@@ -65,6 +65,27 @@ const BulkUpload = () => {
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'User Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Bulk Upload Status') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
@@ -73,19 +94,21 @@ const BulkUpload = () => {
   }, [page]);
 
   useEffect(() => {
-    axiosInstance
-      .get(endpoints.userManagement.academicYear)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setAcademicYear(result.data.data);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
-  }, []);
+    if (moduleId) {
+      axiosInstance
+        .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setAcademicYear(result.data.data);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  }, [moduleId]);
 
   useEffect(() => {
     let request = `${endpoints.userManagement.bulkUpload}?page=${page}&page_size=${limit}`;
@@ -127,7 +150,7 @@ const BulkUpload = () => {
       setPage(1);
       setSearchAcademicYear(value.id);
       axiosInstance
-        .get(`${endpoints.masterManagement.branchList}?session_year=${value?.id}`)
+        .get(`${endpoints.masterManagement.branchList}?session_year=${value?.id}&module_id=${moduleId}`)
         .then((result) => {
           if (result.data?.status_code === 200) {
             setBranches(result.data?.data);

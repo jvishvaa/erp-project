@@ -11,7 +11,7 @@ import StudentHomework from './containers/homework/student-homework/student-home
 import AssignRole from './containers/communication/assign-role/assign-role';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
-import ChapterTypeTable from './containers/master-management/chapter-type/chapter-type-table'
+import ChapterTypeTable from './containers/master-management/chapter-type/chapter-type-table';
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
 import './assets/styles/styles.scss';
 import UserManagement from './containers/user-management';
@@ -113,7 +113,7 @@ import SignatureUpload from './containers/signature-upload';
 import TeacherBatchView from './containers/teacherBatchView';
 import ErpAdminViewClass from './containers/online-class/erp-view-class/admin';
 import AolLogin from './containers/aol-login';
-import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource'
+import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import AttachmentPreviewer from './components/attachment-previewer';
 
 const theme = createMuiTheme({
@@ -169,334 +169,334 @@ function App() {
         <AlertNotificationProvider>
           <OnlineclassViewProvider>
             <ThemeProvider theme={theme}>
-            <AttachmentPreviewer>
-              <CircularStore>
-                <GeneralDairyStore>
-                  <ViewStore>
-                    <DailyDairyStore>
-                      <Switch>
-                        <Route path='/profile'>
-                          {({ match }) => <Profile match={match} />}
-                        </Route>
-                        <Route path='/role-management'>
-                          {({ match }) => <RoleManagement match={match} />}
-                        </Route>
-                        <Route path='/user-management'>
-                          {({ match }) => <UserManagement match={match} />}
-                        </Route>
-                        {/*
+              <AttachmentPreviewer>
+                <CircularStore>
+                  <GeneralDairyStore>
+                    <ViewStore>
+                      <DailyDairyStore>
+                        <Switch>
+                          <Route path='/profile'>
+                            {({ match }) => <Profile match={match} />}
+                          </Route>
+                          <Route path='/role-management'>
+                            {({ match }) => <RoleManagement match={match} />}
+                          </Route>
+                          <Route path='/user-management'>
+                            {({ match }) => <UserManagement match={match} />}
+                          </Route>
+                          {/*
                         <Route exact path='/view-users'>
                             {({ match }) => <ViewUsers match={match} />}
                         </Route>
                         */}
-                        <Route path='/communication/messagelog'>
-                          {({ match }) => <MessageLog match={match} />}
-                        </Route>
-                        <Route path='/dashboard'>
-                          {({ match }) => <Dashboard match={match} />}
-                        </Route>
-                        <Route exact path='/'>
-                          {({ match, history }) => (
-                            <Login match={match} history={history} />
-                          )}
-                        </Route>
-                        <Route exact path='/forgot'>
-                          {({ match, history }) => (
-                            <Forgot match={match} history={history} />
-                          )}
-                        </Route>
-                   
-                        <Route exact path='/aol_login'>
-                          {({ match, history }) => (
-                            <AolLogin match={match} history={history} />
-                          )}
-                        </Route>
-                        {/*
+                          <Route path='/communication/messagelog'>
+                            {({ match }) => <MessageLog match={match} />}
+                          </Route>
+                          <Route path='/dashboard'>
+                            {({ match }) => <Dashboard match={match} />}
+                          </Route>
+                          <Route exact path='/'>
+                            {({ match, history }) => (
+                              <Login match={match} history={history} />
+                            )}
+                          </Route>
+                          <Route exact path='/forgot'>
+                            {({ match, history }) => (
+                              <Forgot match={match} history={history} />
+                            )}
+                          </Route>
+
+                          <Route exact path='/aol_login'>
+                            {({ match, history }) => (
+                              <AolLogin match={match} history={history} />
+                            )}
+                          </Route>
+                          {/*
                         <Route exact path='/assignrole'>
                           {({ match }) => <AssignRole match={match} />}
                         </Route>
                         */}
-                        <Route exact path='/blog/genre'>
-                          {({ match }) => <CreateGenre match={match} />}
-                        </Route>
-                        {/* <Route exact path='/blog/genre/edit'>
+                          <Route exact path='/blog/genre'>
+                            {({ match }) => <CreateGenre match={match} />}
+                          </Route>
+                          {/* <Route exact path='/blog/genre/edit'>
                           {({ match }) => <EditGenre match={match} />}
                         </Route> */}
-                        <Route exact path='/blog/wordcount-config'>
-                          {({ match }) => <CreateWordCountConfig match={match} />}
-                        </Route>
-                        <Route exact path='/blog/wordcount-config/edit'>
-                          {({ match }) => <EditWordCountConfig match={match} />}
-                        </Route>
-                        <Route exact path='/blog/teacher'>
-                          {({ match }) => <TeacherBlog match={match} />}
-                        </Route>
-                        <Route exact path='/blog/admin'>
-                          {({ match }) => <AdminBlog match={match} />}
-                        </Route>
-                        <Route exact path='/blog/principal'>
-                          {({ match }) => <PrincipalBlog match={match} />}
-                        </Route>
-                        <Route exact path='/blog/teacher/contentView'>
-                          {({ match }) => <ContentView match={match} />}
-                        </Route>
-                        <Route exact path='/blog/principal/contentView'>
-                          {({ match }) => <ContentViewPrincipal match={match} />}
-                        </Route>
-                        <Route exact path='/blog/admin/contentView'>
-                          {({ match }) => <ContentViewAdmin match={match} />}
-                        </Route>
-                        <Route exact path='/blog/teacher/contentViewPublish'>
-                          {({ match }) => <ContentViewPublish match={match} />}
-                        </Route>
-                        <Route exact path='/blog/student/contentViewPublishStudent'>
-                          {({ match }) => <ContentViewPublishStudent match={match} />}
-                        </Route>
-                        <Route exact path='/blog/principal/contentViewPublishPrincipal'>
-                          {({ match }) => <ContentViewPublishPrincipal match={match} />}
-                        </Route>
-                        <Route exact path='/blog/admin/contentViewPublishAdmin'>
-                          {({ match }) => <ContentViewPublishAdmin match={match} />}
-                        </Route>
+                          <Route exact path='/blog/wordcount-config'>
+                            {({ match }) => <CreateWordCountConfig match={match} />}
+                          </Route>
+                          <Route exact path='/blog/wordcount-config/edit'>
+                            {({ match }) => <EditWordCountConfig match={match} />}
+                          </Route>
+                          <Route exact path='/blog/teacher'>
+                            {({ match }) => <TeacherBlog match={match} />}
+                          </Route>
+                          <Route exact path='/blog/admin'>
+                            {({ match }) => <AdminBlog match={match} />}
+                          </Route>
+                          <Route exact path='/blog/principal'>
+                            {({ match }) => <PrincipalBlog match={match} />}
+                          </Route>
+                          <Route exact path='/blog/teacher/contentView'>
+                            {({ match }) => <ContentView match={match} />}
+                          </Route>
+                          <Route exact path='/blog/principal/contentView'>
+                            {({ match }) => <ContentViewPrincipal match={match} />}
+                          </Route>
+                          <Route exact path='/blog/admin/contentView'>
+                            {({ match }) => <ContentViewAdmin match={match} />}
+                          </Route>
+                          <Route exact path='/blog/teacher/contentViewPublish'>
+                            {({ match }) => <ContentViewPublish match={match} />}
+                          </Route>
+                          <Route exact path='/blog/student/contentViewPublishStudent'>
+                            {({ match }) => <ContentViewPublishStudent match={match} />}
+                          </Route>
+                          <Route exact path='/blog/principal/contentViewPublishPrincipal'>
+                            {({ match }) => <ContentViewPublishPrincipal match={match} />}
+                          </Route>
+                          <Route exact path='/blog/admin/contentViewPublishAdmin'>
+                            {({ match }) => <ContentViewPublishAdmin match={match} />}
+                          </Route>
 
-                        <Route exact path='/blog/teacher/publish/view'>
-                          {({ match }) => <TeacherPublishBlogView match={match} />}
-                        </Route>
-                        <Route exact path='/blog/admin/publish/view'>
-                          {({ match }) => <AdminPublishBlogView match={match} />}
-                        </Route>
-                        <Route exact path='/blog/student/publish/view'>
-                          {({ match }) => <StudentPublishBlogView match={match} />}
-                        </Route>
-                        <Route exact path='/blog/principal/publish/view'>
-                          {({ match }) => <PrincipalPublishBlogView match={match} />}
-                        </Route>
-                        <Route exact path='/blog/student/dashboard'>
-                          {({ match }) => <StudentDashboard match={match} />}
-                        </Route>
-                        <Route exact path='/blog/student/write-blog'>
-                          {({ match }) => <WriteBlog match={match} />}
-                        </Route>
-                        <Route exact path='/blog/student/edit-blog'>
-                          {({ match }) => <EditBlog match={match} />}
-                        </Route>
-                        <Route exact path='/blog/student/preview-blog'>
-                          {({ match }) => <PreviewBlog match={match} />}
-                        </Route>
-                        <Route exact path='/blog/student/preview-edit-blog'>
-                          {({ match }) => <PreviewEditBlog match={match} />}
-                        </Route>
-                        <Route exact path='/blog/student/view-blog'>
-                          {({ match }) => <BlogView match={match} />}
-                        </Route>
-                        <Route exact path='/communication/addgroup'>
-                          {({ match }) => <CreateGroup match={match} />}
-                        </Route>
-                        <Route exact path='/communication/smscredit'>
-                          {({ match }) => <MessageCredit match={match} />}
-                        </Route>
-                        <Route exact path='/communication/viewgroup'>
-                          {({ match }) => <ViewGroup match={match} />}
-                        </Route>
-                        <Route exact path='/communication/sendmessage'>
-                          {({ match }) => <SendMessage match={match} />}
-                        </Route>
-                        <Route exact path='/online-class/create-class'>
-                          {({ match }) => <CreateClass match={match} />}
-                        </Route>
-                        {/* <Route exact path='/online-class/view-class'>
+                          <Route exact path='/blog/teacher/publish/view'>
+                            {({ match }) => <TeacherPublishBlogView match={match} />}
+                          </Route>
+                          <Route exact path='/blog/admin/publish/view'>
+                            {({ match }) => <AdminPublishBlogView match={match} />}
+                          </Route>
+                          <Route exact path='/blog/student/publish/view'>
+                            {({ match }) => <StudentPublishBlogView match={match} />}
+                          </Route>
+                          <Route exact path='/blog/principal/publish/view'>
+                            {({ match }) => <PrincipalPublishBlogView match={match} />}
+                          </Route>
+                          <Route exact path='/blog/student/dashboard'>
+                            {({ match }) => <StudentDashboard match={match} />}
+                          </Route>
+                          <Route exact path='/blog/student/write-blog'>
+                            {({ match }) => <WriteBlog match={match} />}
+                          </Route>
+                          <Route exact path='/blog/student/edit-blog'>
+                            {({ match }) => <EditBlog match={match} />}
+                          </Route>
+                          <Route exact path='/blog/student/preview-blog'>
+                            {({ match }) => <PreviewBlog match={match} />}
+                          </Route>
+                          <Route exact path='/blog/student/preview-edit-blog'>
+                            {({ match }) => <PreviewEditBlog match={match} />}
+                          </Route>
+                          <Route exact path='/blog/student/view-blog'>
+                            {({ match }) => <BlogView match={match} />}
+                          </Route>
+                          <Route exact path='/communication/addgroup'>
+                            {({ match }) => <CreateGroup match={match} />}
+                          </Route>
+                          <Route exact path='/communication/smscredit'>
+                            {({ match }) => <MessageCredit match={match} />}
+                          </Route>
+                          <Route exact path='/communication/viewgroup'>
+                            {({ match }) => <ViewGroup match={match} />}
+                          </Route>
+                          <Route exact path='/communication/sendmessage'>
+                            {({ match }) => <SendMessage match={match} />}
+                          </Route>
+                          <Route exact path='/online-class/create-class'>
+                            {({ match }) => <CreateClass match={match} />}
+                          </Route>
+                          {/* <Route exact path='/online-class/view-class'>
                       {({ match }) => <ViewClassManagement match={match} />}
                     </Route> */}
-                        {/* <Route exact path='/online-class/resource'>
+                          {/* <Route exact path='/online-class/resource'>
                       {({ match }) => <OnlineClassResource match={match} />}
                     </Route> */}
-                        <Route exact path='/online-class/attendee-list/:id'>
-                          {({ match }) => <AttendeeList match={match} />}
-                        </Route>
-                        {/* <Route exact path='/online-class/attend-class'>
+                          <Route exact path='/online-class/attendee-list/:id'>
+                            {({ match }) => <AttendeeList match={match} />}
+                          </Route>
+                          {/* <Route exact path='/online-class/attend-class'>
                       {({ match }) => <AOLClassView match={match} />}
                     </Route> */}
-                        {/* {({ match }) => <ViewClassStudentCollection match={match} />} */}
-                        <Route exact path='/online-class/resource'>
-                          {({ match }) => <ResourceView match={match} />}
-                        </Route>
-                        <Route exact path='/online-class/view-class'>
-                          {({ match }) => <AOLClassView match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/chapter-type-table'>
-                          {({ match }) => <ChapterTypeTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/branch-table'>
-                          {({ match }) => <BranchTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/branch-acad-table'>
-                          {({ match }) => <BranchAcadTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/subject-mapping-table'>
-                          {({ match }) => <SubjectMappingTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/subject-table'>
-                          {({ match }) => <SubjectTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/section-mapping-table'>
-                          {({ match }) => <SectionMappingTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/section-table'>
-                          {({ match }) => <SectionTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/grade-table'>
-                          {({ match }) => <GradeTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/academic-year-table'>
-                          {({ match }) => <AcademicYearTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/message-type-table'>
-                          {({ match }) => <MessageTypeTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/subject/grade/mapping'>
-                          {({ match }) => <Subjectgrade match={match} />}
-                        </Route>
-                        <Route exact path='/subject/grade'>
-                          {({ match }) => <ListandFilter match={match} />}
-                        </Route>
-                        <Route exact path='/homework/homework-card'>
-                          {({ match }) => <HomeworkCard match={match} />}
-                        </Route>
-                        <Route exact path='/homework/student'>
-                          {({ match }) => <StudentHomework match={match} />}
-                        </Route>
-                        <Route exact path='/homework/teacher'>
-                          {({ match }) => <TeacherHomework match={match} />}
-                        </Route>
-                        <Route exact path='/homework/add/:date/:subject/:id'>
-                          {({ match }) => <AddHomework match={match} />}
-                        </Route>
-                        <Route exact path='/homework/admin'>
-                          {({ match }) => <HomeworkAdmin match={match} />}
-                        </Route>
-                        <Route exact path='/homework/coordinator'>
-                          {/* added by Vijay to display particular teacher details */}
-                          {({ match }) => <CoordinatorHomework match={match} />}
-                        </Route>
-                        <Route
-                          exact
-                          path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'
-                        >
-                          {({ match }) => <AddHomeworkCoord match={match} />}
-                        </Route>
-                        <Route exact path='/lesson-plan/teacher-view'>
-                          {({ match }) => <LessonPlan match={match} />}
-                        </Route>
-                        <Route exact path='/lesson-plan/student-view'>
-                          {({ match }) => <LessonPlan match={match} />}
-                        </Route>
-                        <Route exact path='/lesson-plan/report'>
-                          {({ match }) => <LessonReport match={match} />}
-                        </Route>
-                        <Route exact path='/lesson-plan/graph-report'>
-                          {({ match }) => <LessonPlanGraphReport match={match} />}
-                        </Route>
-                        <Route exact path='/discussion-forum'>
-                          {({ match }) => <Discussionforum match={match} />}
-                        </Route>
-                        <Route exact path='/category/create'>
-                          {({ match }) => <CreateCategory match={match} />}
-                        </Route>
-                        <Route exact path='/discussion-forum/create'>
-                          {({ match }) => <CreateDiscussionForum match={match} />}
-                        </Route>
-                        <Route exact path='/circular'>
-                          {({ match }) => <CircularList match={match} />}
-                        </Route>
-                        <Route exact path='/create-circular'>
-                          {({ match }) => <CreateCircular match={match} />}
-                        </Route>
-                        <Route exact path='/general-dairy'>
-                          {({ match }) => <GeneralDairyList match={match} />}
-                        </Route>
-                        <Route exact path='/diary/student'>
-                          {({ match }) => <GeneralDairyList match={match} />}
-                        </Route>
-                        <Route exact path='/diary/teacher'>
-                          {({ match }) => <GeneralDairyList match={match} />}
-                        </Route>
-                        <Route exact path='/general-dairy/student-view'>
-                          {({ match }) => <GeneralDairyStudentList match={match} />}
-                        </Route>
-                        <Route exact path='/create/general-diary'>
-                          {({ match }) => <CreateGeneralDairy match={match} />}
-                        </Route>
-                        <Route exact path='/daily-dairy'>
-                          {({ match }) => <DailyDairyList match={match} />}
-                        </Route>
-                        <Route exact path='/create/daily-diary'>
-                          {({ match }) => <CreateDailyDairy match={match} />}
-                        </Route>
-                        <Route exact path='/create/course'>
-                          {({ match }) => <CreateCourse match={match} />}
-                        </Route>
-                        <Route exact path='/course-price/:courseKey?/:gradeKey?'>
-                          {({ match }) => <CoursePrice match={match} />}
-                        </Route>
-                        <Route exact path='/create/course/:courseKey?/:gradeKey?'>
-                          {({ match }) => <CreateCourse match={match} />}
-                        </Route>
-                        <Route exact path='/course-list/:gradeKey?'>
-                          {({ match }) => <CourseView match={match} />}
-                        </Route>
-                        <Route exact path='/view-period/:id?'>
-                          {({ match }) => <ViewCourseCard match={match} />}
-                        </Route>
-                        <Route exact path='/assessment/comparision'>
-                          {({ match }) => <AssessmentComparisionUI match={match} />}
-                        </Route>
-                        <Route exact path='/assessment/:assessmentId/analysis'>
-                          {({ match }) => <AssessmentAnalysis match={match} />}
-                        </Route>
-                        <Route exact path='/aol-attendance-list/:id?'>
-                          {({ match }) => <AttendeeListRemake match={match} />}
-                        </Route>
-                        <Route exact path='/assessment/'>
-                          {({ match }) => <ViewAssessments match={match} />}
-                        </Route>
-                        <Route exact path='/assessment/:assessmentId/attempt'>
-                          {({ match }) => <AssessmentAttemption match={match} />}
-                        </Route>
-                        <Route exact path='/student-strength'>
-                          {({ match }) => <StudentStrength match={match} />}
-                        </Route>
-                        <Route exact path='/student-id-card'>
-                          {({ match }) => <StudentIdCard match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/signature-upload'>
-                          {({ match }) => <SignatureUpload match={match} />}
-                        </Route>
-                        <Route exact path='/online-class/attend-class'>
-                          {({ match }) => <TeacherBatchView match={match} />}
-                        </Route>
-                        <Route exact path='/online-class/teacher-view-class'>
-                          {({ match }) => <TeacherBatchView match={match} />}
-                        </Route>
-                        <Route exact path='/aol-reshuffle/:id?'>
-                          {({ match }) => <Reshuffle match={match} />}
-                        </Route>
-                        <Route exact path='/erp-online-class'>
-                          {({ match }) => <ErpAdminViewClass match={match} />}
-                        </Route>
-                        <Route exact path='/erp-online-class-teacher-view'>
-                          {({ match }) => <ErpAdminViewClass match={match} />}
-                        </Route>
-                        <Route exact path='/erp-online-class-student-view'>
-                          {({ match }) => <ErpAdminViewClass match={match} />}
-                        </Route>
-                        <Route exact path='/erp-online-resources'>
-                          {({ match }) => <OnlineClassResource match={match} />}
-                        </Route>
-                      </Switch>
-                    </DailyDairyStore>
-                  </ViewStore>
-                </GeneralDairyStore>
-              </CircularStore>
+                          {/* {({ match }) => <ViewClassStudentCollection match={match} />} */}
+                          <Route exact path='/online-class/resource'>
+                            {({ match }) => <ResourceView match={match} />}
+                          </Route>
+                          <Route exact path='/online-class/view-class'>
+                            {({ match }) => <AOLClassView match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/chapter-type-table'>
+                            {({ match }) => <ChapterTypeTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/branch-table'>
+                            {({ match }) => <BranchTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/branch-acad-table'>
+                            {({ match }) => <BranchAcadTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/subject-mapping-table'>
+                            {({ match }) => <SubjectMappingTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/subject-table'>
+                            {({ match }) => <SubjectTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/section-mapping-table'>
+                            {({ match }) => <SectionMappingTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/section-table'>
+                            {({ match }) => <SectionTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/grade-table'>
+                            {({ match }) => <GradeTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/academic-year-table'>
+                            {({ match }) => <AcademicYearTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/message-type-table'>
+                            {({ match }) => <MessageTypeTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/subject/grade/mapping'>
+                            {({ match }) => <Subjectgrade match={match} />}
+                          </Route>
+                          <Route exact path='/subject/grade'>
+                            {({ match }) => <ListandFilter match={match} />}
+                          </Route>
+                          <Route exact path='/homework/homework-card'>
+                            {({ match }) => <HomeworkCard match={match} />}
+                          </Route>
+                          <Route exact path='/homework/student'>
+                            {({ match }) => <StudentHomework match={match} />}
+                          </Route>
+                          <Route exact path='/homework/teacher'>
+                            {({ match }) => <TeacherHomework match={match} />}
+                          </Route>
+                          <Route exact path='/homework/add/:date/:subject/:id'>
+                            {({ match }) => <AddHomework match={match} />}
+                          </Route>
+                          <Route exact path='/homework/admin'>
+                            {({ match }) => <HomeworkAdmin match={match} />}
+                          </Route>
+                          <Route exact path='/homework/coordinator'>
+                            {/* added by Vijay to display particular teacher details */}
+                            {({ match }) => <CoordinatorHomework match={match} />}
+                          </Route>
+                          <Route
+                            exact
+                            path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'
+                          >
+                            {({ match }) => <AddHomeworkCoord match={match} />}
+                          </Route>
+                          <Route exact path='/lesson-plan/teacher-view'>
+                            {({ match }) => <LessonPlan match={match} />}
+                          </Route>
+                          <Route exact path='/lesson-plan/student-view'>
+                            {({ match }) => <LessonPlan match={match} />}
+                          </Route>
+                          <Route exact path='/lesson-plan/report'>
+                            {({ match }) => <LessonReport match={match} />}
+                          </Route>
+                          <Route exact path='/lesson-plan/graph-report'>
+                            {({ match }) => <LessonPlanGraphReport match={match} />}
+                          </Route>
+                          <Route exact path='/discussion-forum'>
+                            {({ match }) => <Discussionforum match={match} />}
+                          </Route>
+                          <Route exact path='/category/create'>
+                            {({ match }) => <CreateCategory match={match} />}
+                          </Route>
+                          <Route exact path='/discussion-forum/create'>
+                            {({ match }) => <CreateDiscussionForum match={match} />}
+                          </Route>
+                          <Route exact path='/circular'>
+                            {({ match }) => <CircularList match={match} />}
+                          </Route>
+                          <Route exact path='/create-circular'>
+                            {({ match }) => <CreateCircular match={match} />}
+                          </Route>
+                          <Route exact path='/general-dairy'>
+                            {({ match }) => <GeneralDairyList match={match} />}
+                          </Route>
+                          <Route exact path='/diary/student'>
+                            {({ match }) => <GeneralDairyList match={match} />}
+                          </Route>
+                          <Route exact path='/diary/teacher'>
+                            {({ match }) => <GeneralDairyList match={match} />}
+                          </Route>
+                          <Route exact path='/general-dairy/student-view'>
+                            {({ match }) => <GeneralDairyStudentList match={match} />}
+                          </Route>
+                          <Route exact path='/create/general-diary'>
+                            {({ match }) => <CreateGeneralDairy match={match} />}
+                          </Route>
+                          <Route exact path='/daily-dairy'>
+                            {({ match }) => <DailyDairyList match={match} />}
+                          </Route>
+                          <Route exact path='/create/daily-diary'>
+                            {({ match }) => <CreateDailyDairy match={match} />}
+                          </Route>
+                          <Route exact path='/create/course'>
+                            {({ match }) => <CreateCourse match={match} />}
+                          </Route>
+                          <Route exact path='/course-price/:courseKey?/:gradeKey?'>
+                            {({ match }) => <CoursePrice match={match} />}
+                          </Route>
+                          <Route exact path='/create/course/:courseKey?/:gradeKey?'>
+                            {({ match }) => <CreateCourse match={match} />}
+                          </Route>
+                          <Route exact path='/course-list/:gradeKey?'>
+                            {({ match }) => <CourseView match={match} />}
+                          </Route>
+                          <Route exact path='/view-period/:id?'>
+                            {({ match }) => <ViewCourseCard match={match} />}
+                          </Route>
+                          <Route exact path='/assessment/comparision'>
+                            {({ match }) => <AssessmentComparisionUI match={match} />}
+                          </Route>
+                          <Route exact path='/assessment/:assessmentId/analysis'>
+                            {({ match }) => <AssessmentAnalysis match={match} />}
+                          </Route>
+                          <Route exact path='/aol-attendance-list/:id?'>
+                            {({ match }) => <AttendeeListRemake match={match} />}
+                          </Route>
+                          <Route exact path='/assessment/'>
+                            {({ match }) => <ViewAssessments match={match} />}
+                          </Route>
+                          <Route exact path='/assessment/:assessmentId/attempt'>
+                            {({ match }) => <AssessmentAttemption match={match} />}
+                          </Route>
+                          <Route exact path='/student-strength'>
+                            {({ match }) => <StudentStrength match={match} />}
+                          </Route>
+                          <Route exact path='/student-id-card'>
+                            {({ match }) => <StudentIdCard match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/signature-upload'>
+                            {({ match }) => <SignatureUpload match={match} />}
+                          </Route>
+                          <Route exact path='/online-class/attend-class'>
+                            {({ match }) => <TeacherBatchView match={match} />}
+                          </Route>
+                          <Route exact path='/online-class/teacher-view-class'>
+                            {({ match }) => <TeacherBatchView match={match} />}
+                          </Route>
+                          <Route exact path='/aol-reshuffle/:id?'>
+                            {({ match }) => <Reshuffle match={match} />}
+                          </Route>
+                          <Route exact path='/erp-online-class'>
+                            {({ match }) => <ErpAdminViewClass match={match} />}
+                          </Route>
+                          <Route exact path='/erp-online-class-teacher-view'>
+                            {({ match }) => <ErpAdminViewClass match={match} />}
+                          </Route>
+                          <Route exact path='/erp-online-class-student-view'>
+                            {({ match }) => <ErpAdminViewClass match={match} />}
+                          </Route>
+                          <Route exact path='/erp-online-resources'>
+                            {({ match }) => <OnlineClassResource match={match} />}
+                          </Route>
+                        </Switch>
+                      </DailyDairyStore>
+                    </ViewStore>
+                  </GeneralDairyStore>
+                </CircularStore>
               </AttachmentPreviewer>
             </ThemeProvider>
           </OnlineclassViewProvider>
