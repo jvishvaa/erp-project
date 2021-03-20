@@ -149,7 +149,7 @@ const Subjectcard = (props) => {
                                                     >
                                                         <span className='tooltiptext'>
                                                             <div  >
-                                                                <Link to={{ pathname: `/master-mgmt/subject/grade/mapping`, query: { list }, edit: true }}
+                                                                <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }}
                                                                     activeClassName="active"
                                                                     className="link-grade"
                                                                 >
@@ -191,7 +191,7 @@ const Subjectcard = (props) => {
                                     </Grid>
                                     {/* <Grid item xs={12} className={classes.textRight} >
                                         <div className="navigate-link" style={{ display: 'flex' }}>
-                                            // <Link to={{ pathname: `/master-mgmt/subject/grade/mapping`, query: { list }, edit: true }} activeClassName="active" className="link-grade"><p> Edit <EditIcon style={{ fontSize: '16px' }} /></p></Link>
+                                            // <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }} activeClassName="active" className="link-grade"><p> Edit <EditIcon style={{ fontSize: '16px' }} /></p></Link>
                                             <p onClick={() => callDelete(list.id, index)} style={{ marginLeft: 5, color: '#014B7E' }}> Delete <DeleteIcon style={{ fontSize: '16px', color: '#014B7E' }} /></p>
                                         </div>
                                     </Grid> */}
@@ -199,7 +199,7 @@ const Subjectcard = (props) => {
                                     <Grid item xs={6}>
                                         {/*
                                             <Box style={{ display: 'flex' }}>
-                                            <Link to={{ pathname: `/master-mgmt/subject/grade/mapping`, query: { list }, edit: true }} activeClassName="active" className="link-grade">
+                                            <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }} activeClassName="active" className="link-grade">
                                                 <p> Edit <EditIcon style={{ fontSize: '16px' }} /></p>
                                             </Link>
                                             <p onClick={(e) => handleClick(e)} style={{ marginLeft: 5, color: '#014B7E' }}>
