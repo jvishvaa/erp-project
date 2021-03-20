@@ -364,7 +364,7 @@ const Layout = ({ children, history }) => {
         history.push('/role-management');
         break;
       }
-      case 'View & Edit Group': {
+      case 'View&Edit Group': {
         history.push('/communication/viewgroup');
         break;
       }
@@ -376,7 +376,7 @@ const Layout = ({ children, history }) => {
         history.push('/communication/smscredit');
         break;
       }
-      case 'SMS & Email Log': {
+      case 'SMS&Email Log': {
         history.push('/communication/messageLog');
         break;
       }

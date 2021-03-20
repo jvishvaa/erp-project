@@ -83,6 +83,26 @@ const Filter = (props) => {
         { id: 3, type: 'Parent Class' },
       ]);
     const [selectedClassType, setSelectedClassType] = useState('');
+    const [moduleId, setModuleId] = useState();
+    const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  
+    useEffect(() => {
+      if (NavData && NavData.length) {
+        NavData.forEach((item) => {
+          if (
+            item.parent_modules === 'Circular' &&
+            item.child_module &&
+            item.child_module.length > 0
+          ) {
+            item.child_module.forEach((item) => {
+              if (item.child_name === 'Teacher Circular') {
+                setModuleId(item.child_id);
+              }
+            });
+          }
+        });
+      }
+    }, []);
     
     function callApi(api, key) {
         setLoading(true);
@@ -134,7 +154,7 @@ const Filter = (props) => {
             setPage(1);
             callApi(`${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
                 selectedBatch && selectedBatch.id
-                }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1&batch_limit=${selectedBatch.batch_size}`,
+                }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${selectedBatch.batch_size}`,
                 'filter'
             );
         }
@@ -153,7 +173,7 @@ const Filter = (props) => {
         setPage(page);
         callApi(`${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
                     selectedBatch && selectedBatch.id
-                }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1&batch_limit=${selectedBatch.batch_size}`,
+                }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${selectedBatch.batch_size}`,
             'filter'
         );
     }
@@ -192,35 +212,20 @@ const Filter = (props) => {
         setLoading(true);
         setPage(1);
         if(window.location.host === endpoints?.aolConfirmURL){
-            callApi(`${endpoints.teacherViewBatches.getBatchList}?is_aol=1&course=${selectedCourse.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=15&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}`,
+            callApi(`${endpoints.teacherViewBatches.getBatchList}?is_aol=1&course=${selectedCourse.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}`,
             'filter'
         );
         }else if(selectedCourse.id){
             callApi(
-                `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${secSelectedId}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15`,
+                `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${secSelectedId}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15&module_id=${moduleId}`,
                 'filter'
               );
         }else {
             callApi(
-              `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${secSelectedId}&subject_id=${subSelectedId}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15`,
+              `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${secSelectedId}&subject_id=${subSelectedId}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15&module_id=${moduleId}`,
               'filter'
             );
           }
-
-        // >>>>> 
-    //     if (selectedCourse.id) {
-    //   callApi(
-    //     `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15`,
-    //     'filter'
-    //   );
-    // } else {
-    //   callApi(
-    //     `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.id}&subject_id=${selectedSubject.subject__id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15`,
-    //     'filter'
-    //   );
-    // }
-    // >>>>>>>>>>>>>>>
-       
     }
     
     function handleDate(v1) {
@@ -267,7 +272,7 @@ const Filter = (props) => {
                         setSelectedAcadmeicYear(value)
                         if(value){
                           callApi(
-                            `${endpoints.masterManagement.branchList}?session_year=${value?.id}&module_id=8`,
+                            `${endpoints.masterManagement.branchList}?session_year=${value?.id}&module_id=${moduleId}`,
                             'branchList'
                           );
                         }
@@ -300,7 +305,7 @@ const Filter = (props) => {
                           const selectedId=value.map((el)=>el.id)
                           setSelectedBranch(ids)
                           callApi(
-                            `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=8`,
+                            `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
                             'gradeList'
                           );
                         }
@@ -334,7 +339,7 @@ const Filter = (props) => {
                           const branchId=selectedBranch.map((el)=>el.id)
                           setSelectedGrade(ids)
                           callApi(
-                            `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${selectedModule}`,
+                            `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
                             'section'
                           );
                         }
@@ -383,7 +388,7 @@ const Filter = (props) => {
                           setSelectedSection(ids)
                           setSecSelectedId(secId)
                           callApi(
-                            `${endpoints.academics.subjects}?branch=${selectedBranch.map((el)=>el.id)}&grade=${selectedGrade.map((el)=>el.grade_id)}&section=${secId}&module_id=${selectedModule}`,
+                            `${endpoints.academics.subjects}?branch=${selectedBranch.map((el)=>el.id)}&grade=${selectedGrade.map((el)=>el.grade_id)}&section=${secId}&module_id=${moduleId}`,
                             'subject'
                           );
                         }

@@ -94,6 +94,27 @@ const CreateCourse = () => {
   const [progress, setProgress] = React.useState(10);
   const [isLodding, setIsLodding] = React.useState(0);
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Master Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Course') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   const handleCourseLevel = (event, value) => {
     setFilterData({ ...filterData, courseLevel: '' });
     if (value) {
@@ -415,9 +436,9 @@ const CreateCourse = () => {
   };
 
   useEffect(() => {
-    if (aolHostURL !== endpoints.aolConfirmURL) {
+    if (aolHostURL !== endpoints.aolConfirmURL && moduleId) {
       setGradeDropdown([]);
-      let url = `${endpoints.communication.grades}`;
+      let url = `${endpoints.masterManagement.grades}`;
       if (aolHostURL === endpoints.aolConfirmURL) url += `?branch_id=1`;
       else url += `?branch_id=1`;
       axiosInstance
@@ -425,11 +446,12 @@ const CreateCourse = () => {
         .then((result) => {
           if (result.data.status_code === 200) {
             const list = [];
-            result.data.data.forEach((obj) => {
+            result.data.result.results.forEach((obj) => {
               list.push({
-                id: obj.id,
-                gradeName: obj?.grade__grade_name,
-                gradeId: obj?.grade_id,
+                id: obj.id||'',
+                gradeName: obj?.grade_name||'',
+                // gradeId: obj?.grade_id||'',
+                gradeId: obj?.id||'',
               });
             });
             setGradeDropdown(list);
@@ -440,7 +462,7 @@ const CreateCourse = () => {
           setAlert('error', error.message);
         });
     }
-  }, []);
+  }, [moduleId]);
 
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: '' });

@@ -22,13 +22,13 @@ import {
   Tab,
   Typography,
   FormControlLabel,
-  Checkbox
+  Checkbox,
 } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useLocation } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Layout from '../../Layout';
@@ -39,17 +39,15 @@ import axiosInstance from '../../../config/axios';
 import attachmenticon from '../../../assets/images/attachmenticon.svg';
 import deleteIcon from '../../../assets/images/delete.svg';
 import Loading from '../../../components/loader/loader';
-import CustomMultiSelect from '../../../../src/containers/communication/custom-multiselect/custom-multiselect'
-import {Context} from '../context/context'
-import unfiltered from '../../../assets/images/unfiltered.svg'
+import CustomMultiSelect from '../../../../src/containers/communication/custom-multiselect/custom-multiselect';
+import { Context } from '../context/context';
+import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 
 import CustomSelectionTable from '../../../../src/containers/communication/custom-selection-table/custom-selection-table';
 
 import axios from 'axios';
 // import CustomSelectionTable from '../../../containers/communication/custom-selection-table';
-
-
 
 const StyledTabs = withStyles({
   indicator: {
@@ -81,11 +79,11 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     margin: '0 auto',
-    boxShadow:'none'
+    boxShadow: 'none',
   },
   container: {
     maxHeight: '70vh',
-    width: '100%'
+    width: '100%',
   },
   columnHeader: {
     color: `${theme.palette.secondary.main} !important`,
@@ -101,41 +99,8 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 auto',
     background: theme.palette.background.secondary,
     paddingBottom: theme.spacing(2),
-  }
+  },
 }));
-
-// const columns = [
-//   // { 
-//   //   id: 'subject_name',
-//   //   label: 'SL_No',
-//   //   minWidth: 100 ,
-//   //   align: 'center',
-//   //   labelAlign: 'center',
-//   // },
-//   { 
-//     id: 'name',
-//     label: 'Name',
-//     minWidth: 100 ,
-//     align: 'center',
-//     labelAlign: 'center',
-//   },
-//   { 
-//     id: 'erp_id', 
-//     label: 'ERP No', 
-//     minWidth: 100 , 
-//     align: 'center',
-//     labelAlign: 'center',
-//   },
-//   {
-//     id: 'optional',
-//     label: 'Selection',
-//     minWidth: 50,
-//     align: 'center',
-//     labelAlign: 'center',
-//   },
-
-// ];
-// eslint-disable-next-line no-unused-vars
 
 const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const {
@@ -157,18 +122,18 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
 
-  const [sectionDropdown,setSectionDropdown] = useState([])
+  const [sectionDropdown, setSectionDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
-  const [sectionIds,setSectionIds] = useState([])
+  const [sectionIds, setSectionIds] = useState([]);
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [searchAcademicYear, setSearchAcademicYear] = useState('');
-  const [academicYear, setAcademicYear] = useState([])
+  const [academicYear, setAcademicYear] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const limit = 15;
   const [page, setPage] = React.useState(1);
   const [currentTab, setCurrentTab] = useState(0);
   const [isEmail, setIsEmail] = useState(false);
-  const [bulkData,setBulkData]=useState([])
+  const [bulkData, setBulkData] = useState([]);
   const [sectionList, setSectionList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [uploadLoading, setUploadLoading] = useState(false);
@@ -178,9 +143,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const [completeData, setCompleteData] = useState([]);
   const [moduleId, setModuleId] = useState();
   const [grade, setGrade] = useState([]);
-  const [filePath,setFilePath] = useState([])
-  const [ activeTab, setActiveTab ] = useState(0);
-  const [clicked,setClicked] = useState(false)
+  const [filePath, setFilePath] = useState([]);
+  const [activeTab, setActiveTab] = useState(0);
+  const [clicked, setClicked] = useState(false);
 
   const [selectedSections, setSelectedSections] = useState([]);
   const [headers, setHeaders] = useState([]);
@@ -194,17 +159,17 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [branchList, setBranchList] = useState([]);
   const [selectAllObj, setSelectAllObj] = useState([]);
-  const [title,setTitle] = useState('')
+  const [title, setTitle] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const location = useLocation();
   const [studentModuleId, setStudentModuleId] = useState();
   const [teacherModuleId, setTeacherModuleId] = useState(null);
 
-  const [description,setDescription] = useState('')
-     //context
-     const [state,setState] = useContext(Context)
-     const {isEdit, editData} = state;
-     const{setIsEdit,setEditData}=setState;
+  const [description, setDescription] = useState('');
+  //context
+  const [state, setState] = useContext(Context);
+  const { isEdit, editData } = state;
+  const { setIsEdit, setEditData } = setState;
 
   const [overviewSynopsis, setOverviewSynopsis] = useState([]);
 
@@ -221,8 +186,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     selectionArray.push(0);
   }
 
-  console.log(selectedUsers, 'selectedUsers')
-  
+  console.log(selectedUsers, 'selectedUsers');
 
   const handleClear = () => {
     setFilterData({
@@ -231,649 +195,608 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     });
     // setPeriodData([]);
     setSectionDropdown([]);
-
   };
 
   const handleChangePage = (event, newPage) => {
-    setPageno(newPage+1)
+    setPageno(newPage + 1);
   };
   const [filterData, setFilterData] = useState({
-    branch: [],
-    grade: [],
-    section:[],
-    role:''
-});
+    branch: '',
+    grade: '',
+    section: '',
+    role: '',
+  });
 
-useEffect(() => {
-  if (NavData && NavData.length) {
-    NavData.forEach((item) => {
-      if (
-        item.parent_modules === 'Diary' &&
-        item.child_module &&
-        item.child_module.length > 0
-      ) {
-        item.child_module.forEach((item) => {
-          if(location.pathname === "/diary/student" && item.child_name === "Student View") {
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Diary' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (
+              location.pathname === '/diary/student' &&
+              item.child_name === 'Student View'
+            ) {
               setStudentModuleId(item?.child_id);
-          } else if(location.pathname === "/create/general-diary" && item.child_name === "Teacher Diary") {
+            } else if (
+              location.pathname === '/create/general-diary' &&
+              item.child_name === 'Teacher Diary'
+            ) {
               setTeacherModuleId(item?.child_id);
-          } 
-        });
-      }
-    });
-  }
-}, [location.pathname]);
+            }
+          });
+        }
+      });
+    }
+  }, [location.pathname]);
 
-const handleBranch = (event, value) => {
-  setFilterData({ ...filterData, branch: [], grade: [], subject: '', chapter: '' });
-  setOverviewSynopsis([]);
-  if (value) {
-      setFilterData({ ...filterData, branch: [...filterData.branch,value], grade: '', subject: '', chapter: '' });
-      axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${location.pathname === "/diary/student"?studentModuleId:teacherModuleId}`)
-      // axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${location.pathname === "/diary/student"?studentModuleId:teacherModuleId}`)
-          .then(result => {
-              if (result.data.status_code === 200) {
-                  setGradeDropdown(result.data.data);
-              }
-              else {
-                  setAlert('error', result.data.message);
-                  setGradeDropdown([]);
-                  // setSubjectDropdown([]);
-                  // setChapterDropdown([]);
-              }
-          })
-          .catch(error => {
-              setAlert('error', error.message);
-              setGradeDropdown([]);
-              // setSubjectDropdown([]);
-              // setChapterDropdown([]);
-          })
-  }
-  else {
+  const handleBranch = (event, value) => {
+    setFilterData({ ...filterData, branch: [], grade: [], subject: '', chapter: '' });
+    setOverviewSynopsis([]);
+    if (value) {
+      setFilterData({
+        ...filterData,
+        branch: [...filterData.branch, value],
+        grade: '',
+        subject: '',
+        chapter: '',
+      });
+      axiosInstance
+        .get(
+          `${endpoints.communication.grades}?branch_id=${value.id}&module_id=${
+            location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+          }`
+        )
+        // axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${location.pathname === "/diary/student"?studentModuleId:teacherModuleId}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setGradeDropdown(result.data.data);
+          } else {
+            setAlert('error', result.data.message);
+            setGradeDropdown([]);
+            // setSubjectDropdown([]);
+            // setChapterDropdown([]);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+          setGradeDropdown([]);
+          // setSubjectDropdown([]);
+          // setChapterDropdown([]);
+        });
+    } else {
       setGradeDropdown([]);
       // setSubjectDropdown([]);
       // setChapterDropdown([]);
-  }
-};
+    }
+  };
 
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, ...filterData.grade=[], subject: '', chapter: '' });
+    setFilterData({
+      ...filterData,
+      ...(filterData.grade = []),
+      subject: '',
+      chapter: '',
+    });
     setOverviewSynopsis([]);
     if (value && filterData.branch) {
-        setFilterData({ ...filterData, grade:[...filterData.grade,value], subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch[0].id}&grade_id=${value.grade_id}&module_id=${location.pathname === "/lesson-plan/student-view"?studentModuleId:teacherModuleId}`)
-            .then(result => {
-                if (result.data.status_code === 200) {
-                    setSectionDropdown(result.data.data);
-                }
-                else {
-                    setAlert('error', result.data.message);
-                   setSectionDropdown([])
-                }
-            })
-            .catch(error => {
-                setAlert('error', error.message);
-                setSectionDropdown([])
-            })
-    }
-    else {
-        setSectionDropdown([])
-        // setChapterDropdown([]);
-    }
-};
-
-// const handleSection = (event, value) => {
-//   setFilterData({ ...filterData });
-//   if (value.length) {
-//     const ids = value.map((el) => el.id);
-//   //   setSubjectIds(ids);
-//   setSectionIds(ids)
-//   }
-// };
-const handleSection = (event, value) => {
-  setFilterData({ ...filterData, ...filterData.section= [] });
-  console.log(filterData)
-  if (value) {
-      setFilterData({ ...filterData, section: [...filterData.section,value] });
-  }
-};
-
-const handleImageChange=(event)=>{
- 
-  setLoading(true)
-  if(filePath.length<10){
-    // setLoading(true)
-      const data =event.target.files[0]
-  const fd = new FormData();
-  fd.append('file',event.target.files[0])
-  fd.append('branch',filterData.branch[0].branch_name)
-  // fd.append('grade',filterData.grade[0].id)
-  fd.append('grade',filterData.grade.map((g)=>g.grade_id))
-  fd.append('section',filterData.section.map((s)=>s.id))
-  axiosInstance.post(`${endpoints.generalDairy.uploadFile}`, fd)
-      .then((result)=>{
-      
-          if(result.data.status_code === 200){
-              console.log(result.data,'resp')
-              setAlert('success',result.data.message)
-              setLoading(false)
-              setFilePath([ ...filePath,result.data.result])
-          }
-          else{
-            setLoading(false)
-              setAlert('error',result.data.message)
-             
-          }
-
-      })
-  }else{
-      setAlert('warning','Exceed Maximum Number Attachment')
-  }
-  
-
-}
-
-const handleAcademicYear = (event, value) => {
-  setSearchAcademicYear('')
-  if (value) {
-    // setPage(1)
-    setSearchAcademicYear(value.id)
-  }
-}
-useEffect(() => {
-
-    displayUsersList();
-  
-
-}, [pageno,searchAcademicYear]);
-
-useEffect(() => {
-  getBranchApi();
-}, []);
-useEffect(() => {
-  if (selectedBranch) {
-    setGrade([]);
-    getGradeApi();
-  }
-}, [selectedBranch]);
-
-useEffect(() => {
-  if (selectedGrades.length && gradeList.length) {
-    // setSelectedSections([]);
-    getSectionApi();
-  } else {
-    if (!edit) {
-      setSelectedSections([]);
-    }
-  }
-}, [gradeList, selectedGrades]);
-
-useEffect(() => {
-  axiosInstance.get(`${endpoints.communication.branches}`)
-      .then(result => {
-          if (result.data.status_code === 200) {
-              setBranchDropdown(result.data.data);
-          } else {
-              setAlert('error', result.data.message);
-          }
-      }).catch(error => {
-          setBranchDropdown('error', error.message);
-      })
+      setFilterData({
+        ...filterData,
+        grade: [...filterData.grade, value],
+        subject: '',
+        chapter: '',
+      });
       axiosInstance
+        .get(
+          `${endpoints.masterManagement.sections}?branch_id=${
+            filterData.branch[0].id
+          }&grade_id=${value.grade_id}&module_id=${
+            location.pathname === '/lesson-plan/student-view'
+              ? studentModuleId
+              : teacherModuleId
+          }`
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setSectionDropdown(result.data.data);
+          } else {
+            setAlert('error', result.data.message);
+            setSectionDropdown([]);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+          setSectionDropdown([]);
+        });
+    } else {
+      setSectionDropdown([]);
+      // setChapterDropdown([]);
+    }
+  };
+  const handleSection = (event, value) => {
+    setFilterData({ ...filterData, ...(filterData.section = []) });
+    console.log(filterData);
+    if (value) {
+      setFilterData({ ...filterData, section: [...filterData.section, value] });
+    }
+  };
+
+  const handleImageChange = (event) => {
+    setLoading(true);
+    if (filePath.length < 10) {
+      // setLoading(true)
+      const data = event.target.files[0];
+      const fd = new FormData();
+      fd.append('file', event.target.files[0]);
+      fd.append('branch', filterData.branch[0].branch_name);
+      fd.append(
+        'grade',
+        filterData.grade.map((g) => g.grade_id)
+      );
+      fd.append(
+        'section',
+        filterData.section.map((s) => s.id)
+      );
+      axiosInstance.post(`${endpoints.generalDairy.uploadFile}`, fd).then((result) => {
+        if (result.data.status_code === 200) {
+          console.log(result.data, 'resp');
+          setAlert('success', result.data.message);
+          setLoading(false);
+          setFilePath([...filePath, result.data.result]);
+        } else {
+          setLoading(false);
+          setAlert('error', result.data.message);
+        }
+      });
+    } else {
+      setAlert('warning', 'Exceed Maximum Number Attachment');
+    }
+  };
+
+  const handleAcademicYear = (event, value) => {
+    setSearchAcademicYear('');
+    if (value) {
+      setSearchAcademicYear(value.id);
+      axiosInstance
+      .get(`${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`)
+      .then((result) => {
+        if (result?.data?.status_code) {
+          setBranchDropdown(result?.data?.data);
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => setAlert('error', error?.message));
+    }
+  };
+  useEffect(() => {
+    displayUsersList();
+  }, [pageno, searchAcademicYear]);
+
+  useEffect(() => {
+    getBranchApi();
+  }, []);
+  useEffect(() => {
+    if (selectedBranch) {
+      setGrade([]);
+      getGradeApi();
+    }
+  }, [selectedBranch]);
+
+  useEffect(() => {
+    if (selectedGrades.length && gradeList.length) {
+      // setSelectedSections([]);
+      getSectionApi();
+    } else {
+      if (!edit) {
+        setSelectedSections([]);
+      }
+    }
+  }, [gradeList, selectedGrades]);
+
+  useEffect(() => {
+    // axiosInstance.get(`${endpoints.communication.branches}`)
+    //     .then(result => {
+    //         if (result.data.status_code === 200) {
+    //             setBranchDropdown(result.data.data);
+    //         } else {
+    //             setAlert('error', result.data.message);
+    //         }
+    //     }).catch(error => {
+    //         setBranchDropdown('error', error.message);
+    //     })
+    axiosInstance
       .get(endpoints.userManagement.academicYear)
       .then((result) => {
         if (result.status === 200) {
-          setAcademicYear(result.data.data)
+          setAcademicYear(result.data.data);
         } else {
-          setAlert('error', result.data.message)
+          setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message)
-      })
-}, []);
-const handleTabChange = (event, tab) => {
-  setCurrentTab(tab);
-  setIsEmail(!isEmail);
-
-};
-
-const displayUsersList = async (e) => {
-  setClicked(true)
-  const rolesId = [];
-  const gradesId = [];
-  const sectionsId = [];
-  // const sectionArray = [];
-  // sectionsId.forEach((item) => {
-  //   sectionArray.push(item);
-  // });
-  if (e === undefined && activeTab === 0){
-    return
-  }
-  let getUserListUrl;
-    getUserListUrl = `${endpoints.generalDairy.studentList}?academic_year=${searchAcademicYear}&active=${!isEmail ? '0' : '1'}&page=${pageno}&page_size=15&bgs_mapping=${filterData.section.map((s)=>s.id)}`;
-
-  
-  if (selectedSections.length && !selectedSections.includes('All')) {
-    sectionList
-      .filter((item) => selectedSections.includes(item['section__section_name']))
-      .forEach((items) => {
-        sectionsId.push(items.section_id);
+        setAlert('error', error.message);
       });
-  }
- 
-  if (sectionsId.length && !selectedSections.includes('All')) {
-    getUserListUrl += `&bgs_mapping=${sectionsId.toString()}`;
-  }
+  }, []);
+  const handleTabChange = (event, tab) => {
+    setCurrentTab(tab);
+    setIsEmail(!isEmail);
+  };
 
-  try {
-    setLoading(true);
-    const result = await axiosInstance.get(getUserListUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (result.status === 200) {
-      const rows = [];
-      const selectionRows = [];
-      setHeaders([
-        // { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'name', headerName: 'Name', width: 500},
-        // { field: 'email', headerName: 'Email Id', width: 250 },
-        { field: 'erp_id', headerName: 'Erp Id', width: 500 }
-        // { field: 'gender', headerName: 'Gender', width: 100 },
-        // { field: 'contact', headerName: 'Contact', width: 150 },
-      
-      ]);
-    
-      result.data.result && result.data.result.results.forEach((items) => {
-        rows.push({
-          id: items.id,
-          // fullName: `${items.user.first_name} ${items.user.last_name}`,
-          // email: items.user.email,
-          erp_id: items.erp_id,
-          name: items.name,
-          // contact: items.contact,
-        });
-        selectionRows.push({
-          id: items.id,
-          data: {
-            id: items.id,
-            // fullName: `${items.user.first_name} ${items.user.last_name}`,
-            // email: items.user.email,
-            erp_id: items.erp_id,
-            name: items.name,
-            // contact: items.contact,
-          },
-          // selected: selectAll
-          //   ? true
-          //   : selectedUsers.length && !selectedUsers[pageno - 1].first
-          //   ? selectedUsers[pageno - 1].selected.includes(items.id)
-          //   : edit
-          //   ? items.is_assigned
-          //   : false,
-          // selected: selectedUsers.length
-          // ? selectedUsers[pageno - 1].selected.includes(items.id)
-          // : false,
-          selected: selectAll
-          ? true
-          : selectedUsers.length
-          ? selectedUsers[pageno - 1].selected.includes(items.id)
-          : false,
-        });
-      });
-      setUsersRow(rows);
-      setCompleteData(selectionRows);
-      setTotalPage(result.data.result && result.data.result.count);
-      setLoading(false);
-      // debugger
-      if (!selectedUsers.length) {
-        const tempSelectedUser = [];
-        for (let page = 1; page <= (result.data&& result.data.result && result.data.result.total_pages); page += 1) {
-          // debugger
-          tempSelectedUser.push({ pageNo: page, first: true, selected: [] });
-        }
-        // debugger
-        setSelectedUsers(tempSelectedUser);
-      }
-      if (result.data.total_pages !== selectAllObj.length) {
-        const tempSelectAll = [];
-        for (let page = 1; page <= result.data.total_pages; page += 1) {
-          tempSelectAll.push({ selectAll: false });
-        }
-        setSelectAllObj(tempSelectAll);
-      }
-    } else {
-      setAlert('error', result.data.message);
-      setLoading(false);
-    }
-  } catch (error) {
-    setAlert('error', error.message);
-    setLoading(false);
-  }
-};
-
-
-const getBranchApi = async () => {
-  try {
-    setLoading(true);
-    const result = await axiosInstance.get(endpoints.communication.branches, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const resultOptions = [];
-    if (result.status === 200) {
-      result.data.data.map((items) => resultOptions.push(items.branch_name));
-      setBranchList(result.data.data);
-      setLoading(false);
-    } else {
-      setAlert('error', result.data.message);
-      setLoading(false);
-    }
-  } catch (error) {
-    setAlert('error', error.message);
-    setLoading(false);
-  }
-};
-
-const getGradeApi = async () => {
-  try {
-    setLoading(true);
-    const result = await axiosInstance.get(
-      `${endpoints.communication.grades}?branch_id=${selectedBranch.id}&module_id=${moduleId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const resultOptions = [];
-    if (result.status === 200) {
-      result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
-      if (selectedBranch) {
-        setGrade(resultOptions);
-      }
-      setGradeList(result.data.data);
-      setLoading(false);
-    } else {
-      setAlert('error', result.data.message);
-      setLoading(false);
-    }
-  } catch (error) {
-    setAlert('error', error.message);
-    setLoading(false);
-  }
-};
-
-const getSectionApi = async () => {
-  try {
-    setLoading(true);
+  const displayUsersList = async (e) => {
+    setClicked(true);
+    const rolesId = [];
     const gradesId = [];
-    gradeList
-      .filter((item) => selectedGrades.includes(item['grade__grade_name']))
-      .forEach((items) => {
-        gradesId.push(items.grade_id);
-      });
-    const result = await axiosInstance.get(
-      `${endpoints.communication.sections}?branch_id=${
-        selectedBranch.id
-      }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const resultOptions = [];
-    if (result.status === 200) {
-      result.data.data.map((items) => resultOptions.push(items.section__section_name));
-      setSection(resultOptions);
-      setSectionList(result.data.data);
-      if (selectedSections && selectedSections.length > 0) {
-        // for retaining neccessary selected sections when grade is changed
-        const selectedSectionsArray = selectedSections.filter(
-          (sec) =>
-            result.data.data.findIndex((obj) => obj.section__section_name == sec) > -1
-        );
-        console.log('selected sections array ', selectedSectionsArray);
-        setSelectedSections(selectedSectionsArray);
-      }
-      setLoading(false);
-    } else {
-      setAlert('error', result.data.message);
-      setLoading(false);
+    const sectionsId = [];
+    if (e === undefined && activeTab === 0) {
+      return;
     }
-  } catch (error) {
-    setAlert('error', error.message);
-    setLoading(false);
-  }
-};
+    let getUserListUrl;
+    getUserListUrl = `${
+      endpoints.generalDairy.studentList
+    }?academic_year=${searchAcademicYear}&active=${
+      !isEmail ? '0' : '1'
+    }&page=${pageno}&page_size=15&bgs_mapping=${filterData.section.map((s) => s.id)}`;
 
-const handleSelectAll = () => {
-  setSelectAll(!selectAll);
-  const testclick = document.querySelectorAll('input[type=checkbox]');
-  if (!selectAll) {
-    testclick[1].click();
-  } else {
-    for (let i = 2; i < testclick.length; i += 1) {
-      testclick[i].click();
-    }
-  }
-};
-
-
-const handleSubmit = async () => {
-
-  const assignRoleApi = endpoints.generalDairy.SubmitDairy;
-
-  // selectedUsers.forEach((item) => {
-  //   item.selected.forEach((ids) => {
-  //     selectionArray.push(ids);
-  //   });
-  // });
-
-
-  // if (!selectionArray.length) {
-  //   setSelectectUserError('Please select some users');
-  //   return;
-  // }
-  // if (!selectedRole) {
-  //   setRoleError('Please select some Role');
-  //   return;
-  // }
-  // if (!assignedRole) {
-  //   setAssignedRoleError('Please select a role to be assigned');
-  //   return;
-  // }
-
-  setSelectectUserError('');
-  try {
-    const selectionArray = [];
-
-    if (!selectAll) {
-      selectedUsers.forEach((item) => {
-        item.selected.forEach((ids) => {
-          selectionArray.push(ids);
+    if (selectedSections.length && !selectedSections.includes('All')) {
+      sectionList
+        .filter((item) => selectedSections.includes(item['section__section_name']))
+        .forEach((items) => {
+          sectionsId.push(items.section_id);
         });
-      });
-    }
-    if (selectAll) {
-      selectionArray.push(0);
     }
 
-    if(!title || !description || !selectionArray.length){
-      setAlert('error','Fill in required fields')
-      return
+    if (sectionsId.length && !selectedSections.includes('All')) {
+      getUserListUrl += `&bgs_mapping=${sectionsId.toString()}`;
     }
-    const response = await axiosInstance.post(
-      assignRoleApi,
-      filePath && filePath.length > 0 ?
-      
-      {
-        title:title,
-        message:description,
-            // module_name:filterData.role.value,
-            documents:filePath,
-            // branch:filterData.branch.map(function (b) {
-            //     return b.id
-            //   }),
-            branch:filterData.branch[0].id,
-            // grades:[54],
-            grade:filterData.grade.map((g)=>g.grade_id),
-            mapping_bgs:filterData.section.map((s)=>s.id),
-        user_id: selectionArray,
-        dairy_type:1
-      }:
-      {
-        title:title,
-        message:description,
-            // module_name:filterData.role.value,
-            // branch:filterData.branch.map(function (b) {
-            //     return b.id
-            //   }),
-            branch:filterData.branch[0].id,
-            // grades:[54],
-            grade:filterData.grade.map((g)=>g.grade_id),
-            mapping_bgs:filterData.section.map((s)=>s.id),
-        user_id: selectionArray,
-        dairy_type:1
-   
-      },
-      {
+
+    try {
+      setLoading(true);
+      const result = await axiosInstance.get(getUserListUrl, {
         headers: {
-          // 'application/json' is the modern content-type for JSON, but some
-          // older servers may use 'text/json'.
-          // See: http://bit.ly/text-json
-          'content-type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
+      });
+      if (result.status === 200) {
+        const rows = [];
+        const selectionRows = [];
+        setHeaders([
+          { field: 'name', headerName: 'Name', width: 500 },
+          { field: 'erp_id', headerName: 'Erp Id', width: 500 },
+        ]);
+
+        result.data.result &&
+          result.data.result.results.forEach((items) => {
+            rows.push({
+              id: items.id,
+              erp_id: items.erp_id,
+              name: items.name,
+            });
+            selectionRows.push({
+              id: items.id,
+              data: {
+                id: items.id,
+                erp_id: items.erp_id,
+                name: items.name,
+              },
+              selected: selectAll
+                ? true
+                : selectedUsers.length
+                ? selectedUsers[pageno - 1].selected.includes(items.id)
+                : false,
+            });
+          });
+        setUsersRow(rows);
+        setCompleteData(selectionRows);
+        setTotalPage(result.data.result && result.data.result.count);
+        setLoading(false);
+        // debugger
+        if (!selectedUsers.length) {
+          const tempSelectedUser = [];
+          for (
+            let page = 1;
+            page <= (result.data && result.data.result && result.data.result.total_pages);
+            page += 1
+          ) {
+            // debugger
+            tempSelectedUser.push({ pageNo: page, first: true, selected: [] });
+          }
+          // debugger
+          setSelectedUsers(tempSelectedUser);
+        }
+        if (result.data.total_pages !== selectAllObj.length) {
+          const tempSelectAll = [];
+          for (let page = 1; page <= result.data.total_pages; page += 1) {
+            tempSelectAll.push({ selectAll: false });
+          }
+          setSelectAllObj(tempSelectAll);
+        }
+      } else {
+        setAlert('error', result.data.message);
+        setLoading(false);
       }
-    );
-    const { message, status_code: statusCode } = response.data;
-    if (statusCode === 200) {
-      // props.history.push('/user-management/assign-role')
-      // displayUsersList()
-      setAlert('success', message);
-      // window.location.history()
-      history.push('/diary/teacher')
-      setSelectedUsers([]);
-      // setRoleError('');
-      // setSelectedRole('');
-      // setSelectAllObj([]);
-      // setSelectedBranch();
-      // setSelectedGrades([]);
-      // setSelectedMultipleRoles([]);
-      // setSelectedSections([]);
-      // setSelectAllObj([]);
-      setSelectectUserError('');
-      // setAssigenedRole();
-      // clearSelectAll();
-    } else {
-      setAlert('error', response.data.message);
+    } catch (error) {
+      setAlert('error', error.message);
+      setLoading(false);
     }
-  } catch (error) {
-    setAlert('error', error.message);
-  }
-};
-const FileRow = (props) => {
-  const { file, onClose, index } = props;
-  return (
-    <div className='file_row_image' >
-      <div className='file_name_container'>
-        File {index + 1}
-      </div>
-      {/* <Divider orientation="vertical"  className='divider_color' flexItem /> */}
-      <div>
-        <span
-          onClick={onClose}
-        >
-          <SvgIcon
-            component={() => (
-              <img
-                style={isMobile?{
-                  marginLeft:'',
-                  width: '20px',
-                  height:'20px',
-                  // padding: '5px',
-                  cursor: 'pointer',
-                }:{
-                  width: '20px',
-                  height:'20px',
-                  // padding: '5px',
-                  cursor: 'pointer',
-                }}
-                src={deleteIcon}
-                alt='given'
-              />
-            )}
-          />
-        </span>
-      </div>
-    </div>
-  );
-};
-const removeFileHandler = (i) => {
-  // const list = [...filePath];
-      filePath.splice(i, 1);
-      setAlert('success','File successfully deleted');
-}
-const handleEdited =()=>{
-   
-  axiosInstance.put(`${endpoints.circular.updateCircular}`,{
-      'circular_id':editData.id,
-      'circular_name':title,
-      'description':description,
-      'module_name':filterData.role.value
-  }).then(result=>{
-      if(result.data.status_code===200){
-          setState({...state,isEdit:false});
-          setTitle('')
-          setDescription('')
-          setAlert('success',result.data.message)
-      }else {
-          setAlert('error', result.data.message);
+  };
+
+  const getBranchApi = async () => {
+    try {
+      setLoading(true);
+      const result = await axiosInstance.get(endpoints.communication.branches, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const resultOptions = [];
+      if (result.status === 200) {
+        result.data.data.map((items) => resultOptions.push(items.branch_name));
+        setBranchList(result.data.data);
+        setLoading(false);
+      } else {
+        setAlert('error', result.data.message);
+        setLoading(false);
       }
-  }).catch((error) => {
-      setAlert('error', error.data.message);
-  })
+    } catch (error) {
+      setAlert('error', error.message);
+      setLoading(false);
+    }
+  };
 
-  
+  const getGradeApi = async () => {
+    try {
+      setLoading(true);
+      const result = await axiosInstance.get(
+        `${endpoints.communication.grades}?branch_id=${selectedBranch.id}&module_id=${moduleId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const resultOptions = [];
+      if (result.status === 200) {
+        result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
+        if (selectedBranch) {
+          setGrade(resultOptions);
+        }
+        setGradeList(result.data.data);
+        setLoading(false);
+      } else {
+        setAlert('error', result.data.message);
+        setLoading(false);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+      setLoading(false);
+    }
+  };
 
-}
-useEffect(() => {
-  if(clicked){
-    displayUsersList(activeTab)
-  }
-    }, [activeTab])
-  
-const handleActiveTab = (tab) => {
-  setActiveTab(tab);
-}
-console.log(activeTab,"activeTab");
-const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
+  const getSectionApi = async () => {
+    try {
+      setLoading(true);
+      const gradesId = [];
+      gradeList
+        .filter((item) => selectedGrades.includes(item['grade__grade_name']))
+        .forEach((items) => {
+          gradesId.push(items.grade_id);
+        });
+      const result = await axiosInstance.get(
+        `${endpoints.communication.sections}?branch_id=${
+          selectedBranch.id
+        }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const resultOptions = [];
+      if (result.status === 200) {
+        result.data.data.map((items) => resultOptions.push(items.section__section_name));
+        setSection(resultOptions);
+        setSectionList(result.data.data);
+        if (selectedSections && selectedSections.length > 0) {
+          // for retaining neccessary selected sections when grade is changed
+          const selectedSectionsArray = selectedSections.filter(
+            (sec) =>
+              result.data.data.findIndex((obj) => obj.section__section_name == sec) > -1
+          );
+          console.log('selected sections array ', selectedSectionsArray);
+          setSelectedSections(selectedSectionsArray);
+        }
+        setLoading(false);
+      } else {
+        setAlert('error', result.data.message);
+        setLoading(false);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+      setLoading(false);
+    }
+  };
+
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
+    const testclick = document.querySelectorAll('input[type=checkbox]');
+    if (!selectAll) {
+      testclick[1].click();
+    } else {
+      for (let i = 2; i < testclick.length; i += 1) {
+        testclick[i].click();
+      }
+    }
+  };
+
+  const handleSubmit = async () => {
+    const assignRoleApi = endpoints.generalDairy.SubmitDairy;
+
+    setSelectectUserError('');
+    try {
+      const selectionArray = [];
+
+      if (!selectAll) {
+        selectedUsers.forEach((item) => {
+          item.selected.forEach((ids) => {
+            selectionArray.push(ids);
+          });
+        });
+      }
+      if (selectAll) {
+        selectionArray.push(0);
+      }
+
+      if (!title || !description) {
+        setAlert('error', 'Fill in required fields');
+        return;
+      }
+      const response = await axiosInstance.post(
+        assignRoleApi,
+        filePath && filePath.length > 0
+          ? {
+              title: title,
+              message: description,
+              // module_name:filterData.role.value,
+              documents: filePath,
+              // branch:filterData.branch.map(function (b) {
+              //     return b.id
+              //   }),
+              branch: filterData.branch[0].id,
+              // grades:[54],
+              grade: filterData.grade.map((g) => g.grade_id),
+              mapping_bgs: filterData.section.map((s) => s.id),
+              user_id: selectionArray,
+              dairy_type: 1,
+            }
+          : {
+              title: title,
+              message: description,
+              branch: filterData.branch[0].id,
+              grade: filterData.grade.map((g) => g.grade_id),
+              mapping_bgs: filterData.section.map((s) => s.id),
+              user_id: selectionArray,
+              dairy_type: 1,
+            },
+        {
+          headers: {
+            'content-type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const { message, status_code: statusCode } = response.data;
+      if (statusCode === 200) {
+        setAlert('success', message);
+        history.push('/diary/teacher');
+        setSelectedUsers([]);
+        setSelectectUserError('');
+      } else {
+        setAlert('error', response.data.message);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+    }
+  };
+  const FileRow = (props) => {
+    const { file, onClose, index } = props;
+    return (
+      <div className='file_row_image'>
+        <div className='file_name_container'>File {index + 1}</div>
+        <div>
+          <span onClick={onClose}>
+            <SvgIcon
+              component={() => (
+                <img
+                  style={
+                    isMobile
+                      ? {
+                          marginLeft: '',
+                          width: '20px',
+                          height: '20px',
+                          // padding: '5px',
+                          cursor: 'pointer',
+                        }
+                      : {
+                          width: '20px',
+                          height: '20px',
+                          // padding: '5px',
+                          cursor: 'pointer',
+                        }
+                  }
+                  src={deleteIcon}
+                  alt='given'
+                />
+              )}
+            />
+          </span>
+        </div>
+      </div>
+    );
+  };
+  const removeFileHandler = (i) => {
+    // const list = [...filePath];
+    filePath.splice(i, 1);
+    setAlert('success', 'File successfully deleted');
+  };
+  const handleEdited = () => {
+    axiosInstance
+      .put(`${endpoints.circular.updateCircular}`, {
+        circular_id: editData.id,
+        circular_name: title,
+        description: description,
+        module_name: filterData.role.value,
+      })
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setState({ ...state, isEdit: false });
+          setTitle('');
+          setDescription('');
+          setAlert('success', result.data.message);
+        } else {
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.data.message);
+      });
+  };
+  useEffect(() => {
+    if (clicked) {
+      displayUsersList(activeTab);
+    }
+  }, [activeTab]);
+
+  const handleActiveTab = (tab) => {
+    setActiveTab(tab);
+  };
+  console.log(activeTab, 'activeTab');
+  const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
 
   return (
     // console.log(editData,"editData")
     <>
-     {loading ? <Loading message='Loading...' /> : null}
+      {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div style={{overflow: 'hidden'}}>
-        <div className={isMobile ? 'breadCrumbFilterRow' : null}>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='General Diary'
-              childComponentName='Create New'
-            />
+        <div style={{ overflow: 'hidden' }}>
+          <div className={isMobile ? 'breadCrumbFilterRow' : null}>
+            <div style={{ width: '95%', margin: '20px auto' }}>
+              <CommonBreadcrumbs
+                componentName='General Diary'
+                childComponentName='Create New'
+              />
+            </div>
           </div>
-        </div>
-        <Grid
-          container
-          spacing={isMobile ? 3 : 5}
-          style={{ width: widerWidth, margin: wider }}
-        >
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <Autocomplete
+          <Grid
+            container
+            spacing={isMobile ? 3 : 5}
+            style={{ width: widerWidth, margin: wider }}
+          >
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <Autocomplete
                 size='small'
                 style={{ width: '100%' }}
                 onChange={handleAcademicYear}
@@ -890,29 +813,29 @@ const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
                   />
                 )}
               />
-          </Grid>
-                  <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-                <Autocomplete
-                    style={{ width: '100%' }}
-                    size='small'
-                    onChange={handleBranch}
-                    id='grade'
-                    className="dropdownIcon"
-                    value={filterData?.branch[0] || ''}
-                    options={branchDropdown}
-                    getOptionLabel={(option) => option?.branch_name}
-                    filterSelectedOptions
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Branch'
-                            placeholder='Branch'
-                        />
-                    )}
-                />
             </Grid>
-          {/* <Grid xs={12} lg={4} className='create_group_items' item>
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleBranch}
+                id='grade'
+                className='dropdownIcon'
+                value={filterData?.branch[0] || ''}
+                options={branchDropdown}
+                getOptionLabel={(option) => option?.branch_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Branch'
+                    placeholder='Branch'
+                  />
+                )}
+              />
+            </Grid>
+            {/* <Grid xs={12} lg={4} className='create_group_items' item>
                       {selectedBranch && gradeList.length ? (
                         <div>
                           <CustomMultiSelect
@@ -924,112 +847,119 @@ const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
                         </div>
                       ) : null}
                     </Grid> */}
-                      <Grid item xs={12} sm={3} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-                <Autocomplete
-                    style={{ width: '100%' }}
-                    size='small'
-                    onChange={handleGrade}
-                    id='grade'
-                    className="dropdownIcon"
-                    value={filterData?.grade[0] || ''}
-                    options={gradeDropdown}
-                    getOptionLabel={(option) => option?.grade__grade_name}
-                    filterSelectedOptions
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Grade'
-                            placeholder='Grade'
-                        />
-                    )}
-                />
-            </Grid>
-      
-                        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-                <Autocomplete
-                    style={{ width: '100%' }}
-                    size='small'
-                    onChange={handleSection}
-                    id='grade'
-                    className="dropdownIcon"
-                    value={filterData?.section[0] || ''}
-                    options={sectionDropdown}
-                    getOptionLabel={(option) => option?.section__section_name}
-                    filterSelectedOptions
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Section'
-                            placeholder='Section'
-                        />
-                    )}
-                />
-            </Grid>
-      <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-        <Button
-          variant='contained'
-          style={{ color: 'white' }}
-          color='primary'
-          className='custom_button_master'
-          size='medium'
-          type='submit'
-          disabled={!filterData?.section[0]}
-          // onClick={displayUsersList}
-          onClick={(event) => displayUsersList(event)}
-
-        >
-          FILTER
-        </Button>
-      </Grid>
-        </Grid>
-
-        <Grid container className='studentview-tab-container'>
-          <Grid item xs={12} sm={6}>
-            <StyledTabs
-              variant='standard'
-              value={currentTab}
-              onChange={handleTabChange}
-              aria-label='styled tabs example'
+            <Grid
+              item
+              xs={12}
+              sm={3}
+              className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
             >
-              <StyledTab label={<Typography variant='h8'>Active Students</Typography>} onClick={(e) => handleActiveTab(0)} />
-              {/* <StyledTab label={<Typography variant='h8'>Inactive Students</Typography>} onClick={(e) => handleActiveTab(1)}/> */}
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleGrade}
+                id='grade'
+                className='dropdownIcon'
+                value={filterData?.grade[0] || ''}
+                options={gradeDropdown}
+                getOptionLabel={(option) => option?.grade__grade_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Grade'
+                    placeholder='Grade'
+                  />
+                )}
+              />
+            </Grid>
 
-              {/* <StyledTab label={<Typography variant='h8'>In-Active Students</Typography>} /> */}
-            
-            </StyledTabs>
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleSection}
+                id='grade'
+                className='dropdownIcon'
+                value={filterData?.section[0] || ''}
+                options={sectionDropdown}
+                getOptionLabel={(option) => option?.section__section_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Section'
+                    placeholder='Section'
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+              <Button
+                variant='contained'
+                style={{ color: 'white' }}
+                color='primary'
+                className='custom_button_master'
+                size='medium'
+                type='submit'
+                disabled={!filterData?.section[0]}
+                // onClick={displayUsersList}
+                onClick={(event) => displayUsersList(event)}
+              >
+                FILTER
+              </Button>
+            </Grid>
           </Grid>
-          <input
-                      type='checkbox'
-                      className='send_message_select_all_checkbox'
-                      checked={selectAll}
-                      style={
-                        isMobile
-                            ? {marginLeft: '252px', marginTop: '-22px' }
-                            : {marginLeft: '521px', marginTop: '19px' }
-                    }
-                      // style={{marginLeft: '-344px', marginTop: '19px'}}
-                      onChange={handleSelectAll}
-                    />
-                <span               
-                        style={
-                        isMobile
-                            ? { marginLeft: '1%', marginTop: '-25px', fontSize: '16px' }
-                            : { marginLeft: '1%', marginTop: '14px', fontSize: '16px' }
-                    }>Select All</span>
 
-                    {/* <span style={{ marginLeft: '1%', marginTop: '14px', fontSize: '16px'}}>Select All</span> */}
-                  
-        </Grid>
+          <Grid container className='studentview-tab-container'>
+            <Grid item xs={12} sm={6}>
+              <StyledTabs
+                variant='standard'
+                value={currentTab}
+                onChange={handleTabChange}
+                aria-label='styled tabs example'
+              >
+                <StyledTab
+                  label={<Typography variant='h8'>Active Students</Typography>}
+                  onClick={(e) => handleActiveTab(0)}
+                />
+                {/* <StyledTab label={<Typography variant='h8'>Inactive Students</Typography>} onClick={(e) => handleActiveTab(1)}/> */}
 
-        {/* <div className='create_group_select_all_wrapper'>
+                {/* <StyledTab label={<Typography variant='h8'>In-Active Students</Typography>} /> */}
+              </StyledTabs>
+            </Grid>
+            <input
+              type='checkbox'
+              className='send_message_select_all_checkbox'
+              checked={selectAll}
+              style={
+                isMobile
+                  ? { marginLeft: '252px', marginTop: '-22px' }
+                  : { marginLeft: '521px', marginTop: '19px' }
+              }
+              // style={{marginLeft: '-344px', marginTop: '19px'}}
+              onChange={handleSelectAll}
+            />
+            <span
+              style={
+                isMobile
+                  ? { marginLeft: '1%', marginTop: '-25px', fontSize: '16px' }
+                  : { marginLeft: '1%', marginTop: '14px', fontSize: '16px' }
+              }
+            >
+              Select All
+            </span>
+
+            {/* <span style={{ marginLeft: '1%', marginTop: '14px', fontSize: '16px'}}>Select All</span> */}
+          </Grid>
+
+          {/* <div className='create_group_select_all_wrapper'>
                 
                 </div> */}
-    {totalPage ?
-       (
-         <div>
-          <span className='create_group_error_span'>{selectectUserError}</span>
+          {totalPage ? (
+            <div>
+              <span className='create_group_error_span'>{selectectUserError}</span>
               <CustomSelectionTable
                 // header={headers}
                 // rows={usersRow}
@@ -1053,143 +983,156 @@ const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
                 pageno={pageno}
                 selectedUsers={selectedUsers}
                 changePage={setPageno}
-                setSelectedUsers={(data)=>{
-                  console.log(data,'selectedUsers data')
-                  setSelectedUsers(data)
+                setSelectedUsers={(data) => {
+                  console.log(data, 'selectedUsers data');
+                  setSelectedUsers(data);
                 }}
-
               />
-              </div>):
-              <div className='periodDataUnavailable'>
-              <SvgIcon
-                  component={() => (
-                      <img
-                          style={
-                              isMobile
-                                  ? { height: '100px', width: '200px' }
-                                  : { height: '160px', width: '290px' }
-                          }
-                          src={unfiltered}
-                      />
-                  )}
-              />
-              <SvgIcon
-                  component={() => (
-                      <img
-                          style={
-                              isMobile
-                                  ? { height: '20px', width: '250px' }
-                                  : { height: '50px', width: '400px', marginLeft: '5%' }
-                          }
-                          src={selectfilter}
-                      />
-                  )}
-              />
-          </div>
-}
-
-
-        {/* <<<<<<<<<< EDITOR PART  >>>>>>>>>> */}
-        <div>
-        <div className='descriptionBorder'>
-        <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-        <Grid item xs={12}>
-        <TextField
-                    id="outlined-multiline-static"
-                    label="Title"
-                    multiline
-                    rows="1"
-                    color='secondary'
-                    style={{ width: "100%",marginTop:'1.25rem'}}
-                    defaultValue={state.isEdit?editData.title : []}
-                    // value={title}
-                    variant="outlined"
-                    onChange={e=> setTitle(e.target.value)}
-                />
-            </Grid>
-            <Grid item xs={12}>
-            <TextField
-                    id="outlined-multiline-static"
-                    label="Description"
-                    multiline
-                    rows="6"
-                    color='secondary'
-                    style={{ width: "100%" }}
-                    defaultValue={state.isEdit?editData.description : []}
-                    // value={description}
-                    variant="outlined"
-                    onChange={e=> setDescription(e.target.value)}
-                />
-            </Grid>
-        </Grid>
-        <div className="attachmentContainer">
-        <div style={{display:'flex'}} className='scrollsable'>
-            {filePath?.length>0  ?    
-                    filePath?.map((file, i) => (
-                            <FileRow
-                            key={`homework_student_question_attachment_${i}`}
-                            file={file}
-                            index={i}
-                            onClose={() => removeFileHandler(i)}
-                            />
-                        )) : null }
             </div>
-        
-                <div
-                   style={
-                    isMobile
-                        ? {  marginLeft: '114px' }
-                        : {marginBottom: '14px'  }
-                }
-                 className="attachmentButtonContainer">
-                    <Button
-                        startIcon={<SvgIcon
-                            component={() => (
-                                <img
-                                    style={{ height: '20px', width: '20px' }}
-                                    src={attachmenticon}
-                                />
-                            )}
-                        />}
-                        className="attchment_button"
-                        title="Attach Supporting File"
-                        variant='contained'
-                        size="medium"
-                        disableRipple
-                        disableElevation
-                        disableFocusRipple
-                        disableTouchRipple
-                        component="label"
-                        style={{ textTransform: 'none', marginLeft: '-100px' }}
-                    >
-                        <input
-                            type='file'
-                            // style={{ display: 'none' }}
-                            style={
-                              isMobile
-                                  ? { display: 'none', marginLeft: '10px' }
-                                  : {  display: 'none' }
-                          }
-                            id='raised-button-file'
-                            accept="image/*"
-                            onChange={handleImageChange}
+          ) : (
+            <div className='periodDataUnavailable'>
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={
+                      isMobile
+                        ? { height: '100px', width: '200px' }
+                        : { height: '160px', width: '290px' }
+                    }
+                    src={unfiltered}
+                  />
+                )}
+              />
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={
+                      isMobile
+                        ? { height: '20px', width: '250px' }
+                        : { height: '50px', width: '400px', marginLeft: '5%' }
+                    }
+                    src={selectfilter}
+                  />
+                )}
+              />
+            </div>
+          )}
+
+          {/* <<<<<<<<<< EDITOR PART  >>>>>>>>>> */}
+          <div>
+            <div className='descriptionBorder'>
+              <Grid
+                container
+                spacing={isMobile ? 3 : 5}
+                style={{ width: widerWidth, margin: wider }}
+              >
+                <Grid item xs={12}>
+                  <TextField
+                    id='outlined-multiline-static'
+                    label='Title'
+                    multiline
+                    rows='1'
+                    color='secondary'
+                    style={{ width: '100%', marginTop: '1.25rem' }}
+                    defaultValue={state.isEdit ? editData.title : []}
+                    // value={title}
+                    variant='outlined'
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    id='outlined-multiline-static'
+                    label='Description'
+                    multiline
+                    rows='6'
+                    color='secondary'
+                    style={{ width: '100%' }}
+                    defaultValue={state.isEdit ? editData.description : []}
+                    // value={description}
+                    variant='outlined'
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </Grid>
+              </Grid>
+              <div className='attachmentContainer'>
+                <div style={{ display: 'flex' }} className='scrollsable'>
+                  {filePath?.length > 0
+                    ? filePath?.map((file, i) => (
+                        <FileRow
+                          key={`homework_student_question_attachment_${i}`}
+                          file={file}
+                          index={i}
+                          onClose={() => removeFileHandler(i)}
                         />
+                      ))
+                    : null}
+                </div>
+
+                <div
+                  style={isMobile ? { marginLeft: '114px' } : { marginBottom: '14px' }}
+                  className='attachmentButtonContainer'
+                >
+                  <Button
+                    startIcon={
+                      <SvgIcon
+                        component={() => (
+                          <img
+                            style={{ height: '20px', width: '20px' }}
+                            src={attachmenticon}
+                          />
+                        )}
+                      />
+                    }
+                    className='attchment_button'
+                    title='Attach Supporting File'
+                    variant='contained'
+                    size='medium'
+                    disableRipple
+                    disableElevation
+                    disableFocusRipple
+                    disableTouchRipple
+                    component='label'
+                    style={{ textTransform: 'none', marginLeft: '-100px' }}
+                  >
+                    <input
+                      type='file'
+                      // style={{ display: 'none' }}
+                      style={
+                        isMobile
+                          ? { display: 'none', marginLeft: '10px' }
+                          : { display: 'none' }
+                      }
+                      id='raised-button-file'
+                      accept='image/*'
+                      onChange={handleImageChange}
+                    />
                     Add Document
-                </Button>
-                <small
-                    style={{ color: '#014b7e', fontSize: '16px', marginLeft: '28px',marginTop:'8px' }}
+                  </Button>
+                  <small
+                    style={{
+                      color: '#014b7e',
+                      fontSize: '16px',
+                      marginLeft: '28px',
+                      marginTop: '8px',
+                    }}
                   >
                     {' '}
                     Accepted files: [jpeg,jpg,png,pdf]
                   </small>
                 </div>
-                </div>
-
-        </div>
-        <div >
-        <Button style={{marginLeft: '37px'}} onClick={state.isEdit? handleEdited : handleSubmit} className='submit_button'>SUBMIT</Button>
-        </div>
-        </div>
+              </div>
+            </div>
+            <div>
+              <Button
+                style={{ marginLeft: '37px' }}
+                onClick={state.isEdit ? handleEdited : handleSubmit}
+                className='submit_button'
+              >
+                SUBMIT
+              </Button>
+            </div>
+          </div>
         </div>
       </Layout>
     </>

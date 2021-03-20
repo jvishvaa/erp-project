@@ -90,6 +90,16 @@ const CircularFilters = ({
     setFilterData({ ...filterData, year: '' });
     if (value) {
       setFilterData({ ...filterData, year: value });
+      axiosInstance
+        .get(`${endpoints.masterManagement.branchList}?session_year=${value.id}`)
+        .then((result) => {
+          if (result?.data?.status_code) {
+            setBranchDropdown(result?.data?.data);
+          } else {
+            setAlert('error', result?.data?.message);
+          }
+        })
+        .catch((error) => setAlert('error', error?.message));
     }
   };
 
@@ -195,19 +205,6 @@ const CircularFilters = ({
   };
 
   useEffect(() => {
-    axiosInstance
-      .get(`${endpoints.communication.branches}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setBranchDropdown(result.data.data);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setBranchDropdown('error', error.message);
-      });
-
     axiosInstance.get(`${endpoints.userManagement.academicYear}`)
       .then((result) => {
         if (result.data.status_code === 200) {
