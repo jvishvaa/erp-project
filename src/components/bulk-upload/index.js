@@ -189,7 +189,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   const handleFileChange = (event) => {
     const { files } = event.target;
-    const fil = files[0];
+    const fil = files[0]||'';
     if (fil.name.lastIndexOf('.xls') > 0 || fil.name.lastIndexOf('.xlsx') > 0) {
       setFile(fil);
     } else {
@@ -344,7 +344,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
       setSubjects([]);
       axiosInstance
         .get(
-          `${endpoints.academics.subjects}?session_year=${year}&branch=${branch}&grade=${searchGradeId}§ion=${value.section_id}`
+          `${endpoints.academics.subjects}?session_year=${year}&branch=${branch}&grade=${searchGradeId}&section=${value.section_id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {

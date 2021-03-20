@@ -28,6 +28,8 @@ import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useLocation } from "react-router-dom";
+
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Layout from '../../Layout';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
@@ -169,6 +171,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const [bulkData,setBulkData]=useState([])
   const [sectionList, setSectionList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [pageno, setPageno] = useState(1);
   const [usersRow, setUsersRow] = useState([]);
@@ -176,6 +179,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const [moduleId, setModuleId] = useState();
   const [grade, setGrade] = useState([]);
   const [filePath,setFilePath] = useState([])
+  const [ activeTab, setActiveTab ] = useState(0);
+  const [clicked,setClicked] = useState(false)
 
   const [selectedSections, setSelectedSections] = useState([]);
   const [headers, setHeaders] = useState([]);
@@ -190,7 +195,11 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const [branchList, setBranchList] = useState([]);
   const [selectAllObj, setSelectAllObj] = useState([]);
   const [title,setTitle] = useState('')
-  
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const location = useLocation();
+  const [studentModuleId, setStudentModuleId] = useState();
+  const [teacherModuleId, setTeacherModuleId] = useState(null);
+
   const [description,setDescription] = useState('')
      //context
      const [state,setState] = useContext(Context)
@@ -199,7 +208,21 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
 
   const [overviewSynopsis, setOverviewSynopsis] = useState([]);
 
+  const selectionArray = [];
+
+  if (!selectAll) {
+    selectedUsers.forEach((item) => {
+      item.selected.forEach((ids) => {
+        selectionArray.push(ids);
+      });
+    });
+  }
+  if (selectAll) {
+    selectionArray.push(0);
+  }
+
   console.log(selectedUsers, 'selectedUsers')
+  
 
   const handleClear = () => {
     setFilterData({
@@ -221,13 +244,33 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     role:''
 });
 
+useEffect(() => {
+  if (NavData && NavData.length) {
+    NavData.forEach((item) => {
+      if (
+        item.parent_modules === 'Diary' &&
+        item.child_module &&
+        item.child_module.length > 0
+      ) {
+        item.child_module.forEach((item) => {
+          if(location.pathname === "/diary/student" && item.child_name === "Student View") {
+              setStudentModuleId(item?.child_id);
+          } else if(location.pathname === "/create/general-diary" && item.child_name === "Teacher Diary") {
+              setTeacherModuleId(item?.child_id);
+          } 
+        });
+      }
+    });
+  }
+}, [location.pathname]);
 
 const handleBranch = (event, value) => {
   setFilterData({ ...filterData, branch: [], grade: [], subject: '', chapter: '' });
   setOverviewSynopsis([]);
   if (value) {
       setFilterData({ ...filterData, branch: [...filterData.branch,value], grade: '', subject: '', chapter: '' });
-      axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+      axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${location.pathname === "/diary/student"?studentModuleId:teacherModuleId}`)
+      // axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${location.pathname === "/diary/student"?studentModuleId:teacherModuleId}`)
           .then(result => {
               if (result.data.status_code === 200) {
                   setGradeDropdown(result.data.data);
@@ -258,7 +301,7 @@ const handleBranch = (event, value) => {
     setOverviewSynopsis([]);
     if (value && filterData.branch) {
         setFilterData({ ...filterData, grade:[...filterData.grade,value], subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch[0].id}&grade_id=${value.grade_id}`)
+        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch[0].id}&grade_id=${value.grade_id}&module_id=${location.pathname === "/lesson-plan/student-view"?studentModuleId:teacherModuleId}`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setSectionDropdown(result.data.data);
@@ -296,9 +339,10 @@ const handleSection = (event, value) => {
 };
 
 const handleImageChange=(event)=>{
-  // setLoading(true)
+ 
+  setLoading(true)
   if(filePath.length<10){
-    setLoading(true)
+    // setLoading(true)
       const data =event.target.files[0]
   const fd = new FormData();
   fd.append('file',event.target.files[0])
@@ -310,9 +354,9 @@ const handleImageChange=(event)=>{
       .then((result)=>{
       
           if(result.data.status_code === 200){
-            setLoading(false)
               console.log(result.data,'resp')
               setAlert('success',result.data.message)
+              setLoading(false)
               setFilePath([ ...filePath,result.data.result])
           }
           else{
@@ -394,7 +438,8 @@ const handleTabChange = (event, tab) => {
 
 };
 
-const displayUsersList = async () => {
+const displayUsersList = async (e) => {
+  setClicked(true)
   const rolesId = [];
   const gradesId = [];
   const sectionsId = [];
@@ -402,6 +447,9 @@ const displayUsersList = async () => {
   // sectionsId.forEach((item) => {
   //   sectionArray.push(item);
   // });
+  if (e === undefined && activeTab === 0){
+    return
+  }
   let getUserListUrl;
     getUserListUrl = `${endpoints.generalDairy.studentList}?academic_year=${searchAcademicYear}&active=${!isEmail ? '0' : '1'}&page=${pageno}&page_size=15&bgs_mapping=${filterData.section.map((s)=>s.id)}`;
 
@@ -615,61 +663,8 @@ const handleSelectAll = () => {
 };
 
 
-
-// const handleSubmit =()=>{
-//   const selectionArray = [];
-//   if (selectAll) {
-//     selectionArray.push(0);
-//   } else {
-//     selectedUsers.forEach((item) => {
-//       item.selected.forEach((ids) => {
-//         selectionArray.push(ids);
-//       });
-//     });
-//   }
-//   // if (!selectionArray.length) {
-//   //   setSelectectUserError('Please select some users');
-//   //   return;
-//   // }
-//   setSelectectUserError('');
-
-//   axiosInstance.post(`${endpoints.circular.createCircular}`,
-//   {
-//       title:title,
-//       // description:description,
-//       // module_name:filterData.role.value,
-//       media:filePath,
-//       Branch:filterData.branch.map(function (b) {
-//           return b.id
-//         }),
-//       // grades:[54],
-//       grade:filterData.grade.map((g)=>g.grade_id),
-//       mapping_bgs:filterData.section.map((s)=>s.id),
-//       erp_users: selectionArray
-
-//       // sections:[75]
-// })
-//   .then(result => {
-//       if (result.data.status_code === 200) {
-//           setTitle('')
-//           setDescription('')
-//           setAlert('success',result.data.message)
-//           // setFilterData(filterData.branch=[])
-//           // setFilterData({
-//           //     branch: [],
-//           //     grade: [],
-//           //     section:[],
-//           //     role:''
-//           // });
-         
-          
-//       } else {
-//           setAlert('error', result.data.message);
-//       }
-//   })
-// }
-
 const handleSubmit = async () => {
+
   const assignRoleApi = endpoints.generalDairy.SubmitDairy;
 
   // selectedUsers.forEach((item) => {
@@ -705,6 +700,11 @@ const handleSubmit = async () => {
     }
     if (selectAll) {
       selectionArray.push(0);
+    }
+
+    if(!title || !description || !selectionArray.length){
+      setAlert('error','Fill in required fields')
+      return
     }
     const response = await axiosInstance.post(
       assignRoleApi,
@@ -841,12 +841,24 @@ const handleEdited =()=>{
   
 
 }
+useEffect(() => {
+  if(clicked){
+    displayUsersList(activeTab)
+  }
+    }, [activeTab])
+  
+const handleActiveTab = (tab) => {
+  setActiveTab(tab);
+}
+console.log(activeTab,"activeTab");
 const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
 
   return (
     // console.log(editData,"editData")
     <>
+     {loading ? <Loading message='Loading...' /> : null}
       <Layout>
+        <div style={{overflow: 'hidden'}}>
         <div className={isMobile ? 'breadCrumbFilterRow' : null}>
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
@@ -964,7 +976,9 @@ const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
           size='medium'
           type='submit'
           disabled={!filterData?.section[0]}
-          onClick={displayUsersList}
+          // onClick={displayUsersList}
+          onClick={(event) => displayUsersList(event)}
+
         >
           FILTER
         </Button>
@@ -979,7 +993,9 @@ const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
               onChange={handleTabChange}
               aria-label='styled tabs example'
             >
-              <StyledTab label={<Typography variant='h8'>Active Students</Typography>} />
+              <StyledTab label={<Typography variant='h8'>Active Students</Typography>} onClick={(e) => handleActiveTab(0)} />
+              {/* <StyledTab label={<Typography variant='h8'>Inactive Students</Typography>} onClick={(e) => handleActiveTab(1)}/> */}
+
               {/* <StyledTab label={<Typography variant='h8'>In-Active Students</Typography>} /> */}
             
             </StyledTabs>
@@ -1123,7 +1139,7 @@ const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
                    style={
                     isMobile
                         ? {  marginLeft: '114px' }
-                        : {  }
+                        : {marginBottom: '14px'  }
                 }
                  className="attachmentButtonContainer">
                     <Button
@@ -1160,12 +1176,19 @@ const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
                         />
                     Add Document
                 </Button>
+                <small
+                    style={{ color: '#014b7e', fontSize: '16px', marginLeft: '28px',marginTop:'8px' }}
+                  >
+                    {' '}
+                    Accepted files: [jpeg,jpg,png,pdf]
+                  </small>
                 </div>
                 </div>
 
         </div>
         <div >
         <Button style={{marginLeft: '37px'}} onClick={state.isEdit? handleEdited : handleSubmit} className='submit_button'>SUBMIT</Button>
+        </div>
         </div>
         </div>
       </Layout>

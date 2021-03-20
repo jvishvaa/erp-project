@@ -430,7 +430,7 @@ const Layout = ({ children, history }) => {
         history.push('/master-management/branch-table');
         break;
       }
-      case 'Branch Acad': {
+      case 'Branch Acad Mapping': {
         history.push('/master-management/branch-acad-table');
         break;
       }
@@ -444,6 +444,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Section Mapping': {
         history.push('/master-management/section-mapping-table');
+        break;
+      }
+      case 'Chapter Creation': {
+        history.push('/master-management/chapter-type-table');
         break;
       }
       case 'Section': {
@@ -560,11 +564,11 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Teacher Circular': {
-        history.push('/circular');
+        history.push('/teacher-circular');
         break;
       }
       case 'Student Circular': {
-        history.push('/circular');
+        history.push('/student-circular');
         break;
       }
       default:

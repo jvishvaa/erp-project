@@ -6,7 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
+//import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import { SvgIcon } from '@material-ui/core';
 
@@ -15,7 +15,7 @@ import './student-homework.css';
 import studentHomeworkEvaluted from '../../../assets/images/Group-8288.svg';
 import hwFileUnopened from '../../../assets/images/hw-file-unopened.svg';
 import hwFileOpened from '../../../assets/images/Group-8243.svg';
-import hwFileNotSubmitted from '../../../assets/images/cross.svg';
+//import hwFileNotSubmitted from '../../../assets/images/cross.svg';
 import hwSubmitted from '../../../assets/images/hw-given.svg';
 import Divider from '@material-ui/core/Divider';
 import moment from 'moment';
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(4, 0, 2),
   },
 }));
-
+/*
 function generate(element) {
   return [0, 1, 2].map((value) =>
     React.cloneElement(element, {
@@ -43,11 +43,11 @@ function generate(element) {
     })
   );
 }
-
+*/
 const StudenthomeworkMobileScreen = (props) => {
   const classes = useStyles();
   const [dense, setDense] = React.useState(false);
-  const [secondary, setSecondary] = React.useState(false);
+  //const [secondary, setSecondary] = React.useState(false);
   const [subJson, setSubJson] = React.useState([]);
   const [subJectName, setSubjectName] = React.useState('');
   const [optionalLength, setOptionalLength] = React.useState(null);
