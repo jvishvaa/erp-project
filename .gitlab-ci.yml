@@ -21,6 +21,7 @@ deploy_dev:
       - sudo systemctl restart nginx
       - echo "Deploy to development server"
       - sleep 10 
+      - sudo rm package-lock.json
       - sudo npm ci
       - grep home package.json || true
       - export CI=false
