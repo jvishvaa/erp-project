@@ -75,7 +75,6 @@ const CircularList = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   const { role_details } = JSON.parse(localStorage.getItem('userDetails') || {});
-  console.log(role_details,'RRRRRRRRRRRRRRRRR')
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -95,7 +94,7 @@ const CircularList = () => {
         }
       });
     }
-  }, []);
+  }, [window.location.pathname]);
 
   const handlePeriodList = (grade, branch, section, year, startDate, endDate) => {
     // console.log(grade, branch, section, year, startDate, endDate, ']]]]]]]]]]]]]]]]]]');

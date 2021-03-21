@@ -84,19 +84,25 @@ const ErpAdminViewClass = ({ history }) => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Circular' &&
+          item.parent_modules === 'Online Class' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher Circular') {
+            if (item.child_name === 'View Class' && window.location.pathname === '/erp-online-class') {
+              setModuleId(item.child_id);
+            }
+            if (item.child_name === 'Teacher View Class' && window.location.pathname === '/erp-online-class-teacher-view') {
+              setModuleId(item.child_id);
+            }
+            if (item.child_name === 'Attend Online Class' && window.location.pathname === '/erp-online-class-student-view') {
               setModuleId(item.child_id);
             }
           });
         }
       });
     }
-  }, []);
+  }, [window.location.pathname]);
 
   function callApi(api, key) {
     setLoading(true);
@@ -108,7 +114,7 @@ const ErpAdminViewClass = ({ history }) => {
             setAcademicYear(result?.data?.data || [])
           }
           if (key === 'branchList') {
-            setBranchList(result?.data?.data || []);
+            setBranchList(result?.data?.data?.results || []);
           }
           if (key === 'gradeList') {
             setGradeList(result?.data?.data || []);
@@ -374,7 +380,7 @@ const ErpAdminViewClass = ({ history }) => {
                         setSelectedAcadmeicYear(value)
                         if(value){
                           callApi(
-                            `${endpoints.masterManagement.branchList}?session_year=${value?.id}&module_id=${moduleId}`,
+                            `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
                             'branchList'
                           );
                         }
@@ -416,7 +422,7 @@ const ErpAdminViewClass = ({ history }) => {
                       className='dropdownIcon'
                       value={selectedBranch}
                       options={branchList}
-                      getOptionLabel={(option) => option?.branch_name}
+                      getOptionLabel={(option) => option?.branch?.branch_name}
                       filterSelectedOptions
                       renderInput={(params) => (
                         <TextField
@@ -489,7 +495,7 @@ const ErpAdminViewClass = ({ history }) => {
                           const secId=value.map((el)=>el.section_id)
                           setSelectedSection(ids)
                           callApi(
-                            `${endpoints.academics.subjects}?branch=${selectedBranch.map((el)=>el.id)}&grade=${selectedGrade.map((el)=>el.grade_id)}&section=${secId}&module_id=${moduleId}`,
+                            `${endpoints.academics.subjects}?branch=${selectedBranch.map((el)=>el.id)}&session_year=${selectedAcademicYear.id}&grade=${selectedGrade.map((el)=>el.grade_id)}&section=${secId}&module_id=${moduleId}`,
                             'subject'
                           );
                         }
