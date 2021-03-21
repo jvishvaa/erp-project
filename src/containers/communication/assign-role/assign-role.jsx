@@ -64,12 +64,34 @@ const AssignRole = (props) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('xs'));
 
-<<<<<<< HEAD
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'User Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Assign Role') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   useEffect(() => {
     getRoleApi();
-    getYearApi();
-    // getBranchApi();
   }, []);
+
+  useEffect(() => {
+    if (moduleId) getYearApi();
+  }, [moduleId]);
 
   useEffect(() => {
     if (selectedYear) {
@@ -112,28 +134,6 @@ const AssignRole = (props) => {
       setFilterCheck(false);
     }
   }, [pageno, assignedRole, clearAll, filterCheck]);
-=======
-  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  const [moduleId, setModuleId] = useState('');
-
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'User Management' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Assign Role') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, []);
->>>>>>> 103ed9fab4eb77b9692821b17b5b280771b5d716
 
   const getRoleApi = async () => {
     try {
@@ -407,7 +407,7 @@ const AssignRole = (props) => {
 
     // turn all the states to true/ False
     const tempSelectObj = selectAllObj.slice();
-    
+
     // tempSelectObj[pageno - 1].selectAll = !tempSelectObj[pageno - 1].selectAll;
     tempSelectObj[pageno - 1].selectAll = e.target.checked;
     console.log('=== textClick checked: ', tempSelectObj)
@@ -420,7 +420,7 @@ const AssignRole = (props) => {
           testclick[i].click()
         }
         testclick[i].removeAttribute("checked");
-        
+
       }
     } else {
       for (let i = 2; i < testclick.length; i += 1) {
@@ -505,58 +505,6 @@ const AssignRole = (props) => {
       setAlert('error', error.message);
     }
   };
-<<<<<<< HEAD
-=======
-  useEffect(() => {
-    getRoleApi();
-  }, []);
-
-  useEffect(() => {
-    if (moduleId) getYearApi();
-  }, [moduleId]);
-
-  useEffect(() => {
-    if (selectedYear) {
-      getBranchApi();
-    }
-  }, [selectedYear]);
-
-  useEffect(() => {
-    if (selectedBranch) {
-      getGradeApi();
-    }
-  }, [selectedBranch]);
-
-  useEffect(() => {
-    if (
-      selectedMultipleRoles.length ||
-      selectedGrades.length ||
-      selectedSections.length ||
-      searchText
-    ) {
-      setClearAllActive(true);
-    }
-  }, [selectedMultipleRoles, selectedGrades, selectedSections, searchText]);
-
-  useEffect(() => {
-    if (selectedGrades.length) {
-      getSectionApi();
-    }
-  }, [selectedGrades]);
-
-  useEffect(() => {
-    displayUsersList();
-    if (assignedRole) {
-      setAssigenedRole(false);
-    }
-    if (clearAll) {
-      setClearAll(false);
-    }
-    if (filterCheck) {
-      setFilterCheck(false);
-    }
-  }, [pageno, assignedRole, clearAll, filterCheck]);
->>>>>>> 103ed9fab4eb77b9692821b17b5b280771b5d716
 
   const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
 
@@ -952,8 +900,8 @@ const AssignRole = (props) => {
             </div>
           ) : null} */}
             <span className='create_group_error_span'>{selectectUserError}</span>
-              <CustomSelectionTable
-                
+            <CustomSelectionTable
+
               header={
                 isMobile
                   ? headers
