@@ -48,8 +48,9 @@ const Subjectgrade = (props) => {
 
 
     useEffect(() => {
+        //axiosInstance.get(endpoints.mappingStudentGrade.branch).then(res => {
         const getBranch = () => {
-            axiosInstance.get(endpoints.mappingStudentGrade.branch).then(res => {
+            axiosInstance.get(endpoints.masterManagement.branchList).then(res => {
                 if (res.data.data) {
                     setBranchRes(res.data.data)
                 }

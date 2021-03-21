@@ -28,7 +28,7 @@ const SignatureUpload = ({ history }) => {
   function getBranchList() {
     setLoading(true);
     axiosInstance
-      .get(endpoints.communication.branches)
+      .get(endpoints.masterManagement.branchList)
       .then((result) => {
         setLoading(false);
         if (result.data.status_code === 200) {
@@ -41,6 +41,20 @@ const SignatureUpload = ({ history }) => {
         setLoading(false);
         setAlert('error', error.message);
       });
+    // axiosInstance
+    //   .get(endpoints.communication.branches)
+    //   .then((result) => {
+    //     setLoading(false);
+    //     if (result.data.status_code === 200) {
+    //       setBranchList(result.data.data);
+    //     } else {
+    //       setAlert('error', result.data.message);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     setLoading(false);
+    //     setAlert('error', error.message);
+    //   });
   }
 
   function getSignatures(selectedBranch) {
