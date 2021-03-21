@@ -334,41 +334,58 @@ const SubjectMappingTable = () => {
                     </TableHead>
                     <TableBody>
                       {subjects.map((subject, index) => {
+                        // const {
+                        //   created_by,
+                        //   id,
+                        //   subject: { subject_name, subject_description, is_optional },
+                        //   section_mapping: {
+                        //     grade: { grade_name },
+                        //     section: { section_name },
+                        //     acad_session: {
+                        //       branch: { branch_name },
+                        //       session_year: { session_year },
+                        //     },
+                        //   },
+                        // } = subject || '';
                         const {
                           created_by,
                           id,
-                          subject: { subject_name, subject_description, is_optional },
-                          section_mapping: {
-                            grade: { grade_name },
-                            section: { section_name },
-                            acad_session: {
-                              branch: { branch_name },
-                              session_year: { session_year },
-                            },
-                          },
-                        } = subject;
+                          subject: subjectObject = {},
+                          section_mapping: subjectMapping = {},
+                        } = subject || {};
+                        const { subject_name, subject_description, is_optional } = subjectObject || {};
+                        const {
+                          grade: { grade_name } = {},
+                          section: { section_name } = {},
+                          acad_session: {
+                            branch: { branch_name } = {},
+                            session_year: { session_year } = {},
+                          } = subjectMapping || {},
+                        } = subjectMapping || {};
+
+
                         return (
                           <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
                             <TableCell className={classes.tableCell}>
-                              {session_year}
+                              {session_year||''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {branch_name}
+                              {branch_name||''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {grade_name}
+                              {grade_name||''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {section_name}
+                              {section_name||''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {subject_name}
+                              {subject_name||''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {created_by}
+                              {created_by||''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {subject_description}
+                              {subject_description||''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
                               {is_optional ? 'Yes' : 'No'}
