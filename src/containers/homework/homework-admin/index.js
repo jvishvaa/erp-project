@@ -188,7 +188,8 @@ const HomeworkAdmin = () => {
           }
           if (key === 'branchList') {
             handleGrade();
-            setBranchList(result?.data?.data || []);
+            //setBranchList(result?.data?.data || []);
+            setBranchList(result?.data?.data?.results.map(obj=>((obj&&obj.branch)||{})) || []);
             setLoading(false);
           }
           if (key === 'gradeList') {
@@ -451,7 +452,7 @@ const HomeworkAdmin = () => {
     setSelectedAcadmeicYear(value);
     if (value) {
       callApi(
-        `${endpoints.masterManagement.branchList}?session_year=${value?.id}&module_id=${moduleId}`,
+        `${endpoints.mappingStudentGrade.branch}?session_year=${value?.id}&module_id=${moduleId}`,
         'branchList'
       );
     }

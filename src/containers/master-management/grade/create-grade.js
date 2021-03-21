@@ -34,7 +34,7 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
     }
     }).catch((error)=>{
       setLoading(false);
-      setAlert('error', error.response.data.message||error.response.data.msg);
+      setAlert('error', error?.response?.data?.message||error?.response?.data?.msg);
     })
     };
 
