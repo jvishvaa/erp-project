@@ -16,7 +16,7 @@ import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
+import { Grid, withStyles, Popover } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -39,6 +39,26 @@ import Attachment from '../../containers/homework/teacher-homework/attachment';
 import endpoints from '../../config/endpoints';
 
 import './styles.scss';
+
+const StyledButton = withStyles({
+  root: {
+      color: '#FFFFFF',
+      backgroundColor: '#FF6B6B',
+      '&:hover': {
+          backgroundColor: '#FF6B6B',
+      },
+  }
+})(Button);
+  
+const CancelButton = withStyles({
+  root: {
+      color: '#8C8C8C',
+      backgroundColor: '#e0e0e0',
+      '&:hover': {
+          backgroundColor: '#e0e0e0',
+      },
+  }
+})(Button);
 
 const QuestionCard = ({
   addNewQuestion,
@@ -109,6 +129,19 @@ const QuestionCard = ({
       setAlert('error', 'File upload failed');
     }
   };
+
+  // Confirm Popover 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const handleClick = (event) => {
+      setAnchorEl(true);
+  };
+
+  const handleClose = () => {
+      setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
 
   const removeAttachment = (index) => {
     setAttachmentPreviews((prevState) => [
@@ -387,7 +420,7 @@ const QuestionCard = ({
                 color='default'
                 startIcon={<DeleteIcon />}
                 onClick={() => {
-                  removeQuestion(index);
+                  handleClick();
                 }}
                 title='Remove Question'
                 className='btn remove-question-btn'
@@ -395,6 +428,28 @@ const QuestionCard = ({
                 Remove question
               </Button>
             </div>
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
+            >
+              <div style={{ padding: '20px 30px'}}>
+                <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure you want to delete?</Typography>
+                <div>
+                  <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
+                  <StyledButton onClick={() => removeQuestion(index)} style={{float: 'right'}}>Confirm</StyledButton>
+                </div>
+              </div>
+            </Popover>
           </Grid>
         )}
         {/*        

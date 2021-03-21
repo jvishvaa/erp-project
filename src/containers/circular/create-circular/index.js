@@ -112,6 +112,7 @@ const CraeteCircular = () => {
     setFilterData({ ...filterData, year: '' });
     if (value) {
       setFilterData({ ...filterData, year: value });
+      //.get(`${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`)
       axiosInstance
         .get(`${endpoints.communication.branches}?session_year=${value.id}&module_id=${moduleId}`)
         .then((result) => {
