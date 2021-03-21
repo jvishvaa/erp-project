@@ -9,33 +9,34 @@ import {
   SvgIcon,
   IconButton,
   TextareaAutosize,
+  FormHelperText,
 } from '@material-ui/core';
-import { useStyles } from '../../user-management/useStyles';
-import { FormHelperText } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
+import axios from 'axios';
+import { useFormik } from 'formik';
+import { HomeWork } from '@material-ui/icons';
+import { useStyles } from '../../user-management/useStyles';
+
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Layout from '../../Layout';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import attachmenticon from '../../../assets/images/attachmenticon.svg';
 import deleteIcon from '../../../assets/images/delete.svg';
 import Loading from '../../../components/loader/loader';
 import validationSchema from '../../user-management/schemas/school-details';
-import axios from 'axios';
-import { useFormik } from 'formik';
 import {
   fetchBranchesForCreateUser,
   fetchGrades,
   fetchSections,
   fetchAcademicYears as getAcademicYears,
   fetchSubjects as getSubjects,
-} from '../../../../src/redux/actions/index';
+} from '../../../redux/actions/index';
 import { Context } from '../context/context';
-import { HomeWork } from '@material-ui/icons';
 
 const CreateDailyDairy = (details, onSubmit) => {
   const [academicYears, setAcademicYears] = useState([]);
@@ -64,7 +65,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [loading, setLoading] = useState(false);
   const history = useHistory();
 
-  //context
+  // context
   const [state, setState] = useContext(Context);
   const { isEdit, editData } = state;
   const { setIsEdit, setEditData } = setState;
@@ -143,7 +144,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     //         setBranchDropdown('error', error.message);
     //     })
     axiosInstance
-      .get(endpoints.userManagement.academicYear + '?module_id=' + moduleId)
+      .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
       .then((result) => {
         if (result.status === 200) {
           setAcademicYear(result?.data?.data);
@@ -159,7 +160,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     setSearchAcademicYear('');
     setFilterData({ ...filterData, year: '' });
     if (value) {
-      setSearchAcademicYear(value.id)
+      setSearchAcademicYear(value.id);
       setFilterData({ ...filterData, year: value });
       axiosInstance
         .get(
@@ -174,7 +175,6 @@ const CreateDailyDairy = (details, onSubmit) => {
         })
         .catch((error) => setAlert('error', error?.message));
     }
-   
   };
 
   const fetchBranches = () => {
@@ -188,10 +188,10 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleChangeBranch = (values) => {
-    console.log(values,'VVVVVVVVVVVVv')
+    console.log(values, 'VVVVVVVVVVVVv');
     setGrades([]);
     setSections([]);
-    fetchGrades(searchAcademicYear,values,moduleId).then((data) => {
+    fetchGrades(searchAcademicYear, values, moduleId).then((data) => {
       const transformedData = data
         ? data.map((grade) => ({
             id: grade.grade_id,
@@ -204,7 +204,7 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const handleChangeGrade = (values, branch) => {
     if (branch) {
-      fetchSections(searchAcademicYear,branch, values).then((data) => {
+      fetchSections(searchAcademicYear, branch, values).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               id: section.section_id,
@@ -224,7 +224,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const fetchChapters = () => {
-    //debugger
+    // debugger
     axios
       .get(
         `/qbox/academic/chapters/?academic_year=${searchAcademicYear}&subject=${subjectIds}`
@@ -250,7 +250,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       section &&
       section.length > 0
     ) {
-      getSubjects(searchAcademicYear,branch, grade, section,moduleId).then((data) => {
+      getSubjects(searchAcademicYear, branch, grade, section, moduleId).then((data) => {
         const transformedData = data.map((obj) => ({
           id: obj.subject__id,
           subject_name: obj.subject__subject_name,
@@ -301,16 +301,14 @@ const CreateDailyDairy = (details, onSubmit) => {
     if (filePath.length < 10) {
       if (isEdit) {
         console.log('Continue');
-      } else {
-        if (
-          !formik.values.section ||
-          !formik.values.grade ||
-          !formik.values.subjects ||
-          !formik.values.branch.id ||
-          !subjectIds
-        ) {
-          return setAlert('error', 'Please select all fields');
-        }
+      } else if (
+        !formik.values.section ||
+        !formik.values.grade ||
+        !formik.values.subjects ||
+        !formik.values.branch.id ||
+        !subjectIds
+      ) {
+        return setAlert('error', 'Please select all fields');
       }
       setLoading(true);
       const data = event.target.files[0];
@@ -359,68 +357,67 @@ const CreateDailyDairy = (details, onSubmit) => {
       !formik.values.branch.id
     ) {
       return setAlert('error', 'Please select all fields');
-    } else {
-      console.log('===============');
-      console.log(subjectId);
-      console.log(formik.values.subjects);
-      const teacherReport = [];
-      try {
-        const response = await axiosInstance.post(
-          createDairyEntry,
-          filePath && filePath.length > 0
-            ? {
-                academic_year: searchAcademicYear,
-                branch: formik.values.branch.id,
-                grade: grade,
-                section: ids,
-                subject: subjectIds,
-                chapter: formik.values.chapters?.id,
-                documents: filePath,
-                teacher_report: {
-                  previous_class: recap,
-                  summary: summary,
-                  class_work: detail,
-                  tools_used: tools,
-                  homework: homework,
-                },
-                dairy_type: 2,
-              }
-            : {
-                academic_year: searchAcademicYear,
-                branch: formik.values.branch.id,
-                grade: grade,
-                section: ids,
-                subject: subjectIds,
-                chapter: formik.values.chapters.id,
-                teacher_report: {
-                  previous_class: recap,
-                  summary: summary,
-                  class_work: detail,
-                  tools_used: tools,
-                  homework: homework,
-                },
-                dairy_type: 2,
+    }
+    console.log('===============');
+    console.log(subjectId);
+    console.log(formik.values.subjects);
+    const teacherReport = [];
+    try {
+      const response = await axiosInstance.post(
+        createDairyEntry,
+        filePath && filePath.length > 0
+          ? {
+              academic_year: searchAcademicYear,
+              branch: formik.values.branch.id,
+              grade,
+              section: ids,
+              subject: subjectIds,
+              chapter: formik.values.chapters?.id,
+              documents: filePath,
+              teacher_report: {
+                previous_class: recap,
+                summary,
+                class_work: detail,
+                tools_used: tools,
+                homework,
               },
-          {
-            headers: {
-              // 'application/json' is the modern content-type for JSON, but some
-              // older servers may use 'text/json'.
-              // See: http://bit.ly/text-json
-              'content-type': 'application/json',
-              Authorization: `Bearer ${token}`,
+              dairy_type: 2,
+            }
+          : {
+              academic_year: searchAcademicYear,
+              branch: formik.values.branch.id,
+              grade,
+              section: ids,
+              subject: subjectIds,
+              chapter: formik.values.chapters.id,
+              teacher_report: {
+                previous_class: recap,
+                summary,
+                class_work: detail,
+                tools_used: tools,
+                homework,
+              },
+              dairy_type: 2,
             },
-          }
-        );
-        const { message, status_code: statusCode } = response.data;
-        if (statusCode === 200) {
-          setAlert('success', message);
-          window.location.reload();
-        } else {
-          setAlert('error', response.data.message);
+        {
+          headers: {
+            // 'application/json' is the modern content-type for JSON, but some
+            // older servers may use 'text/json'.
+            // See: http://bit.ly/text-json
+            'content-type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
         }
-      } catch (error) {
-        setAlert('error', error.message);
+      );
+      const { message, status_code: statusCode } = response.data;
+      if (statusCode === 200) {
+        setAlert('success', message);
+        window.location.reload();
+      } else {
+        setAlert('error', response.data.message);
       }
+    } catch (error) {
+      setAlert('error', error.message);
     }
   };
 
@@ -502,7 +499,10 @@ const CreateDailyDairy = (details, onSubmit) => {
     const { file, onClose, index } = props;
     return (
       <div className='file_row_image'>
-        <div className='file_name_container'>File {index + 1}</div>
+        <div className='file_name_container'>
+          File
+          {index + 1}
+        </div>
         {/* <Divider orientation="vertical"  className='divider_color' flexItem /> */}
         <div>
           <span onClick={onClose}>
@@ -881,20 +881,20 @@ const CreateDailyDairy = (details, onSubmit) => {
                   {state.isEdit
                     ? editData.documents.map((file, i) => (
                         <FileRow
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(i)}
-                        />
+                        key={`homework_student_question_attachment_${i}`}
+                        file={file}
+                        index={i}
+                        onClose={() => removeFileHandler(i)}
+                      />
                       ))
                     : filePath?.length > 0
                     ? filePath?.map((file, i) => (
                         <FileRow
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(i)}
-                        />
+                        key={`homework_student_question_attachment_${i}`}
+                        file={file}
+                        index={i}
+                        onClose={() => removeFileHandler(i)}
+                      />
                       ))
                     : null}
                 </div>
