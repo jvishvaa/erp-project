@@ -304,7 +304,7 @@ export default function FilterStudents() {
                       selected={isItemSelected}
                     >
                       <TableCell align='center'>{row.sl}</TableCell>
-                      <TableCell align='center'>{row.username}</TableCell>
+                      <TableCell align='center'>{row.erp_id}</TableCell>
                       <TableCell align='center'>{row.user.first_name}</TableCell>
                       <TableCell padding='checkbox'>
                         <Checkbox
