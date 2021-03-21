@@ -15,7 +15,6 @@ import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2'
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 // import './lesson.css';
 import '../circular/create-circular/create-circular.css';
-import communicationStyles from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.styles';
 
 const CircularFilters = ({
   handlePeriodList,
