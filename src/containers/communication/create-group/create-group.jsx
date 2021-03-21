@@ -38,10 +38,10 @@ const useStyles = makeStyles((theme) => ({
 const CreateGroup = withRouter(({ history, ...props }) => {
   const {
     edit,
-    preSeletedRoles,
-    preSeletedBranch,
-    preSeletedGrades,
-    preSeletedSections,
+    preSeletedRoles=[],
+    preSeletedBranch=[],
+    preSeletedGrades=[],
+    preSeletedSections=[],
     preSelectedGroupName,
     preSelectedGroupId,
     editClose,
@@ -53,7 +53,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [selectedRoles, setSelectedRoles] = useState([]);
-  const [selectedAcademic, setSelectedAcademic] = useState([]);
+  const [selectedAcademic, setSelectedAcademic] = useState('');
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
@@ -107,41 +107,83 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     }
   };
 
-  const getAcademicApi = async () => {
-    axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
-    .then((res) => {
-      console.log(res.data);
+  useEffect(() => {
+    getRoleApi();
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Communication' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Add Group') {
+              setModuleId(item.child_id);
+              setModulePermision(true);
+            } else {
+              setModulePermision(false);
+            }
+          });
+        } else {
+          setModulePermision(false);
+        }
+      });
+    } else {
+      setModulePermision(false);
+    }
+    if (edit) {
+      setSelectedBranch({ id: 5, branch_name: 'Orchids' });
+      const tempRoles = [];
+      const tempBranch = [];
+      const tempGrades = [];
+      const tempSections = [];
+      preSeletedRoles.map((items) => tempRoles.push(items?.role_name));
+      preSeletedBranch.map((items) => tempBranch.push(items?.branch_name));
+      preSeletedGrades.map((items) => tempGrades.push(items?.grade_name));
+      preSeletedSections.map((items) => tempSections.push(items?.section__section_name));
+      setSelectedRoles(tempRoles);
+      setGroupName(preSelectedGroupName);
+      setSelectedBranch(tempBranch);
+      setSelectedGrades(tempGrades);
+      setSelectedSections(tempSections);
+    }
+  }, []);
 
-      if (res.data.status_code === 200) {
-        setAcademicYears(res.data.data);
+  const getAcademicApi = () => {
+    axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
+      .then((res) => {
+        console.log(res.data);
+
+        if (res.data.status_code === 200) {
+          setAcademicYears(res.data.data);
+          setLoading(false);
+        } else {
+          setAlert('error', res.data.message);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setAlert('error', error.message);
         setLoading(false);
-      } else {
-        setAlert('error', res.data.message);
-        setLoading(false);
-      }
-    })
-    .catch((error) => { 
-      console.log(error);
-      setAlert('error', error.message);
-      setLoading(false);
-    })
+      })
   };
 
   const getBranchApi = async () => {
-    axiosInstance.get(`${endpoints.communication.branches}?session_year=${selectedAcademic?.id}&module_id=${moduleId}`).then((res) => {
-      console.log(res.data);
+    axiosInstance.get(`${endpoints.academics.branches}?session_year=${selectedAcademic?.id}&module_id=${moduleId}`).then((res) => {
       if (res.data.status_code === 200) {
-        setBranchList(res?.data?.data?.results.map(obj=>((obj&&obj.branch)||{})));
+        const transformedResponse = res?.data?.data?.results.map(obj=>((obj&&obj.branch)||{}));
+        setBranchList(transformedResponse);
         setLoading(false);
       } else {
         setAlert('error', res.data.message);
         setLoading(false);
       }
     })
-    .catch((error) => {
-      setAlert('error', error.message);
-      setLoading(false);
-    })
+      .catch((error) => {
+        setAlert('error', error.message);
+        setLoading(false);
+      })
     // try {
     //   setLoading(true);
     //   const result = await axiosInstance.get(endpoints.communication.branches, {
@@ -171,7 +213,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       const branchsId = [];
       selectedBranch.length > 0 && selectedBranch.map((branchs) => branchsId.push(branchs?.id));
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${branchsId.toString()}&module_id=${moduleId}`,
+        `${endpoints.communication.grades}?session_year=${selectedAcademic?.id}&branch_id=${branchsId.toString()}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -208,7 +250,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
           gradesId.push(items.grade_id);
         });
       const result = await axiosInstance.get(
-        `${endpoints.communication.sections}?branch_id=${branchsId.toString()}&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
+        `${endpoints.communication.sections}?session_year=${selectedAcademic?.id}&branch_id=${branchsId.toString()}&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -331,10 +373,10 @@ const CreateGroup = withRouter(({ history, ...props }) => {
             selected: selectAll
               ? true
               : selectedUsers.length && !selectedUsers[pageno - 1].first
-              ? selectedUsers[pageno - 1].selected.includes(items.id)
-              : edit
-              ? items.is_assigned
-              : false,
+                ? selectedUsers[pageno - 1].selected.includes(items.id)
+                : edit
+                  ? items.is_assigned
+                  : false,
           });
         });
         setUsersRow(rows);
@@ -469,7 +511,12 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         });
     }
     if (selectedBranch) {
-      branchId.push(selectedBranch.id);
+      // branchId.push(selectedBranch.id);
+      // branchId = selectedBranch.map(obj=>obj.id);
+      const blist=[...selectedBranch];
+      for(let p=0;p<blist.length;p++) {
+        branchId.push(blist[p].id);
+      }
     }
     if (selectedGrades.length && !selectedGrades.includes('All')) {
       gradeList
@@ -547,6 +594,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         setSelectedUsers([]);
         setSelectedRoles([]);
         setSelectedSections([]);
+        setSelectedBranch([]);
         setSelectedGrades([]);
         setGroupName('');
         setSelectectUserError('');
@@ -598,6 +646,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     setSelectedUsers([]);
     setSelectedRoles([]);
     setSelectedSections([]);
+    setSelectedBranch([]);
     setSelectedGrades([]);
     setGroupName('');
     setSelectectUserError('');
@@ -661,48 +710,12 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   }, [completeData, selectedUsers]);
 
   useEffect(() => {
-    getRoleApi();
-    getAcademicApi();
-    //getBranchApi();
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Communication' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Add Group') {
-              setModuleId(item.child_id);
-              setModulePermision(true);
-            } else {
-              setModulePermision(false);
-            }
-          });
-        } else {
-          setModulePermision(false);
-        }
-      });
-    } else {
-      setModulePermision(false);
-    }
-    if (edit) {
-      setSelectedBranch({ id: 5, branch_name: 'Orchids' });
-      const tempRoles = [];
-      const tempGrades = [];
-      const tempSections = [];
-      preSeletedRoles.map((items) => tempRoles.push(items.role_name));
-      preSeletedGrades.map((items) => tempGrades.push(items.grade_name));
-      preSeletedSections.map((items) => tempSections.push(items.section__section_name));
-      setSelectedRoles(tempRoles);
-      setGroupName(preSelectedGroupName);
-      setSelectedGrades(tempGrades);
-      setSelectedSections(tempSections);
-    }
-  }, []);
+    if (moduleId)
+      getAcademicApi();
+  }, [moduleId]);
 
   useEffect(() => {
-    if(selectedAcademic?.id){
+    if (selectedAcademic) {
       setSelectedBranch([]);
       setGrade([]);
       setSelectedGrades([]);
@@ -810,7 +823,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
               {selectedRoles.length && !selectedRoles.includes('All') ? (
                 <div className='create_group_filter_container'>
                   <Grid container className='create_group_container' spacing={5}>
-                  <Grid xs={12} lg={4} className='create_group_items' item>
+                    <Grid xs={12} lg={4} className='create_group_items' item>
                       <div>
                         <div className='create_group_branch_wrapper'>
                           <Autocomplete

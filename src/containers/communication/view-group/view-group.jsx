@@ -89,6 +89,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [editGroupName, setEditGroupName] = useState('');
+  const [editGroupBranch, setEditGroupBranch] = useState([]);
   const [editGroupGrades, setEditGroupGrades] = useState([]);
   const [editGroupSections, setEditGroupSections] = useState([]);
   const [editGroupRole, setEditGroupRole] = useState('');
@@ -99,13 +100,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
     try {
       setLoading(true);
       const result = await axiosInstance.get(
-        `${endpoints.communication.getGroups}?page=${currentPage}&page_size=15`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+        `${endpoints.communication.getGroups}?page=${currentPage}&page_size=15`);
       const resultGroups = [];
       if (result.status === 200) {
         setLoading(false);
@@ -114,8 +109,9 @@ const ViewGroup = withRouter(({ history, ...props }) => {
             groupId: items.id,
             groupName: items.group_name,
             roleType: items.role,
+            branch: items.branch,
             grades: items.grade,
-            sections: items.mapping_bgs,
+            sections: items.section_mapping,
             active: items.is_active,
           });
         });
@@ -137,13 +133,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
     try {
       setLoading(true);
       const statusChange = await axiosInstance.put(
-        `${endpoints.communication.editGroup}${id}/change-group-status/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+        `${endpoints.communication.editGroup}${id}/change-group-status/`);
       if (statusChange.status === 200) {
         setLoading(false);
         setAlert('success', statusChange.data.message);
@@ -151,7 +141,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
         tempGroupData[index].active = groupsData[index].active
           ? !groupsData[index].active
           : true;
-        setGroupsData(tempGroupData);
+        setGroupsData(tempGroupData || []);
       } else {
         setAlert('error', statusChange.data.message);
         setLoading(false);
@@ -182,7 +172,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
         setAlert('success', statusChange.data.message);
         const tempGroupData = groupsData.slice();
         tempGroupData.splice(deleteIndex, 1);
-        setGroupsData(tempGroupData);
+        setGroupsData(tempGroupData || []);
         setDeleteId(null);
         setDeleteIndex(null);
         setDeleteAlert(false);
@@ -203,6 +193,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   const handleEdit = (id, index) => {
     setEditGroupId(id);
     setEditGroupName(groupsData[index].groupName);
+    setEditGroupBranch(groupsData[index].branch);
     setEditGroupRole(groupsData[index].roleType);
     setEditGroupGrades(groupsData[index].grades);
     setEditGroupSections(groupsData[index].sections);
@@ -219,6 +210,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
       setEditGroupId(0);
       setEditGroupName('');
       setEditGroupRole('');
+      setEditGroupBranch([]);
       setEditGroupGrades([]);
       setEditGroupSections([]);
       getGroupsData();
@@ -234,6 +226,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
           editClose={setEditing}
           preSelectedGroupName={editGroupName}
           preSeletedRoles={editGroupRole}
+          preSeletedBranch={editGroupBranch}
           preSeletedGrades={editGroupGrades}
           preSeletedSections={editGroupSections}
           setGroupName={setEditGroupName}
@@ -325,7 +318,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                       </TableRow>
                     </TableHead>
                     <TableBody className='view_groups_body'>
-                      {groupsData.map((items, i) => (
+                      {groupsData?.map((items, i) => (
                         <TableRow
                           hover
                           role='checkbox'
@@ -336,39 +329,37 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                           <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
                             {items.roleType.length
                               ? items.roleType.map((roles, index) => {
-                                  if (index + 1 === items.roleType.length) {
-                                    return roles.role_name;
-                                  }
-                                  return `${roles.role_name}, `;
-                                })
+                                if (index + 1 === items.roleType.length) {
+                                  return roles.role_name;
+                                }
+                                return `${roles.role_name}, `;
+                              })
                               : null}
                           </TableCell>
                           <TableCell
-                            className={`view_group_table_sections ${
-                              isHidden ? 'hide' : 'show'
-                            }`}
+                            className={`view_group_table_sections ${isHidden ? 'hide' : 'show'
+                              }`}
                           >
                             {items.grades.length
                               ? items.grades.map((grades, index) => {
-                                  if (index + 1 === items.grades.length) {
-                                    return grades.grade_name;
-                                  }
-                                  return `${grades.grade_name}, `;
-                                })
+                                if (index + 1 === items.grades.length) {
+                                  return grades.grade_name;
+                                }
+                                return `${grades.grade_name}, `;
+                              })
                               : null}
                           </TableCell>
                           <TableCell
-                            className={`view_group_table_sections ${
-                              isHidden ? 'hide' : 'show'
-                            }`}
+                            className={`view_group_table_sections ${isHidden ? 'hide' : 'show'
+                              }`}
                           >
-                            {items.sections.length
+                            {items.sections && items.sections.length
                               ? items.sections.map((sections, index) => {
-                                  if (index + 1 === items.sections.length) {
-                                    return sections.section__section_name;
-                                  }
-                                  return `${sections.section__section_name}, `;
-                                })
+                                if (index + 1 === items.sections.length) {
+                                  return sections.section__section_name;
+                                }
+                                return `${sections.section__section_name}, `;
+                              })
                               : null}
                           </TableCell>
                           <TableCell>
@@ -413,7 +404,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                             </IconButton>
                             <IconButton
                               title='Edit'
-                              style={{padding:'5px'}}
+                              style={{ padding: '5px' }}
                               onClick={() => handleEdit(items.groupId, i)}
                             >
                               <EditOutlinedIcon style={{ color: '#ff6b6b' }} />
