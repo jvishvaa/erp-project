@@ -203,7 +203,7 @@ const SubjectTable = () => {
         }
       })
       .catch((error) => {
-        setAlert('error', error.response.data.message||error.response.data.msg);
+        setAlert('error', error?.response?.data?.message||error?.response?.data?.msg);
       });
   }, [goBackFlag, delFlag, page, searchSubject]);
 

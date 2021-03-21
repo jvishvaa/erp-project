@@ -128,10 +128,10 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   };
 
   const getBranchApi = async () => {
-    axiosInstance.get(`${endpoints.masterManagement.branchList}?session_year=${selectedAcademic?.id}&module_id=${moduleId}`).then((res) => {
+    axiosInstance.get(`${endpoints.communication.branches}?session_year=${selectedAcademic?.id}&module_id=${moduleId}`).then((res) => {
       console.log(res.data);
       if (res.data.status_code === 200) {
-        setBranchList(res.data.data);
+        setBranchList(res?.data?.data?.results.map(obj=>((obj&&obj.branch)||{})));
         setLoading(false);
       } else {
         setAlert('error', res.data.message);
@@ -702,7 +702,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   }, []);
 
   useEffect(() => {
-    if(selectedAcademic){
+    if(selectedAcademic?.id){
       setSelectedBranch([]);
       setGrade([]);
       setSelectedGrades([]);
