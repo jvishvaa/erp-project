@@ -38,7 +38,7 @@ deploy_dev:
     tags:
       - erp_revamp_frontend
     only:
-      - develop
+      - dev
 
 
 deploy_prod:
