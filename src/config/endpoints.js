@@ -211,6 +211,7 @@ export default {
     createCircular: '/circular/upload-circular/',
     deleteCircular: '/circular/delete-circular/',
     updateCircular: '/circular/update-circular/',
+    deleteFile:'/academic/delete-file/',
   },
   generalDairy: {
     dairyList: '/academic/general-dairy-messages/',
