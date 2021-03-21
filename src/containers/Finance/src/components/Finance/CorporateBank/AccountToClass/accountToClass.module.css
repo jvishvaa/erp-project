@@ -1,0 +1,103 @@
+.accClassMapping *{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+.accClassMapping{
+    width: 95%;
+    margin: auto;
+    /* padding-bottom: 60px; */
+    border: 0.1px solid #646363d5;
+    border-bottom: 0px solid #ffffff;
+}
+.accClassMapping__header{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 40px;
+    background-color: #eeeeee65;
+}
+/* .accBrnchMapping__body{
+    border: 0.5px solid #646363
+} */
+.accClassMapping__headingSmall,
+.accClassMapping__headingBig{
+    font-weight: lighter;
+    padding-left: 20px;
+    height: 100%;
+    padding-top: 10px;
+}
+.accClassMapping__headingSmall{
+    width: 40%; 
+}
+.accClassMapping__headingBig{
+    width: 60%;
+    border-left: 0.1px solid #e9e8e8;
+}
+.accClassMapping__class{
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 0.1px solid #e9e8e8;
+}
+.accClassMapping__class:nth-child(even){
+    background-color: #eeeeee65;
+}
+.accClassMapping__classInfo{
+    width: 40%;
+    padding-left: 20px;
+    display: flex;
+    border-right: 0.1px solid #646363d5;
+    padding-top: 15px;
+}
+.accClassMapping__className{
+    width: 80%;
+}
+.accClassMapping__icon{
+    width: 20%;
+}
+.accClassMapping__classAccInfo{
+    width: 60%;
+}
+.accClassMapping__accInfo{
+    display: flex;
+    padding: 15px 0 15px 20px;
+    /* border-bottom: 0.1px solid #e9e8e8; */
+    
+}
+/* .accClassMapping__accInfo:nth-child(even){
+    background-color: #eeeeee65;
+} */
+.accClassMapping__accName{
+    width: 90%;
+}
+.accClassMapping__dlt{
+    width: 10%;
+    border-left: 0.1px solid #e9e8e8;
+    padding-left: 10px;
+}
+.accClassMapping__dlt:hover{
+    cursor: pointer;
+}
+.modal__heading{
+    text-align: center;
+    padding-top: 15px;
+    margin-bottom: 15px;
+}
+.modal__button,
+.modal__remainbutton,
+.modal__deletebutton{
+    display: inline-block;
+    position: absolute;
+}
+.modal__button{
+    bottom: 5px;
+    right: 2px;
+}
+.modal__deletebutton{
+    bottom: 5px;
+    right: 10px;
+}
+.modal__remainbutton{
+    bottom: 5px;
+    left: 10px;
+}
