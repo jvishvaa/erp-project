@@ -57,6 +57,29 @@ const CircularFilters = ({
     chapter: '',
     section: '',
   });
+  const [moduleId, setModuleId] = useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Circular' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Circular' && window.location.pathname === '/teacher-circular') {
+              setModuleId(item.child_id);
+            }
+            if (item.child_name === 'Student Circular' && window.location.pathname === '/student-circular') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, [window.location.pathname]);
 
   // DATE RANGE FUNCTION
   function getDaysAfter(date, amount) {
@@ -91,10 +114,10 @@ const CircularFilters = ({
     if (value) {
       setFilterData({ ...filterData, year: value });
       axiosInstance
-        .get(`${endpoints.masterManagement.branchList}?session_year=${value.id}`)
+        .get(`${endpoints.communication.branches}?session_year=${value.id}&module_id=${moduleId}`)
         .then((result) => {
           if (result?.data?.status_code) {
-            setBranchDropdown(result?.data?.data);
+            setBranchDropdown(result?.data?.data?.results);
           } else {
             setAlert('error', result?.data?.message);
           }
@@ -109,7 +132,6 @@ const CircularFilters = ({
       setFilterData({ ...filterData, section: value });
     }
   };
-
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
     setOverviewSynopsis([]);
@@ -124,10 +146,10 @@ const CircularFilters = ({
       axiosInstance
       //for teacher_module_id=167 ><<<admin=8
       
-        .get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=167`)
+        .get(`${endpoints.communication.grades}?branch_id=${value.id}&session_year=${filterData.year.id}&module_id=${moduleId}`)
         .then((result) => {
           if (result.data.status_code === 200) {
-            setGradeDropdown(result.data.data);
+            setGradeDropdown(result?.data?.data);
           } else {
             setAlert('error', result.data.message);
             setGradeDropdown([]);
@@ -155,7 +177,7 @@ const CircularFilters = ({
       setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&module_id=167`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&session_year=${filterData.year.id}&grade_id=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -285,7 +307,7 @@ const CircularFilters = ({
           className='dropdownIcon'
           value={filterData?.branch}
           options={branchDropdown}
-          getOptionLabel={(option) => option?.branch_name}
+          getOptionLabel={(option) => option?.branch?.branch_name}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField

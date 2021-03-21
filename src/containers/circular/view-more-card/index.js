@@ -23,10 +23,11 @@ const ViewMoreCard = ({
   const { setAlert } = useContext(AlertNotificationContext);
   // const { branch_name} = JSON.parse(localStorage.getItem('userDetails') || {});
 
+  console.log(branch,'=========================================')
   const handleBulkDownload = (files) => {
     if(window.location.pathname==='/teacher-circular'){
       for (let i = 0; i < files?.length; i++) {
-        window.open(`${endpoints.s3}/dev/circular_files/${branch.branch_name}/${files[i]}`);
+        window.open(`${endpoints.s3}/dev/circular_files/${branch?.branch?.branch_name}/${files[i]}`);
       }
     }
     else{
