@@ -91,7 +91,7 @@ const CraeteCircular = () => {
         }
       });
     }
-  }, []);
+  }, [window.location.pathname]);
   const handleClear = () => {
     setFilterData({
       branch: '',
@@ -114,10 +114,10 @@ const CraeteCircular = () => {
       setFilterData({ ...filterData, year: value });
       //.get(`${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`)
       axiosInstance
-        .get(`${endpoints.mappingStudentGrade.branches}/session_year=${value.id}`)
+        .get(`${endpoints.communication.branches}?session_year=${value.id}&module_id=${moduleId}`)
         .then((result) => {
           if (result?.data?.status_code) {
-            setBranchDropdown(result?.data?.data);
+            setBranchDropdown(result?.data?.data?.results);
           } else {
             setAlert('error', result?.data?.message);
           }
@@ -146,7 +146,7 @@ const CraeteCircular = () => {
         chapter: '',
       });
       axiosInstance
-        .get(`${endpoints.communication.grades}?branch_id=${value?.id}&module_id=${moduleId}`)
+        .get(`${endpoints.communication.grades}?branch_id=${value?.id}&session_year=${filterData.year?.id}&module_id=${moduleId}`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setGradeDropdown(result?.data?.data);
@@ -182,7 +182,7 @@ const CraeteCircular = () => {
       });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.id}&grade_id=${value?.grade_id}&module_id=${moduleId}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.id}&session_year=${filterData.year.id}&grade_id=${value?.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -219,9 +219,10 @@ const CraeteCircular = () => {
       const data = event.target.files[0];
       const fd = new FormData();
       fd.append('file', event.target.files[0]);
-      fd.append('branch', filterData.branch.branch_name);
+      fd.append('branch', filterData?.branch?.branch && filterData?.branch?.branch?.branch_name);
       // fd.append('grade',filterData.grade[0].id)
       // fd.append('section',filterData.section.id)
+      console.log(filterData?.branch?.branch?.branch_name,'++++++++++++++++++++++++++++++++++++++++++++')
 
       axiosInstance.post(`${endpoints.circular.fileUpload}`, fd).then((result) => {
         if (result.data.status_code === 200) {
@@ -290,7 +291,7 @@ const CraeteCircular = () => {
     console.log(i,file,"File")
     setLoading(true)
     axiosInstance.post(`${endpoints.circular.deleteFile}`,{
-      file_name:`dev/circular_files/${filterData?.branch?.branch_name}/${file}`
+      file_name:`dev/circular_files/${filterData?.branch?.branch?.branch_name}/${file}`
     }).then((result)=>{
       if (result.data.status_code === 204) {
         list.splice(i, 1);
@@ -498,7 +499,7 @@ const CraeteCircular = () => {
                 className='dropdownIcon'
                 value={filterData?.branch}
                 options={branchDropdown}
-                getOptionLabel={(option) => option?.branch_name}
+                getOptionLabel={(option) => option?.branch?.branch_name}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -743,4 +744,3 @@ const CraeteCircular = () => {
 };
 
 export default CraeteCircular;
-
