@@ -549,6 +549,7 @@ const Layout = ({ children, history }) => {
       }
       case 'Teacher Diary': {
         history.push('/diary/teacher');
+        break;
       }
       case 'Student Shuffle': {
         history.push('/finance/StudentShuffleRequest')

@@ -337,7 +337,7 @@ class StudentLedgerTab extends Component {
               <Tab value='two' label='Make Payment' />
               <Tab value='three' label='Payments' />
               <Tab value='four' label='Cheque Payment' />
-              <Tab value='five' label='IT Certificate' />
+              {/* <Tab value='five' label='IT Certificate' /> */}
               <Tab value='six' label='Concession Details' />
               {/* <Tab value='seven' label='Fee Management' /> */}
               <Tab value='eight' label='Curr Fee Type' />

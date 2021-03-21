@@ -257,12 +257,14 @@ if(clicked){
     if (value) {
       setFilterData({ ...filterData, year: value });
       axiosInstance
-        .get(`${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`)
+        .get(`${endpoints.masterManagement.branchMappingTable}?session_year=${value.id}&module_id=${moduleId}`)
         .then((result) => {
+          console.log('result ===', result)
+          console.log('result ===', result?.data?.data?.results)
           if (result?.data?.status_code) {
-            setBranchDropdown(result?.data?.data);
+            setBranchDropdown(result?.data?.data?.results);
           } else {
-            setAlert('error', result?.data?.message);
+            setAlert('error', result?.message);
           }
         })
         .catch((error) => setAlert('error', error?.message));
@@ -289,11 +291,12 @@ if(clicked){
 
 
   const handleBranch = (event, value) => {
+    console.log('clicked', filterData)
     setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
     // setOverviewSynopsis([]);
     if (value) {
         setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${moduleId}`)
+        axiosInstance.get(`${endpoints.communication.grades}?session_year=${filterData?.year?.id}&branch_id=${value.id}&module_id=${moduleId}`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setGradeDropdown(result.data.data);
@@ -332,6 +335,7 @@ if(clicked){
       activeTab,
       page,
       filterData.subject,
+      moduleId
     );
   };
 
@@ -400,7 +404,7 @@ if(clicked){
             className='dropdownIcon'
             value={filterData?.branch}
             options={branchDropdown}
-            getOptionLabel={(option) => option?.branch_name}
+            getOptionLabel={(option) => option?.branch?.branch_name}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField

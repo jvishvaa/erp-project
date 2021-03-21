@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Divider from '@material-ui/core/Divider';
-import { useHistory } from 'react-router-dom';
+import { useHistory, withRouter, useLocation } from 'react-router-dom';
 import {
   Grid,
   TextField,
@@ -24,29 +24,28 @@ import {
   FormControlLabel,
   Checkbox,
 } from '@material-ui/core';
-import { withRouter } from 'react-router-dom';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useLocation } from 'react-router-dom';
 
+import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
+import axios from 'axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Layout from '../../Layout';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import attachmenticon from '../../../assets/images/attachmenticon.svg';
 import deleteIcon from '../../../assets/images/delete.svg';
 import Loading from '../../../components/loader/loader';
-import CustomMultiSelect from '../../../../src/containers/communication/custom-multiselect/custom-multiselect';
+import CustomMultiSelect from '../../communication/custom-multiselect/custom-multiselect';
 import { Context } from '../context/context';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 
-import CustomSelectionTable from '../../../../src/containers/communication/custom-selection-table/custom-selection-table';
+import CustomSelectionTable from '../../communication/custom-selection-table/custom-selection-table';
 
-import axios from 'axios';
 // import CustomSelectionTable from '../../../containers/communication/custom-selection-table';
 
 const StyledTabs = withStyles({
@@ -166,7 +165,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const [teacherModuleId, setTeacherModuleId] = useState(null);
 
   const [description, setDescription] = useState('');
-  //context
+  // context
   const [state, setState] = useContext(Context);
   const { isEdit, editData } = state;
   const { setIsEdit, setEditData } = setState;
@@ -246,7 +245,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       });
       axiosInstance
         .get(
-          `${endpoints.communication.grades}?branch_id=${value.id}&module_id=${
+          `${
+            endpoints.communication.grades
+          }?session_year=${searchAcademicYear}&branch_id=${value.id}&module_id=${
             location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
           }`
         )
@@ -361,15 +362,19 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     if (value) {
       setSearchAcademicYear(value.id);
       axiosInstance
-      .get(`${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`)
-      .then((result) => {
-        if (result?.data?.status_code) {
-          setBranchDropdown(result?.data?.data);
-        } else {
-          setAlert('error', result?.data?.message);
-        }
-      })
-      .catch((error) => setAlert('error', error?.message));
+        .get(
+          `${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${
+            location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+          }`
+        )
+        .then((result) => {
+          if (result?.data?.status_code) {
+            setBranchDropdown(result?.data?.data);
+          } else {
+            setAlert('error', result?.data?.message);
+          }
+        })
+        .catch((error) => setAlert('error', error?.message));
     }
   };
   useEffect(() => {
@@ -390,10 +395,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     if (selectedGrades.length && gradeList.length) {
       // setSelectedSections([]);
       getSectionApi();
-    } else {
-      if (!edit) {
-        setSelectedSections([]);
-      }
+    } else if (!edit) {
+      setSelectedSections([]);
     }
   }, [gradeList, selectedGrades]);
 
@@ -439,11 +442,15 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       endpoints.generalDairy.studentList
     }?academic_year=${searchAcademicYear}&active=${
       !isEmail ? '0' : '1'
-    }&page=${pageno}&page_size=15&bgs_mapping=${filterData.section.map((s) => s.id)}`;
+    }&page=${pageno}&page_size=15&bgs_mapping=${filterData.section.map(
+      (s) => s.id
+    )}&module_id=${
+      location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+    }`;
 
     if (selectedSections.length && !selectedSections.includes('All')) {
       sectionList
-        .filter((item) => selectedSections.includes(item['section__section_name']))
+        .filter((item) => selectedSections.includes(item.section__section_name))
         .forEach((items) => {
           sectionsId.push(items.section_id);
         });
@@ -548,10 +555,11 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   };
 
   const getGradeApi = async () => {
+    console.log('gradddee');
     try {
       setLoading(true);
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${selectedBranch.id}&module_id=${moduleId}`,
+        `${endpoints.communication.grades}?session_year=${searchAcademicYear}&branch_id=${selectedBranch.id}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -581,7 +589,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       setLoading(true);
       const gradesId = [];
       gradeList
-        .filter((item) => selectedGrades.includes(item['grade__grade_name']))
+        .filter((item) => selectedGrades.includes(item.grade__grade_name))
         .forEach((items) => {
           gradesId.push(items.grade_id);
         });
@@ -658,7 +666,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         assignRoleApi,
         filePath && filePath.length > 0
           ? {
-              title: title,
+              title,
               message: description,
               // module_name:filterData.role.value,
               documents: filePath,
@@ -673,7 +681,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
               dairy_type: 1,
             }
           : {
-              title: title,
+              title,
               message: description,
               branch: filterData.branch[0].id,
               grade: filterData.grade.map((g) => g.grade_id),
@@ -705,7 +713,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     const { file, onClose, index } = props;
     return (
       <div className='file_row_image'>
-        <div className='file_name_container'>File {index + 1}</div>
+        <div className='file_name_container'>
+          File
+          {index + 1}
+        </div>
         <div>
           <span onClick={onClose}>
             <SvgIcon
@@ -747,7 +758,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       .put(`${endpoints.circular.updateCircular}`, {
         circular_id: editData.id,
         circular_name: title,
-        description: description,
+        description,
         module_name: filterData.role.value,
       })
       .then((result) => {
@@ -1060,11 +1071,11 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                   {filePath?.length > 0
                     ? filePath?.map((file, i) => (
                         <FileRow
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(i)}
-                        />
+                        key={`homework_student_question_attachment_${i}`}
+                        file={file}
+                        index={i}
+                        onClose={() => removeFileHandler(i)}
+                      />
                       ))
                     : null}
                 </div>
