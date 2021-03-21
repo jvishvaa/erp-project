@@ -32,23 +32,41 @@ class CreateRole extends Component {
       roleName: '',
       roleNameError: '',
       selectionError: '',
+      moduleId: '',
       academicYearList: [],
+      NavData : JSON.parse(localStorage.getItem('navigationData')),
     };
   }
-
+  // const [moduleId, setModuleId] = useState('');
+  
   componentDidMount() {
     const { fetchModules, fetchBranches } = this.props;
     fetchModules();
     // fetchBranches();
 
-    fetchAcademicYears().then((data) => {
-      let transformedData = '';
-      transformedData = data?.map((obj) => ({
-        id: obj.id,
-        session_year: obj.session_year,
-      }));
-      this.setState({ academicYearList: transformedData });
-    });
+    if (this.state.NavData && this.state.NavData.length) {
+      this.state.NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'User Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Create User') {
+              this.setState({moduleId:item.child_id});
+                fetchAcademicYears(item.child_id).then((data) => {
+                  let transformedData = '';
+                  transformedData = data?.map((obj) => ({
+                    id: obj.id,
+                    session_year: obj.session_year,
+                  }));
+                  this.setState({ academicYearList: transformedData });
+                });
+            }
+          });
+        }
+      });
+    }
   }
 
   handleRoleNameChange = (e) => {
