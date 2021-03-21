@@ -52,6 +52,11 @@ function AttachmentPreviewerUI() {
   //   '.snd',
   // ];
   if (!isOpen) return null;
+  
+  document.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+  }, false);
+
   const previewerUI = (
     <>
       <div className='attachment-viewer' key={src}>
@@ -98,7 +103,7 @@ function AttachmentPreviewerUI() {
                 <iframe
                   id='attachment-iframe'
                   title='attachment-iframe'
-                  src={isPPt ? pptFileSrc : src}
+                  src={isPPt ? pptFileSrc : `${src}#toolbar=0&navpanes=0&scrollbar=0`}
                   className='attachment-viewer-frame-preview-iframe'
                 />
               )}
