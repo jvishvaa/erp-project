@@ -292,7 +292,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     setSubjectIds(value?.id);
     axiosInstance
       .get(
-        `${endpoints.dailyDairy.branches}?academic_year=${searchAcademicYear}&subject=${value.id}&module_id=${moduleId}`
+        `${endpoints.dailyDairy.branches}?session_year=${searchAcademicYear}&subject=${value.id}&module_id=${moduleId}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
