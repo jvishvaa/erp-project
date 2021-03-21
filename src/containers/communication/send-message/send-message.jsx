@@ -97,7 +97,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedGroup, setSelectedGroup] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState([]);
-  const [selectedAcademic, setSelectedAcademic] = useState([]);
+  const [selectedAcademic, setSelectedAcademic] = useState('');
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
@@ -167,39 +167,40 @@ const SendMessage = withRouter(({ history, ...props }) => {
 
   const getAcademicApi = async () => {
     axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
-    .then((res) => {
-      console.log(res.data);
+      .then((res) => {
+        console.log(res.data);
 
-      if (res.data.status_code === 200) {
-        setAcademicYears(res.data.data);
+        if (res.data.status_code === 200) {
+          setAcademicYears(res.data.data);
+          setLoading(false);
+        } else {
+          setAlert('error', res.data.message);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setAlert('error', error.message);
         setLoading(false);
-      } else {
-        setAlert('error', res.data.message);
-        setLoading(false);
-      }
-    })
-    .catch((error) => { 
-      console.log(error);
-      setAlert('error', error.message);
-      setLoading(false);
-    })
+      })
   };
 
   const getBranchApi = async () => {
-    axiosInstance.get(`${endpoints.masterManagement.branchList}?session_year=${selectedAcademic?.id}&module_id=${moduleId}`).then((res) => {
+    axiosInstance.get(`${endpoints.academics.branches}?session_year=${selectedAcademic?.id}&module_id=${moduleId}`).then((res) => {
       console.log(res.data);
       if (res.data.status_code === 200) {
-        setBranchList(res.data.data);
+        const transformedResponse = res?.data?.data?.results.map(obj => ((obj && obj.branch) || {}));
+        setBranchList(transformedResponse);
         setLoading(false);
       } else {
         setAlert('error', res.data.message);
         setLoading(false);
       }
     })
-    .catch((error) => {
-      setAlert('error', error.message);
-      setLoading(false);
-    })
+      .catch((error) => {
+        setAlert('error', error.message);
+        setLoading(false);
+      })
     // try {
     //   setLoading(true);
     //   const result = await axiosInstance.get(endpoints.communication.branches, {
@@ -252,7 +253,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
     try {
       setLoading(true);
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${branchsId.toString()}&module_id=${moduleId}`,
+        `${endpoints.communication.grades}?session_year=${selectedAcademic?.id}&branch_id=${branchsId.toString()}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -289,7 +290,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
         });
       setLoading(true);
       const result = await axiosInstance.get(
-        `${endpoints.communication.sections}?branch_id=${branchsId.toString()}&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
+        `${endpoints.communication.sections}?session_year=${selectedAcademic?.id}&branch_id=${branchsId.toString()}&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -408,8 +409,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
             selected: selectAll
               ? true
               : selectedUsers.length
-              ? selectedUsers[pageno - 1].selected.includes(items.id)
-              : false,
+                ? selectedUsers[pageno - 1].selected.includes(items.id)
+                : false,
           });
         });
         setUsersRow(rows);
@@ -531,9 +532,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
       }
       if (selectAll) {
         completeData
-        .forEach((items) => {
-          selectionArray.push(items.id);
-        });
+          .forEach((items) => {
+            selectionArray.push(items.id);
+          });
         // selectionArray.push(0);
       }
       if (!selectionArray.length) {
@@ -657,9 +658,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
         }
         if (selectAll) {
           completeData
-          .forEach((items) => {
-            selectionArray.push(items.id);
-          });
+            .forEach((items) => {
+              selectionArray.push(items.id);
+            });
           // selectionArray.push(0);
         }
         const formData = new FormData();
@@ -706,7 +707,10 @@ const SendMessage = withRouter(({ history, ...props }) => {
               });
           }
           if (selectedBranch) {
-            branchId.push(selectedBranch.id);
+            const blist = [...selectedBranch];
+            for (let p = 0; p < blist.length; p++) {
+              branchId.push(blist[p].id);
+            }
           }
           if (selectedGrades.length) {
             gradeList
@@ -825,6 +829,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           setLoading(false);
         }
       } catch (error) {
+        
         setAlert('error', error.message);
         setMessageSending(false);
         setLoading(false);
@@ -857,13 +862,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
   }, []);
   useEffect(() => {
     if (customSelect) {
-      if(selectedRoles.length === 0){
+      if (selectedRoles.length === 0) {
         getRoleApi();
       }
-      if(selectedRoles.length > 0){
-        getAcademicApi();
-      }
-      //getBranchApi();
     }
     if (!customSelect) {
       getGroupApi();
@@ -871,10 +872,20 @@ const SendMessage = withRouter(({ history, ...props }) => {
   }, [customSelect, selectedRoles]);
 
   useEffect(() => {
-    if(selectedAcademic){
-      getBranchApi();
+    if (moduleId) {
+      getAcademicApi();
     }
-  },[selectedAcademic]);
+  }, [moduleId])
+
+  useEffect(() => {
+    if (selectedAcademic) {
+      getBranchApi();
+      setSelectedBranch([]);
+      setBranchList([]);
+      setSelectedGrades([]);
+      setSelectedSections([]);
+    }
+  }, [selectedAcademic]);
 
   useEffect(() => {
     if (thirdStep) {
@@ -1099,9 +1110,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
             <div className='message_sending_white_wrapper'>
               <div className='message_type_block_wrapper'>
                 <div
-                  className={`message_type_block ${
-                    isEmail ? null : 'message_type_block_selected'
-                  }`}
+                  className={`message_type_block ${isEmail ? null : 'message_type_block_selected'
+                    }`}
                   onClick={() => {
                     if (isEmail) {
                       setIsEmail(false);
@@ -1113,9 +1123,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   SMS
                 </div>
                 <div
-                  className={`message_type_block ${
-                    isEmail ? 'message_type_block_selected' : null
-                  }`}
+                  className={`message_type_block ${isEmail ? 'message_type_block_selected' : null
+                    }`}
                   onClick={() => {
                     if (!isEmail) {
                       setIsEmail(true);
