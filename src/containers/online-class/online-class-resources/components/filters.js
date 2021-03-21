@@ -90,19 +90,19 @@ const Filter = (props) => {
       if (NavData && NavData.length) {
         NavData.forEach((item) => {
           if (
-            item.parent_modules === 'Circular' &&
+            item.parent_modules === 'Online Class' &&
             item.child_module &&
             item.child_module.length > 0
           ) {
             item.child_module.forEach((item) => {
-              if (item.child_name === 'Teacher Circular') {
+              if (item.child_name === 'Resources') {
                 setModuleId(item.child_id);
               }
             });
           }
         });
       }
-    }, []);
+    }, [window.location.pathname]);
     
     function callApi(api, key) {
         setLoading(true);
@@ -113,7 +113,7 @@ const Filter = (props) => {
                 setAcademicYear(result?.data?.data || [])
               }
               if (key === 'branchList') {
-                setBranchList(result?.data?.data || []);
+                setBranchList(result?.data?.data?.results || []);
               }
                 if (key === 'gradeList') {
                     setGradeList(result.data.data || []);
@@ -217,12 +217,12 @@ const Filter = (props) => {
         );
         }else if(selectedCourse.id){
             callApi(
-                `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${secSelectedId}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15&module_id=${moduleId}`,
+                `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${secSelectedId}&session_year=${selectedAcademicYear.id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15&module_id=${moduleId}`,
                 'filter'
               );
         }else {
             callApi(
-              `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${secSelectedId}&subject_id=${subSelectedId}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15&module_id=${moduleId}`,
+              `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${secSelectedId}&session_year=${selectedAcademicYear.id}&subject_id=${subSelectedId}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15&module_id=${moduleId}`,
               'filter'
             );
           }
@@ -272,7 +272,7 @@ const Filter = (props) => {
                         setSelectedAcadmeicYear(value)
                         if(value){
                           callApi(
-                            `${endpoints.masterManagement.branchList}?session_year=${value?.id}&module_id=${moduleId}`,
+                            `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
                             'branchList'
                           );
                         }
@@ -314,7 +314,7 @@ const Filter = (props) => {
                       className='dropdownIcon'
                       value={selectedBranch}
                       options={branchList}
-                      getOptionLabel={(option) => option?.branch_name}
+                      getOptionLabel={(option) => option?.branch?.branch_name}
                       filterSelectedOptions
                       renderInput={(params) => (
                         <TextField
@@ -388,7 +388,7 @@ const Filter = (props) => {
                           setSelectedSection(ids)
                           setSecSelectedId(secId)
                           callApi(
-                            `${endpoints.academics.subjects}?branch=${selectedBranch.map((el)=>el.id)}&grade=${selectedGrade.map((el)=>el.grade_id)}&section=${secId}&module_id=${moduleId}`,
+                            `${endpoints.academics.subjects}?branch=${selectedBranch.map((el)=>el.id)}&session_year=${selectedAcademicYear.id}&grade=${selectedGrade.map((el)=>el.grade_id)}&section=${secId}&module_id=${moduleId}`,
                             'subject'
                           );
                         }

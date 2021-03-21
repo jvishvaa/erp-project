@@ -124,6 +124,27 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'User Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'View User') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   const getRoleApi = async () => {
     try {
       const result = await axiosInstance.get(endpoints.communication.roles, {
@@ -143,7 +164,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   const getYearApi = async () => {
     try {
-      const result = await axiosInstance.get('/erp_user/list-academic_year/');
+      const result = await axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`);
       if (result.status === 200) {
         setAcademicYearList(result.data.data);
       } else {
@@ -158,10 +179,12 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const getBranchApi = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.masterManagement.branchList}?session_year=${selectedYear.id}`
+        `${endpoints.academics.branches}?session_year=${selectedYear.id}&module_id=${moduleId}`
       );
       if (result.data.status_code === 200) {
-        setBranchList(result.data.data);
+        const transformedResponse = result?.data?.data?.results.map(obj => ((obj && obj.branch) || {}));
+        // setBranchList(result.data.data);
+        setBranchList(transformedResponse);
       } else {
         setAlert('error', result.data.message);
       }
@@ -173,7 +196,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const getGradeApi = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch.id}`);
+        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch.id}&module_id=${moduleId}`);
       if (result.data.status_code === 200) {
         setGradeList(result.data.data);
       } else {
@@ -335,8 +358,11 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   useEffect(() => {
     getRoleApi();
     // getBranchApi();
-    getYearApi();
   }, []);
+
+  useEffect(() => {
+    if (moduleId) getYearApi();
+  }, [moduleId]);
 
   useEffect(() => {
     getUsersData();
@@ -404,7 +430,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
           <div className='bread-crumbs-container'>
             <CommonBreadcrumbs
               componentName='User Management'
-              childComponentName='View users'
+              childComponentName='View Users'
             />
           </div>
           <Grid container spacing={4} className='form-container spacer'>

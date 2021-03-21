@@ -171,7 +171,7 @@ export const setCreateRolePermissionsState = (params) => ({
 
 export const fetchGrades = (acadId, branches, moduleId) => {
   const branchIds =
-    branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
+    branches && branches.length > 0 ? branches.map((branch) => branch?.id||'').join(',') : '';
 
   if (!branchIds) {
     return Promise.resolve(null);
