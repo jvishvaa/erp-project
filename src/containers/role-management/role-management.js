@@ -212,7 +212,8 @@ class RoleManagement extends Component {
 const mapStateToProps = (state) => ({
   roles: state.roleManagement.roles,
   page: state.roleManagement.page,
-  limit: state.roleManagement.limit,
+  // limit: state.roleManagement.limit,
+  limit: 15,
   count: state.roleManagement.count,
   fetchingRoles: state.roleManagement.fetchingRoles,
   selectedRole: state.roleManagement.selectedRole,
