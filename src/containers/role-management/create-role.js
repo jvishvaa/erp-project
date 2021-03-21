@@ -47,12 +47,12 @@ class CreateRole extends Component {
     if (this.state.NavData && this.state.NavData.length) {
       this.state.NavData.forEach((item) => {
         if (
-          item.parent_modules === 'User Management' &&
+          item.parent_modules === 'Role Management' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Create User') {
+            if (item.child_name === 'View Role') {
               this.setState({moduleId:item.child_id});
                 fetchAcademicYears(item.child_id).then((data) => {
                   let transformedData = '';

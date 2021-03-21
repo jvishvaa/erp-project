@@ -278,17 +278,30 @@ const BulkUpload = ({ onUploadSuccess }) => {
     setBranchList([]);
     setBranchDisplay('');
     setBranch(null);
-    if (data?.id) {
-      axiosInstance
-        .get(`erp_user/list-all-branch/?session_year=${data?.id}&module_id=${moduleId}`)
-        .then((result) => {
-          if (result.data.status_code === 200) setBranchList(result.data.data);
-          else console.log('');
-        })
-        .catch((error) => {
-          console.log('');
-        });
-    }
+    // if (data?.id) {
+    //   axiosInstance
+    //     .get(`erp_user/list-all-branch/?session_year=${data?.id}&module_id=${moduleId}`)
+    //     .then((result) => {
+    //       if (result.data.status_code === 200) setBranchList(result.data.data);
+    //       else console.log('');
+    //     })
+    //     .catch((error) => {
+    //       console.log('');
+    //     });
+    // }
+
+    axiosInstance
+    .get(`erp_user/branch/?session_year=${data?.id}&module_id=${moduleId}`)
+    .then((result) => {
+      if (result.data.status_code === 200) {
+        const modifiedResponse=result?.data?.data?.results.map(obj=>((obj&&obj.branch)||{}));
+        setBranchList(modifiedResponse);
+      }
+      else console.log('');
+    })
+    .catch((error) => {
+      console.log('');
+    });
   };
 
   const handleBranchChange = (event, data) => {
