@@ -64,11 +64,34 @@ const AssignRole = (props) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('xs'));
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'User Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Assign Role') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   useEffect(() => {
     getRoleApi();
-    getYearApi();
-    // getBranchApi();
   }, []);
+
+  useEffect(() => {
+    if (moduleId) getYearApi();
+  }, [moduleId]);
 
   useEffect(() => {
     if (selectedYear) {
@@ -133,7 +156,7 @@ const AssignRole = (props) => {
 
   const getYearApi = async () => {
     try {
-      const result = await axiosInstance.get('/erp_user/list-academic_year/');
+      const result = await axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`);
       if (result.status === 200) {
         setAcademicYearList(result.data.data);
       } else {
@@ -147,7 +170,7 @@ const AssignRole = (props) => {
   const getBranchApi = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.masterManagement.branchList}?session_year=${selectedYear.id}`
+        `${endpoints.masterManagement.branchList}?session_year=${selectedYear.id}&module_id=${moduleId}`
       );
       if (result.data.status_code === 200) {
         setBranchList(result.data.data);
@@ -162,7 +185,7 @@ const AssignRole = (props) => {
   const getGradeApi = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch.id}`);
+        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch.id}&module_id=${moduleId}`);
       if (result.data.status_code === 200) {
         setGradeList(result.data.data);
       } else {
@@ -178,7 +201,7 @@ const AssignRole = (props) => {
       const selectedGradeId = selectedGrades.map((el) => el.grade_id);
       const result = await axiosInstance.get(
         `${endpoints.communication.sections
-        }?session_year=${selectedYear.id}&branch_id=${selectedBranch.id}&grade_id=${selectedGradeId.toString()}`,
+        }?session_year=${selectedYear.id}&branch_id=${selectedBranch.id}&grade_id=${selectedGradeId.toString()}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -384,7 +407,7 @@ const AssignRole = (props) => {
 
     // turn all the states to true/ False
     const tempSelectObj = selectAllObj.slice();
-    
+
     // tempSelectObj[pageno - 1].selectAll = !tempSelectObj[pageno - 1].selectAll;
     tempSelectObj[pageno - 1].selectAll = e.target.checked;
     console.log('=== textClick checked: ', tempSelectObj)
@@ -397,7 +420,7 @@ const AssignRole = (props) => {
           testclick[i].click()
         }
         testclick[i].removeAttribute("checked");
-        
+
       }
     } else {
       for (let i = 2; i < testclick.length; i += 1) {
@@ -877,8 +900,8 @@ const AssignRole = (props) => {
             </div>
           ) : null} */}
             <span className='create_group_error_span'>{selectectUserError}</span>
-              <CustomSelectionTable
-                
+            <CustomSelectionTable
+
               header={
                 isMobile
                   ? headers
