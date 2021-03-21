@@ -875,13 +875,15 @@ const SendMessage = withRouter(({ history, ...props }) => {
     if (moduleId) {
       getAcademicApi();
     }
-  }, [moduleId])
+  }, [moduleId]);
 
   useEffect(() => {
     if (selectedAcademic) {
       getBranchApi();
       setSelectedBranch([]);
       setBranchList([]);
+      setGrade([]);
+      setSection([]);
       setSelectedGrades([]);
       setSelectedSections([]);
     }
@@ -904,6 +906,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
     if (selectedBranch.length > 0) {
       setGrade([]);
       setSelectedGrades([]);
+      setSection([]);
       setSelectedSections([]);
       getGradeApi();
     }
