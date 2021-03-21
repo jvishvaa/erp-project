@@ -361,7 +361,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     if (value) {
       setSearchAcademicYear(value.id);
       axiosInstance
-      .get(`${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`)
+      .get(`${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${
+        location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+      }`)
       .then((result) => {
         if (result?.data?.status_code) {
           setBranchDropdown(result?.data?.data);

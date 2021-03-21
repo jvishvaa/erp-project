@@ -143,7 +143,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     //         setBranchDropdown('error', error.message);
     //     })
     axiosInstance
-      .get(endpoints.userManagement.academicYear)
+      .get(endpoints.userManagement.academicYear + '?module_id=' + moduleId)
       .then((result) => {
         if (result.status === 200) {
           setAcademicYear(result?.data?.data);
