@@ -263,7 +263,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          // setAlert('error', error.message);
           setGradeDropdown([]);
           // setSubjectDropdown([]);
           // setChapterDropdown([]);
@@ -382,7 +382,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   }, [pageno, searchAcademicYear]);
 
   useEffect(() => {
-    getBranchApi();
+    // getBranchApi();
   }, []);
   useEffect(() => {
     if (selectedBranch) {
@@ -531,28 +531,28 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     }
   };
 
-  const getBranchApi = async () => {
-    try {
-      setLoading(true);
-      const result = await axiosInstance.get(endpoints.communication.branches, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const resultOptions = [];
-      if (result.status === 200) {
-        result.data.data.map((items) => resultOptions.push(items.branch_name));
-        setBranchList(result.data.data);
-        setLoading(false);
-      } else {
-        setAlert('error', result.data.message);
-        setLoading(false);
-      }
-    } catch (error) {
-      setAlert('error', error.message);
-      setLoading(false);
-    }
-  };
+  // const getBranchApi = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const result = await axiosInstance.get(endpoints.communication.branches, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     const resultOptions = [];
+  //     if (result.status === 200) {
+  //       result.data.data.map((items) => resultOptions.push(items.branch_name));
+  //       setBranchList(result.data.data);
+  //       setLoading(false);
+  //     } else {
+  //       setAlert('error', result.data.message);
+  //       setLoading(false);
+  //     }
+  //   } catch (error) {
+  //     setAlert('error', error.message);
+  //     setLoading(false);
+  //   }
+  // };
 
   const getGradeApi = async () => {
     console.log('gradddee');
