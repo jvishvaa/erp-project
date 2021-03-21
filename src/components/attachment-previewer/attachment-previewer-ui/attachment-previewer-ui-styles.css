@@ -12,8 +12,8 @@
 
 }
 .attachment-viewer-header {
-    height: 55px;
-    width: 225px;
+    /* height: 55px;
+    width: 225px; */
     position: fixed;
     right: 52px;
     z-index: 40;
