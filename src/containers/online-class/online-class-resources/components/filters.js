@@ -182,12 +182,18 @@ const Filter = (props) => {
         setDateRangeTechPer([moment().subtract(6, 'days'), moment()]);
         setEndDate('');
         setStartDate('');
-        setSelectedBranch('');
-        setSelectedGrade('');
+        setSelectedBranch([]);
+        setSelectedGrade([]);
         setCourseList([]);
         setSelectedCourse('');
         setBatchList([]);
+        setSelectedSection([])
+        setSectionList([])
         setSelectedBatch('');
+        setSubjectList([])
+        setSelectedSubject([])
+        setSubSelectedId([])
+        setSelectedAcadmeicYear('')
         props.hendleDetails();
         props.getResourceData([]);
     }
