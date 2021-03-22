@@ -173,7 +173,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const [overviewSynopsis, setOverviewSynopsis] = useState([]);
   const [doc, setDoc] = useState(null);
   useEffect(() => {
-    console.log('form :', doc)
+    console.log('form :', filePath);
   })
 
   const selectionArray = [];
@@ -332,7 +332,16 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   };
 
   const handleImageChange = (event) => {
-    console.log('fd', filterData)
+    let fileType = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf']
+    let selectedFileType = event.target.files[0]?.type
+    if (!fileType.includes(selectedFileType)) {
+      return setAlert('error', 'File Type not supported');
+    }
+    
+    if (!filterData.grade || !filterData.section || !filterData.branch) {
+      return setAlert('error', 'Select all fields');
+    }
+    
     setDoc(event.target.files[0]?.name);
     setLoading(true);
     if (filePath.length < 10) {
@@ -725,10 +734,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const FileRow = (props) => {
     const { file, onClose, index } = props;
     return (
-      <div className='file_row_image'>
-        <div className='file_name_container'>
-          File
-          {index + 1}
+      <div className='file_row_image_new'>
+        <div className='file_name_container_new'>
+          {file}
+          {/* {index + 1} */}
         </div>
         <div>
           <span onClick={onClose}>
@@ -1080,7 +1089,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                 </Grid>
               </Grid>
               <div className='attachmentContainer'>
-                <div style={{ display: 'flex' }} className='scrollsable'>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', padding: '10px' }} className='scrollsable'>
                   {filePath?.length > 0
                     ? filePath?.map((file, i) => (
                         <FileRow
