@@ -156,6 +156,18 @@
   align-self: center;
   margin-left: 10%;
 }
+
+.file_name_container_new {
+  color: #014b7e;
+  font-weight: 600;
+  align-self: center;
+}
+.file_row_image_new {
+  display: flex;
+  border: 1px solid #ff6b6b;
+  border-radius: 10px;
+  padding: 5px;
+}
 .file_close_hw,.file_close {
   align-self: end;
 }

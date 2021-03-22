@@ -308,6 +308,11 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleImageChange = (event) => {
+    let fileType = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf']
+    let selectedFileType = event.target.files[0]?.type
+    if (!fileType.includes(selectedFileType)) {
+      return setAlert('error', 'File Type not supported');
+    }
     if (filePath.length < 10) {
       if (isEdit) {
         console.log('Continue');
@@ -353,9 +358,7 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const handleSubmit = async () => {
     console.log('upload attach:', filePath);
-    // if (!!filePath.length) {
-    //   return setAlert('error', 'Upload attachment!');
-    // }
+
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
     console.log('handle Formik:', formik)
     const ids = formik.values.section
@@ -517,10 +520,10 @@ const CreateDailyDairy = (details, onSubmit) => {
   const FileRow = (props) => {
     const { file, onClose, index } = props;
     return (
-      <div className='file_row_image'>
-        <div className='file_name_container'>
-          File
-          {index + 1}
+      <div className='file_row_image_new'>
+        <div className='file_name_container_new'>
+          {file}
+          {/* {index + 1} */}
         </div>
         {/* <Divider orientation="vertical"  className='divider_color' flexItem /> */}
         <div>
@@ -896,7 +899,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               </Grid>
 
               <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                   {state.isEdit
                     ? editData.documents.map((file, i) => (
                         <FileRow
