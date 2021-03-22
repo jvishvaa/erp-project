@@ -30,7 +30,7 @@ const HomeworkCard = ({
     <Grid item xs={12} md={3} className='hwcard-container' style={{ display: 'flex' }}>
       <Paper
         className='hwcard'
-        style={{ height, display: 'flex', flexDirection: 'column', position: 'relative' }}
+        style={{ height, display: 'flex', flexDirection: 'column', position: 'relative', width: '100%' }}
       >
         <div className='close-icon'>
           <IconButton onClick={onClose}>
