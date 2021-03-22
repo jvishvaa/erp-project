@@ -551,7 +551,11 @@ const Layout = ({ children, history }) => {
         history.push('/assessment/view-assessment');
         break;
       }
-      case 'ID Cards': {
+      // case 'ID Cards': {
+      //   history.push('/student-id-card');
+      //   break;
+      // }
+      case 'ID Card View': {
         history.push('/student-id-card');
         break;
       }
