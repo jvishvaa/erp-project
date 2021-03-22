@@ -239,12 +239,12 @@ const LessonViewFilters = ({
     }
 
     useEffect(() => {
-        axiosInstance.get(`${endpoints.masterManagement.branchList}`)
-            .then(result => {
-                if (result.data?.status_code === 200) {
-                    setBranchDropdown(result.data.data);
+        axiosInstance.get(`${endpoints.communication.branches}`)
+            .then(response => {
+                if (response.data.status_code === 200) {
+                    setBranchDropdown(response.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean));
                 } else {
-                    setAlert('error', result.data?.message);
+                    setAlert('error', response.data.message);
                 }
             }).catch(error => {
                 setAlert('error', error.message);
