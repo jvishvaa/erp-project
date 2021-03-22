@@ -171,6 +171,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const { setIsEdit, setEditData } = setState;
 
   const [overviewSynopsis, setOverviewSynopsis] = useState([]);
+  const [doc, setDoc] = useState(null);
+  useEffect(() => {
+    console.log('form :', doc)
+  })
 
   const selectionArray = [];
 
@@ -326,21 +330,24 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   };
 
   const handleImageChange = (event) => {
+    console.log('fd', event.target.files)
+    setDoc(event.target.files[0]?.name);
     setLoading(true);
     if (filePath.length < 10) {
       // setLoading(true)
       const data = event.target.files[0];
       const fd = new FormData();
       fd.append('file', event.target.files[0]);
-      fd.append('branch', filterData.branch[0].branch_name);
-      fd.append(
-        'grade',
-        filterData.grade.map((g) => g.grade_id)
-      );
-      fd.append(
-        'section',
-        filterData.section.map((s) => s.id)
-      );
+      // fd.append('branch', filterData?.branch[0]?.branch_name);
+      // fd.append(
+      //   'grade',
+      //   filterData.grade.map((g) => g.grade_id)
+      // );
+      // fd.append(
+      //   'section',
+      //   filterData.section.map((s) => s.id)
+      // );
+      console.log('fd', fd)
       axiosInstance.post(`${endpoints.generalDairy.uploadFile}`, fd).then((result) => {
         if (result.data.status_code === 200) {
           console.log(result.data, 'resp');
@@ -1115,10 +1122,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                           : { display: 'none' }
                       }
                       id='raised-button-file'
-                      accept='image/*'
+                      accept='image/*, .pdf'
                       onChange={handleImageChange}
                     />
-                    Add Document
+                    {doc || 'Add Document' }
                   </Button>
                   <small
                     style={{
@@ -1141,6 +1148,13 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                 className='submit_button'
               >
                 SUBMIT
+              </Button>
+              <Button
+                style={{ marginLeft: '20px' }}
+                onClick={() => history.goBack()}
+                className='submit_button'
+              >
+                BACK
               </Button>
             </div>
           </div>
