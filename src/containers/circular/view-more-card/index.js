@@ -23,7 +23,7 @@ const ViewMoreCard = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const studentBranchName = JSON.parse(localStorage.getItem('userDetails') || {});
 
-  console.log(studentBranchName,'=========================================')
+  console.log(studentBranchName?.role_details?.branch.map((el)=>el.branch_name),'=========================================')
   const handleBulkDownload = (files) => {
     if(window.location.pathname==='/teacher-circular'){
       for (let i = 0; i < files?.length; i++) {
@@ -33,7 +33,7 @@ const ViewMoreCard = ({
     else{
       // >>>>>>>>>>>>>>>>>>>>STUDENT SIDE VIEW<<<<<<<<<<<<<<<<<<<<<<<<
       for (let i = 0; i < files?.length; i++) {
-        window.open(`${endpoints.s3}/dev/circular_files/${studentBranchName.map()}/${files[i]}`);
+        window.open(`${endpoints.s3}/dev/circular_files/${studentBranchName?.role_details && studentBranchName?.role_details?.branch.map((el)=>el.branch_name)}/${files[i]}`);
       }
     }
     

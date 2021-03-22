@@ -14,8 +14,8 @@ import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 // import './lesson.css';
-import './create-circular/create-circular.css';
-// import communicationStyles from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.styles';
+import '../circular/create-circular/create-circular.css';
+//import communicationStyles from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.styles';
 
 const CircularFilters = ({
   handlePeriodList,

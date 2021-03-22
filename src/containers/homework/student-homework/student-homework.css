@@ -29,6 +29,7 @@
   } */
   .message_log_white_wrapper{
 	margin-top: 40px;
+	height: 100vh;
 	/* padding: 0px; */
   }
   .message_log_white_wrapper .for-mobile table thead tr .MuiTableCell-stickyHeader .MuiInput-underline{

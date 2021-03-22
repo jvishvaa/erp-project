@@ -102,7 +102,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [overallScore, setOverallScore] = useState('');
   const [attachmentCount, setAttachmentCount] = useState([]);
   const [maxCount, setMaxCount] = useState(0);
-  const [calssNameWise, setClassName]= useState('')
+  const [calssNameWise, setClassName]= useState('');
   const handleHomeworkSubmit = () => {
 
     let count = 0;
@@ -170,7 +170,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   useEffect(() => {
     let maxVal=0;
     axiosInstance
-      .get(`/academic/${homeworkSubmission.homeworkId}/hw-questions/?hw_status=${homeworkSubmission.status}&module_id=${moduleId}`)
+      .get(`/academic/${homeworkSubmission.homeworkId}/hw-questions/?hw_status=${homeworkSubmission.status}&module_id=1`)
       .then((result) => {
         if (result.data.status_code === 200) {
           if (homeworkSubmission.status === 1) {

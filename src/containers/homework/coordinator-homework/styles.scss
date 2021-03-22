@@ -89,7 +89,7 @@
       color: #014b7e;
       font-weight: 600;
       @media screen and (max-width: 768px) {
-        display: none;
+        //display: none;
       }
     }
     .homework_block_wrapper {
@@ -274,25 +274,7 @@
     &:nth-child(1) {
       margin-top: 2rem;
     }
-    .comments-remarks-container {
-      display: flex;
-      flex-wrap: wrap;
-      .item {
-        width: calc(50% - 0.5rem);
-
-        @media screen and (max-width: 768px) {
-          width: 100%;
-          margin-bottom: 1rem;
-        }
-
-        &.comment {
-          margin-right: 1rem;
-          @media screen and (max-width: 768px) {
-            margin-right: 0;
-          }
-        }
-      }
-    }
+    
     .evaluate-answer-btn-container {
       display: flex;
       justify-content: flex-end;
@@ -300,6 +282,25 @@
 
       @media screen and (max-width: 768px) {
         justify-content: center;
+      }
+    }
+  }
+  .comments-remarks-container {
+    display: flex;
+    flex-wrap: wrap;
+    .item {
+      width: calc(50% - 0.5rem);
+
+      @media screen and (max-width: 768px) {
+        width: 100%;
+        margin-bottom: 1rem;
+      }
+
+      &.comment {
+        margin-right: 1rem;
+        @media screen and (max-width: 768px) {
+          margin-right: 0;
+        }
       }
     }
   }
@@ -344,6 +345,7 @@
     @media screen and (max-width: 768px) {
       margin: 10px;
       width: 90% !important;
+      height: auto !important;
     }
   }
   .homework_submit_button_wrapper {
@@ -381,6 +383,8 @@
 
       @media screen and (max-width: 768px) {
         width: 100%;
+        margin-left: 1rem;
+        margin-right: 1rem;
       }
     }
     .btn-container {
@@ -392,18 +396,19 @@
       @media screen and (max-width: 768px) {
         width: 100%;
         justify-content: center;
+        margin-bottom: 1rem;
       }
       .cancel-btn {
         margin-right: 1rem;
         @media screen and (max-width: 768px) {
-          width: 100%;
-          margin: 0;
+          //width: 100%;
+          //margin: 0;
         }
       }
       .done-btn {
         @media screen and (max-width: 768px) {
-          width: 100%;
-          margin: 1rem 0;
+          //width: 100%;
+          //margin: 1rem 0;
         }
       }
     }
