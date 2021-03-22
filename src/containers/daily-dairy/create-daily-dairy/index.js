@@ -309,17 +309,17 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const handleImageChange = (event) => {
     if (filePath.length < 10) {
-      // if (isEdit) {
-      //   console.log('Continue');
-      // } else if (
-      //   !formik.values.section ||
-      //   !formik.values.grade ||
-      //   !formik.values.subjects ||
-      //   !formik.values.branch.id ||
-      //   !subjectIds
-      // ) {
-      //   return setAlert('error', 'Please select all fields');
-      // }
+      if (isEdit) {
+        console.log('Continue');
+      } else if (
+        !formik.values.section ||
+        !formik.values.grade ||
+        !formik.values.subjects ||
+        !formik.values.branch.id ||
+        !subjectIds
+      ) {
+        return setAlert('error', 'Please select all fields');
+      }
       setLoading(true);
       const data = event.target.files[0];
       console.log(formik.values);
@@ -352,6 +352,10 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleSubmit = async () => {
+    console.log('upload attach:', filePath);
+    // if (!!filePath.length) {
+    //   return setAlert('error', 'Upload attachment!');
+    // }
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
     console.log('handle Formik:', formik)
     const ids = formik.values.section
@@ -426,7 +430,8 @@ const CreateDailyDairy = (details, onSubmit) => {
       const { message, status_code: statusCode } = response.data;
       if (statusCode === 200) {
         setAlert('success', message);
-        window.location.reload();
+        // window.location.reload();
+        history.push('/diary/teacher');
       } else {
         setAlert('error', response.data.message);
       }
