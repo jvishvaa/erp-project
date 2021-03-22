@@ -71,8 +71,8 @@ const UpdateGroup = () => {
     getApiCall(
       `${
         endpoints.communication.communicationUserList
-      }?page=1&page_size=500&module_id=${moduleId}&role=${selectedRole}&branch=${branchId}&grade=${gradeId}${
-        sectionId.length !== 0 ? `section=${sectionId}` : ''
+      }?page=1&page_size=500&module_id=${moduleId}&role=${selectedRole}&branch=${branchId}${gradeId ? `&grade=${gradeId}`: ''}${
+        sectionId.length !== 0 ? `&section=${sectionId}` : ''
       }`,
       'fullGroup'
     );
@@ -82,8 +82,8 @@ const UpdateGroup = () => {
     getApiCall(
       `${endpoints.communication.editGroup}${
         location.state.groupId
-      }/retrieve-update-group/?page=1&page_size=500&module_id=${moduleId}&role=${selectedRole}&branch=${branchId}&grade=${gradeId}${
-        sectionId.length !== 0 ? `section=${sectionId}` : ''
+      }/retrieve-update-group/?page=1&page_size=500&module_id=${moduleId}&role=${selectedRole}&branch=${branchId}${gradeId ? `&grade=${gradeId}`: ''}${
+        sectionId.length !== 0 ? `&section=${sectionId}` : ''
       }`,
       'selectedGroup'
     );
@@ -96,10 +96,14 @@ const UpdateGroup = () => {
     }
   }, [moduleId]);
 
-  function getIds(data) {
+  function getIds(data, key) {
     const id = [];
     for (let i = 0; i < data.length; i += 1) {
-      id.push(data[i].id);
+      if(key === 'section'){
+        id.push(data[i].section_id);
+      } else {
+        id.push(data[i].id);
+      }
     }
     return id;
   }
@@ -306,7 +310,7 @@ const UpdateGroup = () => {
                   disabled
                   className='create_group_branch'
                   options={location.state.sections}
-                  getOptionLabel={(option) => option?.section_name}
+                  getOptionLabel={(option) => option?.section__section_name}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
