@@ -101,10 +101,8 @@ deploy_finance-integration2:
       - sudo systemctl restart nginx
       - echo "Deploy to finance server"
       - sleep 10 
-      - sudo rm package-lock.json
       - sudo npm install
-      - sudo rm package-lock.json || true
-      - sudo npm ci
+      - sudo npm install
       - grep home package.json || true
       - export CI=false
       - sudo service uwsgi stop
