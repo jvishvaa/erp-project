@@ -21,7 +21,7 @@ deploy_dev:
       - sudo systemctl restart nginx
       - echo "Deploy to development server"
       - sleep 10 
-      - sudo npm ci
+      - sudo npm install
       - grep home package.json || true
       - export CI=false
       - export NODE_OPTIONS=--max_old_space_size=2048
@@ -38,7 +38,7 @@ deploy_dev:
     tags:
       - erp_revamp_frontend
     only:
-      - develop
+      - dev
 
 
 deploy_prod:
@@ -61,7 +61,7 @@ deploy_prod:
       - sudo systemctl restart nginx
       - echo "Deploy to development server"
       - sleep 10 
-      - sudo npm ci
+      - sudo npm install
       - grep home package.json || true
       - export CI=false
       - export NODE_OPTIONS=--max_old_space_size=2048
@@ -101,9 +101,8 @@ deploy_finance-integration2:
       - sudo systemctl restart nginx
       - echo "Deploy to finance server"
       - sleep 10 
-      - sudo rm package-lock.json
       - sudo npm install
-      - sudo npm ci
+      - sudo npm install
       - grep home package.json || true
       - export CI=false
       - sudo service uwsgi stop

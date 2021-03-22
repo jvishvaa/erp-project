@@ -89,6 +89,7 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   useEffect(() => {
     if (NavData && NavData.length) {
+      console.log('NavData: ', NavData)
       NavData.forEach((item) => {
         if (
           item.parent_modules === 'Diary' &&
@@ -96,7 +97,7 @@ const CreateDailyDairy = (details, onSubmit) => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Daily Diary') {
+            if (item.child_name === 'Teacher Diary') {
               setModuleId(item.child_id);
             }
           });
@@ -162,23 +163,31 @@ const CreateDailyDairy = (details, onSubmit) => {
     if (value) {
       setSearchAcademicYear(value.id);
       setFilterData({ ...filterData, year: value });
-      axiosInstance
-        .get(
-          `${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`
-        )
-        .then((result) => {
-          if (result?.data?.status_code) {
-            setBranchDropdown(result?.data?.data);
-          } else {
-            setAlert('error', result?.data?.message);
-          }
-        })
-        .catch((error) => setAlert('error', error?.message));
+      fetchBranchesForCreateUser(value.id, moduleId).then((data) => {
+        const transformedData = data?.map((obj) => ({
+          id: obj.id,
+          branch_name: obj.branch_name,
+        }));
+        setBranches(transformedData);
+      });
+      // axiosInstance
+      //   .get(
+      //     `${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`
+      //   )
+      //   .then((result) => {
+      //     if (result?.data?.status_code) {
+      //       setBranchDropdown(result?.data?.data);
+      //     } else {
+      //       setAlert('error', result?.data?.message);
+      //     }
+      //   })
+      //   .catch((error) => setAlert('error', error?.message));
     }
   };
 
   const fetchBranches = () => {
-    fetchBranchesForCreateUser(searchAcademicYear).then((data) => {
+    console.log('handle branch: ', searchAcademicYear, moduleId)
+    fetchBranchesForCreateUser(searchAcademicYear, moduleId).then((data) => {
       const transformedData = data?.map((obj) => ({
         id: obj.id,
         branch_name: obj.branch_name,
@@ -204,7 +213,7 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const handleChangeGrade = (values, branch) => {
     if (branch) {
-      fetchSections(searchAcademicYear, branch, values).then((data) => {
+      fetchSections(searchAcademicYear, branch, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               id: section.section_id,
@@ -242,15 +251,14 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const fetchSubjects = (branch, grade, section) => {
-    if (
-      branch &&
-      branch.length > 0 &&
-      grade &&
-      grade.length > 0 &&
-      section &&
-      section.length > 0
+    console.log('=== fetch sub:', branch, grade, section)
+    if (branch && grade &&
+      // grade.length > 0 &&
+      section 
+      // section.length > 0
     ) {
       getSubjects(searchAcademicYear, branch, grade, section, moduleId).then((data) => {
+
         const transformedData = data.map((obj) => ({
           id: obj.subject__id,
           subject_name: obj.subject__subject_name,
@@ -268,12 +276,13 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const handleSection = (e, value) => {
     formik.setFieldValue('section', value);
-    if (!value.length) {
+    if (!!value.length) {
       formik.setFieldValue('subjects', []);
     }
     const {
       values: { branch = {}, grade = [] },
     } = formik;
+    console.log('values : ', value)
     fetchSubjects([branch], grade, value);
   };
 
@@ -283,7 +292,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     setSubjectIds(value?.id);
     axiosInstance
       .get(
-        `${endpoints.dailyDairy.branches}?academic_year=${searchAcademicYear}&subject=${value.id}`
+        `${endpoints.dailyDairy.branches}?session_year=${searchAcademicYear}&subject=${value.id}&module_id=${moduleId}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -342,11 +351,11 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const handleSubmit = async () => {
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
-
+    console.log('handle Formik:', formik)
     const ids = formik.values.section
-      ? formik.values.section.map((el) => el.id)
+      ? [formik.values.section].map((el) => el.id)
       : setAlert('error', 'Fill all the required fields');
-    const grade = formik.values.grade ? formik.values.grade.map((el) => el.id) : '';
+    const grade = formik.values.grade ? [formik.values.grade].map((el) => el.id) : '';
     const subjectId = formik.values.subjects
       ? formik.values.subjects.map((el) => el.id)
       : setAlert('error', 'check');
@@ -367,8 +376,9 @@ const CreateDailyDairy = (details, onSubmit) => {
         createDairyEntry,
         filePath && filePath.length > 0
           ? {
-              academic_year: searchAcademicYear,
-              branch: formik.values.branch.id,
+            academic_year: searchAcademicYear,
+            module_id: moduleId,
+              branch: formik.values?.branch?.id,
               grade,
               section: ids,
               subject: subjectIds,
@@ -385,11 +395,13 @@ const CreateDailyDairy = (details, onSubmit) => {
             }
           : {
               academic_year: searchAcademicYear,
-              branch: formik.values.branch.id,
+            branch: formik.values?.branch?.id,
+            module_id: moduleId,
+
               grade,
               section: ids,
               subject: subjectIds,
-              chapter: formik.values.chapters.id,
+              chapter: formik.values?.chapters?.id,
               teacher_report: {
                 previous_class: recap,
                 summary,
@@ -544,7 +556,7 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   useEffect(() => {
     // fetchAcademicYears();
-    fetchBranches();
+    // fetchBranches();
     console.log('branches ', details.branch, details.grade);
     if (details.branch) {
       handleChangeBranch([details.branch]);
@@ -705,7 +717,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               <Autocomplete
                 id='section'
                 name='section'
-                onChange={handleSection}
+                onChange={(e, value) => handleSection(e, value)}
                 value={state.isEdit ? editData.section : formik.values.section}
                 options={sections}
                 // multiple

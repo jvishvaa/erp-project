@@ -177,13 +177,17 @@ const CreateclassProvider = (props) => {
     moduleId,
     erpId,
     isSuperUser,
-    gradeIds
+    gradeIds,
+    branchIds,
+    acadId
   ) => {
     try {
       const { data } = await axiosInstance.get(
         `/erp_user/sub-sec-list/?role=${roleId}&module_id=${moduleId}&erp_id=${erpId}&is_super=${isSuperUser}&grade_id=${gradeIds.join(
           ','
-        )}`
+        )}&branch_id=${branchIds.join(
+          ','
+        )}&session_year=${acadId}`
       );
       if (data.status === 'success') {
         const { section, subject } = data.data;

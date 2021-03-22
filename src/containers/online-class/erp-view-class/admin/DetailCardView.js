@@ -36,13 +36,13 @@ const JoinClass = (props) => {
   const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
   const diffTime = classTimeMilli - 5 * 60 * 1000;
 
-  console.log(
-    classTimeMilli,
-    parseInt(currTime),
-    diffTime,
-    'TTTTTTTTTTT',
-    new Date(`${props.data.date}T${startTime}`).getTime()
-  );
+  // console.log(
+  //   classTimeMilli,
+  //   parseInt(currTime),
+  //   diffTime,
+  //   'TTTTTTTTTTT',
+  //   new Date(`${props.data.date}T${startTime}`).getTime()
+  // );
 
   const handleCloseData = () => {
     setAnchorEl(null);
@@ -341,7 +341,7 @@ const DetailCardView = ({
     }
   }, [fullData]);
   */
-  console.log(selectedClassType, '[[[[[[[[[[[[[[[[');
+  // console.log(selectedClassType, '[[[[[[[[[[[[[[[[');
   useEffect(() => {
     let detailsURL =
       window.location.pathname === '/erp-online-class-student-view'
@@ -352,7 +352,7 @@ const DetailCardView = ({
       axiosInstance
         .get(detailsURL)
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           setNoOfPeriods(res.data.data);
         })
         .catch((error) => setAlert('error', error.message));
@@ -413,18 +413,17 @@ const DetailCardView = ({
     if (window.location.pathname === '/erp-online-class-student-view') {
       sessionStorage.setItem('isErpClass', 2);
       history.push(
-        `/create/course/${fullData.online_class && fullData.online_class.course_id}/1`
+        `/create/course/${fullData.online_class && fullData.online_class.course_id}/5`
       );
     } else {
       sessionStorage.setItem('isErpClass', 3);
       history.push(
         `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
-          selectedGrade.id
+          selectedGrade.map((el)=>el.id)
         }`
       );
     }
   };
-
   const [openPopup, setOpenPopup] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState('');
 

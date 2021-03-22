@@ -225,12 +225,12 @@ if(clicked){
 
   let sectionId = [];
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: '', subject: '', chapter: '' });
+    setFilterData({ ...filterData, grade: '', subject: '', chapter: '', sections: '' });
     // setOverviewSynopsis([]);
     if (value && filterData.branch) {
       // https://erpnew.letseduvate.com/qbox/academic/general-dairy-messages/?branch=5&grades=25&sections=44&page=1&start_date=2021-02-02&end_date=2021-02-08&dairy_type=2
         setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&module_id=${moduleId}`)
+        axiosInstance.get(`${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.id}&grade_id=${value.grade_id}&module_id=${moduleId}`)
         .then(result => {
           if (result.data.status_code === 200) {
             //console.log(result.data)
@@ -275,12 +275,12 @@ if(clicked){
     sectionId = [];
     setFilterData({ ...filterData });
     if (value.length) {
-      const ids = value.map((el) => {
+      const ids = value && value.map((el) => {
         sectionId.push(el.id);
         return el.section_id
       });
       console.log(sectionId);
-      setFilterData({...filterData,sections:value
+      setFilterData({...filterData, sections:value
       })
       //sectionId = value.map((el) => el.id);
     //   setSubjectIds(ids);
