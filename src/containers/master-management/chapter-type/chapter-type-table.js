@@ -241,7 +241,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.lessonReport.subjects}?session_year=${filterData.year.id}&branch=${filterData.branch.id}&grade=${value.grade_id}&module_id=${moduleId}`
+          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&grade=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
