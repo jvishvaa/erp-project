@@ -100,7 +100,8 @@ const ViewGroup = withRouter(({ history, ...props }) => {
     try {
       setLoading(true);
       const result = await axiosInstance.get(
-        `${endpoints.communication.getGroups}?page=${currentPage}&page_size=15`);
+        `${endpoints.communication.getGroups}?page=${currentPage}&page_size=15`
+      );
       const resultGroups = [];
       if (result.status === 200) {
         setLoading(false);
@@ -133,7 +134,8 @@ const ViewGroup = withRouter(({ history, ...props }) => {
     try {
       setLoading(true);
       const statusChange = await axiosInstance.put(
-        `${endpoints.communication.editGroup}${id}/change-group-status/`);
+        `${endpoints.communication.editGroup}${id}/change-group-status/`
+      );
       if (statusChange.status === 200) {
         setLoading(false);
         setAlert('success', statusChange.data.message);
@@ -216,6 +218,14 @@ const ViewGroup = withRouter(({ history, ...props }) => {
       getGroupsData();
     }
   }, [editing]);
+
+  function handleUpdate(data) {
+    history.push({
+      pathname: '/communication/updategroup',
+      state: { ...data },
+    });
+  }
+
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -329,37 +339,39 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                           <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
                             {items.roleType.length
                               ? items.roleType.map((roles, index) => {
-                                if (index + 1 === items.roleType.length) {
-                                  return roles.role_name;
-                                }
-                                return `${roles.role_name}, `;
-                              })
+                                  if (index + 1 === items.roleType.length) {
+                                    return roles.role_name;
+                                  }
+                                  return `${roles.role_name}, `;
+                                })
                               : null}
                           </TableCell>
                           <TableCell
-                            className={`view_group_table_sections ${isHidden ? 'hide' : 'show'
-                              }`}
+                            className={`view_group_table_sections ${
+                              isHidden ? 'hide' : 'show'
+                            }`}
                           >
                             {items.grades.length
                               ? items.grades.map((grades, index) => {
-                                if (index + 1 === items.grades.length) {
-                                  return grades.grade_name;
-                                }
-                                return `${grades.grade_name}, `;
-                              })
+                                  if (index + 1 === items.grades.length) {
+                                    return grades.grade_name;
+                                  }
+                                  return `${grades.grade_name}, `;
+                                })
                               : null}
                           </TableCell>
                           <TableCell
-                            className={`view_group_table_sections ${isHidden ? 'hide' : 'show'
-                              }`}
+                            className={`view_group_table_sections ${
+                              isHidden ? 'hide' : 'show'
+                            }`}
                           >
                             {items.sections && items.sections.length
                               ? items.sections.map((sections, index) => {
-                                if (index + 1 === items.sections.length) {
-                                  return sections.section__section_name;
-                                }
-                                return `${sections.section__section_name}, `;
-                              })
+                                  if (index + 1 === items.sections.length) {
+                                    return sections.section__section_name;
+                                  }
+                                  return `${sections.section__section_name}, `;
+                                })
                               : null}
                           </TableCell>
                           <TableCell>
@@ -405,7 +417,8 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                             <IconButton
                               title='Edit'
                               style={{ padding: '5px' }}
-                              onClick={() => handleEdit(items.groupId, i)}
+                              onClick={() => handleUpdate(items)}
+                              // onClick={() => handleEdit(items.groupId, i)}
                             >
                               <EditOutlinedIcon style={{ color: '#ff6b6b' }} />
                             </IconButton>
