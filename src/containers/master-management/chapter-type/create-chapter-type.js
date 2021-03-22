@@ -46,6 +46,26 @@ const CreateChapterType = ({
   const [sections, setSections] = useState([]);
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const [centralGsMappingId, setCentralGsMappingId] = useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Master Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Chapter Creation') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
 
   const [filterData, setFilterData] = useState({
     branch: [],
@@ -129,6 +149,24 @@ const CreateChapterType = ({
         setAlert('error', error.message);
       });
   }, []);
+
+  useEffect(() => {
+    if (moduleId) {
+      axiosInstance
+        .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
+        .then((result) => {
+          if (result.status === 200) {
+            setAcademicYear(result.data.data);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  }, [moduleId]);
+
   useEffect(() => {
     axiosInstance
       .get(`${endpoints.communication.branches}`)
@@ -156,17 +194,37 @@ const CreateChapterType = ({
       });
   }, []);
 
+  // const handleAcademicYear = (event, value) => {
+  //   setFilterData({ year: '', branch: '', grade: '', subject: '', chapter: '' });
+  //   if (value) {
+  //     setFilterData({
+  //       ...filterData,
+  //       year: value,
+  //       branch: '',
+  //       grade: '',
+  //       subject: '',
+  //       chapter: '',
+  //     });
+  //   }
+  // };
   const handleAcademicYear = (event, value) => {
-    setFilterData({ year: '', branch: '', grade: '', subject: '', chapter: '' });
+    setFilterData({ ...filterData, year: '' });
     if (value) {
-      setFilterData({
-        ...filterData,
-        year: value,
-        branch: '',
-        grade: '',
-        subject: '',
-        chapter: '',
-      });
+      setFilterData({ ...filterData, year: value });
+      axiosInstance
+        .get(
+          `${endpoints.academics.branches}?session_year=${value.id}&module_id=${moduleId}`
+        )
+        .then((result) => {
+          if (result.status === 200) {
+            setBranchDropdown(result.data.data.results);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
     }
   };
 
@@ -224,7 +282,9 @@ const CreateChapterType = ({
         chapter: '',
       });
       axiosInstance
-        .get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+        .get(
+          `${endpoints.communication.grades}?session_year=${filterData.year.id}&branch_id=${value.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             setGradeDropdown(result.data.data);
@@ -247,13 +307,49 @@ const CreateChapterType = ({
       setChapterDropdown([]);
     }
   };
+
+  // const handleBranch = (event, value) => {
+  //   setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
+  //   setOverviewSynopsis([]);
+  //   if (value) {
+  //     setFilterData({
+  //       ...filterData,
+  //       branch: value,
+  //       grade: '',
+  //       subject: '',
+  //       chapter: '',
+  //     });
+  //     axiosInstance
+  //       .get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+  //       .then((result) => {
+  //         if (result.data.status_code === 200) {
+  //           setGradeDropdown(result.data.data);
+  //         } else {
+  //           setAlert('error', result.data.message);
+  //           setGradeDropdown([]);
+  //           setSubjectDropdown([]);
+  //           setChapterDropdown([]);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         setAlert('error', error.message);
+  //         setGradeDropdown([]);
+  //         setSubjectDropdown([]);
+  //         setChapterDropdown([]);
+  //       });
+  //   } else {
+  //     setGradeDropdown([]);
+  //     setSubjectDropdown([]);
+  //     setChapterDropdown([]);
+  //   }
+  // };
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: '', section: '', subject: '' });
     if (value) {
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&grade=${value.grade_id}`
+          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&grade=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -270,7 +366,7 @@ const CreateChapterType = ({
 
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`
+          `${endpoints.masterManagement.sections}?session_year=${filterData.year.id}&branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -435,7 +531,7 @@ const CreateChapterType = ({
                         />
                     )}
                 /> */}
-            <Autocomplete
+            {/* <Autocomplete
               size='small'
               style={{ width: '100%' }}
               onChange={handleAcademicYear}
@@ -451,7 +547,25 @@ const CreateChapterType = ({
                   placeholder='Academic Year'
                 />
               )}
-            />
+            /> */}
+              <Autocomplete
+                  size='small'
+                  style={{ width: '100%' }}
+                  onChange={handleAcademicYear}
+                  id='year'
+                  className='dropdownIcon'
+                  options={academicYear || []}
+                  getOptionLabel={(option) => option?.session_year || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Academic Year'
+                      placeholder='Academic Year'
+                    />
+                  )}
+                />
           </Grid>
           <Grid
             item
@@ -459,7 +573,7 @@ const CreateChapterType = ({
             sm={4}
             className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
           >
-            <Autocomplete
+            {/* <Autocomplete
               style={{ width: '100%' }}
               size='small'
               onChange={handleBranch}
@@ -477,7 +591,26 @@ const CreateChapterType = ({
                   placeholder='Branch'
                 />
               )}
-            />
+            /> */}
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleBranch}
+                  id='branch'
+                  className='dropdownIcon'
+                  value={filterData?.branch || ''}
+                  options={branchDropdown || []}
+                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                    />
+                  )}
+                />
           </Grid>
           <Grid
             item
