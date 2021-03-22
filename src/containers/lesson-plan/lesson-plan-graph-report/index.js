@@ -336,7 +336,8 @@ const LessonPlanGraphReport = ({
       .get(`${endpoints.communication.branches}`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setBranchDropdown(result.data.data);
+          // setBranchDropdown(result.data.data);
+          setBranchDropdown(result.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean))
           // setBranchId(result.data.data[1].id);
           // a = result.data.data[0].id
         } else {
