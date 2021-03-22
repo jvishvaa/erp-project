@@ -1,5 +1,5 @@
 // const baseURLCentral = 'http://13.232.30.169/qbox';
-const baseURLCentral ='https://dev.mgmt.letseduvate.com/qbox';
+const baseURLCentral = 'https://dev.mgmt.letseduvate.com/qbox';
 export default {
   auth: {
     login: '/auth/login/',
@@ -59,12 +59,27 @@ export default {
     subjects: '/erp_user/subjects-list/',
     grades: '/erp_user/grades-list/',
     sectionsTable: '/erp_user/grades-section-list/',
+    fetchSectionMap: '/erp_user/section/',
+    sectionsTable: '/erp_user/list-section/',
+    branchMappingTable: '/erp_user/branch/',
+    sectionMappingTable: '/erp_user/list-section-mapping/',
+    subjectMappingTable: '/erp_user/list-subjectmapping/',
+    deleteSectionMapping: '/erp_user/delete-section-mapping/',
+    deleteSubjectMapping: '/erp_user/delete-subject-mapping/',
+    createBranch: '/erp_user/create-branch/',
+    deleteBranch: '/erp_user/delete-branch-mapping/',
     createSubject: '/erp_user/create-subject/',
+    createSubjectMapping: '/erp_user/create-subject-mapping/',
     createSection: '/erp_user/create-section/',
+    listSectionMap: '/erp_user/list-section-map/',
+    createSectionMapping: '/erp_user/create-grade-section-mapping',
     createGrade: '/erp_user/create-grade/',
+    branchList: '/erp_user/list-all-branch/',
+    branchMapping: '/erp_user/create-branch-mapping',
     updateSubject: '/erp_user/update-subject/',
     updateSection: '/erp_user/update-section/',
     updateGrade: '/erp_user/update-grade/',
+    updateBranch: '/erp_user/update-branch/',
     gradesDrop: '/erp_user/grade/',
     sections: '/erp_user/sectionmapping/',
     academicYear: '/erp_user/academic-year-list/',
@@ -131,6 +146,9 @@ export default {
     assign: '/academic/school-subjects-mapping/',
     updateAssign: '/academic',
     delete: '/academic',
+    chapter: '/academic/chapters/',
+    ViewChapter: '/academic/chapters/',
+    editChapter: '/academic/',
   },
   lessonPlan: {
     periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
@@ -193,6 +211,7 @@ export default {
     createCircular: '/circular/upload-circular/',
     deleteCircular: '/circular/delete-circular/',
     updateCircular: '/circular/update-circular/',
+    deleteFile:'/academic/delete-file/',
   },
   generalDairy: {
     dairyList: '/academic/general-dairy-messages/',
@@ -200,13 +219,12 @@ export default {
     updateDelete: '/academic/',
     SubmitDairy: '/academic/create-dairy/',
     uploadFile: '/academic/dairy-upload/',
-
   },
   dailyDairy: {
     createDailyDairy: '/academic/create-dairy/',
     branches: '/academic/chapters/',
     updateDelete: '/academic/',
-    chapterList: '/academic/logged-in-users-subjects/'
+    chapterList: '/academic/logged-in-users-subjects/',
   },
   onlineCourses: {
     createCourse: '/aol/courses/',
@@ -254,6 +272,6 @@ export default {
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
-  aolConfirmURL:'aol.letseduvate.com', //WARNING: Uncomment this code before pushing  
+  aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
   // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing
 };

@@ -135,7 +135,7 @@ const MessageCredit = withRouter(({ history, ...props }) => {
       const result = await axiosInstance.get(endpoints.communication.branches);
       if (result.status === 200) {
         setLoading(false);
-        setBranchList(result.data.data);
+        setBranchList(result.data.data.results);
       } else {
         setAlert('error', result.data.message);
         setLoading(false);
@@ -157,7 +157,7 @@ const MessageCredit = withRouter(({ history, ...props }) => {
     try {
       let smsCreditUrl = endpoints.communication.getSmsCredit;
       if (selectedBranch) {
-        smsCreditUrl += `?branch=${selectedBranch.id}`;
+        smsCreditUrl += `?branch=${selectedBranch.branch.id}`;
       }
       const result = await axiosInstance.get(smsCreditUrl);
       const resultOptions = [];
@@ -303,7 +303,7 @@ const MessageCredit = withRouter(({ history, ...props }) => {
                   id='message_log-branch'
                   className='sms_credit_branch'
                   options={branchList}
-                  getOptionLabel={(option) => option?.branch_name}
+                  getOptionLabel={(option) => option.branch.branch_name}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -372,27 +372,27 @@ const MessageCredit = withRouter(({ history, ...props }) => {
                           <TableCell align='right'>
                             {items.Adding ? (
                               <div className='addcredit_button_wrapper'>
-
-                                <Button 
-                                type='submit'
-                                variant='contained'
-                                onClick={() => handleCancel(index)}
-                                className="custom_button_master labelColor"
-                                size="small">
+                                <Button
+                                  type='submit'
+                                  variant='contained'
+                                  onClick={() => handleCancel(index)}
+                                  className='custom_button_master labelColor'
+                                  size='small'
+                                >
                                   CANCEL
                                 </Button>
 
-                                <Button 
-                                type='submit'
-                                variant='contained'
-                                color="primary"
-                                style={{color:'white',marginLeft:'10%'}}
-                                onClick={() => handleSubmit(index)}
-                                className="custom_button_master"
-                                size="small">
+                                <Button
+                                  type='submit'
+                                  variant='contained'
+                                  color='primary'
+                                  style={{ color: 'white', marginLeft: '10%' }}
+                                  onClick={() => handleSubmit(index)}
+                                  className='custom_button_master'
+                                  size='small'
+                                >
                                   SAVE
                                 </Button>
-
                               </div>
                             ) : (
                               <AddCircleIcon

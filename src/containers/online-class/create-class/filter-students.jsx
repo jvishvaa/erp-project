@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
@@ -194,11 +194,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FilterStudents() {
   const classes = useStyles();
-  const [order, setOrder] = React.useState('');
-  const [orderBy, setOrderBy] = React.useState('');
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [order, setOrder] = useState('');
+  const [orderBy, setOrderBy] = useState('');
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const {
     studentList: students = [],
@@ -304,7 +304,7 @@ export default function FilterStudents() {
                       selected={isItemSelected}
                     >
                       <TableCell align='center'>{row.sl}</TableCell>
-                      <TableCell align='center'>{row.username}</TableCell>
+                      <TableCell align='center'>{row.erp_id}</TableCell>
                       <TableCell align='center'>{row.user.first_name}</TableCell>
                       <TableCell padding='checkbox'>
                         <Checkbox

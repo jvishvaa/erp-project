@@ -34,7 +34,7 @@ const ListandFilter = (props) => {
     const [filter, setFilter] = useState(false);
 
     const navigateToCreatePage = () => {
-        props.history.push('/master-mgmt/subject/grade/mapping')
+        props.history.push('/master-management/subject/grade/mapping')
     }
 
     const handleClearAll = () => {
@@ -47,9 +47,10 @@ const ListandFilter = (props) => {
 
     useEffect(() => {
         const getBranch = () => {
+            //axiosInstance.get(endpoints.masterManagement.branchList).then(res => {
             axiosInstance.get(endpoints.mappingStudentGrade.branch).then(res => {
                 if (res.data.data) {
-                    setBranchRes(res.data.data)
+                    setBranchRes(res.data.data.results)
                 }
             }).catch(err => {
                 console.log(err)
@@ -161,7 +162,7 @@ const ListandFilter = (props) => {
                                             value={branchValue}
                                             id="tags-outlined"
                                             options={branch}
-                                            getOptionLabel={(option) => option.branch_name}
+                                            getOptionLabel={(option) => option?.branch.branch_name}
                                             filterSelectedOptions
                                             size="small"
                                             renderInput={(params) => (

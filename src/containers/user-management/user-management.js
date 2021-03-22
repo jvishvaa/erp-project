@@ -37,8 +37,11 @@ class UserManagement extends Component {
 
   getBranches = async () => {
     try {
-      const data = await axiosInstance.get('erp_user/branch/');
+      const data = await axiosInstance.get('erp_user/list-all-branch/');
+      if(data.data.status_code===200)
       this.setState({ branches: data.data.data });
+      else
+      console.log('');
     } catch (error) {
       console.log('failed to load branches');
     }

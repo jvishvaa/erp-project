@@ -288,9 +288,9 @@ const LessonViewFilters = ({
                     onChange={handleAcademicYear}
                     id='academic-year'
                     className="dropdownIcon"
-                    value={filterData?.year}
-                    options={academicYearDropdown}
-                    getOptionLabel={(option) => option?.session_year}
+                    value={filterData?.year||''}
+                    options={academicYearDropdown||[]}
+                    getOptionLabel={(option) => option?.session_year||''}
                     filterSelectedOptions
                     renderInput={(params) => (
                         <TextField
@@ -309,9 +309,9 @@ const LessonViewFilters = ({
                     onChange={handleVolume}
                     id='volume'
                     className="dropdownIcon"
-                    value={filterData?.volume}
-                    options={volumeDropdown}
-                    getOptionLabel={(option) => option?.volume_name}
+                    value={filterData?.volume||''}
+                    options={volumeDropdown||[]}
+                    getOptionLabel={(option) => option?.volume_name||''}
                     filterSelectedOptions
                     renderInput={(params) => (
                         <TextField
@@ -330,9 +330,9 @@ const LessonViewFilters = ({
                     onChange={handleBranch}
                     id='branch'
                     className="dropdownIcon"
-                    value={filterData?.branch}
-                    options={branchDropdown}
-                    getOptionLabel={(option) => option?.branch_name}
+                    value={filterData.branch||''}
+                    options={branchDropdown||[]}
+                    getOptionLabel={(option) => option?.branch_name||''}
                     filterSelectedOptions
                     renderInput={(params) => (
                         <TextField
@@ -351,9 +351,9 @@ const LessonViewFilters = ({
                     onChange={handleGrade}
                     id='grade'
                     className="dropdownIcon"
-                    value={filterData?.grade}
-                    options={gradeDropdown}
-                    getOptionLabel={(option) => option?.grade__grade_name}
+                    value={filterData?.grade||''}
+                    options={gradeDropdown||[]}
+                    getOptionLabel={(option) => option?.grade__grade_name||''}
                     filterSelectedOptions
                     renderInput={(params) => (
                         <TextField
@@ -372,9 +372,9 @@ const LessonViewFilters = ({
                     onChange={handleSubject}
                     id='subject'
                     className="dropdownIcon"
-                    value={filterData?.subject}
-                    options={subjectDropdown}
-                    getOptionLabel={(option) => option?.subject_name}
+                    value={filterData?.subject||''}
+                    options={subjectDropdown||[]}
+                    getOptionLabel={(option) => option?.subject_name||''}
                     filterSelectedOptions
                     renderInput={(params) => (
                         <TextField
@@ -393,9 +393,9 @@ const LessonViewFilters = ({
                     onChange={handleChapter}
                     id='chapter'
                     className="dropdownIcon"
-                    value={filterData?.chapter}
-                    options={chapterDropdown}
-                    getOptionLabel={(option) => option?.chapter_name}
+                    value={filterData?.chapter||''}
+                    options={chapterDropdown||[]}
+                    getOptionLabel={(option) => option?.chapter_name||''}
                     filterSelectedOptions
                     renderInput={(params) => (
                         <TextField

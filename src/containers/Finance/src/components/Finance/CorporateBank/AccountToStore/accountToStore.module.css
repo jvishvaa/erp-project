@@ -1,0 +1,168 @@
+.accBrnchMapping *{
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+.accBrnchMapping{
+  width: 100%;
+  margin: auto;
+  min-width: 800px;
+  /* padding-bottom: 60px; */
+  border: 0.1px solid #646363d5;
+  border-bottom: 0px solid #ffffff;
+}
+.accBrnchMapping__header{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 40px;
+  background-color: #eeeeee65;
+}
+.accBrnchMapping__headingBranch,
+.accBrnchMapping__headingAcc,
+.accBrnchMapping__headingToggle,
+.accBrnchMapping__headingAdd{
+  font-weight: lighter;
+  padding-left: 18px;
+  height: 100%;
+  padding-top: 10px;
+}
+.accBrnchMapping__headingBranch{
+  width: 40%; 
+}
+.accBrnchMapping__headingAcc{
+  width: 38%;
+  border-left: 0.1px solid #e9e8e8;
+}
+.accBrnchMapping__headingToggle{
+  width: 12%;
+  border-left: 0.1px solid #e9e8e8;
+}
+.accBrnchMapping__headingAdd{
+  width: 10%;
+  border-left: 0.1px solid #e9e8e8;
+}
+
+.accBrnchMapping__branch{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  border-bottom: 0.1px solid #e9e8e8;
+}
+.accBrnchMapping__branch_Account{
+  display: flex;
+  margin-left: 40%;
+  flex-direction: row;
+  justify-content: space-around;
+  border-bottom: 0.1px solid #e9e8e8;
+  border-left: 0.1px solid #e9e8e8;
+}
+.accBrnchMapping__branchInfo{
+  width: 40.05%;
+  padding-left: 20px;
+  display: flex;
+  border-right: 0.1px solid #e9e8e8;
+  /* padding-top: 15px; */
+} 
+.accBrnchMapping__accInfo{
+  width: 40%;
+  /* padding-left: 20px; */
+  display: flex;
+  /* border-right: 0.1px solid #646363d5; */
+  /* padding-top: 15px; */
+}
+.accBrnchMapping__toggleInfo{
+  width: 20%;
+  padding-left: 15px;
+  margin-left: 23%;
+  display: flex;
+  border-right: 0.1px solid #646363d5;
+  border-left: 0.1px solid #646363d5;
+  padding-top: 20px;
+  /* border: 0.02px solid rgba(100, 100, 100, 0.329); */
+}
+.accBrnchMapping__AddInfo{
+  width: 16%;
+  padding-left: 10px;
+  display: flex;
+  /* border-right: 0.1px solid #646363d5; */
+  padding-top: 15px;
+}
+/* .accBrnchMapping__branch:nth-child(even) .accBrnchMapping__branchInfo .accBrnchMapping__accInfo .accBrnchMapping__toggleInfo .accBrnchMapping__AddInfo{
+  background-color: #eeeeee65;
+} */
+.accBrnchMapping__branchName{
+  width: 60%;
+}
+.accBrnchMapping__button{
+  width: 90%;
+  /* border-left: 0.1px solid #e9e8e8; */
+  /* padding-left: 10px; */
+  margin-bottom: 10px;
+}
+.accBrnchMapping__button:hover{
+  cursor: pointer;
+}
+.accBrnchMapping__tgglbutton{
+  width: 80%;
+  border-left: 0.1px solid #e9e8e8;
+  padding-left: 5px;
+}
+.accBrnchMapping__tgglbutton:hover{
+  cursor: pointer;
+}
+
+.modal__heading{
+  text-align: center;
+  padding-top: 15px;
+  margin-bottom: 15px;
+}
+.modal__button,
+.modal__remainbutton,
+.modal__deletebutton{
+  display: inline-block;
+  position: absolute;
+}
+.modal__button{
+  bottom: 5px;
+  right: 2px;
+}
+.modal__deletebutton{
+  bottom: 5px;
+  right: 10px;
+}
+.modal__remainbutton{
+  bottom: 5px;
+  left: 10px;
+}
+
+.storeFeeAcc__activeToggleBtn{
+  display: inline-block;
+  width: 80%;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  margin: auto;
+  border-radius: 5px;
+  font-size: 0.6rem;  
+}
+.storeFeeAcc__activeToggleBtn:hover{
+  cursor: pointer;
+}
+.btnColorBlue{
+  background-color: rgb(106, 190, 117)
+}
+.btnColorBlue:hover{
+  background-color: rgb(64, 160, 77)
+}
+.btnColorRed{
+  background-color: rgb(218, 122, 110)
+}
+.btnColorRed:hover{
+  background-color: rgb(255, 118, 100)
+}
+@media(min-width: 950px){
+  .storeFeeAcc__activeToggleBtn{
+      font-size: 0.8rem;
+  }
+}

@@ -18,7 +18,7 @@ import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2'
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import Loader from '../../../../components/loader/loader';
 import axiosInstance from '../../../../config/axios';
-import endpoints from '../../../../config/endpoints';
+import endpoints from '../../../../config/endpoints'
 import filterImage from '../../../../assets/images/unfiltered.svg';
 import CardView from './CardView';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
@@ -51,13 +51,15 @@ const ErpAdminViewClass = ({ history }) => {
   );
 
   // const [selectedBranch, setSelectedBranch] = useState(branchList[0]);
-  const [selectedBranch, setSelectedBranch] = useState('');
+  const [academicYear,setAcademicYear] = useState([]);
+  const [selectedAcademicYear,setSelectedAcadmeicYear] = useState('');
+  const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
-  const [selectedGrade, setSelectedGrade] = useState('');
+  const [selectedGrade, setSelectedGrade] = useState([]);
   const [sectionList, setSectionList] = useState([]);
-  const [selectedSection, setSelectedSection] = useState('');
+  const [selectedSection, setSelectedSection] = useState([]);
   const [subjectList, setSubjectList] = useState([]);
-  const [selectedSubject, setSelectedSubject] = useState('');
+  const [selectedSubject, setSelectedSubject] = useState([]);
   const [courseList, setCourseList] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState('');
   const [batchList, setBatchList] = useState([]);
@@ -75,6 +77,32 @@ const ErpAdminViewClass = ({ history }) => {
     { id: 3, type: 'Parent Class' },
   ]);
   const [selectedClassType, setSelectedClassType] = useState('');
+  const [moduleId, setModuleId] = useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Online Class' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'View Class' && window.location.pathname === '/erp-online-class') {
+              setModuleId(item.child_id);
+            }
+            if (item.child_name === 'Teacher View Class' && window.location.pathname === '/erp-online-class-teacher-view') {
+              setModuleId(item.child_id);
+            }
+            if (item.child_name === 'Attend Online Class' && window.location.pathname === '/erp-online-class-student-view') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, [window.location.pathname]);
 
   function callApi(api, key) {
     setLoading(true);
@@ -82,8 +110,11 @@ const ErpAdminViewClass = ({ history }) => {
       .get(api)
       .then((result) => {
         if (result.status === 200) {
+          if(key === 'academicYearList'){
+            setAcademicYear(result?.data?.data || [])
+          }
           if (key === 'branchList') {
-            setBranchList(result?.data?.data || []);
+            setBranchList(result?.data?.data?.results || []);
           }
           if (key === 'gradeList') {
             setGradeList(result?.data?.data || []);
@@ -132,14 +163,14 @@ const ErpAdminViewClass = ({ history }) => {
             studentDetails &&
             studentDetails.role_details &&
             studentDetails.role_details.erp_user_id
-          }&page_number=1&page_size=15&class_type=${selectedClassType?.id}`,
+          }&page_number=1&page_size=15&class_type=${selectedClassType?.id}&module_id=${moduleId}`,
           'filter'
         );
       } else {
         callApi(
           `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
             selectedBatch && selectedBatch.id
-          }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1`,
+          }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1`,
           'filter'
         );
       }
@@ -148,7 +179,8 @@ const ErpAdminViewClass = ({ history }) => {
 
   useEffect(() => {
     // <<<<<<<<<<<<<<<<BRANCH API START>>>>>>>>>>>
-      callApi(`${endpoints.academics.branches}`,'branchList');
+      // callApi(`${endpoints.userManagement.branchList}`,'branchList');
+      callApi(`${endpoints.userManagement.academicYear}`,'academicYearList');
     // <<<<<<<<<<<<<<<<BRANCH API END>>>>>>>>>>>
     if (window.location.pathname === '/erp-online-class-student-view') {
       callApi(
@@ -191,14 +223,14 @@ const ErpAdminViewClass = ({ history }) => {
           studentDetails &&
           studentDetails.role_details &&
           studentDetails.role_details.erp_user_id
-        }&page_number=${page}&page_size=15`,
+        }&page_number=${page}&page_size=15&module_id=${moduleId}`,
         'filter'
       );
     } else {
       callApi(
         `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
           selectedBatch && selectedBatch.id
-        }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1`,
+        }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1`,
         'filter'
       );
     }
@@ -208,7 +240,7 @@ const ErpAdminViewClass = ({ history }) => {
     setDateRangeTechPer([moment().subtract(6, 'days'), moment()]);
     setEndDate('');
     setStartDate('');
-    setSelectedGrade('');
+    setSelectedGrade([]);
     setCourseList([]);
     setSelectedCourse('');
     setBatchList([]);
@@ -216,9 +248,11 @@ const ErpAdminViewClass = ({ history }) => {
     setFilterList([]);
     setSelectedViewMore('');
     setSectionList([]);
-    setSelectedSection('');
+    setSelectedSection([]);
     setSubjectList([]);
-    setSelectedSubject('');
+    setSelectedSubject([]);
+    setSelectedBranch([])
+    setSelectedAcadmeicYear('')
   }
 
   function handleFilter() {
@@ -255,12 +289,12 @@ const ErpAdminViewClass = ({ history }) => {
     // `https://erpnew.letseduvate.com/qbox/erp_user/teacher_online_class/?page_number=1&page_size=15&class_type=1&is_aol=1&course=97&start_date=2021-02-21&end_date=2021-02-27`
     if (selectedCourse.id) {
       callApi(
-        `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15`,
+        `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el)=>el.id)}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15&module_id=${moduleId}`,
         'filter'
       );
     } else {
       callApi(
-        `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.id}&subject_id=${selectedSubject.subject__id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15`,
+        `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el)=>el.id)}&subject_id=${selectedSubject.map((el)=>el.subject__id)}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15&module_id=${moduleId}`,
         'filter'
       );
     }
@@ -273,15 +307,15 @@ const ErpAdminViewClass = ({ history }) => {
     }
     setDateRangeTechPer(v1);
   }
-  console.log(
-    selectedClassType,
-    selectedBranch,
-    selectedGrade,
-    selectedSection,
-    selectedCourse,
-    selectedSubject,
-    '========================================='
-  );
+  // console.log(
+  //   selectedClassType,
+  //   selectedBranch,
+  //   selectedGrade,
+  //   selectedSection,
+  //   selectedCourse,
+  //   selectedSubject,
+  //   '========================================='
+  // );
 
   return (
     <>
@@ -338,30 +372,57 @@ const ErpAdminViewClass = ({ history }) => {
               </Grid>
               {window.location.pathname !== '/erp-online-class-student-view' && (
                 <>
-                  <Grid item md={3} xs={12}>
+                 <Grid item md={3} xs={12}>
                     <Autocomplete
                       style={{ width: '100%' }}
                       size='small'
                       onChange={(event, value) => {
-                        setSelectedBranch(value);
+                        setSelectedAcadmeicYear(value)
                         if(value){
                           callApi(
-                            `${endpoints.academics.grades}?branch_id=${value?.id}&module_id=8`,
-                            'gradeList'
+                            `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                            'branchList'
                           );
                         }
-                        if(value && window.location.pathname === '/erp-online-class-teacher-view'){
+                      }}
+                      id='branch_id'
+                      className='dropdownIcon'
+                      value={selectedAcademicYear}
+                      options={academicYear}
+                      getOptionLabel={(option) => option?.session_year}
+                      filterSelectedOptions
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant='outlined'
+                          label='Academic Year'
+                          placeholder='Academic Year'
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item md={3} xs={12}>
+                    <Autocomplete
+                      multiple
+                      style={{ width: '100%' }}
+                      size='small'
+                      onChange={(event, value) => {
+                        setSelectedBranch([])
+                        if(value.length){
+                          const ids = value.map((el)=>el)
+                          const selectedId=value.map((el)=>el.id)
+                          setSelectedBranch(ids)
                           callApi(
-                                `${endpoints.academics.grades}?branch_id=${value?.id}&module_id=4`,
-                                'gradeList'
-                              );
+                            `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                            'gradeList'
+                          );
                         }
                       }}
                       id='branch_id'
                       className='dropdownIcon'
                       value={selectedBranch}
                       options={branchList}
-                      getOptionLabel={(option) => option?.branch_name}
+                      getOptionLabel={(option) => option?.branch?.branch_name}
                       filterSelectedOptions
                       renderInput={(params) => (
                         <TextField
@@ -375,32 +436,36 @@ const ErpAdminViewClass = ({ history }) => {
                   </Grid>
                   <Grid item md={3} xs={12}>
                     <Autocomplete
+                      multiple
                       style={{ width: '100%' }}
                       size='small'
                       onChange={(event, value) => {
-                        setSelectedGrade(value);
-                        if (value) {
+                        setSelectedGrade([])
+                        if(value.length){
+                          const ids = value.map((el)=>el)
+                          const selectedId=value.map((el)=>el.grade_id)
+                          const branchId=selectedBranch.map((el)=>el.id)
+                          setSelectedGrade(ids)
                           callApi(
-                            `${endpoints.teacherViewBatches.courseListApi}?grade=${
-                              value && value.grade_id
-                            }`,
-                            'course'
-                          );
-                          callApi(
-                            `${endpoints.academics.sections}?branch_id=${
-                              selectedBranch.id
-                            }&grade_id=${
-                              value && value.grade_id
-                            }&module_id=${selectedModule}`,
+                            `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
                             'section'
                           );
                         }
+                         if (value) {
+                           const gId=value.map((el)=>el.grade_id)
+                          callApi(
+                            `${endpoints.teacherViewBatches.courseListApi}?grade=${
+                             gId
+                            }`,
+                            'course'
+                            );
+                          }
                         setCourseList([]);
                         setBatchList([]);
                         setSelectedCourse('');
                         setSelectedBatch('');
                         setSectionList([]);
-                        setSelectedSection('');
+                        setSelectedSection([]);
                       }}
                       id='grade_id'
                       className='dropdownIcon'
@@ -420,24 +485,28 @@ const ErpAdminViewClass = ({ history }) => {
                   </Grid>
                   <Grid item md={3} xs={12}>
                     <Autocomplete
+                      multiple
                       style={{ width: '100%' }}
                       size='small'
                       onChange={(event, value) => {
-                        setSelectedSection(value);
-                        if (value) {
+                        setSelectedSection([])
+                        if (value.length) {
+                          const ids=value.map((el)=>el)
+                          const secId=value.map((el)=>el.section_id)
+                          setSelectedSection(ids)
                           callApi(
-                            `${endpoints.academics.subjects}?branch=${selectedBranch.id}&grade=${selectedGrade.grade_id}&section=${value.section_id}&module_id=${selectedModule}`,
+                            `${endpoints.academics.subjects}?branch=${selectedBranch.map((el)=>el.id)}&session_year=${selectedAcademicYear.id}&grade=${selectedGrade.map((el)=>el.grade_id)}&section=${secId}&module_id=${moduleId}`,
                             'subject'
                           );
                         }
                         setSubjectList([]);
-                        setSelectedSubject('');
+                        setSelectedSubject([]);
                       }}
                       id='section_id'
                       className='dropdownIcon'
                       value={selectedSection}
                       options={sectionList}
-                      getOptionLabel={(option) => option?.section__section_name}
+                      getOptionLabel={(option) => option?.section__section_name || option?.section_name}
                       filterSelectedOptions
                       renderInput={(params) => (
                         <TextField
@@ -453,18 +522,15 @@ const ErpAdminViewClass = ({ history }) => {
                   {selectedClassType?.id === 0 && gradeList.length > 0 ? (
                     <Grid item md={3} xs={12}>
                       <Autocomplete
+                        multiple
                         style={{ width: '100%' }}
                         size='small'
                         onChange={(event, value) => {
-                          setSelectedSubject(value);
-                          // if (value) {
-                          //   callApi(
-                          //     `${endpoints.teacherViewBatches.batchSizeList}?course_id=${
-                          //       value && value.id
-                          //     }`,
-                          //     'batchsize'
-                          //   );
-                          // }
+                          setSelectedSubject([])
+                          if(value.length){
+                            const ids = value.map((el)=>el)
+                            setSelectedSubject(ids)
+                          }
                           setBatchList([]);
                           setSelectedBatch('');
                         }}

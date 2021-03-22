@@ -25,22 +25,22 @@ const EditGrade = ({ id, name, type, handleGoBack, setLoading }) => {
       (gradeType !== '' && gradeType !== type)
     ) {
       axiosInstance
-        .put(endpoints.masterManagement.updateGrade, request)
+        .put(`${endpoints.masterManagement.updateGrade}${id}`, request)
         .then((result) => {
-          if (result.data.status_code === 200) {
+          if (result.data.status_code > 199 && result.data.status_code < 300) {
             handleGoBack();
             setGradeName('');
             setGradeType('');
             setLoading(false);
-            setAlert('success', result.data.message);
+            setAlert('success', result.data?.message || result.data?.msg);
           } else {
             setLoading(false);
-            setAlert('error', result.data.message);
+            setAlert('error', result.data?.message || result.data?.msg);
           }
         })
         .catch((error) => {
           setLoading(false);
-          setAlert('error', error.message);
+          setAlert('error', error.response.data.message || error.response.data.msg);
         });
     } else {
       setLoading(false);

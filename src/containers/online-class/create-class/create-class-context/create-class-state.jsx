@@ -125,11 +125,11 @@ const CreateclassProvider = (props) => {
     dispatch(success([], LIST_TUTOR_EMAILS_SUCCESS));
   };
 
-  const listGradesCreateClass = async (branch, moduleId) => {
+  const listGradesCreateClass = async (branch, moduleId, acadId) => {
     dispatch(request(LIST_GRADE_REQUEST));
     try {
       const { data } = await axiosInstance.get(
-        `${endpoints.academics.grades}?branch_id=${branch.join(
+        `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branch.join(
           ','
         )}&module_id=${moduleId}`
       );
@@ -177,13 +177,17 @@ const CreateclassProvider = (props) => {
     moduleId,
     erpId,
     isSuperUser,
-    gradeIds
+    gradeIds,
+    branchIds,
+    acadId
   ) => {
     try {
       const { data } = await axiosInstance.get(
         `/erp_user/sub-sec-list/?role=${roleId}&module_id=${moduleId}&erp_id=${erpId}&is_super=${isSuperUser}&grade_id=${gradeIds.join(
           ','
-        )}`
+        )}&branch_id=${branchIds.join(
+          ','
+        )}&session_year=${acadId}`
       );
       if (data.status === 'success') {
         const { section, subject } = data.data;

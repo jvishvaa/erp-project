@@ -15,7 +15,9 @@ import {
   setCreateRolePermissionsState,
   createRole,
   setModulePermissionsRequestData,
+  fetchAcademicYears,
 } from '../../redux/actions';
+
 import styles from './useStyles';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import ModuleCard from '../../components/module-card';
@@ -30,13 +32,41 @@ class CreateRole extends Component {
       roleName: '',
       roleNameError: '',
       selectionError: '',
+      moduleId: '',
+      academicYearList: [],
+      NavData : JSON.parse(localStorage.getItem('navigationData')),
     };
   }
-
+  // const [moduleId, setModuleId] = useState('');
+  
   componentDidMount() {
     const { fetchModules, fetchBranches } = this.props;
     fetchModules();
-    fetchBranches();
+    // fetchBranches();
+
+    if (this.state.NavData && this.state.NavData.length) {
+      this.state.NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Role Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'View Role') {
+              this.setState({moduleId:item.child_id});
+                fetchAcademicYears(item.child_id).then((data) => {
+                  let transformedData = '';
+                  transformedData = data?.map((obj) => ({
+                    id: obj.id,
+                    session_year: obj.session_year,
+                  }));
+                  this.setState({ academicYearList: transformedData });
+                });
+            }
+          });
+        }
+      });
+    }
   }
 
   handleRoleNameChange = (e) => {
@@ -108,6 +138,7 @@ class CreateRole extends Component {
             my_grade: currentSubModule.my_grade,
             my_section: currentSubModule.my_section,
             my_subject: currentSubModule.my_subject,
+            custom_year: currentSubModule.custom_year.map((year) => year.id),
             custom_grade: currentSubModule.custom_grade.map((grade) => grade.id),
             custom_section: currentSubModule.custom_section.map((section) => section.id),
             custom_branch: currentSubModule.custom_branch.map((branch) => branch.id),
@@ -171,6 +202,7 @@ class CreateRole extends Component {
           <Grid item xs={12} sm={6} lg={12}>
             <ModuleCard
               module={module}
+              academicYear={this.state.academicYearList}
               alterCreateRolePermissions={this.alterCreateRolePermissions}
               branches={branches}
               modulePermissionsRequestData={modulePermissionsRequestData}
@@ -253,6 +285,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   fetchBranches: () => {
     dispatch(fetchBranches());
+  },
+  fetchAcademicYears: () => {
+    dispatch(fetchAcademicYears());
   },
   alterCreateRolePermissionsState: (params) => {
     dispatch(setCreateRolePermissionsState(params));

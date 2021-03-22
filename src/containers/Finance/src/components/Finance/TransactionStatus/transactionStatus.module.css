@@ -1,0 +1,64 @@
+.datePicker input{
+    display: inline-block;
+    align-items: center;
+    background-color: hsl(0,0%,100%);
+    border-color: hsl(0,0%,80%);
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+    cursor: default;
+    width: 100%;
+    height: 36px;
+    padding: 0.5rem 1rem !important;
+}
+.table__transactionid{
+    height: 100%;
+    width: 100%;
+}
+.table__editIcon{
+    padding-left: 10px;
+}
+.table__editIcon:hover,
+.table__transactionid:hover{
+    cursor: pointer;
+}
+.modal__heading{
+    text-align: center;
+    padding-top: 15px;
+    margin-bottom: 15px;
+}
+.modal__bodyHeading{
+    display: inline-block;
+    width: 50%;
+}
+.modal__bodyDetail{
+    display: inline-block;
+    width: 50%;
+}
+.modal__body{
+    width: 80%;
+    margin: auto;
+    padding-bottom: 12px;
+}
+.modal__body div{
+    margin-bottom: 12px;
+    font-size: 1.2rem;
+}
+.modal__button,
+.modal__remainbutton,
+.modal__deletebutton{
+    display: inline-block;
+    position: absolute;
+}
+.modal__button{
+    bottom: 5px;
+    right: 2px;
+}
+.modal__deletebutton{
+    bottom: 5px;
+    right: 10px;
+}
+.modal__remainbutton{
+    bottom: 5px;
+    left: 10px;
+}

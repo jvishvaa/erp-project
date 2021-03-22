@@ -36,13 +36,13 @@ const JoinClass = (props) => {
   const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
   const diffTime = classTimeMilli - 5 * 60 * 1000;
 
-  console.log(
-    classTimeMilli,
-    parseInt(currTime),
-    diffTime,
-    'TTTTTTTTTTT',
-    new Date(`${props.data.date}T${startTime}`).getTime()
-  );
+  // console.log(
+  //   classTimeMilli,
+  //   parseInt(currTime),
+  //   diffTime,
+  //   'TTTTTTTTTTT',
+  //   new Date(`${props.data.date}T${startTime}`).getTime()
+  // );
 
   const handleCloseData = () => {
     setAnchorEl(null);
@@ -81,6 +81,29 @@ const JoinClass = (props) => {
         setAlert('error', error.message);
       });
   };
+
+  const handleIsAttended = () => {
+    const params = {
+      zoom_meeting_id: fullData && fullData.id,
+      class_date: props.data && props.data.date,
+      is_attended: true,
+    };
+    axiosInstance
+      .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
+      .then((res) => {
+        setLoading(false);
+        setIsAccept(true);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+  };
+
+  const handleJoinButton = (callback) => {
+    handleIsAttended()
+    callback()
+  }
   function handleCancel() {
     setLoading(true);
     const params1 = {
@@ -142,7 +165,7 @@ const JoinClass = (props) => {
             color='secondary'
             fullWidth
             variant='contained'
-            onClick={() => window.open(fullData && fullData.join_url)}
+            onClick={() => handleJoinButton(() => window.open(fullData && fullData.join_url))}
             className='teacherFullViewSmallButtons'
           >
             Join
@@ -341,7 +364,7 @@ const DetailCardView = ({
     }
   }, [fullData]);
   */
-  console.log(selectedClassType, '[[[[[[[[[[[[[[[[');
+  // console.log(selectedClassType, '[[[[[[[[[[[[[[[[');
   useEffect(() => {
     let detailsURL =
       window.location.pathname === '/erp-online-class-student-view'
@@ -352,7 +375,7 @@ const DetailCardView = ({
       axiosInstance
         .get(detailsURL)
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           setNoOfPeriods(res.data.data);
         })
         .catch((error) => setAlert('error', error.message));
@@ -413,18 +436,17 @@ const DetailCardView = ({
     if (window.location.pathname === '/erp-online-class-student-view') {
       sessionStorage.setItem('isErpClass', 2);
       history.push(
-        `/create/course/${fullData.online_class && fullData.online_class.course_id}/1`
+        `/create/course/${fullData.online_class && fullData.online_class.course_id}/5`
       );
     } else {
       sessionStorage.setItem('isErpClass', 3);
       history.push(
         `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
-          selectedGrade.id
+          selectedGrade.map((el)=>el.id)
         }`
       );
     }
   };
-
   const [openPopup, setOpenPopup] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState('');
 

@@ -1,0 +1,13 @@
+.backdrop{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1250;
+    background-color: rgba(0, 0, 0, 0.596);
+    width: 100vw;
+    min-height: 100vh;
+}
+
+.noBackdrop{
+    display: none;
+}

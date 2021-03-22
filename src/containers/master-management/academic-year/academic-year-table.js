@@ -75,7 +75,7 @@ const columns = [
 const AcademicYearTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = useState(1);
   const [academicYear, setAcademicYear] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [yearId, setYearId] = useState();
@@ -124,24 +124,21 @@ const AcademicYearTable = () => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .put(endpoints.masterManagement.updateAcademicYear, {
-        is_delete: true,
-        academic_year_id: yearId,
-      })
+      .delete(`${endpoints.masterManagement.updateAcademicYear}${yearId}`)
       .then((result) => {
-        if (result.data.status_code === 200) {
+        if (result.data.status_code > 199 && result.data.status_code < 300) {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', result.data.message);
+            setAlert('success', result.data?.message||result.data?.msg);
         }
         else {
           setLoading(false);
-          setAlert('error', result.data.message);
+          setAlert('error', result.data?.message||result.data?.msg);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', error.response.data.message || error.response.data.msg);
       });
     setOpenDeleteModal(false);
   };
@@ -179,11 +176,11 @@ const AcademicYearTable = () => {
             setAcademicYear(result.data.result.results);
           }
         } else {
-          setAlert('error', result.data.error_message);
+          setAlert('error', result.data?.message||result.data?.msg);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', error.response.data.message || error.response.data.msg);
       });
   }, [delFlag, goBackFlag, page]);
 
@@ -228,7 +225,7 @@ const AcademicYearTable = () => {
           </Grid>
         )}
 
-        {!isMobile && tableFlag && !addFlag && !editFlag && (
+        {tableFlag && !addFlag && !editFlag && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
@@ -291,7 +288,7 @@ const AcademicYearTable = () => {
             </div>
           </Paper>
         )}
-        {isMobile && !addFlag && !editFlag && (
+        {/* {isMobile && !addFlag && !editFlag && (
           <>
              {
               academicYear.map(year => (
@@ -312,7 +309,7 @@ const AcademicYearTable = () => {
             />
             </div>
           </>
-        )}
+        )} */}
         <Dialog
           open={openDeleteModal}
           onClose={handleCloseDeleteModal}
