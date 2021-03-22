@@ -641,15 +641,19 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     setSelectAll(!selectAll);
     const testclick = document.querySelectorAll('input[type=checkbox]');
     if (!selectAll) {
-      testclick && testclick[1].click();
+      testclick[1].click();
     } else {
       for (let i = 2; i < testclick.length; i += 1) {
-        testclick && testclick[i].click();
+        testclick[i].click();
       }
     }
   };
 
   const handleSubmit = async () => {
+    console.log('file path: ', filePath)
+    // if (!!filePath.length) {
+    //   return setAlert('error', 'Upload attachment!');
+    // }
     const assignRoleApi = endpoints.generalDairy.SubmitDairy;
 
     setSelectectUserError('');
