@@ -296,8 +296,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${
-            filterData.branch[0].id
+          `${endpoints.masterManagement.sections}?session_year=${searchAcademicYear}&branch_id=${
+            filterData?.branch[0]?.id
           }&grade_id=${value.grade_id}&module_id=${
             location.pathname === '/lesson-plan/student-view'
               ? studentModuleId
