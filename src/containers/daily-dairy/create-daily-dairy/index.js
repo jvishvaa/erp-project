@@ -212,8 +212,9 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleChangeGrade = (values, branch) => {
+    console.log('handle grade', values)
     if (branch) {
-      fetchSections(searchAcademicYear, branch, values, moduleId).then((data) => {
+      fetchSections(searchAcademicYear, branch, [values], moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               id: section.section_id,
@@ -283,7 +284,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       values: { branch = {}, grade = [] },
     } = formik;
     console.log('values : ', value)
-    fetchSubjects([branch], grade, value);
+    fetchSubjects([branch], [grade], [value]);
   };
 
   const handleSubject = (event, value) => {
@@ -308,28 +309,28 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const handleImageChange = (event) => {
     if (filePath.length < 10) {
-      if (isEdit) {
-        console.log('Continue');
-      } else if (
-        !formik.values.section ||
-        !formik.values.grade ||
-        !formik.values.subjects ||
-        !formik.values.branch.id ||
-        !subjectIds
-      ) {
-        return setAlert('error', 'Please select all fields');
-      }
+      // if (isEdit) {
+      //   console.log('Continue');
+      // } else if (
+      //   !formik.values.section ||
+      //   !formik.values.grade ||
+      //   !formik.values.subjects ||
+      //   !formik.values.branch.id ||
+      //   !subjectIds
+      // ) {
+      //   return setAlert('error', 'Please select all fields');
+      // }
       setLoading(true);
       const data = event.target.files[0];
-      console.log(formik.values.branch);
-      const fd = new FormData();
+      console.log(formik.values);
+      let fd = new FormData();
       fd.append('file', data);
       fd.append(
         'branch_name',
-        isEdit ? editData.branch.branch_name : formik.values.branch.branch_name
+        isEdit ? editData.branch?.branch_name : formik.values.branch?.branch_name
       );
-      fd.append('grades', isEdit ? editData.grade.id : formik.values.grade[0].id);
-      fd.append('section', isEdit ? editData.section[0].id : formik.values.section[0].id);
+      fd.append('grades', isEdit ? editData?.grade?.id : formik.values.grade[0]?.id);
+      // fd.append('section', isEdit ? editData.section[0].id : formik.values.section[0].id);
       axiosInstance.post(`academic/dairy-upload/`, fd).then((result) => {
         console.log(fd);
         if (result.data.status_code === 200) {
@@ -890,7 +891,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               </Grid>
 
               <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <div style={{ display: 'flex' }} className='scrollable'>
+                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                   {state.isEdit
                     ? editData.documents.map((file, i) => (
                         <FileRow
@@ -945,13 +946,32 @@ const CreateDailyDairy = (details, onSubmit) => {
                     />
                     Add Document
                   </Button>
+                  <br />
+                  <small
+                    style={{
+                      color: '#014b7e',
+                      fontSize: '16px',
+                      marginLeft: '28px',
+                      marginTop: '8px',
+                    }}
+                  >
+                    {' '}
+                    Accepted files: [jpeg,jpg,png,pdf]
+                  </small>
                 </div>
               </Grid>
             </Grid>
           </div>
-          <div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <Button
-              style={isMobile ? { marginLeft: '' } : { marginLeft: '80%' }}
+              // style={isMobile ? { marginLeft: '' } : { marginLeft: '60%' }}
+              onClick={() => history.goBack()}
+              className='submit_button'
+            >
+              BACK
+            </Button>
+            <Button
+              // style={isMobile ? { marginLeft: '' } : { marginLeft: '80%' }}
               onClick={state.isEdit ? handleEdited : handleSubmit}
               className='submit_button'
             >
