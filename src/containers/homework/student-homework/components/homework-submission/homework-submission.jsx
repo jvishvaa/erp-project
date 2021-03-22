@@ -94,13 +94,15 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [penToolOpen, setPenToolOpen] = useState(false)
   const [penToolUrl, setPenToolUrl] = useState('');
   const [penToolIndex, setPenToolIndex] = useState('');
-  const [comment, setComment] = useState('');
+  const [comment, setComment ] = useState('');
   const [desc, setDesc] = useState('');
+  const [questionwiseComment, setQuestionwiseComment] = useState('');
+  const [questionwiseRemark, setQuestionwiseRemark] = useState('');
   const [overallRemark, setOverallRemark] = useState('');
   const [overallScore, setOverallScore] = useState('');
   const [attachmentCount, setAttachmentCount] = useState([]);
   const [maxCount, setMaxCount] = useState(0);
-  const [calssNameWise, setClassName]= useState('')
+  const [calssNameWise, setClassName]= useState('');
   const handleHomeworkSubmit = () => {
 
     let count = 0;
@@ -144,6 +146,27 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     setHomeworkSubmission({ isOpen: false, subjectId: '', date: '', subjectName: '' });
   };
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Homework' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Student Homework') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   useEffect(() => {
     let maxVal=0;
     axiosInstance
@@ -172,6 +195,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               if (homeworkSubmission.status === 3) {
                 setOverallRemark(result.data.data.overall_remark);
                 setOverallScore(result.data.data.score);
+                setQuestionwiseComment(result.data.data.hw_questions?.comment);
+                setQuestionwiseRemark(result.data.data.hw_questions?.remark);
               }
             } else {
               setIsBulk(true);
@@ -182,6 +207,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 setOverallRemark(result.data.data.overall_remark);
                 setOverallScore(result.data.data.score);
                 setSubmittedEvaluatedFilesBulk(result.data.data.hw_questions.evaluated_files);
+                setQuestionwiseComment(result.data.data.hw_questions?.comment);
+                setQuestionwiseRemark(result.data.data.hw_questions?.remark);
               }
             }
           }
@@ -795,6 +822,18 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         </div>}
                       </div>
                     </div>
+                    {homeworkSubmission.status === 3 ?
+                      <div className="overallContainer">
+                        {questionwiseComment &&
+                          <div className="scoreBox1">
+                            Overall Score : {questionwiseComment}
+                          </div>}
+                        {questionwiseRemark &&
+                          <div className="remarkBox1">
+                            Overall Remark : {questionwiseRemark}
+                          </div>}
+                      </div>
+                      : null}
                   </div>
                 }
               </>

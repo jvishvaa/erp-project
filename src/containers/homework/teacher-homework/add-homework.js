@@ -7,6 +7,7 @@ import {
   Button,
   Typography,
   Grid,
+  withStyles,
   useMediaQuery,
 } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -29,6 +30,15 @@ const validateQuestions = (obj) => {
   }
   return { error, errorObj };
 };
+
+const StyledOutlinedButton = withStyles({
+  root: {
+    height: '42px',
+    color: '#FE6B6B',
+    border: '1px solid #FF6B6B',
+    backgroundColor: 'transparent',
+  },
+})(Button);
 
 const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const [name, setName] = useState('');
@@ -241,6 +251,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                 */}
                 <Grid item xs={12} md={6} className='form-field'>
                   <div className='finish-btn-container'>
+                    {/*
                     <Button
                       startIcon={<AddCircleOutlineIcon />}
                       onClick={() => {
@@ -254,6 +265,18 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                     >
                       Add another question
                     </Button>
+                    */}
+                    <StyledOutlinedButton
+                      startIcon={<AddCircleOutlineIcon />}
+                      onClick={() => {
+                        setQueIndexCounter(queIndexCounter + 1);
+                        addNewQuestion(queIndexCounter + 1);
+                      }}
+                      title='Add Question'
+                      fullWidth
+                    >
+                      Add another question
+                    </StyledOutlinedButton>
                   </div>
                 </Grid>
                 <Grid item xs={12} md={6} className='form-field'>

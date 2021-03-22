@@ -14,7 +14,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import CloseIcon from '@material-ui/icons/Close';
 import Paper from '@material-ui/core/Paper';
-import { Grid, TextField, Button,SvgIcon } from '@material-ui/core';
+import { Grid, TextField, Button, SvgIcon } from '@material-ui/core';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import MomentUtils from '@date-io/moment';
@@ -45,13 +45,13 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     maxHeight: 440,
-  }, periodDataUnavailable:{
+  }, periodDataUnavailable: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     padding: '5%',
-    marginLeft:'30px'
+    marginLeft: '30px'
   }
 }));
 
@@ -63,7 +63,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [messageRows, setMessageRows] = useState([]);
   const [userLogs, setUserLogs] = useState([]);
-  const [tempUserLogs, setTempUserLogs] = useState([0,1]);
+  const [tempUserLogs, setTempUserLogs] = useState([0, 1]);
   const [academicYears, setAcademicYears] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -94,39 +94,39 @@ const MessageLog = withRouter(({ history, ...props }) => {
 
   const getAcademicApi = async () => {
     axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
-    .then((res) => {
-      console.log(res.data);
+      .then((res) => {
+        console.log(res.data);
 
-      if (res.data.status_code === 200) {
-        setAcademicYears(res.data.data);
+        if (res.data.status_code === 200) {
+          setAcademicYears(res.data.data);
+          setLoading(false);
+        } else {
+          setAlert('error', res.data.message);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setAlert('error', error.message);
         setLoading(false);
-      } else {
-        setAlert('error', res.data.message);
-        setLoading(false);
-      }
-    })
-    .catch((error) => { 
-      console.log(error);
-      setAlert('error', error.message);
-      setLoading(false);
-    })
+      })
   };
 
   const getBranchApi = async () => {
-    axiosInstance.get(`${endpoints.masterManagement.branchList}?session_year=${selectedAcademic?.id}&module_id=${moduleId}`).then((res) => {
+    axiosInstance.get(`${endpoints.communication.branches}?session_year=${selectedAcademic?.id}&module_id=${moduleId}`).then((res) => {
       console.log(res.data);
       if (res.data.status_code === 200) {
-        setBranchList(res.data.data);
+        setBranchList(res?.data?.data?.results.map(obj=>((obj&&obj.branch)||{})));
         setLoading(false);
       } else {
         setAlert('error', res.data.message);
         setLoading(false);
       }
     })
-    .catch((error) => {
-      setAlert('error', error.message);
-      setLoading(false);
-    })
+      .catch((error) => {
+        setAlert('error', error.message);
+        setLoading(false);
+      })
     // try {
     //   const result = await axiosInstance.get(endpoints.communication.branches);
     //   if (result.status === 200) {
@@ -241,7 +241,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
   };
 
   const handleMessagePagination = (event, page) => {
-    setMessageCurrentPageno(page+1);
+    setMessageCurrentPageno(page + 1);
   };
 
   const getUserDatails = async (id) => {
@@ -264,7 +264,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
             number: isEmail ? items.email : items.contact_no,
             sent: 'Yes',
           });
-         
+
         });
         setUserLogs(tempLogArray);
         setTempUserLogs(tempLogArray)
@@ -281,7 +281,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
   };
 
   const handleUsersPagination = (event, page) => {
-    setUsersCurrentPageno(page+1);
+    setUsersCurrentPageno(page + 1);
   };
 
   const handleClearAll = () => {
@@ -289,6 +289,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
       setSelectedBranches([]);
       setSelectedFromDate();
       setSelectedSmsType([]);
+      setSelectedAcademic('');
       setSelectedToDate();
       setUsersTotalPage();
       setUsersCurrentPageno(1);
@@ -332,12 +333,6 @@ const MessageLog = withRouter(({ history, ...props }) => {
   };
 
   useEffect(() => {
-    getAcademicApi();
-    // if (!branchList.length) {
-    //   getAcademicApi();
-    //   getBranchApi();
-    //   getSmsTypeApi();
-    // }
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
@@ -363,17 +358,22 @@ const MessageLog = withRouter(({ history, ...props }) => {
   }, []);
 
   useEffect(() => {
-    if(selectedAcademic?.id){
+    if (moduleId)
+      getAcademicApi();
+  }, [moduleId]);
+
+  useEffect(() => {
+    if (selectedAcademic?.id) {
       setBranchList([]);
       getBranchApi();
     }
-  },[selectedAcademic]);
+  }, [selectedAcademic]);
 
   useEffect(() => {
-    if(selectedBranches.length > 0){
+    if (selectedBranches.length > 0) {
       getSmsTypeApi();
     }
-  },[selectedBranches]);
+  }, [selectedBranches]);
 
   useEffect(() => {
     if (clearAll) {
@@ -466,7 +466,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                   onChange={handleSmsType}
                   value={selectedSmsType}
                   required
-                disableClearable
+                  disableClearable
                   id='message_log-smsType'
                   className='message_log_branch'
                   options={smsTypeList}
@@ -551,17 +551,15 @@ const MessageLog = withRouter(({ history, ...props }) => {
           <div className='message_log_white_wrapper'>
             <div className='message_type_block_wrapper'>
               <div
-                className={`message_type_block ${
-                  isEmail ? null : 'message_type_block_selected'
-                }`}
+                className={`message_type_block ${isEmail ? null : 'message_type_block_selected'
+                  }`}
                 onClick={handleTypeChange}
               >
                 SMS Logs
               </div>
               <div
-                className={`message_type_block ${
-                  isEmail ? 'message_type_block_selected' : null
-                }`}
+                className={`message_type_block ${isEmail ? 'message_type_block_selected' : null
+                  }`}
                 onClick={handleTypeChange}
               >
                 Email Logs
@@ -659,90 +657,91 @@ const MessageLog = withRouter(({ history, ...props }) => {
                   </Paper>
                 </Grid>
                 <Grid xs={12} lg={3} item>
-                  { userLogs && userLogs.length >= 1
-                   ? (
-                    <div
-                    className={
-                      isMobile ? 'add_credit_mobile_form_outside_wrapper' : 'none'
-                    }
-                    >
-                      <div className={isMobile ? 'view_details_mobile' : 'desktop'}>
-                        {isMobile ? (
-                          <span
-                          className='close_icon_view_details_mobile'
-                          onClick={() => {
-                            setSelectedRow();
-                            setUserLogs([]);
-                          }}
-                          >
-                            <CloseIcon />
-                          </span>
-                        ) : null}
-                        <Paper className={`message_log_table_wrapper ${classes.root}`}>
-                          <TableContainer
-                            className={`table table-shadow message_log_table ${classes.container}`}
-                            >
-                            <Table stickyHeader aria-label='sticky table'>
-                              <TableHead className='view_groups_header'>
-                                <TableRow>
-                                  <TableCell>Name</TableCell>
-                                  <TableCell>{isEmail ? 'Email Id' : 'Number'}</TableCell>
-                                  <TableCell>Sent</TableCell>
-                                </TableRow>
-                              </TableHead>
-                              {userLogs.length ?
-                              <TableBody>
-                                { userLogs.length && userLogs.map((row, i) =>{ 
-                                   return (
-                                  <TableRow key={i}>
-                                    <TableCell align='right'>{row.name}</TableCell>
-                                    <TableCell align='right'>{row.number}</TableCell>
-                                    <TableCell align='right'>
-                                      {row.sent ? (
-                                        <CheckCircleIcon
-                                          style={{ color: 'green', marginLeft: '15px' }}
-                                        />
-                                      ) : (
-                                        <CancelIcon
-                                          style={{ color: 'red', marginLeft: '15px' }}
-                                        />
-                                      )}
-                                    </TableCell>
-                                  </TableRow>
-                                )})}
-                              </TableBody> : 'NO DATA'}
-                            </Table>
-                          </TableContainer>
-                          <div className={`${classes.root} pagenation_view_groups`}>
-                            <TablePagination
-                              component='div'
-                              count={usersTotalPage}
-                              rowsPerPage={15}
-                              page={Number(usersCurrentPageno) - 1}
-                              onChangePage={handleUsersPagination}
-                              rowsPerPageOptions={false}
-                              className='table-pagination-users-log-message'
-                            />
-                            
-                          </div>
-                        </Paper>
-                      </div>
-                    </div>
-                  ) : 
-                  tempUserLogs.length === 0 ? <div className={classes.periodDataUnavailable}>
-                  <SvgIcon
-                    component={() => (
-                      <img
-                        style={
-                          isMobile
-                            ? { height: '100px', width: '200px' }
-                            : { height: '160px', width: '290px' }
+                  {userLogs && userLogs.length >= 1
+                    ? (
+                      <div
+                        className={
+                          isMobile ? 'add_credit_mobile_form_outside_wrapper' : 'none'
                         }
-                        src={unfiltered}
-                      />
-                    )}
-                  /> NO DATA FOUND
-                  </div> :''}
+                      >
+                        <div className={isMobile ? 'view_details_mobile' : 'desktop'}>
+                          {isMobile ? (
+                            <span
+                              className='close_icon_view_details_mobile'
+                              onClick={() => {
+                                setSelectedRow();
+                                setUserLogs([]);
+                              }}
+                            >
+                              <CloseIcon />
+                            </span>
+                          ) : null}
+                          <Paper className={`message_log_table_wrapper ${classes.root}`}>
+                            <TableContainer
+                              className={`table table-shadow message_log_table ${classes.container}`}
+                            >
+                              <Table stickyHeader aria-label='sticky table'>
+                                <TableHead className='view_groups_header'>
+                                  <TableRow>
+                                    <TableCell>Name</TableCell>
+                                    <TableCell>{isEmail ? 'Email Id' : 'Number'}</TableCell>
+                                    <TableCell>Sent</TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                {userLogs.length ?
+                                  <TableBody>
+                                    {userLogs.length && userLogs.map((row, i) => {
+                                      return (
+                                        <TableRow key={i}>
+                                          <TableCell align='right'>{row.name}</TableCell>
+                                          <TableCell align='right'>{row.number}</TableCell>
+                                          <TableCell align='right'>
+                                            {row.sent ? (
+                                              <CheckCircleIcon
+                                                style={{ color: 'green', marginLeft: '15px' }}
+                                              />
+                                            ) : (
+                                              <CancelIcon
+                                                style={{ color: 'red', marginLeft: '15px' }}
+                                              />
+                                            )}
+                                          </TableCell>
+                                        </TableRow>
+                                      )
+                                    })}
+                                  </TableBody> : 'NO DATA'}
+                              </Table>
+                            </TableContainer>
+                            <div className={`${classes.root} pagenation_view_groups`}>
+                              <TablePagination
+                                component='div'
+                                count={usersTotalPage}
+                                rowsPerPage={15}
+                                page={Number(usersCurrentPageno) - 1}
+                                onChangePage={handleUsersPagination}
+                                rowsPerPageOptions={false}
+                                className='table-pagination-users-log-message'
+                              />
+
+                            </div>
+                          </Paper>
+                        </div>
+                      </div>
+                    ) :
+                    tempUserLogs.length === 0 ? <div className={classes.periodDataUnavailable}>
+                      <SvgIcon
+                        component={() => (
+                          <img
+                            style={
+                              isMobile
+                                ? { height: '100px', width: '200px' }
+                                : { height: '160px', width: '290px' }
+                            }
+                            src={unfiltered}
+                          />
+                        )}
+                      /> NO DATA FOUND
+                  </div> : ''}
                 </Grid>
               </Grid>
             </div>
