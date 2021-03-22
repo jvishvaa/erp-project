@@ -495,6 +495,7 @@ const Layout = ({ children, history }) => {
       }
       case 'Student View': {
         history.push('/lesson-plan/student-view');
+        break;
       }
       case 'Assign Transport Fees': {
         history.push('/feeType/assign_other_fees');
