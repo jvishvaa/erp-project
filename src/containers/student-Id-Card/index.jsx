@@ -112,6 +112,8 @@ const StudentIdCard = ({ history }) => {
         if (result.data.status_code === 200) {
           if (keys === 'roleList' || keys === 'signature') {
             handleStateData(result.data.result, keys);
+          } else if(keys === 'branchList'){
+            handleStateData(result.data.data.results, keys);
           } else {
             handleStateData(result.data.data, keys);
           }
@@ -267,7 +269,7 @@ const StudentIdCard = ({ history }) => {
                     className='dropdownIcon'
                     value={filterList.selectedBranch}
                     options={filterList.branchList}
-                    getOptionLabel={(option) => option?.branch_name}
+                    getOptionLabel={(option) => (option && option.branch && option.branch.branch_name) ? option.branch.branch_name : ''}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField

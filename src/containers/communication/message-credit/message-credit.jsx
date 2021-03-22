@@ -303,7 +303,7 @@ const MessageCredit = withRouter(({ history, ...props }) => {
                   id='message_log-branch'
                   className='sms_credit_branch'
                   options={branchList}
-                  getOptionLabel={(option) => option.branch.branch_name}
+                  getOptionLabel={(option) => (option && option.branch && option.branch.branch_name) ? option.branch.branch_name : ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
