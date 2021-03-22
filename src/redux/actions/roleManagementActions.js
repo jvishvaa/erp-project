@@ -194,11 +194,7 @@ export const fetchGrades = (acadId, branches, moduleId) => {
 };
 
 export const fetchSubjects = (acadId, branches, grades, sections, moduleId) => {
-<<<<<<< HEAD
   console.log('sections: ', sections, moduleId)
-=======
-  console.log('sections: ', sections, moduleId);
->>>>>>> revamp/nitin/new-branch-modification
   const branchIds =
     branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
   const gradeIds =
