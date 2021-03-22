@@ -44,7 +44,7 @@ const LessonPlan = () => {
   const [viewMoreData, setViewMoreData] = useState({});
   const [periodDataForView, setPeriodDataForView] = useState({});
   const [filterDataDown, setFilterDataDown] = useState({});
-  const [completedStatus, setCompletedStatus] = useState(false);
+  const [completedStatus, setCompletedStatus] = useState({});
   const limit = 9;
   const [isFilter, setIsFilter] = useState(true);
   const themeContext = useTheme();
@@ -165,6 +165,9 @@ const LessonPlan = () => {
                       style={isMobile ? { marginLeft: '-8px' } : null}
                       sm={viewMore && viewMoreData?.length > 0 ? 6 : 4}
                     >
+                      {
+                        console.log(completedStatus,'completedStatus')
+                      }
                       <PeriodCard
                         index={i}
                         filterDataDown={filterDataDown}
@@ -177,7 +180,7 @@ const LessonPlan = () => {
                         setViewMore={setViewMore}
                         setViewMoreData={setViewMoreData}
                         setPeriodDataForView={setPeriodDataForView}
-                        setCompletedStatus={setCompletedStatus}
+                        setCompletedStatus={(val)=>setCompletedStatus({...(completedStatus||{}), [period.id]:val})}
                         centralGradeName={centralGradeName}
                         centralSubjectName={centralSubjectName}
                       />
@@ -188,7 +191,7 @@ const LessonPlan = () => {
               {viewMore && viewMoreData?.length > 0 && (
                 <Grid item xs={12} sm={5} style={{ width: '100%' }}>
                   <ViewMoreCard
-                    completedStatus={completedStatus}
+                    completedStatus={completedStatus ? completedStatus[periodDataForView] : undefined}
                     viewMoreData={viewMoreData}
                     setViewMore={setViewMore}
                     setSelectedIndex={setSelectedIndex}
