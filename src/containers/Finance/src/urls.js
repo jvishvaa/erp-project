@@ -103,7 +103,7 @@ if (process.env.REACT_APP_UI_ENV === 'dev_aol') {
 } else {
   HOSTNAME = 'localhost'
   PORT = '8000'
-    BASE =`${window.location.origin}/qbox`
+     BASE =`${window.location.origin}/qbox`
   // BASE = 'http://erp.finance.letseduvate.com' + '/qbox'
   // BASE = 'http://localhost:8000' + '/qbox'
   FRONTENT_BASE = PROTO + '://' + HOSTNAME + ':' + '3000'
