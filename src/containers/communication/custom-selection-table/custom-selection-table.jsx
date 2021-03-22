@@ -49,6 +49,9 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
       tempSelection = selectedUsers;
       tempSelection[pageno - 1].selected.push(e.data.id);
       setSelectedUsers(tempSelection);
+      if(tempSelection.length === totalRows){
+        setSelectAll(true);
+      }
     }
   };
   const pageChange = (e) => {

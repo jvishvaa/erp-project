@@ -212,8 +212,9 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleChangeGrade = (values, branch) => {
+    console.log('handle grade', values)
     if (branch) {
-      fetchSections(searchAcademicYear, branch, values, moduleId).then((data) => {
+      fetchSections(searchAcademicYear, branch, [values], moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               id: section.section_id,
@@ -283,7 +284,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       values: { branch = {}, grade = [] },
     } = formik;
     console.log('values : ', value)
-    fetchSubjects([branch], grade, value);
+    fetchSubjects([branch], [grade], [value]);
   };
 
   const handleSubject = (event, value) => {
@@ -307,6 +308,11 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleImageChange = (event) => {
+    let fileType = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf']
+    let selectedFileType = event.target.files[0]?.type
+    if (!fileType.includes(selectedFileType)) {
+      return setAlert('error', 'File Type not supported');
+    }
     if (filePath.length < 10) {
       if (isEdit) {
         console.log('Continue');
@@ -321,15 +327,15 @@ const CreateDailyDairy = (details, onSubmit) => {
       }
       setLoading(true);
       const data = event.target.files[0];
-      console.log(formik.values.branch);
-      const fd = new FormData();
+      console.log(formik.values);
+      let fd = new FormData();
       fd.append('file', data);
       fd.append(
         'branch_name',
-        isEdit ? editData.branch.branch_name : formik.values.branch.branch_name
+        isEdit ? editData.branch?.branch_name : formik.values.branch?.branch_name
       );
-      fd.append('grades', isEdit ? editData.grade.id : formik.values.grade[0].id);
-      fd.append('section', isEdit ? editData.section[0].id : formik.values.section[0].id);
+      fd.append('grades', isEdit ? editData?.grade?.id : formik.values.grade[0]?.id);
+      // fd.append('section', isEdit ? editData.section[0].id : formik.values.section[0].id);
       axiosInstance.post(`academic/dairy-upload/`, fd).then((result) => {
         console.log(fd);
         if (result.data.status_code === 200) {
@@ -346,10 +352,13 @@ const CreateDailyDairy = (details, onSubmit) => {
       });
     } else {
       setAlert('warning', 'Exceed Maximum Number Attachment');
+      setLoading(false);
     }
   };
 
   const handleSubmit = async () => {
+    console.log('upload attach:', filePath);
+
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
     console.log('handle Formik:', formik)
     const ids = formik.values.section
@@ -424,7 +433,8 @@ const CreateDailyDairy = (details, onSubmit) => {
       const { message, status_code: statusCode } = response.data;
       if (statusCode === 200) {
         setAlert('success', message);
-        window.location.reload();
+        // window.location.reload();
+        history.push('/diary/teacher');
       } else {
         setAlert('error', response.data.message);
       }
@@ -510,10 +520,10 @@ const CreateDailyDairy = (details, onSubmit) => {
   const FileRow = (props) => {
     const { file, onClose, index } = props;
     return (
-      <div className='file_row_image'>
-        <div className='file_name_container'>
-          File
-          {index + 1}
+      <div className='file_row_image_new'>
+        <div className='file_name_container_new'>
+          {file}
+          {/* {index + 1} */}
         </div>
         {/* <Divider orientation="vertical"  className='divider_color' flexItem /> */}
         <div>
@@ -889,7 +899,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               </Grid>
 
               <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <div style={{ display: 'flex' }} className='scrollable'>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                   {state.isEdit
                     ? editData.documents.map((file, i) => (
                         <FileRow
@@ -937,20 +947,39 @@ const CreateDailyDairy = (details, onSubmit) => {
                       type='file'
                       style={{ display: 'none' }}
                       id='raised-button-file'
-                      accept='image/*'
+                      accept='image/*, .pdf'
                       onChange={handleImageChange}
                       // defaultValue={state.isEdit?editData.documents : []}
                       // value={state.isEdit?editData.documents : []}
                     />
                     Add Document
                   </Button>
+                  <br />
+                  <small
+                    style={{
+                      color: '#014b7e',
+                      fontSize: '16px',
+                      marginLeft: '28px',
+                      marginTop: '8px',
+                    }}
+                  >
+                    {' '}
+                    Accepted files: [jpeg,jpg,png,pdf]
+                  </small>
                 </div>
               </Grid>
             </Grid>
           </div>
-          <div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <Button
-              style={isMobile ? { marginLeft: '' } : { marginLeft: '80%' }}
+              // style={isMobile ? { marginLeft: '' } : { marginLeft: '60%' }}
+              onClick={() => history.goBack()}
+              className='submit_button'
+            >
+              BACK
+            </Button>
+            <Button
+              // style={isMobile ? { marginLeft: '' } : { marginLeft: '80%' }}
               onClick={state.isEdit ? handleEdited : handleSubmit}
               className='submit_button'
             >

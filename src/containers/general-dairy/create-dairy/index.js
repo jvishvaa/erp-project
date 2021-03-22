@@ -171,6 +171,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const { setIsEdit, setEditData } = setState;
 
   const [overviewSynopsis, setOverviewSynopsis] = useState([]);
+  const [doc, setDoc] = useState(null);
+  useEffect(() => {
+    console.log('form :', filePath);
+  })
 
   const selectionArray = [];
 
@@ -281,6 +285,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       ...(filterData.grade = []),
       subject: '',
       chapter: '',
+      section: ''
     });
     setOverviewSynopsis([]);
     if (value && filterData.branch) {
@@ -289,11 +294,12 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         grade: [...filterData.grade, value],
         subject: '',
         chapter: '',
+        section: ''
       });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${
-            filterData.branch[0].id
+          `${endpoints.masterManagement.sections}?session_year=${searchAcademicYear}&branch_id=${
+            filterData?.branch[0]?.id
           }&grade_id=${value.grade_id}&module_id=${
             location.pathname === '/lesson-plan/student-view'
               ? studentModuleId
@@ -326,13 +332,24 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   };
 
   const handleImageChange = (event) => {
+    let fileType = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf']
+    let selectedFileType = event.target.files[0]?.type
+    if (!fileType.includes(selectedFileType)) {
+      return setAlert('error', 'File Type not supported');
+    }
+    
+    if (!filterData.grade || !filterData.section || !filterData.branch) {
+      return setAlert('error', 'Select all fields');
+    }
+    
+    setDoc(event.target.files[0]?.name);
     setLoading(true);
     if (filePath.length < 10) {
       // setLoading(true)
       const data = event.target.files[0];
-      const fd = new FormData();
+      var fd = new FormData();
       fd.append('file', event.target.files[0]);
-      fd.append('branch', filterData.branch[0].branch_name);
+      fd.append('branch', filterData?.branch[0]?.branch_name);
       fd.append(
         'grade',
         filterData.grade.map((g) => g.grade_id)
@@ -341,6 +358,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         'section',
         filterData.section.map((s) => s.id)
       );
+      console.log('fd', fd)
       axiosInstance.post(`${endpoints.generalDairy.uploadFile}`, fd).then((result) => {
         if (result.data.status_code === 200) {
           console.log(result.data, 'resp');
@@ -641,6 +659,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   };
 
   const handleSubmit = async () => {
+    console.log('file path: ', filePath)
+    // if (!!filePath.length) {
+    //   return setAlert('error', 'Upload attachment!');
+    // }
     const assignRoleApi = endpoints.generalDairy.SubmitDairy;
 
     setSelectectUserError('');
@@ -712,10 +734,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const FileRow = (props) => {
     const { file, onClose, index } = props;
     return (
-      <div className='file_row_image'>
-        <div className='file_name_container'>
-          File
-          {index + 1}
+      <div className='file_row_image_new'>
+        <div className='file_name_container_new'>
+          {file}
+          {/* {index + 1} */}
         </div>
         <div>
           <span onClick={onClose}>
@@ -1067,7 +1089,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                 </Grid>
               </Grid>
               <div className='attachmentContainer'>
-                <div style={{ display: 'flex' }} className='scrollsable'>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', padding: '10px' }} className='scrollsable'>
                   {filePath?.length > 0
                     ? filePath?.map((file, i) => (
                         <FileRow
@@ -1115,10 +1137,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                           : { display: 'none' }
                       }
                       id='raised-button-file'
-                      accept='image/*'
+                      accept='image/*, .pdf'
                       onChange={handleImageChange}
                     />
-                    Add Document
+                    {'Add Document' }
                   </Button>
                   <small
                     style={{
@@ -1135,13 +1157,21 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
               </div>
             </div>
             <div>
-              <Button
+            <Button
                 style={{ marginLeft: '37px' }}
+                onClick={() => history.goBack()}
+                className='submit_button'
+              >
+                BACK
+              </Button>
+              <Button
+                style={{ marginLeft: '20px' }}
                 onClick={state.isEdit ? handleEdited : handleSubmit}
                 className='submit_button'
               >
                 SUBMIT
               </Button>
+
             </div>
           </div>
         </div>

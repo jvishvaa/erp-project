@@ -300,7 +300,7 @@ const LessonPlanGraphReport = ({
 
   useEffect(() => {
     axios
-      .get(`https://dev.mgmt.letseduvate.com/qbox/lesson_plan/list-session/`, {
+      .get(`${endpoints.baseURLCentral}/lesson_plan/list-session/`, {
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },
@@ -316,7 +316,7 @@ const LessonPlanGraphReport = ({
         setAlert('error', error.message);
       });
     axios
-      .get('https://dev.mgmt.letseduvate.com/qbox/lesson_plan/list-volume/', {
+      .get(`${endpoints.baseURLCentral}/lesson_plan/list-volume/`, {
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },
@@ -336,7 +336,8 @@ const LessonPlanGraphReport = ({
       .get(`${endpoints.communication.branches}`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setBranchDropdown(result.data.data);
+          // setBranchDropdown(result.data.data);
+          setBranchDropdown(result.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean))
           // setBranchId(result.data.data[1].id);
           // a = result.data.data[0].id
         } else {
