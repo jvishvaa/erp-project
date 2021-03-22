@@ -346,6 +346,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       });
     } else {
       setAlert('warning', 'Exceed Maximum Number Attachment');
+      setLoading(false);
     }
   };
 
@@ -937,7 +938,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                       type='file'
                       style={{ display: 'none' }}
                       id='raised-button-file'
-                      accept='image/*'
+                      accept='image/*, .pdf'
                       onChange={handleImageChange}
                       // defaultValue={state.isEdit?editData.documents : []}
                       // value={state.isEdit?editData.documents : []}

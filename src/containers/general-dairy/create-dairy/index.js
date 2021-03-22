@@ -285,6 +285,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       ...(filterData.grade = []),
       subject: '',
       chapter: '',
+      section: ''
     });
     setOverviewSynopsis([]);
     if (value && filterData.branch) {
@@ -293,6 +294,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         grade: [...filterData.grade, value],
         subject: '',
         chapter: '',
+        section: ''
       });
       axiosInstance
         .get(
@@ -330,23 +332,23 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   };
 
   const handleImageChange = (event) => {
-    console.log('fd', event.target.files)
+    console.log('fd', filterData)
     setDoc(event.target.files[0]?.name);
     setLoading(true);
     if (filePath.length < 10) {
       // setLoading(true)
       const data = event.target.files[0];
-      const fd = new FormData();
+      var fd = new FormData();
       fd.append('file', event.target.files[0]);
-      // fd.append('branch', filterData?.branch[0]?.branch_name);
-      // fd.append(
-      //   'grade',
-      //   filterData.grade.map((g) => g.grade_id)
-      // );
-      // fd.append(
-      //   'section',
-      //   filterData.section.map((s) => s.id)
-      // );
+      fd.append('branch', filterData?.branch[0]?.branch_name);
+      fd.append(
+        'grade',
+        filterData.grade.map((g) => g.grade_id)
+      );
+      fd.append(
+        'section',
+        filterData.section.map((s) => s.id)
+      );
       console.log('fd', fd)
       axiosInstance.post(`${endpoints.generalDairy.uploadFile}`, fd).then((result) => {
         if (result.data.status_code === 200) {
@@ -639,10 +641,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     setSelectAll(!selectAll);
     const testclick = document.querySelectorAll('input[type=checkbox]');
     if (!selectAll) {
-      testclick[1].click();
+      testclick && testclick[1].click();
     } else {
       for (let i = 2; i < testclick.length; i += 1) {
-        testclick[i].click();
+        testclick && testclick[i].click();
       }
     }
   };
@@ -1125,7 +1127,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                       accept='image/*, .pdf'
                       onChange={handleImageChange}
                     />
-                    {doc || 'Add Document' }
+                    {'Add Document' }
                   </Button>
                   <small
                     style={{
@@ -1142,20 +1144,21 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
               </div>
             </div>
             <div>
-              <Button
+            <Button
                 style={{ marginLeft: '37px' }}
-                onClick={state.isEdit ? handleEdited : handleSubmit}
-                className='submit_button'
-              >
-                SUBMIT
-              </Button>
-              <Button
-                style={{ marginLeft: '20px' }}
                 onClick={() => history.goBack()}
                 className='submit_button'
               >
                 BACK
               </Button>
+              <Button
+                style={{ marginLeft: '20px' }}
+                onClick={state.isEdit ? handleEdited : handleSubmit}
+                className='submit_button'
+              >
+                SUBMIT
+              </Button>
+
             </div>
           </div>
         </div>
