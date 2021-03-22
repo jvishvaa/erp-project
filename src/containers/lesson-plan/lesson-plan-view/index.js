@@ -191,7 +191,7 @@ const LessonPlan = () => {
               {viewMore && viewMoreData?.length > 0 && (
                 <Grid item xs={12} sm={5} style={{ width: '100%' }}>
                   <ViewMoreCard
-                    completedStatus={completedStatus ? completedStatus[periodDataForView] : undefined}
+                    completedStatus={completedStatus ? completedStatus[periodDataForView?periodDataForView.id:undefined] : undefined}
                     viewMoreData={viewMoreData}
                     setViewMore={setViewMore}
                     setSelectedIndex={setSelectedIndex}
