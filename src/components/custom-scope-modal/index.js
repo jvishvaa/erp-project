@@ -558,7 +558,7 @@ const CustomScopeModal = ({
 
                   handleChangeSubject(filteredValues);
                 }}
-                getOptionSelected={(option, value) => option.id == value.id}
+                getOptionSelected={(option, value) => option.id == value.id && option.subject_name == value.subject_name}
               />
             </FormControl>
           </Grid>
