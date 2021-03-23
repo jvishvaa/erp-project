@@ -1,5 +1,11 @@
 import React, { useContext } from 'react';
 import Paper from '@material-ui/core/Paper';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -79,6 +85,7 @@ const ViewMoreCard = ({
     ],
   };
   return (
+    <>
     <Paper className='rootViewMoreReport'>
       <div className='viewMoreHeader'>
         <div className='leftHeader'>
@@ -102,11 +109,8 @@ const ViewMoreCard = ({
           </div>
         </div>
       </div>
-       <div className="resourceBulkDownload">
-                <div>Chapter Wise Details</div>
-
-            </div>
-            {viewMoreData?.map(p => (
+       <div className="resourceBulkDownload-">
+            {/* {viewMoreData?.map(p => (
                 <div className="viewMoreBody">
                     <div className="bodyTitle">
                       <div>{p?.chapter_name}</div>  
@@ -121,11 +125,34 @@ const ViewMoreCard = ({
                             </div>
                     </div> 
                 </div>
-            ))}
-
+            ))} */}
+            <TableContainer component={Paper}>
+                <Table size="small" aria-label="a dense table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell  style={{textAlign:'left !important'}}>Chapter</TableCell>
+                            <TableCell align="right">Completed periods</TableCell>
+                            <TableCell align="right">Total periods</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {viewMoreData?.map(chapterInfo=>{
+                      return (
+                        <TableRow>
+                          <TableCell style={{textAlign:'left !important'}} align="left">{chapterInfo.chapter_name}</TableCell>
+                          <TableCell align="right">{chapterInfo.completed_periods}</TableCell>
+                          <TableCell align="right">{chapterInfo.no_of_periods}</TableCell>
+                        </TableRow>
+                      )
+                    })}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            </div>
 
       {/* <HighchartsReact highcharts={Highcharts} options={configObj} /> */}
     </Paper>
+    </>
   );
 };
 

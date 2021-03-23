@@ -40,6 +40,9 @@ const Filter = (props) => {
             moment().subtract(6, 'days'),
             moment(),
         ]);
+        const [startDateTechPer, setStartDateTechPer] = useState(moment().format('YYYY-MM-DD'));
+        const [endDateTechPer, setEndDateTechPer] = useState(getDaysAfter(moment(), 7));
+      
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     // const [branchList] = useState([
@@ -103,6 +106,13 @@ const Filter = (props) => {
         });
       }
     }, [window.location.pathname]);
+
+    function getDaysAfter(date, amount) {
+      return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
+  }
+  function getDaysBefore(date, amount) {
+      return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
+  }
     
     function callApi(api, key) {
         setLoading(true);
@@ -154,7 +164,7 @@ const Filter = (props) => {
             setPage(1);
             callApi(`${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
                 selectedBatch && selectedBatch.id
-                }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${selectedBatch.batch_size}`,
+                }&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${selectedBatch.batch_size}`,
                 'filter'
             );
         }
@@ -173,13 +183,14 @@ const Filter = (props) => {
         setPage(page);
         callApi(`${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
                     selectedBatch && selectedBatch.id
-                }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${selectedBatch.batch_size}`,
+                }&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${selectedBatch.batch_size}`,
             'filter'
         );
     }
     
     function handleClearFilter() {
         setDateRangeTechPer([moment().subtract(6, 'days'), moment()]);
+        setSelectedClassType('')
         setEndDate('');
         setStartDate('');
         setSelectedBranch([]);
@@ -199,10 +210,40 @@ const Filter = (props) => {
     }
     
     function handleFilter() {
-        if (!selectedGrade) {
-            setAlert('warning', 'Select Grade');
-            return;
+      const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
+
+
+      if (!selectedClassType) {
+        setAlert('warning', 'Select Classtype');
+        return;
+      }
+      if(!selectedAcademicYear){
+        setAlert('warning','Select Academic Year')
+        return;
+      }
+      if(!selectedBranch.length > 0){
+        setAlert('warning','Select Branch')
+        return;
+      }
+      if (!selectedGrade.length > 0) {
+        setAlert('warning', 'Select Grade');
+        return;
+      }
+      if (!selectedSection.length > 0) {
+        setAlert('warning', 'Select Section');
+        return;
+      }
+      if (selectedClassType.id === 1) {
+        if (!selectedCourse) {
+          setAlert('warning', 'Select Course');
+          return;
         }
+      } else {
+        if (!selectedSubject.length > 0) {
+          setAlert('warning', 'Select Subject');
+          return;
+        }
+      }
         // if (!selectedCourse) {
         //     setAlert('warning', 'Select Course');
         //     return;
@@ -211,24 +252,24 @@ const Filter = (props) => {
         //     setAlert('warning', 'Select Batch Size');
         //     return;
         // }
-        if (!startDate) {
-            setAlert('warning', 'Select Start Date');
-            return;
-        }
+        // if (!startDate) {
+        //     setAlert('warning', 'Select Start Date');
+        //     return;
+        // }
         setLoading(true);
         setPage(1);
         if(window.location.host === endpoints?.aolConfirmURL){
-            callApi(`${endpoints.teacherViewBatches.getBatchList}?is_aol=1&course=${selectedCourse.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}`,
+            callApi(`${endpoints.teacherViewBatches.getBatchList}?is_aol=1&course=${selectedCourse.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=1&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}`,
             'filter'
         );
         }else if(selectedCourse.id){
             callApi(
-                `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.map((el)=>el.id)}&session_year=${selectedAcademicYear.id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15&module_id=${moduleId}`,
+                `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.map((el)=>el.id)}&session_year=${selectedAcademicYear.id}&class_type=${selectedClassType.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${selectedCourse.id}&page_number=1&page_size=15&module_id=${moduleId}`,
                 'filter'
               );
         }else {
             callApi(
-              `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.map((el)=>el.id)}&session_year=${selectedAcademicYear.id}&subject_id=${subSelectedId}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15&module_id=${moduleId}`,
+              `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.map((el)=>el.id)}&session_year=${selectedAcademicYear.id}&subject_id=${subSelectedId}&class_type=${selectedClassType.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=1&page_size=15&module_id=${moduleId}`,
               'filter'
             );
           }
@@ -511,32 +552,32 @@ const Filter = (props) => {
                    />
                </Grid>
                )} 
-                <Grid item md={3} xs={12}>
-                  <LocalizationProvider dateAdapter={MomentUtils}>
-                    <DateRangePicker
-                        startText='Select-date-range'
-                        value={dateRangeTechPer}
-                        onChange={(newValue) => {
-                            handleDate(newValue);
-                        }}
-                        renderInput={({ inputProps, ...startProps }, endProps) => {
-                        return (
-                            <>
-                                <TextField
-                                    {...startProps}
-                                    inputProps={{
-                                        ...inputProps,
-                                        value: `${inputProps.value} - ${endProps.inputProps.value}`,
-                                        readOnly: true,
-                                    }}
-                                    size='small'
-                                    style={{ minWidth: '100%' }}
-                                />
-                          </>
-                        );
-                      }}
-                    />
-                  </LocalizationProvider>
+                <Grid item xs={12} sm={3}>
+                    <LocalizationProvider dateAdapter={MomentUtils}>
+                        <DateRangePicker
+                            startText='Select-date-range'
+                            value={dateRangeTechPer}
+                            onChange={(newValue) => {
+                                setDateRangeTechPer(newValue);
+                            }}
+                            renderInput={({ inputProps, ...startProps }, endProps) => {
+                                return (
+                                    <>
+                                        <TextField
+                                            {...startProps}
+                                            inputProps={{
+                                                ...inputProps,
+                                                value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                                                readOnly: true,
+                                            }}
+                                            size='small'
+                                            style={{ minWidth: '100%' }}
+                                        />
+                                    </>
+                                );
+                            }}
+                        />
+                    </LocalizationProvider>
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container spacing={2} style={{ marginTop: '5px' }}>
