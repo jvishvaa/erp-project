@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // eslint-disable-next-line no-unused-vars
-const CreateGroup = withRouter(({ history, ...props }) => {
+const CreateGroup =({ history, ...props }) => {
   const {
     edit,
     preSeletedRoles=[],
@@ -295,7 +295,14 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     if (edit) {
       getUserListUrl = `${endpoints.communication.editGroup}${preSelectedGroupId}/retrieve-update-group/?page=${pageno}&page_size=15&module_id=${moduleId}`;
     }
-    if (selectedBranch.length && !selectedRoles.includes('All')) {
+    if (selectedRoles.length && !selectedRoles.includes('All')) {
+      roleList
+        .filter((item) => selectedRoles.includes(item['role_name']))
+        .forEach((items) => {
+          rolesId.push(items.id);
+        });
+    }
+    if (selectedBranch.length && !selectedBranch.includes('All')) {
       selectedBranch.map((branchs) => branchsId.push(branchs?.id));
     }
     if (selectedGrades.length && !selectedGrades.includes('All')) {
@@ -306,13 +313,13 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         });
     }
 
-    if (selectedGrades.length && !selectedGrades.includes('All')) {
-      gradeList
-        .filter((item) => selectedGrades.includes(item['grade__grade_name']))
-        .forEach((items) => {
-          gradesId.push(items.grade_id);
-        });
-    }
+    // if (selectedGrades.length && !selectedGrades.includes('All')) {
+    //   gradeList
+    //     .filter((item) => selectedGrades.includes(item['grade__grade_name']))
+    //     .forEach((items) => {
+    //       gradesId.push(items.grade_id);
+    //     });
+    // }
     if (selectedSections.length && !selectedSections.includes('All')) {
       sectionList
         .filter((item) => selectedSections.includes(item['section__section_name']))
@@ -978,6 +985,6 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       </Layout>
     </>
   );
-});
+};
 
-export default CreateGroup;
+export default  withRouter(CreateGroup);

@@ -55,7 +55,9 @@ const UpdateGroup = () => {
           const array = [];
           const n = result.data.data && result.data.data.results.length;
           for (let i = 0; i < n; i += 1) {
-            array.push(result.data.data.results[i].id);
+            if(result.data.data.results[i].is_assigned === true) {
+              array.push(result.data.data.results[i].id);
+            }
           }
           setSelectedUser(array);
         }
@@ -71,7 +73,7 @@ const UpdateGroup = () => {
     getApiCall(
       `${
         endpoints.communication.communicationUserList
-      }?page=1&page_size=500&module_id=${moduleId}&role=${selectedRole}&branch=${branchId}${gradeId ? `&grade=${gradeId}`: ''}${
+      }?page=1&page_size=500&module_id=${moduleId}&role=${selectedRole}&branch=${branchId}${gradeId.length !== 0 ? `&grade=${gradeId}`: ''}${
         sectionId.length !== 0 ? `&section=${sectionId}` : ''
       }`,
       'fullGroup'
@@ -82,7 +84,7 @@ const UpdateGroup = () => {
     getApiCall(
       `${endpoints.communication.editGroup}${
         location.state.groupId
-      }/retrieve-update-group/?page=1&page_size=500&module_id=${moduleId}&role=${selectedRole}&branch=${branchId}${gradeId ? `&grade=${gradeId}`: ''}${
+      }/retrieve-update-group/?page=1&page_size=500&module_id=${moduleId}&role=${selectedRole}&branch=${branchId}${gradeId.length !== 0 ? `&grade=${gradeId}`: ''}${
         sectionId.length !== 0 ? `&section=${sectionId}` : ''
       }`,
       'selectedGroup'
@@ -271,7 +273,7 @@ const UpdateGroup = () => {
                   )}
                 />
               </Grid>
-              <Grid item md={3} xs={12} style={{ marginTop: '8px' }}>
+              <Grid item md={3} xs={12} style={{ marginTop: '8px', display: location.state.grades.length !== 0 ? '' : 'none', }}>
                 <Autocomplete
                   size='small'
                   multiple
