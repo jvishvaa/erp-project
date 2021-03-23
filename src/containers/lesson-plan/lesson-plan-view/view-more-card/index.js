@@ -15,7 +15,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import { AttachmentPreviewerContext } from '../../../../components/attachment-previewer/attachment-previewer-contexts';
 
 
-const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataForView, completedStatus, setSelectedIndex, setLoading, centralGradeName, centralSubjectName }) => {
+const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataForView, completedStatus, setSelectedIndex, setLoading, centralGradeName, centralSubjectName, setCompletedStatus }) => {
     const themeContext = useTheme();
     const { openPreview, closePreview } = React.useContext(AttachmentPreviewerContext) || {};
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -47,16 +47,17 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataFor
             .then(result => {
                 if (result.data.status_code === 200) {
                     setAlert('success', result.data.message);
-                    setOnComplete(result.data.result.is_completed);
+                    setCompletedStatus(result.data.result.is_completed)
+                    // setOnComplete(result.data.result.is_completed);
                 } else {
                     setAlert('error', result.data.message);
-                    setOnComplete(false);
+                    // setOnComplete(false);
                 }
                 setLoading(false);
             })
             .catch(error => {
                 setAlert('error', error.message);
-                setOnComplete(false);
+                // setOnComplete(false);
                 setLoading(false);
             })
     }
@@ -121,7 +122,7 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataFor
                         </IconButton>
                     </div>
                     <div className="headerContent">
-                        {(onComplete || completedStatus) &&
+                        {completedStatus &&
                             <div className="lessonCompleted">Lesson Completed</div>}
                     </div>
                 </div>
@@ -197,9 +198,10 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataFor
             ))}
             {location.pathname === "/lesson-plan/teacher-view" &&
                 <>
-                    {!completedStatus && !onComplete &&
-                        <div className="completed_button_view_more">
+                    {!completedStatus &&
+                        <div key={`btn-div-${periodDataForView?.id}`} className="completed_button_view_more">
                             <Button
+                                key={`btn-${periodDataForView?.id}`} 
                                 variant='contained'
                                 style={{ color: 'white' }}
                                 color="primary"
