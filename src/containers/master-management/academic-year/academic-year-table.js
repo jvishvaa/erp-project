@@ -75,7 +75,7 @@ const columns = [
 const AcademicYearTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = useState(1);
   const [academicYear, setAcademicYear] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [yearId, setYearId] = useState();

@@ -399,7 +399,9 @@ const CreateClassForm = (props) => {
           moduleId,
           value.tutor_id,
           isSuperUser ? 1 : 0,
-          gradeIds
+          gradeIds,
+          onlineClass?.branchIds,
+          onlineClass?.acadId,
         )
       );
     } else {

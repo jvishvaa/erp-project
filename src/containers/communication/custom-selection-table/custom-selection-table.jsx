@@ -20,7 +20,14 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
     setSelectAll,
     name,
   } = props || {};
+
+  React.useEffect(() => {
+    console.log('=== completeData: ', completeData)
+    console.log('=== selectedUsers: ', selectedUsers)
+    //apiRef.current && apiRef.current.setRowModels(completeData);
+  }, [completeData, selectedUsers]);
   const selectRow = (e) => {
+    console.log('=== on Select: ', e)
     if (name !== 'assign_role') {
       setSelectAll(false);
     }
@@ -42,6 +49,9 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
       tempSelection = selectedUsers;
       tempSelection[pageno - 1].selected.push(e.data.id);
       setSelectedUsers(tempSelection);
+      if(tempSelection.length === totalRows){
+        setSelectAll(true);
+      }
     }
   };
   const pageChange = (e) => {
@@ -54,9 +64,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
 
   let apiRef = React.useRef(null);
 
-  React.useEffect(() => {
-    //apiRef.current && apiRef.current.setRowModels(completeData);
-  }, [data]);
+
 
   return (
     <div
@@ -74,7 +82,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
       <DataGrid
         pageSize={pageSize || 15}
         rowCount={totalRows}
-        checkboxSelection={true}
+        checkboxSelection
         onPageChange={pageChange}
         hideFooterSelectedRowCount
         hideFooterRowCount
@@ -82,9 +90,22 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
         ref={(input) => (apiRef = input)}
         {...data}
         onRowSelected={selectRow}
-        selectRows={() => {
-          console.log('selectRows ????');
+        // selectRows={() => {
+        //   console.log('selectRows ????');
+        // }}
+        onSelectionChange={(newSelection) => {
+          // setSelection(newSelection.rows);
+          console.log('=== on selction Change: ', newSelection)
         }}
+        // selectionModel={['8']}
+        // onSelectionModelChange={(e) => {
+        //   console.log('selected with default: ', e)
+        //   const selectedIDs = new Set(e.selectionModel);
+        //   const selectedRowData = rows.filter((r) =>
+        //     selectedIDs.has(r.id.toString())
+        //   );
+        //   console.log(selectedRowData);
+        // }}
         components={{
           noRowsOverlay: (params) => {
             if (!apiRef.current) {

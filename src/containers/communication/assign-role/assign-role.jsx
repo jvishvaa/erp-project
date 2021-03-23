@@ -85,6 +85,56 @@ const AssignRole = (props) => {
     }
   }, []);
 
+  useEffect(() => {
+    getRoleApi();
+  }, []);
+
+  useEffect(() => {
+    if (moduleId) getYearApi();
+  }, [moduleId]);
+
+  useEffect(() => {
+    if (selectedYear) {
+      getBranchApi();
+    }
+  }, [selectedYear]);
+
+  useEffect(() => {
+    if (selectedBranch) {
+      getGradeApi();
+    }
+  }, [selectedBranch]);
+
+  useEffect(() => {
+    if (
+      selectedMultipleRoles.length ||
+      selectedGrades.length ||
+      selectedSections.length ||
+      searchText
+    ) {
+      setClearAllActive(true);
+    }
+  }, [selectedMultipleRoles, selectedGrades, selectedSections, searchText]);
+
+  useEffect(() => {
+    if (selectedGrades.length) {
+      getSectionApi();
+    }
+  }, [selectedGrades]);
+
+  useEffect(() => {
+    displayUsersList();
+    if (assignedRole) {
+      setAssigenedRole(false);
+    }
+    if (clearAll) {
+      setClearAll(false);
+    }
+    if (filterCheck) {
+      setFilterCheck(false);
+    }
+  }, [pageno, assignedRole, clearAll, filterCheck]);
+
   const getRoleApi = async () => {
     try {
       const result = await axiosInstance.get(endpoints.communication.roles, {
@@ -200,6 +250,7 @@ const AssignRole = (props) => {
       });
       if (result.status === 200) {
         setHeaders([
+          // { field: 'id', headerName: 'ID', width: 250 },
           { field: 'fullName', headerName: 'Name', width: 250 },
           { field: 'email', headerName: 'Email Id', width: 250 },
           { field: 'erp_id', headerName: 'ERP Id', width: 150 },
@@ -350,18 +401,34 @@ const AssignRole = (props) => {
     }
   };
 
-  const handleSelectAll = () => {
+  const handleSelectAll = (e) => {
+    console.log('on click', e.target.checked)
+    // set select all to true/false 
+
+    // turn all the states to true/ False
     const tempSelectObj = selectAllObj.slice();
-    tempSelectObj[pageno - 1].selectAll = !tempSelectObj[pageno - 1].selectAll;
+
+    // tempSelectObj[pageno - 1].selectAll = !tempSelectObj[pageno - 1].selectAll;
+    tempSelectObj[pageno - 1].selectAll = e.target.checked;
+    console.log('=== textClick checked: ', tempSelectObj)
     setSelectAllObj(tempSelectObj);
     const testclick = document.querySelectorAll('input[type=checkbox]');
     if (!selectAllObj[pageno - 1].selectAll) {
       for (let i = 2; i < testclick.length; i += 1) {
-        testclick[i].click();
+        // console.log('=== textClick checked: ', testclick[i])
+        if (testclick[i].checked) {
+          testclick[i].click()
+        }
+        testclick[i].removeAttribute("checked");
+
       }
     } else {
       for (let i = 2; i < testclick.length; i += 1) {
-        testclick[i].click();
+        // console.log('=== textClick unCheck: ', testclick[i])
+        if (!testclick[i].checked) {
+          testclick[i].click()
+        }
+        testclick[i].setAttribute("checked", "checked");
       }
     }
   };
@@ -376,6 +443,7 @@ const AssignRole = (props) => {
   const assignRole = async () => {
     const assignRoleApi = endpoints.communication.assignRole;
     const selectionArray = [];
+    console.log('=== selected user assign: ', selectedUsers)
     selectedUsers.forEach((item) => {
       item.selected.forEach((ids) => {
         selectionArray.push(ids);
@@ -416,9 +484,9 @@ const AssignRole = (props) => {
       const { message, status_code: statusCode } = response.data;
       if (statusCode === 200) {
         // props.history.push('/user-management/assign-role')
-        // displayUsersList()
+        displayUsersList()
         setAlert('success', 'Role successfully assigned to user');
-        setSelectedUsers([]);
+        // setSelectedUsers([]);
         setRoleError('');
         setSelectedRole('');
         setSelectAllObj([]);
@@ -437,55 +505,6 @@ const AssignRole = (props) => {
       setAlert('error', error.message);
     }
   };
-  useEffect(() => {
-    getRoleApi();
-  }, []);
-
-  useEffect(() => {
-    if (moduleId) getYearApi();
-  }, [moduleId]);
-
-  useEffect(() => {
-    if (selectedYear) {
-      getBranchApi();
-    }
-  }, [selectedYear]);
-
-  useEffect(() => {
-    if (selectedBranch) {
-      getGradeApi();
-    }
-  }, [selectedBranch]);
-
-  useEffect(() => {
-    if (
-      selectedMultipleRoles.length ||
-      selectedGrades.length ||
-      selectedSections.length ||
-      searchText
-    ) {
-      setClearAllActive(true);
-    }
-  }, [selectedMultipleRoles, selectedGrades, selectedSections, searchText]);
-
-  useEffect(() => {
-    if (selectedGrades.length) {
-      getSectionApi();
-    }
-  }, [selectedGrades]);
-
-  useEffect(() => {
-    displayUsersList();
-    if (assignedRole) {
-      setAssigenedRole(false);
-    }
-    if (clearAll) {
-      setClearAll(false);
-    }
-    if (filterCheck) {
-      setFilterCheck(false);
-    }
-  }, [pageno, assignedRole, clearAll, filterCheck]);
 
   const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
 
@@ -833,7 +852,7 @@ const AssignRole = (props) => {
                 control={
                   <Checkbox
                     checked={!!checkAll}
-                    onChange={handleSelectAll}
+                    onChange={(e) => handleSelectAll(e)}
                     color='primary'
                   />
                 }
@@ -882,6 +901,7 @@ const AssignRole = (props) => {
           ) : null} */}
             <span className='create_group_error_span'>{selectectUserError}</span>
             <CustomSelectionTable
+
               header={
                 isMobile
                   ? headers

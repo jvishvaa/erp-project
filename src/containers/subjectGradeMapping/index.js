@@ -48,8 +48,9 @@ const Subjectgrade = (props) => {
 
 
     useEffect(() => {
+        //axiosInstance.get(endpoints.mappingStudentGrade.branch).then(res => {
         const getBranch = () => {
-            axiosInstance.get(endpoints.mappingStudentGrade.branch).then(res => {
+            axiosInstance.get(endpoints.masterManagement.branchList).then(res => {
                 if (res.data.data) {
                     setBranchRes(res.data.data)
                 }
@@ -113,7 +114,8 @@ const Subjectgrade = (props) => {
                 centralGrade.push({
                     id: filteCentral.id,
                     grade_name: filteCentral.grade_name,
-                    grade: filteCentral.grade
+                    grade: filteCentral.grade,
+                    subject: filteCentral.subject,
                 })
                 for (let filterSub of filteCentral.subject) {
                     centralSub.push({
@@ -138,6 +140,7 @@ const Subjectgrade = (props) => {
     }
 
     const handleChangeCentralGrade = (value) => {
+        setcentralSubValue(null)
         if (value) {
             setcentralGradeValue(value)
         } else {
@@ -461,8 +464,9 @@ const Subjectgrade = (props) => {
                                             // multiple
                                             value={centralSubValue}
                                             id="tags-outlined"
-                                            options={centralSubject}
-                                            getOptionLabel={(option) => option.subject_name}
+                                            // options={centralSubject}
+                                            options={(centralGradeValue&&centralGradeValue.subject)||[]}
+                                            getOptionLabel={(option) => option?.subject_name}
                                             filterSelectedOptions
                                             size="small"
                                             renderInput={(params) => (

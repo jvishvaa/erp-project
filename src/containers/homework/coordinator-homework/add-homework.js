@@ -7,6 +7,7 @@ import {
   Button,
   Typography,
   Grid,
+  withStyles,
 } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import cuid from 'cuid';
@@ -28,6 +29,15 @@ const validateQuestions = (obj) => {
   }
   return { error, errorObj };
 };
+
+const StyledOutlinedButton = withStyles({
+  root: {
+    height: '42px',
+    color: '#FE6B6B',
+    border: '1px solid #FF6B6B',
+    backgroundColor: 'transparent',
+  },
+})(Button);
 
 const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
   const [name, setName] = useState('');
@@ -220,7 +230,8 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
             <Grid container item xs={12} spacing={1}>
               <Grid item xs={12} md={6} className='form-field'>
                 <div className='finish-btn-container'>
-                  <Button
+                  {/**
+                   * <Button
                     startIcon={<AddCircleOutlineIcon />}
                     onClick={() => {
                       setQueIndexCounter(queIndexCounter + 1);
@@ -233,6 +244,17 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
                   >
                     Add another question
                   </Button>
+                   */}
+                  <StyledOutlinedButton
+                    startIcon={<AddCircleOutlineIcon />}
+                    onClick={() => {
+                      setQueIndexCounter(queIndexCounter + 1);
+                      addNewQuestion(queIndexCounter + 1);
+                    }}
+                    fullWidth
+                  >
+                    Add another question
+                  </StyledOutlinedButton>
                 </div>
               </Grid>
               <Grid item xs={12} md={6} className='form-field'>

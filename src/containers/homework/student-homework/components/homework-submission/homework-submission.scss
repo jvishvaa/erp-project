@@ -156,6 +156,18 @@
   align-self: center;
   margin-left: 10%;
 }
+
+.file_name_container_new {
+  color: #014b7e;
+  font-weight: 600;
+  align-self: center;
+}
+.file_row_image_new {
+  display: flex;
+  border: 1px solid #ff6b6b;
+  border-radius: 10px;
+  padding: 5px;
+}
 .file_close_hw,.file_close {
   align-self: end;
 }
@@ -184,6 +196,32 @@
   border: 1px solid #ff6b6b;
   @media screen and (max-width: 768px) {
     width: 100% !important;
+    padding: 8px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-size: 15px;
+    letter-spacing: 0;
+  }
+}
+
+.scoreBox1 {
+  margin-right: 1.25rem;
+  bottom: 0 !important;
+}
+.scoreBox1,
+.remarkBox1 {
+  padding: 10px;
+  width: 45%;
+  border-radius: 10px;
+  opacity: 1;
+  font-weight: 600;
+  font-size: 16px;
+  color: #014b7e;
+  border: 1px solid #ff6b6b;
+  margin-bottom: 50px;
+  @media screen and (max-width: 768px) {
+    width: 100% !important;
+    margin-bottom: 20px !important;
     padding: 8px;
     margin-top: 30px;
     margin-bottom: 30px;
@@ -352,10 +390,11 @@
     width: 166px;
   }
   .homework_submit_wrapper {
-    height: 100% !important;
+    height: 100vh !important;
     width: 325px;
     @media only screen and (max-width: 768px) {
       width: 100% !important;
+      height: 100% !important;
     }
   }
   .makeStyles-content-22{

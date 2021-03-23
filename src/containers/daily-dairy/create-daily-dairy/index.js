@@ -9,33 +9,34 @@ import {
   SvgIcon,
   IconButton,
   TextareaAutosize,
+  FormHelperText,
 } from '@material-ui/core';
-import { useStyles } from '../../user-management/useStyles';
-import { FormHelperText } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
+import axios from 'axios';
+import { useFormik } from 'formik';
+import { HomeWork } from '@material-ui/icons';
+import { useStyles } from '../../user-management/useStyles';
+
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Layout from '../../Layout';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import attachmenticon from '../../../assets/images/attachmenticon.svg';
 import deleteIcon from '../../../assets/images/delete.svg';
 import Loading from '../../../components/loader/loader';
 import validationSchema from '../../user-management/schemas/school-details';
-import axios from 'axios';
-import { useFormik } from 'formik';
 import {
   fetchBranchesForCreateUser,
   fetchGrades,
   fetchSections,
   fetchAcademicYears as getAcademicYears,
   fetchSubjects as getSubjects,
-} from '../../../../src/redux/actions/index';
+} from '../../../redux/actions/index';
 import { Context } from '../context/context';
-import { HomeWork } from '@material-ui/icons';
 
 const CreateDailyDairy = (details, onSubmit) => {
   const [academicYears, setAcademicYears] = useState([]);
@@ -64,7 +65,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [loading, setLoading] = useState(false);
   const history = useHistory();
 
-  //context
+  // context
   const [state, setState] = useContext(Context);
   const { isEdit, editData } = state;
   const { setIsEdit, setEditData } = setState;
@@ -88,6 +89,7 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   useEffect(() => {
     if (NavData && NavData.length) {
+      console.log('NavData: ', NavData)
       NavData.forEach((item) => {
         if (
           item.parent_modules === 'Diary' &&
@@ -95,7 +97,7 @@ const CreateDailyDairy = (details, onSubmit) => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Daily Diary') {
+            if (item.child_name === 'Teacher Diary') {
               setModuleId(item.child_id);
             }
           });
@@ -143,7 +145,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     //         setBranchDropdown('error', error.message);
     //     })
     axiosInstance
-      .get(endpoints.userManagement.academicYear)
+      .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
       .then((result) => {
         if (result.status === 200) {
           setAcademicYear(result?.data?.data);
@@ -159,26 +161,33 @@ const CreateDailyDairy = (details, onSubmit) => {
     setSearchAcademicYear('');
     setFilterData({ ...filterData, year: '' });
     if (value) {
-      setSearchAcademicYear(value.id)
+      setSearchAcademicYear(value.id);
       setFilterData({ ...filterData, year: value });
-      axiosInstance
-        .get(
-          `${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`
-        )
-        .then((result) => {
-          if (result?.data?.status_code) {
-            setBranchDropdown(result?.data?.data);
-          } else {
-            setAlert('error', result?.data?.message);
-          }
-        })
-        .catch((error) => setAlert('error', error?.message));
+      fetchBranchesForCreateUser(value.id, moduleId).then((data) => {
+        const transformedData = data?.map((obj) => ({
+          id: obj.id,
+          branch_name: obj.branch_name,
+        }));
+        setBranches(transformedData);
+      });
+      // axiosInstance
+      //   .get(
+      //     `${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`
+      //   )
+      //   .then((result) => {
+      //     if (result?.data?.status_code) {
+      //       setBranchDropdown(result?.data?.data);
+      //     } else {
+      //       setAlert('error', result?.data?.message);
+      //     }
+      //   })
+      //   .catch((error) => setAlert('error', error?.message));
     }
-   
   };
 
   const fetchBranches = () => {
-    fetchBranchesForCreateUser(searchAcademicYear).then((data) => {
+    console.log('handle branch: ', searchAcademicYear, moduleId)
+    fetchBranchesForCreateUser(searchAcademicYear, moduleId).then((data) => {
       const transformedData = data?.map((obj) => ({
         id: obj.id,
         branch_name: obj.branch_name,
@@ -188,10 +197,10 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleChangeBranch = (values) => {
-    console.log(values,'VVVVVVVVVVVVv')
+    console.log(values, 'VVVVVVVVVVVVv');
     setGrades([]);
     setSections([]);
-    fetchGrades(searchAcademicYear,values,moduleId).then((data) => {
+    fetchGrades(searchAcademicYear, values, moduleId).then((data) => {
       const transformedData = data
         ? data.map((grade) => ({
             id: grade.grade_id,
@@ -203,8 +212,9 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleChangeGrade = (values, branch) => {
+    console.log('handle grade', values)
     if (branch) {
-      fetchSections(searchAcademicYear,branch, values).then((data) => {
+      fetchSections(searchAcademicYear, branch, [values], moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               id: section.section_id,
@@ -224,7 +234,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const fetchChapters = () => {
-    //debugger
+    // debugger
     axios
       .get(
         `/qbox/academic/chapters/?academic_year=${searchAcademicYear}&subject=${subjectIds}`
@@ -242,15 +252,14 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const fetchSubjects = (branch, grade, section) => {
-    if (
-      branch &&
-      branch.length > 0 &&
-      grade &&
-      grade.length > 0 &&
-      section &&
-      section.length > 0
+    console.log('=== fetch sub:', branch, grade, section)
+    if (branch && grade &&
+      // grade.length > 0 &&
+      section 
+      // section.length > 0
     ) {
-      getSubjects(searchAcademicYear,branch, grade, section,moduleId).then((data) => {
+      getSubjects(searchAcademicYear, branch, grade, section, moduleId).then((data) => {
+
         const transformedData = data.map((obj) => ({
           id: obj.subject__id,
           subject_name: obj.subject__subject_name,
@@ -268,13 +277,14 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const handleSection = (e, value) => {
     formik.setFieldValue('section', value);
-    if (!value.length) {
+    if (!!value.length) {
       formik.setFieldValue('subjects', []);
     }
     const {
       values: { branch = {}, grade = [] },
     } = formik;
-    fetchSubjects([branch], grade, value);
+    console.log('values : ', value)
+    fetchSubjects([branch], [grade], [value]);
   };
 
   const handleSubject = (event, value) => {
@@ -283,7 +293,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     setSubjectIds(value?.id);
     axiosInstance
       .get(
-        `${endpoints.dailyDairy.branches}?academic_year=${searchAcademicYear}&subject=${value.id}`
+        `${endpoints.dailyDairy.branches}?session_year=${searchAcademicYear}&subject=${value.id}&module_id=${moduleId}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -298,31 +308,34 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleImageChange = (event) => {
+    let fileType = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf']
+    let selectedFileType = event.target.files[0]?.type
+    if (!fileType.includes(selectedFileType)) {
+      return setAlert('error', 'File Type not supported');
+    }
     if (filePath.length < 10) {
       if (isEdit) {
         console.log('Continue');
-      } else {
-        if (
-          !formik.values.section ||
-          !formik.values.grade ||
-          !formik.values.subjects ||
-          !formik.values.branch.id ||
-          !subjectIds
-        ) {
-          return setAlert('error', 'Please select all fields');
-        }
+      } else if (
+        !formik.values.section ||
+        !formik.values.grade ||
+        !formik.values.subjects ||
+        !formik.values.branch.id ||
+        !subjectIds
+      ) {
+        return setAlert('error', 'Please select all fields');
       }
       setLoading(true);
       const data = event.target.files[0];
-      console.log(formik.values.branch);
-      const fd = new FormData();
+      console.log(formik.values);
+      let fd = new FormData();
       fd.append('file', data);
       fd.append(
         'branch_name',
-        isEdit ? editData.branch.branch_name : formik.values.branch.branch_name
+        isEdit ? editData.branch?.branch_name : formik.values.branch?.branch_name
       );
-      fd.append('grades', isEdit ? editData.grade.id : formik.values.grade[0].id);
-      fd.append('section', isEdit ? editData.section[0].id : formik.values.section[0].id);
+      fd.append('grades', isEdit ? editData?.grade?.id : formik.values.grade[0]?.id);
+      // fd.append('section', isEdit ? editData.section[0].id : formik.values.section[0].id);
       axiosInstance.post(`academic/dairy-upload/`, fd).then((result) => {
         console.log(fd);
         if (result.data.status_code === 200) {
@@ -339,16 +352,19 @@ const CreateDailyDairy = (details, onSubmit) => {
       });
     } else {
       setAlert('warning', 'Exceed Maximum Number Attachment');
+      setLoading(false);
     }
   };
 
   const handleSubmit = async () => {
-    const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
+    console.log('upload attach:', filePath);
 
+    const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
+    console.log('handle Formik:', formik)
     const ids = formik.values.section
-      ? formik.values.section.map((el) => el.id)
+      ? [formik.values.section].map((el) => el.id)
       : setAlert('error', 'Fill all the required fields');
-    const grade = formik.values.grade ? formik.values.grade.map((el) => el.id) : '';
+    const grade = formik.values.grade ? [formik.values.grade].map((el) => el.id) : '';
     const subjectId = formik.values.subjects
       ? formik.values.subjects.map((el) => el.id)
       : setAlert('error', 'check');
@@ -359,68 +375,71 @@ const CreateDailyDairy = (details, onSubmit) => {
       !formik.values.branch.id
     ) {
       return setAlert('error', 'Please select all fields');
-    } else {
-      console.log('===============');
-      console.log(subjectId);
-      console.log(formik.values.subjects);
-      const teacherReport = [];
-      try {
-        const response = await axiosInstance.post(
-          createDairyEntry,
-          filePath && filePath.length > 0
-            ? {
-                academic_year: searchAcademicYear,
-                branch: formik.values.branch.id,
-                grade: grade,
-                section: ids,
-                subject: subjectIds,
-                chapter: formik.values.chapters?.id,
-                documents: filePath,
-                teacher_report: {
-                  previous_class: recap,
-                  summary: summary,
-                  class_work: detail,
-                  tools_used: tools,
-                  homework: homework,
-                },
-                dairy_type: 2,
-              }
-            : {
-                academic_year: searchAcademicYear,
-                branch: formik.values.branch.id,
-                grade: grade,
-                section: ids,
-                subject: subjectIds,
-                chapter: formik.values.chapters.id,
-                teacher_report: {
-                  previous_class: recap,
-                  summary: summary,
-                  class_work: detail,
-                  tools_used: tools,
-                  homework: homework,
-                },
-                dairy_type: 2,
+    }
+    console.log('===============');
+    console.log(subjectId);
+    console.log(formik.values.subjects);
+    const teacherReport = [];
+    try {
+      const response = await axiosInstance.post(
+        createDairyEntry,
+        filePath && filePath.length > 0
+          ? {
+            academic_year: searchAcademicYear,
+            module_id: moduleId,
+              branch: formik.values?.branch?.id,
+              grade,
+              section: ids,
+              subject: subjectIds,
+              chapter: formik.values.chapters?.id,
+              documents: filePath,
+              teacher_report: {
+                previous_class: recap,
+                summary,
+                class_work: detail,
+                tools_used: tools,
+                homework,
               },
-          {
-            headers: {
-              // 'application/json' is the modern content-type for JSON, but some
-              // older servers may use 'text/json'.
-              // See: http://bit.ly/text-json
-              'content-type': 'application/json',
-              Authorization: `Bearer ${token}`,
+              dairy_type: 2,
+            }
+          : {
+              academic_year: searchAcademicYear,
+            branch: formik.values?.branch?.id,
+            module_id: moduleId,
+
+              grade,
+              section: ids,
+              subject: subjectIds,
+              chapter: formik.values?.chapters?.id,
+              teacher_report: {
+                previous_class: recap,
+                summary,
+                class_work: detail,
+                tools_used: tools,
+                homework,
+              },
+              dairy_type: 2,
             },
-          }
-        );
-        const { message, status_code: statusCode } = response.data;
-        if (statusCode === 200) {
-          setAlert('success', message);
-          window.location.reload();
-        } else {
-          setAlert('error', response.data.message);
+        {
+          headers: {
+            // 'application/json' is the modern content-type for JSON, but some
+            // older servers may use 'text/json'.
+            // See: http://bit.ly/text-json
+            'content-type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
         }
-      } catch (error) {
-        setAlert('error', error.message);
+      );
+      const { message, status_code: statusCode } = response.data;
+      if (statusCode === 200) {
+        setAlert('success', message);
+        // window.location.reload();
+        history.push('/diary/teacher');
+      } else {
+        setAlert('error', response.data.message);
       }
+    } catch (error) {
+      setAlert('error', error.message);
     }
   };
 
@@ -501,8 +520,11 @@ const CreateDailyDairy = (details, onSubmit) => {
   const FileRow = (props) => {
     const { file, onClose, index } = props;
     return (
-      <div className='file_row_image'>
-        <div className='file_name_container'>File {index + 1}</div>
+      <div className='file_row_image_new'>
+        <div className='file_name_container_new'>
+          {file}
+          {/* {index + 1} */}
+        </div>
         {/* <Divider orientation="vertical"  className='divider_color' flexItem /> */}
         <div>
           <span onClick={onClose}>
@@ -544,7 +566,7 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   useEffect(() => {
     // fetchAcademicYears();
-    fetchBranches();
+    // fetchBranches();
     console.log('branches ', details.branch, details.grade);
     if (details.branch) {
       handleChangeBranch([details.branch]);
@@ -705,7 +727,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               <Autocomplete
                 id='section'
                 name='section'
-                onChange={handleSection}
+                onChange={(e, value) => handleSection(e, value)}
                 value={state.isEdit ? editData.section : formik.values.section}
                 options={sections}
                 // multiple
@@ -877,24 +899,24 @@ const CreateDailyDairy = (details, onSubmit) => {
               </Grid>
 
               <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <div style={{ display: 'flex' }} className='scrollable'>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                   {state.isEdit
                     ? editData.documents.map((file, i) => (
                         <FileRow
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(i)}
-                        />
+                        key={`homework_student_question_attachment_${i}`}
+                        file={file}
+                        index={i}
+                        onClose={() => removeFileHandler(i)}
+                      />
                       ))
                     : filePath?.length > 0
                     ? filePath?.map((file, i) => (
                         <FileRow
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(i)}
-                        />
+                        key={`homework_student_question_attachment_${i}`}
+                        file={file}
+                        index={i}
+                        onClose={() => removeFileHandler(i)}
+                      />
                       ))
                     : null}
                 </div>
@@ -925,20 +947,39 @@ const CreateDailyDairy = (details, onSubmit) => {
                       type='file'
                       style={{ display: 'none' }}
                       id='raised-button-file'
-                      accept='image/*'
+                      accept='image/*, .pdf'
                       onChange={handleImageChange}
                       // defaultValue={state.isEdit?editData.documents : []}
                       // value={state.isEdit?editData.documents : []}
                     />
                     Add Document
                   </Button>
+                  <br />
+                  <small
+                    style={{
+                      color: '#014b7e',
+                      fontSize: '16px',
+                      marginLeft: '28px',
+                      marginTop: '8px',
+                    }}
+                  >
+                    {' '}
+                    Accepted files: [jpeg,jpg,png,pdf]
+                  </small>
                 </div>
               </Grid>
             </Grid>
           </div>
-          <div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <Button
-              style={isMobile ? { marginLeft: '' } : { marginLeft: '80%' }}
+              // style={isMobile ? { marginLeft: '' } : { marginLeft: '60%' }}
+              onClick={() => history.goBack()}
+              className='submit_button'
+            >
+              BACK
+            </Button>
+            <Button
+              // style={isMobile ? { marginLeft: '' } : { marginLeft: '80%' }}
               onClick={state.isEdit ? handleEdited : handleSubmit}
               className='submit_button'
             >

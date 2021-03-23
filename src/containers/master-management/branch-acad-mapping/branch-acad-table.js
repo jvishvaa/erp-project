@@ -250,23 +250,25 @@ const BranchAcadTable = () => {
   }, [moduleId]);
 
   useEffect(() => {
-    let url = `${endpoints.masterManagement.branchMappingTable}?page=${page}&page_size=${limit}`;
-    if (searchYear) url += `&session_year=${searchYear}`;
-    if (searchBranch) url += `&branch_name=${searchBranch}`;
-    axiosInstance
-      .get(url)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setTotalCount(result.data.data?.count);
-          setBranches(result.data.data?.results);
-        } else {
-          setAlert('error', result.data.message || result.data.msg);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.response.data.message || error.response.data.msg);
-      });
-  }, [goBackFlag, delFlag, searchYear, searchBranch, page]);
+    if (moduleId) {
+      let url = `${endpoints.masterManagement.branchMappingTable}?page=${page}&page_size=${limit}&module_id=${moduleId}`;
+      if (searchYear) url += `&session_year=${searchYear}`;
+      if (searchBranch) url += `&branch_name=${searchBranch}`;
+      axiosInstance
+        .get(url)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setTotalCount(result.data.data?.count);
+            setBranches(result.data.data?.results);
+          } else {
+            setAlert('error', result.data.message || result.data.msg);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.response.data.message || error.response.data.msg);
+        });
+    }
+  }, [moduleId,goBackFlag, delFlag, searchYear, searchBranch, page]);
 
   return (
     <>

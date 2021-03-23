@@ -75,7 +75,7 @@ const columns = [
 const MessageTypeTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = useState(1);
   const [messageType, setMessageType] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [messageTypeId, setMessageTypeId] = useState();
