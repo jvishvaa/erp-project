@@ -29,10 +29,10 @@ import { LaptopWindowsSharp } from '@material-ui/icons';
 
 const ErpAdminViewClass = ({ history }) => {
   //   const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
-  const [dateRangeTechPer, setDateRangeTechPer] = useState([
-    moment().subtract(6, 'days'),
-    moment(),
-  ]);
+  // const [dateRangeTechPer, setDateRangeTechPer] = useState([
+  //   moment().subtract(6, 'days'),
+  //   moment(),
+  // ]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   // const [branchList] = useState([
@@ -70,6 +70,14 @@ const ErpAdminViewClass = ({ history }) => {
   const [selectedViewMore, setSelectedViewMore] = useState('');
   const [page, setPage] = useState(1);
   const viewMoreRef = useRef(null);
+  const [dateRangeTechPer, setDateRangeTechPer] = useState([
+    moment().subtract(6, 'days'),
+    moment(),
+]);
+  const [startDateTechPer, setStartDateTechPer] = useState(moment().format('YYYY-MM-DD'));
+  const [endDateTechPer, setEndDateTechPer] = useState(getDaysAfter(moment(), 7));
+
+
   const [classTypes, setClassTypes] = useState([
     { id: 0, type: 'Compulsory Class' },
     { id: 1, type: 'Optional Class' },
@@ -79,6 +87,13 @@ const ErpAdminViewClass = ({ history }) => {
   const [selectedClassType, setSelectedClassType] = useState('');
   const [moduleId, setModuleId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+ 
+  function getDaysAfter(date, amount) {
+    return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
+}
+function getDaysBefore(date, amount) {
+    return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
+}
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -170,7 +185,7 @@ const ErpAdminViewClass = ({ history }) => {
         callApi(
           `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
             selectedBatch && selectedBatch.id
-          }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1`,
+          }&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1`,
           'filter'
         );
       }
@@ -230,7 +245,7 @@ const ErpAdminViewClass = ({ history }) => {
       callApi(
         `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
           selectedBatch && selectedBatch.id
-        }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1`,
+        }&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1`,
         'filter'
       );
     }
@@ -252,19 +267,30 @@ const ErpAdminViewClass = ({ history }) => {
     setSubjectList([]);
     setSelectedSubject([]);
     setSelectedBranch([])
+    setSelectedClassType('')
     setSelectedAcadmeicYear('')
   }
 
   function handleFilter() {
-    if (!selectedGrade) {
-      setAlert('warning', 'Select Grade');
-      return;
-    }
+    const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
+
     if (!selectedClassType) {
       setAlert('warning', 'Select Classtype');
       return;
     }
-    if (!selectedSection) {
+    if(!selectedAcademicYear){
+      setAlert('warning','Select Academic Year')
+      return;
+    }
+    if(!selectedBranch.length > 0){
+      setAlert('warning','Select Branch')
+      return;
+    }
+    if (!selectedGrade.length > 0) {
+      setAlert('warning', 'Select Grade');
+      return;
+    }
+    if (!selectedSection.length > 0) {
       setAlert('warning', 'Select Section');
       return;
     }
@@ -274,27 +300,27 @@ const ErpAdminViewClass = ({ history }) => {
         return;
       }
     } else {
-      if (!selectedSubject) {
-        setAlert('warning', 'Select Grade');
+      if (!selectedSubject.length > 0) {
+        setAlert('warning', 'Select Subject');
         return;
       }
     }
-    if (!startDate) {
-      setAlert('warning', 'Select Start Date');
-      return;
-    }
+    // if (!startDate) {
+    //   setAlert('warning', 'Select Start Date');
+    //   return;
+    // }
     setLoading(true);
     setPage(1);
 
     // `https://erpnew.letseduvate.com/qbox/erp_user/teacher_online_class/?page_number=1&page_size=15&class_type=1&is_aol=1&course=97&start_date=2021-02-21&end_date=2021-02-27`
     if (selectedCourse.id) {
       callApi(
-        `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el)=>el.id)}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15&module_id=${moduleId}`,
+        `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el)=>el.id)}&class_type=${selectedClassType.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${selectedCourse.id}&page_number=1&page_size=15&module_id=${moduleId}`,
         'filter'
       );
     } else {
       callApi(
-        `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el)=>el.id)}&subject_id=${selectedSubject.map((el)=>el.subject__id)}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15&module_id=${moduleId}`,
+        `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el)=>el.id)}&subject_id=${selectedSubject.map((el)=>el.subject__id)}&class_type=${selectedClassType.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=1&page_size=15&module_id=${moduleId}`,
         'filter'
       );
     }
@@ -585,34 +611,33 @@ const ErpAdminViewClass = ({ history }) => {
                       />
                     </Grid>
                   )}
-                  <Grid item md={3} xs={12}>
+                  <Grid item xs={12} sm={3}>
                     <LocalizationProvider dateAdapter={MomentUtils}>
-                      <DateRangePicker
-                        startText='Select-date-range'
-                        value={dateRangeTechPer}
-                        // className='dropdownIcon'
-                        onChange={(newValue) => {
-                          handleDate(newValue);
-                        }}
-                        renderInput={({ inputProps, ...startProps }, endProps) => {
-                          return (
-                            <>
-                              <TextField
-                                {...startProps}
-                                inputProps={{
-                                  ...inputProps,
-                                  value: `${inputProps.value} - ${endProps.inputProps.value}`,
-                                  readOnly: true,
-                                }}
-                                size='small'
-                                style={{ minWidth: '100%' }}
-                              />
-                            </>
-                          );
-                        }}
-                      />
+                        <DateRangePicker
+                            startText='Select-date-range'
+                            value={dateRangeTechPer}
+                            onChange={(newValue) => {
+                                setDateRangeTechPer(newValue);
+                            }}
+                            renderInput={({ inputProps, ...startProps }, endProps) => {
+                                return (
+                                    <>
+                                        <TextField
+                                            {...startProps}
+                                            inputProps={{
+                                                ...inputProps,
+                                                value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                                                readOnly: true,
+                                            }}
+                                            size='small'
+                                            style={{ minWidth: '100%' }}
+                                        />
+                                    </>
+                                );
+                            }}
+                        />
                     </LocalizationProvider>
-                  </Grid>
+                </Grid>
                 </>
               )}
             </Grid>

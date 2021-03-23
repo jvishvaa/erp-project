@@ -214,16 +214,14 @@ const CraeteCircular = () => {
     if (event.target.files[0].name.split('.')[1] === 'csv') {
       return setAlert('warning', 'Unaccepted File Type');
     }
-    setLoading(true);
     if (filePath.length < 10) {
+      setLoading(true);
       const data = event.target.files[0];
       const fd = new FormData();
       fd.append('file', event.target.files[0]);
       fd.append('branch', filterData?.branch?.branch && filterData?.branch?.branch?.branch_name);
       // fd.append('grade',filterData.grade[0].id)
       // fd.append('section',filterData.section.id)
-      console.log(filterData?.branch?.branch?.branch_name,'++++++++++++++++++++++++++++++++++++++++++++')
-
       axiosInstance.post(`${endpoints.circular.fileUpload}`, fd).then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
