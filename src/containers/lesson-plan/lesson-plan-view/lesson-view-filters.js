@@ -12,6 +12,7 @@ import axiosInstance from '../../../config/axios';
 import axios from 'axios';
 import './lesson.css';
 import { useLocation } from "react-router-dom";
+import { getModuleInfo }from '../../../utility-functions'
 
 const LessonViewFilters = ({
     handlePeriodList,
@@ -117,6 +118,17 @@ const LessonViewFilters = ({
         }
       }, [location.pathname]);
 
+    function getModuleId(){
+        const tempObj = {
+            "/lesson-plan/teacher-view/":"Teacher View",
+            "/lesson-plan/teacher-view":"Teacher View",
+            "/lesson-plan/student-view":"Student View",
+            "/lesson-plan/student-view/":"Student View",
+            "default":"Teacher View",
+        }
+        const moduleName = tempObj[location.pathname]||tempObj["default"]
+        return getModuleInfo(moduleName).id
+    }
     const handleBranch = (event, value) => {
         setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
         setOverviewSynopsis([]);
@@ -239,7 +251,7 @@ const LessonViewFilters = ({
     }
 
     useEffect(() => {
-        axiosInstance.get(`${endpoints.communication.branches}`)
+        axiosInstance.get(`${endpoints.communication.branches}?module_id=${getModuleId()}`)
             .then(response => {
                 if (response.data.status_code === 200) {
                     setBranchDropdown(response.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean));
