@@ -105,7 +105,7 @@ class TotalPaidReports extends Component {
     this.setState({ session: e.value, selectedBranches: [], sessionData: e }, () => {
       if (this.state.role === 'financeaccountant') {
         // this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
-        this.props.fetchGrades(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user, moduleId)
+        // this.props.fetchGrades(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user, moduleId)
         // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
       }
       //  else {
@@ -577,7 +577,7 @@ class TotalPaidReports extends Component {
   render () {
     let selectBranch = null
     const { role } = this.state
-    if (role === 'financeadmin') {
+    // if (role === 'financeadmin') {
       selectBranch = (
         <React.Fragment>
           <Grid item xs={4} style={{ padding: '15px' }}>
@@ -618,7 +618,7 @@ class TotalPaidReports extends Component {
           </Grid>
         </React.Fragment>
       )
-    }
+    // }
     return (
       <Layout>      
         <React.Fragment>
