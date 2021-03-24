@@ -130,6 +130,28 @@ const Subjectgrade = (props) => {
         }).catch(err => {
             // console.log(err)
         })
+        // axiosInstance.get(`${endpoints.mappingStudentGrade.centralGradeSubjects}?domain_name=${axiosInstance.config.baseURL}`).then(res => {
+        //     // console.log(res.data.result)
+        //     for (let filteCentral of res.data.result) {
+        //         centralGrade.push({
+        //             id: filteCentral.id,
+        //             grade_name: filteCentral.grade_name,
+        //             grade: filteCentral.grade,
+        //             subject: filteCentral.subject,
+        //         })
+        //         for (let filterSub of filteCentral.subject) {
+        //             centralSub.push({
+        //                 grade_subject_id: filterSub.grade_subject_id, 
+        //                 subject_id: filterSub.subject_id,
+        //                 subject_name: filterSub.subject_name
+        //             })
+        //         }
+        //     }
+        //     setCentralSubject(centralSub)
+        //     setCentralGrade(centralGrade)
+        // }).catch(err => {
+        //     // console.log(err)
+        // })
     }
     const handleChangeCentralSubject = (value) => {
         if (value) {
