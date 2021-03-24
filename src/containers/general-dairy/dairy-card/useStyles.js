@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: '1.1rem',
-      color: '#014B7E',
+    color: '#014B7E',
   },
   content: {
     fontSize: '0.9rem',
