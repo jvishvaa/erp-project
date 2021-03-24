@@ -225,12 +225,10 @@ import Loader from '../../components/loader/loader';
 function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
-      {'Copyright © '}
-      <Link color='inherit' href='https://material-ui.com/'>
-        K12
-      </Link>
+      {'Copyright © '}  
       {new Date().getFullYear()}
-      {'.'}
+      
+      , K12 Techno Services Pvt. Ltd.
     </Typography>
   );
 }

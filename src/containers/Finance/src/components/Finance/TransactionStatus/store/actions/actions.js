@@ -35,10 +35,10 @@ export const fetchAllTransaction = (payload) => {
   }]
   console.log('Is Accountant', isAccountant)
   let url = `${urls.TransactionStatusList}?academic_year=${session}&mode=${mode}&payment_type=${fees}&fee_plan=${feePlanIds}&from_date=${fromDate}&to_date=${toDate}`
-  if (!isAccountant) {
+  // if (!isAccountant) {
     // body[0].branch_id = branchId
     url = url + `&branch_id=${branchId}`
-  }
+  // }
   if (page !== 0) {
     body[0].page = page + 1
     // url = `${urls.TransactionStatusList}?academic_year=${session}&branch_id=${branchId}&mode=${mode}&from_date=${fromDate}&to_date=${toDate}&page=${page + 1}`

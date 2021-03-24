@@ -58,14 +58,16 @@ class ConcessionReport extends Component {
   }
   componentDidMount () {
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-    const role = userProfile.personal_info.role.toLowerCase()
+    const role = userProfile && userProfile.personal_info && userProfile.personal_info.role.toLowerCase()
     this.setState({
       role
-    }, () => {
-      if (this.state.role === 'financeaccountant') {
-        this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
-      }
-    })
+    }
+    // () => {
+    //   if (this.state.role === 'financeaccountant') {
+    //     this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
+    //   }
+    // }
+    )
   }
   activeHandler = (e) => {
     this.setState({
@@ -165,13 +167,13 @@ class ConcessionReport extends Component {
 
   handleAcademicyear = (e) => {
     const sessions = []
-    e.forEach((val) => {
+    e && e.forEach((val) => {
       sessions.push(val.value)
     })
     console.log(e)
     this.setState({ session: sessions, selectedBranches: [], sessionData: e }, () => {
       if (this.state.role === 'financeaccountant') {
-        this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, 1, this.props.alert, this.props.user)
+        // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, 1, this.props.alert, this.props.user)
       } else {
         this.props.fetchBranches(sessions, this.props.alert, this.props.user, moduleId)
       }
@@ -216,7 +218,7 @@ class ConcessionReport extends Component {
   render () {
     let selectBranch = null
     const { role } = this.state
-    if (role === 'financeadmin') {
+    // if (role === 'financeadmin') {
       selectBranch = (
         <Grid item xs='3'>
           <label>Branch*</label>
@@ -237,7 +239,7 @@ class ConcessionReport extends Component {
           />
         </Grid>
       )
-    }
+    // }
 
     return (
       <Layout>

@@ -103,7 +103,7 @@ class TransactionStatus extends Component {
     //   this.setState(transactionState)
     // }
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-    const isAccountant = userProfile.personal_info.role.toLowerCase() === 'financeaccountant'
+    const isAccountant = userProfile?.personal_info?.role?.toLowerCase() === 'financeaccountant'
     this.setState({
       isAccountant
     })
@@ -157,16 +157,18 @@ class TransactionStatus extends Component {
   }
 
   fetchBranchHandler = (e) => {
-    if (!this.state.isAccountant) {
+    // if (!this.state.isAccountant) {
       this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
-    }
+    // }
     this.setState({
       currentSession: e.value
-    }, () => {
-      if (this.state.isAccountant) {
-        this.props.fetchFeePlans(this.state.currentSession, null, this.props.user, this.props.alert)
-      }
-    })
+    }
+    // , () => {
+    //   if (this.state.isAccountant) {
+    //     this.props.fetchFeePlans(this.state.currentSession, null, this.props.user, this.props.alert)
+    //   }
+    // }
+    )
   }
 
   branchChangeHandler = (e) => {
@@ -285,7 +287,9 @@ class TransactionStatus extends Component {
       this.props.alert.warning('From Date Should Not Be Greater than To Date')
       return
     }
-    this.props.fetchAllTransaction(currentSession, !isAccountant ? currentBranch.id : null, isAccountant, paymentModeId, feeIds, feeAccId, fromDate, toDate, page, user, alert)
+    // this.props.fetchAllTransaction(currentSession, !isAccountant ? currentBranch.id : null, isAccountant, paymentModeId, feeIds, feeAccId, fromDate, toDate, page, user, alert)
+    this.props.fetchAllTransaction(currentSession, currentBranch?.id, isAccountant, paymentModeId, feeIds, feeAccId, fromDate, toDate, page, user, alert)
+
   }
 
   downloadReportHandler = () => {
@@ -317,7 +321,7 @@ class TransactionStatus extends Component {
     }
 
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-    const role = userProfile.personal_info.role.toLowerCase()
+    const role = userProfile?.personal_info?.role?.toLowerCase()
     const data = {
       fee_accounts: feeAccId,
       academic_year: currentSession,
@@ -329,9 +333,9 @@ class TransactionStatus extends Component {
       is_issued_date: true
     }
 
-    if (role === 'financeadmin') {
+    // if (role === 'financeadmin') {
       data.branch_id = [currentBranch.id]
-    }
+    // }
     const url = urls.FDSReport
     const reportName = 'fee_day_sheet.xlsx'
     this.props.downloadReport(url, data, reportName, user, alert)

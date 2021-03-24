@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import axiosInstance from '../../config/axios';
+import axios from 'axios';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import endpoints from '../../config/endpoints';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
@@ -108,29 +109,7 @@ const Subjectgrade = (props) => {
     const centralGradeSubjects = () => {
         let centralSub = [];
         let centralGrade = []
-        axiosInstance.get(`${endpoints.mappingStudentGrade.central}`).then(res => {
-            // console.log(res.data.result)
-            for (let filteCentral of res.data.result) {
-                centralGrade.push({
-                    id: filteCentral.id,
-                    grade_name: filteCentral.grade_name,
-                    grade: filteCentral.grade,
-                    subject: filteCentral.subject,
-                })
-                for (let filterSub of filteCentral.subject) {
-                    centralSub.push({
-                        grade_subject_id: filterSub.grade_subject_id, 
-                        subject_id: filterSub.subject_id,
-                        subject_name: filterSub.subject_name
-                    })
-                }
-            }
-            setCentralSubject(centralSub)
-            setCentralGrade(centralGrade)
-        }).catch(err => {
-            // console.log(err)
-        })
-        // axiosInstance.get(`${endpoints.mappingStudentGrade.centralGradeSubjects}?domain_name=${axiosInstance.config.baseURL}`).then(res => {
+        // axiosInstance.get(`${endpoints.mappingStudentGrade.central}`).then(res => {
         //     // console.log(res.data.result)
         //     for (let filteCentral of res.data.result) {
         //         centralGrade.push({
@@ -152,6 +131,47 @@ const Subjectgrade = (props) => {
         // }).catch(err => {
         //     // console.log(err)
         // })
+        const {host}= new URL(axiosInstance.defaults.baseURL) // "dev.olvorchidnaigaon.letseduvate.com"
+        const hostSplitArray = host.split('.')
+        const subDomainLevels = hostSplitArray.length - 2
+        let domain = ''
+        let subDomain = ''
+        let subSubDomain = ''
+        if(hostSplitArray.length > 2){
+            // domain = hostSplitArray.slice(0, hostSplitArray.length-2)
+            domain = hostSplitArray.slice(hostSplitArray.length-2).join('')
+        }
+        if(subDomainLevels===2){
+            subSubDomain = hostSplitArray[0]
+            subDomain = hostSplitArray[1]
+        }else if(subDomainLevels===1){
+            subDomain = hostSplitArray[0]
+        }
+        const domainTobeSent =subDomain 
+        const apiURL = `${endpoints.mappingStudentGrade.centralGradeSubjects}?domain_name=${domainTobeSent}`
+        const headers = { headers: { 'x-api-key': 'vikash@12345#1231' }, }
+        axios.get(apiURL, headers).then(res => {
+            // console.log(res.data.result)
+            for (let filteCentral of res.data.result) {
+                centralGrade.push({
+                    id: filteCentral.id,
+                    grade_name: filteCentral.grade_name,
+                    grade: filteCentral.grade,
+                    subject: filteCentral.subject,
+                })
+                for (let filterSub of filteCentral.subject) {
+                    centralSub.push({
+                        grade_subject_id: filterSub.grade_subject_id, 
+                        subject_id: filterSub.subject_id,
+                        subject_name: filterSub.subject_name
+                    })
+                }
+            }
+            setCentralSubject(centralSub)
+            setCentralGrade(centralGrade)
+        }).catch(err => {
+            // console.log(err)
+        })
     }
     const handleChangeCentralSubject = (value) => {
         if (value) {

@@ -44,7 +44,7 @@ let moduleId
 if (NavData && NavData.length) {
   NavData.forEach((item) => {
     if (
-      item.parent_modules === 'Student' &&
+      item.parent_modules === 'student' &&
       item.child_module &&
       item.child_module.length > 0
     ) {
@@ -88,7 +88,8 @@ class ChangeFeePlanToStudent extends Component {
       showFeeModal: false,
       filterValue: '',
       showTabs: false,
-      value: 'one'
+      value: 'one',
+      selectedBranches: '',
       // moduleId: null
     }
   }
@@ -106,7 +107,7 @@ class ChangeFeePlanToStudent extends Component {
   handleAcademicyear = (e) => {
     console.log('acad years', this.props.session)
     this.setState({ session: e.value, gradeData: null, gradeId: null, sessionData: e, showTabs: false }, () => {
-      this.props.fetchAllGrades(this.state.session, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
     })
   }
 
@@ -137,9 +138,9 @@ class ChangeFeePlanToStudent extends Component {
     this.setState({
       showTabs: true
     }, () => {
-      if (this.state.session && this.state.gradeId && this.state.sectionId && this.state.studentType) {
-        this.props.fetchAllPlans(this.state.session, this.state.gradeId, this.state.sectionId, this.state.studentType, this.props.alert, this.props.user)
-        this.props.fetchAllFeePlans(this.state.session, this.state.gradeId, this.props.alert, this.props.user)
+      if (this.state.session && this.state.gradeId && this.state.sectionId && this.state.studentType && this.state.selectedBranches) {
+        this.props.fetchAllPlans(this.state.session, this.state.gradeId, this.state.selectedBranches && this.state.selectedBranches.value, this.state.sectionId, this.state.studentType, this.props.alert, this.props.user)
+        this.props.fetchAllFeePlans(this.state.session, this.state.gradeId, this.state.selectedBranches && this.state.selectedBranches.value, this.props.alert, this.props.user)
         feePlanState = this.state
       } else {
         this.props.alert.warning('Fill all the Fields!')
@@ -392,6 +393,11 @@ class ChangeFeePlanToStudent extends Component {
       )
     }
     return instaTable
+  }
+
+  changehandlerbranch = (e) => {
+    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    this.setState({ selectedBranches: e})
   }
 
   render () {
@@ -677,6 +683,24 @@ class ChangeFeePlanToStudent extends Component {
             />
           </Grid>
           <Grid item xs='3'>
+            <label>Branch*</label>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+              options={
+                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+
+              onChange={this.changehandlerbranch}
+            />
+          </Grid>
+          <Grid item xs='3'>
             <label>Grade*</label>
             <Select
               placeholder='Select Grade'
@@ -735,6 +759,7 @@ class ChangeFeePlanToStudent extends Component {
             <Button
               variant='contained'
               color='primary'
+              style={{ marginTop: '20px'}}
               onClick={this.studentList}>
                 GET
             </Button>
@@ -776,20 +801,23 @@ const mapStateToProps = state => ({
   feePlans: state.finance.accountantReducer.changeFeePlan.feePlans,
   adjustFeeData: state.finance.accountantReducer.changeFeePlan.adjustFeeData,
   dataLoading: state.finance.common.dataLoader,
-  instaDetails: state.finance.common.instaDetails
+  instaDetails: state.finance.common.instaDetails,
+  branches: state.finance.common.branchPerSession,
 })
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchAllGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchAllGrades({ session, alert, user, moduleId })),
+  fetchGrades: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
+  // fetchAllGrades: (session, branch, alert, user, moduleId) => dispatch(actionTypes.fetchAllGrades({ session, branch, alert, user, moduleId })),
   fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId })),
-  fetchAllPlans: (session, gradeId, sectionId, studentType, alert, user) => dispatch(actionTypes.fetchAllPlans({ session, gradeId, sectionId, studentType, alert, user })),
-  fetchAllFeePlans: (session, gradeId, alert, user) => dispatch(actionTypes.fetchAllFeePlans({ session, gradeId, alert, user })),
+  fetchAllPlans: (session, gradeId, branch, sectionId, studentType, alert, user) => dispatch(actionTypes.fetchAllPlans({ session, gradeId, branch, sectionId, studentType, alert, user })),
+  fetchAllFeePlans: (session, gradeId, branch, alert, user) => dispatch(actionTypes.fetchAllFeePlans({ session, branch, gradeId, alert, user })),
   editStudentFeePlan: (data, studentId, alert, user) => dispatch(actionTypes.editStudentFeePlan({ data, studentId, alert, user })),
   assignAtmtStudents: (session, gradeId, sectionId, studentType, alert, user) => dispatch(actionTypes.assignAutomaticStudent({ session, gradeId, sectionId, studentType, alert, user })),
   fetchInstallDetails: (feePlanId, alert, user) => dispatch(actionTypes.fetchInstallDetails({ feePlanId, alert, user })),
   fetchAdjustFee: (currentFeePlanId, targetFeePlanId, alert, user) => dispatch(actionTypes.fetchAdjustFee({ currentFeePlanId, targetFeePlanId, alert, user })),
-  filterCurrentFeePlan: (text) => dispatch(actionTypes.filterCurrentFeePlan({ text }))
+  filterCurrentFeePlan: (text) => dispatch(actionTypes.filterCurrentFeePlan({ text })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(ChangeFeePlanToStudent)))
