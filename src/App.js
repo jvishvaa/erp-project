@@ -112,7 +112,6 @@ import StudentIdCard from './containers/student-Id-Card';
 import SignatureUpload from './containers/signature-upload';
 import TeacherBatchView from './containers/teacherBatchView';
 import ErpAdminViewClass from './containers/online-class/erp-view-class/admin';
-import AolLogin from './containers/aol-login';
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import AttachmentPreviewer from './components/attachment-previewer';
 
@@ -326,12 +325,6 @@ function App({ alert }) {
                           <Route exact path='/forgot'>
                             {({ match, history }) => (
                               <Forgot match={match} history={history} />
-                            )}
-                          </Route>
-
-                          <Route exact path='/aol_login'>
-                            {({ match, history }) => (
-                              <AolLogin match={match} history={history} />
                             )}
                           </Route>
                           {/*
