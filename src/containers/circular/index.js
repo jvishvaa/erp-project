@@ -75,6 +75,7 @@ const CircularList = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   const { role_details } = JSON.parse(localStorage.getItem('userDetails') || {});
+  const userId= JSON.parse(localStorage.getItem('userDetails') || {});
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -141,7 +142,7 @@ const CircularList = () => {
       setFilterDataDown(grade, branch);
       axiosInstance
         .get(
-          `${endpoints.circular.circularList}?user_id=${role_details?.erp_user_id}&start_date=${grade.format(
+          `${endpoints.circular.circularList}?user_id=${userId?.user_id}&start_date=${grade.format(
             'YYYY-MM-DD'
           )}&end_date=${branch.format(
             'YYYY-MM-DD'
