@@ -73,14 +73,16 @@ class TotalPaidReports extends Component {
   componentDidMount () {
     // this.todayDate()
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-    const role = userProfile.personal_info.role.toLowerCase()
+    const role = userProfile?.personal_info?.role?.toLowerCase()
     this.setState({
       role
-    }, () => {
-      if (this.state.role === 'financeaccountant') {
-        this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
-      }
-    })
+    }
+    // , () => {
+    //   if (this.state.role === 'financeaccountant') {
+    //     this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
+    //   }
+    // }
+    )
  
   }
   componentWillReceiveProps (nextProps) {
@@ -103,13 +105,13 @@ class TotalPaidReports extends Component {
   handleAcademicyear = (e) => {
     console.log(e)
     this.setState({ session: e.value, selectedBranches: [], sessionData: e }, () => {
-      if (this.state.role === 'financeaccountant') {
+      // if (this.state.role === 'financeaccountant') {
         // this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
         // this.props.fetchGrades(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user, moduleId)
         // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
-      }
+      // }
       //  else {
-      //   this.props.fetchBranches(e.value, this.props.alert, this.props.user)
+        // this.props.fetchBranches(e.value, this.props.alert, this.props.user)
       // }
     })
   }
@@ -175,11 +177,11 @@ class TotalPaidReports extends Component {
         selectedOthrInstallments: []
       }, () => {
         // console.log('the grade state', this.state.gradeData, this.state.valueGrade)
-        if (this.state.role === 'financeaccountant' && this.state.gradeData.length > 0) {
-          this.props.fetchFeePlanNames(this.state.session, this.props.branchAtAcc.branch, this.state.gradeData, this.props.alert, this.props.user)
-        } else if (this.state.gradeData.length > 0) {
+        // if (this.state.role === 'financeaccountant' && this.state.gradeData.length > 0) {
+        //   this.props.fetchFeePlanNames(this.state.session, this.props.branchAtAcc.branch, this.state.gradeData, this.props.alert, this.props.user)
+        // } else if (this.state.gradeData.length > 0) {
           this.props.fetchFeePlanNames(this.state.session, this.state.branchId, this.state.gradeData, this.props.alert, this.props.user)
-        }
+        // }
       })
     }
   }
@@ -252,15 +254,15 @@ class TotalPaidReports extends Component {
         selectedInstallments: []
       }, () => {
         let data = {}
-        if (this.state.role === 'financeaccountant') {
-          data = {
-            branch: this.props.branchAtAcc.branch,
-            academic_year: this.state.session,
-            fee_types: this.state.feeTypeIds,
-            fee_plan: this.state.feePlanId,
-            grades: this.state.gradeData
-          }
-        } else {
+        // if (this.state.role === 'financeaccountant') {
+        //   data = {
+        //     branch: this.props.branchAtAcc.branch,
+        //     academic_year: this.state.session,
+        //     fee_types: this.state.feeTypeIds,
+        //     fee_plan: this.state.feePlanId,
+        //     grades: this.state.gradeData
+        //   }
+        // } else {
           data = {
             branch: this.state.branchId,
             academic_year: this.state.session,
@@ -268,7 +270,7 @@ class TotalPaidReports extends Component {
             fee_plan: this.state.feePlanId,
             grades: this.state.gradeData
           }
-        }
+        // }
         if (this.state.selectedFeeTypes.value === 'all' && this.state.feeTypeIds.length > 0) {
           this.props.fetchInstallments(data, this.props.alert, this.props.user)
         }
@@ -284,15 +286,15 @@ class TotalPaidReports extends Component {
       }, () => {
         // moved
         let data = {}
-        if (this.state.role === 'financeaccountant') {
-          data = {
-            branch: this.props.branchAtAcc.branch,
-            academic_year: this.state.session,
-            fee_types: this.state.feeTypeIds,
-            fee_plan: this.state.feePlanId,
-            grades: this.state.gradeData
-          }
-        } else {
+        // if (this.state.role === 'financeaccountant') {
+        //   data = {
+        //     branch: this.props.branchAtAcc.branch,
+        //     academic_year: this.state.session,
+        //     fee_types: this.state.feeTypeIds,
+        //     fee_plan: this.state.feePlanId,
+        //     grades: this.state.gradeData
+        //   }
+        // } else {
           data = {
             branch: this.state.branchId,
             academic_year: this.state.session,
@@ -300,7 +302,7 @@ class TotalPaidReports extends Component {
             fee_plan: this.state.feePlanId,
             grades: this.state.gradeData
           }
-        }
+        // }
         if (this.state.feeTypeIds.length > 0) {
           this.props.fetchInstallments(data, this.props.alert, this.props.user)
         }
@@ -325,15 +327,15 @@ class TotalPaidReports extends Component {
         selectedOthrInstallments: []
       }, () => {
         let data = {}
-        if (this.state.role === 'financeaccountant') {
-          data = {
-            branch: this.props.branchAtAcc.branch,
-            academic_year: this.state.session,
-            fee_types: this.state.othrfeeTypeIds,
-            // fee_plan: this.state.feePlanId,
-            grades: this.state.gradeData
-          }
-        } else {
+        // if (this.state.role === 'financeaccountant') {
+        //   data = {
+        //     branch: this.props.branchAtAcc.branch,
+        //     academic_year: this.state.session,
+        //     fee_types: this.state.othrfeeTypeIds,
+        //     // fee_plan: this.state.feePlanId,
+        //     grades: this.state.gradeData
+        //   }
+        // } else {
           data = {
             branch: this.state.branchId,
             academic_year: this.state.session,
@@ -341,7 +343,7 @@ class TotalPaidReports extends Component {
             // fee_plan: this.state.feePlanId,
             grades: this.state.gradeData
           }
-        }
+        // }
         if (this.state.selectedOthrFeeTypes.value === 'all' && this.state.othrfeeTypeIds.length > 0) {
           this.props.fetchOthrInstallments(data, this.props.alert, this.props.user)
         }
@@ -357,15 +359,15 @@ class TotalPaidReports extends Component {
       }, () => {
         // moved
         let data = {}
-        if (this.state.role === 'financeaccountant') {
-          data = {
-            branch: this.props.branchAtAcc.branch,
-            academic_year: this.state.session,
-            fee_types: this.state.othrfeeTypeIds,
-            // fee_plan: this.state.feePlanId,
-            grades: this.state.gradeData
-          }
-        } else {
+        // if (this.state.role === 'financeaccountant') {
+        //   data = {
+        //     branch: this.props.branchAtAcc.branch,
+        //     academic_year: this.state.session,
+        //     fee_types: this.state.othrfeeTypeIds,
+        //     // fee_plan: this.state.feePlanId,
+        //     grades: this.state.gradeData
+        //   }
+        // } else {
           data = {
             branch: this.state.branchId,
             academic_year: this.state.session,
@@ -373,7 +375,7 @@ class TotalPaidReports extends Component {
             // fee_plan: this.state.feePlanId,
             grades: this.state.gradeData
           }
-        }
+        // }
         if (this.state.othrfeeTypeIds.length > 0) {
           this.props.fetchOthrInstallments(data, this.props.alert, this.props.user)
         }
@@ -497,24 +499,24 @@ class TotalPaidReports extends Component {
       return
     }
     let data = {}
-    if (this.state.role === 'financeaccountant') {
-      data = {
-        academic_year: this.state.session,
-        branches: [this.props.branchAtAcc.branch],
-        grades: this.state.gradeData,
-        fee_types: this.state.feeTypeIds.length > 0 ? this.state.feeTypeIds : null,
-        fee_plan: this.state.feePlanId.length > 0 ? this.state.feePlanId : null,
-        installments: this.state.installmentIds.length > 0 ? this.state.installmentIds : null,
-        type: this.state.typesId,
-        FeeTypes_installments: this.state.feeInstId,
-        student_status: this.state.selectedStudentStatus.value,
-        active: this.state.active,
-        inactive: this.state.inactive,
-        allStudents: this.state.allStudents,
-        other_fee_type: this.state.othrfeeTypeIds.length > 0 ? this.state.othrfeeTypeIds : null,
-        other_fee_installments: this.state.othrInstallmentIds.length > 0 ? this.state.othrInstallmentIds : null
-      }
-    } else {
+    // if (this.state.role === 'financeaccountant') {
+    //   data = {
+    //     academic_year: this.state.session,
+    //     branches: [this.props.branchAtAcc.branch],
+    //     grades: this.state.gradeData,
+    //     fee_types: this.state.feeTypeIds.length > 0 ? this.state.feeTypeIds : null,
+    //     fee_plan: this.state.feePlanId.length > 0 ? this.state.feePlanId : null,
+    //     installments: this.state.installmentIds.length > 0 ? this.state.installmentIds : null,
+    //     type: this.state.typesId,
+    //     FeeTypes_installments: this.state.feeInstId,
+    //     student_status: this.state.selectedStudentStatus.value,
+    //     active: this.state.active,
+    //     inactive: this.state.inactive,
+    //     allStudents: this.state.allStudents,
+    //     other_fee_type: this.state.othrfeeTypeIds.length > 0 ? this.state.othrfeeTypeIds : null,
+    //     other_fee_installments: this.state.othrInstallmentIds.length > 0 ? this.state.othrInstallmentIds : null
+    //   }
+    // } else {
       data = {
         academic_year: this.state.session,
         branches: [this.state.branchId],
@@ -531,7 +533,7 @@ class TotalPaidReports extends Component {
         other_fee_type: this.state.othrfeeTypeIds.length > 0 ? this.state.othrfeeTypeIds : null,
         other_fee_installments: this.state.othrInstallmentIds.length > 0 ? this.state.othrInstallmentIds : null
       }
-    }
+    // }
     // if (this.state.active) {
     //   data.active = this.state.active
     // } else if (this.state.inactive) {
