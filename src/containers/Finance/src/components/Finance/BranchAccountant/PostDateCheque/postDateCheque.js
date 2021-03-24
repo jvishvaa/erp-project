@@ -244,6 +244,22 @@ class PostDateCheque extends Component {
               onChange={this.handleAcademicyear}
             />
           </Grid>
+          <Grid item xs={3}>
+            <label>Branch*</label>
+            <Select
+              placeholder='Select Branch'
+              value={this.state.branchData}
+              options={
+                this.props.branches.length
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : []
+              }
+              onChange={this.changehandlerbranch}
+            />
+          </Grid>
           <Grid item xs='3'>
             <label>Grade*</label>
             <Select
@@ -348,13 +364,15 @@ const mapStateToProps = state => ({
   session: state.academicSession.items,
   gradeData: state.finance.accountantReducer.pdc.gradeData,
   pdcDetails: state.finance.accountantReducer.pdc.pdcList,
-  dataLoading: state.finance.common.dataLoader
+  dataLoading: state.finance.common.dataLoader,
+  branches: state.finance.common.branchPerSession,
 })
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, alert, user, moduleId })),
-  fetchPdc: (session, grade, fromDate, toDate, alert, user) => dispatch(actionTypes.fetchPdc({ session, grade, fromDate, toDate, alert, user }))
+  fetchPdc: (session, grade, fromDate, toDate, alert, user) => dispatch(actionTypes.fetchPdc({ session, grade, fromDate, toDate, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId }))
 })
 
 export default connect(
