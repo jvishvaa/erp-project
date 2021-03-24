@@ -58,17 +58,17 @@ const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists
   useLayoutEffect(() => {
     // const role = (JSON.parse(localStorage.getItem('userDetails'))).personal_info.role
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-      const role = userProfile.personal_info.role.toLowerCase()
+      const role = userProfile && userProfile.personal_info && userProfile.personal_info.role.toLowerCase()
     if (role === 'FinanceAccountant') {
       setIsAccountant(true)
     }
   }, [])
   useEffect(() => {
-    if (!isAccountant) {
+    // if (!isAccountant) {
       if (sessionYear) {
         fetchBranchLists(sessionYear.value, alert, user)
       }
-    }
+    // }
   }, [alert, fetchBranchLists, isAccountant, sessionYear, user])
 
   const handleSession = (e) => {
@@ -92,26 +92,27 @@ const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists
   }
 
   const showReportHandler = () => {
-    if (!isAccountant && (!sessionYear || !branch || !date || !wise)) {
+    // if (!isAccountant && (!sessionYear || !branch || !date || !wise)) {
+      if (!sessionYear || !branch || !date || !wise) {
       alert.warning('Fill all the Fields!')
     } else {
     // fetch report
     // this.props.downloadReports('TotalPaidReports.xlsx', urls.DownloadTotalPaidReports, data, this.props.alert, this.props.user)
       let storeUrl = null
-      if (!isAccountant) {
+      // if (!isAccountant) {
         if (date.value === 4) {
           storeUrl = `${urls.StoreReport}?session_year=${sessionYear.value}&branch=${branch.value}&date=${date.value}&from_date=${startDate}&to_date=${endDate}&type=${wise.value}&formats=${dateWise.value}`
         } else {
           storeUrl = `${urls.StoreReport}?session_year=${sessionYear.value}&branch=${branch.value}&date=${date.value}&type=${wise.value}&formats=${dateWise.value}`
         }
-      } else {
-        if (date.value === 4 && isAccountant) {
-          storeUrl = `${urls.StoreReport}?session_year=${sessionYear.value}&date=${date.value}&from_date=${startDate}&to_date=${endDate}&formats=${dateWise.value}`
-        } else {
-          storeUrl = `${urls.StoreReport}?session_year=${sessionYear.value}&date=${date.value}&formats=${dateWise.value}`
-        }
-      }
-      if (!isAccountant) {
+      // } else {
+        // if (date.value === 4 && isAccountant) {
+        //   storeUrl = `${urls.StoreReport}?session_year=${sessionYear.value}&date=${date.value}&from_date=${startDate}&to_date=${endDate}&formats=${dateWise.value}`
+        // } else {
+        //   storeUrl = `${urls.StoreReport}?session_year=${sessionYear.value}&date=${date.value}&formats=${dateWise.value}`
+        // }
+      // }
+      // if (!isAccountant) {
         if (session && branch) {
           if (date.value <= 3 || (startDate && endDate)) {
             // fetchStoreReport(sessionYear, branch, date, startDate, endDate, wise, dateWise, alert, user)
@@ -122,14 +123,14 @@ const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists
         } else {
           alert.warning('Select branch!')
         }
-      } else {
-        if (date.value <= 3 || (startDate && endDate)) {
-          // fetchStoreReport(sessionYear, branch, date, startDate, endDate, wise, dateWise, alert, user)
-          downloadReports('StoreReport.xlsx', storeUrl, alert, user)
-        } else {
-          alert.warning('Select From and To date!')
-        }
-      }
+      // } else {
+      //   if (date.value <= 3 || (startDate && endDate)) {
+      //     // fetchStoreReport(sessionYear, branch, date, startDate, endDate, wise, dateWise, alert, user)
+      //     downloadReports('StoreReport.xlsx', storeUrl, alert, user)
+      //   } else {
+      //     alert.warning('Select From and To date!')
+      //   }
+      // }
     }
   }
 
@@ -153,7 +154,7 @@ const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists
             onChange={(e) => handleSession(e)}
           />
         </Grid>
-        { isAccountant ? []
+        {/* { isAccountant ? [] */}
           : <Grid item className={classes.item} xs={3}>
             <label>Branch*</label>
             <Select
@@ -170,7 +171,7 @@ const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists
               onChange={(e) => handleBranch(e)}
             />
           </Grid>
-        }
+        {/* } */}
         <Grid item className={classes.item} xs={3}>
           <label>Date*</label>
           <Select
@@ -231,7 +232,7 @@ const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists
             </Grid>
           </React.Fragment>
           : null}
-        { isAccountant ? []
+        {/* { isAccountant ? [] */}
           : <Grid item className={classes.item} xs={3} style={{ marginTop: '30px' }}>
             {/* <label>Wise*</label> */}
             <Select
@@ -250,7 +251,7 @@ const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists
               onChange={(e) => handleWise(e)}
             />
           </Grid>
-        }
+        {/* } */}
         <Grid item className={classes.item} xs={3} style={{ marginTop: '30px' }}>
           {/* <label>Wise*</label> */}
           <Select
