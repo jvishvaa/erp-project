@@ -111,6 +111,7 @@ class StudentLedgerTab extends Component {
         value: '2021-22'
       },
       sessionData: null,
+      selectedBranches: null,
       getData: false,
       showTabs: false,
       erpNo: null,
@@ -142,7 +143,7 @@ class StudentLedgerTab extends Component {
 
   componentDidMount () {
     if (this.state.session && moduleId) {
-      this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
+      // this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
     }
  
   }
@@ -163,7 +164,8 @@ class StudentLedgerTab extends Component {
       student: null,
       showTabs: false
     }, () => {
-      this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+      // this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
     })
   }
 
@@ -315,6 +317,11 @@ class StudentLedgerTab extends Component {
       console.log('realsession', this.state.session)
     })
     console.log('Childdata', childData)
+  }
+
+  changehandlerbranch = (e) => {
+    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    this.setState({ selectedBranches: e})
   }
   render () {
     const { showTabs, value } = this.state
@@ -517,6 +524,24 @@ class StudentLedgerTab extends Component {
               onChange={this.handleAcademicyear}
             />
           </Grid>
+          <Grid item xs={3}>
+            <label>Branch*</label>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+              options={
+                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+
+              onChange={this.changehandlerbranch}
+            />
+          </Grid>
           <Grid item xs={3} className={classes.item} style={{ zIndex: '1102' }}>
             <label>Grade*</label>
             <Select
@@ -627,17 +652,20 @@ const mapStateToProps = state => ({
   gradeData: state.finance.accountantReducer.pdc.gradeData,
   sectionData: state.finance.accountantReducer.changeFeePlan.sectionData,
   studentErp: state.finance.accountantReducer.studentErpSearch.studentErpList,
-  dataLoading: state.finance.common.dataLoader
+  dataLoading: state.finance.common.dataLoader,
+  branches: state.finance.common.branchPerSession,
 })
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, alert, user, moduleId })),
+  // fetchGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, alert, user, moduleId })),
   // fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
+  fetchGrades: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
   studentErpSearch: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user })),
   clearAllProps: (alert, user) => dispatch(actionTypes.clearAllProps({ alert, user })),
-  fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId }))
+  fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId })),
 //   fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user }))
+fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId }))
 })
 
 export default connect(

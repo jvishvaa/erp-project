@@ -379,13 +379,15 @@ class FeeShowList extends Component {
   componentDidMount () {
     // console.log('Total1', this.props.location.state.session)
     this.setState({
-      session: this.props.location.state.session
+      session: this.props.location.state.session,
+      branchId: this.props.location.state.branch
     }, () => {
       this.props.fetchFeeCollection(this.state.session, this.props.user, this.props.alert)
-      this.props.fetchGrades(this.state.session, this.props.alert, this.props.user)
+      // this.props.fetchGrades(this.state.session, this.props.alert, this.props.user)
+      this.props.fetchGrades(this.props.alert, this.props.user, moduleId, this.state.branchId)
     })
     if (this.state.sessions) {
-      this.props.fetchGrades(this.state.sessions.value, this.props.alert, this.props.user)
+      // this.props.fetchGrades(this.state.sessions.value, this.props.alert, this.props.user)
     }
     // this.props.fetchBranchData(this.props.alert, this.props.user)
     // this.props.fetchReceiptRange(this.state.session, this.props.branchData && this.props.branchData.branch_name, this.props.alert, this.props.user)
@@ -2511,7 +2513,8 @@ const mapDispatchToProps = dispatch => ({
   fetchFeeCollection: (session, user, alert) => dispatch(actionTypes.fetchFeeCollectionList({ session, user, alert })),
   saveOutsiders: (data, user, alert) => dispatch(actionTypes.saveOutsiders({ data, user, alert })),
   orchidsStudentPay: (data, user, alert) => dispatch(actionTypes.orchidsStudentPay({ data, user, alert })),
-  fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user })),
+  // fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user })),
+  fetchGrades: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
   paymentAction: (data, user, alert) => dispatch(actionTypes.paymentAction({ data, user, alert })),
   fetchIfsc: (ifsc, alert, user) => dispatch(actionTypes.fetchIfsc({ ifsc, alert, user })),
   // sendAllPayments: (data, user, alert) => dispatch(actionTypes.sendAllPayments({ data, user, alert }))
