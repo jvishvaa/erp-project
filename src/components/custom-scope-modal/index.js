@@ -481,7 +481,7 @@ const CustomScopeModal = ({
                 getOptionSelected={(option, value) => value && option.id == value.id}
               />
             </FormControl>
-          </Grid> */}
+          </Grid> */}                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
           <Grid item sm={12}>
             <FormControl className={classes.formControl}>
               <Autocomplete
