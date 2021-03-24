@@ -87,17 +87,17 @@ const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downlo
 
   useEffect(() => {
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-    const role = userProfile.personal_info.role.toLowerCase()
+    const role = userProfile && userProfile.personal_info && userProfile.personal_info.role.toLowerCase()
     setRole(role)
   }, [])
 
   const handleAcademicyear = (e) => {
     // console.log('acad years', e)
     setSession(e)
-    if (roleState === 'financeadmin') {
+    // if (roleState === 'financeadmin') {
       fetchBranches(e.value, alert, user, moduleId)
       // fetch banks
-    }
+    // }
   }
 
   const changehandlerbranch = (e) => {
@@ -113,7 +113,7 @@ const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downlo
   }
 
   const selectBranch = (e) => {
-    if (roleState === 'financeadmin') {
+    // if (roleState === 'financeadmin') {
       return (
         <Grid item xs={3} className={classes.item}>
           <label>Branch*</label>
@@ -134,7 +134,7 @@ const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downlo
         </Grid>
       )
     }
-  }
+  // }
 
   const fetchReportHandler = () => {
     // fetch show list
