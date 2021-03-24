@@ -149,6 +149,7 @@ export default {
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
     editChapter: '/academic/',
+    centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`//'https://dev.mgmt.letseduvate.com/qbox/lesson_plan/erp_lesson_mapping/?domain_name=olvorchidnaigaon'
   },
   lessonPlan: {
     periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
@@ -274,4 +275,5 @@ export default {
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
   // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing
+  baseURLCentral,
 };

@@ -73,7 +73,7 @@ export default function ResourceCardComponent(props) {
     //className={`${props.selectedId === classData.id ? classes.activeCard : classes.card}`}
     return (
         <Box className={`${props.selectedId === props.resourceData.id ? classes.activeCard : classes.card}`}>
-            <div>
+            <div style={{display:'flex',justifyContent:'space-between'}}>
                 <Typography className={classes.classTitle}>
                     {props.resourceData.online_class.title}
                 </Typography>
@@ -86,18 +86,26 @@ export default function ResourceCardComponent(props) {
                     <EditOutlinedIcon style={{color:'#fe6b6b', fontSize: '18px'}} />
                 </IconButton>
                 */}
+                <Typography style={{float: 'right', verticalAlign: 'top', display: 'inline-block',fontSize:'15px',marginTop:'3px'}}>
+                Start Time : {moment(props.resourceData.online_class.start_time).format('h:mm A')}
+
+                </Typography>
             </div>
                 <Typography className={classes.classTitle}>
                     {props.resourceData.online_class.subject && props.resourceData.online_class.subject.reduce((sub) => sub.subject_name.join())}
                 </Typography>
-                {/*
+{/*                 
                 <Typography className={classes.classSchedule}>
                     Date : {moment(props.resourceData.online_class.start_time).format('Do MMM YYYY')}
                 </Typography>
                 */}
                 <Typography className={classes.classSchedule}>
-                    Start Time : {moment(props.resourceData.online_class.start_time).format('h:mm:ss')}
+                    Start Date : {moment(props.resourceData.online_class.start_time).format('DD-MM-YYYY')}
                 </Typography>
+                <Typography className={classes.classSchedule}>
+                End Date : {moment(props.resourceData.online_class.start_time).format('DD-MM-YYYY')}
+                </Typography>
+
 
             <div style={{ marginTop: '15px', width: '100%'}}>
                 { props.selectedId !== props.resourceData.id && (

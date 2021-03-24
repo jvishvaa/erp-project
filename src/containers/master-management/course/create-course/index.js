@@ -160,7 +160,7 @@ const CreateCourse = () => {
     } else {
       const isErpValue = Number(sessionStorage.getItem('isErpClass')) || '';
       if (isErpValue === 1) {
-        history.push(`/online-class/view-class`);
+        history.push(`/erp-online-class`);
       } else if (isErpValue === 2) {
         history.push('/erp-online-class-student-view');
       } else if (isErpValue === 3) {
@@ -244,6 +244,7 @@ const CreateCourse = () => {
                   } else if (isAolValue === 3) {
                     history.push('/online-class/teacher-view-class');
                   }
+                 
                 } else {
                   const isErpValue = Number(sessionStorage.getItem('isErpClass')) || '';
                   if (isErpValue === 1) {

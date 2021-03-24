@@ -168,10 +168,10 @@ const LessonPlanGraphReport = ({
           setAlert('error', error.message);
           setSubjectDropdown([]);
         });
-
+        const {year:{school:schoolSectionYear}={}} = filterData||{}
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&session_year=${schoolSectionYear?.id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -208,9 +208,10 @@ const LessonPlanGraphReport = ({
       const sIds = value.map((el) => el.id);
       setSubjId(sIds);
       setSubjectList(value);
+      const {year:{school:{id:schoolAcademicId}}={}}=filterData||{}
       axiosInstance
         .get(
-          `${endpoints.lessonReport.teacherList}?branch=${filterData?.branch?.id}&grade=${filterData?.grade?.grade_id}&section=${filterData.section?.section_id}&subject=${ids}&academic_year=${filterData?.year?.id}`
+          `${endpoints.lessonReport.teacherList}?branch=${filterData?.branch?.id}&grade=${filterData?.grade?.grade_id}&section=${filterData.section?.section_id}&subject=${ids}&academic_year=${schoolAcademicId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -297,24 +298,68 @@ const LessonPlanGraphReport = ({
         setAlert('error', error.message);
       });
   };
+  const fetchCentralAndSchoolsSessions = ()=>{
+    const headers= {headers: {'x-api-key': 'vikash@12345#1231'}}
+    const schoolSessionApiURL = endpoints.masterManagement.academicYear
+    const schoolSessionProm = axiosInstance.get(schoolSessionApiURL)
+
+    const centralSessionsApiURL = `${endpoints.baseURLCentral}/lesson_plan/list-session/`
+    const centralSessionProm = axios.get(centralSessionsApiURL, headers)
+    const promises = [schoolSessionProm,centralSessionProm]
+    Promise.all(promises).then(res=>{
+      const academicYears= []
+      const [schoolAcademicYearsObj, centralAcademicYearsObj]= res
+
+      const {data:{result:{results:schoolAcademicYears}={}}={}}=schoolAcademicYearsObj||{}
+      let {data:{result:{results:centralAcademicYears}={}}={}}=centralAcademicYearsObj||{}
+      let schoolAcademicYearsObjMap = {}
+      schoolAcademicYears.forEach(item=>{
+        schoolAcademicYearsObjMap[item.session_year] = item
+      })
+      centralAcademicYears.forEach(item=>{
+        const obj = {...item, school:schoolAcademicYearsObjMap[item.session_year]}
+        academicYears.push(obj)
+      })
+      setAcademicYearDropdown(academicYears)
+    }).catch(e=>{
+        setAlert('error', 'Failed to fetch academic sessions.');
+    })
+//     axios
+//       .get(`${endpoints.baseURLCentral}/lesson_plan/list-session/`, {
+//         headers: {
+//           'x-api-key': 'vikash@12345#1231',
+//         },
+//       })
+//       .then((result) => {
+//         if (result.data.status_code === 200) {
+//           setAcademicYearDropdown(result.data.result.results);
+//         } else {
+//           setAlert('error', result.data.message);
+//         }
+//       })
+//       .catch((error) => {
+//         setAlert('error', error.message);
+//       });
+// // fetch erp academic years
+      
+//       axiosInstance
+//       .get(apiURL)
+//       .then((result) => {
+//         debugger
+//         if (result.data.status_code === 200) {
+//           setAcademicYearDropdown(result.data.result.results);
+//         } else {
+//           setAlert('error', result.data.message);
+//         }
+//       })
+//       .catch((error) => {
+//         setAlert('error', error.message);
+//       });
+// 
+  }
 
   useEffect(() => {
-    axios
-      .get(`${endpoints.baseURLCentral}/lesson_plan/list-session/`, {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
-      })
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setAcademicYearDropdown(result.data.result.results);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
+    fetchCentralAndSchoolsSessions()
     axios
       .get(`${endpoints.baseURLCentral}/lesson_plan/list-volume/`, {
         headers: {

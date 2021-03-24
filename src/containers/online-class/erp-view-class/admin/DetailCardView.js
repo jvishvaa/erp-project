@@ -33,6 +33,7 @@ const JoinClass = (props) => {
 
   const startTime = props && props?.data?.start_time;
   const currTime = moment(new Date()).format('x');
+  const endTime = new Date(`${props.data.date}T${props?.data?.end_time}`).getTime();
   const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
   const diffTime = classTimeMilli - 5 * 60 * 1000;
 
@@ -101,9 +102,9 @@ const JoinClass = (props) => {
   };
 
   const handleJoinButton = (callback) => {
-    handleIsAttended()
-    callback()
-  }
+    handleIsAttended();
+    callback();
+  };
   function handleCancel() {
     setLoading(true);
     const params1 = {
@@ -165,7 +166,9 @@ const JoinClass = (props) => {
             color='secondary'
             fullWidth
             variant='contained'
-            onClick={() => handleJoinButton(() => window.open(fullData && fullData.join_url))}
+            onClick={() =>
+              handleJoinButton(() => window.open(fullData && fullData.join_url))
+            }
             className='teacherFullViewSmallButtons'
           >
             Join
@@ -173,10 +176,27 @@ const JoinClass = (props) => {
         </Grid>
       ) : (
         <>
-          {isRejected ? (
+          {/* {isRejected ? (
             <Grid item xs={6}>
               <Typography style={{ color: '#ff6b6b' }}>Rejected</Typography>
             </Grid>
+          ) : ( */}
+          {endTime < currTime ? (
+            <Button
+              size='small'
+              color='secondary'
+              variant='contained'
+              disabled='true'
+              className='teacherFullViewSmallButtons'
+            >
+              Class Over
+            </Button>
+          ) : isRejected ? (
+            <>
+              <Grid item xs={6}>
+                <Typography style={{ color: '#ff6b6b' }}>Rejected</Typography>
+              </Grid>
+            </>
           ) : (
             <>
               <Grid item md={3} xs={6}>
@@ -438,11 +458,20 @@ const DetailCardView = ({
       history.push(
         `/create/course/${fullData.online_class && fullData.online_class.course_id}/5`
       );
-    } else {
+    } else if (window.location.pathname === '/erp-online-class-teacher-view') {
       sessionStorage.setItem('isErpClass', 3);
       history.push(
         `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
-          selectedGrade.map((el)=>el.id)
+          // selectedGrade.map((el)=>el.id)
+          1
+        }`
+      );
+    } else if (window.location.pathname === '/erp-online-class') {
+      sessionStorage.setItem('isErpClass', 1);
+      history.push(
+        `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
+          // selectedGrade.map((el)=>el.id)
+          1
         }`
       );
     }
