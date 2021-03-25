@@ -45,6 +45,6 @@ export default axiosInstance;
 
 // Upload: document file size
 export const FileSize = {
-  img_pdf: 31457280,
+  img_pdf: 1048576,
   audio_video: 52428800
 }
