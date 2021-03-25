@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useRef, useEffect, useContext, useCallback } from 'react';
 import {
   IconButton,
   OutlinedInput,
@@ -37,6 +37,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import placeholder from '../../assets/images/placeholder_small.jpg';
 import Attachment from '../../containers/homework/teacher-homework/attachment';
 import endpoints from '../../config/endpoints';
+import FileValidators from '../../components/file-validation/FileValidators';
 
 import './styles.scss';
 
@@ -76,6 +77,7 @@ const QuestionCard = ({
   const fileUploadInput = useRef(null);
   const attachmentsRef = useRef(null);
   const { setAlert } = useContext(AlertNotificationContext);
+  const [sizeValied, setSizeValied] = useState({});
 
   const handleScroll = (dir) => {
     if (dir === 'left') {
@@ -97,36 +99,54 @@ const QuestionCard = ({
   const onChange = (field, value) => {
     handleChange(index, field, value);
   };
+
   const handleFileUpload = async (file) => {
-    try {
-      // console.log(file,"=====File=====");
-      if (
-        file.name.lastIndexOf('.pdf') > 0 ||
-        file.name.lastIndexOf('.jpeg') > 0 ||
-        file.name.lastIndexOf('.jpg') > 0 ||
-        file.name.lastIndexOf('.png') > 0 ||
-        file.name.lastIndexOf('.mp3') > 0 ||
-        file.name.lastIndexOf('.mp4') > 0
-      ) {
-        const fd = new FormData();
-        fd.append('file', file);
-        setFileUploadInProgress(true);
-        const filePath = await uploadFile(fd);
-        if (file.type === 'application/pdf') {
-          setAttachments((prevState) => [...prevState, ...filePath]);
-          setAttachmentPreviews((prevState) => [...prevState, ...filePath]);
+    const isValid = FileValidators(file);
+    !isValid?.isValid && isValid?.msg && setAlert('error', isValid?.msg);
+
+    //setSizeValied(isValid);
+    // if(file.name.lastIndexOf('.mp3') || file.name.lastIndexOf('.mp4')){
+    //   if(file.size > 5242880){
+    //     setSizeValied(true);
+    //     return false
+    //   }
+    //   else {
+    //     setSizeValied(false);
+    //   }
+    // }
+    
+    if(isValid?.isValid) {
+      try {
+        // console.log(file,"=====File=====");
+        if (
+          file.name.lastIndexOf('.pdf') > 0 ||
+          file.name.lastIndexOf('.jpeg') > 0 ||
+          file.name.lastIndexOf('.jpg') > 0 ||
+          file.name.lastIndexOf('.png') > 0 ||
+          file.name.lastIndexOf('.mp3') > 0 ||
+          file.name.lastIndexOf('.mp4') > 0
+        ) {
+          const fd = new FormData();
+          fd.append('file', file);
+          setFileUploadInProgress(true);
+          const filePath = await uploadFile(fd);
+          if (file.type === 'application/pdf') {
+            setAttachments((prevState) => [...prevState, ...filePath]);
+            setAttachmentPreviews((prevState) => [...prevState, ...filePath]);
+          } else {
+            setAttachments((prevState) => [...prevState, filePath]);
+            setAttachmentPreviews((prevState) => [...prevState, filePath]);
+          }
+          setFileUploadInProgress(false);
+          setAlert('success', 'File uploaded successfully');
+          setSizeValied('');
         } else {
-          setAttachments((prevState) => [...prevState, filePath]);
-          setAttachmentPreviews((prevState) => [...prevState, filePath]);
+          setAlert('error', 'Please upload valid file');
         }
+      } catch (e) {
         setFileUploadInProgress(false);
-        setAlert('success', 'File uploaded successfully');
-      } else {
-        setAlert('error', 'Please upload valid file');
+        setAlert('error', 'File upload failed');
       }
-    } catch (e) {
-      setFileUploadInProgress(false);
-      setAlert('error', 'File upload failed');
     }
   };
 
@@ -243,6 +263,7 @@ const QuestionCard = ({
                         <small style={{ width: '100%', color: '#014b7e' }}>
                           {' '}
                           Accepted files: jpeg,jpg,mp3,mp4,pdf,png
+                          {/*sizeValied ? 'Accepted files: jpeg,jpg,mp3,mp4,pdf,png' : 'Document size should be less than 5MB !'*/}
                         </small>
                       </>
                     )}

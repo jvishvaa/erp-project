@@ -109,6 +109,7 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
               variant='p'
               component='p'
               color='primary'
+              noWrap
             >
               {lesson.subject.subject_name}
             </Typography>
