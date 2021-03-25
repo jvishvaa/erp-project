@@ -14,7 +14,7 @@ export const CANCEL_TRANS = 'CANCEL_TRANS'
 export const fetchFeeCollectionList = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.feeCollection + '?session_year=' + payload.session, {
+    axios.get(urls.feeCollection + '?session_year=' + payload.session + '&branch_id=' + payload.branch, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }

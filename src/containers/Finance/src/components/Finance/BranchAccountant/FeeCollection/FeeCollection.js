@@ -16,7 +16,7 @@ let moduleId
 if (NavData && NavData.length) {
   NavData.forEach((item) => {
     if (
-      item.parent_modules === 'Student' &&
+      item.parent_modules === 'student' &&
       item.child_module &&
       item.child_module.length > 0
     ) {
@@ -72,7 +72,7 @@ class FeeCollection extends Component {
   }
 
   changehandlerbranch = (e) => {
-    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
     this.setState({ selectedBranches: e }, () => {
       this.props.fetchReceiptRange(this.state.sessionData?.value, e.value, this.props.alert, this.props.user)
     })

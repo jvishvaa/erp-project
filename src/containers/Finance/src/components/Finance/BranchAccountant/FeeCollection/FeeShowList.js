@@ -81,7 +81,7 @@ let moduleId
 if (NavData && NavData.length) {
   NavData.forEach((item) => {
     if (
-      item.parent_modules === 'Student' &&
+      item.parent_modules === 'student' &&
       item.child_module &&
       item.child_module.length > 0
     ) {
@@ -382,7 +382,7 @@ class FeeShowList extends Component {
       session: this.props.location.state.session,
       branchId: this.props.location.state.branch
     }, () => {
-      this.props.fetchFeeCollection(this.state.session, this.props.user, this.props.alert)
+      this.props.fetchFeeCollection(this.state.session, this.props.user, this.props.alert, this.state.branchId)
       // this.props.fetchGrades(this.state.session, this.props.alert, this.props.user)
       this.props.fetchGrades(this.props.alert, this.props.user, moduleId, this.state.branchId)
     })
@@ -2510,7 +2510,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchStudentErpDet: (erp, session, user, alert) => dispatch(actionTypes.fetchStudentErpDet({ erp, session, user, alert })),
-  fetchFeeCollection: (session, user, alert) => dispatch(actionTypes.fetchFeeCollectionList({ session, user, alert })),
+  fetchFeeCollection: (session, user, alert, branch) => dispatch(actionTypes.fetchFeeCollectionList({ session, user, alert, branch })),
   saveOutsiders: (data, user, alert) => dispatch(actionTypes.saveOutsiders({ data, user, alert })),
   orchidsStudentPay: (data, user, alert) => dispatch(actionTypes.orchidsStudentPay({ data, user, alert })),
   // fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user })),
