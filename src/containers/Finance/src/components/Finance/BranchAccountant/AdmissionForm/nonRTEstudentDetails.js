@@ -58,7 +58,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
-
+console.log('module iD outside', moduleId)
 class NonRTEStudentDetailsFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -128,7 +128,7 @@ class NonRTEStudentDetailsFormAcc extends Component {
   }
 
   componentDidMount () {
-    console.log('alertttt', this.props.alert)
+    console.log('module iD mount', moduleId)
     this.props.fetchGradeList(this.props.alert, this.props.user, moduleId)
     this.props.fetchClassGroup(this.props.alert, this.props.user)
   }

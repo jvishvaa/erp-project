@@ -78,7 +78,7 @@ export const getStudentdetailsbyregNumber = (payload) => {
 export const getAdmissionRecords = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.AdmissionRecords + '?academic_year=' + payload.session + '&from_date=' + payload.fromDate + '&to_date=' + payload.toDate, {
+    axios.get(urls.AdmissionRecords + '?academic_year=' + payload.session + '&from_date=' + payload.fromDate + '&to_date=' + payload.toDate + '&branch_id=' + payload?.branch?.value, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
