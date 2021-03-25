@@ -26,7 +26,7 @@ const validateQuestions = (obj) => {
   let errorObj = { question: '' };
   if (!obj.question.trim()) {
     error = true;
-    errorObj = { ...errorObj, question: 'Required' };
+    errorObj = { ...errorObj, question: '*Question is required...' };
   }
   return { error, errorObj };
 };
@@ -64,13 +64,13 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
     let isFormValid = true;
     if (!name.trim()) {
       isFormValid = false;
-      setErrors((prevState) => ({ ...prevState, name: 'Required' }));
+      setErrors((prevState) => ({ ...prevState, name: '*Title is required...' }));
     } else {
       setErrors((prevState) => ({ ...prevState, name: '' }));
     }
     if (!description.trim()) {
       isFormValid = false;
-      setErrors((prevState) => ({ ...prevState, description: 'Required' }));
+      setErrors((prevState) => ({ ...prevState, description: '*Description is required...' }));
     } else {
       setErrors((prevState) => ({ ...prevState, description: '' }));
     }
@@ -201,6 +201,8 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                     onChange={(e) => {
                       setName(e.target.value);
                     }}
+                    //error={errors.name ? true : false}
+                    //helperText="Title is required"
                   />
                   <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
                 </FormControl>
@@ -219,6 +221,8 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                     rows={4}
                     rowsMax={6}
                     label='Description'
+                    //error={true}
+                    //helperText="Description required"
                   />
                   <FormHelperText style={{ color: 'red' }}>
                     {errors.description}
