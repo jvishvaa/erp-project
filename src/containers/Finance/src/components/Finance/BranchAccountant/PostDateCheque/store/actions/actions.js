@@ -35,7 +35,7 @@ export const fetchPdc = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.ListPDC + '?academic_year=' + payload.session + '&grade_id=' + payload.grade + '&from_date=' + payload.fromDate + '&to_date=' + payload.toDate, {
+      .get(urls.ListPDC + '?academic_year=' + payload.session + '&grade_id=' + payload.grade + '&from_date=' + payload.fromDate + '&to_date=' + payload.toDate + '&branch_id=' + payload.branch, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }

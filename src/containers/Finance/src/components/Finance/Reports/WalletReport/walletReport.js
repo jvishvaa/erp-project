@@ -19,13 +19,13 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
 
   useEffect(() => {
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-    const role = userProfile.personal_info.role.toLowerCase()
+    const role = userProfile?.personal_info?.role?.toLowerCase()
     setRole(role)
-    if (role === 'financeaccountant') {
-      fetchBranchAtAcc(alert, user)
-    }
+    // if (role === 'financeaccountant') {
+    //   fetchBranchAtAcc(alert, user)
+    // }
     console.log('grades', grades)
-  }, [alert, fetchBranchAtAcc, grades, user])
+  }, [alert, grades, user])
 
   const handleAcademicyear = (e) => {
     console.log(e)
@@ -33,11 +33,11 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
     setValueGrade([])
     setBranchData(null)
     // fetchBranches(e.value, alert, user)
-    if (role === 'financeaccountant') {
-      fetchGrades(e.value, branchAtAcc && branchAtAcc.branch, alert, user)
-    } else {
+    // if (role === 'financeaccountant') {
+    //   fetchGrades(e.value, branchAtAcc && branchAtAcc.branch, alert, user)
+    // } else {
       fetchBranches(e.value, alert, user)
-    }
+    // }
   }
   const changehandlerbranch = (e) => {
     if (e.value === 'all') {
@@ -77,7 +77,7 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
     }
   }
   const getReport = () => {
-    if (role === 'financeadmin') {
+    // if (role === 'financeadmin') {
       if (sessionData && branchData && gradeData && gradeData.length > 0) {
         let url = `${urls.WalletReport}?session_year=${sessionData && sessionData.value}&branch_id=${branchId}&grade=${gradeData}`
         downloadReports('walletReport.xlsx', url, alert, user)
@@ -88,23 +88,23 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
       } else {
         alert.warning('Fill all the required Fields!')
       }
-    } else {
-      if (sessionData && gradeData && gradeData.length > 0) {
-        // let url = `${urls.WalletReport}?session_year=${sessionData && sessionData.value}&grade=${gradeData}`
-        let url = `${urls.WalletReport}?session_year=${sessionData && sessionData.value}&branch_id=${branchAtAcc && branchAtAcc.branch}&grade=${gradeData}`
-        downloadReports('walletReport.xlsx', url, alert, user)
-        console.log('gradedata', gradeData)
-        setSessionData([])
-        setGradeData([])
-        setBranchData(null)
-        setValueGrade(null)
-      } else {
-        alert.warning('Fill all the required Fields!')
-      }
-    }
+    // } else {
+    //   if (sessionData && gradeData && gradeData.length > 0) {
+    //     // let url = `${urls.WalletReport}?session_year=${sessionData && sessionData.value}&grade=${gradeData}`
+    //     let url = `${urls.WalletReport}?session_year=${sessionData && sessionData.value}&branch_id=${branchAtAcc && branchAtAcc.branch}&grade=${gradeData}`
+    //     downloadReports('walletReport.xlsx', url, alert, user)
+    //     console.log('gradedata', gradeData)
+    //     setSessionData([])
+    //     setGradeData([])
+    //     setBranchData(null)
+    //     setValueGrade(null)
+    //   } else {
+    //     alert.warning('Fill all the required Fields!')
+    //   }
+    // }
   }
   let selectBranch = null
-  if (role === 'financeadmin') {
+  // if (role === 'financeadmin') {
     selectBranch = (
       <Grid item xs={3} style={{ padding: '15px' }}>
         <label>Branch*</label>
@@ -124,7 +124,7 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
         />
       </Grid>
     )
-  }
+  // }
   return (
     <Layout>
     <React.Fragment>

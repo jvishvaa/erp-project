@@ -115,7 +115,7 @@ const TotalFormCount = ({ classes,
   const [sessionYear, setSession] = useState({ value: '2019-20', label: '2019-20' })
   const [fromDate, setFromDate] = useState(null)
   const [toDate, setToDate] = useState(null)
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(true)
   const [selectedBranch, setSelectedBranch] = useState(null)
   const [showTable, setShowTable] = useState(true)
   const [selectedReport, setSelectedReport] = useState(null)
@@ -125,9 +125,9 @@ const TotalFormCount = ({ classes,
   useLayoutEffect(() => {
     // const role = (JSON.parse(localStorage.getItem('userDetails'))).personal_info.role
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-      const role = userProfile.personal_info.role.toLowerCase()
-    if (role === 'financeadmin') {
-      setIsAdmin(true)
+      const role = userProfile?.personal_info?.role?.toLowerCase()
+    // if (role === 'financeadmin') {
+    //   setIsAdmin(true)
       // if (branchStored && role === 'FinanceAdmin') {
       //   setSelectedBranch(branchStored)
       //   setFromDate(fromDateStored)
@@ -135,16 +135,16 @@ const TotalFormCount = ({ classes,
       // }
       // fetchBranches(sessionYear.value, alert, user)
       fetchBranchList(sessionYear.value, alert, user, moduleId)
-    }
+    // }
   }, [alert, sessionYear.value, fetchBranchList, user])
 
   useEffect(() => {
     // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-      const role = userProfile.personal_info.role.toLowerCase()
-    if (branchStored && role === 'financeadmin') {
+      const role = userProfile?.personal_info?.role?.toLowerCase()
+    // if (branchStored && role === 'financeadmin') {
       setSelectedBranch(branchStored)
-    }
+    // }
     if (fromDateStored) {
       setFromDate(fromDateStored)
     }
@@ -229,21 +229,23 @@ const TotalFormCount = ({ classes,
     if (displayDateRange) {
       // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
       const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-      const role = userProfile.personal_info.role.toLowerCase()
-      if (sessionYear && fromDate && toDate && selectedReport && selectedDates && role !== 'financeadmin') {
-        console.log('Wihout admin +++++++')
-        fetchFormCount(sessionYear.value, null, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
-      } else if (sessionYear && fromDate && toDate && (role === 'financeadmin') && selectedBranch && selectedReport && selectedDates) {
+      const role = userProfile?.personal_info?.role?.toLowerCase()
+      // if (sessionYear && fromDate && toDate && selectedReport && selectedDates && role !== 'financeadmin') {
+      //   console.log('Wihout admin +++++++')
+      //   fetchFormCount(sessionYear.value, null, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
+      // } else 
+      if (sessionYear && fromDate && toDate && selectedBranch && selectedReport && selectedDates) {
         fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
       }
     } else {
       // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
       const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-      const role = userProfile.personal_info.role.toLowerCase()
-      if (sessionYear && selectedReport && selectedDates && role !== 'financeadmin') {
-        console.log('Wihout admin +++++++')
-        fetchFormCount(sessionYear.value, null, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
-      } else if (sessionYear && (role === 'financeadmin') && selectedBranch && selectedReport && selectedDates) {
+      const role = userProfile?.personal_info?.role?.toLowerCase()
+      // if (sessionYear && selectedReport && selectedDates && role !== 'financeadmin') {
+      //   console.log('Wihout admin +++++++')
+      //   fetchFormCount(sessionYear.value, null, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
+      // } else 
+      if (sessionYear && selectedBranch && selectedReport && selectedDates) {
         fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
       }
     }
@@ -278,7 +280,7 @@ const TotalFormCount = ({ classes,
           selectedReport: selectedReport && selectedReport.value,
           selectedDates: selectedDates && selectedDates.value,
           isAdmin,
-          branch: isAdmin ? result && result.branch.id : null
+          branch: isAdmin ? result && result?.branch?.id : null
         }
       })
     } else {
@@ -373,7 +375,6 @@ const TotalFormCount = ({ classes,
             onChange={(e) => handleSession(e)}
           />
         </Grid>
-        {isAdmin ? (
           <Grid item className={classes.item} xs={3}>
             <label>Branch*</label><br />
             <Select
@@ -391,7 +392,6 @@ const TotalFormCount = ({ classes,
               onChange={handleBranch}
             />
           </Grid>
-        ) : null}
         <Grid item className={classes.item} xs={3}>
           <label>Report Type*</label><br />
           <Select
