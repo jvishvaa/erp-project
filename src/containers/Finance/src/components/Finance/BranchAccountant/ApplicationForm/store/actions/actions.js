@@ -45,7 +45,7 @@ export const fetchApplicationDetails = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.GetApplicationDetails + '?enquiry_type=' + payload.key + '&academic_year=' + payload.session, {
+      .get(urls.GetApplicationDetails + '?enquiry_type=' + payload.key + '&academic_year=' + payload.session + '&branch_id=' + payload?.branch?.value, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -76,7 +76,7 @@ export const fetchGrade = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.StudentGradeAcc + '?academic_year=' + payload.session, {
+      .get(urls.StudentGradeAcc + '?academic_year=' + payload.session + '&branch_id=' + payload.branch, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }

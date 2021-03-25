@@ -18,7 +18,7 @@ import { withRouter } from 'react-router-dom'
 import { apiActions } from '../../../../_actions'
 import CustomizedAdmissionFormAcc from './customizedAdmissionForm'
 // import UpdateAdmissionFormAcc from './updateAdmissionForm'
-import * as actionTypes from '../store/actions'
+import * as actionTypes from '../../store/actions'
 import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
@@ -65,9 +65,11 @@ class AdmissionFormAcc extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      selectedBranches: '' ,
       dropdowns: { session: null,
       fromDate: null,
-      toDate: null }
+      toDate: null
+      }
     }
   }
   buttonHandler = (e) => {
@@ -76,10 +78,11 @@ class AdmissionFormAcc extends Component {
     })
   }
   handleGetButton = (e) => {
-    this.props.getAdmissionRecords(this.props.user, this.props.alert, this.state.dropdowns.session, this.state.dropdowns.fromDate, this.state.dropdowns.toDate)
+    this.props.getAdmissionRecords(this.props.user, this.props.alert, this.state.dropdowns.session, this.state.dropdowns.fromDate, this.state.dropdowns.toDate, this.state.selectedBranches)
   }
 
   dropDownHandler= (event, name) => {
+    this.props.fetchBranches(event && event.value, this.props.alert, this.props.user, moduleId)
     console.log('student detail handler', event, name)
     const newstate = { ...this.state.dropdowns }
     console.log(event.value)
@@ -129,6 +132,11 @@ class AdmissionFormAcc extends Component {
     }
   }
 
+  changehandlerbranch = (e) => {
+    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e && e.value)
+    // this.props.fetchGrade(this.state.session, e && e.value, this.props.alert, this.props.user, moduleId)
+    this.setState({ selectedBranches: e})
+  }
   render () {
     console.log('rendered')
     let admissionTable = null
@@ -214,6 +222,26 @@ class AdmissionFormAcc extends Component {
                 />
                 </div>
               </Grid>
+              <Grid item xs='3'>
+            <label>Branch*</label>
+            <div style={{ marginTop: '15px' }}>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+              options={
+                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+
+              onChange={this.changehandlerbranch}
+            />
+            </div>
+          </Grid>
               {/* <Grid item xs={3}>
                 <label>Select</label>
                 <Select
@@ -272,11 +300,14 @@ class AdmissionFormAcc extends Component {
 const mapStateToProps = state => ({
   user: state.authentication.user,
   session: state.academicSession.items,
-  admissionrecords: state.finance.accountantReducer.admissionForm.admissionrecords
+  admissionrecords: state.finance.accountantReducer.admissionForm.admissionrecords,
+  branches: state.finance.common.branchPerSession,
+  
 })
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  getAdmissionRecords: (user, alert, session, fromDate, toDate) => dispatch(actionTypes.getAdmissionRecords({ user, alert, session, fromDate, toDate }))
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
+  getAdmissionRecords: (user, alert, session, fromDate, toDate, branch) => dispatch(actionTypes.getAdmissionRecords({ user, alert, session, fromDate, toDate, branch }))
 })
 
 export default connect(

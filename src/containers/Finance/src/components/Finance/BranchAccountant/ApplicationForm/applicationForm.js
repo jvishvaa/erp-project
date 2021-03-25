@@ -109,6 +109,7 @@ class ApplicationFormAcc extends Component {
     this.state = {
     page: 0,
     rowsPerPage: 10,
+    selectedBranches: '',
       session: '2020-21',
       sessionData: {
         label: '2020-21',
@@ -204,7 +205,7 @@ class ApplicationFormAcc extends Component {
 
   componentDidMount () {
     if (this.state.session) {
-      this.props.fetchGrade(this.state.session, this.props.alert, this.props.user, moduleId)
+      // this.props.fetchGrade(this.state.session, this.props.alert, this.props.user, moduleId)
       this.props.fetchReceiptRange(this.state.session, this.props.alert, this.props.user)
     }
   }
@@ -226,7 +227,8 @@ class ApplicationFormAcc extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, sessionData: e }, () => {
-      this.props.fetchGrade(this.state.session, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+      // this.props.fetchGrade(this.state.session, this.props.alert, this.props.user, moduleId)
     })
   }
 
@@ -260,7 +262,7 @@ class ApplicationFormAcc extends Component {
       ...prevState,
       formData: this.baseFormState
     }), () => {
-      this.props.fetchApplicationDetails(this.state.session, this.state.searchedValue, this.props.user, this.props.alert)
+      this.props.fetchApplicationDetails(this.state.session, this.state.searchedValue, this.state.selectedBranches, this.props.user, this.props.alert)
     })
     // this.setState({ showSiblingTable: true })
   }
@@ -1643,7 +1645,8 @@ class ApplicationFormAcc extends Component {
         receipt_type: this.state.payment.isOnline ? 1 : 2,
         receipt_number: payment.receiptOnline ? payment.receiptOnline : null,
         // receipt_number_online: payment.receiptOnline ? payment.receiptOnline : null,
-        current_date: new Date().toISOString().substr(0, 10)
+        current_date: new Date().toISOString().substr(0, 10),
+        branch_id: this.state.selectedBranches
       }
       this.sendingToServer(cashData)
     } else if (this.state.selectedPayment === 'b') {
@@ -1665,7 +1668,8 @@ class ApplicationFormAcc extends Component {
         name_on_cheque: payment.cheque.chequeName ? payment.cheque.chequeName : null,
         current_date: new Date().toISOString().substr(0, 10),
         bank_name: payment.cheque.chequeBankName ? payment.cheque.chequeBankName : null,
-        bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null
+        bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null,
+        branch_id: this.state.selectedBranches
       }
       this.sendingToServer(chequeData)
     } else if (this.state.selectedPayment === 'c') {
@@ -1683,7 +1687,8 @@ class ApplicationFormAcc extends Component {
         // transaction_id: payment.transid ? payment.transid : null,
         internet_date: payment.internet.internetDate ? payment.internet.internetDate : null,
         remarks: payment.internet.remarks ? payment.internet.remarks : null,
-        current_date: new Date().toISOString().substr(0, 10)
+        current_date: new Date().toISOString().substr(0, 10),
+        branch_id: this.state.selectedBranches
       }
       this.sendingToServer(internetData)
     } else if (this.state.selectedPayment === 'd') {
@@ -1704,7 +1709,8 @@ class ApplicationFormAcc extends Component {
         card_last_digits: payment.credit.digits ? payment.credit.digits : null,
         bank_name: payment.credit.bankName ? payment.credit.bankName : null,
         credit_date: payment.credit.creditDate ? payment.credit.creditDate : null,
-        current_date: new Date().toISOString().substr(0, 10)
+        current_date: new Date().toISOString().substr(0, 10),
+        branch_id: this.state.selectedBranches
       }
       this.sendingToServer(creditData)
     }
@@ -1757,6 +1763,13 @@ class ApplicationFormAcc extends Component {
         this.myErpFunc()
       }
     })
+  }
+
+
+  changehandlerbranch = (e) => {
+    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e && e.value)
+    // this.props.fetchGrade(this.state.session, e && e.value, this.props.alert, this.props.user, moduleId)
+    this.setState({ selectedBranches: e})
   }
 
   render () {
@@ -1868,6 +1881,24 @@ class ApplicationFormAcc extends Component {
             />
           </Grid>
           <Grid item xs='3'>
+            <label>Branch*</label>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+              options={
+                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+
+              onChange={this.changehandlerbranch}
+            />
+          </Grid>
+          <Grid item xs='3'>
             <label>Search Type*</label>
             <Select
               placeholder='Select Type'
@@ -1922,7 +1953,7 @@ class ApplicationFormAcc extends Component {
               variant='contained'
               color='primary'
               style={{ marginTop: 20 }}
-              disabled={!this.state.session}
+              disabled={!this.state.session || !this.state.selectedBranches}
               onClick={this.getDetails}
             >
                 GET
@@ -2019,7 +2050,8 @@ const mapStateToProps = state => ({
   user: state.authentication.user,
   session: state.academicSession.items,
   appDetails: state.finance.accountantReducer.appForm.appDetails,
-  gradeData: state.finance.accountantReducer.appForm.gradeData,
+  // gradeData: state.finance.accountantReducer.appForm.gradeData,
+  gradeData: state.finance.accountantReducer.changeFeePlan.gradeData,
   dataLoading: state.finance.common.dataLoader,
   ifsc: state.finance.common.ifscDetails,
   micr: state.finance.common.micrDetails,
@@ -2027,20 +2059,23 @@ const mapStateToProps = state => ({
   stdSugg: state.finance.accountantReducer.appForm.stdSuggestions,
   finalRecords: state.finance.accountantReducer.appForm.finalRecords,
   leadNumberCheck: state.finance.accountantReducer.appForm.leadNumberCheck,
-  receiptRange: state.finance.makePayAcc.receiptRange
+  receiptRange: state.finance.makePayAcc.receiptRange,
+  branches: state.finance.common.branchPerSession,
 })
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchGrade: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrade({ session, alert, user, moduleId })),
-  fetchApplicationDetails: (session, key, user, alert) => dispatch(actionTypes.fetchApplicationDetails({ session, key, user, alert })),
+  // fetchGrade: (session, branch, alert, user, moduleId) => dispatch(actionTypes.fetchGrade({ session, branch, alert, user, moduleId })),
+  fetchApplicationDetails: (session, key, branch, user, alert) => dispatch(actionTypes.fetchApplicationDetails({ session, key, branch, user, alert })),
   saveAllFormData: (data, user, alert) => dispatch(actionTypes.saveAllFormData({ data, user, alert })),
   saveAppPayment: (data, user, alert) => dispatch(actionTypes.saveAppPayment({ data, user, alert })),
   fetchIfsc: (ifsc, alert, user) => dispatch(actionTypes.fetchIfsc({ ifsc, alert, user })),
   fetchMicr: (micr, alert, user) => dispatch(actionTypes.fetchMicr({ micr, alert, user })),
   fetchSuggestions: (session, sType, value, user, alert) => dispatch(actionTypes.fetchStdSuggestions({ session, sType, value, user, alert })),
   appMobileChecker: (leadNumber, user, alert) => dispatch(actionTypes.appMobileChecker({ leadNumber, user, alert })),
-  fetchReceiptRange: (session, alert, user) => dispatch(actionTypes.fetchReceiptRange({ session, alert, user }))
+  fetchReceiptRange: (session, alert, user) => dispatch(actionTypes.fetchReceiptRange({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
+  fetchGrades: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
 })
 
 export default connect(

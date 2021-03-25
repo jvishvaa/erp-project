@@ -266,6 +266,7 @@ class NonRTEFormAcc extends Component {
         let payData = null
         if (+this.state.payment.mode === 1) {
           payData = {
+            branch_id: this.props.history.location.branch,
             student: this.props.erpCode,
             date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
             total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -280,6 +281,7 @@ class NonRTEFormAcc extends Component {
           // this.sendingToServer(cashData)
         } else if (+this.state.payment.mode === 2) {
           payData = {
+            branch_id: this.props.history.location.branch,
             student: this.props.erpCode,
             date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
             total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -299,6 +301,7 @@ class NonRTEFormAcc extends Component {
           // this.sendingToServer(chequeData)
         } else if (+this.state.payment.mode === 3) {
           payData = {
+            branch_id: this.props.history.location.branch,
             student: this.props.erpCode,
             date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
             total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -314,6 +317,7 @@ class NonRTEFormAcc extends Component {
           // this.sendingToServer(internetData)
         } else if (+this.state.payment.mode === 5) {
           payData = {
+            branch_id: this.props.history.location.branch,
             student: this.props.erpCode,
             date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
             total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -329,6 +333,7 @@ class NonRTEFormAcc extends Component {
           // this.sendingToServer(internetData)
         } else if (+this.state.payment.mode === 4) {
           payData = {
+            branch_id: this.props.history.location.branch,
             student: this.props.erpCode,
             date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
             total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -348,6 +353,7 @@ class NonRTEFormAcc extends Component {
         }
         const body = {
           session_year: studentdetails.academicyear,
+          branch_id: this.props.history.location.branch,
           name: studentdetails.firstName,
           first_name: studentdetails.firstName,
           middle_name: studentdetails.middleName,
