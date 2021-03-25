@@ -81,7 +81,7 @@ let moduleId
 if (NavData && NavData.length) {
   NavData.forEach((item) => {
     if (
-      item.parent_modules === 'Student' &&
+      item.parent_modules === 'student' &&
       item.child_module &&
       item.child_module.length > 0
     ) {
@@ -1741,8 +1741,8 @@ class FeeShowList extends Component {
           <React.Fragment>
             <AppBar position='static' style={{ zIndex: 0 }}>
               <Tabs value={this.state.value} onChange={handleChange} variant='scrollable' scrollButtons='auto'>
-                <Tab value='one' label='Orchid Students' />
-                <Tab value='two' label='Non Orchid Students' />
+                <Tab value='one' label='OLV Students' />
+                <Tab value='two' label='Non OLV Students' />
               </Tabs>
             </AppBar>
           </React.Fragment>

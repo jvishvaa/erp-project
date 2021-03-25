@@ -279,7 +279,7 @@ class TransactionStatus extends Component {
     const feeIds = selectedFees && selectedFees.map(fee => fee.value)
     // const feePlanIds = selectedFeePlans && selectedFeePlans.map(plan => plan.value)
     // transactionState = this.state
-    if (!currentSession || (!paymentModeId || paymentModeId.length === 0) || (!feeIds || feeIds.length === 0) || (!feeAccId || feeAccId.length === 0) || (!isAccountant && currentBranch === null)) {
+    if (!currentSession || (!paymentModeId || paymentModeId.length === 0) || (!feeIds || feeIds.length === 0) || (!feeAccId || feeAccId.length === 0) || (currentBranch === null)) {
       this.props.alert.warning('Please Fill all the details')
       return
     }
@@ -311,7 +311,7 @@ class TransactionStatus extends Component {
     const feeIds = selectedFees && selectedFees.map(fee => fee.value)
     // const feePlanIds = selectedFeePlans && selectedFeePlans.map(plan => plan.value)
     // transactionState = this.state
-    if (!currentSession || (!paymentModeId || paymentModeId.length === 0) || (!feeIds || feeIds.length === 0) || (!feeAccId || feeAccId.length === 0) || (!isAccountant && currentBranch === null)) {
+    if (!currentSession || (!paymentModeId || paymentModeId.length === 0) || (!feeIds || feeIds.length === 0) || (!feeAccId || feeAccId.length === 0) || (currentBranch === null)) {
       this.props.alert.warning('Please Fill all the details')
       return
     }
@@ -705,7 +705,7 @@ class TransactionStatus extends Component {
     }
 
     let branchSelect = null
-    if (!this.state.isAccountant) {
+    // if (!this.state.isAccountant) {
       branchSelect = (
         <Grid item xs='3'>
           <label>Branch*</label>
@@ -727,7 +727,7 @@ class TransactionStatus extends Component {
           />
         </Grid>
       )
-    }
+    // }
 
     return (
       <Layout>      

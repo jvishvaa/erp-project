@@ -105,14 +105,14 @@ class StudentProfile extends Component {
 
   componentDidMount () {
     const erpString = this.props.erp + ''
-    if (erpString.length === 10) {
+    if (erpString.length === 14) {
       this.fetchStudentProfile()
     }
   }
 
   componentDidUpdate (prevProps, prevState) {
     const erpString = this.props.erp + ''
-    if (this.props.erp !== prevProps.erp && erpString.length === 10) {
+    if (this.props.erp !== prevProps.erp && erpString.length === 14) {
       this.fetchStudentProfile()
     }
   }
@@ -313,7 +313,7 @@ class StudentProfile extends Component {
   render () {
     // console.log('theStudentData: ', this.state.studentData)
     const { classes } = this.props
-    const isErpPresent = (this.props.erp + '').length === 10
+    const isErpPresent = (this.props.erp + '').length === 14
     const containerClass = isErpPresent ? customClasses.mainContainer : customClasses.noContainer
     const { showEditModal, studentName, studentAddress, fatherName, fatherNumber, mode, emailId,
       secondLang, thirdLang, subjects
