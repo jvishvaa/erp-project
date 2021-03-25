@@ -73,7 +73,7 @@ class TallyReports extends Component {
       }
       today = yyyy + '-' + mm + '-' + dd
       const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-      const role = userProfile.personal_info.role.toLowerCase()
+      const role = userProfile && userProfile.personal_info && userProfile.personal_info.role.toLowerCase()
       // const role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
       this.setState({
         todayDate: today,
@@ -110,17 +110,17 @@ class TallyReports extends Component {
       })
       console.log(e)
       this.setState({ session: sessions, selectedBranches: [], sessionData: e }, () => {
-        if (this.state.role === 'financeaccountant') {
-          // console.log('====>result<====', this.props.branchAtAcc.branch)
-          // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
-          let data = {
-            session_year: this.state.session,
-            branch_id: [this.props.branchAtAcc.branch]
-          }
-          this.props.fetchFeeAccounts(data, this.props.alert, this.props.user)
-        } else {
+        // if (this.state.role === 'financeaccountant') {
+        //   // console.log('====>result<====', this.props.branchAtAcc.branch)
+        //   // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
+        //   let data = {
+        //     session_year: this.state.session,
+        //     branch_id: [this.props.branchAtAcc.branch]
+        //   }
+        //   this.props.fetchFeeAccounts(data, this.props.alert, this.props.user)
+        // } else {
           this.props.fetchBranches(sessions, this.props.alert, this.props.user, moduleId)
-        }
+        // }
       })
     }
     changehandlerbranch = (e) => {
@@ -264,16 +264,16 @@ class TallyReports extends Component {
         return
       }
       let data = {}
-      if (this.state.role === 'financeaccountant') {
-        data = {
-          session_year: this.state.session,
-          branch: [this.props.branchAtAcc.branch],
-          fee_account: this.state.feeAccId,
-          transactions: this.state.trnsId,
-          payment_mode: this.state.paymentModeId,
-          download_type: this.state.typeId
-        }
-      } else {
+      // if (this.state.role === 'financeaccountant') {
+      //   data = {
+      //     session_year: this.state.session,
+      //     branch: [this.props.branchAtAcc.branch],
+      //     fee_account: this.state.feeAccId,
+      //     transactions: this.state.trnsId,
+      //     payment_mode: this.state.paymentModeId,
+      //     download_type: this.state.typeId
+      //   }
+      // } else {
         data = {
           session_year: this.state.session,
           branch: this.state.selectedbranchIds,
@@ -282,7 +282,7 @@ class TallyReports extends Component {
           payment_mode: this.state.paymentModeId,
           download_type: this.state.typeId
         }
-      }
+      // }
 
       if (this.state.today) {
         data.date_range = 2
@@ -298,7 +298,7 @@ class TallyReports extends Component {
     render () {
       let selectBranch = null
       const { role } = this.state
-      if (role === 'financeadmin') {
+      // if (role === 'financeadmin') {
         selectBranch = (
           <Grid item xs='3'>
             <label>Branch*</label>
@@ -319,7 +319,7 @@ class TallyReports extends Component {
             />
           </Grid>
         )
-      }
+      // }
       return (
         <Layout>
         <React.Fragment>

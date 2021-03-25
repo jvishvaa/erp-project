@@ -683,9 +683,11 @@ const CreateClassForm = (props) => {
     const data = {
       branchIds: onlineClass.branchIds.join(','),
       gradeIds: onlineClass.gradeIds.join(','),
+      acadYears: onlineClass.acadId,
     };
     listTutorEmails(data);
   };
+  // console.log(onlineClass.acadId,'=========================')
 
   const checkTutorAvailability = async () => {
     const { selectedDate, selectedTime, duration } = onlineClass;
@@ -748,7 +750,7 @@ const CreateClassForm = (props) => {
   ]);
 
   useEffect(() => {
-    if (onlineClass.branchIds?.length && selectedGrades?.length) {
+    if (onlineClass.branchIds?.length && selectedGrades?.length && onlineClass.acadId) {
       fetchTutorEmails();
       tutorEmailRef.current.scrollIntoView();
       tutorEmailRef.current.focus();

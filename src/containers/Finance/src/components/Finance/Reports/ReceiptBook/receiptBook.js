@@ -70,14 +70,16 @@ class ReceiptBook extends Component {
     componentDidMount () {
       // this.todayDate()
       const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-      const role = userProfile.personal_info.role.toLowerCase()
+      const role = userProfile && userProfile.personal_info && userProfile.personal_info.role.toLowerCase()
       this.setState({
         role
-      }, () => {
-        if (this.state.role === 'financeaccountant') {
-          this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
-        }
-      })
+      }
+      // , () => {
+      //   if (this.state.role === 'financeaccountant') {
+      //     this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
+      //   }
+      // }
+      )
     }
     componentWillReceiveProps (nextProps) {
       // console.log('------nextprops----------', nextProps)
@@ -103,11 +105,11 @@ class ReceiptBook extends Component {
       })
       console.log(e)
       this.setState({ session: session, selectedBranches: [], sessionData: e.target.value }, () => {
-        if (this.state.role === 'financeaccountant') {
-          // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
-        } else {
+        // if (this.state.role === 'financeaccountant') {
+        //   // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
+        // } else {
           this.props.fetchBranches(session, this.props.alert, this.props.user, moduleId)
-        }
+        // }
       })
     }
     changehandlerbranch = (e) => {
@@ -151,12 +153,12 @@ class ReceiptBook extends Component {
         selectedTypes: e.target.value,
         typesId: e.target.value
       }, () => {
-        if (this.state.role === 'financeaccountant') {
+        // if (this.state.role === 'financeaccountant') {
           // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
-          this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.state.typesId, this.props.alert, this.props.user)
-        } else {
+          // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.state.typesId, this.props.alert, this.props.user)
+        // } else {
           this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.state.typesId, this.props.alert, this.props.user)
-        }
+        // }
       })
     }
     changeFeeTypeHandler = (e) => {
@@ -172,12 +174,12 @@ class ReceiptBook extends Component {
           selectedFeeTypes: allFeeTypes,
           feeTypeId: 'all'
         }, () => {
-          if (this.state.role === 'financeaccountant') {
-            // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
-            this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.state.typesId, this.state.selectedFeeTypes && this.state.selectedFeeTypes.value, this.props.alert, this.props.user)
-          } else {
+          // if (this.state.role === 'financeaccountant') {
+          //   // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
+          //   this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.state.typesId, this.state.selectedFeeTypes && this.state.selectedFeeTypes.value, this.props.alert, this.props.user)
+          // } else {
             this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.state.typesId, this.state.selectedFeeTypes && this.state.selectedFeeTypes.value, this.props.alert, this.props.user)
-          }
+          // }
         })
       } else {
         let ids = []
@@ -188,12 +190,12 @@ class ReceiptBook extends Component {
           selectedFeeTypes: e.target.value,
           feeTypeId: ids
         }, () => {
-          if (this.state.role === 'financeaccountant') {
-            // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
-            this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.state.typesId, this.state.feeTypeId, this.props.alert, this.props.user)
-          } else {
+          // if (this.state.role === 'financeaccountant') {
+          //   // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
+          //   this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.state.typesId, this.state.feeTypeId, this.props.alert, this.props.user)
+          // } else {
             this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.state.typesId, this.state.feeTypeId, this.props.alert, this.props.user)
-          }
+          // }
         })
       }
     }
@@ -265,18 +267,18 @@ class ReceiptBook extends Component {
         return
       }
       let data = {}
-      if (this.state.role === 'financeaccountant') {
-        data = {
-          academic_year: this.state.session,
-          branches: [this.props.branchAtAcc.branch],
-          fee_account: this.state.feeAccId,
-          types: [this.state.typesId],
-          payment_mode: [this.state.paymentModeId],
-          fee_types: this.state.feeTypeId,
-          from_date: this.state.startDate,
-          to_date: this.state.endDate
-        }
-      } else {
+      // if (this.state.role === 'financeaccountant') {
+      //   data = {
+      //     academic_year: this.state.session,
+      //     branches: [this.props.branchAtAcc.branch],
+      //     fee_account: this.state.feeAccId,
+      //     types: [this.state.typesId],
+      //     payment_mode: [this.state.paymentModeId],
+      //     fee_types: this.state.feeTypeId,
+      //     from_date: this.state.startDate,
+      //     to_date: this.state.endDate
+      //   }
+      // } else {
         data = {
           academic_year: this.state.session,
           branches: this.state.branchId,
@@ -286,14 +288,14 @@ class ReceiptBook extends Component {
           fee_types: this.state.feeTypeId,
           from_date: this.state.startDate,
           to_date: this.state.endDate
-        }
+        // }
       }
       this.props.downloadReports('ReceiptBook.csv', urls.DownloadReceiptBook, data, this.props.alert, this.props.user)
     }
     render () {
       let selectBranch = null
       const { role } = this.state
-      if (role === 'financeadmin') {
+      // if (role === 'financeadmin') {
         selectBranch = (
           <Grid item xs='3'>
             <label>Branch*</label> <br />
@@ -313,7 +315,7 @@ class ReceiptBook extends Component {
             </FormControl>
           </Grid>
         )
-      }
+      // }
       return (
         <Layout>
         <React.Fragment>

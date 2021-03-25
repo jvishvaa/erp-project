@@ -98,7 +98,7 @@ export const fetchAllPlans = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.StudentListForAcc + '?academic_year=' + payload.session + '&grade=' + payload.gradeId + '&section=' + payload.sectionId + '&type=' + payload.studentType, {
+      .get(urls.StudentListForAcc + '?academic_year=' + payload.session + '&grade=' + payload.gradeId + '&branch_id=' + payload.branch + '&section=' + payload.sectionId + '&type=' + payload.studentType, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -123,7 +123,7 @@ export const fetchAllFeePlans = (payload) => {
   return (dispatch) => {
     // dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.ListFeePlanUrl + '?academic_year=' + payload.session + '&grade_id=' + payload.gradeId, {
+      .get(urls.ListFeePlanUrl + '?academic_year=' + payload.session + '&grade_id=' + payload.gradeId + '&branch_id=' + payload.branch, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
