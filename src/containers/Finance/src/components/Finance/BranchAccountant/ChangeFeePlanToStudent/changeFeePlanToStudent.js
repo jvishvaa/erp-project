@@ -795,7 +795,7 @@ class ChangeFeePlanToStudent extends Component {
 const mapStateToProps = state => ({
   user: state.authentication.user,
   session: state.academicSession.items,
-  gradeData: state.finance.accountantReducer.changeFeePlan.gradeData,
+  // gradeData: state.finance.accountantReducer.changeFeePlan.gradeData,
   sectionData: state.finance.accountantReducer.changeFeePlan.sectionData,
   studentList: state.finance.accountantReducer.changeFeePlan.studentList,
   feePlans: state.finance.accountantReducer.changeFeePlan.feePlans,
@@ -803,6 +803,7 @@ const mapStateToProps = state => ({
   dataLoading: state.finance.common.dataLoader,
   instaDetails: state.finance.common.instaDetails,
   branches: state.finance.common.branchPerSession,
+  gradeList: state.finance.common.gradeList,
 })
 
 const mapDispatchToProps = dispatch => ({
