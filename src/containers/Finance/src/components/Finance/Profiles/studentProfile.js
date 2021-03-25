@@ -105,7 +105,7 @@ class StudentProfile extends Component {
 
   componentDidMount () {
     const erpString = this.props.erp + ''
-    if (erpString.length === 10) {
+    if (erpString.length === 14) {
       this.fetchStudentProfile()
     }
   }
