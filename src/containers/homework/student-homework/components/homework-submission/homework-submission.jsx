@@ -605,7 +605,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {question.question_files.map((url, i) => (
@@ -654,14 +653,17 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         (homeworkSubmission.status === 3 && question.evaluated_files?.length > 0))
                         &&
                         <div className='attachments-container'>
+                          {document.body.style.overflow = "hidden"}
                           <Typography component='h4' color='primary' className='header'>
                             {homeworkSubmission.status === 2 ? 'Submitted Files' : 'Evaluated Files'}
                           </Typography>
                           <div className='attachments-list-outer-container'>
                             <div className='prev-btn'>
-                              <IconButton onClick={() => handleScroll('left')}>
-                                <ArrowBackIosIcon />
-                              </IconButton>
+                              {question.submitted_files.length > 1 && (
+                                <IconButton onClick={() => handleScroll('left')}>
+                                  <ArrowBackIosIcon />
+                                </IconButton>
+                              )}
                             </div>
                             {homeworkSubmission.status === 2 &&
                               <SimpleReactLightbox>
@@ -670,7 +672,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                   ref={scrollableContainer}
                                   onScroll={(e) => {
                                     e.preventDefault();
-                                    console.log('scrolled');
                                   }}
                                 >
                                   {question.submitted_files.map((url, i) => (
@@ -711,7 +712,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                   ref={scrollableContainer}
                                   onScroll={(e) => {
                                     e.preventDefault();
-                                    console.log('scrolled');
                                   }}
                                 >
                                   {question.evaluated_files.map((url, i) => (
@@ -746,9 +746,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                               </SimpleReactLightbox>
                             }
                             <div className='next-btn'>
-                              <IconButton onClick={() => handleScroll('right')}>
-                                <ArrowForwardIosIcon color='primary' />
-                              </IconButton>
+                              {question.submitted_files.length > 1 && (
+                                <IconButton onClick={() => handleScroll('right')}>
+                                  <ArrowForwardIosIcon color='primary' />
+                                </IconButton>
+                              )}
                             </div>
                           </div>
                         </div>

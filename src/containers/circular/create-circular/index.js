@@ -145,8 +145,9 @@ const CraeteCircular = () => {
         subject: '',
         chapter: '',
       });
+      console.log(value,'============================')
       axiosInstance
-        .get(`${endpoints.communication.grades}?branch_id=${value?.id}&session_year=${filterData.year?.id}&module_id=${moduleId}`)
+        .get(`${endpoints.communication.grades}?branch_id=${value?.branch.id}&session_year=${filterData.year?.id}&module_id=${moduleId}`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setGradeDropdown(result?.data?.data);
@@ -182,7 +183,7 @@ const CraeteCircular = () => {
       });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.id}&session_year=${filterData.year.id}&grade_id=${value?.grade_id}&module_id=${moduleId}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.branch?.id}&session_year=${filterData.year.id}&grade_id=${value?.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -334,9 +335,9 @@ const CraeteCircular = () => {
         description: description,
         module_name: filterData.role.value,
         media: filePath,
-        Branch: [filterData?.branch?.id],
+        Branch: [filterData?.branch?.branch.id],
         grades: [filterData?.grade?.grade_id],
-        sections: [filterData?.section?.id],
+        sections: [filterData?.section?.section_id],
         academic_year: filterData?.year?.id,
       })
       .then((result) => {
@@ -386,7 +387,7 @@ const CraeteCircular = () => {
         media:filePath,
         Branch: [filterData?.branch?.id],
         grades: [filterData?.grade?.id],
-        sections: [filterData?.section?.id],
+        sections: [filterData?.section?.section_id],
         academic_year: filterData?.year?.id,
       })
       .then((result) => {
