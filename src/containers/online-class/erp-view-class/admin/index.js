@@ -169,6 +169,7 @@ function getDaysBefore(date, amount) {
 
   function handleClose(data) {
     setSelectedViewMore('');
+    const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     if (data === 'success') {
       setPage(1);
       if (window.location.pathname === '/erp-online-class-student-view') {
@@ -181,13 +182,20 @@ function getDaysBefore(date, amount) {
           }&page_number=1&page_size=15&class_type=${selectedClassType?.id}&module_id=${moduleId}`,
           'filter'
         );
-      } else {
-        callApi(
-          `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
-            selectedBatch && selectedBatch.id
-          }&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1`,
-          'filter'
-        );
+      } 
+      if(window.location.pathname === '/erp-online-class' || window.location.pathname === '/erp-online-class-teacher-view') {
+        //need to fix
+        if (selectedCourse.id) {
+          callApi(
+            `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el)=>el.id)}&class_type=${selectedClassType.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${selectedCourse.id}&page_number=1&page_size=15&module_id=${moduleId}`,
+            'filter'
+          );
+        } else {
+          callApi(
+            `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el)=>el.id)}&subject_id=${selectedSubject.map((el)=>el.subject__id)}&class_type=${selectedClassType.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=1&page_size=15&module_id=${moduleId}`,
+            'filter'
+          );
+        }
       }
     }
   }
@@ -379,6 +387,20 @@ function getDaysBefore(date, amount) {
                   size='small'
                   onChange={(event, value) => {
                     setSelectedClassType(value);
+                    setSelectedGrade([]);
+                    setCourseList([]);
+                    setSelectedCourse('');
+                    setBatchList([]);
+                    setSelectedBatch('');
+                    setFilterList([]);
+                    setSelectedViewMore('');
+                    setSectionList([]);
+                    setSelectedSection([]);
+                    setSubjectList([]);
+                    setSelectedSubject([]);
+                    setSelectedBranch([])
+                    setSelectedAcadmeicYear('')
+                    setFilterList([]);
                   }}
                   id='branch_id'
                   className='dropdownIcon'
@@ -410,6 +432,20 @@ function getDaysBefore(date, amount) {
                             'branchList'
                           );
                         }
+                    setSelectedGrade([]);
+                    setCourseList([]);
+                    setSelectedCourse('');
+                    setBatchList([]);
+                    setSelectedBatch('');
+                    setFilterList([]);
+                    setSelectedViewMore('');
+                    setSectionList([]);
+                    setSelectedSection([]);
+                    setSubjectList([]);
+                    setSelectedSubject([]);
+                    setSelectedBranch([])
+                    setFilterList([]);
+
                       }}
                       id='branch_id'
                       className='dropdownIcon'
@@ -436,13 +472,25 @@ function getDaysBefore(date, amount) {
                         setSelectedBranch([])
                         if(value.length){
                           const ids = value.map((el)=>el)
-                          const selectedId=value.map((el)=>el.id)
+                          const selectedId = value.map((el)=>el.branch.id)
                           setSelectedBranch(ids)
                           callApi(
                             `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
                             'gradeList'
                           );
                         }
+                    setSelectedGrade([]);
+                    setCourseList([]);
+                    setSelectedCourse('');
+                    setBatchList([]);
+                    setSelectedBatch('');
+                    setFilterList([]);
+                    setSectionList([]);
+                    setSelectedSection([]);
+                    setSubjectList([]);
+                    setSelectedSubject([]);
+                    setFilterList([]);
+
                       }}
                       id='branch_id'
                       className='dropdownIcon'
@@ -470,7 +518,7 @@ function getDaysBefore(date, amount) {
                         if(value.length){
                           const ids = value.map((el)=>el)
                           const selectedId=value.map((el)=>el.grade_id)
-                          const branchId=selectedBranch.map((el)=>el.id)
+                          const branchId=selectedBranch.map((el)=>el.branch.id)
                           setSelectedGrade(ids)
                           callApi(
                             `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
@@ -486,12 +534,17 @@ function getDaysBefore(date, amount) {
                             'course'
                             );
                           }
-                        setCourseList([]);
-                        setBatchList([]);
-                        setSelectedCourse('');
-                        setSelectedBatch('');
-                        setSectionList([]);
-                        setSelectedSection([]);
+                          setCourseList([]);
+                          setSelectedCourse('');
+                          setBatchList([]);
+                          setSelectedBatch('');
+                          setFilterList([]);
+                          setSectionList([]);
+                          setSelectedSection([]);
+                          setSubjectList([]);
+                          setSelectedSubject([]);
+                          setFilterList([]);
+
                       }}
                       id='grade_id'
                       className='dropdownIcon'
@@ -521,12 +574,16 @@ function getDaysBefore(date, amount) {
                           const secId=value.map((el)=>el.section_id)
                           setSelectedSection(ids)
                           callApi(
-                            `${endpoints.academics.subjects}?branch=${selectedBranch.map((el)=>el.id)}&session_year=${selectedAcademicYear.id}&grade=${selectedGrade.map((el)=>el.grade_id)}&section=${secId}&module_id=${moduleId}`,
+                            `${endpoints.academics.subjects}?branch=${selectedBranch.map((el)=>el.branch.id)}&session_year=${selectedAcademicYear.id}&grade=${selectedGrade.map((el)=>el.grade_id)}&section=${secId}&module_id=${moduleId}`,
                             'subject'
                           );
                         }
+                        setBatchList([]);
+                        setSelectedBatch('');
+                        setSelectedCourse('')
                         setSubjectList([]);
                         setSelectedSubject([]);
+                        setFilterList([]);
                       }}
                       id='section_id'
                       className='dropdownIcon'
@@ -559,6 +616,7 @@ function getDaysBefore(date, amount) {
                           }
                           setBatchList([]);
                           setSelectedBatch('');
+                          setFilterList([]);
                         }}
                         id='course_id'
                         className='dropdownIcon'
@@ -593,6 +651,7 @@ function getDaysBefore(date, amount) {
                           }
                           setBatchList([]);
                           setSelectedBatch('');
+                          setFilterList([]);
                         }}
                         id='course_id'
                         className='dropdownIcon'
