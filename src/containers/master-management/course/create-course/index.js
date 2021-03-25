@@ -67,7 +67,6 @@ const CreateCourse = () => {
   const [age, setAge] = useState([]);
   const [noOfPeriods, setNoPeriods] = useState('');
   const [title, setTitle] = useState('');
-  const [metaTitle, setMetaTitle] = useState('');
   const [editData, setEditData] = useState({});
   const [editFlag, setEditFlag] = useState(false);
   const [coursePre, setCoursePre] = useState('');
@@ -215,7 +214,6 @@ const CreateCourse = () => {
                 pre_requirement,
                 overview: overview_text,
                 course_name,
-                meta_title,
                 files: doc_file,
                 thumbnail: thumbnail_file,
                 level: level_name,
@@ -232,7 +230,6 @@ const CreateCourse = () => {
               setCoursePre(pre_requirement);
               setOverview(overview_text);
               setTitle(course_name);
-              setMetaTitle(meta_title);
               setFilePath(doc_file);
               setThumbnailImage(thumbnail_file[0]);
 
@@ -347,8 +344,6 @@ const CreateCourse = () => {
           setAlert('warning', 'Branch is compulsory!');
         if (!Boolean(filterData.courseLevel.level))
           setAlert('warning', 'Level is compulsory!');
-        if(!Boolean(metaTitle))
-          setAlert('warning', 'Course Meta Title is compulsory!');
       }
     } else {
       if (
@@ -577,7 +572,6 @@ const CreateCourse = () => {
     axiosInstance
       .post(`${endpoints.onlineCourses.createCourse}`, {
         course_name: title,
-        meta_title: metaTitle,
         pre_requirement: coursePre,
         overview: overview,
         learn: learn,
@@ -601,7 +595,6 @@ const CreateCourse = () => {
           setLearn('');
           setEditData();
           setEditFlag(false);
-          setMetaTitle('');
           setFilterData({
             branch: '',
             grade: '',
@@ -634,7 +627,6 @@ const CreateCourse = () => {
     axiosInstance
       .put(`${endpoints.onlineCourses.updateCourse}${courseKey}/update-course/`, {
         course_name: title,
-        meta_title: metaTitle,
         pre_requirement: coursePre,
         overview: overview,
         learn: learn,
@@ -653,7 +645,6 @@ const CreateCourse = () => {
           setData([]);
           setNoPeriods('');
           setTitle('');
-          setMetaTitle('');
           setCoursePre('');
           setOverview('');
           setLearn('');
@@ -931,7 +922,6 @@ const CreateCourse = () => {
                   placeholder='Course Title'
                   multiline
                   rows='1'
-                  required
                   color='secondary'
                   style={{ width: '100%' }}
                   value={title}
@@ -946,7 +936,6 @@ const CreateCourse = () => {
                   label='Course Prerequisites'
                   placeholder='Course Prerequisites'
                   multiline
-                  required
                   rows='6'
                   color='secondary'
                   style={{ width: '100%' }}
@@ -963,7 +952,6 @@ const CreateCourse = () => {
                   placeholder='What Will You Learn From This Course'
                   multiline
                   rows='6'
-                  required
                   color='secondary'
                   style={{ width: '100%' }}
                   value={learn}
@@ -979,7 +967,6 @@ const CreateCourse = () => {
                   placeholder='Course Overview'
                   multiline
                   rows='6'
-                  required
                   color='secondary'
                   style={{ width: '100%' }}
                   value={overview}
@@ -987,22 +974,7 @@ const CreateCourse = () => {
                   onChange={(e) => setOverview(e.target.value)}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  className='multiRowTextfield'
-                  id='outlined-multiline-static5'
-                  label='Course Meta Title'
-                  placeholder='Course Meta Title'
-                  multiline
-                  rows='1'
-                  required
-                  color='secondary'
-                  style={{ width: '100%' }}
-                  value={metaTitle}
-                  variant='outlined'
-                  onChange={(e) => setMetaTitle(e.target.value)}
-                />
-              </Grid>
+
               <div className='attachmentContainer'>
                 <div style={{ display: 'flex' }}>
                   {filePath?.length > 0
