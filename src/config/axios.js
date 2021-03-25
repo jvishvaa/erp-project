@@ -12,7 +12,10 @@ const axiosInstance = axios.create({
   // baseURL: 'http://erp.finance.letseduvate.com/qbox',
   // baseURL: 'http://dev.olvorchidnaigaon.letseduvate.com/qbox',
   baseURL: 'http://localhost:8000/qbox'
+<<<<<<< HEAD
   // baseURL: 'http://192.168.0.102:8000/qbox'
+=======
+>>>>>>> 3d28bd38689df89bf650b3c9ad9520aaafdb30b2
 });
 
 // ****** enable the following code to attach authorization headers on each request and for logging out when an unauthorize request is send *****//

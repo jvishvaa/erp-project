@@ -58,7 +58,7 @@ const styles = theme => ({
     width: '90%'
   },
   item: {
-    margin: '10px'
+    // margin: '10px'
   },
   formControl: {
     margin: theme.spacing(1),
@@ -78,7 +78,7 @@ let moduleId
 if (NavData && NavData.length) {
   NavData.forEach((item) => {
     if (
-      item.parent_modules === 'Student' &&
+      item.parent_modules === 'student' &&
       item.child_module &&
       item.child_module.length > 0
     ) {
@@ -111,6 +111,7 @@ class StudentLedgerTab extends Component {
         value: '2021-22'
       },
       sessionData: null,
+      selectedBranches: null,
       getData: false,
       showTabs: false,
       erpNo: null,
@@ -140,9 +141,11 @@ class StudentLedgerTab extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
+    console.log('mounted on student: ', this.state.session, moduleId)
     if (this.state.session && moduleId) {
-      this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(this.state.session.value, this.props.alert, this.props.user, moduleId)
+      // this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
     }
  
   }
@@ -163,8 +166,14 @@ class StudentLedgerTab extends Component {
       student: null,
       showTabs: false
     }, () => {
-      this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+      // this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
     })
+  }
+
+  changehandlerbranch = (e) => {
+    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    this.setState({ selectedBranches: e})
   }
 
   gradeHandler = (e) => {
@@ -316,6 +325,8 @@ class StudentLedgerTab extends Component {
     })
     console.log('Childdata', childData)
   }
+
+
   render () {
     const { showTabs, value } = this.state
     const { classes } = this.props
@@ -467,8 +478,8 @@ class StudentLedgerTab extends Component {
     let searchBox = null
     if (searchTypeData.value === 1) {
       searchBox = (
-        <div style={{ position: 'relative', marginLeft: '33px' }}>
-          <label style={{ display: 'block' }}>Search*</label>
+        <div style={{ position: 'relative', marginTop: 10 }}>
+          {/* <label style={{ display: 'block' }}>Search*</label> */}
           <AutoSuggest
             label='Search ERP'
             style={{ display: 'absolute', top: '10px', width: '240px' }}
@@ -482,8 +493,8 @@ class StudentLedgerTab extends Component {
       )
     } else {
       searchBox = (
-        <div style={{ position: 'relative', marginLeft: '33px' }}>
-          <label style={{ display: 'block' }}>Search*</label>
+        <div style={{ position: 'relative', marginTop: 10 }}>
+          {/* <label style={{ display: 'block' }}>Search*</label> */}
           <AutoSuggest
             label={searchTypeId === 2 ? 'Search Student Name' : searchTypeId === 3 ? 'Search Father Name' : searchTypeId === 4 ? 'Search Father Number' : searchTypeId === 5 ? 'Search Mother Name' : searchTypeId === 6 ? 'Search Mother Number' : 'na'}
             style={{ display: 'absolute', top: '10px', width: '240px' }}
@@ -500,8 +511,8 @@ class StudentLedgerTab extends Component {
     return (
       <Layout>
       <React.Fragment>
-        <Grid container spacing={3} style={{ padding: 15 }}>
-          <Grid item xs={3} className={classes.item} style={{ zIndex: '1103' }}>
+        <Grid container spacing={2} style={{ padding: 15 }}>
+          <Grid item xs={3} className={classes.item} style={{ zIndex: '1104' }}>
             <label>Academic Year*</label>
             <Select
               placeholder='Select Year'
@@ -515,6 +526,24 @@ class StudentLedgerTab extends Component {
                   : []
               }
               onChange={this.handleAcademicyear}
+            />
+          </Grid>
+          <Grid item xs={3} className={classes.item} style={{ zIndex: '1103' }}>
+            <label>Branch*</label>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+              options={
+                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+
+              onChange={this.changehandlerbranch}
             />
           </Grid>
           <Grid item xs={3} className={classes.item} style={{ zIndex: '1102' }}>
@@ -618,8 +647,7 @@ class StudentLedgerTab extends Component {
     )
   }
 }
-// zdfsdf
-// hi sandeep here
+
 const mapStateToProps = state => ({
   user: state.authentication.user,
   session: state.academicSession.items,
@@ -627,17 +655,20 @@ const mapStateToProps = state => ({
   gradeData: state.finance.accountantReducer.pdc.gradeData,
   sectionData: state.finance.accountantReducer.changeFeePlan.sectionData,
   studentErp: state.finance.accountantReducer.studentErpSearch.studentErpList,
-  dataLoading: state.finance.common.dataLoader
+  dataLoading: state.finance.common.dataLoader,
+  branches: state.finance.common.branchPerSession,
 })
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, alert, user, moduleId })),
+  // fetchGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, alert, user, moduleId })),
   // fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
+  fetchGrades: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
   studentErpSearch: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user })),
   clearAllProps: (alert, user) => dispatch(actionTypes.clearAllProps({ alert, user })),
-  fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId }))
-//   fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user }))
+  fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId })),
+  //   fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user }))
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId }))
 })
 
 export default connect(

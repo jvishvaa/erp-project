@@ -42,10 +42,11 @@ class FeeCollection extends Component {
     FeeCollecyionType: '',
     SubType: '',
     FeeAccount: '',
-    sessionData: ''
+    sessionData: '',
+    selectedBranches: ''
   }
   componentDidMount () {
-    this.props.fetchBranchData(this.props.alert, this.props.user)
+    // this.props.fetchBranchData(this.props.alert, this.props.user)
   }
   ButtonHandler = (e) => {
     if (this.state.sessionData.value) {
@@ -53,7 +54,8 @@ class FeeCollection extends Component {
       this.props.history.push({
         pathname: '/finance/feeShowList/',
         state: {
-          session: this.state.sessionData.value
+          session: this.state.sessionData.value,
+          branch: this.state.selectedBranches?.value
         }
       })
     } else {
@@ -62,9 +64,18 @@ class FeeCollection extends Component {
   }
 
   selectHandler = (e) => {
-    this.setState({ sessionData: e })
+    this.setState({ sessionData: e }, () => {
+      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+    })
     console.log(e)
-    this.props.fetchReceiptRange(e.value, this.props.branchData && this.props.branchData.id, this.props.alert, this.props.user)
+    // this.props.fetchReceiptRange(e.value, this.props.branchData && this.props.branchData.id, this.props.alert, this.props.user)
+  }
+
+  changehandlerbranch = (e) => {
+    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    this.setState({ selectedBranches: e }, () => {
+      this.props.fetchReceiptRange(this.state.sessionData?.value, e.value, this.props.alert, this.props.user)
+    })
   }
 
   render () {
@@ -83,6 +94,24 @@ class FeeCollection extends Component {
                   ? this.props.session.session_year.map((session) => ({ value: session, label: session }))
                   : []}
               onChange={(e) => { this.selectHandler(e) }}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <label>Branch*</label>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+              options={
+                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+
+              onChange={this.changehandlerbranch}
             />
           </Grid>
           {
@@ -110,13 +139,15 @@ class FeeCollection extends Component {
 const mapStateToProps = state => ({
   user: state.authentication.user,
   session: state.academicSession.items,
-  branchData: state.finance.accountantReducer.financeAccDashboard.branchData
+  branchData: state.finance.accountantReducer.financeAccDashboard.branchData,
+  branches: state.finance.common.branchPerSession,
 })
 
 const mapDispatchToProps = dispatch => ({
   fetchReceiptRange: (session, branch, alert, user) => dispatch(actionTypes.fetchReceiptRange({ session, branch, alert, user })),
-  fetchBranchData: (alert, user) => dispatch(actionTypes.fetchAccountantBranch({ alert, user })),
-  loadSession: dispatch(apiActions.listAcademicSessions(moduleId))
+  // fetchBranchData: (alert, user) => dispatch(actionTypes.fetchAccountantBranch({ alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   // fetchFeeCollection: (session, user, alert) => dispatch(actionTypes.fetchFeeCollectionList({ session, user, alert }))
 })
 

@@ -14,7 +14,7 @@ export const getStudentInfo = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.GetStudentInfoRegistration + '?application_number=' + payload.data + '&academic_year=' + payload.session, {
+      .get(urls.GetStudentInfoRegistration + '?application_number=' + payload.data + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -74,7 +74,7 @@ export const fetchRegistrationList = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.GetRegistrationList + '?year=' + payload.session.value + '&from_date=' + payload.fromDate + '&to_date=' + payload.toDate, {
+      .get(urls.GetRegistrationList + '?year=' + payload.session.value + '&from_date=' + payload.fromDate + '&to_date=' + payload.toDate + '&branch_id=' + payload.branchId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -104,11 +104,11 @@ export const fetchRegistrationList = (payload) => {
 export const fetchRegistrationSugg = (payload) => {
   let url = null
   if (payload.type === 'Application No') {
-    url = urls.SearchAppNumber + '?application_no=' + payload.value + '&academic_year=' + payload.session
+    url = urls.SearchAppNumber + '?application_no=' + payload.value + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId
   } else if (payload.type === 'Student Name') {
-    url = urls.SearchAppNumber + '?student_name=' + payload.value + '&academic_year=' + payload.session
+    url = urls.SearchAppNumber + '?student_name=' + payload.value + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId
   } else {
-    url = urls.SearchAppNumber + '?Phone_no=' + payload.value + '&academic_year=' + payload.session
+    url = urls.SearchAppNumber + '?Phone_no=' + payload.value + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId
   }
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())

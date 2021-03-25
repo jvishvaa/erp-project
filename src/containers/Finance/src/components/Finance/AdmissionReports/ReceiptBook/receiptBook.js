@@ -231,31 +231,6 @@ class ReceiptBookAdm extends Component {
       this.props.downloadReports('AdmReceiptBook.xlsx', urls.DownloadAdmRecptBook, data, this.props.alert, this.props.user)
     }
     render () {
-      let selectBranch = null
-      const { role } = this.state
-      // if (role === 'financeadmin') {
-        selectBranch = (
-          <Grid item xs='3' >
-            <label>Branch*</label>
-            <Select
-              isMulti
-              placeholder='Select Branch'
-              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
-              options={
-                // this.state.selectedBranches && this.state.selectedBranches.value !== 'all' ? this.props.branches.length && this.props.branches
-                this.props.branches ? this.props.branches && this.props.branches.length && this.props.branches
-                  ? this.props.branches.map(branch => ({
-                    value: branch.branch ? branch.branch.id : '',
-                    label: branch.branch ? branch.branch.branch_name : ''
-                  }))
-                  : [] : []
-              }
-
-              onChange={this.changehandlerbranch}
-            />
-          </Grid>
-        )
-      // }
       return (
         <Layout>
         <React.Fragment>
@@ -272,7 +247,25 @@ class ReceiptBookAdm extends Component {
                 onChange={this.handleAcademicyear}
               />
             </Grid>
-            {selectBranch}
+            <Grid item xs='3' >
+              <label>Branch*</label>
+              <Select
+                isMulti
+                placeholder='Select Branch'
+                value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+                options={
+                  // this.state.selectedBranches && this.state.selectedBranches.value !== 'all' ? this.props.branches.length && this.props.branches
+                  this.props.branches ? this.props.branches && this.props.branches.length && this.props.branches
+                    ? this.props.branches.map(branch => ({
+                      value: branch.branch ? branch.branch.id : '',
+                      label: branch.branch ? branch.branch.branch_name : ''
+                    }))
+                    : [] : []
+                }
+
+                onChange={this.changehandlerbranch}
+              />
+            </Grid>
             <Grid item xs={3}>
               <label>Fee Account*</label>
               <Select
