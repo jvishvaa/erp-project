@@ -172,7 +172,7 @@ class StudentLedgerTab extends Component {
   }
 
   changehandlerbranch = (e) => {
-    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value && this.state.session && this.state.session.value)
     this.setState({ selectedBranches: e})
   }
 
@@ -663,7 +663,7 @@ const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   // fetchGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, alert, user, moduleId })),
   // fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
-  fetchGrades: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
+  fetchGrades: (alert, user, moduleId, branch, session) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch, session })),
   studentErpSearch: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user })),
   clearAllProps: (alert, user) => dispatch(actionTypes.clearAllProps({ alert, user })),
   fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId })),
