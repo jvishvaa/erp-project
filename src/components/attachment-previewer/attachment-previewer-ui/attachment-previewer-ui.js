@@ -1,15 +1,24 @@
-/* eslint-disable jsx-a11y/media-has-caption */
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import { IconButton } from '@material-ui/core';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+// import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+// import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
+
+import Dialog from '@material-ui/core/Dialog';
+import { Slide } from '@material-ui/core';
 
 import PdfjsPreview from '../pdf-js';
 
 import { AttachmentPreviewerContext } from '../attachment-previewer-contexts';
 import './attachment-previewer-ui-styles.css';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction='up' ref={ref} {...props} />;
+  // return <Fade direction='in' ref={ref} {...props} />
+});
+
+
 
 function AttachmentPreviewerUI() {
   const {
@@ -62,6 +71,9 @@ function AttachmentPreviewerUI() {
 
   const previewerUI = (
     <>
+    <Dialog fullScreen open TransitionComponent={Transition}>
+
+    
       <div className='attachment-viewer' key={src}>
         <div className='attachment-viewer-header'>
           <div className='attachment-viewer-header-close-icon'>
@@ -144,7 +156,7 @@ function AttachmentPreviewerUI() {
           </div>
           </div>
         </div> */}
-        <IconButton
+        {/* <IconButton
           // style={{ opacity: isNextAvailable ? 1 : 0 }}
           // style={{ color: isNextAvailable ? 'white' : 'black' }}
           disabled={!isNextAvailable}
@@ -157,8 +169,8 @@ function AttachmentPreviewerUI() {
             style={{ color: isNextAvailable ? 'white' : 'black' }}
             fontSize='inherit'
           />
-        </IconButton>
-        <IconButton
+        </IconButton> */}
+        {/* <IconButton
           // style={{ color: isPrevAvailable ? 'white' : 'black' }}
           disabled={!isPrevAvailable}
           onClick={() => prev()}
@@ -170,8 +182,9 @@ function AttachmentPreviewerUI() {
             style={{ color: isPrevAvailable ? 'white' : 'black' }}
             fontSize='inherit'
           />
-        </IconButton>
+        </IconButton> */}
       </div>
+      </Dialog>
     </>
   );
   return <>{isOpen ? previewerUI : null}</>;

@@ -50,7 +50,7 @@ export function PDFViewerApplicationWarp() {
         // } else {
         //     alert("Please build the pdfjs-dist library using\n `gulp dist-install`");
         // }
-        alert("Please build the pdfjs-dist library using\n `gulp dist-install`");
+        alert("Please reopen the page.");
         return null
     }
 
