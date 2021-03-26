@@ -74,7 +74,7 @@ class ChequePayment extends Component {
 
   componentDidMount () {
     const erpLength = (this.props.erpNo + '').length
-    if (!this.props.erpNo || erpLength !== 10 || !this.props.session || !this.props.getData) {
+    if (!this.props.erpNo || erpLength !== 14 || !this.props.session || !this.props.getData) {
       return
     }
     const {
@@ -89,7 +89,7 @@ class ChequePayment extends Component {
   componentDidUpdate (prevProps) {
     console.log('the receivede data: ', this.props.chequeResponse)
     const erpLength = (this.props.erpNo + '').length
-    if (!this.props.erpNo || !this.props.session || !this.props.getData || erpLength !== 10) {
+    if (!this.props.erpNo || !this.props.session || !this.props.getData || erpLength !== 14) {
       return
     }
     if (this.props.erpNo === prevProps.erpNo && this.props.session === prevProps.session && this.props.getData === prevProps.getData) {
