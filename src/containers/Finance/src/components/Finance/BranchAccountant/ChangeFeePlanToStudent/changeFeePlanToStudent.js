@@ -114,7 +114,7 @@ class ChangeFeePlanToStudent extends Component {
   gradeHandler = (e) => {
     console.log(e.value)
     this.setState({ gradeId: e.value, gradeData: e, showTabs: false }, () => {
-      this.props.fetchAllSections(this.state.session, this.state.gradeId, this.props.alert, this.props.user, moduleId)
+      this.props.fetchAllSections(this.state.session, this.state.gradeId, this.props.alert, this.props.user, moduleId, this.state.selectedBranches && this.state.selectedBranches.value)
     })
   }
 
@@ -396,7 +396,7 @@ class ChangeFeePlanToStudent extends Component {
   }
 
   changehandlerbranch = (e) => {
-    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session)
     this.setState({ selectedBranches: e})
   }
 
@@ -808,9 +808,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchGrades: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
+  fetchGrades: (alert, user, moduleId, branch, session) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch, session })),
   // fetchAllGrades: (session, branch, alert, user, moduleId) => dispatch(actionTypes.fetchAllGrades({ session, branch, alert, user, moduleId })),
-  fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId })),
+  fetchAllSections: (session, gradeId, alert, user, moduleId, branch) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId, branch })),
   fetchAllPlans: (session, gradeId, branch, sectionId, studentType, alert, user) => dispatch(actionTypes.fetchAllPlans({ session, gradeId, branch, sectionId, studentType, alert, user })),
   fetchAllFeePlans: (session, gradeId, branch, alert, user) => dispatch(actionTypes.fetchAllFeePlans({ session, branch, gradeId, alert, user })),
   editStudentFeePlan: (data, studentId, alert, user) => dispatch(actionTypes.editStudentFeePlan({ data, studentId, alert, user })),
