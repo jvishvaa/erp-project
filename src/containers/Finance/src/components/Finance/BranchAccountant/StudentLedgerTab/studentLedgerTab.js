@@ -172,7 +172,8 @@ class StudentLedgerTab extends Component {
   }
 
   changehandlerbranch = (e) => {
-    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value && this.state.session && this.state.session.value)
+    this.props.fetchGrades(this.state.session.value, e.value, this.props.alert, this.props.user, moduleId)
+    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session && this.state.session.value)
     this.setState({ selectedBranches: e})
   }
 
@@ -657,13 +658,14 @@ const mapStateToProps = state => ({
   studentErp: state.finance.accountantReducer.studentErpSearch.studentErpList,
   dataLoading: state.finance.common.dataLoader,
   branches: state.finance.common.branchPerSession,
+  // gradeList: state.finance.common.gradeList,
 })
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  // fetchGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, alert, user, moduleId })),
+  fetchGrades: (session, branch, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, branch, alert, user, moduleId })),
   // fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
-  fetchGrades: (alert, user, moduleId, branch, session) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch, session })),
+  // fetchGrades: (alert, user, moduleId, branch, session) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch, session })),
   studentErpSearch: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user })),
   clearAllProps: (alert, user) => dispatch(actionTypes.clearAllProps({ alert, user })),
   fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId })),

@@ -557,8 +557,8 @@ class ApplicationFormAcc extends Component {
               // className='form-control'
               value={formData.studentInfo.optingClass ? formData.studentInfo.optingClass : null}
               options={
-                this.props.gradeData
-                  ? this.props.gradeData.map(grades => ({
+                this.props.gradeList
+                  ? this.props.gradeList.map(grades => ({
                     value: grades.grade.id,
                     label: grades.grade.grade
                   }))
@@ -1767,7 +1767,7 @@ class ApplicationFormAcc extends Component {
 
 
   changehandlerbranch = (e) => {
-    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e && e.value)
+    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e && e.value, this.state.session)
     // this.props.fetchGrade(this.state.session, e && e.value, this.props.alert, this.props.user, moduleId)
     this.setState({ selectedBranches: e})
   }
@@ -2051,7 +2051,8 @@ const mapStateToProps = state => ({
   session: state.academicSession.items,
   appDetails: state.finance.accountantReducer.appForm.appDetails,
   // gradeData: state.finance.accountantReducer.appForm.gradeData,
-  gradeData: state.finance.accountantReducer.changeFeePlan.gradeData,
+  // gradeData: state.finance.accountantReducer.changeFeePlan.gradeData,
+  gradeList: state.finance.common.gradeList,
   dataLoading: state.finance.common.dataLoader,
   ifsc: state.finance.common.ifscDetails,
   micr: state.finance.common.micrDetails,
@@ -2075,7 +2076,7 @@ const mapDispatchToProps = dispatch => ({
   appMobileChecker: (leadNumber, user, alert) => dispatch(actionTypes.appMobileChecker({ leadNumber, user, alert })),
   fetchReceiptRange: (session, alert, user) => dispatch(actionTypes.fetchReceiptRange({ session, alert, user })),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
-  fetchGrades: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
+  fetchGrades: (alert, user, moduleId, branch, session) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch, session })),
 })
 
 export default connect(

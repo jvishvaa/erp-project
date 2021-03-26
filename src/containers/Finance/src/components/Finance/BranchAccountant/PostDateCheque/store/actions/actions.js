@@ -11,7 +11,7 @@ export const fetchGrades = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.StudentGradeAcc + '?academic_year=' + payload.session + '&module_id=' + payload.moduleId, {
+      .get(urls.StudentGradeAcc + '?academic_year=' + payload.session + '&branch_id=' + payload.branch + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
