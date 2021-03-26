@@ -81,9 +81,11 @@ class ChequePayment extends Component {
       erpNo,
       session,
       alert,
-      user
+      user,
+      branchId,
+      moduleId
     } = this.props
-    this.props.fetchChequeTransaction(erpNo, session, user, alert)
+    this.props.fetchChequeTransaction(erpNo, session, user, alert, branchId, moduleId)
   }
 
   componentDidUpdate (prevProps) {
@@ -102,7 +104,7 @@ class ChequePayment extends Component {
       user
     } = this.props
     if (this.props.getData && (erpNo !== prevProps.erpNo || session !== prevProps.session || this.props.getData)) {
-      this.props.fetchChequeTransaction(erpNo, session, user, alert)
+      this.props.fetchChequeTransaction(erpNo, session, user, alert, branchId, moduleId)
     }
   }
 
@@ -261,7 +263,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchChequeTransaction: (erpNo, session, user, alert) => dispatch(actionTypes.fetchAccountantChequeTransaction({ erpNo, session, user, alert }))
+  fetchChequeTransaction: (erpNo, session, user, alert, branchId, moduleId) => dispatch(actionTypes.fetchAccountantChequeTransaction({ erpNo, session, user, alert, branchId, moduleId }))
 })
 
 export default connect(

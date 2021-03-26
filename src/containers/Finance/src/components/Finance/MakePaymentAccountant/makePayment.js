@@ -244,7 +244,7 @@ class MakePayment extends Component {
 
   // Generation of PDF Start
   getPdfData = (transactionId) => {
-    return (axios.get(`${urls.FeeTransactionReceipt}?transaction_id=${transactionId}&academic_year=${this.props.session}`, {
+    return (axios.get(`${urls.FeeTransactionReceipt}?transaction_id=${transactionId}&academic_year=${this.props.session}&branch_id=${this.props.branchId}&module_id=${this.props.moduleId}`, {
       headers: {
         Authorization: 'Bearer ' + this.props.user
       }
@@ -554,6 +554,8 @@ class MakePayment extends Component {
       let cashData = {
         ...this.props.walletInfo.length && this.state.isWalletAgree ? wal : null,
         session_year: this.props.session,
+        branch_id: this.props.branchId,
+        module_id: this.props.moduleId,
         student: this.props.erpCode,
         date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
         total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -572,6 +574,8 @@ class MakePayment extends Component {
       let chequeData = {
         ...this.props.walletInfo.length && this.state.isWalletAgree ? wal : null,
         session_year: this.props.session,
+        branch_id: this.props.branchId,
+        module_id: this.props.moduleId,
         student: this.props.erpCode,
         date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
         total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -595,6 +599,8 @@ class MakePayment extends Component {
       let internetData = {
         ...this.props.walletInfo.length && this.state.isWalletAgree ? wal : null,
         session_year: this.props.session,
+        branch_id: this.props.branchId,
+        module_id: this.props.moduleId,
         student: this.props.erpCode,
         date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
         total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -614,6 +620,8 @@ class MakePayment extends Component {
       let creditData = {
         ...this.props.walletInfo.length && this.state.isWalletAgree ? wal : null,
         session_year: this.props.session,
+        branch_id: this.props.branchId,
+        module_id: this.props.moduleId,
         student: this.props.erpCode,
         date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
         total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,

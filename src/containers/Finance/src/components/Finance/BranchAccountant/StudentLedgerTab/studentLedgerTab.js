@@ -230,9 +230,9 @@ class StudentLedgerTab extends Component {
   erpHandler = () => {
     // const erp = document.querySelectorAll('[name=searchBox]')
     if (this.state.searchTypeData.value === 1 && this.state.selectedErpStatus) {
-      this.props.fetchAllPayment(this.state.session.value, this.state.studentLabel, this.props.user, this.props.alert)
+      this.props.fetchAllPayment(this.state.session.value, this.state.studentLabel, this.props.user, this.props.alert, this.state.selectedBranches?.value, moduleId)
     } else if (this.state.searchTypeData.value === 2 && this.state.selectedNameStatus) {
-      this.props.fetchAllPayment(this.state.session.value, this.state.studentErp, this.props.user, this.props.alert)
+      this.props.fetchAllPayment(this.state.session.value, this.state.studentErp, this.props.user, this.props.alert, this.state.selectedBranches?.value, moduleId)
     } else {
       this.props.alert.warning('Select Valid Erp')
     }
@@ -248,7 +248,9 @@ class StudentLedgerTab extends Component {
       this.state.studentTypeData.value,
       this.state.student,
       this.props.alert,
-      this.props.user
+      this.props.user,
+      this.state.selectedBranches?.value, e.value,
+      moduleId
     )
   }
 
@@ -276,7 +278,9 @@ class StudentLedgerTab extends Component {
       this.state.studentTypeData.value,
       this.state.studentName,
       this.props.alert,
-      this.props.user
+      this.props.user,
+      this.state.selectedBranches?.value,
+      moduleId
     )
   }
 
@@ -361,6 +365,8 @@ class StudentLedgerTab extends Component {
           {value === 'one' && <TabContainer>
             <FeeStructureAtAcc alert={this.props.alert}
               session={this.state.session.value}
+              moduleId={moduleId}
+              branchId={this.state.selectedBranches?.value}
               getData={this.state.getData}
               erp={erpValue}
               user={this.props.user} />
@@ -368,6 +374,8 @@ class StudentLedgerTab extends Component {
           {value === 'two' && <TabContainer>
             <MakePayment alert={this.props.alert}
               session={this.state.session.value}
+              moduleId={moduleId}
+              branchId={this.state.selectedBranches?.value}
               getData={this.state.getData}
               erp={erpValue}
               user={this.props.user}
@@ -376,6 +384,8 @@ class StudentLedgerTab extends Component {
           {value === 'three' && <TabContainer>
             <Payments alert={this.props.alert}
               session={this.state.session.value}
+              moduleId={moduleId}
+              branchId={this.state.selectedBranches?.value}
               getData={this.state.getData}
               erpNo={erpValue}
               user={this.props.user} />
@@ -383,6 +393,8 @@ class StudentLedgerTab extends Component {
           {value === 'four' && <TabContainer>
             <ChequePayments alert={this.props.alert}
               session={this.state.session.value}
+              moduleId={moduleId}
+              branchId={this.state.selectedBranches?.value}
               getData={this.state.getData}
               erpNo={erpValue}
               user={this.props.user} />
@@ -390,6 +402,8 @@ class StudentLedgerTab extends Component {
           {value === 'five' && <TabContainer>
             <Certificate alert={this.props.alert}
               session={this.state.session.value}
+              moduleId={moduleId}
+              branchId={this.state.selectedBranches?.value}
               getData={this.state.getData}
               erp={erpValue}
               user={this.props.user} />
@@ -397,6 +411,8 @@ class StudentLedgerTab extends Component {
           {value === 'six' && <TabContainer>
             <ConcessionDetails alert={this.props.alert}
               session={this.state.session.value}
+              moduleId={moduleId}
+              branchId={this.state.selectedBranches?.value}
               getData={this.state.getData}
               erp={erpValue}
               user={this.props.user} />
@@ -413,6 +429,8 @@ class StudentLedgerTab extends Component {
           {value === 'eight' && <TabContainer>
             <CurrFeeTypeAcc
               session={this.state.session.value}
+              moduleId={moduleId}
+              branchId={this.state.selectedBranches?.value}
               getData={this.state.getData}
               erp={erpValue}
               user={this.props.user}
@@ -422,6 +440,8 @@ class StudentLedgerTab extends Component {
           {value === 'nine' && <TabContainer>
             <StoreAtAcc
               session={this.state.session.value}
+              moduleId={moduleId}
+              branchId={this.state.selectedBranches?.value}
               getData={this.state.getData}
               erp={erpValue}
               user={this.props.user}
@@ -431,6 +451,8 @@ class StudentLedgerTab extends Component {
           {value === 'ele' && <TabContainer>
             <ShippingAmount
               session={this.state.session.value}
+              moduleId={moduleId}
+              branchId={this.state.selectedBranches?.value}
               getData={this.state.getData}
               erpValue={erpValue}
               user={this.props.user}
@@ -440,6 +462,8 @@ class StudentLedgerTab extends Component {
           {value === 'ten' && <TabContainer>
             <StoreItemStatus
               session={this.state.session.value}
+              moduleId={moduleId}
+              branchId={this.state.selectedBranches?.value}
               getData={this.state.getData}
               erp={erpValue}
               user={this.props.user}

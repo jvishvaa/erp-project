@@ -106,8 +106,8 @@ class Payments extends Component {
       alert,
       user
     } = this.props
-    this.props.fetchReceiptRange(session, erpNo, alert, user)
-    this.props.fetchAccountantTransaction(erpNo, session, user, alert)
+    this.props.fetchReceiptRange(session, erpNo, alert, user, this.props.branchId, this.props.moduleId)
+    this.props.fetchAccountantTransaction(erpNo, session, user, alert, this.props.branchId, this.props.moduleId)
   }
 
   componentDidUpdate (prevProps) {
@@ -139,7 +139,7 @@ class Payments extends Component {
   // }
 
   getPdfData = (transactionId) => {
-    return (axios.get(`${urls.FeeTransactionReceipt}?transaction_id=${transactionId}&academic_year=${this.props.session}`, {
+    return (axios.get(`${urls.FeeTransactionReceipt}?transaction_id=${transactionId}&academic_year=${this.props.session}&branch_id=${this.props.branchId}&module_id=${this.props.moduleId}`, {
       headers: {
         Authorization: 'Bearer ' + this.props.user
       }
@@ -147,7 +147,7 @@ class Payments extends Component {
   }
 
   getKitPdfData = (transactionId) => {
-    return (axios.get(`${urls.StoreReceiptPdfData}?transaction_id=${transactionId}&academic_year=${this.props.session}`, {
+    return (axios.get(`${urls.StoreReceiptPdfData}?transaction_id=${transactionId}&academic_year=${this.props.session}&branch_id=${this.props.branchId}&module_id=${this.props.moduleId}`, {
       headers: {
         Authorization: 'Bearer ' + this.props.user
       }
@@ -318,6 +318,8 @@ class Payments extends Component {
         newEditTrans['old_cheque_number'] = this.state.oldChequeNumber
       }
       newEditTrans['session_year'] = this.props.session
+      newEditTrans['branch_id'] = this.props.branchId
+      newEditTrans['module_id'] = this.props.moduleId
       newEditTrans['student_id'] = this.props.erpNo
       newEditTrans['change_date_of_payment_status'] = isDateRequest
       newEditTrans['change_receipt_number_status'] = isReceiptRequest
@@ -736,10 +738,10 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchReceiptRange: (session, erp, alert, user) => dispatch(actionTypes.fetchReceiptRange({ session, erp, alert, user })),
-  fetchAccountantTransaction: (erpNo, session, user, alert) => dispatch(actionTypes.fetchAccountantTransaction({ erpNo, session, user, alert })),
-  editAccountantTransaction: (transactionId, user, alert) => dispatch(actionTypes.editAccountantTransaction({ transactionId, user, alert })),
-  updateAccountantTransaction: (data, user, alert) => dispatch(actionTypes.updateAccountantTransaction({ data, user, alert }))
+  fetchReceiptRange: (session, erp, alert, user, branchId, moduleId) => dispatch(actionTypes.fetchReceiptRange({ session, erp, alert, user, branchId, moduleId })),
+  fetchAccountantTransaction: (erpNo, session, user, alert, branchId, moduleId) => dispatch(actionTypes.fetchAccountantTransaction({ erpNo, session, user, alert, branchId, moduleId })),
+  editAccountantTransaction: (transactionId, user, alert, branchId, moduleId) => dispatch(actionTypes.editAccountantTransaction({ transactionId, user, alert, branchId, moduleId })),
+  updateAccountantTransaction: (data, user, alert, branchId, moduleId) => dispatch(actionTypes.updateAccountantTransaction({ data, user, alert, branchId, moduleId }))
 })
 
 export default connect(
