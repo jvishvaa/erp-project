@@ -359,9 +359,9 @@ export const setActiveInactive = (payload) => {
 export const fetchGradeList = (payload) => {
   let url = null
   if (payload.branch) {
-    url = urls.GradeList + '?module_id=' + payload.moduleId + '&branch_id=' + payload.branch
+    url = urls.GradeList + '?module_id=' + payload.moduleId + '&branch_id=' + payload.branch + '&session_year=' + payload.session
   } else {
-    url = urls.GradeList + '?module_id=' + payload.moduleId
+    url = urls.GradeList + '?module_id=' + payload.moduleId + '&session_year=' + payload.session
   }
   return (dispatch) => {
     dispatch(dataLoaded())
