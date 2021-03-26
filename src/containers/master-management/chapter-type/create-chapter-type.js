@@ -92,18 +92,18 @@ const CreateChapterType = ({
   // };
 
   useEffect(() => {
-    axiosInstance
-      .get(`${endpoints.communication.branches}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setBranchDropdown(result.data.data);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
+    // axiosInstance
+    //   .get(`${endpoints.communication.branches}`)
+    //   .then((result) => {
+    //     if (result.data.status_code === 200) {
+    //       setBranchDropdown(result.data.data);
+    //     } else {
+    //       setAlert('error', result.data.message);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     setAlert('error', error.message);
+    //   });
 
     axiosInstance
       .get(endpoints.userManagement.academicYear)
@@ -168,18 +168,18 @@ const CreateChapterType = ({
   }, [moduleId]);
 
   useEffect(() => {
-    axiosInstance
-      .get(`${endpoints.communication.branches}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setBranchDropdown(result.data.data);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setBranchDropdown('error', error.message);
-      });
+    // axiosInstance
+    //   .get(`${endpoints.communication.branches}`)
+    //   .then((result) => {
+    //     if (result.data.status_code === 200) {
+    //       setBranchDropdown(result.data.data);
+    //     } else {
+    //       setAlert('error', result.data.message);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     setBranchDropdown('error', error.message);
+    //   });
     axiosInstance
       .get(endpoints.userManagement.academicYear)
       .then((result) => {
@@ -283,7 +283,7 @@ const CreateChapterType = ({
       });
       axiosInstance
         .get(
-          `${endpoints.communication.grades}?session_year=${filterData.year.id}&branch_id=${value.id}&module_id=${moduleId}`
+          `${endpoints.communication.grades}?session_year=${filterData.year.id}&branch_id=${value.branch.id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -349,7 +349,7 @@ const CreateChapterType = ({
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&grade=${value.grade_id}&module_id=${moduleId}`
+          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.branch.id}&grade=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -366,7 +366,7 @@ const CreateChapterType = ({
 
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?session_year=${filterData.year.id}&branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&module_id=${moduleId}`
+          `${endpoints.masterManagement.sections}?session_year=${filterData.year.id}&branch_id=${filterData.branch.branch.id}&grade_id=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -567,12 +567,12 @@ const CreateChapterType = ({
                   )}
                 />
           </Grid>
-          <Grid
+          {/* <Grid
             item
             xs={12}
             sm={4}
             className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
-          >
+          > */}
             {/* <Autocomplete
               style={{ width: '100%' }}
               size='small'
@@ -592,6 +592,13 @@ const CreateChapterType = ({
                 />
               )}
             /> */}
+          {/* </Grid> */}
+          <Grid
+                item
+                xs={12}
+                sm={4}
+                className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+              >
                 <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
@@ -611,7 +618,7 @@ const CreateChapterType = ({
                     />
                   )}
                 />
-          </Grid>
+              </Grid>
           <Grid
             item
             xs={12}
