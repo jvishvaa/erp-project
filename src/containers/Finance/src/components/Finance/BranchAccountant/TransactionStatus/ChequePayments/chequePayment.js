@@ -101,7 +101,9 @@ class ChequePayment extends Component {
       erpNo,
       session,
       alert,
-      user
+      user,
+      branchId,
+      moduleId
     } = this.props
     if (this.props.getData && (erpNo !== prevProps.erpNo || session !== prevProps.session || this.props.getData)) {
       this.props.fetchChequeTransaction(erpNo, session, user, alert, branchId, moduleId)
