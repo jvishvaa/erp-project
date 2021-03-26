@@ -287,7 +287,7 @@ class CreateFeePlan extends Component {
                   this.props.gradeList ? this.props.gradeList.filter(grade => {
                     let value = true
                     this.state.gradeList.map(filteredGrade => {
-                      if (filteredGrade.id === grade.id) { value = false }
+                      if (filteredGrade.id === grade.grade.id) { value = false }
                     })
                     return value
                   }).map((con, i) => ({ value: con.grade.id, label: con.grade.grade })) : null
