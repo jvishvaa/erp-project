@@ -609,6 +609,7 @@ const TeacherHomework = withRouter(
                                 <List component='nav' aria-label='main mailbox folders'>
                                   {homeworkRows.map((row) => {
                                     const data = row[col.subject_name];
+                                    console.log(row, "data");
                                     return (
                                       <ListItem className='homework-table-mobile-view'>
                                         <div className='day-icon'>
@@ -624,17 +625,23 @@ const TeacherHomework = withRouter(
                                           }}
                                         >
                                           {!data.hasOwnProperty('student_submitted') ? (
-                                            <IconButton
-                                              onClick={() => {
-                                                navigateToAddScreen({
-                                                  date: row.date,
-                                                  subject: col.subject_name,
-                                                  subjectId: col.id,
-                                                });
-                                              }}
-                                            >
-                                              <AddCircleOutlineIcon color='primary' />
-                                            </IconButton>
+                                            <>
+                                              {row.canUpload ? (
+                                                <IconButton
+                                                  onClick={() => {
+                                                    navigateToAddScreen({
+                                                      date: row.date,
+                                                      subject: col.subject_name,
+                                                      subjectId: col.id,
+                                                    });
+                                                  }}
+                                                >
+                                                  <AddCircleOutlineIcon color='primary' />
+                                                </IconButton>
+                                              ) : (
+                                                <></>
+                                              )}
+                                            </>
                                           ) : (
                                             <>
                                               <IconButton

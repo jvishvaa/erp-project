@@ -86,10 +86,11 @@ export default function ResourceCardComponent(props) {
                     <EditOutlinedIcon style={{color:'#fe6b6b', fontSize: '18px'}} />
                 </IconButton>
                 */}
-                <Typography style={{float: 'right', verticalAlign: 'top', display: 'inline-block',fontSize:'15px',marginTop:'3px'}}>
+
+                {/* <Typography style={{float: 'right', verticalAlign: 'top', display: 'inline-block',fontSize:'15px',marginTop:'3px'}}>
                 Start Time : {moment(props.resourceData.online_class.start_time).format('h:mm A')}
 
-                </Typography>
+                </Typography> */}
             </div>
                 <Typography className={classes.classTitle}>
                     {props.resourceData.online_class.subject && props.resourceData.online_class.subject.reduce((sub) => sub.subject_name.join())}
@@ -103,7 +104,7 @@ export default function ResourceCardComponent(props) {
                     Start Date : {moment(props.resourceData.online_class.start_time).format('DD-MM-YYYY')}
                 </Typography>
                 <Typography className={classes.classSchedule}>
-                End Date : {moment(props.resourceData.online_class.start_time).format('DD-MM-YYYY')}
+                End Date : {moment(props.resourceData.online_class.end_time).format('DD-MM-YYYY')}
                 </Typography>
 
 

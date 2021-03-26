@@ -99,18 +99,19 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   return (
     <Paper className={periodColor?classes.selectedRoot:classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}>
       <Grid container spacing={2}>
-        <Grid item xs={8}>
+        <Grid item xs={10}>
           <Box>
             <Typography
               className={classes.title}
               variant='p'
               component='p'
               color='primary'
+              noWrap
             >
-              Topic: <span style={{ color: 'red' }}>{lesson.title}</span>
+              Topic: <span style={{ color: 'red'}}>{lesson.title}</span>
             </Typography>
           </Box>
-        <Typography style={{fontSize: '15px',marginTop: '10px'}}> General Diary</Typography>
+          <Typography style={{fontSize: '15px',marginTop: '10px'}}> General Diary</Typography>
           <Divider className='divider'/>
           <Box mt={2}>
             <Typography
@@ -124,7 +125,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
             </Typography>
           </Box>
         </Grid>
-        <Grid item xs={4} className={classes.textRight}>
+        <Grid item xs={2} className={classes.textRight}>
           <Box>
             <span
               className='period_card_menu'

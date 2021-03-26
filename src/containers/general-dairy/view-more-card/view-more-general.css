@@ -3,7 +3,7 @@
     border-radius: 10px !important;
     height:70vh;
     width:95%;
-    margin:20px auto;
+    margin:2px auto;
     box-shadow: none;
     overflow-y: scroll;
     position: sticky;
@@ -81,6 +81,7 @@
     font-size: 1.1rem;
     color: #014B7E;
     margin-bottom: 7px;
+    word-break: break-all;
 }
 
 .headerContent {
@@ -132,6 +133,7 @@
     color: #014b7e;
     margin:5px 10px 0px 20px;
     display: flex;
+    word-break: break-all;
     justify-content: space-between;
 }
 

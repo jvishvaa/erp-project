@@ -372,14 +372,16 @@ const SectionTable = () => {
                       section,
                       grade: { grade_name },
                       acad_session: {
-                        branch: { branch_name },
-                        session_year: { session_year },
+                        branch: branchObj = {},
+                        session_year: sessionObj ={},
                       },
                     } = sect;
+                    const  { branch_name = 'Branch not found' }  = branchObj || {}
+                    const { session_year = 'Session not found'} = sessionObj || {}
                     return (
                       <TableRow hover section='checkbox' tabIndex={-1} key={index}>
                         <TableCell className={classes.tableCell}>
-                          {session_year}
+                          {session_year || ''}
                         </TableCell>
                         <TableCell className={classes.tableCell}>{branch_name}</TableCell>
                         <TableCell className={classes.tableCell}>{grade_name}</TableCell>

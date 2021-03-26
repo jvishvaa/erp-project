@@ -106,12 +106,12 @@ const CreateclassProvider = (props) => {
   // };
 
   const listTutorEmails = async (reqData) => {
-    const { branchIds, gradeIds } = reqData;
+    const { branchIds, gradeIds,acadYears } = reqData;
     dispatch(request(LIST_TUTOR_EMAILS_REQUEST));
 
     try {
       const { data } = await axiosInstance.get(
-        `/erp_user/teacher-list/?branch_id=${branchIds}&grade_id=${gradeIds}`
+        `/erp_user/teacher-list/?branch_id=${branchIds}&grade_id=${gradeIds}&session_year=${acadYears}`
       );
       if (data.status === 'success')
         dispatch(success(data.data, LIST_TUTOR_EMAILS_SUCCESS));

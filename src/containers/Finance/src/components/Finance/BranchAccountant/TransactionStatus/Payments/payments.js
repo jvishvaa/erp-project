@@ -97,7 +97,7 @@ class Payments extends Component {
 
   componentDidMount () {
     const erpLength = (this.props.erpNo + '').length
-    if (!this.props.erpNo || erpLength !== 10 || !this.props.session || !this.props.getData) {
+    if (!this.props.erpNo || erpLength !== 14 || !this.props.session || !this.props.getData) {
       return
     }
     const {
@@ -122,7 +122,7 @@ class Payments extends Component {
     // if (refresh !== prevProps.refresh) {
     //   this.props.fetchAccountantTransaction(erpNo, session, user, alert)
     // }
-    if (!this.props.erpNo || !this.props.session || !this.props.getData || erpLength !== 10) {
+    if (!this.props.erpNo || !this.props.session || !this.props.getData || erpLength !== 14) {
       return
     }
     if (this.props.erpNo === prevProps.erpNo && this.props.session === prevProps.session && this.props.getData === prevProps.getData) {

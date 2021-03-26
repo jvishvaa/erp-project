@@ -293,6 +293,21 @@ const Filter = (props) => {
                        size='small'
                        onChange={(event, value) => {
                            setSelectedClassType(value)
+                    setSelectedGrade([]);
+                    setCourseList([]);
+                    setSelectedCourse('');
+                    setBatchList([]);
+                    setSelectedBatch('');
+                    setFilterList([]);
+                    setSelectedViewMore('');
+                    setSectionList([]);
+                    setSelectedSection([]);
+                    setSubjectList([]);
+                    setSelectedSubject([]);
+                    setSelectedBranch([])
+                    setSelectedAcadmeicYear('')
+                    props.getResourceData([]);
+
                        }}
                        id='branch_id'
                        className='dropdownIcon'
@@ -323,6 +338,20 @@ const Filter = (props) => {
                             'branchList'
                           );
                         }
+                        setSelectedGrade([]);
+                        setCourseList([]);
+                        setSelectedCourse('');
+                        setBatchList([]);
+                        setSelectedBatch('');
+                        setFilterList([]);
+                        setSelectedViewMore('');
+                        setSectionList([]);
+                        setSelectedSection([]);
+                        setSubjectList([]);
+                        setSelectedSubject([]);
+                        setSelectedBranch([])
+                        props.getResourceData([]);
+
                       }}
                       id='branch_id'
                       className='dropdownIcon'
@@ -349,13 +378,25 @@ const Filter = (props) => {
                         setSelectedBranch([])
                         if(value.length){
                           const ids = value.map((el)=>el)
-                          const selectedId=value.map((el)=>el.id)
+                          const selectedId=value.map((el)=>el.branch.id)
                           setSelectedBranch(ids)
                           callApi(
                             `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
                             'gradeList'
                           );
                         }
+                        setSelectedGrade([]);
+                        setCourseList([]);
+                        setSelectedCourse('');
+                        setBatchList([]);
+                        setSelectedBatch('');
+                        setFilterList([]);
+                        setSectionList([]);
+                        setSelectedSection([]);
+                        setSubjectList([]);
+                        setSelectedSubject([]);
+                        props.getResourceData([]);
+
                       }}
                       id='branch_id'
                       className='dropdownIcon'
@@ -383,7 +424,7 @@ const Filter = (props) => {
                         if(value.length){
                           const ids = value.map((el)=>el)
                           const selectedId=value.map((el)=>el.grade_id)
-                          const branchId=selectedBranch.map((el)=>el.id)
+                          const branchId=selectedBranch.map((el)=>el.branch.id)
                           setSelectedGrade(ids)
                           callApi(
                             `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
@@ -399,12 +440,17 @@ const Filter = (props) => {
                             'course'
                             );
                           }
-                        setCourseList([]);
-                        setBatchList([]);
-                        setSelectedCourse('');
-                        setSelectedBatch('');
-                        setSectionList([]);
-                        setSelectedSection([]);
+                          setCourseList([]);
+                          setSelectedCourse('');
+                          setBatchList([]);
+                          setSelectedBatch('');
+                          setFilterList([]);
+                          setSectionList([]);
+                          setSelectedSection([]);
+                          setSubjectList([]);
+                          setSelectedSubject([]);
+                          props.getResourceData([]);
+
                       }}
                       id='grade_id'
                       className='dropdownIcon'
@@ -435,12 +481,17 @@ const Filter = (props) => {
                           setSelectedSection(ids)
                           setSecSelectedId(secId)
                           callApi(
-                            `${endpoints.academics.subjects}?branch=${selectedBranch.map((el)=>el.id)}&session_year=${selectedAcademicYear.id}&grade=${selectedGrade.map((el)=>el.grade_id)}&section=${secId}&module_id=${moduleId}`,
+                            `${endpoints.academics.subjects}?branch=${selectedBranch.map((el)=>el.branch.id)}&session_year=${selectedAcademicYear.id}&grade=${selectedGrade.map((el)=>el.grade_id)}&section=${secId}&module_id=${moduleId}`,
                             'subject'
                           );
                         }
+                        setBatchList([]);
+                        setSelectedBatch('');
+                        setSelectedCourse('')
                         setSubjectList([]);
                         setSelectedSubject([]);
+                        props.getResourceData([]);
+
                       }}
                       id='section_id'
                       className='dropdownIcon'
@@ -474,6 +525,8 @@ const Filter = (props) => {
                         }
                         setBatchList([]);
                         setSelectedBatch('');
+                        props.getResourceData([]);
+
                       }}
                       id='course_id'
                       className='dropdownIcon'
@@ -508,6 +561,8 @@ const Filter = (props) => {
                           }
                           setBatchList([]);
                           setSelectedBatch('');
+                          props.getResourceData([]);
+
                         }}
                         id='course_id'
                         className='dropdownIcon'
