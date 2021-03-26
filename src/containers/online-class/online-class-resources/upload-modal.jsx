@@ -23,7 +23,7 @@ import { fileUploadStyles, fileUploadButton, fileRow } from './uploadModal.style
 import Modal from './modal';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-
+import Loading from '../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const allowedExtensions = [
@@ -238,6 +238,8 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
   const [disableButton, setDisableButton] = useState(false);
   const [filePath,setFilePath] = useState([]);
   const [ isDownload, setIsDownload ] = useState([]);
+  const [loading, setLoading] = useState(false);
+
 
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -298,6 +300,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
     if (e.target.files[0]) {
       const data  = e.target.files[0];
       const tempArr = e.target.files[0].name.split('.');
+     
       const ext = tempArr.length ? tempArr[tempArr.length - 1] : 'unsupported';
       if (!allowedExtensions.includes(ext)) {
         setAlert('error', 'Unsupported File Type');
@@ -326,6 +329,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
   };
 
   const removeFileHandler = (i) => {
+    console.log(i,'===========================')
     const newFiles = files.filter((_, index) => index !== i);
     setFiles(newFiles);
     const delFile = {
@@ -721,6 +725,9 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
   };
 
   return (
+    <>
+    {loading ? <Loading message='Loading...' /> : null}
+
     <div className={classes.container}>
       <Grid container justifyContent="space-between" alignItems='center'>
         <Grid item xs sm style={isMobile?{display:'none'}:{}}/>
@@ -823,6 +830,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
         </Typography>
       </div>
     </div>
+    </>
   );
 };
 

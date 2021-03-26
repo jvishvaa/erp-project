@@ -149,7 +149,7 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
               Created By - {period?.uploaded_by?.first_name}
               </Typography>
               <Typography
-                className={classes.title}
+                className={classes.content}
                 variant='p'
                 component='p'
                 color='secondary'>
