@@ -145,11 +145,11 @@ class CreateFeePlan extends Component {
 
   changehandlerbranch = (e) => {
     this.setState({ branchId: e.value, branchData: e })
-    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session)
   }
 
   handleClickSessionYear = (e) => {
-    this.setState({ session: e.value, branchData: [], sessionData: e })
+    this.setState({ session: e.value, sessionData: e })
     this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
   }
 
@@ -273,6 +273,7 @@ class CreateFeePlan extends Component {
     if (this.state.addGradeModal) {
       addFeePlanGradeModal = (
         <EModal open={this.state.addGradeModal} click={this.closeAddGradeHandler} medium>
+          <React.Fragment>
           <Grid container spacing={3} style={{ padding: 25 }}>
             <Grid item xs='12' >
               <h3>Add Grade</h3>
@@ -289,7 +290,7 @@ class CreateFeePlan extends Component {
                       if (filteredGrade.id === grade.id) { value = false }
                     })
                     return value
-                  }).map((con, i) => ({ value: con.id, label: con.grade })) : null
+                  }).map((con, i) => ({ value: con.grade.id, label: con.grade.grade })) : null
                 }
                 onChange={this.gradelistHandler}
               />
@@ -303,6 +304,7 @@ class CreateFeePlan extends Component {
               >Add </Button>
             </Grid>
           </Grid>
+          </React.Fragment>
         </EModal>
       )
     }
@@ -496,7 +498,7 @@ const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchListFeePlan: (session, branch, alert, user) => dispatch(actionTypes.fetchFeePlanList({ session, branch, alert, user })),
-  fetchGrades: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
+  fetchGrades: (alert, user, moduleId, branch, session) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch, session })),
   deleteGrades: (gradeId, typeId, alert, user) => dispatch(actionTypes.deleteFeePlanGrades({ gradeId, typeId, alert, user })),
   updateGrades: (gradeId, typeId, alert, user) => dispatch(actionTypes.updateFeePlanGrades({ gradeId, typeId, alert, user }))
 })
