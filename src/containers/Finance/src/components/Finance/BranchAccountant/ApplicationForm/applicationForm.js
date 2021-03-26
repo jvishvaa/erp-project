@@ -443,7 +443,7 @@ class ApplicationFormAcc extends Component {
       enquiry_code: this.props.appDetails.data[0] && this.props.appDetails.data[0].enquiry_no ? this.props.appDetails.data[0].enquiry_no : null,
       child_id: formData.studentInfo.childId ? formData.studentInfo.childId : null,
       lead_id: this.props.appDetails.data[0] && this.props.appDetails.data[0].id ? this.props.appDetails.data[0].id : null,
-      branch:this.props.selectedBranches && this.props.selectedBranches.value
+      branch:this.state.selectedBranches && this.state.selectedBranches.value
     }
     this.props.saveAllFormData(data, this.props.user, this.props.alert)
   }
