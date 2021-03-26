@@ -442,7 +442,8 @@ class ApplicationFormAcc extends Component {
       mother_email: formData.parentInfo.motherEmail ? formData.parentInfo.motherEmail : null,
       enquiry_code: this.props.appDetails.data[0] && this.props.appDetails.data[0].enquiry_no ? this.props.appDetails.data[0].enquiry_no : null,
       child_id: formData.studentInfo.childId ? formData.studentInfo.childId : null,
-      lead_id: this.props.appDetails.data[0] && this.props.appDetails.data[0].id ? this.props.appDetails.data[0].id : null
+      lead_id: this.props.appDetails.data[0] && this.props.appDetails.data[0].id ? this.props.appDetails.data[0].id : null,
+      branch:this.state.selectedBranches && this.state.selectedBranches.value
     }
     this.props.saveAllFormData(data, this.props.user, this.props.alert)
   }
@@ -1646,7 +1647,7 @@ class ApplicationFormAcc extends Component {
         receipt_number: payment.receiptOnline ? payment.receiptOnline : null,
         // receipt_number_online: payment.receiptOnline ? payment.receiptOnline : null,
         current_date: new Date().toISOString().substr(0, 10),
-        branch_id: this.state.selectedBranches
+        branch: this.state.selectedBranches && this.state.selectedBranches.value
       }
       this.sendingToServer(cashData)
     } else if (this.state.selectedPayment === 'b') {
@@ -1669,7 +1670,7 @@ class ApplicationFormAcc extends Component {
         current_date: new Date().toISOString().substr(0, 10),
         bank_name: payment.cheque.chequeBankName ? payment.cheque.chequeBankName : null,
         bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null,
-        branch_id: this.state.selectedBranches
+        branch: this.state.selectedBranches && this.state.selectedBranches.value
       }
       this.sendingToServer(chequeData)
     } else if (this.state.selectedPayment === 'c') {
@@ -1688,7 +1689,7 @@ class ApplicationFormAcc extends Component {
         internet_date: payment.internet.internetDate ? payment.internet.internetDate : null,
         remarks: payment.internet.remarks ? payment.internet.remarks : null,
         current_date: new Date().toISOString().substr(0, 10),
-        branch_id: this.state.selectedBranches
+        branch: this.state.selectedBranches && this.state.selectedBranches.value
       }
       this.sendingToServer(internetData)
     } else if (this.state.selectedPayment === 'd') {
@@ -1710,7 +1711,7 @@ class ApplicationFormAcc extends Component {
         bank_name: payment.credit.bankName ? payment.credit.bankName : null,
         credit_date: payment.credit.creditDate ? payment.credit.creditDate : null,
         current_date: new Date().toISOString().substr(0, 10),
-        branch_id: this.state.selectedBranches
+        branch: this.state.selectedBranches && this.state.selectedBranches.value
       }
       this.sendingToServer(creditData)
     }
