@@ -45,7 +45,7 @@ export const fetchApplicationDetails = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.GetApplicationDetails + '?enquiry_type=' + payload.key + '&academic_year=' + payload.session + '&branch_id=' + payload?.branch?.value, {
+      .get(urls.GetApplicationDetails + '?enquiry_type=' + payload.key + '&academic_year=' + payload.session + '&branch_id=' + payload?.branch?.value + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }

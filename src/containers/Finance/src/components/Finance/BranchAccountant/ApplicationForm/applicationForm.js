@@ -262,7 +262,7 @@ class ApplicationFormAcc extends Component {
       ...prevState,
       formData: this.baseFormState
     }), () => {
-      this.props.fetchApplicationDetails(this.state.session, this.state.searchedValue, this.state.selectedBranches, this.props.user, this.props.alert)
+      this.props.fetchApplicationDetails(this.state.session, this.state.searchedValue, this.state.selectedBranches, this.props.user, this.props.alert, moduleId)
     })
     // this.setState({ showSiblingTable: true })
   }
@@ -2068,7 +2068,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   // fetchGrade: (session, branch, alert, user, moduleId) => dispatch(actionTypes.fetchGrade({ session, branch, alert, user, moduleId })),
-  fetchApplicationDetails: (session, key, branch, user, alert) => dispatch(actionTypes.fetchApplicationDetails({ session, key, branch, user, alert })),
+  fetchApplicationDetails: (session, key, branch, user, alert, moduleId) => dispatch(actionTypes.fetchApplicationDetails({ session, key, branch, user, alert, moduleId })),
   saveAllFormData: (data, user, alert) => dispatch(actionTypes.saveAllFormData({ data, user, alert })),
   saveAppPayment: (data, user, alert) => dispatch(actionTypes.saveAppPayment({ data, user, alert })),
   fetchIfsc: (ifsc, alert, user) => dispatch(actionTypes.fetchIfsc({ ifsc, alert, user })),
