@@ -326,22 +326,75 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
   };
 
   const removeFileHandler = (i) => {
-    const newFiles = files.filter((_, index) => index !== i);
-    setFiles(newFiles);
+    alert("i = "+ i);
     const delFile = {
-      file_name: filePath[0],
+      file_name: filePath[i],
     }
+
     axiosInstance.post(endpoints.deleteFromS3,delFile)
     .then((res) => {
       setAlert('success', res.data.message);
       setFilePath([]);
     })
     .catch((err) => console.log(err))
+    
+    // if(files.length === 1){
+    //   const delFile = {
+    //     file_name: filePath[0],
+    //   }
+  
+    //   axiosInstance.post(endpoints.deleteFromS3,delFile)
+    //   .then((res) => {
+    //     setAlert('success', res.data.message);
+    //     setFilePath([]);
+    //   })
+    //   .catch((err) => console.log(err))
+    // }
+    // else {
+    //   const newFiles = files.splice(i, 1);
+    //   //const newFiles = files.filter((_, index) => index !== i);
+    //   setFiles(newFiles);
+    // }
   };
 
-  const deleteExistingFileHandler = (fileName, i) => {
+  const deleteExistingFileHandler = (fileName, i,index) => {
     //const newFiles = files.filter((_, index) => index !== i);
     //setFiles(newFiles);
+    //const newFiles = files.splice(i, 1);
+    //setFiles(newFiles);
+    //isDownload.length > 0 && isDownload[i].files.splice(i, 1);
+    // const newFiles = isDownload[i].files.filter((_, index) => index !== i);
+    // setIsDownload(newFiles);
+    // alert("dj"+i);
+    // console.log(isDownload);
+    // if(files.length === 1){
+    //   const delFile = {
+    //     file_name: filePath[0],
+    //   }
+  
+    //   axiosInstance.post(endpoints.deleteFromS3,delFile)
+    //   .then((res) => {
+    //     setAlert('success', res.data.message);
+    //     setFilePath([]);
+    //   })
+    //   .catch((err) => console.log(err))
+    // }
+    // else {
+    //   const newFiles = files.splice(i, 1);
+    //   //const newFiles = files.filter((_, index) => index !== i);
+    //   setFiles(newFiles);
+    // }
+    const newFiles = isDownload[i].files.filter((_, index1) => index1 !== index);
+    console.log(isDownload[i].files, 'old');
+    //fileArray.push(newFiles);
+    // isDownload.map((file, id) => {
+    //   if(id !== i){
+    //     file.files && file.files.map((path) => newFiles.push(path))
+    //   }
+    // })
+    
+    console.log('newFiles',newFiles,"isDownload" ,isDownload,'fileArray');
+
     const delFile = {
       file_name: fileName,
     }
@@ -350,13 +403,15 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
       setAlert('success', res.data.message);
       setFilePath([]);
       const param = {
+        files: newFiles,
         online_class_id : id,
         class_date: classDate
       };
       axiosInstance.put(endpoints.onlineClass.resourceFile,param)
       .then((res) => {
-        const newResources = isDownload.splice(i,1);
-        setIsDownload([]);
+        console.log(res.data);
+        //const newResources = isDownload.splice(i,1);
+        setIsDownload([newFiles]);
         setAlert('success', "Deleted");
       })
       .catch((err) => console.log(err))
@@ -544,7 +599,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
       formData.set('description', description);
       formData.set('is_home_work_uploaded', 'true');
     }
-/** 
+ /** 
     files.forEach((file, index) => {
       formData.append(`files`, files[index]);
     });
@@ -752,14 +807,14 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
           //setFilePath([ ...filePath,file.files[0]]);
         return (
           <div>
-                {file.files && file.files.map((path) => 
+                {file.files && file.files.map((path, index) => 
                   <>
                     <Grid container spacing={2} alignItems='center'>
                       <Grid item xs={12} md={8}>
                         <Typography variant='h6'>{path}</Typography>
                       </Grid>
                       <Grid item xs={6} md={2}>
-                        <HighlightOffIcon onClick={() => deleteExistingFileHandler(path, i)} className={classes.icon} />
+                        <HighlightOffIcon onClick={() => deleteExistingFileHandler(path, i,index)} className={classes.icon} />
                       </Grid>
                     </Grid>
                      <Divider />
