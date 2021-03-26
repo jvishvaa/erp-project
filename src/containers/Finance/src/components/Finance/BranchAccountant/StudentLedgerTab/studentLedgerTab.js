@@ -249,7 +249,7 @@ class StudentLedgerTab extends Component {
       this.state.student,
       this.props.alert,
       this.props.user,
-      this.state.selectedBranches?.value, e.value,
+      this.state.selectedBranches?.value,
       moduleId
     )
   }
