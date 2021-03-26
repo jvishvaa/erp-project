@@ -1,12 +1,24 @@
-/* eslint-disable jsx-a11y/media-has-caption */
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import { IconButton } from '@material-ui/core';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+// import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+// import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CloseIcon from '@material-ui/icons/Close';
+
+import Dialog from '@material-ui/core/Dialog';
+import { Slide } from '@material-ui/core';
+
+import PdfjsPreview from '../pdf-js';
+
 import { AttachmentPreviewerContext } from '../attachment-previewer-contexts';
 import './attachment-previewer-ui-styles.css';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction='up' ref={ref} {...props} />;
+  // return <Fade direction='in' ref={ref} {...props} />
+});
+
+
 
 function AttachmentPreviewerUI() {
   const {
@@ -52,18 +64,21 @@ function AttachmentPreviewerUI() {
   //   '.snd',
   // ];
   if (!isOpen) return null;
-  
+
   document.addEventListener("contextmenu", function (e) {
     e.preventDefault();
   }, false);
 
   const previewerUI = (
     <>
+    <Dialog fullScreen open TransitionComponent={Transition}>
+
+    
       <div className='attachment-viewer' key={src}>
         <div className='attachment-viewer-header'>
           <div className='attachment-viewer-header-close-icon'>
             <IconButton onClick={closePreview} aria-label='close' size='small'>
-              <CloseIcon style={{ color: 'white' }} fontSize='inherit' />
+              <CloseIcon style={{ color: 'white', backgroundColor: 'black' }} fontSize='inherit' />
             </IconButton>
           </div>
         </div>
@@ -99,14 +114,20 @@ function AttachmentPreviewerUI() {
                   {/* <source src='mov_bbb.ogg' type='video/ogg' /> */}
                   Your browser does not support HTML5 video.
                 </video>
-              ) : (
+              ) : 
+              isPPt ?(
                 <iframe
-                  id='attachment-iframe'
-                  title='attachment-iframe'
-                  src={isPPt ? pptFileSrc : `${src}#toolbar=0&navpanes=0&scrollbar=0`}
-                  className='attachment-viewer-frame-preview-iframe'
+                id='attachment-iframe'
+                title='attachment-iframe'
+                src={pptFileSrc}
+                // src={isPPt ? pptFileSrc : `${src}#toolbar=0&navpanes=0&scrollbar=0`}
+                // src={isPPt ? pptFileSrc : `http://docs.google.com/gview?url=${src}&embedded=true#toolbar=0&navpanes=0&scrollbar=0`}
+                className='attachment-viewer-frame-preview-iframe'
                 />
-              )}
+                ):
+                <PdfjsPreview url={src} />
+              }
+              {/* <iframe src="http://docs.google.com/gview?url=http://infolab.stanford.edu/pub/papers/google.pdf&embedded=true" style="width:600px; height:500px;" frameborder="0"></iframe> */}
               {/* <p className='attachment-viewer-frame-preview-placeholder'>
                 There is no preview available for this attachment.
                 <a
@@ -135,7 +156,7 @@ function AttachmentPreviewerUI() {
           </div>
           </div>
         </div> */}
-        <IconButton
+        {/* <IconButton
           // style={{ opacity: isNextAvailable ? 1 : 0 }}
           // style={{ color: isNextAvailable ? 'white' : 'black' }}
           disabled={!isNextAvailable}
@@ -148,8 +169,8 @@ function AttachmentPreviewerUI() {
             style={{ color: isNextAvailable ? 'white' : 'black' }}
             fontSize='inherit'
           />
-        </IconButton>
-        <IconButton
+        </IconButton> */}
+        {/* <IconButton
           // style={{ color: isPrevAvailable ? 'white' : 'black' }}
           disabled={!isPrevAvailable}
           onClick={() => prev()}
@@ -161,8 +182,9 @@ function AttachmentPreviewerUI() {
             style={{ color: isPrevAvailable ? 'white' : 'black' }}
             fontSize='inherit'
           />
-        </IconButton>
+        </IconButton> */}
       </div>
+      </Dialog>
     </>
   );
   return <>{isOpen ? previewerUI : null}</>;
