@@ -250,7 +250,7 @@ class StudentLedgerTab extends Component {
       this.props.alert,
       this.props.user,
       this.state.selectedBranches?.value,
-      moduleId
+      moduleId,
     )
   }
 
@@ -690,7 +690,7 @@ const mapDispatchToProps = dispatch => ({
   fetchGrades: (session, branch, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, branch, alert, user, moduleId })),
   // fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
   // fetchGrades: (alert, user, moduleId, branch, session) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch, session })),
-  studentErpSearch: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user })),
+  studentErpSearch: (type, session, grade, section, status, erp, alert, user, branch) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user, branch })),
   clearAllProps: (alert, user) => dispatch(actionTypes.clearAllProps({ alert, user })),
   fetchAllSections: (session, gradeId, branch, alert, user, moduleId) => dispatch(actionTypes.fetchAllSections({ session, gradeId, branch, alert, user, moduleId })),
   //   fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user }))

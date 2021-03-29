@@ -78,7 +78,8 @@ class AssignOtherFees extends Component {
       due_date: '',
       value: 'one',
       getList: false,
-      moduleId:null
+      moduleId:null,
+      selectedBranches: '',
     }
   }
 
@@ -138,10 +139,16 @@ class AssignOtherFees extends Component {
   handleAcademicyear = (e) => {
     console.log(e)
     this.setState({ session: e.value, branchData: [], sessionData: e })
-    this.props.fetchAllGrades(e.value, this.props.alert, this.props.user, moduleId)
-    this.props.fetchOtherFees(e.value, this.props.alert, this.props.user)
+    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId) 
+    // this.props.fetchAllGrades(e.value, this.props.alert, this.props.user, moduleId, selectedBranches?.value)
+    // this.props.fetchOtherFees(e.value, this.props.alert, this.props.user)
   }
 
+  changehandlerbranch = (e) => {
+    this.props.fetchAllGrades(e.value, this.props.alert, this.props.user, moduleId, e.value)
+    this.setState({ selectedBranches: e})
+    this.props.fetchOtherFees(e.value, this.props.alert, this.props.user, e.value)
+  }
   render () {
     let tabView = null
     if (this.state.getList) {
@@ -196,6 +203,24 @@ class AssignOtherFees extends Component {
                   ({ value: session, label: session })) : []
               }
               onChange={this.handleAcademicyear}
+            />
+          </Grid>
+          <Grid item xs='3'>
+            <label>Branch*</label>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+              options={
+                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+
+              onChange={this.changehandlerbranch}
             />
           </Grid>
           <Grid item xs='3'>
@@ -276,16 +301,18 @@ const mapStateToProps = state => ({
   sectionData: state.finance.common.sectionsPerGrade,
   otherFeesList: state.finance.accountantReducer.listOtherFee.listOtherFees,
   isMisc: state.finance.accountantReducer.listOtherFee.isMisc,
-  dataLoading: state.finance.common.dataLoader
+  dataLoading: state.finance.common.dataLoader,
+  branches: state.finance.common.branchPerSession,
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchAllGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchAllGrades({ session, alert, user, moduleId })),
+  fetchAllGrades: (session, alert, user, moduleId, branch) => dispatch(actionTypes.fetchAllGrades({ session, alert, user, moduleId, branch })),
   fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, gradeId, alert, user, moduleId })),
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchOtherFees: (session, alert, user) => dispatch(actionTypes.fetchListtOtherFee({ session, alert, user })),
+  fetchOtherFees: (session, alert, user, branch) => dispatch(actionTypes.fetchListtOtherFee({ session, alert, user, branch })),
   checkIsMisc: (session, otherFeeId, alert, user) => dispatch(actionTypes.checkIsMisc({ session, otherFeeId, alert, user })),
-  clearProps: () => dispatch(actionTypes.clearingAllProps())
+  clearProps: () => dispatch(actionTypes.clearingAllProps()),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(AssignOtherFees)))

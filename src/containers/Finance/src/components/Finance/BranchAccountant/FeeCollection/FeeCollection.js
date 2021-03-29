@@ -55,7 +55,7 @@ class FeeCollection extends Component {
         pathname: '/finance/feeShowList/',
         state: {
           session: this.state.sessionData.value,
-          branch: this.state.selectedBranches?.value
+          branch: this.state.selectedBranches?.value,
         }
       })
     } else {

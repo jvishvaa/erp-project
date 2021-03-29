@@ -160,7 +160,7 @@ export const fetchListtOtherFee = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.StudentOtherFees + '?academic_year=' + payload.session, {
+      .get(urls.StudentOtherFees + '?academic_year=' + payload.session + '&branch_id=' + payload.branch, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }

@@ -826,7 +826,8 @@ class FeeShowList extends Component {
             payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
             receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
             receipt_number: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
-            current_date: new Date().toISOString().substr(0, 10)
+            current_date: new Date().toISOString().substr(0, 10),
+            branch_id: this.props.branch
           }
           this.sendingToServer(cashData)
           // } else {
@@ -874,7 +875,8 @@ class FeeShowList extends Component {
             payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
             receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
             receipt_number_online: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
-            current_date: new Date().toISOString().substr(0, 10)
+            current_date: new Date().toISOString().substr(0, 10),
+            branch_id: this.props.branch
           }
           this.sendingToServer(cashData)
         // } else {
@@ -937,7 +939,8 @@ class FeeShowList extends Component {
             // name_on_cheque: payment.cheque.chequeName ? payment.cheque.chequeName : null,
             current_date: new Date().toISOString().substr(0, 10),
             bank_name: payment.cheque.chequeBankName ? payment.cheque.chequeBankName : null,
-            bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null
+            bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null,
+            branch_id: this.props.branch
           }
           this.sendingToServer(chequeData)
         } else {
@@ -962,7 +965,8 @@ class FeeShowList extends Component {
             // name_on_cheque: payment.cheque.chequeName ? payment.cheque.chequeName : null,
             current_date: new Date().toISOString().substr(0, 10),
             bank_name: payment.cheque.chequeBankName ? payment.cheque.chequeBankName : null,
-            bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null
+            bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null,
+            branch_id: this.props.branch
           }
           this.sendingToServer(chequeData)
         }
@@ -991,7 +995,8 @@ class FeeShowList extends Component {
             transaction_id: payment.transid ? payment.transid : null,
             internet_date: payment.internet.internetDate ? payment.internet.internetDate : null,
             remarks: payment.internet.remarks ? payment.internet.remarks : null,
-            current_date: new Date().toISOString().substr(0, 10)
+            current_date: new Date().toISOString().substr(0, 10),
+            branch_id: this.props.branch
           }
           this.sendingToServer(internetData)
         } else {
@@ -1012,7 +1017,8 @@ class FeeShowList extends Component {
             transaction_id: payment.transid ? payment.transid : null,
             internet_date: payment.internet.internetDate ? payment.internet.internetDate : null,
             remarks: payment.internet.remarks ? payment.internet.remarks : null,
-            current_date: new Date().toISOString().substr(0, 10)
+            current_date: new Date().toISOString().substr(0, 10),
+            branch_id: this.props.branch
           }
           this.sendingToServer(internetData)
         }
@@ -1044,7 +1050,8 @@ class FeeShowList extends Component {
             card_last_digits: payment.credit.digits ? payment.credit.digits : null,
             bank_name: payment.credit.bankName ? payment.credit.bankName : null,
             credit_date: payment.credit.creditDate ? payment.credit.creditDate : null,
-            current_date: new Date().toISOString().substr(0, 10)
+            current_date: new Date().toISOString().substr(0, 10),
+            branch_id: this.props.branch
           }
           this.sendingToServer(creditData)
         } else {
@@ -1068,7 +1075,8 @@ class FeeShowList extends Component {
             card_last_digits: payment.credit.digits ? payment.credit.digits : null,
             bank_name: payment.credit.bankName ? payment.credit.bankName : null,
             credit_date: payment.credit.creditDate ? payment.credit.creditDate : null,
-            current_date: new Date().toISOString().substr(0, 10)
+            current_date: new Date().toISOString().substr(0, 10),
+            branch_id: this.props.branch
           }
           this.sendingToServer(creditData)
         }
