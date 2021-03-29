@@ -384,7 +384,7 @@ class FeeShowList extends Component {
     }, () => {
       this.props.fetchFeeCollection(this.state.session, this.props.user, this.props.alert, this.state.branchId)
       // this.props.fetchGrades(this.state.session, this.props.alert, this.props.user)
-      this.props.fetchGrades(this.props.alert, this.props.user, moduleId, this.state.branchId)
+      this.props.fetchGrades(this.props.alert, this.props.user, moduleId, this.state.branchId, this.state.session)
     })
     if (this.state.sessions) {
       // this.props.fetchGrades(this.state.sessions.value, this.props.alert, this.props.user)
@@ -1167,9 +1167,11 @@ class FeeShowList extends Component {
       getData: false,
       s: null,
       showTabs: false
-    }, () => {
-      this.props.fetchGrades(this.state.sessions.value, this.props.alert, this.props.user)
-    })
+    }
+    // , () => {
+    //   this.props.fetchGrades(this.state.sessions.value, this.props.alert, this.props.user)
+    // }
+    )
   }
 
   gradeHandler = (e) => {
@@ -1815,8 +1817,8 @@ class FeeShowList extends Component {
                     placeholder='Select Grade'
                     value={this.state.gradeData ? this.state.gradeData : null}
                     options={
-                      this.props.gradeData
-                        ? this.props.gradeData && this.props.gradeData.map(grades => ({
+                      this.props.gradeList
+                        ? this.props.gradeList && this.props.gradeList.map(grades => ({
                           value: grades.grade.id,
                           label: grades.grade.grade
                         }))
@@ -1968,8 +1970,8 @@ class FeeShowList extends Component {
                       name='class'
                       // className='form-control'
                       options={
-                        this.props.gradeDatas
-                          ? this.props.gradeDatas && this.props.gradeDatas.map(grades => ({
+                        this.props.gradeList
+                          ? this.props.gradeList && this.props.gradeList.map(grades => ({
                             value: grades.grade.id,
                             label: grades.grade.grade
                           }))
@@ -2491,7 +2493,7 @@ const mapStateToProps = state => ({
   dataLoading: state.finance.common.dataLoader,
   feeList: state.finance.accountantReducer.feeCollection.feeCollectionList,
   studentId: state.finance.accountantReducer.feeCollection.studentId,
-  gradeData: state.finance.accountantReducer.pdc.gradeData,
+  // gradeData: state.finance.accountantReducer.pdc.gradeData,
   gradeDatas: state.finance.accountantReducer.pdc.gradeDatas,
   ifsc: state.finance.common.ifscDetails,
   ReceiptNo: state.finance.accountantReducer.feeCollection.ReceiptNo,
@@ -2505,7 +2507,8 @@ const mapStateToProps = state => ({
   // gradeData: state.finance.accountantReducer.pdc.gradeData,
   sectionData: state.finance.accountantReducer.changeFeePlan.sectionData,
   studentErp: state.finance.accountantReducer.studentErpSearch.studentErpList,
-  branchData: state.finance.accountantReducer.financeAccDashboard.branchData
+  branchData: state.finance.accountantReducer.financeAccDashboard.branchData,
+  gradeList: state.finance.common.gradeList,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -2514,7 +2517,7 @@ const mapDispatchToProps = dispatch => ({
   saveOutsiders: (data, user, alert) => dispatch(actionTypes.saveOutsiders({ data, user, alert })),
   orchidsStudentPay: (data, user, alert) => dispatch(actionTypes.orchidsStudentPay({ data, user, alert })),
   // fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user })),
-  fetchGrades: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
+  fetchGrades: (alert, user, moduleId, branch, session) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch, session })),
   paymentAction: (data, user, alert) => dispatch(actionTypes.paymentAction({ data, user, alert })),
   fetchIfsc: (ifsc, alert, user) => dispatch(actionTypes.fetchIfsc({ ifsc, alert, user })),
   // sendAllPayments: (data, user, alert) => dispatch(actionTypes.sendAllPayments({ data, user, alert }))

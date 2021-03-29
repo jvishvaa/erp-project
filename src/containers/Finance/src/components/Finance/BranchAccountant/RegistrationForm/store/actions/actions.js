@@ -30,7 +30,8 @@ export const getStudentInfo = (payload) => {
           let data = {
             acad_session_id: response.data.academic_year.id,
             student: response.data.id,
-            session_year: payload.session
+            session_year: payload.session,
+            branch_id: payload.branchId
           }
           axios
             .post(urls.AddRegForm, data, {
