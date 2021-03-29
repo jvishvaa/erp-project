@@ -377,7 +377,7 @@ class FeeShowList extends Component {
   }
 
   componentDidMount () {
-    // console.log('Total1', this.props.location.state.session)
+    console.log('Total1', this.props.location.state.session)
     this.setState({
       session: this.props.location.state.session,
       branchId: this.props.location.state.branch
@@ -827,7 +827,7 @@ class FeeShowList extends Component {
             receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
             receipt_number: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
             current_date: new Date().toISOString().substr(0, 10),
-            branch_id: this.props.state && this.props.state.branch
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(cashData)
           // } else {
@@ -876,7 +876,7 @@ class FeeShowList extends Component {
             receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
             receipt_number_online: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
             current_date: new Date().toISOString().substr(0, 10),
-            branch_id: this.props.branch
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(cashData)
         // } else {
@@ -940,7 +940,7 @@ class FeeShowList extends Component {
             current_date: new Date().toISOString().substr(0, 10),
             bank_name: payment.cheque.chequeBankName ? payment.cheque.chequeBankName : null,
             bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null,
-            branch_id: this.props.branch
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(chequeData)
         } else {
@@ -966,7 +966,7 @@ class FeeShowList extends Component {
             current_date: new Date().toISOString().substr(0, 10),
             bank_name: payment.cheque.chequeBankName ? payment.cheque.chequeBankName : null,
             bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null,
-            branch_id: this.props.branch
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(chequeData)
         }
@@ -996,7 +996,7 @@ class FeeShowList extends Component {
             internet_date: payment.internet.internetDate ? payment.internet.internetDate : null,
             remarks: payment.internet.remarks ? payment.internet.remarks : null,
             current_date: new Date().toISOString().substr(0, 10),
-            branch_id: this.props.branch
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(internetData)
         } else {
@@ -1018,7 +1018,7 @@ class FeeShowList extends Component {
             internet_date: payment.internet.internetDate ? payment.internet.internetDate : null,
             remarks: payment.internet.remarks ? payment.internet.remarks : null,
             current_date: new Date().toISOString().substr(0, 10),
-            branch_id: this.props.branch
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(internetData)
         }
@@ -1051,7 +1051,7 @@ class FeeShowList extends Component {
             bank_name: payment.credit.bankName ? payment.credit.bankName : null,
             credit_date: payment.credit.creditDate ? payment.credit.creditDate : null,
             current_date: new Date().toISOString().substr(0, 10),
-            branch_id: this.props.branch
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(creditData)
         } else {
@@ -1076,7 +1076,7 @@ class FeeShowList extends Component {
             bank_name: payment.credit.bankName ? payment.credit.bankName : null,
             credit_date: payment.credit.creditDate ? payment.credit.creditDate : null,
             current_date: new Date().toISOString().substr(0, 10),
-            branch_id: this.props.branch
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(creditData)
         }
