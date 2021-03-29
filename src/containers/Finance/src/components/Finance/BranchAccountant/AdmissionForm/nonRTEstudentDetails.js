@@ -123,13 +123,13 @@ class NonRTEStudentDetailsFormAcc extends Component {
     this.props.getStudentDetail(this.state.studentDetails)
     console.log('prev prop and next: ', prevProps, prevState)
     if (prevProps.studentDetailsForAdmission && prevProps.studentDetailsForAdmission.opting_class && !this.props.sectionList.length) {
-      this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, this.state.studentDetails.class.value, moduleId)
+      this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, this.state.studentDetails.class.value, moduleId, this.props.branch)
     }
   }
 
   componentDidMount () {
     console.log('module iD mount', moduleId)
-    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId)
+    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId, this.props.branch)
     this.props.fetchClassGroup(this.props.alert, this.props.user)
   }
 
@@ -528,9 +528,9 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchGradeList: (alert, user, moduleId) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId })),
+  fetchGradeList: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
   fetchClassGroup: (alert, user) => dispatch(actionTypes.fetchClassGroup({ alert, user })),
-  fetchAllSectionsPerGrade: (session, alert, user, gradeId, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, moduleId }))
+  fetchAllSectionsPerGrade: (session, alert, user, gradeId, moduleId, branch) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, moduleId, branch }))
 
 })
 export default connect(
