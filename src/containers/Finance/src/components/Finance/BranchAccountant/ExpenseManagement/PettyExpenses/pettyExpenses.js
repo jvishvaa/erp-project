@@ -31,7 +31,7 @@ let moduleId
 if (NavData && NavData.length) {
   NavData.forEach((item) => {
     if (
-      item.parent_modules === 'Expense Management' &&
+      item.parent_modules === 'Expanse Management' &&
       item.child_module &&
       item.child_module.length > 0
     ) {
@@ -180,14 +180,15 @@ class PettyExpenses extends Component {
       approvedBy: null,
       date: null,
       selectedSession: null,
-      selectedBranches: '',
-      session: ''
+      selectedBranches: null,
+      session: '',
+      sessionData: ''
     })
   }
 
   handleAcademicyear = (e) => {
     console.log('acad years', this.props.session)
-    this.setState({ session: e.value}, () => {
+    this.setState({ session: e.value, sessionData: e}, () => {
       this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
     })
   }
@@ -195,8 +196,8 @@ class PettyExpenses extends Component {
   changehandlerbranch = (e) => {
     // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session)
     this.setState({ selectedBranches: e})
-    this.props.fetchPettyCashAcc(this.props.user, this.state.session, this.state.selectedBranches?.value)
-    this.props.listCashOpeningBalance(this.props.user, this.props.alert, this.state.session, this.state.selectedBranches?.value)
+    this.props.fetchPettyCashAcc(this.props.user, this.state.session, e?.value)
+    this.props.listCashOpeningBalance(this.props.user, this.props.alert, this.state.session, e?.value)
   }
 
 
@@ -368,9 +369,9 @@ class PettyExpenses extends Component {
               value={this.state.sessionData ? this.state.sessionData : ''}
               options={
                 this.props.session
-                  ? this.props.session.session_year.map(session => ({
-                    value: session,
-                    label: session
+                  ? this.props.session && this.props.session.map(session => ({
+                    value: session?.session_year,
+                    label: session?.session_year
                   }))
                   : []
               }
@@ -452,8 +453,8 @@ const mapStateToProps = (state) => ({
   pettyCashAccounts: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.pettyCashAccounts,
   cashInHand: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.cashInHand,
   dataLoading: state.finance.common.dataLoader,
-  // session: state.finance.common.financialYear,
-  session: state.academicSession.items,
+  session: state.finance.common.financialYear,
+  // session: state.academicSession.items,
   branches: state.finance.common.branchPerSession,
 })
 
