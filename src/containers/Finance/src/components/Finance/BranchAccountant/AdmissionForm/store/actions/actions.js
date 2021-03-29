@@ -136,7 +136,7 @@ export const getStudentdetailsbyappNumber = (payload) => {
 export const fetchFeePlan = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ListFeePlanGrade + '?grade_id=' + payload.gradeValue + '&academic_year=' + payload.session, {
+    axios.get(urls.ListFeePlanGrade + '?grade_id=' + payload.gradeValue + '&academic_year=' + payload.session + '&branch_id=' + payload.branch, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
