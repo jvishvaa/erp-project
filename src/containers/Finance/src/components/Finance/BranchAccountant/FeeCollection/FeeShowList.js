@@ -827,7 +827,7 @@ class FeeShowList extends Component {
             receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
             receipt_number: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
             current_date: new Date().toISOString().substr(0, 10),
-            branch_id: this.props.branch
+            branch_id: this.props.state.branch
           }
           this.sendingToServer(cashData)
           // } else {
