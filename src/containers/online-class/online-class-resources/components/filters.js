@@ -274,7 +274,6 @@ const Filter = (props) => {
             );
           }
     }
-    console.log(secSelectedId,'+++++++++++++++++++++++++++++++++++++++')
     function handleDate(v1) {
         if (v1 && v1.length !== 0) {
             setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));

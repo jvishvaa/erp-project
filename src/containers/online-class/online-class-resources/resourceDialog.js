@@ -166,7 +166,6 @@ export default function ResourceDialogComponent(props) {
     React.useEffect(() => {
         axiosInstance.get(`erp_user/${props.resourceId}/student-oc-details/`)
         .then((res) => {
-            console.log(res);
             setPeriodsData(res.data.data);
         })
         .catch((error) => console.log(error))

@@ -23,7 +23,7 @@ import { fileUploadStyles, fileUploadButton, fileRow } from './uploadModal.style
 import Modal from './modal';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-
+import Loading from '../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const allowedExtensions = [
@@ -238,6 +238,8 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
   const [disableButton, setDisableButton] = useState(false);
   const [filePath,setFilePath] = useState([]);
   const [ isDownload, setIsDownload ] = useState([]);
+  const [loading, setLoading] = useState(false);
+
 
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -247,17 +249,18 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
 
     axiosInstance.get(`${endpoints.onlineClass.resourceFile}?online_class_id=${id}&class_date=${classDate}`)
     .then((res) => {
-        const fileAr = [];
+        let fileAr;
         console.log(res.data);
         setIsDownload(res.data.result);
         if(res.data.result) {
           fileAr = res.data.result;
-          fileAr.length > 0 && fileAr.map((file) => {
-            setFilePath([ ...filePath,file.files[0]]); 
+          fileAr?.length > 0 && fileAr.map((file) => {
+            file.files && file.files.map(path => {      
+            console.log('useEffect',path)
+              setFilePath(filePath => [ ...filePath,path]);   
+            })
           })
         }
-        // setFilePath([ ...filePath,result.data.result]);
-        //setIsDown(res.data.status_code);
     })
     .catch((error) => console.log(error))
   },[]);
@@ -294,10 +297,12 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
       .catch((err) => console.error(err));
   }, [id, type]);
 
+
   const uploadFileHandler = (e) => {
     if (e.target.files[0]) {
       const data  = e.target.files[0];
       const tempArr = e.target.files[0].name.split('.');
+     
       const ext = tempArr.length ? tempArr[tempArr.length - 1] : 'unsupported';
       if (!allowedExtensions.includes(ext)) {
         setAlert('error', 'Unsupported File Type');
@@ -312,21 +317,32 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
         axiosInstance.post(`academic/dairy-upload/`, fd)
         .then((result)=>{
               if (result.data.status_code === 200) {
-                  setAlert('success',result.data.message);
-                  setFilePath([ ...filePath,result.data.result]);
+                console.log('result',result.data.result);
+                console.log('filePath',filePath)
+                setAlert('success',result.data.message);
+                setFilePath([ ...filePath,result.data.result]);
               }
               else {
                   setAlert('error',result.data.message)
               }
         })
+        console.log('filePath === ',filePath)
       }
       const newFiles = [...files, e.target.files[0]];
       setFiles(newFiles);
     }
   };
 
+  useEffect(() => {
+    console.log("------------------");
+    console.log(filePath);
+  }, [filePath])
+
   const removeFileHandler = (i) => {
-    alert("i = "+ i);
+    console.log(i,'===========================')
+    alert('File')
+    const newFiles = files.filter((_, index) => index !== i);
+    setFiles(newFiles);
     const delFile = {
       file_name: filePath[i],
     }
@@ -338,62 +354,15 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
     })
     .catch((err) => console.log(err))
     
-    // if(files.length === 1){
-    //   const delFile = {
-    //     file_name: filePath[0],
-    //   }
-  
-    //   axiosInstance.post(endpoints.deleteFromS3,delFile)
-    //   .then((res) => {
-    //     setAlert('success', res.data.message);
-    //     setFilePath([]);
-    //   })
-    //   .catch((err) => console.log(err))
-    // }
-    // else {
-    //   const newFiles = files.splice(i, 1);
-    //   //const newFiles = files.filter((_, index) => index !== i);
-    //   setFiles(newFiles);
-    // }
   };
 
+  // Delete and Remove file
   const deleteExistingFileHandler = (fileName, i,index) => {
-    //const newFiles = files.filter((_, index) => index !== i);
-    //setFiles(newFiles);
-    //const newFiles = files.splice(i, 1);
-    //setFiles(newFiles);
-    //isDownload.length > 0 && isDownload[i].files.splice(i, 1);
-    // const newFiles = isDownload[i].files.filter((_, index) => index !== i);
-    // setIsDownload(newFiles);
-    // alert("dj"+i);
-    // console.log(isDownload);
-    // if(files.length === 1){
-    //   const delFile = {
-    //     file_name: filePath[0],
-    //   }
-  
-    //   axiosInstance.post(endpoints.deleteFromS3,delFile)
-    //   .then((res) => {
-    //     setAlert('success', res.data.message);
-    //     setFilePath([]);
-    //   })
-    //   .catch((err) => console.log(err))
-    // }
-    // else {
-    //   const newFiles = files.splice(i, 1);
-    //   //const newFiles = files.filter((_, index) => index !== i);
-    //   setFiles(newFiles);
-    // }
-    const newFiles = isDownload[i].files.filter((_, index1) => index1 !== index);
-    console.log(isDownload[i].files, 'old');
-    //fileArray.push(newFiles);
-    // isDownload.map((file, id) => {
-    //   if(id !== i){
-    //     file.files && file.files.map((path) => newFiles.push(path))
-    //   }
-    // })
+   
+    // const newFiles = isDownload[i].files.filter((_, index1) => index1 !== index);
+    // console.log(isDownload[i].files, 'old');
     
-    console.log('newFiles',newFiles,"isDownload" ,isDownload,'fileArray');
+    const newFiles = filePath.filter((_, index1) => index1 !== index);
 
     const delFile = {
       file_name: fileName,
@@ -401,7 +370,6 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
     axiosInstance.post(endpoints.deleteFromS3,delFile)
     .then((res) => {
       setAlert('success', res.data.message);
-      setFilePath([]);
       const param = {
         files: newFiles,
         online_class_id : id,
@@ -409,9 +377,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
       };
       axiosInstance.put(endpoints.onlineClass.resourceFile,param)
       .then((res) => {
-        console.log(res.data);
-        //const newResources = isDownload.splice(i,1);
-        setIsDownload([newFiles]);
+        setFilePath(newFiles);
         setAlert('success', "Deleted");
       })
       .catch((err) => console.log(err))
@@ -419,31 +385,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
     .catch((err) => console.log(err))
   };
 
-  const removeExistingFileHandler = (fileId) => {
-    let url = endpoints.onlineClass.resourceFile;
-    let params = {
-      resource_id: fileId,
-    };
-    if (type === 'homework') {
-      url = endpoints.onlineClass.resourceFile;
-      params = {
-        homework_id: fileId,
-      };
-    }
-    axiosInstance
-      .delete(`${url}`, {
-        params,
-      })
-      .then((res) => {
-        const updatedFiles = existingUpload.filter((file) => file.id !== fileId);
-        setExistingUpload(updatedFiles);
-        setAlert('success', 'Deleted Permanently');
-      })
-      .catch((err) => {
-        setAlert('error', 'Failed To Delete Resource');
-      });
-  };
-
+  
   const errorCallback = (err, errorQueue, customMessage) => {
     errorQueue && errorQueue.push(customMessage);
     setAlert(
@@ -462,34 +404,6 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
   //     setDescriptionError(true)
   //   }
   // }
-
-  const handleImageChange = (event) => {
-    if(filePath.length<10) {
-      const data  = event.target.files[0];
-      const fileName = data? data.name : '';
-      console.log(data);
-      const fd = new FormData();
-      fd.append('file', data); 
-      fd.append('online_class_id', id);
-      fd.append('class_date', classDate);
-      fd.append('description', 'description123');
-      axiosInstance.post(`academic/dairy-upload/`, fd)
-      .then((result)=>{
-            console.log(fd);
-            if (result.data.status_code === 200) {
-                console.log(result.data,'resp')
-                setAlert('success',result.data.message);
-                setFilePath([ ...filePath,result.data.result]);
-            }
-            else {
-                setAlert('error',result.data.message)
-            }
-      })
-    } else {
-        setAlert('warning','Exceed Maximum Number Attachment')
-    }
-
-  }
   const handlerUpload = () => {
     if(filePath.length > 0) {
       const formData = new FormData();
@@ -507,7 +421,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
 
       axiosInstance.post(endpoints.onlineClass.resourceFile, data1)
       .then((res) => {
-        console.log(res);
+        //console.log(res);
         if (res.data.status_code === 200) {
           setAlert('success', 'Work Submitted Successfully');
           setDisableButton(false);
@@ -776,6 +690,9 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
   };
 
   return (
+    <>
+    {loading ? <Loading message='Loading...' /> : null}
+
     <div className={classes.container}>
       <Grid container justifyContent="space-between" alignItems='center'>
         <Grid item xs sm style={isMobile?{display:'none'}:{}}/>
@@ -803,33 +720,26 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
           />
         );
       }) */}
-      {isDownload.length > 0 && isDownload.map((file, i) => {
-          //setFilePath([ ...filePath,file.files[0]]);
-        return (
-          <div>
-                {file.files && file.files.map((path, index) => 
-                  <>
-                    <Grid container spacing={2} alignItems='center'>
-                      <Grid item xs={12} md={8}>
-                        <Typography variant='h6'>{path}</Typography>
-                      </Grid>
-                      <Grid item xs={6} md={2}>
-                        <HighlightOffIcon onClick={() => deleteExistingFileHandler(path, i,index)} className={classes.icon} />
-                      </Grid>
-                    </Grid>
-                     <Divider />
-                  </>
-                )}
-          </div>
-        );
-      })}
-      {files.map((file, i) => (
+      {filePath.length > 0 && filePath.map((path, i) => 
+        <div>
+          <Grid container spacing={2} alignItems='center'>
+            <Grid item xs={12} md={8}>
+              <Typography variant='h6'>{path}</Typography>
+            </Grid>
+            <Grid item xs={6} md={2}>
+                <HighlightOffIcon onClick={() => deleteExistingFileHandler(path, 0, i)} className={classes.icon} />
+            </Grid>
+          </Grid>
+          <Divider />
+        </div>
+      )}
+      {/* {files.map((file, i) => (
         <FileRow
           file={file}
           onClose={() => removeFileHandler(i)}
           className={classes.fileRow}
         />
-      ))}
+      ))} */}
       <CustomFileUpload
         className={classes.uploadButton}
         onChange={uploadFileHandler}
@@ -837,31 +747,6 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
         isMobile={isMobile}
         accept='image/*, audio/*, video/*, application/pdf'
       />
-      {/* existingLinks && existingLinks.length > 0 && (
-        <Grid container spacing={2} alignItems='center' style={{ marginTop: '15px' }}>
-          {getResourceLink(existingLinks, true)}
-        </Grid>
-      )}
-      {type.trim() === 'homework' ? (
-        <TextField
-          className={classes.description}
-          required
-          label='Description'
-          value={description}
-          variant='outlined'
-          multiline
-          placeholder='Homework Description'
-          rowsmax={6}
-          rows={6}
-          inputProps={{maxLength:250}}
-          fullWidth
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      ) : (
-        <Grid container spacing={2} alignItems='center' style={{ marginTop: '15px' }}>
-          {getResourceLink(resourceLinks, false)}
-        </Grid>
-      )  */}
       <div className={classes.submitButton}>
         <Button
           color='primary'
@@ -878,6 +763,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
         </Typography>
       </div>
     </div>
+    </>
   );
 };
 

@@ -335,7 +335,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         'branch_name',
         isEdit ? editData.branch?.branch_name : formik.values.branch?.branch_name
       );
-      fd.append('grades', isEdit ? editData?.grade?.id : formik.values.grade[0]?.id);
+      fd.append('grades', isEdit ? editData?.grade[0]?.id : formik.values.grade?.id);
       // fd.append('section', isEdit ? editData.section[0].id : formik.values.section[0].id);
       axiosInstance.post(`academic/dairy-upload/`, fd).then((result) => {
         console.log(fd);

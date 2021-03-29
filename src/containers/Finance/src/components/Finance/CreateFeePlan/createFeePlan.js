@@ -145,7 +145,7 @@ class CreateFeePlan extends Component {
 
   changehandlerbranch = (e) => {
     this.setState({ branchId: e.value, branchData: e })
-    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session)
   }
 
   handleClickSessionYear = (e) => {
@@ -286,10 +286,10 @@ class CreateFeePlan extends Component {
                   this.props.gradeList ? this.props.gradeList.filter(grade => {
                     let value = true
                     this.state.gradeList.map(filteredGrade => {
-                      if (filteredGrade.id === grade.id) { value = false }
+                      if (filteredGrade.id === grade.grade.id) { value = false }
                     })
                     return value
-                  }).map((con, i) => ({ value: con.id, label: con.grade })) : null
+                  }).map((con, i) => ({ value: con.grade.id, label: con.grade.grade })) : null
                 }
                 onChange={this.gradelistHandler}
               />
@@ -496,7 +496,7 @@ const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchListFeePlan: (session, branch, alert, user) => dispatch(actionTypes.fetchFeePlanList({ session, branch, alert, user })),
-  fetchGrades: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
+  fetchGrades: (alert, user, moduleId, branch, session) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch, session })),
   deleteGrades: (gradeId, typeId, alert, user) => dispatch(actionTypes.deleteFeePlanGrades({ gradeId, typeId, alert, user })),
   updateGrades: (gradeId, typeId, alert, user) => dispatch(actionTypes.updateFeePlanGrades({ gradeId, typeId, alert, user }))
 })
