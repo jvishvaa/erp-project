@@ -96,7 +96,7 @@ class AssignOtherFees extends Component {
 
   sectionHandler = (e) => {
     let sectionIds = []
-    e.forEach(section => {
+    e && e.forEach(section => {
       sectionIds.push(section.value)
     })
     this.setState({ sectionId: sectionIds, sectionData: e })
