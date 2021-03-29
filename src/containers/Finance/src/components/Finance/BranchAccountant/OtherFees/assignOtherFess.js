@@ -147,7 +147,7 @@ class AssignOtherFees extends Component {
   changehandlerbranch = (e) => {
     this.props.fetchAllGrades(this.state.session, this.props.alert, this.props.user, moduleId, e.value)
     this.setState({ selectedBranches: e})
-    this.props.fetchOtherFees(e.value, this.props.alert, this.props.user, e.value)
+    this.props.fetchOtherFees(this.state.session, this.props.alert, this.props.user, e.value)
   }
   render () {
     let tabView = null
