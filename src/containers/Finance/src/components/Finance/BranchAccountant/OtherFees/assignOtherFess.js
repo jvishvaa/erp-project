@@ -90,7 +90,7 @@ class AssignOtherFees extends Component {
   gradeHandler = (e) => {
     console.log(e.value)
     this.setState({ gradeId: e.value, gradeData: e }, () => {
-      this.props.fetchAllSections(this.state.session, this.state.gradeId, this.props.alert, this.props.user, moduleId)
+      this.props.fetchAllSections(this.state.session, this.state.gradeId, this.props.alert, this.props.user, moduleId, this.state.selectedBranches?.value)
     })
   }
 
@@ -145,7 +145,7 @@ class AssignOtherFees extends Component {
   }
 
   changehandlerbranch = (e) => {
-    this.props.fetchAllGrades(e.value, this.props.alert, this.props.user, moduleId, e.value)
+    this.props.fetchAllGrades(this.state.session, this.props.alert, this.props.user, moduleId, e.value)
     this.setState({ selectedBranches: e})
     this.props.fetchOtherFees(e.value, this.props.alert, this.props.user, e.value)
   }
@@ -277,6 +277,7 @@ class AssignOtherFees extends Component {
               <Button
                 variant='contained'
                 color='primary'
+                style={{ marginTop: '18px'}}
                 onClick={this.getStudentList}>
               GET Student List
               </Button>
@@ -307,7 +308,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchAllGrades: (session, alert, user, moduleId, branch) => dispatch(actionTypes.fetchAllGrades({ session, alert, user, moduleId, branch })),
-  fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, gradeId, alert, user, moduleId })),
+  fetchAllSections: (session, gradeId, alert, user, moduleId, branch) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, gradeId, alert, user, moduleId, branch})),
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchOtherFees: (session, alert, user, branch) => dispatch(actionTypes.fetchListtOtherFee({ session, alert, user, branch })),
   checkIsMisc: (session, otherFeeId, alert, user) => dispatch(actionTypes.checkIsMisc({ session, otherFeeId, alert, user })),
