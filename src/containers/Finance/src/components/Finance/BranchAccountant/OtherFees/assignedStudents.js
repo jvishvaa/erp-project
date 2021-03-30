@@ -38,8 +38,8 @@ class UnassignedStudents extends Component {
         'assigned',
         this.props.alert,
         this.props.user,
-        this.props.branchId,
-        this.props.moduleId
+        this.props.moduleId,
+        this.props.branchId
       )
     } else {
       this.props.alert.warning('Please fill All madatory Filled')
