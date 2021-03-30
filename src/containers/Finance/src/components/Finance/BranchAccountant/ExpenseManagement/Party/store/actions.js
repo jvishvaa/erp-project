@@ -10,7 +10,7 @@ export const DELETE_PARTY = 'DELETE_PARTY'
 export const partyList = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ListCreateParty, {
+    axios.get(urls.ListCreateParty + '?branch_id=' + payload.branch, {
       headers: {
         'Authorization': 'Bearer ' + payload.user
       }
