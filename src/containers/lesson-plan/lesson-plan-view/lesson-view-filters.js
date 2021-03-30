@@ -41,6 +41,7 @@ const LessonViewFilters = ({
     const location = useLocation();
     const [branchDropdown, setBranchDropdown] = useState([]);
     const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
+    const [academicYear, setAcademicYear] = useState([]);
     const [volumeDropdown, setVolumeDropdown] = useState([]);
     const [gradeDropdown, setGradeDropdown] = useState([]);
     const [subjectDropdown, setSubjectDropdown] = useState([]);
@@ -251,17 +252,23 @@ const LessonViewFilters = ({
     }
 
     useEffect(() => {
-        axiosInstance.get(`${endpoints.communication.branches}?academic_year=${filterData.year.id}&module_id=${getModuleId()}`)
-            .then(response => {
-                if (response.data.status_code === 200) {
-                    setBranchDropdown(response.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean));
-                } else {
-                    setAlert('error', response.data.message);
-                }
-            }).catch(error => {
-                setAlert('error', error.message);
-            })
+        // axiosInstance.get(`${endpoints.communication.branches}?academic_year=${filterData.year.id}&module_id=${getModuleId()}`)
+        //     .then(response => {
+        //         if (response.data.status_code === 200) {
+        //             setBranchDropdown(response.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean));
+        //         } else {
+        //             setAlert('error', response.data.message);
+        //         }
+        //     }).catch(error => {
+        //         setAlert('error', error.message);
+        //     })
 
+        axiosInstance.get(`${endpoints.userManagement.academicYear}?module_id=${getModuleId()}`).then(res => {
+            console.log(res.data);
+        }).catch(error => {
+            setAlert('error ', error)
+        });
+            //setAcademicYear
         axios.get(`${endpoints.lessonPlan.academicYearList}`, {
             headers: {
                 'x-api-key': 'vikash@12345#1231',
@@ -289,6 +296,19 @@ const LessonViewFilters = ({
         }).catch(error => {
             setAlert('error', error.message);
         })
+    }, []);
+
+    useEffect(() => {
+        axiosInstance.get(`${endpoints.communication.branches}?academic_year=${filterData.year.id}&module_id=${getModuleId()}`)
+            .then(response => {
+                if (response.data.status_code === 200) {
+                    setBranchDropdown(response.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean));
+                } else {
+                    setAlert('error', response.data.message);
+                }
+            }).catch(error => {
+                setAlert('error', error.message);
+            })
     }, []);
 
     return (
