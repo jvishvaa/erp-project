@@ -314,7 +314,9 @@ export const assignAccoutantOtherFees = (payload) => {
         '&otherfee=' + payload.otherFeeId +
         '&grade=' + payload.grade +
         '&section=' + payload.section +
-        '&type=' + payload.type, {
+        '&type=' + payload.type +
+        '&branch_id=' + payload.branchId + 
+        '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }

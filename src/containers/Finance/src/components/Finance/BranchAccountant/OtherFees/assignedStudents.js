@@ -37,7 +37,9 @@ class UnassignedStudents extends Component {
         this.props.sectionId,
         'assigned',
         this.props.alert,
-        this.props.user
+        this.props.user,
+        this.props.branchId,
+        this.props.moduleId
       )
     } else {
       this.props.alert.warning('Please fill All madatory Filled')
@@ -85,7 +87,7 @@ class UnassignedStudents extends Component {
     if (this.props.getState && (sessionId !== prevProps.sessionId ||
       otherFeeId !== prevProps.otherFeeId ||
       gradeId !== prevProps.gradeId || sectionId !== prevProps.sectionId)) {
-      this.props.fetchStudentList(sessionId, otherFeeId, gradeId, sectionId, 'assigned', alert, user)
+      this.props.fetchStudentList(sessionId, otherFeeId, gradeId, sectionId, 'assigned', alert, user, this.props.moduleId, this.props.branchId)
     }
   }
   handleChangePage = (event, newPage) => {
@@ -168,7 +170,8 @@ class UnassignedStudents extends Component {
       other_fee: this.props.otherFeeId,
       academic_year: this.props.sessionId,
       grade: this.props.gradeId,
-      section: this.props.sectionId
+      section: this.props.sectionId,
+      branch_id: this.props.branchId
     }
     console.log('-------------data--------------', data)
     this.setState({
@@ -336,7 +339,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchStudentList: (session, otherFeeId, grade, section, type, alert, user) => dispatch(actionTypes.assignAccoutantOtherFees({ session, otherFeeId, grade, section, type, alert, user })),
+  fetchStudentList: (session, otherFeeId, grade, section, type, alert, user, moduleId, branchId) => dispatch(actionTypes.assignAccoutantOtherFees({ session, otherFeeId, grade, section, type, alert, user, moduleId, branchId })),
   deleteOtherFees: (data, alert, user) => dispatch(actionTypes.deleteOtherFeeForAssigned({ data, alert, user }))
 })
 

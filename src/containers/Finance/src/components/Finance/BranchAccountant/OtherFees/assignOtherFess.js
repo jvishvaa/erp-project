@@ -171,6 +171,8 @@ class AssignOtherFees extends Component {
               alert={this.props.alert}
               user={this.props.user}
               getState={this.state.getList}
+              branchId={this.state.selectedBranches?.value}
+              moduleId={moduleId}
             />
           </TabContainer>}
           {this.state.value === 'two' && <TabContainer>
@@ -184,6 +186,8 @@ class AssignOtherFees extends Component {
               alert={this.props.alert}
               getState={this.state.getList}
               user={this.props.user}
+              branchId={this.state.selectedBranches?.value}
+              moduleId={moduleId}
             />
           </TabContainer>}
         </React.Fragment>
