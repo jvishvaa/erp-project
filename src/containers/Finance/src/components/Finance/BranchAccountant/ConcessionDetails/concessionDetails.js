@@ -39,6 +39,8 @@ const ConcessionDetails = ({
           user={user}
           alert={alert}
           getData={getData}
+          branchId={this.props.branchId}
+          moduleId={this.props.moduleId}
         />
       )
     } else if (selectedValue === 'two') {
@@ -49,6 +51,8 @@ const ConcessionDetails = ({
           user={user}
           alert={alert}
           getData={getData}
+          branchId={this.props.branchId}
+          moduleId={this.props.moduleId}
         />
       )
     }

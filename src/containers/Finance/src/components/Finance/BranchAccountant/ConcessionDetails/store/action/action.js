@@ -11,7 +11,7 @@ export const fetchFeeConcessionList = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.FeeConcessionList + '?erp=' + payload.erp + '&academic_year=' + payload.session, {
+      .get(urls.FeeConcessionList + '?erp=' + payload.erp + '&academic_year=' + payload.session + '&branch_id=' + payload.branch + '&moduleId=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }

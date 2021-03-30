@@ -25,7 +25,7 @@ const FeeConcession = ({
   useEffect(() => {
     if (getData && erp.length >= 10 && session) {
       console.log('Fee Concession')
-      fetchListConcession(session, erp, alert, user)
+      fetchListConcession(session, erp, alert, user, this.props.branchId, this.props.moduleId)
       // setValue(true)
     } else {
       alert.warning('Select Required Fields')
@@ -141,7 +141,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchListConcession: (session, erp, alert, user) => dispatch(actionTypes.fetchFeeConcessionList({ session, erp, alert, user }))
+  fetchListConcession: (session, erp, alert, user, branch, modoleId) => dispatch(actionTypes.fetchFeeConcessionList({ session, erp, alert, user, branch, modoleId }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(FeeConcession)
