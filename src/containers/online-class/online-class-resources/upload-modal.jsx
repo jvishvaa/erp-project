@@ -8,6 +8,8 @@ import {
   TextField,
   Tooltip,
   IconButton,
+  withStyles,
+  Popover
 } from '@material-ui/core';
 import {
   CloudUpload as UploadIcon,
@@ -68,6 +70,26 @@ const getResourceType = (file, type) => {
 const useStylesButton = makeStyles(fileUploadButton);
 const useStyles = makeStyles(fileUploadStyles);
 const useStyleRow = makeStyles(fileRow);
+
+const StyledButton = withStyles({
+  root: {
+      color: '#FFFFFF',
+      backgroundColor: '#FF6B6B',
+      '&:hover': {
+          backgroundColor: '#FF6B6B',
+      },
+  }
+})(Button);
+  
+const CancelButton = withStyles({
+  root: {
+      color: '#8C8C8C',
+      backgroundColor: '#e0e0e0',
+      '&:hover': {
+          backgroundColor: '#e0e0e0',
+      },
+  }
+})(Button);
 
 // CustomButton component
 const CustomFileUpload = (props) => {
@@ -299,6 +321,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
 
 
   const uploadFileHandler = (e) => {
+    setLoading(true);
     if (e.target.files[0]) {
       const data  = e.target.files[0];
       const tempArr = e.target.files[0].name.split('.');
@@ -306,6 +329,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
       const ext = tempArr.length ? tempArr[tempArr.length - 1] : 'unsupported';
       if (!allowedExtensions.includes(ext)) {
         setAlert('error', 'Unsupported File Type');
+        setLoading(false);
         return;
       }
       else {
@@ -319,6 +343,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
               if (result.data.status_code === 200) {
                 //console.log('result',result.data.result);
                 //console.log('filePath',filePath)
+                setLoading(false);
                 setAlert('success',result.data.message);
                 setFilePath([ ...filePath,result.data.result]);
               }
@@ -373,7 +398,8 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
       axiosInstance.post(endpoints.onlineClass.resourceFile,param)
       .then((res) => {
         setFilePath(newFiles);
-        setAlert('success', "Deleted");
+        handleClose();
+        setAlert('success', "File deleted successfully");
       })
       .catch((err) => console.log(err))
     })
@@ -608,6 +634,19 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
     }
   };
 
+  // Confirm Popover 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const handleClick = (event) => {
+      setAnchorEl(true);
+  };
+
+  const handleClose = () => {
+      setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const popoverId = open ? 'simple-popover' : undefined;
+
   const getResourceLink = (resources, isExisting) => {
     const addResourceLink = resources.map((item, i) => (
       <React.Fragment key={`item-${i}`}>
@@ -722,10 +761,31 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
               <Typography variant='h6'>{path}</Typography>
             </Grid>
             <Grid item xs={6} md={2}>
-                <HighlightOffIcon onClick={() => deleteExistingFileHandler(path, i)} className={classes.icon} />
+              <HighlightOffIcon onClick={() => handleClick()}  className={classes.icon} />
             </Grid>
           </Grid>
-          <Divider />
+          <Popover
+            id={popoverId}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'center',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'center',
+              horizontal: 'center',
+            }}
+          >
+            <div style={{ padding: '20px 30px'}}>
+              <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure you want to delete?</Typography>
+              <div>
+                <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
+                <StyledButton onClick={() => deleteExistingFileHandler(path, i)} style={{float: 'right'}}>Confirm</StyledButton>
+              </div>
+            </div>
+          </Popover>
         </div>
       )}
       {/* {files.map((file, i) => (
