@@ -473,7 +473,8 @@ const LessonViewFilters = ({
                     <a className="underlineRemove" 
                     // href={`${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${centralGradeName}/${centralSubjectName}/pdf/${obj?.media_file[0]}`}
                     onClick={()=>{
-                        const fileSrc = `${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${centralGradeName}/${centralSubjectName}/pdf/${obj?.media_file[0]}`
+                        // const fileSrc = `${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${centralGradeName}/${centralSubjectName}/pdf/${obj?.media_file[0]}`
+                        const fileSrc = `${endpoints.lessonPlan.s3}${obj?.media_file[0]}`
                         openPreview({
                             currentAttachmentIndex:0,
                             attachmentsArray: [
