@@ -184,7 +184,7 @@ export const fetchAccountantOtherFee = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.AccountantOtherFeeList + '?session_year=' + payload.session + '&erp_code=' + payload.erp, {
+      .get(urls.AccountantOtherFeeList + '?session_year=' + payload.session + '&erp_code=' + payload.erp + '&module_id=' + payload.moduleId + '&branch_id=' + payload.branchId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }

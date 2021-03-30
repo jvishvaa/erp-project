@@ -13,9 +13,9 @@ export const fetchAccountantTransaction = (payload) => {
     dispatch(actionTypes.dataLoading())
     let url = null
     if (payload.erpNo) {
-      url = `${urls.AccountantTransaction}?erp_code=${payload.erpNo}&session_year=${payload.session}&branch_id=${this.props.branchId}&module_id=${this.props.moduleId}`
+      url = `${urls.AccountantTransaction}?erp_code=${payload.erpNo}&session_year=${payload.session}&branch_id=${payload.branchId}&module_id=${payload.moduleId}`
     } else {
-      url = `${urls.AccountantTransaction}?session_year=${payload.session}&branch_id=${this.props.branchId}&module_id=${this.props.moduleId}`
+      url = `${urls.AccountantTransaction}?session_year=${payload.session}&branch_id=${payload.branchId}&module_id=${payload.moduleId}`
     }
     axios.get(url, {
       headers: {
