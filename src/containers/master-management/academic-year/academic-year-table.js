@@ -129,7 +129,9 @@ const AcademicYearTable = () => {
         if (result.data.status_code > 199 && result.data.status_code < 300) {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', result.data?.message||result.data?.msg);
+            setAlert('success', `Academic Year ${result.data?.message||result.data?.msg}`);
+
+            // setAlert('success', `${sessionYear} ${result.data?.message||result.data?.msg}`);
         }
         else {
           setLoading(false);
@@ -176,11 +178,11 @@ const AcademicYearTable = () => {
             setAcademicYear(result.data.result.results);
           }
         } else {
-          setAlert('error', result.data?.message||result.data?.msg);
+          setAlert('error', result?.data?.message||result?.data?.msg);
         }
       })
       .catch((error) => {
-        setAlert('error', error.response.data.message || error.response.data.msg);
+        setAlert('error', error?.response?.data?.message || error?.response?.data?.msg);
       });
   }, [delFlag, goBackFlag, page]);
 

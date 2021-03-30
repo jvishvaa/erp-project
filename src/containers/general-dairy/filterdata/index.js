@@ -230,7 +230,7 @@ if(clicked){
     if (value && filterData.branch) {
       // https://erpnew.letseduvate.com/qbox/academic/general-dairy-messages/?branch=5&grades=25&sections=44&page=1&start_date=2021-02-02&end_date=2021-02-08&dairy_type=2
         setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.id}&grade_id=${value.grade_id}&module_id=${moduleId}`)
+        axiosInstance.get(`${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${value.grade_id}&module_id=${moduleId}`)
         .then(result => {
           if (result.data.status_code === 200) {
             //console.log(result.data)
@@ -296,7 +296,7 @@ if(clicked){
     // setOverviewSynopsis([]);
     if (value) {
         setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.communication.grades}?session_year=${filterData?.year?.id}&branch_id=${value.id}&module_id=${moduleId}`)
+        axiosInstance.get(`${endpoints.communication.grades}?session_year=${filterData?.year?.id}&branch_id=${value.branch.id}&module_id=${moduleId}`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setGradeDropdown(result.data.data);
@@ -327,7 +327,7 @@ if(clicked){
       return
     }
     handleDairyList(
-      filterData.branch.id,
+      filterData.branch.branch.id,
       filterData.grade.grade_id,
       sectionIds,
       startDateTechPer,

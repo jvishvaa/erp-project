@@ -177,7 +177,7 @@ const SectionTable = () => {
         if (result.data.status_code === 200) {
           setDelFlag(!delFlag);
           setLoading(false);
-          setAlert('success', result.data?.message || result.data?.msg);
+          setAlert('success', `Mapped Section ${result.data?.message || result.data?.msg}`);
         } else {
           setLoading(false);
           setAlert('error', result.data?.message || result.data?.msg);
@@ -226,7 +226,7 @@ const SectionTable = () => {
 
   useEffect(() => {
     let url = `${endpoints.masterManagement.sectionMappingTable}?page=${page}&page_size=${limit}`;
-    if (searchSection) url += `&section_name=${searchSection}`;
+    if (searchSection) url += `&section_name=${searchSection.toLowerCase()}`;
     if (searchYear) url += `&session_year=${searchYear}`;
     // if(searchGrade)url += `&grade_name=${searchGrade}`;
     // if(searchBranch)url += `&branch_name=${searchBranch}`;

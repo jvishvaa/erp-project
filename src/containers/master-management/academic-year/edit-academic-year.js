@@ -26,7 +26,7 @@ const EditAcademicYear = ({ id, year, handleGoBack, setLoading }) => {
             handleGoBack();
             setSessionYear('');
             setLoading(false);
-            setAlert('success', result.data.message || result.data.msg);
+            setAlert('success', ` Academic Year ${result.data.message || result.data.msg}`);
           } else {
             setLoading(false);
             setAlert('error', result.data.message || result.data.msg);
