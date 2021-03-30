@@ -779,9 +779,9 @@ const mapDispatchToProps = dispatch => ({
   fetchFeeStructureList: (erp, session, alert, user, moduleId, branch) => dispatch(actionTypes.fetchFeeStructureList({ erp, session, alert, user, moduleId, branch })),
   fetchConcessionTypes: (alert, user) => dispatch(actionTypes.ListConcessionTypes({ alert, user })),
   saveConcessionRequest: (data, alert, user) => dispatch(actionTypes.saveConcessionRequest({ data, alert, user })),
-  fetchFeetypeList: (session, erp, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchFeeTypeListFeeStru({ session, erp, alert, user, moduleId, branch })),
+  fetchFeetypeList: (session, erp, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchFeeTypeListFeeStru({ session, erp, alert, user, moduleId, branchId })),
   unassignFee: (id, data, alert, user) => dispatch(actionTypes.unassignFeeStructure({ id, data, alert, user })),
-  fetchOtherFeetypeList: (session, erp, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchOtherFeeTypeList({ session, erp, alert, user, moduleId, branch })),
+  fetchOtherFeetypeList: (session, erp, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchOtherFeeTypeList({ session, erp, alert, user, moduleId, branchId })),
   updateFineAmt: (data, alert, user) => dispatch(actionTypes.updateInstFineAmount({ data, alert, user })),
   fetchBackDatConcession: (session, alert, user, moduleId, branch) => dispatch(actionTypes.fetchBackDatConcession({ session, alert, user, moduleId, branch }))
 })
