@@ -174,7 +174,7 @@ class UnassignedStudents extends Component {
       academic_year: this.props.sessionId,
       grade: this.props.gradeId,
       section: this.props.sectionId,
-      branch_id: this.props.moduleId
+      branch_id: this.props.branchId
     }
     console.log('-------------data--------------', data)
     this.setState({
