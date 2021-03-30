@@ -52,7 +52,7 @@ export const fetchFeeStructureList = (payload) => {
     console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.StudentPaymentAcc + '?erp_code=' + payload.erp + '&session_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
+      .get(urls.StudentPaymentAcc + '?erp_code=' + payload.erp + '&session_year=' + payload.session + '&branch_id=' + payload.branch + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -362,7 +362,7 @@ export const fetchStudentDues = (payload) => {
 export const fetchBackDatConcession = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ConcessionBackdate + '?academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
+    axios.get(urls.ConcessionBackdate + '?academic_year=' + payload.session + '&branch_id=' + payload.branch + '&module_id=' + payload.moduleId, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }

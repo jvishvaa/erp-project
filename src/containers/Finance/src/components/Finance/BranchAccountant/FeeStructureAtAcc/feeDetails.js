@@ -51,10 +51,10 @@ class FeeDetailsAccountant extends Component {
 
   componentDidMount () {
     if (this.props.getData && this.state.selectFeeWise.value === 1) {
-      this.props.fetchFeeStructureList(this.props.erp, this.props.session, this.props.alert, this.props.user)
+      this.props.fetchFeeStructureList(this.props.erp, this.props.session, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
     }
     if (this.props.session) {
-      this.props.fetchBackDatConcession(this.props.session, this.props.alert, this.props.user)
+      this.props.fetchBackDatConcession(this.props.session, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
     }
     console.log('fee deetees', this.props.refund)
   }
@@ -78,7 +78,7 @@ class FeeDetailsAccountant extends Component {
       return
     }
     if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData) && this.state.selectFeeWise.value === 1) {
-      this.props.fetchFeeStructureList(erp, this.props.session, alert, user)
+      this.props.fetchFeeStructureList(erp, this.props.session, alert, user, this.props.moduleId, this.props.branchId)
     } else if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData) && this.state.selectFeeWise.value === 2) {
       this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, this.props.user)
     }
@@ -121,7 +121,7 @@ class FeeDetailsAccountant extends Component {
       showUnassignModal: false
     }, () => {
       if (this.props.getData && this.state.selectFeeWise.value === 1 && this.props.unassignRes) {
-        this.props.fetchFeeStructureList(erp, this.props.session, alert, user)
+        this.props.fetchFeeStructureList(erp, this.props.session, alert, user, this.props.moduleId, this.props.branchId)
       } else if (this.props.getData && this.state.selectFeeWise.value === 2 && this.props.unassignRes) {
         this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, this.props.user)
       }
@@ -185,7 +185,7 @@ class FeeDetailsAccountant extends Component {
       selectFeeWise: e
     }, () => {
       if (this.state.selectFeeWise.value === 1) {
-        this.props.fetchFeeStructureList(this.props.erp, this.props.session, this.props.alert, this.props.user)
+        this.props.fetchFeeStructureList(this.props.erp, this.props.session, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
       } else {
         this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, this.props.user)
       }
@@ -774,14 +774,14 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchFeeStructureList: (erp, session, alert, user) => dispatch(actionTypes.fetchFeeStructureList({ erp, session, alert, user })),
+  fetchFeeStructureList: (erp, session, alert, user, moduleId, branch) => dispatch(actionTypes.fetchFeeStructureList({ erp, session, alert, user, moduleId, branch })),
   fetchConcessionTypes: (alert, user) => dispatch(actionTypes.ListConcessionTypes({ alert, user })),
   saveConcessionRequest: (data, alert, user) => dispatch(actionTypes.saveConcessionRequest({ data, alert, user })),
   fetchFeetypeList: (session, erp, alert, user) => dispatch(actionTypes.fetchFeeTypeListFeeStru({ session, erp, alert, user })),
   unassignFee: (id, data, alert, user) => dispatch(actionTypes.unassignFeeStructure({ id, data, alert, user })),
   fetchOtherFeetypeList: (session, erp, alert, user) => dispatch(actionTypes.fetchOtherFeeTypeList({ session, erp, alert, user })),
   updateFineAmt: (data, alert, user) => dispatch(actionTypes.updateInstFineAmount({ data, alert, user })),
-  fetchBackDatConcession: (session, alert, user) => dispatch(actionTypes.fetchBackDatConcession({ session, alert, user }))
+  fetchBackDatConcession: (session, alert, user, moduleId, branch) => dispatch(actionTypes.fetchBackDatConcession({ session, alert, user, moduleId, branch }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(FeeDetailsAccountant))

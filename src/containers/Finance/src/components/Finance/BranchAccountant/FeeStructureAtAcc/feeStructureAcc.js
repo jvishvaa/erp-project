@@ -244,6 +244,8 @@ class FeeStructureAcc extends Component {
           erp={this.props.erp}
           alert={this.props.alert}
           user={this.props.user}
+          branchId={this.props.branchId}
+          moduleId={this.props.moduleId}
           // refund={this.props.refund}
         />
       )
@@ -255,6 +257,8 @@ class FeeStructureAcc extends Component {
           erp={this.props.erp}
           alert={this.props.alert}
           user={this.props.user}
+          branchId={this.props.branchId}
+          moduleId={this.props.moduleId}
         />
       )
     }
