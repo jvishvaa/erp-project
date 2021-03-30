@@ -90,7 +90,7 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
 
   }
   const handleEdit=(data)=>{
-    debugger
+    //debugger
 
     console.log(data,'PPP')
     // // setEditData(e)
@@ -98,7 +98,6 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
     history.push('/create/daily-diary')
   }
 
-  console.log("DailyDairy");
   return (
     <Paper className={periodColor?classes.selectedRoot:classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' } }>
       <Grid container spacing={2}>

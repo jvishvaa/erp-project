@@ -28,7 +28,7 @@ const EditSectionMapping = ({sectionData,handleGoBack,setLoading}) => {
           handleGoBack();
           setSectionName('')
           setLoading(false);
-          setAlert('success', result.data?.msg||result.data?.message);
+          setAlert('success', `Mapped Section ${result.data?.msg||result.data?.message}`);
         } else {
           debugger
           setLoading(false);

@@ -37,6 +37,7 @@ import {
   fetchSubjects as getSubjects,
 } from '../../../redux/actions/index';
 import { Context } from '../context/context';
+import communicationStyles from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.styles';
 
 const CreateDailyDairy = (details, onSubmit) => {
   const [academicYears, setAcademicYears] = useState([]);
@@ -79,6 +80,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     branch: '',
   });
 
+  console.log(editData, isEdit);
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -188,7 +190,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const fetchBranches = () => {
     console.log('handle branch: ', searchAcademicYear, moduleId)
     fetchBranchesForCreateUser(searchAcademicYear, moduleId).then((data) => {
-      const transformedData = data?.map((obj) => ({
+      const transformedData = data?.map((obj) => console.log(obj,'==========================')({
         id: obj.id,
         branch_name: obj.branch_name,
       }));
@@ -212,13 +214,14 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleChangeGrade = (values, branch) => {
-    console.log('handle grade', values)
+    console.log('===============', branch)
     if (branch) {
       fetchSections(searchAcademicYear, branch, [values], moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               id: section.section_id,
               section_name: `${section.section__section_name}`,
+              section_mapping_id:section.id,
             }))
           : [];
         const filteredSelectedSections = formik.values.section.filter(
@@ -334,7 +337,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         'branch_name',
         isEdit ? editData.branch?.branch_name : formik.values.branch?.branch_name
       );
-      fd.append('grades', isEdit ? editData?.grade?.id : formik.values.grade[0]?.id);
+      fd.append('grades', isEdit ? editData?.grade[0]?.id : formik.values.grade?.id);
       // fd.append('section', isEdit ? editData.section[0].id : formik.values.section[0].id);
       axiosInstance.post(`academic/dairy-upload/`, fd).then((result) => {
         console.log(fd);
@@ -361,6 +364,8 @@ const CreateDailyDairy = (details, onSubmit) => {
 
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
     console.log('handle Formik:', formik)
+    // console.log(formik.values.section,'++++++++++++++++++++++++')
+    const mapId=formik.values.section.section_mapping_id
     const ids = formik.values.section
       ? [formik.values.section].map((el) => el.id)
       : setAlert('error', 'Fill all the required fields');
@@ -389,7 +394,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             module_id: moduleId,
               branch: formik.values?.branch?.id,
               grade,
-              section: ids,
+              section_mapping: [mapId],
               subject: subjectIds,
               chapter: formik.values.chapters?.id,
               documents: filePath,
@@ -408,7 +413,8 @@ const CreateDailyDairy = (details, onSubmit) => {
             module_id: moduleId,
 
               grade,
-              section: ids,
+              //---------------------------------------
+              section_mapping: [mapId],
               subject: subjectIds,
               chapter: formik.values?.chapters?.id,
               teacher_report: {
@@ -444,7 +450,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleEdited = () => {
-    console.log(editData);
+    console.log(editData, isEdit);
     axiosInstance
       .put(
         `${endpoints.dailyDairy.updateDelete}${editData.id}/update-delete-dairy/`,
@@ -453,7 +459,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               academic_year: editData.academic_year.id,
               branch: editData.branch.id,
               grade: editData.grade.id,
-              section: [editData.section[0].id],
+              section: [editData.section.id],
               subject: editData.subject.id,
               chapter: editData.chapter.id,
               documents: filePath,
@@ -560,6 +566,7 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const removeFileHandler = (i) => {
     // const list = [...filePath];
+    console.log(filePath);
     filePath.splice(i, 1);
     setAlert('success', 'File successfully deleted');
   };
@@ -697,7 +704,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                   handleChangeGrade(value || null, [formik.values.branch]);
                 }}
                 // multiple
-                value={state.isEdit ? editData.grade : formik.values.grade}
+                value={state.isEdit ? editData.grade[0] : formik.values.grade}
                 options={grades}
                 getOptionLabel={(option) => option.grade_name || ''}
                 renderInput={(params) => (
@@ -964,7 +971,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     }}
                   >
                     {' '}
-                    Accepted files: [jpeg,jpg,png,pdf]
+                    Accepted files: [ jpeg,jpg,png,pdf ]
                   </small>
                 </div>
               </Grid>

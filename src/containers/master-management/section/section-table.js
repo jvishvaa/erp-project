@@ -151,7 +151,7 @@ const SectionTable = () => {
         if (result.data.status_code === 204) {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', result.data?.message||result.data?.msg);
+            setAlert('success', `Section ${result.data?.message||result.data?.msg}`);
         } else {
           setLoading(false);
           setAlert('error', result.data?.message||result.data?.msg);

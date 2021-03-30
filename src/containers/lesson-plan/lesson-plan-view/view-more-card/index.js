@@ -157,7 +157,7 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataFor
                     <div className="scrollableContent">
                         {p.media_file.map(file => (
                             <div className="bodyContent">
-                                <div>{file}</div>
+                                <div>{(file||'-/No file').split('/').splice(-1)[0]}</div>
                                 <div>
                                     <a 
                                     // href={`${endpoints.lessonPlan.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${centralGradeName}/${centralSubjectName}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}`} 
@@ -169,7 +169,8 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataFor
                                                     {
                                                         // src: getS3DomainURL(file, p),
                                                         // src: `${endpoints.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${grade_name}/${subject_name}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}`,
-                                                        src: `${endpoints.lessonPlan.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${centralGradeName}/${centralSubjectName}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}`,
+                                                        // src: `${endpoints.lessonPlan.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${centralGradeName}/${centralSubjectName}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}`,
+                                                        src: `${endpoints.lessonPlan.s3}${file}`,
                                                         name: `${p?.document_type}`,
                                                         extension: '.' + file.split('.')[file.split('.').length-1],
                                                     }
@@ -210,7 +211,7 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataFor
                                 onClick={handleComplete}
                             >
                                 Completed
-                                </Button>
+                            </Button>
                         </div>}
                 </>}
         </Paper>

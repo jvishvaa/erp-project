@@ -128,10 +128,11 @@ const history=useHistory()
     // setOverviewSynopsis([]);
     if (value) {
         setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '' });
+        console.log(value,'==================')
         axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
             .then(result => {
                 if (result.data.status_code === 200) {
-                    setGradeDropdown(result.data.data);
+                    setGradeDropdown(result?.data?.data);
                 }
                 else {
                     setAlert('error', result.data.message);

@@ -26,7 +26,7 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
         setGradeName('')
         setGradeType('')
         setLoading(false);
-        setAlert('success', result.data?.message||result.data?.msg);
+        setAlert('success', `Grade ${result.data?.message||result.data?.msg}`);
       }
     } else {
       setLoading(false);

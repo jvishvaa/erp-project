@@ -159,7 +159,7 @@ const SubjectTable = () => {
         if (result.data.status_code === 204) {
           setDelFlag(!delFlag);
           setLoading(false);
-          setAlert('success', result.data.msg || result.data.message);
+          setAlert('success', `Subject ${result.data.msg || result.data.message}`);
         } else {
           setLoading(false);
           setAlert('error', result.data.msg || result.data.message);
