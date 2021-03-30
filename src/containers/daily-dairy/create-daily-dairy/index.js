@@ -391,7 +391,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             module_id: moduleId,
               branch: formik.values?.branch?.id,
               grade,
-              section: ids,
+              section_mapping: ids,
               subject: subjectIds,
               chapter: formik.values.chapters?.id,
               documents: filePath,
@@ -410,7 +410,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             module_id: moduleId,
 
               grade,
-              section: ids,
+              section_mapping: ids,
               subject: subjectIds,
               chapter: formik.values?.chapters?.id,
               teacher_report: {
