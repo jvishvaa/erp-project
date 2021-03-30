@@ -31,8 +31,8 @@ class CurrFeeTypeAcc extends Component {
   }
 
   componentDidMount () {
-    this.props.fetchMiscFeeList(this.props.session, this.props.alert, this.props.user)
-    this.props.fetchStudentMiscDetails(this.props.session, this.props.erp, this.props.alert, this.props.user)
+    this.props.fetchMiscFeeList(this.props.session, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
+    this.props.fetchStudentMiscDetails(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -251,8 +251,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchMiscFeeList: (session, alert, user) => dispatch(actionTypes.fetchMiscFeeList({ session, alert, user })),
-  fetchStudentMiscDetails: (session, erp, alert, user) => dispatch(actionTypes.fetchStudentMiscDetails({ session, erp, alert, user })),
+  fetchMiscFeeList: (session, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchMiscFeeList({ session, alert, user, moduleId, branchId })),
+  fetchStudentMiscDetails: (session, erp, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchStudentMiscDetails({ session, erp, alert, user, moduleId, branchId })),
   saveStudentMiscType: (data, alert, user) => dispatch(actionTypes.saveStudentMiscType({ data, alert, user })),
   fetchMiscDetails: (session, miscId, alert, user) => dispatch(actionTypes.fetchMiscDetails({ session, miscId, alert, user }))
 })

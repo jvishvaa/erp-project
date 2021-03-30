@@ -15,7 +15,7 @@ export const fetchMiscFeeList = (payload) => {
     console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.MiscList + '?academic_year=' + payload.session, {
+      .get(urls.MiscList + '?academic_year=' + payload.session + '&module_id=' + payload.moduleId + '&branch_id=' + payload.branchId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -44,7 +44,7 @@ export const fetchStudentMiscDetails = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.StudentMiscDetails + '?academic_year=' + payload.session + '&erp=' + payload.erp, {
+      .get(urls.StudentMiscDetails + '?academic_year=' + payload.session + '&erp=' + payload.erp + '&module_id=' + payload.moduleId + '&branch_id=' + payload.branchId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
