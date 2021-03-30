@@ -63,7 +63,7 @@ const ListandFilter = (props) => {
     const handleChangeBranch = (value) => {
         if (value) {
             setBranchValue(value);
-            axiosInstance.get(`${endpoints.mappingStudentGrade.grade}?branch_id=${value.id}&module_id=8`).then(res => {
+            axiosInstance.get(`${endpoints.mappingStudentGrade.grade}?branch_id=${value?.branch.id}&module_id=8`).then(res => {
                 if (res.data.data) {
                     setGradeRes(res.data.data)
                 }

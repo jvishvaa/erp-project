@@ -1,7 +1,9 @@
 import axios from 'axios';
+//require('dotenv').config();
 
 const axiosInstance = axios.create({
-  // baseURL: `${window.location.origin}/qbox`,
+  // baseURL: process.env.BASE_URL
+  baseURL: `${window.location.origin}/qbox`,
   // baseURL:'https://revamperp.letseduvate.com/qbox',
   // baseURL: 'https://erpnew.letseduvate.com/qbox',
   // baseURL: 'https://aol.letseduvate.com/qbox',

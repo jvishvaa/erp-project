@@ -23,7 +23,7 @@ const CreateAcademicYear = ({setLoading,handleGoBack}) => {
       {
         setSessionYear('')
         setLoading(false);
-        setAlert('success', result.data.message);
+        setAlert('success', `Academic Year ${result.data.message || result?.data?.msg}`);
       }
     } else {
       setLoading(false);

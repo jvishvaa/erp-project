@@ -41,7 +41,7 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
           setLoading(false);
           setOptional(false);
           handleGoBack();
-          setAlert('success', result.data?.message||result.data?.msg);
+          setAlert('success', `Subject ${result.data?.message||result.data?.msg}`);
         } else {
           setLoading(false);
           setAlert('error', result.data?.message||result.data?.msg);
@@ -65,7 +65,8 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
               variant='outlined'
               size='small'
               value={subjectName}
-              inputProps={{ pattern: '^[a-zA-Z0-9 ]+', maxLength: 20 }}
+              // inputProps={{ pattern: '^[a-zA-Z0-9 ]+', maxLength: 20 }}
+              inputProps={{maxLength: 20 }}
               name='subname'
               onChange={(e) => setSubjectName(e.target.value)}
               required

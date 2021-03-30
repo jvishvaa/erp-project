@@ -362,7 +362,9 @@ const ResourceModal = ({ id, alert, onClick, isMobile, type, isOpen }) => {
   };
 
   const removeFileHandler = (i) => {
-    const newFiles = files.filter((_, index) => index !== i);
+    alert('Resource model = '+i);
+    const newFiles = files.splice(i, 1);
+    //const newFiles = files.filter((_, index) => index !== i);
     setFiles(newFiles);
   };
 

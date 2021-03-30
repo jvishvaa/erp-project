@@ -181,7 +181,7 @@ export default function ResourceDetailsCardComponent(props) {
             axiosInstance
             .get(`erp_user/${props.resourceData && props.resourceData.id}/online-class-details/`)
             .then((res) => {
-              console.log(res.data );
+              //console.log(res.data );
               setNoOfPeriods(res.data.data);
             })
             .catch((error) => setAlert('error', error.message));

@@ -54,12 +54,14 @@
 }
 .attachment-viewer-frame-preview-wrapper {
     bottom: 0;
-    left: 24px;
+    /* left: 24px; */
+    left: 0;
     overflow-x: hidden;
     overflow-y: auto;
     position: absolute;
     top: 0;
-    right: 24px;
+    /* right: 24px; */
+    right: 0;
 }
 .attachment-viewer-frame-preview-image-wrapper {
     height: auto;

@@ -128,7 +128,7 @@ const GradeTable = () => {
         if (result.data.status_code > 199 && result.data.status_code < 300) {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', result.data.message||result.data.msg);
+            setAlert('success', `Grade ${result.data.message||result.data.msg}`);
         } else {
           setLoading(false);
           setAlert('error', result.data.message||result.data.msg);
