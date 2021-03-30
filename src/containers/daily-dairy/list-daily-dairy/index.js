@@ -75,6 +75,7 @@ const DailyDairyList = () => {
                     setTotalCount(result.data.result.count);
                     setLoading(false);
                     setPeriodData(result.data.result.results);
+                    console.log(result.data.result.results);
                     setViewMore(false);
                     setViewMoreData({});
                 } else {

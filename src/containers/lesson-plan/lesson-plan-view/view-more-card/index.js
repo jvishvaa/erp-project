@@ -210,7 +210,7 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataFor
                                 onClick={handleComplete}
                             >
                                 Completed
-                                </Button>
+                            </Button>
                         </div>}
                 </>}
         </Paper>
