@@ -251,7 +251,7 @@ const LessonViewFilters = ({
     }
 
     useEffect(() => {
-        axiosInstance.get(`${endpoints.communication.branches}?module_id=${getModuleId()}`)
+        axiosInstance.get(`${endpoints.communication.branches}?academic_year=${filterData.year.id}&module_id=${getModuleId()}`)
             .then(response => {
                 if (response.data.status_code === 200) {
                     setBranchDropdown(response.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean));

@@ -250,13 +250,13 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
     axiosInstance.get(`${endpoints.onlineClass.resourceFile}?online_class_id=${id}&class_date=${classDate}`)
     .then((res) => {
         let fileAr;
-        console.log(res.data);
+       // console.log(res.data);
         setIsDownload(res.data.result);
         if(res.data.result) {
           fileAr = res.data.result;
           fileAr?.length > 0 && fileAr.map((file) => {
             file.files && file.files.map(path => {      
-            console.log('useEffect',path)
+            //console.log('useEffect',path)
               setFilePath(filePath => [ ...filePath,path]);   
             })
           })
@@ -317,8 +317,8 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
         axiosInstance.post(`academic/dairy-upload/`, fd)
         .then((result)=>{
               if (result.data.status_code === 200) {
-                console.log('result',result.data.result);
-                console.log('filePath',filePath)
+                //console.log('result',result.data.result);
+                //console.log('filePath',filePath)
                 setAlert('success',result.data.message);
                 setFilePath([ ...filePath,result.data.result]);
               }
@@ -326,21 +326,16 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
                   setAlert('error',result.data.message)
               }
         })
-        console.log('filePath === ',filePath)
+        //console.log('filePath === ',filePath)
       }
       const newFiles = [...files, e.target.files[0]];
       setFiles(newFiles);
     }
   };
 
-  useEffect(() => {
-    console.log("------------------");
-    console.log(filePath);
-  }, [filePath])
-
   const removeFileHandler = (i) => {
-    console.log(i,'===========================')
-    alert('File')
+    //console.log(i,'===========================')
+    //alert('File')
     const newFiles = files.filter((_, index) => index !== i);
     setFiles(newFiles);
     const delFile = {
@@ -357,7 +352,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
   };
 
   // Delete and Remove file
-  const deleteExistingFileHandler = (fileName, i,index) => {
+  const deleteExistingFileHandler = (fileName, index) => {
    
     // const newFiles = isDownload[i].files.filter((_, index1) => index1 !== index);
     // console.log(isDownload[i].files, 'old');
@@ -375,7 +370,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
         online_class_id : id,
         class_date: classDate
       };
-      axiosInstance.put(endpoints.onlineClass.resourceFile,param)
+      axiosInstance.post(endpoints.onlineClass.resourceFile,param)
       .then((res) => {
         setFilePath(newFiles);
         setAlert('success', "Deleted");
@@ -727,7 +722,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
               <Typography variant='h6'>{path}</Typography>
             </Grid>
             <Grid item xs={6} md={2}>
-                <HighlightOffIcon onClick={() => deleteExistingFileHandler(path, 0, i)} className={classes.icon} />
+                <HighlightOffIcon onClick={() => deleteExistingFileHandler(path, i)} className={classes.icon} />
             </Grid>
           </Grid>
           <Divider />
