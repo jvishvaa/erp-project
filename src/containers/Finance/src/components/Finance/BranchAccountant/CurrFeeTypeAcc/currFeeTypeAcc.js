@@ -84,7 +84,7 @@ class CurrFeeTypeAcc extends Component {
     this.setState({
       feeType: e
     }, () => {
-      this.props.fetchMiscDetails(this.props.session, e.value, this.props.alert, this.props.user)
+      this.props.fetchMiscDetails(this.props.session, e.value, this.props.alert, this.props.user, this.props.branchId)
     })
   }
 
@@ -254,7 +254,7 @@ const mapDispatchToProps = dispatch => ({
   fetchMiscFeeList: (session, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchMiscFeeList({ session, alert, user, moduleId, branchId })),
   fetchStudentMiscDetails: (session, erp, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchStudentMiscDetails({ session, erp, alert, user, moduleId, branchId })),
   saveStudentMiscType: (data, alert, user) => dispatch(actionTypes.saveStudentMiscType({ data, alert, user })),
-  fetchMiscDetails: (session, miscId, alert, user) => dispatch(actionTypes.fetchMiscDetails({ session, miscId, alert, user }))
+  fetchMiscDetails: (session, miscId, alert, user, branch) => dispatch(actionTypes.fetchMiscDetails({ session, miscId, alert, user, branch }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(CurrFeeTypeAcc)))

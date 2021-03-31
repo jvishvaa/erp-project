@@ -73,7 +73,7 @@ export const fetchMiscDetails = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.FetchMiscTypeDetails + '?academic_year=' + payload.session + '&id=' + payload.miscId, {
+      .get(urls.FetchMiscTypeDetails + '?academic_year=' + payload.session + '&id=' + payload.miscId + '&branch_id=' + payload.branch, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
