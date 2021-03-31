@@ -11,7 +11,8 @@ import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Typ
 import Layout from '../../Layout/index';
 import ResourceFilter from './components/resourceFilter';
 import { OnlineclassViewContext } from '../online-class-context/online-class-state';
-import Pagination from '../../../components/Pagination';
+//import Pagination from '../../../components/Pagination';
+import { Pagination } from '@material-ui/lab';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectFilter from '../../../assets/images/selectfilter.svg';
 import Filter from './components/filters';
@@ -152,6 +153,9 @@ const Resources = () => {
     const [ resourceData, setResourceData ] = React.useState();
     const [filter, setFilter] = React.useState(false);
     const [resourceOnlineClasses, setResourceOnlineClasses] = React.useState([]);
+    const [totalCount, setTotalCount] = React.useState(0);
+    const [page, setPage] = React.useState(1);
+    const limit = 12;
     /**
     const {
         resourceView: {
@@ -205,6 +209,10 @@ const Resources = () => {
         }
     }
 
+    const handlePagination = (event, page) => {
+        setPage(page);
+    };
+    
     return (
         <>
             <div className='breadcrumb-container-create' style={{ marginLeft: '15px'}}>
@@ -215,7 +223,7 @@ const Resources = () => {
             </div>
             <Grid container spacing={4} className={classes.topFilter}>
                 <Grid item xs={12}>
-                    <Filter getResourceData={getResourceData} hendleDetails={hendleCloseDetails}/>
+                    <Filter getResourceData={getResourceData} hendleDetails={hendleCloseDetails} pages={page}/>
                 </Grid>
             </Grid>
             <Divider />
@@ -264,7 +272,7 @@ const Resources = () => {
                     </Grid>
                 )}
             </Grid>
-            {resourceOnlineClasses.length > showPerPage && (
+            {/* {resourceOnlineClasses.length > showPerPage && (
                 <div>
                     <Pagination
                         showPerPage={showPerPage}
@@ -272,7 +280,16 @@ const Resources = () => {
                         totalCategory={resourceOnlineClasses.length}
                     />
                 </div>
-            )}
+            )} */}
+            <div className='paginateData paginateMobileMargin'>
+                <Pagination
+                    onChange={handlePagination}
+                    style={{ marginTop: 25 }}
+                    count={Math.ceil(totalCount / limit)}
+                    color='primary'
+                    page={page}
+                />
+            </div>
         </>
     )
 }
