@@ -194,7 +194,7 @@ export const fetchInstallment = (payload) => {
 export const searchStudentdetailsbyregNumber = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.SearchStudentDetailbyregNumber + '?registration_number=' + payload.regno + '&academic_year=' + payload.session, {
+    axios.get(urls.SearchStudentDetailbyregNumber + '?registration_number=' + payload.regno + '&academic_year=' + payload.session + '&module_id=' + payload.moduleId + '&branch_id=' + payload.branchId, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }

@@ -148,7 +148,7 @@ class CustomizedAdmissionFormAcc extends Component {
   searchByRegnoHandler = (e, selected) => {
     this.setState({ regNo: e.target.value, regStatus: selected, appNo: null, appStatus: false, otherStatus: false, regId: null }, () => {
       if (this.state.regNo.length >= 3) {
-        this.props.searchStudentdetailsbyregNumber(this.state.session.value, this.state.regNo, this.props.user, this.props.alert)
+        this.props.searchStudentdetailsbyregNumber(this.state.session.value, this.state.regNo, this.props.user, this.props.alert, moduleId, this.state.selectedBranches?.value)
       }
       if (this.state.regStatus) {
         this.props.getStudentdetailsbyregNumber(this.state.session.value, this.state.regNo, this.props.user, this.props.alert)
@@ -384,7 +384,7 @@ const mapDispatchToProps = dispatch => ({
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   getStudentdetailsbyregNumber: (session, regno, user, alert) => dispatch(actionTypes.getStudentdetailsbyregNumber({ session, regno, user, alert })),
   getStudentdetailsbyappNumber: (session, appno, user, alert) => dispatch(actionTypes.getStudentdetailsbyappNumber({ session, appno, user, alert })),
-  searchStudentdetailsbyregNumber: (session, regno, user, alert) => dispatch(actionTypes.searchStudentdetailsbyregNumber({ session, regno, user, alert })),
+  searchStudentdetailsbyregNumber: (session, regno, user, alert, moduleId, branchId) => dispatch(actionTypes.searchStudentdetailsbyregNumber({ session, regno, user, alert, moduleId, branchId })),
   searchStudentdetailsbyAppNumber: (session, appNo, user, alert) => dispatch(actionTypes.searchStudentdetailsbyappNumber({ session, appNo, user, alert })),
   searchAdmissionByOthers: (searchBy, session, key, user, alert) => dispatch(actionTypes.searchAdmissionByOthers({ searchBy, session, key, user, alert }))
 })
