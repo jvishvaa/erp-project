@@ -167,7 +167,7 @@ class NewRegistration extends Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.registrationDetails && nextProps.registrationDetails.error && nextProps.registrationDetails.error.length) {
       this.setState({
-        showModal: true
+        showModal: false
       })
     }
   }

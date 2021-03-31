@@ -108,7 +108,7 @@ class NonRTEStudentDetailsFormAcc extends Component {
 
       if (nextProps.studentDetailsForAdmission && nextProps.studentDetailsForAdmission.error && nextProps.studentDetailsForAdmission.error.length) {
         this.setState({
-          showModal: true,
+          showModal: false,
           studentDetails: newstudentDetails
         })
       } else {
