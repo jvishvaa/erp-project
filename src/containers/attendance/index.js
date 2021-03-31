@@ -63,7 +63,7 @@ const AttendeeListRemake = (props) => {
 
   const getAttendeeList = async (date) => {
     setExcelDate(date)
-    axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=${id}&class_date=${date}&type=json&page_number=1&page_size=10`)
+    axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=${id}&class_date=${date}&type=json&page_number=${currentPage}&page_size=10`)
       .then((result) => {
         setTotalPages(result.data.total_pages);
         setAttendeeList(result.data.data);
@@ -81,7 +81,7 @@ const AttendeeListRemake = (props) => {
   //   }, [currentPage]);
   useEffect(() => {
     getAttendeeList(dateValue)
-  }, [])
+  }, [currentPage]);
   const handlePagination = (event, page) => {
     setCurrentPage(page);
   };
@@ -272,7 +272,7 @@ const AttendeeListRemake = (props) => {
                         align='center'
                         className={`${isHidden ? 'hide' : 'show'}`}
                       >
-                        {index + 1}
+                        {index + (currentPage * 10) - 9}
                       </TableCell>
                       <TableCell align='center'>{el.user.user.first_name}</TableCell>
                       <TableCell align='center'>{el.user.user.username}</TableCell>
