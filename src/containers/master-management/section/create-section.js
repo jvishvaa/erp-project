@@ -23,7 +23,7 @@ const CreateSection = ({ setLoading, handleGoBack }) => {
         if (result.data.status_code === 201) {
           setSectionName('');
           setLoading(false);
-          setAlert('success', result?.data?.message||result?.data?.msg);
+          setAlert('success', `Section ${result?.data?.message||result?.data?.msg}`);
         } else {
           setLoading(false);
           setAlert('error', result?.data?.message||result?.data?.msg);

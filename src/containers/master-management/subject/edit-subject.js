@@ -50,7 +50,7 @@ const EditSubject = ({ subjectData, handleGoBack, setLoading }) => {
             setDescription('');
             setOptional(false);
             setLoading(false);
-            setAlert('success', result.data.message || result.data.msg);
+            setAlert('success', `Subject ${result.data.message || result.data.msg}`);
           } else {
             setLoading(false);
             setAlert('error', result.data.message || result.data.msg);

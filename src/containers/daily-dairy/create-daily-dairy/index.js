@@ -37,6 +37,7 @@ import {
   fetchSubjects as getSubjects,
 } from '../../../redux/actions/index';
 import { Context } from '../context/context';
+import communicationStyles from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.styles';
 
 const CreateDailyDairy = (details, onSubmit) => {
   const [academicYears, setAcademicYears] = useState([]);
@@ -189,7 +190,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const fetchBranches = () => {
     console.log('handle branch: ', searchAcademicYear, moduleId)
     fetchBranchesForCreateUser(searchAcademicYear, moduleId).then((data) => {
-      const transformedData = data?.map((obj) => ({
+      const transformedData = data?.map((obj) => console.log(obj,'==========================')({
         id: obj.id,
         branch_name: obj.branch_name,
       }));
@@ -198,7 +199,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleChangeBranch = (values) => {
-    //console.log(values, 'VVVVVVVVVVVVv');
+    console.log(values, 'VVVVVVVVVVVVv');
     setGrades([]);
     setSections([]);
     fetchGrades(searchAcademicYear, values, moduleId).then((data) => {
@@ -213,13 +214,14 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleChangeGrade = (values, branch) => {
-    console.log('handle grade', values)
+    console.log('===============', branch)
     if (branch) {
       fetchSections(searchAcademicYear, branch, [values], moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               id: section.section_id,
               section_name: `${section.section__section_name}`,
+              section_mapping_id:section.id,
             }))
           : [];
         const filteredSelectedSections = formik.values.section.filter(
@@ -362,6 +364,8 @@ const CreateDailyDairy = (details, onSubmit) => {
 
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
     console.log('handle Formik:', formik)
+    // console.log(formik.values.section,'++++++++++++++++++++++++')
+    const mapId=formik.values.section.section_mapping_id
     const ids = formik.values.section
       ? [formik.values.section].map((el) => el.id)
       : setAlert('error', 'Fill all the required fields');
@@ -390,7 +394,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             module_id: moduleId,
               branch: formik.values?.branch?.id,
               grade,
-              section_mapping: ids,
+              section_mapping: [mapId],
               subject: subjectIds,
               chapter: formik.values.chapters?.id,
               documents: filePath,
@@ -409,7 +413,8 @@ const CreateDailyDairy = (details, onSubmit) => {
             module_id: moduleId,
 
               grade,
-              section_mapping: ids,
+              //---------------------------------------
+              section_mapping: [mapId],
               subject: subjectIds,
               chapter: formik.values?.chapters?.id,
               teacher_report: {

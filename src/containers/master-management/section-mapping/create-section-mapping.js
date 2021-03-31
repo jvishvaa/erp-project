@@ -40,7 +40,7 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
         if (result.data?.status_code > 199 && result.data?.status_code < 300) {
           setLoading(false);
           handleGoBack();
-          setAlert('success', result.data?.message || result.data?.msg);
+          setAlert('success', `Mapped Section ${result.data?.message || result.data?.msg}`);
         } else {
           setLoading(false);
           setAlert('error', result.data?.message || result.data?.msg);
