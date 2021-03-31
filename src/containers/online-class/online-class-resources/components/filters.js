@@ -284,7 +284,7 @@ const Filter = (props) => {
     }
 
     useEffect(() => {
-      if(props.pages > 1){
+      if(selectedBranch.length > 0){
         handleFilter();
       }
     }, [props.pages])
