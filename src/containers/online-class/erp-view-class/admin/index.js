@@ -360,6 +360,7 @@ const ErpAdminViewClass = ({ history }) => {
     setSelectedBranch([]);
     setSelectedClassType('');
     setSelectedAcadmeicYear('');
+    setPage(1)
   }
 
   function handleFilter() {
@@ -401,7 +402,7 @@ const ErpAdminViewClass = ({ history }) => {
     //   return;
     // }
     setLoading(true);
-    // setPage(1);
+    setPage(1);
 
     // `https://erpnew.letseduvate.com/qbox/erp_user/teacher_online_class/?page_number=1&page_size=15&class_type=1&is_aol=1&course=97&start_date=2021-02-21&end_date=2021-02-27`
     if (selectedCourse.id) {
@@ -505,6 +506,7 @@ const ErpAdminViewClass = ({ history }) => {
                     setSelectedBranch([]);
                     setSelectedAcadmeicYear('');
                     setFilterList([]);
+                    setPage(1)
                   }}
                   id='branch_id'
                   className='dropdownIcon'
@@ -549,6 +551,7 @@ const ErpAdminViewClass = ({ history }) => {
                         setSelectedSubject([]);
                         setSelectedBranch([]);
                         setFilterList([]);
+                        setPage(1)
                       }}
                       id='branch_id'
                       className='dropdownIcon'
@@ -595,6 +598,7 @@ const ErpAdminViewClass = ({ history }) => {
                         setSubjectList([]);
                         setSelectedSubject([]);
                         setFilterList([]);
+                        setPage(1)
                       }}
                       id='branch_id'
                       className='dropdownIcon'
@@ -646,6 +650,7 @@ const ErpAdminViewClass = ({ history }) => {
                         setSubjectList([]);
                         setSelectedSubject([]);
                         setFilterList([]);
+                        setPage(1)
                       }}
                       id='grade_id'
                       className='dropdownIcon'
@@ -691,6 +696,7 @@ const ErpAdminViewClass = ({ history }) => {
                         setSubjectList([]);
                         setSelectedSubject([]);
                         setFilterList([]);
+                        setPage(1)
                       }}
                       id='section_id'
                       className='dropdownIcon'
@@ -726,6 +732,7 @@ const ErpAdminViewClass = ({ history }) => {
                           setBatchList([]);
                           setSelectedBatch('');
                           setFilterList([]);
+                          setPage(1)
                         }}
                         id='course_id'
                         className='dropdownIcon'
@@ -761,6 +768,7 @@ const ErpAdminViewClass = ({ history }) => {
                           setBatchList([]);
                           setSelectedBatch('');
                           setFilterList([]);
+                          setPage(1)
                         }}
                         id='course_id'
                         className='dropdownIcon'
