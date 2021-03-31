@@ -129,7 +129,7 @@ class NonRTEStudentDetailsFormAcc extends Component {
 
   componentDidMount () {
     console.log('module iD mount', moduleId)
-    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId, this.props.branch)
+    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId, this.props.branch, this.state.studentDetails.academicyear)
     this.props.fetchClassGroup(this.props.alert, this.props.user)
   }
 
@@ -528,7 +528,7 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchGradeList: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
+  fetchGradeList: (alert, user, moduleId, branch, session) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch, session })),
   fetchClassGroup: (alert, user) => dispatch(actionTypes.fetchClassGroup({ alert, user })),
   fetchAllSectionsPerGrade: (session, alert, user, gradeId, moduleId, branch) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, moduleId, branch }))
 
