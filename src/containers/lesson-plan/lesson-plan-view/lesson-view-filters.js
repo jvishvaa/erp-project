@@ -13,7 +13,6 @@ import axios from 'axios';
 import './lesson.css';
 import { useLocation } from "react-router-dom";
 import { getModuleInfo }from '../../../utility-functions'
-import addYears from 'date-fns/addYears';
 
 const LessonViewFilters = ({
     handlePeriodList,
