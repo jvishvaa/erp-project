@@ -145,6 +145,7 @@ const Filter = (props) => {
                     setFilterList(result.data.data || {});
                     setSelectedViewMore('');
                     props.getResourceData(result.data.data);
+                    props.totalCount(result.data.count);
                 }
                 setLoading(false);
             } else {
@@ -294,40 +295,40 @@ const Filter = (props) => {
                 {window.location.host !== endpoints?.aolConfirmURL && (
                    <Grid item md={3} xs={12}>
                    <Autocomplete
-                       style={{ width: '100%' }}
-                       size='small'
-                       onChange={(event, value) => {
-                           setSelectedClassType(value)
-                    setSelectedGrade([]);
-                    setCourseList([]);
-                    setSelectedCourse('');
-                    setBatchList([]);
-                    setSelectedBatch('');
-                    setFilterList([]);
-                    setSelectedViewMore('');
-                    setSectionList([]);
-                    setSelectedSection([]);
-                    setSubjectList([]);
-                    setSelectedSubject([]);
-                    setSelectedBranch([])
-                    setSelectedAcadmeicYear('')
-                    props.getResourceData([]);
+                      style={{ width: '100%' }}
+                      size='small'
+                      onChange={(event, value) => {
+                        setSelectedClassType(value)
+                        setSelectedGrade([]);
+                        setCourseList([]);
+                        setSelectedCourse('');
+                        setBatchList([]);
+                        setSelectedBatch('');
+                        setFilterList([]);
+                        setSelectedViewMore('');
+                        setSectionList([]);
+                        setSelectedSection([]);
+                        setSubjectList([]);
+                        setSelectedSubject([]);
+                        setSelectedBranch([])
+                        setSelectedAcadmeicYear('')
+                        props.getResourceData([]);
 
-                       }}
-                       id='branch_id'
-                       className='dropdownIcon'
-                       value={selectedClassType}
-                       options={classTypes}
-                       getOptionLabel={(option) => option?.type}
-                       filterSelectedOptions
-                       renderInput={(params) => (
+                      }}
+                      id='branch_id'
+                      className='dropdownIcon'
+                      value={selectedClassType}
+                      options={classTypes}
+                      getOptionLabel={(option) => option?.type}
+                      filterSelectedOptions
+                      renderInput={(params) => (
                            <TextField
                                {...params}
                                variant='outlined'
                                label='Class Types'
                                placeholder='Class Types'
                            />
-                       )}
+                      )}
                    />
                </Grid> 
                 )}

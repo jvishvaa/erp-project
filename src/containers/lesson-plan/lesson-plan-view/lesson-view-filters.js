@@ -197,7 +197,7 @@ const LessonViewFilters = ({
         if (filterData.grade && filterData.year && filterData.volume && value) {
             setFilterData({ ...filterData, subject: value, chapter: '' });
             if (value && filterData.branch && filterData.year && filterData.volume) {
-                axiosInstance.get(`${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value.id}&volume=${filterData.volume.id}&academic_year=${filterData.academic.id}&branch=${filterData.grade.grade_id}`)
+                axiosInstance.get(`${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value.id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&branch=${filterData.grade.grade_id}`)
                     .then(result => {
                         if (result.data.status_code === 200) {
                             setChapterDropdown(result.data.result.chapter_list);
@@ -303,20 +303,18 @@ const LessonViewFilters = ({
     }, []);
 
     useEffect(() => {
-        console.log(filterData);
         if(filterData.year?.id){
-            const acad = academicYearDropdown.map((year) => {
-                console.log(year.session_year+" === "+filterData.year.session_year);
+            let erp_year;
+            const acad = academicYear.map((year) => {
                 if(year.session_year === filterData.year.session_year){
                     console.log(year);
+                    erp_year = year;
                     setFilterData({ ...filterData, academic: year})
                     return year;
                 }
                 return {}
             })
-            //setFilterData({ ...filterData, academic: acad[0]})
-            console.log(acad);
-            axiosInstance.get(`${endpoints.communication.branches}?session_year=${filterData.year.id}&module_id=${getModuleId()}`)
+            axiosInstance.get(`${endpoints.communication.branches}?session_year=${erp_year?.id}&module_id=${getModuleId()}`)
             .then(response => {
                 if (response.data.status_code === 200) {
                     setBranchDropdown(response.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean));
@@ -339,7 +337,7 @@ const LessonViewFilters = ({
                     id='academic-year'
                     className="dropdownIcon"
                     value={filterData?.year||''}
-                    options={academicYear||[]}
+                    options={academicYearDropdown||[]}
                     getOptionLabel={(option) => option?.session_year||''}
                     filterSelectedOptions
                     renderInput={(params) => (

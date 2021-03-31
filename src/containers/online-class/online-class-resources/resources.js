@@ -212,6 +212,10 @@ const Resources = () => {
     const handlePagination = (event, page) => {
         setPage(page);
     };
+
+    const handleTotalCount = (count) => {
+        setTotalCount(count);
+    }
     
     return (
         <>
@@ -223,14 +227,14 @@ const Resources = () => {
             </div>
             <Grid container spacing={4} className={classes.topFilter}>
                 <Grid item xs={12}>
-                    <Filter getResourceData={getResourceData} hendleDetails={hendleCloseDetails} pages={page}/>
+                    <Filter getResourceData={getResourceData} hendleDetails={hendleCloseDetails} pages={page} totalCount={handleTotalCount}/>
                 </Grid>
             </Grid>
             <Divider />
             <Grid container spacing={3} className={classes.root}>
                 <Grid item sm={size} xs={12}>
                     <Grid container spacing={3}>
-                        {resourceOnlineClasses.length > 0 && resourceOnlineClasses.slice(pagination.start, pagination.end).map((data, id) => (
+                        {resourceOnlineClasses.length > 0 && resourceOnlineClasses.map((data, id) => (
                             <Grid item sm={itemSize} xs={12} key={id}>
                                 <ResourceCard
                                     resourceData={data}
