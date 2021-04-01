@@ -288,7 +288,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
       if (value && filterData.branch && filterData.year && filterData.volume) {
         axiosInstance
           .get(
-            `${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value.id}&academic_year=${filterData.year.id}&branch=${filterData.grade.grade_id}`
+            `${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value.id}&academic_year=${filterData.year.id}&grade_id=${filterData.grade.grade_id}`
           )
           .then((result) => {
             if (result.data.status_code === 200) {

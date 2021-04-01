@@ -26,7 +26,7 @@ import {
 } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 // import './attendee-list.scss';
 import { Pagination } from '@material-ui/lab';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -36,6 +36,7 @@ import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import { useSelector } from 'react-redux';
 import Layout from '../Layout';
 import ShuffleModal from './shuffle-modal';
 import { result } from 'lodash';
@@ -44,7 +45,11 @@ import selectfilter from '../../assets/images/selectfilter.svg';
 import './attendance.css' 
 
 const AttendeeListRemake = (props) => {
+  const history = useHistory();
+  const location = useLocation();
+  //const { attendDate } = history.location.state
   const { id } = useParams();
+  const attendanceDate = useSelector((state) => state.attendanceReducers.attendance);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [attendeeList, setAttendeeList] = useState([]);
@@ -54,8 +59,7 @@ const AttendeeListRemake = (props) => {
   const [loading, setLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isHidden, setIsHidden] = useState(window.innerWidth < 600);
-  const [dateValue, setDateValue] = useState(moment(new Date()).format('YYYY-MM-DD'));
-  const history = useHistory();
+  const [dateValue, setDateValue] = useState(moment(attendanceDate? attendanceDate : new Date()).format('YYYY-MM-DD'));
   const [openShuffleModal, setOpenShuffleModal] = useState(false);
   const pageSize = 10;
   const [excelDate, setExcelDate] = useState('')
@@ -79,9 +83,11 @@ const AttendeeListRemake = (props) => {
   //   useEffect(() => {
   //     getAttendeeList();
   //   }, [currentPage]);
+  
   useEffect(() => {
     getAttendeeList(dateValue)
   }, [currentPage]);
+
   const handlePagination = (event, page) => {
     setCurrentPage(page);
   };
