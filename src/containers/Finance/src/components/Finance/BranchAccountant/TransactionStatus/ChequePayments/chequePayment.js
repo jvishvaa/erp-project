@@ -168,7 +168,7 @@ class ChequePayment extends Component {
         <Modal open={this.state.showBounceModal} click={this.hideBounceModalHandler} large>
           <h3 className={classes.modal__heading}>Cheque Bounce</h3>
           <hr />
-          <ChequeBounce close={this.hideBounceModalHandler} chequeBounce={this.state.chequeBounce} transId={this.state.transBounceModalId} erp={this.props.erpNo} session={this.props.session} alert={this.props.alert} user={this.props.user} />
+          <ChequeBounce close={this.hideBounceModalHandler} chequeBounce={this.state.chequeBounce} transId={this.state.transBounceModalId} erp={this.props.erpNo} session={this.props.session} alert={this.props.alert} user={this.props.user} branchId={this.props.branchId}/>
         </Modal>
       )
     }

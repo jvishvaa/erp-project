@@ -197,7 +197,7 @@ class StudentLedgerTab extends Component {
 
   sectionHandler = (e) => {
     let sectionIds = []
-    e.forEach(section => {
+    e && e.forEach(section => {
       sectionIds.push(section.value)
     })
     this.setState({ sectionId: sectionIds, sectionData: e, getData: false })
@@ -391,7 +391,8 @@ class StudentLedgerTab extends Component {
               user={this.props.user} />
           </TabContainer>}
           {value === 'four' && <TabContainer>
-            <ChequePayments alert={this.props.alert}
+            < ChequePayments
+              alert={this.props.alert}
               session={this.state.session.value}
               moduleId={moduleId}
               branchId={this.state.selectedBranches?.value}
