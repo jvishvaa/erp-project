@@ -175,6 +175,7 @@ const AttendeeListRemake = (props) => {
 
   const handleDateChange = (event, value) => {
     setDateValue(value)
+    setCurrentPage(1);
     getAttendeeList(value);
   }
 
