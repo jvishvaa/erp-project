@@ -2535,7 +2535,7 @@ const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   // fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user })),
   // fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
-  studentErpSearch: (type, session, grade, section, status, erp, alert, user, branchId) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user, branchId })),
+  studentErpSearch: (type, session, grade, section, status, erp, alert, user, branch) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user, branch })),
   clearAllProps: (alert, user) => dispatch(actionTypes.clearAllProps({ alert, user })),
   fetchAllSections: (session, gradeId, alert, user, moduleId, branch) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId, branch })),
   fetchReceiptRange: (session, erp, alert, user) => dispatch(actionTypes.fetchReceiptRange({ session, erp, alert, user })),
