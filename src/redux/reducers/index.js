@@ -5,6 +5,7 @@ import userManagement from './userManagementReducer';
 import academicMappingReducer from './academic-mapping-reducer';
 import teacherHomework from './teacherHomeworkReducer';
 import postReducer from './discussionForumReducer';
+import attendanceReducer from './onlineClassReducer';
 // /home/rana/ErpRevamp/erp-revamp-frontend/src/containers/Finance/src/_reducers/academicSession.reducer.js
 import commonReducer from '../../../src/containers/Finance/src/components/Finance/store/reducer/common.reducer'
 import { academicSession } from '../../../src/containers/Finance/src/_reducers/academicSession.reducer'
@@ -30,6 +31,7 @@ export default combineReducers({
   academic: academicMappingReducer,
   teacherHomework,
   postReducers: postReducer,
+  attendanceReducers: attendanceReducer,
   common: commonReducer,
   academicSession,
   authentication,
