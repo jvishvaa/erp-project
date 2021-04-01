@@ -1191,7 +1191,7 @@ class FeeShowList extends Component {
           getData: false
         })
       } else {
-        this.props.fetchAllSections(this.state.sessions.value, this.state.gradeId, this.props.alert, this.props.user, moduleId)
+        this.props.fetchAllSections(this.state.sessions.value, this.state.gradeId, this.props.alert, this.props.user, moduleId, this.state.branchId)
         this.setState({
           allSections: false,
           getData: false
@@ -1253,7 +1253,8 @@ class FeeShowList extends Component {
       this.state.studentTypeData.value,
       this.state.students,
       this.props.alert,
-      this.props.user
+      this.props.user,
+      this.state.branchId
     )
   }
 
@@ -1281,7 +1282,8 @@ class FeeShowList extends Component {
       this.state.studentTypeData.value,
       this.state.studentName,
       this.props.alert,
-      this.props.user
+      this.props.user,
+      this.state.branchId
     )
   }
 
@@ -2533,9 +2535,9 @@ const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   // fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user })),
   // fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
-  studentErpSearch: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user })),
+  studentErpSearch: (type, session, grade, section, status, erp, alert, user, branchId) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user, branchId })),
   clearAllProps: (alert, user) => dispatch(actionTypes.clearAllProps({ alert, user })),
-  fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId })),
+  fetchAllSections: (session, gradeId, alert, user, moduleId, branch) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId, branch })),
   fetchReceiptRange: (session, erp, alert, user) => dispatch(actionTypes.fetchReceiptRange({ session, erp, alert, user })),
   fetchBranchData: (alert, user, moduleId) => dispatch(actionTypes.fetchAccountantBranch({ alert, user, moduleId })),
   fetchMicr: (micr, alert, user) => dispatch(actionTypes.fetchMicr({ micr, alert, user }))
