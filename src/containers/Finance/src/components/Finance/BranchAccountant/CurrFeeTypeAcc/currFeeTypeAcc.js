@@ -126,7 +126,8 @@ class CurrFeeTypeAcc extends Component {
       id: feeType.value,
       amount: +feeTypeAmount || 0,
       due_date: dueDate,
-      update: changeType && changeType.value ? changeType.value : ''
+      update: changeType && changeType.value ? changeType.value : '',
+      branch_id: this.props.branchId
     }
     this.props.saveStudentMiscType(data, this.props.alert, this.props.user)
     // this.props.fetchStudentMiscDetails(this.props.session, this.props.erp, this.props.alert, this.props.user)
