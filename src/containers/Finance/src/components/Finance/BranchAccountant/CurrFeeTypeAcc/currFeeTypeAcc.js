@@ -122,7 +122,7 @@ class CurrFeeTypeAcc extends Component {
     const { erp, feeType, feeTypeAmount, dueDate, changeType } = this.state
     let data = {
       session_year: this.props.session,
-      erp_code: +erp,
+      erp_code: this.props.erp,
       id: feeType.value,
       amount: +feeTypeAmount || 0,
       due_date: dueDate,
