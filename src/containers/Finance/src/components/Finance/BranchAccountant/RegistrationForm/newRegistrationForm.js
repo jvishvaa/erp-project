@@ -125,7 +125,7 @@ class NewRegistration extends Component {
   // }, 500) // rajneesh
   myErpFunc =() => {
     this.props.fetchRegistrationSugg(
-      this.state.academicYearValue.value,
+      this.state.academicYearValue?.value,
       this.state.searchByValue.value,
       this.state.searchedValue,
       this.props.user,
