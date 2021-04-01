@@ -121,7 +121,7 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
               color='secondary'
               noWrap
             >
-              Homework
+              Daily Diary
             </Typography>
             <Divider className='divider'/>
             <Typography

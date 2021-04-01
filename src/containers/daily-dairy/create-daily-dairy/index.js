@@ -190,7 +190,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const fetchBranches = () => {
     console.log('handle branch: ', searchAcademicYear, moduleId)
     fetchBranchesForCreateUser(searchAcademicYear, moduleId).then((data) => {
-      const transformedData = data?.map((obj) => console.log(obj,'==========================')({
+      const transformedData = data?.map((obj) => ({
         id: obj.id,
         branch_name: obj.branch_name,
       }));
@@ -199,7 +199,6 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleChangeBranch = (values) => {
-    console.log(values, 'VVVVVVVVVVVVv');
     setGrades([]);
     setSections([]);
     fetchGrades(searchAcademicYear, values, moduleId).then((data) => {
@@ -214,7 +213,6 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleChangeGrade = (values, branch) => {
-    console.log('===============', branch)
     if (branch) {
       fetchSections(searchAcademicYear, branch, [values], moduleId).then((data) => {
         const transformedData = data
@@ -254,6 +252,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       });
   };
 
+  console.log(editData,'EEEEEEEEEEEEEEEEEEEEEE')
   const fetchSubjects = (branch, grade, section) => {
     console.log('=== fetch sub:', branch, grade, section)
     if (branch && grade &&
@@ -411,9 +410,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               academic_year: searchAcademicYear,
             branch: formik.values?.branch?.id,
             module_id: moduleId,
-
               grade,
-              //---------------------------------------
               section_mapping: [mapId],
               subject: subjectIds,
               chapter: formik.values?.chapters?.id,
@@ -514,6 +511,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
+          history.push('/diary/teacher')
         } else {
           setAlert('error', 'Something went wrong');
         }
@@ -570,7 +568,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     filePath.splice(i, 1);
     setAlert('success', 'File successfully deleted');
   };
-
+console.log(editData,'|||||||||||||||||||||||||||||||')
   useEffect(() => {
     // fetchAcademicYears();
     // fetchBranches();
@@ -735,10 +733,10 @@ const CreateDailyDairy = (details, onSubmit) => {
                 id='section'
                 name='section'
                 onChange={(e, value) => handleSection(e, value)}
-                value={state.isEdit ? editData.section : formik.values.section}
+                value={state.isEdit ? editData.section[0] : formik.values.section}
                 options={sections}
                 // multiple
-                getOptionLabel={(option) => option.section_name || ''}
+                getOptionLabel={(option) => option.section_name || option.section__section_name}
                 renderInput={(params) => (
                   <TextField
                     {...params}

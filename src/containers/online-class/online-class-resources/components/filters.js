@@ -234,7 +234,7 @@ const Filter = (props) => {
         setAlert('warning', 'Select Section');
         return;
       }
-      if (selectedClassType.id === 1) {
+      if (selectedClassType.id !== 0) {
         if (!selectedCourse) {
           setAlert('warning', 'Select Course');
           return;
@@ -284,7 +284,7 @@ const Filter = (props) => {
     }
 
     useEffect(() => {
-      if(props.pages > 1){
+      if(selectedBranch.length > 0){
         handleFilter();
       }
     }, [props.pages])

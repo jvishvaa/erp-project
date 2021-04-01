@@ -637,6 +637,8 @@ import { AlertNotificationContext } from '../../../../context-api/alert-context/
 import ResourceDialog from '../../../online-class/online-class-resources/resourceDialog';
 import CountdownTimer from './CountdownTimer';
 import './index.css';
+import { useDispatch } from 'react-redux';
+import { attendanceAction } from '../../../../redux/actions/onlineClassActions'
 
 const JoinClass = (props) => {
   const fullData = props.fullData;
@@ -992,6 +994,7 @@ const DetailCardView = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
+  const dispatch = useDispatch();
   const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
   /*
   useEffect(() => {
@@ -1073,8 +1076,8 @@ const DetailCardView = ({
       });
   }
 
-  console.log(fullData.online_class.cource_id, selectedGrade, '=====================');
   const handleAttendance = () => {
+    dispatch(attendanceAction(fullData ? fullData.online_class?.start_time : ''));
     history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`);
   };
   const handleCoursePlan = () => {
