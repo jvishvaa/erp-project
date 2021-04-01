@@ -112,7 +112,7 @@ class StudentProfile extends Component {
 
   componentDidUpdate (prevProps, prevState) {
     const erpString = this.props.erp + ''
-    if (this.props.erp !== prevProps.erp ) {
+    if (this.props.erp !== prevProps.erp  && this.props.erp && this.props.erp.length > 0) {
       this.fetchStudentProfile()
     }
   }
