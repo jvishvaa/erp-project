@@ -194,7 +194,7 @@ class Payments extends Component {
       chequeNumber: chequeNumber,
       payMode: mode
     })
-    this.props.editAccountantTransaction(id, this.props.user, this.props.alert)
+    this.props.editAccountantTransaction(id, this.props.user, this.props.alert, this.props.branchId, this.props.moduleId)
   }
 
   hideEditModalHandler = () => {
