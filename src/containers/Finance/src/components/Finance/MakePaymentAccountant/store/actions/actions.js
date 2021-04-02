@@ -104,7 +104,7 @@ export const sendAllPayment = (payload) => {
 
 export const fetchReceiptRange = (payload) => {
   return (dispatch) => {
-    let url = urls.ReceiprRangeMsg + '?academic_year=' + payload.session + '&branch_id=' + payload.branch 
+    let url = urls.ReceiprRangeMsg + '?academic_year=' + payload.session + '&branch_id=' + payload.branchId
     // if (payload.branch) {
     //   url = url + `&branch=${payload.branch}`
     // }
