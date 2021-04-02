@@ -917,7 +917,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchReceiptRange: (session, alert, user, branch) => dispatch(actionTypes.fetchReceiptRange({ session, alert, user, branch })),
+  fetchReceiptRange: (session, alert, user, branchId) => dispatch(actionTypes.fetchReceiptRange({ session, alert, user, branchId })),
   fetchIfsc: (ifsc, alert, user) => dispatch(actionTypes.fetchIfsc({ ifsc, alert, user })),
   fetchMicr: (micr, alert, user) => dispatch(actionTypes.fetchMicr({ micr, alert, user }))
 })
