@@ -20,12 +20,12 @@ export const fetchAllPayment = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios.all([
-      axios.get(urls.StudentPayAtAcc + '?student=' + payload.erp + '&academic_year=' + payload.session, {
+      axios.get(urls.StudentPayAtAcc + '?student=' + payload.erp + '&academic_year=' + payload.session + '&module_id=' + payload.moduleId + '&branch_id=' + payload.branchId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
       }),
-      axios.get(urls.StudentInfo + '?erp_code=' + payload.erp + '&academic_year=' + payload.session, {
+      axios.get(urls.StudentInfo + '?erp_code=' + payload.erp + '&academic_year=' + payload.session + '&module_id=' + payload.moduleId + '&branch_id=' + payload.branchId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -104,10 +104,10 @@ export const sendAllPayment = (payload) => {
 
 export const fetchReceiptRange = (payload) => {
   return (dispatch) => {
-    let url = urls.ReceiprRangeMsg + '?academic_year=' + payload.session
-    if (payload.branch) {
-      url = url + `&branch=${payload.branch}`
-    }
+    let url = urls.ReceiprRangeMsg + '?academic_year=' + payload.session + '&branch_id=' + payload.branchId
+    // if (payload.branch) {
+    //   url = url + `&branch=${payload.branch}`
+    // }
     dispatch(actionTypes.dataLoading())
     axios.get(url, {
       headers: {
@@ -191,7 +191,7 @@ export const fetchErpSuggestions = (payload) => {
 
 export const fetchStudentDues = (payload) => {
   return (dispatch) => {
-    let url = `${urls.StudentDues}?erp_code=${payload.erp}&session_year=${payload.session}`
+    let url = `${urls.StudentDues}?erp_code=${payload.erp}&session_year=${payload.session}&module_id=${payload.moduleId}&branch_id=${payload.branchId}`
     if (payload.branch) {
       url = url + `&branch=${payload.branch}`
     }

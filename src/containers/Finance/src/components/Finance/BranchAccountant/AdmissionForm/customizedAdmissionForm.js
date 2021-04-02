@@ -9,7 +9,7 @@ import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest'
 import NewAdmissionFormAcc from './newAdmissionForm'
 import NonRTEFormAcc from './nonRTEAdmissionForm'
 // import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
-import * as actionTypes from '../store/actions'
+import * as actionTypes from '../../store/actions'
 import { debounce } from '../../../../utils'
 import Layout from '../../../../../../Layout'
 
@@ -67,7 +67,8 @@ class CustomizedAdmissionFormAcc extends Component {
       regStatus: false,
       appStatus: false,
       otherKey: null,
-      otherStatus: false
+      otherStatus: false,
+      selectedBranches: ''
     }
   }
   buttonHandler = (e) => {
@@ -76,6 +77,7 @@ class CustomizedAdmissionFormAcc extends Component {
     })
   }
   handleAcademicyear = (e) => {
+    this.props.fetchBranches(e && e.value, this.props.alert, this.props.user, moduleId)
     console.log(e)
     this.setState({
       session: e
@@ -92,7 +94,8 @@ class CustomizedAdmissionFormAcc extends Component {
       } else if (this.props.studentDetailsForAdmission && this.props.studentDetailsForAdmission.admission_status === false) {
         this.props.history.push({
           pathname: '/finance/accountant/NonRTEFormAcc',
-          regNo: this.state.regNo || this.state.regId
+          regNo: this.state.regNo || this.state.regId,
+          branch: this.state.selectedBranches && this.state.selectedBranches.value
         })
       }
     }
@@ -145,7 +148,7 @@ class CustomizedAdmissionFormAcc extends Component {
   searchByRegnoHandler = (e, selected) => {
     this.setState({ regNo: e.target.value, regStatus: selected, appNo: null, appStatus: false, otherStatus: false, regId: null }, () => {
       if (this.state.regNo.length >= 3) {
-        this.props.searchStudentdetailsbyregNumber(this.state.session.value, this.state.regNo, this.props.user, this.props.alert)
+        this.props.searchStudentdetailsbyregNumber(this.state.session.value, this.state.regNo, this.props.user, this.props.alert, moduleId, this.state.selectedBranches?.value)
       }
       if (this.state.regStatus) {
         this.props.getStudentdetailsbyregNumber(this.state.session.value, this.state.regNo, this.props.user, this.props.alert)
@@ -167,6 +170,10 @@ class CustomizedAdmissionFormAcc extends Component {
         this.props.getStudentdetailsbyregNumber(this.state.session.value, regNo.registration_number || '', this.props.user, this.props.alert)
       }
     })
+  }
+
+  changehandlerbranch = (e) => {
+    this.setState({ selectedBranches: e})
   }
 
   render () {
@@ -306,6 +313,26 @@ class CustomizedAdmissionFormAcc extends Component {
                   />
                 </div>
               </Grid>
+              <Grid item xs='3'>
+            <label>Branch*</label>
+            <div style={{ marginTop: '15px' }} >
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+              options={
+                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+
+              onChange={this.changehandlerbranch}
+            />
+            </div>
+          </Grid>
               <Grid item xs={2} style={{ marginRight: '10px' }}>
                 <label>From:</label>
                 <div style={{ marginTop: '15px' }} >
@@ -349,13 +376,15 @@ const mapStateToProps = state => ({
   regNoSuggestion: state.finance.accountantReducer.admissionForm.regNoSuggestion,
   appNoSuggestion: state.finance.accountantReducer.admissionForm.appNoSuggestion,
   otherSugg: state.finance.accountantReducer.admissionForm.otherSugg,
-  dataLoading: state.finance.common.dataLoader
+  dataLoading: state.finance.common.dataLoader,
+  branches: state.finance.common.branchPerSession,
 })
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   getStudentdetailsbyregNumber: (session, regno, user, alert) => dispatch(actionTypes.getStudentdetailsbyregNumber({ session, regno, user, alert })),
   getStudentdetailsbyappNumber: (session, appno, user, alert) => dispatch(actionTypes.getStudentdetailsbyappNumber({ session, appno, user, alert })),
-  searchStudentdetailsbyregNumber: (session, regno, user, alert) => dispatch(actionTypes.searchStudentdetailsbyregNumber({ session, regno, user, alert })),
+  searchStudentdetailsbyregNumber: (session, regno, user, alert, moduleId, branchId) => dispatch(actionTypes.searchStudentdetailsbyregNumber({ session, regno, user, alert, moduleId, branchId })),
   searchStudentdetailsbyAppNumber: (session, appNo, user, alert) => dispatch(actionTypes.searchStudentdetailsbyappNumber({ session, appNo, user, alert })),
   searchAdmissionByOthers: (searchBy, session, key, user, alert) => dispatch(actionTypes.searchAdmissionByOthers({ searchBy, session, key, user, alert }))
 })

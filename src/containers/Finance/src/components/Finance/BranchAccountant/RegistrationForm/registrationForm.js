@@ -54,7 +54,7 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
+          // console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -71,12 +71,20 @@ class RegistrationForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      session: null
+      session: null,
+      selectedBranches: null
     }
   }
 
   handleAcademicyear = (e) => {
-    this.setState({ session: e })
+    this.setState({ session: e }, () => {
+      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+    })
+  }
+
+  changehandlerbranch = (e) => {
+    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    this.setState({ selectedBranches: e})
   }
 
   fromDateHandler = (e) => {
@@ -116,8 +124,8 @@ class RegistrationForm extends Component {
 
   fetchRegListHandler = () => {
     // fetch calll
-    const { session, fromDate, toDate } = this.state
-    this.props.fetchRegistrationList(session, fromDate, toDate, this.props.user, this.props.alert)
+    const { session, fromDate, toDate, selectedBranches } = this.state
+    this.props.fetchRegistrationList(session, fromDate, toDate, this.props.user, this.props.alert, selectedBranches?.value)
   }
 
   render () {
@@ -198,6 +206,24 @@ class RegistrationForm extends Component {
             />
           </Grid>
           <Grid item xs={3} style={{ padding: '20px' }}>
+            <label>Branch*</label>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+              options={
+                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+
+              onChange={this.changehandlerbranch}
+            />
+          </Grid>
+          <Grid item xs={3} style={{ padding: '20px' }}>
             {/* <label>From Date*</label> */}
             <TextField
               id='startDate'
@@ -226,7 +252,7 @@ class RegistrationForm extends Component {
             />
           </Grid>
           <Grid item xs={3} style={{ padding: '20px', marginTop: '18px' }}>
-            <Button variant='contained' disabled={!this.state.session || !this.state.fromDate || !this.state.toDate} color='primary' onClick={this.fetchRegListHandler}>
+            <Button variant='contained' disabled={!this.state.session || !this.state.fromDate || !this.state.toDate || !this.state.selectedBranches} color='primary' onClick={this.fetchRegListHandler}>
                 Get
             </Button>
           </Grid>
@@ -243,12 +269,14 @@ const mapStateToProps = state => ({
   user: state.authentication.user,
   session: state.academicSession.items,
   regList: state.finance.accountantReducer.regForm.regList,
-  dataLoading: state.finance.common.dataLoader
+  dataLoading: state.finance.common.dataLoader,
+  branches: state.finance.common.branchPerSession
 })
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchRegistrationList: (session, fromDate, toDate, user, alert) => dispatch(actionTypes.fetchRegistrationList({ session, fromDate, toDate, user, alert }))
+  fetchRegistrationList: (session, fromDate, toDate, user, alert, branchId) => dispatch(actionTypes.fetchRegistrationList({ session, fromDate, toDate, user, alert, branchId })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(RegistrationForm)))

@@ -109,9 +109,9 @@ const AdjustFeeType = ({
     const uniqueSet = new Set(jsonObject)
     const filteredFeePlan = Array.from(uniqueSet).map(JSON.parse)
     console.log('before filter currFeePlan: ', filteredFeePlan)
-    const uniqueFeePlan = Array.from(new Set(filteredFeePlan.map(a => a.id)))
+    const uniqueFeePlan = Array.from(new Set(filteredFeePlan.map(a => a && a.id)))
       .map(id => {
-        return filteredFeePlan.find(a => a.id === id)
+        return filteredFeePlan.find(a => a && a.id === id)
       })
     console.log('after currFeePlan: ', uniqueFeePlan)
     setCurrFeePlanList(uniqueFeePlan)
@@ -361,8 +361,8 @@ const AdjustFeeType = ({
             options={
               currFeePlanList
                 ? currFeePlanList.map(fp => ({
-                  value: fp.id,
-                  label: fp.fee_plan_name
+                  value: fp && fp.id,
+                  label: fp && fp.fee_plan_name
                 }))
                 : []
             }

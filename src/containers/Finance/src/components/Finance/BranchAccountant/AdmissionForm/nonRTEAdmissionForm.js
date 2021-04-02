@@ -126,17 +126,17 @@ class NonRTEFormAcc extends Component {
     getStepContent = (stepIndex) => {
       switch (stepIndex) {
         case 0:
-          return <NonRTEStudentDetailsFormAcc studentPrefillDetails={this.props.studentPrefillDetails} getStudentDetail={this.getStudentDetail} alert={this.props.alert} />
+          return <NonRTEStudentDetailsFormAcc branch={this.props.history.location.branch} studentPrefillDetails={this.props.studentPrefillDetails} getStudentDetail={this.getStudentDetail} alert={this.props.alert} />
         case 1:
-          return <NonRTEStudentParentDetailsFormAcc getStudentParentDetail={this.getStudentParentDetail} alert={this.props.alert} />
+          return <NonRTEStudentParentDetailsFormAcc branch={this.props.history.location.branch} getStudentParentDetail={this.getStudentParentDetail} alert={this.props.alert} />
         case 2:
-          return <NonRTEAddressDetailsFormAcc getAddressDetail={this.getAddressDetail} />
+          return <NonRTEAddressDetailsFormAcc branch={this.props.history.location.branch} getAddressDetail={this.getAddressDetail} />
         case 3:
-          return <NonRTEOtherDetailsFormAcc alert={this.props.alert} getOtherDetail={this.getOtherDetail} />
+          return <NonRTEOtherDetailsFormAcc branch={this.props.history.location.branch} alert={this.props.alert} getOtherDetail={this.getOtherDetail} />
         case 4:
-          return <NonRTEFeeDetailsFormAcc alert={this.props.alert} session={this.state.studentdetails.academicyear} stuGrade={this.state.studentdetails.class} getFeeDetails={this.getFeeDetails} />
+          return <NonRTEFeeDetailsFormAcc branch={this.props.history.location.branch} alert={this.props.alert} session={this.state.studentdetails.academicyear} stuGrade={this.state.studentdetails.class} getFeeDetails={this.getFeeDetails} />
         case 5:
-          return <Receipt alert={this.props.alert} session={this.state.studentdetails.academicyear} feeTable={this.state.feeDetails} getReceiptDetail={this.getReceiptDetail} />
+          return <Receipt branch={this.props.history.location.branch} alert={this.props.alert} session={this.state.studentdetails.academicyear} feeTable={this.state.feeDetails} getReceiptDetail={this.getReceiptDetail} />
 
         default:
           return 'Unknown stepIndex'
@@ -266,6 +266,7 @@ class NonRTEFormAcc extends Component {
         let payData = null
         if (+this.state.payment.mode === 1) {
           payData = {
+            branch_id: this.props.history.location.branch,
             student: this.props.erpCode,
             date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
             total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -280,6 +281,7 @@ class NonRTEFormAcc extends Component {
           // this.sendingToServer(cashData)
         } else if (+this.state.payment.mode === 2) {
           payData = {
+            branch_id: this.props.history.location.branch,
             student: this.props.erpCode,
             date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
             total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -299,6 +301,7 @@ class NonRTEFormAcc extends Component {
           // this.sendingToServer(chequeData)
         } else if (+this.state.payment.mode === 3) {
           payData = {
+            branch_id: this.props.history.location.branch,
             student: this.props.erpCode,
             date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
             total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -314,6 +317,7 @@ class NonRTEFormAcc extends Component {
           // this.sendingToServer(internetData)
         } else if (+this.state.payment.mode === 5) {
           payData = {
+            branch_id: this.props.history.location.branch,
             student: this.props.erpCode,
             date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
             total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -329,6 +333,7 @@ class NonRTEFormAcc extends Component {
           // this.sendingToServer(internetData)
         } else if (+this.state.payment.mode === 4) {
           payData = {
+            branch_id: this.props.history.location.branch,
             student: this.props.erpCode,
             date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
             total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -348,6 +353,7 @@ class NonRTEFormAcc extends Component {
         }
         const body = {
           session_year: studentdetails.academicyear,
+          branch_id: this.props.history.location.branch,
           name: studentdetails.firstName,
           first_name: studentdetails.firstName,
           middle_name: studentdetails.middleName,

@@ -377,15 +377,17 @@ class FeeShowList extends Component {
   }
 
   componentDidMount () {
-    // console.log('Total1', this.props.location.state.session)
+    console.log('Total1', this.props.location.state.session)
     this.setState({
-      session: this.props.location.state.session
+      session: this.props.location.state.session,
+      branchId: this.props.location.state.branch
     }, () => {
-      this.props.fetchFeeCollection(this.state.session, this.props.user, this.props.alert)
-      this.props.fetchGrades(this.state.session, this.props.alert, this.props.user)
+      this.props.fetchFeeCollection(this.state.session, this.props.user, this.props.alert, this.state.branchId)
+      // this.props.fetchGrades(this.state.session, this.props.alert, this.props.user)
+      this.props.fetchGrades(this.props.alert, this.props.user, moduleId, this.state.branchId, this.state.session)
     })
     if (this.state.sessions) {
-      this.props.fetchGrades(this.state.sessions.value, this.props.alert, this.props.user)
+      // this.props.fetchGrades(this.state.sessions.value, this.props.alert, this.props.user)
     }
     // this.props.fetchBranchData(this.props.alert, this.props.user)
     // this.props.fetchReceiptRange(this.state.session, this.props.branchData && this.props.branchData.branch_name, this.props.alert, this.props.user)
@@ -824,7 +826,8 @@ class FeeShowList extends Component {
             payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
             receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
             receipt_number: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
-            current_date: new Date().toISOString().substr(0, 10)
+            current_date: new Date().toISOString().substr(0, 10),
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(cashData)
           // } else {
@@ -872,7 +875,8 @@ class FeeShowList extends Component {
             payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
             receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
             receipt_number_online: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
-            current_date: new Date().toISOString().substr(0, 10)
+            current_date: new Date().toISOString().substr(0, 10),
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(cashData)
         // } else {
@@ -935,7 +939,8 @@ class FeeShowList extends Component {
             // name_on_cheque: payment.cheque.chequeName ? payment.cheque.chequeName : null,
             current_date: new Date().toISOString().substr(0, 10),
             bank_name: payment.cheque.chequeBankName ? payment.cheque.chequeBankName : null,
-            bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null
+            bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null,
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(chequeData)
         } else {
@@ -960,7 +965,8 @@ class FeeShowList extends Component {
             // name_on_cheque: payment.cheque.chequeName ? payment.cheque.chequeName : null,
             current_date: new Date().toISOString().substr(0, 10),
             bank_name: payment.cheque.chequeBankName ? payment.cheque.chequeBankName : null,
-            bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null
+            bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null,
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(chequeData)
         }
@@ -989,7 +995,8 @@ class FeeShowList extends Component {
             transaction_id: payment.transid ? payment.transid : null,
             internet_date: payment.internet.internetDate ? payment.internet.internetDate : null,
             remarks: payment.internet.remarks ? payment.internet.remarks : null,
-            current_date: new Date().toISOString().substr(0, 10)
+            current_date: new Date().toISOString().substr(0, 10),
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(internetData)
         } else {
@@ -1010,7 +1017,8 @@ class FeeShowList extends Component {
             transaction_id: payment.transid ? payment.transid : null,
             internet_date: payment.internet.internetDate ? payment.internet.internetDate : null,
             remarks: payment.internet.remarks ? payment.internet.remarks : null,
-            current_date: new Date().toISOString().substr(0, 10)
+            current_date: new Date().toISOString().substr(0, 10),
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(internetData)
         }
@@ -1042,7 +1050,8 @@ class FeeShowList extends Component {
             card_last_digits: payment.credit.digits ? payment.credit.digits : null,
             bank_name: payment.credit.bankName ? payment.credit.bankName : null,
             credit_date: payment.credit.creditDate ? payment.credit.creditDate : null,
-            current_date: new Date().toISOString().substr(0, 10)
+            current_date: new Date().toISOString().substr(0, 10),
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(creditData)
         } else {
@@ -1066,7 +1075,8 @@ class FeeShowList extends Component {
             card_last_digits: payment.credit.digits ? payment.credit.digits : null,
             bank_name: payment.credit.bankName ? payment.credit.bankName : null,
             credit_date: payment.credit.creditDate ? payment.credit.creditDate : null,
-            current_date: new Date().toISOString().substr(0, 10)
+            current_date: new Date().toISOString().substr(0, 10),
+            branch_id: this.props.location.state && this.props.location.state.branch
           }
           this.sendingToServer(creditData)
         }
@@ -1165,9 +1175,11 @@ class FeeShowList extends Component {
       getData: false,
       s: null,
       showTabs: false
-    }, () => {
-      this.props.fetchGrades(this.state.sessions.value, this.props.alert, this.props.user)
-    })
+    }
+    // , () => {
+    //   this.props.fetchGrades(this.state.sessions.value, this.props.alert, this.props.user)
+    // }
+    )
   }
 
   gradeHandler = (e) => {
@@ -1179,7 +1191,7 @@ class FeeShowList extends Component {
           getData: false
         })
       } else {
-        this.props.fetchAllSections(this.state.sessions.value, this.state.gradeId, this.props.alert, this.props.user, moduleId)
+        this.props.fetchAllSections(this.state.sessions.value, this.state.gradeId, this.props.alert, this.props.user, moduleId, this.state.branchId)
         this.setState({
           allSections: false,
           getData: false
@@ -1241,7 +1253,8 @@ class FeeShowList extends Component {
       this.state.studentTypeData.value,
       this.state.students,
       this.props.alert,
-      this.props.user
+      this.props.user,
+      this.state.branchId
     )
   }
 
@@ -1269,7 +1282,8 @@ class FeeShowList extends Component {
       this.state.studentTypeData.value,
       this.state.studentName,
       this.props.alert,
-      this.props.user
+      this.props.user,
+      this.state.branchId
     )
   }
 
@@ -1813,8 +1827,8 @@ class FeeShowList extends Component {
                     placeholder='Select Grade'
                     value={this.state.gradeData ? this.state.gradeData : null}
                     options={
-                      this.props.gradeData
-                        ? this.props.gradeData && this.props.gradeData.map(grades => ({
+                      this.props.gradeList
+                        ? this.props.gradeList && this.props.gradeList.map(grades => ({
                           value: grades.grade.id,
                           label: grades.grade.grade
                         }))
@@ -1966,8 +1980,8 @@ class FeeShowList extends Component {
                       name='class'
                       // className='form-control'
                       options={
-                        this.props.gradeDatas
-                          ? this.props.gradeDatas && this.props.gradeDatas.map(grades => ({
+                        this.props.gradeList
+                          ? this.props.gradeList && this.props.gradeList.map(grades => ({
                             value: grades.grade.id,
                             label: grades.grade.grade
                           }))
@@ -2489,7 +2503,7 @@ const mapStateToProps = state => ({
   dataLoading: state.finance.common.dataLoader,
   feeList: state.finance.accountantReducer.feeCollection.feeCollectionList,
   studentId: state.finance.accountantReducer.feeCollection.studentId,
-  gradeData: state.finance.accountantReducer.pdc.gradeData,
+  // gradeData: state.finance.accountantReducer.pdc.gradeData,
   gradeDatas: state.finance.accountantReducer.pdc.gradeDatas,
   ifsc: state.finance.common.ifscDetails,
   ReceiptNo: state.finance.accountantReducer.feeCollection.ReceiptNo,
@@ -2503,15 +2517,17 @@ const mapStateToProps = state => ({
   // gradeData: state.finance.accountantReducer.pdc.gradeData,
   sectionData: state.finance.accountantReducer.changeFeePlan.sectionData,
   studentErp: state.finance.accountantReducer.studentErpSearch.studentErpList,
-  branchData: state.finance.accountantReducer.financeAccDashboard.branchData
+  branchData: state.finance.accountantReducer.financeAccDashboard.branchData,
+  gradeList: state.finance.common.gradeList,
 })
 
 const mapDispatchToProps = dispatch => ({
   fetchStudentErpDet: (erp, session, user, alert) => dispatch(actionTypes.fetchStudentErpDet({ erp, session, user, alert })),
-  fetchFeeCollection: (session, user, alert) => dispatch(actionTypes.fetchFeeCollectionList({ session, user, alert })),
+  fetchFeeCollection: (session, user, alert, branch) => dispatch(actionTypes.fetchFeeCollectionList({ session, user, alert, branch })),
   saveOutsiders: (data, user, alert) => dispatch(actionTypes.saveOutsiders({ data, user, alert })),
   orchidsStudentPay: (data, user, alert) => dispatch(actionTypes.orchidsStudentPay({ data, user, alert })),
-  fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user })),
+  // fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user })),
+  fetchGrades: (alert, user, moduleId, branch, session) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch, session })),
   paymentAction: (data, user, alert) => dispatch(actionTypes.paymentAction({ data, user, alert })),
   fetchIfsc: (ifsc, alert, user) => dispatch(actionTypes.fetchIfsc({ ifsc, alert, user })),
   // sendAllPayments: (data, user, alert) => dispatch(actionTypes.sendAllPayments({ data, user, alert }))
@@ -2519,9 +2535,9 @@ const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   // fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user })),
   // fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
-  studentErpSearch: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user })),
+  studentErpSearch: (type, session, grade, section, status, erp, alert, user, branch) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user, branch })),
   clearAllProps: (alert, user) => dispatch(actionTypes.clearAllProps({ alert, user })),
-  fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId })),
+  fetchAllSections: (session, gradeId, alert, user, moduleId, branch) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId, branch })),
   fetchReceiptRange: (session, erp, alert, user) => dispatch(actionTypes.fetchReceiptRange({ session, erp, alert, user })),
   fetchBranchData: (alert, user, moduleId) => dispatch(actionTypes.fetchAccountantBranch({ alert, user, moduleId })),
   fetchMicr: (micr, alert, user) => dispatch(actionTypes.fetchMicr({ micr, alert, user }))

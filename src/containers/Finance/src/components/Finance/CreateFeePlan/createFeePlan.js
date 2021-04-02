@@ -149,7 +149,7 @@ class CreateFeePlan extends Component {
   }
 
   handleClickSessionYear = (e) => {
-    this.setState({ session: e.value, branchData: [], sessionData: e })
+    this.setState({ session: e.value, sessionData: e })
     this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
   }
 
@@ -273,6 +273,7 @@ class CreateFeePlan extends Component {
     if (this.state.addGradeModal) {
       addFeePlanGradeModal = (
         <EModal open={this.state.addGradeModal} click={this.closeAddGradeHandler} medium>
+          <React.Fragment>
           <Grid container spacing={3} style={{ padding: 25 }}>
             <Grid item xs='12' >
               <h3>Add Grade</h3>
@@ -303,6 +304,7 @@ class CreateFeePlan extends Component {
               >Add </Button>
             </Grid>
           </Grid>
+          </React.Fragment>
         </EModal>
       )
     }

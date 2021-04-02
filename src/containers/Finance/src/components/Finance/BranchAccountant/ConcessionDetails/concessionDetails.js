@@ -7,13 +7,16 @@ import {
 
 import FeeConcession from './feeConcessionDetails'
 import OtherFeeConcession from './otherFeeConcession'
+import concessionLastDate from '../../LastDateSettings/concessionLastDate'
 
 const ConcessionDetails = ({
   session,
   alert,
   user,
   getData,
-  erp
+  erp,
+  moduleId,
+  branchId
 }) => {
   const [selectedValue, setSelectedValue] = useState('one')
   // const data = null
@@ -23,6 +26,7 @@ const ConcessionDetails = ({
     if (erp && erp.length >= 10) {
       console.log('Api Called')
     }
+    console.log('qwer1', moduleId, branchId )
   }, [getData, erp, session])
 
   const handleChange = (event) => {
@@ -39,6 +43,8 @@ const ConcessionDetails = ({
           user={user}
           alert={alert}
           getData={getData}
+          branchId={branchId}
+          moduleId={moduleId}
         />
       )
     } else if (selectedValue === 'two') {
@@ -49,6 +55,8 @@ const ConcessionDetails = ({
           user={user}
           alert={alert}
           getData={getData}
+          branchId={branchId}
+          moduleId={moduleId}
         />
       )
     }
