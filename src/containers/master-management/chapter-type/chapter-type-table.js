@@ -210,7 +210,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
       });
       axiosInstance
         .get(
-          `${endpoints.communication.grades}?session_year=${filterData.year.id}&branch_id=${value.id}&module_id=${moduleId}`
+          `${endpoints.communication.grades}?session_year=${filterData.year.id}&branch_id=${value.branch.id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -241,7 +241,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&grade=${value.grade_id}&module_id=${moduleId}`
+          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.branch.id}&grade=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -258,7 +258,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
 
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?session_year=${filterData.year.id}&branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&module_id=${moduleId}`
+          `${endpoints.masterManagement.sections}?session_year=${filterData.year.id}&branch_id=${filterData.branch.branch.id}&grade_id=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -288,7 +288,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
       if (value && filterData.branch && filterData.year && filterData.volume) {
         axiosInstance
           .get(
-            `${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value.id}&academic_year=${filterData.year.id}&branch=${filterData.grade.grade_id}`
+            `${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value.id}&academic_year=${filterData.year.id}&grade_id=${filterData.grade.grade_id}`
           )
           .then((result) => {
             if (result.data.status_code === 200) {

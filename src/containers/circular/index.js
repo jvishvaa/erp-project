@@ -121,19 +121,19 @@ const CircularList = () => {
         )
         .then((result) => {
           if (result.data.status_code === 200) {
-            setTotalCount(result.data.count);
+            setTotalCount(result?.data?.count);
             setLoading(false);
-            setPeriodData(result.data.result);
+            setPeriodData(result?.data?.result);
             setViewMore(false);
             setViewMoreData({});
           } else {
             setLoading(false);
-            setAlert('error', result.data.description);
+            setAlert('error', result?.data?.description);
           }
         })
         .catch((error) => {
           setLoading(false);
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     } else {
       setPeriodData([]);

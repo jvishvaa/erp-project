@@ -145,6 +145,7 @@ const Filter = (props) => {
                     setFilterList(result.data.data || {});
                     setSelectedViewMore('');
                     props.getResourceData(result.data.data);
+                    props.totalCount(result.data.count);
                 }
                 setLoading(false);
             } else {
@@ -233,7 +234,7 @@ const Filter = (props) => {
         setAlert('warning', 'Select Section');
         return;
       }
-      if (selectedClassType.id === 1) {
+      if (selectedClassType.id !== 0) {
         if (!selectedCourse) {
           setAlert('warning', 'Select Course');
           return;
@@ -259,22 +260,21 @@ const Filter = (props) => {
         setLoading(true);
         setPage(1);
         if(window.location.host === endpoints?.aolConfirmURL){
-            callApi(`${endpoints.teacherViewBatches.getBatchList}?is_aol=1&course=${selectedCourse.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=1&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}`,
+            callApi(`${endpoints.teacherViewBatches.getBatchList}?is_aol=1&course=${selectedCourse.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=${props.pages}&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}`,
             'filter'
         );
         }else if(selectedCourse.id){
             callApi(
-                `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.map((el)=>el.id)}&session_year=${selectedAcademicYear.id}&class_type=${selectedClassType.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${selectedCourse.id}&page_number=1&page_size=15&module_id=${moduleId}`,
+                `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.map((el)=>el.id)}&session_year=${selectedAcademicYear.id}&class_type=${selectedClassType.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${selectedCourse.id}&page_number=${props.pages}&page_size=12&module_id=${moduleId}`,
                 'filter'
               );
         }else {
             callApi(
-              `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.map((el)=>el.id)}&session_year=${selectedAcademicYear.id}&subject_id=${subSelectedId}&class_type=${selectedClassType.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=1&page_size=15&module_id=${moduleId}`,
+              `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.map((el)=>el.id)}&session_year=${selectedAcademicYear.id}&subject_id=${subSelectedId}&class_type=${selectedClassType.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=${props.pages}&page_size=12&module_id=${moduleId}`,
               'filter'
             );
           }
     }
-    console.log(secSelectedId,'+++++++++++++++++++++++++++++++++++++++')
     function handleDate(v1) {
         if (v1 && v1.length !== 0) {
             setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
@@ -283,46 +283,52 @@ const Filter = (props) => {
         setDateRangeTechPer(v1);
     }
 
+    useEffect(() => {
+      if(selectedBranch.length > 0){
+        handleFilter();
+      }
+    }, [props.pages])
+
     return (
         <>
             <Grid container spacing={2} style={{ marginTop: '10px' }}>
                 {window.location.host !== endpoints?.aolConfirmURL && (
                    <Grid item md={3} xs={12}>
                    <Autocomplete
-                       style={{ width: '100%' }}
-                       size='small'
-                       onChange={(event, value) => {
-                           setSelectedClassType(value)
-                    setSelectedGrade([]);
-                    setCourseList([]);
-                    setSelectedCourse('');
-                    setBatchList([]);
-                    setSelectedBatch('');
-                    setFilterList([]);
-                    setSelectedViewMore('');
-                    setSectionList([]);
-                    setSelectedSection([]);
-                    setSubjectList([]);
-                    setSelectedSubject([]);
-                    setSelectedBranch([])
-                    setSelectedAcadmeicYear('')
-                    props.getResourceData([]);
+                      style={{ width: '100%' }}
+                      size='small'
+                      onChange={(event, value) => {
+                        setSelectedClassType(value)
+                        setSelectedGrade([]);
+                        setCourseList([]);
+                        setSelectedCourse('');
+                        setBatchList([]);
+                        setSelectedBatch('');
+                        setFilterList([]);
+                        setSelectedViewMore('');
+                        setSectionList([]);
+                        setSelectedSection([]);
+                        setSubjectList([]);
+                        setSelectedSubject([]);
+                        setSelectedBranch([])
+                        setSelectedAcadmeicYear('')
+                        props.getResourceData([]);
 
-                       }}
-                       id='branch_id'
-                       className='dropdownIcon'
-                       value={selectedClassType}
-                       options={classTypes}
-                       getOptionLabel={(option) => option?.type}
-                       filterSelectedOptions
-                       renderInput={(params) => (
+                      }}
+                      id='branch_id'
+                      className='dropdownIcon'
+                      value={selectedClassType}
+                      options={classTypes}
+                      getOptionLabel={(option) => option?.type}
+                      filterSelectedOptions
+                      renderInput={(params) => (
                            <TextField
                                {...params}
                                variant='outlined'
                                label='Class Types'
                                placeholder='Class Types'
                            />
-                       )}
+                      )}
                    />
                </Grid> 
                 )}

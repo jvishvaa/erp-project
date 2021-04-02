@@ -41,6 +41,7 @@ const LessonViewFilters = ({
     const location = useLocation();
     const [branchDropdown, setBranchDropdown] = useState([]);
     const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
+    const [academicYear, setAcademicYear] = useState([]);
     const [volumeDropdown, setVolumeDropdown] = useState([]);
     const [gradeDropdown, setGradeDropdown] = useState([]);
     const [subjectDropdown, setSubjectDropdown] = useState([]);
@@ -48,6 +49,7 @@ const LessonViewFilters = ({
     const [overviewSynopsis, setOverviewSynopsis] = useState([]);
     const [centralGsMappingId, setCentralGsMappingId] = useState();
     const [filterData, setFilterData] = useState({
+        academic: '',
         branch: '',
         year: '',
         volume: '',
@@ -58,6 +60,7 @@ const LessonViewFilters = ({
 
     const handleClear = () => {
         setFilterData({
+            academic: '',
             branch: '',
             year: '',
             volume: '',
@@ -194,7 +197,7 @@ const LessonViewFilters = ({
         if (filterData.grade && filterData.year && filterData.volume && value) {
             setFilterData({ ...filterData, subject: value, chapter: '' });
             if (value && filterData.branch && filterData.year && filterData.volume) {
-                axiosInstance.get(`${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value.id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&branch=${filterData.grade.grade_id}`)
+                axiosInstance.get(`${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value.id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&grade_id=${filterData.grade.grade_id}`)
                     .then(result => {
                         if (result.data.status_code === 200) {
                             setChapterDropdown(result.data.result.chapter_list);
@@ -251,17 +254,25 @@ const LessonViewFilters = ({
     }
 
     useEffect(() => {
-        axiosInstance.get(`${endpoints.communication.branches}?module_id=${getModuleId()}`)
-            .then(response => {
-                if (response.data.status_code === 200) {
-                    setBranchDropdown(response.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean));
-                } else {
-                    setAlert('error', response.data.message);
-                }
-            }).catch(error => {
-                setAlert('error', error.message);
-            })
+        // axiosInstance.get(`${endpoints.communication.branches}?academic_year=${filterData.year.id}&module_id=${getModuleId()}`)
+        //     .then(response => {
+        //         if (response.data.status_code === 200) {
+        //             setBranchDropdown(response.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean));
+        //         } else {
+        //             setAlert('error', response.data.message);
+        //         }
+        //     }).catch(error => {
+        //         setAlert('error', error.message);
+        //     })
 
+        axiosInstance.get(`${endpoints.userManagement.academicYear}?module_id=${getModuleId()}`)
+        .then(res => {
+            console.log(res.data);
+            setAcademicYear(res.data.data);
+        }).catch(error => {
+            setAlert('error ', error);
+        });
+            //setAcademicYear
         axios.get(`${endpoints.lessonPlan.academicYearList}`, {
             headers: {
                 'x-api-key': 'vikash@12345#1231',
@@ -290,6 +301,31 @@ const LessonViewFilters = ({
             setAlert('error', error.message);
         })
     }, []);
+
+    useEffect(() => {
+        if(filterData.year?.id){
+            let erp_year;
+            const acad = academicYear.map((year) => {
+                if(year.session_year === filterData.year.session_year){
+                    console.log(year);
+                    erp_year = year;
+                    setFilterData({ ...filterData, academic: year})
+                    return year;
+                }
+                return {}
+            })
+            axiosInstance.get(`${endpoints.communication.branches}?session_year=${erp_year?.id}&module_id=${getModuleId()}`)
+            .then(response => {
+                if (response.data.status_code === 200) {
+                    setBranchDropdown(response.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean));
+                } else {
+                    setAlert('error', response.data.message);
+                }
+            }).catch(error => {
+                setAlert('error', error.message);
+            })
+        }
+    }, [filterData.year]);
 
     return (
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
@@ -453,7 +489,8 @@ const LessonViewFilters = ({
                     <a className="underlineRemove" 
                     // href={`${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${centralGradeName}/${centralSubjectName}/pdf/${obj?.media_file[0]}`}
                     onClick={()=>{
-                        const fileSrc = `${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${centralGradeName}/${centralSubjectName}/pdf/${obj?.media_file[0]}`
+                        // const fileSrc = `${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${centralGradeName}/${centralSubjectName}/pdf/${obj?.media_file[0]}`
+                        const fileSrc = `${endpoints.lessonPlan.s3}${obj?.media_file[0]}`
                         openPreview({
                             currentAttachmentIndex:0,
                             attachmentsArray: [
