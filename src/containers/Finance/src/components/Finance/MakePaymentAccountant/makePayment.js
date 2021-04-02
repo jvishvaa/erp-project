@@ -288,6 +288,7 @@ class MakePayment extends Component {
           getData={this.getAxisPosDataHandler}
           totalAmountToBePaid={this.state.totalAmountToBePaid}
           alert={this.props.alert}
+          branch={this.props.branchId}
           // walletInfo={this.props.walletInfo}
         />
       case 3:
