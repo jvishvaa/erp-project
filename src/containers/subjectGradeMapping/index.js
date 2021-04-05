@@ -31,12 +31,14 @@ const useStyles = makeStyles((theme) => ({
 
 const Subjectgrade = (props) => {
     const classes = useStyles();
+    const [academicYear, setAcademicYear] = useState([]);
     const [branchRes, setBranchRes] = useState([]);
     const [gradeRes, setGradeRes] = useState([]);
     const [subjectRes, setSubjectRes] = useState([]);
     const [centralSubject, setCentralSubject] = useState([]);
     const [centralGrade, setCentralGrade] = useState([]);
     const [subjectValue, setSubjectValue] = useState(null);
+    const [selectedYear, setSelectedYear] = useState(null);
     const [branchValue, setBranchValue] = useState(null);
     const [gradeValue, setGradeValue] = useState(null);
     const [centralSubValue, setcentralSubValue] = useState(null);
@@ -49,9 +51,20 @@ const Subjectgrade = (props) => {
 
 
     useEffect(() => {
+        axiosInstance.get(`${endpoints.userManagement.academicYear}?module_id=8`).then(res => {
+            if (res.data.data) {
+                console.log(res.data.data);
+                setAcademicYear(res.data.data);
+            }
+        }).catch(err => {
+            console.log(err)
+        })
+    }, []);
+
+    useEffect(() => {
         //axiosInstance.get(endpoints.mappingStudentGrade.branch).then(res => {
         const getBranch = () => {
-            axiosInstance.get(endpoints.masterManagement.branchList).then(res => {
+            axiosInstance.get(`${endpoints.masterManagement.branchList}?session_year=${selectedYear?.id}`).then(res => {
                 if (res.data.data) {
                     setBranchRes(res.data.data)
                 }
@@ -60,15 +73,16 @@ const Subjectgrade = (props) => {
             })
 
         }
-        getBranch()
-        centralGradeSubjects()
-
-    }, []);
+        if(selectedYear?.id){
+            getBranch();
+            centralGradeSubjects();
+        }
+    }, [selectedYear]);
 
     const handleChangeBranch = (value) => {
         if (value) {
             setBranchValue(value);
-            axiosInstance.get(`${endpoints.mappingStudentGrade.grade}?branch_id=${value.id}&module_id=8`).then(res => {
+            axiosInstance.get(`${endpoints.mappingStudentGrade.grade}?session_year=${selectedYear?.id}&branch_id=${value.id}&module_id=8`).then(res => {
                 if (res.data.data) {
                     console.log(res.data.data)
                     setGradeRes(res.data.data)
@@ -84,7 +98,7 @@ const Subjectgrade = (props) => {
     const handleGradeChange = (value) => {
         setGradeValue(value);
         if (value) {
-            axiosInstance.get(`${endpoints.mappingStudentGrade.subjects}?branch=${branchValue.id}&grade=${value.grade_id}`).then(res => {
+            axiosInstance.get(`${endpoints.mappingStudentGrade.subjects}?session_year=${selectedYear?.id}&branch=${branchValue.id}&grade=${value.grade_id}`).then(res => {
                 if (res.data.result) {
                     setSubjectRes(res.data.result)
                 }
@@ -96,6 +110,12 @@ const Subjectgrade = (props) => {
             setGradeValue(null);
         }
 
+    }
+
+    const handleChangeYear = (vaule) => {
+        if(vaule) {
+            setSelectedYear(vaule);
+        }
     }
 
     const handleSubjectChange = (e, value) => {
@@ -363,173 +383,197 @@ const Subjectgrade = (props) => {
                 </div>
                 <div className="mapping-grade-subject-dropdown-container">
                     <Grid container className={classes.root} spacing={2}>
-                        <Grid item xs={10} style={{ display: 'flex', justifyContent: 'space-around' }}>
-                            <div className="branch-dropdown">
-                                <Grid item xs={12} sm={4}>
-                                    <FormControl className={`select-form`}>
-                                        <Autocomplete
-                                            // {...defaultProps}
-                                            style={{ width: 350 }}
-                                            // multiple
-                                            value={branchValue}
-                                            id="tags-outlined"
-                                            options={branchRes}
-                                            getOptionLabel={(option) => option.branch_name}
-                                            filterSelectedOptions
-                                            size="small"
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    variant="outlined"
-                                                    label="Branch"
-
-                                                />
-                                            )}
-                                            onChange={(e, value) => {
-                                                handleChangeBranch(value);
-                                            }}
-                                            getOptionSelected={(option, value) => value && option.id == value.id}
+                        <Grid item xs={12} sm={4}>
+                            <FormControl className={`select-form`}>
+                                <Autocomplete
+                                    // {...defaultProps}
+                                    style={{ width: 350 }}
+                                    // multiple
+                                    value={selectedYear}
+                                    id="tags-outlined"
+                                    options={academicYear}
+                                    getOptionLabel={(option) => option.session_year}
+                                    filterSelectedOptions
+                                    size="small"
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            label="Academic Year"
                                         />
-                                        <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.branchError}</FormHelperText>
-                                    </FormControl>
-
-                                </Grid>
+                                    )}
+                                    onChange={(e, value) => {
+                                        handleChangeYear(value);
+                                    }}
+                                    getOptionSelected={(option, value) => value && option.id == value.id}
+                                />
+                                <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.branchError}</FormHelperText>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <FormControl className={`select-form`}>
+                                <Autocomplete
+                                    // {...defaultProps}
+                                    style={{ width: 350 }}
+                                    // multiple
+                                    value={branchValue}
+                                    id="tags-outlined"
+                                    options={branchRes}
+                                    getOptionLabel={(option) => option.branch_name}
+                                    filterSelectedOptions
+                                    size="small"
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            label="Branch"
+                                        />
+                                    )}
+                                    onChange={(e, value) => {
+                                        handleChangeBranch(value);
+                                    }}
+                                    getOptionSelected={(option, value) => value && option.id == value.id}
+                                />
+                                <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.branchError}</FormHelperText>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <FormControl className={`grade-form`}>
+                                <Autocomplete
+                                    // {...defaultProps}
+                                    style={{ width: 350 }}
+                                    // multiple
+                                    // defaultvalue={Options.find(v => v.label[0])} 
+                                    value={gradeValue}
+                                    id="tags-outlined"
+                                    options={gradeRes}
+                                    getOptionLabel={(option) => option.grade__grade_name}
+                                    filterSelectedOptions
+                                    size="small"
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            label="Grade"
+                                        />
+                                    )}
+                                    onChange={(e, value) => {
+                                        handleGradeChange(value);
+                                    }}
+                                    getOptionSelected={(option, value) => value && option.id == value.id}
+                                />
+                                <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.erp_gradeError}</FormHelperText>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <FormControl className={`subject-form`}>
+                                <Autocomplete
+                                    {...defaultProps}
+                                    style={{ width: 350 }}
+                                    multiple
+                                    required={true}
+                                    value={subjectUpdateValue || []}
+                                    // defaultValue={subjectRes.find(v =>  v)} 
+                                    id="tags-outlined"
+                                    options={subjectRes}
+                                    getOptionLabel={(option) => option.subject_name}
+                                    filterSelectedOptions
+                                    size="small"
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            label="Subject"
+                                        />
+                                    )}
+                                    onChange={(e, value) => {
+                                        handleSubjectChange(e, value);
+                                    }}
+                                    getOptionSelected={(option, value) => value && option.id == value.id}
+                                />
+                                <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.erp_gs_mappingError}</FormHelperText>
+                            </FormControl>
+                        </Grid>
+                        {/* <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-around' }}>
+                            <div className="branch-dropdown">
+                                
                             </div>
                             <div className="grade-dropdown">
-                                <Grid item xs={12} sm={4}>
-                                    <FormControl className={`grade-form`}>
-                                        <Autocomplete
-                                            // {...defaultProps}
-                                            style={{ width: 350 }}
-                                            // multiple
-                                            // defaultvalue={Options.find(v => v.label[0])} 
-                                            value={gradeValue}
-                                            id="tags-outlined"
-                                            options={gradeRes}
-                                            getOptionLabel={(option) => option.grade__grade_name}
-                                            filterSelectedOptions
-                                            size="small"
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    variant="outlined"
-                                                    label="Grade"
-
-                                                />
-                                            )}
-                                            onChange={(e, value) => {
-                                                handleGradeChange(value);
-                                            }}
-                                            getOptionSelected={(option, value) => value && option.id == value.id}
-                                        />
-                                    <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.erp_gradeError}</FormHelperText>
-
-                                    </FormControl>
-                                </Grid>
+                                
                             </div>
                             <div className="subject-dropdown">
-                                <Grid item xs={12} sm={4}>
-                                    <FormControl className={`subject-form`}>
-                                        <Autocomplete
-                                            {...defaultProps}
-                                            style={{ width: 350 }}
-                                            multiple
-                                            required={true}
-                                            value={subjectUpdateValue || []}
-                                            // defaultValue={subjectRes.find(v =>  v)} 
-                                            id="tags-outlined"
-                                            options={subjectRes}
-                                            getOptionLabel={(option) => option.subject_name}
-                                            filterSelectedOptions
-                                            size="small"
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    variant="outlined"
-                                                    label="Subject"
-                                                />
-                                            )}
-                                            onChange={(e, value) => {
-                                                handleSubjectChange(e, value);
-                                            }}
-                                            getOptionSelected={(option, value) => value && option.id == value.id}
-                                        />
-                                         <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.erp_gs_mappingError}</FormHelperText>
-                                    </FormControl>
-                                </Grid>
+                                
                             </div>
-                        </Grid>
+                        </Grid> */}
                     </Grid>
 
                 </div>
                 <div className="cen-dropdown">
                     <Grid container className={classes.root} spacing={2}>
-                        <Grid item xs={10} style={{ display: 'flex', }}>
-                       
-                            <div className="central-grade-dropdown">
-                                <Grid item xs={12} sm={4}>
-                                    <FormControl className={`select-form`}>
-                                        <Autocomplete
-                                            // {...defaultProps}
-                                            style={{ width: 350 }}
-                                            // multiple
-                                            value={centralGradeValue}
-                                            id="tags-outlined"
-                                            options={centralGrade}
-                                            getOptionLabel={(option) => option.grade_name}
-                                            filterSelectedOptions
-                                            size="small"
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    variant="outlined"
-                                                    label="Central-Grade"
-
-                                                />
-                                            )}
-                                            onChange={(e, value) => {
-                                                handleChangeCentralGrade(value);
-                                            }}
-                                            getOptionSelected={(option, value) => value && option.id == value.id}
+                        <Grid item xs={12} sm={4}>
+                            <FormControl className={`select-form`}>
+                                <Autocomplete
+                                    // {...defaultProps}
+                                    style={{ width: 350 }}
+                                    // multiple
+                                    value={centralGradeValue}
+                                    id="tags-outlined"
+                                    options={centralGrade}
+                                    getOptionLabel={(option) => option.grade_name}
+                                    filterSelectedOptions
+                                    size="small"
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            label="Central-Grade"
                                         />
-                                        <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.central_gradeError}</FormHelperText>
-                                    </FormControl>
+                                    )}
+                                    onChange={(e, value) => {
+                                        handleChangeCentralGrade(value);
+                                    }}
+                                    getOptionSelected={(option, value) => value && option.id == value.id}
+                                />
+                                <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.central_gradeError}</FormHelperText>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <FormControl className={`select-form`}>
+                                <Autocomplete
+                                    // {...defaultProps}
+                                    style={{ width: 350 }}
+                                    // multiple
+                                    value={centralSubValue}
+                                    id="tags-outlined"
+                                    // options={centralSubject}
+                                    options={(centralGradeValue&&centralGradeValue.subject)||[]}
+                                    getOptionLabel={(option) => option?.subject_name}
+                                    filterSelectedOptions
+                                    size="small"
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            label="Central-Subject"
+                                        />
+                                    )}
+                                    onChange={(e, value) => {
+                                        handleChangeCentralSubject(value);
+                                    }}
+                                    getOptionSelected={(option, value) => value && option.id == value.id}
+                                />
+                                <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.central_subjectError}</FormHelperText>
+                            </FormControl>
+                        </Grid>
+                        {/* <Grid item xs={12} style={{ display: 'flex', }}>
 
-                                </Grid>
+                            <div className="central-grade-dropdown">
+                                
                             </div>
                             <div className="central-subject-dropdown">
-                                <Grid item xs={12} sm={4}>
-                                    <FormControl className={`select-form`}>
-                                        <Autocomplete
-                                            // {...defaultProps}
-                                            style={{ width: 350 }}
-                                            // multiple
-                                            value={centralSubValue}
-                                            id="tags-outlined"
-                                            // options={centralSubject}
-                                            options={(centralGradeValue&&centralGradeValue.subject)||[]}
-                                            getOptionLabel={(option) => option?.subject_name}
-                                            filterSelectedOptions
-                                            size="small"
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    variant="outlined"
-                                                    label="Central-Subject"
-
-                                                />
-                                            )}
-                                            onChange={(e, value) => {
-                                                handleChangeCentralSubject(value);
-                                            }}
-                                            getOptionSelected={(option, value) => value && option.id == value.id}
-                                        />
-                                     <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.central_subjectError}</FormHelperText>
-                                    </FormControl>
-
-                                </Grid>
+                                
                             </div>
-                        </Grid>
+                        </Grid> */}
 
                     </Grid>
                     <div className="btn-container">
