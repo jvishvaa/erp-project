@@ -64,7 +64,7 @@ const columnsGrade = [
 const columnsSection = [
   {
     id: 'section_id',
-    label: 'Id',
+    label: 'Mapping Id',
     minWidth: 100,
     align: 'center',
     labelAlign: 'center',
@@ -644,7 +644,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                               key={`section_suggestion_list${index}`}
                             >
                               <TableCell className={classes.tableCell}>
-                                {section.section_id}
+                                {section.id}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
                                 {section.section__section_name}
