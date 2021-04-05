@@ -206,7 +206,7 @@ class ApplicationFormAcc extends Component {
   componentDidMount () {
     if (this.state.session) {
       // this.props.fetchGrade(this.state.session, this.props.alert, this.props.user, moduleId)
-      this.props.fetchReceiptRange(this.state.session, this.props.alert, this.props.user)
+      this.props.fetchReceiptRange(this.state.session, this.props.alert, this.props.user, this.state.selectedBranches?.value)
     }
   }
 
@@ -2075,7 +2075,7 @@ const mapDispatchToProps = dispatch => ({
   fetchMicr: (micr, alert, user) => dispatch(actionTypes.fetchMicr({ micr, alert, user })),
   fetchSuggestions: (session, sType, value, user, alert) => dispatch(actionTypes.fetchStdSuggestions({ session, sType, value, user, alert })),
   appMobileChecker: (leadNumber, user, alert) => dispatch(actionTypes.appMobileChecker({ leadNumber, user, alert })),
-  fetchReceiptRange: (session, alert, user) => dispatch(actionTypes.fetchReceiptRange({ session, alert, user })),
+  fetchReceiptRange: (session, alert, user, branchId ) => dispatch(actionTypes.fetchReceiptRange({ session, alert, user, branchId })),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchGrades: (alert, user, moduleId, branch, session) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch, session })),
 })
