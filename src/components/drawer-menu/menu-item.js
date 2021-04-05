@@ -73,6 +73,9 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Student Strength', Path: '/student-strength' },
     { name: 'Teacher Circular', Path: '/teacher-circular' },
     { name: 'Student Circular', Path: '/student-circular' },
+    { name: 'Teacher Time Table', Path: '/time-table/teacher-view' },
+    { name: 'Student Time Table', Path: '/time-table/student-view' },
+
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

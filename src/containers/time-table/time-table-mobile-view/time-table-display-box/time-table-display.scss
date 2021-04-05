@@ -1,0 +1,44 @@
+@import '../time-table-mobile.scss';
+
+.display-box-mobile-container {
+  .display-top-container {
+    background: #ffebeb;
+    border-bottom: 2px solid #ff6b6b;
+    width: 100%;
+    padding: 10%;
+  }
+  .display-bottom-container {
+    padding: 10%;
+    width: 100%;
+  }
+  .field-container {
+    margin-top: 28px;
+  }
+  h3{
+    color: $text-color;
+    margin: 6px 1px;
+    font-size: 22px;
+  }
+  p{
+    font-size: 22px !important;
+    color: $text-color;
+    margin: 6px 1px;
+  }
+  .field-container-button {
+    margin-top: 34px;
+    background: #ff6b6b;
+    height: 34px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 60%;
+  }
+  .yellow-header-mobile {
+    color: #ff6b6b;
+    margin: 6px 1px;
+    font-size: 24px;
+  }
+}
