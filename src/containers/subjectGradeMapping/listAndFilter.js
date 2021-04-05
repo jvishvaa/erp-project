@@ -25,8 +25,10 @@ const StyledButton = withStyles({
 
 const ListandFilter = (props) => {
     const { setAlert } = useContext(AlertNotificationContext);
+    const [academicYear, setAcademicYear] = useState([]);
     const [branch, setBranchRes] = useState([])
     const [gradeRes, setGradeRes] = useState([]);
+    const [selectedYear, setSelectedYear] = useState(null);
     const [branchValue, setBranchValue] = useState(null);
     const [gradeValue, setGradeValue] = useState(null);
     const [schoolGsMapping, setSchoolGsMapping] = useState([]);
@@ -45,6 +47,38 @@ const ListandFilter = (props) => {
         setGradeValue(null);
     }
 
+    const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+    const [moduleId, setModuleId] = useState('');
+
+    useEffect(() => {
+        if (NavData && NavData.length) {
+          NavData.forEach((item) => {
+            if (
+              item.parent_modules === 'Master Management' &&
+              item.child_module &&
+              item.child_module.length > 0
+            ) {
+              item.child_module.forEach((item) => {
+                if (item.child_name === 'Lesson Plan Mapping') {
+                  setModuleId(item.child_id);
+                }
+              });
+            }
+          });
+        }
+      }, []);
+
+    useEffect(() => {
+        axiosInstance.get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`).then(res => {
+            if (res.data.data) {
+                console.log(res.data.data);
+                setAcademicYear(res.data.data);
+            }
+        }).catch(err => {
+            console.log(err)
+        })
+    }, []);
+
     useEffect(() => {
         const getBranch = () => {
             //axiosInstance.get(endpoints.masterManagement.branchList).then(res => {
@@ -57,13 +91,21 @@ const ListandFilter = (props) => {
             })
 
         }
-        getBranch()
-    }, [schoolGsMapping]);
+        if(selectedYear?.id){
+            getBranch();
+        }
+    }, [selectedYear]);
+
+    const handleChangeYear = (vaule) => {
+        if(vaule) {
+            setSelectedYear(vaule);
+        }
+    }
 
     const handleChangeBranch = (value) => {
         if (value) {
             setBranchValue(value);
-            axiosInstance.get(`${endpoints.mappingStudentGrade.grade}?branch_id=${value?.branch.id}&module_id=8`).then(res => {
+            axiosInstance.get(`${endpoints.mappingStudentGrade.grade}?session_year=${selectedYear?.id}&branch_id=${value?.branch.id}&module_id=${moduleId}`).then(res => {
                 if (res.data.data) {
                     setGradeRes(res.data.data)
                 }
@@ -73,8 +115,6 @@ const ListandFilter = (props) => {
         } else {
             setBranchValue(null)
         }
-
-
     }
 
     const handleGradeChange = (value) => {
@@ -152,6 +192,39 @@ const ListandFilter = (props) => {
                 <div className="mapping-grade-subject-dropdown-container">
                     <Grid container spacing={2}>
                         <Grid item xs={10} style={{ display: 'flex', }}>
+                        <div className="branch-dropdown" style={{ marginRight: '20px'}}>
+                                <Grid item xs={4} sm={2}>
+                                    <FormControl className={`select-form`}>
+                                        <Autocomplete
+                                            // {...defaultProps}
+                                            style={{ width: 350 }}
+                                            // multiple
+                                            value={selectedYear}
+                                            id="tags-outlined"
+                                            options={academicYear}
+                                            getOptionLabel={(option) => option?.session_year}
+                                            filterSelectedOptions
+                                            size="small"
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    variant="outlined"
+                                                    label="Academic Year"
+
+                                                />
+                                            )}
+                                            onChange={(e, value) => {
+                                                handleChangeYear(value);
+                                            }}
+                                            getOptionSelected={(option, value) => value && option.id == value.id}
+                                        />
+                                        <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.branchError}</FormHelperText>
+                                         
+                                    </FormControl>
+
+                                </Grid>
+                            </div>
+
                             <div className="branch-dropdown">
                                 <Grid item xs={4} sm={2}>
                                     <FormControl className={`select-form`}>
