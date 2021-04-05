@@ -204,10 +204,10 @@ class ApplicationFormAcc extends Component {
   }
 
   componentDidMount () {
-    if (this.state.session) {
-      // this.props.fetchGrade(this.state.session, this.props.alert, this.props.user, moduleId)
-      this.props.fetchReceiptRange(this.state.session, this.props.alert, this.props.user, this.state.selectedBranches?.value)
-    }
+    // if (this.state.session) {
+    //   // this.props.fetchGrade(this.state.session, this.props.alert, this.props.user, moduleId)
+     
+    // }
   }
 
   handleChangePage = (event, newPage) => {
@@ -1771,6 +1771,7 @@ class ApplicationFormAcc extends Component {
     this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e && e.value, this.state.session)
     // this.props.fetchGrade(this.state.session, e && e.value, this.props.alert, this.props.user, moduleId)
     this.setState({ selectedBranches: e})
+    this.props.fetchReceiptRange(this.state.session, this.props.alert, this.props.user, e && e.value)
   }
 
   render () {
