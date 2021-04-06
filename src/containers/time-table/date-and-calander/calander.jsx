@@ -56,9 +56,6 @@ const Calander = (props) => {
   const [startTime, setStartTime] = useState();
   const [acadamicYearID, setAcadamicYear] = useState();
   const [dayName, setDayName] = useState('Monday');
-  const [gradeID, setGradeID] = useState();
-  const [sectionID, setSectionID] = useState();
-  const [branchID, setBranchID] = useState();
   const [endTime, setEndTime] = useState();
   // const [openDialog, setOpenDialog] = useState(false);
 
@@ -82,7 +79,7 @@ const Calander = (props) => {
   const handleContextData = () => (
     <UserConsumer>{({ ids }) => setAcadamicYear(ids)}</UserConsumer>
   );
-  console.log(acadamicYearID, 'ids');
+  console.log(props.passId, 'ids');
 
   const handleChangeData = (data) => {
     setSelectData(data);
@@ -99,7 +96,7 @@ const Calander = (props) => {
     axiosInstance
       .get('/erp_user/subjects-list/', {
         params: {
-          grade: 3,
+          grade: props.grade_ID,
         },
       })
       .then((res) => {
@@ -118,7 +115,7 @@ const Calander = (props) => {
     axiosInstance
       .get('/academic/teachers-list/', {
         params: {
-          grade: 3,
+          grade: props.grade_ID,
         },
       })
       .then((res) => {
@@ -131,10 +128,14 @@ const Calander = (props) => {
   };
   const createPeriodAPI = () => {
     let obj = {
-      academic_year: props.passId.academic_year_id,
-      section: 1,
-      branch: 1,
-      grade: 3,
+      // academic_year: props.passId.academic_year_id,
+      // section: props.passId.section_id,
+      // branch: props.passId.section_id,
+      // grade: props.passId.grade_id,
+      academic_year: props.acadamicYear_ID,
+      section: props.section_ID,
+      branch: props.branch_ID,
+      grade: props.grade_ID,
       subject: sectionIdOption,
       assigned_teacher: assignedTeacherID,
       day: day,
@@ -159,6 +160,7 @@ const Calander = (props) => {
       });
   };
   const OpenCalanderWeek = () => {
+    // console.log(props.tableData)
     setDataMonday(props.tableData.Monday);
     setDataTuesday(props.tableData.Tuesday);
     setDataWednesday(props.tableData.Wednesday);
@@ -245,7 +247,7 @@ const Calander = (props) => {
               options={section}
               getOptionLabel={(option) => option.subject_name}
               style={{ width: 250 }}
-              onChange={(event, option) => setSectionIdOption(option.id)}
+              onChange={(event, option) => setSectionIdOption(option?.id)}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -407,7 +409,7 @@ const Calander = (props) => {
                   borderRight={1}
                   {...defaultProps}
                 >
-                  <div className='header'>Thrusday</div>
+                  <div className='header'>Thursday</div>
                 </Box>
               </th>
               <th>
@@ -429,7 +431,7 @@ const Calander = (props) => {
                       {DataMonday[index].period_start_time.slice(0, 5)}-
                       {DataMonday[index].period_end_time.slice(0, 5)}AM
                     </p>
-                    <h4>{DataMonday[index].teacher_name.name}</h4>
+                    <h4>{DataMonday[index].teacher_name?.name}</h4>
                   </td>
                 ) : (
                   <td>
@@ -449,7 +451,7 @@ const Calander = (props) => {
                       {DataTuesday[index].period_start_time.slice(0, 5)}-
                       {DataTuesday[index].period_end_time.slice(0, 5)}AM
                     </p>
-                    <h4>{DataTuesday[index].teacher_name.name}</h4>
+                    <h4>{DataTuesday[index].teacher_name?.name}</h4>
                   </td>
                 ) : (
                   <td>
@@ -469,7 +471,7 @@ const Calander = (props) => {
                       {DataWednesday[index].period_start_time.slice(0, 5)}-
                       {DataWednesday[index].period_end_time.slice(0, 5)}AM
                     </p>
-                    <h4>{DataWednesday[index].teacher_name.name}</h4>
+                    <h4>{DataWednesday[index].teacher_name?.name}</h4>
                   </td>
                 ) : (
                   <td>
@@ -488,7 +490,7 @@ const Calander = (props) => {
                       {DataThursday[index].period_start_time.slice(0, 5)}-
                       {DataThursday[index].period_end_time.slice(0, 5)}.AM
                     </p>
-                    <h4>{DataThursday[index].teacher_name.name}</h4>
+                    <h4>{DataThursday[index].teacher_name?.name}</h4>
                   </td>
                 ) : (
                   <td>
@@ -507,7 +509,7 @@ const Calander = (props) => {
                       {DataFriday[index].period_start_time.slice(0, 5)}-
                       {DataFriday[index].period_end_time.slice(0, 5)}AM
                     </p>
-                    <h4>{DataFriday[index].teacher_name.name}</h4>
+                    <h4>{DataFriday[index].teacher_name?.name}</h4>
                   </td>
                 ) : (
                   <td>

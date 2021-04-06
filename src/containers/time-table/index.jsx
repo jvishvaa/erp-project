@@ -26,6 +26,8 @@ const TimeTable = (props) => {
   const [academicYear, setAcadamicYearName] = useState();
   const [gradeName, setGradeName] = useState();
   const [branchName, setBranchName] = useState();
+  const [studentModuleId, setStudentModuleId] = useState();
+  const [teacherModuleId, setTeacherModuleId] = useState();
   const [sectinName, setSectionName] = useState();
   const [teacherView, setTeacherView] = useState(false);
   const [ids, setIDS] = useState({
@@ -34,21 +36,46 @@ const TimeTable = (props) => {
     grade_id: gradeID,
     section_id: sectionID,
   });
-  console.log(location.pathname, 'url');
-  // useEffect(() => {
-  //   callGetTimeTableAPI();
-  //   console.log('calling parent componet');
-  // }, [gradeID]);
+
   useEffect(() => {
+    // if (NavData && NavData.length) {
+    //   if (location.pathname === '/time-table/student-view') {
+    //     setTeacherView(false);
+    //   } else if (location.pathname === '/time-table/teacher-view') {
+    //     setTeacherView(true);
+    //   }
+    // }
+
     if (NavData && NavData.length) {
-      if (location.pathname === '/time-table/student-view') {
-        setTeacherView(false);
-      } else if (location.pathname === '/time-table/teacher-view') {
-        setTeacherView(true);
-      }
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Time Table' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (
+              location.pathname === '/time-table/student-view' &&
+              item.child_name === 'Teacher Time Table'
+            ) {
+              setStudentModuleId(item?.child_id);
+              setTeacherView(false);
+            } else if (
+              location.pathname === '/time-table/teacher-view' &&
+              item.child_name === 'Student Time Table'
+            ) {
+              setTeacherModuleId(item?.child_id);
+              setTeacherView(true);
+            }
+          });
+        }
+      });
     }
   }, [location.pathname]);
-  console.log(teacherView, 'find result teacherview');
+  // console.log(getModuleId(), 'madule ids');
+console.log(ids, 'all datas')
+  // console.log(studentModuleId, teacherModuleId, 'module ids')
+  // console.log(teacherView, 'find result teacherview');
   const callGetTimeTableAPI = async () => {
     setLoading(true);
     await axiosInstance
@@ -96,13 +123,15 @@ const TimeTable = (props) => {
     setAcadamicYearName(academic_Year);
     setBranchName(branch_Name);
     setSectionName(sectin_Name);
-  //   setIDS( ...ids, academic_year_id: acadamicYear_ID,
-  //     branch_id: grade_ID,
-  //     grade_id: grade_ID,
-  //     section_id: section_ID )
-  // };
-  }
-  
+    setIDS({
+      ...ids,
+      academic_year_id: acadamicYear_ID,
+      branch_id: grade_ID,
+      grade_id: grade_ID,
+      section_id: section_ID,
+    });
+  };
+
   const handleClickAPI = () => {
     callGetTimeTableAPI();
   };
@@ -175,6 +204,10 @@ const TimeTable = (props) => {
                 <UserProvider value={ids}>
                   <DateAndCalander
                     passId={ids}
+                    section_ID={sectionID}
+                    grade_ID={gradeID}
+                    branch_ID={branchID}
+                    acadamicYear_ID={acadamicYearID}
                     teacherView={teacherView}
                     handlePassData={handlePassData}
                     callGetAPI={callGetTimeTableAPI}

@@ -12,6 +12,7 @@ import './upper-grade.scss';
 import { set } from 'lodash';
 const UpperGrade = (props) => {
   const [dataMap, setDataMap] = useState();
+  const [dataMapAcademicYear, setDataMapAcademicYear] = useState();
   const [moduleID, setModuleID] = useState();
   const [acadamicYearID, setAcadamicYear] = useState(1);
   const [gradeID, setGradeID] = useState(1);
@@ -21,6 +22,7 @@ const UpperGrade = (props) => {
   const [academicYear, setAcadamicYearName] = useState();
   const [gradeName, setGradeName] = useState();
   const [branchName, setBranchName] = useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [sectinName, setSectionName] = useState();
 
   const handleChangeMultiple = (event) => {
@@ -90,10 +92,10 @@ const UpperGrade = (props) => {
   };
   const callingAcadamicAPI = () => {
     axiosInstance
-      .get('/erp_user/list-academic_year/', {})
+      .get(`/erp_user/list-academic_year/`, {})
       .then((res) => {
         console.log(res, 'Academic');
-        setDataMap(res.data.data);
+        setDataMapAcademicYear(res.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -116,6 +118,17 @@ const UpperGrade = (props) => {
   };
   const clearButtonColor = {
     color: 'gray',
+  };
+  const getModuleId = () => {
+    // const tempObj = {
+    //   '/time-table/teacher-view/': 'Teacher Time Table',
+    //   '/time-table/teacher-view': 'Teacher Time Table',
+    //   '/time-table/student-view': 'Student Time Table',
+    //   '/time-table/student-view/': 'Student Time Table',
+    //   default: 'Student Time Table',
+    // };
+    // const moduleName = tempObj[location.pathname] || tempObj['default'];
+    // return getModuleInfo(moduleName).id;
   };
   const handleCounter = (value) => {
     console.log('counter');
@@ -169,12 +182,12 @@ const UpperGrade = (props) => {
                       value={acadamicYearID}
                       onChange={handleChangeMultiple}
                     >
-                      {dataMap &&
-                        dataMap.map((name) => (
+                      {dataMapAcademicYear &&
+                        dataMapAcademicYear.map((name) => (
                           <option
-                            key={name.id}
-                            value={name.id}
-                            onClick={() => setAcadamicYearName(name.session_year)}
+                            key={name?.id}
+                            value={name?.id}
+                            onClick={() => setAcadamicYearName(name?.session_year)}
                           >
                             {name?.session_year}
                           </option>
@@ -233,7 +246,7 @@ const UpperGrade = (props) => {
                           <option
                             key={name.id}
                             value={name.id}
-                            onClick={() => setBranchName(name.branch.branch_name)}
+                            onClick={() => setBranchName(name?.branch?.branch_name)}
                           >
                             {/* {console.log(name, '=======')} */}
                             {/* {name?.branch?.branch_name} */}
@@ -389,17 +402,19 @@ const UpperGrade = (props) => {
           >
             Clear All
           </Button>
-          <Button
-            size='small'
-            variant='contained'
-            color='primary'
-            inputProps={clearButtonColor}
-            className='signatureUploadFilterButton'
-            onClick={handleGenerateData}
-            startIcon={<EmojiObjectsSharpIcon />}
-          >
-            Genrate
-          </Button>
+          <div className='generate-button'>
+            <Button
+              size='small'
+              variant='contained'
+              color='primary'
+              inputProps={clearButtonColor}
+              className='signatureUploadFilterButton'
+              onClick={handleGenerateData}
+              startIcon={<EmojiObjectsSharpIcon />}
+            >
+              Generate
+            </Button>
+          </div>
         </div>
       </div>
     </>

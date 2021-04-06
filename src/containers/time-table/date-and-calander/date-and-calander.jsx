@@ -27,7 +27,11 @@ const DateAndCalander = (props) => {
       <Divider variant='middle' className='date-week-underline' />
       {openToggleCalander ? (
         <Calander
-        passId={props.passId}
+          passId={props.passId}
+          section_ID={props.section_ID}
+          grade_ID={props.grade_ID}
+          branch_ID={props.branch_ID}
+          acadamicYear_ID={props.acadamicYear_ID}
           teacherView={props.teacherView}
           callGetAPI={props.callGetAPI}
           handlePassData={props.handlePassData}
