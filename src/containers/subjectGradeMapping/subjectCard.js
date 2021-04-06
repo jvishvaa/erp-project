@@ -148,7 +148,7 @@ const Subjectcard = (props) => {
                                                         style={{ display: 'flex', justifyContent: 'space-between' }}
                                                     >
                                                         <span className='tooltiptext'>
-                                                            <div  >
+                                                            {/* <div  >
                                                                 <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }}
                                                                     activeClassName="active"
                                                                     className="link-grade"
@@ -157,7 +157,7 @@ const Subjectcard = (props) => {
                                                                         Edit
                                                                     </p>
                                                                 </Link>
-                                                            </div>
+                                                            </div> */}
                                                             <div className='tooltip' title='Delete' onClick={(e) => handleClick(e)}>
                                                                 Delete
                                                             </div>

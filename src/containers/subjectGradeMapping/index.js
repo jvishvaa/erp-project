@@ -83,6 +83,18 @@ const Subjectgrade = (props) => {
     const handleChangeBranch = (value) => {
         if (value) {
             setBranchValue(value);
+
+            setGradeRes([]);
+            setSubjectRes([]);
+            //setCentralGrade([]);
+            //setCentralSubject([]);
+            setSubjectValue(null);
+
+            setGradeValue([]);
+            //setcentralGradeValue([]);
+            //setcentralSubValue([]);
+            setUpdateSubjectValue(null);
+
             axiosInstance.get(`${endpoints.mappingStudentGrade.grade}?session_year=${selectedYear?.id}&branch_id=${value?.branch.id}&module_id=8`).then(res => {
                 if (res.data.data) {
                     console.log(res.data.data)
@@ -98,6 +110,11 @@ const Subjectgrade = (props) => {
 
     const handleGradeChange = (value) => {
         setGradeValue(value);
+
+        setSubjectRes([]);
+        setSubjectValue(null);
+        setUpdateSubjectValue(null);
+
         if (value) {
             axiosInstance.get(`${endpoints.mappingStudentGrade.subjects}?session_year=${selectedYear?.id}&branch=${branchValue?.branch.id}&grade=${value.grade_id}`).then(res => {
                 if (res.data.result) {
@@ -116,6 +133,19 @@ const Subjectgrade = (props) => {
     const handleChangeYear = (vaule) => {
         if(vaule) {
             setSelectedYear(vaule);
+            
+            setBranchRes([]);
+            setGradeRes([]);
+            setSubjectRes([]);
+            setCentralGrade([]);
+            setCentralSubject([]);
+            setSubjectValue(null);
+
+            setBranchValue([]);
+            setGradeValue([]);
+            setcentralGradeValue([]);
+            setcentralSubValue([]);
+            setUpdateSubjectValue(null);
         }
     }
 
@@ -123,8 +153,6 @@ const Subjectgrade = (props) => {
         let values = Array.from(value, (option) => option.id);
         setUpdateSubjectValue(value)
         setSubjectValue(values);
-
-
     }
 
     const centralGradeSubjects = () => {

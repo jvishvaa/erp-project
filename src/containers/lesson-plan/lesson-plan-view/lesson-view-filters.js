@@ -344,8 +344,8 @@ const LessonViewFilters = ({
                         <TextField
                             {...params}
                             variant='outlined'
-                            label='Academic Year'
-                            placeholder='Academic Year'
+                            label='Lesson Plan Acad Year'
+                            placeholder='Lesson Plan Acad Year'
                         />
                     )}
                 />
