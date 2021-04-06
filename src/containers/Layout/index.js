@@ -20,6 +20,8 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/More';
 import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
+import TodayIcon from '@material-ui/icons/Today';
+import AssessmentSharpIcon from '@material-ui/icons/AssessmentSharp';
 import {
   Popper,
   Fade,
@@ -65,6 +67,9 @@ import { useTheme } from '@material-ui/core/styles';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserInfo from '../../components/user-info';
+import EventNoteIcon from '@material-ui/icons/EventNote';
+import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
+import ContactPhoneRoundedIcon from '@material-ui/icons/ContactPhoneRounded'
 
 export const ContainerContext = createContext();
 
@@ -288,9 +293,6 @@ const Layout = ({ children, history }) => {
     </Menu>
   );
 
-
-  
-
   const handleRouting = (name) => {
     switch (name) {
       case 'Take Class': {
@@ -298,10 +300,9 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'View Class': {
-        if(window.location.host===endpoints?.aolConfirmURL){
+        if (window.location.host === endpoints?.aolConfirmURL) {
           history.push('/online-class/view-class');
-        }
-        else{
+        } else {
           history.push('/erp-online-class');
         }
         break;
@@ -311,19 +312,19 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Attend Online Class': {
-        if(window.location.host===endpoints?.aolConfirmURL){
+        if (window.location.host === endpoints?.aolConfirmURL) {
           history.push('/online-class/attend-class');
-        }else{
+        } else {
           history.push('/erp-online-class-student-view');
         }
         break;
       }
       case 'Teacher View Class': {
-       if(window.location.host===endpoints?.aolConfirmURL){
-        history.push('/online-class/teacher-view-class');
-       }else{
-        history.push('/erp-online-class-teacher-view');
-       }
+        if (window.location.host === endpoints?.aolConfirmURL) {
+          history.push('/online-class/teacher-view-class');
+        } else {
+          history.push('/erp-online-class-teacher-view');
+        }
         break;
       }
       case 'Create Class': {
@@ -431,44 +432,44 @@ const Layout = ({ children, history }) => {
         break;
       }
       // case 'subject-table': {
-        // history.push('/master-mgmt/subject-table');
-        // break;
+      // history.push('/master-mgmt/subject-table');
+      // break;
       // }
       // case 'section-table': {
-        // history.push('/master-mgmt/section-table');
-        // break;
+      // history.push('/master-mgmt/section-table');
+      // break;
       // }
       // case 'grade-table': {
-        // history.push('/master-mgmt/grade-table');
-        // break;
+      // history.push('/master-mgmt/grade-table');
+      // break;
       // }
       // case 'academic-year-table': {
-        // history.push('/master-mgmt/academic-year-table');
-        // break;
+      // history.push('/master-mgmt/academic-year-table');
+      // break;
       // }
       // case 'chapter-type-table': {
-        // history.push('/master-mgmt/chapter-type-table');
-        // break;
+      // history.push('/master-mgmt/chapter-type-table');
+      // break;
       // }
       // case 'message-type-table': {
-        // history.push('/master-mgmt/message-type-table');
-        // break;
+      // history.push('/master-mgmt/message-type-table');
+      // break;
       // }
       // case 'signature-upload': {
-        // history.push('/master-mgmt/signature-upload');
-        // break;
+      // history.push('/master-mgmt/signature-upload');
+      // break;
       // }
       // case 'course-table': {
-        // history.push('/course-list');
-        // break;
+      // history.push('/course-list');
+      // break;
       // }
       // case 'course-price': {
-        // history.push('/course-price');
-        // break;
+      // history.push('/course-price');
+      // break;
       // }
       // case 'school-mapping': {
-        // history.push('/subject/grade');
-        // break;
+      // history.push('/subject/grade');
+      // break;
       // }
       case 'Subject': {
         history.push('/master-mgmt/subject-table');
@@ -502,7 +503,7 @@ const Layout = ({ children, history }) => {
         history.push('/course-list');
         break;
       }
-       case 'Course Price': {
+      case 'Course Price': {
         history.push('/course-price');
         break;
       }
@@ -992,6 +993,89 @@ const Layout = ({ children, history }) => {
               {drawerOpen ? <CloseIcon /> : <MenuIcon />}
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
+          </ListItem>
+
+          {/* <ListItem
+            button
+            className={classes.menuControlContainer}
+            onClick={() => history.push('/appointments')}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              <AssignmentLateIcon />
+            </ListItemIcon>
+            <ListItemText className='menu-item-text'>Appointments</ListItemText>
+          </ListItem> */}
+
+          {/* <ListItem
+            button
+            className={classes.menuControlContainer}
+            onClick={() => history.push('/responder-view')}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              <EventNoteIcon />
+            </ListItemIcon>
+            <ListItemText className='menu-item-text'>Responder View</ListItemText>
+          </ListItem> */}
+
+          {/* <ListItem
+            button
+            onClick={() => history.push('/Contact')}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              <ContactPhoneRoundedIcon />
+            </ListItemIcon>
+            <ListItemText className='menu-item-text'>Contact</ListItemText>
+          </ListItem> */}
+          <ListItem
+            button
+            className={classes.menuControlContainer}
+            onClick={() => history.push('/calendar1')}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              <TodayIcon />
+            </ListItemIcon>
+            <ListItemText className='menu-item-text'>calender1</ListItemText>
+          </ListItem>
+          <ListItem
+            button
+            className={classes.menuControlContainer}
+            onClick={() => history.push('/attend')}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              <TodayIcon />
+            </ListItemIcon>
+            <ListItemText className='menu-item-text'>Attend</ListItemText>
+          </ListItem>
+          
+          <ListItem
+            button
+            className={classes.menuControlContainer}
+            onClick={() => history.push('/attendance')}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+            <TodayIcon />
+            </ListItemIcon>
+            <ListItemText className='menu-item-text'>MarkAttendance</ListItemText>
+          </ListItem>
+          <ListItem
+            button
+            className={classes.menuControlContainer}
+            onClick={() => history.push('/AttedanceCalender')}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+            <TodayIcon />
+            </ListItemIcon>
+            <ListItemText className='menu-item-text'>AttedanceCalender</ListItemText>
+          </ListItem>
+          <ListItem
+            button
+            className={classes.menuControlContainer}
+            onClick={() => history.push('/createevent')}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+            <TodayIcon />
+            </ListItemIcon>
+            <ListItemText className='menu-item-text'>CreateEvent</ListItemText>
           </ListItem>
           {/* {drawerOpen ? (
             <ListItem

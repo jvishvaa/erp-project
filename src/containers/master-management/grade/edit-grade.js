@@ -6,6 +6,8 @@ import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const EditGrade = ({ id, name, type, handleGoBack, setLoading }) => {
+  console.log('idL', id);
+  console.log('handlegoback:', handleGoBack);
   const { setAlert } = useContext(AlertNotificationContext);
   const [gradeName, setGradeName] = useState(name || '');
   const [gradeType, setGradeType] = useState(type || '');

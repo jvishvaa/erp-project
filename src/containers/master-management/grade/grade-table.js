@@ -84,16 +84,16 @@ const GradeTable = () => {
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const limit = 15;
-  const [goBackFlag,setGoBackFlag]=useState(false)
-  
+  const [goBackFlag, setGoBackFlag] = useState(false);
+
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const wider= isMobile?'-10px 0px':'-10px 0px 20px 8px'
-  const widerWidth=isMobile?'98%':'95%'
+  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
+  const widerWidth = isMobile ? '98%' : '95%';
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage+1)
-  }
+    setPage(newPage + 1);
+  };
 
   const handleAddGrade = () => {
     setTableFlag(false);
@@ -111,12 +111,12 @@ const GradeTable = () => {
   };
 
   const handleGoBack = () => {
-    setPage(1)
+    setPage(1);
     setTableFlag(true);
     setAddFlag(false);
     setEditFlag(false);
     setSearchGrade('');
-    setGoBackFlag(!goBackFlag)
+    setGoBackFlag(!goBackFlag);
   };
 
   const handleDeleteGrade = (e) => {
@@ -129,9 +129,9 @@ const GradeTable = () => {
       })
       .then((result) => {
         if (result.data.status_code === 200) {
-            setDelFlag(!delFlag);
-            setLoading(false);
-            setAlert('success', result.data.message);
+          setDelFlag(!delFlag);
+          setLoading(false);
+          setAlert('success', result.data.message);
         } else {
           setLoading(false);
           setAlert('error', result.data.message);
@@ -167,8 +167,8 @@ const GradeTable = () => {
       )
       .then((result) => {
         if (result.data.status_code === 200) {
-            setTotalCount(result.data.result.count);
-            setGrades(result.data.result.results);
+          setTotalCount(result.data.result.count);
+          setGrades(result.data.result.results);
         } else {
           setAlert('error', result.data.error_message);
         }
@@ -187,12 +187,20 @@ const GradeTable = () => {
             <CommonBreadcrumbs
               componentName='Master Management'
               childComponentName='Grade List'
-              childComponentNameNext={(addFlag&&!tableFlag)?'Add Grade':(editFlag&&!tableFlag)?'Edit Grade':null}
+              childComponentNameNext={
+                addFlag && !tableFlag
+                  ? 'Add Grade'
+                  : editFlag && !tableFlag
+                  ? 'Edit Grade'
+                  : null
+              }
             />
           </div>
         </div>
 
-        {!tableFlag && addFlag && !editFlag && <CreateGrade setLoading={setLoading} handleGoBack={handleGoBack}/>}
+        {!tableFlag && addFlag && !editFlag && (
+          <CreateGrade setLoading={setLoading} handleGoBack={handleGoBack} />
+        )}
         {!tableFlag && !addFlag && editFlag && (
           <EditGrade
             id={gradeId}
@@ -204,29 +212,37 @@ const GradeTable = () => {
         )}
 
         {tableFlag && !addFlag && !editFlag && (
-          <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
-            <Grid item xs={12} sm={3} >
-                <TextField
-                  id='gradename'
-                  style={{ width: '100%' }}
-                  label='Grade Name'
-                  variant='outlined'
-                  size='small'
-                  name='gradename'
-                  autoComplete='off'
-                  onChange={(e) => {setPage(1);setSearchGrade(e.target.value);}}
-                />
+          <Grid
+            container
+            spacing={isMobile ? 3 : 5}
+            style={{ width: widerWidth, margin: wider }}
+          >
+            <Grid item xs={12} sm={3}>
+              <TextField
+                id='gradename'
+                style={{ width: '100%' }}
+                label='Grade Name'
+                variant='outlined'
+                size='small'
+                name='gradename'
+                autoComplete='off'
+                onChange={(e) => {
+                  setPage(1);
+                  setSearchGrade(e.target.value);
+                }}
+              />
             </Grid>
-            <Grid item xs sm={9} className={isMobile?'hideGridItem':''}/>
-            <Grid item xs={12} sm={3} className={isMobile?'':'addButtonPadding'}>
-              <Button 
-              startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
-              variant='contained' 
-              color='primary' 
-              size="small" 
-              style={{color:'white'}} 
-              title="Add Grade" 
-              onClick={handleAddGrade}>
+            <Grid item xs sm={9} className={isMobile ? 'hideGridItem' : ''} />
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
+              <Button
+                startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                variant='contained'
+                color='primary'
+                size='small'
+                style={{ color: 'white' }}
+                title='Add Grade'
+                onClick={handleAddGrade}
+              >
                 Add Grade
               </Button>
             </Grid>
@@ -265,7 +281,6 @@ const GradeTable = () => {
                           {grade.created_by ? grade.created_by.first_name : ''}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-
                           <IconButton
                             onClick={(e) => {
                               setGradeName(grade.grade_name);
@@ -273,7 +288,7 @@ const GradeTable = () => {
                             }}
                             title='Delete Grade'
                           >
-                            <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
+                            <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
                           </IconButton>
 
                           <IconButton
@@ -286,8 +301,8 @@ const GradeTable = () => {
                             }
                             title='Edit Grade'
                           >
-                            <EditOutlinedIcon style={{color:'#fe6b6b'}} />
-                          </IconButton>      
+                            <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
+                          </IconButton>
                         </TableCell>
                       </TableRow>
                     );
@@ -295,15 +310,15 @@ const GradeTable = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <div className="paginateData">
-            <TablePagination
-              component='div'
-              count={totalCount}
-              rowsPerPage={limit}
-              page={page - 1}
-              onChangePage={handleChangePage}
-              rowsPerPageOptions={false}
-            />
+            <div className='paginateData'>
+              <TablePagination
+                component='div'
+                count={totalCount}
+                rowsPerPage={limit}
+                page={page - 1}
+                onChangePage={handleChangePage}
+                rowsPerPageOptions={false}
+              />
             </div>
           </Paper>
         )}
@@ -323,15 +338,15 @@ const GradeTable = () => {
                 />
               ))}
             </Container>
-            <div className="paginateData paginateMobileMargin">
-            <TablePagination
-              component='div'
-              count={totalCount}
-              rowsPerPage={limit}
-              page={page-1}
-              onChangePage={handleChangePage}
-              rowsPerPageOptions={false}
-            />
+            <div className='paginateData paginateMobileMargin'>
+              <TablePagination
+                component='div'
+                count={totalCount}
+                rowsPerPage={limit}
+                page={page - 1}
+                onChangePage={handleChangePage}
+                rowsPerPageOptions={false}
+              />
             </div>
           </>
         )}
@@ -340,17 +355,22 @@ const GradeTable = () => {
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle style={{ cursor: 'move',color: '#014b7e' }} id='draggable-dialog-title'>
+          <DialogTitle
+            style={{ cursor: 'move', color: '#014b7e' }}
+            id='draggable-dialog-title'
+          >
             Delete Grade
           </DialogTitle>
           <DialogContent>
             <DialogContentText>{`Confirm Delete Grade ${gradeName}`}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button  onClick={handleCloseDeleteModal} className="labelColor cancelButton">
+            <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color="primary" onClick={handleDeleteGrade}>Confirm</Button>
+            <Button color='primary' onClick={handleDeleteGrade}>
+              Confirm
+            </Button>
           </DialogActions>
         </Dialog>
       </Layout>

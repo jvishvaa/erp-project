@@ -34,7 +34,7 @@ class CreateUser extends Component {
         last_name: '',
         email: '',
         academic_year: '',
-        academic_year_value:'',
+        academic_year_value: '',
         branch: '',
         grade: [],
         section: [],
@@ -45,7 +45,7 @@ class CreateUser extends Component {
         profile: '',
         address: '',
         // erp_user:'',
-        branch_code:'',
+        branch_code: '',
         parent: {
           father_first_name: '',
           father_last_name: '',
@@ -172,9 +172,9 @@ class CreateUser extends Component {
 
     requestObj = {
       academic_year: academic_year.id,
-      academic_year_value:academic_year.session_year,
+      academic_year_value: academic_year.session_year,
       branch: branch.id,
-      branch_code:branch.branch_code,
+      branch_code: branch.branch_code,
       grade: grade.map((grade) => grade.id).join(),
       section: section.map((section) => section.id).join(),
       subjects: subjects.map((sub) => sub.id).join(),
@@ -215,7 +215,7 @@ class CreateUser extends Component {
       delete requestObj.parent;
       delete requestObj.father_photo;
       delete requestObj.mother_photo;
-      delete requestObj.guardian_photo
+      delete requestObj.guardian_photo;
     }
     const { setAlert } = this.context;
     const requestObjFormData = jsonToFormData(requestObj);

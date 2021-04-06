@@ -1,5 +1,5 @@
 // const baseURLCentral = 'http://13.232.30.169/qbox';
-const baseURLCentral ='https://dev.mgmt.letseduvate.com/qbox';
+const baseURLCentral = 'https://dev.mgmt.letseduvate.com/qbox';
 export default {
   auth: {
     login: '/auth/login/',
@@ -74,8 +74,7 @@ export default {
     updateMessageType: '/communication/',
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
-    editChapter: '/academic/'
-
+    editChapter: '/academic/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -200,13 +199,12 @@ export default {
     updateDelete: '/academic/',
     SubmitDairy: '/academic/create-dairy/',
     uploadFile: '/academic/dairy-upload/',
-
   },
   dailyDairy: {
     createDailyDairy: '/academic/create-dairy/',
     branches: '/academic/chapters/',
     updateDelete: '/academic/',
-    chapterList: '/academic/logged-in-users-subjects/'
+    chapterList: '/academic/logged-in-users-subjects/',
   },
   onlineCourses: {
     createCourse: '/aol/courses/',
@@ -252,8 +250,30 @@ export default {
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
+  Appointments: {
+    bookedAppointmentList: 'academic/booked-appointment-list/',
+    bookAppointment: 'academic/book-appointment/',
+    updateAppointment: 'update-appointment/',
+  },
+  calender: {
+    events: 'academic/events_details/',
+    postEvents: 'academic/events/',
+  },
+
+  Calendar_attendance:{
+    Monthly_attendance:'academic/monthly_attendance/',
+    Monthly_student_attendance:'academic/monthly_attendance/?branch_id=1&grade_id=1&month=2021-1',
+    Student_calender:'academic/student_calender/?erp_id=erpsupport2021',
+    DayWise_list:'academic/attendance_day_info/?grade_id=1&section_id=1&day=2021/03/01'
+    
+ 
+ },
+ ContactUsAPI: {
+  getContactUsAPI: '/academic/contact/',
+  updatedeleteContact: '/academic/update_contact/',
+},
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
-  aolConfirmURL:'aol.letseduvate.com', //WARNING: Uncomment this code before pushing  
+  aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
   // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing
 };
