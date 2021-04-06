@@ -52,7 +52,7 @@ const Calander = (props) => {
   const [requiredMaterial, setRequiredMaterial] = useState();
   const [periodName, setPeriodName] = useState();
   const [periodDescription, setPeriodDescription] = useState();
-  const [day, setDay] = useState();
+  const [day, setDay] = useState('Monday');
   const [startTime, setStartTime] = useState();
   const [acadamicYearID, setAcadamicYear] = useState();
   const [dayName, setDayName] = useState('Monday');

@@ -63,7 +63,7 @@ const DisplayBox = (props) => {
       required_material: MaterialRequired,
     };
     axiosInstance
-      .post('/academic/assign_class_periods/' + data.id + '/', obj)
+      .put('/academic/assign_class_periods/' + data.id + '/', obj)
       .then((response) => {
         console.log(response);
         props.callGetAPI();
