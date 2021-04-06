@@ -92,6 +92,7 @@ class EditRegistrationFee extends Component {
           <Grid item xs='5'>
             <label>Fee Type Name</label>
             <input
+              disabled={true}
               placeholder='Fee Type Name'
               type='text'
               className='form-control'
