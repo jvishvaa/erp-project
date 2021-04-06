@@ -238,6 +238,7 @@ import TransactionStatus from './containers/Finance/src/components/Finance/Trans
 import AdmFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/admFormList.js'
 import Airpay from './containers/Finance/src/components/Finance/PaymentGateways/Airpay/airpayIntegration.js'
 import UploadPaymentFile from './containers/Finance/src/components/Finance/student/managePayment/UploadPaymentFile.js'
+import ActivateInactivateStudentAdm  from './containers/Finance/src/components/Finance/Dashboard/FinanceAdmin/activateInactivateStudent.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -822,6 +823,9 @@ function App({ alert }) {
                 </Route>
                 <Route exact path= '/finance/Student/ActiveInactive'>
                   {({ match }) => <StudentActivateInactiveAcc match={match} alert={alert} />}
+                </Route>
+                <Route exact path= '/finance/Student/ActiveInactive/Admin'>
+                  {({ match }) => <ActivateInactivateStudentAdm match={match} alert={alert} />}
                 </Route>
                 <Route exact path= '/finance/admissions/OnlineAdmission'>
                   {({ match }) => <OnlineAdmission match={match} alert={alert} />}
