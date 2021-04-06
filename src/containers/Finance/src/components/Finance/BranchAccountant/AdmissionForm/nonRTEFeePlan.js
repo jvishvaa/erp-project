@@ -81,7 +81,7 @@ class NonRTEFeeDetailsFormAcc extends Component {
     // this.props.fetchGradeList(this.props.alert, this.props.user)
     console.log('session and grade', this.props.session, this.props.stuGrade)
     if (this.props.session && this.props.stuGrade) {
-      this.props.fetchFeePlan(this.props.alert, this.props.user, this.props.session, this.props.stuGrade.value)
+      this.props.fetchFeePlan(this.props.alert, this.props.user, this.props.session, this.props.stuGrade.value, this.props.branch)
     }
   }
 
@@ -332,7 +332,7 @@ const mapDispatchToProps = dispatch => ({
   fetchGradeList: (alert, user, moduleId) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId })),
   fetchClassGroup: (alert, user) => dispatch(actionTypes.fetchClassGroup({ alert, user })),
   fetchAllSectionsPerGrade: (session, alert, user, gradeId, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, moduleId })),
-  fetchFeePlan: (alert, user, session, gradeValue) => dispatch(actionTypes.fetchFeePlan({ alert, user, session, gradeValue })),
+  fetchFeePlan: (alert, user, session, gradeValue, branch) => dispatch(actionTypes.fetchFeePlan({ alert, user, session, gradeValue, branch })),
   fetchInstallment: (alert, user, feePlanId) => dispatch(actionTypes.fetchInstallment({ alert, user, feePlanId }))
 })
 export default connect(

@@ -390,7 +390,7 @@ export const fetchAllSectionsPerGrade = (payload) => {
   return (dispatch) => {
     dispatch(dataLoading())
     axios
-      .get(urls.StudentGradeSectionAcc + '?grade=' + payload.gradeId + '&academic_year=' + payload.session + '&module_id=' + payload.moduleId, {
+      .get(urls.StudentGradeSectionAcc + '?grade=' + payload.gradeId + '&academic_year=' + payload.session + '&module_id=' + payload.moduleId + '&branch_id=' + payload.branch, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -414,7 +414,7 @@ export const fetchAllSectionsPerGradeAsAdmin = (payload) => {
   return (dispatch) => {
     dispatch(dataLoading())
     axios
-      .get(urls.StudentGradeSectionAcc + '?grade=' + payload.gradeId + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId, {
+      .get(urls.StudentGradeSectionAcc + '?grade=' + payload.gradeId + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }

@@ -9,7 +9,7 @@ export const POST_STUDENT_ACTIVATE = 'POST_STUDENT_ACTIVATE'
 export const getActiveStudentDetails = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.Studentstatusfilter + '?academic_year=' + payload.session + '&status=' + payload.status + '&section=' + payload.section + '&grade=' + payload.grade, {
+    axios.get(urls.Studentstatusfilter + '?academic_year=' + payload.session + '&status=' + payload.status + '&section=' + payload.section + '&grade=' + payload.grade + '&branch_id=' + payload.branch, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }

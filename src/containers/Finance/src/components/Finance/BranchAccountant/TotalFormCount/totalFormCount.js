@@ -375,7 +375,6 @@ const TotalFormCount = ({ classes,
             onChange={(e) => handleSession(e)}
           />
         </Grid>
-        {/* {isAdmin ? ( */}
           <Grid item className={classes.item} xs={3}>
             <label>Branch*</label><br />
             <Select
@@ -393,7 +392,6 @@ const TotalFormCount = ({ classes,
               onChange={handleBranch}
             />
           </Grid>
-        {/* ) : null} */}
         <Grid item className={classes.item} xs={3}>
           <label>Report Type*</label><br />
           <Select

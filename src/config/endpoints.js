@@ -1,5 +1,11 @@
 // const baseURLCentral = 'http://13.232.30.169/qbox';
-const baseURLCentral = 'https://mgmt.letseduvate.com/qbox';
+const appBaseURL = window.location.hostname;
+const baseURLCentral = (appBaseURL.includes("dev.") || appBaseURL.includes("localhost"))
+  ? 'http://dev.mgmt.letseduvate.com/qbox'
+  : 'https://mgmt.letseduvate.com/qbox';
+// const baseURLCentral = 'http://dev.mgmt.letseduvate.com/qbox'
+// const baseURLCentral = 'https://mgmt.letseduvate.com/qbox';
+
 export default {
   auth: {
     login: '/auth/login/',

@@ -9,27 +9,27 @@ export const studentErpSearch = (payload) => {
   if (payload.type === 'erp') {
     url = urls.SuggestionsForErpStudent + '?erp=' + payload.erp +
       '&session_year=' + payload.session + '&grade=' + payload.grade + '&section=' + payload.section +
-      '&state=' + payload.status
+      '&state=' + payload.status + '&branch_id=' + payload.branch
   } else if (payload.type === 'student') {
     url = urls.SuggestionsForErpStudent + '?student_name=' + payload.erp +
       '&session_year=' + payload.session + '&grade=' + payload.grade + '&section=' + payload.section +
-      '&state=' + payload.status
+      '&state=' + payload.status + '&branch_id=' + payload.branch
   } else if (payload.type === 'fatherName') {
     url = urls.SuggestionsForErpStudent + '?father_name=' + payload.erp +
       '&session_year=' + payload.session + '&grade=' + payload.grade + '&section=' + payload.section +
-      '&state=' + payload.status
+      '&state=' + payload.status + '&branch_id=' + payload.branch
   } else if (payload.type === 'fatherNo') {
     url = urls.SuggestionsForErpStudent + '?father_contact_no=' + payload.erp +
       '&session_year=' + payload.session + '&grade=' + payload.grade + '&section=' + payload.section +
-      '&state=' + payload.status
+      '&state=' + payload.status + '&branch_id=' + payload.branch
   } else if (payload.type === 'motherName') {
     url = urls.SuggestionsForErpStudent + '?mother_name=' + payload.erp +
       '&session_year=' + payload.session + '&grade=' + payload.grade + '&section=' + payload.section +
-      '&state=' + payload.status
+      '&state=' + payload.status + '&branch_id=' + payload.branch
   } else if (payload.type === 'motherNo') {
     url = urls.SuggestionsForErpStudent + '?mother_contact_no=' + payload.erp +
       '&session_year=' + payload.session + '&grade=' + payload.grade + '&section=' + payload.section +
-      '&state=' + payload.status
+      '&state=' + payload.status + '&branch_id=' + payload.branch
   }
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())

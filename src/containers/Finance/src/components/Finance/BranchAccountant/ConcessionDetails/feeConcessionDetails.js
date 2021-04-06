@@ -19,13 +19,16 @@ const FeeConcession = ({
   getData,
   erp,
   fetchListConcession,
-  listFeeConcession
+  listFeeConcession,
+  branchId,
+  moduleId
 }) => {
   // const [value, setValue] = useState(false)
   useEffect(() => {
+    console.log('qwer2', moduleId, branchId )
     if (getData && erp.length >= 10 && session) {
       console.log('Fee Concession')
-      fetchListConcession(session, erp, alert, user)
+      fetchListConcession(session, erp, alert, user, branchId, moduleId)
       // setValue(true)
     } else {
       alert.warning('Select Required Fields')
@@ -141,7 +144,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchListConcession: (session, erp, alert, user) => dispatch(actionTypes.fetchFeeConcessionList({ session, erp, alert, user }))
+  fetchListConcession: (session, erp, alert, user, branch, moduleId) => dispatch(actionTypes.fetchFeeConcessionList({ session, erp, alert, user, branch, moduleId }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(FeeConcession)

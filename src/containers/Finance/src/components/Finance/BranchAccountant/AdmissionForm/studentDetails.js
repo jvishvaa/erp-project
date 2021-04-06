@@ -94,7 +94,7 @@ class StudentDetailsFormAcc extends Component {
       this.setState({
         studentDetails: newstudentDetails })
     }
-    this.props.fetchGradeList(this.props.alert, this.props.user)
+    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId)
     this.props.fetchClassGroup(this.props.alert, this.props.user)
   }
 

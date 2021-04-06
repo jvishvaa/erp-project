@@ -158,6 +158,8 @@ class Ledger extends Component {
     this.setState({
       accountHeadModal: true
     })
+
+    this.props.fetchLedgerList(this.props.user, this.props.alert)
   }
 
   hideAccountHeadModal = () => {

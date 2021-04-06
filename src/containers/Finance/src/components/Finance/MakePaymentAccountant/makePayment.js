@@ -122,11 +122,11 @@ class MakePayment extends Component {
     if (makePayState) {
       this.setState(makePayState)
     }
-    this.props.fetchAllPayment(this.props.session, this.props.erp, this.props.user, this.props.alert)
-    this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user)
+    this.props.fetchAllPayment(this.props.session, this.props.erp, this.props.user, this.props.alert, this.props.moduleId, this.props.branchId)
+    this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
     this.props.fetchNormalWallet(this.props.session, this.props.erp, this.props.alert, this.props.user)
     this.props.fetchDate(this.props.alert, this.props.user)
-    this.props.fetchStudentDues(this.props.erp, this.props.session, this.props.alert, this.props.user)
+    this.props.fetchStudentDues(this.props.erp, this.props.session, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
   }
   // componentWillUnmount () {
   //   this.setState({
@@ -165,8 +165,8 @@ class MakePayment extends Component {
       return
     }
     if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData)) {
-      this.props.fetchAllPayment(session, erp, user, alert)
-      this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user)
+      this.props.fetchAllPayment(session, erp, user, alert, this.props.moduleId, this.props.branchId)
+      this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
       this.props.fetchDate(this.props.alert, this.props.user)
     }
     if (session !== prevProps.session) {
@@ -244,7 +244,7 @@ class MakePayment extends Component {
 
   // Generation of PDF Start
   getPdfData = (transactionId) => {
-    return (axios.get(`${urls.FeeTransactionReceipt}?transaction_id=${transactionId}&academic_year=${this.props.session}`, {
+    return (axios.get(`${urls.FeeTransactionReceipt}?transaction_id=${transactionId}&academic_year=${this.props.session}&branch_id=${this.props.branchId}&module_id=${this.props.moduleId}`, {
       headers: {
         Authorization: 'Bearer ' + this.props.user
       }
@@ -288,6 +288,7 @@ class MakePayment extends Component {
           getData={this.getAxisPosDataHandler}
           totalAmountToBePaid={this.state.totalAmountToBePaid}
           alert={this.props.alert}
+          branch={this.props.branchId}
           // walletInfo={this.props.walletInfo}
         />
       case 3:
@@ -544,7 +545,8 @@ class MakePayment extends Component {
         // receipt_number_online: this.state.payment.payment.receiptOnline ? this.state.payment.payment.receiptOnline : null,
         current_date: this.props.dateFromServer[0] ? this.props.dateFromServer[0] : null,
         fee: insta,
-        other_fee: otherDetails
+        other_fee: otherDetails,
+        branch_id: this.props.branchId
       }
       this.sendingToServer(walletData)
       return
@@ -554,6 +556,8 @@ class MakePayment extends Component {
       let cashData = {
         ...this.props.walletInfo.length && this.state.isWalletAgree ? wal : null,
         session_year: this.props.session,
+        branch_id: this.props.branchId,
+        module_id: this.props.moduleId,
         student: this.props.erpCode,
         date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
         total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -565,13 +569,16 @@ class MakePayment extends Component {
         // receipt_number_online: this.state.payment.payment.receiptOnline ? this.state.payment.payment.receiptOnline : null,
         current_date: this.props.dateFromServer[0] ? this.props.dateFromServer[0] : null,
         fee: insta,
-        other_fee: otherDetails
+        other_fee: otherDetails,
+        branch_id: this.props.branchId
       }
       this.sendingToServer(cashData)
     } else if (+this.state.payment.mode === 2) {
       let chequeData = {
         ...this.props.walletInfo.length && this.state.isWalletAgree ? wal : null,
         session_year: this.props.session,
+        branch_id: this.props.branchId,
+        module_id: this.props.moduleId,
         student: this.props.erpCode,
         date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
         total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -588,13 +595,16 @@ class MakePayment extends Component {
         bank_name: this.state.payment.payment.cheque.chequeBankName ? this.state.payment.payment.cheque.chequeBankName : null,
         bank_branch: this.state.payment.payment.cheque.chequeBankBranch ? this.state.payment.payment.cheque.chequeBankBranch : null,
         fee: insta,
-        other_fee: otherDetails
+        other_fee: otherDetails,
+        branch_id: this.props.branchId
       }
       this.sendingToServer(chequeData)
     } else if (+this.state.payment.mode === 3) {
       let internetData = {
         ...this.props.walletInfo.length && this.state.isWalletAgree ? wal : null,
         session_year: this.props.session,
+        branch_id: this.props.branchId,
+        module_id: this.props.moduleId,
         student: this.props.erpCode,
         date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
         total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -607,13 +617,16 @@ class MakePayment extends Component {
         remarks: this.state.payment.payment.internet.remarks ? this.state.payment.payment.internet.remarks : null,
         current_date: this.props.dateFromServer[0] ? this.props.dateFromServer[0] : null,
         fee: insta,
-        other_fee: otherDetails
+        other_fee: otherDetails,
+        branch_id: this.props.branchId
       }
       this.sendingToServer(internetData)
     } else if (+this.state.payment.mode === 4) {
       let creditData = {
         ...this.props.walletInfo.length && this.state.isWalletAgree ? wal : null,
         session_year: this.props.session,
+        branch_id: this.props.branchId,
+        module_id: this.props.moduleId,
         student: this.props.erpCode,
         date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
         total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -629,7 +642,8 @@ class MakePayment extends Component {
         credit_date: this.state.payment.payment.credit.creditDate ? this.state.payment.payment.credit.creditDate : null,
         current_date: this.props.dateFromServer[0] ? this.props.dateFromServer[0] : null,
         fee: insta,
-        other_fee: otherDetails
+        other_fee: otherDetails,
+        branch_id: this.props.branchId
       }
       this.sendingToServer(creditData)
     }
@@ -685,8 +699,8 @@ class MakePayment extends Component {
         }
       }, () => {
         this.props.clearAllProps()
-        this.props.fetchAllPayment(this.props.session, this.props.erp, this.props.user, this.props.alert)
-        this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user)
+        this.props.fetchAllPayment(this.props.session, this.props.erp, this.props.user, this.props.alert, this.props.moduleId, this.props.branchId)
+        this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
         this.props.fetchNormalWallet(this.props.session, this.props.erp, this.props.alert, this.props.user)
         // this.props.fetchAllPayment(this.props.erpCode, this.props.user, this.props.alert)
       })
@@ -879,15 +893,15 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   // loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchAllPayment: (session, erp, user, alert) => dispatch(actionTypes.fetchAllPayment({ session, erp, user, alert })),
-  listOtherFees: (session, erp, alert, user) => dispatch(actionTypes.fetchAccountantOtherFee({ session, erp, alert, user })),
+  fetchAllPayment: (session, erp, user, alert, moduleId, branchId) => dispatch(actionTypes.fetchAllPayment({ session, erp, user, alert, moduleId, branchId })),
+  listOtherFees: (session, erp, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchAccountantOtherFee({ session, erp, alert, user, moduleId, branchId })),
   sendAllPayment: (data, user, alert) => dispatch(actionTypes.sendAllPayment({ data, user, alert })),
   clearAllProps: () => dispatch(actionTypes.clearAllProps()),
   fetchGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, alert, user, moduleId })),
   fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
   fetchAllSections: (session, gradeId, alert, user, moduleId ) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId })),
   fetchDate: (alert, user) => dispatch(actionTypes.fetchDateFromServer({ alert, user })),
-  fetchStudentDues: (erp, session, alert, user) => dispatch(actionTypes.fetchStudentDues({ erp, session, alert, user })),
+  fetchStudentDues: (erp, session, alert, user, moduleId, branchId ) => dispatch(actionTypes.fetchStudentDues({ erp, session, alert, user, moduleId, branchId })),
   fetchNormalWallet: (session, erp, alert, user) => dispatch(actionTypes.fetchNormalWallet({ session, erp, alert, user }))
 })
 

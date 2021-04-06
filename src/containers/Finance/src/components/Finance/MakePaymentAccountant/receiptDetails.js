@@ -131,7 +131,7 @@ class ReceiptDetails extends Component {
       })
     })
     // this.setState(Object.assign(this.state.payment, { dateOfPayment: today }))
-    this.props.fetchReceiptRange(this.props.session, this.props.erp, this.props.alert, this.props.user)
+    this.props.fetchReceiptRange(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.branch)
   }
 
   // componentDidUpdate (prevProps, prevState) {
@@ -1251,7 +1251,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   cardDetailsPayment: (data, alert, user) => dispatch(actionTypes.cardDetailsPayment({ data, alert, user })),
   sendAxisPosPayment: (data, alert, user) => dispatch(actionTypes.sendAxisPosPayment({ data, alert, user })),
-  fetchReceiptRange: (session, erp, alert, user) => dispatch(actionTypes.fetchReceiptRange({ session, erp, alert, user })),
+  fetchReceiptRange: (session, erp, alert, user, branchId) => dispatch(actionTypes.fetchReceiptRange({ session, erp, alert, user, branchId })),
   fetchIfsc: (ifsc, alert, user) => dispatch(actionTypes.fetchIfsc({ ifsc, alert, user })),
   fetchMicr: (micr, alert, user) => dispatch(actionTypes.fetchMicr({ micr, alert, user }))
 })
