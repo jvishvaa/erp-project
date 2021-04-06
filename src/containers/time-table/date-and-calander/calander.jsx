@@ -279,7 +279,7 @@ const Calander = (props) => {
           </div>
           <div className={classes.formTextFields}>
             <TextField
-              label='Reqired materials'
+              label='Required materials'
               id='outlined-size-small'
               variant='outlined'
               size='small'
@@ -342,7 +342,7 @@ const Calander = (props) => {
           </div> */}
           <div className={classes.formTextFields}>
             <TextField
-              label='start Time'
+              label='Start Time'
               id='outlined-size-small'
               variant='outlined'
               size='small'

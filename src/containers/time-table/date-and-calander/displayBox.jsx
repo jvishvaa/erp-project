@@ -131,7 +131,7 @@ const DisplayBox = (props) => {
           <div className='field-container'>
             <TextField
             fullWidth
-              label='description'
+              label='Description'
               value={Description}
               id='outlined-size-small'
               variant='outlined'

@@ -38,13 +38,6 @@ const TimeTable = (props) => {
   });
 
   useEffect(() => {
-    // if (NavData && NavData.length) {
-    //   if (location.pathname === '/time-table/student-view') {
-    //     setTeacherView(false);
-    //   } else if (location.pathname === '/time-table/teacher-view') {
-    //     setTeacherView(true);
-    //   }
-    // }
 
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -74,6 +67,9 @@ const TimeTable = (props) => {
   }, [location.pathname]);
   // console.log(getModuleId(), 'madule ids');
 console.log(ids, 'all datas')
+useEffect(()=>{
+  callGetTimeTableAPI()
+},[branchID])
   // console.log(studentModuleId, teacherModuleId, 'module ids')
   // console.log(teacherView, 'find result teacherview');
   const callGetTimeTableAPI = async () => {
