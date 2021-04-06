@@ -164,7 +164,6 @@ export default {
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
     gradeSubjectMappingList: `/academic/lesson-plan-subjects/`,
     chapterList: `/academic/central-chapters-list/`,
-    chaptersList: `${baseURLCentral}/central-chapters-list/`,
     periodCompleted: '/academic/lessonplan-completed-status/',
     periodCompletedStatus: '/academic/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
