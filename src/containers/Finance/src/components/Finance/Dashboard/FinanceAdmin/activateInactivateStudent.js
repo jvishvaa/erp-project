@@ -19,6 +19,7 @@ import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
 import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from 'containers/Layout'
 
 const styles = theme => ({
   container: {
@@ -317,6 +318,7 @@ class ActivateInactivateStudentAdm extends Component {
       studentTableActive = (<h1>No Records Found</h1>)
     }
     return (
+      <Layout>
       <React.Fragment>
         <div>
           <Grid container spacing={3}>
@@ -355,6 +357,7 @@ class ActivateInactivateStudentAdm extends Component {
         {acceptModal}
         {rejectModal}
       </React.Fragment>
+      </Layout>
     )
   }
 }

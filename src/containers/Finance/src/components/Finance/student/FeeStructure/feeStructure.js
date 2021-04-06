@@ -29,6 +29,33 @@ TabContainer.propTypes = {
   dir: PropTypes.string.isRequired
 }
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Finance' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Fee Structure') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 class FeeStructure extends Component {
   constructor (props) {
     super(props)
@@ -171,7 +198,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchStudentDues: (erp, session, alert, user) => dispatch(actionTypes.fetchStudentDues({ erp, session, alert, user })),
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchListDefaultView: (alert, user) => dispatch(actionTypes.fetchStudentFeeStructureList({ alert, user }))
 })
 
