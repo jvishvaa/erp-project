@@ -16,10 +16,28 @@ class AddRegistrationFee extends Component {
     }
   }
 
+  componentDidMount = (e) => {
+    if (this.props.feeType === 'Registration Fee Type') {
+      this.setState({
+        feeTypeName: 'Registration Fee'
+      })
+    } else {
+      this.setState({
+        feeTypeName: 'Application Fee'
+      })
+    }
+  }
+
   changehandlerFeeTypeName = (e) => {
-    this.setState({
-      feeTypeName: e.target.value
-    })
+  //   if (this.props.feeType === 'Registration Fee Type') {
+  //   this.setState({
+  //     feeTypeName: 'Registration Fee'
+  //   })
+  // } else {
+  //   this.setState({
+  //     feeTypeName: 'Registration Fee'
+  //   })
+  // }
   }
 
   changehandlerAmount = (e) => {
@@ -53,6 +71,7 @@ class AddRegistrationFee extends Component {
           <input
             placeholder='Fee Type Name'
             type='text'
+            // disabled={true}
             className='form-control'
             value={this.state.feeTypeName}
             onChange={this.changehandlerFeeTypeName}

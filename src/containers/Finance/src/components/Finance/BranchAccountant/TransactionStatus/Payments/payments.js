@@ -166,7 +166,7 @@ class Payments extends Component {
         const response = await this.getPdfData(transactionId)
         let feeType = response.data.feeType
         // if (feeType === 'Application Fee' || feeType === 'Registration Fee') {
-          if (feeType === 'app fee' || feeType === 'reg fee') {
+          if (feeType === 'Application Fee' || feeType === 'Registration Fee') {
           appRegReceiptsPdf(response.data, isCancelled)
         } else {
           feeReceiptss(response.data, isCancelled)
