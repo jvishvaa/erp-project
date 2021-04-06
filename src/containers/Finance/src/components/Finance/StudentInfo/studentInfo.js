@@ -117,7 +117,7 @@ class StudentInfoAdm extends Component {
         this.props.fetchGradesPerBranch(this.props.alert, this.props.user, this.state.studentInfo.academicyear, this.state.studentInfo.branch, moduleId)
       } else if (name === 'class') {
         console.log('api called')
-        this.props.fetchAllSectionsPerGradeAsAdmin(this.state.studentInfo.academicyear, this.props.alert, this.props.user, event.value, this.state.studentInfo.branch)
+        this.props.fetchAllSectionsPerGradeAsAdmin(this.state.studentInfo.academicyear, this.props.alert, this.props.user, event.value, this.state.studentInfo.branch, moduleId)
       } if (name === 'academicyear') {
         // this.props.listBranches()
         this.props.fetchBranches(event && event.value, this.props.alert, this.props.user, moduleId)
@@ -329,7 +329,7 @@ const mapDispatchToProps = dispatch => ({
   fetchGradesPerBranch: (alert, user, session, branch, moduleId) => dispatch(actionTypes.fetchGradesPerBranch({ alert, user, session, branch, moduleId })),
   gradeMapBranch: (branchId) => dispatch(apiActions.getGradeMapping(branchId)),
   sectionMap: (acadMapId) => dispatch(apiActions.getSectionMapping(acadMapId)),
-  fetchAllSectionsPerGradeAsAdmin: (session, alert, user, gradeId, branchId) => dispatch(actionTypes.fetchAllSectionsPerGradeAsAdmin({ session, alert, user, gradeId, branchId })),
+  fetchAllSectionsPerGradeAsAdmin: (session, alert, user, gradeId, branchId, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGradeAsAdmin({ session, alert, user, gradeId, branchId, moduleId })),
   fetchBranchAtAcc: (alert, user) => dispatch(actionTypes.fetchBranchAtAcc({ alert, user })),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchErpSuggestionsStudentName: (alert, user, session, grade, section, branch, erp) => dispatch(actionTypes.fetchErpSuggestionsStudentName({ alert, user, session, grade, section, branch, erp })),
