@@ -37,7 +37,8 @@ export const saveParty = (payload) => {
       address_no: payload.address,
       contact_no: payload.contact,
       gstin_no: payload.gst,
-      pan_no: payload.pan
+      pan_no: payload.pan,
+      branch_id: payload.branch
     }
     dispatch(actionTypes.dataLoading())
     axios.post(urls.ListCreateParty, body, {

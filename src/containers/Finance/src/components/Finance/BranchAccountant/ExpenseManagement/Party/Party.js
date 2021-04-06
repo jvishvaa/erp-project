@@ -185,7 +185,7 @@ const Party = ({ user, alert, fetchPartyList, classes, sessions, fetchBranches, 
       alert.warning('Phone Number should be of 10 Digits')
       return
     }
-    props.saveParty(name, phone, gst, pan, address, user, alert)
+    props.saveParty(name, phone, gst, pan, address, user, alert, selectedBranches?.value)
     setShowAddModal(false)
   }
 
