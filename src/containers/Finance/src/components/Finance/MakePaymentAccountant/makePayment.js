@@ -700,7 +700,7 @@ class MakePayment extends Component {
       }, () => {
         this.props.clearAllProps()
         this.props.fetchAllPayment(this.props.session, this.props.erp, this.props.user, this.props.alert, this.props.moduleId, this.props.branchId)
-        this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user)
+        this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
         this.props.fetchNormalWallet(this.props.session, this.props.erp, this.props.alert, this.props.user)
         // this.props.fetchAllPayment(this.props.erpCode, this.props.user, this.props.alert)
       })
