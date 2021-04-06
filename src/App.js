@@ -125,8 +125,8 @@ import Calendar1 from './containers/Calendar1/Calendar'
 import Attendance from './containers/Calendar1/Attendance'
 import CreateEvent from './containers/Calendar1/CreateEvent'
 import Attend from './containers/Calendar1/Attend';
-import MarkAttedance from './containers/attendance/MarkAttedance';
 import AttedanceCalender from './containers/attendance/AttedanceCalender';
+import MarkAttedance from 'containers/attendance/MarkAttedance';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -535,9 +535,10 @@ function App() {
                         <Route exact path='/createEvent'>
                           {({ match }) => <CreateEvent match={match} />}
                         </Route>
-                        <Route exact path='/MarkAttedance'>
+                        <Route exact path='/markattendance'>
                           {({ match }) => <MarkAttedance match={match} />}
                         </Route>
+                       
                         <Route exact path='/AttedanceCalender'>
                           {({ match }) => <AttedanceCalender match={match} />}
                         </Route>

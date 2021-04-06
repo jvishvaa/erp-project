@@ -25,7 +25,9 @@ import OutlinedFlagRoundedIcon from '@material-ui/icons/OutlinedFlagRounded';
 import WatchLaterOutlinedIcon from '@material-ui/icons/WatchLaterOutlined';
 import EventOutlinedIcon from '@material-ui/icons/EventOutlined';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-
+// import { StaticDateRangePicker, LocalizationProvider } from '@material-ui/lab';
+// import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
+// import Box from '@material-ui/core/Box';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
@@ -106,6 +108,7 @@ const AttedanceCalender = () => {
       stroke: '#FFFFFF',
     },
   })(Button);
+  const [value, setValue] = React.useState([null, null]);
 
   return (
     <Layout>
@@ -189,7 +192,24 @@ const AttedanceCalender = () => {
         spacing={3}
         style={{ background: 'white' }}
       >
-        <Grid item md={6}></Grid>
+        <Grid item md={6}>
+          {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <StaticDateRangePicker
+              displayStaticWrapperAs='desktop'
+              value={value}
+              onChange={(newValue) => {
+                setValue(newValue);
+              }}
+              renderInput={(startProps, endProps) => (
+                <React.Fragment>
+                  <TextField {...startProps} variant='standard' />
+                  <Box sx={{ mx: 2 }}> to </Box>
+                  <TextField {...endProps} variant='standard' />
+                </React.Fragment>
+              )}
+            />
+          </LocalizationProvider> */}
+        </Grid>
         <Grid item md={2}>
           <Paper elevation={3}>
             <Grid container direction='row' className={classes.root}>

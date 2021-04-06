@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
+
+import Calendar from 'react-calendar';
+import MobileDatepicker from './mobile-datepicker';
+import { DateRangePicker } from 'materialui-daterange-picker';
 import 'react-calendar/dist/Calendar.css';
+import moment from 'moment';
 import Layout from 'containers/Layout';
 import Divider from '@material-ui/core/Divider';
+import sameera from '../Calendar1/Attend';
 import Button from '@material-ui/core/Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
+import { addDays } from 'date-fns';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Grid from '@material-ui/core/Grid';
@@ -13,11 +20,27 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Breadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import './Styles.css';
+import { setModulePermissionsRequestData } from 'redux/actions';
+
+function getDaysAfter(date, amount) {
+  return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
+}
+function getDaysBefore(date, amount) {
+  return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
+}
 
 const CreateEvent = () => {
+  // const [dateState, setDateState] = useState(new Date());
+  // const [spacing, setSpacing] = useState(2);
+  // const [getDatastudent, setGetDatastudent] = useState();
+  // const [getData, setGetData] = useState([]);
+  // const [flag, setFlag] = useState(false);
+  // const [open, setOpen] = useState(false);
   const [state, setState] = useState();
   const [branches, setBranches] = useState();
   const [grades, setGrades] = useState();
+  const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
+  const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -28,8 +51,20 @@ const CreateEvent = () => {
       margin: '1.5rem -0.1rem',
     },
   }));
-  
 
+  const handleStartDateChange = (date) => {
+    const endDate = getDaysAfter(date.clone(), 6);
+    setEndDate(endDate);
+    setStartDate(date.format('YYYY-MM-DD'));
+    // getTeacherHomeworkDetails(2, date, endDate);
+  };
+
+  const handleEndDateChange = (date) => {
+    const startDate = getDaysBefore(date.clone(), 6);
+    setStartDate(startDate);
+    setEndDate(date.format('YYYY-MM-DD'));
+    // getTeacherHomeworkDetails(2, startDate, date);
+  };
   const handleChange = (event) => {
     console.log(event.target.value);
     setState({ ...state, [event.target.name]: event.target.value });
@@ -65,47 +100,19 @@ const CreateEvent = () => {
   return (
     <>
       <Layout>
-        <Grid container direction='row'>
-          <Grid item md={4} xs={12}>
-            <Breadcrumbs componentName='CreateEvent' />
-          </Grid>
-        </Grid>
         <form>
+          <Grid container direction='row'>
+            <Grid item md={2} xs={12}>
+              <Breadcrumbs componentName='CreateEvent' />
+            </Grid>
+          </Grid>
           <Grid container direction='row' spacing={2} className={classes.root}>
-            {/* <Grid item md={2}>
-              
-              <DateRangePicker
-                startText='Select-Date-Range'
-                size='medium'
-                value={dateRangeTechPer}
-                onChange={(newValue) => {
-                  setDateRangeTechPer(newValue);
-                }}
-                renderInput={({ inputProps, ...startProps }, endProps) => {
-                  return (
-                    <>
-                      <TextField
-                        {...startProps}
-                        format={(date) => moment(date).format('DD-MM-YYYY')}
-                        inputProps={{
-                          ...inputProps,
-                          value: `${inputProps.value} > ${endProps.inputProps.value}`,
-                          readOnly: true,
-                        }}
-                        size='medium'
-                        style={{ minWidth: '100%' }}
-                      />
-                    </>
-                  );
-                }}
-              />
-            </Grid> */}
-
             <Grid item md={2} xs={12}>
               <Autocomplete
-                size='medium'
-                // style={{ width: 150 }}
+                className='dropdown'
+                size='small'
                 id='combo-box-demo'
+                labelplaceholder='Event Type'
                 onChange={handleChange}
                 options={branches}
                 getOptionLabel={(option) => option.branch_name}
@@ -114,39 +121,27 @@ const CreateEvent = () => {
                 )}
               />
             </Grid>
+
             <Grid item md={2} xs={12}>
               <TextField
                 name='event_name'
                 variant='outlined'
-                size='medium'
+                size='small'
+                labelplaceholder='Event Type'
                 label='Event Name'
                 fullWidth
                 onChange={handleChange}
               />
             </Grid>
           </Grid>
-
-          <Grid conatiner>
+          <Grid item md={12} xs={12}>
             <Divider />
           </Grid>
-
           <Grid container direction='row' spacing={2} className={classes.root}>
-            {/* <Grid item md={2}>
+            <Grid item md={2} xs={12}>
               <Autocomplete
-                size='medium'
-                style={{ width: 250 }}
-                id='combo-box-demo'
-                options={getData}
-                onChange={handleChange}
-                getOptionLabel={(getData) => getData}
-                renderInput={(params) => (
-                  <TextField {...params} label='academic year' variant='outlined' />
-                )}
-              />
-            </Grid> */}
-            <Grid item md={2} xs={12} xl={2}>
-              <Autocomplete
-                size='medium'
+                size='small'
+                className='dropdown'
                 id='combo-box-demo'
                 name='branch'
                 onChange={handleChange}
@@ -157,10 +152,11 @@ const CreateEvent = () => {
                 )}
               />
             </Grid>
-            <Grid item md={2} xs={12} xl={2}>
+            <Grid item md={2} xs={12}>
               <Autocomplete
-                size='medium'
+                size='small'
                 id='combo-box-demo'
+                className='dropdown'
                 name='grade'
                 options={grades}
                 onChange={handleChange}
@@ -170,10 +166,11 @@ const CreateEvent = () => {
                 )}
               />
             </Grid>
-            <Grid item md={2} xs={12} xl={2}>
+            <Grid item md={2} xs={12}>
               <Autocomplete
                 id='combo-box-demo'
-                size='medium'
+                size='small'
+                className='dropdown'
                 options={grades}
                 onChange={handleChange}
                 getOptionLabel={(option) => option.grade_name}
@@ -183,31 +180,22 @@ const CreateEvent = () => {
               />
             </Grid>
           </Grid>
-          <Grid conatiner>
+          <Grid item md={12} xs={12}>
             <Divider />
           </Grid>
-
           <Grid container direction='row' spacing={2} className={classes.root}>
-            <Grid item md={2} xs={6} xl={2}>
-              <TextField
-                type='date'
-                variant='outlined'
-                name='start_date'
-                fullWidth
-                onChange={handleChange}
-              />
+            <Grid item md={2} xs={12}>
+              {
+                <div className='mobile-date-picker'>
+                  <MobileDatepicker
+                    onChange={(date) => handleEndDateChange(date)}
+                    handleStartDateChange={handleStartDateChange}
+                    handleEndDateChange={handleEndDateChange}
+                  />
+                </div>
+              }
             </Grid>
-
-            <Grid item md={2} xs={6} xl={2}>
-              <TextField
-                variant='outlined'
-                type='date'
-                name='end_date'
-                fullWidth
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item md={1} xs={12} xl={1}>
+            <Grid item md={1} xs={12}>
               <FormControlLabel
                 control={<Checkbox onChange={handleChange} />}
                 label='All Day'
@@ -216,26 +204,19 @@ const CreateEvent = () => {
               />
             </Grid>
           </Grid>
-
           <Grid container direction='row' className={classes.root}>
-            <Grid item md={1} xs={6} xl={1}>
-              <TextField
-                type='time'
-                variant='outlined'
-                name='start_time'
-                onChange={handleChange}
-              />
+            <Grid item md={2} xs={12}>
+              {
+                <div className='mobile-date-picker'>
+                  <MobileDatepicker
+                    onChange={(date) => handleEndDateChange(date)}
+                    handleStartDateChange={handleStartDateChange}
+                    handleEndDateChange={handleEndDateChange}
+                  />
+                </div>
+              }
             </Grid>
-
-            <Grid item md={2} xs={6} xl={2}>
-              <TextField
-                variant='outlined'
-                type='time'
-                name='end_time'
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item md={1} xs={3} xl={1}>
+            <Grid item md={1} xs={3}>
               <FormControlLabel
                 value='top'
                 control={<Checkbox />}
@@ -243,7 +224,7 @@ const CreateEvent = () => {
                 labelPlacement='top'
               />
             </Grid>
-            <Grid item md={1} xs={3} xl={1}>
+            <Grid item md={1} xs={3}>
               <FormControlLabel
                 value='top'
                 control={<Checkbox />}
@@ -252,41 +233,34 @@ const CreateEvent = () => {
               />
             </Grid>
           </Grid>
-          <Grid conatiner style={{ marginTop: '3%' }}>
+
+          <Grid item md={12} xs={12}>
             <Divider />
           </Grid>
+
           <Grid container direction='row' className={classes.root}>
-            <Grid item md={8} xl={8} xs={12}>
+            <Grid item md={6} xs={12}>
               <TextField
-                variant='outlined'
-                name='description'
+                id='outlined-multiline-static'
                 label='ADD Event Description'
                 labelwidth='170'
                 fullWidth
                 onChange={handleChange}
-                className='style'
+                multiline
+                rows={5}
+                variant='outlined'
               />
             </Grid>
           </Grid>
           <Grid container direction='row' className={classes.root}>
-            <Grid item md={2} xl={2} xs={12}>
+            <Grid item md={2} xs={12}>
               <Button variant='contained'>CLEAR ALL</Button>
             </Grid>
-            <Grid item md={2} xs={12} xl={2}>
+            <Grid item md={2} xs={12}>
               <Button variant='contained' color='primary' onClick={handleSubmit}>
                 SAVE EVENT
               </Button>
             </Grid>
-            {/* <Grid item md={2}>
-              <DateRangePicker
-                onChange={(item) => setAte([item.selection])}
-                showSelectionPreview={true}
-                moveRangeOnFirstSelection={false}
-                months={2}
-                ranges={ate}
-                direction='horizontal'
-              />
-            </Grid> */}
           </Grid>
         </form>
 

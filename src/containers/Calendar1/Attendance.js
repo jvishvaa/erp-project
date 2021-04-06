@@ -6,6 +6,7 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import ClearIcon from '../../components/icon/ClearIcon';
+import Breadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import moment from 'moment';
 import './attendance.scss';
 import {
@@ -28,13 +29,27 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 
 
 const useStyles = makeStyles((theme) => ({
-    root: {
+  root: {
+    flexGrow: 1,
+    margin: 10,
+    
+    
+  },
+    
+    bord:{
+      
+      margin: theme.spacing(1),
+      border: "solid lightgrey",
+      borderRadius:10,
       flexGrow: 1,
-      margin: 10,
+       margin: 10,
     },
-    root: {
+    root1: {
       '& > *': {
+      
         margin: theme.spacing(1),
+      
+ 
       },
     },
     cardsPagination: {
@@ -109,6 +124,7 @@ const Attendance = () =>{
         color: '#8C8C8C',
         height: '42px',
         marginTop: 'auto',
+        
       },
     })(Button);
     const handleGrade = (e, value) => {
@@ -185,10 +201,15 @@ const Attendance = () =>{
 
 return(
     <Layout>
+      <Grid container direction='row'>
+          <Grid item md={2} xs={12} >
+            <Breadcrumbs componentName='Attendance' />
+          </Grid>
+        </Grid>
     <form>
       <div className={classes.root}>
-        <Grid container spacing={3} direction='row'>
-          <Grid item xs={12} sm={5} md={3}>
+        <Grid container spacing={2} direction='row'>
+          <Grid item  md={2} xs={12} >
             <MuiPickersUtilsProvider utils={MomentUtils}>
             <KeyboardDatePicker
               size='small'
@@ -202,8 +223,8 @@ return(
               value={dateValue}
               style={{ background: 'white' }}
               style={{ marginTop: 25}}
-              fullWidth
               required
+              
               onChange={handleDateChange}
               KeyboardButtonProps={{
                 'aria-label': 'change date',
@@ -213,7 +234,7 @@ return(
             
               
           </Grid>
-          <Grid item xs={12} sm={5} md={3} lg={2}>
+          <Grid item  md={2} xs={12} >
           <Autocomplete
                 size='small'
                 id='role'
@@ -235,7 +256,7 @@ return(
                 )}
               />
           </Grid>
-          <Grid item xs={12} sm={5} md={3} lg={2}>
+          <Grid item md={2} xs={12}>
           <Autocomplete
                 size='small'
                 id='grade'
@@ -256,7 +277,7 @@ return(
                 )}
               />
           </Grid>
-          <Grid item xs={12} sm={5} md={3} lg={2}>
+          <Grid item  md={2}  xs={12}>
           <Autocomplete
                 id='section'
                 size='small'
@@ -282,7 +303,7 @@ return(
 
 
          
-          <Grid item xs={12}>
+          <Grid item  xs={12} >
             <Divider />
           </Grid>
           <Grid container spacing={1} style={{ width: '45%', margin: '10px' }}>
@@ -371,7 +392,7 @@ return(
        
        { dummyData.map((data) => {
        return (<Grid item md={2}>
-          <Card className={classes.root}>
+          <Card className={classes.bord}>
             <CardMedia
               className={classes.cover}
             />

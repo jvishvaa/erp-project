@@ -1047,16 +1047,7 @@ const Layout = ({ children, history }) => {
             <ListItemText className='menu-item-text'>Attend</ListItemText>
           </ListItem>
           
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/attendance')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-            <TodayIcon />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>MarkAttendance</ListItemText>
-          </ListItem>
+          
           <ListItem
             button
             className={classes.menuControlContainer}
@@ -1077,6 +1068,7 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>CreateEvent</ListItemText>
           </ListItem>
+          
           {/* {drawerOpen ? (
             <ListItem
               button

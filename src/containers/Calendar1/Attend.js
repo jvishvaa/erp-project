@@ -14,6 +14,7 @@ import {
   Typography,
   withStyles,
  } from '@material-ui/core';
+ import Breadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { Autocomplete ,Pagination } from '@material-ui/lab';
 import Layout from '../Layout';
 import line from '../../assets/images/line.svg';
@@ -22,6 +23,7 @@ import axiosInstance from '../../config/axios';
 import ClearIcon from '../../components/icon/ClearIcon';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import MediaQuery from "react-responsive";
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
 import './attend.scss';
@@ -29,9 +31,16 @@ import './attend.scss';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      flexGrow: 1,
+      // flexGrow: 1,
       margin: 10,
       
+      
+    },
+    bord:{
+      
+      margin: theme.spacing(1),
+      border: "solid lightgrey",
+      borderRadius:10,
       
     },
     root: {
@@ -108,8 +117,10 @@ const Attend = () =>{
       root: {
         backgroundColor: '#E2E2E2',
         color: '#8C8C8C',
+        borderRadius: '10px',
         height: '42px',
         marginTop: 'auto',
+        width:'170'
       },
     })(Button);
     const handleGrade = (e, value) => {
@@ -127,6 +138,7 @@ const Attend = () =>{
         color: '#FFFFFF',
         height: '42px',
         borderRadius: '10px',
+        width:'100',
         padding: '12px 40px',
         marginLeft: '20px',
         marginTop: 'auto',
@@ -203,10 +215,15 @@ const Attend = () =>{
 
 return(
     <Layout>
+       <Grid container direction='row' >
+          <Grid item md={2} xs={12}>
+            <Breadcrumbs componentName='Attendance' />
+          </Grid>
+        </Grid>
     <form>
       <div className={classes.root}>
         <Grid container spacing={3} direction='row'>
-          <Grid item xs={12} sm={5} md={3}>
+          <Grid item xs={10} sm={5} md={3} lg={2}>
            <MuiPickersUtilsProvider utils={MomentUtils}>
             <KeyboardDatePicker
               size='small'
@@ -229,13 +246,14 @@ return(
             />
           </MuiPickersUtilsProvider>
           </Grid>
-          <Grid item xs={12} sm={5} md={3} lg={2}>
+          <Grid item xs={10} sm={5} md={3} lg={2}>
           <Autocomplete
                 size='small'
                 id='role'
                 style={{ width: '100%' }}
                 style={{ marginTop: 25 }}
                 options={branch}
+            
                 name="branch_id"
                 getOptionLabel={(option) => option.branch_name}
                 
@@ -251,7 +269,7 @@ return(
                 )}
               />
           </Grid>
-          <Grid item xs={12} sm={5} md={3} lg={2}>
+          <Grid item xs={10} sm={5} md={3} lg={2}>
           <Autocomplete
                 size='small'
                 id='role'
@@ -273,7 +291,7 @@ return(
                 )}
               />
           </Grid>
-          <Grid item xs={12} sm={5} md={3} lg={2}>
+          <Grid item xs={10} sm={5} md={3} lg={2}>
           <Autocomplete
                 size='small'
                 id='role'
@@ -304,18 +322,17 @@ return(
           <Grid item xs={12}>
             <Divider />
           </Grid>
-          <Grid container spacing={1} style={{ width: '45%', margin: '10px' }}>
-        
-          <Grid>
-          <StyledClearButton
-            variant='contained'
-            startIcon={<ClearIcon />}
-            href={`/markattedance`}
-          >
-            Clear all
-          </StyledClearButton>
+          <Grid container spacing={1} direction="row" justify="flex-start" align="flex-start">
+          <Grid item xs={12} sm={4} md={2} lg={2}>
+            <StyledClearButton
+              variant='contained'
+              startIcon={<ClearIcon />}
+              href={`/markattedance`}
+            >
+              Clear all
+            </StyledClearButton>
         </Grid>
-        <Grid>
+        <Grid item xs={12} sm={3} md={2} lg={1}>
           <StyledFilterButton
             variant='contained'
             color='secondary'
@@ -331,75 +348,121 @@ return(
         <br />
         <br />
         <br />
+        <MediaQuery minWidth={541}>
         <Grid container direction='row'>
                     {/* <Grid item md={1}></Grid> */}
                     
                     
-                    <Grid item md={1}>
+                    <Grid item sm={2} md={2}>
                       <Typography  color="primary">12 Dec 2021-19 Dec 2021 </Typography>
                       
                     </Grid>
-                    <Grid item md={1}>
+                    <Grid item sm={1} md={1}>
                       <img src={line} className={classes.lines} />
                     </Grid>
                     
-                    <Grid item md={1}>
+                    <Grid item sm={1} md={1}>
                       <Typography variant='subtitle2'><FormControlLabel 
                               control={<Checkbox color="primary"/>}
                               label="Present"/></Typography>
                      
                     </Grid>
-                    <Grid item md={1}>
+                    <Grid item sm={1} md={1}>
                     <Typography><FormControlLabel 
                               control={<Checkbox color="primary"/>}
                               
                               label="Absent"/></Typography>
                     </Grid>
-                    <Grid item md={1}>
+                    <Grid item sm={1} md={1}>
                     <Typography><FormControlLabel 
                               control={<Checkbox color="primary"/>}
                               label="1st Half"/></Typography>
                     </Grid>
-                    <Grid item md={1}>
+                    <Grid item sm={1} md={1}>
                     <Typography><FormControlLabel 
                               control={<Checkbox color="primary"/>}
                               label="2nd Half"/></Typography>
                     </Grid>
-                    <Grid><Typography variant='subtitle2' color="secondary" style={{marginLeft:400}}>Number of students:33</Typography></Grid>
-                    <Grid>
-                    <Button  style={{marginLeft:100}}>
+                    <Grid item xs={8} sm={2} md={2} lg={2}><Typography variant='subtitle2' color="secondary" >Number of students:33</Typography></Grid>
+                    <Grid item xs={8} sm={2} md={2} lg={2}>
+                    <Button  >
                         Download Excel
                     </Button>
                     </Grid>
-                    
+                      
                 </Grid>
+                </MediaQuery>
+                <MediaQuery maxWidth={540}>
+                    <Grid container direction='row'>
+                                {/* <Grid item md={1}></Grid> */}
+                                
+                    
+                    <Grid item xs={10} sm={4} md={2}>
+                      <Typography  color="primary" variant="subtitle1">12 Dec 2021-19 Dec 2021 </Typography>
+                      </Grid>
+                    {/* </Grid>
+                    <Grid item sm={1} md={1}>
+                      <img src={line} className={classes.lines} />
+                    </Grid>
+                    
+                    <Grid item sm={1} md={1}>
+                      <Typography variant='subtitle2'><FormControlLabel 
+                              control={<Checkbox color="primary"/>}
+                              label="Present"/></Typography>
+                     
+                    </Grid>
+                    <Grid item sm={1} md={1}>
+                    <Typography><FormControlLabel 
+                              control={<Checkbox color="primary"/>}
+                              
+                              label="Absent"/></Typography>
+                    </Grid>
+                    <Grid item sm={1} md={1}>
+                    <Typography><FormControlLabel 
+                              control={<Checkbox color="primary"/>}
+                              label="1st Half"/></Typography>
+                    </Grid>
+                    <Grid item sm={1} md={1}>
+                    <Typography><FormControlLabel 
+                              control={<Checkbox color="primary"/>}
+                              label="2nd Half"/></Typography>
+                    </Grid>
+                    <Grid item xs={8} sm={2} md={2} lg={2}><Typography variant='subtitle2' color="secondary" >Number of students:33</Typography></Grid> */}
+                    {/* <Grid item xs={8} sm={2} md={2} lg={2}>
+                    <Button  >
+                        Download Excel
+                    </Button>
+                    </Grid>    */}
+                </Grid>
+                </MediaQuery>
                 <Grid container direction="row">
-        <Grid item md={12}>
+        <Grid item xs={12} md={12}>
           <Divider />
         </Grid> 
         <br />
         
         </Grid>
-
-        <Grid container direction='row' spacing={4}>
-       
+                <Grid container spacing={2} direction='row'>
+      
        { dummyData.map((data) => {
-       return (<Grid item md={2}>
-          <Card className={classes.root}>
+       return (<Grid item xs={10} sm={6} md={4} lg={3}>
+          <Card className={classes.bord}>
             <CardMedia
               className={classes.cover}
             />
-            <div >
+            <div>
               <CardContent>
-                <Grid container direction="row">
-                  <Grid style={{marginTop:15}}><Avatar>Ak</Avatar></Grid>
-                <Grid style={{marginLeft:10}}>
-                <Typography>{data.name}</Typography>
+                <Grid container direction="row"  >
+                  <Grid item xs={1} sm={1} md={1} lg={1} style={{marginTop:15}}><Avatar>Ak</Avatar></Grid>
+                <Grid item xs={6} sm={6} md={6} lg={6} style={{ marginLeft:30,textAlign:'start'}}>
+                <Typography >{data.name}</Typography>
                 <Typography>{data.rollno}</Typography>
                 <Typography>{data.ERPno}</Typography>
                 </Grid>
-                <Grid style={{marginLeft:25,marginTop:12}}><div className="triangle">
-                </div></Grid>
+                <Grid item xs={2} sm={1} md={1} lg={1} style={{marginTop:12}}>
+                  <div className="triangle">
+                </div>
+                </Grid>
                 </Grid>
                 
               </CardContent>

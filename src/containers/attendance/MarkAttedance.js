@@ -12,6 +12,7 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core';
+import DateFnsUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import endpoints from '../../config/endpoints';
@@ -82,6 +83,8 @@ const MarkAttedance = () => {
     root: {
       backgroundColor: '#E2E2E2',
       color: '#8C8C8C',
+      borderRadius: '10px',
+      marginLeft: '10px',
       height: '42px',
       marginTop: 'auto',
     },
@@ -124,15 +127,77 @@ const MarkAttedance = () => {
     { name: 'Mani Pal' },
     { name: 'Manish' },
     { name: 'Nagendra' },
+    { name: 'Mani Pal' },
+    { name: 'Manish' },
+    { name: 'Nagendra' },
+    { name: 'Manish' },
+    { name: 'Nagendra' },
   ];
+
+  const StudentData = () => {
+    return (
+      <>
+        {dummyData.map((options) => {
+          return (
+            <div value={options.id} key={options.id}>
+              {' '}
+              <Grid item md={2} xs={12} className={classes.root}>
+                <Paper elevation={3} className={classes.paperSize}>
+                  <Grid container direction='row'>
+                    {' '}
+                    <Avatar className={[classes.orange, classes.paperStyle]}>
+                      {options.name.slice(0, 1)}
+                    </Avatar>
+                    <Typography
+                      className={[classes.content, classes.paperStyle]}
+                      style={{ marginTop: '10%' }}
+                    >
+                      {options.name}
+                    </Typography>
+                    <Typography
+                      className={classes.contentsmall}
+                      style={{ marginLeft: '60%' }}
+                    >
+                      Mark Present
+                    </Typography>
+                  </Grid>
+                  <Divider />
+                  <Grid container direction='row'>
+                    <Typography className={[classes.contentList, classes.paperStyle]}>
+                      1stHalf
+                    </Typography>
+
+                    <Grid style={{ marginLeft: '40%' }}>
+                      <Switch color='primary' />
+                    </Grid>
+                  </Grid>
+                  <Divider />
+
+                  <Grid container direction='row'>
+                    <Typography className={[classes.contentList, classes.paperStyle]}>
+                      2stHalf
+                    </Typography>
+
+                    <Grid style={{ marginLeft: '40%' }}>
+                      <Switch color='primary' />
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Grid>
+            </div>
+          );
+        })}
+      </>
+    );
+  };
 
   return (
     <Layout>
-      <CommonBreadcrumbs componentName='MarkAttedance' />
+      <CommonBreadcrumbs componentName='MarkAttendance' />
 
       <Grid container direction='row' className={classes.root} spacing={3}>
         <Grid item md={12} xs={12}>
-          <Typography>Today's attedance</Typography>
+          <Typography>Today's attendance</Typography>
         </Grid>
         <Grid item md={2} xs={12}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -202,27 +267,23 @@ const MarkAttedance = () => {
         <Grid item md={11} xs={12}>
           <Divider />
         </Grid>
-        <Grid container direction='row' className={classes.root}>
-          <Grid>
-            {' '}
-            <StyledClearButton
-              variant='contained'
-              startIcon={<ClearIcon />}
-              href={`/markattedance`}
-            >
-              Clear all
-            </StyledClearButton>
-          </Grid>
-          <Grid>
-            <StyledFilterButton
-              variant='contained'
-              color='secondary'
-              startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-              className={classes.filterButton}
-            >
-              filter
-            </StyledFilterButton>
-          </Grid>
+        <Grid container direction='row'>
+          <StyledClearButton
+            variant='contained'
+            startIcon={<ClearIcon />}
+            href={`/markattedance`}
+          >
+            Clear all
+          </StyledClearButton>
+
+          <StyledFilterButton
+            variant='contained'
+            color='secondary'
+            startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+            className={classes.filterButton}
+          >
+            filter
+          </StyledFilterButton>
         </Grid>
       </Grid>
 
@@ -247,64 +308,15 @@ const MarkAttedance = () => {
         <Grid item md={10}>
           <Divider />
         </Grid>
-
-        <Grid container direction='row' className={classes.root} spacing={3}>
-          {dummyData.map((options) => {
-            return (
-              <div value={options.id} key={options.id}>
-                {' '}
-                <Grid item md={2} xs={12} className={classes.root}>
-                  <Paper elevation={3} className={classes.paperSize}>
-                    <Grid container direction='row'>
-                      {' '}
-                      <Avatar className={[classes.orange, classes.paperStyle]}>
-                        {options.name.slice(0, 1)}
-                      </Avatar>
-                      <Typography
-                        className={[classes.content, classes.paperStyle]}
-                        style={{ marginTop: '10%' }}
-                      >
-                        {options.name}
-                      </Typography>
-                      <Typography
-                        className={classes.contentsmall}
-                        style={{ marginLeft: '60%' }}
-                      >
-                        Mark Present
-                      </Typography>
-                    </Grid>
-                    <Divider />
-                    <Grid container direction='row'>
-                      <Typography className={[classes.contentList, classes.paperStyle]}>
-                        1stHalf
-                      </Typography>
-
-                      <Grid style={{ marginLeft: '40%' }}>
-                        <Switch color='primary' />
-                      </Grid>
-                    </Grid>
-                    <Divider />
-
-                    <Grid container direction='row'>
-                      <Typography className={[classes.contentList, classes.paperStyle]}>
-                        2stHalf
-                      </Typography>
-
-                      <Grid style={{ marginLeft: '40%' }}>
-                        <Switch color='primary' />
-                      </Grid>
-                    </Grid>
-                  </Paper>
-                </Grid>
-              </div>
-            );
-          })}
+        <Grid></Grid>
+        <Grid container direction='row' className={classes.root} spacing={3} item md={10}>
+          <StudentData />
         </Grid>
 
         <Grid item md={2} xs={12}></Grid>
         <Grid container justify='center'>
           {' '}
-          <Pagination count={3} color='primary' />
+          <Pagination count={3} color='secondary' />
         </Grid>
       </Grid>
     </Layout>
