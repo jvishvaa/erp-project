@@ -132,7 +132,7 @@ const ListandFilter = (props) => {
             return false
         }else{
             let body = {
-                branch: branchValue && branchValue.id,
+                branch: branchValue && branchValue.branch.id,
                 erp_grade: gradeValue && gradeValue.grade_id
             }
             const valid = Validation(body);

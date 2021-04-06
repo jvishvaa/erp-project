@@ -64,9 +64,10 @@ const Subjectgrade = (props) => {
     useEffect(() => {
         //axiosInstance.get(endpoints.mappingStudentGrade.branch).then(res => {
         const getBranch = () => {
-            axiosInstance.get(`${endpoints.masterManagement.branchList}?session_year=${selectedYear?.id}`).then(res => {
+            axiosInstance.get(`${endpoints.communication.branches}?session_year=${selectedYear?.id}`).then(res => {
                 if (res.data.data) {
-                    setBranchRes(res.data.data)
+                    //console.log(res.data.data.results);
+                    setBranchRes(res.data.data.results)
                 }
             }).catch(err => {
                 console.log(err)
@@ -82,7 +83,7 @@ const Subjectgrade = (props) => {
     const handleChangeBranch = (value) => {
         if (value) {
             setBranchValue(value);
-            axiosInstance.get(`${endpoints.mappingStudentGrade.grade}?session_year=${selectedYear?.id}&branch_id=${value.id}&module_id=8`).then(res => {
+            axiosInstance.get(`${endpoints.mappingStudentGrade.grade}?session_year=${selectedYear?.id}&branch_id=${value?.branch.id}&module_id=8`).then(res => {
                 if (res.data.data) {
                     console.log(res.data.data)
                     setGradeRes(res.data.data)
@@ -98,7 +99,7 @@ const Subjectgrade = (props) => {
     const handleGradeChange = (value) => {
         setGradeValue(value);
         if (value) {
-            axiosInstance.get(`${endpoints.mappingStudentGrade.subjects}?session_year=${selectedYear?.id}&branch=${branchValue.id}&grade=${value.grade_id}`).then(res => {
+            axiosInstance.get(`${endpoints.mappingStudentGrade.subjects}?session_year=${selectedYear?.id}&branch=${branchValue?.branch.id}&grade=${value.grade_id}`).then(res => {
                 if (res.data.result) {
                     setSubjectRes(res.data.result)
                 }
@@ -257,7 +258,7 @@ const Subjectgrade = (props) => {
 
     const submit = () => {
         let body = {
-            branch: branchValue && branchValue.id,
+            branch: branchValue && branchValue.branch.id,
             erp_grade: gradeValue && gradeValue.grade_id,
             erp_gs_mapping: subjectValue && subjectValue,
             central_grade: centralGradeValue && centralGradeValue.grade,
@@ -272,8 +273,12 @@ const Subjectgrade = (props) => {
             const valid = Validation(body)
             if(valid.isValid === true){
                 axiosInstance.post(endpoints.mappingStudentGrade.assign, body).then(res => {
-                    setAlert('success', res.data.message);
-                    props.history.push('/subject/grade');
+                    if(res.data.status_code === 200){
+                        setAlert('success', res.data.message);
+                        props.history.push('/subject/grade');
+                    } else {
+                        setAlert('warning', res.data.message);
+                    }
                 }).catch(err => {
                     setAlert('error', err.message);
                     console.log(err)
@@ -298,8 +303,14 @@ const Subjectgrade = (props) => {
             }
             axiosInstance.put(`${endpoints.mappingStudentGrade.updateAssign}/${updateId}/update-school-gs-mapping/`, body).then(res => {
                 // console.log(res, "res")
-                setAlert('success', res.data.message);
-                props.history.push('/subject/grade');
+                if(res.data.status_code === 200){
+                    setAlert('success', res.data.message);
+                    props.history.push('/subject/grade');
+                }
+                else {
+                    setAlert('warning', res.data.message);
+                }
+                
             }).catch(err => {
                 setAlert('error', err.message);
                 console.log(err)
@@ -419,7 +430,7 @@ const Subjectgrade = (props) => {
                                     value={branchValue}
                                     id="tags-outlined"
                                     options={branchRes}
-                                    getOptionLabel={(option) => option.branch_name}
+                                    getOptionLabel={(option) => option?.branch?.branch_name}
                                     filterSelectedOptions
                                     size="small"
                                     renderInput={(params) => (
