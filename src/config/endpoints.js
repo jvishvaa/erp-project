@@ -158,12 +158,15 @@ export default {
     centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`//'https://dev.mgmt.letseduvate.com/qbox/lesson_plan/erp_lesson_mapping/?domain_name=olvorchidnaigaon'
   },
   lessonPlan: {
+    gradeSubjectMappingListCentral: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
     periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
     periodCardData: `${baseURLCentral}/lesson_plan/lesson/`,
     academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
     gradeSubjectMappingList: `/academic/lesson-plan-subjects/`,
     chapterList: `/academic/central-chapters-list/`,
+    gradeListCentral: `${baseURLCentral}/lesson_plan/list-grade/`,
+    chapterListCentral: `${baseURLCentral}/lesson_plan/chapter/`,
     periodCompleted: '/academic/lessonplan-completed-status/',
     periodCompletedStatus: '/academic/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
@@ -276,6 +279,16 @@ export default {
     userAssessmentSubmission: `${baseURLCentral}/assessment/user_response/`,
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+  },
+  createQuestionApis: {
+    topicList: `${baseURLCentral}/assessment/topic/`,
+    questionType: `${baseURLCentral}/assessment/question_type/`,
+    createQuestion: `${baseURLCentral}/assessment/create-question/`,
+  },
+  createQuestionBulk: {
+    BulkUploadTrueOrFalse: `${baseURLCentral}/assessment/bulk_upload_tf/`,
+    BulkUploadSingleChoiceQuestion: `${baseURLCentral}/assessment/upload-sc-questions/`,
+    FillBlankUploadQuestion: `${baseURLCentral}/assessment/fill_bulk_upload/`,
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
