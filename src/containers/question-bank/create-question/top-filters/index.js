@@ -1,0 +1,303 @@
+import React, { useContext, useEffect, useState } from 'react';
+import Divider from '@material-ui/core/Divider';
+import { Grid, TextField, Button, useTheme, SvgIcon } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
+import endpoints from '../../../../config/endpoints';
+import axiosInstance from '../../../../config/axios';
+import './top-filters.css';
+
+const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) => {
+  const { setAlert } = useContext(AlertNotificationContext);
+  const themeContext = useTheme();
+  const history = useHistory();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
+  const widerWidth = isMobile ? '98%' : '95%';
+
+  const [filterData, setFilterData] = useState({
+    grade: '',
+    subject: '',
+    chapter: '',
+    topic: '',
+  });
+
+  const [dropdownData, setDropdownData] = useState({
+    grades: [],
+    subjects: [],
+    chapters: [],
+    topics: [],
+  });
+
+  useEffect(() => {
+    axiosInstance
+      .get(`${endpoints.lessonPlan.gradeListCentral}`,{
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      })
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setDropdownData({
+            ...dropdownData,
+            grades: result.data?.result?.results,
+            subjects: [],
+            chapters: [],
+            topics: [],
+          });
+        } else {
+          setAlert('error', result.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+  }, []);
+
+  const handleGrade = (event, value) => {
+    setFilterData({ ...filterData, grade: '', subject: '', chapter: '', topic: '' });
+    setDropdownData({ ...dropdownData, subjects: [], chapters: [], topics: [] });
+    if (value) {
+      setFilterData({ ...filterData, grade: value, subject: '', chapter: '', topic: '' });
+      axiosInstance
+        .get(`${endpoints.lessonPlan.gradeSubjectMappingListCentral}?grade=${value.id}`,{
+          headers: {'x-api-key': 'vikash@12345#1231' },
+        })
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setDropdownData({
+              ...dropdownData,
+              subjects: result.data?.result?.results,
+              chapters: [],
+              topics: [],
+            });
+          } else {
+            setAlert('error', result.data?.message);
+            setDropdownData({ ...dropdownData, subjects: [], chapters: [], topics: [] });
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+          setDropdownData({ ...dropdownData, subjects: [], chapters: [], topics: [] });
+        });
+    }
+  };
+
+  const handleSubject = (event, value) => {
+    setFilterData({ ...filterData, subject: '', chapter: '', topic: '' });
+    setDropdownData({ ...dropdownData, chapters: [], topics: [] });
+    if (value) {
+      setFilterData({ ...filterData, subject: value, chapter: '', topic: '' });
+      if (value) {
+        axiosInstance
+          .get(`${endpoints.lessonPlan.chapterListCentral}?grade_subject=${value.id}`,{
+            headers: {'x-api-key': 'vikash@12345#1231' },
+          })
+          .then((result) => {
+            if (result.data.status_code === 200) {
+              setDropdownData({
+                ...dropdownData,
+                chapters: result.data?.result,
+                topics: [],
+              });
+            } else {
+              setAlert('error', result.data?.message);
+              setDropdownData({ ...dropdownData, chapters: [], topics: [] });
+            }
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
+            setDropdownData({ ...dropdownData, chapters: [], topics: [] });
+          });
+      }
+    }
+  };
+
+  const handleChapter = (event, value) => {
+    setFilterData({ ...filterData, chapter: '', topic: '' });
+    setDropdownData({ ...dropdownData, topics: [] });
+    if (value) {
+      setFilterData({ ...filterData, chapter: value, topic: '' });
+      if (value) {
+        axiosInstance
+          .get(`${endpoints.createQuestionApis.topicList}?chapter=${value.id}`,{
+            headers: {'x-api-key': 'vikash@12345#1231' },
+          })
+          .then((result) => {
+            if (result.data.status_code === 200) {
+              setDropdownData({ ...dropdownData, topics: result.data?.result });
+            } else {
+              setAlert('error', result.data?.message);
+              setDropdownData({ ...dropdownData, topics: [] });
+            }
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
+            setDropdownData({ ...dropdownData, topics: [] });
+          });
+      }
+    }
+  };
+
+  const handleTopic = (event, value) => {
+    setFilterData({ ...filterData, topic: '' });
+    if (value) {
+      setFilterData({ ...filterData, topic: value });
+    }
+  };
+
+  const handleClear = () => {
+    setFilterData({
+      grade: '',
+      subject: '',
+      chapter: '',
+      topic: '',
+    });
+    setFilterDataDisplay({
+      grade: '',
+      subject: '',
+      chapter: '',
+      topic: '',
+    });
+    setDropdownData({
+      ...dropdownData,
+      subjects: [],
+      chapters: [],
+      topics: [],
+    });
+    setIsFilter(false);
+  };
+
+  const handleFilter = () => {
+    console.log('filter Data :=: ', filterData);
+    if (
+      filterData?.grade &&
+      filterData?.subject &&
+      filterData?.chapter &&
+      filterData?.topic
+    ) {
+      setIsFilter(true);
+      setFilterDataDisplay(filterData);
+      setIsTopFilterOpen(false);
+    } else if (!filterData?.grade) setAlert('warning', 'Please select grade!');
+    else if (!filterData?.subject) setAlert('warning', 'Please select subject!');
+    else if (!filterData?.chapter) setAlert('warning', 'Please select chapter!');
+    else if (!filterData?.topic) setAlert('warning', 'Please select topic!');
+  };
+
+  return (
+    <Grid
+      container
+      spacing={isMobile ? 3 : 5}
+      style={{ width: widerWidth, margin: wider }}
+    >
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={handleGrade}
+          id='grade'
+          className='dropdownIcon'
+          value={filterData.grade}
+          options={dropdownData.grades}
+          getOptionLabel={(option) => option?.grade_name}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' />
+          )}
+        />
+      </Grid>
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={handleSubject}
+          id='subject'
+          className='dropdownIcon'
+          value={filterData.subject}
+          options={dropdownData.subjects}
+          getOptionLabel={(option) => option?.subject?.subject_name}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Subject'
+              placeholder='Subject'
+            />
+          )}
+        />
+      </Grid>
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={handleChapter}
+          id='chapter'
+          className='dropdownIcon'
+          value={filterData.chapter}
+          options={dropdownData.chapters}
+          getOptionLabel={(option) => option?.chapter_name}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Chapter'
+              placeholder='Chapter'
+            />
+          )}
+        />
+      </Grid>
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={handleTopic}
+          id='topic'
+          className='dropdownIcon'
+          value={filterData.topic}
+          options={dropdownData.topics}
+          getOptionLabel={(option) => option?.topic_name}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField {...params} variant='outlined' label='Topic' placeholder='Topic' />
+          )}
+        />
+      </Grid>
+      {!isMobile && (
+        <Grid item xs={12} sm={12}>
+          <Divider />
+        </Grid>
+      )}
+      {isMobile && <Grid item xs={3} sm={0} />}
+      <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+        <Button
+          variant='contained'
+          className='custom_button_master labelColor modifyDesign'
+          size='medium'
+          onClick={handleClear}
+        >
+          CLEAR ALL
+        </Button>
+      </Grid>
+      {isMobile && <Grid item xs={3} sm={0} />}
+      {isMobile && <Grid item xs={3} sm={0} />}
+      <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+        <Button
+          variant='contained'
+          style={{ color: 'white' }}
+          color='primary'
+          className='custom_button_master modifyDesign'
+          size='medium'
+          onClick={handleFilter}
+        >
+          NEXT
+        </Button>
+      </Grid>
+      {isMobile && <Grid item xs={3} sm={0} />}
+    </Grid>
+  );
+};
+
+export default TopFilters;
