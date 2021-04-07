@@ -397,7 +397,7 @@ const BranchTable = () => {
           <DialogContent>
             <DialogContentText>{`Confirm Delete Branch ${branchName}`}</DialogContentText>
           </DialogContent>
-          <DialogActions>
+          <DialogActions style={{display:'flex',justifyContent:'space-around'}}>
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>
