@@ -185,7 +185,7 @@ const Party = ({ user, alert, fetchPartyList, classes, sessions, fetchBranches, 
       alert.warning('Phone Number should be of 10 Digits')
       return
     }
-    props.saveParty(name, phone, gst, pan, address, user, alert)
+    props.saveParty(name, phone, gst, pan, address, user, alert, selectedBranches && selectedBranches.value)
     setShowAddModal(false)
   }
 
@@ -592,7 +592,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   loadFinancialYear: dispatch(actionTypes.fetchFinancialYear(moduleId)),
   fetchPartyList: (user, alert, session, branch) => dispatch(actionTypes.partyList({ user, alert, session, branch })),
-  saveParty: (name, contact, gst, pan, address, user, alert) => dispatch(actionTypes.saveParty({ name, contact, gst, pan, address, user, alert })),
+  saveParty: (name, contact, gst, pan, address, user, alert, branch) => dispatch(actionTypes.saveParty({ name, contact, gst, pan, address, user, alert, branch })),
   editParty: (id, name, contact, gst, pan, address, user, alert) => dispatch(actionTypes.editParty({ id, name, contact, gst, pan, address, user, alert })),
   deleteParty: (id, user, alert) => dispatch(actionTypes.deleteParty({ id, user, alert })),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),

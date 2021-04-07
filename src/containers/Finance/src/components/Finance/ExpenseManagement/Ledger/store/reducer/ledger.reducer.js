@@ -83,11 +83,11 @@ const ledgerReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.ADD_LEDGER_TYPE: {
-      const ledgerTypeList = [...state.ledgerTypeList]
-      ledgerTypeList.push(action.payload.data)
+      const ledgerTypeLists = [...state.ledgerTypeList]
+      ledgerTypeLists.push(action.payload.data)
       return {
         ...state,
-        ledgerTypeList
+        ledgerTypeList: ledgerTypeLists
       }
     }
     default: {
