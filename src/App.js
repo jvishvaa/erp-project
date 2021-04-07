@@ -238,6 +238,8 @@ import TransactionStatus from './containers/Finance/src/components/Finance/Trans
 import AdmFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/admFormList.js'
 import Airpay from './containers/Finance/src/components/Finance/PaymentGateways/Airpay/airpayIntegration.js'
 import UploadPaymentFile from './containers/Finance/src/components/Finance/student/managePayment/UploadPaymentFile.js'
+import MarkAttedance from './containers/attendance/MarkAttedance';
+import AttedanceCalender from './containers/attendance/AttedanceCalender';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -432,558 +434,741 @@ function App({ alert }) {
                           {/* <Route exact path='/online-class/attend-class'>
                       {({ match }) => <AOLClassView match={match} />}
                     </Route> */}
-                        {/* {({ match }) => <ViewClassStudentCollection match={match} />} */}
-                        <Route exact path='/online-class/resource'>
-                          {({ match }) => <ResourceView match={match} />}
-                        </Route>
-                        <Route exact path='/online-class/view-class'>
-                          {({ match }) => <AOLClassView match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/chapter-type-table'>
-                          {({ match }) => <ChapterTypeTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/branch-table'>
-                          {({ match }) => <BranchTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/branch-acad-table'>
-                          {({ match }) => <BranchAcadTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/subject-mapping-table'>
-                          {({ match }) => <SubjectMappingTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/subject-table'>
-                          {({ match }) => <SubjectTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/section-mapping-table'>
-                          {({ match }) => <SectionMappingTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/section-table'>
-                          {({ match }) => <SectionTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/grade-table'>
-                          {({ match }) => <GradeTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/academic-year-table'>
-                          {({ match }) => <AcademicYearTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/message-type-table'>
-                          {({ match }) => <MessageTypeTable match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/subject/grade/mapping'>
-                          {({ match }) => <Subjectgrade match={match} />}
-                        </Route>
-                        <Route exact path='/subject/grade'>
-                          {({ match }) => <ListandFilter match={match} />}
-                        </Route>
-                        <Route exact path='/homework/homework-card'>
-                          {({ match }) => <HomeworkCard match={match} />}
-                        </Route>
-                        <Route exact path='/homework/student'>
-                          {({ match }) => <StudentHomework match={match} />}
-                        </Route>
-                        <Route exact path='/homework/teacher'>
-                          {({ match }) => <TeacherHomework match={match} />}
-                        </Route>
-                        <Route exact path='/homework/add/:date/:subject/:id'>
-                          {({ match }) => <AddHomework match={match} />}
-                        </Route>
-                        <Route exact path='/homework/admin'>
-                          {({ match }) => <HomeworkAdmin match={match} />}
-                        </Route>
-                        <Route exact path='/homework/coordinator'>
-                          {/* added by Vijay to display particular teacher details */}
-                          {({ match }) => <CoordinatorHomework match={match} />}
-                        </Route>
-                        <Route
-                          exact
-                          path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'
-                        >
-                          {({ match }) => <AddHomeworkCoord match={match} />}
-                        </Route>
-                        <Route exact path='/lesson-plan/teacher-view'>
-                          {({ match }) => <LessonPlan match={match} />}
-                        </Route>
-                        <Route exact path='/lesson-plan/student-view'>
-                          {({ match }) => <LessonPlan match={match} />}
-                        </Route>
-                        <Route exact path='/lesson-plan/report'>
-                          {({ match }) => <LessonReport match={match} />}
-                        </Route>
-                        <Route exact path='/lesson-plan/graph-report'>
-                          {({ match }) => <LessonPlanGraphReport match={match} />}
-                        </Route>
-                        <Route exact path='/discussion-forum'>
-                          {({ match }) => <Discussionforum match={match} />}
-                        </Route>
-                        <Route exact path='/category/create'>
-                          {({ match }) => <CreateCategory match={match} />}
-                        </Route>
-                        <Route exact path='/discussion-forum/create'>
-                          {({ match }) => <CreateDiscussionForum match={match} />}
-                        </Route>
-                        <Route exact path='/teacher-circular'>
-                          {({ match }) => <CircularList match={match} />}
-                        </Route>
-                        <Route exact path='/student-circular'>
-                          {({ match }) => <CircularList match={match} />}
-                        </Route>
-                        <Route exact path='/create-circular/:circularKey?'>
-                          {({ match }) => <CreateCircular match={match} />}
-                        </Route>
-                        <Route exact path='/general-dairy'>
-                          {({ match }) => <GeneralDairyList match={match} />}
-                        </Route>
-                        <Route exact path='/diary/student'>
-                          {({ match }) => <GeneralDairyList match={match} />}
-                        </Route>
-                        <Route exact path='/diary/teacher'>
-                          {({ match }) => <GeneralDairyList match={match} />}
-                        </Route>
-                        <Route exact path='/general-dairy/student-view'>
-                          {({ match }) => <GeneralDairyStudentList match={match} />}
-                        </Route>
-                        <Route exact path='/create/general-diary'>
-                          {({ match }) => <CreateGeneralDairy match={match} />}
-                        </Route>
-                        <Route exact path='/daily-dairy'>
-                          {({ match }) => <DailyDairyList match={match} />}
-                        </Route>
-                        <Route exact path='/create/daily-diary'>
-                          {({ match }) => <CreateDailyDairy match={match} />}
-                        </Route>
-                        <Route exact path='/create/course'>
-                          {({ match }) => <CreateCourse match={match} />}
-                        </Route>
-                        <Route exact path='/course-price/:courseKey?/:gradeKey?'>
-                          {({ match }) => <CoursePrice match={match} />}
-                        </Route>
-                        <Route exact path='/create/course/:courseKey?/:gradeKey?'>
-                          {({ match }) => <CreateCourse match={match} />}
-                        </Route>
-                        <Route exact path='/course-list/:gradeKey?'>
-                          {({ match }) => <CourseView match={match} />}
-                        </Route>
-                        <Route exact path='/view-period/:id?'>
-                          {({ match }) => <ViewCourseCard match={match} />}
-                        </Route>
-                        <Route exact path='/assessment/comparision'>
-                          {({ match }) => <AssessmentComparisionUI match={match} />}
-                        </Route>
-                        <Route exact path='/assessment/:assessmentId/analysis'>
-                          {({ match }) => <AssessmentAnalysis match={match} />}
-                        </Route>
-                        <Route exact path='/aol-attendance-list/:id?'>
-                          {({ match }) => <AttendeeListRemake match={match} />}
-                        </Route>
-                        <Route exact path='/assessment/'>
-                          {({ match }) => <ViewAssessments match={match} />}
-                        </Route>
-                        <Route exact path='/assessment/:assessmentId/attempt'>
-                          {({ match }) => <AssessmentAttemption match={match} />}
-                        </Route>
-                        <Route exact path='/student-strength'>
-                          {({ match }) => <StudentStrength match={match} />}
-                        </Route>
-                        <Route exact path='/student-id-card'>
-                          {({ match }) => <StudentIdCard match={match} />}
-                        </Route>
-                        <Route exact path='/master-management/signature-upload'>
-                          {({ match }) => <SignatureUpload match={match} />}
-                        </Route>
-                        <Route exact path='/online-class/attend-class'>
-                          {({ match }) => <TeacherBatchView match={match} />}
-                        </Route>
-                        <Route exact path='/online-class/teacher-view-class'>
-                          {({ match }) => <TeacherBatchView match={match} />}
-                        </Route>
-                        <Route exact path='/aol-reshuffle/:id?'>
-                          {({ match }) => <Reshuffle match={match} />}
-                        </Route>
-                        <Route exact path='/erp-online-class'>
-                          {({ match }) => <ErpAdminViewClass match={match} />}
-                        </Route>
-                        <Route exact path='/erp-online-class-teacher-view'>
-                          {({ match }) => <ErpAdminViewClass match={match} />}
-                        </Route>
-                        <Route exact path='/erp-online-class-student-view'>
-                          {({ match }) => <ErpAdminViewClass match={match} />}
-                        </Route>
-                        <Route exact path='/erp-online-resources'>
-                          {({ match }) => <OnlineClassResource match={match} />}
-                        </Route>
+                          {/* {({ match }) => <ViewClassStudentCollection match={match} />} */}
+                          <Route exact path='/online-class/resource'>
+                            {({ match }) => <ResourceView match={match} />}
+                          </Route>
+                          <Route exact path='/online-class/view-class'>
+                            {({ match }) => <AOLClassView match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/chapter-type-table'>
+                            {({ match }) => <ChapterTypeTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/branch-table'>
+                            {({ match }) => <BranchTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/branch-acad-table'>
+                            {({ match }) => <BranchAcadTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/subject-mapping-table'>
+                            {({ match }) => <SubjectMappingTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/subject-table'>
+                            {({ match }) => <SubjectTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/section-mapping-table'>
+                            {({ match }) => <SectionMappingTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/section-table'>
+                            {({ match }) => <SectionTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/grade-table'>
+                            {({ match }) => <GradeTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/academic-year-table'>
+                            {({ match }) => <AcademicYearTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/message-type-table'>
+                            {({ match }) => <MessageTypeTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/subject/grade/mapping'>
+                            {({ match }) => <Subjectgrade match={match} />}
+                          </Route>
+                          <Route exact path='/subject/grade'>
+                            {({ match }) => <ListandFilter match={match} />}
+                          </Route>
+                          <Route exact path='/homework/homework-card'>
+                            {({ match }) => <HomeworkCard match={match} />}
+                          </Route>
+                          <Route exact path='/homework/student'>
+                            {({ match }) => <StudentHomework match={match} />}
+                          </Route>
+                          <Route exact path='/homework/teacher'>
+                            {({ match }) => <TeacherHomework match={match} />}
+                          </Route>
+                          <Route exact path='/homework/add/:date/:subject/:id'>
+                            {({ match }) => <AddHomework match={match} />}
+                          </Route>
+                          <Route exact path='/homework/admin'>
+                            {({ match }) => <HomeworkAdmin match={match} />}
+                          </Route>
+                          <Route exact path='/homework/coordinator'>
+                            {/* added by Vijay to display particular teacher details */}
+                            {({ match }) => <CoordinatorHomework match={match} />}
+                          </Route>
+                          <Route
+                            exact
+                            path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'
+                          >
+                            {({ match }) => <AddHomeworkCoord match={match} />}
+                          </Route>
+                          <Route exact path='/lesson-plan/teacher-view'>
+                            {({ match }) => <LessonPlan match={match} />}
+                          </Route>
+                          <Route exact path='/lesson-plan/student-view'>
+                            {({ match }) => <LessonPlan match={match} />}
+                          </Route>
+                          <Route exact path='/lesson-plan/report'>
+                            {({ match }) => <LessonReport match={match} />}
+                          </Route>
+                          <Route exact path='/lesson-plan/graph-report'>
+                            {({ match }) => <LessonPlanGraphReport match={match} />}
+                          </Route>
+                          <Route exact path='/discussion-forum'>
+                            {({ match }) => <Discussionforum match={match} />}
+                          </Route>
+                          <Route exact path='/category/create'>
+                            {({ match }) => <CreateCategory match={match} />}
+                          </Route>
+                          <Route exact path='/discussion-forum/create'>
+                            {({ match }) => <CreateDiscussionForum match={match} />}
+                          </Route>
+                          <Route exact path='/teacher-circular'>
+                            {({ match }) => <CircularList match={match} />}
+                          </Route>
+                          <Route exact path='/student-circular'>
+                            {({ match }) => <CircularList match={match} />}
+                          </Route>
+                          <Route exact path='/create-circular/:circularKey?'>
+                            {({ match }) => <CreateCircular match={match} />}
+                          </Route>
+                          <Route exact path='/general-dairy'>
+                            {({ match }) => <GeneralDairyList match={match} />}
+                          </Route>
+                          <Route exact path='/diary/student'>
+                            {({ match }) => <GeneralDairyList match={match} />}
+                          </Route>
+                          <Route exact path='/diary/teacher'>
+                            {({ match }) => <GeneralDairyList match={match} />}
+                          </Route>
+                          <Route exact path='/general-dairy/student-view'>
+                            {({ match }) => <GeneralDairyStudentList match={match} />}
+                          </Route>
+                          <Route exact path='/create/general-diary'>
+                            {({ match }) => <CreateGeneralDairy match={match} />}
+                          </Route>
+                          <Route exact path='/daily-dairy'>
+                            {({ match }) => <DailyDairyList match={match} />}
+                          </Route>
+                          <Route exact path='/create/daily-diary'>
+                            {({ match }) => <CreateDailyDairy match={match} />}
+                          </Route>
+                          <Route exact path='/create/course'>
+                            {({ match }) => <CreateCourse match={match} />}
+                          </Route>
+                          <Route exact path='/course-price/:courseKey?/:gradeKey?'>
+                            {({ match }) => <CoursePrice match={match} />}
+                          </Route>
+                          <Route exact path='/create/course/:courseKey?/:gradeKey?'>
+                            {({ match }) => <CreateCourse match={match} />}
+                          </Route>
+                          <Route exact path='/course-list/:gradeKey?'>
+                            {({ match }) => <CourseView match={match} />}
+                          </Route>
+                          <Route exact path='/view-period/:id?'>
+                            {({ match }) => <ViewCourseCard match={match} />}
+                          </Route>
+                          <Route exact path='/assessment/comparision'>
+                            {({ match }) => <AssessmentComparisionUI match={match} />}
+                          </Route>
+                          <Route exact path='/assessment/:assessmentId/analysis'>
+                            {({ match }) => <AssessmentAnalysis match={match} />}
+                          </Route>
+                          <Route exact path='/aol-attendance-list/:id?'>
+                            {({ match }) => <AttendeeListRemake match={match} />}
+                          </Route>
+                          <Route exact path='/assessment/'>
+                            {({ match }) => <ViewAssessments match={match} />}
+                          </Route>
+                          <Route exact path='/assessment/:assessmentId/attempt'>
+                            {({ match }) => <AssessmentAttemption match={match} />}
+                          </Route>
+                          <Route exact path='/student-strength'>
+                            {({ match }) => <StudentStrength match={match} />}
+                          </Route>
+                          <Route exact path='/student-id-card'>
+                            {({ match }) => <StudentIdCard match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/signature-upload'>
+                            {({ match }) => <SignatureUpload match={match} />}
+                          </Route>
+                          <Route exact path='/online-class/attend-class'>
+                            {({ match }) => <TeacherBatchView match={match} />}
+                          </Route>
+                          <Route exact path='/online-class/teacher-view-class'>
+                            {({ match }) => <TeacherBatchView match={match} />}
+                          </Route>
+                          <Route exact path='/aol-reshuffle/:id?'>
+                            {({ match }) => <Reshuffle match={match} />}
+                          </Route>
+                          <Route exact path='/erp-online-class'>
+                            {({ match }) => <ErpAdminViewClass match={match} />}
+                          </Route>
+                          <Route exact path='/erp-online-class-teacher-view'>
+                            {({ match }) => <ErpAdminViewClass match={match} />}
+                          </Route>
+                          <Route exact path='/erp-online-class-student-view'>
+                            {({ match }) => <ErpAdminViewClass match={match} />}
+                          </Route>
+                          <Route exact path='/erp-online-resources'>
+                            {({ match }) => <OnlineClassResource match={match} />}
+                          </Route>
 
-                <Route exact path='/homework/student'>
-                  {({ match }) => <StudentHomework match={match} />}
-                </Route>
-                <Route exact path='/homework/teacher'>
-                  {({ match }) => <TeacherHomework match={match} />}
-                </Route>
-                <Route exact path='/homework/add/:date/:subject/:id'>
-                  {({ match }) => <AddHomework match={match} />}
-                </Route>
-                <Route exact path='/homework/admin'>
-                  {({ match }) => <HomeworkAdmin match={match} />}
-                </Route>
-                <Route exact path='/feeType/miscFeeType'>
-                  {({ match }) => <MiscFeeType match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/feeType/normalFeeType'>
-                  {({ match }) => <FeeType match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/feeType/CurricularFeeType'>
-                  {({ match }) => <CurrFeeType match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/feeType/OtherFeeType'>
-                  {({ match }) => <AdminOtherFees match={match} alert={alert} />}
-              </Route>
-              <Route exact path='/feeType/add_otherFee'>
-                  {({ match }) => <AddOtherFees match={match} alert={alert} />}
-              </Route>
-              <Route exact path='/feeType/assign_other_fees'>
-                  {({ match }) => <AssignOtherFees match={match} alert={alert} />}
-              </Route>
-                <Route exact path='/feeType/RegistrationFee'>
-                  {({ match }) => <RegistrationFee match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/feePlan/ViewFeePlan'>
-                  {({ match }) => <CreateFeePlan match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/ConcessionSetting'>
-                  {({ match }) => <ConcessionSettings match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/Ledger'>
-                  {({ match }) => <Ledger match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/TotalPaidReport'>
-                  {({ match }) => <TotalPaidReports match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/OtherFeeTotalPaidReport'>
-                  {({ match }) => <OtherFeeTotalPaidReports match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/TallyReport'>
-                  {({ match }) => <TallyReports match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/Application/registration/ReceiptBook'>
-                  {({ match }) => <ReceiptBookAdm match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/WalletReport'>
-                  {({ match }) => <WalletReport match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/TransactionStatus'>
-                  {({ match }) => <TransactionStatus  match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/ConcessionReport'>
-                  {({ match }) => <ConcessionReport match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/ChequeBounceReport'>
-                  {({ match }) => <ChequeBounceReport match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/StudentShuffleRequest'>
-                  {({ match }) => <StudentShuffle match={match} alert={alert} />}
-                </Route>
-                {/* <Route exact path='/finance/Requestshuffle'>
+                          <Route exact path='/homework/student'>
+                            {({ match }) => <StudentHomework match={match} />}
+                          </Route>
+                          <Route exact path='/homework/teacher'>
+                            {({ match }) => <TeacherHomework match={match} />}
+                          </Route>
+                          <Route exact path='/homework/add/:date/:subject/:id'>
+                            {({ match }) => <AddHomework match={match} />}
+                          </Route>
+                          <Route exact path='/homework/admin'>
+                            {({ match }) => <HomeworkAdmin match={match} />}
+                          </Route>
+                          <Route exact path='/feeType/miscFeeType'>
+                            {({ match }) => <MiscFeeType match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/feeType/normalFeeType'>
+                            {({ match }) => <FeeType match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/feeType/CurricularFeeType'>
+                            {({ match }) => <CurrFeeType match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/feeType/OtherFeeType'>
+                            {({ match }) => (
+                              <AdminOtherFees match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/feeType/add_otherFee'>
+                            {({ match }) => <AddOtherFees match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/feeType/assign_other_fees'>
+                            {({ match }) => (
+                              <AssignOtherFees match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/feeType/RegistrationFee'>
+                            {({ match }) => (
+                              <RegistrationFee match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/feePlan/ViewFeePlan'>
+                            {({ match }) => <CreateFeePlan match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/ConcessionSetting'>
+                            {({ match }) => (
+                              <ConcessionSettings match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/Ledger'>
+                            {({ match }) => <Ledger match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/TotalPaidReport'>
+                            {({ match }) => (
+                              <TotalPaidReports match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/OtherFeeTotalPaidReport'>
+                            {({ match }) => (
+                              <OtherFeeTotalPaidReports match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/TallyReport'>
+                            {({ match }) => <TallyReports match={match} alert={alert} />}
+                          </Route>
+                          <Route
+                            exact
+                            path='/finance/Application/registration/ReceiptBook'
+                          >
+                            {({ match }) => (
+                              <ReceiptBookAdm match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/WalletReport'>
+                            {({ match }) => <WalletReport match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/TransactionStatus'>
+                            {({ match }) => (
+                              <TransactionStatus match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/ConcessionReport'>
+                            {({ match }) => (
+                              <ConcessionReport match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/ChequeBounceReport'>
+                            {({ match }) => (
+                              <ChequeBounceReport match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/StudentShuffleRequest'>
+                            {({ match }) => (
+                              <StudentShuffle match={match} alert={alert} />
+                            )}
+                          </Route>
+                          {/* <Route exact path='/finance/Requestshuffle'>
                   {({ match }) => <RequestShuffle match={match} />}
                 </Route> */}
-                  <Route exact path='/finance/MiscFeeClass'>
-                  {({ match }) => <MiscFeeClass match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/AssignCoupon'>
-                  {({ match }) => <AssignCoupon match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/CreateCoupon'>
-                  {({ match }) => <CreateCoupon match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/DepositTab'>
-                  {({ match }) => <DepositeTab match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/TotalFormReport'>
-                  {({ match }) => <TotalFormCount match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/Requestshuffle'>
-                  {({ match }) => <RequestShuffle match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/UnassignFeeRequests'>
-                  {({ match }) => <UnassignFeeRequests match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/approval_request'>
-                  {({ match }) => <ApprovalRequest match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/pending_request'>
-                  {({ match }) => <PendingRequest match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/editTransactionDetails'>
-                  {({ match }) => <EditTransactionDetails match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/rejected_request'>
-                  {({ match }) => <rejectedRequest match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/ReceiptRange'>
-                  {({ match }) => <CreateReceipt match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/StoreReport'>
-                  {({ match }) => <StoreReport match={match} alert={alert} />}
-                </Route>
-                 <Route exact path='/finance/add_feePlan'>
-                  {({ match }) => <AddFeePlan match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/student/LegerTab'>
-                  {({ match }) => <StudentLedgerTab match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/manage_feeType/'>
-                  {({ match }) => <ManageFeeType match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/admissions/registrationForm/'>
-                  {({ match }) => <RegistrationForm match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/accountant/newregistrationForm'>
-                  {({ match }) => <NewRegistration match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/accountant/admissionForm'>
-                  {({ match }) => <AdmissionFormAcc match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/customizedAdmissionForm'>
-                  {({ match }) => <CustomizedAdmissionForm match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/newAdmissionForm'>
-                  {({ match }) => <NewAdmissionForm match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/accountant/applicationFrom'>
-                  {({ match }) => <ApplicationFormAcc match={match} alert={alert} />}
-                </Route>
-      
-                <Route exact path='/finance/accountant/NonRTEFormAcc'>
-                  {({ match }) => <NonRTEFormAcc match={match} alert={alert} />}
-                </Route>
-                {/* <Route exact path='/finance/accountat/pendingOnlineadmission'>
+                          <Route exact path='/finance/MiscFeeClass'>
+                            {({ match }) => <MiscFeeClass match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/AssignCoupon'>
+                            {({ match }) => <AssignCoupon match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/CreateCoupon'>
+                            {({ match }) => <CreateCoupon match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/DepositTab'>
+                            {({ match }) => <DepositeTab match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/TotalFormReport'>
+                            {({ match }) => (
+                              <TotalFormCount match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/Requestshuffle'>
+                            {({ match }) => (
+                              <RequestShuffle match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/UnassignFeeRequests'>
+                            {({ match }) => (
+                              <UnassignFeeRequests match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/approval_request'>
+                            {({ match }) => (
+                              <ApprovalRequest match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/pending_request'>
+                            {({ match }) => (
+                              <PendingRequest match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/editTransactionDetails'>
+                            {({ match }) => (
+                              <EditTransactionDetails match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/rejected_request'>
+                            {({ match }) => (
+                              <rejectedRequest match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/ReceiptRange'>
+                            {({ match }) => <CreateReceipt match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/StoreReport'>
+                            {({ match }) => <StoreReport match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/add_feePlan'>
+                            {({ match }) => <AddFeePlan match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/student/LegerTab'>
+                            {({ match }) => (
+                              <StudentLedgerTab match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/manage_feeType/'>
+                            {({ match }) => <ManageFeeType match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/admissions/registrationForm/'>
+                            {({ match }) => (
+                              <RegistrationForm match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/accountant/newregistrationForm'>
+                            {({ match }) => (
+                              <NewRegistration match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/accountant/admissionForm'>
+                            {({ match }) => (
+                              <AdmissionFormAcc match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/customizedAdmissionForm'>
+                            {({ match }) => (
+                              <CustomizedAdmissionForm match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/newAdmissionForm'>
+                            {({ match }) => (
+                              <NewAdmissionForm match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/accountant/applicationFrom'>
+                            {({ match }) => (
+                              <ApplicationFormAcc match={match} alert={alert} />
+                            )}
+                          </Route>
+
+                          <Route exact path='/finance/accountant/NonRTEFormAcc'>
+                            {({ match }) => <NonRTEFormAcc match={match} alert={alert} />}
+                          </Route>
+                          {/* <Route exact path='/finance/accountat/pendingOnlineadmission'>
                   {({ match }) => <OnlineAdmission match={match} />}
                 </Route> */}
-                <Route exact path='/finance/BankAndFeeAccounts'>
-                  {({ match }) => <TabView match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/Bank'>
-                  {({ match }) => <Bank match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/ViewBank'>
-                  {({ match }) => <ViewBanks match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/ViewFeeAccounts'>
-                  {({ match }) => <ViewFeeAccounts match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/AccToClass'>
-                  {({ match }) => <AccToClass match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/AccToBranch'>
-                  {({ match }) => <AccToBranch match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/AccToStore'>
-                  {({ match }) => <AccToStore match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/Setting/LastDateSetting'>
-                  {({ match }) => <LastDateSettings match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/Setting/ReceiptSettings'>
-                  {({ match }) => <ReceiptSettings match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/BulkOperation/Feestructure'>
-                  {({ match }) => <BulkFeeUpload match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/StudentWallet'>
-                  {({ match }) => <StudentWallet match={match} alert={alert} />}
-                </Route>
-                <Route exact path='/finance/student/FeeCollection'>
-                  {({ match }) => <FeeCollection match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/feeShowList/'>
-                  {({ match }) => <FeeShowList match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/student/AssignDeliveryCharge'>
-                  {({ match }) => <AssignDelieveryCharge match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/student/ChnageFeePlanToStudent'>
-                  {({ match }) => <ChangeFeePlanToStudent match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/BulkOperation/BulkReportUpload'>
-                  {({ match }) => <BulkReportUpload match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/BulkOperation/AccountantLogin'>
-                  {({ match }) => <AccountantLogin match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/BulkOperation/BulkUploadStatus'>
-                  {({ match }) => <BulkReportStatus match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/BulkOperation/UploadOnlinePayment'>
-                  {({ match }) => <OnlinePayment match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/BulkOperation/BulkActiveInactive'>
-                  {({ match }) => <BulkActiveInactive match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/BulkOperation/BulkActiveInactiveParent'>
-                  {({ match }) => <BulkActiveInactiveParent match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Student/ActiveInactive'>
-                  {({ match }) => <StudentActivateInactiveAcc match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/admissions/OnlineAdmission'>
-                  {({ match }) => <OnlineAdmission match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Student/StudentPromotion'>
-                  {({ match }) => <StudentPromotion match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Student/OqCodeGenerate'>
-                  {({ match }) => <QRCodeGenerator match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Student/Communication'>
-                  {({ match }) => <CommunicationSMS match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Student/IncomeTaxCertificate'>
-                  {({ match }) => <ItCertificate match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Approval/Requests/FeePaymentRequests'>
-                  {({ match }) => <FeePaymentChangeRequests match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Approval/Requests/StorePaymentRequests'>
-                  {({ match }) => <StorePaymentRequests match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Approval/Requests/ApprovedStorePaymentRequests'>
-                  {({ match }) => <ApprovedStoreRequests match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Approval/Requests/RejectedStorePaymentRequests'>
-                  {({ match }) => <RejectedStoreRequests match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Approval/Requests/CancelledStorePaymentRequests'>
-                  {({ match }) => <CancelledStoreRequests match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Approval/Requests/PendingStorePaymentRequests'>
-                  {({ match }) => <PendingStoreRequests match={match} alert={alert} />}
-                </Route>
-                
+                          <Route exact path='/finance/BankAndFeeAccounts'>
+                            {({ match }) => <TabView match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/Bank'>
+                            {({ match }) => <Bank match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/ViewBank'>
+                            {({ match }) => <ViewBanks match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/ViewFeeAccounts'>
+                            {({ match }) => (
+                              <ViewFeeAccounts match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/AccToClass'>
+                            {({ match }) => <AccToClass match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/AccToBranch'>
+                            {({ match }) => <AccToBranch match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/AccToStore'>
+                            {({ match }) => <AccToStore match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/Setting/LastDateSetting'>
+                            {({ match }) => (
+                              <LastDateSettings match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/Setting/ReceiptSettings'>
+                            {({ match }) => (
+                              <ReceiptSettings match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/BulkOperation/Feestructure'>
+                            {({ match }) => <BulkFeeUpload match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/StudentWallet'>
+                            {({ match }) => <StudentWallet match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/student/FeeCollection'>
+                            {({ match }) => <FeeCollection match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/feeShowList/'>
+                            {({ match }) => <FeeShowList match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/student/AssignDeliveryCharge'>
+                            {({ match }) => (
+                              <AssignDelieveryCharge match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/student/ChnageFeePlanToStudent'>
+                            {({ match }) => (
+                              <ChangeFeePlanToStudent match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/BulkOperation/BulkReportUpload'>
+                            {({ match }) => (
+                              <BulkReportUpload match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/BulkOperation/AccountantLogin'>
+                            {({ match }) => (
+                              <AccountantLogin match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/BulkOperation/BulkUploadStatus'>
+                            {({ match }) => (
+                              <BulkReportStatus match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/BulkOperation/UploadOnlinePayment'>
+                            {({ match }) => <OnlinePayment match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/BulkOperation/BulkActiveInactive'>
+                            {({ match }) => (
+                              <BulkActiveInactive match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route
+                            exact
+                            path='/finance/BulkOperation/BulkActiveInactiveParent'
+                          >
+                            {({ match }) => (
+                              <BulkActiveInactiveParent match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/Student/ActiveInactive'>
+                            {({ match }) => (
+                              <StudentActivateInactiveAcc match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/admissions/OnlineAdmission'>
+                            {({ match }) => (
+                              <OnlineAdmission match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/Student/StudentPromotion'>
+                            {({ match }) => (
+                              <StudentPromotion match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/Student/OqCodeGenerate'>
+                            {({ match }) => (
+                              <QRCodeGenerator match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/Student/Communication'>
+                            {({ match }) => (
+                              <CommunicationSMS match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/Student/IncomeTaxCertificate'>
+                            {({ match }) => <ItCertificate match={match} alert={alert} />}
+                          </Route>
+                          <Route
+                            exact
+                            path='/finance/Approval/Requests/FeePaymentRequests'
+                          >
+                            {({ match }) => (
+                              <FeePaymentChangeRequests match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route
+                            exact
+                            path='/finance/Approval/Requests/StorePaymentRequests'
+                          >
+                            {({ match }) => (
+                              <StorePaymentRequests match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route
+                            exact
+                            path='/finance/Approval/Requests/ApprovedStorePaymentRequests'
+                          >
+                            {({ match }) => (
+                              <ApprovedStoreRequests match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route
+                            exact
+                            path='/finance/Approval/Requests/RejectedStorePaymentRequests'
+                          >
+                            {({ match }) => (
+                              <RejectedStoreRequests match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route
+                            exact
+                            path='/finance/Approval/Requests/CancelledStorePaymentRequests'
+                          >
+                            {({ match }) => (
+                              <CancelledStoreRequests match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route
+                            exact
+                            path='/finance/Approval/Requests/PendingStorePaymentRequests'
+                          >
+                            {({ match }) => (
+                              <PendingStoreRequests match={match} alert={alert} />
+                            )}
+                          </Route>
 
-                <Route exact path= '/finance/Approval/Requests/ApprovedPaymentRequests'>
-                  {({ match }) => <ApprovedRequestView match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Approval/Requests/RejectedPaymentRequests'>
-                  {({ match }) => <RejectedRequestView match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Approval/Requests/CancelledPaymentRequests'>
-                  {({ match }) => <CancelledRequestView match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Approval/Requests/PendingPaymentRequests'>
-                  {({ match }) => <PendingRequestView match={match} alert={alert} />}
-                </Route>
+                          <Route
+                            exact
+                            path='/finance/Approval/Requests/ApprovedPaymentRequests'
+                          >
+                            {({ match }) => (
+                              <ApprovedRequestView match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route
+                            exact
+                            path='/finance/Approval/Requests/RejectedPaymentRequests'
+                          >
+                            {({ match }) => (
+                              <RejectedRequestView match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route
+                            exact
+                            path='/finance/Approval/Requests/CancelledPaymentRequests'
+                          >
+                            {({ match }) => (
+                              <CancelledRequestView match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route
+                            exact
+                            path='/finance/Approval/Requests/PendingPaymentRequests'
+                          >
+                            {({ match }) => (
+                              <PendingRequestView match={match} alert={alert} />
+                            )}
+                          </Route>
 
-                <Route exact path= '/finance/Approval/Requests/AcceptRejectPayment'>
-                  {({ match }) => <AcceptRejectPayment match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Approval/Requests/PostDateCheque'>
-                  {({ match }) => <PostDateCheque match={match} alert={alert} />}
-                </Route>
-                {/* <Route exact path= '/finance/Approval/Requests/PostDateCheque'>
+                          <Route
+                            exact
+                            path='/finance/Approval/Requests/AcceptRejectPayment'
+                          >
+                            {({ match }) => (
+                              <AcceptRejectPayment match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/Approval/Requests/PostDateCheque'>
+                            {({ match }) => (
+                              <PostDateCheque match={match} alert={alert} />
+                            )}
+                          </Route>
+                          {/* <Route exact path= '/finance/Approval/Requests/PostDateCheque'>
                   {({ match }) => <PostDateCheque match={match} />}
                 </Route> */}
-                <Route exact path= '/finance/student/studentInfo'>
-                  {({ match }) => <StudentInfoAdm match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/E-Mandate/BillingDetails'>
-                  {({ match }) => <BillingDetails match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/E-Mandate/GenerateSubsequentPayment'>
-                  {({ match }) => <GenerateSubsequentPayment match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/E-Mandate/AddBranch'>
-                  {({ match }) => <EMandate match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/E-Mandate/CreateLink'>
-                  {({ match }) => <CreateLink match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/E-Mandate/CustomerDetails'>
-                  {({ match }) => <CustomerDeatils match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/E-Mandate/AdminCustomerDetails'>
-                  {({ match }) => <CustomerDeatils match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/E-Mandate/OrderDetails'>
-                  {({ match }) => <OrderDetails match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/E-Mandate/TotalBillingDetails'>
-                  {({ match }) => <DailyBillingDetails match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Expanse Management/PettyExpense'>
-                  {({ match }) => <PettyExpenses match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Expanse Management/MakeEntry'>
-                  {({ match }) => <MakeEntry match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Expanse Management/CashReport'>
-                  {({ match }) => <CashReport match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Expanse Management/BankReport'>
-                  {({ match }) => <BankReport match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Expanse Management/LedgerReport'>
-                  {({ match }) => <LedgerReport match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Expanse Management/FinancialLedgerReport'>
-                  {({ match }) => <FinancialLedgerReport match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Expanse Management/PartyList'>
-                  {({ match }) => <Party match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/Approval/Requests/StudentShuffleRequest'>
-                  {({ match }) => <StudentShuffleReq match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/ManagePayments'>
-                  {({ match }) => <ManagePayment match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/FeeStructure'>
-                  {({ match }) => <FeeStructure match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/BooksAndUniform'>
-                  {({ match }) => <BulkUniform match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/ShippingPayment'>
-                  {({ match }) => <ShippingAmount match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/Store/AddItems'>
-                  {({ match }) => <AddItems match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/Store/CreateKit'>
-                  {({ match }) => <Kit match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/Store/SubCategoryAllow'>
-                  {({ match }) => <SubCategoryAllow match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/admissions/UpdateRegistrationForm/'>
-                  {({ match }) => <UpdateAdmissionForm match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/Store/AddGst'>
-                  {({ match }) => <AddGst match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/Store/OrderStatusUpload'>
-                  {({ match }) => <OrderStatusUpload match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/ReceiptBook'>
-                  {({ match }) => <ReceiptBook match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/appformlist'>
-                  {({ match }) => <AppFormList match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/regformlist'>
-                  {({ match }) => <RegFormList match={match} alert={alert} />}
-                </Route>
-              <Route exact path= '/finance/admformlist'>
-                  {({ match }) => <AdmFormList match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/fee_payment/'>
-                  {({ match }) => <Airpay match={match} alert={alert} />}
-                </Route>
-                <Route exact path= '/finance/upload_file'>
-                  {({ match }) => <UploadPaymentFile match={match} alert={alert} />}
-                </Route>
-              </Switch>
-                  </DailyDairyStore>
-                </ViewStore>
-              </GeneralDairyStore>
-            </CircularStore>
+                          <Route exact path='/finance/student/studentInfo'>
+                            {({ match }) => (
+                              <StudentInfoAdm match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/E-Mandate/BillingDetails'>
+                            {({ match }) => (
+                              <BillingDetails match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route
+                            exact
+                            path='/finance/E-Mandate/GenerateSubsequentPayment'
+                          >
+                            {({ match }) => (
+                              <GenerateSubsequentPayment match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/E-Mandate/AddBranch'>
+                            {({ match }) => <EMandate match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/E-Mandate/CreateLink'>
+                            {({ match }) => <CreateLink match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/E-Mandate/CustomerDetails'>
+                            {({ match }) => (
+                              <CustomerDeatils match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/E-Mandate/AdminCustomerDetails'>
+                            {({ match }) => (
+                              <CustomerDeatils match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/E-Mandate/OrderDetails'>
+                            {({ match }) => <OrderDetails match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/E-Mandate/TotalBillingDetails'>
+                            {({ match }) => (
+                              <DailyBillingDetails match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/Expanse Management/PettyExpense'>
+                            {({ match }) => <PettyExpenses match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/Expanse Management/MakeEntry'>
+                            {({ match }) => <MakeEntry match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/Expanse Management/CashReport'>
+                            {({ match }) => <CashReport match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/Expanse Management/BankReport'>
+                            {({ match }) => <BankReport match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/Expanse Management/LedgerReport'>
+                            {({ match }) => <LedgerReport match={match} alert={alert} />}
+                          </Route>
+                          <Route
+                            exact
+                            path='/finance/Expanse Management/FinancialLedgerReport'
+                          >
+                            {({ match }) => (
+                              <FinancialLedgerReport match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/Expanse Management/PartyList'>
+                            {({ match }) => <Party match={match} alert={alert} />}
+                          </Route>
+                          <Route
+                            exact
+                            path='/finance/Approval/Requests/StudentShuffleRequest'
+                          >
+                            {({ match }) => (
+                              <StudentShuffleReq match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/ManagePayments'>
+                            {({ match }) => <ManagePayment match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/FeeStructure'>
+                            {({ match }) => <FeeStructure match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/BooksAndUniform'>
+                            {({ match }) => <BulkUniform match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/ShippingPayment'>
+                            {({ match }) => (
+                              <ShippingAmount match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/Store/AddItems'>
+                            {({ match }) => <AddItems match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/Store/CreateKit'>
+                            {({ match }) => <Kit match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/Store/SubCategoryAllow'>
+                            {({ match }) => (
+                              <SubCategoryAllow match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/admissions/UpdateRegistrationForm/'>
+                            {({ match }) => (
+                              <UpdateAdmissionForm match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/Store/AddGst'>
+                            {({ match }) => <AddGst match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/Store/OrderStatusUpload'>
+                            {({ match }) => (
+                              <OrderStatusUpload match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/ReceiptBook'>
+                            {({ match }) => <ReceiptBook match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/appformlist'>
+                            {({ match }) => <AppFormList match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/regformlist'>
+                            {({ match }) => <RegFormList match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/admformlist'>
+                            {({ match }) => <AdmFormList match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/fee_payment/'>
+                            {({ match }) => <Airpay match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/upload_file'>
+                            {({ match }) => (
+                              <UploadPaymentFile match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/markattedance'>
+                            {({ match }) => <MarkAttedance match={match} />}
+                          </Route>
+                          <Route exact path='/attedance'>
+                            {({ match }) => <AttedanceCalender match={match} />}
+                          </Route>
+                        </Switch>
+                      </DailyDairyStore>
+                    </ViewStore>
+                  </GeneralDairyStore>
+                </CircularStore>
               </AttachmentPreviewer>
             </ThemeProvider>
           </OnlineclassViewProvider>
