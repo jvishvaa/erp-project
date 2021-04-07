@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import axiosInstance from '../../../config/axios';
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import moment from 'moment';
 import '../timetable.scss';
 const useStyles = makeStyles(() => ({
@@ -19,14 +20,17 @@ const DisplayBox = (props) => {
   const setMobileView = useMediaQuery('(min-width:800px)');
   const currDate = moment('08:09:00').format(' h:mm: a');
   const [data] = useState(props.dataOpenChange);
+  const [assignedTeacherID, setAssignedTeacherID] = useState();
   const [Description, setDescription] = useState(props.dataOpenChange.period_description);
   const [startTime, setStartTime] = useState(
     props.dataOpenChange.period_start_time + ' - ' + props.dataOpenChange.period_end_time
   );
   const [teacherDetails, setTeacherDetails] = useState(data.teacher_name.name);
-  const [assignedTeacherID, setAssignTeacherID] = useState(props.dataOpenChange.assigned_teacher_id);
+  const [assignedTeacherName, setAssignedTeacherName] = useState(
+    props.dataOpenChange.teacher_name.name
+  );
   const [subject, setSubject] = useState(props.dataOpenChange.period_name);
-  const [subjectID, setSubjectID] = useState(props.dataOpenChange.subject_id); 
+  const [subjectID, setSubjectID] = useState(props.dataOpenChange.subject_id);
   const [MaterialRequired, setMaterialRequired] = useState(
     props.dataOpenChange.required_material
   );
@@ -55,6 +59,7 @@ const DisplayBox = (props) => {
     if (!setMobileView) {
       props.handleOpenChangeMobile(data, false);
     }
+    props.handleChangeDisplayView();
     console.log('updateDAta');
     let obj = {
       period_description: Description,
@@ -102,7 +107,7 @@ const DisplayBox = (props) => {
         <>
           <div className='field-container'>
             <TextField
-            fullWidth
+              fullWidth
               label='Duration'
               id='outlined-size-small'
               variant='outlined'
@@ -115,8 +120,34 @@ const DisplayBox = (props) => {
             />
           </div>
           <div className='field-container'>
+            <Autocomplete
+              id='combo-box-demo'
+              size='samll'
+              fullWidth
+              item={assignedTeacherName}
+              options={props.assignedTeacher}
+              getItemValue={(item) => item?.name}
+              // defaultValue={
+              //   props.assignedTeacher &&
+              //   props.assignedTeacher.find(assignedTeacherName)
+              // }
+              getOptionLabel={(option) => option?.name}
+              style={{ width: '100%' }}
+              onChange={(event, option) => setAssignedTeacherID(option?.id)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  size='small'
+                  fullWidth
+                  label={assignedTeacherName}
+                  variant='outlined'
+                />
+              )}
+            />
+          </div>
+          {/* <div className='field-container'>
             <TextField
-            fullWidth
+              fullWidth
               label='Conducted By'
               id='outlined-size-small'
               variant='outlined'
@@ -127,10 +158,10 @@ const DisplayBox = (props) => {
               value={teacherDetails}
               onChange={(e) => setTeacherDetails(e.target.value)}
             />
-          </div>
+          </div> */}
           <div className='field-container'>
             <TextField
-            fullWidth
+              fullWidth
               label='Description'
               value={Description}
               id='outlined-size-small'
@@ -154,7 +185,8 @@ const DisplayBox = (props) => {
           </div> */}
           <div className='field-container'>
             <TextField
-            fullWidth
+              fullWidth
+              key='Caption Name'
               label='Caption Name'
               value={subject}
               id='outlined-size-small'
@@ -176,7 +208,7 @@ const DisplayBox = (props) => {
           </div> */}
           <div className='field-container'>
             <TextField
-            fullWidth
+              fullWidth
               label='Material required'
               id='outlined-size-small'
               value={MaterialRequired}

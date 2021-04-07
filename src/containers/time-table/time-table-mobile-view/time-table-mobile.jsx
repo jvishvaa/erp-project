@@ -79,8 +79,7 @@ const TimeTableMobile = (props) => {
                           {data.period_end_time.slice(0, 5)}
                         </p>
                         <h4>
-                          {data.assigned_teacher__first_name}{' '}
-                          {data.assigned_teacher__last_name}
+                          {data.teacher_name?.name}
                         </h4>
                       </div>
                       <div className='button-container'>

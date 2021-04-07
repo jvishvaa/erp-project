@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Layout from '../Layout/index';
 import Loader from '../../components/loader/loader';
 import FilterImage from '../../assets/images/Filter_Icon.svg';
@@ -30,15 +30,9 @@ const TimeTable = (props) => {
   const [teacherModuleId, setTeacherModuleId] = useState();
   const [sectinName, setSectionName] = useState();
   const [teacherView, setTeacherView] = useState(false);
-  const [ids, setIDS] = useState({
-    academic_year_id: acadamicYearID,
-    branch_id: branchID,
-    grade_id: gradeID,
-    section_id: sectionID,
-  });
-
+  const [openCloseTable, setOpenCloseTable] = useState(false);
+  const [ids, setIDS] = useState(false);
   useEffect(() => {
-
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
@@ -53,12 +47,14 @@ const TimeTable = (props) => {
             ) {
               setStudentModuleId(item?.child_id);
               setTeacherView(false);
+              setOpenCloseTable(false);
             } else if (
               location.pathname === '/time-table/teacher-view' &&
               item.child_name === 'Student Time Table'
             ) {
               setTeacherModuleId(item?.child_id);
               setTeacherView(true);
+              setOpenCloseTable(false)
             }
           });
         }
@@ -66,12 +62,15 @@ const TimeTable = (props) => {
     }
   }, [location.pathname]);
   // console.log(getModuleId(), 'madule ids');
-console.log(ids, 'all datas')
-useEffect(()=>{
-  callGetTimeTableAPI()
-},[branchID])
-  // console.log(studentModuleId, teacherModuleId, 'module ids')
-  // console.log(teacherView, 'find result teacherview');
+  console.log(ids, 'all datas');
+  useEffect(() => {
+    if (openCloseTable) {
+      console.log('fetching');
+      callGetTimeTableAPI();
+    } else {
+      setIDS(true);
+    }
+  }, [branchID]);
   const callGetTimeTableAPI = async () => {
     setLoading(true);
     await axiosInstance
@@ -81,10 +80,6 @@ useEffect(()=>{
           branch_id: branchID,
           grade_id: gradeID,
           section_id: sectionID,
-          // academic_year_id: 1,
-          // branch_id: 1,
-          // grade_id: 3,
-          // section_id: 1,
         },
       })
       .then((response) => {
@@ -134,7 +129,15 @@ useEffect(()=>{
   const handleFilter = (value) => {
     setFilter(value);
   };
-
+  const handleCloseTable = (value) => {
+    setOpenCloseTable(value);
+    if (!value) {
+      setGradeName(null);
+      setAcadamicYearName(null);
+      setBranchName(null);
+      setSectionName(null);
+    }
+  };
   return (
     <>
       <Layout>
@@ -167,6 +170,7 @@ useEffect(()=>{
               {Filter ? (
                 <>
                   <UpperGrade
+                    handleCloseTable={handleCloseTable}
                     handlePassData={handlePassData}
                     handleClickAPI={handleClickAPI}
                   />
@@ -197,19 +201,23 @@ useEffect(()=>{
               )}
 
               <div className='date-container'>
-                <UserProvider value={ids}>
-                  <DateAndCalander
-                    passId={ids}
-                    section_ID={sectionID}
-                    grade_ID={gradeID}
-                    branch_ID={branchID}
-                    acadamicYear_ID={acadamicYearID}
-                    teacherView={teacherView}
-                    handlePassData={handlePassData}
-                    callGetAPI={callGetTimeTableAPI}
-                    tableData={tableData}
-                  />
-                </UserProvider>
+                {openCloseTable ? (
+                  <UserProvider value={ids}>
+                    <DateAndCalander
+                      passId={ids}
+                      section_ID={sectionID}
+                      grade_ID={gradeID}
+                      branch_ID={branchID}
+                      acadamicYear_ID={acadamicYearID}
+                      teacherView={teacherView}
+                      handlePassData={handlePassData}
+                      callGetAPI={callGetTimeTableAPI}
+                      tableData={tableData}
+                    />
+                  </UserProvider>
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
           </>

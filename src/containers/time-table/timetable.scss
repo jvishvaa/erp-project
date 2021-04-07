@@ -29,7 +29,7 @@ $font-roboto:  'Raleway', sans-serif;
 }
 @mixin tableData {
   table {
-    font-family: arial, sans-serif;
+    font-family: $font-roboto;
     border-collapse: collapse;
     width: 100%;
     border: none;
@@ -79,7 +79,7 @@ $font-roboto:  'Raleway', sans-serif;
     margin: 6px 1px;
   }
   p {
-    font-size: 10px;
+    font-size: 17px;
     color: $text-color;
     margin: 6px 1px;
   }

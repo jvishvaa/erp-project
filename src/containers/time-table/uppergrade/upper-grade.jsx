@@ -8,12 +8,14 @@ import Select from '@material-ui/core/Select';
 import LayersClearIcon from '@material-ui/icons/LayersClear';
 import WbIncandescentSharpIcon from '@material-ui/icons/WbIncandescentSharp';
 import { Button, IconButton } from '@material-ui/core';
+import { useLocation } from 'react-router-dom';
+import { getModuleInfo }from '../../../utility-functions'
 import './upper-grade.scss';
 import { set } from 'lodash';
 const UpperGrade = (props) => {
   const [dataMap, setDataMap] = useState();
   const [dataMapAcademicYear, setDataMapAcademicYear] = useState();
-  const [moduleID, setModuleID] = useState();
+  const location = useLocation();
   const [acadamicYearID, setAcadamicYear] = useState(1);
   const [gradeID, setGradeID] = useState(1);
   const [sectionID, setSectionID] = useState(1);
@@ -83,8 +85,10 @@ const UpperGrade = (props) => {
     axiosInstance
       .get(`/erp_user/branch/?session_year=${acadamicYearID}`)
       .then((res) => {
-        console.log(res.data, 'branch');
-        setDataMap(res.data.data.results);
+        if(res.status === 200){
+          setDataMap(res.data.data.results);
+        }
+        
       })
       .catch((error) => {
         console.log(error);
@@ -120,15 +124,15 @@ const UpperGrade = (props) => {
     color: 'gray',
   };
   const getModuleId = () => {
-    // const tempObj = {
-    //   '/time-table/teacher-view/': 'Teacher Time Table',
-    //   '/time-table/teacher-view': 'Teacher Time Table',
-    //   '/time-table/student-view': 'Student Time Table',
-    //   '/time-table/student-view/': 'Student Time Table',
-    //   default: 'Student Time Table',
-    // };
-    // const moduleName = tempObj[location.pathname] || tempObj['default'];
-    // return getModuleInfo(moduleName).id;
+    const tempObj = {
+      '/time-table/teacher-view/': 'Teacher Time Table',
+      '/time-table/teacher-view': 'Teacher Time Table',
+      '/time-table/student-view': 'Student Time Table',
+      '/time-table/student-view/': 'Student Time Table',
+      default: 'Student Time Table',
+    };
+    const moduleName = tempObj[location.pathname] || tempObj['default'];
+    return getModuleInfo(moduleName).id;
   };
   const handleCounter = (value) => {
     console.log('counter');
@@ -152,7 +156,21 @@ const UpperGrade = (props) => {
       sectinName
     );
     props.handleClickAPI();
+    handleClearData('generate');
   };
+  const handleClearData = (data) =>{
+    if(data === 'clear'){
+      props.handleCloseTable(false);
+      setCounter(1);
+      setAcadamicYear(null);
+      setBranchID(null);
+      setGradeID(null);
+      setSectionID(null);
+    }
+    if(data === 'generate'){
+      props.handleCloseTable(true)
+    }
+}
   return (
     <>
       <div className='upper-table-container'>
@@ -398,6 +416,7 @@ const UpperGrade = (props) => {
             size='small'
             variant='contained'
             className='clear-all'
+            onClick={() => handleClearData('clear')}
             startIcon={<LayersClearIcon />}
           >
             Clear All

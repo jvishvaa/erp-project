@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   // baseURL: process.env.BASE_URL
-  // baseURL: `${window.location.origin}/qbox`,
+  baseURL: `${window.location.origin}/qbox`,
   // baseURL:'https://revamperp.letseduvate.com/qbox',
   // baseURL: 'https://erpnew.letseduvate.com/qbox',
   // baseURL: 'https://aol.letseduvate.com/qbox',
@@ -13,8 +13,8 @@ const axiosInstance = axios.create({
   // baseURL:'http://192.168.0.96/qbox'
   // baseURL: 'http://erp.finance.letseduvate.com/qbox',
   // baseURL: 'http://dev.olvorchidnaigaon.letseduvate.com/qbox',
-  baseURL: 'http://localhost:8000/qbox'
-  // baseURL: 'http://192.168.1.69:8800/qbox'
+  // baseURL: 'http://localhost:8000/qbox'
+  // baseURL: 'http://192.168.1.69:8000/qbox'
 });
 
 // ****** enable the following code to attach authorization headers on each request and for logging out when an unauthorize request is send *****//

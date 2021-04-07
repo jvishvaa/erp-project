@@ -3,6 +3,12 @@
 //***********************For-mobile-view**********************//
 
 .mobile-table-view {
+  h4{
+    color: #014b7e;
+    margin: 6px 1px;
+    font-size: 20px;
+    font-family: $font-roboto;
+  }
   .display-box-mobile-container {
     display: flex;
     flex-direction: column;
@@ -48,12 +54,14 @@
     justify-content: space-between;
     align-items: flex-start;
     h4 {
-      font-size: 23px;
+      font-size: 20px;
       margin: 10px 8px;
       color: $text-color;
+      font-family: $font-roboto;
     }
     p {
       font-size: 20px;
+      font-family: $font-roboto;
       margin: 10px 8px;
       color: $text-color;
     }

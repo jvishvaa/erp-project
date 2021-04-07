@@ -110,7 +110,7 @@ const Calander = (props) => {
         console.log(error);
       });
   };
-  console.log(props.passId, 'sev;icsvpeplesv');
+  // console.log(props.passId, 'sev;icsvpeplesv');
   const callingTeachersAPI = () => {
     axiosInstance
       .get('/academic/teachers-list/', {
@@ -224,6 +224,10 @@ const Calander = (props) => {
     setDayName(e.target.value);
     setDay(e.target.value);
   };
+  const handleChangeDisplayView = () => {
+    setSelectClick(false);
+  };
+
   return (
     <>
       {props.teacherView ? (
@@ -245,7 +249,7 @@ const Calander = (props) => {
             <Autocomplete
               id='combo-box-demo'
               options={section}
-              getOptionLabel={(option) => option.subject_name}
+              getOptionLabel={(option) => option?.subject_name}
               style={{ width: 250 }}
               onChange={(event, option) => setSectionIdOption(option?.id)}
               renderInput={(params) => (
@@ -263,9 +267,9 @@ const Calander = (props) => {
             <Autocomplete
               id='combo-box-demo'
               options={assignedTeacher}
-              getOptionLabel={(option) => option.name}
+              getOptionLabel={(option) => option?.name}
               style={{ width: 250 }}
-              onChange={(event, option) => setAssignedTeacherID(option.id)}
+              onChange={(event, option) => setAssignedTeacherID(option?.id)}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -325,7 +329,7 @@ const Calander = (props) => {
               </MenuItem>
               <MenuItem value='Monday'>Monday</MenuItem>
               <MenuItem value='Tuesday'>Tuesday</MenuItem>
-              <MenuItem value='Wednesday'>Wedneday</MenuItem>
+              <MenuItem value='Wednesday'>Wednesday</MenuItem>
               <MenuItem value='Thursday'>Thursday</MenuItem>
               <MenuItem value='Friday'>Friday</MenuItem>
             </Select>
@@ -640,6 +644,8 @@ const Calander = (props) => {
         <div className='display-container'>
           {selectClick ? (
             <DisplayBox
+            assignedTeacher={assignedTeacher}
+              handleChangeDisplayView={handleChangeDisplayView}
               teacherView={props.teacherView}
               callGetAPI={props.callGetAPI}
               newPeriod={newPeriod}

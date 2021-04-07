@@ -17,7 +17,7 @@ const DisplayBox = (props) => {
   );
   const [subject, setSubject] = useState(props.dataOpenChange.subject__subject_name);
   const [ConductedBy, setConductedBy] = useState(
-    props.dataOpenChange.assigned_teacher__first_name
+    props.dataOpenChange.teacher_name?.name
   );
   const [MaterialRequired, setMaterialRequired] = useState(
     props.dataOpenChange.required_material
@@ -69,7 +69,7 @@ const DisplayBox = (props) => {
               </div>
               <h3>{data.period_name}</h3>
               <h4>
-                {data.assigned_teacher__first_name} {data.assigned_teacher__last_name}
+                {data.teacher_name?.name}
               </h4>
             </div>
             <div className='display-bottom-container'>

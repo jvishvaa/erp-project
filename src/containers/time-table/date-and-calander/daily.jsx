@@ -11,31 +11,31 @@ const Daily = (props) => {
   const [DataThursday, setDataThursday] = useState(props.tableData.Thursday);
   const [DataFriday, setDataFriday] = useState(props.tableData.Friday);
 
-  useEffect(()=>{
+  useEffect(() => {
     handleDailyData();
     console.log(props.openToggleCalander, 'open===');
-  },[props.openToggleCalander])
-  const handleDailyData = () =>{
+  }, [props.openToggleCalander]);
+  const handleDailyData = () => {
     let newDate = new Date();
-    let days = ["","Monday","Tuesday","Wednesday","Thursday","Friday",""];
-    let day = days[newDate.getDay()]
+    let days = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', ''];
+    let day = days[newDate.getDay()];
     setCurrent(day);
-    if(day === 'Monday'){
+    if (day === 'Monday') {
       setDaily(DataMonday);
     }
-    if(day === 'Tuesday'){
+    if (day === 'Tuesday') {
       setDaily(DataTuesday);
     }
-    if(day === 'Wednesday'){
+    if (day === 'Wednesday') {
       setDaily(DataWednesday);
     }
-    if(day === 'Thursday'){
+    if (day === 'Thursday') {
       setDaily(DataThursday);
     }
-    if(day === 'Friday'){
+    if (day === 'Friday') {
       setDaily(DataFriday);
     }
-  }
+  };
 
   return (
     <>
@@ -47,19 +47,17 @@ const Daily = (props) => {
             </tr>
             {daily &&
               daily.map((data) => (
-                <tr key={data.id} onClick={()=>setSelectData(data)}>
-                  {loopData.map((times) => (
-                    <td key={times}>
-                      <h4>{data.period_name}</h4>
-                      <p>
-                        {data.period_start_time.slice(0,5)}-{data.period_end_time.slice(0,5)}
-                      </p>
-                      <h4>
-                        {data.assigned_teacher__first_name}{' '}
-                        {data.assigned_teacher__last_name}
-                      </h4>
-                    </td>
-                  ))}
+                <tr key={data.id} onClick={() => setSelectData(data)}>
+                  <td>
+                    <h4>{data.period_name}</h4>
+                    <p>
+                      {data.period_start_time.slice(0, 5)}-
+                      {data.period_end_time.slice(0, 5)}
+                    </p>
+                    <h4>
+                      {data.teacher_name?.name}
+                    </h4>
+                  </td>
                 </tr>
               ))}
           </table>
