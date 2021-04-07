@@ -764,6 +764,10 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/Student/ActiveInactive')
                   break;
                 }
+                case 'Student Active/Inactive': {
+                  history.push('/finance/Student/ActiveInactive/Admin')
+                    break;
+                  }
               case 'Student Promotion': {
                 history.push('/finance/Student/StudentPromotion')
                   break;
