@@ -221,8 +221,6 @@ export default function JoinClassComponent(props) {
                       </Grid>
                     </Popover>
                     </div>
-             {/* }   */}
-            {/* )} */}
         </div>
     )
 }

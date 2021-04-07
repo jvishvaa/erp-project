@@ -48,6 +48,7 @@ const LessonViewFilters = ({
     const [chapterDropdown, setChapterDropdown] = useState([]);
     const [overviewSynopsis, setOverviewSynopsis] = useState([]);
     const [centralGsMappingId, setCentralGsMappingId] = useState();
+    const [erpYear, setErpYear] = useState({});
     const [filterData, setFilterData] = useState({
         academic: '',
         branch: '',
@@ -98,6 +99,7 @@ const LessonViewFilters = ({
         setFilterData({ ...filterData, volume: '' });
         if (value) {
             setFilterData({ ...filterData, volume: value });
+            //handleSubject(filterData.subject);
         }
     };
 
@@ -137,7 +139,7 @@ const LessonViewFilters = ({
         setOverviewSynopsis([]);
         if (value) {
             setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '' });
-            axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${location.pathname === "/lesson-plan/student-view"?studentModuleId:teacherModuleId}`)
+            axiosInstance.get(`${endpoints.communication.grades}?session_year=${erpYear?.id}&branch_id=${value.id}&module_id=${location.pathname === "/lesson-plan/student-view"?studentModuleId:teacherModuleId}`)
                 .then(result => {
                     if (result.data.status_code === 200) {
                         setGradeDropdown(result.data.data);
@@ -168,7 +170,7 @@ const LessonViewFilters = ({
         setOverviewSynopsis([]);
         if (value && filterData.branch) {
             setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
-            axiosInstance.get(`${endpoints.lessonPlan.gradeSubjectMappingList}?branch=${filterData.branch.id}&grade=${value.grade_id}`)
+            axiosInstance.get(`${endpoints.lessonPlan.gradeSubjectMappingList}?session_year=${erpYear?.id}&branch=${filterData.branch.id}&grade=${value.grade_id}&module_id=${location.pathname === "/lesson-plan/student-view"?studentModuleId:teacherModuleId}`)
                 .then(result => {
                     if (result.data.status_code === 200) {
                         setSubjectDropdown(result.data.result);
@@ -196,8 +198,8 @@ const LessonViewFilters = ({
         setOverviewSynopsis([]);
         if (filterData.grade && filterData.year && filterData.volume && value) {
             setFilterData({ ...filterData, subject: value, chapter: '' });
-            if (value && filterData.branch && filterData.year && filterData.volume) {
-                axiosInstance.get(`${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value.id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&branch=${filterData.grade.grade_id}`)
+            if (value && filterData.branch && filterData.year && filterData.volume && filterData.volume.id) {
+                axiosInstance.get(`${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value.id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&grade_id=${filterData.grade.grade_id}`)
                     .then(result => {
                         if (result.data.status_code === 200) {
                             setChapterDropdown(result.data.result.chapter_list);
@@ -309,6 +311,7 @@ const LessonViewFilters = ({
                 if(year.session_year === filterData.year.session_year){
                     console.log(year);
                     erp_year = year;
+                    setErpYear(year);
                     setFilterData({ ...filterData, academic: year})
                     return year;
                 }
@@ -344,8 +347,8 @@ const LessonViewFilters = ({
                         <TextField
                             {...params}
                             variant='outlined'
-                            label='Academic Year'
-                            placeholder='Academic Year'
+                            label='Lesson Plan Acad Year'
+                            placeholder='Lesson Plan Acad Year'
                         />
                     )}
                 />

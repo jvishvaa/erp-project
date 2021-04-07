@@ -160,7 +160,7 @@ export const fetchListtOtherFee = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.StudentOtherFees + '?academic_year=' + payload.session, {
+      .get(urls.StudentOtherFees + '?academic_year=' + payload.session + '&branch_id=' + payload.branch, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -184,7 +184,7 @@ export const fetchAccountantOtherFee = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.AccountantOtherFeeList + '?session_year=' + payload.session + '&erp_code=' + payload.erp, {
+      .get(urls.AccountantOtherFeeList + '?session_year=' + payload.session + '&erp_code=' + payload.erp + '&module_id=' + payload.moduleId + '&branch_id=' + payload.branchId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -314,7 +314,9 @@ export const assignAccoutantOtherFees = (payload) => {
         '&otherfee=' + payload.otherFeeId +
         '&grade=' + payload.grade +
         '&section=' + payload.section +
-        '&type=' + payload.type, {
+        '&type=' + payload.type +
+        '&branch_id=' + payload.branchId + 
+        '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }

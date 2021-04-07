@@ -116,7 +116,7 @@ class Receipt extends Component {
       // makeAmt: this.props.makePayAmt || 0,
       // otherFees: this.props.otherFeeId || []
     }, () => {
-      this.props.fetchReceiptRange(this.props.session, this.props.alert, this.props.user)
+      this.props.fetchReceiptRange(this.props.session, this.props.alert, this.props.user, this.props.branch)
       // let currentData = this.props.otherFeesList.filter(val => this.state.otherFees.includes(val.id.toString()))
       // this.setState({
       //   currentData: currentData
@@ -917,7 +917,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchReceiptRange: (session, alert, user) => dispatch(actionTypes.fetchReceiptRange({ session, alert, user })),
+  fetchReceiptRange: (session, alert, user, branchId) => dispatch(actionTypes.fetchReceiptRange({ session, alert, user, branchId })),
   fetchIfsc: (ifsc, alert, user) => dispatch(actionTypes.fetchIfsc({ ifsc, alert, user })),
   fetchMicr: (micr, alert, user) => dispatch(actionTypes.fetchMicr({ micr, alert, user }))
 })

@@ -57,7 +57,8 @@ class ChequeBounce extends Component {
       academic_year: this.props.session,
       erp: this.props.erp,
       amount: this.state.bounceAmount,
-      reason: this.state.bounceReason
+      reason: this.state.bounceReason,
+      branch_id: this.props.branchId
     }
     this.props.saveChequeBounce(this.props.chequeBounce, data, this.props.user, this.props.alert)
     this.props.close()

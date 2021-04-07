@@ -318,6 +318,7 @@ class RegistrationFee extends Component {
             typeId={this.state.currentFeetype.value}
             user={this.props.user}
             alert={this.props.alert}
+            feeType={this.state.currentFeetype.label}
             close={this.hideModalHandler}
           />
         </Modal>

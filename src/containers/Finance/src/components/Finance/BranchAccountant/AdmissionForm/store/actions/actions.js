@@ -78,7 +78,7 @@ export const getStudentdetailsbyregNumber = (payload) => {
 export const getAdmissionRecords = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.AdmissionRecords + '?academic_year=' + payload.session + '&from_date=' + payload.fromDate + '&to_date=' + payload.toDate, {
+    axios.get(urls.AdmissionRecords + '?academic_year=' + payload.session + '&from_date=' + payload.fromDate + '&to_date=' + payload.toDate + '&branch_id=' + payload?.branch?.value, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
@@ -136,7 +136,7 @@ export const getStudentdetailsbyappNumber = (payload) => {
 export const fetchFeePlan = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ListFeePlanGrade + '?grade_id=' + payload.gradeValue + '&academic_year=' + payload.session, {
+    axios.get(urls.ListFeePlanGrade + '?grade_id=' + payload.gradeValue + '&academic_year=' + payload.session + '&branch_id=' + payload.branch, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
@@ -194,7 +194,7 @@ export const fetchInstallment = (payload) => {
 export const searchStudentdetailsbyregNumber = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.SearchStudentDetailbyregNumber + '?registration_number=' + payload.regno + '&academic_year=' + payload.session, {
+    axios.get(urls.SearchStudentDetailbyregNumber + '?registration_number=' + payload.regno + '&academic_year=' + payload.session + '&module_id=' + payload.moduleId + '&branch_id=' + payload.branchId, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }

@@ -74,22 +74,24 @@ class ChequePayment extends Component {
 
   componentDidMount () {
     const erpLength = (this.props.erpNo + '').length
-    if (!this.props.erpNo || erpLength !== 14 || !this.props.session || !this.props.getData) {
+    if (!this.props.erpNo || !this.props.session || !this.props.getData) {
       return
     }
     const {
       erpNo,
       session,
       alert,
-      user
+      user,
+      branchId,
+      moduleId
     } = this.props
-    this.props.fetchChequeTransaction(erpNo, session, user, alert)
+    this.props.fetchChequeTransaction(erpNo, session, user, alert, branchId, moduleId)
   }
 
   componentDidUpdate (prevProps) {
     console.log('the receivede data: ', this.props.chequeResponse)
     const erpLength = (this.props.erpNo + '').length
-    if (!this.props.erpNo || !this.props.session || !this.props.getData || erpLength !== 14) {
+    if (!this.props.erpNo || !this.props.session || !this.props.getData) {
       return
     }
     if (this.props.erpNo === prevProps.erpNo && this.props.session === prevProps.session && this.props.getData === prevProps.getData) {
@@ -99,10 +101,12 @@ class ChequePayment extends Component {
       erpNo,
       session,
       alert,
-      user
+      user,
+      branchId,
+      moduleId
     } = this.props
     if (this.props.getData && (erpNo !== prevProps.erpNo || session !== prevProps.session || this.props.getData)) {
-      this.props.fetchChequeTransaction(erpNo, session, user, alert)
+      this.props.fetchChequeTransaction(erpNo, session, user, alert, branchId, moduleId)
     }
   }
 
@@ -164,7 +168,7 @@ class ChequePayment extends Component {
         <Modal open={this.state.showBounceModal} click={this.hideBounceModalHandler} large>
           <h3 className={classes.modal__heading}>Cheque Bounce</h3>
           <hr />
-          <ChequeBounce close={this.hideBounceModalHandler} chequeBounce={this.state.chequeBounce} transId={this.state.transBounceModalId} erp={this.props.erpNo} session={this.props.session} alert={this.props.alert} user={this.props.user} />
+          <ChequeBounce close={this.hideBounceModalHandler} chequeBounce={this.state.chequeBounce} transId={this.state.transBounceModalId} erp={this.props.erpNo} session={this.props.session} alert={this.props.alert} user={this.props.user} branchId={this.props.branchId}/>
         </Modal>
       )
     }
@@ -261,7 +265,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchChequeTransaction: (erpNo, session, user, alert) => dispatch(actionTypes.fetchAccountantChequeTransaction({ erpNo, session, user, alert }))
+  fetchChequeTransaction: (erpNo, session, user, alert, branchId, moduleId) => dispatch(actionTypes.fetchAccountantChequeTransaction({ erpNo, session, user, alert, branchId, moduleId }))
 })
 
 export default connect(

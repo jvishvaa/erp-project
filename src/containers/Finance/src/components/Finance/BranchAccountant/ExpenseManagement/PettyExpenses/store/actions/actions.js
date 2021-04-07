@@ -21,7 +21,7 @@ export const VOUCHER_RECEIPT_HEADERS = 'VOUCHER_RECEIPT_HEADERS'
 export const fetchPettyCashAcc = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ListPettyCashAccounts, {
+    axios.get(urls.ListPettyCashAccounts + '?academic_year='  + payload.session + '&branch_id=' + payload.branch, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
@@ -345,7 +345,7 @@ export const cashWithdraw = (payload) => {
 export const listCashOpeningBalance = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.CashOpeningBalance, {
+    axios.get(urls.CashOpeningBalance + '?academic_year='  + payload.session + '&branch_id=' + payload.branch, {
       headers: {
         'Authorization': 'Bearer ' + payload.user
       }
