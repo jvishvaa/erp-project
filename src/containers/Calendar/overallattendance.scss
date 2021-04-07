@@ -1,0 +1,29 @@
+.triangle1 {
+  //   border-left: 30px solid red;
+  //   border-right: 30px solid green;
+  //   border-bottom: 30px solid green;
+  //   border-top: 30px solid red;
+  //   display: inline-block;
+  //   text-align: end;
+}
+.corner1 {
+  width: 0;
+  height: 0;
+  border-left: 40px solid red;
+  border-right: 40px solid green;
+  border-bottom: 40px solid green;
+  border-top: 40px solid red;
+  display: inline-block;
+  text-align: end;
+  border-radius: 6px 4px;
+}
+.corner h6 {
+  position: absolute;
+  top: 40px;
+  width: 100px;
+  left: 1px;
+  text-align: center;
+  font-size: 20px;
+  font-family: arial;
+  display: block;
+}

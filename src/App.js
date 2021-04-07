@@ -115,78 +115,78 @@ import ErpAdminViewClass from './containers/online-class/erp-view-class/admin';
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import AttachmentPreviewer from './components/attachment-previewer';
 
-import FeeType from './containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/feeType.js'
+import FeeType from './containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/feeType.js';
 import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType';
 // import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType.js'
-import CurrFeeType from './containers/Finance/src/components/Finance/CreateFeeType/CurrFeeType/currFeeType.js'
-import AddOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/addOtherFees.js'
-import AdminOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/adminOtherFees.js'
-import RegistrationFee from './containers/Finance/src/components/Finance/CreateFeeType/RegistrationFeeType/registrationFee.js'
+import CurrFeeType from './containers/Finance/src/components/Finance/CreateFeeType/CurrFeeType/currFeeType.js';
+import AddOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/addOtherFees.js';
+import AdminOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/adminOtherFees.js';
+import RegistrationFee from './containers/Finance/src/components/Finance/CreateFeeType/RegistrationFeeType/registrationFee.js';
 // import ManageFeeType from './containers/Finance/src/components/Finance/CreateFeePlan/manageFeeType.js'
-import CreateFeePlan from './containers/Finance/src/components/Finance/CreateFeePlan/createFeePlan.js'
-import ConcessionSettings from  './containers/Finance/src/components/Finance/ConcessionSettings/concessionSettings.js'
-import Ledger from './containers/Finance/src/components/Finance/ExpenseManagement/Ledger/ledger.js'
-import TotalPaidReports from './containers/Finance/src/components/Finance/Reports/TotalPaidDueReports/totalPaidReports.js'
-import OtherFeeTotalPaidReports from './containers/Finance/src/components/Finance/Reports/TotalPaidDueReports/otherFeeTotalPaidDueReport.js'
-import TallyReports from './containers/Finance/src/components/Finance/Reports/TallyReports/tallyReports.js'
-import ReceiptBookAdm from './containers/Finance/src/components/Finance/AdmissionReports/ReceiptBook/receiptBook.js'
-import WalletReport from './containers/Finance/src/components/Finance/Reports/WalletReport/walletReport.js'
-import ConcessionReport from './containers/Finance/src/components/Finance/BranchAccountant/ConcessionReport/ConcessionReport.js'
-import ChequeBounceReport from './containers/Finance/src/components/Finance/Reports/ChequeBounceReports/chequeBounceReports.js'
-import StudentShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/studentShuffle.js'
+import CreateFeePlan from './containers/Finance/src/components/Finance/CreateFeePlan/createFeePlan.js';
+import ConcessionSettings from './containers/Finance/src/components/Finance/ConcessionSettings/concessionSettings.js';
+import Ledger from './containers/Finance/src/components/Finance/ExpenseManagement/Ledger/ledger.js';
+import TotalPaidReports from './containers/Finance/src/components/Finance/Reports/TotalPaidDueReports/totalPaidReports.js';
+import OtherFeeTotalPaidReports from './containers/Finance/src/components/Finance/Reports/TotalPaidDueReports/otherFeeTotalPaidDueReport.js';
+import TallyReports from './containers/Finance/src/components/Finance/Reports/TallyReports/tallyReports.js';
+import ReceiptBookAdm from './containers/Finance/src/components/Finance/AdmissionReports/ReceiptBook/receiptBook.js';
+import WalletReport from './containers/Finance/src/components/Finance/Reports/WalletReport/walletReport.js';
+import ConcessionReport from './containers/Finance/src/components/Finance/BranchAccountant/ConcessionReport/ConcessionReport.js';
+import ChequeBounceReport from './containers/Finance/src/components/Finance/Reports/ChequeBounceReports/chequeBounceReports.js';
+import StudentShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/studentShuffle.js';
 // import RequestShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/requestShuffle.js'
-import MiscFeeClass from './containers/Finance/src/components/Finance/MiscFeeToClass/miscFeeClass.js'
-import AssignCoupon from './containers/Finance/src/components/Finance/AssignCoupon/assignCoupon.js'
-import CreateCoupon from './containers/Finance/src/components/Finance/CreateCoupon/createCoupon.js'
-import DepositeTab from './containers/Finance/src/components/Finance/ExpenseManagement/Deposits/deposits.js'
-import TotalFormCount from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/totalFormCount.js'
-import RequestShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/requestShuffle.js'
-import UnassignFeeRequests from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/unassignFeeRequestsTab.js'
-import ApprovalRequest from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/approvalRequest.js'
-import PendingRequest from  './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/pendingRequest.js'
+import MiscFeeClass from './containers/Finance/src/components/Finance/MiscFeeToClass/miscFeeClass.js';
+import AssignCoupon from './containers/Finance/src/components/Finance/AssignCoupon/assignCoupon.js';
+import CreateCoupon from './containers/Finance/src/components/Finance/CreateCoupon/createCoupon.js';
+import DepositeTab from './containers/Finance/src/components/Finance/ExpenseManagement/Deposits/deposits.js';
+import TotalFormCount from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/totalFormCount.js';
+import RequestShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/requestShuffle.js';
+import UnassignFeeRequests from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/unassignFeeRequestsTab.js';
+import ApprovalRequest from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/approvalRequest.js';
+import PendingRequest from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/pendingRequest.js';
 import RejectedRequest from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/rejectedRequest';
-import CreateReceipt from './containers/Finance/src/components/Finance/ReceiptChanges/createReceipt.js'
-import StoreReport from '../src/containers/Finance/src/components/Inventory/StoreAdmin/StoreReports/storeReports.js'
-import AddFeePlan from './containers/Finance/src/components/Finance/CreateFeePlan/addFeePlan.js'
-import StudentLedgerTab from './containers/Finance/src/components/Finance/BranchAccountant/StudentLedgerTab/studentLedgerTab.js'
-import ManageFeeType from '../src/containers/Finance/src/components/Finance/CreateFeePlan/manageFeeType.js'
-import RegistrationForm from '../src/containers/Finance/src/components/Finance/BranchAccountant/RegistrationForm/registrationForm.js'
-import NewRegistration from '../src/containers/Finance/src/components/Finance/BranchAccountant/RegistrationForm/newRegistrationForm.js'
-import AdmissionFormAcc from '../src/containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/admissionForm.js'
-import CustomizedAdmissionForm from '../src/containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/customizedAdmissionForm.js'
+import CreateReceipt from './containers/Finance/src/components/Finance/ReceiptChanges/createReceipt.js';
+import StoreReport from '../src/containers/Finance/src/components/Inventory/StoreAdmin/StoreReports/storeReports.js';
+import AddFeePlan from './containers/Finance/src/components/Finance/CreateFeePlan/addFeePlan.js';
+import StudentLedgerTab from './containers/Finance/src/components/Finance/BranchAccountant/StudentLedgerTab/studentLedgerTab.js';
+import ManageFeeType from '../src/containers/Finance/src/components/Finance/CreateFeePlan/manageFeeType.js';
+import RegistrationForm from '../src/containers/Finance/src/components/Finance/BranchAccountant/RegistrationForm/registrationForm.js';
+import NewRegistration from '../src/containers/Finance/src/components/Finance/BranchAccountant/RegistrationForm/newRegistrationForm.js';
+import AdmissionFormAcc from '../src/containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/admissionForm.js';
+import CustomizedAdmissionForm from '../src/containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/customizedAdmissionForm.js';
 import NewAdmissionForm from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/newAdmissionForm';
-import ApplicationFormAcc from '../src/containers/Finance/src/components/Finance/BranchAccountant/ApplicationForm/applicationForm.js'
+import ApplicationFormAcc from '../src/containers/Finance/src/components/Finance/BranchAccountant/ApplicationForm/applicationForm.js';
 // import OnlineAdmission from '../src/containers/Finance/src/components/Finance/PendingOnlineAdmission/pendingOnlineAdmission.js'
-import TabView from '../src/containers/Finance/src/components/Finance/CorporateBank/CorporateBankTabView/corporateBankTabView.js'
-import Bank from './containers/Finance/src/components/Finance/CorporateBank/bank.js'
-import ViewBanks from '../src/containers/Finance/src/components/Finance/CorporateBank/ViewBanks/viewBanks.js'
-import ViewFeeAccounts from '../src/containers/Finance/src/components/Finance/CorporateBank/ViewFeeAccounts/viewFeeAccounts.js'
-import AccToClass from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToClass/accountToClass.js'
-import AccToBranch from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToBranch/accountToBranch.js'
-import AccToStore from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToStore/accountToStore.js'
-import LastDateSettings from '../src/containers/Finance/src/components/Finance/LastDateSettings/lastDate.js'
-import ReceiptSettings from '../src/containers/Finance/src/components/Finance/ReceiptSettings/ReceiptSettings.js'
-import BulkFeeUpload from  '../src/containers/Finance/src/components/Finance/BulkOperations/BulkFeeUpload/bulkFeeUpload.js'
-import StudentWallet from '../src/containers/Finance/src/components/Finance/student/StudentWallet/StudentWallet.js'
-import FeeCollection from '../src/containers/Finance/src/components/Finance/BranchAccountant/FeeCollection/FeeCollection.js'
+import TabView from '../src/containers/Finance/src/components/Finance/CorporateBank/CorporateBankTabView/corporateBankTabView.js';
+import Bank from './containers/Finance/src/components/Finance/CorporateBank/bank.js';
+import ViewBanks from '../src/containers/Finance/src/components/Finance/CorporateBank/ViewBanks/viewBanks.js';
+import ViewFeeAccounts from '../src/containers/Finance/src/components/Finance/CorporateBank/ViewFeeAccounts/viewFeeAccounts.js';
+import AccToClass from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToClass/accountToClass.js';
+import AccToBranch from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToBranch/accountToBranch.js';
+import AccToStore from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToStore/accountToStore.js';
+import LastDateSettings from '../src/containers/Finance/src/components/Finance/LastDateSettings/lastDate.js';
+import ReceiptSettings from '../src/containers/Finance/src/components/Finance/ReceiptSettings/ReceiptSettings.js';
+import BulkFeeUpload from '../src/containers/Finance/src/components/Finance/BulkOperations/BulkFeeUpload/bulkFeeUpload.js';
+import StudentWallet from '../src/containers/Finance/src/components/Finance/student/StudentWallet/StudentWallet.js';
+import FeeCollection from '../src/containers/Finance/src/components/Finance/BranchAccountant/FeeCollection/FeeCollection.js';
 import FeeShowList from './containers/Finance/src/components/Finance/BranchAccountant/FeeCollection/FeeShowList';
-import AssignDelieveryCharge from './containers/Finance/src/components/Finance/BranchAccountant/AssignDelieveryCharge/assignDelieveryCharge.js'
-import ChangeFeePlanToStudent from './containers/Finance/src/components/Finance/BranchAccountant/ChangeFeePlanToStudent/changeFeePlanToStudent.js'
-import BulkReportUpload from './containers/Finance/src/components/Finance/BulkOperations/bulkReportUpload.js'
-import BulkReportStatus from './containers/Finance/src/components/Finance/BulkOperations/bulkReportStatus.js'
-import OnlinePayment from './containers/Finance/src/components/Finance/UploadOnlinePayments/uploadOnlinePayments.js'
-import BulkActiveInactive from './containers/Finance/src/components/Finance/BulkOperations/BulkActiveInactive/bulkActiveInactive.js'
-import BulkActiveInactiveParent from './containers/Finance/src/components/Finance/BulkOperations/BulkActiveInactiveParent/bulkActiveInactiveParent.js'
-import StudentActivateInactiveAcc from './containers/Finance/src/components/Finance/BranchAccountant/StudentActivateInactivate/studentActivateInactiveacc.js'
-import OnlineAdmission from './containers/Finance/src/components/Finance/PendingOnlineAdmission/pendingOnlineAdmission.js'
-import StudentPromotion from './containers/Finance/src/components/Finance/BranchAccountant/StudentPromotion/studentPromotion.js'
-import QRCodeGenerator from './containers/Finance/src/components/Finance/QRCode/qrCodeGenerator.js'
-import CommunicationSMS from './containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.js'
-import ItCertificate from './containers/Finance/src/components/Finance/ItCertificate/itCertificate.js'
-import FeePaymentChangeRequests from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/feePaymentChangeRequests.js'
-import StorePaymentRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/storePaymentRequests.js'
-import ApprovedStoreRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/approvedStoreRequests.js'
-import RejectedStoreRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/rejectedStoreRequests.js'
+import AssignDelieveryCharge from './containers/Finance/src/components/Finance/BranchAccountant/AssignDelieveryCharge/assignDelieveryCharge.js';
+import ChangeFeePlanToStudent from './containers/Finance/src/components/Finance/BranchAccountant/ChangeFeePlanToStudent/changeFeePlanToStudent.js';
+import BulkReportUpload from './containers/Finance/src/components/Finance/BulkOperations/bulkReportUpload.js';
+import BulkReportStatus from './containers/Finance/src/components/Finance/BulkOperations/bulkReportStatus.js';
+import OnlinePayment from './containers/Finance/src/components/Finance/UploadOnlinePayments/uploadOnlinePayments.js';
+import BulkActiveInactive from './containers/Finance/src/components/Finance/BulkOperations/BulkActiveInactive/bulkActiveInactive.js';
+import BulkActiveInactiveParent from './containers/Finance/src/components/Finance/BulkOperations/BulkActiveInactiveParent/bulkActiveInactiveParent.js';
+import StudentActivateInactiveAcc from './containers/Finance/src/components/Finance/BranchAccountant/StudentActivateInactivate/studentActivateInactiveacc.js';
+import OnlineAdmission from './containers/Finance/src/components/Finance/PendingOnlineAdmission/pendingOnlineAdmission.js';
+import StudentPromotion from './containers/Finance/src/components/Finance/BranchAccountant/StudentPromotion/studentPromotion.js';
+import QRCodeGenerator from './containers/Finance/src/components/Finance/QRCode/qrCodeGenerator.js';
+import CommunicationSMS from './containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.js';
+import ItCertificate from './containers/Finance/src/components/Finance/ItCertificate/itCertificate.js';
+import FeePaymentChangeRequests from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/feePaymentChangeRequests.js';
+import StorePaymentRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/storePaymentRequests.js';
+import ApprovedStoreRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/approvedStoreRequests.js';
+import RejectedStoreRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/rejectedStoreRequests.js';
 import CancelledStoreRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/cancelledStoreRequests';
 import PendingStoreRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/pendingStoreRequests';
 import ApprovedRequestView from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/approvedRequestView';
@@ -195,25 +195,25 @@ import CancelledRequestView from './containers/Finance/src/components/Finance/Fe
 import PendingRequestView from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/pendingRequestView';
 import AcceptRejectPayment from './containers/Finance/src/components/Finance/BranchAccountant/AcceptRejectPayment/acceptRejectPayment';
 import PostDateCheque from './containers/Finance/src/components/Finance/BranchAccountant/PostDateCheque/postDateCheque';
-import StudentInfoAdm from './containers/Finance/src/components/Finance/StudentInfo/studentInfo.js'
+import StudentInfoAdm from './containers/Finance/src/components/Finance/StudentInfo/studentInfo.js';
 import BillingDetails from './containers/Finance/src/components/Finance/E-mandate/billingDetails';
 import CustomerDeatils from './containers/Finance/src/components/Finance/E-mandate/addCustomerDeatils';
 // import CustomerDeatils from './containers/Finance/src/components/Finance/E-mandate/addCustomerDeatils.js'
 import OrderDetails from './containers/Finance/src/components/Finance/E-mandate/orderDetails';
-import DailyBillingDetails from './containers/Finance/src/components/Finance/E-mandate/dailyBillingDetails'
-import PettyExpenses from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/pettyExpenses.js'
-import MakeEntry from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/MakeEntry/makeEntry.js'
-import BankReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/BankReport/bankReport.js'
-import CashReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/CashReport/cashReport.js'
-import LedgerReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/LedgerReport/ledgerReport.js'
-import FinancialLedgerReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/FinancialLedgerReport/financialLedgerReport.js'
-import Party from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/Party/Party.js'
-import StudentShuffleReq from './containers/Finance/src/components/Finance/ApprovalRequests/StudentShuffle/studentShuffleReq.js'
-import ManagePayment from './containers/Finance/src/components/Finance/student/managePayment/managePayment.js'
-import FeeStructure from './containers/Finance/src/components/Finance/student/FeeStructure/feeStructure.js'
-import BulkUniform from './containers/Finance/src/components/Inventory/StoreManager/BulkUniform/bulkUniform.js'
-import ShippingAmount from './containers/Finance/src/components/Inventory/BranchAccountant/shippingAmount/ShippingAmount.js'
-import AddItems from './containers/Finance/src/components/Inventory/StoreAdmin/SchoolStore/AddItems/addItems.js'
+import DailyBillingDetails from './containers/Finance/src/components/Finance/E-mandate/dailyBillingDetails';
+import PettyExpenses from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/pettyExpenses.js';
+import MakeEntry from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/MakeEntry/makeEntry.js';
+import BankReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/BankReport/bankReport.js';
+import CashReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/CashReport/cashReport.js';
+import LedgerReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/LedgerReport/ledgerReport.js';
+import FinancialLedgerReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/FinancialLedgerReport/financialLedgerReport.js';
+import Party from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/Party/Party.js';
+import StudentShuffleReq from './containers/Finance/src/components/Finance/ApprovalRequests/StudentShuffle/studentShuffleReq.js';
+import ManagePayment from './containers/Finance/src/components/Finance/student/managePayment/managePayment.js';
+import FeeStructure from './containers/Finance/src/components/Finance/student/FeeStructure/feeStructure.js';
+import BulkUniform from './containers/Finance/src/components/Inventory/StoreManager/BulkUniform/bulkUniform.js';
+import ShippingAmount from './containers/Finance/src/components/Inventory/BranchAccountant/shippingAmount/ShippingAmount.js';
+import AddItems from './containers/Finance/src/components/Inventory/StoreAdmin/SchoolStore/AddItems/addItems.js';
 import Kit from './containers/Finance/src/components/Inventory/StoreAdmin/Kit/kit';
 import SubCategoryAllow from './containers/Finance/src/components/Inventory/StoreAdmin/SubCategoryAllow/subCategoryAllow';
 import UpdateAdmissionForm from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/updateAdmissionForm';
@@ -221,25 +221,29 @@ import AccountantLogin from './containers/Finance/src/components/Finance/BulkOpe
 import AddGst from './containers/Finance/src/components/Inventory/StoreAdmin/AddGst/addGst';
 import OrderStatusUpload from './containers/Finance/src/components/Inventory/StoreAdmin/OrderStatusUpload/orderStatusUpload';
 import ReceiptBook from './containers/Finance/src/components/Finance/Reports/ReceiptBook/receiptBook.js';
-import EMandate from './containers/Finance/src/components/Finance/E-mandate/e-mandate.js'
-import CreateLink from './containers/Finance/src/components/Finance/E-mandate/createLink.js'
-import Alert from './containers/Finance/src/ui/alert'
-import alertActions from './containers/Finance/src/_actions/alert.actions'
-import userActions from './containers/Finance/src/_actions/user.actions'
+import EMandate from './containers/Finance/src/components/Finance/E-mandate/e-mandate.js';
+import CreateLink from './containers/Finance/src/components/Finance/E-mandate/createLink.js';
+import Alert from './containers/Finance/src/ui/alert';
+import alertActions from './containers/Finance/src/_actions/alert.actions';
+import userActions from './containers/Finance/src/_actions/user.actions';
 
-import { connect } from 'react-redux'
-import NonRTEFormAcc from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/nonRTEAdmissionForm.js'
-import AssignOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/assignOtherFess.js'
-import GenerateSubsequentPayment from './containers/Finance/src/components/Finance/E-mandate/generateSubsequentPayment.js'
+import { connect } from 'react-redux';
+import NonRTEFormAcc from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/nonRTEAdmissionForm.js';
+import AssignOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/assignOtherFess.js';
+import GenerateSubsequentPayment from './containers/Finance/src/components/Finance/E-mandate/generateSubsequentPayment.js';
 import EditTransactionDetails from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/editTransactionDetails';
-import AppFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/appFormList.js'
-import RegFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/regFormList.js'
-import TransactionStatus from './containers/Finance/src/components/Finance/TransactionStatus/transactionStatus.js'
-import AdmFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/admFormList.js'
-import Airpay from './containers/Finance/src/components/Finance/PaymentGateways/Airpay/airpayIntegration.js'
-import UploadPaymentFile from './containers/Finance/src/components/Finance/student/managePayment/UploadPaymentFile.js'
+import AppFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/appFormList.js';
+import RegFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/regFormList.js';
+import TransactionStatus from './containers/Finance/src/components/Finance/TransactionStatus/transactionStatus.js';
+import AdmFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/admFormList.js';
+import Airpay from './containers/Finance/src/components/Finance/PaymentGateways/Airpay/airpayIntegration.js';
+import UploadPaymentFile from './containers/Finance/src/components/Finance/student/managePayment/UploadPaymentFile.js';
 import MarkAttedance from './containers/attendance/MarkAttedance';
 import AttedanceCalender from './containers/attendance/AttedanceCalender';
+import CreateEventCategory from './containers/Calendar/CreateEventCategory';
+import Attendance from './containers/Calendar/Attendance';
+import CreateEvent from './containers/Calendar/CreateEvent';
+import OverallAttendance from './containers/Calendar/OverallAttendance';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -1161,8 +1165,20 @@ function App({ alert }) {
                           <Route exact path='/markattedance'>
                             {({ match }) => <MarkAttedance match={match} />}
                           </Route>
-                          <Route exact path='/attedance'>
+                          <Route exact path='/attedancecalendar'>
                             {({ match }) => <AttedanceCalender match={match} />}
+                          </Route>
+                          <Route exact path='/Attendance'>
+                            {({ match }) => <Attendance match={match} />}
+                          </Route>
+                          <Route exact path='/OverallAttendance'>
+                            {({ match }) => <OverallAttendance match={match} />}
+                          </Route>
+                          <Route exact path='/createEvent'>
+                            {({ match }) => <CreateEvent match={match} />}
+                          </Route>
+                          <Route exact path='/CreateEventCategory'>
+                            {({ match }) => <CreateEventCategory match={match} />}
                           </Route>
                         </Switch>
                       </DailyDairyStore>
@@ -1179,20 +1195,17 @@ function App({ alert }) {
   );
 }
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   alert: {
-    success: message => dispatch(alertActions.success(message)),
-    warning: message => dispatch(alertActions.warning(message)),
-    error: message => dispatch(alertActions.error(message))
-  }
-})
-const mapStateToProps = state => {
+    success: (message) => dispatch(alertActions.success(message)),
+    warning: (message) => dispatch(alertActions.warning(message)),
+    error: (message) => dispatch(alertActions.error(message)),
+  },
+});
+const mapStateToProps = (state) => {
   return {
     // isLoggedIn: state.authentication.loggedIn
-  }
-}
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App)
+export default connect(mapStateToProps, mapDispatchToProps)(App);
