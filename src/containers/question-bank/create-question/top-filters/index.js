@@ -173,7 +173,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
     if (value) {
       setFilterData({ ...filterData, grade: value });
       axiosInstance
-        .get(`${endpoints.assessmentApis.gradesList}?gs_id=${value.id}`)
+        .get(`${endpoints.assessmentApis.gradesList}?gs_id=${value.mp_id}`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setDropdownData({
