@@ -94,9 +94,9 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     quesCatId,
     subjMapId,
     quesLevel,
+    topicId,
     newValue
   ) => {
-    console.log('tab value ::', tabValue, newValue);
     // setTabValue(newValue);
     if (!subjMapId || !quesLevel) {
       setAlert('error', 'Select all the fields!');
@@ -108,10 +108,10 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     // setTabPanelGradeValue(gradeId);
     setTabQueTypeId(quesTypeId);
     setTabQueCatId(quesCatId);
-    // setTabTopicId(topicId);
+    setTabTopicId(topicId);
     setTabMapId(subjMapId);
     setTabQueLevel(quesLevel);
-    console.log(quesTypeId, quesCatId, subjMapId, quesLevel, newValue, 'FETCHED');
+    console.log(topicId, 'FETCHED');
     if (newValue == 0 || newValue == undefined) {
       setTabValue(0);
       const filterStatus = '';
@@ -120,7 +120,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       // }
       axiosInstance
         .get(
-          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId.id}&question_type=${quesTypeId}&question_categories=${quesCatId.value}&question_level=${quesLevel.value}&page=${page}&page_size=${limit}${filterStatus}`
+          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId?.id}&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}${filterStatus}`
           // `${endpoints.questionBank.questionData}?mapping_id=14&question_type=7&question_categories=2&question_level=2`
         )
         .then((result) => {
@@ -144,7 +144,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       setTabValue(1);
       axiosInstance
         .get(
-          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId.id}&question_status=1&question_type=${quesTypeId}&question_categories=${quesCatId.value}&question_level=${quesLevel.value}&page=${page}&page_size=${limit}`
+          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId.id}&question_status=1&question_type=${quesTypeId}&question_categories=${quesCatId.value}&question_level=${quesLevel.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`
           // `${endpoints.questionBank.questionData}?mapping_id=${13}&is_draft=True&question_type=${quesTypeId}&question_categories=${quesCatId.value}&topic=${topicId.id}`
         )
         .then((result) => {
@@ -167,7 +167,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       setTabValue(2);
       axiosInstance
         .get(
-          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId.id}&question_status=3&question_type=${quesTypeId}&question_categories=${quesCatId.value}&question_level=${quesLevel.value}&page=${page}&page_size=${limit}`
+          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId.id}&question_status=3&question_type=${quesTypeId}&question_categories=${quesCatId.value}&question_level=${quesLevel.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`
           // `${endpoints.questionBank.questionData}?mapping_id=13&is_review=True&topic=1&question_type=1&question_categories=1&question_level=1`
         )
         .then((result) => {
@@ -190,7 +190,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       setTabValue(3);
       axiosInstance
         .get(
-          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId.id}&question_status=2&question_type=${quesTypeId}&question_categories=${quesCatId.value}&question_level=${quesLevel.value}&page=${page}&page_size=${limit}`
+          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId.id}&question_status=2&question_type=${quesTypeId}&question_categories=${quesCatId.value}&question_level=${quesLevel.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`
           // `${endpoints.questionBank.questionData}?mapping_id=13&is_published=True&topic=1&question_type=1&question_categories=1&question_level=1`
         )
         .then((result) => {
@@ -213,8 +213,8 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
   };
 
   useEffect(() => {
-    if (tabQueTypeId && tabQueCatId && tabMapId && tabQueLevel) {
-      handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel, tabValue);
+    if (tabQueTypeId && tabQueCatId && tabMapId && tabQueLevel && tabTopicId) {
+      handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel,tabTopicId, tabValue);
     }
   }, [page]);
   return (
@@ -290,7 +290,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
               // tabPanelGradeValue={tabPanelGradeValue}
               tabQueTypeId={tabQueTypeId}
               tabQueCatId={tabQueCatId}
-              // tabTopicId={tabTopicId}
+              tabTopicId={tabTopicId}
               tabMapId={tabMapId}
               tabQueLevel={tabQueLevel}
               setTabValue={setTabValue}

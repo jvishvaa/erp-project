@@ -109,6 +109,8 @@
   border-radius: 10px;
   margin: 1rem 0;
   color: #014b7e;
+  word-wrap: break-word;
+
 }
 
 .divider.MuiDivider-root {

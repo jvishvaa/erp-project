@@ -85,14 +85,21 @@ const QuestionBankFilters = ({
   };
 
   const handleTopic = (event, value) => {
-    setFilterData({ ...filterData, topicId: '' });
+    setFilterData({
+      ...filterData,
+      topicId: '',
+      question_level_option: '',
+      question_categories_options: '',
+      quesType: '',
+      quesLevel: '',
+    });
     if (value) {
       setFilterData({ ...filterData, topicId: value });
     }
   };
 
   const handleQuestionCategory = (event, value) => {
-    setFilterData({ ...filterData, question_categories_options: '',quesType:''});
+    setFilterData({ ...filterData, question_categories_options: '', quesType: '' });
     setPeriodData([]);
     if (value) {
       setQuesCatData(value);
@@ -100,7 +107,14 @@ const QuestionBankFilters = ({
     }
   };
   const handleQuestionLevel = (event, value) => {
-    setFilterData({ ...filterData, question_level_option: '',question_level_option:'',question_categories_options:'',quesType:'',quesLevel:''  });
+    setFilterData({
+      ...filterData,
+      question_level_option: '',
+      question_level_option: '',
+      question_categories_options: '',
+      quesType: '',
+      quesLevel: '',
+    });
     setPeriodData([]);
     if (value) {
       setQuesLevel(value);
@@ -117,7 +131,16 @@ const QuestionBankFilters = ({
   };
 
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: '', subject: '', chapter: '',question_level_option:'',question_categories_options:'',quesType:'',quesLevel:'' });
+    setFilterData({
+      ...filterData,
+      grade: '',
+      subject: '',
+      chapter: '',
+      question_level_option: '',
+      question_categories_options: '',
+      quesType: '',
+      quesLevel: '',
+    });
     setPeriodData([]);
     setSubjectDropdown([]);
     setChapterDropdown([]);
@@ -129,7 +152,6 @@ const QuestionBankFilters = ({
           if (result.data.status_code === 200) {
             setSubjectDropdown(result.data.result.results);
             setMapId(result.data.result.results);
-            console.log(result.data.result.results[0].id, '+++');
           } else {
             setAlert('error', result.data.message);
             setSubjectDropdown([]);
@@ -143,9 +165,17 @@ const QuestionBankFilters = ({
         });
     }
   };
-
+  console.log(filterData, '===============================');
   const handleSubject = (event, value) => {
-    setFilterData({ ...filterData,subject: '', chapter: '',question_level_option:'',question_categories_options:'',quesType:'',quesLevel:''  });
+    setFilterData({
+      ...filterData,
+      subject: '',
+      chapter: '',
+      question_level_option: '',
+      question_categories_options: '',
+      quesType: '',
+      quesLevel: '',
+    });
     setPeriodData([]);
     if (value) {
       setFilterData({ ...filterData, subject: value, chapter: '', topic: '' });
@@ -155,16 +185,13 @@ const QuestionBankFilters = ({
           .then((result) => {
             if (result.data.status_code === 200) {
               setChapterDropdown(result.data.result);
-              // setDropdownData({ ...dropdownData, chapters: result.data.result, topics: [] });
             } else {
               setAlert('error', result.data.message);
-              // setDropdownData({ ...dropdownData, chapters: [], topics: [] });
               setChapterDropdown([]);
             }
           })
           .catch((error) => {
             setAlert('error', error.message);
-            // setDropdownData({ ...dropdownData, chapters: [], topics: [] });
             setChapterDropdown([]);
           });
       }
@@ -172,37 +199,38 @@ const QuestionBankFilters = ({
   };
 
   const handleChapter = (event, value) => {
-    setFilterData({ ...filterData, chapter: '', topic: '',question_level_option:'',question_categories_options:'',quesType:'',quesLevel:''  });
-    // setDropdownData({ ...dropdownData, topics: [] });
+    setFilterData({
+      ...filterData,
+      chapter: '',
+      topicId: '',
+      question_level_option: '',
+      question_categories_options: '',
+      quesType: '',
+      quesLevel: '',
+    });
     setPeriodData([]);
     setTopicDropdown([]);
     if (value) {
-      setFilterData({ ...filterData, chapter: value, topic: '' });
+      setFilterData({ ...filterData, chapter: value });
       if (value) {
         axiosInstance
           .get(`${endpoints.questionBank.topics}?chapter=${value.id}`)
           .then((result) => {
             if (result.data.status_code === 200) {
-              // setDropdownData({ ...dropdownData, topics: result.data.result });
               setTopicDropdown(result.data.result);
             } else {
               setAlert('error', result.data.message);
-              // setDropdownData({ ...dropdownData, topics: [] });
               setTopicDropdown([]);
             }
           })
           .catch((error) => {
             setAlert('error', error.message);
-            // setDropdownData({ ...dropdownData, topics: [] });
             setTopicDropdown([]);
           });
       }
     }
   };
-
   const handleFilter = () => {
-    console.log('filter Data ::: ', filterData);
-
     if (!filterData?.grade) {
       setAlert('error', 'Select Grade!');
       return;
@@ -215,7 +243,6 @@ const QuestionBankFilters = ({
       setAlert('error', 'Select chapter!');
       return;
     }
-
     if (
       !filterData?.quesType ||
       !filterData?.question_categories_options ||
@@ -224,17 +251,8 @@ const QuestionBankFilters = ({
       setAlert('error', 'Select all the fields!');
       return;
     }
-
-    // console.log(filterData.grade.id,filterData.quesType.id,quesCatData,filterData.topicId,filterData.subject,'FETCHING DATA....')
-    handlePeriodList(
-      // filterData.grade.id,
-      filterData.quesType.id,
-      quesCatData,
-      filterData.subject,
-      quesLevel
-      // filterData.topicId,
-    );
-
+    console.log(filterData?.topicId,'TOPICID')
+    handlePeriodList(filterData.quesType.id, quesCatData, filterData.subject, quesLevel,filterData.topicId);
     setSelectedIndex(-1);
 
     // if (filterData.chapter) {
@@ -271,22 +289,9 @@ const QuestionBankFilters = ({
       .catch((error) => {
         setAlert('error', error.message);
       });
-
-    // axiosInstance.get(`${endpoints.questionBank.topics}`)
-    // .then(result => {
-    //     if (result.data.status_code === 200) {
-    //         setTopicDropdown(result.data.result.results);
-    //     } else {
-    //         setAlert('error', result.data.message);
-    //     }
-    // }).catch(error => {
-    //     setAlert('error', error.message);
-    // })
-
     axiosInstance
       .get(`${endpoints.questionBank.examType}`)
       .then((result) => {
-        // console.log(result.data.result[0].exam_name,"jjjjj")
         if (result.data.status_code === 200) {
           setQueTypeDropdown(result.data.result);
         } else {
@@ -362,27 +367,22 @@ const QuestionBankFilters = ({
           )}
         />
       </Grid>
-      {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-                <Autocomplete
-                    style={{ width: '100%' }}
-                    size='small'
-                    onChange={handleTopic}
-                    id='topic'
-                    className="dropdownIcon"
-                    value={filterData?.topic}
-                    options={topicDropdown}
-                    getOptionLabel={(option) => option?.topic_name}
-                    filterSelectedOptions
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Topic'
-                            placeholder='Topic'
-                        />
-                    )}
-                />
-            </Grid> */}
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={handleTopic}
+          id='topic'
+          className='dropdownIcon'
+          value={filterData?.topicId}
+          options={topicDropdown}
+          getOptionLabel={(option) => option?.topic_name}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField {...params} variant='outlined' label='Topic' placeholder='Topic' />
+          )}
+        />
+      </Grid>
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
