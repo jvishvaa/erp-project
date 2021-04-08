@@ -172,6 +172,7 @@ const Attend = () => {
               margin='none'
               id='date-picker'
               label='Date'
+              className='button'
               maxDate={new Date()}
               inputVariant='outlined'
               value={dateValue}
@@ -192,7 +193,31 @@ const Attend = () => {
             id='role'
             style={{ width: '100%' }}
             style={{ marginTop: 25 }}
+            // options={branch}
+            // onChange={handleBranch}
+            name='Academic_year'
+            className='arrow'
+            // getOptionLabel={(option) => option.branch_name}
+            renderInput={(params) => (
+              <TextField
+                className='create__class-textfield'
+                {...params}
+                variant='outlined'
+                label='Academic_Year'
+                placeholder='Academic_Year'
+                required
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={5} md={2} lg={2}>
+          <Autocomplete
+            size='small'
+            id='role'
+            style={{ width: '100%' }}
+            style={{ marginTop: 25 }}
             options={branch}
+            className='arrow'
             name='branch_id'
             getOptionLabel={(option) => option.branch_name}
             renderInput={(params) => (
@@ -214,6 +239,7 @@ const Attend = () => {
             style={{ width: '100%' }}
             style={{ marginTop: 25 }}
             options={gradesGet}
+            className='arrow'
             getOptionLabel={(option) => option.grade_name}
             name='grade'
             onChange={handleGrade}
@@ -235,6 +261,7 @@ const Attend = () => {
             id='role'
             style={{ width: '100%' }}
             style={{ marginTop: 25 }}
+            className='arrow'
             options={[
               { id: 1, name: 'A' },
               { id: 2, name: 'B' },
@@ -409,9 +436,10 @@ const Attend = () => {
                         </div>
                       </Grid> */}
 
-                      <div class='corner1'>
-                        <h3>2nd</h3>
-                      </div>
+                      <p class='box'>
+                        <span class='content1'>1st</span>
+                        <span class='content'>2nd</span>
+                      </p>
                     </Grid>
                   </CardContent>
                 </div>

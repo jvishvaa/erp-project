@@ -26,6 +26,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { deepOrange, deepPurple } from '@material-ui/core/colors';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
+import './attendance.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -206,10 +207,12 @@ const MarkAttedance = () => {
               variant='dialog'
               format='YYYY-MM-DD'
               margin='none'
+              className='button'
               id='date-picker'
               label='Date'
               maxDate={new Date()}
               inputVariant='outlined'
+              fullWidth
               value={dateValue}
               style={{ background: 'white' }}
               onChange={handleDateChange}
@@ -220,10 +223,11 @@ const MarkAttedance = () => {
           </MuiPickersUtilsProvider>
         </Grid>
 
-        <Grid item md={2} xs={12}>
+        <Grid item md={2} xs={12} className='select_box'>
           <Autocomplete
             id='attedancetype'
             size='small'
+            className='arrow'
             options={[
               { id: 1, name: 'Student' },
               { id: 2, name: 'Staff' },
@@ -235,6 +239,23 @@ const MarkAttedance = () => {
             )}
           />
         </Grid>
+        <Grid item md={8}></Grid>
+        <Grid item md={2} xs={12}>
+          <Autocomplete
+            id='AcademicYear'
+            size='small'
+            className='arrow'
+            options={[
+              { id: 1, name: '2019' },
+              { id: 2, name: '2020' },
+            ]}
+            getOptionLabel={(option) => option.name}
+            style={{ background: 'white' }}
+            renderInput={(params) => (
+              <TextField {...params} label='AcademicYear' variant='outlined' required />
+            )}
+          />
+        </Grid>
         <Grid item md={2} xs={12}>
           <Autocomplete
             id='grade'
@@ -242,10 +263,27 @@ const MarkAttedance = () => {
             options={gradesGet}
             getOptionLabel={(option) => option.grade_name}
             name='grade'
+            className='arrow'
             style={{ background: 'white' }}
             onChange={handleGrade}
             renderInput={(params) => (
-              <TextField {...params} label='grades' variant='outlined' required />
+              <TextField {...params} label='Grade' variant='outlined' required />
+            )}
+          />
+        </Grid>
+        <Grid item md={2} xs={12}>
+          <Autocomplete
+            id='branch'
+            size='small'
+            className='arrow'
+            options={[
+              { id: 1, name: 'A' },
+              { id: 2, name: 'B' },
+            ]}
+            getOptionLabel={(option) => option.name}
+            style={{ background: 'white' }}
+            renderInput={(params) => (
+              <TextField {...params} label='Branch' variant='outlined' required />
             )}
           />
         </Grid>
@@ -253,6 +291,7 @@ const MarkAttedance = () => {
           <Autocomplete
             id='section'
             size='small'
+            className='arrow'
             options={[
               { id: 1, name: 'A' },
               { id: 2, name: 'B' },
@@ -264,6 +303,7 @@ const MarkAttedance = () => {
             )}
           />
         </Grid>
+
         <Grid item md={11} xs={12}>
           <Divider />
         </Grid>

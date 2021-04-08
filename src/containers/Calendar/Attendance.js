@@ -173,6 +173,7 @@ const Attendance = () => {
               variant='dialog'
               format='YYYY-MM-DD'
               margin='none'
+              className='button'
               id='date-picker'
               label='Date'
               maxDate={new Date()}
@@ -205,8 +206,32 @@ const Attendance = () => {
             id='role'
             style={{ width: '100%' }}
             style={{ marginTop: 25 }}
+            // options={branch}
+            // onChange={handleBranch}
+            name='Academic_year'
+            className='arrow'
+            // getOptionLabel={(option) => option.branch_name}
+            renderInput={(params) => (
+              <TextField
+                className='create__class-textfield'
+                {...params}
+                variant='outlined'
+                label='Academic_Year'
+                placeholder='Academic_Year'
+                required
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={5} md={2} lg={2}>
+          <Autocomplete
+            size='small'
+            id='role'
+            style={{ width: '100%' }}
+            style={{ marginTop: 25 }}
             options={branch}
             name='branch_id'
+            className='arrow'
             getOptionLabel={(option) => option.branch_name}
             renderInput={(params) => (
               <TextField
@@ -229,6 +254,7 @@ const Attendance = () => {
             options={gradesGet}
             getOptionLabel={(option) => option.grade_name}
             name='grade'
+            className='arrow'
             onChange={handleGrade}
             renderInput={(params) => (
               <TextField
@@ -252,6 +278,7 @@ const Attendance = () => {
               { id: 1, name: 'A' },
               { id: 2, name: 'B' },
             ]}
+            className='arrow'
             getOptionLabel={(option) => option.name}
             renderInput={(params) => (
               <TextField
@@ -420,15 +447,22 @@ const Attendance = () => {
                       justify='flex-start'
                       align='flex-start'
                     >
-                      <Grid item xs={12} sm={6} md={2} lg={12}>
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={2}
+                        lg={12}
+                        // style={{ textAlign: 'start' }}
+                      >
                         <h3>{data.date}</h3>
                         <Grid
                           item
                           xs={11}
                           sm={1}
                           md={1}
-                          lg={10}
-                          style={{ marginLeft: 40 }}
+                          lg={2}
+                          style={{ marginLeft: 15 }}
                         >
                           {/* <div className='triangle'>
                             <div className='shifts'>
@@ -440,9 +474,10 @@ const Attendance = () => {
                             </div>
                           </div> */}
 
-                          <div class='corner'>
-                            <h3>2nd</h3>
-                          </div>
+                          <p class='box'>
+                            <span class='content1'>1st</span>
+                            <span class='content'>2nd</span>
+                          </p>
                         </Grid>
                       </Grid>
                     </Grid>

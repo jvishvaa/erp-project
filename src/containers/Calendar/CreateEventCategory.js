@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Grid from '@material-ui/core/Grid';
 import Layout from '../Layout';
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Pagination from '@material-ui/lab/Pagination';
@@ -13,13 +13,25 @@ import ColorPicker from 'material-ui-color-picker';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import moment from 'moment';
-import './createeventcategory.scss';
+// import './calendar.scss';
 import { InputAdornment } from '@material-ui/core';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import { ClickAwayListener } from '@material-ui/core';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import axiosInstance from '../../config/axios';
+import './createeventcategory.scss';
+import { withStyles } from '@material-ui/core/styles';
+import Dialog from '@material-ui/core/Dialog';
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import MuiDialogContent from '@material-ui/core/DialogContent';
+import MuiDialogActions from '@material-ui/core/DialogActions';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import {
   Paper,
@@ -27,7 +39,6 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
-  IconButton,
   Tooltip,
   Typography,
 } from '@material-ui/core';
@@ -50,6 +61,10 @@ const useStyles = makeStyles((theme) => ({
   },
   tableCell: {
     color: theme.palette.secondary.main,
+  },
+  paperSize: {
+    width: ' 399px',
+    height: '109px',
   },
   tablePaginationSpacer: {
     flex: 0,
@@ -82,13 +97,101 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.primary.main,
     // padding: '1rem',
     borderRadius: '10px',
-
+    boxShadow: '0px 0px 4px #00000029',
+    border: '1px solid #E2E2E2',
+    opacity: 1,
     margin: '20px',
   },
+  dailog: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  dialogPaper: {
+    minHeight: '30vh',
+    maxHeight: '30vh',
+  },
+
+  // cardstyle: {
+  //   // background: transparent url('img/Rectangle 5407.png') 0% 0% no-repeat padding-box;
+  //   boxShadow: '0px 0px 4px #00000029',
+  //   border: '1px solid #E2E2E2',
+  //   borderRadius: '12px',
+  //   opacity: 1,
+  //   width: '399px',
+  //   height: '109px',
+
+  // },
 }));
+const styles = (theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(2),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+});
+
+const DialogTitle = withStyles(styles)((props) => {
+  const { children, classes, onClose, ...other } = props;
+  return (
+    <MuiDialogTitle disableTypography className={classes.root} {...other}>
+      <Typography variant='h6'>{children}</Typography>
+      {onClose ? (
+        <IconButton aria-label='close' className={classes.closeButton} onClick={onClose}>
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </MuiDialogTitle>
+  );
+});
+
+const DialogContent = withStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}))(MuiDialogContent);
+
+const DialogActions = withStyles((theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(1),
+  },
+}))(MuiDialogActions);
 
 const Cal1 = () => {
   const classes = useStyles();
+
+  const { setAlert } = useState();
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleDelete = (value) => {
+    // setLoading(true);
+    axiosInstance
+      .delete()
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setAlert('success', result.data);
+        } else {
+          setAlert('error', result.data);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+  };
+
   const [datePopperOpen, setDatePopperOpen] = useState(false);
   // const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   // const [endDate, setEndDate] = useState(getDaysAfter(moment(), 7));
@@ -104,8 +207,8 @@ const Cal1 = () => {
   const dummyData = [
     {
       exam: 'AnnualExams',
-      test: 'Maths Test',
-      date: '2nd April 2021-3rd April 2022 ',
+      test: ' Science Test',
+      date: '5th April 2021-6th April 2022',
     },
     {
       exam: 'AnnualExams',
@@ -124,8 +227,33 @@ const Cal1 = () => {
     },
     {
       exam: 'AnnualExams',
-      test: 'GK Test',
-      date: '9th April 2021-10th April 2022',
+      test: ' Science Test',
+      date: '5th April 2021-6th April 2022',
+    },
+    {
+      exam: 'AnnualExams',
+      test: 'English Test',
+      date: '7th April 2021-8th April 2022',
+    },
+    {
+      exam: 'AnnualExams',
+      test: 'Social Test',
+      date: '3rd April 2021-4th April 2022',
+    },
+    {
+      exam: 'AnnualExams',
+      test: ' Science Test',
+      date: '5th April 2021-6th April 2022',
+    },
+    {
+      exam: 'AnnualExams',
+      test: 'English Test',
+      date: '7th April 2021-8th April 2022',
+    },
+    {
+      exam: 'AnnualExams',
+      test: ' Science Test',
+      date: '5th April 2021-6th April 2022',
     },
     {
       exam: 'AnnualExams',
@@ -139,18 +267,13 @@ const Cal1 = () => {
     },
     {
       exam: 'AnnualExams',
-      test: ' Science Test',
-      date: '5th April 2021-6th April 2022',
+      test: 'English Test text',
+      date: '7th April 2021-8th April 2022',
     },
     {
       exam: 'AnnualExams',
       test: 'English Test',
       date: '7th April 2021-8th April 2022',
-    },
-    {
-      exam: 'AnnualExams',
-      test: 'GK Test',
-      date: '9th April 2021-10th April 2022',
     },
     {
       exam: 'AnnualExams',
@@ -180,41 +303,15 @@ const Cal1 = () => {
     height: 70,
   };
 
-  // const classes = useStyles();
-  // const theme = useTheme();
-  // const handleDelete = (value) => {
-  //   // setLoading(true);
-  //   axiosInstance
-  //     .delete(`${endpoints.ebook.ebook}?ebook_id=${value}`)
-  //     .then((result) => {
-  //       if (result.data.status_code === 200) {
-  //         setAlert('success', result.data);
-  //       } else {
-  //         setAlert('error', result.data);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       setAlert('error', error.message);
-  //     });
-  // };
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
-  //   useEffect(() => {
-  //     axiosInstance.get(endpoints.event.event).then((res) => {
-  //       if (res.data.status_code === 200){
-  //         console.log("review-response:",res)
-  //         console.log('review-data:', res.data.result.data);
-  //         setTotalCountreview(res.data.result.total_pages);
-  //         setReviewdata(res.data.result.data);
+  const handleClicknew = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  //       }else {
-  //         setAlert('error', res.data.error_message);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       setAlert('error', error.message);
-  //     });
-
-  // },[queryID,delFlag, goBackFlag, pagereview, searchGrade]);
+  const handleClose1 = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <Layout>
@@ -236,155 +333,23 @@ const Cal1 = () => {
         </Grid>
         <div className={classes.root}>
           <Grid container spacing={2} direction='row'>
-            <Grid item xs={12} sm={5} md={3} lg={3}>
+            <Grid item xs={12} sm={5} md={3} className='arrow'>
               <Autocomplete
                 size='small'
                 id='role'
-                style={{ width: '100%' }}
+                fullWidth
                 style={{ marginTop: 25 }}
                 // getOptionLabel={(option) => option?.role_name}
 
                 renderInput={(params) => (
                   <TextField
-                    className='create__class-textfield'
                     {...params}
                     variant='outlined'
-                    label='Category type'
+                    label='Event type'
                     placeholder='role'
                     required
                   />
                 )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={5} md={3} lg={3}>
-              <Autocomplete
-                size='small'
-                id='role'
-                style={{ width: '100%' }}
-                style={{ marginTop: 25 }}
-                renderInput={(params) => (
-                  <TextField
-                    className='create__class-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='Category Name'
-                    placeholder='role'
-                    required
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={5} md={3} lg={3}>
-              <div className='date-container'>
-                <ClickAwayListener
-                  onClickAway={(e) => {
-                    setDatePopperOpen(false);
-                  }}
-                >
-                  <LocalizationProvider
-                    dateAdapter={MomentUtils}
-                    style={{ backgroundColor: '#F9F9F9' }}
-                  >
-                    <DateRangePicker
-                      id='date-range-picker-date'
-                      disableCloseOnSelect={false}
-                      startText='Date'
-                      PopperProps={{ open: datePopperOpen }}
-                      // endText='End-date'
-                      value={dateRange}
-                      // calendars='1'
-                      onChange={(newValue) => {
-                        console.log('onChange truggered', newValue);
-                        const [startDate, endDate] = newValue;
-                        const sevenDaysAfter = moment(startDate).add(6, 'days');
-                        setDateRange([startDate, sevenDaysAfter]);
-                        setDatePopperOpen(false);
-                      }}
-                      renderInput={(
-                        // {
-                        //   inputProps: { value: startValue, ...restStartInputProps },
-                        //   ...startProps
-                        // },
-                        // {
-                        //   inputProps: { value: endValue, ...restEndInputProps },
-                        //   ...endProps
-                        // }
-                        { inputProps, ...startProps },
-                        // startProps,
-                        endProps
-                      ) => {
-                        //console.log('startProps ', startProps, 'endProps', endProps);
-                        return (
-                          <>
-                            <TextField
-                              fullWidth
-                              style={{ width: '100%' }}
-                              style={{ marginTop: 25 }}
-                              // style={{ marginTop: 35 }}
-                              {...startProps}
-                              InputProps={{
-                                ...inputProps,
-                                value: `${moment(inputProps.value).format(
-                                  'DD-MM-YYYY'
-                                )} - ${moment(endProps.inputProps.value).format(
-                                  'DD-MM-YYYY'
-                                )}`,
-                                readOnly: true,
-                                endAdornment: (
-                                  <InputAdornment position='start'>
-                                    <DateRangeIcon
-                                      // style={{ width: '35px' }}
-                                      color='primary'
-                                    />
-                                  </InputAdornment>
-                                ),
-                              }}
-                              size='small'
-                              // style={{ minWidth: '250px' }}
-                              onClick={() => {
-                                console.log('triggered');
-                                setDatePopperOpen(true);
-                              }}
-                            />
-                            {/* <TextField {...startProps} size='small' /> */}
-                            {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
-                            {/* <TextField {...endProps} size='small' /> */}
-                          </>
-                        );
-                      }}
-                    />
-                  </LocalizationProvider>
-                </ClickAwayListener>
-              </div>
-            </Grid>
-            <Grid item xs={12} sm={5} md={3} lg={2}>
-              {/* <TextField 
-              name='Assign color'
-              label='Assign color'
-              type='color'
-              InputLabelProps={{ shrink: true, required: true }}
-              variant='outlined'
-              fullWidth
-              size='small'
-            
-              style={{ marginTop: 25 }}
-            /> */}
-              <ColorPicker
-                name='color'
-                // backgroundColor='red'
-                defaultValue='color'
-                value={custColor}
-                label='Assign color'
-                variant='outlined'
-                fullWidth
-                size='small'
-                InputLabelProps={{ shrink: true, required: true }}
-                style={{ marginTop: 25 }}
-                // value={this.state.color} - for controlled component
-                // onChange={color => console.log(color)}
-                // onClick={() =>
-                //   handlequeryID(name.subject.id)
-                onChange={(e) => handleColor(e)}
               />
             </Grid>
 
@@ -395,35 +360,84 @@ const Cal1 = () => {
               <Grid item xs={12} sm={3} md={3} lg={1}>
                 <Button
                   variant='contained'
-                  className='custom_button_master labelColor'
+                  className='custom_button_master '
+                  size='medium'
+                  color='primary'
+
+                  // onClick={handleGoBack}
+                >
+                  Clear All
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={3} md={3} lg={1}>
+                <Button
+                  variant='contained'
+                  className='custom_button_master '
                   size='medium'
 
                   // onClick={handleGoBack}
                 >
-                  DELETE
+                  Filter
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={5} md={4} lg={2}>
-                <Button
-                  variant='contained'
-                  style={{ color: 'white' }}
-                  color='primary'
-                  className='custom_button_master'
-                  size='medium'
-                  type='submit'
-                >
-                  Save Category
+              <Grid item xs={12} sm={3} md={3} lg={1}>
+                <Button variant='outlined' onClick={handleClickOpen}>
+                  Create
                 </Button>
+                <Dialog
+                  fullWidth
+                  maxWidth='sm'
+                  onClose={handleClose}
+                  aria-labelledby='customized-dialog-title'
+                  open={open}
+                  classes={{ paper: classes.dialogPaper }}
+                >
+                  <DialogTitle id='customized-dialog-title' onClose={handleClose}>
+                    Create Event Category
+                  </DialogTitle>
+                  <Grid container spacing={2} className={classes.dailog}>
+                    <Grid item xs={12} sm={5} md={3} lg={3}>
+                      <TextField
+                        className='arrow'
+                        size='small'
+                        id='role'
+                        variant='outlined'
+                        label='Event Name'
+                        placeholder='role'
+                        required
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={5} md={3} lg={2}>
+                      <ColorPicker
+                        name='color'
+                        defaultValue='color'
+                        value={custColor}
+                        label='Assign color'
+                        variant='outlined'
+                        fullWidth
+                        size='small'
+                        InputLabelProps={{ shrink: true, required: true }}
+                        style={{ marginTop: 25 }}
+                        onChange={(e) => handleColor(e)}
+                      />
+                    </Grid>
+                    <DialogActions>
+                      <Button autoFocus onClick={handleClose} color='primary'>
+                        Save
+                      </Button>
+                    </DialogActions>
+                  </Grid>
+                </Dialog>
               </Grid>
             </Grid>
           </Grid>
 
-          <Grid container spacing={2} direction='row'>
+          <Grid container justify='space-around' spacing={2} direction='row'>
             {dummyData.map((data) => {
               return (
                 <div>
                   <Grid item xs={12} sm={12}>
-                    <Paper className={classes.cardstyle}>
+                    <Card className={classes.cardstyle}>
                       <CardContent className={classes.content}>
                         <Grid
                           container
@@ -457,38 +471,46 @@ const Cal1 = () => {
                             >
                               {data.test}
                             </Typography>
-                            <Typography
-                              variant='subtitle2'
-                              style={{
-                                marginLeft: 8,
-                                color: '#036799',
-                                textAlign: 'start',
-                              }}
-                            >
-                              {data.date}
-                            </Typography>
                           </Grid>
 
                           <Grid item xs={1}>
-                            <CardHeader
-                              action={
-                                <IconButton
-                                  aria-label='settings'
-                                  // onClick={(e) => {
-                                  //   // e.preventDefault();
-                                  //   handleDelete(item.id);
-                                  // }}
-                                >
-                                  <Tooltip title='Delete Book' arrow>
-                                    <MoreHorizIcon />
-                                  </Tooltip>
-                                </IconButton>
-                              }
-                            />
+                            {/* <CardHeader
+                      action={
+                        <IconButton
+                          aria-label='settings'
+                          onClick={(e) => {
+                             e.preventDefault();
+                            handleDelete();
+                          }}
+                        >
+                          <Tooltip title='Delete Category ' arrow>
+                            <MoreHorizIcon style={{ color: "#F7324D" }}/>
+                          </Tooltip>
+                        </IconButton>
+                      }
+                    /> */}
+                            {/* <MoreHorizIcon style={{ color: "#F7324D" }}/> */}
+                            <IconButton
+                              aria-controls='simple-menu'
+                              aria-haspopup='true'
+                              onClick={handleClicknew}
+                            >
+                              <MoreHorizIcon style={{ color: '#F7324D' }} />
+                            </IconButton>
+                            <Menu
+                              id='simple-menu'
+                              anchorEl={anchorEl}
+                              keepMounted
+                              open={Boolean(anchorEl)}
+                              onClose={handleClose}
+                            >
+                              <MenuItem onClick={handleClose1}>Edit</MenuItem>
+                              <MenuItem onClick={handleClose1}>Delete</MenuItem>
+                            </Menu>
                           </Grid>
                         </Grid>
                       </CardContent>
-                    </Paper>
+                    </Card>
                   </Grid>
                 </div>
               );

@@ -1,0 +1,147 @@
+@import './styles.scss';
+//*********************************upper-grade-selection-panel**********************//
+
+.MuiSelect-select.MuiSelect-select {
+  padding-right: 24px !important;
+  padding-left: 8px !important;
+}
+.MuiSelect-select[multiple] {
+  height: 132px !important;
+}
+.upper-table-container {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: space-evenly;
+  padding-left: 24px;
+}
+.filter-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 83%;
+}
+.filter-container-show {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 57%;
+  .filter-show {
+    display: flex;
+    flex-direction: row;
+  }
+}
+.filter-container-hidden {
+  display: none;
+}
+.filterImage {
+  width: 13px;
+  height: 14px;
+}
+.filter {
+  color: $text-color;
+  font-size: 11px;
+  font-weight: 600;
+  margin-right: 4px;
+  cursor: pointer;
+}
+.all-box-container {
+  display: flex;
+  flex-direction: row;
+  .text-rotate {
+    transform-origin: 0 0;
+    transform: rotate(270deg);
+    width: 100%;
+    color: $text-color;
+    font-size: 16px;
+    padding-top: 8px;
+    font-weight: 600;
+    font-family: $font-roboto;
+  }
+  .text-fixed {
+    color: $text-color;
+    font-size: 20px;
+    padding: 13px;
+    font-family: $font-roboto;
+  }
+  .acadamic-year-box {
+    width: 9%;
+    border-radius: 10px 1px 1px 10px;
+    display: flex;
+    align-items: flex-end;
+    background: #fef5f5;
+  }
+  .grade-container {
+    width: 485px;
+    border-radius: 10px;
+    height: 223px;
+    background: #ffd9d9;
+    .arrow-button {
+      color: $text-color;
+    }
+    .inner-grade-container {
+      display: flex;
+      flex-direction: row;
+    }
+    .change-grade-options {
+      width: 257px;
+      height: 145px;
+      margin-left: 72px;
+      background: white;
+      border-radius: 10px;
+    }
+    .text-fixed-last {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      color: $text-color;
+      font-size: 20px;
+      font-family: $font-roboto;
+      padding-left: 16px;
+    }
+  }
+  option {
+    color: $text-color;
+  }
+  .box-last-1 {
+    @include box-right();
+    background: #ffe5e5;
+  }
+  .box-last-2 {
+    @include box-right();
+    background: #ffefef;
+  }
+  .box-last-3 {
+    @include box-right();
+    background: #fef5f5;
+  }
+  .box-last-4 {
+    @include box-right();
+    background: #fef5f5;
+  }
+  .box-right-1 {
+    @include box-left();
+    background: #ffe5e5;
+  }
+  .box-right-2 {
+    @include box-left();
+    background: #ffefef;
+  }
+  .box-right-3 {
+    @include box-left();
+    background: #fef5f5;
+  }
+}
+.table-button-container {
+  width: 21%;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  padding-bottom: 30px;
+  .MuiButton-contained {
+    color: gray !important;
+  }
+}
+
+//*****************************//
