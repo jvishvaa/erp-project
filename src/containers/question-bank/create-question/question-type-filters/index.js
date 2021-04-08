@@ -16,8 +16,8 @@ import MultipleChoice from '../question-types/multiple-choice';
 import ComprehensionModal from '../question-types/multiple-choice/comprehension-question-select';
 import MyTinyEditor from '../tinymce-editor';
 import TypeFiltersContainer from './type-filters-container';
-
 import QuestionBulkCreation from '../question-bulk-upload';
+import axios from 'axios';
 
 const levels = [
   { id: '1', level: 'Easy' },
@@ -292,8 +292,10 @@ const QuestionTypeFilters = ({
           setAlert('error', error.message);
         });
     } else {
-      axiosInstance
-        .post(`${endpoints.createQuestionApis.createQuestion}`, requestBody)
+      axios
+        .post(`${endpoints.createQuestionApis.createQuestion}`, requestBody, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        })
         .then((result) => {
           if (result.data.status_code === 200) {
             const objlist = { ...showQuestionType };

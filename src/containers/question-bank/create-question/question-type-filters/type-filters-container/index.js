@@ -5,6 +5,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import endpoints from '../../../../../config/endpoints';
 import axiosInstance from '../../../../../config/axios';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
+import axios from 'axios';
 
 const TypeFiltersContainer = ({ levels, categories, filterData, setFilterData }) => {
   const themeContext = useTheme();
@@ -37,8 +38,10 @@ const TypeFiltersContainer = ({ levels, categories, filterData, setFilterData })
   };
 
   useEffect(() => {
-    axiosInstance
-      .get(`${endpoints.createQuestionApis.questionType}`)
+    axios
+      .get(`${endpoints.createQuestionApis.questionType}`, {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      })
       .then((result) => {
         if (result.data.status_code === 200) {
           setQuestionTypes(result.data?.result?.filter((obj) => obj?.id !== 5));

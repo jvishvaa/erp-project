@@ -19,6 +19,7 @@ import SingleOption from './single-option';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import './multiple-choice.css';
 import MyTinyEditor from '../../tinymce-editor';
+import axios from 'axios';
 
 const MultipleChoice = ({
   editData,
@@ -176,8 +177,10 @@ const MultipleChoice = ({
           formData.append('subject_name', filterDataTop.subject?.subject?.subject_name);
           formData.append('question_categories', filterDataBottom.category.category);
           formData.append('question_type', filterDataBottom.type?.question_type);
-          axiosInstance
-            .post(`${endpoints.questionBank.uploadFile}`, formData)
+          axios
+            .post(`${endpoints.questionBank.uploadFile}`, formData, {
+              headers: { 'x-api-key': 'vikash@12345#1231' },
+            })
             .then((result) => {
               if (result.data.status_code === 200) {
                 list[index][name].push(result.data.result);
@@ -462,8 +465,10 @@ const MultipleChoice = ({
             setAlert('error', error.message);
           });
       } else {
-        axiosInstance
-          .post(`${endpoints.createQuestionApis.createQuestion}`, requestBody)
+        axios
+          .post(`${endpoints.createQuestionApis.createQuestion}`, requestBody, {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          })
           .then((result) => {
             if (result.data.status_code === 200) {
               setAlert('success', result.data?.message);
