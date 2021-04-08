@@ -11,7 +11,8 @@ const intialState = {
   bankStatements: null,
   financialLedgerReport: null,
   cashStatements: null,
-  receiptHeader: null
+  receiptHeader: null,
+  sendData: null
 }
 
 const pettyExpensesReducer = (state = intialState, action) => {
@@ -98,6 +99,13 @@ const pettyExpensesReducer = (state = intialState, action) => {
       return {
         ...state,
         receiptHeader: action.payload.data
+      }
+    }
+    case actionTypes.SENDING_DATA: {
+      console.log('data+', action.payload.data)
+      return {
+        ...state,
+        sendData: action.payload.data
       }
     }
     default: {
