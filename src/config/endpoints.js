@@ -155,7 +155,8 @@ export default {
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
     editChapter: '/academic/',
-    centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`//'https://dev.mgmt.letseduvate.com/qbox/lesson_plan/erp_lesson_mapping/?domain_name=olvorchidnaigaon'
+    centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`
+    //'https://dev.mgmt.letseduvate.com/qbox/lesson_plan/erp_lesson_mapping/?domain_name=olvorchidnaigaon'
   },
   lessonPlan: {
     gradeSubjectMappingListCentral: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
@@ -279,6 +280,9 @@ export default {
     userAssessmentSubmission: `${baseURLCentral}/assessment/user_response/`,
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+  },
+  assessmentApis : {
+    gradesList: `/academic/sm-grades-list/`,
   },
   createQuestionApis: {
     topicList: `${baseURLCentral}/assessment/topic/`,

@@ -235,21 +235,16 @@ const QuestionTypeFilters = ({
     let requestBody = {
       sub_questions: subQuestions,
       question_answer: questionAndAnswer,
-      // question_level: filterData.level.id,
-      // question_categories: filterData.category.id,
-      // question_type: filterData.type.id,
-      // chapter: filterDataDisplay.chapter?.id,
-      // topic: filterDataDisplay.topic?.id,
+      question_level: filterData.level.id,
+      question_categories: filterData.category.id,
+      question_type: filterData.type.id,
+      chapter: filterDataDisplay.chapter?.id,
+      topic: filterDataDisplay.topic?.id,
       question_status: isSubmit ? 3 : 1,
     };
     if (!editData?.id) {
       requestBody = {
         ...requestBody,
-        question_level: filterData.level.id,
-        question_categories: filterData.category.id,
-        question_type: filterData.type.id,
-        chapter: filterDataDisplay.chapter?.id,
-        topic: filterDataDisplay.topic?.id,
         grade_subject_mapping: filterDataDisplay.subject.id,
       };
     }

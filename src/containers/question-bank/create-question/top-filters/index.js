@@ -18,6 +18,8 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
   const widerWidth = isMobile ? '98%' : '95%';
 
   const [filterData, setFilterData] = useState({
+    academic: '',
+    branch: '',
     grade: '',
     subject: '',
     chapter: '',
@@ -25,6 +27,8 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
   });
 
   const [dropdownData, setDropdownData] = useState({
+    academic: [],
+    branch: [],
     grades: [],
     subjects: [],
     chapters: [],
@@ -33,14 +37,13 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
 
   useEffect(() => {
     axiosInstance
-      .get(`${endpoints.lessonPlan.gradeListCentral}`,{
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
+      .get(`${endpoints.userManagement.academicYear}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setDropdownData({
-            ...dropdownData,
-            grades: result.data?.result?.results,
+            academic: result.data?.data,
+            branch: [],
+            grades: [],
             subjects: [],
             chapters: [],
             topics: [],
@@ -54,44 +57,157 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       });
   }, []);
 
-  const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: '', subject: '', chapter: '', topic: '' });
-    setDropdownData({ ...dropdownData, subjects: [], chapters: [], topics: [] });
+  // useEffect(() => {
+  // axiosInstance
+  //   .get(`${endpoints.lessonPlan.gradeListCentral}`, {
+  //     headers: { 'x-api-key': 'vikash@12345#1231' },
+  //   })
+  //   .then((result) => {
+  //     if (result.data.status_code === 200) {
+  //       setDropdownData({
+  //         ...dropdownData,
+  //         grades: result.data?.result?.results,
+  //         subjects: [],
+  //         chapters: [],
+  //         topics: [],
+  //       });
+  //     } else {
+  //       setAlert('error', result.data?.message);
+  //     }
+  //   })
+  //   .catch((error) => {
+  //     setAlert('error', error.message);
+  //   });
+  // }, []);
+
+  const handleAcademicYear = (event, value) => {
+    setFilterData({
+      academic: '',
+      branch: '',
+      grade: '',
+      subject: '',
+      chapter: '',
+      topic: '',
+    });
+    setDropdownData({
+      ...dropdownData,
+      branch: [],
+      grades: [],
+      subjects: [],
+      chapters: [],
+      topics: [],
+    });
     if (value) {
-      setFilterData({ ...filterData, grade: value, subject: '', chapter: '', topic: '' });
+      setFilterData({
+        ...filterData,
+        academic: value,
+      });
       axiosInstance
-        .get(`${endpoints.lessonPlan.gradeSubjectMappingListCentral}?grade=${value.id}`,{
-          headers: {'x-api-key': 'vikash@12345#1231' },
+        .get(`${endpoints.academics.branches}?session_year=${value.id}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setDropdownData({
+              ...dropdownData,
+              branch: result.data?.data?.results,
+            });
+          } else {
+            setAlert('error', result.data?.message);
+          }
         })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  };
+
+  const handleBranch = (event, value) => {
+    setFilterData({
+      ...filterData,
+      branch: '',
+      grade: '',
+      subject: '',
+      chapter: '',
+      topic: '',
+    });
+    setDropdownData({
+      ...dropdownData,
+      grades: [],
+      subjects: [],
+      chapters: [],
+      topics: [],
+    });
+    if (value) {
+      setFilterData({ ...filterData, branch: value });
+      axiosInstance
+        .get(`${endpoints.assessmentApis.gradesList}?branch=${value.branch.id}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setDropdownData({
+              ...dropdownData,
+              grades: result.data?.result?.results,
+            });
+          } else {
+            setAlert('error', result.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  };
+
+  const handleGrade = (event, value) => {
+    setFilterData({
+      ...filterData,
+      grade: '',
+      subject: '',
+      chapter: '',
+      topic: '',
+    });
+    setDropdownData({
+      ...dropdownData,
+      subjects: [],
+      chapters: [],
+      topics: [],
+    });
+    if (value) {
+      setFilterData({ ...filterData, grade: value });
+      axiosInstance
+        .get(`${endpoints.assessmentApis.gradesList}?gs_id=${value.id}`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setDropdownData({
               ...dropdownData,
               subjects: result.data?.result?.results,
-              chapters: [],
-              topics: [],
             });
           } else {
             setAlert('error', result.data?.message);
-            setDropdownData({ ...dropdownData, subjects: [], chapters: [], topics: [] });
           }
         })
         .catch((error) => {
           setAlert('error', error.message);
-          setDropdownData({ ...dropdownData, subjects: [], chapters: [], topics: [] });
         });
     }
   };
 
   const handleSubject = (event, value) => {
-    setFilterData({ ...filterData, subject: '', chapter: '', topic: '' });
-    setDropdownData({ ...dropdownData, chapters: [], topics: [] });
+    setFilterData({
+      ...filterData,
+      subject: '',
+      chapter: '',
+      topic: '',
+    });
+    setDropdownData({
+      ...dropdownData,
+      chapters: [],
+      topics: [],
+    });
     if (value) {
-      setFilterData({ ...filterData, subject: value, chapter: '', topic: '' });
+      setFilterData({ ...filterData, subject: value });
       if (value) {
         axiosInstance
-          .get(`${endpoints.lessonPlan.chapterListCentral}?grade_subject=${value.id}`,{
-            headers: {'x-api-key': 'vikash@12345#1231' },
+          .get(`${endpoints.lessonPlan.chapterListCentral}?grade_subject=${value.id}`, {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
           })
           .then((result) => {
             if (result.data.status_code === 200) {
@@ -120,8 +236,8 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       setFilterData({ ...filterData, chapter: value, topic: '' });
       if (value) {
         axiosInstance
-          .get(`${endpoints.createQuestionApis.topicList}?chapter=${value.id}`,{
-            headers: {'x-api-key': 'vikash@12345#1231' },
+          .get(`${endpoints.createQuestionApis.topicList}?chapter=${value.id}`, {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
           })
           .then((result) => {
             if (result.data.status_code === 200) {
@@ -148,6 +264,8 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
 
   const handleClear = () => {
     setFilterData({
+      academic: '',
+      branch: '',
       grade: '',
       subject: '',
       chapter: '',
@@ -160,7 +278,9 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       topic: '',
     });
     setDropdownData({
-      ...dropdownData,
+      academic: [],
+      branches: [],
+      grades: [],
       subjects: [],
       chapters: [],
       topics: [],
@@ -169,7 +289,6 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
   };
 
   const handleFilter = () => {
-    console.log('filter Data :=: ', filterData);
     if (
       filterData?.grade &&
       filterData?.subject &&
@@ -195,12 +314,54 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
+          onChange={handleAcademicYear}
+          id='academic-year'
+          className='dropdownIcon'
+          value={filterData.academic || ''}
+          options={dropdownData.academic || []}
+          getOptionLabel={(option) => option?.session_year || ''}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Academic Year'
+              placeholder='Academic Year'
+            />
+          )}
+        />
+      </Grid>
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={handleBranch}
+          id='branch'
+          className='dropdownIcon'
+          value={filterData.branch || ''}
+          options={dropdownData.branch || []}
+          getOptionLabel={(option) => option?.branch?.branch_name || ''}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Branch'
+              placeholder='Branch'
+            />
+          )}
+        />
+      </Grid>
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
           onChange={handleGrade}
           id='grade'
           className='dropdownIcon'
-          value={filterData.grade}
-          options={dropdownData.grades}
-          getOptionLabel={(option) => option?.grade_name}
+          value={filterData.grade || ''}
+          options={dropdownData.grades || []}
+          getOptionLabel={(option) => option?.grade_name || ''}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' />
@@ -214,9 +375,9 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           onChange={handleSubject}
           id='subject'
           className='dropdownIcon'
-          value={filterData.subject}
-          options={dropdownData.subjects}
-          getOptionLabel={(option) => option?.subject?.subject_name}
+          value={filterData.subject || ''}
+          options={dropdownData.subjects || []}
+          // getOptionLabel={(option) => option?.subject?.subject_name}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField
@@ -235,9 +396,9 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           onChange={handleChapter}
           id='chapter'
           className='dropdownIcon'
-          value={filterData.chapter}
-          options={dropdownData.chapters}
-          getOptionLabel={(option) => option?.chapter_name}
+          value={filterData.chapter || ''}
+          options={dropdownData.chapters || []}
+          // getOptionLabel={(option) => option?.chapter_name}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField
@@ -256,9 +417,9 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           onChange={handleTopic}
           id='topic'
           className='dropdownIcon'
-          value={filterData.topic}
-          options={dropdownData.topics}
-          getOptionLabel={(option) => option?.topic_name}
+          value={filterData.topic || ''}
+          options={dropdownData.topics || []}
+          // getOptionLabel={(option) => option?.topic_name}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField {...params} variant='outlined' label='Topic' placeholder='Topic' />
