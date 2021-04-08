@@ -402,49 +402,39 @@ const MultipleChoice = ({
 
     let requestBody = {
       question_answer: questionAndAnswer,
-      // question_level: filterDataBottom.level?.id,
-      // question_categories: filterDataBottom.category.id,
-      // question_type: filterDataBottom.type.id,
-      // chapter: filterDataTop.chapter?.id,
-      // topic: filterDataTop.topic?.id,
+      question_level: filterDataBottom.level?.id,
+      question_categories: filterDataBottom.category.id,
+      question_type: filterDataBottom.type.id,
+      chapter: filterDataTop.chapter?.id,
+      topic: filterDataTop.topic?.id,
       question_status: isSubmit ? 3 : 1,
     };
 
     if (!editData?.id)
       requestBody = {
         ...requestBody,
-        question_level: filterDataBottom.level?.id,
-        question_categories: filterDataBottom.category.id,
-        question_type: filterDataBottom.type.id,
-        chapter: filterDataTop.chapter?.id,
-        topic: filterDataTop.topic?.id,
         grade_subject_mapping: filterDataTop.subject?.id,
       };
 
     if (submitFlag || saveFlag) {
-      let reqForComp = {
+      let req = {
         question_answer: questionAndAnswer,
+        question_type: showQuestionType?.id,
+        question_level: filterDataBottom.level.id,
+        question_categories: filterDataBottom.category.id,
+        grade_subject_mapping: filterDataTop.subject?.id,
+        chapter: filterDataTop.chapter?.id,
+        topic: filterDataTop.topic?.id,
         question_status: isSubmit ? 3 : 1,
       };
 
-      if (editData?.id) reqForComp = { ...reqForComp, id: editData?.id };
-      else {
-        reqForComp = {
-          ...reqForComp,
-          question_type: showQuestionType?.id,
-          question_level: filterDataBottom.level.id,
-          question_categories: filterDataBottom.category.id,
-          chapter: filterDataTop.chapter?.id,
-          topic: filterDataTop.topic?.id,
-          grade_subject_mapping: filterDataTop.subject?.id,
-        };
-      }
+      if (editData?.id) req = { ...req, id: editData?.id };
 
       if (parentQuestionType?.ComprehensionQuestions) {
-        subQuestions.push(reqForComp);
+        subQuestions.push(req);
       } else if (parentQuestionType?.VideoQuestion) {
-        reqForComp = { ...reqForComp, time_or_slide: showQuestionType?.time };
-        subQuestions.push(reqForComp);
+        req = { ...req, time_or_slide: showQuestionType?.time };
+        subQuestions.push(req);
       }
     } else {
       // if (

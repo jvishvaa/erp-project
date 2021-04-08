@@ -181,7 +181,7 @@ const QuestionBankFilters = ({
       setFilterData({ ...filterData, subject: value, chapter: '', topic: '' });
       if (value) {
         axiosInstance
-          .get(`${endpoints.lessonPlan.chapterList}?grade_subject=${value.id}`)
+          .get(`${endpoints.lessonPlan.chapterListCentral}?grade_subject=${value.id}`)
           .then((result) => {
             if (result.data.status_code === 200) {
               setChapterDropdown(result.data.result);

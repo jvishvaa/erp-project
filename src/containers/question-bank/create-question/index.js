@@ -70,7 +70,7 @@ const CreateQuestion = () => {
                 created_by: null,
               },
               subject: {
-                id: subjectId,
+                id: gsMappingId,
                 grade: {
                   id: gradeId,
                   grade_name: grade_name,
