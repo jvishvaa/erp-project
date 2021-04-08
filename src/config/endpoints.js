@@ -281,6 +281,17 @@ export default {
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
+  questionBank:{
+    grades:'/lesson_plan/list-grade/',
+    subjects:'/lesson_plan/list-grade-subject-mapping/',
+    topics:'/assessment/topic/',
+    examType:'/assessment/question_type/',
+    questionData:'/assessment/question-list/',
+    viewMoreData:'/assessment/question-details/',
+    uploadFile: '/assessment/upload-question-file/',
+    removeFile: '/assessment/delete-s3file/',
+    deleteQuestion:'/assessment/publish-question/',
+  },
   assessmentApis : {
     gradesList: `/academic/sm-grades-list/`,
   },

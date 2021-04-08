@@ -27,6 +27,7 @@ const QuestionBankFilters = ({
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
+  const [branchDropdown,setBranchDropdown] = useState([])
   const [volumeDropdown, setVolumeDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
@@ -40,6 +41,7 @@ const QuestionBankFilters = ({
   const [mapId, setMapId] = useState('');
   const [filterData, setFilterData] = useState({
     year: '',
+    branch:'',
     volume: '',
     grade: '',
     subject: '',
@@ -66,6 +68,7 @@ const QuestionBankFilters = ({
   const handleClear = () => {
     setFilterData({
       year: '',
+      branch:'',
       volume: '',
       grade: '',
       subject: '',
@@ -83,6 +86,46 @@ const QuestionBankFilters = ({
     setFilterDataDown({});
     setSelectedIndex(-1);
   };
+
+
+  function handleAcademicYear(event,value){
+    setFilterData({...filterData,year:''})
+    if(value){
+      setFilterData({...filterData,year:value})
+      axiosInstance
+      .get(`${endpoints.academics.branches}?session_year=${value.id}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+            setBranchDropdown(result?.data?.data?.results)
+        } else {
+          setAlert('error', result.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+    }
+  }
+
+  function handleBranch(event,value){
+    setFilterData({...filterData,branch:''})
+    if(value){
+      setFilterData({...filterData,branch:value})
+      axiosInstance
+      .get(`${endpoints.assessmentApis.gradesList}?branch=${value.branch.id}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+            setGradeDropdown(result?.data?.result?.results)
+        } else {
+          setAlert('error', result.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+    }
+
+  }
 
   const handleTopic = (event, value) => {
     setFilterData({
@@ -277,18 +320,18 @@ const QuestionBankFilters = ({
   };
 
   useEffect(() => {
-    axiosInstance
-      .get(`${endpoints.questionBank.grades}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setGradeDropdown(result.data.result.results);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
+    // axiosInstance
+    //   .get(`${endpoints.questionBank.grades}`)
+    //   .then((result) => {
+    //     if (result.data.status_code === 200) {
+    //       setGradeDropdown(result.data.result.results);
+    //     } else {
+    //       setAlert('error', result.data.message);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     setAlert('error', error.message);
+    //   });
     axiosInstance
       .get(`${endpoints.questionBank.examType}`)
       .then((result) => {
@@ -296,6 +339,18 @@ const QuestionBankFilters = ({
           setQueTypeDropdown(result.data.result);
         } else {
           setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+      axiosInstance
+      .get(`${endpoints.userManagement.academicYear}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setAcademicYearDropdown(result?.data?.data);
+        } else {
+          setAlert('error', result.data?.message);
         }
       })
       .catch((error) => {
@@ -309,6 +364,38 @@ const QuestionBankFilters = ({
       spacing={isMobile ? 3 : 5}
       style={{ width: widerWidth, margin: wider }}
     >
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={handleAcademicYear}
+          id='grade'
+          className='dropdownIcon'
+          value={filterData?.year}
+          options={academicYearDropdown}
+          getOptionLabel={(option) => option?.session_year}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField {...params} variant='outlined' label='Academic Year' placeholder='Academic Year' />
+          )}
+        />
+      </Grid>
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={handleBranch}
+          id='grade'
+          className='dropdownIcon'
+          value={filterData?.branch}
+          options={branchDropdown}
+          getOptionLabel={(option) => option?.branch?.branch_name}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField {...params} variant='outlined' label='Branch' placeholder='Branch' />
+          )}
+        />
+      </Grid>
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
