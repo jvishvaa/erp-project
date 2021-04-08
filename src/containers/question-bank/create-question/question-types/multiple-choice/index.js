@@ -19,6 +19,7 @@ import SingleOption from './single-option';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import './multiple-choice.css';
 import MyTinyEditor from '../../tinymce-editor';
+import axios from 'axios';
 
 const MultipleChoice = ({
   editData,
@@ -176,8 +177,10 @@ const MultipleChoice = ({
           formData.append('subject_name', filterDataTop.subject?.subject?.subject_name);
           formData.append('question_categories', filterDataBottom.category.category);
           formData.append('question_type', filterDataBottom.type?.question_type);
-          axiosInstance
-            .post(`${endpoints.questionBank.uploadFile}`, formData)
+          axios
+            .post(`${endpoints.questionBank.uploadFile}`, formData, {
+              headers: { 'x-api-key': 'vikash@12345#1231' },
+            })
             .then((result) => {
               if (result.data.status_code === 200) {
                 list[index][name].push(result.data.result);
@@ -225,8 +228,10 @@ const MultipleChoice = ({
           formData.append('subject_name', filterDataTop.subject?.subject?.subject_name);
           formData.append('question_categories', filterDataBottom.category.category);
           formData.append('question_type', filterDataBottom.type?.question_type);
-          axiosInstance
-            .post(`${endpoints.questionBank.uploadFile}`, formData)
+          axios
+            .post(`${endpoints.questionBank.uploadFile}`, formData, {
+              headers: { 'x-api-key': 'vikash@12345#1231' },
+            })
             .then((result) => {
               if (result.data.status_code === 200) {
                 list[index][name].push(result.data.result);
@@ -253,10 +258,16 @@ const MultipleChoice = ({
   const handleDeleteImage = (rowIndex, imageIndex, isMatching) => {
     setLoading(true);
     const list = isMatching ? [...matchingOptionsList] : [...optionsList];
-    axiosInstance
-      .post(`${endpoints.questionBank.removeFile}`, {
-        file_name: list[rowIndex]['images'][imageIndex],
-      })
+    axios
+      .post(
+        `${endpoints.questionBank.removeFile}`,
+        {
+          file_name: list[rowIndex]['images'][imageIndex],
+        },
+        {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        }
+      )
       .then((result) => {
         if (result.data.status_code === 204) {
           if (isMatching) {
@@ -447,8 +458,10 @@ const MultipleChoice = ({
         // const apiEndPoint = editData?'dasd':'post ur'
         // axiosInstance[editData?'put':'post'](apiEndPoint, requestBody).then((e)=>{
         // })
-        axiosInstance
-          .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody)
+        axios
+          .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody, {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          })
           .then((result) => {
             if (result.data?.status_code === 200) {
               setAlert('success', result.data?.message);
@@ -462,8 +475,10 @@ const MultipleChoice = ({
             setAlert('error', error.message);
           });
       } else {
-        axiosInstance
-          .post(`${endpoints.createQuestionApis.createQuestion}`, requestBody)
+        axios
+          .post(`${endpoints.createQuestionApis.createQuestion}`, requestBody, {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          })
           .then((result) => {
             if (result.data.status_code === 200) {
               setAlert('success', result.data?.message);

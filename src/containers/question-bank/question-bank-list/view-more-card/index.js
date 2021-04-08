@@ -16,6 +16,7 @@ import downloadAll from '../../../../assets/images/downloadAll.svg';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { Context } from '../../context/QuestionStore';
 import { AttachmentPreviewerContext } from '../../../../components/attachment-previewer/attachment-previewer-contexts';
+import axios from 'axios';
 
 const ViewMoreCard = ({
   viewMoreData,
@@ -84,11 +85,18 @@ const ViewMoreCard = ({
   };
 
   const handlePublish = (obj) => {
-    axiosInstance
-      .put(`${endpoints.questionBank.deleteQuestion}`, {
+    // axiosInstance
+    axios
+      .put(`${endpoints.questionBank.deleteQuestion}`,
+      {
         question_status: 2,
         question: obj.parent.id,
-      })
+      },
+      {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+
+      }, 
+      )
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setSelectedIndex(-1);
@@ -101,11 +109,17 @@ const ViewMoreCard = ({
       .catch((error) => setAlert('error', error?.message));
   };
   const handleDelete = (obj) => {
-    axiosInstance
+    // axiosInstance
+    axios
       .put(`${endpoints.questionBank.deleteQuestion}`, {
         question_status: 1,
         question: obj.parent.id,
-      })
+      },
+      {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+
+      }, 
+      )
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setSelectedIndex(-1);

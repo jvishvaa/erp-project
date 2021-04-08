@@ -16,8 +16,8 @@ import MultipleChoice from '../question-types/multiple-choice';
 import ComprehensionModal from '../question-types/multiple-choice/comprehension-question-select';
 import MyTinyEditor from '../tinymce-editor';
 import TypeFiltersContainer from './type-filters-container';
-
 import QuestionBulkCreation from '../question-bulk-upload';
+import axios from 'axios';
 
 const levels = [
   { id: '1', level: 'Easy' },
@@ -257,8 +257,10 @@ const QuestionTypeFilters = ({
           .map((obj) => obj?.data?.id)
           .filter(Boolean),
       };
-      axiosInstance
-        .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody)
+      axios
+        .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        })
         .then((result) => {
           if (result.data.status_code === 200) {
             const objlist = { ...showQuestionType };
@@ -292,8 +294,10 @@ const QuestionTypeFilters = ({
           setAlert('error', error.message);
         });
     } else {
-      axiosInstance
-        .post(`${endpoints.createQuestionApis.createQuestion}`, requestBody)
+      axios
+        .post(`${endpoints.createQuestionApis.createQuestion}`, requestBody, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        })
         .then((result) => {
           if (result.data.status_code === 200) {
             const objlist = { ...showQuestionType };
@@ -342,8 +346,10 @@ const QuestionTypeFilters = ({
       formData.append('subject_name', filterDataDisplay.subject?.subject?.subject_name);
       formData.append('question_categories', filterData.category.category);
       formData.append('question_type', filterData.type?.question_type);
-      axiosInstance
-        .post(`${endpoints.questionBank.uploadFile}`, formData)
+      axios
+        .post(`${endpoints.questionBank.uploadFile}`, formData, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        })
         .then((result) => {
           if (result.data.status_code === 200) {
             setVideoURL(result.data.result);
@@ -364,10 +370,16 @@ const QuestionTypeFilters = ({
 
   const handleRemoveVideo = () => {
     setLoading(true);
-    axiosInstance
-      .post(`${endpoints.questionBank.removeFile}`, {
-        file_name: videoURL,
-      })
+    axios
+      .post(
+        `${endpoints.questionBank.removeFile}`,
+        {
+          file_name: videoURL,
+        },
+        {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        }
+      )
       .then((result) => {
         if (result.data.status_code === 204) {
           setVideoURL('');

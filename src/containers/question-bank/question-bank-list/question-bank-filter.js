@@ -9,6 +9,8 @@ import download from '../../../assets/images/downloadAll.svg';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
+import Loading from '../../../components/loader/loader';
+import axios from 'axios';
 import './question-bank.css';
 
 const QuestionBankFilters = ({
@@ -23,11 +25,12 @@ const QuestionBankFilters = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const history = useHistory();
+  const [loading, setLoading] = useState(false);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
-  const [branchDropdown,setBranchDropdown] = useState([])
+  const [branchDropdown, setBranchDropdown] = useState([]);
   const [volumeDropdown, setVolumeDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
@@ -41,7 +44,7 @@ const QuestionBankFilters = ({
   const [mapId, setMapId] = useState('');
   const [filterData, setFilterData] = useState({
     year: '',
-    branch:'',
+    branch: '',
     volume: '',
     grade: '',
     subject: '',
@@ -68,7 +71,7 @@ const QuestionBankFilters = ({
   const handleClear = () => {
     setFilterData({
       year: '',
-      branch:'',
+      branch: '',
       volume: '',
       grade: '',
       subject: '',
@@ -87,44 +90,73 @@ const QuestionBankFilters = ({
     setSelectedIndex(-1);
   };
 
-
-  function handleAcademicYear(event,value){
-    setFilterData({...filterData,year:''})
-    if(value){
-      setFilterData({...filterData,year:value})
+  function handleAcademicYear(event, value) {
+    setFilterData({
+      ...filterData,
+      year: '',
+      branch: '',
+      grade: '',
+      subject: '',
+      chapter: '',
+      question_level_option: '',
+      question_categories_options: '',
+      quesType: '',
+      quesLevel: '',
+    });
+    setPeriodData([]);
+    setLoading(true)
+    if (value) {
+      setFilterData({ ...filterData, year: value });
       axiosInstance
-      .get(`${endpoints.academics.branches}?session_year=${value.id}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-            setBranchDropdown(result?.data?.data?.results)
-        } else {
-          setAlert('error', result.data?.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
+        .get(`${endpoints.academics.branches}?session_year=${value.id}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setBranchDropdown(result?.data?.data?.results);
+            setLoading(false)
+          } else {
+            setAlert('error', result.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }else{
+      setLoading(false)
     }
   }
 
-  function handleBranch(event,value){
-    setFilterData({...filterData,branch:''})
-    if(value){
-      setFilterData({...filterData,branch:value})
+  function handleBranch(event, value) {
+    setFilterData({
+      ...filterData,
+      branch: '',
+      grade: '',
+      subject: '',
+      chapter: '',
+      question_level_option: '',
+      question_categories_options: '',
+      quesType: '',
+      quesLevel: '',
+    });
+    setPeriodData([]);
+    setLoading(true)
+    if (value) {
+      setFilterData({ ...filterData, branch: value });
       axiosInstance
-      .get(`${endpoints.assessmentApis.gradesList}?branch=${value.branch.id}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-            setGradeDropdown(result?.data?.result?.results)
-        } else {
-          setAlert('error', result.data?.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
+        .get(`${endpoints.assessmentApis.gradesList}?branch=${value.branch.id}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setGradeDropdown(result?.data?.result?.results);
+            setLoading(false)
+          } else {
+            setAlert('error', result.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }else{
+      setLoading(false)
     }
-
   }
 
   const handleTopic = (event, value) => {
@@ -136,17 +168,26 @@ const QuestionBankFilters = ({
       quesType: '',
       quesLevel: '',
     });
+    setPeriodData([]);
+    setLoading(true)
     if (value) {
       setFilterData({ ...filterData, topicId: value });
+      setLoading(false)
+    }else{
+      setLoading(false)
     }
   };
 
   const handleQuestionCategory = (event, value) => {
     setFilterData({ ...filterData, question_categories_options: '', quesType: '' });
     setPeriodData([]);
+    setLoading(true)
     if (value) {
       setQuesCatData(value);
       setFilterData({ ...filterData, question_categories_options: value });
+      setLoading(false)
+    }else{
+      setLoading(false)
     }
   };
   const handleQuestionLevel = (event, value) => {
@@ -159,17 +200,25 @@ const QuestionBankFilters = ({
       quesLevel: '',
     });
     setPeriodData([]);
+    setLoading(true)
     if (value) {
       setQuesLevel(value);
       setFilterData({ ...filterData, question_level_option: value });
+      setLoading(false)
+    }else{
+      setLoading(false)
     }
   };
   const handleQuestionType = (event, value) => {
     setFilterData({ ...filterData, quesType: '' });
     setPeriodData([]);
     setPeriodData([]);
+    setLoading(true)
     if (value) {
       setFilterData({ ...filterData, quesType: value });
+      setLoading(false)
+    }else{
+      setLoading(false)
     }
   };
 
@@ -183,18 +232,22 @@ const QuestionBankFilters = ({
       question_categories_options: '',
       quesType: '',
       quesLevel: '',
+      topicId:'',
     });
     setPeriodData([]);
     setSubjectDropdown([]);
     setChapterDropdown([]);
+    setLoading(true)
     if (value) {
       setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
       axiosInstance
-        .get(`${endpoints.questionBank.subjects}?grade=${value.id}`)
+        // .get(`${endpoints.questionBank.subjects}?grade=${value.id}`) //central_api
+        .get(`${endpoints.assessmentApis.gradesList}?gs_id=${value.mp_id}`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setSubjectDropdown(result.data.result.results);
             setMapId(result.data.result.results);
+            setLoading(false)
           } else {
             setAlert('error', result.data.message);
             setSubjectDropdown([]);
@@ -206,6 +259,8 @@ const QuestionBankFilters = ({
           setSubjectDropdown([]);
           setChapterDropdown([]);
         });
+    }else{
+      setLoading(false)
     }
   };
   console.log(filterData, '===============================');
@@ -220,24 +275,46 @@ const QuestionBankFilters = ({
       quesLevel: '',
     });
     setPeriodData([]);
+    setLoading(true)
     if (value) {
       setFilterData({ ...filterData, subject: value, chapter: '', topic: '' });
       if (value) {
-        axiosInstance
-          .get(`${endpoints.lessonPlan.chapterListCentral}?grade_subject=${value.id}`)
+        axios
+          .get(`${endpoints.lessonPlan.chapterListCentral}?grade_subject=${33}`, {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          })
           .then((result) => {
             if (result.data.status_code === 200) {
-              setChapterDropdown(result.data.result);
+              setChapterDropdown(result?.data?.result);
+              setLoading(false)
             } else {
-              setAlert('error', result.data.message);
-              setChapterDropdown([]);
+              setAlert('error', result.data?.message);
             }
           })
           .catch((error) => {
             setAlert('error', error.message);
-            setChapterDropdown([]);
           });
+      }else{
+        setLoading(false)
       }
+      // if (value) {
+      //   axiosInstance
+      //     .get(`${endpoints.lessonPlan.chapterListCentral}?grade_subject=${value.id}`)
+      //     .then((result) => {
+      //       if (result.data.status_code === 200) {
+      //         setChapterDropdown(result.data.result);
+      //       } else {
+      //         setAlert('error', result.data.message);
+      //         setChapterDropdown([]);
+      //       }
+      //     })
+      //     .catch((error) => {
+      //       setAlert('error', error.message);
+      //       setChapterDropdown([]);
+      //     });
+      // }
+    }else{
+      setLoading(false)
     }
   };
 
@@ -253,25 +330,50 @@ const QuestionBankFilters = ({
     });
     setPeriodData([]);
     setTopicDropdown([]);
+    setLoading(true)
     if (value) {
-      setFilterData({ ...filterData, chapter: value });
+      setFilterData({ ...filterData, chapter: value, topic: '' });
       if (value) {
-        axiosInstance
-          .get(`${endpoints.questionBank.topics}?chapter=${value.id}`)
+        axios
+          .get(`${endpoints.createQuestionApis.topicList}?chapter=${value.id}`, {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          })
           .then((result) => {
             if (result.data.status_code === 200) {
-              setTopicDropdown(result.data.result);
+              setTopicDropdown(result?.data?.result);
+              setLoading(false)
             } else {
-              setAlert('error', result.data.message);
-              setTopicDropdown([]);
+              setAlert('error', result.data?.message);
             }
           })
           .catch((error) => {
             setAlert('error', error.message);
-            setTopicDropdown([]);
           });
+      }else{
+        setLoading(false)
       }
+    }else{
+      setLoading(false)
     }
+    // if (value) {
+    //   setFilterData({ ...filterData, chapter: value });
+    //   if (value) {
+    //     axiosInstance
+    //       .get(`${endpoints.questionBank.topics}?chapter=${value.id}`)
+    //       .then((result) => {
+    //         if (result.data.status_code === 200) {
+    //           setTopicDropdown(result.data.result);
+    //         } else {
+    //           setAlert('error', result.data.message);
+    //           setTopicDropdown([]);
+    //         }
+    //       })
+    //       .catch((error) => {
+    //         setAlert('error', error.message);
+    //         setTopicDropdown([]);
+    //       });
+    //   }
+    // }
   };
   const handleFilter = () => {
     if (!filterData?.grade) {
@@ -294,8 +396,14 @@ const QuestionBankFilters = ({
       setAlert('error', 'Select all the fields!');
       return;
     }
-    console.log(filterData?.topicId,'TOPICID')
-    handlePeriodList(filterData.quesType.id, quesCatData, filterData.subject, quesLevel,filterData.topicId);
+    console.log(filterData?.topicId, 'TOPICID');
+    handlePeriodList(
+      filterData.quesType.id,
+      quesCatData,
+      filterData.subject,
+      quesLevel,
+      filterData.topicId
+    );
     setSelectedIndex(-1);
 
     // if (filterData.chapter) {
@@ -320,6 +428,7 @@ const QuestionBankFilters = ({
   };
 
   useEffect(() => {
+    // <<<<<<<<<<<<<<<GRADE DROPDOWN>>>>>>>>>>>>>>>>>>>>>
     // axiosInstance
     //   .get(`${endpoints.questionBank.grades}`)
     //   .then((result) => {
@@ -332,23 +441,42 @@ const QuestionBankFilters = ({
     //   .catch((error) => {
     //     setAlert('error', error.message);
     //   });
+
+    // <<<<<>>>>>>QUESTION TYPE API>>>>>>>>>>>><<<<<<<<<<
+    // axiosInstance
+    //   .get(`${endpoints.questionBank.examType}`)
+    //   .then((result) => {
+    //     if (result.data.status_code === 200) {
+    //       setQueTypeDropdown(result.data.result);
+    //     } else {
+    //       setAlert('error', result.data.message);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     setAlert('error', error.message);
+    //   });
+    setLoading(true)
     axiosInstance
-      .get(`${endpoints.questionBank.examType}`)
+      .get(`${endpoints.userManagement.academicYear}`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setQueTypeDropdown(result.data.result);
+          setAcademicYearDropdown(result?.data?.data);
+          setLoading(false)
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result.data?.message);
         }
       })
       .catch((error) => {
         setAlert('error', error.message);
       });
-      axiosInstance
-      .get(`${endpoints.userManagement.academicYear}`)
+    axios
+      .get(`${endpoints.createQuestionApis.questionType}`, {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      })
       .then((result) => {
         if (result.data.status_code === 200) {
-          setAcademicYearDropdown(result?.data?.data);
+          setQueTypeDropdown(result?.data?.result?.filter((obj) => obj?.id !== 5));
+          setLoading(false)
         } else {
           setAlert('error', result.data?.message);
         }
@@ -359,6 +487,9 @@ const QuestionBankFilters = ({
   }, []);
 
   return (
+    <>
+        {loading ? <Loading message='Loading...' /> : null}
+
     <Grid
       container
       spacing={isMobile ? 3 : 5}
@@ -376,7 +507,12 @@ const QuestionBankFilters = ({
           getOptionLabel={(option) => option?.session_year}
           filterSelectedOptions
           renderInput={(params) => (
-            <TextField {...params} variant='outlined' label='Academic Year' placeholder='Academic Year' />
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Academic Year'
+              placeholder='Academic Year'
+            />
           )}
         />
       </Grid>
@@ -392,7 +528,12 @@ const QuestionBankFilters = ({
           getOptionLabel={(option) => option?.branch?.branch_name}
           filterSelectedOptions
           renderInput={(params) => (
-            <TextField {...params} variant='outlined' label='Branch' placeholder='Branch' />
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Branch'
+              placeholder='Branch'
+            />
           )}
         />
       </Grid>
@@ -589,6 +730,7 @@ const QuestionBankFilters = ({
       )}
       {isMobile && <Grid item xs={3} sm={0} />}
     </Grid>
+    </>
   );
 };
 

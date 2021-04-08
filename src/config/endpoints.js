@@ -1,10 +1,11 @@
 // const baseURLCentral = 'http://13.232.30.169/qbox';
 const appBaseURL = window.location.hostname;
-const baseURLCentral = (appBaseURL.includes("dev.") || appBaseURL.includes("localhost"))
-  ? 'http://dev.mgmt.letseduvate.com/qbox'
-  : 'https://mgmt.letseduvate.com/qbox';
+const baseURLCentral =
+  appBaseURL.includes('dev.') || appBaseURL.includes('localhost')
+    ? 'http://dev.mgmt.letseduvate.com/qbox'
+    : 'https://mgmt.letseduvate.com/qbox';
 // const baseURLCentral = 'http://dev.mgmt.letseduvate.com/qbox'
-// const baseURLCentral = 'https://mgmt.letseduvate.com/qbox';
+// const baseURLCentral = 'http://192.168.0.67/qbox';
 
 export default {
   auth: {
@@ -95,8 +96,7 @@ export default {
     updateMessageType: '/communication/',
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
-    editChapter: '/academic/'
-
+    editChapter: '/academic/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -155,7 +155,7 @@ export default {
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
     editChapter: '/academic/',
-    centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`
+    centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`,
     //'https://dev.mgmt.letseduvate.com/qbox/lesson_plan/erp_lesson_mapping/?domain_name=olvorchidnaigaon'
   },
   lessonPlan: {
@@ -222,7 +222,7 @@ export default {
     createCircular: '/circular/upload-circular/',
     deleteCircular: '/circular/delete-circular/',
     updateCircular: '/circular/update-circular/',
-    deleteFile:'/academic/delete-file/',
+    deleteFile: '/academic/delete-file/',
   },
   generalDairy: {
     dairyList: '/academic/general-dairy-messages/',
@@ -281,19 +281,23 @@ export default {
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
-  questionBank:{
-    grades:'/lesson_plan/list-grade/',
-    subjects:'/lesson_plan/list-grade-subject-mapping/',
-    topics:'/assessment/topic/',
-    examType:'/assessment/question_type/',
-    questionData:'/assessment/question-list/',
-    viewMoreData:'/assessment/question-details/',
-    uploadFile: '/assessment/upload-question-file/',
-    removeFile: '/assessment/delete-s3file/',
-    deleteQuestion:'/assessment/publish-question/',
-  },
-  assessmentApis : {
+  assessmentApis: {
     gradesList: `/academic/sm-grades-list/`,
+  },
+  questionBank: {
+    grades: `${baseURLCentral}/lesson_plan/list-grade/`,
+    subjects: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
+    topics: `${baseURLCentral}/assessment/topic/`,
+    examType: `${baseURLCentral}/assessment/question_type/`,
+    questionData: `${baseURLCentral}/assessment/question-list/`,
+    viewMoreData: `${baseURLCentral}/assessment/question-details/`,
+    uploadFile: `${baseURLCentral}/assessment/upload-question-file/`,
+    removeFile: `${baseURLCentral}/assessment/delete-s3file/`,
+    deleteQuestion: `${baseURLCentral}/assessment/publish-question/`,
+  },
+  assementQP: {
+    assementFilter: '/assessment/list-question-paper/',
+    assementViewmore: '/assessment/',
   },
   createQuestionApis: {
     topicList: `${baseURLCentral}/assessment/topic/`,

@@ -7,6 +7,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
+import axios from 'axios';
 import './top-filters.css';
 
 const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) => {
@@ -205,8 +206,8 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
     if (value) {
       setFilterData({ ...filterData, subject: value });
       if (value) {
-        axiosInstance
-          .get(`${endpoints.lessonPlan.chapterListCentral}?grade_subject=${value.id}`, {
+        axios
+          .get(`${endpoints.lessonPlan.chapterListCentral}?grade_subject=${33}`, {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           })
           .then((result) => {
@@ -235,7 +236,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
     if (value) {
       setFilterData({ ...filterData, chapter: value, topic: '' });
       if (value) {
-        axiosInstance
+        axios
           .get(`${endpoints.createQuestionApis.topicList}?chapter=${value.id}`, {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           })
@@ -377,7 +378,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           className='dropdownIcon'
           value={filterData.subject || ''}
           options={dropdownData.subjects || []}
-          // getOptionLabel={(option) => option?.subject?.subject_name}
+          getOptionLabel={(option) => option?.subject?.subject_name || ''}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField
@@ -398,7 +399,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           className='dropdownIcon'
           value={filterData.chapter || ''}
           options={dropdownData.chapters || []}
-          // getOptionLabel={(option) => option?.chapter_name}
+          getOptionLabel={(option) => option?.chapter_name||''}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField
@@ -419,7 +420,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           className='dropdownIcon'
           value={filterData.topic || ''}
           options={dropdownData.topics || []}
-          // getOptionLabel={(option) => option?.topic_name}
+          getOptionLabel={(option) => option?.topic_name||''}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField {...params} variant='outlined' label='Topic' placeholder='Topic' />
