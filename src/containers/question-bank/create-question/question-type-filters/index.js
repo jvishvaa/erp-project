@@ -257,8 +257,10 @@ const QuestionTypeFilters = ({
           .map((obj) => obj?.data?.id)
           .filter(Boolean),
       };
-      axiosInstance
-        .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody)
+      axios
+        .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        })
         .then((result) => {
           if (result.data.status_code === 200) {
             const objlist = { ...showQuestionType };
@@ -344,8 +346,10 @@ const QuestionTypeFilters = ({
       formData.append('subject_name', filterDataDisplay.subject?.subject?.subject_name);
       formData.append('question_categories', filterData.category.category);
       formData.append('question_type', filterData.type?.question_type);
-      axiosInstance
-        .post(`${endpoints.questionBank.uploadFile}`, formData)
+      axios
+        .post(`${endpoints.questionBank.uploadFile}`, formData, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        })
         .then((result) => {
           if (result.data.status_code === 200) {
             setVideoURL(result.data.result);
@@ -366,10 +370,16 @@ const QuestionTypeFilters = ({
 
   const handleRemoveVideo = () => {
     setLoading(true);
-    axiosInstance
-      .post(`${endpoints.questionBank.removeFile}`, {
-        file_name: videoURL,
-      })
+    axios
+      .post(
+        `${endpoints.questionBank.removeFile}`,
+        {
+          file_name: videoURL,
+        },
+        {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        }
+      )
       .then((result) => {
         if (result.data.status_code === 204) {
           setVideoURL('');

@@ -2,6 +2,7 @@ import React from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
+import axios from 'axios';
 
 const MyTinyEditor = ({
   id,
@@ -61,11 +62,13 @@ const MyTinyEditor = ({
               );
               formData.append('question_categories', filterDataBottom.category.category);
               formData.append('question_type', filterDataBottom.type?.question_type);
-              axiosInstance
-                .post(`${endpoints.questionBank.uploadFile}`, formData)
+              axios
+                .post(`${endpoints.questionBank.uploadFile}`, formData, {
+                  headers: { 'x-api-key': 'vikash@12345#1231' },
+                })
                 .then((result) => {
                   if (result.data.status_code === 200) {
-                    let imageUrl = `${endpoints.s3}${result.data?.result}`;
+                    let imageUrl = `${endpoints.assessment.s3}${result.data?.result}`;
                     cb(imageUrl, { alt: 'My alt text' });
                   } else {
                   }

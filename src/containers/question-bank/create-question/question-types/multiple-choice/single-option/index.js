@@ -16,6 +16,7 @@ import deleteicon from '../../../../../../assets/images/deleteicon.svg';
 import attachmentIcon from '../../../../../../assets/images/attachmenticon.svg';
 import deletematch from '../../../../../../assets/images/deletematch.svg';
 import './single-option.css';
+import axios from 'axios';
 
 const SingleOption = ({
   option,
@@ -141,7 +142,7 @@ const SingleOption = ({
                   <div className='optionImageThumbnailContainer'>
                     <div className='optionImageThumbnail'>
                       <img
-                        src={`${endpoints.s3}${image}`}
+                        src={`${endpoints.assessment.s3}${image}`}
                         alt='Not found'
                         className='optionImageAttachment'
                       />
