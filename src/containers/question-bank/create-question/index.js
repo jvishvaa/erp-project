@@ -18,6 +18,7 @@ import selectfilter from '../../../assets/images/selectfilter.svg';
 import TopFilters from './top-filters';
 import QuestionTypeFilters from './question-type-filters';
 import './create-question.css';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,8 +48,10 @@ const CreateQuestion = () => {
 
   useEffect(() => {
     if (qId) {
-      axiosInstance
-        .get(`/assessment/${qId}/retrieve_update_question/`)
+      axios
+        .get(`${endpoints.baseURLCentral}/assessment/${qId}/retrieve_update_question/`, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        })
         .then((res) => {
           const { status_code, result, message, error_msg } = res?.data;
           if (status_code === 200) {
