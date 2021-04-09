@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import useStyles from './useStyles';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
+import axios from 'axios'
 import { addQuestionPaperToTest } from '../../../../redux/actions';
 
 // import '../../lesson-plan-view/lesson.css';
@@ -59,10 +60,15 @@ const AssessmentCard = ({
 
   const handlePublish = () => {
     setPublishFlag(false);
-    axiosInstance
+    // axiosInstance
+    axios
       .put(`/assessment/${period?.id}/update-status-question-paper/`, {
         is_verified: true,
-      })
+      },
+      {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      }
+      )
       .then((result) => {
         if (result.data.status_code > 199 && result.data.status_code < 300) {
           setAlert('success', result.data.message);
@@ -78,8 +84,12 @@ const AssessmentCard = ({
 
   const handleViewMore = () => {
     setLoading(true);
-    axiosInstance
-      .get(`${endpoints.assementQP.assementViewmore}${period.id}/qp-questions-list/`)
+    // axiosInstance
+    axios
+      .get(`${endpoints.assementQP.assementViewmore}${period.id}/qp-questions-list/`,
+      {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      })
       .then((result) => {
         if (result.data.status_code === 200) {
           const { sections, questions } = result.data.result;
