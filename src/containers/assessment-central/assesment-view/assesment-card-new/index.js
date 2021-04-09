@@ -12,6 +12,7 @@ import useStyles from './useStyles';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
 import { addQuestionPaperToTest } from '../../../../redux/actions';
+import axios from 'axios';
 
 // import '../../lesson-plan-view/lesson.css';
 // import downloadAll from '../../../../assets/images/downloadAll.svg';
@@ -30,9 +31,8 @@ const AssessmentCard = ({
   setPeriodColor,
   setSelectedIndex,
   initAddQuestionPaperToTest,
-  setPublishFlag
+  setPublishFlag,
 }) => {
-  
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -59,10 +59,16 @@ const AssessmentCard = ({
 
   const handlePublish = () => {
     setPublishFlag(false);
-    axiosInstance
-      .put(`/assessment/${period?.id}/update-status-question-paper/`, {
-        is_verified: true,
-      })
+    axios
+      .put(
+        `${endpoints.baseURLCentral}/assessment/${period?.id}/update-status-question-paper/`,
+        {
+          is_verified: true,
+        },
+        {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        }
+      )
       .then((result) => {
         if (result.data.status_code > 199 && result.data.status_code < 300) {
           setAlert('success', result.data.message);
@@ -78,8 +84,10 @@ const AssessmentCard = ({
 
   const handleViewMore = () => {
     setLoading(true);
-    axiosInstance
-      .get(`${endpoints.assementQP.assementViewmore}${period.id}/qp-questions-list/`)
+    axios
+      .get(`${endpoints.assementQP.assementViewmore}${period.id}/qp-questions-list/`, {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      })
       .then((result) => {
         if (result.data.status_code === 200) {
           const { sections, questions } = result.data.result;
@@ -158,31 +166,33 @@ const AssessmentCard = ({
           </Box>
         </Grid>
         {/* {period.is_verified && ( */}
-          <Grid item xs={4} className={classes.textRight}>
-            <Box>
-              <span
-                className='period_card_menu'
-                onClick={() => handlePeriodMenuOpen(index)}
-                onMouseLeave={handlePeriodMenuClose}
-              >
-                <IconButton className='moreHorizIcon' color='primary'>
-                  <MoreHorizIcon />
-                </IconButton>
-                {showPeriodIndex === index && showMenu ? (
-                  <div className='tooltipContainer'>
-                     {period.is_verified && (
+        <Grid item xs={4} className={classes.textRight}>
+          <Box>
+            <span
+              className='period_card_menu'
+              onClick={() => handlePeriodMenuOpen(index)}
+              onMouseLeave={handlePeriodMenuClose}
+            >
+              <IconButton className='moreHorizIcon' color='primary'>
+                <MoreHorizIcon />
+              </IconButton>
+              {showPeriodIndex === index && showMenu ? (
+                <div className='tooltipContainer'>
+                  {period.is_verified && (
                     <span className='tooltiptext' onClick={handleAssign}>
                       Assign To Test
-                    </span>)}
-                    {!period.is_verified && (
+                    </span>
+                  )}
+                  {!period.is_verified && (
                     <span className='tooltiptext' onClick={handlePublish}>
                       Publish Paper
-                    </span>)}
-                  </div>
-                ) : null}
-              </span>
-            </Box>
-          </Grid>
+                    </span>
+                  )}
+                </div>
+              ) : null}
+            </span>
+          </Box>
+        </Grid>
         {/* )} */}
         <Grid item xs={12} sm={12} />
         <Grid item xs={6}>

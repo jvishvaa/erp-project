@@ -1,4 +1,6 @@
 import axiosInstance from '../../config/axios';
+import axios from 'axios';
+import endpoints from '../../config/endpoints';
 
 export const createQuestionPaperActions = {
   ADD_NEW_QUESTION: 'ADD_NEW_QUESTION',
@@ -32,7 +34,13 @@ export const addQuestionToSection = (data, questionId, section) => ({
 export const createQuestionPaper = (data) => async (dispatch) => {
   dispatch({ type: createQuestionPaperActions.CREATE_QUESTION_PAPER_STARTED });
   try {
-    const response = await axiosInstance.post('/assessment/question-paper/', data);
+    const response = await axios.post(
+      `${endpoints.baseURLCentral}/assessment/question-paper/`,
+      data,
+      {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      }
+    );
     dispatch({ type: createQuestionPaperActions.CREATE_QUESTION_PAPER_SUCCESS });
     if (response.data.status_code !== 200) {
       throw new Error();

@@ -80,8 +80,29 @@ const CreateQuestionPaper = ({
   const [expandFilter, setExpandFilter] = useState(true);
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
-
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+
+  useEffect(() => {
+    if (formik.values.academic) {
+      getBranch(formik.values.academic.id);
+      if (formik.values.branch) {
+        getGrades(formik.values.branch.branch.id);
+        if (formik.values.grade) {
+          getSubjects(formik.values.grade.mp_id);
+        } else {
+          setSubjects([])
+        }
+      } else {
+        setGrades([])
+      }
+    } else {
+      setBranchDropdown([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    getAcademic();
+  }, []);
 
   const validationSchema = Yup.object({
     academic: Yup.object('').required('Required').nullable(),
@@ -114,27 +135,27 @@ const CreateQuestionPaper = ({
     }
   };
 
-  const getBranch = async () => {
+  const getBranch = async (acadId) => {
     try {
-      const data = await fetchGrades();
+      const data = await fetchBranches(acadId);
       setBranchDropdown(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch branch');
     }
   };
 
-  const getGrades = async () => {
+  const getGrades = async (branchId) => {
     try {
-      const data = await fetchGrades();
+      const data = await fetchGrades(branchId);
       setGrades(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch grades');
     }
   };
 
-  const getSubjects = async (gradeId) => {
+  const getSubjects = async (mappingId) => {
     try {
-      const data = await fetchSubjects(gradeId);
+      const data = await fetchSubjects(mappingId);
       setSubjects(data);
     } catch (e) {}
   };
@@ -273,21 +294,36 @@ const CreateQuestionPaper = ({
     }
   };
 
-  useEffect(() => {
-    if (formik.values.grade) {
-      getSubjects(formik.values.grade.id);
-    } else {
-      setSubjects([]);
+  const handleAcademicYear = (event, value) => {
+    if (value) {
+      getBranch(value.id);
+      formik.setFieldValue('academic', value);
+      initSetFilter('selectedAcademic', value);
     }
-  }, [formik.values.grade]);
+  };
 
-  // useEffect(() => {
-  //   getGrades();
-  // }, []);
+  const handleBranch = (event, value) => {
+    if (value) {
+      getGrades(value.branch.id);
+      formik.setFieldValue('branch', value);
+      initSetFilter('selectedBranch', value);
+    }
+  };
 
-  useEffect(() => {
-    getAcademic();
-  }, []);
+  const handleGrade = (event, value) => {
+    if (value) {
+      getSubjects(value.mp_id);
+      formik.setFieldValue('grade', value);
+      initSetFilter('selectedGrade', value);
+    }
+  };
+
+  const handleSubject = (event, value) => {
+    if (value) {
+      formik.setFieldValue('subject', value);
+      initSetFilter('selectedSubject', value);
+    }
+  };
 
   return (
     <Layout>
@@ -354,10 +390,11 @@ const CreateQuestionPaper = ({
                       id='academic'
                       name='academic'
                       className='dropdownIcon'
-                      onChange={(e, value) => {
-                        formik.setFieldValue('academic', value);
-                        initSetFilter('selectedAcademic', value);
-                      }}
+                      onChange={handleAcademicYear}
+                      // onChange={(e, value) => {
+                      //   formik.setFieldValue('academic', value);
+                      //   initSetFilter('selectedAcademic', value);
+                      // }}
                       value={formik.values.academic}
                       options={academicDropdown}
                       getOptionLabel={(option) => option.session_year || ''}
@@ -382,12 +419,13 @@ const CreateQuestionPaper = ({
                       id='branch'
                       name='branch'
                       className='dropdownIcon'
-                      onChange={(e, value) => {
-                        formik.setFieldValue('branch', value);
-                        initSetFilter('selectedBranch', value);
-                      }}
-                      value={formik.values.branch||''}
-                      options={branchDropdown||[]}
+                      onChange={handleBranch}
+                      // onChange={(e, value) => {
+                      //   formik.setFieldValue('branch', value);
+                      //   initSetFilter('selectedBranch', value);
+                      // }}
+                      value={formik.values.branch || ''}
+                      options={branchDropdown || []}
                       getOptionLabel={(option) => option?.branch?.branch_name || ''}
                       renderInput={(params) => (
                         <TextField
@@ -410,10 +448,11 @@ const CreateQuestionPaper = ({
                       id='grade'
                       name='grade'
                       className='dropdownIcon'
-                      onChange={(e, value) => {
-                        formik.setFieldValue('grade', value);
-                        initSetFilter('selectedGrade', value);
-                      }}
+                      onChange={handleGrade}
+                      // onChange={(e, value) => {
+                      //   formik.setFieldValue('grade', value);
+                      //   initSetFilter('selectedGrade', value);
+                      // }}
                       value={formik.values.grade}
                       options={grades}
                       getOptionLabel={(option) => option.grade_name || ''}
@@ -437,10 +476,11 @@ const CreateQuestionPaper = ({
                     <Autocomplete
                       id='subject'
                       name='subject'
-                      onChange={(e, value) => {
-                        formik.setFieldValue('subject', value);
-                        initSetFilter('selectedSubject', value);
-                      }}
+                      onChange={handleSubject}
+                      // onChange={(e, value) => {
+                      // formik.setFieldValue('subject', value);
+                      // initSetFilter('selectedSubject', value);
+                      // }}
                       multiple
                       className='dropdownIcon'
                       value={formik.values.subject}
