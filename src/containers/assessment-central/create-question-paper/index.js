@@ -53,6 +53,8 @@ const CreateQuestionPaper = ({
   initAddQuestion,
   initCreateQuestionPaper,
   initSetFilter,
+  selectedAcademic,
+  selectedBranch,
   selectedGrade,
   selectedSubject,
   selectedLevel,
@@ -75,12 +77,16 @@ const CreateQuestionPaper = ({
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   const validationSchema = Yup.object({
+    academic: Yup.object('').required('Required').nullable(),
+    branch: Yup.object('').required('Required').nullable(),
     grade: Yup.object('').required('Required').nullable(),
     subject: Yup.object('').required('Required').nullable(),
   });
 
   const formik = useFormik({
     initialValues: {
+      academic: selectedAcademic,
+      branch: selectedBranch,
       grade: selectedGrade,
       subject: selectedSubject,
       question_paper_level: selectedLevel,
@@ -313,7 +319,63 @@ const CreateQuestionPaper = ({
             <AccordionDetails>
               {/* <div className='form-grid-container mv-20'> */}
               <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
+                  <FormControl fullWidth variant='outlined'>
+                    <Autocomplete
+                      id='academic'
+                      name='academic'
+                      className='dropdownIcon'
+                      onChange={(e, value) => {
+                        formik.setFieldValue('academic', value);
+                        initSetFilter('selectedAcademic', value);
+                      }}
+                      value={formik.values.academic}
+                      options={grades}
+                      getOptionLabel={(option) => option.session_year || ''}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant='outlined'
+                          label='Academic Year'
+                          placeholder='Academic Year'
+                        />
+                      )}
+                      size='small'
+                    />
+                    <FormHelperText style={{ color: 'red' }}>
+                      {formik.errors.academic ? formik.errors.academic : ''}
+                    </FormHelperText>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <FormControl fullWidth variant='outlined'>
+                    <Autocomplete
+                      id='branch'
+                      name='branch'
+                      className='dropdownIcon'
+                      onChange={(e, value) => {
+                        formik.setFieldValue('branch', value);
+                        initSetFilter('selectedBranch', value);
+                      }}
+                      value={formik.values.branch}
+                      options={grades}
+                      getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant='outlined'
+                          label='Branch'
+                          placeholder='Branch'
+                        />
+                      )}
+                      size='small'
+                    />
+                    <FormHelperText style={{ color: 'red' }}>
+                      {formik.errors.branch ? formik.errors.branch : ''}
+                    </FormHelperText>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={3}>
                   <FormControl fullWidth variant='outlined'>
                     <Autocomplete
                       id='grade'
@@ -341,7 +403,7 @@ const CreateQuestionPaper = ({
                     </FormHelperText>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                   <FormControl fullWidth variant='outlined'>
                     <Autocomplete
                       id='subject'
@@ -371,7 +433,7 @@ const CreateQuestionPaper = ({
                   </FormControl>
                 </Grid>
 
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                   <FormControl fullWidth variant='outlined'>
                     <Autocomplete
                       id='question_paper_level'
@@ -460,6 +522,8 @@ const CreateQuestionPaper = ({
 
 const mapStateToProps = (state) => ({
   questions: state.createQuestionPaper.questions,
+  selectedAcademic: state.createQuestionPaper.selectedAcademic,
+  selectedBranch: state.createQuestionPaper.selectedBranch,
   selectedGrade: state.createQuestionPaper.selectedGrade,
   selectedSubject: state.createQuestionPaper.selectedSubject,
   selectedLevel: state.createQuestionPaper.selectedLevel,

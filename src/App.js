@@ -243,6 +243,7 @@ import QuestionBankList from './containers/question-bank/question-bank-list';
 import CreateQuestion from './containers/question-bank/create-question';
 import CreateQuestionPaper from './containers/assessment-central/create-question-paper';
 // import Assesmentquestion from './containers/assesment/assesment';
+import Assesment from './containers/assessment-central';
 import AssessmentView from './containers/assessment-central/assesment-view';
 import CreateAssesment from './containers/assessment-central/create-assesment';
 
@@ -334,6 +335,9 @@ function App({ alert }) {
                             {({ match, history }) => (
                               <Forgot match={match} history={history} />
                             )}
+                          </Route>
+                          <Route path='/assesment'>
+                            {({ match }) => <Assesment match={match} />}
                           </Route>
                           {/*
                         <Route exact path='/assignrole'>

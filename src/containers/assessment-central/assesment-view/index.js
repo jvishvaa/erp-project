@@ -20,6 +20,7 @@ import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 import hidefilter from '../../../assets/images/hidefilter.svg';
 import showfilter from '../../../assets/images/showfilter.svg';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -85,9 +86,12 @@ const AssessmentView = () => {
       // } else if (tabValue == 3) {
       //   tabVal = '&is_verified=True';
       // }
-      axiosInstance
+      axios
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}${tabVal}&page=${page}&page_size=${limit}`
+          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}${tabVal}&page=${page}&page_size=${limit}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
         )
         // axiosInstance.get(`${endpoints.assementQP.assementFilter}?grade=${2}&paper_level=${1}`)
         .then((result) => {
@@ -108,9 +112,12 @@ const AssessmentView = () => {
         });
     } else if (newValue == 1) {
       setTabValue(1);
-      axiosInstance
+      axios
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_draft=True&page=${page}&page_size=${limit}`
+          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_draft=True&page=${page}&page_size=${limit}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
         )
         // axiosInstance.get(`${endpoints.assementQP.assementFilter}?grade=${2}&paper_level=${1}&is_draft=True`)
         .then((result) => {
@@ -131,9 +138,12 @@ const AssessmentView = () => {
         });
     } else if (newValue == 2) {
       setTabValue(2);
-      axiosInstance
+      axios
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_review=True&page=${page}&page_size=${limit}`
+          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_review=True&page=${page}&page_size=${limit}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
         )
         // axiosInstance.get(`${endpoints.assementQP.assementFilter}?grade=${2}&paper_level=${1}&is_review=True`)
         .then((result) => {
@@ -154,9 +164,12 @@ const AssessmentView = () => {
         });
     } else if (newValue == 3) {
       setTabValue(3);
-      axiosInstance
+      axios
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_verified=True&page=${page}&page_size=${limit}`
+          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_verified=True&page=${page}&page_size=${limit}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
         )
         // axiosInstance.get(`${endpoints.assementQP.assementFilter}?grade=${2}&paper_level=${1}&is_verified=True`)
         .then((result) => {
