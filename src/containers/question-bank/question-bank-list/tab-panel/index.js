@@ -19,14 +19,14 @@ const useStyles = makeStyles({
     //   }
 });
 
-export default function CenteredTabs({setSelectedIndex, period,handlePeriodList,tabQueTypeId,tabQueCatId,tabMapId,tabQueLevel,setTabValue,tabValue,setPage}) {
+export default function CenteredTabs({setSelectedIndex, period,handlePeriodList,tabQueTypeId,tabQueCatId,tabMapId,tabQueLevel,setTabValue,tabValue,setPage,tabTopicId}) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
 
   const handleChange =  (event, newValue) => {
     setSelectedIndex(-1);
     setTabValue(newValue)
-    handlePeriodList(tabQueTypeId,tabQueCatId,tabMapId,tabQueLevel,newValue)
+    handlePeriodList(tabQueTypeId,tabQueCatId,tabMapId,tabQueLevel,tabTopicId,newValue)
     setValue(newValue);
     setPage(1)
   };

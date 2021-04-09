@@ -245,7 +245,8 @@ const QuestionTypeFilters = ({
     if (!editData?.id) {
       requestBody = {
         ...requestBody,
-        grade_subject_mapping: filterDataDisplay.subject.id,
+        grade_subject_mapping: 33,
+        // grade_subject_mapping: filterDataDisplay.subject.id,
       };
     }
     if (editData?.id) {
@@ -258,9 +259,13 @@ const QuestionTypeFilters = ({
           .filter(Boolean),
       };
       axios
-        .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody, {
-          headers: { 'x-api-key': 'vikash@12345#1231' },
-        })
+        .put(
+          `${endpoints.baseURLCentral}/assessment/${editData?.id}/retrieve_update_question/`,
+          requestBody,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             const objlist = { ...showQuestionType };

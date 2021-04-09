@@ -89,7 +89,6 @@ const MultipleChoice = ({
           { answer, question: editQuestion, options, matchingOptions, matrixOptions },
         ],
       } = editData;
-      console.log('editData', editData);
       if (
         showQuestionType?.MultipleChoiceMultipleSelect ||
         showQuestionType?.MultipleChoiceSingleSelect ||
@@ -424,7 +423,8 @@ const MultipleChoice = ({
     if (!editData?.id)
       requestBody = {
         ...requestBody,
-        grade_subject_mapping: filterDataTop.subject?.id,
+        grade_subject_mapping: 33,
+        // grade_subject_mapping: filterDataTop.subject?.id,
       };
 
     if (submitFlag || saveFlag) {
@@ -459,7 +459,7 @@ const MultipleChoice = ({
         // axiosInstance[editData?'put':'post'](apiEndPoint, requestBody).then((e)=>{
         // })
         axios
-          .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody, {
+          .put(`${endpoints.baseURLCentral}/assessment/${editData?.id}/retrieve_update_question/`, requestBody, {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           })
           .then((result) => {
@@ -734,7 +734,7 @@ const MultipleChoice = ({
                   </div>
                   <div
                     onClick={() => {
-                      setIsMinimized(!isMinimized);
+                      setIsMinimized(prev=>!prev);
                     }}
                   >
                     {isMinimized ? 'Maximize' : 'Minimize'}

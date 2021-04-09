@@ -16,6 +16,7 @@ import downloadAll from '../../../../assets/images/downloadAll.svg';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { Context } from '../../context/QuestionStore';
 import { AttachmentPreviewerContext } from '../../../../components/attachment-previewer/attachment-previewer-contexts';
+import axios from 'axios';
 
 const ViewMoreCard = ({
   viewMoreData,
@@ -41,6 +42,7 @@ const ViewMoreCard = ({
   const compData = viewMoreData?.child;
   const Data = periodDataForView?.question_answer;
   const history = useHistory();
+  const [queSRC, setQueSRC] = useState('');
   const optData = viewMoreData.parent;
   const getS3DomainURL = (fileSrc) => {
     return `${endpoints.s3}${fileSrc}`;
@@ -80,15 +82,21 @@ const ViewMoreCard = ({
   }
   const handleEdit = () => {
     history.push(`/create-question/${viewMoreData?.parent?.id}`);
-    // setState({editData:viewMoreData,isEdit:true})
   };
 
   const handlePublish = (obj) => {
-    axiosInstance
-      .put(`${endpoints.questionBank.deleteQuestion}`, {
+    // axiosInstance
+    axios
+      .put(`${endpoints.questionBank.deleteQuestion}`,
+      {
         question_status: 2,
         question: obj.parent.id,
-      })
+      },
+      {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+
+      }, 
+      )
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setSelectedIndex(-1);
@@ -101,11 +109,17 @@ const ViewMoreCard = ({
       .catch((error) => setAlert('error', error?.message));
   };
   const handleDelete = (obj) => {
-    axiosInstance
+    // axiosInstance
+    axios
       .put(`${endpoints.questionBank.deleteQuestion}`, {
         question_status: 1,
         question: obj.parent.id,
-      })
+      },
+      {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+
+      }, 
+      )
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setSelectedIndex(-1);
@@ -163,12 +177,44 @@ const ViewMoreCard = ({
           <div className='mcq-container'>
             <div className='question-container'>
               {Data?.map((p) => (
-                <div style={{ color: '#014B7E' }}>{extractContent(p.question)}</div>
+                <div style={{ color: '#014B7E' }}>
+                  {extractContent(p?.question)}
+                  <div>
+                    {p?.question?.split('"').filter((str) => str.startsWith('https'))
+                      .length > 0 && (
+                      <a
+                        onClick={() => {
+                          openPreview({
+                            currentAttachmentIndex: 0,
+                            attachmentsArray: (() => {
+                              let newArray = p?.question?.split('"');
+                              let filtered = newArray.filter((str) =>
+                                str.startsWith('https')
+                              );
+                              const images = filtered || {};
+                              const attachmentsArray = [];
+                              images.forEach((image) => {
+                                const attachmentObj = {
+                                  src: image,
+                                  name: `${image}`.split('.').slice(0, -1).join('.'),
+                                  extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                };
+                                attachmentsArray.push(attachmentObj);
+                              });
+                              return attachmentsArray;
+                            })(),
+                          });
+                        }}
+                      >
+                        <SvgIcon component={() => <VisibilityIcon />} />
+                      </a>
+                    )}
+                  </div>
+                </div>
               ))}
             </div>
 
             <div className='resourceBulkDownload'>Answers</div>
-            {/* <Divider className='secondary-divider' /> */}
             <div className='question-container'>
               {Data[0]?.answer.map((obj, i) => (
                 <div>{obj}</div>
@@ -216,7 +262,40 @@ const ViewMoreCard = ({
           <div className='ccc'>
             <div className='question-container'>
               {Data?.map((p) => (
-                <div style={{ color: '#014B7E' }}>{extractContent(p.question)}</div>
+                <div style={{ color: '#014B7E' }}>
+                  {extractContent(p.question)}
+                  {p?.question?.split('"').filter((str) => str.startsWith('https'))
+                    .length > 0 && (
+                    <div>
+                      <a
+                        onClick={() => {
+                          openPreview({
+                            currentAttachmentIndex: 0,
+                            attachmentsArray: (() => {
+                              let newArray = p?.question?.split('"');
+                              let filtered = newArray.filter((str) =>
+                                str.startsWith('https')
+                              );
+                              const images = filtered || {};
+                              const attachmentsArray = [];
+                              images.forEach((image) => {
+                                const attachmentObj = {
+                                  src: image,
+                                  name: `${image}`.split('.').slice(0, -1).join('.'),
+                                  extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                };
+                                attachmentsArray.push(attachmentObj);
+                              });
+                              return attachmentsArray;
+                            })(),
+                          });
+                        }}
+                      >
+                        <SvgIcon component={() => <VisibilityIcon />} />
+                      </a>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
 
@@ -237,7 +316,7 @@ const ViewMoreCard = ({
 
             <div className='resourceBulkDownload'>Options</div>
             <div>
-              {Data[0]?.options.map((obj, i) => (
+              {Data[0]?.options?.map((obj, i) => (
                 <div className='question-container'>
                   {`OPTION${i + 1}:   ${obj.optionValue}`}
                   {obj?.images?.length > 0 && (
@@ -426,18 +505,13 @@ const ViewMoreCard = ({
                         <div className='resourceBulkDownload'>Options</div>
                         <div className='question-container'>
                           {childQuestions?.question_answer[0]?.options.map((obj, i) => {
-                              console.log(
-                                'object option: ',
-                                obj,
-                                obj[Object.keys(obj)[0]]?.isChecked
-                              );
-                              return (
-                                <div>
-                                  {Object.keys(obj)[0] || ''} :{' '}
-                                  {obj[Object.keys(obj)[0]]?.isChecked ? 'True' : 'False'}
-                                </div>
-                              );
-                            })}
+                            return (
+                              <div>
+                                {Object.keys(obj)[0] || ''} :{' '}
+                                {obj[Object.keys(obj)[0]]?.isChecked ? 'True' : 'False'}
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     </>
@@ -721,7 +795,40 @@ const ViewMoreCard = ({
           <div className='ccc'>
             <div className='question-container'>
               {Data?.map((p) => (
-                <div style={{ color: '#014B7E' }}>{extractContent(p.question)}</div>
+                <div style={{ color: '#014B7E' }}>
+                  {extractContent(p.question)}
+                  {p?.question?.split('"').filter((str) => str.startsWith('https'))
+                    .length > 0 && (
+                    <div>
+                      <a
+                        onClick={() => {
+                          openPreview({
+                            currentAttachmentIndex: 0,
+                            attachmentsArray: (() => {
+                              let newArray = p?.question?.split('"');
+                              let filtered = newArray.filter((str) =>
+                                str.startsWith('https')
+                              );
+                              const images = filtered || {};
+                              const attachmentsArray = [];
+                              images.forEach((image) => {
+                                const attachmentObj = {
+                                  src: image,
+                                  name: `${image}`.split('.').slice(0, -1).join('.'),
+                                  extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                };
+                                attachmentsArray.push(attachmentObj);
+                              });
+                              return attachmentsArray;
+                            })(),
+                          });
+                        }}
+                      >
+                        <SvgIcon component={() => <VisibilityIcon />} />
+                      </a>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
 
@@ -789,7 +896,40 @@ const ViewMoreCard = ({
           <div className='ccc'>
             <div className='question-container'>
               {Data?.map((p) => (
-                <div style={{ color: '#014B7E' }}>{extractContent(p.question)}</div>
+                <div style={{ color: '#014B7E' }}>
+                  {extractContent(p.question)}
+                  {p?.question?.split('"').filter((str) => str.startsWith('https'))
+                    .length > 0 && (
+                    <div>
+                      <a
+                        onClick={() => {
+                          openPreview({
+                            currentAttachmentIndex: 0,
+                            attachmentsArray: (() => {
+                              let newArray = p?.question?.split('"');
+                              let filtered = newArray.filter((str) =>
+                                str.startsWith('https')
+                              );
+                              const images = filtered || {};
+                              const attachmentsArray = [];
+                              images.forEach((image) => {
+                                const attachmentObj = {
+                                  src: image,
+                                  name: `${image}`.split('.').slice(0, -1).join('.'),
+                                  extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                };
+                                attachmentsArray.push(attachmentObj);
+                              });
+                              return attachmentsArray;
+                            })(),
+                          });
+                        }}
+                      >
+                        <SvgIcon component={() => <VisibilityIcon />} />
+                      </a>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
             {Array.isArray(compData) &&
@@ -903,18 +1043,13 @@ const ViewMoreCard = ({
                         <div className='resourceBulkDownload'>Options</div>
                         <div className='question-container'>
                           {childQuestions?.question_answer[0]?.options.map((obj, i) => {
-                              console.log(
-                                'object option: ',
-                                obj,
-                                obj[Object.keys(obj)[0]]?.isChecked
-                              );
-                              return (
-                                <div>
-                                  {Object.keys(obj)[0] || ''} :{' '}
-                                  {obj[Object.keys(obj)[0]]?.isChecked ? 'True' : 'False'}
-                                </div>
-                              );
-                            })}
+                            return (
+                              <div>
+                                {Object.keys(obj)[0] || ''} :{' '}
+                                {obj[Object.keys(obj)[0]]?.isChecked ? 'True' : 'False'}
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     </>
@@ -1199,7 +1334,40 @@ const ViewMoreCard = ({
             <div className='question-container'>
               {Data &&
                 Data?.map((p) => (
-                  <div style={{ color: '#014B7E' }}>{extractContent(p.question)}</div>
+                  <div style={{ color: '#014B7E' }}>
+                    {extractContent(p.question)}
+                    {p?.question?.split('"').filter((str) => str.startsWith('https'))
+                      .length > 0 && (
+                      <div>
+                        <a
+                          onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: (() => {
+                                let newArray = p?.question?.split('"');
+                                let filtered = newArray.filter((str) =>
+                                  str.startsWith('https')
+                                );
+                                const images = filtered || {};
+                                const attachmentsArray = [];
+                                images.forEach((image) => {
+                                  const attachmentObj = {
+                                    src: image,
+                                    name: `${image}`.split('.').slice(0, -1).join('.'),
+                                    extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                  };
+                                  attachmentsArray.push(attachmentObj);
+                                });
+                                return attachmentsArray;
+                              })(),
+                            });
+                          }}
+                        >
+                          <SvgIcon component={() => <VisibilityIcon />} />
+                        </a>
+                      </div>
+                    )}
+                  </div>
                 ))}
             </div>
             <div className='resourceBulkDownload'>Answers</div>
@@ -1210,11 +1378,6 @@ const ViewMoreCard = ({
             <div className='question-container'>
               {Data &&
                 Data[0]?.options.map((obj, i) => {
-                  console.log(
-                    'object option: ',
-                    obj,
-                    obj[Object.keys(obj)[0]]?.isChecked
-                  );
                   return (
                     <div>
                       {Object.keys(obj)[0] || ''} :{' '}
@@ -1231,7 +1394,40 @@ const ViewMoreCard = ({
             <div className='question-container'>
               {Data &&
                 Data?.map((p) => (
-                  <div style={{ color: '#014B7E' }}>{extractContent(p.question)}</div>
+                  <div style={{ color: '#014B7E' }}>
+                    {extractContent(p.question)}
+                    {p?.question?.split('"').filter((str) => str.startsWith('https'))
+                      .length > 0 && (
+                      <div>
+                        <a
+                          onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: (() => {
+                                let newArray = p?.question?.split('"');
+                                let filtered = newArray.filter((str) =>
+                                  str.startsWith('https')
+                                );
+                                const images = filtered || {};
+                                const attachmentsArray = [];
+                                images.forEach((image) => {
+                                  const attachmentObj = {
+                                    src: image,
+                                    name: `${image}`.split('.').slice(0, -1).join('.'),
+                                    extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                  };
+                                  attachmentsArray.push(attachmentObj);
+                                });
+                                return attachmentsArray;
+                              })(),
+                            });
+                          }}
+                        >
+                          <SvgIcon component={() => <VisibilityIcon />} />
+                        </a>
+                      </div>
+                    )}
+                  </div>
                 ))}
             </div>
 
@@ -1282,7 +1478,40 @@ const ViewMoreCard = ({
             <div className='question-container'>
               {Data &&
                 Data?.map((p) => (
-                  <div style={{ color: '#014B7E' }}>{extractContent(p.question)}</div>
+                  <div style={{ color: '#014B7E' }}>
+                    {extractContent(p.question)}
+                    {p?.question?.split('"').filter((str) => str.startsWith('https'))
+                      .length > 0 && (
+                      <div>
+                        <a
+                          onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: (() => {
+                                let newArray = p?.question?.split('"');
+                                let filtered = newArray.filter((str) =>
+                                  str.startsWith('https')
+                                );
+                                const images = filtered || {};
+                                const attachmentsArray = [];
+                                images.map((image) => {
+                                  const attachmentObj = {
+                                    src: image,
+                                    name: `${image}`.split('.').slice(0, -1).join('.'),
+                                    extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                  };
+                                  attachmentsArray.push(attachmentObj);
+                                });
+                                return attachmentsArray;
+                              })(),
+                            });
+                          }}
+                        >
+                          <SvgIcon component={() => <VisibilityIcon />} />
+                        </a>
+                      </div>
+                    )}
+                  </div>
                 ))}
             </div>
 
