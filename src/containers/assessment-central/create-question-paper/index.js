@@ -25,7 +25,12 @@ import cuid from 'cuid';
 import { useLocation } from 'react-router-dom';
 import Layout from '../../Layout';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import { fetchGrades, fetchSubjects } from '../../lesson-plan/create-lesson-plan/apis';
+import {
+  fetchAcademicYears,
+  fetchBranches,
+  fetchGrades,
+  fetchSubjects,
+} from '../../lesson-plan/create-lesson-plan/apis';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import productIcon from '../../../assets/images/product-icons.svg';
 import infoicon from '../../../assets/images/infoicon.svg';
@@ -65,6 +70,8 @@ const CreateQuestionPaper = ({
   const location = useLocation();
   const history = useHistory();
   const query = new URLSearchParams(location.search);
+  const [academicDropdown, setAcademicDropdown] = useState([]);
+  const [branchDropdown, setBranchDropdown] = useState([]);
   const [grades, setGrades] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [showQuestionPaper, setShowQuestionPaper] = useState(
@@ -97,6 +104,24 @@ const CreateQuestionPaper = ({
     validateOnChange: false,
     validateOnBlur: false,
   });
+
+  const getAcademic = async () => {
+    try {
+      const data = await fetchAcademicYears();
+      setAcademicDropdown(data);
+    } catch (e) {
+      setAlert('error', 'Failed to fetch academic');
+    }
+  };
+
+  const getBranch = async () => {
+    try {
+      const data = await fetchGrades();
+      setBranchDropdown(data);
+    } catch (e) {
+      setAlert('error', 'Failed to fetch branch');
+    }
+  };
 
   const getGrades = async () => {
     try {
@@ -256,8 +281,12 @@ const CreateQuestionPaper = ({
     }
   }, [formik.values.grade]);
 
+  // useEffect(() => {
+  //   getGrades();
+  // }, []);
+
   useEffect(() => {
-    getGrades();
+    getAcademic();
   }, []);
 
   return (
@@ -330,7 +359,7 @@ const CreateQuestionPaper = ({
                         initSetFilter('selectedAcademic', value);
                       }}
                       value={formik.values.academic}
-                      options={grades}
+                      options={academicDropdown}
                       getOptionLabel={(option) => option.session_year || ''}
                       renderInput={(params) => (
                         <TextField
@@ -357,8 +386,8 @@ const CreateQuestionPaper = ({
                         formik.setFieldValue('branch', value);
                         initSetFilter('selectedBranch', value);
                       }}
-                      value={formik.values.branch}
-                      options={grades}
+                      value={formik.values.branch||''}
+                      options={branchDropdown||[]}
                       getOptionLabel={(option) => option?.branch?.branch_name || ''}
                       renderInput={(params) => (
                         <TextField
