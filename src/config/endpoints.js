@@ -296,8 +296,8 @@ export default {
     deleteQuestion: `${baseURLCentral}/assessment/publish-question/`,
   },
   assementQP: {
-    assementFilter: '/assessment/list-question-paper/',
-    assementViewmore: '/assessment/',
+    assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,
+    assementViewmore: `${baseURLCentral}/assessment/`,
   },
   createQuestionApis: {
     topicList: `${baseURLCentral}/assessment/topic/`,
