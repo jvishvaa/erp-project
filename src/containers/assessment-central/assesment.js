@@ -13,6 +13,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import FilterTabs from './tabsFilter';
 import Store from './Store';
 import ViewMoreCard from './view-more-card';
+import axios from 'axios';
 // http://127.0.0.1:8000/qbox/assessment/list-question-paper/?grade=1&paper_level=1
 // http://127.0.0.1:8000/qbox/assessment/list-question-paper/?grade=1&paper_level=1&is_draft=True
 // http://127.0.0.1:8000/qbox/assessment/list-question-paper/?grade=1&paper_level=1&is_verified=True
@@ -24,6 +25,8 @@ const qpLevel = [
 ];
 
 const Assesmentquestion = () => {
+  const [academicDropdown,setAcademicDropdown] = useState([]);
+  const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [subjectDropdown, setSujectDropdown] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -56,25 +59,107 @@ const Assesmentquestion = () => {
       });
   }, []);
 
-  const handleGrade = (event, value) => {
+  const handleAcademicYear = (event, value) => {
+    setFilterData({
+      academic: '',
+      branch: '',
+      grade: '',
+      subject: '',
+    });
+    setBranchDropdown([]);
+    setGradeDropdown([]);
+    setSubjectDropdown([]);
     if (value) {
-      setGradeValue(value);
+      setFilterData({
+        ...filterData,
+        academic: value,
+      });
       axiosInstance
-        .get(`${endpoints.lessonPlan.gradeSubjectMappingList}?grade=${value.id}`)
+        .get(`${endpoints.academics.branches}?session_year=${value.id}`)
         .then((result) => {
           if (result.data.status_code === 200) {
-            setSujectDropdown(result.data.result.results);
+            setBranchDropdown(result.data?.data?.results);
           } else {
-            setAlert('error', result.data.message);
+            setAlert('error', result.data?.message);
           }
         })
         .catch((error) => {
           setAlert('error', error.message);
         });
-    } else {
-      setGradeValue(null);
     }
   };
+
+  const handleBranch = (event, value) => {
+    setFilterData({
+      ...filterData,
+      branch: '',
+      grade: '',
+      subject: '',
+    });
+    setGradeDropdown([]);
+    setSubjectDropdown([]);
+    if (value) {
+      setFilterData({ ...filterData, branch: value });
+      axiosInstance
+        .get(`${endpoints.assessmentApis.gradesList}?branch=${value.branch.id}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setGradeDropdown(result.data?.result?.results);
+          } else {
+            setAlert('error', result.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  };
+
+  const handleGrade = (event, value) => {
+    setFilterData({
+      ...filterData,
+      grade: '',
+      subject: '',
+    });
+    setQpValue('');
+    setPeriodData([]);
+    setSubjectDropdown([]);
+    if (value) {
+      setFilterData({ ...filterData, grade: value });
+      axiosInstance
+        .get(`${endpoints.assessmentApis.gradesList}?gs_id=${value.mp_id}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setSubjectDropdown(result.data?.result?.results);
+          } else {
+            setAlert('error', result.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  };
+
+  // const handleGrade = (event, value) => {
+  //   if (value) {
+  //     setGradeValue(value);
+  //     axiosInstance
+  //       .get(`${endpoints.lessonPlan.gradeSubjectMappingList}?grade=${value.id}`)
+  //       .then((result) => {
+  //         if (result.data.status_code === 200) {
+  //           setSujectDropdown(result.data.result.results);
+  //         } else {
+  //           setAlert('error', result.data.message);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         setAlert('error', error.message);
+  //       });
+  //   } else {
+  //     setGradeValue(null);
+  //   }
+  // };
 
   const handleSubject = (event, value) => {
     if (value) {
@@ -94,9 +179,12 @@ const Assesmentquestion = () => {
 
   const callfilter = () => {
     if (gradeValue !== null || qpValue !== null) {
-      axiosInstance
+      axios
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${gradeValue.id}&paper_level=${qpValue.id}`
+          `${endpoints.assementQP.assementFilter}?grade=${gradeValue.id}&paper_level=${qpValue.id}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -114,9 +202,12 @@ const Assesmentquestion = () => {
   const handleTabs = (TabLevel) => {
     // console.log(TabLevel, "TabLevel")
     if (TabLevel === 0) {
-      axiosInstance
+      axios
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${gradeValue.id}&paper_level=${qpValue.id}`
+          `${endpoints.assementQP.assementFilter}?grade=${gradeValue.id}&paper_level=${qpValue.id}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -128,9 +219,12 @@ const Assesmentquestion = () => {
         });
     }
     if (TabLevel === 1) {
-      axiosInstance
+      axios
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${gradeValue.id}&paper_level=${qpValue.id}is_draft=True`
+          `${endpoints.assementQP.assementFilter}?grade=${gradeValue.id}&paper_level=${qpValue.id}is_draft=True`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -142,9 +236,12 @@ const Assesmentquestion = () => {
         });
     }
     if (TabLevel === 2) {
-      axiosInstance
+      axios
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${gradeValue.id}&paper_level=${qpValue.id}is_review=True`
+          `${endpoints.assementQP.assementFilter}?grade=${gradeValue.id}&paper_level=${qpValue.id}is_review=True`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -156,9 +253,12 @@ const Assesmentquestion = () => {
         });
     }
     if (TabLevel === 3) {
-      axiosInstance
+      axios
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${gradeValue.id}&paper_level=${qpValue.id}is_verified=True`
+          `${endpoints.assementQP.assementFilter}?grade=${gradeValue.id}&paper_level=${qpValue.id}is_verified=True`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -184,7 +284,7 @@ const Assesmentquestion = () => {
           <div className='assesment-breadcrum' style={{ paddingLeft: 20 }}>
             <CommonBreadcrumbs
               componentName='Assesment'
-              childComponentName={'Question paper'}
+              childComponentName={'Question Paper'}
             />
           </div>
           <div className='assesment-question-input'>
@@ -193,6 +293,48 @@ const Assesmentquestion = () => {
               spacing={isMobile ? 3 : 5}
               style={{ width: widerWidth, margin: wider }}
             >
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleAcademicYear}
+                  id='academic-year'
+                  className='dropdownIcon'
+                  value={filterData.academic || ''}
+                  options={academicDropdown || []}
+                  getOptionLabel={(option) => option?.session_year || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Academic Year'
+                      placeholder='Academic Year'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleBranch}
+                  id='branch'
+                  className='dropdownIcon'
+                  value={filterData.branch || ''}
+                  options={branchDropdown || []}
+                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                    />
+                  )}
+                />
+              </Grid>
               <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <Autocomplete
                   style={{ width: '100%' }}
@@ -200,9 +342,9 @@ const Assesmentquestion = () => {
                   onChange={handleGrade}
                   id='Grade'
                   className='Grade'
-                  value={gradeValue}
-                  options={gradeDropdown}
-                  getOptionLabel={(option) => option?.grade_name}
+                  value={gradeValue||''}
+                  options={gradeDropdown||[]}
+                  getOptionLabel={(option) => option?.grade_name||''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -221,9 +363,9 @@ const Assesmentquestion = () => {
                   onChange={handleSubject}
                   id='Subject'
                   className='Subject'
-                  value={subjectDropdownValue?.subject}
-                  options={subjectDropdown}
-                  getOptionLabel={(option) => option?.subject.subject_name}
+                  value={subjectDropdownValue?.subject||''}
+                  options={subjectDropdown||[]}
+                  getOptionLabel={(option) => option?.subject.subject_name||''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -242,9 +384,9 @@ const Assesmentquestion = () => {
                   onChange={handleQpLevel}
                   id='questionpaperLevel'
                   className='questionpaperLevel'
-                  value={qpValue}
-                  options={qpLevel}
-                  getOptionLabel={(option) => option?.level}
+                  value={qpValue||''}
+                  options={qpLevel||[]}
+                  getOptionLabel={(option) => option?.level||''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
