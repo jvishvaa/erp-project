@@ -124,7 +124,7 @@ const ViewMoreCard = ({
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setSelectedIndex(-1);
-          handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel);
+          handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel,tabTopicId);
           setAlert('success', 'Question Moved To Draft');
         } else {
           setAlert('error', 'ERROR!');
