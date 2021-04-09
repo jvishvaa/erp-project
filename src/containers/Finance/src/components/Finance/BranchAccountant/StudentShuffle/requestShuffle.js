@@ -124,7 +124,7 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
       console.log('use effect NAme:', selectedStudent)
       setDisplayErp(selectedStudent && selectedStudent.erp ? selectedStudent.erp : displayErp)
     }
-    if (erp) {
+    if (erp && erp.length > 3) {
       const selectedStudent = ErpSuggestions && ErpSuggestions.length > 0 ? ErpSuggestions.filter(item => item.erp === erp)[0] : null
       console.log('use effect ERp:', selectedStudent)
       setDisplayErp(selectedStudent && selectedStudent.erp ? selectedStudent.erp : displayErp)
@@ -153,7 +153,8 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
       3,
       studentName,
       alert,
-      user
+      user, 
+      branch && branch.value
     )
   }
 
@@ -179,7 +180,8 @@ const erpDebounceFunc = () => {
       3,
       erp,
       alert,
-      user
+      user,
+      branch && branch.value
     )
   }
   const erpHandler = (e) => {
@@ -191,14 +193,14 @@ const erpDebounceFunc = () => {
         console.log('its string')
         setErp(null)
         setStudentName(e.target.value)
-        if (e.target.value.length >= 3) {
+        if (e.target.value && e.target.value.length >= 3) {
           nameDebounceFunc()
         }
       } else if (isFinite(Number(e.target.value))) {
         console.log('its number')
         setStudentName(null)
         setErp(e.target.value)
-        if (e.target.value.length >= 3) {
+        if (e.target.value && e.target.value.length >= 3) {
           erpDebounceFunc()
         }
       }
@@ -393,7 +395,7 @@ const mapDispatchToProps = dispatch => ({
   fetchBranchAtAcc: (session, user, alert, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, user, alert, moduleId })),
   fetchSections: (gradeId, session, branchId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGradeAsAdmin({ gradeId, session, branchId, alert, user, moduleId })),
   initiateShuffleRequest: (data, alert, user) => dispatch(actionTypes.initiateShuffleRequest({ data, alert, user })),
-  fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user }))
+  fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user, branch) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user, branch }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(RequestShuffle)))
