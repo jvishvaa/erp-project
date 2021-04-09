@@ -200,7 +200,7 @@ export const assignAutomaticStudent = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.StudentListForAcc + '?academic_year=' + payload.session + '&grade=' + payload.gradeId + '&section=' + payload.sectionId + '&type=' + payload.studentType, {
+      .get(urls.StudentListForAcc + '?academic_year=' + payload.session + '&grade=' + payload.gradeId + '&section=' + payload.sectionId + '&type=' + payload.studentType + '&branch_id=' + payload.branch + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
