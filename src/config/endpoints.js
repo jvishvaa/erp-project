@@ -1,8 +1,9 @@
 // const baseURLCentral = 'http://13.232.30.169/qbox';
 const appBaseURL = window.location.hostname;
-const baseURLCentral = (appBaseURL.includes("dev.") || appBaseURL.includes("localhost"))
-  ? 'http://dev.mgmt.letseduvate.com/qbox'
-  : 'https://mgmt.letseduvate.com/qbox';
+const baseURLCentral =
+  appBaseURL.includes('dev.') || appBaseURL.includes('localhost')
+    ? 'http://dev.mgmt.letseduvate.com/qbox'
+    : 'https://mgmt.letseduvate.com/qbox';
 // const baseURLCentral = 'http://dev.mgmt.letseduvate.com/qbox'
 // const baseURLCentral = 'https://mgmt.letseduvate.com/qbox';
 
@@ -95,8 +96,7 @@ export default {
     updateMessageType: '/communication/',
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
-    editChapter: '/academic/'
-
+    editChapter: '/academic/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -155,7 +155,7 @@ export default {
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
     editChapter: '/academic/',
-    centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`//'https://dev.mgmt.letseduvate.com/qbox/lesson_plan/erp_lesson_mapping/?domain_name=olvorchidnaigaon'
+    centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`, //'https://dev.mgmt.letseduvate.com/qbox/lesson_plan/erp_lesson_mapping/?domain_name=olvorchidnaigaon'
   },
   lessonPlan: {
     periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
@@ -218,7 +218,7 @@ export default {
     createCircular: '/circular/upload-circular/',
     deleteCircular: '/circular/delete-circular/',
     updateCircular: '/circular/update-circular/',
-    deleteFile:'/academic/delete-file/',
+    deleteFile: '/academic/delete-file/',
   },
   generalDairy: {
     dairyList: '/academic/general-dairy-messages/',
@@ -266,6 +266,7 @@ export default {
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
   assessment: {
+    assessmentResultAnalysis: `/assessment/student-reports`,
     questionPaperList: `/academic/assessment-list/`,
     viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
     userTests: `${baseURLCentral}/assessment/user-tests/`, // ?user=20&subject=1,
