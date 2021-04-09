@@ -391,12 +391,14 @@ const QuestionBankFilters = ({
     if (
       !filterData?.quesType ||
       !filterData?.question_categories_options ||
-      !filterData?.question_level_option
+      !filterData?.question_level_option ||
+      !filterData?.year ||
+      !filterData?.branch
     ) {
       setAlert('error', 'Select all the fields!');
       return;
     }
-    console.log(filterData?.topicId, 'TOPICID');
+    console.log(filterData, 'filtered');
     handlePeriodList(
       filterData.quesType.id,
       quesCatData,
