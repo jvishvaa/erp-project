@@ -307,7 +307,8 @@ export const cashWithdraw = (payload) => {
       approvedBy,
       date,
       alert,
-      user
+      user, 
+      branch
     } = payload
     const body = {
       academic_year: session,
@@ -316,7 +317,8 @@ export const cashWithdraw = (payload) => {
       narration,
       cheque_no: chequeNo,
       approved_by: approvedBy,
-      date
+      date,
+      branch_id: branch
     }
     axios.post(urls.AddCashWithdraw, body, {
       headers: {

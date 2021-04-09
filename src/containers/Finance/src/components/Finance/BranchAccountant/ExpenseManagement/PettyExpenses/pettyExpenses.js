@@ -190,7 +190,8 @@ class PettyExpenses extends Component {
       approvedBy,
       date,
       user,
-      alert
+      alert,
+      this.state.selectedBranches  && this.state.selectedBranches.value
     )
 
     this.setState({
@@ -483,7 +484,7 @@ const mapDispatchToProps = (dispatch) => ({
   fetchPettyCashAcc: (user, session, branch) => dispatch(actionTypes.fetchPettyCashAcc({ user, session, branch })),
   loadFinancialYear: dispatch(actionTypes.fetchFinancialYear(moduleId)),
   listCashOpeningBalance: (user, alert, session, branch) => dispatch(actionTypes.listCashOpeningBalance({ user, alert, session, branch })),
-  saveCashWithdraw: (session, bank, amount, narration, chequeNo, approvedBy, date, user, alert) => dispatch(actionTypes.cashWithdraw({ session, bank, amount, narration, chequeNo, approvedBy, date, user, alert })),
+  saveCashWithdraw: (session, bank, amount, narration, chequeNo, approvedBy, date, user, alert, branch) => dispatch(actionTypes.cashWithdraw({ session, bank, amount, narration, chequeNo, approvedBy, date, user, alert, branch })),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   sendData: (data, alert, user) => dispatch(actionTypes.sendingData({ data, alert, user})),
 })
