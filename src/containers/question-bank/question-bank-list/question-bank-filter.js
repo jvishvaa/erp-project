@@ -102,6 +102,7 @@ const QuestionBankFilters = ({
       question_categories_options: '',
       quesType: '',
       quesLevel: '',
+      topicId:'',
     });
     setPeriodData([]);
     setLoading(true)
@@ -136,6 +137,7 @@ const QuestionBankFilters = ({
       question_categories_options: '',
       quesType: '',
       quesLevel: '',
+      topicId:'',
     });
     setPeriodData([]);
     setLoading(true)

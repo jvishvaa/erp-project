@@ -364,6 +364,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
                     tabQueCatId={tabQueCatId}
                     tabMapId={tabMapId}
                     tabQueLevel={tabQueLevel}
+                    tabTopicId={tabTopicId}
                   />
                 </Grid>
               )}

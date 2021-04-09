@@ -29,6 +29,7 @@ const ViewMoreCard = ({
   tabQueCatId,
   tabMapId,
   tabQueLevel,
+  tabTopicId
 }) => {
   // const { year: { session_year }, grade: { grade_name }, subject: { subject: { subject_name } }, chapter: { chapter_name }, volume: { volume_name } } = filterDataDown;
   // const { setAlert } = useContext(AlertNotificationContext);
@@ -45,7 +46,7 @@ const ViewMoreCard = ({
   const [queSRC, setQueSRC] = useState('');
   const optData = viewMoreData.parent;
   const getS3DomainURL = (fileSrc) => {
-    return `${endpoints.s3}${fileSrc}`;
+    return `${endpoints.assessment.s3}${fileSrc}`;
   };
   const resolveQuestionTypeName = (type) => {
     switch (type) {
@@ -100,7 +101,7 @@ const ViewMoreCard = ({
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setSelectedIndex(-1);
-          handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel);
+          handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel,tabTopicId);
           setAlert('success', result?.data?.message);
         } else {
           setAlert('error', 'ERROR!');
@@ -1452,6 +1453,7 @@ const ViewMoreCard = ({
                                   `${obj[`option${i + 1}`].images}`.split(',') || {};
                                 const attachmentsArray = [];
                                 images.forEach((image) => {
+                                  console.log(image,'++++++')
                                   const attachmentObj = {
                                     src: getS3DomainURL(image),
                                     name: `${image}`.split('.').slice(0, -1).join('.'),
