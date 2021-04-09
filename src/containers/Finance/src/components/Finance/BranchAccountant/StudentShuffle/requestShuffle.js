@@ -42,6 +42,34 @@ const styles = theme => ({
   }
 })
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Student Shuffle') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiateShuffleRequest, fetchGradesPerBranch, fetchErpSuggestions, ErpSuggestions, sectionList, fetchSections, gradeList, fetchBranchAtAcc, branchList, dataLoading, user, alert }) => {
   const [displayErp, setDisplayErp] = useState(null)
   const [erp, setErp] = useState(null)
@@ -59,7 +87,6 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
 
   useEffect(() => {
     if (sessionYear) {
-      fetchBranchAtAcc(sessionYear.value, user, alert)
       setBranch('')
       setGrade('')
       setSection('')
@@ -69,7 +96,7 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
   useEffect(() => {
     // Update the document title using the browser API
     if (branch && sessionYear) {
-      fetchGradesPerBranch(sessionYear.value, branch.value, alert, user)
+      fetchGradesPerBranch(sessionYear.value, branch.value, alert, user, moduleId)
       setGrade('')
       setSection('')
     }
@@ -77,7 +104,7 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
 
   useEffect(() => {
     if (branch && sessionYear && grade) {
-      fetchSections(grade.value, sessionYear.value, branch.value, alert, user)
+      fetchSections(grade.value, sessionYear.value, branch.value, alert, user, moduleId)
       setSection('')
     }
   }, [sessionYear, branch, grade, fetchSections, alert, user])
@@ -180,6 +207,7 @@ const erpDebounceFunc = () => {
 
   const academicYearChangeHandler = (e) => {
     setSessionYear(e)
+    fetchBranchAtAcc(e && e.value, user, alert, moduleId)
   }
 
   const branchChangeHandler = (e) => {
@@ -360,10 +388,10 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchGradesPerBranch: (session, branch, alert, user) => dispatch(actionTypes.fetchGradesPerBranch({ session, branch, alert, user })),
-  fetchBranchAtAcc: (session, user, alert) => dispatch(actionTypes.fetchBranchPerSession({ session, user, alert })),
-  fetchSections: (gradeId, session, branchId, alert, user) => dispatch(actionTypes.fetchAllSectionsPerGradeAsAdmin({ gradeId, session, branchId, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchGradesPerBranch: (session, branch, alert, user, moduleId) => dispatch(actionTypes.fetchGradesPerBranch({ session, branch, alert, user, moduleId })),
+  fetchBranchAtAcc: (session, user, alert, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, user, alert, moduleId })),
+  fetchSections: (gradeId, session, branchId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGradeAsAdmin({ gradeId, session, branchId, alert, user, moduleId })),
   initiateShuffleRequest: (data, alert, user) => dispatch(actionTypes.initiateShuffleRequest({ data, alert, user })),
   fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user }))
 })
