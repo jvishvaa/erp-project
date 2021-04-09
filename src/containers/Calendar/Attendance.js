@@ -206,11 +206,13 @@ const Attendance = () => {
             id='role'
             style={{ width: '100%' }}
             style={{ marginTop: 25 }}
-            // options={branch}
-            // onChange={handleBranch}
+            options={[
+              { id: 1, Year: '2021-2022' },
+              { id: 2, Year: '2022-2023' },
+            ]}
             name='Academic_year'
             className='arrow'
-            // getOptionLabel={(option) => option.branch_name}
+            getOptionLabel={(option) => option.Year}
             renderInput={(params) => (
               <TextField
                 className='create__class-textfield'
@@ -307,7 +309,7 @@ const Attendance = () => {
             <StyledClearButton
               variant='contained'
               startIcon={<ClearIcon />}
-              href={`/markattedance`}
+              href={`/attendance`}
             >
               Clear all
             </StyledClearButton>

@@ -17,11 +17,12 @@ import moment from 'moment';
 import { InputAdornment } from '@material-ui/core';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import { ClickAwayListener } from '@material-ui/core';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+// import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import Link from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import axiosInstance from '../../config/axios';
-import './createeventcategory.scss';
+// import './createeventcategory.scss';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
@@ -47,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     margin: 20,
   },
+
   cardsPagination: {
     width: '100%',
     display: 'flex',
@@ -92,15 +94,17 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   cardstyle: {
-    // display: 'flex',
-    border: '1px solid',
-    borderColor: theme.palette.primary.main,
+    display: 'flex',
+    flexDirection: 'column',
+    // border: '1px solid',
+    // borderColor: theme.palette.primary.main,
     // padding: '1rem',
-    borderRadius: '10px',
+    borderRadius: '12px',
     boxShadow: '0px 0px 4px #00000029',
     border: '1px solid #E2E2E2',
     opacity: 1,
     margin: '20px',
+    width: '3600',
   },
   dailog: {
     display: 'flex',
@@ -108,8 +112,11 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   dialogPaper: {
-    minHeight: '30vh',
-    maxHeight: '30vh',
+    minHeight: '40vh',
+    maxHeight: '40vh',
+  },
+  dgsize: {
+    width: '100%',
   },
 
   // cardstyle: {
@@ -208,7 +215,6 @@ const Cal1 = () => {
     {
       exam: 'AnnualExams',
       test: ' Science Test',
-      date: '5th April 2021-6th April 2022',
     },
     {
       exam: 'AnnualExams',
@@ -218,72 +224,58 @@ const Cal1 = () => {
     {
       exam: 'AnnualExams',
       test: ' Science Test',
-      date: '5th April 2021-6th April 2022',
     },
     {
       exam: 'AnnualExams',
       test: 'English Test',
-      date: '7th April 2021-8th April 2022',
     },
     {
       exam: 'AnnualExams',
       test: ' Science Test',
-      date: '5th April 2021-6th April 2022',
     },
     {
       exam: 'AnnualExams',
       test: 'English Test',
-      date: '7th April 2021-8th April 2022',
     },
     {
       exam: 'AnnualExams',
       test: 'Social Test',
-      date: '3rd April 2021-4th April 2022',
     },
     {
       exam: 'AnnualExams',
       test: ' Science Test',
-      date: '5th April 2021-6th April 2022',
     },
     {
       exam: 'AnnualExams',
       test: 'English Test',
-      date: '7th April 2021-8th April 2022',
     },
     {
       exam: 'AnnualExams',
       test: ' Science Test',
-      date: '5th April 2021-6th April 2022',
     },
     {
       exam: 'AnnualExams',
-      test: 'Maths Test',
-      date: '2nd April 2021-3rd April 2022',
+      test: ' Science Test',
+    },
+    {
+      exam: 'AnnualExams',
+      test: 'Maths Testffhhjghh jhjk',
     },
     {
       exam: 'AnnualExams',
       test: 'Social Test',
-      date: '3rd April 2021-4th April 2022',
     },
     {
       exam: 'AnnualExams',
       test: 'English Test text',
-      date: '7th April 2021-8th April 2022',
     },
     {
       exam: 'AnnualExams',
       test: 'English Test',
-      date: '7th April 2021-8th April 2022',
-    },
-    {
-      exam: 'AnnualExams',
-      test: 'Maths Test',
-      date: '2nd April 2021-3rd April 2022',
     },
     {
       exam: 'AnnualExams',
       test: 'Social Test',
-      date: '3rd April 2021-4th April 2022',
     },
   ];
   const [custColor, setCustColor] = useState('red');
@@ -316,21 +308,8 @@ const Cal1 = () => {
   return (
     <Layout>
       <form>
-        <Grid container direction='row'>
-          <Grid item md={2} xs={12} md={3} lg={3}>
-            <Breadcrumbs
-              separator={<NavigateNextIcon fontSize='medium' color='primary' />}
-              aria-label='breadcrumb'
-            >
-              <Link color='textPrimary' onClick={handleClick}>
-                Dashboard
-              </Link>
-              <Link color='textPrimary' onClick={handleClick}>
-                Create event category
-              </Link>
-            </Breadcrumbs>
-          </Grid>
-        </Grid>
+        <CommonBreadcrumbs componentName='Create Event Category' />
+
         <div className={classes.root}>
           <Grid container spacing={2} direction='row'>
             <Grid item xs={12} sm={5} md={3} className='arrow'>
@@ -352,170 +331,173 @@ const Cal1 = () => {
                 )}
               />
             </Grid>
-
             <Grid item xs={12}>
               <Divider />
             </Grid>
-            <Grid container spacing={2} style={{ margin: '10px' }}>
-              <Grid item xs={12} sm={3} md={3} lg={1}>
-                <Button
-                  variant='contained'
-                  className='custom_button_master '
-                  size='medium'
-                  color='primary'
+          </Grid>
+          <Grid container spacing={2} direction='row'>
+            <Grid item xs={12} sm={4} md={3} lg={2}>
+              <Button
+                variant='contained'
+                className='custom_button_master '
+                // size='medium'
 
-                  // onClick={handleGoBack}
-                >
-                  Clear All
-                </Button>
-              </Grid>
-              <Grid item xs={12} sm={3} md={3} lg={1}>
-                <Button
-                  variant='contained'
-                  className='custom_button_master '
-                  size='medium'
-
-                  // onClick={handleGoBack}
-                >
-                  Filter
-                </Button>
-              </Grid>
-              <Grid item xs={12} sm={3} md={3} lg={1}>
-                <Button variant='outlined' onClick={handleClickOpen}>
-                  Create
-                </Button>
-                <Dialog
-                  fullWidth
-                  maxWidth='sm'
-                  onClose={handleClose}
-                  aria-labelledby='customized-dialog-title'
-                  open={open}
-                  classes={{ paper: classes.dialogPaper }}
-                >
-                  <DialogTitle id='customized-dialog-title' onClose={handleClose}>
-                    Create Event Category
-                  </DialogTitle>
-                  <Grid container spacing={2} className={classes.dailog}>
-                    <Grid item xs={12} sm={5} md={3} lg={3}>
-                      <TextField
-                        className='arrow'
-                        size='small'
-                        id='role'
-                        variant='outlined'
-                        label='Event Name'
-                        placeholder='role'
-                        required
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={5} md={3} lg={2}>
-                      <ColorPicker
-                        name='color'
-                        defaultValue='color'
-                        value={custColor}
-                        label='Assign color'
-                        variant='outlined'
-                        fullWidth
-                        size='small'
-                        InputLabelProps={{ shrink: true, required: true }}
-                        style={{ marginTop: 25 }}
-                        onChange={(e) => handleColor(e)}
-                      />
-                    </Grid>
-                    <DialogActions>
-                      <Button autoFocus onClick={handleClose} color='primary'>
-                        Save
-                      </Button>
-                    </DialogActions>
-                  </Grid>
-                </Dialog>
-              </Grid>
+                // onClick={handleGoBack}
+              >
+                Clear All
+              </Button>
             </Grid>
+            <Grid item xs={12} sm={4} md={3} lg={2}>
+              <Button
+                variant='contained'
+                className='custom_button_master '
+                // size='medium'
+                color='primary'
+
+                // onClick={handleGoBack}
+              >
+                Filter
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={4} md={3} lg={2}>
+              <Button
+                variant='contained'
+                className='custom_button_master '
+                // size='medium'
+                color='primary'
+                onClick={handleClickOpen}
+                // onClick={handleGoBack}
+              >
+                Create
+              </Button>
+            </Grid>
+            {/* <Grid
+            item
+            xs={12}
+            sm={3}
+            md={3}
+          lg={1}
+          >
+            <Button variant="outlined" onClick={handleClickOpen}>
+              Create
+            </Button>
+        </Grid> */}
           </Grid>
 
-          <Grid container justify='space-around' spacing={2} direction='row'>
+          <Dialog
+            onClose={handleClose}
+            aria-labelledby='customized-dialog-title'
+            open={open}
+            classes={{ paper: classes.dialogPaper }}
+          >
+            <DialogTitle id='customized-dialog-title'>Create Event Category</DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                size='small'
+                id='role'
+                variant='outlined'
+                fullWidth
+                label='Event Name'
+                placeholder='role'
+                required
+              />
+
+              <ColorPicker
+                name='color'
+                defaultValue='color'
+                value={custColor}
+                label='Assign color'
+                variant='outlined'
+                fullWidth
+                size='small'
+                InputLabelProps={{ shrink: true, required: true }}
+                style={{ marginTop: 30 }}
+                onChange={(e) => handleColor(e)}
+              />
+              {/* </Grid> */}
+            </DialogContent>
+            <DialogActions>
+              <Button autoFocus onClick={handleClose} color='primary'>
+                Save
+              </Button>
+              <Button autoFocus onClick={handleClose} color='primary'>
+                Close
+              </Button>
+            </DialogActions>
+            {/* </Grid> */}
+          </Dialog>
+
+          <Grid
+            container
+            justify='center'
+            alignItems='center'
+            spacing={2}
+            direction='row'
+          >
             {dummyData.map((data) => {
               return (
                 <div>
-                  <Grid item xs={12} sm={12}>
-                    <Card className={classes.cardstyle}>
-                      <CardContent className={classes.content}>
-                        <Grid
-                          container
-                          direction='row'
-                          spacing={1}
-                          justify='flex-start'
-                          align='flex-start'
-                        >
-                          <Grid item style={mystyle} xs={2}></Grid>
-                          <Grid item xs={8} justify='flex-start' align='flex-start'>
-                            <Typography
-                              variant='subtitle1'
-                              style={{
-                                marginTop: 8,
-                                marginLeft: 8,
-                                marginRight: 70,
-                                color: '#036799',
-                                textAlign: 'start',
-                              }}
-                            >
-                              {data.exam}
-                            </Typography>
-                            <Typography
-                              variant='subtitle2'
-                              style={{
-                                marginLeft: 8,
-                                marginRight: 70,
-                                color: '#036799',
-                                textAlign: 'start',
-                              }}
-                            >
-                              {data.test}
-                            </Typography>
-                          </Grid>
+                  <Grid container>
+                    <Grid item xs={12} sm={12} lg={12}>
+                      <Card className={classes.cardstyle}>
+                        <CardContent>
+                          <Grid container spacing={2} direction='row'>
+                            <Grid item style={mystyle} xs={2}></Grid>
+                            <Grid item xs={8}>
+                              <Typography
+                                variant='subtitle1'
+                                style={{
+                                  marginTop: 8,
+                                  marginLeft: 8,
+                                  marginRight: 70,
+                                  color: '#036799',
+                                  textAlign: 'start',
+                                }}
+                              >
+                                {data.exam}
+                              </Typography>
+                              <Typography
+                                variant='subtitle2'
+                                style={{
+                                  marginLeft: 8,
+                                  color: '#036799',
+                                  textAlign: 'start',
+                                }}
+                              >
+                                {data.test}
+                              </Typography>
+                            </Grid>
 
-                          <Grid item xs={1}>
-                            {/* <CardHeader
-                      action={
-                        <IconButton
-                          aria-label='settings'
-                          onClick={(e) => {
-                             e.preventDefault();
-                            handleDelete();
-                          }}
-                        >
-                          <Tooltip title='Delete Category ' arrow>
-                            <MoreHorizIcon style={{ color: "#F7324D" }}/>
-                          </Tooltip>
-                        </IconButton>
-                      }
-                    /> */}
-                            {/* <MoreHorizIcon style={{ color: "#F7324D" }}/> */}
-                            <IconButton
-                              aria-controls='simple-menu'
-                              aria-haspopup='true'
-                              onClick={handleClicknew}
-                            >
-                              <MoreHorizIcon style={{ color: '#F7324D' }} />
-                            </IconButton>
-                            <Menu
-                              id='simple-menu'
-                              anchorEl={anchorEl}
-                              keepMounted
-                              open={Boolean(anchorEl)}
-                              onClose={handleClose}
-                            >
-                              <MenuItem onClick={handleClose1}>Edit</MenuItem>
-                              <MenuItem onClick={handleClose1}>Delete</MenuItem>
-                            </Menu>
+                            <Grid item xs={1}>
+                              <IconButton
+                                aria-controls='simple-menu'
+                                aria-haspopup='true'
+                                onClick={handleClicknew}
+                              >
+                                <MoreHorizIcon style={{ color: '#F7324D' }} />
+                              </IconButton>
+                              <Menu
+                                id='simple-menu'
+                                anchorEl={anchorEl}
+                                keepMounted
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                              >
+                                <MenuItem onClick={handleClose1}>Edit</MenuItem>
+                                <MenuItem onClick={handleClose1}>Delete</MenuItem>
+                              </Menu>
+                            </Grid>
                           </Grid>
-                        </Grid>
-                      </CardContent>
-                    </Card>
+                        </CardContent>
+                      </Card>
+                    </Grid>
                   </Grid>
                 </div>
               );
             })}
           </Grid>
+          {/* </Grid> */}
 
           {/* <Grid container justify='center'>
           <Grid item md={8}>
