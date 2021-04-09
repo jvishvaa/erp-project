@@ -272,7 +272,7 @@ export default {
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
   assessment: {
-    assessmentResultAnalysis: `/assessment/student-reports`,
+    assessmentResultAnalysis: `${baseURLCentral}/assessment/student-reports/`,
     questionPaperList: `/academic/assessment-list/`,
     viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
     userTests: `${baseURLCentral}/assessment/user-tests/`, // ?user=20&subject=1,
