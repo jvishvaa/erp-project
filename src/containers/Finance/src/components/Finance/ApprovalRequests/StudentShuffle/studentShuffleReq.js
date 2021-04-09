@@ -16,6 +16,35 @@ import Approval from './Components/approvalReq'
 import Rejected from './Components/rejectedReq'
 import Layout from '../../../../../../Layout'
 
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Approvals/Requests' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Student Shuffle Requests') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 const StudentShuffleReq = ({
   classes,
   alert,
@@ -45,12 +74,13 @@ const StudentShuffleReq = ({
 
   useEffect(() => {
     if (selectedYear) {
-      fetchBranches(selectedYear.value, alert, user)
+      fetchBranches(selectedYear.value, alert, user, moduleId)
     }
   }, [selectedYear, fetchBranches, alert, user])
 
   const academicYearChangeHandler = (e) => {
     setSelectedYear(e)
+    fetchBranches(e && e.value, alert, user, moduleId)
   }
 
   const branchChangeHandler = (e) => {
@@ -194,8 +224,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchPendingList: (session, branch, alert, user) => dispatch(actionTypes.fetchShufflePendingReq({ session, branch, alert, user })),
   fetchApprovalList: (session, branch, alert, user) => dispatch(actionTypes.fetchShuffleApprLists({ session, branch, alert, user })),
   fetchRejectedList: (session, branch, alert, user) => dispatch(actionTypes.fetchShuffleRejectLists({ session, branch, alert, user }))
