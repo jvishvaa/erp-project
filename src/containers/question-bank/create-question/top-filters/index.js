@@ -289,11 +289,18 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
   };
 
   const handleFilter = () => {
+    console.log('filtered: ', filterData)
+    if (!filterData?.academic || !filterData?.branch) {
+      setAlert('warning', 'Please select academic and branch')
+      return
+    }
     if (
       filterData?.grade &&
       filterData?.subject &&
       filterData?.chapter &&
-      filterData?.topic
+      filterData?.topic &&
+      filterData?.academic &&
+      filterData?.branch
     ) {
       setIsFilter(true);
       setFilterDataDisplay(filterData);
