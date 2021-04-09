@@ -186,8 +186,9 @@ const erpDebounceFunc = () => {
   }
   const erpHandler = (e) => {
     // let searchBox = null
-    if (!sessionYear) {
-      alert.warning('Select Academic Year!')
+
+    if (!sessionYear || !branch) {
+      alert.warning('Select Academic Year and Branch!')
     } else {
       if (isNaN(Number(e.target.value))) {
         console.log('its string')
