@@ -1,0 +1,91 @@
+@import '../../../assets/styles/variables';
+
+.assesment-details-container {
+  border: 1px solid $primary-color;
+  border-radius: 5px;
+  width: calc(100% - 2rem);
+  margin: 0.5rem auto;
+  position: relative;
+  // height: 70vh;
+  .font-lg {
+    font-size: 1.1rem;
+  }
+  .font-md {
+    font-size: 1rem;
+  }
+  .font-sm {
+    font-size: 0.9rem;
+  }
+  .primary-text {
+    color: $primary-color;
+    margin: 5px;
+  }
+  .secondary-text {
+    color: $secondary-color;
+    margin: 5px;
+  }
+
+  .header-container {
+    padding: 1rem;
+    background-color: #fceeef;
+    border-radius: 5px;
+
+    height: 120px;
+    .primary-header-container {
+      .close-icon {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        button {
+          height: 1rem;
+          width: 1rem;
+        }
+      }
+    }
+    .secondary-header-container {
+      display: flex;
+      justify-content: space-between;
+      .secondary-text {
+        &:first-child {
+          width: 70%;
+        }
+      }
+    }
+  }
+  .parameters-container {
+    height: calc(100% - 120px);
+    .parameters-header {
+      height: 64px;
+      color: $primary-color;
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      border-top: 1px solid #efefef;
+      border-bottom: 1px solid #efefef;
+    }
+    .parameters-content {
+      height: calc(100% - 64px);
+      overflow: auto;
+      padding: 1rem 1rem 3rem;
+      .parameter-cell-grid {
+        background-color: #f6f6f6;
+        &:nth-child(3n - 1) {
+          background-color: #ffffff;
+        }
+        .parameter-cell {
+          padding: 0.5rem;
+          .cell-header {
+            font-size: 0.9rem;
+            color: $secondary-color;
+            &.right-align {
+              padding-left: 1rem;
+            }
+            &:not(.right-align) {
+              font-weight: 550;
+            }
+          }
+        }
+      }
+    }
+  }
+}

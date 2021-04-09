@@ -241,6 +241,10 @@ import UploadPaymentFile from './containers/Finance/src/components/Finance/stude
 import ActivateInactivateStudentAdm from './containers/Finance/src/components/Finance/Dashboard/FinanceAdmin/activateInactivateStudent.js';
 import QuestionBankList from './containers/question-bank/question-bank-list';
 import CreateQuestion from './containers/question-bank/create-question';
+import CreateQuestionPaper from './containers/assessment-central/create-question-paper';
+// import Assesmentquestion from './containers/assesment/assesment';
+import AssessmentView from './containers/assessment-central/assesment-view';
+import CreateAssesment from './containers/assessment-central/create-assesment';
 
 const theme = createMuiTheme({
   palette: {
@@ -341,6 +345,15 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/create-question/:qId?'>
                             {({ match }) => <CreateQuestion match={match} />}
+                          </Route>
+                          <Route exact path='/create-question-paper'>
+                            {({ match }) => <CreateQuestionPaper match={match} />}
+                          </Route>
+                          <Route exact path='/assessment-question'>
+                            {({ match }) => <AssessmentView match={match} />}
+                          </Route>
+                          <Route path='/create-assesment'>
+                            {({ match }) => <CreateAssesment match={match} />}
                           </Route>
                           <Route exact path='/blog/genre'>
                             {({ match }) => <CreateGenre match={match} />}

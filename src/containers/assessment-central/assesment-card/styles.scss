@@ -1,0 +1,86 @@
+@import '../../../assets/styles/variables';
+.assesment-card {
+  font-size: 18px;
+
+  box-shadow: 0px 0px 4px #00000029;
+  border-radius: 12px;
+  padding: 0.25rem 1rem;
+  margin: 0.5rem;
+
+  p {
+    margin: 0.5rem 0;
+    &.scheduled {
+      color: $primary-color !important;
+      font-size: 0.9rem;
+    }
+    &.header {
+      margin-bottom: 0 !important;
+    }
+  }
+
+  &.selected {
+    background-color: #fceeee;
+    border: 1px solid $primary-color;
+  }
+
+  .card-header {
+    display: flex;
+    color: $primary-color;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .name {
+    p {
+      color: $secondary-color;
+    }
+  }
+
+  .grade-details {
+    display: flex;
+    justify-content: space-between;
+    p {
+      color: $secondary-color;
+      &.completed {
+        color: #168d00;
+        font-size: 0.9rem;
+      }
+    }
+    .btn-container {
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+.assesment-card-popup-menu {
+  // border: 1px solid $primary-color;
+  .MuiPopover-paper {
+    overflow: visible;
+    &::before {
+      content: '';
+      position: absolute;
+      right: 50%;
+      top: -6px;
+      background-color: #ffffff;
+      width: 10px;
+      height: 10px;
+      transform: rotate(45deg);
+      border: 1px solid $primary-color;
+      border-bottom: 0;
+      border-right: 0;
+      z-index: 10;
+    }
+  }
+  // .arrow-up {
+  //   width: 0;
+  //   height: 0;
+  //   border-left: 5px solid transparent;
+  //   border-right: 5px solid transparent;
+
+  //   border-bottom: 5px solid black;
+  // }
+  .assesment-card-popup-menu {
+    color: $primary-color;
+  }
+}

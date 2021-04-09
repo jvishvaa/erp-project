@@ -1,0 +1,119 @@
+@import '../../assets/styles/variables';
+
+.mv-20 {
+  margin: 20px 0;
+}
+.pv-20 {
+  padding: 20px 0;
+}
+.mb-20 {
+  margin: 0 0 20px;
+}
+
+.dateRangeSelector{
+  .MuiOutlinedInput-root {
+    border-radius: 10px;
+    .MuiOutlinedInput-input {
+      color: #014b7e;
+    }
+  }
+}
+.assesment-container {
+  width: 95%;
+  margin: auto;
+  .content-container {
+    .select-filter-text {
+      color: #87a5bb;
+      text-align: center;
+      font-size: 23px;
+    }
+    .collapsible-section {
+      background: #fafafa;
+      box-shadow: none;
+      .header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+      }
+      .form-grid-container {
+        width: 100%;
+      }
+      .MuiAccordionSummary-content {
+        height: 40px;
+      }
+    }
+    .form-actions-container {
+      .btn-container {
+        button {
+          min-width: 160px;
+        }
+        &.with-border {
+          display: flex;
+          .border-line-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            .line {
+              width: 1px;
+              height: 100%;
+              background-color: $secondary-color;
+            }
+            @media screen and (max-width: 768px) {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+
+    .tabs-container {
+      .MuiTab-root {
+        position: relative;
+        &.right-border {
+          &::after {
+            content: '';
+            width: 1px;
+            height: 60%;
+            margin: auto 0;
+            background-color: $secondary-color;
+            position: absolute;
+            right: 0;
+          }
+        }
+        &.MuiTab-labelIcon {
+          .info-icon {
+            position: absolute;
+            top: 0;
+            right: 8px;
+          }
+        }
+      }
+      .tab-header {
+        // left: 0;
+        // position: absolute;
+        height: 100%;
+        display: flex;
+        background-color: #fafafa;
+        align-items: center;
+        font-weight: 550;
+      }
+
+      .list-container {
+        height: 70vh;
+        overflow: auto;
+        padding-bottom: 3rem;
+      }
+    }
+  }
+  .pagination-container {
+    background-color: #e5e5e5;
+    // position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    left: -20px;
+  }
+}

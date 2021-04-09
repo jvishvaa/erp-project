@@ -1,10 +1,10 @@
 // const baseURLCentral = 'http://13.232.30.169/qbox';
 const appBaseURL = window.location.hostname;
-const baseURLCentral =
-  appBaseURL.includes('dev.') || appBaseURL.includes('localhost')
-    ? 'http://dev.mgmt.letseduvate.com/qbox'
-    : 'https://mgmt.letseduvate.com/qbox';
-// const baseURLCentral = 'http://dev.mgmt.letseduvate.com/qbox'
+// const baseURLCentral =
+//   appBaseURL.includes('dev.') || appBaseURL.includes('localhost')
+//     ? 'http://dev.mgmt.letseduvate.com/qbox'
+//     : 'https://mgmt.letseduvate.com/qbox';
+const baseURLCentral = 'http://dev.mgmt.letseduvate.com/qbox'
 // const baseURLCentral = 'http://192.168.0.67/qbox';
 
 export default {

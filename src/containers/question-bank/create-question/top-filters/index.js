@@ -279,7 +279,6 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       topic: '',
     });
     setDropdownData({
-      academic: [],
       branches: [],
       grades: [],
       subjects: [],
