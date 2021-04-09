@@ -259,6 +259,10 @@ export default {
     getBatchesApi: '/erp_user/student_online_class/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
+  CreateEvent:{
+    CreateEvent:'academic/events/',
+    getEventCategory:"academic/list_create_event_category/"
+  },
   assessment: {
     questionPaperList: `/academic/assessment-list/`,
     viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,

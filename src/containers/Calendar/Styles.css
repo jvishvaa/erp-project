@@ -4,3 +4,10 @@
 .bodyMargin {
   margin: 25px;
 }
+.arrow .MuiSvgIcon-root {
+  color: red;
+}
+.time-ranger-border{
+  border: 1 solid rgb(184, 27, 27);
+ 
+}

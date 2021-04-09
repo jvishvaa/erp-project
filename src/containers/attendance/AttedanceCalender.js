@@ -11,6 +11,7 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core';
+import CreateEvent from '../Calendar/CreateEvent'
 
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import endpoints from '../../config/endpoints';
@@ -25,6 +26,7 @@ import OutlinedFlagRoundedIcon from '@material-ui/icons/OutlinedFlagRounded';
 import WatchLaterOutlinedIcon from '@material-ui/icons/WatchLaterOutlined';
 import EventOutlinedIcon from '@material-ui/icons/EventOutlined';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import { createEvent } from '@testing-library/dom';
 // import { StaticDateRangePicker, LocalizationProvider } from '@material-ui/lab';
 // import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 // import Box from '@material-ui/core/Box';
@@ -246,7 +248,7 @@ const AttedanceCalender = () => {
                 </Typography>
               </Grid>
               <Grid item md={6} xs={12}>
-                <Button size='small' fullWidth>
+                <Button size='small' onclick={<CreateEvent/>} fullWidth>
                   ADD EVENT
                 </Button>
               </Grid>
