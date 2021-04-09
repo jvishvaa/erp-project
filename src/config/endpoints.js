@@ -1,9 +1,15 @@
+import ENVCONFIG from './config';
+
+const {
+  apiGateway: { baseURLCentral },
+  s3: { BUCKET: s3BUCKET },
+} = ENVCONFIG;
+
 // const baseURLCentral = 'http://13.232.30.169/qbox';
-const appBaseURL = window.location.hostname;
-const baseURLCentral =
-  appBaseURL.includes('dev.') || appBaseURL.includes('localhost')
-    ? 'http://dev.mgmt.letseduvate.com/qbox'
-    : 'https://mgmt.letseduvate.com/qbox';
+// const appBaseURL = window.location.hostname;
+// const baseURLCentral = (appBaseURL.includes("dev.") || appBaseURL.includes("localhost"))
+//   ? 'http://dev.mgmt.letseduvate.com/qbox'
+//   : 'https://mgmt.letseduvate.com/qbox';
 // const baseURLCentral = 'http://dev.mgmt.letseduvate.com/qbox'
 // const baseURLCentral = 'https://mgmt.letseduvate.com/qbox';
 
@@ -278,7 +284,8 @@ export default {
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
-  s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+  // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+  s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
   // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing
