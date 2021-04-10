@@ -237,6 +237,7 @@ const handleDateChange = ()=>{
               variant='dialog'
               format='YYYY-MM-DD'
               margin='none'
+              className='button'
               id='date-picker'
               label='Date'
               maxDate={new Date()}
@@ -510,19 +511,37 @@ const handleDateChange = ()=>{
                       justify='flex-start'
                       align='flex-start'
                     >
-                      <Grid item xs={12} sm={6} md={2} lg={12}>
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={2}
+                        lg={12}
+                        // style={{ textAlign: 'start' }}
+                      >
                         <h3>{data.date}</h3>
                         <Grid
                           item
                           xs={11}
                           sm={1}
                           md={1}
-                          lg={10}
-                          style={{ marginLeft: 40 }}
+                          lg={2}
+                          style={{ marginLeft: 15 }}
                         >
-                          <div class='corner'>
-                            <h3>2nd</h3>
-                          </div>
+                          {/* <div className='triangle'>
+                            <div className='shifts'>
+                              <span className='shifts'>1st</span>
+                              <br />
+                              <br />
+                              <br />
+                              <span className='shifts'>2nd</span>
+                            </div>
+                          </div> */}
+
+                          <p class='box'>
+                            <span class='content1'>1st</span>
+                            <span class='content'>2nd</span>
+                          </p>
                         </Grid>
                       </Grid>
                     </Grid>

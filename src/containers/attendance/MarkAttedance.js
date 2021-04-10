@@ -366,10 +366,12 @@ const handleFilter = ()=>{
               variant='dialog'
               format='YYYY-MM-DD'
               margin='none'
+              className='button'
               id='date-picker'
               label='Date'
               maxDate={new Date()}
               inputVariant='outlined'
+              fullWidth
               value={dateValue}
               onChange={handleDateChange}
               className="dropdown"
@@ -525,6 +527,7 @@ const handleFilter = ()=>{
             className='dropdownIcon'
             id='attedancetype'
             size='small'
+            className='arrow'
             options={[
               { id: 1, name: 'Student' },
               { id: 2, name: 'Staff' },
@@ -540,6 +543,7 @@ const handleFilter = ()=>{
 
           />
         </Grid>
+
         <Grid item md={11} xs={12}>
           <Divider />
         </Grid>

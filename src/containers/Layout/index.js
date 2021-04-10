@@ -66,6 +66,7 @@ import { useTheme } from '@material-ui/core/styles';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserInfo from '../../components/user-info';
+import PublishIcon from '@material-ui/icons/Publish';
 
 export const ContainerContext = createContext();
 
@@ -1351,6 +1352,16 @@ const Layout = ({ children, history }) => {
               <TodayIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>MarkAttedance</ListItemText>
+          </ListItem>
+          <ListItem
+            button
+            className={classes.menuControlContainer}
+            onClick={() => history.push('/publications')}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              <PublishIcon />
+            </ListItemIcon>
+            <ListItemText className='menu-item-text'>Publication</ListItemText>
           </ListItem>
           {/* {drawerOpen ? (
             <ListItem

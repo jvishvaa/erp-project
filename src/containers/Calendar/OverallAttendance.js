@@ -567,9 +567,10 @@ const defaultValues = {
                         <Typography>{item.student}</Typography>
                       </Grid>
 
-                      <div class='corner1'>
-                        <h3>2nd</h3>
-                      </div>
+                      <p class='box'>
+                        <span class='content1'>1st</span>
+                        <span class='content'>2nd</span>
+                      </p>
                     </Grid>
                   </CardContent>
                 </div>

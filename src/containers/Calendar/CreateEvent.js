@@ -22,7 +22,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Breadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import './Styles.css';
 import { setModulePermissionsRequestData } from 'redux/actions';
-// import LineAtt from '../../../assets/images/LineAtt.svg';
+import LineAtt from '../../assets/images/LineAtt.svg';
 
 function getDaysAfter(date, amount) {
   return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
@@ -166,7 +166,7 @@ const CreateEvent = () => {
               <Grid item md={4} lg={2} sm={4} xs={12}>
                 <Autocomplete
                   size='small'
-                  className='dropdown'
+                  className='arrow'
                   id='combo-box-demo'
                   name='branch'
                   onChange={handleChange}
@@ -181,7 +181,7 @@ const CreateEvent = () => {
                 <Autocomplete
                   size='small'
                   id='combo-box-demo'
-                  className='dropdown'
+                  className='arrow'
                   name='grade'
                   options={grades}
                   onChange={handleChange}
@@ -195,7 +195,7 @@ const CreateEvent = () => {
                 <Autocomplete
                   id='combo-box-demo'
                   size='small'
-                  className='dropdown'
+                  className='arrow'
                   options={grades}
                   onChange={handleChange}
                   getOptionLabel={(option) => option.grade_name}

@@ -244,6 +244,7 @@ import CreateEventCategory from './containers/Calendar/CreateEventCategory';
 import Attendance from './containers/Calendar/Attendance';
 import CreateEvent from './containers/Calendar/CreateEvent';
 import OverallAttendance from './containers/Calendar/OverallAttendance';
+import Publications from './containers/publications/Publications';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -1179,6 +1180,9 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/CreateEventCategory'>
                             {({ match }) => <CreateEventCategory match={match} />}
+                          </Route>
+                          <Route exact path='/publications'>
+                            {({ match }) => <Publications match={match} />}
                           </Route>
                         </Switch>
                       </DailyDairyStore>
