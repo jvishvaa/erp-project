@@ -1,10 +1,16 @@
 /* eslint-disable no-nested-ternary */
 import moment from 'moment';
 import axios from '../../config/axios';
+import endpoints from '../../config/endpoints';
 
 export const fetchAssesmentTypes = async () => {
   try {
-    const response = await axios.get(`/assessment/exam-type-list/`);
+    const response = await axios.get(
+      `${endpoints.baseURLCentral}/assessment/exam-type-list/`,
+      {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      }
+    );
     return response.data.result;
   } catch (e) {
     throw new Error(e);
@@ -13,7 +19,9 @@ export const fetchAssesmentTypes = async () => {
 
 export const fetchTopics = async () => {
   try {
-    const response = await axios.get(`/assessment/topic/`);
+    const response = await axios.get(`${endpoints.baseURLCentral}/assessment/topic/`, {
+      headers: { 'x-api-key': 'vikash@12345#1231' },
+    });
     return response.data.result;
   } catch (e) {
     throw new Error();
@@ -34,7 +42,7 @@ export const fetchAssesmentTests = async (
   try {
     console.log('entered');
 
-    let url = '';
+    let url = endpoints.baseURLCentral;
     if (fetchAll) {
       if (type === 'all') {
         url = `/assessment/tests/?all=1`;
@@ -61,7 +69,9 @@ export const fetchAssesmentTests = async (
       }
     }
     console.log('api called with ', url);
-    const response = await axios.get(url);
+    const response = await axios.get(url, {
+      headers: { 'x-api-key': 'vikash@12345#1231' },
+    });
     if (response.data.status_code === 200) {
       return { totalPages: response.data.total_pages, results: response.data.result };
     }
@@ -75,7 +85,12 @@ export const fetchAssesmentTests = async (
 export const fetchAssesmentTestDetail = async (id) => {
   console.log('fetch test details');
   try {
-    const response = await axios.get(`/assessment/tests/?test_id_in=${id}`);
+    const response = await axios.get(
+      `${endpoints.baseURLCentral}/assessment/tests/?test_id_in=${id}`,
+      {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      }
+    );
     if (response.data.status_code === 200) {
       return { results: response.data.result[0] };
     }
