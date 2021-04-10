@@ -10,6 +10,9 @@ export default {
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
     courses: '/aol/courses/',
+    attendance: '/academic/student_attendance_between_date_range/',
+    showAttendance: '/academic/show_attendance/',
+    createAttendance: '/academic/create_attendance/'
   },
   profile: {
     userDetails: '/erp_user/user-data/',

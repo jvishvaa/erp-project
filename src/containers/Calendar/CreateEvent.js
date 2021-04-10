@@ -13,16 +13,16 @@ import Button from '@material-ui/core/Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import { addDays } from 'date-fns';
-import axiosInstance from '../../../config/axios';
-import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../config/axios';
+import endpoints from '../../config/endpoints';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Breadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
+import Breadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import './Styles.css';
 import { setModulePermissionsRequestData } from 'redux/actions';
-import LineAtt from '../../../assets/images/LineAtt.svg';
+// import LineAtt from '../../../assets/images/LineAtt.svg';
 
 function getDaysAfter(date, amount) {
   return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
@@ -104,10 +104,10 @@ const CreateEvent = () => {
       setBranches(res.data.data);
     });
 
-    axiosInstance.get(endpoints.academics.sections).then((res) => {
-      console.log('section', res.data.result.results);
-      setSections(res.data.result.results);
-    });
+    // axiosInstance.get(endpoints.academics.sections).then((res) => {
+    //   console.log('section', res.data.result.results);
+    //   setSections(res.data.result.results);
+    // });
   }, []);
 
   return (
@@ -219,7 +219,7 @@ const CreateEvent = () => {
                 />
               </Grid>
               <Grid item md={1} sm={1}>
-                <img src={LineAtt} />
+                {/* <img src={LineAtt} /> */}
               </Grid>
               <Grid item lg={1} md={1} sm={1}>
                 <FormControlLabel
@@ -245,7 +245,7 @@ const CreateEvent = () => {
                 /> */}
               </Grid>
               <Grid item md={1} sm={1}>
-                <img src={LineAtt} />
+                {/* <img src={LineAtt} /> */}
               </Grid>
               <Grid item md={1} sm={2}>
                 <FormControlLabel

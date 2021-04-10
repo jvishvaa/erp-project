@@ -41,6 +41,7 @@
     "react-dom": "^16.14.0",
     "react-dropzone": "^11.2.4",
     "react-highcharts": "^16.1.0",
+    "react-hook-form": "^7.0.4",
     "react-html-parser": "^2.0.2",
     "react-redux": "^7.2.1",
     "react-responsive": "^8.2.0",
@@ -108,6 +109,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {}
+  }
 }

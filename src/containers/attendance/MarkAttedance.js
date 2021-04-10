@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Layout from '../Layout/index';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import {
@@ -18,7 +18,8 @@ import { Autocomplete, Pagination } from '@material-ui/lab';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
-
+import '../teacherBatchView/style.scss'
+import './markAttendance.css';
 import ClearIcon from '../../components/icon/ClearIcon';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
@@ -26,13 +27,14 @@ import Avatar from '@material-ui/core/Avatar';
 import { deepOrange, deepPurple } from '@material-ui/core/colors';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state'
+import Axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
     borderRadius: '10px',
     width: '100%',
-
     margin: '1.5rem -0.1rem',
   },
   paperStyle: {
@@ -53,6 +55,8 @@ const useStyles = makeStyles((theme) => ({
   },
   contentsmall: {
     fontSize: '0.8rem',
+    textAlign:'right',
+    marginRight:'10%'
   },
   textRight: {
     textAlign: 'right',
@@ -68,17 +72,120 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const MarkAttedance = () => {
+  const moduleId = 178;
+  const { setAlert } = useContext(AlertNotificationContext);
+  const [loading, setLoading] = useState(false);
   const classes = useStyles();
-  const [grade, setGrade] = useState();
-  const [gradesGet, setGradesGet] = useState();
-  const [dateValue, setDateValue] = useState(moment(new Date()).format('YYYY-MM-DD'));
+  const [attendanceType, setAttendanceType] = useState([])
+  const [date, setDate] = useState(new Date())
+  const[dateString, setDateString] = useState('')
+  const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
+  const [academicYear,setAcademicYear] = useState([]);
+  const [selectedAcademicYear,setSelectedAcadmeicYear] = useState('');  
+  const [branchList,setBranchList] = useState([])
+  const [selectedBranch,setSelectedBranch] = useState([])
+  const [gradeList, setGradeList] = useState([]);
+  const [selectedGrade, setSelectedGrade] = useState([]);
+  const [sectionList, setSectionList] = useState([]);
+  const [selectedSection, setSelectedSection] = useState([]);
+  const [secSelectedId, setSecSelectedId] = useState([])
+  const [data, setData] = useState()
+  const [newData, setNewData] = useState()
+  const [state, setState] = React.useState({
+    checkedA: true,
+    checkedB: true,
+  });
+
+  const handleChange = (event) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+  };
 
   useEffect(() => {
-    axiosInstance.get(endpoints.masterManagement.gradesDrop).then((res) => {
-      console.log('res', res.data.data);
-      setGradesGet(res.data.data);
-    });
+    const date = new Date();
+    console.log(new Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'long' }).format(date))
+    callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
+    // callApi(`${endpoints.academics.branches}`,'branchList');
+    //   callApi(
+    //       `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=15`,
+    //       'gradeList'
+    //   );
   }, []);
+
+const handleFilter = ()=>{
+  // const payload = {
+  //   academic_year_id: selectedAcademicYear.id,
+  //   branch_id: selectedBranch.branch.id,
+  //   grade_id: selectedGrade.grade_id,
+  //   section_id: selectedSection.section_id,
+  //   dateValue: dateValue,
+  //   attendanceType: attendanceType,
+  // }
+  // console.log(payload)
+  axiosInstance
+      .get(
+        `${endpoints.idCards.getIdCardsApi}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}`
+      )
+      .then(res=>{
+        console.log(res.data.result.results)
+        setNewData(res.data.result.results)
+
+       var result =  res.data.result.results.map((item)=>(
+          {
+            name: item.user.first_name,
+            student_id: item.erp_id,
+            section_mapping_id: selectedSection.section_id,
+            remarks: "none",
+            fullday_present: true,
+            is_first_shift_present: true,
+            is_second_shift_present: true,
+            attendance_for_date: dateValue
+          }
+        ))
+      setData(result)
+      })
+      .catch(err=>console.log(err))
+
+  // mapData()
+}
+
+
+// const mapData = ()=>{
+//   console.log(newData)
+// }
+
+  function callApi(api, key) {
+    setLoading(true);
+    axiosInstance.get(api)
+    .then((result) => {
+        if (result.status === 200) {
+          if(key === 'academicYearList'){
+            console.log(result?.data?.data || [])
+            setAcademicYear(result?.data?.data || [])
+          }
+          if (key === 'branchList') {
+            console.log(result?.data?.data || [])
+            setBranchList(result?.data?.data?.results || []);
+          }
+            if (key === 'gradeList') {
+              console.log(result?.data?.data || [])
+                setGradeList(result.data.data || []);
+            }
+            if (key === 'section') {
+              console.log(result?.data?.data || [])
+                setSectionList(result.data.data);
+              }
+            setLoading(false);
+        } else {
+            setAlert('error', result.data.message);
+            setLoading(false);
+        }
+    })
+    .catch((error) => {
+        setAlert('error', error.message);
+        setLoading(false);
+    });
+}
+
   const StyledClearButton = withStyles({
     root: {
       backgroundColor: '#E2E2E2',
@@ -89,15 +196,7 @@ const MarkAttedance = () => {
       marginTop: 'auto',
     },
   })(Button);
-  const handleGrade = (e, value) => {
-    console.log('The value of grade', e.target.value);
-    if (value) {
-      console.log('grade:', value.id);
-      setGrade(e.target.value);
-    } else {
-      setGrade('');
-    }
-  };
+
   const StyledFilterButton = withStyles({
     root: {
       backgroundColor: '#FF6B6B',
@@ -117,46 +216,104 @@ const MarkAttedance = () => {
       stroke: '#FFFFFF',
     },
   })(Button);
+
   const handleDateChange = (event, value) => {
     setDateValue(value);
     console.log('date', value);
   };
-  const dummyData = [
-    { name: 'Sankalp Khanna' },
-    { name: 'Hari Das' },
-    { name: 'Mani Pal' },
-    { name: 'Manish' },
-    { name: 'Nagendra' },
-    { name: 'Mani Pal' },
-    { name: 'Manish' },
-    { name: 'Nagendra' },
-    { name: 'Manish' },
-    { name: 'Nagendra' },
-  ];
 
+
+  const handleFirstHalf = (e, id)=>{
+    console.log(e.target.checked, id)
+    const studentId = data.findIndex((item)=>item.student_id == id)
+    console.log(studentId)
+    let products = [...data];
+    let product = { ...products[studentId] };
+    product.is_first_shift_present = e.target.checked;
+    products[studentId] = product;
+    console.log(products)
+    setData(products)
+    const remarks = "test"
+    const fullday_present = true
+    console.log(selectedSection.section_id)
+    axiosInstance
+    .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
+    .then(res=>console.log(res))
+    .catch(err=>console.log(err))
+    
+  }
+
+  const handleSecondHalf = (e, id)=>{
+    console.log(e.target.checked, id)
+    const studentId = data.findIndex((item)=>item.student_id == id)
+    console.log(studentId)
+    let products = [...data];
+    let product = { ...products[studentId] };
+    product.is_second_shift_present = e.target.checked;
+    products[studentId] = product;
+    console.log(products)
+    setData(products)
+    const remarks = "test"
+    const fullday_present = true
+    axiosInstance
+    .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
+    .then(res=>console.log(res))
+    .catch(err=>console.log(err))
+    
+  }
+
+  const handlePostAttendance = ()=>{
+    // if(data){
+    //   let temp = data
+    //   for(let i=0; i<data.length; i++){
+    //     temp = {
+    //       ...data,
+    //       [`&[i]`]
+    //     }
+    //   }
+    // }
+    // data && data.map((item)=(
+    //   {...data, section_mapping_id: selectedSection.section_id, student_id: item.erp_id, attendance_for_date: dateValue, remarks: null, is_fullday: }
+    // ))
+  }
+
+  //pagination
+  const [activePage, setActivePage] = useState(1)
+
+    let totalPages = data && Math.ceil(data.length / 8)
+    console.log(totalPages)
+    let offset = (activePage - 1)*8
+    const handlePageChange = (e, value)=>{
+        setActivePage(value)
+    }
   const StudentData = () => {
     return (
       <>
-        {dummyData.map((options) => {
+        { data && data
+        .filter((item,index)=>{
+          const pageCondition = index >= offset && index < offset + 8
+          return pageCondition
+          })
+        .map((options) => {
           return (
-            <div value={options.id} key={options.id}>
+            <div value={options.student_id} key={options.student_id}>
               {' '}
               <Grid item md={2} xs={12} className={classes.root}>
                 <Paper elevation={3} className={classes.paperSize}>
-                  <Grid container direction='row'>
+                  <Grid container direction='row'style={{display:'flex', alignItems:'center'}} >
                     {' '}
                     <Avatar className={[classes.orange, classes.paperStyle]}>
                       {options.name.slice(0, 1)}
                     </Avatar>
                     <Typography
                       className={[classes.content, classes.paperStyle]}
-                      style={{ marginTop: '10%' }}
                     >
-                      {options.name}
+                      {options.name.slice(0, 6)}
                     </Typography>
-                    <Typography
+                  </Grid>
+                  <Grid>
+                  <Typography
                       className={classes.contentsmall}
-                      style={{ marginLeft: '60%' }}
                     >
                       Mark Present
                     </Typography>
@@ -168,7 +325,8 @@ const MarkAttedance = () => {
                     </Typography>
 
                     <Grid style={{ marginLeft: '40%' }}>
-                      <Switch color='primary' />
+                    {/* <Switch color='primary'  /> */}
+                      <Switch color='primary' checked={options.is_first_shift_present} onChange={(e)=>handleFirstHalf(e, options.student_id)}/>
                     </Grid>
                   </Grid>
                   <Divider />
@@ -179,7 +337,8 @@ const MarkAttedance = () => {
                     </Typography>
 
                     <Grid style={{ marginLeft: '40%' }}>
-                      <Switch color='primary' />
+                    {/* <Switch color='primary' /> */}
+                      <Switch color='primary'  checked={options.is_second_shift_present} onChange={(e)=>handleSecondHalf(e, options.student_id)}/>
                     </Grid>
                   </Grid>
                 </Paper>
@@ -193,13 +352,14 @@ const MarkAttedance = () => {
 
   return (
     <Layout>
-      <CommonBreadcrumbs componentName='MarkAttendance' />
-
+      <div className='profile_breadcrumb_wrapper'>
+          <CommonBreadcrumbs componentName='Mark Attendance' />
+      </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
         <Grid item md={12} xs={12}>
           <Typography>Today's attendance</Typography>
         </Grid>
-        <Grid item md={2} xs={12}>
+        <Grid item md={3} xs={12}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <KeyboardDatePicker
               size='small'
@@ -211,17 +371,158 @@ const MarkAttedance = () => {
               maxDate={new Date()}
               inputVariant='outlined'
               value={dateValue}
-              style={{ background: 'white' }}
               onChange={handleDateChange}
+              className="dropdown"
+              style={{width:'100%'}}
               KeyboardButtonProps={{
                 'aria-label': 'change date',
               }}
             />
           </MuiPickersUtilsProvider>
         </Grid>
+        <Grid item md={3} xs={12}>
+            <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedAcadmeicYear(value)
+                if(value){
+                  callApi(
+                    `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                    'branchList'
+                  );
+                }
+                setSelectedGrade([]);
+                setSectionList([]);
+                setSelectedSection([]);
+                setSelectedBranch([])
 
-        <Grid item md={2} xs={12}>
-          <Autocomplete
+              }}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedAcademicYear}
+              options={academicYear}
+              getOptionLabel={(option) => option?.session_year}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Academic Year'
+                  placeholder='Academic Year'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={3} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedBranch([])
+                if(value){
+                  // const ids = value.map((el)=>el)
+                  const selectedId=value.branch.id
+                  setSelectedBranch(value)
+                  callApi(
+                    `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                    'gradeList'
+                  );
+                }
+                setSelectedGrade([]);
+                setSectionList([]);
+                setSelectedSection([]);
+
+              }}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedBranch}
+              options={branchList}
+              getOptionLabel={(option) => option?.branch?.branch_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  placeholder='Branch'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={3} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedGrade([])
+                if(value){
+                  // const ids = value.map((el)=>el)
+                  const selectedId=value.grade_id
+                  // console.log(selectedBranch.branch)
+                  const branchId=selectedBranch.branch.id
+                  setSelectedGrade(value)
+                  callApi(
+                    `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+                    'section'
+                  );
+                }
+                  setSectionList([]);
+                  setSelectedSection([]);
+
+              }}
+              id='grade_id'
+              className='dropdownIcon'
+              value={selectedGrade}
+              options={gradeList}
+              getOptionLabel={(option) => option?.grade__grade_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Grade'
+                  placeholder='Grade'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={3} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedSection([])
+                if (value) {
+                  const ids=value.id
+                  const secId=value.section_id
+                  setSelectedSection(value)
+                  setSecSelectedId(secId)
+                }
+
+              }}
+              id='section_id'
+              className='dropdownIcon'
+              value={selectedSection}
+              options={sectionList}
+              getOptionLabel={(option) => option?.section__section_name || option?.section_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Section'
+                  placeholder='Section'
+                />
+              )}
+            />
+          </Grid>
+        <Grid item md={3} xs={12}>
+        <Autocomplete
+            className='dropdownIcon'
             id='attedancetype'
             size='small'
             options={[
@@ -229,50 +530,24 @@ const MarkAttedance = () => {
               { id: 2, name: 'Staff' },
             ]}
             getOptionLabel={(option) => option.name}
-            style={{ background: 'white' }}
+            onChange = {(e, value)=>{
+              console.log(e.target.id)
+              setAttendanceType(value.name)
+            }}
             renderInput={(params) => (
-              <TextField {...params} label='Attedance Type' variant='outlined' required />
+              <TextField {...params} label='Attedance Type' placeholder="Attedance Type" variant='outlined' />
             )}
-          />
-        </Grid>
-        <Grid item md={2} xs={12}>
-          <Autocomplete
-            id='grade'
-            size='small'
-            options={gradesGet}
-            getOptionLabel={(option) => option.grade_name}
-            name='grade'
-            style={{ background: 'white' }}
-            onChange={handleGrade}
-            renderInput={(params) => (
-              <TextField {...params} label='grades' variant='outlined' required />
-            )}
-          />
-        </Grid>
-        <Grid item md={2} xs={12}>
-          <Autocomplete
-            id='section'
-            size='small'
-            options={[
-              { id: 1, name: 'A' },
-              { id: 2, name: 'B' },
-            ]}
-            getOptionLabel={(option) => option.name}
-            style={{ background: 'white' }}
-            renderInput={(params) => (
-              <TextField {...params} label='Section' variant='outlined' required />
-            )}
+
           />
         </Grid>
         <Grid item md={11} xs={12}>
           <Divider />
         </Grid>
       </Grid>
-      <Grid container direction='row'>
+      <Grid container direction='row' >
         <StyledClearButton
           variant='contained'
           startIcon={<ClearIcon />}
-          href={`/markattedance`}
         >
           Clear all
         </StyledClearButton>
@@ -282,6 +557,7 @@ const MarkAttedance = () => {
           color='secondary'
           startIcon={<FilterFilledIcon className={classes.filterIcon} />}
           className={classes.filterButton}
+          onClick={handleFilter}
         >
           filter
         </StyledFilterButton>
@@ -298,25 +574,25 @@ const MarkAttedance = () => {
           <ArrowBackIosIcon />
         </Grid>
         <Grid>
-          <Typography variant='h5'>10 December 2020</Typography>
+          <Typography variant='h5'>{dateValue}</Typography>
         </Grid>
         <Grid>
           <ArrowForwardIosIcon />
         </Grid>
         <Grid item md={6}></Grid>
-        <Typography>Number of Students:33</Typography>
+        <Typography>Number of Students: {data && data.length}</Typography>
         <Grid item md={10}>
           <Divider />
         </Grid>
         <Grid></Grid>
-        <Grid container direction='row' className={classes.root} spacing={3} item md={10}>
+        <Grid container direction='row' className={classes.root} spacing={2} item justify='center'>
           <StudentData />
         </Grid>
 
         <Grid item md={2} xs={12}></Grid>
         <Grid container justify='center'>
           {' '}
-          <Pagination count={3} color='secondary' />
+          <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
         </Grid>
       </Grid>
     </Layout>
