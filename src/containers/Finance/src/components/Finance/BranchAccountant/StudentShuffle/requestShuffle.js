@@ -124,7 +124,7 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
       console.log('use effect NAme:', selectedStudent)
       setDisplayErp(selectedStudent && selectedStudent.erp ? selectedStudent.erp : displayErp)
     }
-    if (erp && erp.length > 3) {
+    if (erp) {
       const selectedStudent = ErpSuggestions && ErpSuggestions.length > 0 ? ErpSuggestions.filter(item => item.erp === erp)[0] : null
       console.log('use effect ERp:', selectedStudent)
       setDisplayErp(selectedStudent && selectedStudent.erp ? selectedStudent.erp : displayErp)
@@ -252,7 +252,7 @@ const erpDebounceFunc = () => {
   const studentInfoHandler = useMemo(() => {
     console.log('useMemo: ', studentName, erp, displayErp)
     if (studentName || erp) {
-      return <Student erp={displayErp} user={user} alert={alert} />
+      return <Student erp={displayErp} session={sessionYear && sessionYear.value} user={user} alert={alert} />
     }
   }, [studentName, displayErp, erp, alert, user])
 
