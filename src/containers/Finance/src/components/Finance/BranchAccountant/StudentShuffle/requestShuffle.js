@@ -76,10 +76,16 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
   const [studentName, setStudentName] = useState(null)
   const [sessionYear, setSessionYear] = useState(null)
   const [branch, setBranch] = useState('')
+  const [branches, setBranches] = useState('')
   const [grade, setGrade] = useState('')
   const [section, setSection] = useState('')
   const [reason, setReason] = useState('')
   // const [searchBy, setSearchBy] = useState('')
+
+  // useEffect(() => {
+  //   console.log('his', history)
+  //   console.log('his1', location && location.state && location.state.branch)
+  // })
 
   useEffect(() => {
     console.log('displayErp', displayErp)
@@ -154,7 +160,7 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
       studentName,
       alert,
       user, 
-      branch && branch.value
+      branches && branches.value
     )
   }
 
@@ -181,13 +187,13 @@ const erpDebounceFunc = () => {
       erp,
       alert,
       user,
-      branch && branch.value
+      branches && branches.value
     )
   }
   const erpHandler = (e) => {
     // let searchBox = null
 
-    if (!sessionYear || !branch) {
+    if (!sessionYear || !branches) {
       alert.warning('Select Academic Year and Branch!')
     } else {
       if (isNaN(Number(e.target.value))) {
@@ -229,6 +235,10 @@ const erpDebounceFunc = () => {
     setReason(e.target.value)
   }
 
+  const branchHandler = (e) => {
+    setBranches(e)
+  }
+
   const handleSug = (e) => {
     if (ErpSuggestions && studentName) {
       return ErpSuggestions.map(item => ({ value: item.name ? item.name : null, label: item.name ? item.name : null }))
@@ -252,7 +262,7 @@ const erpDebounceFunc = () => {
   const studentInfoHandler = useMemo(() => {
     console.log('useMemo: ', studentName, erp, displayErp)
     if (studentName || erp) {
-      return <Student erp={displayErp} session={sessionYear && sessionYear.value} user={user} alert={alert} />
+      return <Student erp={erp} session={sessionYear && sessionYear.value} user={user} alert={alert} />
     }
   }, [studentName, displayErp, erp, alert, user])
 
@@ -275,6 +285,22 @@ const erpDebounceFunc = () => {
                 : []
             }
             onChange={academicYearChangeHandler}
+          />
+        </Grid>
+        <Grid item className={classes.item} xs={3}>
+          <label>Branch* </label>
+          <Select
+            placeholder='Select Branch'
+            value={branches || ''}
+            options={
+              branchList
+                ? branchList.map(g => ({
+                  value: g.branch && g.branch.id ? g.branch.id : '',
+                  label: g.branch && g.branch.branch_name ? g.branch.branch_name : ''
+                }))
+                : []
+            }
+            onChange={branchHandler}
           />
         </Grid>
         <Grid item className={classes.item} xs={3}>

@@ -107,7 +107,10 @@ const StudentShuffle = ({ classes, session, history, dataLoading, branchList, fe
 
   const requestHandler = (e) => {
     history.push({
-      pathname: '/finance/Requestshuffle'
+      pathname: '/finance/Requestshuffle',
+      state:{
+        branch: branch && branch.value
+      }
     })
   }
 
