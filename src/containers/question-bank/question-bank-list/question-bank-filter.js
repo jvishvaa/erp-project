@@ -281,8 +281,9 @@ const QuestionBankFilters = ({
     if (value) {
       setFilterData({ ...filterData, subject: value, chapter: '', topic: '' });
       if (value) {
+        console.log(value,'+++++++++++++++++')
         axios
-          .get(`${endpoints.lessonPlan.chapterListCentral}?grade_subject=${33}`, {
+          .get(`${endpoints.lessonPlan.chapterListCentral}?grade_subject=${value?.grade?.central_grade_id}`, {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           })
           .then((result) => {
@@ -393,12 +394,14 @@ const QuestionBankFilters = ({
     if (
       !filterData?.quesType ||
       !filterData?.question_categories_options ||
-      !filterData?.question_level_option
+      !filterData?.question_level_option ||
+      !filterData?.year ||
+      !filterData?.branch
     ) {
       setAlert('error', 'Select all the fields!');
       return;
     }
-    console.log(filterData?.topicId, 'TOPICID');
+    console.log(filterData, 'filtered');
     handlePeriodList(
       filterData.quesType.id,
       quesCatData,

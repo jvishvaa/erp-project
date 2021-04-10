@@ -1,4 +1,5 @@
 import axios from '../../config/axios';
+import endpoints from '../../config/endpoints';
 
 export const createAssesmentActions = {
   SET_FILTER_FOR_CREATE_ASSESMENT: 'SET_FILTER_FOR_CREATE_ASSESMENT',
@@ -50,7 +51,9 @@ export const addQuestionPaperToTest = (data) => ({
 export const fetchQuestionPaperDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: createAssesmentActions.FETCH_QUESTION_PAPER_DETAILS_REQUEST });
-    const response = await axios.get(`/assessment/${id}/qp-questions-list/`);
+    const response = await axios.get(`${endpoints.baseURLCentral}/assessment/${id}/qp-questions-list/`, {
+      headers: { 'x-api-key': 'vikash@12345#1231' },
+    });
     if (response.data.status_code === 200) {
       const { sections, questions } = response.data.result;
       const parsedResponse = [];

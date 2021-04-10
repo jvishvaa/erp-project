@@ -47,9 +47,10 @@ const QuestionCard = (props) => {
   };
 
   const handleViewMore = (result) => {
-    // console.log(result,'=====')
-    axiosInstance
-      .get(`${endpoints.assementQP.assementViewmore}${result.id}/qp-questions-list/`)
+    axios
+      .get(`${endpoints.assementQP.assementViewmore}${result.id}/qp-questions-list/`, {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      })
       .then((result) => {
         if (result.data.status_code === 200) {
           setData(result.data.result);
