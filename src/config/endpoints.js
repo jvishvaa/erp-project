@@ -5,7 +5,7 @@ const appBaseURL = window.location.hostname;
 //     ? 'http://dev.mgmt.letseduvate.com/qbox'
 //     : 'https://mgmt.letseduvate.com/qbox';
 const baseURLCentral = 'http://dev.mgmt.letseduvate.com/qbox'
-// const baseURLCentral = 'http://192.168.0.67/qbox';
+// const baseURLCentral = 'http://192.168.0.67:8000/qbox';
 
 export default {
   auth: {

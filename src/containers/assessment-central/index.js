@@ -199,9 +199,9 @@ const Assesment = () => {
   };
 
   useEffect(() => {
-    getGrades();
-    getAssesmentTypes();
-    getTopics();
+    // getGrades();
+    // getAssesmentTypes();
+    // getTopics();
   }, []);
 
   useEffect(() => {
