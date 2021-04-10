@@ -1755,8 +1755,10 @@ class FeeShowList extends Component {
           <React.Fragment>
             <AppBar position='static' style={{ zIndex: 0 }}>
               <Tabs value={this.state.value} onChange={handleChange} variant='scrollable' scrollButtons='auto'>
-                <Tab value='one' label='OLV Students' />
-                <Tab value='two' label='Non OLV Students' />
+                {/* <Tab value='one' label='OLV Students' />
+                <Tab value='two' label='Non OLV Students' /> */}
+                 <Tab value='one' label='ORCHIDS Students' />
+                <Tab value='two' label='Non ORCHIDS Students' />
               </Tabs>
             </AppBar>
           </React.Fragment>
