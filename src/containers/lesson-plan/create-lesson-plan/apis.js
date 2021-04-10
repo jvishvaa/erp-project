@@ -40,10 +40,10 @@ export const fetchGrades = async (branchId) => {
   }
 };
 
-export const fetchSubjects = async (mappingId) => {
+export const fetchSubjects = async (mappingId,branchId) => {
   try {
     const response = await axios.get(
-      `${endpoints.assessmentApis.gradesList}?gs_id=${mappingId}`
+      `${endpoints.assessmentApis.gradesList}?gs_id=${mappingId}&branch=${branchId}`
     );
     return response.data?.result?.results;
   } catch (e) {

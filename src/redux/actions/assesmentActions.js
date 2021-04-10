@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import moment from 'moment';
-import axios from '../../config/axios';
+// import axiosInstance from '../../config/axios';
+import axios from 'axios';
 import endpoints from '../../config/endpoints';
 
 export const fetchAssesmentTypes = async () => {
@@ -42,28 +43,28 @@ export const fetchAssesmentTests = async (
   try {
     console.log('entered');
 
-    let url = endpoints.baseURLCentral;
+    let url = '';
     if (fetchAll) {
       if (type === 'all') {
-        url = `/assessment/tests/?all=1`;
+        url = `${endpoints.baseURLCentral}/assessment/tests/?all=1`;
       } else if (type === 'physical-test') {
-        url = `/assessment/tests/?test_mode=2`;
+        url = `${endpoints.baseURLCentral}/assessment/tests/?test_mode=2`;
       } else if (type === 'online-pattern') {
-        url = `/assessment/tests/?test_mode=1`;
+        url = `${endpoints.baseURLCentral}/assessment/tests/?test_mode=1`;
       }
     } else {
       const startDate = moment(date[0]).format('YYYY-MM-DD');
       const endDate = moment(date[1]).format('YYYY-MM-DD');
       if (type === 'all') {
-        url = `/assessment/tests/?grade=${gradeId}&subject=${subjectIds}&test_type=${testTypeId}&is_completed=${
+        url = `${endpoints.baseURLCentral}/assessment/tests/?grade=${gradeId}&subject=${subjectIds}&test_type=${testTypeId}&is_completed=${
           statusId === 1 ? 'False' : statusId === 2 ? 'True' : null
         }&start_date=${startDate}&end_date=${endDate}&page=${page}&page_size=${pageSize}`;
       } else if (type === 'physical-test') {
-        url = `/assessment/tests/?grade=${gradeId}&subject=${subjectIds}&test_type=${testTypeId}&is_completed=${
+        url = `${endpoints.baseURLCentral}/assessment/tests/?grade=${gradeId}&subject=${subjectIds}&test_type=${testTypeId}&is_completed=${
           statusId === 1 ? 'False' : statusId === 2 ? 'True' : null
         }&start_date=${startDate}&end_date=${endDate}&test_mode=2&page=${page}&page_size=${pageSize}`;
       } else if (type === 'online-pattern') {
-        url = `/assessment/tests/?grade=${gradeId}&subject=${subjectIds}&test_type=${testTypeId}&is_completed=${
+        url = `${endpoints.baseURLCentral}/assessment/tests/?grade=${gradeId}&subject=${subjectIds}&test_type=${testTypeId}&is_completed=${
           statusId === 1 ? 'False' : statusId === 2 ? 'True' : null
         }&start_date=${startDate}&end_date=${endDate}&test_mode=1&page=${page}&page_size=${pageSize}`;
       }
