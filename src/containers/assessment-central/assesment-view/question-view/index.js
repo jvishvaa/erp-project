@@ -265,12 +265,12 @@ const QuestionView = ({ question, showHeader, index }) => {
                   style={{ maxWidth: '100%' }}
                 />
               </div>
-              <div className='answers-container'>
-                <div className='answers-header '>Answers</div>
-                <Divider className='secondary-divider' />
-                <div className='options-container'>
-                  <div className='option'>Answer</div>
-                </div>
+              <div className='sub-questions-container'>
+                {question.sub_questions?.map((question, index) => (
+                  <div className='sub-question-container' key={question.id}>
+                    <QuestionView question={question} index={index} showHeader />
+                  </div>
+                ))}
               </div>
             </div>
           )}

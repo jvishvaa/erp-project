@@ -162,7 +162,7 @@ const CreateQuestionPaper = ({
           sec.questions.forEach((question) => {
             sectionObj[sec.name].push(question.id);
             if (!questionData.includes(question.id)) {
-              questionData.push(question.id);
+              questionData.push(question.id,question.child_id);
             }
           });
           sectionData.push(sectionObj);
@@ -177,7 +177,7 @@ const CreateQuestionPaper = ({
         subject: formik.values.subject.map((obj) => obj.subject.id),
         subject_name: formik.values.subject.map((obj) => obj.subject.subject_name),
         paper_level: formik.values.question_paper_level.id,
-        question: questionData,
+        question: questionData.flat(),
         // section: [
         //   {
         //     section: sectionData,
