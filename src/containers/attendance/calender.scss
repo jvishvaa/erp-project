@@ -5,9 +5,16 @@
 border-radius: 10px;
     .rdrCalendarWrapper{
         border-radius: 30px;
+        width: 100%;
     }
     .rdrMonthAndYearWrapper{
         padding-top: 0px;
+    }
+    .rdrMonth{
+        width: 100%;
+    }
+    .rdrDays{
+        height: 230px;
     }
 // background: transparent  0% 0% no-repeat padding-box;
 // border: 1px solid #8C8C8C;
