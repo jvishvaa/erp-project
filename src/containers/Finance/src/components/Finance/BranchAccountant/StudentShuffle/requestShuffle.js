@@ -262,7 +262,7 @@ const erpDebounceFunc = () => {
   const studentInfoHandler = useMemo(() => {
     console.log('useMemo: ', studentName, erp, displayErp)
     if (studentName || erp) {
-      return <Student erp={erp} session={sessionYear && sessionYear.value} user={user} alert={alert} />
+      return <Student erp={erp} branch={branches && branches.value} session={sessionYear && sessionYear.value} user={user} alert={alert} />
     }
   }, [studentName, displayErp, erp, alert, user])
 
