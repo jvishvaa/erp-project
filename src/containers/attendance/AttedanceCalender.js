@@ -250,6 +250,29 @@ const AttedanceCalender = () => {
     console.log(startDate, 'startDate');
     setStartDate(startDate);
     setEndDate(endDate);
+    // axiosInstance
+    //   .get(`academic/student_attendance_between_date_range/`, {
+    //     params: {
+    //       start_date: startDate,
+    //       end_date: endDate,
+    //       branch_id: branchID,
+    //       grade_id: gradeID,
+    //       grade_id: 2,
+
+    //       // section_id: sectionID,
+    //       section_id: 2,
+    //       academic_year: academicYearID,
+    //     },
+    //   })
+    //   .then((res) => {
+    //     console.log(res.data.absent_list, 'respond student');
+    //     setStudentData(res.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+  };
+  const getRangeData = () => {
     axiosInstance
       .get(`academic/student_attendance_between_date_range/`, {
         params: {
@@ -271,7 +294,7 @@ const AttedanceCalender = () => {
       .catch((error) => {
         console.log(error);
       });
-  };
+  }
   const StyledFilterButton = withStyles({
     root: {
       backgroundColor: '#FF6B6B',
@@ -495,6 +518,7 @@ const AttedanceCalender = () => {
               color='secondary'
               startIcon={<FilterFilledIcon className={classes.filterIcon} />}
               className={classes.filterButton}
+              onClick={getRangeData}
             >
               filter
             </StyledFilterButton>
