@@ -25,10 +25,10 @@ export default function CenteredTabs({setSelectedIndex, period,handlePeriodList,
 
   const handleChange =  (event, newValue) => {
     setSelectedIndex(-1);
-    setTabValue(newValue)
-    handlePeriodList(tabQueTypeId,tabQueCatId,tabMapId,tabQueLevel,tabTopicId,newValue)
+    setTabValue(newValue);
+    handlePeriodList(tabQueTypeId,tabQueCatId,tabMapId,tabQueLevel,tabTopicId,newValue);
     setValue(newValue);
-    setPage(1)
+    setPage(1);
   };
   return (
     <Paper className={classes.root}>

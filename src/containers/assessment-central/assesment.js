@@ -127,7 +127,7 @@ const Assesmentquestion = () => {
     if (value) {
       setFilterData({ ...filterData, grade: value });
       axiosInstance
-        .get(`${endpoints.assessmentApis.gradesList}?gs_id=${value.mp_id}`)
+        .get(`${endpoints.assessmentApis.gradesList}?gs_id=${value.id}&branch=${filterData.branch.branch.id}`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setSubjectDropdown(result.data?.result?.results);

@@ -113,6 +113,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     setTabMapId(subjMapId);
     setTabQueLevel(quesLevel);
     console.log(topicId, 'FETCHED');
+    console.log(subjMapId,"subjMapId")
     if (newValue == 0 || newValue == undefined) {
       setTabValue(0);
       const filterStatus = '';
@@ -124,7 +125,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       //     `${endpoints.questionBank.questionData}?mapping_id=${subjMapId?.id}&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}${filterStatus}`
       //     // `${endpoints.questionBank.questionData}?mapping_id=14&question_type=7&question_categories=2&question_level=2`
       //   )
-      axios.get(`${endpoints.questionBank.questionData}?mapping_id=${subjMapId?.id}&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,{
+      axios.get(`${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,{
         headers: { 'x-api-key': 'vikash@12345#1231' },
       })
         .then((result) => {
@@ -145,7 +146,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
         });
     } else if (newValue == 1) {
       setTabValue(1);
-      axios.get(`${endpoints.questionBank.questionData}?mapping_id=${subjMapId?.id}&question_status=1&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,{
+      axios.get(`${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=1&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,{
         headers: { 'x-api-key': 'vikash@12345#1231' },
       })
         .then((result) => {
@@ -166,7 +167,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
         });
     } else if (newValue == 2) {
       setTabValue(2);
-      axios.get(`${endpoints.questionBank.questionData}?mapping_id=${subjMapId?.id}&question_status=3&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,{
+      axios.get(`${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=3&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,{
         headers: { 'x-api-key': 'vikash@12345#1231' },
       })
         .then((result) => {
@@ -187,7 +188,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
         });
     } else if (newValue == 3) {
       setTabValue(3);
-      axios.get(`${endpoints.questionBank.questionData}?mapping_id=${subjMapId?.id}&question_status=2&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,{
+      axios.get(`${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=2&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,{
         headers: { 'x-api-key': 'vikash@12345#1231' },
       })
         .then((result) => {
@@ -364,6 +365,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
                     tabQueCatId={tabQueCatId}
                     tabMapId={tabMapId}
                     tabQueLevel={tabQueLevel}
+                    tabTopicId={tabTopicId}
                   />
                 </Grid>
               )}

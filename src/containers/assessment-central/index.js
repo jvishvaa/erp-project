@@ -147,10 +147,10 @@ const Assesment = () => {
     }
   };
 
-  const getSubjects = async (mappingId) => {
+  const getSubjects = async (mappingId,branchId) => {
     try {
       setSubjects([]);
-      const data = await fetchSubjects(mappingId);
+      const data = await fetchSubjects(mappingId,branchId);
       setSubjects(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch subjects');
@@ -173,12 +173,12 @@ const Assesment = () => {
   //   } catch (e) {}
   // };
 
-  const getTopics = async () => {
-    try {
-      const data = await fetchTopics();
-      setTopics(data);
-    } catch (e) {}
-  };
+  // const getTopics = async () => {
+  //   try {
+  //     const data = await fetchTopics();
+  //     setTopics(data);
+  //   } catch (e) {}
+  // };
 
   const getAssesmentTypes = async () => {
     try {
@@ -189,7 +189,9 @@ const Assesment = () => {
 
   const filterResults = async (page) => {
     const { grade, subject, assesment_type: assesmentType, date, status } = formik.values;
-    const subjectIds = subject.map((obj) => obj.id);
+    // const subjectIds = subject.map((obj) => obj.id);
+    // const subjectIds = subject.map((obj) => obj.subject.central_mp_id);
+    const subjectIds = subject.map((obj) => obj.subject.id);
     try {
       setFetchingTests(true);
 
@@ -254,12 +256,13 @@ const Assesment = () => {
   };
 
   useEffect(() => {
+    getAcademic();
     if (formik.values.academic) {
       getBranch(formik.values.academic.id);
       if (formik.values.branch) {
         getGrades(formik.values.branch.branch.id);
         if (formik.values.grade) {
-          getSubjects(formik.values.grade.mp_id);
+          getSubjects(formik.values.grade.id,formik.values.branch.branch.id);
         } else {
           setSubjects([]);
         }
@@ -367,7 +370,7 @@ const Assesment = () => {
 
   const handleGrade = (event, value) => {
     if (value) {
-      getSubjects(value.mp_id);
+      getSubjects(value.id,formik.values.branch.branch.id);
       formik.setFieldValue('grade', value);
       // initSetFilter('selectedGrade', value);
     }

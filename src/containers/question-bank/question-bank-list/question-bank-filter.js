@@ -102,6 +102,7 @@ const QuestionBankFilters = ({
       question_categories_options: '',
       quesType: '',
       quesLevel: '',
+      topicId:'',
     });
     setPeriodData([]);
     setLoading(true);
@@ -136,6 +137,7 @@ const QuestionBankFilters = ({
       question_categories_options: '',
       quesType: '',
       quesLevel: '',
+      topicId:'',
     });
     setPeriodData([]);
     setLoading(true);
@@ -243,7 +245,7 @@ const QuestionBankFilters = ({
       axiosInstance
         // .get(`${endpoints.questionBank.subjects}?grade=${value.id}`) //central_api
         .get(
-          `${endpoints.assessmentApis.gradesList}?branch=${filterData.branch.id}`
+          `${endpoints.assessmentApis.gradesList}?gs_id=${value.id}&branch=${filterData.branch.branch.id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -283,7 +285,7 @@ const QuestionBankFilters = ({
       if (value) {
         axios
           .get(
-            `${endpoints.lessonPlan.chapterListCentral}?grade_subject=${value.subject.central_mp_id}&branch=${filterData.branch.id}`,
+            `${endpoints.lessonPlan.chapterListCentral}?grade_subject=${value.subject.central_mp_id}`,
             {
               headers: { 'x-api-key': 'vikash@12345#1231' },
             }
@@ -407,7 +409,7 @@ const QuestionBankFilters = ({
     handlePeriodList(
       filterData.quesType.id,
       quesCatData,
-      filterData.subject,
+      filterData.subject.subject.central_mp_id,
       quesLevel,
       filterData.topicId
     );

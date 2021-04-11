@@ -423,7 +423,7 @@ const MultipleChoice = ({
     if (!editData?.id)
       requestBody = {
         ...requestBody,
-        grade_subject_mapping: filterDataTop.subject?.central_mp_id,
+        grade_subject_mapping: filterDataTop.subject?.subject.central_mp_id,
         // grade_subject_mapping: filterDataTop.subject?.id,
       };
 
@@ -433,7 +433,7 @@ const MultipleChoice = ({
         question_type: showQuestionType?.id,
         question_level: filterDataBottom.level.id,
         question_categories: filterDataBottom.category.id,
-        grade_subject_mapping: filterDataTop.subject?.central_mp_id,
+        grade_subject_mapping: filterDataTop.subject.subject?.central_mp_id,
         chapter: filterDataTop.chapter?.id,
         topic: filterDataTop.topic?.id,
         question_status: isSubmit ? 3 : 1,
