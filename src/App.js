@@ -1175,7 +1175,10 @@ function App({ alert }) {
                             {({ match }) => <OverallAttendance match={match} />}
                           </Route>
                           <Route exact path='/createEvent'>
-                            {({ match }) => <CreateEvent match={match} />}
+                          
+                            {({ match, history }) => (
+                              <CreateEvent match={match} history={history} />
+                            )}
                           </Route>
                           <Route exact path='/CreateEventCategory'>
                             {({ match }) => <CreateEventCategory match={match} />}

@@ -42,6 +42,8 @@
     "react-dropzone": "^11.2.4",
     "react-highcharts": "^16.1.0",
     "react-html-parser": "^2.0.2",
+    "react-overflow-scrolling": "^1.0.1",
+    "react-perfect-scrollbar": "^1.5.8",
     "react-redux": "^7.2.1",
     "react-responsive": "^8.2.0",
     "react-responsive-carousel": "^3.2.11",

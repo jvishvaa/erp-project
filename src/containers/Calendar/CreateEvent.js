@@ -39,32 +39,37 @@ function getDaysBefore(date, amount) {
 }
 
 const CreateEvent = () => {
+  const moduleId = 178;
+
   // const [dateState, setDateState] = useState(new Date());
   // const [spacing, setSpacing] = useState(2);
   // const [getDatastudent, setGetDatastudent] = useState();
   // const [getData, setGetData] = useState([]);
   // const [flag, setFlag] = useState(false);
   // const [open, setOpen] = useState(false);
-  const [allday, setAllDay] = useState(true);
-  const [firsthalf, setFirstHalf] = useState(false);
-  const [secondhalf, setSecondHalf] = useState(false);
+  const [allDay, setAllDay] = useState(true);
+  const [firstHalf, setFirstHalf] = useState(false);
+  const [secondHalf, setSecondHalf] = useState(false);
   const [isconfirm, setIsConfirm] = useState(false);
   const [valuetime, onChange] = useState('10:00');
   const [state, setState] = useState();
   const [time, setTime] = useState();
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
-  const [branches, setBranches] = useState();
-  const [sections, setSections] = useState();
-  const [grades, setGrades] = useState();
+  // const [branches, setBranches] = useState();
+  // const [sections, setSections] = useState();
+  // const [grades, setGrades] = useState();
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
   const [evnetcategoryType,setEventcategoryType]=useState()
   const [selectedStartTime, setSelectedStartTime] = useState(new Date());
   const [selectedEndTime, setSelectedEndTime] = useState(new Date());
-  const [gradeID,setGradeID]=useState()
-  const [sectionID,setSectionID]=useState()
-  const [branchID,setBranchID]=useState()
+
+  const [loading, setLoading] = useState(false);
+
+  // const [gradeID,setGradeID]=useState()
+  // const [sectionID,setSectionID]=useState()
+  // const [branchID,setBranchID]=useState()
   const [counter,setCounter]=useState(1)
   const [discripValue, setdiscripValue] = useState();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -72,22 +77,22 @@ const CreateEvent = () => {
   
 
 
-  const handleGrade=(e,value)=>{
-    e.preventDefault()
-console.log("ID",value.id)
-setGradeID(value.id)
-  }
-  const handleBranch=(e,value)=>{
-    e.preventDefault()
-console.log("ID",value.id)
-setBranchID(value.id)
-  }
+//   const handleGrade=(e,value)=>{
+//     e.preventDefault()
+// console.log("ID",value.id)
+// setGradeID(value.id)
+//   }
+//   const handleBranch=(e,value)=>{
+//     e.preventDefault()
+// console.log("ID",value.id)
+// setBranchID(value.id)
+//   }
   
-  const handleSection=(e,value)=>{
-    e.preventDefault()
-console.log("ID",value.id)
-setSectionID(value.id)
-  }
+//   const handleSection=(e,value)=>{
+//     e.preventDefault()
+// console.log("ID",value.id)
+// setSectionID(value.id)
+//   }
   
   
   const handleStartTimeChange = (start_time) => {
@@ -152,6 +157,7 @@ setEndTime(end_time.toString().slice(16,21))
     console.log("EndDate:",endDate)
     console.log("Starttime:",startTime)
     console.log("Endtime:",endTime)
+    console.log("evne:",eventType)
     axiosInstance.post(endpoints.CreateEvent.CreateEvent,{
       event_name: state.event_name,
             description: state.description,
@@ -159,10 +165,14 @@ setEndTime(end_time.toString().slice(16,21))
             end_date:endDate,
             start_time: startTime,
             end_time: endTime,
-            grade:gradeID,
-            // section:sectionID,
-
-            branch: branchID
+            event_category:eventType,
+            branch:selectedBranch.id,
+            grade:selectedGrade.id,
+            section:selectedSection.id,
+            // branch:selectedBranch.id,
+            is_full_day: allDay,
+            is_first_half: firstHalf,
+            is_second_half: secondHalf,
     }).then((result) => {
       if (result.data.status_code === 200) {
         setAlert('success', result.data.message);
@@ -183,35 +193,81 @@ setEndTime(end_time.toString().slice(16,21))
   };
 
   const classes = useStyles();
+  const [academicYear,setAcademicYear] = useState([]);
+  const [selectedAcademicYear,setSelectedAcadmeicYear] = useState('');  
+  const [branchList,setBranchList] = useState([])
+  const [selectedBranch,setSelectedBranch] = useState([])
+  const [gradeList, setGradeList] = useState([]);
+  const [selectedGrade, setSelectedGrade] = useState([]);
+  const [sectionList, setSectionList] = useState([]);
+  const [selectedSection, setSelectedSection] = useState([]);
+  const [secSelectedId, setSecSelectedId] = useState([])
+  const [eventType, seteventType] = useState()
+
+  
+  function callApi(api, key) {
+    setLoading(true);
+    axiosInstance.get(api)
+    .then((result) => {
+        if (result.status === 200) {
+          if(key === 'academicYearList'){
+            console.log(result?.data?.data || [])
+            setAcademicYear(result?.data?.data || [])
+          }
+          if (key === 'branchList') {
+            console.log(result?.data?.data || [])
+            setBranchList(result?.data?.data?.results || []);
+          }
+            if (key === 'gradeList') {
+              console.log(result?.data?.data || [])
+                setGradeList(result.data.data || []);
+            }
+            if (key === 'section') {
+              console.log(result?.data?.data || [])
+                setSectionList(result.data.data);
+              }
+            setLoading(false);
+        } else {
+            setAlert('error', result.data.message);
+            setLoading(false);
+        }
+    })
+    .catch((error) => {
+        setAlert('error', error.message);
+        setLoading(false);
+    });
+}
 
   useEffect(() => {
-    if(counter===1) {
-      setCounter(2)
-    axiosInstance.get(endpoints.academics.branches).then((res) => {
-      console.log('Branches:', res.data.data?.results);
-      setBranches(res.data.data?.results);
-    });
-  }
-  if(counter===2) {
-    setCounter(3)
+  //   if(counter===1) {
+  //     setCounter(2)
+  //   axiosInstance.get(endpoints.academics.branches).then((res) => {
+  //     console.log('Branches:', res.data.data?.results);
+  //     setBranches(res.data.data?.results);
+  //   });
+  // }
+  // if(counter===2) {
+  //   setCounter(3)
 
-    axiosInstance.get(endpoints.masterManagement.grades,{params:{
-      branch_id:1,
-    }}).then((res) => {
-      console.log('grades', res.data.result?.results);
-      setGrades(res.data.result?.results);
+  //   axiosInstance.get(endpoints.masterManagement.grades,{params:{
+  //     branch_id:1,
+  //   }}).then((res) => {
+  //     console.log('grades', res.data.result?.results);
+  //     setGrades(res.data.result?.results);
       
-    });
-  }
-    if(counter===3) {
-    axiosInstance.get(endpoints.academics.sections,{params:{
-      branch_id:1,grade_id:1
-    }}).then((res) => {
-      console.log('section', res.data?.data);
-      setSections(res);
-    });
+  //   });
+  // }
+  //   if(counter===3) {
+  //   axiosInstance.get(endpoints.academics.sections,{params:{
+  //     branch_id:1,grade_id:1
+  //   }}).then((res) => {
+  //     console.log('section', res.data?.data);
+  //     setSections(res);
+  //   });
 
-  }
+  // }
+  callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
+
     console.log("iuhiuhi")
     axiosInstance.get(endpoints.CreateEvent.getEventCategory)
 .then((res)=>{
@@ -223,8 +279,48 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
 }, [counter]);
 
   const handleEventTypeChange=(e,value)=>{
+
     e.preventDefault()
+ 
     console.log("eventttttype:",value.id)
+    seteventType(value.id)
+
+  }
+  const is_full_day=(e,value)=>{
+
+    e.preventDefault()
+    if(value%2){
+    console.log("is_full_day:","true")
+    setAllDay("true")
+    }
+    else{
+      console.log("is_full_day:","false")
+      setAllDay("false")
+    }
+  }
+  const is_first_half=(e,value)=>{
+
+    e.preventDefault( )
+    if(value%2){
+    console.log("is_first_half:","true")
+    setFirstHalf("true")
+    }
+    else{
+      console.log("is_first_half:","false")
+      setFirstHalf("false")
+    }
+  }
+  const is_second_half=(e,value)=>{
+
+    e.preventDefault()
+      if(value%2){
+    console.log("is_second_half:","true")
+    setSecondHalf("true")
+      }
+      else{
+        console.log("is_second_half:","false")
+        setSecondHalf("false")
+      }
 
   }
 
@@ -256,8 +352,9 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
                   className='arrow'
                   size='small'
                   id='combo-box-demo'
-                  labelplaceholder='Event Type'
-                  // onChange={handleEventTypeChange}
+                  name='event_category'
+                  labelplaceholder='Event_Type'
+                  onChange={handleEventTypeChange}
                   options={evnetcategoryType}
                   getOptionLabel={(option) => option.event_category_type}
                   renderInput={(params) => (
@@ -285,7 +382,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
               </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={4} lg={2} sm={4} xs={12}>
+              {/* <Grid item md={4} lg={2} sm={4} xs={12}>
                 <Autocomplete
                   size='small'
                   className='arrow'
@@ -328,7 +425,151 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
                     <TextField {...params} label='Section' variant='outlined' />
                   )}
                 />
-              </Grid>
+              </Grid> */}
+              <Grid item md={2} xs={12}>
+            <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedAcadmeicYear(value)
+                if(value){
+                  callApi(
+                    `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                    'branchList'
+                  );
+                }
+                setSelectedGrade([]);
+                setSectionList([]);
+                setSelectedSection([]);
+                setSelectedBranch([])
+
+              }}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedAcademicYear}
+              options={academicYear}
+              getOptionLabel={(option) => option?.session_year}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Academic Year'
+                  name='Academic'
+                  placeholder='Academic Year'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={2} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedBranch([])
+                if(value){
+                  // const ids = value.map((el)=>el)
+                  const selectedId=value.branch.id
+                  setSelectedBranch(value)
+                  callApi(
+                    `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                    'gradeList'
+                  );
+                }
+                setSelectedGrade([]);
+                setSectionList([]);
+                setSelectedSection([]);
+
+              }}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedBranch}
+              options={branchList}
+              getOptionLabel={(option) => option?.branch?.branch_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  name='branch'
+                  placeholder='Branch'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={2} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedGrade([])
+                if(value){
+                  // const ids = value.map((el)=>el)
+                  const selectedId=value.grade_id
+                  // console.log(selectedBranch.branch)
+                  const branchId=selectedBranch.branch.id
+                  setSelectedGrade(value)
+                  callApi(
+                    `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+                    'section'
+                  );
+                }
+                  setSectionList([]);
+                  setSelectedSection([]);
+
+              }}
+              id='grade_id'
+              className='dropdownIcon'
+              value={selectedGrade}
+              options={gradeList}
+              getOptionLabel={(option) => option?.grade__grade_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Grade'
+                  name='grade'
+                  placeholder='Grade'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={2} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedSection([])
+                if (value) {
+                  const ids=value.id
+                  const secId=value.section_id
+                  setSelectedSection(value)
+                  setSecSelectedId(secId)
+                }
+
+              }}
+              id='section_id'
+              className='dropdownIcon'
+              value={selectedSection}
+              options={sectionList}
+              getOptionLabel={(option) => option?.section__section_name || option?.section_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Section'
+                  name='section'
+                  placeholder='Section'
+                />
+              )}
+            />
+          </Grid>
             </Grid>
             <Grid container direction='row'>
               <Grid item md={12} xs={12}>
@@ -349,7 +590,8 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
               </Grid>
               <Grid item lg={1} md={1} sm={1}>
                 <FormControlLabel
-                  control={<Checkbox onChange={handleChange} />}
+                  name
+                  control={<Checkbox onChange={is_full_day} />}
                   label='All Day'
                   variant='outlined'
                   labelPlacement='top'
@@ -366,7 +608,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
                                     size='small'
                                         // margin="normal"
                                         
-                                        style={{ width: '33%' }}
+                                        style={{ width: '38%' }}
                                         className='arrow'
                                         id="time-picker"
                                         label="Start Time"
@@ -385,7 +627,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
                                 <KeyboardTimePicker
                                     size='small'
                                         // margin="normal"
-                                        style={{ width: '33%' }}
+                                        style={{ width: '38%' }}
                                         className='helperText'
                                         className='arrow'
                                         
@@ -409,8 +651,9 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
               <Grid item md={1} sm={2}>
                 <FormControlLabel
                   value='top'
-                  control={<Checkbox  onChange={handleChange}/>}
+                  control={<Checkbox  onChange={is_first_half}/>}
                   label='1st Half'
+                  
                   labelPlacement='top'
                   // oncheck={}g351
                 />
@@ -419,7 +662,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
               <Grid item md={1} sm={2}>
                 <FormControlLabel
                   value='top'
-                  control={<Checkbox onChange={handleChange} />}
+                  control={<Checkbox onChange={is_second_half} />}
                   label='2nd Half'
                   labelPlacement='top'
                   // oncheck={}
@@ -470,7 +713,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
                   size='small'
                   id='combo-box-demo'
                   labelplaceholder='Event Type'
-                  // onChange={handleEventTypeChange}
+                  onChange={handleEventTypeChange}
                   options={evnetcategoryType}
                   getOptionLabel={(option) => option.event_category_type}
                   renderInput={(params) => (
@@ -497,7 +740,147 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
               </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={4} lg={2} sm={4} xs={12}>
+            <Grid item md={3} xs={12}>
+            <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedAcadmeicYear(value)
+                if(value){
+                  callApi(
+                    `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                    'branchList'
+                  );
+                }
+                setSelectedGrade([]);
+                setSectionList([]);
+                setSelectedSection([]);
+                setSelectedBranch([])
+
+              }}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedAcademicYear}
+              options={academicYear}
+              getOptionLabel={(option) => option?.session_year}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Academic Year'
+                  placeholder='Academic Year'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={3} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedBranch([])
+                if(value){
+                  // const ids = value.map((el)=>el)
+                  const selectedId=value.branch.id
+                  setSelectedBranch(value)
+                  callApi(
+                    `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                    'gradeList'
+                  );
+                }
+                setSelectedGrade([]);
+                setSectionList([]);
+                setSelectedSection([]);
+
+              }}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedBranch}
+              options={branchList}
+              getOptionLabel={(option) => option?.branch?.branch_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  placeholder='Branch'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={3} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedGrade([])
+                if(value){
+                  // const ids = value.map((el)=>el)
+                  const selectedId=value.grade_id
+                  // console.log(selectedBranch.branch)
+                  const branchId=selectedBranch.branch.id
+                  setSelectedGrade(value)
+                  callApi(
+                    `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+                    'section'
+                  );
+                }
+                  setSectionList([]);
+                  setSelectedSection([]);
+
+              }}
+              id='grade_id'
+              className='dropdownIcon'
+              value={selectedGrade}
+              options={gradeList}
+              getOptionLabel={(option) => option?.grade__grade_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Grade'
+                  placeholder='Grade'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={3} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedSection([])
+                if (value) {
+                  const ids=value.id
+                  const secId=value.section_id
+                  setSelectedSection(value)
+                  setSecSelectedId(secId)
+                }
+
+              }}
+              id='section_id'
+              className='dropdownIcon'
+              value={selectedSection}
+              options={sectionList}
+              getOptionLabel={(option) => option?.section__section_name || option?.section_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Section'
+                  placeholder='Section'
+                />
+              )}
+            />
+          </Grid>
+              {/* <Grid item md={4} lg={2} sm={4} xs={12}>
               <Autocomplete
                   size='small'
                   className='arrow'
@@ -511,8 +894,8 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
                     <TextField {...params} label='Branch' variant='outlined' />
                   )}
                 />
-              </Grid>
-              <Grid item md={4} lg={2} sm={4} xs={12}>
+              </Grid> */}
+              {/* <Grid item md={4} lg={2} sm={4} xs={12}>
               <Autocomplete
                   size='small'
                   id='combo-box-demo'
@@ -540,7 +923,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
                     <TextField {...params} label='Section' variant='outlined' />
                   )}
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
             <Grid container direction='row'>
               <Grid item md={12} xs={12}>
@@ -550,6 +933,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
             <Grid container direction='row' spacing={2} className={classes.root}>
               <Grid item md={4} lg={3} sm={10} xs={11}>
               <MobileDatepicker
+              className='arrow'
                 id="coustom-date"
                   onChange={(date) => handleEndDateChange(date)}
                   handleStartDateChange={handleStartDateChange}
@@ -565,7 +949,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
               <Grid item md={1} sm={3}>
                 <FormControlLabel
                   value='top'
-                  control={<Checkbox  onChange={handleChange}/>}
+                  control={<Checkbox  onChange={is_first_half}/>}
                   label='1st Half'
                   labelPlacement='top'
                 />
@@ -573,7 +957,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
               <Grid item md={1} sm={3}>
                 <FormControlLabel
                   value='top'
-                  control={<Checkbox  onChange={handleChange} />}
+                  control={<Checkbox  onChange={is_second_half} />}
                   label='2nd Half'
                   labelPlacement='top'
                 />
@@ -586,7 +970,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
                                     size='small'
                                         // margin="normal"
                                         
-                                        style={{ width: '33%',marginLeft:'15%' }}
+                                        style={{ width: '35%',marginLeft:'15%' }}
                                         className='arrow'
                                         id="time-picker"
                                         label="Start Time"
@@ -605,7 +989,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
                                 <KeyboardTimePicker
                                     size='small'
                                         // margin="normal"
-                                        style={{ width: '33%',marginLeft:'7%' }}
+                                        style={{ width: '35%',marginLeft:'7%' }}
                                         className='helperText'
                                         className='arrow'
                                         

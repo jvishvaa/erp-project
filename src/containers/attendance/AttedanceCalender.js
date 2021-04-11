@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../Layout/index';
+import {Link} from 'react-router-dom'
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
+import './attendance.scss' 
 import {
   Button,
   Divider,
   Grid,
+  Hidden,
   makeStyles,
   Paper,
   TextField,
@@ -12,6 +15,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import CreateEvent from '../Calendar/CreateEvent'
+import OverflowScrolling from 'react-overflow-scrolling';
 
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import endpoints from '../../config/endpoints';
@@ -38,7 +42,8 @@ const useStyles = makeStyles((theme) => ({
 
     margin: '1.5rem -0.1rem',
   },
-
+  
+ 
   title: {
     fontSize: '1.1rem',
   },
@@ -72,12 +77,20 @@ const AttedanceCalender = () => {
   const classes = useStyles();
   const [grade, setGrade] = useState();
   const [gradesGet, setGradesGet] = useState();
+  const [events,setEvents]=useState([])
 
+
+  
   useEffect(() => {
+    console.log("hhhhhhhhhhhhhhh")
     axiosInstance.get(endpoints.masterManagement.gradesDrop).then((res) => {
       console.log('res', res.data.data);
       setGradesGet(res.data.data);
     });
+    axiosInstance.get(endpoints.CreateEvent.CreateEvent).then((res)=>{
+      console.log("reeeeee",res.data.holiday_detail)
+      setEvents(res.data.holiday_detail)
+    })
   }, []);
   const StyledClearButton = withStyles({
     root: {
@@ -217,8 +230,8 @@ const AttedanceCalender = () => {
           </LocalizationProvider> */}
         </Grid>
         <Grid item md={2}>
-          <Paper elevation={3} className={classes.paperSize}>
-            <Grid container direction='row' className={classes.root}>
+          <Paper elevation={3} className={classes.paperSize} id="eventContainer">
+            <Grid container direction='row' className={classes.root }>
               <Grid item md={6} xs={12}>
                 <Typography variant='h6' color='primary'>
                   Attedance
@@ -240,7 +253,7 @@ const AttedanceCalender = () => {
         </Grid>
         <Grid item md={1}></Grid>
         <Grid item md={2}>
-          <Paper elevation={3} className={[classes.root, classes.paperSize]}>
+          <Paper elevation={3} className={[classes.root, classes.paperSize]} id="eventContainer">
             <Grid container direction='row'>
               <Grid item md={6} xs={12}>
                 <Typography variant='h6' color='primary'>
@@ -248,84 +261,47 @@ const AttedanceCalender = () => {
                 </Typography>
               </Grid>
               <Grid item md={6} xs={12}>
-                <Button size='small' onclick={<CreateEvent/>} fullWidth>
+                <Link className="textt" to="/createevent"  fullWidth>
                   ADD EVENT
-                </Button>
+                </Link>
+               
               </Grid>
               <Grid item md={5}>
                 <Typography className={classes.contentsmall}>Event Details</Typography>
               </Grid>
               <Grid item md={7}>
                 <Typography className={classes.contentsmall}>
-                  Updated:1 Day ago
+                  {events.updated_at} updated: 1 day ago
                 </Typography>
               </Grid>
             </Grid>
+            <OverflowScrolling className='overflow-scrolling'>
 
-            <Paper elevation={1}>
-              <Typography className={[classes.contentsmall, classes.root]}>
-                12 December 2020
+            <Paper elevation={1} classNaame={classes.scrollbar}  >
+              {events.map((item)=>(
+                <>
+                <Typography className={[classes.contentsmall, classes.root]}>
+                {item.created_at.slice(0,10)}
                 <br />
                 <Grid container direction='row'>
                   <OutlinedFlagRoundedIcon
                     style={{ background: '#78B5F3', borderRadius: '30px' }}
                   />
-                  <Typography> Event Name</Typography>
+                  <Typography>{item.event_name}</Typography>
                 </Grid>
                 <Grid container direction='row'>
                   <WatchLaterOutlinedIcon color='primary' className={classes.content} />
-                  11:20AM
+                  {item.start_time.slice(11,16)}
                   <EventOutlinedIcon color='primary' className={classes.content} />
-                  11-01-2021
+                  {item.start_time.slice(0,10)}
                 </Grid>
                 <Typography className={classes.contentData}>
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                  eirmod tempor invidunt ut labore et dolore magna
+                  {item.description}
                 </Typography>
-              </Typography>
-
-              <Typography className={[classes.contentsmall, classes.root]}>
-                12 December 2020
-                <br />
-                <Grid container direction='row'>
-                  <OutlinedFlagRoundedIcon
-                    style={{ background: '#78B5F3', borderRadius: '30px' }}
-                  />
-                  <Typography> Event Name</Typography>
-                </Grid>
-                <Grid container direction='row'>
-                  <WatchLaterOutlinedIcon color='primary' className={classes.content} />
-                  11:20AM
-                  <EventOutlinedIcon color='primary' className={classes.content} />
-                  11-01-2021
-                </Grid>
-                <Typography className={classes.contentData}>
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                  eirmod tempor invidunt ut labore et dolore magna
-                </Typography>
-              </Typography>
-
-              <Typography className={[classes.contentsmall, classes.root]}>
-                12 December 2020
-                <br />
-                <Grid container direction='row'>
-                  <OutlinedFlagRoundedIcon
-                    style={{ background: '#78B5F3', borderRadius: '30px' }}
-                  />
-                  <Typography> Event Name</Typography>
-                </Grid>
-                <Grid container direction='row'>
-                  <WatchLaterOutlinedIcon color='primary' className={classes.content} />
-                  11:20AM
-                  <EventOutlinedIcon color='primary' className={classes.content} />
-                  11-01-2021
-                </Grid>
-                <Typography className={classes.contentData}>
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                  eirmod tempor invidunt ut labore et dolore magna
-                </Typography>
-              </Typography>
+              </Typography></>
+              ))}
             </Paper>
+            </OverflowScrolling>
           </Paper>
         </Grid>
       </Grid>

@@ -42,7 +42,7 @@ import ShuffleModal from './shuffle-modal';
 import { result } from 'lodash';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
-import './attendance.css' 
+import './attendance.scss' 
 
 const AttendeeListRemake = (props) => {
   const history = useHistory();
