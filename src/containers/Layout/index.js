@@ -1326,7 +1326,7 @@ const Layout = ({ children, history }) => {
           <ListItem
             button
             className={classes.menuControlContainer}
-            onClick={() => history.push('/attedancecalendar')}
+            onClick={() => history.push('/AttendanceCalendar')}
           >
             <ListItemIcon className={classes.menuItemIcon}>
               <TodayIcon />

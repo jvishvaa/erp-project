@@ -361,7 +361,7 @@ const AttedanceCalender = () => {
 
   return (
     <Layout>
-      <CommonBreadcrumbs componentName='Attedance+Calender' />
+      <CommonBreadcrumbs componentName='Attendance + Calendar' />
       <Grid
         container
         direction='row'

@@ -1166,7 +1166,7 @@ function App({ alert }) {
                           <Route exact path='/markattedance'>
                             {({ match }) => <MarkAttedance match={match} />}
                           </Route>
-                          <Route exact path='/attedancecalendar'>
+                          <Route exact path='/AttendanceCalendar'>
                             {({ match }) => <AttedanceCalender match={match} />}
                           </Route>
                           <Route exact path='/Attendance'>
