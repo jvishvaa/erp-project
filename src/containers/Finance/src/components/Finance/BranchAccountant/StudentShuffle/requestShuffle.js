@@ -251,6 +251,7 @@ const erpDebounceFunc = () => {
     let data = {
       erp: displayErp,
       academic_year: sessionYear.value,
+      branch_id: branches && branches.value,
       reason: reason,
       branch_to: branch.value,
       grade_to: grade.value,
