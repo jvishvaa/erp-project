@@ -8,7 +8,7 @@ const local = {
     xAPIKey: 'vikash@12345#1231',
   },
 };
-
+// baseURL: 'http://dev.olvorchidnaigaon.letseduvate.com/qbox',
 const dev = {
   s3: {
     BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
