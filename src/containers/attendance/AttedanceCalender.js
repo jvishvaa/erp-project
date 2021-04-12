@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Layout from '../Layout/index';
-import Avatar from '@material-ui/core/Avatar';
+// import Avatar from '@material-ui/core/Avatar';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import {
   Button,
@@ -14,20 +14,28 @@ import {
 } from '@material-ui/core';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state'
 import {Link, useHistory} from 'react-router-dom';
+import RangeCalender from './calender.jsx';
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
-import Group from '../../assets/images/Group.png';
-
+import Group from '../../assets/images/noImg.jpg';
+import Avatar from '@material-ui/core/Avatar';
 import ClearIcon from '../../components/icon/ClearIcon';
-
+import Chip from '@material-ui/core/Chip';
 import { deepOrange, deepPurple } from '@material-ui/core/colors';
 import OutlinedFlagRoundedIcon from '@material-ui/icons/OutlinedFlagRounded';
 import WatchLaterOutlinedIcon from '@material-ui/icons/WatchLaterOutlined';
 import EventOutlinedIcon from '@material-ui/icons/EventOutlined';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
+import AcademicYear from 'components/icon/AcademicYear';
+import moment from 'moment';
+import './AttendanceCalender.scss';
+import { student } from 'containers/Finance/src/_reducers/student.reducer';
+// import { StaticDateRangePicker, LocalizationProvider } from '@material-ui/lab';
+// import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
+// import Box from '@material-ui/core/Box';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
@@ -72,118 +80,53 @@ const useStyles = makeStyles((theme) => ({
 
 const AttedanceCalender = () => {
   const classes = useStyles();
-  const moduleId = 178;
-  const { setAlert } = useContext(AlertNotificationContext);
-  const [loading, setLoading] = useState(false);
-  const [academicYear,setAcademicYear] = useState([]);
-  const [selectedAcademicYear,setSelectedAcadmeicYear] = useState('');  
-  const [branchList,setBranchList] = useState([])
-  const [selectedBranch,setSelectedBranch] = useState([])
-  const [gradeList, setGradeList] = useState([]);
-  const [selectedGrade, setSelectedGrade] = useState([]);
-  const [sectionList, setSectionList] = useState([]);
-  const [selectedSection, setSelectedSection] = useState([]);
-  const [secSelectedId, setSecSelectedId] = useState([])
-  const [studentData, setStudentData] = useState([])
-  const history = useHistory();
+  const [callapi, setCallApi] = useState(1);
+  const [gradeID, setGradeID] = useState();
+  const [academicYear, setAcademicYear] = useState();
+  const [academicYearID, setAcademicYearID] = useState();
+  const [branchData, setBranchData] = useState();
+  const [branchID, setBranchID] = useState();
+  const [gradeData, setGradeData] = useState();
+  const [sectionData, setSectionData] = useState();
+  const [sectionID, setSectionID] = useState();
+  const [studentData, setStudentData] = useState(null);
+  const [student, setStudent] = useState([]);
+  const [counter, setCounter] = useState(2);
+  const [todayDate, setTodayDate] = useState();
+  const [currentEvent, setCurrentEvent] = useState(null);
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
+  const [sevenDay, setSevenDay] = useState();
 
   useEffect(() => {
-    callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
-    // callApi(`${endpoints.academics.branches}`,'branchList');
-    //   callApi(
-    //       `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=15`,
-    //       'gradeList'
-    //   );
-  }, []);
+    // axiosInstance.get(endpoints.masterManagement.gradesDrop).then((res) => {
+    //   console.log('res', res.data.data);
+    //   setGradesGet(res.data.data);
 
-const handleFilter = ()=>{
- 
-  let startDate = "2021-04-08";
-  let endDate = "2021-04-14";
-  // console.log(payload)
-  axiosInstance.
-  get(
-    `${endpoints.academics.attendance}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}`
-  )
-  .then(res=>{
-    console.log(res.data)
-    let temp = [...res.data.absent_list, ...res.data.present_list]
-    console.log(temp)
-    setStudentData(temp)
-  })
-  .catch(err=>console.log(err))
-}
-    
-
-const handleViewDetails = ()=>{
-
-  const payload = {
-    academic_year_id: selectedAcademicYear,
-    branch_id: selectedBranch,
-    grade_id: selectedGrade,
-    section_id: selectedSection,
-    startDate: "2021-04-08",
-    endDate: "2021-04-14"
-  }
-  history.push({
-    pathname:'/OverallAttendance',
-    state:{
-      data: studentData,
-      payload: payload
+    // });
+    if (callapi === 1) {
+      callingAcadamicAPI();
+      setCallApi(2);
     }
-  })
-}
-
-const handleMarkAttendance = ()=>{
-  const payload = {
-    academic_year_id: selectedAcademicYear,
-    branch_id: selectedBranch,
-    grade_id: selectedGrade,
-    section_id: selectedSection,
-    startDate: "2021-04-08",
-    endDate: "2021-04-14"
-  }
-  history.push({
-    pathname:'/markattedance',
-    state:{
-      data: studentData,
-      payload: payload
+    if (callapi === 2) {
+      callingBranchAPI();
+      setCallApi(3);
     }
-  })
-}
+    if (callapi === 3) {
+      callingGradeAPI();
+      setCallApi(4);
+    }
+    if (callapi === 4) {
+      callingSectionAPI();
+    }
+    // if(callapi === 2){
 
-  function callApi(api, key) {
-    setLoading(true);
-    axiosInstance.get(api)
-    .then((result) => {
-        if (result.status === 200) {
-          if(key === 'academicYearList'){
-            console.log(result?.data?.data || [])
-            setAcademicYear(result?.data?.data || [])
-          }
-          if (key === 'branchList') {
-            console.log(result?.data?.data || [])
-            setBranchList(result?.data?.data?.results || []);
-          }
-            if (key === 'gradeList') {
-              console.log(result?.data?.data || [])
-                setGradeList(result.data.data || []);
-            }
-            if (key === 'section') {
-              console.log(result?.data?.data || [])
-                setSectionList(result.data.data);
-              }
-            setLoading(false);
-        } else {
-            setAlert('error', result.data.message);
-            setLoading(false);
-        }
-    })
-    .catch((error) => {
-        setAlert('error', error.message);
-        setLoading(false);
-    });
-}
+    // }
+  }, [academicYearID, branchID, gradeID]);
+
+  // useEffect(() => {
+  //   getToday();
+  // }, []);
   const StyledClearButton = withStyles({
     root: {
       backgroundColor: '#E2E2E2',
@@ -192,7 +135,209 @@ const handleMarkAttendance = ()=>{
       marginTop: 'auto',
     },
   })(Button);
-  
+  // const handleGrade = (e, value) => {
+  //   console.log('The value of grade', e.target.value);
+  //   if (value) {
+  //     console.log('grade:', value.id);
+  //     setGrade(e.target.value);
+  //   } else {
+  //     setGrade('');
+  //   }
+  // };
+  const handleCallGrade = (event, id) => {
+    console.log(id, 'branch id');
+    setBranchID(id);
+  };
+  const callingAcadamicAPI = () => {
+    axiosInstance
+      .get(`/erp_user/list-academic_year/`, {})
+      .then((res) => {
+        console.log(res, 'Academic');
+        setAcademicYear(res.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const callingGradeAPI = () => {
+    axiosInstance
+      .get(`/erp_user/grademapping/?session_year=${academicYearID}&branch_id=${branchID}`)
+      .then((res) => {
+        console.log(res, 'grade');
+        setGradeData(res.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const callingBranchAPI = () => {
+    axiosInstance
+      .get(`/erp_user/branch/?session_year=${academicYearID}`)
+      .then((res) => {
+        if (res.status === 200) {
+          // console.log(res);
+          setBranchData(res.data.data.results);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const callingSectionAPI = () => {
+    axiosInstance
+      .get(
+        `/erp_user/sectionmapping/?session_year=${academicYearID}&branch_id=${branchID}&grade_id=${gradeID}`
+      )
+      .then((res) => {
+        console.log(res, 'setion');
+        if (res.status === 200) {
+          setSectionData(res.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const setDate = () => {
+    setStudentData(null);
+    var date = new Date();
+    var formatDate = moment(date).format('YYYY-MM-DD');
+    console.log(formatDate, 'format date');
+    var day = date.getDay();
+    let currentDay;
+    setCounter(1);
+    if (day === 0) {
+      currentDay = 'Sunday';
+    }
+    if (day === 1) {
+      currentDay = 'Monday';
+    }
+    if (day === 2) {
+      currentDay = 'Tuesday';
+    }
+    if (day === 3) {
+      currentDay = 'Wednesday';
+    }
+    if (day === 4) {
+      currentDay = 'Thursday';
+    }
+    if (day === 5) {
+      currentDay = 'Friday';
+    }
+    if (day === 6) {
+      currentDay = 'Saturday';
+    }
+    setTodayDate(currentDay + ' ' + moment(date).format('DD-MM-YYYY'));
+    console.log(currentDay, 'todays Date');
+    setStartDate(moment(date).format('DD-MM-YYYY'));
+    setEndDate(moment(date).format('DD-MM-YYYY'));
+    // getToday();
+    // axiosInstance
+    //   .get(`academic/events_list/?date=${formatDate}`)
+    //   .then((res) => {
+    //     console.log(res, 'setion');
+    //     setCurrentEvent(res);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+  };
+
+  const weeklyData = () => {
+    setCounter(2);
+    setStudentData(null);
+  };
+
+  const getToday = () => {
+    var date = new Date();
+    var formatDate = moment(date).format('YYYY-MM-DD');
+    console.log(formatDate, 'format date');
+    axiosInstance
+      .get(`academic/events_list/`, {
+        params: {
+          start_date: formatDate,
+          data: formatDate,
+          branch_id: branchID,
+          grade_id: gradeID,
+          // grade_id: 2,
+
+          section_id: sectionID,
+          // section_id: 2,
+          academic_year: academicYearID,
+        },
+      })
+      .then((res) => {
+        console.log(res.data.events, 'current eventssss');
+        setCurrentEvent(res.data.events);
+        setStudentData(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handlePassData = (endDate, startDate, starttime) => {
+    console.log(endDate, 'got date');
+    console.log(startDate, 'startDate passss');
+    setStartDate(starttime);
+    setEndDate(endDate);
+    // axiosInstance
+    //   .get(`academic/student_attendance_between_date_range/`, {
+    //     params: {
+    //       start_date: startDate,
+    //       end_date: endDate,
+    //       branch_id: branchID,
+    //       grade_id: gradeID,
+    //       grade_id: 2,
+
+    //       // section_id: sectionID,
+    //       section_id: 2,
+    //       academic_year: academicYearID,
+    //     },
+    //   })
+    //   .then((res) => {
+    //     console.log(res.data.absent_list, 'respond student');
+    //     setStudentData(res.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+  };
+  // const getfuture = () => {
+  //   var myCurrentDate=new Date();
+  //   var myFutureDate=new Date(myCurrentDate);
+  //   myFutureDate.setDate(myFutureDate.getDate()+ 7);
+  //   console.log(myFutureDate , "futuree");
+  //   setSevenDay(myFutureDate);
+  // }
+  const getRangeData = () => {
+    if (counter === 2) {
+      axiosInstance
+        .get(`academic/student_attendance_between_date_range/`, {
+          params: {
+            start_date: startDate,
+            end_date: endDate,
+            branch_id: branchID,
+            grade_id: gradeID,
+            // grade_id: 2,
+
+            section_id: sectionID,
+            // section_id: 2,
+            academic_year: academicYearID,
+          },
+        })
+        .then((res) => {
+          console.log(res, 'respond student');
+          setStudentData(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    if (counter === 1) {
+      getToday();
+    }
+  };
+
   const StyledFilterButton = withStyles({
     root: {
       backgroundColor: '#FF6B6B',
@@ -216,157 +361,74 @@ const handleMarkAttendance = ()=>{
 
   return (
     <Layout>
-      {/* <CommonBreadcrumbs componentName='Attedance+Calender' /> */}
-      <div className='profile_breadcrumb_wrapper'>
-          <CommonBreadcrumbs componentName='Attedance + Calendar' />
-      </div>
-      <Grid container direction='row' className={classes.root} spacing={3}>
-        <Grid item md={3} xs={12}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedAcadmeicYear(value)
-                console.log(value, "test")
-                if(value){
-                  callApi(
-                    `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                    'branchList'
-                  );
-                }
-                setSelectedGrade([]);
-                setSectionList([]);
-                setSelectedSection([]);
-                setSelectedBranch([])
-
-              }}
-              id='branch_id'
-              className='dropdownIcon'
-              value={selectedAcademicYear}
-              options={academicYear}
-              getOptionLabel={(option) => option?.session_year}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Academic Year'
-                  placeholder='Academic Year'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedBranch([])
-                if(value){
-                  // const ids = value.map((el)=>el)
-                  const selectedId=value.branch.id
-                  setSelectedBranch(value)
-                  console.log(value)
-                  callApi(
-                    `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-                    'gradeList'
-                  );
-                }
-                setSelectedGrade([]);
-                setSectionList([]);
-                setSelectedSection([]);
-
-              }}
-              id='branch_id'
-              className='dropdownIcon'
-              value={selectedBranch}
-              options={branchList}
-              getOptionLabel={(option) => option?.branch?.branch_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedGrade([])
-                if(value){
-                  // const ids = value.map((el)=>el)
-                  const selectedId=value.grade_id
-                  // console.log(selectedBranch.branch)
-                  const branchId=selectedBranch.branch.id
-                  setSelectedGrade(value)
-                  callApi(
-                    `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
-                    'section'
-                  );
-                }
-                  setSectionList([]);
-                  setSelectedSection([]);
-
-              }}
-              id='grade_id'
-              className='dropdownIcon'
-              value={selectedGrade}
-              options={gradeList}
-              getOptionLabel={(option) => option?.grade__grade_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Grade'
-                  placeholder='Grade'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedSection([])
-                if (value) {
-                  const ids=value.id
-                  const secId=value.section_id
-                  setSelectedSection(value)
-                  setSecSelectedId(secId)
-                }
-
-              }}
-              id='section_id'
-              className='dropdownIcon'
-              value={selectedSection}
-              options={sectionList}
-              getOptionLabel={(option) => option?.section__section_name || option?.section_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Section'
-                  placeholder='Section'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={11} xs={12}>
-          <Divider />
+      <CommonBreadcrumbs componentName='Attedance+Calender' />
+      <Grid
+        container
+        direction='row'
+        className={classes.root}
+        spacing={3}
+        id='selectionContainer'
+      >
+        <Grid item md={2} xs={12}>
+          <Autocomplete
+            id='academic_year'
+            size='small'
+            options={academicYear}
+            getOptionLabel={(option) => option?.session_year}
+            style={{ background: 'white' }}
+            onChange={(event, option) => setAcademicYearID(option?.id)}
+            renderInput={(params) => (
+              <TextField {...params} label='Academic' variant='outlined' required />
+            )}
+          />
         </Grid>
-        <Grid container direction='row' className={classes.root} spacing={3} >
+        <Grid item md={2} xs={12}>
+          <Autocomplete
+            id='attedancetype'
+            size='small'
+            options={branchData}
+            getOptionLabel={(option) => option?.branch?.branch_name}
+            style={{ background: 'white' }}
+            onChange={(event, option) => handleCallGrade(event, option?.id)}
+            renderInput={(params) => (
+              <TextField {...params} label='Branch' variant='outlined' required />
+            )}
+          />
+        </Grid>
+        <Grid item md={2} xs={12}>
+          <Autocomplete
+            id='grade'
+            size='small'
+            options={gradeData}
+            getOptionLabel={(option) => option?.grade_name}
+            name='grade'
+            style={{ background: 'white' }}
+            onChange={(event, option) => setGradeID(option?.id)}
+            renderInput={(params) => (
+              <TextField {...params} label='grades' variant='outlined' required />
+            )}
+          />
+        </Grid>
+        <Grid item md={2} xs={12}>
+          <Autocomplete
+            id='section'
+            size='small'
+            options={sectionData}
+            getOptionLabel={(option) => option?.section_name}
+            onChange={(event, option) => setSectionID(option?.id)}
+            style={{ background: 'white' }}
+            renderInput={(params) => (
+              <TextField {...params} label='Section' variant='outlined' required />
+            )}
+          />
+        </Grid>
+        {/* <Grid item md={11} xs={12}>
+          <Divider />
+        </Grid> */}
+        {/* <Grid item md={1} xs={12}></Grid>
+        <br />
+        <br />
+        <Grid>
           <StyledClearButton
             variant='contained'
             startIcon={<ClearIcon />}
@@ -384,7 +446,7 @@ const handleMarkAttendance = ()=>{
           >
             filter
           </StyledFilterButton>
-        </Grid>
+        </Grid> */}
       </Grid>
       <Grid
         container
@@ -392,147 +454,304 @@ const handleMarkAttendance = ()=>{
         className={classes.root}
         spacing={3}
         style={{ background: 'white' }}
+        id="completeContainer"
       >
-        <Grid item md={6}></Grid>
-        <Grid item md={2}>
-          <Paper elevation={3} className={classes.paperSize}>
-            <Grid container direction='row' className={classes.root}>
+        <div className='whole-calender-filter'>
+          <Grid className='calenderGrid'>
+            <div className='buttonContainer'>
+              <div className='today'>
+                <Button
+                  variant='outlined'
+                  size='small'
+                  color='secondary'
+                  className={counter === 1 ? 'viewDetailsButtonClick' : 'viewDetails'}
+                  // className='viewDetails'
+                  onClick={() => setDate()}
+                >
+                  {/* <p className='btnLabel'>Secondary</p> */}
+                  Today
+                </Button>
+              </div>
+              <div className='today'>
+                <Button
+                  variant='outlined'
+                  size='small'
+                  color='secondary'
+                  className={counter === 2 ? 'viewDetailsButtonClick' : 'viewDetails'}
+                  onClick={() => weeklyData()}
+                >
+                  {/* <p className='btnLabel'>Secondary</p> */}
+                  Weekly
+                </Button>
+              </div>
+              <div className='today'>
+                <Button
+                  variant='outlined'
+                  size='small'
+                  color='secondary'
+                  className={counter === 3 ? 'viewDetailsButtonClick' : 'viewDetails'}
+                  // onClick={getfuture}
+                >
+                  {/* <p className='btnLabel'>Secondary</p> */}
+                  Monthly
+                </Button>
+              </div>
+            </div>
+            {counter === 2 ? (
+              <RangeCalender
+                gradeID={gradeID}
+                branchID={branchID}
+                sectionID={sectionID}
+                academicYearID={academicYearID}
+                handlePassData={handlePassData}
+                sevenDay={sevenDay}
+              />
+            ) : counter === 1 ? (
+              <div className='todayEventContainer'>
+                <div className='showDate'>
+                  <p className='dateToday'> {todayDate} </p>
+                </div>
+                {currentEvent && currentEvent != null ? (
+                  <>
+                    <hr className='dividerEvent'></hr>
+
+                    {currentEvent &&
+                      currentEvent.map((data) => (
+                        <div className='eventRow'>
+                          <div className='event-data'>
+                            {data?.start_time.slice(11, 16)}
+                          </div>
+                          <div
+                            className='event-name'
+                            style={{
+                              background: data.event_category.event_category_color,
+                            }}
+                          >
+                            <OutlinedFlagRoundedIcon
+                              style={{ background: '#FF6B6B', borderRadius: '30px' }}
+                            />
+                            {data?.event_name}
+                          </div>
+                        </div>
+                      ))}
+                  </>
+                ) : (
+                  <div className='noEvent'>
+                    <img src={Group} width='100%' height=' 504px' className='noDataImg' />
+                  </div>
+                )}
+              </div>
+            ) : counter === 3 ? (
+              <div> month </div>
+            ) : (
+              <></>
+            )}
+            {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <StaticDateRangePicker
+              displayStaticWrapperAs='desktop'
+              value={value}
+              onChange={(newValue) => {
+                setValue(newValue);
+              }}
+              renderInput={(startProps, endProps) => (
+                <React.Fragment>
+                  <TextField {...startProps} variant='standard' />
+                  <Box sx={{ mx: 2 }}> to </Box>
+                  <TextField {...endProps} variant='standard' />
+                </React.Fragment>
+              )}
+            />
+          </LocalizationProvider> */}
+          </Grid>
+          <Grid className='buttonGrid'>
+            <StyledClearButton
+              variant='contained'
+              startIcon={<ClearIcon />}
+              // href={`/markattedance`}
+            >
+              Clear all
+            </StyledClearButton>
+
+            <StyledFilterButton
+              variant='contained'
+              color='secondary'
+              startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+              className={classes.filterButton}
+              onClick={getRangeData}
+            >
+              filter
+            </StyledFilterButton>
+          </Grid>
+        </div>
+        {/* <Grid item md={2} className='topGrid'> */}
+        <div className='attendenceWhole'>
+          <div className='startDate'> From {startDate}</div>
+          <Paper elevation={3} className={classes.paperSize} id='attendanceContainer'>
+            <Grid container direction='row' className={classes.root} id='attendanceGrid'>
               <Grid item md={6} xs={12}>
-                <Typography variant='h6' color='primary' >
+                <Typography variant='h6' color='primary' className='attendancePara'>
                   Attedance
                 </Typography>
               </Grid>
-              <Grid item md={6} xs={12}>
-                <Button size='small' onClick={handleMarkAttendance}>
-                  <span className={classes.contentData}>MarkAttendance</span>
+              <Grid item md={6} xs={12} className='mark-btn-grid'>
+                <Button size='small'>
+                  <span className={classes.contentData} id='mark-para'>
+                    MarkAttendance
+                  </span>
                 </Button>
               </Grid>
-              <Grid item md={5}>
-                <Typography className={classes.content}>Student</Typography>
-              </Grid>
-              <KeyboardArrowDownIcon />
+              <div className='stu-icon'>
+                <Grid item md={3}>
+                  <Typography className={classes.content} id='studentPara'>
+                    Student
+                  </Typography>
+                </Grid>
+                <KeyboardArrowDownIcon className='downIcon' />
+              </div>
             </Grid>
-              {
-                studentData && studentData.slice(0,5).map((item)=>(
-                    <Grid key={value} item container justify="center" style={{display:'flex', justifyContent:'center'}}>
-                      <Avatar className={[classes.orange, classes.paperStyle, classes.small]}>
-                        {item.student_first_name.slice(0, 1)}
-                      </Avatar>
-                      <Typography
-                        className={[classes.content, classes.paperStyle]}
-                        style={{fontSize:'12px'}} 
-                      >
-                        {item.student_first_name.slice(0, 6) || ""}
-                      </Typography>
-                      <Typography style={{fontSize:'12px'}}>3days present</Typography>
-                    </Grid>
-                ))
-                
-              }
-              {
-                studentData ? 
-                (
-                  <div style={{display:'flex', justifyContent:'center'}}>
-                    <Button onClick={handleViewDetails}>
-                      view details
+            {studentData != null ? (
+              <>
+                <div className='absentContainer'>
+                  <div className='absentHeader'>
+                    <p>Absent List</p>
+                    <p>Absent Duration</p>
+                  </div>
+                  <Divider />
+                  <div className='absentList'>
+                    {studentData.absent_list &&
+                      studentData.absent_list.map((data) => (
+                        <div className='eachAbsent'>
+                          <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
+                          <div className='studentName'>
+                            <p className='absentName'>
+                              {data.student_first_name} {data.student_last_name}{' '}
+                            </p>
+                            {/* <p className='absentName'>{data.student_last_name}</p> */}
+                            {/* <Chip  className='chipDays' > {data.absent_count}  </Chip> */}
+                            <div className='absentCount'>
+                              <p className='absentChip'> {data.student_count} Days </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                  <div className='btnArea'>
+                    <Button variant='outlined' color='secondary' className='viewDetails'>
+                      <p className='btnLabel'>View Details</p>
                     </Button>
                   </div>
-                )
-                : ""
-              }
-            <img src={Group} width='100%' height=' 504px' />
+                </div>
+                <div className='presentContainer'>
+                  <div className='presentHeader'>
+                    <p className='presentPara'>Present List</p>
+                  </div>
+                  <Divider />
+                  <div className='presentStudents'>
+                    {studentData.present_list &&
+                      studentData.present_list.map((data) => (
+                        <div className='presentList'>
+                          <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
+                          <div className='presentStudent'>
+                            <p className='presentFName'>
+                              {data?.student_first_name} {data?.student_last_name}
+                            </p>
+                            {/* <p className='presentLName'> {data.student_last_name}</p> */}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className='noImg'>
+                <img src={Group} width='100%' className='noDataImg' />
+              </div>
+            )}
           </Paper>
-        </Grid>
-        <Grid item md={1}></Grid>
-        <Grid item md={2}>
-          <Paper elevation={3} className={[classes.root, classes.paperSize]}>
-            <Grid container direction='row'>
+        </div>
+        {/* </Grid> */}
+        {/* <Grid item md={1} className="hello" ></Grid> */}
+        {/* <Grid item md={2} className='topGrid'> */}
+        <div className='eventWhole'>
+          <div className='startDate'> To {endDate}</div>
+          <Paper
+            elevation={3}
+            className={[classes.root, classes.paperSize]}
+            id='eventContainer'
+          >
+            <Grid container direction='row' className='eventContainer'>
               <Grid item md={6} xs={12}>
-                <Typography variant='h6' color='primary'>
+                <Typography variant='h6' color='primary' className='eventPara'>
                   Event
                 </Typography>
               </Grid>
-              <Grid item md={6} xs={12}>
-                <Button size='small' fullWidth>
-                  ADD EVENT
+              <Grid item md={6} xs={12} className='event-btn'>
+                <Button size='small'>
+                  {/* ADD EVENT */}
+                  <span className={classes.contentData} id='event-text'>
+                    Add Event
+                  </span>
                 </Button>
               </Grid>
-              <Grid item md={5}>
-                <Typography className={classes.contentsmall}>Event Details</Typography>
-              </Grid>
-              <Grid item md={7}>
-                <Typography className={classes.contentsmall}>
-                  Updated:1 Day ago
-                </Typography>
-              </Grid>
+              <div className='event-details'>
+                <Grid item md={5}>
+                  <Typography className={classes.contentsmall} id='eventpara'>
+                    Event Details
+                  </Typography>
+                </Grid>
+                <Grid item md={7} className='detailsPara'>
+                  <Typography className={classes.contentsmall} id='updated'>
+                    Updated:1 Day ago
+                  </Typography>
+                </Grid>
+              </div>
             </Grid>
-
-            <Paper elevation={1}>
-              <Typography className={[classes.contentsmall, classes.root]}>
-                12 December 2020
-                <br />
-                <Grid container direction='row'>
-                  <OutlinedFlagRoundedIcon
-                    style={{ background: '#78B5F3', borderRadius: '30px' }}
-                  />
-                  <Typography> Event Name</Typography>
-                </Grid>
-                <Grid container direction='row'>
-                  <WatchLaterOutlinedIcon color='primary' className={classes.content} />
-                  11:20AM
-                  <EventOutlinedIcon color='primary' className={classes.content} />
-                  11-01-2021
-                </Grid>
-                <Typography className={classes.contentData}>
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                  eirmod tempor invidunt ut labore et dolore magna
-                </Typography>
-              </Typography>
-
-              <Typography className={[classes.contentsmall, classes.root]}>
-                12 December 2020
-                <br />
-                <Grid container direction='row'>
-                  <OutlinedFlagRoundedIcon
-                    style={{ background: '#78B5F3', borderRadius: '30px' }}
-                  />
-                  <Typography> Event Name</Typography>
-                </Grid>
-                <Grid container direction='row'>
-                  <WatchLaterOutlinedIcon color='primary' className={classes.content} />
-                  11:20AM
-                  <EventOutlinedIcon color='primary' className={classes.content} />
-                  11-01-2021
-                </Grid>
-                <Typography className={classes.contentData}>
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                  eirmod tempor invidunt ut labore et dolore magna
-                </Typography>
-              </Typography>
-
-              <Typography className={[classes.contentsmall, classes.root]}>
-                12 December 2020
-                <br />
-                <Grid container direction='row'>
-                  <OutlinedFlagRoundedIcon
-                    style={{ background: '#78B5F3', borderRadius: '30px' }}
-                  />
-                  <Typography> Event Name</Typography>
-                </Grid>
-                <Grid container direction='row'>
-                  <WatchLaterOutlinedIcon color='primary' className={classes.content} />
-                  11:20AM
-                  <EventOutlinedIcon color='primary' className={classes.content} />
-                  11-01-2021
-                </Grid>
-                <Typography className={classes.contentData}>
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                  eirmod tempor invidunt ut labore et dolore magna
-                </Typography>
-              </Typography>
-            </Paper>
+            {studentData != null ? (
+              <Paper elevation={1} className='eventGrid'>
+                {studentData.events &&
+                  studentData.events.map((data) => (
+                    <Typography
+                      className={[classes.contentsmall, classes.root]}
+                      id='eventData'
+                    >
+                      {data.start_time.slice(0, 10)}
+                      <br />
+                      <Grid container direction='row'>
+                        <OutlinedFlagRoundedIcon
+                          style={{ background: '#78B5F3', borderRadius: '30px' }}
+                        />
+                        <Typography> {data.event_name} </Typography>
+                      </Grid>
+                      <Grid container direction='row' className='dateTimeEvent'>
+                        <div className='timeEvent'>
+                          <WatchLaterOutlinedIcon
+                            color='primary'
+                            className={classes.content}
+                          />
+                          {data.start_time.slice(11, 16)}
+                        </div>
+                        <div className='dateEvent'>
+                          <EventOutlinedIcon
+                            color='primary'
+                            className={classes.content}
+                          />
+                          {data.start_time.slice(0, 10)}
+                        </div>
+                      </Grid>
+                      <Typography className={classes.contentData}>
+                        {data.description}
+                      </Typography>
+                    </Typography>
+                  ))}
+              </Paper>
+            ) : (
+              <div className='noImgEvent'>
+                <img src={Group} width='100%' className='noDataImgEvent' />
+              </div>
+            )}
           </Paper>
-        </Grid>
+        </div>
+        {/* </Grid> */}
       </Grid>
     </Layout>
   );

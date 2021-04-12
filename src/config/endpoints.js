@@ -263,6 +263,16 @@ export default {
     getBatchesApi: '/erp_user/student_online_class/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
+  
+  eventBat:{
+    getPaginatedCategories:"/academic/list_event_categories_p/",  //get
+    getListCategories:"/academic/list_event_categories/",  //get
+    postCreateEvent:"/academic/create_event_category/",  //post
+    patchUpdateEvent:"/academic/update_event_category/",//patch
+    deleteEventCategory:"/academic/delete_event_category/", //delete
+    filterEventCategory:"/academic/filter_event_categories/" //get 
+
+},
   assessment: {
     questionPaperList: `/academic/assessment-list/`,
     viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
