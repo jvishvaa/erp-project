@@ -97,32 +97,33 @@ const AttedanceCalender = () => {
   }, []);
 
 const handleFilter = ()=>{
-  const payload = {
-    academic_year_id: selectedAcademicYear.id,
-    branch_id: selectedBranch.branch.id,
-    grade_id: selectedGrade.grade_id,
-    section_id: selectedSection.section_id
-  }
+ 
+  let startDate = "2021-04-08";
+  let endDate = "2021-04-14";
   // console.log(payload)
-  axiosInstance
-      .get(
-        `${endpoints.idCards.getIdCardsApi}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}`
-      )
-      .then(res=>{
-        console.log(res.data.result.results)
-        setStudentData(res.data.result.results)
-
-      })
-      .catch(err=>console.log(err))
-
+  axiosInstance.
+  get(
+    `${endpoints.academics.attendance}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}`
+  )
+  .then(res=>{
+    console.log(res.data)
+    let temp = [...res.data.absent_list, ...res.data.present_list]
+    console.log(temp)
+    setStudentData(temp)
+  })
+  .catch(err=>console.log(err))
 }
+    
 
 const handleViewDetails = ()=>{
+
   const payload = {
     academic_year_id: selectedAcademicYear,
-    branch_id: selectedBranch.branch,
-    grade_id: selectedGrade.grade_name,
-    section_id: selectedSection.section_name
+    branch_id: selectedBranch,
+    grade_id: selectedGrade,
+    section_id: selectedSection,
+    startDate: "2021-04-08",
+    endDate: "2021-04-14"
   }
   history.push({
     pathname:'/OverallAttendance',
@@ -134,8 +135,20 @@ const handleViewDetails = ()=>{
 }
 
 const handleMarkAttendance = ()=>{
+  const payload = {
+    academic_year_id: selectedAcademicYear,
+    branch_id: selectedBranch,
+    grade_id: selectedGrade,
+    section_id: selectedSection,
+    startDate: "2021-04-08",
+    endDate: "2021-04-14"
+  }
   history.push({
     pathname:'/markattedance',
+    state:{
+      data: studentData,
+      payload: payload
+    }
   })
 }
 
@@ -214,6 +227,7 @@ const handleMarkAttendance = ()=>{
               size='small'
               onChange={(event, value) => {
                 setSelectedAcadmeicYear(value)
+                console.log(value, "test")
                 if(value){
                   callApi(
                     `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
@@ -253,6 +267,7 @@ const handleMarkAttendance = ()=>{
                   // const ids = value.map((el)=>el)
                   const selectedId=value.branch.id
                   setSelectedBranch(value)
+                  console.log(value)
                   callApi(
                     `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
                     'gradeList'
@@ -401,13 +416,13 @@ const handleMarkAttendance = ()=>{
                 studentData && studentData.slice(0,5).map((item)=>(
                     <Grid key={value} item container justify="center" style={{display:'flex', justifyContent:'center'}}>
                       <Avatar className={[classes.orange, classes.paperStyle, classes.small]}>
-                        {item.name.slice(0, 1)}
+                        {item.student_first_name.slice(0, 1)}
                       </Avatar>
                       <Typography
                         className={[classes.content, classes.paperStyle]}
                         style={{fontSize:'12px'}} 
                       >
-                        {item.user.first_name.slice(0, 6)}
+                        {item.student_first_name.slice(0, 6) || ""}
                       </Typography>
                       <Typography style={{fontSize:'12px'}}>3days present</Typography>
                     </Grid>

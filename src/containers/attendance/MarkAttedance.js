@@ -29,6 +29,7 @@ import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state'
 import Axios from 'axios';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -91,6 +92,8 @@ const MarkAttedance = () => {
   const [secSelectedId, setSecSelectedId] = useState([])
   const [data, setData] = useState()
   const [newData, setNewData] = useState()
+  const history = useHistory()
+
   const [state, setState] = React.useState({
     checkedA: true,
     checkedB: true,
@@ -101,15 +104,64 @@ const MarkAttedance = () => {
   };
 
   useEffect(() => {
-    const date = new Date();
-    console.log(new Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'long' }).format(date))
-    callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
-    // callApi(`${endpoints.academics.branches}`,'branchList');
-    //   callApi(
-    //       `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=15`,
-    //       'gradeList'
-    //   );
+    console.log(history)
+
+    if(history?.location?.state?.payload){
+      console.log(history?.location?.state?.payload?.academic_year_id?.session_year)
+      setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id)
+      setSelectedBranch(history?.location?.state?.payload?.branch_id)
+      setSelectedGrade(history?.location?.state?.payload?.grade_id)
+      setSelectedSection(history?.location?.state?.payload?.section_id)
+      // setStartDate(history?.location?.state?.payload?.startDate)
+      // setEndDate(history?.location?.state?.payload?.endDate)
+      setNewData(history?.location?.state?.data)
+
+      axiosInstance
+      .get(
+        `${endpoints.academics.studentList}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}`
+      )
+      .then(res=>{
+        console.log(res.data.result)
+        setNewData(res.data.result)
+
+       var result =  res.data.result.map((item)=>(
+          {
+            name: item.name,
+            student_id: item.user,
+            section_mapping_id: selectedSection.section_id,
+            remarks: "none",
+            fullday_present: true,
+            is_first_shift_present: true,
+            is_second_shift_present: true,
+            attendance_for_date: dateValue
+          }
+        ))
+      setData(result)
+      })
+      .catch(err=>console.log(err))
+  }
+
+    else{
+      const date = new Date();
+      console.log(new Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'long' }).format(date))
+      callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
+    }
+
+
   }, []);
+
+
+
+
+  const handleOpenOnViewDetails = ()=>{
+    if(history?.location?.state?.payload)
+    {
+      callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
+    // console.log("history data is there")
+    }
+    else{
+    }
+  }
 
 const handleFilter = ()=>{
   // const payload = {
@@ -123,16 +175,16 @@ const handleFilter = ()=>{
   // console.log(payload)
   axiosInstance
       .get(
-        `${endpoints.idCards.getIdCardsApi}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}`
+        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}`
       )
       .then(res=>{
-        console.log(res.data.result.results)
-        setNewData(res.data.result.results)
+        console.log(res.data.result)
+        setNewData(res.data.result)
 
-       var result =  res.data.result.results.map((item)=>(
+       var result =  res.data.result.map((item)=>(
           {
-            name: item.user.first_name,
-            student_id: item.erp_id,
+            name: item.name,
+            student_id: item.user,
             section_mapping_id: selectedSection.section_id,
             remarks: "none",
             fullday_present: true,
@@ -145,13 +197,8 @@ const handleFilter = ()=>{
       })
       .catch(err=>console.log(err))
 
-  // mapData()
 }
 
-
-// const mapData = ()=>{
-//   console.log(newData)
-// }
 
   function callApi(api, key) {
     setLoading(true);
@@ -236,10 +283,26 @@ const handleFilter = ()=>{
     const remarks = "test"
     const fullday_present = true
     console.log(selectedSection.section_id)
+    var bodyFormData = new FormData();
+    bodyFormData.append('section_mapping_id', selectedSection.section_id);
+    bodyFormData.append('student_id', id);
+    bodyFormData.append('attendance_for_date', dateValue);
+    bodyFormData.append('remarks', remarks);
+    bodyFormData.append('fullday_present', fullday_present);
+    bodyFormData.append('is_first_shift_present', product.is_first_shift_present);
+    bodyFormData.append('is_second_shift_present', product.is_second_shift_present);
+
     axiosInstance
-    .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
+    .post(`${endpoints.academics.createAttendance},{
+      ${bodyFormData}
+    }`)
     .then(res=>console.log(res))
     .catch(err=>console.log(err))
+    // .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
+    // .post(`${endpoints.academics.createAttendance}`)
+    // console.log(`${endpoints.academics.createAttendance}`)
+    // .then(res=>console.log(res))
+    // .catch(err=>console.log(err))
     
   }
 
@@ -386,6 +449,7 @@ const handleFilter = ()=>{
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
+              onOpen={()=>handleOpenOnViewDetails()}
               onChange={(event, value) => {
                 setSelectedAcadmeicYear(value)
                 if(value){

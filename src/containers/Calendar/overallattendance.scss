@@ -56,3 +56,9 @@
 .button .MuiSvgIcon-root {
   color: #ff6b6b;
 }
+
+.checkboxStyle .MuiFormControlLabel-root {
+  // border: 1px solid red;
+  // margin-right: 5px !important;
+  min-width: 0px !important;
+}

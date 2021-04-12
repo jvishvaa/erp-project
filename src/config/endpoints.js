@@ -12,7 +12,8 @@ export default {
     courses: '/aol/courses/',
     attendance: '/academic/student_attendance_between_date_range/',
     showAttendance: '/academic/show_attendance/',
-    createAttendance: '/academic/create_attendance/'
+    createAttendance: '/academic/create_attendance/',
+    studentList: '/academic/get_user_details/'
   },
   profile: {
     userDetails: '/erp_user/user-data/',

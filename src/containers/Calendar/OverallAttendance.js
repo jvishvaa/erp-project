@@ -5,15 +5,17 @@ import {
   TextField,
   Grid,
   Avatar,
-  Checkbox,
   Button,
-  FormControlLabel,
   Card,
   CardContent,
   CardMedia,
   Typography,
   withStyles,
 } from '@material-ui/core';
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import MobileDatepicker from './mobile-datepicker';
 import Layout from '../Layout';
@@ -32,6 +34,7 @@ import '../teacherBatchView/style.scss'
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { useHistory } from 'react-router';
 import { useForm, Controller } from "react-hook-form";
+import { fi } from 'date-fns/locale';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,29 +76,50 @@ const Attend = () => {
   const [result, setResult] = useState()
 
   useEffect(() => {
-    console.log(history.location.state)
-      {
-        history.location.state && setData(history.location.state.data)
-        history.location.state && setDefaultData(history.location.state.payload)
-      }
+    console.log(history)
 
-    const date = new Date();
-    console.log(new Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'long' }).format(date))
-    callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
+    if(history?.location?.state?.payload){
+      console.log(history?.location?.state?.payload?.academic_year_id?.session_year)
+      setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id)
+      setSelectedBranch(history?.location?.state?.payload?.branch_id)
+      setSelectedGrade(history?.location?.state?.payload?.grade_id)
+      setSelectedSection(history?.location?.state?.payload?.section_id)
+      setStartDate(history?.location?.state?.payload?.startDate)
+      setEndDate(history?.location?.state?.payload?.endDate)
+      setResult(history?.location?.state?.data)
 
-    axiosInstance
-    .get(`${endpoints.academics.showAttendance}`)
-    .then(res=>{
-      console.log(res.data.result.present_list)
-      setData(res.data.result.present_list)
-    })
+  }
+
+    else{
+      const date = new Date();
+      console.log(new Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'long' }).format(date))
+      callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
+    }
+
+
   }, []);
 
+const handleOpenOnViewDetails = ()=>{
+  if(history?.location?.state?.payload)
+  {
+    callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
+  // console.log("history data is there")
+  }
+  else{
+  }
+}
+
+// useEffect(() => {
+//   if(history){
+//     console.log(history?.location?.state?.payload?.academic_year_id?.session_year)
+//     setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id)
+//   }
+// }, [history])
   //pagination
 
   const [activePage, setActivePage] = useState(1)
 
-  let totalPages = data && Math.ceil(data.length / 8)
+  let totalPages = result && Math.ceil(result.length / 8)
   console.log(totalPages)
   let offset = (activePage - 1)*8
   const handlePageChange = (e, value)=>{
@@ -105,8 +129,8 @@ const Attend = () => {
   const [state, setState] = React.useState({
     present: false,
     absent: false,
-    is_first_shift_present: false,
-    is_second_shift_present: false,
+    first_half: false,
+    second_half: false,
   });
 
   const handleChange = (event) => {
@@ -122,22 +146,32 @@ const Attend = () => {
   }
 const handleFilter = ()=>{
   const payload = {
-    academic_year_id: selectedAcademicYear.id,
-    branch_id: selectedBranch.branch.id,
-    grade_id: selectedGrade.grade_id,
-    section_id: selectedSection.section_id,
+    academic_year_id: selectedAcademicYear?.selectedAcademicYear?.id,
+    branch_id: selectedBranch?.branch?.id,
+    grade_id: selectedGrade?.grade_id,
+    section_id: selectedSection?.section_id,
     start_date: startDate,
     end_date: endDate
   }
   console.log(payload)
-
-  axiosInstance.
+  // if(selectedAcademicYear.length < 0 || selectedBranch.length < 0 || selectedGrade.length < 0 || selectedSection.length < 0){
+  //   alert('select filters')
+  // }
+  // else{
+    axiosInstance.
   get(
     `${endpoints.academics.attendance}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}`
   )
-  .then(res=>setResult(res))
+  .then(res=>{
+    console.log(res.data)
+    let temp = [...res.data.absent_list, ...res.data.present_list]
+    console.log(temp)
+    setResult(temp)
+  })
   .catch(err=>console.log(err))
-}
+  }
+  
+// }
 
 const handleStartDateChange = (date) => {
   const endDate = getDaysAfter(date.clone(), 6);
@@ -227,6 +261,27 @@ const defaultValues = {
     console.log('date', value);
   };
   
+const handleSinlgeStudent = (id)=>{
+  console.log(id)
+  const studentData = result.filter((item)=>item.id == id)
+  console.log(studentData)
+  const payload = {
+    academic_year_id: selectedAcademicYear,
+    branch_id: selectedBranch,
+    grade_id: selectedGrade,
+    section_id: selectedSection,
+    startDate: startDate,
+    endDate: endDate
+  }
+  history.push({
+    pathname: '/attendance',
+    state: {
+      studentData,
+      payload
+    }
+  })
+}
+
   const dummyData = [
     {
       name: 'Akash',
@@ -263,7 +318,7 @@ const defaultValues = {
       rollno: '17',
       ERPno: '123456789',
     },
-  ];
+  ]
 
   return (
     <Layout>
@@ -283,6 +338,7 @@ const defaultValues = {
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
+              onOpen={()=>handleOpenOnViewDetails()}
               onChange={(event, value) => {
                 setSelectedAcadmeicYear(value)
                 if(value){
@@ -444,80 +500,85 @@ const defaultValues = {
       <br />
       <br />
       <MediaQuery minWidth={541}>
-        <Grid container direction='row' className={classes.root} spacing={3}>
+        <Grid container direction='row' className={classes.root} spacing={2}>
           {/* <Grid item md={1}></Grid> */}
 
-          <Grid item sm={2} md={2}>
-            <Typography color='primary'>12 Dec 2021-19 Dec 2021 </Typography>
+          <Grid item sm={2} md={3}>
+            <Typography color='primary'>{startDate && startDate} to {endDate && endDate} </Typography>
           </Grid>
           <Grid item sm={1} md={1}>
             <img src={line} className={classes.lines} />
           </Grid>
-
-          <Grid item sm={1} md={1}>
-            <Typography variant='subtitle2'>
-              <FormControlLabel control={
-              <Checkbox color='primary' 
-              checked={state.present} 
-              onChange={handleChange} 
-              name="present" 
-              />
-            } 
-            label='Present' />
-            </Typography>
+          <Grid item xs={12} md={5} >
+            <FormGroup row className='checkboxStyle'>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={state.present}
+                      onChange={handleChange}
+                      name="present"
+                      disabled={state.absent}
+                      color="primary"
+                    />
+                  }
+                  label="Present"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={state.absent}
+                      onChange={handleChange}
+                      name="absent"
+                      color="primary"
+                      disabled={
+                        state.present || (state.first_half && state.second_half)
+                      }
+                    />
+                  }
+                  label="Absent"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={state.first_half}
+                      onChange={handleChange}
+                      name="first_half"
+                      color="primary"
+                      disabled={state.present || state.absent}
+                    />
+                  }
+                  label="1st half"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={state.second_half}
+                      onChange={handleChange}
+                      name="second_half"
+                      color="primary"
+                      disabled={state.present || state.absent}
+                    />
+                  }
+                  label="2nd half"
+                />
+            </FormGroup>
           </Grid>
           <Grid item sm={1} md={1}>
-            <Typography>
-              <FormControlLabel control={
-                 <Checkbox color='primary' 
-                 checked={state.absent} 
-                 onChange={handleChange} 
-                 name="absent" 
-                 />
-              } label='Absent' />
-            </Typography>
-          </Grid>
-          <Grid item sm={1} md={1}>
-            <Typography>
-              <FormControlLabel control={
-                 <Checkbox color='primary' 
-                 checked={state.is_first_shift_present} 
-                 onChange={handleChange} 
-                 name="is_first_shift_present" 
-                 />
-              } label='1st Half' />
-            </Typography>
-          </Grid>
-          <Grid item sm={1} md={1}>
-            <Typography>
-              <FormControlLabel control={
-                 <Checkbox color='primary' 
-                 checked={state.is_second_shift_present} 
-                 onChange={handleChange} 
-                 name="is_second_shift_present" 
-                 />
-              } label='2nd Half' />
-            </Typography>
+            <img src={line} className={classes.lines} />
           </Grid>
           <Grid item xs={8} sm={2} md={2} lg={2}>
             <Typography variant='subtitle2' color='secondary'>
-              Number of students:33
+              Number of students: {result && result.length || 0}
             </Typography>
           </Grid>
-          <Grid item xs={8} sm={2} md={2} lg={2}>
+          {/* <Grid item xs={8} sm={2} md={2} lg={2}>
             <Button>Download Excel</Button>
-          </Grid>
+          </Grid> */}
         </Grid>
       </MediaQuery>
       <MediaQuery maxWidth={540}>
         <Grid container direction='row'>
           {/* <Grid item md={1}></Grid> */}
-
-          <Grid item xs={10} sm={4} md={2}>
-            <Typography color='primary' variant='subtitle1'>
-              12 Dec 2021-19 Dec 2021{' '}
-            </Typography>
-          </Grid>
         </Grid>
       </MediaQuery>
       <Grid container direction='row'>
@@ -527,26 +588,37 @@ const defaultValues = {
         <br />
       </Grid>
       <Grid container spacing={2} direction='row'>
-        {data && data
+        {result && result
         .filter((item,index)=>{
-          const pageCondition = index >= offset && index < offset + 8
-            let full_day 
-            if(item.is_second_shift_present && item.is_first_shift_present){
-              full_day = true
+            if(state.present){
+              const pageCondition = index >= offset && index < offset + 8
+              return pageCondition && (item.is_first_shift_present && item.is_second_shift_present)
             }
-              // let rating = item.restaurant.user_rating.aggregate_rating
-              // // console.log(rating)
-              // if(rating && pageCondition){
-              //     console.log(rating)
-              // }
-              // console.log(pageCondition)
-              // return rating >= filterRating && pageCondition
-          return pageCondition && full_day
+            else if(state.absent){
+              const pageCondition = index >= offset && index < offset + 8
+              return pageCondition && (item.is_first_shift_present || item.is_second_shift_present)
+            }
+            else if(state.first_half){
+              const pageCondition = index >= offset && index < offset + 8
+              return pageCondition && item.is_first_shift_present
+            }
+            else if(state.second_half){
+              const pageCondition = index >= offset && index < offset + 8
+              return pageCondition && item.is_second_shift_present
+            }
+            else if(state.first_half && state.second_half){
+              const pageCondition = index >= offset && index < offset + 8
+              return pageCondition && (item.is_first_shift_present && item.is_second_shift_present)
+            }
+            else{
+              const pageCondition = index >= offset && index < offset + 8
+              return pageCondition && item
+            }
           })
         .map((item) => {
           return (
             <Grid item xs={12} sm={6} md={4} lg={3}>
-              <Card className={classes.bord}>
+              <Card className={classes.bord} onClick={()=>handleSinlgeStudent(item.id)} style={{cursor:'pointer'}}>
                 <CardMedia className={classes.cover} />
                 <div>
                   <CardContent>
@@ -562,11 +634,9 @@ const defaultValues = {
                         lg={6}
                         style={{ marginLeft: 30, textAlign: 'start' }}
                       >
-                        <Typography>{item.student_first_name.slice(0, 6)}</Typography>
-                        <Typography>{item.id}</Typography>
+                        <Typography>{item.student_first_name.slice(0, 6) || ""}</Typography>
                         <Typography>{item.student}</Typography>
                       </Grid>
-
                       <p class='box'>
                         <span class='content1'>1st</span>
                         <span class='content'>2nd</span>
@@ -583,7 +653,10 @@ const defaultValues = {
 
       <Grid container justify='center'>
         {' '}
-        <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
+        {
+          result && <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
+
+        }
       </Grid>
     </Layout>
   );
