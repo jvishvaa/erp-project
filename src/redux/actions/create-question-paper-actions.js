@@ -11,6 +11,7 @@ export const createQuestionPaperActions = {
   SET_FILTER: 'SET_FILTER',
   RESET_STATE: 'RESET_STATE',
   DELETE_SECTION: 'DELETE_SECTION',
+  DELETE_QUESTION_UNDER_SECTION: 'DELETE_QUESTION_UNDER_SECTION'
 };
 
 export const addQuestion = (question) => ({
@@ -57,6 +58,12 @@ export const resetState = () => ({
 });
 export const deleteSection = (questionId, sectionId) => ({
   type: createQuestionPaperActions.DELETE_SECTION,
+  questionId,
+  sectionId,
+});
+
+export const deleteQuestionSection = (questionId, sectionId) => ({
+  type: createQuestionPaperActions.DELETE_QUESTION_UNDER_SECTION,
   questionId,
   sectionId,
 });

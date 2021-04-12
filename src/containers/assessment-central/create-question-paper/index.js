@@ -45,6 +45,7 @@ import {
   setFilter,
   resetState,
   deleteSection,
+  deleteQuestionSection
 } from '../../../redux/actions';
 
 const levels = [
@@ -66,6 +67,7 @@ const CreateQuestionPaper = ({
   questionPaperName,
   initResetState,
   initDeleteSection,
+  deleteQuestionSection
 }) => {
   const location = useLocation();
   const history = useHistory();
@@ -588,6 +590,7 @@ const CreateQuestionPaper = ({
               }
               questionPaperName={questionPaperName}
               onDeleteSection={handleDeleteSection}
+              onDeleteQuestion={deleteQuestionSection}
             />
           )}
         </div>
@@ -615,6 +618,8 @@ const mapDispatchToProps = (dispatch) => ({
   initResetState: () => dispatch(resetState()),
   initDeleteSection: (questionId, sectionId) =>
     dispatch(deleteSection(questionId, sectionId)),
+    deleteQuestionSection: (questionId, sectionId) =>
+    dispatch(deleteQuestionSection(questionId, sectionId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateQuestionPaper);
