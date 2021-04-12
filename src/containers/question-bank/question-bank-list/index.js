@@ -12,7 +12,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import axios from 'axios'
+import axios from 'axios';
 import './question-bank.css';
 import Loading from '../../../components/loader/loader';
 
@@ -112,8 +112,6 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     setTabTopicId(topicId);
     setTabMapId(subjMapId);
     setTabQueLevel(quesLevel);
-    console.log(topicId, 'FETCHED');
-    console.log(subjMapId,"subjMapId")
     if (newValue == 0 || newValue == undefined) {
       setTabValue(0);
       const filterStatus = '';
@@ -125,9 +123,13 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       //     `${endpoints.questionBank.questionData}?mapping_id=${subjMapId?.id}&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}${filterStatus}`
       //     // `${endpoints.questionBank.questionData}?mapping_id=14&question_type=7&question_categories=2&question_level=2`
       //   )
-      axios.get(`${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,{
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
+      axios
+        .get(
+          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             setTotalCount(result?.data?.result?.count);
@@ -135,6 +137,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
             setPeriodData(result?.data?.result?.results);
             setViewMore(false);
             setViewMoreData({});
+            setSelectedIndex(-1);
           } else {
             setLoading(false);
             setAlert('error', result?.data?.description);
@@ -146,9 +149,13 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
         });
     } else if (newValue == 1) {
       setTabValue(1);
-      axios.get(`${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=1&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,{
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
+      axios
+        .get(
+          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=1&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        )
         .then((result) => {
           if (result?.data?.status_code === 200) {
             setTotalCount(result?.data?.result?.count);
@@ -167,9 +174,13 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
         });
     } else if (newValue == 2) {
       setTabValue(2);
-      axios.get(`${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=3&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,{
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
+      axios
+        .get(
+          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=3&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        )
         .then((result) => {
           if (result?.data?.status_code === 200) {
             setTotalCount(result?.data?.result?.count);
@@ -188,9 +199,13 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
         });
     } else if (newValue == 3) {
       setTabValue(3);
-      axios.get(`${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=2&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,{
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
+      axios
+        .get(
+          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=2&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        )
         .then((result) => {
           if (result?.data?.status_code === 200) {
             setTotalCount(result?.data?.result?.count);
@@ -212,7 +227,14 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
 
   useEffect(() => {
     if (tabQueTypeId && tabQueCatId && tabMapId && tabQueLevel && tabTopicId) {
-      handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel,tabTopicId, tabValue);
+      handlePeriodList(
+        tabQueTypeId,
+        tabQueCatId,
+        tabMapId,
+        tabQueLevel,
+        tabTopicId,
+        tabValue
+      );
     }
   }, [page]);
   return (
@@ -342,6 +364,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
                         tabQueTypeId={tabQueTypeId}
                         tabQueCatId={tabQueCatId}
                         tabMapId={tabMapId}
+                        tabTopicId={tabTopicId}
                         tabQueLevel={tabQueLevel}
                         onClick={
                           questionId && section ? handleAddQuestionToQuestionPaper : null

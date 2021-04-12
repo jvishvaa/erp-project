@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FormControl,
   FormHelperText,
@@ -75,7 +75,11 @@ const Section = ({ question, section, questionId, onDelete }) => {
 
   const handleDeleteQuestion = () => {
     handleMenuClose();
-  }
+  };
+  useEffect(() => {
+    console.log(section, 'mydata');
+    console.log(questionId, 'mydata');
+  }, []);
 
   return (
     <div className='section-container'>
