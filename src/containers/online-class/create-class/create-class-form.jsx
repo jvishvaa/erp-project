@@ -108,7 +108,7 @@ const CreateClassForm = (props) => {
   } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const fetchBranches = (acadId) => {
-    fetchBranchesForCreateUser(acadId,moduleId).then((data) => {
+    fetchBranchesForCreateUser(acadId, moduleId).then((data) => {
       const transformedData = data?.map((obj) => ({
         id: obj.id,
         branch_name: obj.branch_name,
@@ -424,20 +424,38 @@ const CreateClassForm = (props) => {
   //   verifyTutorEmail(tutorEmail, selectedDate, selectedTime, duration, data);
   // }
   // };
+  const resolveSelectedDays = (val) => {
+    if (toggle && [...selectedDays].length) {
+      // if ([...selectedDays].length)
+      return [...selectedDays].map((obj) => obj.send);
+      // else
+      // return [daysList[new Date(val).getDay() - 1]?.send] || [];
+    }
+    else if (!toggle && new Date(val).getDay() === 0) {
+      // if (new Date(val).getDay() === 0)
+      return ['S'];
+      // else
+      // return [daysList[new Date(val).getDay() - 1]?.send] || [];
+    }
+    else
+      return [daysList[new Date(val).getDay() - 1]?.send] || [];
+  }
 
   const handleDateChange = (event, value) => {
     const isFutureTime = onlineClass.selectedTime > new Date();
     if (!isFutureTime) {
       setOnlineClass((prevState) => ({ ...prevState, selectedTime: new Date() }));
     }
+
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({
       ...prevState,
       selectedDate: value,
-      days:
-        !toggle && new Date(value).getDay() === 0
-          ? ['S']
-          : [daysList[new Date(value).getDay() - 1]?.send] || [],
+      days: resolveSelectedDays(value),
+      // days:
+      //   !toggle && new Date(value).getDay() === 0
+      //     ? ['S']
+      //     : [daysList[new Date(value).getDay() - 1]?.send] || [],
     }));
   };
 
