@@ -1,11 +1,17 @@
+import ENVCONFIG from './config';
+
+const {
+  apiGateway: { baseURLCentral },
+  s3: { BUCKET: s3BUCKET },
+} = ENVCONFIG;
+
 // const baseURLCentral = 'http://13.232.30.169/qbox';
-const appBaseURL = window.location.hostname;
-// const baseURLCentral =
-//   appBaseURL.includes('dev.') || appBaseURL.includes('localhost')
-//     ? 'http://dev.mgmt.letseduvate.com/qbox'
-//     : 'https://mgmt.letseduvate.com/qbox';
-const baseURLCentral = 'http://dev.mgmt.letseduvate.com/qbox'
-// const baseURLCentral = 'http://192.168.0.67:8000/qbox';
+// const appBaseURL = window.location.hostname;
+// const baseURLCentral = (appBaseURL.includes("dev.") || appBaseURL.includes("localhost"))
+//   ? 'http://dev.mgmt.letseduvate.com/qbox'
+//   : 'https://mgmt.letseduvate.com/qbox';
+// const baseURLCentral = 'http://dev.mgmt.letseduvate.com/qbox'
+// const baseURLCentral = 'https://mgmt.letseduvate.com/qbox';
 
 export default {
   auth: {
@@ -155,8 +161,7 @@ export default {
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
     editChapter: '/academic/',
-    centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`,
-    //'https://dev.mgmt.letseduvate.com/qbox/lesson_plan/erp_lesson_mapping/?domain_name=olvorchidnaigaon'
+    centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`, //'https://dev.mgmt.letseduvate.com/qbox/lesson_plan/erp_lesson_mapping/?domain_name=olvorchidnaigaon'
   },
   lessonPlan: {
     gradeSubjectMappingListCentral: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
@@ -270,6 +275,7 @@ export default {
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
   assessment: {
+    assessmentResultAnalysis: `${baseURLCentral}/assessment/student-reports/`,
     questionPaperList: `/academic/assessment-list/`,
     viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
     userTests: `${baseURLCentral}/assessment/user-tests/`, // ?user=20&subject=1,
@@ -309,7 +315,8 @@ export default {
     BulkUploadSingleChoiceQuestion: `${baseURLCentral}/assessment/upload-sc-questions/`,
     FillBlankUploadQuestion: `${baseURLCentral}/assessment/fill_bulk_upload/`,
   },
-  s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+  // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+  s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
   // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing
