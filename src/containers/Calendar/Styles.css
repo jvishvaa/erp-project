@@ -7,3 +7,12 @@
 .arrow .MuiSvgIcon-root {
   color: red;
 }
+.response .MuiFormControlLabel-root {
+  min-width: 0px;
+  margin-left: 23px;
+}
+.responsesecond .MuiFormControlLabel-root {
+  min-width: 0px;
+  margin-left: 80px;
+  margin-bottom: 25px;
+}

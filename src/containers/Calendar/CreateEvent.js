@@ -944,18 +944,21 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
             <Grid
               container
               direction='row'
+              
             
             >
-              <Grid item md={1} sm={3}>
+              <Grid item md={1} sm={3} className='responsesecond'>
                 <FormControlLabel
+                
                   value='top'
                   control={<Checkbox  onChange={is_first_half}/>}
                   label='1st Half'
                   labelPlacement='top'
                 />
               </Grid>
-              <Grid item md={1} sm={3}>
+              <Grid item md={1} sm={3} className='response'>
                 <FormControlLabel
+              
                   value='top'
                   control={<Checkbox  onChange={is_second_half} />}
                   label='2nd Half'
@@ -970,7 +973,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
                                     size='small'
                                         // margin="normal"
                                         
-                                        style={{ width: '35%',marginLeft:'15%' }}
+                                        style={{ width: '30%',marginLeft:'15%' }}
                                         className='arrow'
                                         id="time-picker"
                                         label="Start Time"
@@ -989,7 +992,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
                                 <KeyboardTimePicker
                                     size='small'
                                         // margin="normal"
-                                        style={{ width: '35%',marginLeft:'7%' }}
+                                        style={{ width: '30%',marginLeft:'7%' }}
                                         className='helperText'
                                         className='arrow'
                                         
