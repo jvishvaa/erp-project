@@ -89,6 +89,19 @@ const Attendance = () => {
       setEndDate(history?.location?.state?.payload?.endDate)
       setData(history?.location?.state?.studentData)
 
+      console.log(history?.location?.state?.studentData[0]?.student)
+      axiosInstance
+      .get(`${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.endDate}&end_date=${history?.location?.state?.payload?.startDate}&erp_id=${history?.location?.state?.studentData[0]?.student}`)
+      .then(res=>{
+        if(res.status == 200){
+          
+        }
+        if(res.status == 400){
+          console.log(res.message)
+        }
+      })
+      .catch(err=>console.log(err))
+
   }
   else{
     const date = new Date();

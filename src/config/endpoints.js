@@ -13,7 +13,8 @@ export default {
     attendance: '/academic/student_attendance_between_date_range/',
     showAttendance: '/academic/show_attendance/',
     createAttendance: '/academic/create_attendance/',
-    studentList: '/academic/get_user_details/'
+    studentList: '/academic/get_user_details/',
+    singleStudentAttendance: '/academic/student_attendance_between_days/',
   },
   profile: {
     userDetails: '/erp_user/user-data/',

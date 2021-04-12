@@ -30,6 +30,7 @@ import moment from 'moment';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state'
 import Axios from 'axios';
 import { useHistory } from 'react-router';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -281,7 +282,7 @@ const handleFilter = ()=>{
     console.log(products)
     setData(products)
     const remarks = "test"
-    const fullday_present = true
+    const fullday_present = true ? "true" : "false"
     console.log(selectedSection.section_id)
     var bodyFormData = new FormData();
     bodyFormData.append('section_mapping_id', selectedSection.section_id);
@@ -291,11 +292,21 @@ const handleFilter = ()=>{
     bodyFormData.append('fullday_present', fullday_present);
     bodyFormData.append('is_first_shift_present', product.is_first_shift_present);
     bodyFormData.append('is_second_shift_present', product.is_second_shift_present);
+    console.log(JSON.stringify(bodyFormData), "test")
 
+    const fullData = {
+      section_mapping_id:selectedSection.section_id,
+      student_id: id,
+      attendance_for_date: dateValue,
+      remarks: remarks,
+      fullday_present: fullday_present,
+      is_first_shift_present: product.is_second_shift_present ? "true" : "false",
+      is_second_shift_present: product.is_second_shift_present ? "true" : "false"
+    }
+console.log(fullData)
     axiosInstance
-    .post(`${endpoints.academics.createAttendance},{
-      ${bodyFormData}
-    }`)
+    .post(`${endpoints.academics.createAttendance}`,
+      fullData)
     .then(res=>console.log(res))
     .catch(err=>console.log(err))
     // .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
@@ -303,6 +314,14 @@ const handleFilter = ()=>{
     // console.log(`${endpoints.academics.createAttendance}`)
     // .then(res=>console.log(res))
     // .catch(err=>console.log(err))
+    // axios.post({
+    //   method: 'post',
+    //   url:'http://127.0.0.1:8000/qbox/academic/create_attendance/',
+    //   data: JSON.stringify(bodyFormData),
+    //   headers: {
+    //     authorization: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjYxODA2MTA2OCwiZW1haWwiOiIifQ.aEV_0N-ZvMG7DWfC0hraHc7YSQNf8wxpg_j9jV2p39o'
+    //   }
+    // })
     
   }
 
@@ -353,6 +372,17 @@ const handleFilter = ()=>{
     return (
       <>
         { data && data
+        .sort((a, b)=>{
+          let fa = a.name.toLowerCase();
+          let fb = b.name.toLowerCase();
+          if (fa < fb) {
+            return -1;
+        }
+        if (fa > fb) {
+            return 1;
+        }
+        return 0;
+        })
         .filter((item,index)=>{
           const pageCondition = index >= offset && index < offset + 8
           return pageCondition
@@ -586,7 +616,7 @@ const handleFilter = ()=>{
               )}
             />
           </Grid>
-        <Grid item md={3} xs={12}>
+        {/* <Grid item md={3} xs={12}>
         <Autocomplete
             className='dropdownIcon'
             id='attedancetype'
@@ -606,7 +636,7 @@ const handleFilter = ()=>{
             )}
 
           />
-        </Grid>
+        </Grid> */}
 
         <Grid item md={11} xs={12}>
           <Divider />
