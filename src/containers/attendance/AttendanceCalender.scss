@@ -72,10 +72,13 @@
   margin-left: 2%;
 }
 .whole-calender-filter {
-  margin-left: 5%;
   .buttonGrid {
     margin-top: 20%;
   }
+}
+#completeContainer{
+  display: flex;
+  justify-content: space-around;
 }
 .calenderGrid {
   box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.5);
@@ -237,7 +240,6 @@
 #eventContainer {
   // height: fit-content !important;
   height: 395px !important ;
-  margin-left: 28%;
   overflow: auto;
   overflow-x: hidden;
   .noImgEvent {

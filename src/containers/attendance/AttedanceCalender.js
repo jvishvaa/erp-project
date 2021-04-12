@@ -245,7 +245,7 @@ const AttedanceCalender = () => {
     var formatDate = moment(date).format('YYYY-MM-DD');
     console.log(formatDate, 'format date');
     axiosInstance
-      .get(`academic/events_list/`,{
+      .get(`academic/events_list/`, {
         params: {
           start_date: formatDate,
           data: formatDate,
@@ -302,35 +302,33 @@ const AttedanceCalender = () => {
   //   setSevenDay(myFutureDate);
   // }
   const getRangeData = () => {
-    if ( counter === 2) {
-    axiosInstance
-      .get(`academic/student_attendance_between_date_range/`, {
-        params: {
-          start_date: startDate,
-          end_date: endDate,
-          branch_id: branchID,
-          grade_id: gradeID,
-          // grade_id: 2,
+    if (counter === 2) {
+      axiosInstance
+        .get(`academic/student_attendance_between_date_range/`, {
+          params: {
+            start_date: startDate,
+            end_date: endDate,
+            branch_id: branchID,
+            grade_id: gradeID,
+            // grade_id: 2,
 
-          section_id: sectionID,
-          // section_id: 2,
-          academic_year: academicYearID,
-        },
-      })
-      .then((res) => {
-        console.log(res, 'respond student');
-        setStudentData(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+            section_id: sectionID,
+            // section_id: 2,
+            academic_year: academicYearID,
+          },
+        })
+        .then((res) => {
+          console.log(res, 'respond student');
+          setStudentData(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
     if (counter === 1) {
-    getToday();
+      getToday();
     }
   };
-
-
 
   const StyledFilterButton = withStyles({
     root: {
@@ -447,6 +445,7 @@ const AttedanceCalender = () => {
         className={classes.root}
         spacing={3}
         style={{ background: 'white' }}
+        id="completeContainer"
       >
         <div className='whole-calender-filter'>
           <Grid className='calenderGrid'>
@@ -513,7 +512,12 @@ const AttedanceCalender = () => {
                           <div className='event-data'>
                             {data?.start_time.slice(11, 16)}
                           </div>
-                          <div className='event-name' style={{ background: data.event_category.event_category_color  }} >
+                          <div
+                            className='event-name'
+                            style={{
+                              background: data.event_category.event_category_color,
+                            }}
+                          >
                             <OutlinedFlagRoundedIcon
                               style={{ background: '#FF6B6B', borderRadius: '30px' }}
                             />
@@ -523,8 +527,8 @@ const AttedanceCalender = () => {
                       ))}
                   </>
                 ) : (
-                  <div className="noEvent" >
-                  <img src={Group} width='100%' height=' 504px' className="noDataImg" />
+                  <div className='noEvent'>
+                    <img src={Group} width='100%' height=' 504px' className='noDataImg' />
                   </div>
                 )}
               </div>
@@ -570,7 +574,8 @@ const AttedanceCalender = () => {
             </StyledFilterButton>
           </Grid>
         </div>
-        <Grid item md={2} className='topGrid'>
+        {/* <Grid item md={2} className='topGrid'> */}
+        <div className='attendenceWhole'>
           <div className='startDate'> From {startDate}</div>
           <Paper elevation={3} className={classes.paperSize} id='attendanceContainer'>
             <Grid container direction='row' className={classes.root} id='attendanceGrid'>
@@ -654,9 +659,11 @@ const AttedanceCalender = () => {
               </div>
             )}
           </Paper>
-        </Grid>
-        <Grid item md={1}></Grid>
-        <Grid item md={2} className='topGrid'>
+        </div>
+        {/* </Grid> */}
+        {/* <Grid item md={1} className="hello" ></Grid> */}
+        {/* <Grid item md={2} className='topGrid'> */}
+        <div className='eventWhole'>
           <div className='startDate'> To {endDate}</div>
           <Paper
             elevation={3}
@@ -734,7 +741,8 @@ const AttedanceCalender = () => {
               </div>
             )}
           </Paper>
-        </Grid>
+        </div>
+        {/* </Grid> */}
       </Grid>
     </Layout>
   );
