@@ -6,13 +6,21 @@ import { IconButton, Button, Grid, Paper } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 
-import axiosInstance from '../../../../config/axios';
+// import axiosInstance from '../../../../config/axios';
+import axios from 'axios';
 import endpoints from '../../../../config/endpoints';
 
 import Loading from '../../../../components/loader/loader';
 
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
+
 import DNDFileUpload from '../../../../components/dnd-file-upload';
+
+import ENVCONFIG from '../../../../config/config';
+
+const {
+  apiGateway: { xAPIKey },
+} = ENVCONFIG;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -156,9 +164,11 @@ function QuestionBulkCreation(props) {
     });
     if (isValid) {
       setUploading(true);
-      axiosInstance
+      axios
         // .post(apiURL, formData, { responseType: 'blob' })
-        .post(apiURL, formData)
+        .post(apiURL, formData, {
+          headers: { 'x-api-key': xAPIKey },
+        })
         .then((response) => {
           setUploading(false);
           const {
