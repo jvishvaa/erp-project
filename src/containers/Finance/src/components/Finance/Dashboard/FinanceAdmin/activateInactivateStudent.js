@@ -259,7 +259,7 @@ class ActivateInactivateStudentAdm extends Component {
                     {/* <TableCell>{row.request_date ? row.request_date : '-'}</TableCell> */}
                     <TableCell>{row.student.gender ? row.student.gender : '-'}</TableCell>
                     {/* <TableCell>{row.student.roll_no ? row.student.roll_no : '-'}</TableCell> */}
-                    <TableCell><Button color='primary' onClick={(e) => { this.showInfoModalAcceptHandler(e, row) }}>Approve</Button><Button color='primary' onClick={(e) => { this.showInfoModalRejectHandler(e, row) }}>Reject</Button></TableCell>
+                    <TableCell><Button style={{ marginBottom: '20px'}} color='primary' onClick={(e) => { this.showInfoModalAcceptHandler(e, row) }}>Approve</Button><Button color='primary' onClick={(e) => { this.showInfoModalRejectHandler(e, row) }}>Reject</Button></TableCell>
                   </TableRow>
                 )
               })}
@@ -306,7 +306,10 @@ class ActivateInactivateStudentAdm extends Component {
                     <TableCell>{row.amout_paid ? row.amout_paid : '-'}</TableCell>
                     <TableCell>{row.request_remarks ? row.request_remarks : '-'}</TableCell>
                     <TableCell>{row.student.gender ? row.student.gender : '-'}</TableCell>
-                    <TableCell><Button color='primary' onClick={(e) => { this.showInfoModalAcceptHandler(e, row) }}>Approve</Button><Button color='primary' onClick={(e) => { this.showInfoModalRejectHandler(e, row) }}>Reject</Button></TableCell>
+                    <TableCell>
+                        <Button style={{ marginBottom: '20px'}} color='primary' onClick={(e) => { this.showInfoModalAcceptHandler(e, row) }}>Approve</Button>
+                        <Button color='primary' onClick={(e) => { this.showInfoModalRejectHandler(e, row) }}>Reject</Button>
+                    </TableCell>
                   </TableRow>
                 )
               })}

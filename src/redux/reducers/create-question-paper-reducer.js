@@ -77,6 +77,28 @@ export default function reducer(state = INITIAL_STATE, action) {
       return { ...state, questions: questionsList };
     }
 
+    case createQuestionPaperActions.DELETE_QUESTION_UNDER_SECTION: {
+      console.log('on delete QQ sec:', state.questions, action)
+      const newQuestionsList = JSON.parse(JSON.stringify(state.questions));
+      // const filterArray = array.filter((item) => item.id !== idToRemove);
+      newQuestionsList.forEach((obj) => {
+        const newSec = [...obj.sections]
+        const filterArray = newSec[0].questions.filter((item) => item.id !== action.questionId);
+        console.log('filtered Array: ', filterArray);
+        newSec[0].questions = [...filterArray]
+        obj.sections = newSec 
+      })
+      console.log('newQuestion List: ', newQuestionsList)
+
+      // const newQuestionList = [...state.questions]
+      // const newSecArr = [...newQuestionList.sections]
+      // const newFinal = [...newSecArr]
+      // const filteredFinal = newFinal[0].questions.filter((item) => item.id !== action.questionId)
+      // newFinal[0].questions = filteredFinal
+
+      return { ...state, questions: newQuestionsList};
+    }
+
     case createQuestionPaperActions.RESET_STATE: {
       return {...INITIAL_STATE, questionPaperName:''};
     }

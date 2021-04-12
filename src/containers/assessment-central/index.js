@@ -40,7 +40,13 @@ import {
   fetchAssesmentTests,
   fetchAssesmentTestDetail,
 } from '../../redux/actions';
-import { fetchGrades, fetchSubjects } from '../lesson-plan/create-lesson-plan/apis';
+import {
+  fetchAcademicYears,
+  fetchBranches,
+  fetchGrades,
+  fetchSubjects,
+} from '../lesson-plan/create-lesson-plan/apis';
+// import { fetchGrades, fetchSubjects } from '../lesson-plan/create-lesson-plan/apis';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import DateRangeSelector from '../../components/date-range-selector';
 import infoIcon from '../../assets/images/info-icon.svg';
@@ -66,6 +72,8 @@ const Assesment = () => {
   const history = useHistory();
 
   // const [statuses, setStatuses] = useState([]);
+  const [academicDropdown, setAcademicDropdown] = useState([]);
+  const [branchDropdown, setBranchDropdown] = useState([]);
   const [grades, setGrades] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [topics, setTopics] = useState([]);
@@ -86,44 +94,112 @@ const Assesment = () => {
   const [fetchingTests, setFetchingTests] = useState(false);
   const [minDate, setMinDate] = useState(null);
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Assessment' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Create Test') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   const formik = useFormik({
     initialValues: {
       status: '',
       date: [moment().startOf('isoWeek'), moment().endOf('week')],
+      branch: '',
+      academic: '',
       grade: '',
       subject: [],
       assesment_type: '',
     },
     onSubmit: (values) => {
-      console.log(values);
       filterResults(1);
     },
     validateOnChange: false,
     validateOnBlur: false,
   });
 
-  const getGrades = async () => {
+  const getAcademic = async () => {
     try {
-      const data = await fetchGrades();
+      setAcademicDropdown([]);
+      setBranchDropdown([]);
+      setGrades([]);
+      setSubjects([]);
+      const data = await fetchAcademicYears(moduleId);
+      setAcademicDropdown(data);
+    } catch (e) {
+      setAlert('error', 'Failed to fetch academic');
+    }
+  };
+
+  const getBranch = async (acadId) => {
+    try {
+      setBranchDropdown([]);
+      setGrades([]);
+      setSubjects([]);
+      const data = await fetchBranches(acadId, moduleId);
+      setBranchDropdown(data);
+    } catch (e) {
+      setAlert('error', 'Failed to fetch branch');
+    }
+  };
+
+  const getGrades = async (branchId) => {
+    try {
+      setGrades([]);
+      setSubjects([]);
+      const data = await fetchGrades(branchId);
       setGrades(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch grades');
     }
   };
 
-  const getSubjects = async (gradeId) => {
+  const getSubjects = async (mappingId, branchId) => {
     try {
-      const data = await fetchSubjects(gradeId);
+      setSubjects([]);
+      const data = await fetchSubjects(mappingId, branchId);
       setSubjects(data);
-    } catch (e) {}
+    } catch (e) {
+      setAlert('error', 'Failed to fetch subjects');
+    }
   };
 
-  const getTopics = async () => {
-    try {
-      const data = await fetchTopics();
-      setTopics(data);
-    } catch (e) {}
-  };
+  // const getGrades = async () => {
+  //   try {
+  //     const data = await fetchGrades();
+  //     setGrades(data);
+  //   } catch (e) {
+  //     setAlert('error', 'Failed to fetch grades');
+  //   }
+  // };
+
+  // const getSubjects = async (gradeId) => {
+  //   try {
+  //     const data = await fetchSubjects(gradeId);
+  //     setSubjects(data);
+  //   } catch (e) {}
+  // };
+
+  // const getTopics = async () => {
+  //   try {
+  //     const data = await fetchTopics();
+  //     setTopics(data);
+  //   } catch (e) {}
+  // };
 
   const getAssesmentTypes = async () => {
     try {
@@ -134,7 +210,9 @@ const Assesment = () => {
 
   const filterResults = async (page) => {
     const { grade, subject, assesment_type: assesmentType, date, status } = formik.values;
-    const subjectIds = subject.map((obj) => obj.id);
+    // const subjectIds = subject.map((obj) => obj.id);
+    // const subjectIds = subject.map((obj) => obj.subject.central_mp_id);
+    const subjectIds = subject.map((obj) => obj.subject.id);
     try {
       setFetchingTests(true);
 
@@ -199,18 +277,38 @@ const Assesment = () => {
   };
 
   useEffect(() => {
-    // getGrades();
-    // getAssesmentTypes();
-    // getTopics();
+    if (formik.values.academic) {
+      getBranch(formik.values.academic.id);
+      if (formik.values.branch) {
+        getGrades(formik.values.branch.branch.id);
+        if (formik.values.grade) {
+          getSubjects(formik.values.grade.id, formik.values.branch.branch.id);
+        } else {
+          setSubjects([]);
+        }
+      } else {
+        setGrades([]);
+      }
+    } else {
+      setBranchDropdown([]);
+    }
   }, []);
 
   useEffect(() => {
-    if (formik.values.grade) {
-      getSubjects(formik.values.grade.id);
-    } else {
-      setSubjects([]);
+    if (moduleId) {
+      getAcademic();
     }
-  }, [formik.values.grade]);
+    getAssesmentTypes();
+    // getTopics();
+  }, [moduleId]);
+
+  // useEffect(() => {
+  //   if (formik.values.grade) {
+  //     getSubjects(formik.values.grade.id);
+  //   } else {
+  //     setSubjects([]);
+  //   }
+  // }, [formik.values.grade]);
 
   const clearResults = () => {
     formik.handleReset();
@@ -276,6 +374,37 @@ const Assesment = () => {
     formik.handleSubmit();
   };
 
+  const handleAcademicYear = (event, value) => {
+    if (value) {
+      getBranch(value.id);
+      formik.setFieldValue('academic', value);
+      // initSetFilter('selectedAcademic', value);
+    }
+  };
+
+  const handleBranch = (event, value) => {
+    if (value) {
+      getGrades(value.branch.id);
+      formik.setFieldValue('branch', value);
+      // initSetFilter('selectedBranch', value);
+    }
+  };
+
+  const handleGrade = (event, value) => {
+    if (value) {
+      getSubjects(value.id, formik.values.branch.branch.id);
+      formik.setFieldValue('grade', value);
+      // initSetFilter('selectedGrade', value);
+    }
+  };
+
+  const handleSubject = (event, value) => {
+    if (value) {
+      formik.setFieldValue('subject', value);
+      // initSetFilter('selectedSubject', value);
+    }
+  };
+
   return (
     <Layout>
       <div className='assesment-container'>
@@ -327,7 +456,7 @@ const Assesment = () => {
             <AccordionDetails>
               <div className='form-grid-container mv-20'>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} md={4}>
+                  <Grid item xs={12} md={3}>
                     <FormControl fullWidth variant='outlined'>
                       <Autocomplete
                         id='status'
@@ -354,7 +483,7 @@ const Assesment = () => {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={4} className='dateRangeSelector'>
+                  <Grid item xs={12} md={3} className='dateRangeSelector'>
                     <FormControl fullWidth variant='outlined'>
                       <DateRangeSelector
                         value={formik.values.date}
@@ -371,7 +500,124 @@ const Assesment = () => {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={4}>
+                  <Grid item xs={12} md={3}>
+                    <FormControl fullWidth variant='outlined'>
+                      <Autocomplete
+                        id='academic'
+                        name='academic'
+                        className='dropdownIcon'
+                        onChange={handleAcademicYear}
+                        // onChange={(e, value) => {
+                        //   formik.setFieldValue('academic', value);
+                        //   initSetFilter('selectedAcademic', value);
+                        // }}
+                        value={formik.values.academic}
+                        options={academicDropdown}
+                        getOptionLabel={(option) => option.session_year || ''}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Academic Year'
+                            placeholder='Academic Year'
+                          />
+                        )}
+                        size='small'
+                      />
+                      <FormHelperText style={{ color: 'red' }}>
+                        {formik.errors.academic ? formik.errors.academic : ''}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} md={3}>
+                    <FormControl fullWidth variant='outlined'>
+                      <Autocomplete
+                        id='branch'
+                        name='branch'
+                        className='dropdownIcon'
+                        onChange={handleBranch}
+                        // onChange={(e, value) => {
+                        //   formik.setFieldValue('branch', value);
+                        //   initSetFilter('selectedBranch', value);
+                        // }}
+                        value={formik.values.branch || ''}
+                        options={branchDropdown || []}
+                        getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Branch'
+                            placeholder='Branch'
+                          />
+                        )}
+                        size='small'
+                      />
+                      <FormHelperText style={{ color: 'red' }}>
+                        {formik.errors.branch ? formik.errors.branch : ''}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} md={3}>
+                    <FormControl fullWidth variant='outlined'>
+                      <Autocomplete
+                        id='grade'
+                        name='grade'
+                        className='dropdownIcon'
+                        onChange={handleGrade}
+                        // onChange={(e, value) => {
+                        //   formik.setFieldValue('grade', value);
+                        //   initSetFilter('selectedGrade', value);
+                        // }}
+                        value={formik.values.grade}
+                        options={grades}
+                        getOptionLabel={(option) => option.grade_name || ''}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Grade'
+                            placeholder='Grade'
+                          />
+                        )}
+                        size='small'
+                      />
+                      <FormHelperText style={{ color: 'red' }}>
+                        {formik.errors.grade ? formik.errors.grade : ''}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} md={3}>
+                    <FormControl fullWidth variant='outlined'>
+                      <Autocomplete
+                        id='subject'
+                        name='subject'
+                        onChange={handleSubject}
+                        // onChange={(e, value) => {
+                        // formik.setFieldValue('subject', value);
+                        // initSetFilter('selectedSubject', value);
+                        // }}
+                        multiple
+                        className='dropdownIcon'
+                        value={formik.values.subject}
+                        options={subjects}
+                        getOptionLabel={(option) => option.subject?.subject_name || ''}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Subject'
+                            placeholder='Subject'
+                          />
+                        )}
+                        size='small'
+                      />
+                      <FormHelperText style={{ color: 'red' }}>
+                        {formik.errors.subject ? formik.errors.subject : ''}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
+                  {/* <Grid item xs={12} md={4}>
                     <FormControl fullWidth variant='outlined'>
                       <Autocomplete
                         id='grade'
@@ -425,7 +671,7 @@ const Assesment = () => {
                         {formik.errors.subject ? formik.errors.subject : ''}
                       </FormHelperText>
                     </FormControl>
-                  </Grid>
+                  </Grid> */}
                   {/* <Grid item xs={12} md={4}>
                     <FormControl fullWidth variant='outlined'>
                       <Autocomplete
@@ -452,7 +698,7 @@ const Assesment = () => {
                       </FormHelperText>
                     </FormControl>
                   </Grid> */}
-                  <Grid item xs={12} md={4}>
+                  <Grid item xs={12} md={3}>
                     <FormControl fullWidth variant='outlined'>
                       <Autocomplete
                         id='assesment_type'

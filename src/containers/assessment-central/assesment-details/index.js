@@ -98,14 +98,14 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
           <div style={{ margin: '1rem' }}>
             <Grid container spacing={4}>
               <Grid item xs={12} md={6}>
-                <Button variant='contained' color='primary' fullWidth>
+                {/* <Button variant='contained' color='primary' fullWidth>
                   Results
-                </Button>
+                </Button> */}
               </Grid>
               <Grid item xs={12} md={6}>
-                <Button variant='contained' color='primary' fullWidth>
+                {/* <Button variant='contained' color='primary' fullWidth>
                   Question Paper
-                </Button>
+                </Button> */}
               </Grid>
             </Grid>
           </div>

@@ -36,27 +36,50 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
     topics: [],
   });
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
   useEffect(() => {
-    axiosInstance
-      .get(`${endpoints.userManagement.academicYear}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setDropdownData({
-            academic: result.data?.data,
-            branch: [],
-            grades: [],
-            subjects: [],
-            chapters: [],
-            topics: [],
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Assessment' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Question Bank') {
+              setModuleId(item.child_id);
+            }
           });
-        } else {
-          setAlert('error', result.data?.message);
         }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
       });
+    }
   }, []);
+
+  useEffect(() => {
+    if (moduleId) {
+      axiosInstance
+        .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setDropdownData({
+              academic: result.data?.data,
+              branch: [],
+              grades: [],
+              subjects: [],
+              chapters: [],
+              topics: [],
+            });
+          } else {
+            setAlert('error', result.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  }, [moduleId]);
 
   // useEffect(() => {
   // axiosInstance
@@ -104,7 +127,9 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
         academic: value,
       });
       axiosInstance
-        .get(`${endpoints.academics.branches}?session_year=${value.id}`)
+        .get(
+          `${endpoints.academics.branches}?session_year=${value.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             setDropdownData({
@@ -174,7 +199,9 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
     if (value) {
       setFilterData({ ...filterData, grade: value });
       axiosInstance
-        .get(`${endpoints.assessmentApis.gradesList}?gs_id=${value.mp_id}`)
+        .get(
+          `${endpoints.assessmentApis.gradesList}?gs_id=${value.id}&branch=${filterData.branch.id}`
+        ) //new_changes
         .then((result) => {
           if (result.data.status_code === 200) {
             setDropdownData({
@@ -206,10 +233,15 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
     if (value) {
       setFilterData({ ...filterData, subject: value });
       if (value) {
+        console.log(value, '===============');
         axios
-          .get(`${endpoints.lessonPlan.chapterListCentral}?grade_subject=${33}`, {
-            headers: { 'x-api-key': 'vikash@12345#1231' },
-          })
+          .get(
+            `${endpoints.lessonPlan.chapterListCentral}?grade_subject=${value.subject.central_mp_id}`,
+            {
+              //new_changes
+              headers: { 'x-api-key': 'vikash@12345#1231' },
+            }
+          )
           .then((result) => {
             if (result.data.status_code === 200) {
               setDropdownData({
@@ -289,10 +321,10 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
   };
 
   const handleFilter = () => {
-    console.log('filtered: ', filterData)
+    console.log('filtered: ', filterData);
     if (!filterData?.academic || !filterData?.branch) {
-      setAlert('warning', 'Please select academic and branch')
-      return
+      setAlert('warning', 'Please select academic and branch');
+      return;
     }
     if (
       filterData?.grade &&
@@ -405,7 +437,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           className='dropdownIcon'
           value={filterData.chapter || ''}
           options={dropdownData.chapters || []}
-          getOptionLabel={(option) => option?.chapter_name||''}
+          getOptionLabel={(option) => option?.chapter_name || ''}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField
@@ -426,7 +458,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           className='dropdownIcon'
           value={filterData.topic || ''}
           options={dropdownData.topics || []}
-          getOptionLabel={(option) => option?.topic_name||''}
+          getOptionLabel={(option) => option?.topic_name || ''}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField {...params} variant='outlined' label='Topic' placeholder='Topic' />

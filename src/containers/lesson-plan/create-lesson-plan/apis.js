@@ -11,18 +11,18 @@ export const fetchVolumes = async () => {
   }
 };
 
-export const fetchAcademicYears = async () => {
+export const fetchAcademicYears = async (moduleId) => {
   try {
-    const response = await axios.get(endpoints.userManagement.academicYear);
+    const response = await axios.get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`);
     return response.data.data;
   } catch (e) {
     return [];
   }
 };
 
-export const fetchBranches = async (acadId) => {
+export const fetchBranches = async (acadId,moduleId) => {
   try {
-    const response = await axios.get(`${endpoints.academics.branches}?session_year=${acadId}`);
+    const response = await axios.get(`${endpoints.academics.branches}?session_year=${acadId}&module_id=${moduleId}`);
     return response.data?.data?.results;
   } catch (e) {
     return [];
@@ -40,10 +40,10 @@ export const fetchGrades = async (branchId) => {
   }
 };
 
-export const fetchSubjects = async (mappingId) => {
+export const fetchSubjects = async (mappingId,branchId) => {
   try {
     const response = await axios.get(
-      `${endpoints.assessmentApis.gradesList}?gs_id=${mappingId}`
+      `${endpoints.assessmentApis.gradesList}?gs_id=${mappingId}&branch=${branchId}`
     );
     return response.data?.result?.results;
   } catch (e) {

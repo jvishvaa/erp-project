@@ -26,14 +26,14 @@ const AssesmentCard = ({ value, onClick, isSelected }) => {
       <div className='card-header'>
         <p className='header'>{value.test_type__exam_name}</p>
         <div className='menu'>
-          <IconButton
+          {/* <IconButton
             aria-label='more'
             aria-controls='long-menu'
             aria-haspopup='true'
             onClick={handleClick}
           >
             <MoreHorizIcon color='primary' />
-          </IconButton>
+          </IconButton> */}
           {/* <Menu
             id='long-menu'
             anchorEl={anchorEl}
@@ -135,6 +135,7 @@ const AssesmentCard = ({ value, onClick, isSelected }) => {
         <div className='btn-container'>
           {!isSelected && (
             <Button
+              style={{ borderRadius: '10px', color: 'white' }}
               variant='contained'
               color='primary'
               onClick={() => {

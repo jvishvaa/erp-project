@@ -75,7 +75,18 @@ class PettyExpenses extends Component {
   }
 
   makeEntryClickHandler = () => {
-    this.props.history.push('/finance/Expanse Management/MakeEntry')
+    // this.props.history.push('/finance/Expanse Management/MakeEntry')
+    this.props.history.push({
+      pathname: '/finance/Expanse Management/MakeEntry',
+      state: {
+        branch: this.state.selectedBranches && this.state.selectedBranches.value
+      }
+    })
+    let data = {
+      branch:this.state.selectedBranches && this.state.selectedBranches.value,
+      moduleId:moduleId
+    }
+    this.props.sendData(data, this.props.alert, this.props.user)
   }
 
   bankAccClickHandler = (id) => {
@@ -94,10 +105,20 @@ class PettyExpenses extends Component {
 
   ledgerReportClickHandler = () => {
     this.props.history.push('/finance/Expanse Management/LedgerReport')
+    let data = {
+      branch:this.state.selectedBranches && this.state.selectedBranches.value,
+      moduleId:moduleId
+    }
+    this.props.sendData(data, this.props.alert, this.props.user)
   }
 
   reportClickHandler = () => {
     this.props.history.push('/finance/Expanse Management/FinancialLedgerReport')
+    let data = {
+      branch:this.state.selectedBranches && this.state.selectedBranches.value,
+      moduleId:moduleId
+    }
+    this.props.sendData(data, this.props.alert, this.props.user)
   }
 
   addMoneyHandler = (e) => {
@@ -169,7 +190,8 @@ class PettyExpenses extends Component {
       approvedBy,
       date,
       user,
-      alert
+      alert,
+      this.state.selectedBranches  && this.state.selectedBranches.value
     )
 
     this.setState({
@@ -196,8 +218,8 @@ class PettyExpenses extends Component {
   changehandlerbranch = (e) => {
     // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session)
     this.setState({ selectedBranches: e})
-    this.props.fetchPettyCashAcc(this.props.user, this.state.session, e?.value)
-    this.props.listCashOpeningBalance(this.props.user, this.props.alert, this.state.session, e?.value)
+    this.props.fetchPettyCashAcc(this.props.user, this.state.session, e.value)
+    this.props.listCashOpeningBalance(this.props.user, this.props.alert, this.state.session, e.value)
   }
 
 
@@ -462,8 +484,9 @@ const mapDispatchToProps = (dispatch) => ({
   fetchPettyCashAcc: (user, session, branch) => dispatch(actionTypes.fetchPettyCashAcc({ user, session, branch })),
   loadFinancialYear: dispatch(actionTypes.fetchFinancialYear(moduleId)),
   listCashOpeningBalance: (user, alert, session, branch) => dispatch(actionTypes.listCashOpeningBalance({ user, alert, session, branch })),
-  saveCashWithdraw: (session, bank, amount, narration, chequeNo, approvedBy, date, user, alert) => dispatch(actionTypes.cashWithdraw({ session, bank, amount, narration, chequeNo, approvedBy, date, user, alert })),
+  saveCashWithdraw: (session, bank, amount, narration, chequeNo, approvedBy, date, user, alert, branch) => dispatch(actionTypes.cashWithdraw({ session, bank, amount, narration, chequeNo, approvedBy, date, user, alert, branch })),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
+  sendData: (data, alert, user) => dispatch(actionTypes.sendingData({ data, alert, user})),
 })
 
 export default withRouter(connect(

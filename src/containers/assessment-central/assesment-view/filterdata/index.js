@@ -44,9 +44,31 @@ const AssessmentFilters = ({
     { id: 3, level: 'Difficult' },
   ];
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
   useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Assessment' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Question Paper') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if(moduleId) {
     axiosInstance
-      .get(`${endpoints.userManagement.academicYear}`)
+      .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setAcademicDropdown(result.data?.data);
@@ -57,7 +79,8 @@ const AssessmentFilters = ({
       .catch((error) => {
         setAlert('error', error.message);
       });
-  }, []);
+    }
+  }, [moduleId]);
 
   const handleClear = () => {
     setFilterData({
@@ -93,7 +116,7 @@ const AssessmentFilters = ({
         academic: value,
       });
       axiosInstance
-        .get(`${endpoints.academics.branches}?session_year=${value.id}`)
+        .get(`${endpoints.academics.branches}?session_year=${value.id}&module_id=${moduleId}`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setBranchDropdown(result.data?.data?.results);
@@ -145,7 +168,7 @@ const AssessmentFilters = ({
     if (value) {
       setFilterData({ ...filterData, grade: value });
       axiosInstance
-        .get(`${endpoints.assessmentApis.gradesList}?gs_id=${value.mp_id}`)
+        .get(`${endpoints.assessmentApis.gradesList}?gs_id=${value.id}&branch=${filterData.branch.branch.id}`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setSubjectDropdown(result.data?.result?.results);

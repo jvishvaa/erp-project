@@ -9,7 +9,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import useStyles from './useStyles';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
-import axios from 'axios'
+import axios from 'axios';
 // import '../../lesson-plan.css';
 import downloadAll from '../../../../assets/images/downloadAll.svg';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
@@ -27,6 +27,7 @@ const QuestionBankCard = ({
   tabQueCatId,
   tabMapId,
   tabQueLevel,
+  tabTopicId,
   setLoading,
   index,
   periodColor,
@@ -62,9 +63,10 @@ const QuestionBankCard = ({
     setLoading(true);
     // axiosInstance
     //   .get(`${endpoints.questionBank.viewMoreData}?question=${period.id}`)
-    axios.get(`${endpoints.questionBank.viewMoreData}?question=${period?.id}`,{
-      headers: { 'x-api-key': 'vikash@12345#1231' },
-    })
+    axios
+      .get(`${endpoints.questionBank.viewMoreData}?question=${period?.id}`, {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      })
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setLoading(false);
@@ -133,14 +135,20 @@ const QuestionBankCard = ({
     return span.textContent || span.innerText;
   }
   const handleDelete = (obj) => {
-    axiosInstance
-      .put(`${endpoints.questionBank.deleteQuestion}`, {
-        question: obj.id,
-        is_delete: true,
-      })
+    axios
+      .put(
+        `${endpoints.questionBank.deleteQuestion}`,
+        {
+          question: obj.id,
+          is_delete: true,
+        },
+        {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        }
+      )
       .then((result) => {
         if (result.data.status_code === 200) {
-          handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel);
+          handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel, tabTopicId);
           setAlert('success', 'Question Deleted Successfully');
         } else {
           setAlert('error', 'ERROR!');

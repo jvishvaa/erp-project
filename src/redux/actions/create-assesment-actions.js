@@ -1,4 +1,5 @@
-import axios from '../../config/axios';
+// import axiosInstance from '../../config/axios';
+import axios from 'axios';
 import endpoints from '../../config/endpoints';
 
 export const createAssesmentActions = {
@@ -28,7 +29,13 @@ export const changeTestFormField = (field, data) => ({
 export const createAssesment = (data) => async (dispatch) => {
   dispatch({ type: createAssesmentActions.CREATE_ASSESMENT_REQUEST });
   try {
-    const response = await axios.post(`/assessment/tests/`, data);
+    const response = await axios.post(
+      `${endpoints.baseURLCentral}/assessment/tests/`,
+      data,
+      {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      }
+    );
     if (response.data.status_code !== 200) {
       throw new Error();
     }
@@ -51,9 +58,12 @@ export const addQuestionPaperToTest = (data) => ({
 export const fetchQuestionPaperDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: createAssesmentActions.FETCH_QUESTION_PAPER_DETAILS_REQUEST });
-    const response = await axios.get(`${endpoints.baseURLCentral}/assessment/${id}/qp-questions-list/`, {
-      headers: { 'x-api-key': 'vikash@12345#1231' },
-    });
+    const response = await axios.get(
+      `${endpoints.baseURLCentral}/assessment/${id}/qp-questions-list/`,
+      {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      }
+    );
     if (response.data.status_code === 200) {
       const { sections, questions } = response.data.result;
       const parsedResponse = [];

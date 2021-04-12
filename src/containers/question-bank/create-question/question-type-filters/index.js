@@ -245,7 +245,7 @@ const QuestionTypeFilters = ({
     if (!editData?.id) {
       requestBody = {
         ...requestBody,
-        grade_subject_mapping: 33,
+        grade_subject_mapping: filterDataDisplay.subject.subject.central_mp_id,
         // grade_subject_mapping: filterDataDisplay.subject.id,
       };
     }
