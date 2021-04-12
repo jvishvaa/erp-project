@@ -62,7 +62,7 @@ const Attend = () => {
   const [academicYear,setAcademicYear] = useState([]);
   const [selectedAcademicYear,setSelectedAcadmeicYear] = useState('');  
   const [branchList,setBranchList] = useState([])
-  const [selectedBranch,setSelectedBranch] = useState('vinod')
+  const [selectedBranch,setSelectedBranch] = useState([])
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [sectionList, setSectionList] = useState([]);
@@ -87,7 +87,7 @@ const Attend = () => {
       setStartDate(history?.location?.state?.payload?.startDate)
       setEndDate(history?.location?.state?.payload?.endDate)
       setResult(history?.location?.state?.data)
-
+      console.log(history?.location?.state?.payload?.branch_id)
   }
 
     else{
@@ -370,7 +370,7 @@ const handleSinlgeStudent = (id)=>{
             />
           </Grid>
           <Grid item md={3} xs={12}>
-            <Autocomplete
+          <Autocomplete
               // multiple
               style={{ width: '100%' }}
               size='small'
@@ -392,6 +392,7 @@ const handleSinlgeStudent = (id)=>{
               }}
               id='branch_id'
               className='dropdownIcon'
+              value={selectedBranch}
               options={branchList}
               getOptionLabel={(option) => option?.branch?.branch_name}
               filterSelectedOptions
