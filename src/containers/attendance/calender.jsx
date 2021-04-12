@@ -6,26 +6,41 @@ import './calender.scss';
 import axiosInstance from '../../config/axios';
 import moment from 'moment';
 
-
+let myFutureDate;
+let postSeven;
 const RangeCalender = (props) => {
   const [state, setState] = useState([
     {
       startDate: new Date(),
-      endDate: null,
+      endDate: new Date(new Date()).setDate(new Date(new Date()).getDate()+ 7),
       key: 'selection'
     }
   ]);
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
   const [student, setStudent] = useState([]);
-
+  postSeven = state[0].startDate;
   useEffect(() => {
     getAttendance()
-    console.log(props.sectionID, "branch");
     setStartDate((moment(state[0].startDate).format("YYYY-MM-DD")));
-    console.log(state[0].endDate, "end date");
+    console.log(postSeven , "dcdcdcdccdd");
+    // setState(endDate : postSeven.setDate(postSeven).getDate()+7);
     // setEndDate((moment(state[0].endDate).format("YYYY-MM-DD")));
   }, state);
+
+  useEffect(()=>{
+    getfuture();
+  },[]);
+
+  const getfuture = () => {
+    var myCurrentDate=new Date();
+    myFutureDate=new Date(myCurrentDate);
+    myFutureDate.setDate(myFutureDate.getDate()+ 7);
+    console.log(myFutureDate , "futuree");
+    setEndDate(myFutureDate);
+    console.log(moment(state[0].startDate).format("YYYY-MM-DD") , "starttttttttttttt");
+    setStartDate(moment(state[0].startDate).format("YYYY-MM-DD"))
+  }
 
   const getAttendance = () => {
     if (state[0].endDate === state[0].startDate || state[0].endDate === null) {
@@ -41,10 +56,11 @@ const RangeCalender = (props) => {
     //   console.log(student, "student data passsss");
     //   props.handlePassData(student)
     // }, 6000);
+    let starttime = (moment(state[0].startDate).format("YYYY-MM-DD"))
     let endtime = (moment(state[0].endDate).format("YYYY-MM-DD"));
     console.log(startDate , "start");
     console.log(endtime , "end");
-    props.handlePassData(endtime , startDate)
+    props.handlePassData(endtime , startDate , starttime)
 
   }
 

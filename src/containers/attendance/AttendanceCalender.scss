@@ -2,33 +2,37 @@
   .absentHeader {
     display: flex;
     justify-content: space-around;
+    color: #042955;
   }
-    .MuiDivider-root{
-        margin-bottom: 8px;
-    }
-  
+  .MuiDivider-root {
+    margin-bottom: 8px;
+  }
+
   .absentList {
     display: flex;
-    justify-content: space-evenly;
-    min-height: 150px;
+    flex-direction: column;
+    min-height: 105px;
+    overflow: auto;
+    overflow-x: hidden;
     .absentName {
       margin: auto 0;
-      font-size: 15px;
+      font-size: 12px;
+      color: #042955;
     }
     .studentName {
       height: 39px;
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
+      width: 80%;
     }
     .absentCount {
-    margin-left: 50px;
-    padding: 3px 14px;
-    height: 21px;
-    font-size: 12px;
-    background: red;
-    border-radius: 30px;
-    color: white;
+      padding: 3px 14px;
+      height: 21px;
+      font-size: 12px;
+      background: red;
+      border-radius: 30px;
+      color: white;
     }
   }
   .chipDays {
@@ -43,33 +47,35 @@
   .viewDetails {
     background-color: white;
     width: 37%;
-    height: 30px;
+    height: 23px;
     .btnLabel {
       font-size: 10px;
     }
   }
-//   .viewDetailsButtonClick {
-//     background-color: red;
-//     width: 37%;
-//     height: 30px;
-//     .btnLabel {
-//       font-size: 10px;
-//     }
-//   }
+
   .btnArea {
     display: flex;
     justify-content: center;
-    .MuiButton-outlinedSecondary{
-        color: #FF6B6B;
-        border: 1px solid #FF6B6B;
+    .MuiButton-outlinedSecondary {
+      color: #ff6b6b;
+      border: 1px solid #ff6b6b;
     }
   }
 }
-.whole-calender-filter{
-    margin-left: 5%;
-    .buttonGrid{
-        margin-top: 20%;
-    }
+.page_title {
+  margin-left: 3%;
+}
+#selectionContainer {
+  padding-bottom: 0;
+  width: 90%;
+  margin: 10px 0;
+  margin-left: 2%;
+}
+.whole-calender-filter {
+  margin-left: 5%;
+  .buttonGrid {
+    margin-top: 20%;
+  }
 }
 .calenderGrid {
   box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.5);
@@ -91,6 +97,12 @@
     height: 23px;
     font-size: 10px;
   }
+  .viewDetailsButtonClick {
+    background-color: #ff6b6b;
+    color: white;
+    height: 23px;
+    font-size: 10px;
+  }
   .showDate {
     display: flex;
     justify-content: center;
@@ -101,32 +113,47 @@
   }
 }
 .presentContainer {
-    padding-bottom: 30px;
+  .presentPara {
+    color: #042955;
+  }
+  .presentStudents {
+    height: 145px;
+    overflow: auto;
+    overflow-x: hidden;
+  }
   .presentList {
     display: flex;
   }
-  .presentStudent{
+  .presentStudent {
     display: flex;
     margin: auto 0;
     width: 28%;
   }
-  .presentHeader{
-      margin-left: 30px;
+  .presentHeader {
+    margin-left: 30px;
   }
-  .MuiDivider-root{
-      margin-bottom: 28px;
-  }
-  .MuiAvatar-root{
+  .MuiAvatar-root {
     margin-right: 12px;
     margin-left: 28px;
   }
-  
+  .presentFName {
+    font-size: 12px;
+    color: #042955;
+  }
 }
 .todayEventContainer {
   .eventName {
     display: flex;
     margin-left: 25%;
     width: 100px;
+  }
+  .noEvent{
+    display: flex;
+    justify-content: center;
+  }
+  .noDataImg {
+    height: 200px;
+    width: 200px;
   }
   .eventRow {
     display: flex;
@@ -152,7 +179,7 @@
   }
 }
 .topGrid {
-    margin-left: 30px !important;
+  margin-left: 30px !important;
   .startDate {
     height: 20px;
     display: flex;
@@ -161,125 +188,126 @@
     font-size: 17px;
   }
 }
-#attendanceContainer{
-    height: fit-content;
-    min-height: 395px;
-    #mark-para{
-        font-size: 9px;
-    }
-    .stu-icon{
-        display: flex;
-        justify-content: space-between;
-        width: 28%;
-    }
-    .downIcon{
-        height: 22px;
-    }
-    .mark-btn-grid{
-        display: flex;
-        justify-content: flex-end;
-    }
-    #attendanceGrid{
-        margin-bottom: 0;
-        padding-bottom: 0;
-    }
-    .noDataImg{
-        height: 200px;
-        width: 200px;
+#attendanceContainer {
+  height: fit-content;
+  min-height: 395px;
+  #mark-para {
+    font-size: 9px;
+  }
+  .stu-icon {
+    display: flex;
+    justify-content: space-between;
+    width: 28%;
+  }
+  .downIcon {
+    height: 22px;
+  }
+  .mark-btn-grid {
+    display: flex;
+    justify-content: flex-end;
+  }
+  #attendanceGrid {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .noDataImg {
+    height: 200px;
+    width: 200px;
     margin-bottom: 100px;
-    }
-    .attendancePara{
-        font-size: 15px;
-    }
-    #studentPara{
-        font-size: 12px;
-    }
-    .noImg{
-        display: flex;
-        justify-content: center;
-    }
+  }
+  .attendancePara {
+    font-size: 15px;
+  }
+  #studentPara {
+    font-size: 12px;
+  }
+  .noImg {
+    display: flex;
+    justify-content: center;
+  }
 }
 .eachAbsent {
-  width: 85%;
+  margin-left: 7%;
   display: flex;
   flex-direction: row;
 }
-.eventGrid{
-    box-shadow: none !important;
+.eventGrid {
+  box-shadow: none !important;
 }
-#eventContainer{
-    // height: fit-content !important;
-    height: 395px !important ;
-    margin-left: 28%;
-    overflow:auto;
-    overflow-x:hidden;
-    .noImgEvent{
-        display: flex;
-        justify-content: center;
-        .noDataImgEvent{
-            height: 200px;
-            width: 200px;
-        }
+#eventContainer {
+  // height: fit-content !important;
+  height: 395px !important ;
+  margin-left: 28%;
+  overflow: auto;
+  overflow-x: hidden;
+  .noImgEvent {
+    display: flex;
+    justify-content: center;
+    .noDataImgEvent {
+      height: 200px;
+      width: 200px;
     }
-    .event-btn{
-        display: flex;
-        justify-content: flex-end;
+  }
+  .event-btn {
+    display: flex;
+    justify-content: flex-end;
+  }
+  #event-text {
+    font-size: 9px;
+  }
+  .event-details {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .detailsPara {
+    display: flex;
+    justify-content: flex-end;
+  }
+  #eventpara,
+  #updated {
+    font-size: 12px;
+  }
+  #eventData {
+    margin: 0;
+  }
+  .noEventImg {
+    height: 300px;
+    margin-bottom: 100px;
+  }
+  .dateTimeEvent {
+    display: flex;
+    justify-content: space-between;
+    .timeEvent {
+      display: flex;
+      justify-content: space-evenly;
+      width: 75px;
     }
-    #event-text{
-        font-size: 9px;
+    .dateEvent {
+      display: flex;
+      justify-content: space-evenly;
+      width: 115px;
     }
-    .event-details{
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-    }
-    .detailsPara{
-        display: flex;
-        justify-content: flex-end;
-    }
-    #eventpara , #updated {
-        font-size: 12px;
-    }
-    #eventData{
-        margin: 0;
-       }
-    .noEventImg{
-        height: 300px;
-        margin-bottom: 100px;
-    }
-    .dateTimeEvent{
-        display: flex;
-        justify-content: space-between;
-        .timeEvent{
-            display: flex;
-            justify-content: space-evenly;
-            width: 75px;
-        }
-        .dateEvent{
-            display: flex;
-    justify-content: space-evenly;
-    width: 115px;
-        }
-    }
-    .eventPara{
-        font-size: 15px;
-    }
-    #updated{
-        margin-left: 23px;
-    }
+  }
+  .eventPara {
+    font-size: 15px;
+  }
+  #updated {
+    margin-left: 23px;
+  }
 }
 @media only screen and (max-width: 600px) {
   .calenderGrid {
     width: 88%;
     margin: auto;
   }
-  #eventContainer{
-      margin-left: 0;
+  #eventContainer {
+    margin-left: 0;
   }
-  .calenderGrid{
-      .MuiGrid-root{
-          margin: auto;
-          padding: 0;
-      }
+  .calenderGrid {
+    .MuiGrid-root {
+      margin: auto;
+      padding: 0;
+    }
   }
 }
