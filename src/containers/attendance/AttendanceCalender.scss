@@ -300,6 +300,12 @@
   .calenderGrid {
     width: 88%;
     margin: auto;
+    .MuiButton-label{
+      font-size: 13px;
+    }
+  }
+  .buttonGrid{
+    display: flex;
   }
   #eventContainer {
     margin-left: 0;
@@ -310,4 +316,13 @@
       padding: 0;
     }
   }
+  .topGrid{
+    margin-left: 3% !important;
+  }
+#selectionContainer{
+  display: flex;
+  justify-content: center;
+  margin-left: 0;
+  width: 100%;
+}
 }

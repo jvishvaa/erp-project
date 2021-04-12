@@ -329,6 +329,9 @@ const AttedanceCalender = () => {
     getToday();
     }
   };
+
+
+
   const StyledFilterButton = withStyles({
     root: {
       backgroundColor: '#FF6B6B',
@@ -551,7 +554,7 @@ const AttedanceCalender = () => {
             <StyledClearButton
               variant='contained'
               startIcon={<ClearIcon />}
-              href={`/markattedance`}
+              // href={`/markattedance`}
             >
               Clear all
             </StyledClearButton>
