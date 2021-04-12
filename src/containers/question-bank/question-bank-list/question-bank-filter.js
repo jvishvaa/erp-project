@@ -68,6 +68,91 @@ const QuestionBankFilters = ({
     { value: 4, q_cat: 'Analyse' },
   ];
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Assessment' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Question Bank') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (moduleId) {
+      axiosInstance
+        .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setAcademicYearDropdown(result?.data?.data);
+            setLoading(false);
+          } else {
+            setAlert('error', result.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  }, [moduleId]);
+
+  useEffect(() => {
+    // <<<<<<<<<<<<<<<GRADE DROPDOWN>>>>>>>>>>>>>>>>>>>>>
+    // axiosInstance
+    //   .get(`${endpoints.questionBank.grades}`)
+    //   .then((result) => {
+    //     if (result.data.status_code === 200) {
+    //       setGradeDropdown(result.data.result.results);
+    //     } else {
+    //       setAlert('error', result.data.message);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     setAlert('error', error.message);
+    //   });
+
+    // <<<<<>>>>>>QUESTION TYPE API>>>>>>>>>>>><<<<<<<<<<
+    // axiosInstance
+    //   .get(`${endpoints.questionBank.examType}`)
+    //   .then((result) => {
+    //     if (result.data.status_code === 200) {
+    //       setQueTypeDropdown(result.data.result);
+    //     } else {
+    //       setAlert('error', result.data.message);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     setAlert('error', error.message);
+    //   });
+    setLoading(true);
+    axios
+      .get(`${endpoints.createQuestionApis.questionType}`, {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      })
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setQueTypeDropdown(result?.data?.result?.filter((obj) => obj?.id !== 5));
+          setLoading(false);
+        } else {
+          setAlert('error', result.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+  }, []);
+
   const handleClear = () => {
     setFilterData({
       year: '',
@@ -102,14 +187,16 @@ const QuestionBankFilters = ({
       question_categories_options: '',
       quesType: '',
       quesLevel: '',
-      topicId:'',
+      topicId: '',
     });
     setPeriodData([]);
     setLoading(true);
     if (value) {
       setFilterData({ ...filterData, year: value });
       axiosInstance
-        .get(`${endpoints.academics.branches}?session_year=${value.id}`)
+        .get(
+          `${endpoints.academics.branches}?session_year=${value.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             setBranchDropdown(result?.data?.data?.results);
@@ -137,7 +224,7 @@ const QuestionBankFilters = ({
       question_categories_options: '',
       quesType: '',
       quesLevel: '',
-      topicId:'',
+      topicId: '',
     });
     setPeriodData([]);
     setLoading(true);
@@ -435,65 +522,6 @@ const QuestionBankFilters = ({
     //     setFilterDataDown({});
     // }
   };
-
-  useEffect(() => {
-    // <<<<<<<<<<<<<<<GRADE DROPDOWN>>>>>>>>>>>>>>>>>>>>>
-    // axiosInstance
-    //   .get(`${endpoints.questionBank.grades}`)
-    //   .then((result) => {
-    //     if (result.data.status_code === 200) {
-    //       setGradeDropdown(result.data.result.results);
-    //     } else {
-    //       setAlert('error', result.data.message);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     setAlert('error', error.message);
-    //   });
-
-    // <<<<<>>>>>>QUESTION TYPE API>>>>>>>>>>>><<<<<<<<<<
-    // axiosInstance
-    //   .get(`${endpoints.questionBank.examType}`)
-    //   .then((result) => {
-    //     if (result.data.status_code === 200) {
-    //       setQueTypeDropdown(result.data.result);
-    //     } else {
-    //       setAlert('error', result.data.message);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     setAlert('error', error.message);
-    //   });
-    setLoading(true);
-    axiosInstance
-      .get(`${endpoints.userManagement.academicYear}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setAcademicYearDropdown(result?.data?.data);
-          setLoading(false);
-        } else {
-          setAlert('error', result.data?.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
-    axios
-      .get(`${endpoints.createQuestionApis.questionType}`, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setQueTypeDropdown(result?.data?.result?.filter((obj) => obj?.id !== 5));
-          setLoading(false);
-        } else {
-          setAlert('error', result.data?.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
-  }, []);
 
   return (
     <>
