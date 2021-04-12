@@ -82,6 +82,27 @@ const CreateQuestionPaper = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Assessment' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Question Paper') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   useEffect(() => {
     if (formik.values.academic) {
       getBranch(formik.values.academic.id);
@@ -101,8 +122,10 @@ const CreateQuestionPaper = ({
   }, []);
 
   useEffect(() => {
-    getAcademic();
-  }, []);
+    if (moduleId) {
+      getAcademic();
+    }
+  }, [moduleId]);
 
   const validationSchema = Yup.object({
     academic: Yup.object('').required('Required').nullable(),
@@ -128,7 +151,7 @@ const CreateQuestionPaper = ({
 
   const getAcademic = async () => {
     try {
-      const data = await fetchAcademicYears();
+      const data = await fetchAcademicYears(moduleId);
       setAcademicDropdown(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch academic');
@@ -137,7 +160,7 @@ const CreateQuestionPaper = ({
 
   const getBranch = async (acadId) => {
     try {
-      const data = await fetchBranches(acadId);
+      const data = await fetchBranches(acadId,moduleId);
       setBranchDropdown(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch branch');
@@ -226,7 +249,9 @@ const CreateQuestionPaper = ({
         grade: formik.values.grade.id,
         grade_name: formik.values.grade.grade_name,
         subject: formik.values.subject.map((obj) => obj.subject.id),
-        grade_subject_mapping: formik.values.subject.map((obj) => obj.subject.central_mp_id),
+        grade_subject_mapping: formik.values.subject.map(
+          (obj) => obj.subject.central_mp_id
+        ),
         // filterDataTop.subject?.subject.central_mp_id,
         subject_name: formik.values.subject.map((obj) => obj.subject.subject_name),
         paper_level: formik.values.question_paper_level.id,

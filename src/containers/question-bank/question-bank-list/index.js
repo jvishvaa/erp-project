@@ -252,7 +252,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
           >
             <div style={{ width: '100%' }}>
               <CommonBreadcrumbs
-                componentName='Assesment'
+                componentName='Assessment'
                 childComponentName='Question Bank'
               />
             </div>

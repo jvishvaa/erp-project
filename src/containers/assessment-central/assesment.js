@@ -283,7 +283,7 @@ const Assesmentquestion = () => {
         <div className='question-assement-cont'>
           <div className='assesment-breadcrum' style={{ paddingLeft: 20 }}>
             <CommonBreadcrumbs
-              componentName='Assesment'
+              componentName='Assessment'
               childComponentName={'Question Paper'}
             />
           </div>

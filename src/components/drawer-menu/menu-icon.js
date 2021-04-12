@@ -184,12 +184,10 @@ const menuIcon = (name) => {
       icon = <AttachMoney />;
       break;
     }
-
     case 'Store': {
       icon = <Store />;
       break;
     }
-
     case 'Orchidio': {
       icon = <School />;
       break;
@@ -198,7 +196,6 @@ const menuIcon = (name) => {
       icon = <ShopTwo />;
       break;
     }
-
     case 'Marketing Report': {
       icon = <Assessment />;
       break;

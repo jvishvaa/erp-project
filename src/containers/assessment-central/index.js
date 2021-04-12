@@ -94,6 +94,27 @@ const Assesment = () => {
   const [fetchingTests, setFetchingTests] = useState(false);
   const [minDate, setMinDate] = useState(null);
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Assessment' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Create Test') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   const formik = useFormik({
     initialValues: {
       status: '',
@@ -117,7 +138,7 @@ const Assesment = () => {
       setBranchDropdown([]);
       setGrades([]);
       setSubjects([]);
-      const data = await fetchAcademicYears();
+      const data = await fetchAcademicYears(moduleId);
       setAcademicDropdown(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch academic');
@@ -129,7 +150,7 @@ const Assesment = () => {
       setBranchDropdown([]);
       setGrades([]);
       setSubjects([]);
-      const data = await fetchBranches(acadId);
+      const data = await fetchBranches(acadId, moduleId);
       setBranchDropdown(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch branch');
@@ -147,10 +168,10 @@ const Assesment = () => {
     }
   };
 
-  const getSubjects = async (mappingId,branchId) => {
+  const getSubjects = async (mappingId, branchId) => {
     try {
       setSubjects([]);
-      const data = await fetchSubjects(mappingId,branchId);
+      const data = await fetchSubjects(mappingId, branchId);
       setSubjects(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch subjects');
@@ -256,13 +277,12 @@ const Assesment = () => {
   };
 
   useEffect(() => {
-    getAcademic();
     if (formik.values.academic) {
       getBranch(formik.values.academic.id);
       if (formik.values.branch) {
         getGrades(formik.values.branch.branch.id);
         if (formik.values.grade) {
-          getSubjects(formik.values.grade.id,formik.values.branch.branch.id);
+          getSubjects(formik.values.grade.id, formik.values.branch.branch.id);
         } else {
           setSubjects([]);
         }
@@ -275,10 +295,12 @@ const Assesment = () => {
   }, []);
 
   useEffect(() => {
-    getAcademic();
+    if (moduleId) {
+      getAcademic();
+    }
     getAssesmentTypes();
     // getTopics();
-  }, []);
+  }, [moduleId]);
 
   // useEffect(() => {
   //   if (formik.values.grade) {
@@ -370,7 +392,7 @@ const Assesment = () => {
 
   const handleGrade = (event, value) => {
     if (value) {
-      getSubjects(value.id,formik.values.branch.branch.id);
+      getSubjects(value.id, formik.values.branch.branch.id);
       formik.setFieldValue('grade', value);
       // initSetFilter('selectedGrade', value);
     }
@@ -537,64 +559,64 @@ const Assesment = () => {
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} md={3}>
-                  <FormControl fullWidth variant='outlined'>
-                    <Autocomplete
-                      id='grade'
-                      name='grade'
-                      className='dropdownIcon'
-                      onChange={handleGrade}
-                      // onChange={(e, value) => {
-                      //   formik.setFieldValue('grade', value);
-                      //   initSetFilter('selectedGrade', value);
-                      // }}
-                      value={formik.values.grade}
-                      options={grades}
-                      getOptionLabel={(option) => option.grade_name || ''}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant='outlined'
-                          label='Grade'
-                          placeholder='Grade'
-                        />
-                      )}
-                      size='small'
-                    />
-                    <FormHelperText style={{ color: 'red' }}>
-                      {formik.errors.grade ? formik.errors.grade : ''}
-                    </FormHelperText>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                  <FormControl fullWidth variant='outlined'>
-                    <Autocomplete
-                      id='subject'
-                      name='subject'
-                      onChange={handleSubject}
-                      // onChange={(e, value) => {
-                      // formik.setFieldValue('subject', value);
-                      // initSetFilter('selectedSubject', value);
-                      // }}
-                      multiple
-                      className='dropdownIcon'
-                      value={formik.values.subject}
-                      options={subjects}
-                      getOptionLabel={(option) => option.subject?.subject_name || ''}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant='outlined'
-                          label='Subject'
-                          placeholder='Subject'
-                        />
-                      )}
-                      size='small'
-                    />
-                    <FormHelperText style={{ color: 'red' }}>
-                      {formik.errors.subject ? formik.errors.subject : ''}
-                    </FormHelperText>
-                  </FormControl>
-                </Grid>
+                    <FormControl fullWidth variant='outlined'>
+                      <Autocomplete
+                        id='grade'
+                        name='grade'
+                        className='dropdownIcon'
+                        onChange={handleGrade}
+                        // onChange={(e, value) => {
+                        //   formik.setFieldValue('grade', value);
+                        //   initSetFilter('selectedGrade', value);
+                        // }}
+                        value={formik.values.grade}
+                        options={grades}
+                        getOptionLabel={(option) => option.grade_name || ''}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Grade'
+                            placeholder='Grade'
+                          />
+                        )}
+                        size='small'
+                      />
+                      <FormHelperText style={{ color: 'red' }}>
+                        {formik.errors.grade ? formik.errors.grade : ''}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} md={3}>
+                    <FormControl fullWidth variant='outlined'>
+                      <Autocomplete
+                        id='subject'
+                        name='subject'
+                        onChange={handleSubject}
+                        // onChange={(e, value) => {
+                        // formik.setFieldValue('subject', value);
+                        // initSetFilter('selectedSubject', value);
+                        // }}
+                        multiple
+                        className='dropdownIcon'
+                        value={formik.values.subject}
+                        options={subjects}
+                        getOptionLabel={(option) => option.subject?.subject_name || ''}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Subject'
+                            placeholder='Subject'
+                          />
+                        )}
+                        size='small'
+                      />
+                      <FormHelperText style={{ color: 'red' }}>
+                        {formik.errors.subject ? formik.errors.subject : ''}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
                   {/* <Grid item xs={12} md={4}>
                     <FormControl fullWidth variant='outlined'>
                       <Autocomplete

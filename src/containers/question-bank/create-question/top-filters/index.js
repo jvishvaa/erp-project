@@ -36,27 +36,50 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
     topics: [],
   });
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
   useEffect(() => {
-    axiosInstance
-      .get(`${endpoints.userManagement.academicYear}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setDropdownData({
-            academic: result.data?.data,
-            branch: [],
-            grades: [],
-            subjects: [],
-            chapters: [],
-            topics: [],
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Assessment' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Question Bank') {
+              setModuleId(item.child_id);
+            }
           });
-        } else {
-          setAlert('error', result.data?.message);
         }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
       });
+    }
   }, []);
+
+  useEffect(() => {
+    if (moduleId) {
+      axiosInstance
+        .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setDropdownData({
+              academic: result.data?.data,
+              branch: [],
+              grades: [],
+              subjects: [],
+              chapters: [],
+              topics: [],
+            });
+          } else {
+            setAlert('error', result.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  }, [moduleId]);
 
   // useEffect(() => {
   // axiosInstance
@@ -104,7 +127,9 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
         academic: value,
       });
       axiosInstance
-        .get(`${endpoints.academics.branches}?session_year=${value.id}`)
+        .get(
+          `${endpoints.academics.branches}?session_year=${value.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             setDropdownData({
