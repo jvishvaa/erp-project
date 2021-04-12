@@ -218,7 +218,7 @@ const handleMarkAttendance = ()=>{
     <Layout>
       {/* <CommonBreadcrumbs componentName='Attedance+Calender' /> */}
       <div className='profile_breadcrumb_wrapper'>
-          <CommonBreadcrumbs componentName='Attedance + Calender' />
+          <CommonBreadcrumbs componentName='Attedance + Calendar' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
         <Grid item md={3} xs={12}>
