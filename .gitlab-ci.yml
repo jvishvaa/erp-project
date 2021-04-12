@@ -12,6 +12,7 @@ deploy_dev:
       - sudo npm cache clean --force
       - sudo npm install -g serve
       - sudo npm install -g forever
+      - sudo service uwsgi stop
     variables:
       GIT_STRATEGY: clone
     stage: deploy
@@ -33,6 +34,7 @@ deploy_dev:
       - forever start --uid "erp" -a -l forever.log -o out.log -e err.log $(which serve) -s /home/ubuntu/build -l 3000 
       - sonar-scanner   -Dsonar.projectKey=ERP-Revamp-User-Frontend   -Dsonar.sources=.   -Dsonar.host.url=http://3.6.23.199:9000   -Dsonar.login=40cf8e68959fee394596fa649b681f0f5875aef9 > sonar.log
       - cat sonar.log | grep -i browse
+      - sudo service uwsgi start
     environment:
       name: erp_revamp_frontend
       url: 

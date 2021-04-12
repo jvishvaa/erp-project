@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FormControl,
   FormHelperText,
@@ -53,7 +53,7 @@ const ITEM_HEIGHT = 48;
 
 const menuOptions = ['Delete'];
 
-const Section = ({ question, section, questionId, onDelete }) => {
+const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) => {
   let history = useHistory();
 
   const themeContext = useTheme();
@@ -73,9 +73,15 @@ const Section = ({ question, section, questionId, onDelete }) => {
     onDelete(questionId, section.id);
   };
 
-  const handleDeleteQuestion = () => {
+  const handleDeleteQuestion = (q) => {
+    console.log('option: ', q, section)
     handleMenuClose();
-  }
+    onDeleteQuestion(q?.id, section)
+  };
+  useEffect(() => {
+    console.log(section, 'mydata');
+    console.log(questionId, 'mydata');
+  }, []);
 
   return (
     <div className='section-container'>
@@ -213,7 +219,7 @@ const Section = ({ question, section, questionId, onDelete }) => {
                       className='assesment-card-popup-menu-item'
                       key={option}
                       selected={option === 'Pyxis'}
-                      onClick={handleDeleteQuestion}
+                      onClick={() => handleDeleteQuestion(q)}
                       style={{
                         color: themeContext.palette.primary.main,
                       }}

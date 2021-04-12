@@ -21,6 +21,7 @@ const QuestionPaper = ({
   onChangePaperName,
   questionPaperName,
   onDeleteSection,
+  onDeleteQuestion
 }) => {
   const [minimize, setMinimize] = useState(false);
   const [noOfSections, setNoOfSections] = useState(1);
@@ -166,7 +167,7 @@ const QuestionPaper = ({
               </div>
               <div className='questions-content'>
                 {questions?.map((question) => (
-                  <Question question={question} onDeleteSection={onDeleteSection} />
+                  <Question question={question} onDeleteSection={onDeleteSection} onDeleteQuestion={onDeleteQuestion} />
                 ))}
 
                 <div className='add-new' ref={addNewContainerRef}>

@@ -29,7 +29,7 @@ const ViewMoreCard = ({
   tabQueCatId,
   tabMapId,
   tabQueLevel,
-  tabTopicId
+  tabTopicId,
 }) => {
   // const { year: { session_year }, grade: { grade_name }, subject: { subject: { subject_name } }, chapter: { chapter_name }, volume: { volume_name } } = filterDataDown;
   // const { setAlert } = useContext(AlertNotificationContext);
@@ -88,20 +88,20 @@ const ViewMoreCard = ({
   const handlePublish = (obj) => {
     // axiosInstance
     axios
-      .put(`${endpoints.questionBank.deleteQuestion}`,
-      {
-        question_status: 2,
-        question: obj.parent.id,
-      },
-      {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-
-      }, 
+      .put(
+        `${endpoints.questionBank.deleteQuestion}`,
+        {
+          question_status: 2,
+          question: obj.parent.id,
+        },
+        {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        }
       )
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setSelectedIndex(-1);
-          handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel,tabTopicId);
+          handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel, tabTopicId);
           setAlert('success', result?.data?.message);
         } else {
           setAlert('error', 'ERROR!');
@@ -112,19 +112,20 @@ const ViewMoreCard = ({
   const handleDelete = (obj) => {
     // axiosInstance
     axios
-      .put(`${endpoints.questionBank.deleteQuestion}`, {
-        question_status: 1,
-        question: obj.parent.id,
-      },
-      {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-
-      }, 
+      .put(
+        `${endpoints.questionBank.deleteQuestion}`,
+        {
+          question_status: 1,
+          question: obj.parent.id,
+        },
+        {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        }
       )
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setSelectedIndex(-1);
-          handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel,tabTopicId);
+          handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel, tabTopicId);
           setAlert('success', 'Question Moved To Draft');
         } else {
           setAlert('error', 'ERROR!');
@@ -1453,7 +1454,7 @@ const ViewMoreCard = ({
                                   `${obj[`option${i + 1}`].images}`.split(',') || {};
                                 const attachmentsArray = [];
                                 images.forEach((image) => {
-                                  console.log(image,'++++++')
+                                  console.log(image, '++++++');
                                   const attachmentObj = {
                                     src: getS3DomainURL(image),
                                     name: `${image}`.split('.').slice(0, -1).join('.'),
