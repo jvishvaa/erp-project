@@ -175,6 +175,7 @@ setEndTime(end_time.toString().slice(16,21))
             is_second_half: secondHalf,
     }).then((result) => {
       if (result.data.status_code === 200) {
+        console.log('success', result.data.message)
         setAlert('success', result.data.message);
       } else {
         setAlert('error', result.data.message);
@@ -342,7 +343,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
         <form>
           <MediaQuery minWidth={785}>
             <Grid container direction='row'>
-              <Grid item md={4} lg={2} sm={6} xs={12}>
+              <Grid item md={4} lg={3} sm={6} xs={12}>
                 <Breadcrumbs componentName='CreateEvent' />
               </Grid>
             </Grid>
