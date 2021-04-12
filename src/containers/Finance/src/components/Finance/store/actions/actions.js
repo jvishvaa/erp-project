@@ -518,11 +518,11 @@ export const downloadReports = (payload) => {
       url = payload.url
     } else if (payload.reportName === 'LedgerReport.xlsx') {
       if (payload.data.academic_year && payload.data.ledger_type && payload.data.ledger_head && payload.data.ledger_name) {
-        url = payload.url + '?academic_year=' + payload.data.academic_year + '&ledger_type=' + payload.data.ledger_type + '&ledger_head=' + payload.data.ledger_head + '&ledger_name=' + payload.data.ledger_name
+        url = payload.url + '?academic_year=' + payload.data.academic_year + '&ledger_type=' + payload.data.ledger_type + '&ledger_head=' + payload.data.ledger_head + '&ledger_name=' + payload.data.ledger_name + '&branch_id=' + payload.data.branch
       } else if (payload.data.academic_year && payload.data.from_date && payload.data.to_date) {
-        url = payload.url + '?academic_year=' + payload.data.academic_year + '&fromDate=' + payload.data.from_date + '&toDate=' + payload.data.to_date
+        url = payload.url + '?academic_year=' + payload.data.academic_year + '&fromDate=' + payload.data.from_date + '&toDate=' + payload.data.to_date + '&branch_id=' + payload.data.branch
       } else if (payload.data.academic_year) {
-        url = payload.url + '?academic_year=' + payload.data.academic_year
+        url = payload.url + '?academic_year=' + payload.data.academic_year + '&branch_id=' + payload.data.branch
       }
     } else if (payload.reportName === 'Other_fee_total_paid_and_due_reports.csv') {
       url = payload.url + '?academic_year=' + payload.data.academic_year + '&branches=' + payload.data.branches +

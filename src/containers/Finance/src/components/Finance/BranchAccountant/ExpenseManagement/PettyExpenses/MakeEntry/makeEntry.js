@@ -14,6 +14,7 @@ import * as actionTypes from '../../../../store/actions'
 import Layout from '../../../../../../../../Layout'
 // import { CircularProgress } from '../../../../../../ui'
 
+
 const styles = theme => ({
   root: {
     color: theme.palette.text.primary
@@ -55,6 +56,33 @@ const customStyles = () => {
   }
 }
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Expanse Management' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Petty Cash Expense') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class MakeEntry extends Component {
   state = {
     ledgerCount: 0,
@@ -71,8 +99,10 @@ class MakeEntry extends Component {
     selectedParty: null,
     selectedSession: null
   }
-
+  
   componentDidMount () {
+    console.log('his', this.props)
+    console.log('his1', this.props.history)
     const ledgerData = [...this.state.ledgerData]
     const data = {
       ledgerType: null,
@@ -85,8 +115,8 @@ class MakeEntry extends Component {
     this.setState({
       ledgerData
     })
-    this.props.fetchPettyCash(this.props.user, this.props.alert)
-    this.props.fetchPartyList(this.props.user, this.props.alert)
+    this.props.fetchPettyCash(this.props.user, this.props.alert, this.props.recData && this.props.recData.branch)
+    this.props.fetchPartyList(this.props.user, this.props.alert, this.props.recData && this.props.recData.branch )
   }
 
   addLedgerRow = () => {
@@ -701,17 +731,18 @@ const mapStateToProps = (state) => ({
   dataLoading: state.finance.common.dataLoader,
   leadgerHeadList: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.ledgerHeadList,
   ledgerNameList: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.ledgerNameList,
-  partyList: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.partyList
+  partyList: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.partyList,
+  recData: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.sendData
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loadFinancialYear: dispatch(actionTypes.fetchFinancialYear()),
+  loadFinancialYear: dispatch(actionTypes.fetchFinancialYear(moduleId)),
   loadLedgerType: dispatch(actionTypes.fetchLedgerType()),
   fetchLedgerRecord: (ledgerType, user, alert) => dispatch(actionTypes.fetchLedgerRecord({ ledgerType, user, alert })),
   fetchLedgerName: (headId, user, alert) => dispatch(actionTypes.fetchLedgerName({ headId, user, alert })),
-  fetchPettyCash: (user, alert) => dispatch(actionTypes.listPettyCash({ user, alert })),
+  fetchPettyCash: (user, alert, branch) => dispatch(actionTypes.listPettyCash({ user, alert, branch })),
   savePettyCashExpense: (body, user, alert) => dispatch(actionTypes.savePettyCashExpense({ body, alert, user })),
-  fetchPartyList: (user, alert) => dispatch(actionTypes.fetchPartyList({ user, alert }))
+  fetchPartyList: (user, alert, branch) => dispatch(actionTypes.fetchPartyList({ user, alert, branch }))
 })
 export default connect(
   mapStateToProps,
