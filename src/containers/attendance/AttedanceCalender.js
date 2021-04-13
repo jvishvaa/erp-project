@@ -686,7 +686,7 @@ const AttedanceCalender = () => {
                 </Typography>
               </Grid>
               <Grid item md={6} xs={12} className='event-btn'>
-                <Button size='small'>
+                <Button size='small'   href={`/createEvent`}>
                   {/* ADD EVENT */}
                   <span className={classes.contentData} id='event-text'>
                     Add Event

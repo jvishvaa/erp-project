@@ -273,6 +273,12 @@ export default {
     filterEventCategory:"/academic/filter_event_categories/" //get 
 
 },
+
+CreateEvent:{
+  CreateEvent:'academic/events/',
+  getEventCategory:"academic/list_create_event_category/"
+},
+
   assessment: {
     questionPaperList: `/academic/assessment-list/`,
     viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
