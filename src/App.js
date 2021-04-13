@@ -245,6 +245,7 @@ import Attendance from './containers/Calendar/Attendance';
 import CreateEvent from './containers/Calendar/CreateEvent';
 import OverallAttendance from './containers/Calendar/OverallAttendance';
 import Publications from './containers/publications/Publications';
+import TimeTable from './containers/time-table/index';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -306,6 +307,12 @@ function App({ alert }) {
                         <Switch>
                           <Route path='/profile'>
                             {({ match }) => <Profile match={match} />}
+                          </Route>
+                           <Route path='/time-table/student-view'>
+                            {({ match }) => <TimeTable match={match} />}
+                          </Route>
+                           <Route path='/time-table/teacher-view'>
+                            {({ match }) => <TimeTable match={match} />}
                           </Route>
                           <Route path='/role-management'>
                             {({ match }) => <RoleManagement match={match} />}

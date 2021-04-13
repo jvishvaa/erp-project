@@ -88,6 +88,7 @@ const Attend = () => {
       setEndDate(history?.location?.state?.payload?.endDate)
       setResult(history?.location?.state?.data)
       console.log(history?.location?.state?.payload?.branch_id)
+      console.log(history?.location?.state?.data , "student data")
   }
 
     else{

@@ -79,6 +79,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AttedanceCalender = () => {
+const history = useHistory();
+
   const classes = useStyles();
   const [callapi, setCallApi] = useState(1);
   const [gradeID, setGradeID] = useState();
@@ -89,7 +91,7 @@ const AttedanceCalender = () => {
   const [gradeData, setGradeData] = useState();
   const [sectionData, setSectionData] = useState();
   const [sectionID, setSectionID] = useState();
-  const [studentData, setStudentData] = useState(null);
+  const [studentDataAll, setStudentDataAll] = useState(null);
   const [student, setStudent] = useState([]);
   const [counter, setCounter] = useState(2);
   const [todayDate, setTodayDate] = useState();
@@ -97,6 +99,7 @@ const AttedanceCalender = () => {
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
   const [sevenDay, setSevenDay] = useState();
+  const [ studentData , setStudentData] = useState([]);
 
   useEffect(() => {
     // axiosInstance.get(endpoints.masterManagement.gradesDrop).then((res) => {
@@ -152,7 +155,7 @@ const AttedanceCalender = () => {
     axiosInstance
       .get(`/erp_user/list-academic_year/`, {})
       .then((res) => {
-        console.log(res, 'Academic');
+        console.log(res.data.data, 'Academic');
         setAcademicYear(res.data.data);
       })
       .catch((error) => {
@@ -175,7 +178,7 @@ const AttedanceCalender = () => {
       .get(`/erp_user/branch/?session_year=${academicYearID}`)
       .then((res) => {
         if (res.status === 200) {
-          // console.log(res);
+           console.log(res.data.data.results);
           setBranchData(res.data.data.results);
         }
       })
@@ -199,7 +202,7 @@ const AttedanceCalender = () => {
       });
   };
   const setDate = () => {
-    setStudentData(null);
+    setStudentDataAll(null);
     var date = new Date();
     var formatDate = moment(date).format('YYYY-MM-DD');
     console.log(formatDate, 'format date');
@@ -245,7 +248,7 @@ const AttedanceCalender = () => {
 
   const weeklyData = () => {
     setCounter(2);
-    setStudentData(null);
+    setStudentDataAll(null);
   };
 
   const getToday = () => {
@@ -269,7 +272,7 @@ const AttedanceCalender = () => {
       .then((res) => {
         console.log(res.data.events, 'current eventssss');
         setCurrentEvent(res.data.events);
-        setStudentData(res.data);
+        setStudentDataAll(res.data);
       })
       .catch((error) => {
         console.log(error);
@@ -327,7 +330,9 @@ const AttedanceCalender = () => {
         })
         .then((res) => {
           console.log(res, 'respond student');
-          setStudentData(res.data);
+          setStudentDataAll(res.data);
+          let temp = [...res.data.present_list , ...res.data.absent_list ]
+          setStudentData(temp);
         })
         .catch((error) => {
           console.log(error);
@@ -337,6 +342,43 @@ const AttedanceCalender = () => {
       getToday();
     }
   };
+
+  const handleViewDetails = ()=>{
+
+const payload = {
+academic_year_id: academicYear,
+branch_id: branchData,
+grade_id: gradeData,
+section_id: sectionData,
+startDate: startDate,
+endDate: endDate
+}
+history.push({
+pathname:'/OverallAttendance',
+state:{
+data: studentData,
+payload: payload
+}
+})
+}
+
+const handleMarkAttendance = ()=>{
+const payload = {
+academic_year_id: academicYear,
+branch_id: branchData,
+grade_id: gradeData,
+section_id: sectionData,
+startDate: startDate,
+endDate: endDate
+}
+history.push({
+pathname:'/markattedance',
+state:{
+data: studentData,
+payload: payload
+}
+})
+}
 
   const StyledFilterButton = withStyles({
     root: {
@@ -567,7 +609,7 @@ const AttedanceCalender = () => {
             <StyledClearButton
               variant='contained'
               startIcon={<ClearIcon />}
-              // href={`/markattedance`}
+//               href={`/markattedance`}
             >
               Clear all
             </StyledClearButton>
@@ -594,7 +636,7 @@ const AttedanceCalender = () => {
                 </Typography>
               </Grid>
               <Grid item md={6} xs={12} className='mark-btn-grid'>
-                <Button size='small'>
+                <Button size='small' onClick={handleMarkAttendance}  >
                   <span className={classes.contentData} id='mark-para'>
                     MarkAttendance
                   </span>
@@ -609,7 +651,7 @@ const AttedanceCalender = () => {
                 <KeyboardArrowDownIcon className='downIcon' />
               </div>
             </Grid>
-            {studentData != null ? (
+            {studentDataAll != null ? (
               <>
                 <div className='absentContainer'>
                   <div className='absentHeader'>
@@ -618,8 +660,8 @@ const AttedanceCalender = () => {
                   </div>
                   <Divider />
                   <div className='absentList'>
-                    {studentData.absent_list &&
-                      studentData.absent_list.map((data) => (
+                    {studentDataAll.absent_list &&
+                      studentDataAll.absent_list.map((data) => (
                         <div className='eachAbsent'>
                           <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
                           <div className='studentName'>
@@ -636,7 +678,7 @@ const AttedanceCalender = () => {
                       ))}
                   </div>
                   <div className='btnArea'>
-                    <Button variant='outlined' color='secondary' className='viewDetails'>
+                    <Button variant='outlined' color='secondary' className='viewDetails' onClick={handleViewDetails} >
                       <p className='btnLabel'>View Details</p>
                     </Button>
                   </div>
@@ -647,8 +689,8 @@ const AttedanceCalender = () => {
                   </div>
                   <Divider />
                   <div className='presentStudents'>
-                    {studentData.present_list &&
-                      studentData.present_list.map((data) => (
+                    {studentDataAll.present_list &&
+                      studentDataAll.present_list.map((data) => (
                         <div className='presentList'>
                           <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
                           <div className='presentStudent'>
@@ -706,10 +748,10 @@ const AttedanceCalender = () => {
                 </Grid>
               </div>
             </Grid>
-            {studentData != null ? (
+            {studentDataAll != null ? (
               <Paper elevation={1} className='eventGrid'>
-                {studentData.events &&
-                  studentData.events.map((data) => (
+                {studentDataAll.events &&
+                  studentDataAll.events.map((data) => (
                     <Typography
                       className={[classes.contentsmall, classes.root]}
                       id='eventData'

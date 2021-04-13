@@ -357,7 +357,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
                   labelplaceholder='Event_Type'
                   onChange={handleEventTypeChange}
                   options={evnetcategoryType}
-                  getOptionLabel={(option) => option.event_category_type}
+                  getOptionLabel={(option) => option.event_category_name}
                   renderInput={(params) => (
                     <TextField {...params} label='Event Type' variant='outlined' />
                   )}
