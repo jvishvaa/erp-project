@@ -144,7 +144,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       });
     }
   }, []);
-console.log(moduleId,'==============')
   const getRoleApi = async () => {
     try {
       const result = await axiosInstance.get(endpoints.communication.roles, {
