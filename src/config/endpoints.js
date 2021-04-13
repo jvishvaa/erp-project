@@ -1,8 +1,15 @@
+import ENVCONFIG from './config';
+
+const {
+  apiGateway: { baseURLCentral },
+  s3: { BUCKET: s3BUCKET },
+} = ENVCONFIG;
+
 // const baseURLCentral = 'http://13.232.30.169/qbox';
-const appBaseURL = window.location.hostname;
-const baseURLCentral = (appBaseURL.includes("dev.") || appBaseURL.includes("localhost"))
-  ? 'http://dev.mgmt.letseduvate.com/qbox'
-  : 'https://mgmt.letseduvate.com/qbox';
+// const appBaseURL = window.location.hostname;
+// const baseURLCentral = (appBaseURL.includes("dev.") || appBaseURL.includes("localhost"))
+//   ? 'http://dev.mgmt.letseduvate.com/qbox'
+//   : 'https://mgmt.letseduvate.com/qbox';
 // const baseURLCentral = 'http://dev.mgmt.letseduvate.com/qbox'
 // const baseURLCentral = 'https://mgmt.letseduvate.com/qbox';
 
@@ -95,8 +102,7 @@ export default {
     updateMessageType: '/communication/',
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
-    editChapter: '/academic/'
-
+    editChapter: '/academic/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -155,15 +161,18 @@ export default {
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
     editChapter: '/academic/',
-    centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`//'https://dev.mgmt.letseduvate.com/qbox/lesson_plan/erp_lesson_mapping/?domain_name=olvorchidnaigaon'
+    centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`, //'https://dev.mgmt.letseduvate.com/qbox/lesson_plan/erp_lesson_mapping/?domain_name=olvorchidnaigaon'
   },
   lessonPlan: {
+    gradeSubjectMappingListCentral: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
     periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
     periodCardData: `${baseURLCentral}/lesson_plan/lesson/`,
     academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
     gradeSubjectMappingList: `/academic/lesson-plan-subjects/`,
     chapterList: `/academic/central-chapters-list/`,
+    gradeListCentral: `${baseURLCentral}/lesson_plan/list-grade/`,
+    chapterListCentral: `${baseURLCentral}/lesson_plan/chapter/`,
     periodCompleted: '/academic/lessonplan-completed-status/',
     periodCompletedStatus: '/academic/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
@@ -222,7 +231,7 @@ export default {
     createCircular: '/circular/upload-circular/',
     deleteCircular: '/circular/delete-circular/',
     updateCircular: '/circular/update-circular/',
-    deleteFile:'/academic/delete-file/',
+    deleteFile: '/academic/delete-file/',
   },
   generalDairy: {
     dairyList: '/academic/general-dairy-messages/',
@@ -270,6 +279,7 @@ export default {
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
   assessment: {
+    assessmentResultAnalysis: `${baseURLCentral}/assessment/student-reports/`,
     questionPaperList: `/academic/assessment-list/`,
     viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
     userTests: `${baseURLCentral}/assessment/user-tests/`, // ?user=20&subject=1,
@@ -281,7 +291,36 @@ export default {
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
-  s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+  assessmentApis: {
+    gradesList: `/academic/sm-grades-list/`,
+  },
+  questionBank: {
+    grades: `${baseURLCentral}/lesson_plan/list-grade/`,
+    subjects: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
+    topics: `${baseURLCentral}/assessment/topic/`,
+    examType: `${baseURLCentral}/assessment/question_type/`,
+    questionData: `${baseURLCentral}/assessment/question-list/`,
+    viewMoreData: `${baseURLCentral}/assessment/question-details/`,
+    uploadFile: `${baseURLCentral}/assessment/upload-question-file/`,
+    removeFile: `${baseURLCentral}/assessment/delete-s3file/`,
+    deleteQuestion: `${baseURLCentral}/assessment/publish-question/`,
+  },
+  assementQP: {
+    assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,
+    assementViewmore: `${baseURLCentral}/assessment/`,
+  },
+  createQuestionApis: {
+    topicList: `${baseURLCentral}/assessment/topic/`,
+    questionType: `${baseURLCentral}/assessment/question_type/`,
+    createQuestion: `${baseURLCentral}/assessment/create-question/`,
+  },
+  createQuestionBulk: {
+    BulkUploadTrueOrFalse: `${baseURLCentral}/assessment/bulk_upload_tf/`,
+    BulkUploadSingleChoiceQuestion: `${baseURLCentral}/assessment/upload-sc-questions/`,
+    FillBlankUploadQuestion: `${baseURLCentral}/assessment/fill_bulk_upload/`,
+  },
+  // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+  s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
   // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing

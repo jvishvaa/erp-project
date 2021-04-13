@@ -1,0 +1,101 @@
+@import '../../../../assets/styles/variables';
+
+.secondary-divider {
+  background-color: $secondary-color;
+}
+
+.vertical-divider {
+  margin: 0 10px;
+  height: 100%;
+  width: 1px;
+  background-color: #dbdbdb;
+}
+
+.flex-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.question-view-container {
+  color: $secondary-color;
+  height: max-content;
+  .comprehension-question-header-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    color: $secondary-color;
+    font-size: 1.2rem;
+    background: linear-gradient(
+      90deg,
+      rgba(246, 210, 255, 1) 20%,
+      rgba(254, 216, 217, 1) 80%
+    );
+    align-items: center;
+    border-radius: 10px;
+    margin: 10px 0;
+  }
+  .question-header,
+  .answers-header {
+    color: $secondary-color;
+    font-size: 1.1rem;
+    margin: 10px 0;
+  }
+  .answers-container {
+    .options-container {
+      .option {
+        background-color: #f3f3f3;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  }
+  .question-container {
+    border: 1px solid #dbdbdb;
+    padding: 1rem;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    margin: 1rem 0;
+    // word-wrap: break-word;
+
+  }
+
+  .matrix-container {
+    .matrix-columns {
+      border: 1px solid $secondary-color;
+      padding: 1rem;
+      border-radius: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      .matrix-column {
+        width: 45%;
+        display: flex;
+        padding: 10px;
+        background-color: #def2ff;
+        margin: 0.5rem;
+        border-radius: 10px;
+      }
+    }
+  }
+
+  .true-false-container {
+    .true-false-option {
+      width: 30%;
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 0.5rem;
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  .comprehension-container {
+    .sub-questions-container {
+      .sub-question-container {
+      }
+    }
+  }
+}

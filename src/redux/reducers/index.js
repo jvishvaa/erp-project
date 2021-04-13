@@ -22,7 +22,8 @@ import inventory from '../../../src/containers/Finance/src/components/Inventory/
 import { gradeMap } from '../../../src/containers/Finance/src/_reducers/gradeMap.reducer.js'
 import { sectionMap } from '../../../src/containers/Finance/src/_reducers/sectionMap.reducer.js'
 import { subjects } from '../../../src/containers/Finance/src/_reducers/subject.reducer.js'
-
+import createQuestionPaper from './create-question-paper-reducer';
+import createAssesment from './create-assesment-reducer';
 
 export default combineReducers({
   auth,
@@ -43,5 +44,7 @@ export default combineReducers({
   inventory,
   gradeMap,
   sectionMap,
-  subjects 
+  subjects,
+  createQuestionPaper,
+  createAssesment,
 });

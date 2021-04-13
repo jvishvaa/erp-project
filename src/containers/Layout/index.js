@@ -556,14 +556,34 @@ const Layout = ({ children, history }) => {
         history.push('/finance/StudentShuffleRequest')
         break;
       }
-      case 'Assessment': {
-        history.push('/assessment');
-        break;
-      }
-      case 'ViewAssessment': {
-        history.push('/assessment/view-assessment');
-        break;
-      }
+      // case 'Assessment': {
+      //   history.push('/assessment');
+      //   break;
+      // }
+      // case 'ViewAssessment': {
+      //   history.push('/assessment/view-assessment');
+      //   break;
+      // }
+    case 'Question Bank' : {
+      history.push('/question-bank');
+      break;
+    }
+    case 'Question Paper' : {
+      history.push('/assessment-question');
+      break;
+    }
+    case 'Create Test': {
+      history.push('/assesment');
+      break;
+    }
+    case 'Take Test': {
+      history.push('/assessment');
+      break;
+    }
+    //   { name: 'Question Bank', Path: '/question-bank' },
+    // { name: 'Question Paper', Path: '/assessment-question' },
+    // { name: 'Create Test', Path: '/assesment' },
+    // { name: 'Take Test', Path: '/assessment' }
       // case 'ID Cards': {
       //   history.push('/student-id-card');
       //   break;
@@ -764,6 +784,10 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/Student/ActiveInactive')
                   break;
                 }
+                case 'Student Active/Inactive': {
+                  history.push('/finance/Student/ActiveInactive/Admin')
+                    break;
+                  }
               case 'Student Promotion': {
                 history.push('/finance/Student/StudentPromotion')
                   break;

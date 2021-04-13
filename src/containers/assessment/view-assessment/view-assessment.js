@@ -16,6 +16,27 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import axiosInstance from '../../../config/axios';
 import './view-assessment.css';
 
+function getSubDomainName() {
+  const { host } = new URL(axiosInstance.defaults.baseURL) // "dev.olvorchidnaigaon.letseduvate.com"
+  const hostSplitArray = host.split('.')
+  const subDomainLevels = hostSplitArray.length - 2
+  let domain = ''
+  let subDomain = ''
+  let subSubDomain = ''
+  if (hostSplitArray.length > 2) {
+    // domain = hostSplitArray.slice(0, hostSplitArray.length-2)
+    domain = hostSplitArray.slice(hostSplitArray.length - 2).join('')
+  }
+  if (subDomainLevels === 2) {
+    subSubDomain = hostSplitArray[0]
+    subDomain = hostSplitArray[1]
+  } else if (subDomainLevels === 1) {
+    subDomain = hostSplitArray[0]
+  }
+  const domainTobeSent = subDomain
+  return domainTobeSent
+
+}
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -52,7 +73,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.assessment.questionPaperList}?user=${user}&page=${page}&status=${status}`
+        `${endpoints.assessment.questionPaperList}?domain=${getSubDomainName()}&user=${user}&page=${page}&status=${status}`
       )
       .then((response) => {
         console.log('qp result:', response);
