@@ -102,15 +102,15 @@ const CreateDiscussionForum = () => {
     const getBranchApi = async () => {
       try {
         setLoading(true);
-        const result = await axiosInstance.get(endpoints.communication.branches, {
+        const result = await axiosInstance.get(`${endpoints.communication.branches}?session_year=${1}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         const resultOptions = [];
         if (result.status === 200) {
-          result.data.data.map((items) => resultOptions.push(items.branch_name));
-          setBranchList(result.data.data);
+          result.data.data.results.map((items) => resultOptions.push(items.branch.branch_name));
+          setBranchList(result.data.data.results);
           setLoading(false);
         } else {
           setAlert('error', result.data.message);
@@ -238,7 +238,7 @@ const getSectionApi = async () => {
         gradesId.push(items.grade_id);
       });
     const result = await axiosInstance.get(
-      `${endpoints.communication.sections}?branch_id=${
+      `${endpoints.communication.sections}?session_year=${1}&branch_id=${
         selectedBranch.id
       }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
       {
@@ -338,7 +338,7 @@ const handleEditorChange = (content, editor) => {
                             id='message_log-branch'
                             className='create_group_branch'
                             options={branchList}
-                            getOptionLabel={(option) => option?.branch_name}
+                            getOptionLabel={(option) => option?.branch.branch_name}
                             filterSelectedOptions
                             renderInput={(params) => (
                               <TextField

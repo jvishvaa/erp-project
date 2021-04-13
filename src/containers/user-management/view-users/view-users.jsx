@@ -364,7 +364,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   }, [moduleId]);
 
   useEffect(() => {
-    if(moduleId) getUsersData();
+    if(moduleId) {
+      getUsersData();
+    }
   }, [currentPage,moduleId]);
 
   useEffect(() => {
@@ -382,7 +384,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   }, [selectedBranch]);
 
   useEffect(() => {
-    if (isNewSeach) {
+    if (isNewSeach && moduleId) {
       setIsNewSearch(false);
       setCurrentPage(1);
       getUsersData();
