@@ -21,8 +21,8 @@ const useStyles = makeStyles({
 
 const ProfileIcon = ({ firstname, lastname, bgColor }) => {
   const classes = useStyles({});
-  const firstChar = firstname.charAt(0).toUpperCase();
-  const secondChar = lastname.charAt(0).toUpperCase();
+  const firstChar = firstname !== '' ? firstname.charAt(0).toUpperCase() : '';
+  const secondChar = lastname !== '' ? lastname.charAt(0).toUpperCase() : '';
   const userText = firstChar.concat(secondChar);
 
   return (

@@ -200,6 +200,7 @@ export default {
 
   discussionForum: {
     categoryList: '/academic/categories/',
+    UpdateCategory: '/update-category/',
     branch: '/erp_user/branch/',
     grade: '/erp_user/grademapping/',
     filterCategory: '/academic/posts/',
@@ -207,7 +208,10 @@ export default {
     PostCategory: '/academic/create-category/',
     CreateDissusionForum: '/academic/add-post/',
     CreateCommentAndReplay: '/academic/create-answer-replay/',
-    AwardListAPI: '/academic/',
+    AwardListAPI: '/academic/awards-list/',
+    GiveAwardAPI: '/academic/create-award/',
+    commentList: '/academic/comments-list/',
+    replyToAnswer: '/academic/create-answer-replay/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     deletePost: '/academic/',
   },

@@ -84,6 +84,7 @@ import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-re
 import Discussionforum from './containers/discussionForum/index';
 import DiscussionPost from './containers/discussionForum/discussion/DiscussionPost';
 import CreateCategory from './containers/discussionForum/createCategory';
+import CategoryPage from './containers/discussionForum/discussion/CategoryPage';
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
 import CircularList from './containers/circular';
 import CreateCircular from './containers/circular/create-circular';
@@ -516,8 +517,14 @@ function App({ alert }) {
                         <Route exact path='/discussion-forum'>
                           {({ match }) => <Discussionforum match={match} />}
                         </Route>
+                        <Route exact path='/discussion-forum/post/:id?'>
+                          {({ match }) => <DiscussionPost match={match} />}
+                        </Route>
                         <Route exact path='/category/create'>
                           {({ match }) => <CreateCategory match={match} />}
+                        </Route>
+                        <Route exact path='/category'>
+                          {({ match }) => <CategoryPage match={match} />}
                         </Route>
                         <Route exact path='/discussion-forum/create'>
                           {({ match }) => <CreateDiscussionForum match={match} />}
