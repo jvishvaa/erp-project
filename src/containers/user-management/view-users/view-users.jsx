@@ -136,15 +136,14 @@ const ViewUsers = withRouter(({ history, ...props }) => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'View User') {
-              setModuleId(item.child_id);
+            if (item?.child_name === 'View User') {
+              setModuleId(item?.child_id);
             }
           });
         }
       });
     }
   }, []);
-
   const getRoleApi = async () => {
     try {
       const result = await axiosInstance.get(endpoints.communication.roles, {
@@ -222,7 +221,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         });
     }
     */
-    let getUserListUrl = `${endpoints.communication.userList}?page=${currentPage}&page_size=${limit}`;
+    let getUserListUrl = `${endpoints.communication.userList}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}`;
     if (rolesId.length && selectedRoles !== 'All') {
       getUserListUrl += `&role=${rolesId.toString()}`;
     }
@@ -365,8 +364,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   }, [moduleId]);
 
   useEffect(() => {
-    getUsersData();
-  }, [currentPage]);
+    if(moduleId) getUsersData();
+  }, [currentPage,moduleId]);
 
   useEffect(() => {
     if (selectedYear) {

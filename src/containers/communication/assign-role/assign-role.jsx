@@ -229,7 +229,7 @@ const AssignRole = (props) => {
       getUserListUrl += `&session_year=${selectedYear.id}`;
     }
     if (selectedBranch) {
-      getUserListUrl += `&branch=${selectedBranch.id}`;
+      getUserListUrl += `&branch_id=${selectedBranch.id}`;
     }
     if (selectedGrades.length) {
       const selectedGradeId = selectedGrades.map((el) => el.grade_id);
