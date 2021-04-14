@@ -84,6 +84,7 @@ import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-re
 import Discussionforum from './containers/discussionForum/index';
 import DiscussionPost from './containers/discussionForum/discussion/DiscussionPost';
 import CreateCategory from './containers/discussionForum/createCategory';
+import CategoryPage from './containers/discussionForum/discussion/CategoryPage';
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
 import CircularList from './containers/circular';
 import CreateCircular from './containers/circular/create-circular';

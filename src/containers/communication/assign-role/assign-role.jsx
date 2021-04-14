@@ -123,7 +123,7 @@ const AssignRole = (props) => {
   }, [selectedGrades]);
 
   useEffect(() => {
-    displayUsersList();
+   if(moduleId) displayUsersList();
     if (assignedRole) {
       setAssigenedRole(false);
     }
@@ -133,7 +133,7 @@ const AssignRole = (props) => {
     if (filterCheck) {
       setFilterCheck(false);
     }
-  }, [pageno, assignedRole, clearAll, filterCheck]);
+  }, [pageno, assignedRole, clearAll, filterCheck,moduleId]);
 
   const getRoleApi = async () => {
     try {
