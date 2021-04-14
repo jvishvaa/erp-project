@@ -645,7 +645,7 @@ console.log(fullData)
         spacing={3}
         style={{ color: 'red', background: 'white' }}
       >
-        <Grid style={{display:'flex', alignItems:'center', justifyContent:'space-between'}} md={12} xs={12}>
+        <Grid style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginLeft:'10px'}} md={12} xs={12}>
           <Grid style={{display:'flex', alignItems:'center'}}>
             <ArrowBackIosIcon />
             <Typography variant='h5'>{dateValueShow}</Typography>
