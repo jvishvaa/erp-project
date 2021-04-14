@@ -802,7 +802,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
               </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={4} lg={3} sm={10} xs={11}>
+              <Grid item md={4} lg={3} sm={10} xs={11} className="items">
               <MobileDatepicker
               className='arrow'
                 id="coustom-date"

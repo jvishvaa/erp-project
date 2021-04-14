@@ -167,3 +167,7 @@
   // margin-right: 5px !important;
   min-width: 0px !important;
 }
+.items .MuiPickersDateRangePickerInput-root {
+  align-items: inherit;
+  flex-direction: column;
+}

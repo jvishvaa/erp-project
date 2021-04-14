@@ -341,7 +341,7 @@ const handleSinlgeStudent = (id)=>{
           <CommonBreadcrumbs componentName='OverallAttendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
-        <Grid item md={3}  xs={12}>
+        <Grid item md={3}  xs={12} className="items">
           <MobileDatepicker
           style={{ width: '100%'}}
             onChange={(date) => handleEndDateChange(date)}
@@ -604,7 +604,7 @@ const handleSinlgeStudent = (id)=>{
         <br />
       </Grid>
       <Grid container spacing={2} direction='row'>
-        {dummyData && dummyData
+        {data && data
         .filter((item,index)=>{
             if(state.present){
               const pageCondition = index >= offset && index < offset + 8
@@ -665,7 +665,7 @@ const handleSinlgeStudent = (id)=>{
       <Grid container justify='center'>
         {' '}
         {
-          dummyData && <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
+          data && <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
 
         }
       </Grid>
