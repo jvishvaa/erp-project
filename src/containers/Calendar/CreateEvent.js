@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useContext } from 'react';
+import React, { useEffect, useState,useContext} from 'react';
 import MediaQuery from 'react-responsive';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
@@ -31,6 +31,7 @@ import {KeyboardTimePicker} from '@material-ui/pickers';
 import {KeyboardDatePicker} from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { dateFormat } from 'highcharts';
+import { useHistory } from 'react-router';
 function getDaysAfter(date, amount) {
   return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
 }
@@ -41,12 +42,6 @@ function getDaysBefore(date, amount) {
 const CreateEvent = () => {
   const moduleId = 178;
 
-  // const [dateState, setDateState] = useState(new Date());
-  // const [spacing, setSpacing] = useState(2);
-  // const [getDatastudent, setGetDatastudent] = useState();
-  // const [getData, setGetData] = useState([]);
-  // const [flag, setFlag] = useState(false);
-  // const [open, setOpen] = useState(false);
   const [allDay, setAllDay] = useState(true);
   const [firstHalf, setFirstHalf] = useState(false);
   const [secondHalf, setSecondHalf] = useState(false);
@@ -56,9 +51,7 @@ const CreateEvent = () => {
   const [time, setTime] = useState();
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
-  // const [branches, setBranches] = useState();
-  // const [sections, setSections] = useState();
-  // const [grades, setGrades] = useState();
+ 
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
   const [evnetcategoryType,setEventcategoryType]=useState()
@@ -66,33 +59,12 @@ const CreateEvent = () => {
   const [selectedEndTime, setSelectedEndTime] = useState(new Date());
 
   const [loading, setLoading] = useState(false);
-
-  // const [gradeID,setGradeID]=useState()
-  // const [sectionID,setSectionID]=useState()
-  // const [branchID,setBranchID]=useState()
   const [counter,setCounter]=useState(1)
   const [discripValue, setdiscripValue] = useState();
   const { setAlert } = useContext(AlertNotificationContext);
-
+  const history = useHistory();
   
 
-
-//   const handleGrade=(e,value)=>{
-//     e.preventDefault()
-// console.log("ID",value.id)
-// setGradeID(value.id)
-//   }
-//   const handleBranch=(e,value)=>{
-//     e.preventDefault()
-// console.log("ID",value.id)
-// setBranchID(value.id)
-//   }
-  
-//   const handleSection=(e,value)=>{
-//     e.preventDefault()
-// console.log("ID",value.id)
-// setSectionID(value.id)
-//   }
   
   
   const handleStartTimeChange = (start_time) => {
@@ -183,6 +155,10 @@ setEndTime(end_time.toString().slice(16,21))
     }).catch((error)=>{
       console.log(error)
     })
+
+    history.push({
+      pathname: '/AttendanceCalendar'
+    })
   };
 
   const styles = {
@@ -240,33 +216,7 @@ setEndTime(end_time.toString().slice(16,21))
 }
 
   useEffect(() => {
-  //   if(counter===1) {
-  //     setCounter(2)
-  //   axiosInstance.get(endpoints.academics.branches).then((res) => {
-  //     console.log('Branches:', res.data.data?.results);
-  //     setBranches(res.data.data?.results);
-  //   });
-  // }
-  // if(counter===2) {
-  //   setCounter(3)
 
-  //   axiosInstance.get(endpoints.masterManagement.grades,{params:{
-  //     branch_id:1,
-  //   }}).then((res) => {
-  //     console.log('grades', res.data.result?.results);
-  //     setGrades(res.data.result?.results);
-      
-  //   });
-  // }
-  //   if(counter===3) {
-  //   axiosInstance.get(endpoints.academics.sections,{params:{
-  //     branch_id:1,grade_id:1
-  //   }}).then((res) => {
-  //     console.log('section', res.data?.data);
-  //     setSections(res);
-  //   });
-
-  // }
   callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
 
     console.log("iuhiuhi")
@@ -383,50 +333,6 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
               </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              {/* <Grid item md={4} lg={2} sm={4} xs={12}>
-                <Autocomplete
-                  size='small'
-                  className='arrow'
-                  
-                  id='combo-box-demo'
-                  name='branch'
-                  onChange={handleBranch}
-                  options={branches}
-                  getOptionLabel={(option) => option.branch.branch_name}
-                  renderInput={(params) => (
-                    <TextField {...params} label='Branch' variant='outlined' />
-                  )}
-                />
-              </Grid>
-              <Grid item md={4} lg={2} sm={4} xs={12}>
-                <Autocomplete
-                  size='small'
-                  id='combo-box-demo'
-                  className='arrow'
-                  name='grade'
-                  options={grades}
-                  onChange={handleGrade}
-                  getOptionLabel={(option) => option.grade_name
-
-                  }
-                  renderInput={(params) => (
-                    <TextField {...params} label='Grade' variant='outlined' />
-                  )}
-                />
-              </Grid>
-              <Grid item md={4} lg={2} sm={4} xs={12}>
-                <Autocomplete
-                  id='combo-box-demo'
-                  size='small'
-                  className='arrow'
-                  options={grades}
-                  onChange={handleSection}
-                  getOptionLabel={(option) => option.grade_name}
-                  renderInput={(params) => (
-                    <TextField {...params} label='Section' variant='outlined' />
-                  )}
-                />
-              </Grid> */}
               <Grid item md={2} xs={12}>
             <Autocomplete
               style={{ width: '100%' }}
@@ -881,50 +787,6 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
               )}
             />
           </Grid>
-              {/* <Grid item md={4} lg={2} sm={4} xs={12}>
-              <Autocomplete
-                  size='small'
-                  className='arrow'
-                  
-                  id='combo-box-demo'
-                  name='branch'
-                  onChange={handleBranch}
-                  options={branches}
-                  getOptionLabel={(option) => option.branch.branch_name}
-                  renderInput={(params) => (
-                    <TextField {...params} label='Branch' variant='outlined' />
-                  )}
-                />
-              </Grid> */}
-              {/* <Grid item md={4} lg={2} sm={4} xs={12}>
-              <Autocomplete
-                  size='small'
-                  id='combo-box-demo'
-                  className='arrow'
-                  name='grade'
-                  options={grades}
-                  onChange={handleGrade}
-                  getOptionLabel={(option) => option.grade_name
-
-                  }
-                  renderInput={(params) => (
-                    <TextField {...params} label='Grade' variant='outlined' />
-                  )}
-                />
-              </Grid>
-              <Grid item md={4} lg={2} sm={4} xs={12}>
-              <Autocomplete
-                  id='combo-box-demo'
-                  size='small'
-                  className='arrow'
-                  options={grades}
-                  onChange={handleSection}
-                  getOptionLabel={(option) => option.grade_name}
-                  renderInput={(params) => (
-                    <TextField {...params} label='Section' variant='outlined' />
-                  )}
-                />
-              </Grid> */}
             </Grid>
             <Grid container direction='row'>
               <Grid item md={12} xs={12}>
