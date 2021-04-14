@@ -549,6 +549,9 @@ function App({ alert }) {
                           <Route exact path='/discussion-forum/create'>
                             {({ match }) => <CreateDiscussionForum match={match} />}
                           </Route>
+                          <Route exact path='/discussion-forum/post/:id'>
+                            {({ match }) => <DiscussionPost match={match} />}
+                          </Route>
                           <Route exact path='/teacher-circular'>
                             {({ match }) => <CircularList match={match} />}
                           </Route>
