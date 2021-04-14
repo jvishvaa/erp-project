@@ -90,7 +90,6 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
 
   }
   const handleEdit=(data)=>{
-    //debugger
 
     console.log(data,'PPP')
     // // setEditData(e)

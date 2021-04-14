@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-array-index-key */
-/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { DataGrid } from '@material-ui/data-grid';

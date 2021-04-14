@@ -369,8 +369,6 @@ export default QuestionBulkCreation;
 
 // var blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
 //         var link = document.createElement('a')
-//         // eslint-disable-next-line no-debugger
-//         // debugger
 //         link.href = window.URL.createObjectURL(blob)
 //         link.download = 'monthly_Summary_attendence_report.xls'
 //         link.click()

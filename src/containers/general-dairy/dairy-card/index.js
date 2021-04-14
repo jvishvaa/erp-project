@@ -91,7 +91,6 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   const handleEdit=(data)=>{
     // console.log(data,'PPP')
     // // setEditData(e)
-    debugger
     setState({isEdit:true,editData:data});
     history.push('/create/general-diary')
   }

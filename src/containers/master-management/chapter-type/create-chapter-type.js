@@ -253,7 +253,6 @@ const CreateChapterType = ({
   };
 
   const fetchChapters = () => {
-    debugger;
     axios
       .get(
         `/qbox/academic/chapters/?academic_year=${searchAcademicYear}&subject=${subjectIds}`
