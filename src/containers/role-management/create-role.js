@@ -1,4 +1,4 @@
-/* eslint-disable no-debugger */
+
 /* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';

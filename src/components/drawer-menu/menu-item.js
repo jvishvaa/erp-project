@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 /* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';

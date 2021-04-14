@@ -86,8 +86,6 @@ class ImgDropAndCaptureAndCrop extends Component {
     // console.log(image)
   }
   handleOnCropChange = (crop) => {
-    // eslint-disable-next-line no-debugger
-    //   debugger
     this.setState({ crop: {
       ...crop
       // width: 500,

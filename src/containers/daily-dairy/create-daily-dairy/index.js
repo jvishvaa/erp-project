@@ -235,7 +235,6 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const fetchChapters = () => {
-    // debugger
     axios
       .get(
         `/qbox/academic/chapters/?academic_year=${searchAcademicYear}&subject=${subjectIds}`

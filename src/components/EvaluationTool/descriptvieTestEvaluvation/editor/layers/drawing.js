@@ -69,8 +69,7 @@ const DrawingLayer = ({
     context.lineJoin = 'round';
     context.lineCap = 'round';
     context.lineWidth = 5;
-    // // eslint-disable-next-line no-debugger
-    // debugger
+
     if (drawingCanvas) {
       const context = drawingCanvas.getContext('2d');
       // eslint-disable-next-line no-undef

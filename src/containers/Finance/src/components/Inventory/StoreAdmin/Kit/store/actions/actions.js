@@ -45,7 +45,6 @@ export const listGradeKit = (payload) => {
 
 export const createGradeKit = (payload) => {
   console.log(payload)
-  // debugger;
   return dispatch => {
     dispatch(actionTypes.dataLoading())
     const body = {
@@ -93,7 +92,6 @@ export const createGradeKit = (payload) => {
 
 export const updateKits = (payload) => {
   console.log(payload)
-  // debugger;
   return dispatch => {
     dispatch(actionTypes.dataLoading())
     const body = {

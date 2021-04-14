@@ -24,10 +24,8 @@ export function loadScript(src, windowVariableKey) {
 // const ispdfjsViewerReady = loadScript(`${moduleBaseURL}/pdf_viewer.js`)
 
 // Promise.all([ispdfjsLibReady, ispdfjsViewerReady]).then(() => {
-//     debugger
 //     pdfjsLib = window.pdfjsLib
 //     pdfjsViewer = window.pdfjsViewer
-//     debugger
 //     if (!pdfjsLib.getDocument || !pdfjsViewer.PDFViewer) {
 //         alert("Please build the pdfjs-dist library using\n `gulp dist-install`");
 //     }
