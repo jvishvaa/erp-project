@@ -271,9 +271,9 @@ const CreateAssesment = ({
           changedQuestion.question_mark[0] = value;
           changedQuestion.question_mark[1] = 0;
         } else {
-          if (value > changedQuestion.question_mark[0]) {
-            setAlert('error', 'Enter less than Assign marks');
-            return;
+          if (+value > +changedQuestion.question_mark[0]) {
+            setAlert('error', 'Enter less than Assign marks')
+            return
           }
           changedQuestion.question_mark[1] = value;
         }
