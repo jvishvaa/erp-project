@@ -480,7 +480,14 @@ const Layout = ({ children, history }) => {
         history.push('/subject/grade');
         break;
       }
-
+      case 'Teacher Forum': {
+        history.push('/discussion-forum');
+        break;
+      }
+      case 'Student Forum': {
+        history.push('/discussion-forum');
+        break;
+      }
       // case 'role-management': {
       //   history.push('/role-management');
       //   break;
