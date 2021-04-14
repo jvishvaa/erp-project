@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   IconButton,
   Divider,
@@ -17,7 +17,7 @@ import {
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useHistory } from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react';
-
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { AutoSizer } from '@material-ui/data-grid';
 import minimizeIcon from '../../../../assets/images/minimize.svg';
 import maximizeIcon from '../../../../assets/images/maximize.svg';
@@ -69,7 +69,44 @@ const AssesmentTest = ({
   const [minimize, setMinimize] = useState(false);
   const [openEditor, setOpenEditor] = useState(false);
   const history = useHistory();
-  console.log(questionPaper, '=====');
+  const { setAlert } = useContext(AlertNotificationContext);
+
+  const handleChange = (event) => {
+    let value = 0;
+    let fieldName = event.target.name;
+    if (fieldName === 'duration') {
+      value = Math.round(+event.target.value);
+      if (value <= 1440) {
+        onTestDurationChange(+value);
+      } else {
+        setAlert('error', "Duration can't be more than 1440 minutes / 24 hours / 1 day!");
+      }
+    }
+    if (fieldName === 'testid') {
+      value = event.target.value;
+      if (value.toString().length <= 10) {
+        onTestIdChange(+value);
+      } else {
+        setAlert('error', 'Test ID must not exceed length of 10!');
+      }
+    }
+    if (fieldName === 'testmarks') {
+      value = Math.round(+event.target.value);
+      if (value <= 1000) {
+        onTotalMarksChange(+value);
+      } else {
+        setAlert('error', "Test marks can't be more than 1000!");
+      }
+    }
+  };
+
+  // onChange={(e) => {
+  //   const { target: { value } = {} } = e || {};
+  //   if (Number.isFinite(+value)) {
+  //   onTestDurationChange(+value);
+  //   }
+  //   }}
+
   return (
     <div className='create-container'>
       <div className='header'>
@@ -117,6 +154,7 @@ const AssesmentTest = ({
                       variant='outlined'
                       size='small'
                       className='bg-white'
+                      style={{ width: '100px' }}
                       value={testName}
                       onChange={(e) => {
                         onTestNameChange(e.target.value);
@@ -131,14 +169,17 @@ const AssesmentTest = ({
                     <TextField
                       variant='outlined'
                       size='small'
+                      style={{ width: '70px' }}
                       className='bg-white'
+                      name='testid'
                       value={testId}
-                      onChange={(e) => {
-                        const { target: { value } = {} } = e || {};
-                        if (Number.isFinite(+value)) {
-                          onTestIdChange(+value);
-                        }
-                      }}
+                      // onChange={(e) => {
+                      //   const { target: { value } = {} } = e || {};
+                      //   if (Number.isFinite(+value)) {
+                      //     onTestIdChange(+value);
+                      //   }
+                      // }}
+                      onChange={(e) => handleChange(e)}
                     />
                   </div>
                 </div>
@@ -166,16 +207,23 @@ const AssesmentTest = ({
                     <TextField
                       variant='outlined'
                       type='number'
+                      inputProps={{
+                        min: 0,
+                        max: 30,
+                        maxLength: 2,
+                      }}
                       size='small'
                       className='bg-white'
+                      name='duration'
                       value={testDuration}
                       style={{ width: '70px' }}
-                      onChange={(e) => {
-                        const { target: { value } = {} } = e || {};
-                        if (Number.isFinite(+value)) {
-                          onTestDurationChange(+value);
-                        }
-                      }}
+                      // onChange={(e) => {
+                      // const { target: { value } = {} } = e || {};
+                      // if (Number.isFinite(+value)) {
+                      // onTestDurationChange(+value);
+                      // }
+                      // }}
+                      onChange={(e) => handleChange(e)}
                     />
                   </div>
                 </div>
@@ -185,16 +233,23 @@ const AssesmentTest = ({
                     <TextField
                       variant='outlined'
                       type='number'
+                      inputProps={{
+                        min: 0,
+                        max: 100,
+                        maxLength: 3,
+                      }}
                       size='small'
                       className='bg-white'
+                      name='testmarks'
                       value={totalMarks}
-                      style={{ width: '70px' }}
-                      onChange={(e) => {
-                        const { target: { value } = {} } = e || {};
-                        if (Number.isFinite(+value)) {
-                          onTotalMarksChange(+value);
-                        }
-                      }}
+                      style={{ width: '100px' }}
+                      // onChange={(e) => {
+                      //   const { target: { value } = {} } = e || {};
+                      //   if (Number.isFinite(+value)) {
+                      //     onTotalMarksChange(+value);
+                      //   }
+                      // }}
+                      onChange={(e) => handleChange(e)}
                     />
                   </div>
                 </div>
@@ -291,7 +346,7 @@ const AssesmentTest = ({
                   }}
                   color='primary'
                   className='mv-20'
-                  style={{ margin: '1rem', borderRadius: '10px' }}
+                  style={{ color: 'white', margin: '1rem', borderRadius: '10px' }}
                 >
                   ADD QUESTION PAPER
                 </Button>

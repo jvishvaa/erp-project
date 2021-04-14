@@ -9,7 +9,8 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import Loading from '../../components/loader/loader';
-import MyTinyEditor from './tinymce-editor'
+// import MyTinyEditor from './tinymce-editor'
+import MyTinyEditor from '../question-bank/create-question/tinymce-editor'
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '85%',
