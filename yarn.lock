@@ -1472,7 +1472,7 @@
     "@types/yargs" "^15.0.0"
     "chalk" "^3.0.0"
 
-"@material-ui/core@^4.0.0", "@material-ui/core@^4.11.0", "@material-ui/core@^4.9.3", "@material-ui/core@^4.9.4":
+"@material-ui/core@^4.11.0", "@material-ui/core@^4.9.3", "@material-ui/core@^4.9.4":
   "integrity" "sha512-Adt40rGW6Uds+cAyk3pVgcErpzU/qxc7KBR94jFHBYretU4AtWZltYcNsbeMn9tXL86jjVL1kuGcIHsgLgFGRw=="
   "resolved" "https://registry.npmjs.org/@material-ui/core/-/core-4.11.3.tgz"
   "version" "4.11.3"
@@ -4230,7 +4230,7 @@
   "resolved" "https://registry.npmjs.org/date-fns/-/date-fns-1.30.1.tgz"
   "version" "1.30.1"
 
-"date-fns@^2.0.1", "date-fns@^2.17.0", "date-fns@2.0.0-alpha.7 || >=2.0.0":
+"date-fns@^2.0.1", "date-fns@^2.17.0":
   "integrity" "sha512-X3bf2iTPgCAQp9wvjOQytnf5vO5rESYRXlPIVcgSbtT5OTScPcsf9eZU+B/YIkKAtYr5WeCii58BgATrNitlWg=="
   "resolved" "https://registry.npmjs.org/date-fns/-/date-fns-2.19.0.tgz"
   "version" "2.19.0"
@@ -10274,7 +10274,7 @@
     "strip-ansi" "6.0.0"
     "text-table" "0.2.0"
 
-"react-dom@^16.14.0", "react-dom@^16.3.0", "react-dom@^16.5.2":
+"react-dom@^16.14.0", "react-dom@^16.5.2":
   "integrity" "sha512-1gCeQXDLoIqMgqD3IO2Ah9bnf0w9kzhwN5q4FGnHZ67hBm9yePzB5JJAIQCc8x3pFnNlwFq4RidZggNAAkzWWw=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-16.14.0.tgz"
   "version" "16.14.0"
@@ -10652,7 +10652,7 @@
   "resolved" "https://registry.npmjs.org/react-zoom-pan-pinch/-/react-zoom-pan-pinch-1.6.1.tgz"
   "version" "1.6.1"
 
-"react@^0.14 || ^15.0.0-rc || >=15.0", "react@^15.0.0 || ^16.0.0 || ^17.0.0|| ^18.0.0", "react@^16.12.0", "react@^16.14.0", "react@^16.3.0", "react@^16.5.2", "react@^16.8.0 || ^17", "react@^16.8.0 || ^17.0.0", "react@0.14 || 15 || 16 || 17":
+"react@^16.14.0", "react@^16.5.2":
   "integrity" "sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g=="
   "resolved" "https://registry.npmjs.org/react/-/react-16.14.0.tgz"
   "version" "16.14.0"
@@ -12994,7 +12994,7 @@
     "source-list-map" "^2.0.0"
     "source-map" "~0.6.1"
 
-"webpack@^2.0.0 || ^3.0.0 || ^4.0.0", "webpack@^3.0.0 || ^4.0.0-alpha.0 || ^4.0.0", "webpack@^4.0.0", "webpack@^4.20.2", "webpack@4.42.0":
+"webpack@^4.20.2", "webpack@4.42.0":
   "integrity" "sha512-EzJRHvwQyBiYrYqhyjW9AqM90dE4+s1/XtCfn7uWg6cS72zH+2VPFAlsnW0+W0cDi0XRjNKUMoJtpSi50+Ph6w=="
   "resolved" "https://registry.npmjs.org/webpack/-/webpack-4.42.0.tgz"
   "version" "4.42.0"

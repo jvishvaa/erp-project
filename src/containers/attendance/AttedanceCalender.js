@@ -82,17 +82,19 @@ const AttedanceCalender = () => {
 const history = useHistory();
 
   const classes = useStyles();
-  const [callapi, setCallApi] = useState(1);
-  const [gradeID, setGradeID] = useState();
-  const [academicYear, setAcademicYear] = useState();
-  const [academicYearID, setAcademicYearID] = useState();
-  const [branchData, setBranchData] = useState();
-  const [branchID, setBranchID] = useState();
-  const [gradeData, setGradeData] = useState();
-  const [sectionData, setSectionData] = useState();
-  const [sectionID, setSectionID] = useState();
+  const moduleId = 178;
+  const { setAlert } = useContext(AlertNotificationContext);
+  const [loading, setLoading] = useState(false);
+  const [academicYear,setAcademicYear] = useState([]);
+  const [selectedAcademicYear,setSelectedAcadmeicYear] = useState('');  
+  const [branchList,setBranchList] = useState([])
+  const [selectedBranch,setSelectedBranch] = useState([])
+  const [gradeList, setGradeList] = useState([]);
+  const [selectedGrade, setSelectedGrade] = useState([]);
+  const [sectionList, setSectionList] = useState([]);
+  const [selectedSection, setSelectedSection] = useState([]);
+  const [secSelectedId, setSecSelectedId] = useState([])
   const [studentDataAll, setStudentDataAll] = useState(null);
-  const [student, setStudent] = useState([]);
   const [counter, setCounter] = useState(2);
   const [todayDate, setTodayDate] = useState();
   const [currentEvent, setCurrentEvent] = useState(null);
@@ -101,35 +103,48 @@ const history = useHistory();
   const [sevenDay, setSevenDay] = useState();
   const [ studentData , setStudentData] = useState([]);
 
+
   useEffect(() => {
-    // axiosInstance.get(endpoints.masterManagement.gradesDrop).then((res) => {
-    //   console.log('res', res.data.data);
-    //   setGradesGet(res.data.data);
+    callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
+  }, []);
 
-    // });
-    if (callapi === 1) {
-      callingAcadamicAPI();
-      setCallApi(2);
-    }
-    if (callapi === 2) {
-      callingBranchAPI();
-      setCallApi(3);
-    }
-    if (callapi === 3) {
-      callingGradeAPI();
-      setCallApi(4);
-    }
-    if (callapi === 4) {
-      callingSectionAPI();
-    }
-    // if(callapi === 2){
+const handleClearAll = ()=>{
+  console.log("clear all")
+}
 
-    // }
-  }, [academicYearID, branchID, gradeID]);
+  function callApi(api, key) {
+    setLoading(true);
+    axiosInstance.get(api)
+    .then((result) => {
+        if (result.status === 200) {
+          if(key === 'academicYearList'){
+            console.log(result?.data?.data || [])
+            setAcademicYear(result?.data?.data || [])
+          }
+          if (key === 'branchList') {
+            console.log(result?.data?.data || [])
+            setBranchList(result?.data?.data?.results || []);
+          }
+            if (key === 'gradeList') {
+              console.log(result?.data?.data || [])
+                setGradeList(result.data.data || []);
+            }
+            if (key === 'section') {
+              console.log(result?.data?.data || [])
+                setSectionList(result.data.data);
+              }
+            setLoading(false);
+        } else {
+            setAlert('error', result.data.message);
+            setLoading(false);
+        }
+    })
+    .catch((error) => {
+        setAlert('error', error.message);
+        setLoading(false);
+    });
+}
 
-  // useEffect(() => {
-  //   getToday();
-  // }, []);
   const StyledClearButton = withStyles({
     root: {
       backgroundColor: '#E2E2E2',
@@ -138,69 +153,7 @@ const history = useHistory();
       marginTop: 'auto',
     },
   })(Button);
-  // const handleGrade = (e, value) => {
-  //   console.log('The value of grade', e.target.value);
-  //   if (value) {
-  //     console.log('grade:', value.id);
-  //     setGrade(e.target.value);
-  //   } else {
-  //     setGrade('');
-  //   }
-  // };
-  const handleCallGrade = (event, id) => {
-    console.log(id, 'branch id');
-    setBranchID(id);
-  };
-  const callingAcadamicAPI = () => {
-    axiosInstance
-      .get(`/erp_user/list-academic_year/`, {})
-      .then((res) => {
-        console.log(res.data.data, 'Academic');
-        setAcademicYear(res.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const callingGradeAPI = () => {
-    axiosInstance
-      .get(`/erp_user/grademapping/?session_year=${academicYearID}&branch_id=${branchID}`)
-      .then((res) => {
-        console.log(res, 'grade');
-        setGradeData(res.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const callingBranchAPI = () => {
-    axiosInstance
-      .get(`/erp_user/branch/?session_year=${academicYearID}`)
-      .then((res) => {
-        if (res.status === 200) {
-           console.log(res.data.data.results);
-          setBranchData(res.data.data.results);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const callingSectionAPI = () => {
-    axiosInstance
-      .get(
-        `/erp_user/sectionmapping/?session_year=${academicYearID}&branch_id=${branchID}&grade_id=${gradeID}`
-      )
-      .then((res) => {
-        console.log(res, 'setion');
-        if (res.status === 200) {
-          setSectionData(res.data.data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+
   const setDate = () => {
     setStudentDataAll(null);
     var date = new Date();
@@ -260,13 +213,13 @@ const history = useHistory();
         params: {
           start_date: formatDate,
           data: formatDate,
-          branch_id: branchID,
-          grade_id: gradeID,
+          branch_id: selectedBranch.branch.id,
+          grade_id: selectedGrade.grade_id,
           // grade_id: 2,
 
-          section_id: sectionID,
+          section_id: selectedSection.section_id,
           // section_id: 2,
-          academic_year: academicYearID,
+          academic_year: selectedAcademicYear.id,
         },
       })
       .then((res) => {
@@ -283,35 +236,8 @@ const history = useHistory();
     console.log(startDate, 'startDate passss');
     setStartDate(starttime);
     setEndDate(endDate);
-    // axiosInstance
-    //   .get(`academic/student_attendance_between_date_range/`, {
-    //     params: {
-    //       start_date: startDate,
-    //       end_date: endDate,
-    //       branch_id: branchID,
-    //       grade_id: gradeID,
-    //       grade_id: 2,
-
-    //       // section_id: sectionID,
-    //       section_id: 2,
-    //       academic_year: academicYearID,
-    //     },
-    //   })
-    //   .then((res) => {
-    //     console.log(res.data.absent_list, 'respond student');
-    //     setStudentData(res.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   };
-  // const getfuture = () => {
-  //   var myCurrentDate=new Date();
-  //   var myFutureDate=new Date(myCurrentDate);
-  //   myFutureDate.setDate(myFutureDate.getDate()+ 7);
-  //   console.log(myFutureDate , "futuree");
-  //   setSevenDay(myFutureDate);
-  // }
+ 
   const getRangeData = () => {
     if (counter === 2) {
       axiosInstance
@@ -319,13 +245,13 @@ const history = useHistory();
           params: {
             start_date: startDate,
             end_date: endDate,
-            branch_id: branchID,
-            grade_id: gradeID,
+            branch_id: selectedBranch.branch.id,
+            grade_id: selectedGrade.grade_id,
             // grade_id: 2,
 
-            section_id: sectionID,
+            section_id: selectedSection.section_id,
             // section_id: 2,
-            academic_year: academicYearID,
+            academic_year: selectedAcademicYear.id,
           },
         })
         .then((res) => {
@@ -344,40 +270,39 @@ const history = useHistory();
   };
 
   const handleViewDetails = ()=>{
-
-const payload = {
-academic_year_id: academicYear,
-branch_id: branchData,
-grade_id: gradeData,
-section_id: sectionData,
-startDate: startDate,
-endDate: endDate
-}
-history.push({
-pathname:'/OverallAttendance',
-state:{
-data: studentData,
-payload: payload
-}
-})
+    const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: startDate,
+      endDate: endDate
+      }
+      history.push({
+      pathname:'/OverallAttendance',
+      state:{
+      data: studentData,
+      payload: payload
+      }
+    })
 }
 
 const handleMarkAttendance = ()=>{
-const payload = {
-academic_year_id: academicYear,
-branch_id: branchData,
-grade_id: gradeData,
-section_id: sectionData,
-startDate: startDate,
-endDate: endDate
-}
-history.push({
-pathname:'/markattedance',
-state:{
-data: studentData,
-payload: payload
-}
-})
+  const payload = {
+    academic_year_id: selectedAcademicYear,
+    branch_id: selectedBranch,
+    grade_id: selectedGrade,
+    section_id: selectedSection,
+    startDate: startDate,
+    endDate: endDate
+    }
+    history.push({
+    pathname:'/markattedance',
+    state:{
+    data: studentData,
+    payload: payload
+    }
+    })
 }
 
   const StyledFilterButton = withStyles({
@@ -411,84 +336,151 @@ payload: payload
         spacing={3}
         id='selectionContainer'
       >
-        <Grid item md={2} xs={12}>
+        <Grid item md={3} xs={12}>
           <Autocomplete
-            id='academic_year'
-            size='small'
-            options={academicYear}
-            getOptionLabel={(option) => option?.session_year}
-            style={{ background: 'white' }}
-            onChange={(event, option) => setAcademicYearID(option?.id)}
-            renderInput={(params) => (
-              <TextField {...params} label='Academic' variant='outlined' required />
-            )}
-          />
-        </Grid>
-        <Grid item md={2} xs={12}>
-          <Autocomplete
-            id='attedancetype'
-            size='small'
-            options={branchData}
-            getOptionLabel={(option) => option?.branch?.branch_name}
-            style={{ background: 'white' }}
-            onChange={(event, option) => handleCallGrade(event, option?.id)}
-            renderInput={(params) => (
-              <TextField {...params} label='Branch' variant='outlined' required />
-            )}
-          />
-        </Grid>
-        <Grid item md={2} xs={12}>
-          <Autocomplete
-            id='grade'
-            size='small'
-            options={gradeData}
-            getOptionLabel={(option) => option?.grade_name}
-            name='grade'
-            style={{ background: 'white' }}
-            onChange={(event, option) => setGradeID(option?.id)}
-            renderInput={(params) => (
-              <TextField {...params} label='grades' variant='outlined' required />
-            )}
-          />
-        </Grid>
-        <Grid item md={2} xs={12}>
-          <Autocomplete
-            id='section'
-            size='small'
-            options={sectionData}
-            getOptionLabel={(option) => option?.section_name}
-            onChange={(event, option) => setSectionID(option?.id)}
-            style={{ background: 'white' }}
-            renderInput={(params) => (
-              <TextField {...params} label='Section' variant='outlined' required />
-            )}
-          />
-        </Grid>
-        {/* <Grid item md={11} xs={12}>
-          <Divider />
-        </Grid> */}
-        {/* <Grid item md={1} xs={12}></Grid>
-        <br />
-        <br />
-        <Grid>
-          <StyledClearButton
-            variant='contained'
-            startIcon={<ClearIcon />}
-            // href={`/markattedance`}
-          >
-            Clear all
-          </StyledClearButton>
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedAcadmeicYear(value)
+                console.log(value, "test")
+                if(value){
+                  callApi(
+                    `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                    'branchList'
+                  );
+                }
+                setSelectedGrade([]);
+                setSectionList([]);
+                setSelectedSection([]);
+                setSelectedBranch([])
 
-          <StyledFilterButton
-            variant='contained'
-            color='secondary'
-            startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-            className={classes.filterButton}
-            onClick={handleFilter}
-          >
-            filter
-          </StyledFilterButton>
-        </Grid> */}
+              }}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedAcademicYear}
+              options={academicYear}
+              getOptionLabel={(option) => option?.session_year}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Academic Year'
+                  placeholder='Academic Year'
+                />
+              )}
+            />
+        </Grid>
+        <Grid item md={3} xs={12}>
+          <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedBranch([])
+                if(value){
+                  // const ids = value.map((el)=>el)
+                  const selectedId=value.branch.id
+                  setSelectedBranch(value)
+                  console.log(value)
+                  callApi(
+                    `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                    'gradeList'
+                  );
+                }
+                setSelectedGrade([]);
+                setSectionList([]);
+                setSelectedSection([]);
+
+              }}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedBranch}
+              options={branchList}
+              getOptionLabel={(option) => option?.branch?.branch_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  placeholder='Branch'
+                />
+              )}
+            />
+        </Grid>
+        <Grid item md={3} xs={12}>
+          <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedGrade([])
+                if(value){
+                  // const ids = value.map((el)=>el)
+                  const selectedId=value.grade_id
+                  // console.log(selectedBranch.branch)
+                  const branchId=selectedBranch.branch.id
+                  setSelectedGrade(value)
+                  callApi(
+                    `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+                    'section'
+                  );
+                }
+                  setSectionList([]);
+                  setSelectedSection([]);
+
+              }}
+              id='grade_id'
+              className='dropdownIcon'
+              value={selectedGrade}
+              options={gradeList}
+              getOptionLabel={(option) => option?.grade__grade_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Grade'
+                  placeholder='Grade'
+                />
+              )}
+            />
+        </Grid>
+        <Grid item md={3} xs={12}>
+          <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedSection([])
+                if (value) {
+                  const ids=value.id
+                  const secId=value.section_id
+                  setSelectedSection(value)
+                  setSecSelectedId(secId)
+                }
+
+              }}
+              id='section_id'
+              className='dropdownIcon'
+              value={selectedSection}
+              options={sectionList}
+              getOptionLabel={(option) => option?.section__section_name || option?.section_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Section'
+                  placeholder='Section'
+                />
+              )}
+            />
+        </Grid>
+        <Grid item md={11} xs={12}>
+          <Divider />
+        </Grid>
       </Grid>
       <Grid
         container
@@ -541,10 +533,10 @@ payload: payload
             </div>
             {counter === 2 ? (
               <RangeCalender
-                gradeID={gradeID}
-                branchID={branchID}
-                sectionID={sectionID}
-                academicYearID={academicYearID}
+                gradeID={selectedGrade}
+                branchID={selectedBranch}
+                sectionID={selectedSection}
+                academicYearID={selectedAcademicYear}
                 handlePassData={handlePassData}
                 sevenDay={sevenDay}
               />
@@ -588,28 +580,12 @@ payload: payload
             ) : (
               <></>
             )}
-            {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <StaticDateRangePicker
-              displayStaticWrapperAs='desktop'
-              value={value}
-              onChange={(newValue) => {
-                setValue(newValue);
-              }}
-              renderInput={(startProps, endProps) => (
-                <React.Fragment>
-                  <TextField {...startProps} variant='standard' />
-                  <Box sx={{ mx: 2 }}> to </Box>
-                  <TextField {...endProps} variant='standard' />
-                </React.Fragment>
-              )}
-            />
-          </LocalizationProvider> */}
           </Grid>
           <Grid className='buttonGrid'>
             <StyledClearButton
               variant='contained'
               startIcon={<ClearIcon />}
-//               href={`/markattedance`}
+              onClick={handleClearAll}
             >
               Clear all
             </StyledClearButton>
