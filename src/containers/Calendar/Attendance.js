@@ -9,7 +9,7 @@ import ClearIcon from '../../components/icon/ClearIcon';
 import Breadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import moment from 'moment';
 import MobileDatepicker from './mobile-datepicker';
-import './attendance.scss';
+import './overallattendance.scss';
 import FormGroup from "@material-ui/core/FormGroup";
 import { useHistory } from 'react-router';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
@@ -608,18 +608,42 @@ const handleDateChange = ()=>{
                         // style={{ textAlign: 'start' }}
                       >
                         <h3 style={{color:'#014B7E', textAlign:'center'}}>{item.attendance_for_date}</h3>
-                        <Grid
-                          item
-                          xs={11}
-                          sm={1}
-                          md={1}
-                          lg={2}
-                        >
-                          <p class='box'>
-                            <span style={{borderTopColor: item.is_first_shift_present ? "yellow" : 'blue', borderLeftColor:item.is_first_shift_present ? "yellow" : 'blue'}}>1st</span>
-                            <span style={{borderBottomColor: item.is_second_shift_present ? "yellow" : 'blue', borderRightColor:item.is_second_shift_present ? "yellow" : 'blue'}}>2nd</span>
+                        {
+                        (item.is_first_shift_present && item.is_second_shift_present) && 
+                        <Grid>
+                          <p class='box3'>
+                            <span class='content1'>1st</span>
+                            <span class='content'>2nd</span>
                           </p>
-                        </Grid>
+                      </Grid>
+                      }
+                      {
+                        (item.is_first_shift_present && !item.is_second_shift_present) && 
+                        <Grid>
+                          <p class='box'>
+                            <span class='content1'>1st</span>
+                            <span class='content'>2nd</span>
+                          </p>
+                      </Grid>
+                      }
+                      {
+                        (!item.is_first_shift_present && item.is_second_shift_present) && 
+                        <Grid>
+                          <p class='box1'>
+                            <span class='content1'>1st</span>
+                            <span class='content'>2nd</span>
+                          </p>
+                      </Grid>
+                      }
+                      {
+                        (!item.is_first_shift_present && !item.is_second_shift_present) &&
+                        <Grid>
+                          <p class='box2'>
+                            <span class='content1'>1st</span>
+                            <span class='content'>2nd</span>
+                          </p>
+                      </Grid>
+                      }
                       </Grid>
                     </Grid>
                   </CardContent>

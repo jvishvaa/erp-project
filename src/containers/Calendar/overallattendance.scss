@@ -34,6 +34,111 @@
   border-radius: 6px 4px;
 }
 
+.box1 {
+  /* we need this to position the pseudo-element */
+  position: relative;
+
+  /* set a fixed size */
+  width: 6em;
+  height: 6em;
+
+  /* this is just to style the content */
+  padding: 6px;
+  color: white;
+  text-align: right;
+}
+
+.box1:before {
+  /* we need this to create the pseudo-element */
+  content: '';
+  display: block;
+
+  /* position the triangle in the top right corner */
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+
+  /* create the triangle */
+  width: 0;
+  height: 0;
+  border: 3em solid transparent;
+  border-top-color: red;
+  border-left-color: red;
+  border-bottom-color: green;
+  border-right-color: green;
+  border-radius: 6px 4px;
+}
+.box2 {
+  /* we need this to position the pseudo-element */
+  position: relative;
+
+  /* set a fixed size */
+  width: 6em;
+  height: 6em;
+
+  /* this is just to style the content */
+  padding: 6px;
+  color: white;
+  text-align: right;
+}
+
+.box2:before {
+  /* we need this to create the pseudo-element */
+  content: '';
+  display: block;
+
+  /* position the triangle in the top right corner */
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+
+  /* create the triangle */
+  width: 0;
+  height: 0;
+  border: 3em solid transparent;
+  border-top-color: red;
+  border-left-color: red;
+  border-bottom-color: red;
+  border-right-color: red;
+  border-radius: 6px 4px;
+}
+.box3 {
+  /* we need this to position the pseudo-element */
+  position: relative;
+
+  /* set a fixed size */
+  width: 6em;
+  height: 6em;
+
+  /* this is just to style the content */
+  padding: 6px;
+  color: white;
+  text-align: right;
+}
+
+.box3:before {
+  /* we need this to create the pseudo-element */
+  content: '';
+  display: block;
+
+  /* position the triangle in the top right corner */
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+
+  /* create the triangle */
+  width: 0;
+  height: 0;
+  border: 3em solid transparent;
+  border-top-color: green;
+  border-left-color: green;
+  border-bottom-color: green;
+  border-right-color: green;
+  border-radius: 6px 4px;
+}
 .content {
   /* position the content above the triangle */
   position: absolute;

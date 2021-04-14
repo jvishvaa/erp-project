@@ -285,38 +285,52 @@ const handleSinlgeStudent = (id)=>{
 
   const dummyData = [
     {
-      name: 'Akash',
-      rollno: '11',
+      student_first_name: 'Akash',
+      is_first_shift_present: true,
+      is_second_shift_present: false,
+      student: '11',
       ERPno: '123456789',
     },
     {
-      name: 'Sharma',
-      rollno: '12',
+      student_first_name: 'Sharma',
+      is_first_shift_present: true,
+      is_second_shift_present: false,
+      student: '12',
       ERPno: '123456789',
     },
     {
-      name: 'Akash',
-      rollno: '13',
+      student_first_name: 'Akash',
+      is_first_shift_present: true,
+      is_second_shift_present: false,
+      student: '13',
       ERPno: '123456789',
     },
     {
-      name: 'Sharma',
-      rollno: '14',
+      student_first_name: 'Sharma',
+      is_first_shift_present: true,
+      is_second_shift_present: false,
+      student: '14',
       ERPno: '123456789',
     },
     {
-      name: 'Akash',
-      rollno: '15',
+      student_first_name: 'Akash',
+      is_first_shift_present: true,
+      is_second_shift_present: false,
+      student: '15',
       ERPno: '123456789',
     },
     {
-      name: 'Sharma',
-      rollno: '16',
+      student_first_name: 'Sharma',
+      is_first_shift_present: true,
+      is_second_shift_present: false,
+      student: '16',
       ERPno: '123456789',
     },
     {
-      name: 'Akash',
-      rollno: '17',
+      student_first_name: 'Akash',
+      is_first_shift_present: true,
+      is_second_shift_present: false,
+      student: '17',
       ERPno: '123456789',
     },
   ]
@@ -590,7 +604,7 @@ const handleSinlgeStudent = (id)=>{
         <br />
       </Grid>
       <Grid container spacing={2} direction='row'>
-        {result && result
+        {dummyData && dummyData
         .filter((item,index)=>{
             if(state.present){
               const pageCondition = index >= offset && index < offset + 8
@@ -619,30 +633,25 @@ const handleSinlgeStudent = (id)=>{
           })
         .map((item) => {
           return (
-            <Grid item xs={12} sm={6} md={4} lg={3}>
+            <Grid item xs={12} sm={6} md={3} lg={3}>
               <Card className={classes.bord} onClick={()=>handleSinlgeStudent(item.id)} style={{cursor:'pointer'}}>
                 <CardMedia className={classes.cover} />
                 <div>
                   <CardContent>
-                    <Grid container direction='row'>
+                    <Grid container direction='row' justify="space-between" alignItems="center" style={{border:'1px solid red'}}>
                       <Grid item xs={1} sm={1} md={1} lg={1} style={{ marginTop: 15 }}>
                         <Avatar>{item.student_first_name.slice(0, 1)}</Avatar>
                       </Grid>
-                      <Grid
-                        item
-                        xs={6}
-                        sm={6}
-                        md={6}
-                        lg={6}
-                        style={{ marginLeft: 30, textAlign: 'start' }}
-                      >
+                      <Grid item >
                         <Typography>{item.student_first_name.slice(0, 6) || ""}</Typography>
                         <Typography>{item.student}</Typography>
                       </Grid>
-                      <p class='box'>
-                        <span class='content1'>1st</span>
-                        <span class='content'>2nd</span>
-                      </p>
+                      <Grid>
+                        <p class='box'>
+                          <span class='content1'>1st</span>
+                          <span class='content'>2nd</span>
+                        </p>
+                      </Grid>
                     </Grid>
                   </CardContent>
                 </div>
@@ -656,7 +665,7 @@ const handleSinlgeStudent = (id)=>{
       <Grid container justify='center'>
         {' '}
         {
-          result && <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
+          dummyData && <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
 
         }
       </Grid>
