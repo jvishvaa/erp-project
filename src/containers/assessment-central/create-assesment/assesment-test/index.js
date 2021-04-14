@@ -65,6 +65,7 @@ const AssesmentTest = ({
   testDate,
   testInstructions,
   totalMarks,
+  testMarks
 }) => {
   const [minimize, setMinimize] = useState(false);
   const [openEditor, setOpenEditor] = useState(false);
@@ -354,6 +355,7 @@ const AssesmentTest = ({
                                 question={q}
                                 expanded={marksAssignMode}
                                 onChangeMarks={onChangeTestMarks}
+                                testMarks={testMarks}
                               />
                             </div>
                           ))}

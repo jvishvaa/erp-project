@@ -19,6 +19,7 @@ const MyTinyEditor = ({
             name="tinymce"
             value={content}
             onEditorChange={handleEditorChange}
+            mce={true}
             init={{
                 selector: 'textarea#myTextArea',
                 placeholder: placeholder,
