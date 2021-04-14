@@ -16,6 +16,11 @@ export default {
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
     courses: '/aol/courses/',
+    attendance: '/academic/student_attendance_between_date_range/',
+    showAttendance: '/academic/show_attendance/',
+    createAttendance: '/academic/create_attendance/',
+    studentList: '/academic/get_user_details/',
+    singleStudentAttendance: '/academic/student_attendance_between_days/',
   },
   profile: {
     userDetails: '/erp_user/user-data/',
@@ -95,8 +100,7 @@ export default {
     updateMessageType: '/communication/',
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
-    editChapter: '/academic/'
-
+    editChapter: '/academic/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -155,7 +159,7 @@ export default {
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
     editChapter: '/academic/',
-    centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`//'https://dev.mgmt.letseduvate.com/qbox/lesson_plan/erp_lesson_mapping/?domain_name=olvorchidnaigaon'
+    centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`, //'https://dev.mgmt.letseduvate.com/qbox/lesson_plan/erp_lesson_mapping/?domain_name=olvorchidnaigaon'
   },
   lessonPlan: {
     periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
@@ -218,7 +222,7 @@ export default {
     createCircular: '/circular/upload-circular/',
     deleteCircular: '/circular/delete-circular/',
     updateCircular: '/circular/update-circular/',
-    deleteFile:'/academic/delete-file/',
+    deleteFile: '/academic/delete-file/',
   },
   generalDairy: {
     dairyList: '/academic/general-dairy-messages/',
@@ -265,6 +269,22 @@ export default {
     getBatchesApi: '/erp_user/student_online_class/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
+  
+  eventBat:{
+    getPaginatedCategories:"/academic/list_event_categories_p/",  //get
+    getListCategories:"/academic/list_event_categories/",  //get
+    postCreateEvent:"/academic/create_event_category/",  //post
+    patchUpdateEvent:"/academic/update_event_category/",//patch
+    deleteEventCategory:"/academic/delete_event_category/", //delete
+    filterEventCategory:"/academic/filter_event_categories/" //get 
+
+},
+
+CreateEvent:{
+  CreateEvent:'academic/events/',
+  getEventCategory:"academic/list_create_event_category/"
+},
+
   assessment: {
     questionPaperList: `/academic/assessment-list/`,
     viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
@@ -276,6 +296,10 @@ export default {
     userAssessmentSubmission: `${baseURLCentral}/assessment/user_response/`,
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+  },
+  publish: {
+    ebook: `erp_user/publication/`,
+    update_delete: `erp_user/update-destroy-publication/`,
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',

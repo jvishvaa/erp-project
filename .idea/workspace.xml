@@ -2,21 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="12e30880-aaa5-4a06-8f95-cea5433c2102" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/BranchAccountant/ChangeFeePlanToStudent/changeFeePlanToStudent.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/BranchAccountant/ChangeFeePlanToStudent/changeFeePlanToStudent.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/BranchAccountant/ChangeFeePlanToStudent/store/actions/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/BranchAccountant/ChangeFeePlanToStudent/store/actions/actions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/BranchAccountant/PostDateCheque/postDateCheque.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/BranchAccountant/PostDateCheque/postDateCheque.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/BranchAccountant/PostDateCheque/store/actions/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/BranchAccountant/PostDateCheque/store/actions/actions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/BranchAccountant/StudentLedgerTab/studentLedgerTab.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/BranchAccountant/StudentLedgerTab/studentLedgerTab.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/CreateFeeType/CurrFeeType/currFeeType.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/CreateFeeType/CurrFeeType/currFeeType.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/feeType.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/feeType.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/CreateFeeType/RegistrationFeeType/registrationFee.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/CreateFeeType/RegistrationFeeType/registrationFee.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/ExpenseManagement/Deposits/deposits.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/ExpenseManagement/Deposits/deposits.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/store/actions/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Finance/src/components/Finance/store/actions/actions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/Finance/src/components/Inventory/store/actions/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Finance/src/components/Inventory/store/actions/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/containers/Finance/src/urls.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Finance/src/urls.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/redux/reducers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/reducers/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/axios.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/axios.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/containers/Calendar/CreateEvent.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Calendar/CreateEvent.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/containers/Calendar/OverallAttendance.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Calendar/OverallAttendance.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/containers/attendance/AttedanceCalender.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/attendance/AttedanceCalender.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +15,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitToolBoxStore">
@@ -85,6 +81,7 @@
       <updated>1612733130185</updated>
       <workItem from="1612733133222" duration="329000" />
       <workItem from="1612871722991" duration="49000" />
+      <workItem from="1617772391644" duration="60000" />
     </task>
     <servers />
   </component>
