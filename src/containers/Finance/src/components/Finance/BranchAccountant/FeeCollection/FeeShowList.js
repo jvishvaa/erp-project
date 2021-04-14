@@ -377,6 +377,7 @@ class FeeShowList extends Component {
   }
 
   componentDidMount () {
+    this.props.schoolDeatails(this.props.user, this.props.alert)
     console.log('Total1', this.props.location.state.session)
     this.setState({
       session: this.props.location.state.session,
@@ -1757,8 +1758,10 @@ class FeeShowList extends Component {
               <Tabs value={this.state.value} onChange={handleChange} variant='scrollable' scrollButtons='auto'>
                 {/* <Tab value='one' label='OLV Students' />
                 <Tab value='two' label='Non OLV Students' /> */}
-                 <Tab value='one' label='ORCHIDS Students' />
-                <Tab value='two' label='Non ORCHIDS Students' />
+                 {/* <Tab value='one' label='ORCHIDS Students' />
+                <Tab value='two' label='Non ORCHIDS Students' /> */}
+                 <Tab value='one' label= {this.props.schoolData && this.props.schoolData[0]?.school_name + ' Student'} />
+                <Tab value='two' label= { 'Non ' + (this.props.schoolData && this.props.schoolData[0]?.school_name) + ' Student'} />
               </Tabs>
             </AppBar>
           </React.Fragment>
@@ -2521,9 +2524,11 @@ const mapStateToProps = state => ({
   studentErp: state.finance.accountantReducer.studentErpSearch.studentErpList,
   branchData: state.finance.accountantReducer.financeAccDashboard.branchData,
   gradeList: state.finance.common.gradeList,
+  schoolData: state.finance.accountantReducer.feeCollection.schoolData,
 })
 
 const mapDispatchToProps = dispatch => ({
+  schoolDeatails: (user, alert) => dispatch(actionTypes.schoolDeatails({user, alert})),
   fetchStudentErpDet: (erp, session, user, alert) => dispatch(actionTypes.fetchStudentErpDet({ erp, session, user, alert })),
   fetchFeeCollection: (session, user, alert, branch) => dispatch(actionTypes.fetchFeeCollectionList({ session, user, alert, branch })),
   saveOutsiders: (data, user, alert) => dispatch(actionTypes.saveOutsiders({ data, user, alert })),

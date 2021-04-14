@@ -7,7 +7,8 @@ const initialState = {
   ReceiptNo: '',
   studentId: null,
   studentDet: null,
-  miscReports: []
+  miscReports: [],
+  schoolData: null
 }
 
 export const feeCollectionReducer = (state = initialState, action) => {
@@ -75,6 +76,12 @@ export const feeCollectionReducer = (state = initialState, action) => {
       return {
         ...state,
         miscReports: data
+      }
+    }
+    case actionTypes.SCHOOL_DETAILS: {
+      return {
+        ...state,
+        schoolData: action.payload.data
       }
     }
     default : {

@@ -549,6 +549,7 @@ const urls = {
   AssessmentUserStatus: BASE + '/assessment/student/status',
   CreateOtherFeesForUnassigned: BASE + '/finance/listapiforotherfeeaccountant/',
   StudentsInfo: BASE + '/finance/ledger-tab/student-data/',
+  SchoolDeatails: BASE + '/finance/school-name/',
   StudentInfo: BASE + '/finance/studentdata/',
   DeleteOtherFeesForassigned: BASE + '/finance/delete_otherfee_for_assigned/',
   ITC: BASE + '/finance/studentitcertificate/',
