@@ -2,6 +2,8 @@ import React, { Fragment } from 'react';
 import { makeStyles } from '@material-ui/core';
 import CommentBlock from './CommentBlock';
 import Comments from './Comments';
+import axiosInstance from '../../../../config/axios';
+import endpoints from '../../../../config/endpoints';
 
 const useStyles = makeStyles({
   childComment: {
@@ -12,6 +14,19 @@ const useStyles = makeStyles({
 
 export default function PostCommentsComponent(props) {
   const classes = useStyles({});
+  const [commentsList, setCommentsList] = React.useState([]);
+
+  React.useEffect(() => {
+    if(props.replayCount >= 1) {
+      axiosInstance
+      .get(`${endpoints.discussionForum.commentList}?comment=${props.id}`)
+      .then((res) => {
+        setCommentsList(res.data.result.results);
+      })
+      .catch((error) => console.log(error));
+    }
+  }, [props.rowData]);
+
   return (
     <>
       <Comments
@@ -22,16 +37,35 @@ export default function PostCommentsComponent(props) {
         isLikes={props.isLikes}
         id={props.id}
       />
-      {props.replies !== undefined && props.replies !== null && props.replies.length > 0 && (
+      {/* {props.replies !== undefined && props.replies !== null && props.replies.length > 0 && (
         <div className={classes.childComment}>
           {props.replies.map((rowData, id) => (
             <CommentBlock
               key={id}
+              id={rowData.id}
               firstname={rowData.firstname}
               lastname={rowData.lastname}
               commnet={rowData.commnet}
               likes={rowData.likes}
+              isLikes={rowData.isLikes}
               replies={rowData.commnet_reply}
+            />
+          ))}
+        </div>
+      )} */}
+      {props.replayCount && props.replayCount >= 1 && (
+        <div className={classes.childComment}>
+          {commentsList.length > 0 && commentsList.map((rowData, id) => (
+            <CommentBlock
+              key={id}
+              id={rowData.id}
+              firstname={rowData.first_name}
+              lastname={rowData.last_name}
+              commnet={rowData.answer}
+              likes={rowData.like_count}
+              isLikes={rowData.is_like}
+              replies={rowData.commnet_reply}
+              replayCount={rowData.replay_count ? rowData.replay_count : 0}
             />
           ))}
         </div>

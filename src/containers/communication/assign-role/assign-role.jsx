@@ -124,7 +124,7 @@ const AssignRole = (props) => {
   }, [selectedGrades]);
 
   useEffect(() => {
-    displayUsersList();
+   if(moduleId) displayUsersList();
     if (assignedRole) {
       setAssigenedRole(false);
     }
@@ -134,7 +134,7 @@ const AssignRole = (props) => {
     if (filterCheck) {
       setFilterCheck(false);
     }
-  }, [pageno, assignedRole, clearAll, filterCheck]);
+  }, [pageno, assignedRole, clearAll, filterCheck,moduleId]);
 
   useEffect(() => {
     if (isNewSeach) {
@@ -227,7 +227,7 @@ const AssignRole = (props) => {
   };
 
   const displayUsersList = async () => {
-    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
+    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
 
     if (selectedMultipleRoles.length) {
       const selectedRoleId = selectedMultipleRoles.map((el) => el.id);
@@ -237,7 +237,7 @@ const AssignRole = (props) => {
       getUserListUrl += `&session_year=${selectedYear.id}`;
     }
     if (selectedBranch) {
-      getUserListUrl += `&branch=${selectedBranch.id}`;
+      getUserListUrl += `&branch_id=${selectedBranch.id}`;
     }
     if (selectedGrades.length) {
       const selectedGradeId = selectedGrades.map((el) => el.grade_id);
