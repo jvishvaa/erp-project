@@ -65,6 +65,7 @@ const AssesmentTest = ({
   testDate,
   testInstructions,
   totalMarks,
+  testMarks,
 }) => {
   const [minimize, setMinimize] = useState(false);
   const [openEditor, setOpenEditor] = useState(false);
@@ -84,10 +85,13 @@ const AssesmentTest = ({
     }
     if (fieldName === 'testid') {
       value = event.target.value;
-      if (value.toString().length <= 10) {
-        onTestIdChange(+value);
+      if (/^[a-zA-Z0-9]{0,10}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
+        onTestIdChange(value);
       } else {
-        setAlert('error', 'Test ID must not exceed length of 10!');
+        setAlert(
+          'error',
+          'Test ID can contain alphanumeric & must not exceed length of 10!'
+        );
       }
     }
     if (fieldName === 'testmarks') {
@@ -99,13 +103,6 @@ const AssesmentTest = ({
       }
     }
   };
-
-  // onChange={(e) => {
-  //   const { target: { value } = {} } = e || {};
-  //   if (Number.isFinite(+value)) {
-  //   onTestDurationChange(+value);
-  //   }
-  //   }}
 
   return (
     <div className='create-container'>
@@ -209,8 +206,8 @@ const AssesmentTest = ({
                       type='number'
                       inputProps={{
                         min: 0,
-                        max: 30,
-                        maxLength: 2,
+                        max: 1440,
+                        maxLength: 4,
                       }}
                       size='small'
                       className='bg-white'
@@ -235,8 +232,8 @@ const AssesmentTest = ({
                       type='number'
                       inputProps={{
                         min: 0,
-                        max: 100,
-                        maxLength: 3,
+                        max: 1000,
+                        maxLength: 4,
                       }}
                       size='small'
                       className='bg-white'
@@ -409,6 +406,7 @@ const AssesmentTest = ({
                                 question={q}
                                 expanded={marksAssignMode}
                                 onChangeMarks={onChangeTestMarks}
+                                testMarks={testMarks}
                               />
                             </div>
                           ))}
