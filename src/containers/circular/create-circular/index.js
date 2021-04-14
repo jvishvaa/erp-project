@@ -145,7 +145,6 @@ const CraeteCircular = () => {
         subject: '',
         chapter: '',
       });
-      console.log(value,'============================')
       axiosInstance
         .get(`${endpoints.communication.grades}?branch_id=${value?.branch.id}&session_year=${filterData.year?.id}&module_id=${moduleId}`)
         .then((result) => {
@@ -377,8 +376,8 @@ const CraeteCircular = () => {
     if (!filterData.section) {
       return setAlert('warning', 'Select Section');
     }
-
-    axiosInstance
+    if(filePath.length>0){
+      axiosInstance
       .put(`${endpoints.circular.updateCircular}`, {
         circular_id: circularKey,
         circular_name: title,
@@ -387,7 +386,7 @@ const CraeteCircular = () => {
         media:filePath,
         Branch: [filterData?.branch?.id],
         grades: [filterData?.grade?.id],
-        sections: [filterData?.section?.section_id],
+        sections: [filterData?.section?.section_id || filterData?.section?.id],
         academic_year: filterData?.year?.id,
       })
       .then((result) => {
@@ -411,6 +410,43 @@ const CraeteCircular = () => {
       .catch((error) => {
         setAlert('error', error?.data?.message);
       });
+    }
+    if(filePath.length === 0){
+      axiosInstance
+      .put(`${endpoints.circular.updateCircular}`, {
+        circular_id: circularKey,
+        circular_name: title,
+        description: description,
+        module_name: filterData.role.value,
+        Branch: [filterData?.branch?.id],
+        grades: [filterData?.grade?.id],
+        sections: [filterData?.section?.section_id || filterData?.section?.id],
+        academic_year: filterData?.year?.id,
+      })
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setTitle('');
+          setDescription('');
+          setFilterData({
+            branch: '',
+            grade: '',
+            section: '',
+            role: '',
+          });
+          setFilePath([]);
+          setFilterEvent(false);
+          setAlert('success', result?.data?.message);
+          history.push('/teacher-circular');
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error?.data?.message);
+      });
+    }
+
+
   };
 
   //////EDIT USE-EFFECT
@@ -498,7 +534,7 @@ const CraeteCircular = () => {
                 className='dropdownIcon'
                 value={filterData?.branch}
                 options={branchDropdown}
-                getOptionLabel={(option) => option?.branch?.branch_name}
+                getOptionLabel={(option) => option?.branch?.branch_name || filterData?.branch?.branch_name}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
