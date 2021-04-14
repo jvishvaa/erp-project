@@ -73,7 +73,6 @@ const ViewClassTableCell = (props) => {
   };
 
   const handleAudit = () => {
-    debugger;
   };
 
   const handleCancel =  async (classId) => {

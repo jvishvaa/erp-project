@@ -29,6 +29,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const modulesArray = [
+    { id: 'lesson-plan', label: 'Lesson plan', key:'is_lesson_plan', value:true },
+    { id: 'assessment', label: 'Assessment', key:'is_assessment', value:true},
+    { id: 'ebook', label: 'Ebook', key:'is_ebook', value:true }
+]
+
 const Subjectgrade = (props) => {
     const classes = useStyles();
     const [academicYear, setAcademicYear] = useState([]);
@@ -48,6 +54,11 @@ const Subjectgrade = (props) => {
     const [error, setError] = useState(null);
     const [defaultValueGrade, setdefaultValueGrade] = useState(null);
     const { setAlert } = useContext(AlertNotificationContext);
+
+
+    const [modules] = React.useState(modulesArray)
+    // const [selectedModule, selectModule] = React.useState(modulesArray[0])
+    const [selectedModule, selectModule] = React.useState()
 
 
     useEffect(() => {
@@ -76,10 +87,12 @@ const Subjectgrade = (props) => {
         }
         if(selectedYear?.id){
             getBranch();
-            centralGradeSubjects();
+            // centralGradeSubjects();
         }
     }, [selectedYear]);
-
+    useEffect(()=>{
+        centralGradeSubjects();
+    },[selectedModule])
     const handleChangeBranch = (value) => {
         if (value) {
             setBranchValue(value);
@@ -148,14 +161,22 @@ const Subjectgrade = (props) => {
             setUpdateSubjectValue(null);
         }
     }
-
+    
     const handleSubjectChange = (e, value) => {
         let values = Array.from(value, (option) => option.id);
         setUpdateSubjectValue(value)
         setSubjectValue(values);
     }
-
+    
     const centralGradeSubjects = () => {
+        setCentralSubject([])
+        setCentralGrade([])
+        
+        const { key:moduleKey, value } = selectedModule || {}
+        
+        if(!moduleKey) return
+        
+
         let centralSub = [];
         let centralGrade = []
         // axiosInstance.get(`${endpoints.mappingStudentGrade.central}`).then(res => {
@@ -197,7 +218,9 @@ const Subjectgrade = (props) => {
             subDomain = hostSplitArray[0]
         }
         const domainTobeSent =subDomain 
-        const apiURL = `${endpoints.mappingStudentGrade.centralGradeSubjects}?domain_name=${domainTobeSent}`
+
+
+        const apiURL = `${endpoints.mappingStudentGrade.centralGradeSubjects}?domain_name=${domainTobeSent}&${moduleKey}=${value}`
         const headers = { headers: { 'x-api-key': 'vikash@12345#1231' }, }
         axios.get(apiURL, headers).then(res => {
             // console.log(res.data.result)
@@ -274,6 +297,12 @@ const Subjectgrade = (props) => {
             error['central_gradeError'] = 'Please select valid Central Grade';
 
         }
+        if (!input['module']) {
+            isValid = false
+            errors = true
+            error['moduleError'] = 'Please select valid module';
+
+        }
 
         const validInfo = {
             errorMessage: error,
@@ -285,6 +314,7 @@ const Subjectgrade = (props) => {
 
 
     const submit = () => {
+        const {key:moduleKey, value} = selectedModule
         let body = {
             branch: branchValue && branchValue.branch.id,
             erp_grade: gradeValue && gradeValue.grade_id,
@@ -295,7 +325,9 @@ const Subjectgrade = (props) => {
             // central_gs_mapping: gradeValue && gradeValue.id,
             // central_gs_mapping: centralGrade[0] && centralGrade[0].id,
             central_gs_mapping: centralSubValue && centralSubValue.grade_subject_id,
-            central_subject_name: centralSubValue && centralSubValue.subject_name
+            central_subject_name: centralSubValue && centralSubValue.subject_name,
+            module: moduleKey,
+            [moduleKey]: value
         }
         if (!props.location.edit) {
             const valid = Validation(body)
@@ -422,6 +454,7 @@ const Subjectgrade = (props) => {
                 </div>
                 <div className="mapping-grade-subject-dropdown-container">
                     <Grid container className={classes.root} spacing={2}>
+
                         <Grid item xs={12} sm={4}>
                             <FormControl className={`select-form`}>
                                 <Autocomplete
@@ -549,6 +582,35 @@ const Subjectgrade = (props) => {
                 </div>
                 <div className="cen-dropdown">
                     <Grid container className={classes.root} spacing={2}>
+                    <Grid item xs={12} sm={4}>
+                            <FormControl className={`select-form`}>
+                                <Autocomplete
+                                    // {...defaultProps}
+                                    style={{ width: 350 }}
+                                    // multiple
+                                    value={selectedModule}
+                                    id="tags-outlined"
+                                    options={modules}
+                                    getOptionLabel={(option) => option.label}
+                                    filterSelectedOptions
+                                    size="small"
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="outlined"
+                                            label="Module"
+                                        />
+                                    )}
+                                    onChange={(e, value) => {
+                                        selectModule(value);
+                                        handleChangeCentralGrade(null);
+                                        handleChangeCentralSubject(null)
+                                    }}
+                                    getOptionSelected={(option, value) => value && option.id == value.id}
+                                />
+                                <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.moduleError}</FormHelperText>
+                            </FormControl>
+                        </Grid>
                         <Grid item xs={12} sm={4}>
                             <FormControl className={`select-form`}>
                                 <Autocomplete

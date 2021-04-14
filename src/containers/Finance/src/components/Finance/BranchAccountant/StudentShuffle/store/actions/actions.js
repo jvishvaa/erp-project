@@ -12,7 +12,7 @@ export const fetchStudentShuffle = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.FetchStudentShuffle + '?academic_year=' + payload.session + '&status=' + payload.status, {
+      .get(urls.FetchStudentShuffle + '?academic_year=' + payload.session + '&status=' + payload.status + '&branch_id=' + payload.branch, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }

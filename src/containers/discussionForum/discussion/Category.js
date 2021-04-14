@@ -111,7 +111,7 @@ const Category = (props) => {
   const classes = useStyles({});
   const [postList, setPostList] = React.useState([]);
   const [categoryId, setCategoryId] = React.useState(0);
-  const [postURL, setPostURL] = React.useState(endpoints.discussionForum.postList);
+  const [postURL, setPostURL] = React.useState(endpoints.discussionForum.filterCategory);
   const history = useHistory();
 
   const hideFilter = () => {
@@ -147,19 +147,19 @@ const Category = (props) => {
         : '';
     if (categoryId !== 0 && grades === '') {
       //postURL = `${endpoints.discussionForum.postList}?category=${categoryId}`;
-      setPostURL(`${endpoints.discussionForum.postList}?category=${categoryId}`);
+      setPostURL(`${endpoints.discussionForum.filterCategory}?category=${categoryId}`);
       console.log(categoryId + ' === ' + postURL);
     }
     if (categoryId === 0 && grades !== '' && sections !== '') {
       //postURL = `${endpoints.discussionForum.postList}?grade=${grades}&section=${sections}`;
       setPostURL(
-        `${endpoints.discussionForum.postList}?grade=${grades}&section=${sections}`
+        `${endpoints.discussionForum.filterCategory}?grade=${grades}&section=${sections}`
       );
     }
     if (categoryId !== 0 && grades !== '' && sections !== '') {
       //postURL = `${endpoints.discussionForum.postList}?category=${categoryId}&grade=${grades}&section=${sections}`;
       setPostURL(
-        `${endpoints.discussionForum.postList}?category=${categoryId}&grade=${grades}&section=${sections}`
+        `${endpoints.discussionForum.filterCategory}?category=${categoryId}&grade=${grades}&section=${sections}`
       );
     }
     axiosInstance

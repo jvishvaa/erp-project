@@ -1,0 +1,64 @@
+@import '../../../../assets/styles/variables';
+
+.create-assesment-container {
+  .selected-question-card {
+    padding: 0.5rem 1rem;
+    border: 1px solid #dbdbdb;
+    border-radius: 10px;
+    width: 500px;
+    margin: 20px 10px;
+
+    &.extra-width {
+      width: 550px;
+    }
+
+    .selected-question-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .header-name {
+        color: #ff6b6b;
+        font-size: 1.1rem;
+      }
+    }
+
+    .content {
+      display: flex;
+      .left {
+        width: 50%;
+        color: $secondary-color;
+      }
+
+      .right {
+        width: 50%;
+        display: flex;
+        justify-content: space-evenly;
+        width: 50%;
+        .created {
+          color: #168d00;
+        }
+      }
+    }
+
+    .expanded-selected-question-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .header-name {
+        color: #ff6b6b;
+        font-size: 1.1rem;
+      }
+      .mode {
+        color: $secondary-color;
+        font-weight: 550;
+        font-size: 1rem;
+      }
+      .is-published {
+        color: $secondary-color;
+      }
+      .created {
+        color: #168d00;
+      }
+    }
+  }
+}

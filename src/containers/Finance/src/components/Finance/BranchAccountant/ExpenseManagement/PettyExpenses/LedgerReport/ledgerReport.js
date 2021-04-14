@@ -31,6 +31,34 @@ import { urls } from '../../../../../../urls'
 import LedgerInfo from './ledgerInfo'
 import Layout from '../../../../../../../../Layout'
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Expanse Management' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Petty Cash Expense') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 const LedgerReport = ({ classes,
   session,
   user,
@@ -39,6 +67,7 @@ const LedgerReport = ({ classes,
   fetchLedgerName,
   fetchLedgerReport,
   fetchReceiptHeader,
+  recData,
   receiptHeader,
   ledgerTypeList,
   downloadReports,
@@ -91,7 +120,7 @@ const LedgerReport = ({ classes,
   useEffect(() => {
     if (academicSession) {
       // for receipt headers and subheader in voucher PDF
-      fetchReceiptHeader(academicSession, user, alert)
+      fetchReceiptHeader(academicSession, recData && recData.branch, user, alert)
     }
   }, [academicSession,
     fetchReceiptHeader,
@@ -176,7 +205,8 @@ const LedgerReport = ({ classes,
       toDate,
       page,
       user,
-      alert
+      alert,
+      recData && recData.branch
     )
     setPage(1)
   }
@@ -278,7 +308,8 @@ const LedgerReport = ({ classes,
         ledger_head: ledgerHead,
         ledger_name: ledgerName,
         from_date: fromDate,
-        to_date: toDate
+        to_date: toDate,
+        branch: recData && recData.branch
       }
       downloadReports('LedgerReport.xlsx', urls.pettyReport, data, alert, user)
     } else {
@@ -607,19 +638,20 @@ const mapStateToProps = (state) => ({
   leadgerHeadList: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.ledgerHeadList,
   ledgerNameList: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.ledgerNameList,
   ledgerReportList: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.ledgerReportList,
-  receiptHeader: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.receiptHeader
+  receiptHeader: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.receiptHeader,
+  recData: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.sendData
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loadFinancialYear: dispatch(actionTypes.fetchFinancialYear()),
+  loadFinancialYear: dispatch(actionTypes.fetchFinancialYear(moduleId)),
   loadLedgerType: dispatch(actionTypes.fetchLedgerType()),
   downloadReports: (reportName, url, data, alert, user) => dispatch(actionTypes.downloadReports({ reportName, url, data, alert, user })),
   fetchLedgerRecord: (ledgerType, user, alert) => dispatch(actionTypes.fetchLedgerRecord({ ledgerType, user, alert })),
   fetchLedgerName: (headId, user, alert) => dispatch(actionTypes.fetchLedgerName({ headId, user, alert })),
-  fetchLedgerReport: (academicSession, ledgerType, ledgerHead, ledgerName, fromDate, toDate, page, user, alert) => dispatch(actionTypes.fetchLedgerReport({ academicSession, ledgerType, ledgerHead, ledgerName, fromDate, toDate, page, user, alert })),
+  fetchLedgerReport: (academicSession, ledgerType, ledgerHead, ledgerName, fromDate, toDate, page, user, alert, branch) => dispatch(actionTypes.fetchLedgerReport({ academicSession, ledgerType, ledgerHead, ledgerName, fromDate, toDate, page, user, alert, branch })),
   setActiveInactive: (id, status, user, alert) => dispatch(actionTypes.setTxnActiveInactive({ id, status, user, alert })),
   downloadAttachments: (urls, user, alert) => dispatch(actionTypes.downloadLedgerAttachment({ urls, user, alert })),
-  fetchReceiptHeader: (session, user, alert) => dispatch(actionTypes.fetchReceiptHeader({ session, user, alert }))
+  fetchReceiptHeader: (session, branch, user, alert) => dispatch(actionTypes.fetchReceiptHeader({ session, branch, user, alert }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(LedgerReport))

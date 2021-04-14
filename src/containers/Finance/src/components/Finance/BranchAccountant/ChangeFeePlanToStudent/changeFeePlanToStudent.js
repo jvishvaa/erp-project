@@ -255,7 +255,7 @@ class ChangeFeePlanToStudent extends Component {
   }
 
   assignAutomatic = () => {
-    this.props.assignAtmtStudents(this.state.session, this.state.gradeId, this.state.sectionId, this.state.studentType, this.props.alert, this.props.user)
+    this.props.assignAtmtStudents(this.state.session, this.state.gradeId, this.state.sectionId, this.state.studentType, this.props.alert, this.props.user, this.state.selectedBranches && this.state.selectedBranches.value, moduleId)
   }
 
   showAdjustFeeHandler = () => {
@@ -814,7 +814,7 @@ const mapDispatchToProps = dispatch => ({
   fetchAllPlans: (session, gradeId, branch, sectionId, studentType, alert, user) => dispatch(actionTypes.fetchAllPlans({ session, gradeId, branch, sectionId, studentType, alert, user })),
   fetchAllFeePlans: (session, gradeId, branch, alert, user) => dispatch(actionTypes.fetchAllFeePlans({ session, branch, gradeId, alert, user })),
   editStudentFeePlan: (data, studentId, alert, user) => dispatch(actionTypes.editStudentFeePlan({ data, studentId, alert, user })),
-  assignAtmtStudents: (session, gradeId, sectionId, studentType, alert, user) => dispatch(actionTypes.assignAutomaticStudent({ session, gradeId, sectionId, studentType, alert, user })),
+  assignAtmtStudents: (session, gradeId, sectionId, studentType, alert, user, branch, moduleId) => dispatch(actionTypes.assignAutomaticStudent({ session, gradeId, sectionId, studentType, alert, user, branch, moduleId })),
   fetchInstallDetails: (feePlanId, alert, user) => dispatch(actionTypes.fetchInstallDetails({ feePlanId, alert, user })),
   fetchAdjustFee: (currentFeePlanId, targetFeePlanId, alert, user) => dispatch(actionTypes.fetchAdjustFee({ currentFeePlanId, targetFeePlanId, alert, user })),
   filterCurrentFeePlan: (text) => dispatch(actionTypes.filterCurrentFeePlan({ text })),
