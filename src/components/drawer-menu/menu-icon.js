@@ -12,7 +12,38 @@ import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import PeopleIcon from '@material-ui/icons/People';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
-import { AccountBalance, AccountBalanceWallet, AccountBox, AlarmOn, Assessment, AssignmentInd, AssignmentTurnedIn, AttachMoney, BlurCircular, Book, ConfirmationNumber, Contacts, CreditCard, DateRange, EmojiTransportation, GroupAdd, LibraryAddCheck, LocalAtm, LocalLibrary, Loyalty, Money, Person, Report, School, Settings, ShopTwo, Store } from '@material-ui/icons';
+import WifiTetheringIcon from '@material-ui/icons/WifiTethering';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
+import {
+  AccountBalance,
+  AccountBalanceWallet,
+  AccountBox,
+  AlarmOn,
+  Assessment,
+  AssignmentInd,
+  AssignmentTurnedIn,
+  AttachMoney,
+  BlurCircular,
+  Book,
+  ConfirmationNumber,
+  Contacts,
+  CreditCard,
+  DateRange,
+  EmojiTransportation,
+  GroupAdd,
+  LibraryAddCheck,
+  LocalAtm,
+  LocalLibrary,
+  Loyalty,
+  Money,
+  Person,
+  Report,
+  School,
+  Settings,
+  ShopTwo,
+  Store,
+} from '@material-ui/icons';
+import AssessmentIcon from '@material-ui/icons/Assessment';
 
 const menuIcon = (name) => {
   let icon = '';
@@ -34,7 +65,7 @@ const menuIcon = (name) => {
       break;
     }
     case 'Communication': {
-      icon = <ForumIcon />;
+      icon = <WifiTetheringIcon />;
       break;
     }
     case 'Add Group': {
@@ -80,45 +111,45 @@ const menuIcon = (name) => {
     case 'Misc. Fee To Class': {
       icon = <Money />;
       break;
-    };
+    }
     case 'Transport Fees': {
       icon = <EmojiTransportation />;
       break;
-    };
-  
-  case 'Approvals/Requests': {
-    icon = <LibraryAddCheck/>;
-    break;
-  };
-  case 'Concession': {
-    icon = <AlarmOn />;
-    break;
-  };
-  case 'Reports': {
-    icon = <Report />;
-    break;
-  };
-  case 'Expense Management': {
-    icon = <AccountBalanceWallet />;
-    break;
-  };
-  
-  case 'Coupons': {
-    icon = <ConfirmationNumber />;
-    break;
-  };
+    }
 
-  case 'student': {
-    icon = <Person />;
-    break;
-  };
+    case 'Approvals/Requests': {
+      icon = <LibraryAddCheck />;
+      break;
+    }
+    case 'Concession': {
+      icon = <AlarmOn />;
+      break;
+    }
+    case 'Reports': {
+      icon = <Report />;
+      break;
+    }
+    case 'Expense Management': {
+      icon = <AccountBalanceWallet />;
+      break;
+    }
 
-  case 'Admissions': {
-    icon = <Contacts  />;
-    break;
-  };
-  
-      case 'Banks & Fee Accounts': {
+    case 'Coupons': {
+      icon = <ConfirmationNumber />;
+      break;
+    }
+
+    case 'student': {
+      icon = <Person />;
+      break;
+    }
+
+    case 'Admissions': {
+      icon = <Contacts />;
+      break;
+    }
+
+    case 'Banks & Fee Accounts': {
       icon = <AccountBalance />;
       break;
     }
@@ -134,54 +165,51 @@ const menuIcon = (name) => {
     case 'Settings': {
       icon = <Settings />;
       break;
-    }   
+    }
     case 'Expanse Management': {
       icon = <AssignmentTurnedIn />;
       break;
-    }  
+    }
     case 'E-Mandate': {
       icon = <DateRange />;
       break;
-    } 
+    }
     case 'Diary': {
       icon = <LocalLibrary />;
       break;
-    } 
+    }
     case 'Circular': {
       icon = <BlurCircular />;
       break;
-    } 
+    }
     case 'Finance': {
       icon = <AttachMoney />;
       break;
-    } 
-
+    }
     case 'Store': {
       icon = <Store />;
       break;
-    } 
-
+    }
     case 'Orchidio': {
       icon = <School />;
       break;
-    } 
+    }
     case 'Marketing Admin': {
       icon = <ShopTwo />;
       break;
-    } 
-    
+    }
     case 'Marketing Report': {
       icon = <Assessment />;
       break;
-    } 
+    }
     case 'Aol Sales': {
       icon = <Loyalty />;
       break;
-    } 
+    }
     case 'ID Card': {
       icon = <AccountBox />;
       break;
-    } 
+    }
     case 'Blogs': {
       icon = <WebAsset />;
       break;
@@ -196,6 +224,18 @@ const menuIcon = (name) => {
     }
     case 'Role Management': {
       icon = <AssignmentIndIcon />;
+      break;
+    }
+    case 'Assessment': {
+      icon = <AssessmentIcon />;
+      break;
+    }
+    case 'Discussion Forum': {
+      icon = <ForumIcon />;
+      break;
+    }
+    case 'Ebook': {
+      icon = <MenuBookIcon />;
       break;
     }
     default:

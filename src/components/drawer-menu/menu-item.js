@@ -73,6 +73,11 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Student Strength', Path: '/student-strength' },
     { name: 'Teacher Circular', Path: '/teacher-circular' },
     { name: 'Student Circular', Path: '/student-circular' },
+
+    { name: 'Question Bank', Path: '/question-bank' },
+    { name: 'Question Paper', Path: '/assessment-question' },
+    { name: 'Create Test', Path: '/assesment' },
+    { name: 'Take Test', Path: '/assessment' },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

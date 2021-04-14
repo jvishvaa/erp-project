@@ -3,6 +3,8 @@ import { Grid, makeStyles, withStyles, Button, InputBase } from '@material-ui/co
 import LikeIcon from '../../../../components/icon/LikeIcon';
 import ProfileIcon from '../../../../components/icon/ProfileIcon';
 import LikeButton from '../../../../components/like-button/index';
+import axiosInstance from '../../../../config/axios';
+import endpoints from '../../../../config/endpoints';
 // import Avatar from '@material-ui/core/Avatar';
 // import OutlinedButton from '../../core_themes/buttons/OutlinedButton';
 
@@ -93,12 +95,28 @@ export default function CommentsComponent(props) {
 
   const [reply, setReply] = React.useState('');
   const [isReply, setIsReply] = React.useState(false);
+  const [isChildReply ] = React.useState(props.isChildReply ? props.isChildReply : false);
   const handleChange = (e) => {
     setReply(e.target.value);
   };
   const handleOnClick = () => {
     setIsReply(true);
   };
+
+  const handleReplyToAnswer = () => {
+    //replyToAnswer
+    const params = {
+      answer: reply,
+      replay : props.id
+    }
+    axiosInstance.post(endpoints.discussionForum.replyToAnswer, params)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
 
   return (
     <Grid container spacing={1}>
@@ -130,7 +148,7 @@ export default function CommentsComponent(props) {
             <span className={classes.replyComment}>
               <span dangerouslySetInnerHTML={{ __html: props.commnet }} />
             </span>
-            {!isReply && (
+            {!isChildReply && !isReply && (
               <span onClick={handleOnClick} className={classes.commentsCount}>
                 / reply to this user
               </span>
@@ -138,7 +156,7 @@ export default function CommentsComponent(props) {
           </div>
         </div>
       </Grid>
-      {isReply && (
+      {!isChildReply && isReply && (
         <Grid item xs={10}>
           <StyledInput
             placeholder='Have your say'
@@ -148,9 +166,9 @@ export default function CommentsComponent(props) {
           />
         </Grid>
       )}
-      {isReply && (
+      {!isChildReply && isReply && (
         <Grid item xs={2}>
-          <StyledOutlinedButton fullWidth>Reply</StyledOutlinedButton>
+          <StyledOutlinedButton fullWidth onClick={handleReplyToAnswer}>Reply</StyledOutlinedButton>
         </Grid>
       )}
     </Grid>
