@@ -79,7 +79,6 @@ const Calander = (props) => {
   const handleContextData = () => (
     <UserConsumer>{({ ids }) => setAcadamicYear(ids)}</UserConsumer>
   );
-  console.log(props.passId, 'ids');
 
   const handleChangeData = (data) => {
     setSelectData(data);
@@ -89,7 +88,6 @@ const Calander = (props) => {
     setAddPeriod(false);
   };
   const handleOpenNewPeriod = () => {
-    console.log('new period');
     setAddPeriod(true);
   };
   const callingSubjectAPI = () => {
@@ -100,17 +98,13 @@ const Calander = (props) => {
         },
       })
       .then((res) => {
-        // if (res.status === 200) {
-        //   setAcadamicData(res, 'subject');
-        // }
-        console.log(res, 'subject');
+       
         setSection(res.data.data.results);
       })
       .catch((error) => {
-        console.log(error);
+        setAlert('error', "can't fetch subjects")
       });
   };
-  // console.log(props.passId, 'sev;icsvpeplesv');
   const callingTeachersAPI = () => {
     axiosInstance
       .get('/academic/teachers-list/', {
@@ -119,11 +113,10 @@ const Calander = (props) => {
         },
       })
       .then((res) => {
-        console.log(res, 'teachers');
         setAssignedTeacher(res.data.result);
       })
       .catch((error) => {
-        console.log(error);
+        setAlert('error', "can't fetch teachers list")
       });
   };
   const createPeriodAPI = () => {
@@ -155,18 +148,15 @@ const Calander = (props) => {
         }
       })
       .catch((error) => {
-        // setAlert('error', error.data.message);
-        console.log(error, 'test');
+        setAlert('error', error?.data?.message);
       });
   };
   const OpenCalanderWeek = () => {
-    // console.log(props.tableData)
     setDataMonday(props.tableData.Monday);
     setDataTuesday(props.tableData.Tuesday);
     setDataWednesday(props.tableData.Wednesday);
     setDataThursday(props.tableData.Thursday);
     setDataFriday(props.tableData.Friday);
-    console.log(props.tableData, 'calander-table-data');
     // while (1) {
     //   if (props.tableData.Monday) [counterLength];
     // // }
@@ -220,7 +210,6 @@ const Calander = (props) => {
     // setLoopMax(mappingArray);
   };
   const handleChangeDay = (e) => {
-    console.log(e, 'event');
     setDayName(e.target.value);
     setDay(e.target.value);
   };

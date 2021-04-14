@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext,useEffect, useState } from 'react';
 // import Paper from '@material-ui/core/Paper';
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import DisplayBox from './time-table-display-box/time-table-display';
 import {
   Grid,
@@ -17,6 +18,7 @@ const TimeTableMobile = (props) => {
   const [headingLoop] = useState(['Mon', 'Tue', 'Wed', 'Thus', 'Fri']);
   const [dataDay, setDataDay] = useState(props.tableData.Monday);
   const [dataOpenChange, setDataOpenChange] = useState([]);
+  const { setAlert } = useContext(AlertNotificationContext);
   const [isEdit, setIsEdit] = useState(false);
   useEffect(() => {
     props.callGetAPI();

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -6,6 +6,7 @@ import axiosInstance from '../../../config/axios';
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import moment from 'moment';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import '../timetable.scss';
 const useStyles = makeStyles(() => ({
   multilineColor: {
@@ -16,6 +17,7 @@ const useStyles = makeStyles(() => ({
 }));
 const DisplayBox = (props) => {
   const classes = useStyles();
+  const { setAlert } = useContext(AlertNotificationContext);
   const [openEditForm, setOpenEditForm] = useState(true);
   const setMobileView = useMediaQuery('(min-width:800px)');
   const currDate = moment('08:09:00').format(' h:mm: a');
@@ -34,33 +36,12 @@ const DisplayBox = (props) => {
   const [MaterialRequired, setMaterialRequired] = useState(
     props.dataOpenChange.required_material
   );
-
-  // useEffect(() => {
-  //   // axiosInstance
-  //   //   .get('/erp_user/user-data/', {
-  //   //     params: {
-  //   //       erp_user_id: data.teacher_name.name,
-  //   //     },
-  //   //   })
-  //   //   .then((response) => {
-  //   //     if (response.status === 200) {
-  //   //       console.log(response, 'ydyd');
-  //   //       setTeacherDetails(response.data.result.name);
-  //   //     }
-  //   //   })
-  //   //   .catch((error) => {
-  //   //     console.log(error);
-  //   //   });
-  // }, [props.dataOpenChange, openEditForm]);
-
-  console.log(currDate, 'datatae');
   const sendUpdatedData = () => {
     setOpenEditForm(true);
     if (!setMobileView) {
       props.handleOpenChangeMobile(data, false);
     }
     props.handleChangeDisplayView();
-    console.log('updateDAta');
     let obj = {
       period_description: Description,
       subject: subjectID,
@@ -69,12 +50,15 @@ const DisplayBox = (props) => {
     };
     axiosInstance
       .put('/academic/assign_class_periods/' + data.id + '/', obj)
-      .then((response) => {
-        console.log(response);
+      .then((responce) => {
+        if(responce.status===200){
+          setAlert('success', 'Period Edited');
+        }
         props.callGetAPI();
       })
       .catch((error) => {
-        console.log(error);
+
+        setAlert('error', "can't edit list");
       });
   };
   return (
@@ -139,7 +123,8 @@ const DisplayBox = (props) => {
                   {...params}
                   size='small'
                   fullWidth
-                  label={assignedTeacherName}
+                  label='Conducted By'
+                  // label={assignedTeacherName}
                   variant='outlined'
                 />
               )}

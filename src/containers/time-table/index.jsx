@@ -61,11 +61,8 @@ const TimeTable = (props) => {
       });
     }
   }, [location.pathname]);
-  // console.log(getModuleId(), 'madule ids');
-  console.log(ids, 'all datas');
   useEffect(() => {
     if (openCloseTable) {
-      console.log('fetching');
       callGetTimeTableAPI();
     } else {
       setIDS(true);
@@ -88,12 +85,10 @@ const TimeTable = (props) => {
             setLoading(false);
           }
           setTableData(response.data.result);
-          console.log(response, 'table data');
         }
       })
       .catch((error) => {
         setLoading(false);
-        console.log(error);
       });
   };
   const handlePassData = (
