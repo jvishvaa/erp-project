@@ -63,30 +63,65 @@ const styles = theme => ({
   }
 })
 
-const StudentShuffle = ({ classes, session, history, dataLoading, studentShuffle, alert, user, fetchStudentShuffle, sendApproveReject }) => {
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Student Shuffle') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
+const StudentShuffle = ({ classes, session, history, dataLoading, branchList, fetchBranchAtAcc, studentShuffle, alert, user, fetchStudentShuffle, sendApproveReject }) => {
   const [sessionYear, setSession] = useState({ value: '2019-20', label: '2019-20' })
   const [shuffleStatus, setShuffleStatus] = useState({ label: 'Pending', value: 1 })
   const [accReasonToApprove, setAccReason] = useState({})
+  const [branch, setBranch] = useState('')
 
   useEffect(() => {
     // Update the document title using the browser API
     console.log('im calling the main func')
-    if (sessionYear && shuffleStatus) {
-      fetchStudentShuffle(sessionYear.value, shuffleStatus.label, alert, user)
+    if (sessionYear && shuffleStatus && branch) {
+      fetchStudentShuffle(sessionYear.value, shuffleStatus.label, alert, user, branch && branch.value)
     }
   }, [alert, fetchStudentShuffle, sessionYear, shuffleStatus, user])
 
   const requestHandler = (e) => {
     history.push({
-      pathname: '/finance/Requestshuffle'
+      pathname: '/finance/Requestshuffle',
+      state:{
+        branch: branch && branch.value
+      }
     })
   }
 
   const handleSession = (e) => {
     setSession(e)
     // fetchStudentShuffle(alert, user)
+    fetchBranchAtAcc(e && e.value, user, alert, moduleId)
   }
-
+  const branchChangeHandler = (e) => {
+    setBranch(e)
+  }
   const handleShuffleStatus = (e) => {
     console.log('changed status: ', e)
     setShuffleStatus(e)
@@ -329,6 +364,22 @@ const StudentShuffle = ({ classes, session, history, dataLoading, studentShuffle
           />
         </Grid>
         <Grid item className={classes.item} xs={3}>
+          <label>To Branch* </label>
+          <Select
+            placeholder='Select Branch'
+            value={branch || ''}
+            options={
+              branchList
+                ? branchList.map(g => ({
+                  value: g.branch && g.branch.id ? g.branch.id : '',
+                  label: g.branch && g.branch.branch_name ? g.branch.branch_name : ''
+                }))
+                : []
+            }
+            onChange={branchChangeHandler}
+          />
+        </Grid>
+        <Grid item className={classes.item} xs={3}>
           <label>Shuffle Status*</label>
           <Select
             placeholder='Status'
@@ -369,12 +420,14 @@ const mapStateToProps = state => ({
   user: state.authentication.user,
   session: state.academicSession.items,
   dataLoading: state.finance.common.dataLoader,
-  studentShuffle: state.finance.accountantReducer.studentShuffle.shuffleDetails
+  studentShuffle: state.finance.accountantReducer.studentShuffle.shuffleDetails,
+  branchList: state.finance.common.branchPerSession,
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchStudentShuffle: (session, status, alert, user) => dispatch(actionTypes.fetchStudentShuffle({ session, status, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranchAtAcc: (session, user, alert, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, user, alert, moduleId })),
+  fetchStudentShuffle: (session, status, alert, user, branch) => dispatch(actionTypes.fetchStudentShuffle({ session, status, alert, user, branch })),
   sendApproveReject: (data, alert, user) => dispatch(actionTypes.sendApproveReject({ data, alert, user }))
 })
 
