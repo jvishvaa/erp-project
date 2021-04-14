@@ -324,12 +324,12 @@ const handleSinlgeStudent = (id)=>{
   return (
     <Layout>
       <div className='profile_breadcrumb_wrapper'  style={{marginLeft:'-10px'}}>
-          <CommonBreadcrumbs componentName='Attendance' />
+          <CommonBreadcrumbs componentName='OverallAttendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
         <Grid item md={3}  xs={12}>
           <MobileDatepicker
-          // style={{ width: '100%' }}
+          style={{ width: '100%'}}
             onChange={(date) => handleEndDateChange(date)}
             handleStartDateChange={handleStartDateChange}
             handleEndDateChange={handleEndDateChange}

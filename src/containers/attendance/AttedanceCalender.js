@@ -39,12 +39,15 @@ import { student } from 'containers/Finance/src/_reducers/student.reducer';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
-
+    borderRadius: '10px',
     width: '100%',
-
     margin: '1.5rem -0.1rem',
   },
-
+  bord: {
+    margin: theme.spacing(1),
+    border: 'solid lightgrey',
+    borderRadius: 10,
+  },
   title: {
     fontSize: '1.1rem',
   },
@@ -328,7 +331,9 @@ const handleMarkAttendance = ()=>{
 
   return (
     <Layout>
-      <CommonBreadcrumbs componentName='Attendance + Calendar' />
+      <div style={{marginTop:'20px', marginLeft:'-10px'}}>
+        <CommonBreadcrumbs componentName='Attendance + Calendar'/>
+      </div>
       <Grid
         container
         direction='row'

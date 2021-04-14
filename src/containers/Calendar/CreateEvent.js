@@ -5,6 +5,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import Calendar from 'react-calendar';
 import DatePicker from 'react-datepicker';
 import MobileDatepicker from './mobile-datepicker';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { DateRangePicker } from 'materialui-daterange-picker';
 import 'react-calendar/dist/Calendar.css';
 import TimeRange from 'react-time-range';
@@ -85,8 +86,13 @@ setEndTime(end_time.toString().slice(16,21))
       padding: '1rem',
       borderRadius: '10px',
       width: '100%',
-
+  
       margin: '1.5rem -0.1rem',
+    },
+    bord: {
+      margin: theme.spacing(1),
+      border: 'solid lightgrey',
+      borderRadius: 10,
     },
     
   }));
@@ -289,13 +295,15 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
     <>
 
       <Layout>
-      
+        <div className='profile_breadcrumb_wrapper'  style={{marginLeft:'-10px'}}>
+            <CommonBreadcrumbs componentName='CreateEvent' />
+        </div>
         <form>
           <MediaQuery minWidth={785}>
             <Grid container direction='row'>
-              <Grid item md={4} lg={3} sm={6} xs={12}>
+              {/* <Grid item md={4} lg={3} sm={6} xs={12}>
                 <Breadcrumbs componentName='CreateEvent' />
-              </Grid>
+              </Grid> */}
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
               <Grid item md={4} lg={2} sm={6} xs={12}>
@@ -333,7 +341,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
               </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={2} xs={12}>
+              <Grid item md={3} xs={12}>
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
@@ -368,7 +376,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
               )}
             />
           </Grid>
-          <Grid item md={2} xs={12}>
+          <Grid item md={3} xs={12}>
             <Autocomplete
               // multiple
               style={{ width: '100%' }}
@@ -406,7 +414,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
               )}
             />
           </Grid>
-          <Grid item md={2} xs={12}>
+          <Grid item md={3} xs={12}>
             <Autocomplete
               // multiple
               style={{ width: '100%' }}
@@ -445,7 +453,7 @@ console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
               )}
             />
           </Grid>
-          <Grid item md={2} xs={12}>
+          <Grid item md={3} xs={12}>
             <Autocomplete
               // multiple
               style={{ width: '100%' }}

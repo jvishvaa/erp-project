@@ -37,20 +37,13 @@ const useStyles = makeStyles((theme) => ({
     padding: '1rem',
     borderRadius: '10px',
     width: '100%',
+
     margin: '1.5rem -0.1rem',
   },
-
   bord: {
     margin: theme.spacing(1),
     border: 'solid lightgrey',
     borderRadius: 10,
-    flexGrow: 1,
-    margin: 10,
-  },
-  root1: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
   },
 }));
 
@@ -268,7 +261,7 @@ const handleDateChange = ()=>{
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper'  style={{marginLeft:'-10px'}}>
+      <div className='profile_breadcrumb_wrapper' style={{marginLeft:'-10px'}}>
           <CommonBreadcrumbs componentName='Attendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>

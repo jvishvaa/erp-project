@@ -37,7 +37,13 @@ const useStyles = makeStyles((theme) => ({
     padding: '1rem',
     borderRadius: '10px',
     width: '100%',
+
     margin: '1.5rem -0.1rem',
+  },
+  bord: {
+    margin: theme.spacing(1),
+    border: 'solid lightgrey',
+    borderRadius: 10,
   },
   paperStyle: {
     margin: '10px',
@@ -82,6 +88,7 @@ const MarkAttedance = () => {
   const [date, setDate] = useState(new Date())
   const[dateString, setDateString] = useState('')
   const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
+  const [dateValueShow, setDateValueShow] = useState(moment(date).format('DD MMMM YYYY'));
   const [academicYear,setAcademicYear] = useState([]);
   const [selectedAcademicYear,setSelectedAcadmeicYear] = useState('');  
   const [branchList,setBranchList] = useState([])
@@ -267,6 +274,7 @@ const handleFilter = ()=>{
 
   const handleDateChange = (event, value) => {
     setDateValue(value);
+    setDateValueShow(value)
     console.log('date', value);
   };
 
@@ -284,15 +292,6 @@ const handleFilter = ()=>{
     const remarks = "test"
     const fullday_present = true ? "true" : "false"
     console.log(selectedSection.section_id)
-    var bodyFormData = new FormData();
-    bodyFormData.append('section_mapping_id', selectedSection.section_id);
-    bodyFormData.append('student_id', id);
-    bodyFormData.append('attendance_for_date', dateValue);
-    bodyFormData.append('remarks', remarks);
-    bodyFormData.append('fullday_present', fullday_present);
-    bodyFormData.append('is_first_shift_present', product.is_first_shift_present);
-    bodyFormData.append('is_second_shift_present', product.is_second_shift_present);
-    console.log(JSON.stringify(bodyFormData), "test")
 
     const fullData = {
       section_mapping_id:selectedSection.section_id,
@@ -445,7 +444,7 @@ console.log(fullData)
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper'>
+      <div className='profile_breadcrumb_wrapper' style={{marginLeft:'-10px'}}>
           <CommonBreadcrumbs componentName='Mark Attendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
@@ -616,28 +615,6 @@ console.log(fullData)
               )}
             />
           </Grid>
-        {/* <Grid item md={3} xs={12}>
-        <Autocomplete
-            className='dropdownIcon'
-            id='attedancetype'
-            size='small'
-            className='arrow'
-            options={[
-              { id: 1, name: 'Student' },
-              { id: 2, name: 'Staff' },
-            ]}
-            getOptionLabel={(option) => option.name}
-            onChange = {(e, value)=>{
-              console.log(e.target.id)
-              setAttendanceType(value.name)
-            }}
-            renderInput={(params) => (
-              <TextField {...params} label='Attedance Type' placeholder="Attedance Type" variant='outlined' />
-            )}
-
-          />
-        </Grid> */}
-
         <Grid item md={11} xs={12}>
           <Divider />
         </Grid>
@@ -668,18 +645,17 @@ console.log(fullData)
         spacing={3}
         style={{ color: 'red', background: 'white' }}
       >
-        <Grid>
-          <ArrowBackIosIcon />
+        <Grid style={{display:'flex', alignItems:'center', justifyContent:'space-between'}} md={12} xs={12}>
+          <Grid style={{display:'flex', alignItems:'center'}}>
+            <ArrowBackIosIcon />
+            <Typography variant='h5'>{dateValueShow}</Typography>
+            <ArrowForwardIosIcon />
+          </Grid>
+          <Grid>
+            <Typography style={{textAlign:'center'}}>Number of Students: {data && data.length}</Typography>
+          </Grid>
         </Grid>
-        <Grid>
-          <Typography variant='h5'>{dateValue}</Typography>
-        </Grid>
-        <Grid>
-          <ArrowForwardIosIcon />
-        </Grid>
-        <Grid item md={6}></Grid>
-        <Typography>Number of Students: {data && data.length}</Typography>
-        <Grid item md={10}>
+        <Grid item md={12} xs={12}>
           <Divider />
         </Grid>
         <Grid></Grid>
@@ -688,10 +664,13 @@ console.log(fullData)
         </Grid>
 
         <Grid item md={2} xs={12}></Grid>
-        <Grid container justify='center'>
-          {' '}
-          <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
-        </Grid>
+        {
+          data && 
+          <Grid container justify='center'>
+            {' '}
+            <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
+          </Grid>
+        }
       </Grid>
     </Layout>
   );
