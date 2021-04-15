@@ -1295,12 +1295,12 @@ const Layout = ({ children, history }) => {
           <ListItem
             button
             className={classes.menuControlContainer}
-            onClick={() => history.push('/CreateEventCategory')}
+            onClick={() => history.push('/event-category')}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-              <EventNoteIcon />
+              {/* <EventNoteIcon /> */}
             </ListItemIcon>
-            <ListItemText className='menu-item-text'>CreateEventCategory</ListItemText>
+            <ListItemText className='menu-item-text'>Event Category</ListItemText>
           </ListItem>
           {/* <ListItem
             button
@@ -1326,12 +1326,12 @@ const Layout = ({ children, history }) => {
           <ListItem
             button
             className={classes.menuControlContainer}
-            onClick={() => history.push('/AttendanceCalendar')}
+            onClick={() => history.push('/attendance-calendar')}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
+              {/* <TodayIcon /> */}
             </ListItemIcon>
-            <ListItemText className='menu-item-text'>AttedanceCalender</ListItemText>
+            <ListItemText className='menu-item-text'>Attendance Calender</ListItemText>
           </ListItem>
           {/* <ListItem
             button
@@ -1359,7 +1359,7 @@ const Layout = ({ children, history }) => {
             onClick={() => history.push('/publications')}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-              <PublishIcon />
+              {/* <PublishIcon /> */}
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Publication</ListItemText>
           </ListItem>

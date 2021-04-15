@@ -201,6 +201,9 @@ const Cal1 = () => {
   const themeContext = useTheme()
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
   const [filterData, setFilterData] = useState({
     selectedEventType: '',
     // selectedEventName: '',
@@ -215,6 +218,26 @@ const Cal1 = () => {
         // setCategoryType([{val:1,category_name:'cat'},{val:2,category_name:'dog'}])
       });
   }, []);
+
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Calendar & Attendance' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher View' ) {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, [window.location.pathname]);
+  console.log(moduleId,'MODULE_ID')
 
   // useEffect(() => {
   //   axiosInstance.get(`${endpoints.eventCategory.eventCreate}?page_num=${pageNumber}&page_size=${limit}`).then((result) => {
@@ -244,8 +267,6 @@ const Cal1 = () => {
     setEventName(e.target.value);
   };
   function handleEventType(event, value) {
-    console.log(value, '======================================');
-
     setFilterData({ ...filterData, selectedEventType: '' });
     if (value) {
       setFilterData({ ...filterData, selectedEventType: value });
@@ -263,7 +284,7 @@ const Cal1 = () => {
   const handleFilter = (type) => {
     setLoading(true)
     axiosInstance
-      .get(`${endpoints.eventBat.filterEventCategory}?event_category_name=${type}&page_num=${pageNumber}&page_size=${limit}`) //queryparams pass need to done
+      .get(`${endpoints.eventBat.filterEventCategory}?event_category_name=${type}&page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`) //queryparams pass need to done
       .then((result) => {
         setLoading(false)
         setTotalGenre(result.data.data.count);
@@ -285,10 +306,12 @@ const Cal1 = () => {
       })
       .then((result) => {
         setLoading(false)
+        setAlert('success', 'Event Saved Successfully')
         console.log(result.data.data.results)
       })
       .catch((err)=>{
         setLoading(false)
+        setAlert('error', err)
         console.log(err)
       });
     setEventName('')
@@ -300,7 +323,6 @@ const Cal1 = () => {
     })
     setEventType(fullData)
     setOpen(false);
-    setAlert('success', 'Event Saved Successfully')
   };
 
 
@@ -645,10 +667,10 @@ const Cal1 = () => {
             <br />
           </Grid> */}
           <Grid container justify='center'>
-            {totalGenre && totalGenre > 9 && (
+            { totalGenre > 9 && (
               <Pagination
                 onChange={handlePagination}
-                // style={{ paddingLeft: '150px' }}
+                style={{ paddingLeft: '150px' }}
                 count={Math.ceil(totalGenre / limit)}
                 color='primary'
                 page={pageNumber}
