@@ -245,7 +245,7 @@ const EbookPdf = (props) => {
               <div className={classes.root}>
                 <Grid container spacing={2}>
                   <Grid item xs={4} sm={4} md={4}>
-                    <IconButton color='inherit' aria-label='Close'>
+                    <IconButton color='inherit' aria-label='Close'  style={{ color: 'white' }}>
                       <Close onClick={handleClose} /> &nbsp; <span onClick={handleClose} style={{ fontSize: '17px' }}>Close</span>
                     </IconButton>
                   </Grid>
@@ -260,6 +260,7 @@ const EbookPdf = (props) => {
                         <input type='range' className='js-line-range' min='3' max='72' value='1' />
                         <Tooltip title='Undo' arrow>
                           <Undo id='clear'
+                            style={{ color: 'white' }}
                             onClick={deleteAnnotateData}
                           />
                         </Tooltip>
@@ -267,7 +268,7 @@ const EbookPdf = (props) => {
                       &nbsp;
                       &nbsp;
                       <li>
-                        <Tooltip title='Marker' arrow>
+                        <Tooltip title='Marker' arrow style={{ color: 'white' }}>
                           <input type='color' className='js-color-picker color-picker' />
                         </Tooltip>
                       </li>
