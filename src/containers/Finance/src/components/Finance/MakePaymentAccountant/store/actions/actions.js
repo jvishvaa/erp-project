@@ -144,27 +144,27 @@ export const fetchErpSuggestions = (payload) => {
   if (payload.type === 'erp') {
     url = urls.SuggestionsForErp + '?erp=' + payload.erp +
     '&session_year=' + payload.session + '&grade=' + payload.grade + '&section=' + payload.section +
-    '&state=' + payload.status
+    '&state=' + payload.status + '&branch_id=' + payload.branch
   } else if (payload.type === 'student') {
     url = urls.SuggestionsForErp + '?student_name=' + payload.erp +
     '&session_year=' + payload.session + '&grade=' + payload.grade + '&section=' + payload.section +
-    '&state=' + payload.status
+    '&state=' + payload.status + '&branch_id=' + payload.branch
   } else if (payload.type === 'fatherName') {
     url = urls.SuggestionsForErp + '?father_name=' + payload.erp +
     '&session_year=' + payload.session + '&grade=' + payload.grade + '&section=' + payload.section +
-    '&state=' + payload.status
+    '&state=' + payload.status + '&branch_id=' + payload.branch
   } else if (payload.type === 'fatherNo') {
     url = urls.SuggestionsForErp + '?father_contact_no=' + payload.erp +
     '&session_year=' + payload.session + '&grade=' + payload.grade + '&section=' + payload.section +
-    '&state=' + payload.status
+    '&state=' + payload.status + '&branch_id=' + payload.branch
   } else if (payload.type === 'motherName') {
     url = urls.SuggestionsForErp + '?mother_name=' + payload.erp +
     '&session_year=' + payload.session + '&grade=' + payload.grade + '&section=' + payload.section +
-    '&state=' + payload.status
+    '&state=' + payload.status + '&branch_id=' + payload.branch
   } else if (payload.type === 'motherNo') {
     url = urls.SuggestionsForErp + '?mother_contact_no=' + payload.erp +
     '&session_year=' + payload.session + '&grade=' + payload.grade + '&section=' + payload.section +
-    '&state=' + payload.status
+    '&state=' + payload.status + '&branch_id=' + payload.branch
   }
   return (dispatch) => {
     // dispatch(actionTypes.dataLoading())

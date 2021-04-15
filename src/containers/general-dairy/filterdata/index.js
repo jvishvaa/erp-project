@@ -192,7 +192,6 @@ const GeneralDairyFilter = ({
     // setViewMore(false);
   };
   const handleTabChange = (event, tab) => {
-    //debugger
     //handleFilter();
     setCurrentTab(tab);
     setIsEmail(!isEmail);

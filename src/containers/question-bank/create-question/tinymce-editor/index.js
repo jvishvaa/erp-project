@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import endpoints from '../../../../config/endpoints';
-import axiosInstance from '../../../../config/axios';
+// import axiosInstance from '../../../../config/axios';
+import axios from 'axios';
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
 const MyTinyEditor = ({
   id,
@@ -12,6 +14,8 @@ const MyTinyEditor = ({
   filterDataTop,
   filterDataBottom,
 }) => {
+  const { setAlert } = useContext(AlertNotificationContext);
+
   return (
     <Editor
       id={id}
@@ -61,16 +65,21 @@ const MyTinyEditor = ({
               );
               formData.append('question_categories', filterDataBottom.category.category);
               formData.append('question_type', filterDataBottom.type?.question_type);
-              axiosInstance
-                .post(`${endpoints.questionBank.uploadFile}`, formData)
+              axios
+                .post(`${endpoints.questionBank.uploadFile}`, formData, {
+                  headers: { 'x-api-key': 'vikash@12345#1231' },
+                })
                 .then((result) => {
                   if (result.data.status_code === 200) {
-                    let imageUrl = `${endpoints.s3}${result.data?.result}`;
+                    let imageUrl = `${endpoints.assessment.s3}${result.data?.result}`;
                     cb(imageUrl, { alt: 'My alt text' });
                   } else {
+                    setAlert('error', "Can't upload the following image.");
                   }
                 })
-                .catch((error) => {});
+                .catch((error) => {
+                  setAlert('error', "Can't upload the following image.");
+                });
             }
           };
           input.click();

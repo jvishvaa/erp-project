@@ -59,7 +59,6 @@ const DailyDairyList = () => {
         console.log(branchId, gradeId, sectionIds, startDate, endDate, '===');
         setLoading(true);
         setPeriodData([]);
-        debugger
         axiosInstance
             .get(
                 `${endpoints.generalDairy.dairyList

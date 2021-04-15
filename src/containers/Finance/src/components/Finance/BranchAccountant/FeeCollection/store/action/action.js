@@ -10,6 +10,7 @@ export const STUDENT_DETAILS = 'STUDENT_DETAILS'
 export const ORCHIDS_STUDNET_PAY = 'ORCHIDS_STUDNET_PAY'
 export const MISC_REPORT = 'MISC_REPORT'
 export const CANCEL_TRANS = 'CANCEL_TRANS'
+export const SCHOOL_DETAILS = 'SCHOOL_DETAILS'
 
 export const fetchFeeCollectionList = (payload) => {
   return (dispatch) => {
@@ -243,6 +244,33 @@ export const cancelTransaction = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       payload.alert.error('Something Went Wrong!')
+      dispatch(actionTypes.dataLoaded())
+      console.log(error)
+    })
+  }
+}
+
+export const schoolDeatails = (payload) => {
+  return (dispatch) => {
+    dispatch(actionTypes.dataLoading())
+    axios.get(`${urls.SchoolDeatails}`, {
+      headers: {
+        Authorization: 'Bearer ' + payload.user
+      }
+    }).then(response => {
+      if (response.status === 200) {
+        console.log(response)
+        dispatch({
+          type: SCHOOL_DETAILS,
+          payload: {
+            data: response.data
+          }
+        })
+        payload.alert.success('Success!')
+      }
+      dispatch(actionTypes.dataLoaded())
+    }).catch(error => {
+      payload.alert.error('Student Info Failed')
       dispatch(actionTypes.dataLoaded())
       console.log(error)
     })

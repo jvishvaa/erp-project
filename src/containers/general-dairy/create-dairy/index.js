@@ -518,7 +518,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         setCompleteData(selectionRows);
         setTotalPage(result.data.result && result.data.result.count);
         setLoading(false);
-        // debugger
         if (!selectedUsers.length) {
           const tempSelectedUser = [];
           for (
@@ -526,10 +525,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
             page <= (result.data && result.data.result && result.data.result.total_pages);
             page += 1
           ) {
-            // debugger
             tempSelectedUser.push({ pageNo: page, first: true, selected: [] });
           }
-          // debugger
           setSelectedUsers(tempSelectedUser);
         }
         if (result.data.total_pages !== selectAllObj.length) {

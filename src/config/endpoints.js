@@ -209,6 +209,7 @@ export default {
 
   discussionForum: {
     categoryList: '/academic/categories/',
+    UpdateCategory: '/update-category/',
     branch: '/erp_user/branch/',
     grade: '/erp_user/grademapping/',
     filterCategory: '/academic/posts/',
@@ -216,7 +217,10 @@ export default {
     PostCategory: '/academic/create-category/',
     CreateDissusionForum: '/academic/add-post/',
     CreateCommentAndReplay: '/academic/create-answer-replay/',
-    AwardListAPI: '/academic/',
+    AwardListAPI: '/academic/awards-list/',
+    GiveAwardAPI: '/academic/create-award/',
+    commentList: '/academic/comments-list/',
+    replyToAnswer: '/academic/create-answer-replay/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     deletePost: '/academic/',
   },
@@ -263,6 +267,15 @@ export default {
     BlogLike: '/academic/like_blog/',
     BlogView: '/academic/view_blog/',
     WordCountConfig: '/academic/word_count_config/',
+  },
+  ebook: {
+    ebook: '/academic/ebook/',
+    EbookUser:'/academic/ebook_user/',
+    AnnotateEbook:'/academic/ebook_user_status/',
+    academicYearList: '/erp_user/list-academic_year/',
+    // academicYearList: '/erp_user/list-academic_year/',
+    gradeSubjectMappingList: '/lesson_plan/list-grade-subject-mapping/',
+    gradeList: '/lesson_plan/list-grade/',
   },
   teacherViewBatches: {
     courseListApi: '/aol/courses/',
