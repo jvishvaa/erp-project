@@ -311,6 +311,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       topic: '',
     });
     setDropdownData({
+      ...dropdownData,
       branches: [],
       grades: [],
       subjects: [],
@@ -321,11 +322,10 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
   };
 
   const handleFilter = () => {
-    console.log('filtered: ', filterData);
-    if (!filterData?.academic || !filterData?.branch) {
-      setAlert('warning', 'Please select academic and branch');
-      return;
-    }
+    // if (!filterData?.academic || !filterData?.branch) {
+    //   setAlert('warning', 'Please select academic and branch');
+    //   return;
+    // }
     if (
       filterData?.grade &&
       filterData?.subject &&
@@ -337,7 +337,9 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       setIsFilter(true);
       setFilterDataDisplay(filterData);
       setIsTopFilterOpen(false);
-    } else if (!filterData?.grade) setAlert('warning', 'Please select grade!');
+    } else if (!filterData?.academic) setAlert('warning', 'Please select Academic Year!');
+    else if (!filterData?.branch) setAlert('warning', 'Please select Branch!');
+    else if (!filterData?.grade) setAlert('warning', 'Please select grade!');
     else if (!filterData?.subject) setAlert('warning', 'Please select subject!');
     else if (!filterData?.chapter) setAlert('warning', 'Please select chapter!');
     else if (!filterData?.topic) setAlert('warning', 'Please select topic!');
