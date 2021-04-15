@@ -271,6 +271,7 @@ const CreateQuestionPaper = ({
 
       if (isDraft) {
         reqObj.is_draft = 'True';
+        reqObj.is_review='False';
       }
 
       let sectionFlag = true,
