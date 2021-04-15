@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-return-assign */
-/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 import * as React from 'react';
 import { DataGrid } from '@material-ui/data-grid';

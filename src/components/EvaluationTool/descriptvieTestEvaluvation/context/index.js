@@ -190,8 +190,7 @@ export function DescriptiveTestContextProvider({
   };
 
   const getResData = useCallback(() => {
-    // eslint-disable-next-line no-debugger
-    // debugger;
+
     const res = evlRes && evlRes.filter((e) => e.actual_paper_id === mediaId)[0];
 
     let angl = 0;

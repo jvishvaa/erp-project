@@ -96,7 +96,6 @@ const GeneralDairyList = () => {
       }, [location.pathname,page,deleteFlag]);
 
     const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate, activeTab,page, subjects) => {
-        // debugger
         console.log(page,'inside')
         setLoading(true);
         setPeriodData([]);

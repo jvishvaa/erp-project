@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-use-before-define */
-/* eslint-disable no-debugger */
+
 /* eslint-disable react/prop-types */
 import React, { useContext, useState, useEffect, useRef, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -406,6 +406,10 @@ const Layout = ({ children, history }) => {
       // }
       case 'User Management': {
         history.push('/user-management');
+        break;
+      }
+      case 'Ebook View':{
+        history.push('/ebook/view');
         break;
       }
       case 'Create User': {

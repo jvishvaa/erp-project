@@ -345,7 +345,6 @@ const LessonPlanGraphReport = ({
 //       axiosInstance
 //       .get(apiURL)
 //       .then((result) => {
-//         debugger
 //         if (result.data.status_code === 200) {
 //           setAcademicYearDropdown(result.data.result.results);
 //         } else {

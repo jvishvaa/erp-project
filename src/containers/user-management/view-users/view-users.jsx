@@ -1,7 +1,7 @@
 /* eslint-disable dot-notation */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable no-debugger */
+
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import React, { useContext, useState, useEffect } from 'react';

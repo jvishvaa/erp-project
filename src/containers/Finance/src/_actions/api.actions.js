@@ -171,7 +171,6 @@ function listGrades () {
       )
   }
   // eslint-disable-next-line
-  debugger
   function request () { return { type: apiConstants.GRADE_REQUEST } }
   function success (data) { return { type: apiConstants.GRADE_SUCCESS, data } }
   function failure (error) { return { type: apiConstants.GRADE_FAILURE, error } }

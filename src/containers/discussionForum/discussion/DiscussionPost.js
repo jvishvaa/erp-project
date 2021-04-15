@@ -224,7 +224,7 @@ export default function DiscussionPostComponent(props) {
   };
 
   const handleReplie = () => {
-    alert(reply);
+    //alert(reply);
     const params = {
       answer: reply,
       post: postsData.id
@@ -340,12 +340,6 @@ export default function DiscussionPostComponent(props) {
                     isLike={postsData.is_like}
                     likeCounts={postsData? postsData.like_count : 0}
                   />
-                              {/*
-                                <LikeIcon/>
-                                <span className={classes.discussionIcon}>
-                                    {postsData? postsData.like_count : 0}
-                                </span>
-                                */}
                 </span>
                 <span style={{ marginLeft: '10px'}}>
                   <ChatIcon />
