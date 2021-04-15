@@ -54,7 +54,8 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
     }
   };
   const pageChange = (e) => {
-    changePage(e.page);
+    // console.log(e,'page',e.page+1) 
+    changePage(e.page+1);
   };
   const data = {
     rows: [...rows],
