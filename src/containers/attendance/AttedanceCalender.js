@@ -640,13 +640,13 @@ const AttedanceCalender = () => {
             <Grid container direction='row' className={classes.root} id='attendanceGrid'>
               <Grid item md={6} xs={12}>
                 <Typography variant='h6' color='primary' className='attendancePara'>
-                  Attedance
+                  Attendance
                 </Typography>
               </Grid>
               <Grid item md={6} xs={12} className='mark-btn-grid'>
                 <Button size='small' onClick={handleMarkAttendance}  >
                   <span className={classes.contentData} id='mark-para'>
-                    MarkAttendance
+                    Mark Attendance
                   </span>
                 </Button>
               </Grid>

@@ -39,11 +39,11 @@ import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import clsx from 'clsx';
-
+import EventAvailableIcon from '@material-ui/icons/EventAvailable';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-
+import EventNoteIcon from '@material-ui/icons/EventNote';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Grow from '@material-ui/core/Grow';
@@ -1298,7 +1298,7 @@ const Layout = ({ children, history }) => {
             onClick={() => history.push('/CreateEventCategory')}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
+              <EventNoteIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>CreateEventCategory</ListItemText>
           </ListItem>
@@ -1329,7 +1329,7 @@ const Layout = ({ children, history }) => {
             onClick={() => history.push('/AttendanceCalendar')}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
+              <EventAvailableIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>AttedanceCalender</ListItemText>
           </ListItem>

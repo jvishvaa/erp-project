@@ -11,6 +11,9 @@ import {
   TextField,
   Typography,
   withStyles,
+  SvgIcon,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import DateFnsUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
@@ -32,7 +35,8 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import Axios from 'axios';
 import { useHistory } from 'react-router';
 import axios from 'axios';
-
+import unfiltered from '../../assets/images/unfiltered.svg';
+import selectfilter from '../../assets/images/selectfilter.svg';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
@@ -102,7 +106,8 @@ const MarkAttedance = () => {
   const [data, setData] = useState()
   const [newData, setNewData] = useState()
   const history = useHistory()
-
+  const themeContext = useTheme()
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [state, setState] = React.useState({
     checkedA: true,
     checkedB: true,
@@ -461,8 +466,8 @@ const MarkAttedance = () => {
                     <Divider />
                     <Grid container direction='row'>
                       <Typography className={[classes.contentList, classes.paperStyle]}>
-                      1<sup>st</sup><span>&nbsp; Half</span>
-                    </Typography>
+                        1<sup>st</sup><span>&nbsp; Half</span>
+                      </Typography>
 
                       <Grid style={{ marginLeft: '40%' }}>
                         {/* <Switch color='primary'  /> */}
@@ -474,7 +479,7 @@ const MarkAttedance = () => {
                     <Grid container direction='row'>
                       <Typography className={[classes.contentList, classes.paperStyle]}>
                         2<sup>nd</sup><span>&nbsp; Half</span>
-                    </Typography>
+                      </Typography>
 
                       <Grid style={{ marginLeft: '40%' }}>
                         {/* <Switch color='primary' /> */}
@@ -711,7 +716,31 @@ const MarkAttedance = () => {
         <Grid container direction='row' className={classes.root} spacing={2} item justify='center'>
           <StudentData />
         </Grid>
+        {
+          !data &&
+          (<div  style={{width:'10%', margin:'auto'}}>
+            <SvgIcon
+              component={() => (
+                <img
+                  src={unfiltered}
+                />
+              )}
+            />
+            <SvgIcon
+              component={() => (
+                <img
+                  style={
+                    isMobile
+                      ? { height: '20px', width: '250px' }
+                      : { height: '50px', width: '400px'}
+                  }
+                  src={selectfilter}
+                />
+              )}
+            />
+          </div>)
 
+        }
         <Grid item md={2} xs={12}></Grid>
         {
           data &&
