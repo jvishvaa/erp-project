@@ -270,6 +270,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const handleResetFilters = () => {
     setSearchText('');
     setSelectedYear('');
+    setSelectedRoles('')
     setSelectedBranch(null);
     setSelectedGrades([]);
     setSelectedRoles(null);
@@ -389,7 +390,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       setCurrentPage(1);
       getUsersData();
     }
-  }, [isNewSeach]);
+  }, [isNewSeach,moduleId]);
 
   const handleYear = (event, value) => {
     setSelectedYear('');
