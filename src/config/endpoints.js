@@ -29,6 +29,10 @@ export default {
     bulkUpload: '/erp_user/uploaded-users-status/',
     academicYear: '/erp_user/list-academic_year/',
   },
+  timeTable:{
+    tableData:'/academic/time_table/',
+    editTableData:'/academic/assign_class_periods/',
+  },
   communication: {
     roles: '/erp_user/roles/',
     branches: '/erp_user/branch/',

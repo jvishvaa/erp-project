@@ -898,6 +898,14 @@ const Layout = ({ children, history }) => {
         history.push('/finance/TransactionStatus');
         break;
       }
+      case 'Teacher Time Table': {
+        history.push('/time-table/teacher-view');
+        break;
+      }
+      case 'Student Time Table': {
+        history.push('/time-table/student-view');
+        break;
+      }
       default:
         break;
     }

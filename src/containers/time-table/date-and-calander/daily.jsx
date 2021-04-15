@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import DisplayBox from './displayBox.jsx';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 const Daily = (props) => {
   const [daily, setDaily] = useState(null);
   const [loopData] = useState([1, 2, 3, 4, 5]);
+  const { setAlert } = useContext(AlertNotificationContext);
   const [selectData, setSelectData] = useState(false);
   const [currentDay, setCurrent] = useState(null);
   const [DataMonday, setDataMonday] = useState(props.tableData.Monday);
@@ -13,7 +15,6 @@ const Daily = (props) => {
 
   useEffect(() => {
     handleDailyData();
-    console.log(props.openToggleCalander, 'open===');
   }, [props.openToggleCalander]);
   const handleDailyData = () => {
     let newDate = new Date();

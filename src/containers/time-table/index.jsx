@@ -33,41 +33,36 @@ const TimeTable = (props) => {
   const [openCloseTable, setOpenCloseTable] = useState(false);
   const [ids, setIDS] = useState(false);
   useEffect(() => {
-//     if (NavData && NavData.length) {
-//       NavData.forEach((item) => {
-//         if (
-//           item.parent_modules === 'Time Table' &&
-//           item.child_module &&
-//           item.child_module.length > 0
-//         ) {
-//           item.child_module.forEach((item) => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Time Table' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
             if (
-              location.pathname === '/time-table/student-view'
-//               &&
-//               item.child_name === 'Teacher Time Table'
+              location.pathname === '/time-table/student-view' &&
+              item.child_name === 'Teacher Time Table'
             ) {
-//               setStudentModuleId(item?.child_id);
+              setStudentModuleId(item?.child_id);
               setTeacherView(false);
               setOpenCloseTable(false);
             } else if (
-              location.pathname === '/time-table/teacher-view'
-//               &&
-//               item.child_name === 'Student Time Table'
+              location.pathname === '/time-table/teacher-view' &&
+              item.child_name === 'Student Time Table'
             ) {
-//               setTeacherModuleId(item?.child_id);
+              setTeacherModuleId(item?.child_id);
               setTeacherView(true);
               setOpenCloseTable(false)
             }
-//           });
-//         }
-//       });
-//     }
+          });
+        }
+      });
+    }
   }, [location.pathname]);
-  // console.log(getModuleId(), 'madule ids');
-  console.log(ids, 'all datas');
   useEffect(() => {
     if (openCloseTable) {
-      console.log('fetching');
       callGetTimeTableAPI();
     } else {
       setIDS(true);
@@ -90,12 +85,10 @@ const TimeTable = (props) => {
             setLoading(false);
           }
           setTableData(response.data.result);
-          console.log(response, 'table data');
         }
       })
       .catch((error) => {
         setLoading(false);
-        console.log(error);
       });
   };
   const handlePassData = (
