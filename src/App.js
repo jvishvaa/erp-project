@@ -240,7 +240,7 @@ import Airpay from './containers/Finance/src/components/Finance/PaymentGateways/
 import UploadPaymentFile from './containers/Finance/src/components/Finance/student/managePayment/UploadPaymentFile.js';
 import MarkAttedance from './containers/attendance/MarkAttedance';
 import AttedanceCalender from './containers/attendance/AttedanceCalender';
-import CreateEventCategory from './containers/Calendar/CreateEventCategory';
+import EventCategory from './containers/Calendar/EventCategory';
 import Attendance from './containers/Calendar/Attendance';
 import CreateEvent from './containers/Calendar/CreateEvent';
 import OverallAttendance from './containers/Calendar/OverallAttendance';
@@ -308,10 +308,10 @@ function App({ alert }) {
                           <Route path='/profile'>
                             {({ match }) => <Profile match={match} />}
                           </Route>
-                           <Route path='/time-table/student-view'>
+                          <Route path='/time-table/student-view'>
                             {({ match }) => <TimeTable match={match} />}
                           </Route>
-                           <Route path='/time-table/teacher-view'>
+                          <Route path='/time-table/teacher-view'>
                             {({ match }) => <TimeTable match={match} />}
                           </Route>
                           <Route path='/role-management'>
@@ -1170,10 +1170,10 @@ function App({ alert }) {
                               <UploadPaymentFile match={match} alert={alert} />
                             )}
                           </Route>
-                          <Route exact path='/markattedance'>
+                          <Route exact path='/markattendance'>
                             {({ match }) => <MarkAttedance match={match} />}
                           </Route>
-                          <Route exact path='/AttendanceCalendar'>
+                          <Route exact path='/attendance-calendar'>
                             {({ match }) => <AttedanceCalender match={match} />}
                           </Route>
                           <Route exact path='/Attendance'>
@@ -1185,8 +1185,8 @@ function App({ alert }) {
                           <Route exact path='/createEvent'>
                             {({ match }) => <CreateEvent match={match} />}
                           </Route>
-                          <Route exact path='/CreateEventCategory'>
-                            {({ match }) => <CreateEventCategory match={match} />}
+                          <Route exact path='/event-category'>
+                            {({ match }) => <EventCategory match={match} />}
                           </Route>
                           <Route exact path='/publications'>
                             {({ match }) => <Publications match={match} />}

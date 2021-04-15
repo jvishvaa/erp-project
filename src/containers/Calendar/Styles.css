@@ -16,3 +16,7 @@
   margin-left: 80px;
   margin-bottom: 25px;
 }
+.items .MuiPickersDateRangePickerInput-root {
+  align-items: inherit;
+  flex-direction: column;
+}

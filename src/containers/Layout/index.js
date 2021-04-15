@@ -39,11 +39,11 @@ import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import clsx from 'clsx';
-
+import EventAvailableIcon from '@material-ui/icons/EventAvailable';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-
+import EventNoteIcon from '@material-ui/icons/EventNote';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Grow from '@material-ui/core/Grow';
@@ -1295,14 +1295,14 @@ const Layout = ({ children, history }) => {
           <ListItem
             button
             className={classes.menuControlContainer}
-            onClick={() => history.push('/CreateEventCategory')}
+            onClick={() => history.push('/event-category')}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
+              {/* <EventNoteIcon /> */}
             </ListItemIcon>
-            <ListItemText className='menu-item-text'>CreateEventCategory</ListItemText>
+            <ListItemText className='menu-item-text'>Event Category</ListItemText>
           </ListItem>
-          <ListItem
+          {/* <ListItem
             button
             className={classes.menuControlContainer}
             onClick={() => history.push('/OverallAttendance')}
@@ -1311,8 +1311,8 @@ const Layout = ({ children, history }) => {
               <TodayIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>OverallAttendance</ListItemText>
-          </ListItem>
-          <ListItem
+          </ListItem> */}
+          {/* <ListItem
             button
             className={classes.menuControlContainer}
             onClick={() => history.push('/attendance')}
@@ -1321,19 +1321,19 @@ const Layout = ({ children, history }) => {
               <TodayIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Attendance</ListItemText>
-          </ListItem>
+          </ListItem> */}
 
           <ListItem
             button
             className={classes.menuControlContainer}
-            onClick={() => history.push('/AttendanceCalendar')}
+            onClick={() => history.push('/attendance-calendar')}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
+              {/* <TodayIcon /> */}
             </ListItemIcon>
-            <ListItemText className='menu-item-text'>AttedanceCalender</ListItemText>
+            <ListItemText className='menu-item-text'>Attendance Calender</ListItemText>
           </ListItem>
-          <ListItem
+          {/* <ListItem
             button
             className={classes.menuControlContainer}
             onClick={() => history.push('/createEvent')}
@@ -1342,8 +1342,8 @@ const Layout = ({ children, history }) => {
               <TodayIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>CreateEvent</ListItemText>
-          </ListItem>
-          <ListItem
+          </ListItem> */}
+          {/* <ListItem
             button
             className={classes.menuControlContainer}
             onClick={() => history.push('/markattedance')}
@@ -1352,14 +1352,14 @@ const Layout = ({ children, history }) => {
               <TodayIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>MarkAttedance</ListItemText>
-          </ListItem>
+          </ListItem> */}
           <ListItem
             button
             className={classes.menuControlContainer}
             onClick={() => history.push('/publications')}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-              <PublishIcon />
+              {/* <PublishIcon /> */}
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Publication</ListItemText>
           </ListItem>

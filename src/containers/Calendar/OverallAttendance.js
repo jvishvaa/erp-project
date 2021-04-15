@@ -11,11 +11,14 @@ import {
   CardMedia,
   Typography,
   withStyles,
+  SvgIcon,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-
+import Loader from '../../components/loader/loader';
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import MobileDatepicker from './mobile-datepicker';
 import Layout from '../Layout';
@@ -23,7 +26,6 @@ import line from '../../assets/images/line.svg';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import ClearIcon from '../../components/icon/ClearIcon';
-import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MediaQuery from 'react-responsive';
 import moment from 'moment';
@@ -35,7 +37,9 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { useHistory } from 'react-router';
 import { useForm, Controller } from "react-hook-form";
 import { fi } from 'date-fns/locale';
-
+import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
+import unfiltered from '../../assets/images/unfiltered.svg';
+import selectfilter from '../../assets/images/selectfilter.svg';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
@@ -57,12 +61,12 @@ const Attend = () => {
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const [date, setDate] = useState(new Date())
-  const[dateString, setDateString] = useState('')
+  const [dateString, setDateString] = useState('')
   const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
-  const [academicYear,setAcademicYear] = useState([]);
-  const [selectedAcademicYear,setSelectedAcadmeicYear] = useState('');  
-  const [branchList,setBranchList] = useState([])
-  const [selectedBranch,setSelectedBranch] = useState([])
+  const [academicYear, setAcademicYear] = useState([]);
+  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const [branchList, setBranchList] = useState([])
+  const [selectedBranch, setSelectedBranch] = useState([])
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [sectionList, setSectionList] = useState([]);
@@ -74,11 +78,13 @@ const Attend = () => {
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
   const [result, setResult] = useState()
+  const themeContext = useTheme()
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   useEffect(() => {
     console.log(history)
 
-    if(history?.location?.state?.payload){
+    if (history?.location?.state?.payload) {
       console.log(history?.location?.state?.payload?.academic_year_id?.session_year)
       setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id)
       setSelectedBranch(history?.location?.state?.payload?.branch_id)
@@ -88,43 +94,42 @@ const Attend = () => {
       setEndDate(history?.location?.state?.payload?.endDate)
       setResult(history?.location?.state?.data)
       console.log(history?.location?.state?.payload?.branch_id)
-      console.log(history?.location?.state?.data , "student data")
-  }
+      console.log(history?.location?.state?.data, "student data")
+    }
 
-    else{
+    else {
       const date = new Date();
       console.log(new Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'long' }).format(date))
-      callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
+      callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList')
     }
 
 
   }, []);
 
-const handleOpenOnViewDetails = ()=>{
-  if(history?.location?.state?.payload)
-  {
-    callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
-  // console.log("history data is there")
+  const handleOpenOnViewDetails = () => {
+    if (history?.location?.state?.payload) {
+      callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList')
+      // console.log("history data is there")
+    }
+    else {
+    }
   }
-  else{
-  }
-}
 
-// useEffect(() => {
-//   if(history){
-//     console.log(history?.location?.state?.payload?.academic_year_id?.session_year)
-//     setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id)
-//   }
-// }, [history])
+  // useEffect(() => {
+  //   if(history){
+  //     console.log(history?.location?.state?.payload?.academic_year_id?.session_year)
+  //     setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id)
+  //   }
+  // }, [history])
   //pagination
 
   const [activePage, setActivePage] = useState(1)
 
   let totalPages = result && Math.ceil(result.length / 8)
   console.log(totalPages)
-  let offset = (activePage - 1)*8
-  const handlePageChange = (e, value)=>{
-      setActivePage(value)
+  let offset = (activePage - 1) * 8
+  const handlePageChange = (e, value) => {
+    setActivePage(value)
   }
 
   const [state, setState] = React.useState({
@@ -145,54 +150,74 @@ const handleOpenOnViewDetails = ()=>{
   function getDaysBefore(date, amount) {
     return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
   }
-const handleFilter = ()=>{
-  const payload = {
-    academic_year_id: selectedAcademicYear?.selectedAcademicYear?.id,
-    branch_id: selectedBranch?.branch?.id,
-    grade_id: selectedGrade?.grade_id,
-    section_id: selectedSection?.section_id,
-    start_date: startDate,
-    end_date: endDate
-  }
-  console.log(payload)
-  // if(selectedAcademicYear.length < 0 || selectedBranch.length < 0 || selectedGrade.length < 0 || selectedSection.length < 0){
-  //   alert('select filters')
-  // }
-  // else{
+  const handleFilter = () => {
+    if (!selectedAcademicYear) {
+      setAlert('warning', 'Select Academic Year');
+      return;
+    }
+    console.log(selectedBranch.length, "===============")
+    if (selectedBranch.length == 0) {
+      console.log(selectedBranch.length, "===============")
+      setAlert('warning', 'Select Branch');
+      return;
+    }
+    if (selectedGrade.length == 0) {
+      setAlert('warning', 'Select Grade');
+      return;
+    }
+    if (selectedSection.length == 0) {
+      setAlert('warning', 'Select Section');
+      return;
+    }
+    setLoading(true);
+    const payload = {
+      academic_year_id: selectedAcademicYear?.selectedAcademicYear?.id,
+      branch_id: selectedBranch?.branch?.id,
+      grade_id: selectedGrade?.grade_id,
+      section_id: selectedSection?.section_id,
+      start_date: startDate,
+      end_date: endDate
+    }
+    console.log(payload)
+    console.log(selectedAcademicYear.length < 0)
+
     axiosInstance.
-  get(
-    `${endpoints.academics.attendance}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}`
-  )
-  .then(res=>{
-    console.log(res.data)
-    let temp = [...res.data.absent_list, ...res.data.present_list]
-    console.log(temp)
-    setResult(temp)
-  })
-  .catch(err=>console.log(err))
+      get(
+        `${endpoints.academics.attendance}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}`
+      )
+      .then(res => {
+        setLoading(false)
+        console.log(res.data)
+        let temp = [...res.data.absent_list, ...res.data.present_list]
+        console.log(temp)
+        setResult(temp)
+      })
+      .catch(err => {
+        setLoading(false)
+        console.log(err)
+      })
   }
-  
-// }
 
-const handleStartDateChange = (date) => {
-  const endDate = getDaysAfter(date.clone(), 6);
-  setEndDate(endDate);
-  setStartDate(date.format('YYYY-MM-DD'));
-  // getTeacherHomeworkDetails(2, date, endDate);
-};
 
-const handleEndDateChange = (date) => {
-  const startDate = getDaysBefore(date.clone(), 6);
-  setStartDate(startDate);
-  setEndDate(date.format('YYYY-MM-DD'));
-  // getTeacherHomeworkDetails(2, startDate, date);
-};
+  const handleStartDateChange = (date) => {
+    const endDate = getDaysAfter(date.clone(), 6);
+    setEndDate(endDate);
+    setStartDate(date.format('YYYY-MM-DD'));
+    // getTeacherHomeworkDetails(2, date, endDate);
+  };
+
+  const handleEndDateChange = (date) => {
+    const startDate = getDaysBefore(date.clone(), 6);
+    setStartDate(startDate);
+    setEndDate(date.format('YYYY-MM-DD'));
+    // getTeacherHomeworkDetails(2, startDate, date);
+  };
   function callApi(api, key) {
     setLoading(true);
     axiosInstance.get(api)
-    .then((result) => {
+      .then((result) => {
         if (result.status === 200) {
-          if(key === 'academicYearList'){
+          if (key === 'academicYearList') {
             console.log(result?.data?.data || [])
             setAcademicYear(result?.data?.data || [])
           }
@@ -200,31 +225,39 @@ const handleEndDateChange = (date) => {
             console.log(result?.data?.data || [])
             setBranchList(result?.data?.data?.results || []);
           }
-            if (key === 'gradeList') {
-              console.log(result?.data?.data || [])
-                setGradeList(result.data.data || []);
-            }
-            if (key === 'section') {
-              console.log(result?.data?.data || [])
-                setSectionList(result.data.data);
-              }
-            setLoading(false);
+          if (key === 'gradeList') {
+            console.log(result?.data?.data || [])
+            setGradeList(result.data.data || []);
+          }
+          if (key === 'section') {
+            console.log(result?.data?.data || [])
+            setSectionList(result.data.data);
+          }
+          setLoading(false);
         } else {
-            setAlert('error', result.data.message);
-            setLoading(false);
+          setAlert('error', result.data.message);
+          setLoading(false);
         }
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
         setAlert('error', error.message);
         setLoading(false);
-    });
-}
-const defaultValues = {
-  firstName: "Elon",
-  lastName: "Musk",
-  gender: "male"
-};
+      });
+  }
+  const defaultValues = {
+    firstName: "Elon",
+    lastName: "Musk",
+    gender: "male"
+  };
 
+  const handleClearAll = () => {
+    setSelectedAcadmeicYear('')
+    setSelectedBranch([])
+    setSelectedBranch([])
+    setSelectedGrade([])
+    setSelectedSection([])
+    setDateValue(moment(date).format('YYYY-MM-DD'))
+  }
 
   const StyledClearButton = withStyles({
     root: {
@@ -261,221 +294,235 @@ const defaultValues = {
     setDateValue(value);
     console.log('date', value);
   };
-  
-const handleSinlgeStudent = (id)=>{
-  console.log(id)
-  const studentData = result.filter((item)=>item.id == id)
-  console.log(studentData)
-  const payload = {
-    academic_year_id: selectedAcademicYear,
-    branch_id: selectedBranch,
-    grade_id: selectedGrade,
-    section_id: selectedSection,
-    startDate: startDate,
-    endDate: endDate
-  }
-  history.push({
-    pathname: '/attendance',
-    state: {
-      studentData,
-      payload
+
+  const handleSinlgeStudent = (id) => {
+    console.log(id)
+    const studentData = result.filter((item) => item.id == id)
+    console.log(studentData)
+    const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: startDate,
+      endDate: endDate
     }
-  })
-}
+    history.push({
+      pathname: '/attendance',
+      state: {
+        studentData,
+        payload
+      }
+    })
+  }
 
   const dummyData = [
     {
-      name: 'Akash',
-      rollno: '11',
+      student_first_name: 'Akash',
+      is_first_shift_present: true,
+      is_second_shift_present: false,
+      student: '11',
       ERPno: '123456789',
     },
     {
-      name: 'Sharma',
-      rollno: '12',
+      student_first_name: 'Sharma',
+      is_first_shift_present: true,
+      is_second_shift_present: false,
+      student: '12',
       ERPno: '123456789',
     },
     {
-      name: 'Akash',
-      rollno: '13',
+      student_first_name: 'Akash',
+      is_first_shift_present: true,
+      is_second_shift_present: false,
+      student: '13',
       ERPno: '123456789',
     },
     {
-      name: 'Sharma',
-      rollno: '14',
+      student_first_name: 'Sharma',
+      is_first_shift_present: true,
+      is_second_shift_present: false,
+      student: '14',
       ERPno: '123456789',
     },
     {
-      name: 'Akash',
-      rollno: '15',
+      student_first_name: 'Akash',
+      is_first_shift_present: true,
+      is_second_shift_present: false,
+      student: '15',
       ERPno: '123456789',
     },
     {
-      name: 'Sharma',
-      rollno: '16',
+      student_first_name: 'Sharma',
+      is_first_shift_present: true,
+      is_second_shift_present: false,
+      student: '16',
       ERPno: '123456789',
     },
     {
-      name: 'Akash',
-      rollno: '17',
+      student_first_name: 'Akash',
+      is_first_shift_present: true,
+      is_second_shift_present: false,
+      student: '17',
       ERPno: '123456789',
     },
   ]
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper'  style={{marginLeft:'-10px'}}>
-          <CommonBreadcrumbs componentName='Attendance' />
+      <div className='profile_breadcrumb_wrapper' style={{ marginLeft: '-10px' }}>
+        <CommonBreadcrumbs componentName='OverallAttendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
-        <Grid item md={3}  xs={12}>
+        <Grid item md={3} xs={12} className="items">
           <MobileDatepicker
-          // style={{ width: '100%' }}
+            style={{ width: '100%' }}
             onChange={(date) => handleEndDateChange(date)}
             handleStartDateChange={handleStartDateChange}
             handleEndDateChange={handleEndDateChange}
           />
         </Grid>
         <Grid item md={3} xs={12}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onOpen={()=>handleOpenOnViewDetails()}
-              onChange={(event, value) => {
-                setSelectedAcadmeicYear(value)
-                if(value){
-                  callApi(
-                    `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                    'branchList'
-                  );
-                }
-                setSelectedGrade([]);
-                setSectionList([]);
-                setSelectedSection([]);
-                setSelectedBranch([])
-
-              }}
-              id='branch_id'
-              className='dropdownIcon'
-              value={selectedAcademicYear}
-              options={academicYear}
-              getOptionLabel={(option) => option?.session_year}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Academic Year'
-                  placeholder='Academic Year'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
           <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedBranch([])
-                if(value){
-                  // const ids = value.map((el)=>el)
-                  const selectedId=value.branch.id
-                  setSelectedBranch(value)
-                  callApi(
-                    `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-                    'gradeList'
-                  );
-                }
-                setSelectedGrade([]);
-                setSectionList([]);
-                setSelectedSection([]);
+            style={{ width: '100%' }}
+            size='small'
+            onOpen={() => handleOpenOnViewDetails()}
+            onChange={(event, value) => {
+              setSelectedAcadmeicYear(value)
+              if (value) {
+                callApi(
+                  `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                  'branchList'
+                );
+              }
+              setSelectedGrade([]);
+              setSectionList([]);
+              setSelectedSection([]);
+              setSelectedBranch([])
 
-              }}
-              id='branch_id'
-              className='dropdownIcon'
-              value={selectedBranch}
-              options={branchList}
-              getOptionLabel={(option) => option?.branch?.branch_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedGrade([])
-                if(value){
-                  // const ids = value.map((el)=>el)
-                  const selectedId=value.grade_id
-                  // console.log(selectedBranch.branch)
-                  const branchId=selectedBranch.branch.id
-                  setSelectedGrade(value)
-                  callApi(
-                    `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
-                    'section'
-                  );
-                }
-                  setSectionList([]);
-                  setSelectedSection([]);
+            }}
+            id='branch_id'
+            className='dropdownIcon'
+            value={selectedAcademicYear || ""}
+            options={academicYear || ""}
+            getOptionLabel={(option) => option?.session_year || ""}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Academic Year'
+                placeholder='Academic Year'
+              />
+            )}
+          />
+        </Grid>
+        <Grid item md={3} xs={12}>
+          <Autocomplete
+            // multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              setSelectedBranch([])
+              if (value) {
+                // const ids = value.map((el)=>el)
+                const selectedId = value.branch.id
+                setSelectedBranch(value)
+                callApi(
+                  `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                  'gradeList'
+                );
+              }
+              setSelectedGrade([]);
+              setSectionList([]);
+              setSelectedSection([]);
 
-              }}
-              id='grade_id'
-              className='dropdownIcon'
-              value={selectedGrade}
-              options={gradeList}
-              getOptionLabel={(option) => option?.grade__grade_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Grade'
-                  placeholder='Grade'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedSection([])
-                if (value) {
-                  const ids=value.id
-                  const secId=value.section_id
-                  setSelectedSection(value)
-                  setSecSelectedId(secId)
-                }
+            }}
+            id='branch_id'
+            className='dropdownIcon'
+            value={selectedBranch || ""}
+            options={branchList || ""}
+            getOptionLabel={(option) => option?.branch?.branch_name || ""}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Branch'
+                placeholder='Branch'
+              />
+            )}
+          />
+        </Grid>
+        <Grid item md={3} xs={12}>
+          <Autocomplete
+            // multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              setSelectedGrade([])
+              if (value) {
+                // const ids = value.map((el)=>el)
+                const selectedId = value.grade_id
+                // console.log(selectedBranch.branch)
+                const branchId = selectedBranch.branch.id
+                setSelectedGrade(value)
+                callApi(
+                  `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+                  'section'
+                );
+              }
+              setSectionList([]);
+              setSelectedSection([]);
 
-              }}
-              id='section_id'
-              className='dropdownIcon'
-              value={selectedSection}
-              options={sectionList}
-              getOptionLabel={(option) => option?.section__section_name || option?.section_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Section'
-                  placeholder='Section'
-                />
-              )}
-            />
-          </Grid>
+            }}
+            id='grade_id'
+            className='dropdownIcon'
+            value={selectedGrade || ""}
+            options={gradeList || ""}
+            getOptionLabel={(option) => option?.grade__grade_name || ""}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Grade'
+                placeholder='Grade'
+              />
+            )}
+          />
+        </Grid>
+        <Grid item md={3} xs={12}>
+          <Autocomplete
+            // multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              setSelectedSection([])
+              if (value) {
+                const ids = value.id
+                const secId = value.section_id
+                setSelectedSection(value)
+                setSecSelectedId(secId)
+              }
+
+            }}
+            id='section_id'
+            className='dropdownIcon'
+            value={selectedSection || ""}
+            options={sectionList || ""}
+            getOptionLabel={(option) => option?.section__section_name || option?.section_name || ""}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Section'
+                placeholder='Section'
+              />
+            )}
+          />
+        </Grid>
         <Grid item md={11} xs={12}>
           <Divider />
         </Grid>
@@ -484,6 +531,7 @@ const handleSinlgeStudent = (id)=>{
         <StyledClearButton
           variant='contained'
           startIcon={<ClearIcon />}
+          onClick={handleClearAll}
         >
           Clear all
         </StyledClearButton>
@@ -498,7 +546,7 @@ const handleSinlgeStudent = (id)=>{
           filter
         </StyledFilterButton>
       </Grid>
-     
+
       <br />
       <br />
       <MediaQuery minWidth={541}>
@@ -513,56 +561,56 @@ const handleSinlgeStudent = (id)=>{
           </Grid>
           <Grid item xs={12} md={5} >
             <FormGroup row className='checkboxStyle'>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={state.present}
-                      onChange={handleChange}
-                      name="present"
-                      disabled={state.absent}
-                      color="primary"
-                    />
-                  }
-                  label="Present"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={state.absent}
-                      onChange={handleChange}
-                      name="absent"
-                      color="primary"
-                      disabled={
-                        state.present || (state.first_half && state.second_half)
-                      }
-                    />
-                  }
-                  label="Absent"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={state.first_half}
-                      onChange={handleChange}
-                      name="first_half"
-                      color="primary"
-                      disabled={state.present || state.absent}
-                    />
-                  }
-                  label="1st half"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={state.second_half}
-                      onChange={handleChange}
-                      name="second_half"
-                      color="primary"
-                      disabled={state.present || state.absent}
-                    />
-                  }
-                  label="2nd half"
-                />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={state.present}
+                    onChange={handleChange}
+                    name="present"
+                    disabled={state.absent}
+                    color="primary"
+                  />
+                }
+                label="Present"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={state.absent}
+                    onChange={handleChange}
+                    name="absent"
+                    color="primary"
+                    disabled={
+                      state.present || (state.first_half && state.second_half)
+                    }
+                  />
+                }
+                label="Absent"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={state.first_half}
+                    onChange={handleChange}
+                    name="first_half"
+                    color="primary"
+                    disabled={state.present || state.absent}
+                  />
+                }
+                label="1st half"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={state.second_half}
+                    onChange={handleChange}
+                    name="second_half"
+                    color="primary"
+                    disabled={state.present || state.absent}
+                  />
+                }
+                label="2nd half"
+              />
             </FormGroup>
           </Grid>
           <Grid item sm={1} md={1}>
@@ -590,76 +638,96 @@ const handleSinlgeStudent = (id)=>{
         <br />
       </Grid>
       <Grid container spacing={2} direction='row'>
-        {result && result
-        .filter((item,index)=>{
-            if(state.present){
+        {data && data
+          .filter((item, index) => {
+            if (state.present) {
               const pageCondition = index >= offset && index < offset + 8
               return pageCondition && (item.is_first_shift_present && item.is_second_shift_present)
             }
-            else if(state.absent){
+            else if (state.absent) {
               const pageCondition = index >= offset && index < offset + 8
               return pageCondition && (item.is_first_shift_present || item.is_second_shift_present)
             }
-            else if(state.first_half){
+            else if (state.first_half) {
               const pageCondition = index >= offset && index < offset + 8
               return pageCondition && item.is_first_shift_present
             }
-            else if(state.second_half){
+            else if (state.second_half) {
               const pageCondition = index >= offset && index < offset + 8
               return pageCondition && item.is_second_shift_present
             }
-            else if(state.first_half && state.second_half){
+            else if (state.first_half && state.second_half) {
               const pageCondition = index >= offset && index < offset + 8
               return pageCondition && (item.is_first_shift_present && item.is_second_shift_present)
             }
-            else{
+            else {
               const pageCondition = index >= offset && index < offset + 8
               return pageCondition && item
             }
           })
-        .map((item) => {
-          return (
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <Card className={classes.bord} onClick={()=>handleSinlgeStudent(item.id)} style={{cursor:'pointer'}}>
-                <CardMedia className={classes.cover} />
-                <div>
-                  <CardContent>
-                    <Grid container direction='row'>
-                      <Grid item xs={1} sm={1} md={1} lg={1} style={{ marginTop: 15 }}>
-                        <Avatar>{item.student_first_name.slice(0, 1)}</Avatar>
+          .map((item) => {
+            return (
+              <Grid item xs={12} sm={6} md={3} lg={3}>
+                <Card className={classes.bord} onClick={() => handleSinlgeStudent(item.id)} style={{ cursor: 'pointer' }}>
+                  <CardMedia className={classes.cover} />
+                  <div>
+                    <CardContent>
+                      <Grid container direction='row' justify="space-between" alignItems="center" style={{ border: '1px solid red' }}>
+                        <Grid item xs={1} sm={1} md={1} lg={1} style={{ marginTop: 15 }}>
+                          <Avatar>{item.student_first_name.slice(0, 1)}</Avatar>
+                        </Grid>
+                        <Grid item >
+                          <Typography>{item.student_first_name.slice(0, 6) || ""}</Typography>
+                          <Typography>{item.student}</Typography>
+                        </Grid>
+                        <Grid>
+                          <p class='box'>
+                            <span class='content1'>1st</span>
+                            <span class='content'>2nd</span>
+                          </p>
+                        </Grid>
                       </Grid>
-                      <Grid
-                        item
-                        xs={6}
-                        sm={6}
-                        md={6}
-                        lg={6}
-                        style={{ marginLeft: 30, textAlign: 'start' }}
-                      >
-                        <Typography>{item.student_first_name.slice(0, 6) || ""}</Typography>
-                        <Typography>{item.student}</Typography>
-                      </Grid>
-                      <p class='box'>
-                        <span class='content1'>1st</span>
-                        <span class='content'>2nd</span>
-                      </p>
-                    </Grid>
-                  </CardContent>
-                </div>
-              </Card>
-            </Grid>
-          );
-        })}
+                    </CardContent>
+                  </div>
+                </Card>
+              </Grid>
+            );
+          })}
       </Grid>
       <br />
+      {
+          !data &&
+          (<div  style={{width:'10%',marginLeft:'40%',}}>
+            <SvgIcon
+              component={() => (
+                <img
+                  src={unfiltered}
+                />
+              )}
+            />
+            <SvgIcon
+              component={() => (
+                <img
+                  style={
+                    isMobile
+                      ? { height: '20px', width: '250px' }
+                      : { height: '50px', width: '400px'}
+                  }
+                  src={selectfilter}
+                />
+              )}
+            />
+          </div>)
 
+        }
       <Grid container justify='center'>
         {' '}
         {
-          result && <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
+          data && <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
 
         }
       </Grid>
+      {loading && <Loader />}
     </Layout>
   );
 };

@@ -11,6 +11,9 @@ import {
   TextField,
   Typography,
   withStyles,
+  SvgIcon,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import DateFnsUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
@@ -21,6 +24,7 @@ import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import '../teacherBatchView/style.scss'
 import './markAttendance.css';
 import ClearIcon from '../../components/icon/ClearIcon';
+import Loader from '../../components/loader/loader';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import Avatar from '@material-ui/core/Avatar';
@@ -31,13 +35,20 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import Axios from 'axios';
 import { useHistory } from 'react-router';
 import axios from 'axios';
-
+import unfiltered from '../../assets/images/unfiltered.svg';
+import selectfilter from '../../assets/images/selectfilter.svg';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
     borderRadius: '10px',
     width: '100%',
+
     margin: '1.5rem -0.1rem',
+  },
+  bord: {
+    margin: theme.spacing(1),
+    border: 'solid lightgrey',
+    borderRadius: 10,
   },
   paperStyle: {
     margin: '10px',
@@ -57,8 +68,8 @@ const useStyles = makeStyles((theme) => ({
   },
   contentsmall: {
     fontSize: '0.8rem',
-    textAlign:'right',
-    marginRight:'10%'
+    textAlign: 'right',
+    marginRight: '10%'
   },
   textRight: {
     textAlign: 'right',
@@ -80,12 +91,13 @@ const MarkAttedance = () => {
   const classes = useStyles();
   const [attendanceType, setAttendanceType] = useState([])
   const [date, setDate] = useState(new Date())
-  const[dateString, setDateString] = useState('')
+  const [dateString, setDateString] = useState('')
   const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
-  const [academicYear,setAcademicYear] = useState([]);
-  const [selectedAcademicYear,setSelectedAcadmeicYear] = useState('');  
-  const [branchList,setBranchList] = useState([])
-  const [selectedBranch,setSelectedBranch] = useState([])
+  const [dateValueShow, setDateValueShow] = useState(moment(date).format('DD MMMM YYYY'));
+  const [academicYear, setAcademicYear] = useState([]);
+  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const [branchList, setBranchList] = useState([])
+  const [selectedBranch, setSelectedBranch] = useState([])
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [sectionList, setSectionList] = useState([]);
@@ -94,10 +106,11 @@ const MarkAttedance = () => {
   const [data, setData] = useState()
   const [newData, setNewData] = useState()
   const history = useHistory()
-
+  const themeContext = useTheme()
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [state, setState] = React.useState({
-    checkedA: true,
-    checkedB: true,
+    checkedA: false,
+    checkedB: false,
   });
 
   const handleChange = (event) => {
@@ -107,7 +120,7 @@ const MarkAttedance = () => {
   useEffect(() => {
     console.log(history)
 
-    if(history?.location?.state?.payload){
+    if (history?.location?.state?.payload) {
       console.log(history?.location?.state?.payload?.academic_year_id?.session_year)
       setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id)
       setSelectedBranch(history?.location?.state?.payload?.branch_id)
@@ -118,34 +131,34 @@ const MarkAttedance = () => {
       setNewData(history?.location?.state?.data)
 
       axiosInstance
-      .get(
-        `${endpoints.academics.studentList}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}`
-      )
-      .then(res=>{
-        console.log(res.data.result)
-        setNewData(res.data.result)
+        .get(
+          `${endpoints.academics.studentList}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}`
+        )
+        .then(res => {
+          console.log(res.data.result)
+          setNewData(res.data.result)
 
-       var result =  res.data.result.map((item)=>(
-          {
-            name: item.name,
-            student_id: item.user,
-            section_mapping_id: selectedSection.section_id,
-            remarks: "none",
-            fullday_present: true,
-            is_first_shift_present: true,
-            is_second_shift_present: true,
-            attendance_for_date: dateValue
-          }
-        ))
-      setData(result)
-      })
-      .catch(err=>console.log(err))
-  }
+          var result = res.data.result.map((item) => (
+            {
+              name: item.name,
+              student_id: item.user,
+              section_mapping_id: selectedSection.section_id,
+              remarks: "none",
+              fullday_present: true,
+              is_first_shift_present: true,
+              is_second_shift_present: true,
+              attendance_for_date: dateValue
+            }
+          ))
+          setData(result)
+        })
+        .catch(err => console.log(err))
+    }
 
-    else{
+    else {
       const date = new Date();
       console.log(new Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'long' }).format(date))
-      callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
+      callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList')
     }
 
 
@@ -154,59 +167,82 @@ const MarkAttedance = () => {
 
 
 
-  const handleOpenOnViewDetails = ()=>{
-    if(history?.location?.state?.payload)
-    {
-      callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
-    // console.log("history data is there")
+  const handleOpenOnViewDetails = () => {
+    if (history?.location?.state?.payload) {
+      callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList')
+      // console.log("history data is there")
     }
-    else{
+    else {
     }
   }
 
-const handleFilter = ()=>{
-  // const payload = {
-  //   academic_year_id: selectedAcademicYear.id,
-  //   branch_id: selectedBranch.branch.id,
-  //   grade_id: selectedGrade.grade_id,
-  //   section_id: selectedSection.section_id,
-  //   dateValue: dateValue,
-  //   attendanceType: attendanceType,
-  // }
-  // console.log(payload)
-  axiosInstance
+  const handleFilter = () => {
+    if (!selectedAcademicYear) {
+      setAlert('warning', 'Select Academic Year');
+      return;
+    }
+    console.log(selectedBranch.length, "===============")
+    if (selectedBranch.length == 0) {
+      console.log(selectedBranch.length, "===============")
+      setAlert('warning', 'Select Branch');
+      return;
+    }
+    if (selectedGrade.length == 0) {
+      setAlert('warning', 'Select Grade');
+      return;
+    }
+    if (selectedSection.length == 0) {
+      setAlert('warning', 'Select Section');
+      return;
+    }
+    setLoading(true);
+    // const payload = {
+    //   academic_year_id: selectedAcademicYear.id,
+    //   branch_id: selectedBranch.branch.id,
+    //   grade_id: selectedGrade.grade_id,
+    //   section_id: selectedSection.section_id,
+    //   dateValue: dateValue,
+    //   attendanceType: attendanceType,
+    // }
+    // console.log(payload)
+    axiosInstance
       .get(
         `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}`
       )
-      .then(res=>{
+      .then(res => {
+        setLoading(false);
         console.log(res.data.result)
         setNewData(res.data.result)
-
-       var result =  res.data.result.map((item)=>(
+        const is_first_shift_present = false
+        const is_second_shift_present = false
+        var result = res.data.result.map((item) => (
           {
             name: item.name,
             student_id: item.user,
             section_mapping_id: selectedSection.section_id,
             remarks: "none",
-            fullday_present: true,
-            is_first_shift_present: true,
-            is_second_shift_present: true,
+            is_first_shift_present: is_first_shift_present,
+            is_second_shift_present: is_second_shift_present,
+            fullday_present: (is_first_shift_present && is_second_shift_present) ? true : false,
             attendance_for_date: dateValue
           }
         ))
-      setData(result)
+        setData(result)
       })
-      .catch(err=>console.log(err))
+      .catch(err => {
+        setLoading(false);
+        console.log(err)
+      })
 
-}
+  }
 
 
   function callApi(api, key) {
     setLoading(true);
     axiosInstance.get(api)
-    .then((result) => {
+      .then((result) => {
         if (result.status === 200) {
-          if(key === 'academicYearList'){
+          if (key === 'academicYearList') {
             console.log(result?.data?.data || [])
             setAcademicYear(result?.data?.data || [])
           }
@@ -214,25 +250,25 @@ const handleFilter = ()=>{
             console.log(result?.data?.data || [])
             setBranchList(result?.data?.data?.results || []);
           }
-            if (key === 'gradeList') {
-              console.log(result?.data?.data || [])
-                setGradeList(result.data.data || []);
-            }
-            if (key === 'section') {
-              console.log(result?.data?.data || [])
-                setSectionList(result.data.data);
-              }
-            setLoading(false);
+          if (key === 'gradeList') {
+            console.log(result?.data?.data || [])
+            setGradeList(result.data.data || []);
+          }
+          if (key === 'section') {
+            console.log(result?.data?.data || [])
+            setSectionList(result.data.data);
+          }
+          setLoading(false);
         } else {
-            setAlert('error', result.data.message);
-            setLoading(false);
+          setAlert('error', result.data.message);
+          setLoading(false);
         }
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
         setAlert('error', error.message);
         setLoading(false);
-    });
-}
+      });
+  }
 
   const StyledClearButton = withStyles({
     root: {
@@ -267,48 +303,48 @@ const handleFilter = ()=>{
 
   const handleDateChange = (event, value) => {
     setDateValue(value);
+    setDateValueShow(value)
     console.log('date', value);
   };
 
+  const handleClearAll = () => {
+    setSelectedAcadmeicYear('')
+    setSelectedBranch([])
+    setSelectedBranch([])
+    setSelectedGrade([])
+    setSelectedSection([])
+    setDateValue(moment(date).format('YYYY-MM-DD'))
+  }
 
-  const handleFirstHalf = (e, id)=>{
+  const handleFirstHalf = (e, id) => {
     console.log(e.target.checked, id)
-    const studentId = data.findIndex((item)=>item.student_id == id)
+    const studentId = data.findIndex((item) => item.student_id == id)
     console.log(studentId)
     let products = [...data];
     let product = { ...products[studentId] };
     product.is_first_shift_present = e.target.checked;
     products[studentId] = product;
-    console.log(products)
+    // console.log(products)
     setData(products)
     const remarks = "test"
-    const fullday_present = true ? "true" : "false"
+    const fullday_present = (product.is_first_shift_present && product.is_second_shift_present) ? "true" : "false"
     console.log(selectedSection.section_id)
-    var bodyFormData = new FormData();
-    bodyFormData.append('section_mapping_id', selectedSection.section_id);
-    bodyFormData.append('student_id', id);
-    bodyFormData.append('attendance_for_date', dateValue);
-    bodyFormData.append('remarks', remarks);
-    bodyFormData.append('fullday_present', fullday_present);
-    bodyFormData.append('is_first_shift_present', product.is_first_shift_present);
-    bodyFormData.append('is_second_shift_present', product.is_second_shift_present);
-    console.log(JSON.stringify(bodyFormData), "test")
 
     const fullData = {
-      section_mapping_id:selectedSection.section_id,
+      section_mapping_id: selectedSection.section_id,
       student_id: id,
       attendance_for_date: dateValue,
       remarks: remarks,
       fullday_present: fullday_present,
-      is_first_shift_present: product.is_second_shift_present ? "true" : "false",
+      is_first_shift_present: product.is_first_shift_present ? "true" : "false",
       is_second_shift_present: product.is_second_shift_present ? "true" : "false"
     }
-console.log(fullData)
+    console.log(fullData)
     axiosInstance
-    .post(`${endpoints.academics.createAttendance}`,
-      fullData)
-    .then(res=>console.log(res))
-    .catch(err=>console.log(err))
+      .post(`${endpoints.academics.createAttendance}`,
+        fullData)
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
     // .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
     // .post(`${endpoints.academics.createAttendance}`)
     // console.log(`${endpoints.academics.createAttendance}`)
@@ -322,29 +358,46 @@ console.log(fullData)
     //     authorization: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjYxODA2MTA2OCwiZW1haWwiOiIifQ.aEV_0N-ZvMG7DWfC0hraHc7YSQNf8wxpg_j9jV2p39o'
     //   }
     // })
-    
+
   }
 
-  const handleSecondHalf = (e, id)=>{
+  const handleSecondHalf = (e, id) => {
     console.log(e.target.checked, id)
-    const studentId = data.findIndex((item)=>item.student_id == id)
+    const studentId = data.findIndex((item) => item.student_id == id)
     console.log(studentId)
     let products = [...data];
     let product = { ...products[studentId] };
     product.is_second_shift_present = e.target.checked;
     products[studentId] = product;
-    console.log(products)
+    // console.log(products)
     setData(products)
     const remarks = "test"
-    const fullday_present = true
+    const fullday_present = (product.is_first_shift_present && product.is_second_shift_present) ? "true" : "false"
+    console.log(selectedSection.section_id)
+
+    const fullData = {
+      section_mapping_id: selectedSection.section_id,
+      student_id: id,
+      attendance_for_date: dateValue,
+      remarks: remarks,
+      fullday_present: fullday_present,
+      is_first_shift_present: product.is_first_shift_present ? "true" : "false",
+      is_second_shift_present: product.is_second_shift_present ? "true" : "false"
+    }
+    console.log(fullData)
     axiosInstance
-    .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
-    .then(res=>console.log(res))
-    .catch(err=>console.log(err))
-    
+      .post(`${endpoints.academics.createAttendance}`,
+        fullData)
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
+    // axiosInstance
+    //   .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
+    //   .then(res => console.log(res))
+    //   .catch(err => console.log(err))
+
   }
 
-  const handlePostAttendance = ()=>{
+  const handlePostAttendance = () => {
     // if(data){
     //   let temp = data
     //   for(let i=0; i<data.length; i++){
@@ -362,91 +415,91 @@ console.log(fullData)
   //pagination
   const [activePage, setActivePage] = useState(1)
 
-    let totalPages = data && Math.ceil(data.length / 8)
-    console.log(totalPages)
-    let offset = (activePage - 1)*8
-    const handlePageChange = (e, value)=>{
-        setActivePage(value)
-    }
+  let totalPages = data && Math.ceil(data.length / 8)
+  console.log(totalPages)
+  let offset = (activePage - 1) * 8
+  const handlePageChange = (e, value) => {
+    setActivePage(value)
+  }
   const StudentData = () => {
     return (
       <>
         { data && data
-        .sort((a, b)=>{
-          let fa = a.name.toLowerCase();
-          let fb = b.name.toLowerCase();
-          if (fa < fb) {
-            return -1;
-        }
-        if (fa > fb) {
-            return 1;
-        }
-        return 0;
-        })
-        .filter((item,index)=>{
-          const pageCondition = index >= offset && index < offset + 8
-          return pageCondition
+          .sort((a, b) => {
+            let fa = a.name.toLowerCase();
+            let fb = b.name.toLowerCase();
+            if (fa < fb) {
+              return -1;
+            }
+            if (fa > fb) {
+              return 1;
+            }
+            return 0;
           })
-        .map((options) => {
-          return (
-            <div value={options.student_id} key={options.student_id}>
-              {' '}
-              <Grid item md={2} xs={12} className={classes.root}>
-                <Paper elevation={3} className={classes.paperSize}>
-                  <Grid container direction='row'style={{display:'flex', alignItems:'center'}} >
-                    {' '}
-                    <Avatar className={[classes.orange, classes.paperStyle]}>
-                      {options.name.slice(0, 1)}
-                    </Avatar>
-                    <Typography
-                      className={[classes.content, classes.paperStyle]}
-                    >
-                      {options.name.slice(0, 6)}
-                    </Typography>
-                  </Grid>
-                  <Grid>
-                  <Typography
-                      className={classes.contentsmall}
-                    >
-                      Mark Present
-                    </Typography>
-                  </Grid>
-                  <Divider />
-                  <Grid container direction='row'>
-                    <Typography className={[classes.contentList, classes.paperStyle]}>
-                      1stHalf
-                    </Typography>
-
-                    <Grid style={{ marginLeft: '40%' }}>
-                    {/* <Switch color='primary'  /> */}
-                      <Switch color='primary' checked={options.is_first_shift_present} onChange={(e)=>handleFirstHalf(e, options.student_id)}/>
+          .filter((item, index) => {
+            const pageCondition = index >= offset && index < offset + 8
+            return pageCondition
+          })
+          .map((options) => {
+            return (
+              <div value={options.student_id} key={options.student_id}>
+                {' '}
+                <Grid item md={2} xs={12} className={classes.root}>
+                  <Paper elevation={3} className={classes.paperSize}>
+                    <Grid container direction='row' style={{ display: 'flex', alignItems: 'center' }} >
+                      {' '}
+                      <Avatar className={[classes.orange, classes.paperStyle]}>
+                        {options.name.slice(0, 1)}
+                      </Avatar>
+                      <Typography
+                        className={[classes.content, classes.paperStyle]}
+                      >
+                        {options.name.slice(0, 6)}
+                      </Typography>
                     </Grid>
-                  </Grid>
-                  <Divider />
-
-                  <Grid container direction='row'>
-                    <Typography className={[classes.contentList, classes.paperStyle]}>
-                      2stHalf
+                    <Grid>
+                      <Typography
+                        className={classes.contentsmall}
+                      >
+                        Mark Present
                     </Typography>
-
-                    <Grid style={{ marginLeft: '40%' }}>
-                    {/* <Switch color='primary' /> */}
-                      <Switch color='primary'  checked={options.is_second_shift_present} onChange={(e)=>handleSecondHalf(e, options.student_id)}/>
                     </Grid>
-                  </Grid>
-                </Paper>
-              </Grid>
-            </div>
-          );
-        })}
+                    <Divider />
+                    <Grid container direction='row'>
+                      <Typography className={[classes.contentList, classes.paperStyle]}>
+                        1<sup>st</sup><span>&nbsp; Half</span>
+                      </Typography>
+
+                      <Grid style={{ marginLeft: '40%' }}>
+                        {/* <Switch color='primary'  /> */}
+                        <Switch color='primary' checked={options.is_first_shift_present} onChange={(e) => handleFirstHalf(e, options.student_id)} />
+                      </Grid>
+                    </Grid>
+                    <Divider />
+
+                    <Grid container direction='row'>
+                      <Typography className={[classes.contentList, classes.paperStyle]}>
+                        2<sup>nd</sup><span>&nbsp; Half</span>
+                      </Typography>
+
+                      <Grid style={{ marginLeft: '40%' }}>
+                        {/* <Switch color='primary' /> */}
+                        <Switch color='primary' checked={options.is_second_shift_present} onChange={(e) => handleSecondHalf(e, options.student_id)} />
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                </Grid>
+              </div>
+            );
+          })}
       </>
     );
   };
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper'>
-          <CommonBreadcrumbs componentName='Mark Attendance' />
+      <div className='profile_breadcrumb_wrapper' style={{ marginLeft: '-10px' }}>
+        <CommonBreadcrumbs componentName='Mark Attendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
         <Grid item md={12} xs={12}>
@@ -468,7 +521,7 @@ console.log(fullData)
               value={dateValue}
               onChange={handleDateChange}
               className="dropdown"
-              style={{width:'100%'}}
+              style={{ width: '100%' }}
               KeyboardButtonProps={{
                 'aria-label': 'change date',
               }}
@@ -476,168 +529,146 @@ console.log(fullData)
           </MuiPickersUtilsProvider>
         </Grid>
         <Grid item md={3} xs={12}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onOpen={()=>handleOpenOnViewDetails()}
-              onChange={(event, value) => {
-                setSelectedAcadmeicYear(value)
-                if(value){
-                  callApi(
-                    `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                    'branchList'
-                  );
-                }
-                setSelectedGrade([]);
-                setSectionList([]);
-                setSelectedSection([]);
-                setSelectedBranch([])
-
-              }}
-              id='branch_id'
-              className='dropdownIcon'
-              value={selectedAcademicYear}
-              options={academicYear}
-              getOptionLabel={(option) => option?.session_year}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Academic Year'
-                  placeholder='Academic Year'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedBranch([])
-                if(value){
-                  // const ids = value.map((el)=>el)
-                  const selectedId=value.branch.id
-                  setSelectedBranch(value)
-                  callApi(
-                    `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-                    'gradeList'
-                  );
-                }
-                setSelectedGrade([]);
-                setSectionList([]);
-                setSelectedSection([]);
-
-              }}
-              id='branch_id'
-              className='dropdownIcon'
-              value={selectedBranch}
-              options={branchList}
-              getOptionLabel={(option) => option?.branch?.branch_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedGrade([])
-                if(value){
-                  // const ids = value.map((el)=>el)
-                  const selectedId=value.grade_id
-                  // console.log(selectedBranch.branch)
-                  const branchId=selectedBranch.branch.id
-                  setSelectedGrade(value)
-                  callApi(
-                    `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
-                    'section'
-                  );
-                }
-                  setSectionList([]);
-                  setSelectedSection([]);
-
-              }}
-              id='grade_id'
-              className='dropdownIcon'
-              value={selectedGrade}
-              options={gradeList}
-              getOptionLabel={(option) => option?.grade__grade_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Grade'
-                  placeholder='Grade'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedSection([])
-                if (value) {
-                  const ids=value.id
-                  const secId=value.section_id
-                  setSelectedSection(value)
-                  setSecSelectedId(secId)
-                }
-
-              }}
-              id='section_id'
-              className='dropdownIcon'
-              value={selectedSection}
-              options={sectionList}
-              getOptionLabel={(option) => option?.section__section_name || option?.section_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Section'
-                  placeholder='Section'
-                />
-              )}
-            />
-          </Grid>
-        {/* <Grid item md={3} xs={12}>
-        <Autocomplete
-            className='dropdownIcon'
-            id='attedancetype'
+          <Autocomplete
+            style={{ width: '100%' }}
             size='small'
-            className='arrow'
-            options={[
-              { id: 1, name: 'Student' },
-              { id: 2, name: 'Staff' },
-            ]}
-            getOptionLabel={(option) => option.name}
-            onChange = {(e, value)=>{
-              console.log(e.target.id)
-              setAttendanceType(value.name)
+            onOpen={() => handleOpenOnViewDetails()}
+            onChange={(event, value) => {
+              setSelectedAcadmeicYear(value)
+              if (value) {
+                callApi(
+                  `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                  'branchList'
+                );
+              }
+              setSelectedGrade([]);
+              setSectionList([]);
+              setSelectedSection([]);
+              setSelectedBranch([])
+
             }}
+            id='branch_id'
+            className='dropdownIcon'
+            value={selectedAcademicYear || ""}
+            options={academicYear || ""}
+            getOptionLabel={(option) => option?.session_year || ""}
+            filterSelectedOptions
             renderInput={(params) => (
-              <TextField {...params} label='Attedance Type' placeholder="Attedance Type" variant='outlined' />
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Academic Year'
+                placeholder='Academic Year'
+              />
             )}
-
           />
-        </Grid> */}
+        </Grid>
+        <Grid item md={3} xs={12}>
+          <Autocomplete
+            // multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              setSelectedBranch([])
+              if (value) {
+                // const ids = value.map((el)=>el)
+                const selectedId = value.branch.id
+                setSelectedBranch(value)
+                callApi(
+                  `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                  'gradeList'
+                );
+              }
+              setSelectedGrade([]);
+              setSectionList([]);
+              setSelectedSection([]);
 
+            }}
+            id='branch_id'
+            className='dropdownIcon'
+            value={selectedBranch || ""}
+            options={branchList || ""}
+            getOptionLabel={(option) => option?.branch?.branch_name || ""}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Branch'
+                placeholder='Branch'
+              />
+            )}
+          />
+        </Grid>
+        <Grid item md={3} xs={12}>
+          <Autocomplete
+            // multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              setSelectedGrade([])
+              if (value) {
+                // const ids = value.map((el)=>el)
+                const selectedId = value.grade_id
+                // console.log(selectedBranch.branch)
+                const branchId = selectedBranch.branch.id
+                setSelectedGrade(value)
+                callApi(
+                  `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+                  'section'
+                );
+              }
+              setSectionList([]);
+              setSelectedSection([]);
+
+            }}
+            id='grade_id'
+            className='dropdownIcon'
+            value={selectedGrade || ""}
+            options={gradeList || ""}
+            getOptionLabel={(option) => option?.grade__grade_name || ""}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Grade'
+                placeholder='Grade'
+              />
+            )}
+          />
+        </Grid>
+        <Grid item md={3} xs={12}>
+          <Autocomplete
+            // multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              setSelectedSection([])
+              if (value) {
+                const ids = value.id
+                const secId = value.section_id
+                setSelectedSection(value)
+                setSecSelectedId(secId)
+              }
+
+            }}
+            id='section_id'
+            className='dropdownIcon'
+            value={selectedSection || ""}
+            options={sectionList || ""}
+            getOptionLabel={(option) => option?.section__section_name || option?.section_name || ""}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Section'
+                placeholder='Section'
+              />
+            )}
+          />
+        </Grid>
         <Grid item md={11} xs={12}>
           <Divider />
         </Grid>
@@ -645,6 +676,7 @@ console.log(fullData)
       <Grid container direction='row' >
         <StyledClearButton
           variant='contained'
+          onClick={handleClearAll}
           startIcon={<ClearIcon />}
         >
           Clear all
@@ -668,31 +700,58 @@ console.log(fullData)
         spacing={3}
         style={{ color: 'red', background: 'white' }}
       >
-        <Grid>
-          <ArrowBackIosIcon />
+        <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginLeft: '10px' }} md={12} xs={12}>
+          <Grid style={{ display: 'flex', alignItems: 'center' }}>
+            <ArrowBackIosIcon />
+            <Typography variant='h5'>{dateValueShow}</Typography>
+            <ArrowForwardIosIcon />
+          </Grid>
+          <Grid>
+            <Typography style={{ textAlign: 'center' }}>Number of Students: {data && data.length}</Typography>
+          </Grid>
         </Grid>
-        <Grid>
-          <Typography variant='h5'>{dateValue}</Typography>
-        </Grid>
-        <Grid>
-          <ArrowForwardIosIcon />
-        </Grid>
-        <Grid item md={6}></Grid>
-        <Typography>Number of Students: {data && data.length}</Typography>
-        <Grid item md={10}>
+        <Grid item md={12} xs={12}>
           <Divider />
         </Grid>
         <Grid></Grid>
         <Grid container direction='row' className={classes.root} spacing={2} item justify='center'>
           <StudentData />
         </Grid>
+        {
+          !data &&
+          (<div style={{ width: '10%', margin: 'auto' }}>
+            <SvgIcon
+              component={() => (
+                <img
+                  src={unfiltered}
+                />
+              )}
+            />
+            <SvgIcon
+              component={() => (
+                <img
+                  style={
+                    isMobile
+                      ? { height: '20px', width: '250px' }
+                      : { height: '50px', width: '400px' }
+                  }
+                  src={selectfilter}
+                />
+              )}
+            />
+          </div>)
 
+        }
         <Grid item md={2} xs={12}></Grid>
-        <Grid container justify='center'>
-          {' '}
-          <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
-        </Grid>
+        {
+          data &&
+          <Grid container justify='center'>
+            {' '}
+            <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
+          </Grid>
+        }
       </Grid>
+      {loading && <Loader />}
     </Layout>
   );
 };
