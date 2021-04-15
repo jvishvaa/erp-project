@@ -53,7 +53,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Attendance = () => {
-  const moduleId = 178;
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
@@ -76,6 +75,10 @@ const Attendance = () => {
   const history = useHistory()
   const themeContext = useTheme()
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
 
   useEffect(() => {
     console.log(history)

@@ -86,7 +86,6 @@ const AttedanceCalender = () => {
   const history = useHistory();
 
   const classes = useStyles();
-  const moduleId = 178;
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const [academicYear, setAcademicYear] = useState([]);
@@ -107,9 +106,36 @@ const AttedanceCalender = () => {
   const [sevenDay, setSevenDay] = useState();
   const [studentData, setStudentData] = useState([]);
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+
 
   useEffect(() => {
-    callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList')
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Calendar & Attendance' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Calendar' && window.location.pathname === '/teacher-view') {
+              setModuleId(item.child_id);
+            }
+            if (item.child_name === 'Student Calendar' && window.location.pathname === '/student-view') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, [window.location.pathname]);
+  console.log(moduleId,'MODULE_ID')
+
+
+  useEffect(() => {
+    callApi(`${endpoints.userManagement.academicYear}?moduleId=${moduleId}`, 'academicYearList')
   }, []);
 
   const handleClearAll = () => {

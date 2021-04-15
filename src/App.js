@@ -486,6 +486,9 @@ function App({ alert }) {
                           <Route exact path='/master-management/subject/grade/mapping'>
                             {({ match }) => <Subjectgrade match={match} />}
                           </Route>
+                          <Route exact path='/master-management/event-category'>
+                            {({ match }) => <EventCategory match={match} />}
+                          </Route>
                           <Route exact path='/subject/grade'>
                             {({ match }) => <ListandFilter match={match} />}
                           </Route>
@@ -1173,7 +1176,10 @@ function App({ alert }) {
                           <Route exact path='/markattendance'>
                             {({ match }) => <MarkAttedance match={match} />}
                           </Route>
-                          <Route exact path='/attendance-calendar'>
+                          <Route exact path='/attendance-calendar/teacher-view'>
+                            {({ match }) => <AttedanceCalender match={match} />}
+                          </Route>
+                          <Route exact path='/attendance-calendar/student-view'>
                             {({ match }) => <AttedanceCalender match={match} />}
                           </Route>
                           <Route exact path='/Attendance'>

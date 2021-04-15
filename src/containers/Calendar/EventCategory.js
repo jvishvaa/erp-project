@@ -210,26 +210,28 @@ const Cal1 = () => {
   });
 
   useEffect(() => {
-    axiosInstance.get(`${endpoints.eventBat.getListCategories}`)
+    if(moduleId){
+      axiosInstance.get(`${endpoints.eventBat.getListCategories}?module_id=${moduleId}`)
       .then((result) => {
         console.log('useEffect Data', result.data);
         setEventType(result.data.data)
         // setDummyData(result?.data.data.results);
         // setCategoryType([{val:1,category_name:'cat'},{val:2,category_name:'dog'}])
       });
-  }, []);
+    }
+  }, [moduleId]);
 
 
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Calendar & Attendance' &&
+          item.parent_modules === 'Master Management' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher View' ) {
+            if (item.child_name === 'Event Category' ) {
               setModuleId(item.child_id);
             }
           });
@@ -299,7 +301,7 @@ const Cal1 = () => {
   const handleSave = () => {
     setLoading(true)
     axiosInstance
-      .post(`${endpoints.eventBat.postCreateEvent}`, {
+      .post(`${endpoints.eventBat.postCreateEvent}?module_id=${moduleId}`, {
         // event_category_type: eventName,
         event_category_name: eventName,
         event_category_color: custColor,
@@ -375,7 +377,7 @@ const Cal1 = () => {
   };
 
   const handleDelete = (e, idx) => {
-    axiosInstance.delete(`${endpoints.eventBat.deleteEventCategory}${e.id}`).then((result) => {
+    axiosInstance.delete(`${endpoints.eventBat.deleteEventCategory}${e.id}?module_id=${moduleId}`).then((result) => {
       console.log('deleted Data', result.data.data);
       setDeleteFlag(!deleteFlag);
       setAnchorEl(null);
@@ -416,7 +418,7 @@ const Cal1 = () => {
       event_category_color: custColor,
     }
     axiosInstance
-      .put(`${endpoints.eventBat.patchUpdateEvent}${isEditId}`, params)
+      .put(`${endpoints.eventBat.patchUpdateEvent}${isEditId} ?module_id=${moduleId}`, params)
       .then((result) => {
         console.log(result.data, 'Update Data');
         setIsEditId('');

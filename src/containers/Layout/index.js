@@ -470,6 +470,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-management/signature-upload');
         break;
       }
+      case 'Event Category': {
+        history.push('/master-management/event-category');
+        break;
+      }
       case 'Course': {
         history.push('/course-list');
         break;
@@ -505,6 +509,14 @@ const Layout = ({ children, history }) => {
       }
       case 'App/Reg Fee Type': {
         history.push('/feeType/RegistrationFee');
+        break;
+      }
+      case 'Teacher Calendar':{
+        history.push('/attendance-calendar/teacher-view');
+        break;
+      }
+      case 'Student Calendar':{
+        history.push('/attendance-calendar/student-view');
         break;
       }
       case 'Management Report': {
