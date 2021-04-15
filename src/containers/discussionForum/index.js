@@ -2,19 +2,15 @@ import React from 'react';
 import { makeStyles, Button, withStyles, Collapse, Grid } from '@material-ui/core';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { Provider } from 'react-redux';
-import CategoryPage from './discussion/CategoryPage';
 import Category from './discussion/Category';
-import DiscussionFilter from './discussion/DiscussionFilter';
-import { discussionData } from './discussion/discussionData';
-import Discussion from './discussion/Discussion';
-import DiscussionPost from './discussion/DiscussionPost';
 import Layout from '../Layout/index';
 import Filters from '../../components/filters/Filters';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import FilterIcon from '../../components/icon/FilterIcon';
-import store from '../../redux/store'
+import store from '../../redux/store';
+import {useLocation} from 'react-router-dom'
 
 const useStyles = makeStyles({
   root: {
@@ -89,9 +85,8 @@ const CommonBreadcrumbsStyle = withStyles({
 
 const Discussionforum = () => {
   const classes = useStyles({});
-  const totalDiscussion = discussionData.length;
-  const rowData = discussionData[0];
   const url = endpoints.discussionForum.categoryList;
+  const location = useLocation();
   //let postURL = endpoints.discussionForum.postList;
 
   const [showFilter, setShowFilter] = React.useState(false);
@@ -168,21 +163,23 @@ const Discussionforum = () => {
                     )}
                   </span>
                 )}
-                <span className={classes.topLeft}>
-                  {selectedFilter && (
-                    <span className={classes.dashboardText}>
-                      Number of discussion :{filterData.length}
-                    </span>
-                  )}
-                  <StyledButton
-                    variant='text'
-                    size='small'
-                    endIcon={<FilterIcon />}
-                    onClick={handleFilter}
-                  >
-                    Show filters
-                  </StyledButton>
-                </span>
+                {location.pathname !== '/student-forum' && (
+                  <span className={classes.topLeft}>
+                    {selectedFilter && (
+                      <span className={classes.dashboardText}>
+                        Number of discussion :{filterData.length}
+                      </span>
+                    )}
+                    <StyledButton
+                      variant='text'
+                      size='small'
+                      endIcon={<FilterIcon />}
+                      onClick={handleFilter}
+                    >
+                      Show filters
+                    </StyledButton>
+                  </span>
+                )}
               </span>
             )}
             <Collapse in={showFilter}>

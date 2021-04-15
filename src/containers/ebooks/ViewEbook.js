@@ -18,7 +18,7 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../Layout';
 import { Pagination } from '@material-ui/lab';
 // import Filter from './Filter';
-import Filter from './filter';
+import Filter from './filter.jsx';
 import GridList from './gridList';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';

@@ -37,6 +37,7 @@ function GiveAwardDialog(props) {
       .then((res) => {
         setAlert('success', res.data.message);
         if (res.data && res.data.status_code === 200) {
+          props.handleAwardsCount(awardId);
           onClose(selectedValue);
         }
       })
@@ -58,14 +59,14 @@ function GiveAwardDialog(props) {
         }}
       >
         <span onClick={() => giveAwardHandler(1)} tabIndex={0}>
-            <img src={GoldAwards} alt="Gold Awards" />
-          </span>
+          <img src={GoldAwards} alt="Gold Awards" />
+        </span>
         <span onClick={() => giveAwardHandler(2)} tabIndex={0}>
-            <img src={SilverAwards} alt="Silver Awards" />
-          </span>
+          <img src={SilverAwards} alt="Silver Awards" />
+        </span>
         <span onClick={() => giveAwardHandler(3)} tabIndex={0}>
-            <img src={BronzeAwards} alt="Bronze Awards" />
-          </span>
+          <img src={BronzeAwards} alt="Bronze Awards" />
+        </span>
       </div>
     </Dialog>
   );

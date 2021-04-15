@@ -544,13 +544,28 @@ function App({ alert }) {
                           <Route exact path='/discussion-forum'>
                             {({ match }) => <Discussionforum match={match} />}
                           </Route>
+                          <Route exact path='/teacher-forum'>
+                            {({ match }) => <Discussionforum match={match} />}
+                          </Route>
+                          <Route exact path='/student-forum'>
+                            {({ match }) => <Discussionforum match={match} />}
+                          </Route>
                           <Route exact path='/category/create'>
                             {({ match }) => <CreateCategory match={match} />}
                           </Route>
                           <Route exact path='/discussion-forum/create'>
                             {({ match }) => <CreateDiscussionForum match={match} />}
                           </Route>
-                          <Route exact path='/discussion-forum/post/:id'>
+                          <Route exact path='/teacher-forum/create'>
+                            {({ match }) => <CreateDiscussionForum match={match} />}
+                          </Route>
+                          <Route exact path='/student-forum/create'>
+                            {({ match }) => <CreateDiscussionForum match={match} />}
+                          </Route>
+                          <Route exact path='/teacher-forum/post/:id'>
+                            {({ match }) => <DiscussionPost match={match} />}
+                          </Route>
+                          <Route exact path='/student-forum/post/:id'>
                             {({ match }) => <DiscussionPost match={match} />}
                           </Route>
                           <Route exact path='/teacher-circular'>
