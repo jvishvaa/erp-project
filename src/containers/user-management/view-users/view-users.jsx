@@ -389,7 +389,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       setCurrentPage(1);
       getUsersData();
     }
-  }, [isNewSeach]);
+  }, [isNewSeach,moduleId]);
 
   const handleYear = (event, value) => {
     setSelectedYear('');
