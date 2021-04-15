@@ -783,7 +783,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {submittedEvaluatedFilesBulk?.map((url, i) => (

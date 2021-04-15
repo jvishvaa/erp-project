@@ -100,7 +100,6 @@ const ClassWiseSms = ({ classes,
   }, [])
 
   useEffect(() => {
-    console.log('selectAll & isChecked: ', selectAll, Object.keys(isChecked).length)
   })
 
   useEffect(() => {
@@ -213,7 +212,6 @@ const ClassWiseSms = ({ classes,
         }
       }
     }
-    console.log(`Selected All: ${selectAll}, isChecked: ${selectedErp}, dontSend: ${dontSend} `)
     const sec = section.map(item => item.value)
     const data = {
       students: selectAll ? 'all' : selectedErp,

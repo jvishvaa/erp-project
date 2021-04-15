@@ -144,7 +144,6 @@ const ListandFilter = (props) => {
                     console.log(err)
                 })
             }else{
-                console.log(valid.errorMessage)
                 setError(valid)
             }
             

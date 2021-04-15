@@ -208,11 +208,7 @@ export default function ModuleCard({
     } else if (unCheckDependency.length === 0) {
       const unCheckScopeDependencies = [];
       const currSubModule = subModules.find((obj) => obj.module_child_id === subModuleId);
-      console.log(
-        'currSubModule ',
-        currSubModule,
-        unCheckScopeDependenciesForModules[scope]
-      );
+
       // unCheckScopeDependenciesForModules[scope].forEach((scopeName) => {
       //   if (currSubModule[scopeName] == true) {
       //     // parent scope is checked
@@ -254,11 +250,7 @@ export default function ModuleCard({
         return true;
       });
       const currSubModule = subModules.find((obj) => obj.module_child_id === subModuleId);
-      console.log(
-        'currSubModule ',
-        currSubModule,
-        unCheckScopeDependenciesForModules[scope]
-      );
+ 
       // unCheckScopeDependenciesForModules[scope].forEach((scopeName) => {
       //   if (currSubModule[scopeName] == true) {
       //     // parent scope is checked
@@ -284,7 +276,6 @@ export default function ModuleCard({
           );
         }
       } else {
-        console.log('not safe to uncheck dependency', unCheckDependencies);
         setAlert('error', `Uncheck  ${unCheckDependencies.join(', ')} modules first`);
       }
     }
@@ -331,7 +322,6 @@ export default function ModuleCard({
     unCheckDependency,
     scope
   ) => {
-    console.log('custom scope obj ', customScopeObj);
     const moduleObj = JSON.parse(JSON.stringify(module));
     const subModules = module.module_child;
     // const changedModuleIndices = [];
@@ -343,7 +333,6 @@ export default function ModuleCard({
     );
     moduleObj.module_child = clonedArray;
 
-    console.log('module state', moduleObj);
 
     // if (unCheckDependency.length == 0) {
     //   const { clonedArray, index } = findAndApplyCustomScope(

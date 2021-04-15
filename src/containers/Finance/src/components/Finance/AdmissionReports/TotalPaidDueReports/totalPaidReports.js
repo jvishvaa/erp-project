@@ -67,7 +67,6 @@ class TotalPaidReports extends Component {
     // }
   }
   handleAcademicyear = (e) => {
-    console.log(e)
     this.setState({ session: e.value, selectedBranches: [], sessionData: e }, () => {
       if (this.state.role === 'financeaccountant') {
         // this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
@@ -85,7 +84,6 @@ class TotalPaidReports extends Component {
       valueGrade: [],
       selectedFeeTypes: []
     }, () => {
-      console.log('branchHandler: ', this.state.selectedBranches, this.state.branchId)
       this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, this.props.user)
       // this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.props.alert, this.props.user)
     })
@@ -137,7 +135,6 @@ class TotalPaidReports extends Component {
     })
   }
   getReport = () => {
-    console.log('I am Called')
     if (!this.state.session || this.state.valueGrade.length < 1 ||
       !this.state.selectedFeeTypes || !this.state.typesId
     ) {
@@ -177,7 +174,6 @@ class TotalPaidReports extends Component {
     // } else if (this.state.allStudents) {
     //   data.allStudents = this.state.allStudents
     // }
-    console.log('--data-------', data)
     this.props.downloadReports('AdmTotalPaidReports.xlsx', urls.DownloadAdmTotalPdreports, data, this.props.alert, this.props.user)
     this.props.clearProps()
     this.setState({

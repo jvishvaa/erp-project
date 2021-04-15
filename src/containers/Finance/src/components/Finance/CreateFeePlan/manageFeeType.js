@@ -75,7 +75,6 @@ class ManageFeeType extends Component {
       installmentId: id,
       acadId: academic
     }, () => {
-      console.log('shoeEditModal')
     })
   }
 
@@ -96,7 +95,6 @@ class ManageFeeType extends Component {
     //   return
     // }
     // this.props.fetchFeeTypes(this.props.match.params.id, this.props.alert, this.props.user)
-    console.log('component')
     this.props.fetchFeeTypeAndAccountList(this.props.location.state, this.props.alert, this.props.user)
     // this.feeAccountInfo()
   }
@@ -115,7 +113,6 @@ class ManageFeeType extends Component {
   }
 
   // componentDidUpdate(){
-  //   console.log('-----------fee accounts---------------',this.props.feeAccounts)
   // }
 
   scrollDownHandler = () => {
@@ -124,10 +121,8 @@ class ManageFeeType extends Component {
   }
 
   handleClickFeeType = e => {
-    // console.log(e)
     // this.setState({ FeeId: e.value, feeTypeData: e, showTable: true }, () => {
     // feePlanState = this.state
-    // console.log(this.state)
     // })
     const feeplanTypeListNew = this.props.feeTypes.filter((type) => {
       return type.fee_type_name ? type.fee_type_name.id === e.value : ''
@@ -310,7 +305,6 @@ class ManageFeeType extends Component {
     const installFeeAcc = document.querySelectorAll('[name=feeAccountInfo]')
     const installFine = document.querySelectorAll('input[type=checkbox]')
 
-    console.log('installment name: ', installName)
     for (let i = 0; i < installName.length; i++) {
       if (!installName[i].value.length) {
         this.props.alert.warning('enter installment names.')
@@ -450,7 +444,6 @@ class ManageFeeType extends Component {
     }
     // let editModal = null
     // if (this.state.showEditModal) {
-    //   console.log('opening modal')
     //   editModal = (
     //     <Modal open={this.state.showEditModal} click={this.hideModalHandler}>
     //       <Typography variant='h3' style={{ textAlign: 'center', fontWeight: 'lighter' }}>Edit Installments</Typography>

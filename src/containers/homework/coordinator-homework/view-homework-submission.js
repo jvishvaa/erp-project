@@ -107,10 +107,7 @@ const ViewHomework = withRouter(
         scrollableContainer.current.scrollLeft -= 150;
       } else {
         scrollableContainer.current.scrollLeft += 150;
-        console.log(
-          scrollableContainer.current.scrollLeft,
-          scrollableContainer.current.scrollRight
-        );
+       
       }
     };
 
@@ -166,7 +163,6 @@ const ViewHomework = withRouter(
         //   return;
         // }
       }
-      console.log('Evaluated answer ', currentQuestion);
       const { id, ...reqData } = currentQuestion;
       try {
         await evaluateHomework(id, reqData);
@@ -241,7 +237,6 @@ const ViewHomework = withRouter(
       const data = await getSubmittedHomeworkDetails(studentHomeworkId);
 
       const { hw_questions: hwQuestions, is_question_wise: isQuestionwise, overall_remark: overallRemarks, score: scores,  id } = data;
-      console.log('fetched data ', data);
       setHomeworkId(id);
       setRemark(overallRemarks);
       setScore(scores);
@@ -406,7 +401,6 @@ const ViewHomework = withRouter(
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {collatedSubmissionFiles.map((url, i) => (
@@ -474,7 +468,6 @@ const ViewHomework = withRouter(
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {collatedQuestionState.corrected_submission.map((url, i) => (

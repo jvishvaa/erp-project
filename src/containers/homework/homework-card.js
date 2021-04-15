@@ -23,7 +23,6 @@ const HomeworkCard = ({
   onClose,
 }) => {
   const { subject, date, view } = data;
-  console.log('view ', view);
   return (
     // <Layout>
 

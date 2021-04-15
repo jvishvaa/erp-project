@@ -40,7 +40,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -209,7 +208,6 @@ class PettyExpenses extends Component {
   }
 
   handleAcademicyear = (e) => {
-    console.log('acad years', this.props.session)
     this.setState({ session: e.value, sessionData: e}, () => {
       this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
     })

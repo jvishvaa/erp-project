@@ -40,7 +40,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -101,7 +100,6 @@ class CustomizedAdmissionFormAcc extends Component {
     }
   }
   handleSearchby = event => {
-    console.log(event.value)
     this.setState({
       searchByDropdown: event.value,
       regNo: null,
@@ -166,7 +164,6 @@ class CustomizedAdmissionFormAcc extends Component {
         this.props.searchStudentdetailsbyAppNumber(this.state.session.value, this.state.appNo, this.props.user, this.props.alert)
       }
       if (this.state.appStatus) {
-        console.log('inside app status')
         this.props.getStudentdetailsbyregNumber(this.state.session.value, regNo.registration_number || '', this.props.user, this.props.alert)
       }
     })

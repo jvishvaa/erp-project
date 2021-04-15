@@ -62,8 +62,7 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
         }
       }
     }
-    console.log('promoted', promoted)
-    console.log('notpromoted', notPromoted)
+ 
     setPromotedStu(promoted)
     setNotPromotedStu(notPromoted)
     setAllStuPromoted(false)
@@ -74,7 +73,6 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
   }, [studentList])
 
   useEffect(() => {
-    console.log('promotedStudent: ', promotedStudent)
     let arr1 = []
     if (promotedStudent) {
       arr1 = ((Object.keys(promotedStudent).filter(key => promotedStudent[key] === true)))
@@ -82,15 +80,12 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
       // setNotPromotedStudent(false)
       // setAllNotStuPromoted(false)
     }
-    console.log('arr1', arr1)
-    console.log('promotedStudentActive', promotedStudent)
-    // console.log('notpromtedstudentActive', notpromotedStudent)
+ 
     // let arr2 = []
     // if (notpromotedStudent) {
     //   arr2 = ((Object.keys(notpromotedStudent).filter(key => notpromotedStudent[key] === true)))
     //   setStudentListCanPromoted(arr2)
     // }
-    // console.log('arr2', arr2)
   }, [promotedStudent])
 
   const downloadCanBePromotedStu = () => {
@@ -133,7 +128,6 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
         }
       ])
     })
-    console.log('body: ', body)
     // const body = [
     //   {
     //     value: promoted,
@@ -189,7 +183,6 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
         }
       ])
     })
-    console.log('body: ', body)
     // const body = [
     //   {
     //     value: promoted,
@@ -213,7 +206,6 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
     fetchGradesPerBranch(alert, user, sessionData.value, e.value)
   }
   const gradeHandler = (e) => {
-    console.log(e.value)
     setGradeData(e)
     // setGradeId(e.value)
     fetchAllSection(sessionData.value, alert, user, e.value, branchData.value)
@@ -277,7 +269,6 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
         section: sectionData && sectionData.value
       }
       studentPromotionList(data, alert, user)
-      console.log('qwert', studentList)
     }
     setDisplayStudentList(true)
   }
@@ -295,7 +286,6 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
       // } else {
       //   setDisablePromote(false)
       // }
-      console.log('Allchecked', checked)
     }
   }
 
@@ -307,7 +297,6 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
   //     })
   //     setNotPromotedStudent(checked)
   //     setAllNotStuPromoted(!allNotStuPromoted)
-  //     console.log('Allchecked', checked)
   //   }
   // }
 
@@ -344,7 +333,6 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
   }
 
   const erpSearchHandler = (e) => {
-    console.log('studenrList', studentList)
     const filteredArr = studentList.filter(stu => stu.is_promoted && +stu.student.includes(+e.target.value))
     setErpSearchValue(e.target.value)
     setReasonSearchData(null)
@@ -361,14 +349,12 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
   const reasonSearchHandler = (e) => {
     if (e.value) {
       const filteredArr = studentList.filter(stu => stu.is_promoted && stu.Reason.includes(e.value))
-      console.log('fillered Reason: ', filteredArr)
       setPromotedStu(filteredArr)
       setErpSearchValue(null)
       setNotProErpValue(null)
       setReasonSearchData(e)
     } else {
       const filteredArr = studentList.filter(stu => stu.is_promoted)
-      console.log('fillered Reason: ', filteredArr)
       setPromotedStu(filteredArr)
       setReasonSearchData(e)
       setErpSearchValue(null)
@@ -377,17 +363,14 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
   }
 
   const reasonNotPromotedHandler = (e) => {
-    console.log(e)
     if (e.value) {
       const filteredArr = studentList.filter(stu => !stu.is_promoted && stu.Reason.includes(e.value))
-      console.log('fillered Reason: ', filteredArr)
       setNotPromotedStu(filteredArr)
       setErpSearchValue(null)
       setNotProErpValue(null)
       setReasonNotPromotedData(e)
     } else {
       const filteredArr = studentList.filter(stu => !stu.is_promoted)
-      console.log('fillered Reason: ', filteredArr)
       setNotPromotedStu(filteredArr)
       setReasonNotPromotedData(e)
       setErpSearchValue(null)

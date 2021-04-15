@@ -24,7 +24,6 @@ const DescriptiveTestCorrectionModule = ({
   handleSaveFile,
 }) => {
   // const
-  console.log(open, 'ooooooo');
   const classes = useStyles();
   return (
     <Modal open onClose={handleClose} disablePortal className={classes.modal}>

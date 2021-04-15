@@ -25,7 +25,6 @@ export const fetchStoreBranchMapping = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       payload.alert.warning('Unable To Load')
-      console.log(err)
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -84,8 +83,6 @@ export const addStoreFeeAccount = (payload) => {
       } else {
         payload.alert.warning('Something Went Wrong!')
       }
-      console.log(error.response)
-      // console.log(error.response.data)
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -105,7 +102,6 @@ export const activeInactiveAccount = (payload) => {
         }
       })
       dispatch(actionTypes.dataLoaded())
-      console.log('data++++++', response.data)
       payload.alert.success('Updated Successfully')
     }).catch(error => {
       if (error.response && error.response.status === 400) {

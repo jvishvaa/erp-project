@@ -413,8 +413,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   const handleGrade = (event, value) => {
     setSelectedGrades(value);
-    console.log(value);
-
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);

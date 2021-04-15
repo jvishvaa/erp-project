@@ -64,7 +64,6 @@ const AssessmentView = () => {
   };
 
   const handlePeriodList = (grade, subject, qpValue, newValue) => {
-    console.log('Tab Value: ', tabValue, newValue);
     if (!grade || !qpValue) {
       setAlert('error', 'Select all the fields!');
       return;

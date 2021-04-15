@@ -37,10 +37,8 @@ class EditMiscFeeType extends Component {
   }
 
   componentDidMount () {
-    console.log('alert---------------', this.props.alert)
     let currentData = this.props.miscFeeList.filter(val => val.id === this.props.id)
     currentData.forEach(arr => {
-      console.log(arr)
       this.setState({
         fee_type_name: arr.fee_type_name ? arr.fee_type_name : '',
         is_multiple_records_allow: arr.is_multiple_records_allow ? arr.is_multiple_records_allow : false,
@@ -116,9 +114,7 @@ class EditMiscFeeType extends Component {
   }
 
   handleAcademicyear = (e) => {
-    console.log(e)
     this.setState({ sessionData: e }, () => {
-      console.log(this.state.sessionData)
     })
   }
 
@@ -142,7 +138,6 @@ class EditMiscFeeType extends Component {
   }
 
   feeAccountHandler = (e) => {
-    console.log('fee acc', e)
     this.setState({
       feeAccount: {
         label: e.label,

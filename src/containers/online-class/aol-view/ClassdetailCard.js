@@ -191,7 +191,6 @@ export default function ClassdetailsCardComponent(props) {
                 }
             })
     }, [])
-    console.log(props,'==============')
     return (
         <>
             <div className={classes.classDetailsBox}>

@@ -62,7 +62,6 @@ const CraeteCircular = () => {
   const [filePath, setFilePath] = useState([]);
   const [filterEvent, setFilterEvent] = useState(false);
 
-  console.log(state, 'eeeeeeeeee');
   const circularRole = [{ name: 'Student Circular', value: 'Student Circular' }];
 
   const [filterData, setFilterData] = useState({
@@ -286,7 +285,6 @@ const CraeteCircular = () => {
 
   const removeFileHandler = (i,file) => {
     const list = [...filePath];
-    console.log(i,file,"File")
     setLoading(true)
     axiosInstance.post(`${endpoints.circular.deleteFile}`,{
       file_name:`dev/circular_files/${filterData?.branch?.branch?.branch_name}/${file}`
@@ -455,7 +453,6 @@ const CraeteCircular = () => {
       axiosInstance
         .get(`${endpoints.circular.viewMoreCircularData}?circular_id=${circularKey}`)
         .then((result) => {
-          console.log(result?.data, 'RRRRRRRR');
           if (result?.data?.status_code === 200) {
             setFilterData({
               ...filterData,

@@ -32,14 +32,10 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
       let c = b[0].split('-')
       let d = c.reverse()
       let e = d.join('-')
-      console.log('a,b,c,d,d', a, b, c, d, e)
-      console.log('time', b[1])
       if (b[1] < '12:00') {
         setValidToHelerTxt(e + ' (' + b[1] + 'AM)')
-        console.log('AM')
       } else {
         setValidToHelerTxt(e + ' (' + b[1] + 'PM)')
-        console.log('PM')
       }
     }
     if (validFrom) {
@@ -48,19 +44,15 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
       let c = b[0].split('-')
       let d = c.reverse()
       let e = d.join('-')
-      console.log('time', b[1])
       if (b[1] < '12:00') {
         setValidFromHelerTxt(e + ' (' + b[1] + 'AM)')
-        console.log('AM')
       } else {
         setValidFromHelerTxt(e + ' (' + b[1] + 'PM)')
-        console.log('PM')
       }
     }
   }, [validFrom, validTo])
 
   const activeInactiveHandeler = (e) => {
-    console.log('switch value: ', e.target.value)
     if (e.target.value === 'isActive') {
       setIsActive(e.target.checked)
     }

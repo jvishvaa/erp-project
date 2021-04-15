@@ -50,7 +50,6 @@ class CurrFeeTypeAcc extends Component {
     const { erp, feeType, feeTypeAmount, dueDate } = this.state
     if (!erp || !feeType || !feeTypeAmount || !dueDate) {
       if (nextProps.studentMiscFee && nextProps.studentMiscFee.length > 0) {
-        console.log('inside 1st props eill')
         nextProps.studentMiscFee.map((student) => {
           this.setState({
             feeType: {
@@ -66,7 +65,6 @@ class CurrFeeTypeAcc extends Component {
     }
 
     if (nextProps.miscDetails && Object.keys(nextProps.miscDetails)) {
-      console.log('inside 2nd will receive props: ', nextProps.miscDetails)
       this.setState({
         feeType: {
           label: nextProps.miscDetails.fee_type_name ? nextProps.miscDetails.fee_type_name : '',
@@ -80,7 +78,6 @@ class CurrFeeTypeAcc extends Component {
   }
 
   feeTypeHandler = (e) => {
-    console.log('feetType:', e)
     this.setState({
       feeType: e
     }, () => {

@@ -101,7 +101,6 @@ export const AssessmentHandlerContextProvider = ({
     setAssessmentDetails(assessmentDtObj);
   }
   // eslint-disable-next-line no-console
-  console.log(restProps);
   // function setLocalData(questionsData, metaInfo) {
   //   try {
   //     let prevlocalData = localStorage.getItem(storageKey);
@@ -231,7 +230,6 @@ export const AssessmentHandlerContextProvider = ({
   }
   function attemptQuestion(qId, userResponse = {}) {
     if (readOnly) {
-      console.log('No questions can be attempted.');
     } else {
       // updateQuestionsUserResponse(9, { attemption_status: true, ...userResponse });
       updateQuestionsUserResponse(qId, userResponse);
@@ -308,7 +306,6 @@ export const AssessmentHandlerContextProvider = ({
         processFunc(subeElement, index, subIndex, isSubQuestion);
       });
     });
-    // console.log({ apiData, questionsObj }, 'apiData');
     updateQuestionsDataObj(questionsObj);
   }
 
@@ -456,11 +453,9 @@ export const AssessmentHandlerContextProvider = ({
       .then((res) => {
         onResolve(res);
         localStorage.removeItem(storageKey);
-        // console.log(res);
       })
       .catch((er) => {
         onReject(er);
-        // console.log(er);
       });
   }
 

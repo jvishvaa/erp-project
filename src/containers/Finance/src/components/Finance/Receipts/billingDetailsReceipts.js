@@ -139,7 +139,6 @@ function mainView (details) {
   //         acc += item.balance
   //         return acc
   //       }, 0)
-  //       console.log('amount', amt)
   //     }
   //     return amt
   //   }
@@ -266,8 +265,6 @@ function mainView (details) {
 }
 
 const BillingReceipts = (details) => {
-  console.log('std VIEW', details)
-  console.log('PDF VIEW', details.data)
   const title = 'BillingReceipt'
   const header = (
     <React.Fragment>

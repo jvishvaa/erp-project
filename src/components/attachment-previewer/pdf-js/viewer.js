@@ -219,22 +219,7 @@ export function PDFViewerApplicationWarp() {
                 self.documentInfo = info;
                 self.metadata = metadata;
 
-                // Provides some basic debug information
-                console.log(
-                    "PDF " +
-                    pdfDocument.fingerprint +
-                    " [" +
-                    info.PDFFormatVersion +
-                    " " +
-                    (info.Producer || "-").trim() +
-                    " / " +
-                    (info.Creator || "-").trim() +
-                    "]" +
-                    " (PDF.js: " +
-                    (pdfjsLib.version || "-") +
-                    ")"
-                );
-
+ 
                 let pdfTitle;
                 if (metadata && metadata.has("dc:title")) {
                     const title = metadata.get("dc:title");

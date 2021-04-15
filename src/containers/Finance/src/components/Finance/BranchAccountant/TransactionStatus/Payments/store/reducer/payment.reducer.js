@@ -18,8 +18,6 @@ const accountantPaymentReducer = (state = initialState, action) => {
     }
     case actionTypes.EDIT_ACCOUNTANT_TRANSACTIONS: {
       // const a = state.allTransactions
-      // console.log('a', a)
-      // console.log('action', action.payload.data)
       // let index = a.results.findIndex((val) => +val.transaction_id === +action.payload.data.transaction_id)
       // a.results[index].is_raised_for_cancellation = action.payload.data.is_wrong_payment
       return {
@@ -32,8 +30,6 @@ const accountantPaymentReducer = (state = initialState, action) => {
       // let a = null
       // if (action.payload.data2) {
       //   a = state.allTransactions
-      //   console.log('a', a)
-      //   console.log('action', action.payload.data)
       //   let index = a.results.findIndex((val) => +val.transaction_id === +action.payload.data.transaction_id)
       //   a.results[index].is_cancelled = true
       // }

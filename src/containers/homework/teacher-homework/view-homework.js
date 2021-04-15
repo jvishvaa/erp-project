@@ -92,7 +92,6 @@ const ViewHomework = withRouter(
         scrollableContainer.current.scrollLeft -= 150;
       } else {
         scrollableContainer.current.scrollLeft += 150;
-        console.log(scrollableContainer.current.scrollLeft);
       }
     };
 

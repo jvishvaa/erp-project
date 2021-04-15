@@ -139,13 +139,9 @@ const ApprovePendingReq = ({
       const newAmt = { ...amount }
       newAmt[id] = e.target.value
       const initialSum = Object.keys(newAmt).reduce((acc, item) => acc + (+newAmt[item]), 0)
-      console.log('sum initial', initialSum)
       // setTotalAmtAdjust(initialSum)
       const diff = totalAmount - initialSum
-      console.log('initialSum', initialSum)
-      console.log('sum diff', diff)
       setDiffTotalAmtPaidAdjust(diff)
-      console.log('sum Adj Amt', location.state.totalAmount)
       if (+location.state.totalAmount - diff < 0) {
         alert.warning('Adjustment amount cannot be less than 0')
         return
@@ -239,18 +235,13 @@ const ApprovePendingReq = ({
     let concAmt = 0
     for (let [key, value] of Object.entries(concAmount)) {
       concAmt += +value
-      console.log(`${key}: ${value}`)
     }
-    console.log('concess amount and entered amount', location.state.concessionAmt, concAmt)
     if (location.state.concessionAmt !== concAmt) {
       return alert.warning('Adjust Concession amount properly')
     }
     instaDetails.map(val => {
-      console.log('amt val id', val.id)
       Object.keys(amount).map(id => {
-        console.log('amt object keys map', id)
         if (+val.id === +id) {
-          console.log('amt inside object keys', amount[id])
           val['installment_amount'] = +amount[id]
           val['concession_amount'] = +concAmount[id] ? +concAmount[id] : 0
         }
@@ -260,7 +251,6 @@ const ApprovePendingReq = ({
     let feeTypeIds = []
     stdDetails.map((instas) => feeTypeIds.push(instas.fee_type))
     let newFeeTypeIds = feeTypeIds.filter((a, b) => feeTypeIds.indexOf(a) === b)
-    console.log('Unique set ======', newFeeTypeIds)
     let objAmount = {}
 
     for (let i = 0; i < newFeeTypeIds.length; i++) {
@@ -272,7 +262,6 @@ const ApprovePendingReq = ({
       }
       objAmount[newFeeTypeIds[i]] = bal
     }
-    console.log('objAmount ======', objAmount)
     // let amount = 0
 
     // stdDetails.map((instas) => {

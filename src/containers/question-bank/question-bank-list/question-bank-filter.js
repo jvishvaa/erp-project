@@ -492,7 +492,6 @@ const QuestionBankFilters = ({
       setAlert('error', 'Select all the fields!');
       return;
     }
-    console.log(filterData, 'filtered');
     handlePeriodList(
       filterData.quesType.id,
       quesCatData,

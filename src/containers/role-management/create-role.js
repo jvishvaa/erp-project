@@ -111,21 +111,11 @@ class CreateRole extends Component {
         const includeInRequest = Object.keys(currentSubModule).some((key) => {
           if (key.includes('my_')) {
             if (currentSubModule[key]) {
-              console.log(
-                'included in request because non custom scope is true',
-                currentSubModule
-              );
-
               return true;
             }
           }
           if (key.includes('custom_')) {
             if (currentSubModule[key].length > 0) {
-              console.log(
-                'included in request because custom scope is true',
-                currentSubModule
-              );
-
               return true;
             }
           }

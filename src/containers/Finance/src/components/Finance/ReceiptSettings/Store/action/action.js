@@ -71,7 +71,6 @@ export const AddReceiptSetting = (payload) => {
             data: response.data
           }
         })
-        console.log('resssss:', response)
         // payload.alert.success('added Successfully')
       }
       dispatch(actionTypes.dataLoaded())

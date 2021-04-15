@@ -44,7 +44,6 @@ const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage 
   //   setRowsPerPage(+event.target.value);
   //   setPage(0);
   // };
-console.log(roles, onEdit, onDelete, count, limit, page, onChangePage,'==============')
   return (
     <Paper className={`${classes.root} roles-table`}>
       <TableContainer className={classes.container}>

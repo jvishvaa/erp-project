@@ -244,7 +244,6 @@ export default function DiscussionPostComponent(props) {
     axiosInstance
       .get(`/academic/${postsId.id}/retrieve-post/`)
       .then((res) => {
-        //console.log(res.data);
         setPostsData(res.data.result);
       })
       .catch((error) => console.log(error));
@@ -257,7 +256,6 @@ export default function DiscussionPostComponent(props) {
     axiosInstance
       .get(`${endpoints.discussionForum.postLike}?post=${postsId.id}&type=2`)
       .then((res) => {
-        //console.log(res.data.result.results);
         setCommentsList(res.data.result.results);
       })
       .catch((error) => console.log(error));

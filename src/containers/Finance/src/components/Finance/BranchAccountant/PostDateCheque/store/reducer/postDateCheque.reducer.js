@@ -9,7 +9,6 @@ const initialState = {
 const pdcReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.ALL_GRADES : {
-      console.log('==> all grades in acc ==<', action.payload)
       const gradelist = [...action.payload.data]
       const allGrades = gradelist.map(grades => (grades.grade.id
       ))

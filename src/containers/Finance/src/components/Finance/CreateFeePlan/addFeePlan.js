@@ -32,7 +32,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId= item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -92,7 +91,6 @@ class AddFeePlan extends Component {
     })
     this.setState({ yearApplicableId: aIds })
     // this.setState({ yearApplicableId: e.value }, ()=> {
-    //   console.log(this.state.yearApplicableId)
     // })
   }
 

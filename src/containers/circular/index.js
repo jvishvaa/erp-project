@@ -98,7 +98,6 @@ const CircularList = () => {
   }, [window.location.pathname]);
 
   const handlePeriodList = (grade, branch, section, year, startDate, endDate) => {
-    console.log(grade, branch, section, year, startDate, endDate, ']]]]]]]]]]]]]]]]]]');
     setLoading(true);
     if (window.location.pathname === '/teacher-circular') {
       setPeriodData([]);

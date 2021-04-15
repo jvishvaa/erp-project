@@ -98,8 +98,6 @@ function mainView (details) {
 }
 
 const voucherPdf = (details) => {
-  console.log('Voucher VIEW', details)
-  // console.log('PDF VIEW', details.data)
   const title = 'Voucher Receipt'
   const header = (
     <React.Fragment />

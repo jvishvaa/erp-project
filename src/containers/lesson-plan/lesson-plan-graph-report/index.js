@@ -140,7 +140,6 @@ const LessonPlanGraphReport = ({
     //         const aa=a?.map(a=>a.central_gs_mapping_id)
     //         // centralGsMappingId=aa?.pop()
     //         setCentralGsMappingId(aa?.pop())
-    //         // console.log(result.data.result.results,'OOOO',centralGsMappingId)
     //         }else {
     //             setAlert('error', result.data.message);
     //         }
@@ -202,7 +201,6 @@ const LessonPlanGraphReport = ({
   const handleSubject = (event, value) => {
     setSubjectList([]);
     if (value.length > 0) {
-      //   console.log(value, 'vvvvvv');
       const ids = value.map((el) => el.subject_id);
       setSubjectIds(ids);
       const sIds = value.map((el) => el.id);
@@ -226,7 +224,6 @@ const LessonPlanGraphReport = ({
           setTeacherDropdown([]);
         });
     }
-    // console.log(value[0].id, filterData.grade.grade_id, 'GRADEEE');
     axiosInstance
       .get(
         `${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value[0].id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&grade_id=${filterData.grade.grade_id}`
@@ -246,7 +243,6 @@ const LessonPlanGraphReport = ({
 
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: '' });
-    console.log(value, '=======')
     if (value) {
       setFilterData({ ...filterData, branch: value });
       axiosInstance
@@ -284,7 +280,6 @@ const LessonPlanGraphReport = ({
         )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`
       )
       .then((result) => {
-        //   console.log(result.data)
         if (result.data.status_code === 200) {
           setLoading(false);
           setGraphData(result.data.result);

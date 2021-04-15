@@ -259,7 +259,6 @@ const getSectionApi = async () => {
           (sec) =>
             result.data.data.findIndex((obj) => obj.section__section_name == sec) > -1
         );
-        console.log('selected sections array ', selectedSectionsArray);
         setSelectedSections(selectedSectionsArray);
       }
       setLoading(false);

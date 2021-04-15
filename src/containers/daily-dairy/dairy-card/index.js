@@ -39,7 +39,6 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
     setShowMenu(false);
     setShowPeriodIndex();
   };
-  console.log(lesson,'======DailyDairy')
 
   const handleViewMore = () => {
     setLoading(true)
@@ -74,7 +73,6 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
     //   })
   }
   const handleDelete=(e,index)=>{
-    console.log(e,index,'event')
     axiosInstance.delete(`${endpoints.dailyDairy.updateDelete}${e.id}/update-delete-dairy/`)
     .then((result)=>{
 
@@ -90,8 +88,6 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
 
   }
   const handleEdit=(data)=>{
-
-    console.log(data,'PPP')
     // // setEditData(e)
     setState({editData:data,isEdit:true});
     history.push('/create/daily-diary')

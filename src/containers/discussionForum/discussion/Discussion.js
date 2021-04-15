@@ -212,7 +212,6 @@ export default function DiscussionComponent(props) {
     axiosInstance
       .post(endpoints.discussionForum.CreateCommentAndReplay, param)
       .then((res) => {
-        //console.log(res);
         setReply('');
         setAlert('success', res.data.message);
         setAddComment(addComment + 1);
@@ -231,7 +230,6 @@ export default function DiscussionComponent(props) {
     axiosInstance
       .get(`${endpoints.discussionForum.postLike}?post=${props.rowData.id}&type=2`)
       .then((res) => {
-        //console.log(res.data.result.results);
         setCommentList(res.data.result.results);
       })
       .catch((error) => console.log(error));

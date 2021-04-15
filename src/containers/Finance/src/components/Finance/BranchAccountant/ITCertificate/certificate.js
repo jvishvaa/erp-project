@@ -26,9 +26,7 @@ class Certificate extends Component {
   }
 
   componentDidMount () {
-    console.log('NUmber------------', Number.toNumericString(12000, 'only'))
     const d = new Date()
-    // console.log('///////////DATE', d && d.withMonthName())
   }
 
   // sessionChangeHandler = (e) => {
@@ -70,7 +68,6 @@ class Certificate extends Component {
     } = this.props
     try {
       const response = await this.getPdfData(session, erp, selectedParent.id)
-      console.log('-====Response====', response)
       if (typeof response.data === 'string') {
         this.props.alert.warning(response.data)
         return
@@ -87,7 +84,6 @@ class Certificate extends Component {
         location: response.data[0] && response.data[0].location,
         institute: response.data[0] && response.data[0].institute_name
       }
-      console.log('DATA+++++++++++', data)
       generateCertificate(data)
     } catch (error) {
       console.log(error)

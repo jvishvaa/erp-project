@@ -52,14 +52,12 @@ const LessonReport = () => {
     };
 
     const handleLessonList = (gradeId, subjectIds, volumeId, startDate, endDate) => {
-        console.log(gradeId, subjectIds, volumeId, startDate, endDate, '===')
         setLoading(true);
         setPeriodData([]);
         axiosInstance.get(`${endpoints.lessonReport.lessonList}?grade=${gradeId}&page=${page}&subjects=${subjectIds}&volume_id=${volumeId}&start_date=${startDate.format(
             'YYYY-MM-DD'
         )}&end_date=${endDate.format('YYYY-MM-DD')}`)
             .then(result => {
-                console.log(result)
                 if (result.data.status_code === 200) {
                     setTotalCount(result.data.result.count)
                     setLoading(false);

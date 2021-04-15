@@ -16,9 +16,7 @@ const studentShuffleReducer = (state = initialState, action) => {
     }
     case actionTypes.SEND_APPROVE_REJECT : {
       // const newStudentList = [...state.shuffleDetails]
-      // console.log('the copied list: ', newStudentList)
       const newStudentList = state.shuffleDetails.filter((row) => row.id !== action.payload.data.id)
-      console.log('filtered list: ', newStudentList)
       return {
         ...state,
         shuffleDetails: newStudentList

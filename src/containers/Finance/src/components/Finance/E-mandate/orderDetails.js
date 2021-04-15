@@ -40,7 +40,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -77,7 +76,6 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
     // let role = ''
     // role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
     // role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
-    // console.log('role+', JSON.parse(localStorage.getItem('role_details')))
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile.personal_info.role.toLowerCase()
     setRole(role)
@@ -106,7 +104,6 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
     setPaymnetMethod('')
   }
 
-  // console.log(listCustomerDetailsId)
 
   const handlePaymentMethodChange = (e) => {
     listCustomerDetails(domainName && domainName.value, user, alert)
@@ -155,7 +152,6 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
             ifsc_code: ifscCode.toLocaleUpperCase()
           }
           createOrderDetails(data, user, alert)
-          console.log('data', data)
           setIsCreateOrderModel(false)
         } else {
           alert.warning('You entered invalid IFSC code!')
@@ -173,7 +169,6 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
     getOrderDetails(branch, sessionData && sessionData.value, role, user, alert)
     setShowTable(true)
   }
-  console.log(orderDetails)
 
   const handleClickSessionYear = (e) => {
     setSessionData(e)

@@ -23,7 +23,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId = item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -98,9 +97,7 @@ class AddMiscFeeType extends Component {
   }
 
   handleAcademicyear = (e) => {
-    console.log(e)
     this.setState({ sessionData: e }, () => {
-      console.log(this.state.sessionData)
     })
   }
 
@@ -129,7 +126,6 @@ class AddMiscFeeType extends Component {
     })
   }
   feeAccountHandler = (e) => {
-    console.log('fee acc', e)
     this.setState({
       feeAccount: {
         label: e.label,

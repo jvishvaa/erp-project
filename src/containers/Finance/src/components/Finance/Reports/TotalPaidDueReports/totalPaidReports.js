@@ -28,7 +28,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -86,8 +85,6 @@ class TotalPaidReports extends Component {
  
   }
   componentWillReceiveProps (nextProps) {
-    // console.log('------nextprops----------', nextProps)
-    // console.log('-----state------', this.state)
     // if (this.state.confirmStatus) {
     //   this.setState({
     //     sessionData: [],
@@ -103,7 +100,6 @@ class TotalPaidReports extends Component {
     // }
   }
   handleAcademicyear = (e) => {
-    console.log(e)
     this.setState({ session: e.value, selectedBranches: [], sessionData: e }, () => {
       // if (this.state.role === 'financeaccountant') {
         // this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
@@ -124,7 +120,6 @@ class TotalPaidReports extends Component {
         valueGrade: [],
         selectedFeeTypes: []
       }, () => {
-        console.log('branchHandler: ', this.state.selectedBranches, this.state.branchId)
         this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, this.props.user, moduleId)
         // this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.props.alert, this.props.user)
       })
@@ -135,7 +130,6 @@ class TotalPaidReports extends Component {
         valueGrade: [],
         selectedFeeTypes: []
       }, () => {
-        console.log('branchHandler: ', this.state.selectedBranches, this.state.branchId)
         this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, this.props.user, moduleId)
       // this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.props.alert, this.props.user)
       })
@@ -176,7 +170,6 @@ class TotalPaidReports extends Component {
         selectedFeeTypes: [],
         selectedOthrInstallments: []
       }, () => {
-        // console.log('the grade state', this.state.gradeData, this.state.valueGrade)
         // if (this.state.role === 'financeaccountant' && this.state.gradeData.length > 0) {
         //   this.props.fetchFeePlanNames(this.state.session, this.props.branchAtAcc.branch, this.state.gradeData, this.props.alert, this.props.user)
         // } else if (this.state.gradeData.length > 0) {
@@ -401,7 +394,6 @@ class TotalPaidReports extends Component {
         label: 'All Fee Plan'
       }
       const allfeePlIds = this.props.feePlans.map(ele => ele.id).filter(ele => ele !== 'all')
-      console.log(allfeePlIds)
       this.setState({
         selectedFeePlan: allFeePlans,
         feePlanId: allfeePlIds,
@@ -475,7 +467,6 @@ class TotalPaidReports extends Component {
     })
   }
   getReport = () => {
-    console.log('I am Called')
     // if (!this.state.session || this.state.valueGrade.length < 1 ||
     //   this.state.selectedInstallments.length < 1 || this.state.selectedFeeTypes.length < 1 ||
     //   !this.state.feeInstId || !this.state.typesId || this.state.othrInstallmentIds.length < 1 ||
@@ -541,7 +532,6 @@ class TotalPaidReports extends Component {
     // } else if (this.state.allStudents) {
     //   data.allStudents = this.state.allStudents
     // }
-    console.log('--data-------', data)
     this.props.downloadReports('total_paid_and_due_reports.csv', urls.DownloadTotalPaidReports, data, this.props.alert, this.props.user)
     this.setState({
       sessionData: [],

@@ -3,7 +3,6 @@ import { generatePdf } from '../../../utils'
 import schoolshop from '../../../assets/schoolshop.jpeg'
 
 const storePayment = (data, isCancelled) => {
-  console.log('the receipt Data: ', data, schoolshop)
   const style = {
     header: {
       lineHeight: '13px',
@@ -180,10 +179,7 @@ const storePayment = (data, isCancelled) => {
       }
     }
   })
-  console.log('data length: ', data.length)
-  console.log('All the kits uni: ', uniformKit)
-  console.log('All the kits stat: ', stationaryKit)
-  console.log('All the kits delivery: ', deliveryItem)
+
   const deliveryKitReceipt = (
     <React.Fragment>
       <div style={{ ...style.header, display: 'flex' }}>
@@ -271,7 +267,6 @@ const storePayment = (data, isCancelled) => {
           totalDelCgst = totalDelCgst + (+item.cgst_amount)
           totalDelSgst = totalDelSgst + (+item.sgst_amount)
           // shippingAmountUni = shippingAmountUni + (+item.delivery_amount)
-          // console.log('delivery items uniii: ', item.delivery_amount)
           return (
             <div style={style.itemRow} key={index}>
               <div style={{ ...style.itemElement, width: '4%', height: '25px', lineHeight: '25px' }}>
@@ -473,7 +468,6 @@ const storePayment = (data, isCancelled) => {
           discountUni = (+item.discount)
           totalUni = totalCalcAmount - discountUni
           // shippingAmountUni = shippingAmountUni + (+item.delivery_amount)
-          console.log('delivery items uniii: ', totalUni)
           return (
             <div style={style.itemRow} key={index}>
               <div style={{ ...style.itemElement, width: '4%', height: '25px', lineHeight: '25px' }}>
@@ -675,7 +669,6 @@ const storePayment = (data, isCancelled) => {
           totalSgstStan = totalSgstStan + (+item.sgst_amount)
           discountStat = (+item.discount)
           totalStat = totalWithoutGstStan - discountStat + totalCgstStan + totalSgstStan
-          // console.log('delivery items stttaa: ', item.delivery_amount)
           return (
             <div style={style.itemRow} key={index}>
               <div style={{ ...style.itemElement, width: '4%', height: '25px', lineHeight: '25px' }}>

@@ -271,7 +271,6 @@ const AssignRole = (props) => {
         ]);
         const rows = [];
         const selectionRows = [];
-        console.log('results ', result.data.results);
 
         result.data.results.forEach((items) => {
           rows.push({
@@ -412,7 +411,6 @@ const AssignRole = (props) => {
   };
 
   const handleSelectAll = (e) => {
-    console.log('on click', e.target.checked)
     // set select all to true/false 
 
     // turn all the states to true/ False
@@ -420,7 +418,6 @@ const AssignRole = (props) => {
 
     // tempSelectObj[pageno - 1].selectAll = !tempSelectObj[pageno - 1].selectAll;
     tempSelectObj[pageno - 1].selectAll = e.target.checked;
-    console.log('=== textClick checked: ', tempSelectObj)
     setSelectAllObj(tempSelectObj);
     const testclick = document.querySelectorAll('input[type=checkbox]');
     if (!selectAllObj[pageno - 1].selectAll) {
@@ -453,7 +450,6 @@ const AssignRole = (props) => {
   const assignRole = async () => {
     const assignRoleApi = endpoints.communication.assignRole;
     const selectionArray = [];
-    console.log('=== selected user assign: ', selectedUsers)
     selectedUsers.forEach((item) => {
       item.selected.forEach((ids) => {
         selectionArray.push(ids);

@@ -491,7 +491,6 @@ const CreateChapterType = ({
       });
   };
   const handleSection = (event, value) => {
-    // console.log(value);
     setFilterData({ ...filterData, section: '' });
     if (value) {
       setFilterData({ ...filterData, section: value });

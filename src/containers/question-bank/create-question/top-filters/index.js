@@ -233,7 +233,6 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
     if (value) {
       setFilterData({ ...filterData, subject: value });
       if (value) {
-        console.log(value, '===============');
         axios
           .get(
             `${endpoints.lessonPlan.chapterListCentral}?grade_subject=${value.subject.central_mp_id}`,
