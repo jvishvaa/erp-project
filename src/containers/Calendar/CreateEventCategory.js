@@ -33,6 +33,9 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
+import selectfilter from '../../assets/images/selectfilter.svg';
+import unfiltered from '../../assets/images/unfiltered.svg';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MenuItem from '@material-ui/core/MenuItem';
 import endpoints from '../../config/endpoints';
 import { shadows } from '@material-ui/system';
@@ -47,6 +50,8 @@ import {
   CardMedia,
   Tooltip,
   Typography,
+  useTheme,
+  SvgIcon,
 } from '@material-ui/core';
 import { result } from 'lodash';
 import e from 'cors';
@@ -180,7 +185,7 @@ const Cal1 = () => {
   const [eventType, setEventType] = useState([]);
   const [eventName, setEventName] = useState('');
   const [isEditId, setIsEditId] = useState('');
-  const [totalGenre, setTotalGenre] = useState(0);
+  const [totalGenre, setTotalGenre] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [chaTitle, setChaTitle] = useState(false)
   const [deleteFlag,setDeleteFlag]=useState(false)
@@ -189,7 +194,8 @@ const Cal1 = () => {
   const [dummyData, setDummyData] = useState([]);
   const { id } = useParams();
   const history = useHistory();
-
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [filterData, setFilterData] = useState({
     selectedEventType: '',
     // selectedEventName: '',
@@ -334,7 +340,7 @@ const Cal1 = () => {
       setAnchorEl(null);
       setAlert('success','Event Delete Successfully')
     }).catch((error) => console.log(error));
-    setAlert('warning','Something went wrong')
+    // setAlert('warning','Something went wrong')
   };
 
   const handleEdit = (data) => {
@@ -372,10 +378,12 @@ const Cal1 = () => {
       .put(`${endpoints.eventBat.patchUpdateEvent}${isEditId}`, params)
       .then((result) => {
         console.log(result.data, 'Update Data');
-        setIsEditId('');
-        setEventName('');
-        setEditFlag(!editFlag)
-        setAlert('success','Event Updated Successfully')
+        if(result.data.status === 200){
+          setIsEditId('');
+          setEventName('');
+          setEditFlag(!editFlag)
+          setAlert('success','Event Updated Successfully')
+        }
       })
       .catch((error) => console.log(error))
      //history.push('/calendar1')
@@ -535,7 +543,7 @@ const Cal1 = () => {
                   {/* </Grid> */}
                 </Dialog>
              
-
+                  
           <Grid container justify='flex-start' alignItems="flex-start"  spacing={2} direction='row'>
             {dummyData.map((data) => {
               return (
@@ -618,16 +626,44 @@ const Cal1 = () => {
             <br />
           </Grid> */}
           <Grid container justify='center'>
-            {totalGenre && totalGenre > 9 && (
+            {totalGenre ?(
               <Pagination
                 onChange={handlePagination}
-                  // style={{ paddingLeft: '150px' }}
+                  style={{ paddingLeft: '150px'}}
                 count={Math.ceil(totalGenre / limit)}
                 color='primary'
                 page={pageNumber}
                 color='primary'
               />
+            ):(
+              <div className='periodDataUnavailable'>
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={
+                      isMobile
+                        ? { height: '100px', width: '200px' }
+                        : { height: '160px', width: '290px' }
+                    }
+                    src={unfiltered}
+                  />
+                )}
+              />
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={
+                      isMobile
+                        ? { height: '20px', width: '250px' }
+                        : { height: '50px', width: '400px', marginLeft: '5%' }
+                    }
+                    src={selectfilter}
+                  />
+                )}
+              />
+            </div>
             )}
+            
           </Grid>
           
         </div>
