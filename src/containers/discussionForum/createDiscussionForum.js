@@ -6,11 +6,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import CustomMultiSelect from '../communication/custom-multiselect/custom-multiselect';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import Loading from '../../components/loader/loader';
 // import MyTinyEditor from './tinymce-editor'
 import MyTinyEditor from '../question-bank/create-question/tinymce-editor'
+import { useHistory } from 'react-router-dom';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '85%',
@@ -33,10 +36,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.main,
   },
 }));
-
-
-  
-
 
 const CreateDiscussionForum = () => {
   const classes = useStyles()
@@ -69,7 +68,7 @@ const CreateDiscussionForum = () => {
   const [moduleId, setModuleId] = useState(8);
   const [description, setDescription] = useState('');
   const [descriptionDisplay, setDescriptionDisplay] = useState('');
-
+  const history = useHistory();
 
 
   const handleSubmit = (e) => {
@@ -90,6 +89,7 @@ const CreateDiscussionForum = () => {
     if (result.data.status_code === 200) {
       setLoading(false);
       setAlert('success', result.data.message);
+      history.push('/discussion-forum');
     } else {        
       setLoading(false);
       setAlert('error', result.data.message);
@@ -103,15 +103,15 @@ const CreateDiscussionForum = () => {
     const getBranchApi = async () => {
       try {
         setLoading(true);
-        const result = await axiosInstance.get(endpoints.communication.branches, {
+        const result = await axiosInstance.get(`${endpoints.communication.branches}?session_year=${1}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         const resultOptions = [];
         if (result.status === 200) {
-          result.data.data.map((items) => resultOptions.push(items.branch_name));
-          setBranchList(result.data.data);
+          result.data.data.results.map((items) => resultOptions.push(items.branch.branch_name));
+          setBranchList(result.data.data.results);
           setLoading(false);
         } else {
           setAlert('error', result.data.message);
@@ -239,7 +239,7 @@ const getSectionApi = async () => {
         gradesId.push(items.grade_id);
       });
     const result = await axiosInstance.get(
-      `${endpoints.communication.sections}?branch_id=${
+      `${endpoints.communication.sections}?session_year=${1}&branch_id=${
         selectedBranch.id
       }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
       {
@@ -327,7 +327,12 @@ const handleEditorChange = (content, editor) => {
    <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-
+        <div className='breadcrumb-container-create' style={{ marginLeft: '15px' }}>
+          <CommonBreadcrumbs
+            componentName='Discussion forum'
+            childComponentName='Create'
+          />
+        </div>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
                     <Grid xs={12} lg={4} className='create_group_items' item>
                           <Autocomplete
@@ -339,7 +344,7 @@ const handleEditorChange = (content, editor) => {
                             id='message_log-branch'
                             className='create_group_branch'
                             options={branchList}
-                            getOptionLabel={(option) => option?.branch_name}
+                            getOptionLabel={(option) => option?.branch.branch_name}
                             filterSelectedOptions
                             renderInput={(params) => (
                               <TextField

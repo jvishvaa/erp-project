@@ -209,7 +209,7 @@ export default function DiscussionPostComponent(props) {
   const history = useHistory();
   const location = useLocation();
   const postsId = useParams();
-  const postData = useSelector((state) => state.postReducers.post);
+  const postData = useSelector((state) => state.discussionReducers.post);
   const [reply, setReply] = React.useState('');
   const [commentsList, setCommentsList] = React.useState([]);
   const [postsData, setPostsData] = React.useState('');
@@ -224,7 +224,19 @@ export default function DiscussionPostComponent(props) {
   };
 
   const handleReplie = () => {
-    alert(reply);
+    //alert(reply);
+    const params = {
+      answer: reply,
+      post: postsData.id
+    }
+
+    axiosInstance.post(endpoints.discussionForum.CreateCommentAndReplay, params)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   };
 
   React.useEffect(() => {
@@ -243,7 +255,7 @@ export default function DiscussionPostComponent(props) {
       comment: postsId.id,
     };
     axiosInstance
-      .get(`${endpoints.discussionForum.postLike}?comment=${postsId.id}`)
+      .get(`${endpoints.discussionForum.postLike}?post=${postsId.id}&type=2`)
       .then((res) => {
         //console.log(res.data.result.results);
         setCommentsList(res.data.result.results);
@@ -328,12 +340,6 @@ export default function DiscussionPostComponent(props) {
                     isLike={postsData.is_like}
                     likeCounts={postsData? postsData.like_count : 0}
                   />
-                              {/*
-                                <LikeIcon/>
-                                <span className={classes.discussionIcon}>
-                                    {postsData? postsData.like_count : 0}
-                                </span>
-                                */}
                 </span>
                 <span style={{ marginLeft: '10px'}}>
                   <ChatIcon />
@@ -413,21 +419,20 @@ export default function DiscussionPostComponent(props) {
                               </span>
                               {postsData.post_at && (
                                 <>
-                                      <span className={classes.discussionTime}>
-                                          {moment(postsData.post_at).format('hh:mm')}
-                                          {' '}/
-                                      </span>
-                                      <span className={classes.discussionTime}>{moment(postsData.post_at).format('DD.MM.YYYY')}</span>
+                                  <span className={classes.discussionTime}>
+                                    {moment(postsData.post_at).format('hh:mm')}
+                                    {' '}/
+                                  </span>
+                                  <span className={classes.discussionTime}>{moment(postsData.post_at).format('DD.MM.YYYY')}</span>
                                 </>
                               )}
                             </span>
                           </div>
                       <Box className={classes.discussionDetailsBox}>
-                          {/*
-                            <Typography className={classes.discussionTitle}>
-                                {postsData && postsData.title}
-                            </Typography>
-                            */}
+                          <Typography className={classes.discussionTitle}>
+                            {postsData && postsData.title}
+                          </Typography>
+                           
                           <Typography className={classes.discussionParagraph}>
                               <div dangerouslySetInnerHTML={{__html: postsData && postsData.description}} />
                           </Typography>
@@ -465,9 +470,9 @@ export default function DiscussionPostComponent(props) {
                               <Grid item xs={12}>
                                   {commentsList && commentsList.length > 0 && (
                                     <Box className={classes.commentReplyBox}>
-                      {commentsList &&
-                        commentsList.length > 0 &&
-                        commentsList.map((commentRow, id) => (
+                                      {commentsList &&
+                                        commentsList.length > 0 &&
+                                            commentsList.map((commentRow, id) => (
                                               <PostComments
                                                   key={commentRow.id}
                                                   id={commentRow.id}
@@ -477,15 +482,16 @@ export default function DiscussionPostComponent(props) {
                                                   likes={commentRow.like_count? commentRow.like_count : 0}
                                                   isLikes={commentRow.is_like? commentRow.is_like : false}
                                                   replies={commentRow.replay? commentRow.replay : []}
-                            //commentRow={commentRow}
-                          />
-                        ))}
-                    </Box>
-                  )}
-                </Grid>
-              </Grid>
-            </Box>
-          </Grid>
+                                                  replayCount={commentRow.replay_count ? commentRow.replay_count : 0}
+                                                  //commentRow={commentRow}
+                                              />
+                                      ))}
+                                    </Box>
+                                  )}
+                              </Grid>
+                          </Grid>
+                      </Box>
+                  </Grid>
                   <Grid item xs={12}>
                       <span className={classes.bottomButton}>
                           <StyledCancelButton>
@@ -494,9 +500,9 @@ export default function DiscussionPostComponent(props) {
                           <StyledButton onClick={handleBackToPost}>
                               Back to posts
                             </StyledButton>
-            </span>
-          </Grid>
-        </Grid>
+                      </span>
+                  </Grid>
+                </Grid>
               <GiveAwardDialog selectedValue={selectedValue} postId={postId} open={openGiveAward} onClose={handleClose} />
       </Paper>
     </Layout>

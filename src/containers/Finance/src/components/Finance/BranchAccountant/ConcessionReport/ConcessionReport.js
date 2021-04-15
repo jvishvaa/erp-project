@@ -128,7 +128,7 @@ class ConcessionReport extends Component {
       })
   }
   changehandlerbranch = (e) => {
-    const branch = e.map(city => city.value)
+    const branch = e && e.map(city => city.value)
     console.log('branch: ', branch)
     if (branch.includes('all')) {
       const allBranches = {
