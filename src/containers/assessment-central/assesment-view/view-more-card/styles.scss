@@ -56,9 +56,6 @@
           border-radius: 10px;
           display: flex;
           align-items: center;
-          &:nth-child(3) {
-            width: 50%;
-          }
           .detail {
             padding: 0.5rem;
             display: flex;
@@ -130,8 +127,6 @@
                       font-size: 1.2rem;
                       font-weight: 400;
                     }
-                  }
-                  .right {
                   }
                 }
                 .section-content {

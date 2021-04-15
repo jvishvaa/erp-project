@@ -5,7 +5,7 @@ const local = {
   apiGateway: {
     baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
     // baseURL: 'http://localhost:8000/qbox',
-    baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
+    baseURLCentral: 'http://dev.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
   },
 };

@@ -74,7 +74,6 @@ const AssesmentTest = ({
   const themeContext = useTheme();
   const history = useHistory();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  
 
   const handleChange = (event) => {
     let value = 0;
@@ -192,7 +191,9 @@ const AssesmentTest = ({
                   {/* <div className='dividerVertical' /> */}
                   <Grid xs={12} sm={6}>
                     <div className='detail'>
-                      <div className='label'>Test Date</div>
+                      <div className='label' style={{ marginRight: isMobile && '1rem' }}>
+                        Test Date
+                      </div>
                       <div className='input-container'>
                         <TextField
                           variant='outlined'
@@ -421,6 +422,7 @@ const AssesmentTest = ({
                           {section.questions.map((q) => (
                             <div className='question-detail-card-wrapper'>
                               <QuestionDetailCard
+                                createdAt={q?.created_at}
                                 question={q}
                                 expanded={marksAssignMode}
                                 onChangeMarks={onChangeTestMarks}
