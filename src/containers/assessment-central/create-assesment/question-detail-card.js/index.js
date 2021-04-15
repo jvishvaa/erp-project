@@ -209,7 +209,7 @@ const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks, crea
             <div className='is-published'> {'Published'}</div>
             <div className='created'>
               <div>Created on</div>
-              <div style={{ fontWeight: 550, fontSize: '1rem' }}>{createdAt}</div>
+              <div style={{ fontWeight: 550, fontSize: '1rem' }}>{extractDate(createdAt)}</div>
             </div>
             <AssignMarksMenu
               menuOptions={menuOptions}
