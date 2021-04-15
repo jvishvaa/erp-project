@@ -253,9 +253,7 @@ export const createOrderDetails = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log('aaa', response.data)
       if (response.status === 201 && response.data) {
-        console.log('rrr', response.data)
         dispatch({
           type: CREATE_ORDER_DETAILS,
           payload: {

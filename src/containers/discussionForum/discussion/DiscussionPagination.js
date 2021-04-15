@@ -37,7 +37,6 @@ const DiscussionPagination = ({ showPerPage, onPaginationChange, totalCategory }
 
   React.useEffect(() => {
     const value = showPerPage * page;
-    console.log(`${value} === ${page}`);
     onPaginationChange(value - showPerPage, value);
   }, [page]);
 

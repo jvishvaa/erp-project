@@ -129,7 +129,6 @@ const SectionTable = () => {
     setAddFlag(false);
     setEditFlag(true);
     setSectionData(sec);
-    console.log({sec});
   };
 
   const handleGoBack = () => {

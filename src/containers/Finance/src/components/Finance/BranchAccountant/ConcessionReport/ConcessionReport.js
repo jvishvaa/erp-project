@@ -26,7 +26,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -129,7 +128,6 @@ class ConcessionReport extends Component {
   }
   changehandlerbranch = (e) => {
     const branch = e && e.map(city => city.value)
-    console.log('branch: ', branch)
     if (branch.includes('all')) {
       const allBranches = {
         value: 'all',
@@ -141,7 +139,6 @@ class ConcessionReport extends Component {
           AllBranchIds.push(branch.branch.id)
         }
       })
-      console.log('AllbranchIds: ', AllBranchIds)
       this.setState({
         selectedBranches: allBranches,
         selectedbranchIds: AllBranchIds
@@ -155,7 +152,6 @@ class ConcessionReport extends Component {
       })
     } else {
       const selectIds = e.map(branch => branch.value)
-      // console.log('')
       this.setState({
         selectedBranches: e,
         selectedbranchIds: selectIds
@@ -170,7 +166,6 @@ class ConcessionReport extends Component {
     e && e.forEach((val) => {
       sessions.push(val.value)
     })
-    console.log(e)
     this.setState({ session: sessions, selectedBranches: [], sessionData: e }, () => {
       if (this.state.role === 'financeaccountant') {
         // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, 1, this.props.alert, this.props.user)
@@ -185,13 +180,11 @@ class ConcessionReport extends Component {
 
   selectHandler = (e) => {
     this.setState({ sessionData: e })
-    console.log(e)
   }
   changeFeeTypeHandler = (e) => {
     // const allLabel = e.filter(event => {
     //   return event.label === 'All Fee Types'
     // })
-    console.log('change fee typrs: ', e)
     if (e.value === 'all') {
       const allFeeTypes = {
         value: 'all',
@@ -203,7 +196,6 @@ class ConcessionReport extends Component {
           fee.push(feeId.id)
         }
       })
-      console.log('fee:', fee)
       this.setState({
         selectedFeeTypes: allFeeTypes,
         feeTypeId: fee

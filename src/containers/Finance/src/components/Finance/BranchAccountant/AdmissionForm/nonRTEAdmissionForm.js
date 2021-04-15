@@ -71,7 +71,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -100,14 +99,12 @@ class NonRTEFormAcc extends Component {
   }
 
   componentDidMount () {
-    console.log('props:', this.props.history.location.regNo)
     this.setState({
       regNo: this.props.history.location.regNo
     })
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('RECIEVED PROPS', nextProps.redirect)
     if (nextProps.redirect === true) {
       this.props.history.push({
         pathname: '/finance/customizedAdmissionForm'
@@ -117,7 +114,6 @@ class NonRTEFormAcc extends Component {
 
   componentDidUpdate () {
     // console.log('DID UPDATED', this.state.studentdetails)
-    console.log('DID UPDATED', this.state.studentparentdetails)
     // console.log('DID UPDATED', this.state.adressdetails)
     // console.log('DID UPDATED', this.state.otherdetails)
     // console.log('DID UPDATED', this.state.feeDetails)
@@ -144,28 +140,24 @@ class NonRTEFormAcc extends Component {
     }
 
     getStudentDetail = (dataOb) => {
-      console.log(dataOb)
       this.setState({
         studentdetails: dataOb
       })
     }
 
     getStudentParentDetail = (dataOb) => {
-      console.log(dataOb)
       this.setState({
         studentparentdetails: dataOb
       })
     }
 
     getAddressDetail = (dataOb) => {
-      console.log(dataOb)
       this.setState({
         adressdetails: dataOb
       })
     }
 
     getFeeDetails = (dataOb) => {
-      console.log(dataOb)
       this.setState({
         feeDetails: dataOb
       })
@@ -179,7 +171,6 @@ class NonRTEFormAcc extends Component {
           payment: paymentDetail,
           totalAmountToBePaid: total
         }, () => {
-          console.log('payment details from main file: ', this.state.payment)
         })
       } else {
         this.setState({ disableNext: false })
@@ -188,7 +179,6 @@ class NonRTEFormAcc extends Component {
     }
 
     getOtherDetail = (dataOb) => {
-      console.log(dataOb)
       this.setState({
         otherdetails: dataOb
       })
@@ -261,7 +251,6 @@ class NonRTEFormAcc extends Component {
         //     activeStep: prevState.activeStep + 1
         //   }
         // })
-        console.log('make API Call')
         const { studentdetails, otherdetails, studentparentdetails, adressdetails, feeDetails } = this.state
         let payData = null
         if (+this.state.payment.mode === 1) {
@@ -405,12 +394,10 @@ class NonRTEFormAcc extends Component {
           fee_plan_name: feeDetails.feePlanId,
           ...payData
         }
-        console.log('this is body', body)
         this.props.postAdmission(body, this.props.user, this.props.alert)
       }
     }
     handleBack = () => {
-      console.log('handle back pressed')
       this.setState(state => ({
         activeStep: state.activeStep - 1
       }), () => {
@@ -437,7 +424,6 @@ class NonRTEFormAcc extends Component {
       const response = await this.getPdfData(this.props.receiptGen.transaction_id)
       feeReceiptss(response.data)
     } catch (e) {
-      console.log(e)
       this.props.alert.warning('Something Went Wrong')
     }
   }

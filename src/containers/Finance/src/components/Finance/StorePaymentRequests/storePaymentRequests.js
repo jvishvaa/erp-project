@@ -64,7 +64,6 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
-    // console.log('reason Data: ', studentShuffle)
     if (sessionRed) {
       setSession(sessionRed)
     }
@@ -77,7 +76,6 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
   }, [fetchStorePayRequests, sessionYear, alert, user])
 
   const handleAcademicyear = (e) => {
-    // console.log('acad years', e)
     setSession(e)
   }
 
@@ -91,7 +89,6 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
   };
 
   const pendingRequestHandler = (id, branch) => {
-    console.log('calling pending ')
     history.push({
       pathname: '/finance/Approval/Requests/PendingStorePaymentRequests',
       session: sessionYear,
@@ -102,7 +99,6 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
   }
 
   const approvedRequestHandler = (id) => {
-    console.log('calling pending ')
     history.push({
       pathname: '/finance/Approval/Requests/ApprovedStorePaymentRequests',
       session: sessionYear,
@@ -111,7 +107,6 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
     })
   }
   const rejectedRequestHandler = (id) => {
-    console.log('calling pending ')
     history.push({
       pathname: '/finance/Approval/Requests/RejectedStorePaymentRequests',
       session: sessionYear,
@@ -120,7 +115,6 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
     })
   }
   const cancelledRequestHandler = (id) => {
-    console.log('calling pending ')
     history.push({
       pathname: '/finance/Approval/Requests/CancelledStorePaymentRequests',
       session: sessionYear,

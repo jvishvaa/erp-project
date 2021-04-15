@@ -1111,7 +1111,6 @@ const Layout = ({ children, history }) => {
                                               className='user_rows_details'
                                               button
                                               onClick={() => {
-                                                console.log('I amcalled...');
                                                 setSearching(false);
                                                 setUserId(result.id);
                                                 setDisplayUserDetails(true);

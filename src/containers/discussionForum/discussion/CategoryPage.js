@@ -68,7 +68,6 @@ function CategoryPage() {
   const categoryData = useSelector((state) => state.discussionReducers.categoryList);
   const dispatch = useDispatch();
 
-  console.log(categoryData);
 
   const handleChange = (e) => {
     setCategory(e.target.value);

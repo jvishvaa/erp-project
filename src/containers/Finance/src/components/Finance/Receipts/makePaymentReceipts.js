@@ -139,7 +139,6 @@ function mainView (details) {
         acc += item.balance
         return acc
       }, 0)
-      console.log('amount', amt)
     }
     return amt
   }
@@ -226,8 +225,6 @@ function mainView (details) {
 }
 
 const feeReceipts = (details) => {
-  console.log('std VIEW', details.stdDetails)
-  console.log('PDF VIEW', details.data)
   const title = 'Receipt'
   const header = (
     <React.Fragment>

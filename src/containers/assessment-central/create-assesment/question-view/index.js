@@ -92,7 +92,6 @@ const QuestionView = ({
   //   }
   //   if(questionType === 2)
   const sampleFunc = () => {
-    console.log('debounce is working');
   };
   const debounceOnChangeMarks = debounce(300, onChangeMarks);
   const toggleExpand = () => {

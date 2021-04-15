@@ -91,7 +91,6 @@ const AccountantDashboard = ({
     }
 
     if (returnAdminData) {
-      console.log('returnAdminData:', returnAdminData)
       localStorage.setItem('user_profile', JSON.stringify(returnAdminData))
       history.push({
         pathname: '/'

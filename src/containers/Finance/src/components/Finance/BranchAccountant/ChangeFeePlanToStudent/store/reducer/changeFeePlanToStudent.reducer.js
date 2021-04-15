@@ -27,7 +27,6 @@ const changeFeePlanReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.FETCH_ALL_SECTIONS : {
-      console.log('===>sections: ', action.payload.data)
       const newSections = [...action.payload.data]
       const allSections = newSections.map(sections => (sections.section.id))
       // newSections.unshift({
@@ -79,7 +78,6 @@ const changeFeePlanReducer = (state = initialState, action) => {
                 obj[key] = action.payload.data[key]
                 return obj
               }, {})
-            console.log(filtered)
             for (let [, value] of Object.entries(filtered)) {
               student.fee_plan_name.id = value.fee_plan_id
               student.fee_plan_name.fee_plan_name = value.fee_plan
@@ -88,7 +86,6 @@ const changeFeePlanReducer = (state = initialState, action) => {
           }
         })
       })
-      console.log('copyList: ', copyList)
       return {
         ...state,
         excelData: action.payload.data,
@@ -96,11 +93,9 @@ const changeFeePlanReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.EDIT_STUDENT_FEE_PLAN : {
-      console.log('action payload data: ', action.payload.data)
       const editStudentList = [...state.studentList]
       action.payload.data.map((e) => e.erp_code).forEach(ele => {
         const index = editStudentList.findIndex(item => item.student.erp === ele)
-        console.log('INDEX ++++++', index)
         if (index !== -1) {
           let id = null
           let fee = null
@@ -141,11 +136,9 @@ const changeFeePlanReducer = (state = initialState, action) => {
             //   )
             // })
           }
-          console.log('fee plan name', feePlanName)
           editStudentList[index].fee_plan_name = feePlanName
         }
       })
-      console.log('edit list ++++', editStudentList)
       // editStudentList.map((ele, i) => {
       //   action.payload.data.erp_code.forEach(element => {
       //     if (element === ele.student.erp) {

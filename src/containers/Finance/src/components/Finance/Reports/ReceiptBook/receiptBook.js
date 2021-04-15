@@ -36,7 +36,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -82,8 +81,6 @@ class ReceiptBook extends Component {
       )
     }
     componentWillReceiveProps (nextProps) {
-      // console.log('------nextprops----------', nextProps)
-      // console.log('-----state------', this.state)
       // if (this.state.confirmStatus) {
       //   this.setState({
       //     sessionData: [],
@@ -103,7 +100,6 @@ class ReceiptBook extends Component {
       e.target.value.forEach(payment => {
         session.push(payment)
       })
-      console.log(e)
       this.setState({ session: session, selectedBranches: [], sessionData: e.target.value }, () => {
         // if (this.state.role === 'financeaccountant') {
         //   // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
@@ -130,7 +126,6 @@ class ReceiptBook extends Component {
           branchId: 'all',
           selectedTypes: []
         }, () => {
-          console.log(this.state.selectedBranches)
           // this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.props.alert, this.props.user)
         })
       } else {
@@ -142,8 +137,6 @@ class ReceiptBook extends Component {
           branchId: ids,
           selectedTypes: []
         }, () => {
-          console.log(this.state.selectedBranches)
-          console.log(this.state.branchId)
           // this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.props.alert, this.props.user)
         })
       }
@@ -248,8 +241,6 @@ class ReceiptBook extends Component {
         this.setState({
           paymentModeId: 'all', paymentModeData: allPayment
         }, () => {
-          console.log('-all payment-----------', this.state.paymentModeId)
-          console.log('-all payment-----------', this.state.paymentModeData)
         })
       } else {
         e.target.value.forEach(payment => {
@@ -259,7 +250,6 @@ class ReceiptBook extends Component {
       }
     }
     getReport = () => {
-      console.log('I am Called')
       if (!this.state.session || this.state.feeTypeId.length < 1 ||
         !this.state.startDate || !this.state.feeAccId
       ) {

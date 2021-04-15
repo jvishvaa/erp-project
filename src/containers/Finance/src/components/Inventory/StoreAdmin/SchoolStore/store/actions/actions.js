@@ -156,7 +156,6 @@ export const addItem = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       dispatch({
         type: ADD_ITEM,
         payload: {

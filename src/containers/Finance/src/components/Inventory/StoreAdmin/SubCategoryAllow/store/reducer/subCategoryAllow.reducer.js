@@ -18,12 +18,9 @@ const subCategoryReducer = (state = initialState, action) => {
       if (action.payload.data) {
         data.unshift(action.payload.data)
       }
-      console.log('data', action.payload.data)
-      console.log('data1', action.payload.data1)
       if (action.payload.data1) {
         const index = data.findIndex((val) => (+val.id === +action.payload.data1.id))
         data[index] = action.payload.data1
-        console.log('index', index)
       }
       // let updatedData = null
       // action.payload.data ? updatedData = datas : updatedData = data

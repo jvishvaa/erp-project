@@ -51,7 +51,6 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     const batchSlot = assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.split('-', 2)
     const batchSlotAMPM = assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.slice(-2);
     const helperTextMsg = `Select time between ${batchSlot && parseInt(batchSlot[0])} to ${batchSlot && parseInt(batchSlot[1])} ${batchSlotAMPM}`
-    console.log(batchSlot + '---' + batchSlotAMPM, 'BBBBBB')
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
@@ -103,7 +102,6 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
             new_slot_end_m = 60 - divideMin
 
         }
-        console.log(new_slot_end_h, new_slot_end_m, hour, '++++++++++++++')
         if (parseInt(hour) % 12 >= batchSlot[0] % 12 && batchSlot && batchSlotAMPM === ampm) {
             if (parseInt(hour) % 12 < new_slot_end_h % 12) {
                 const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);

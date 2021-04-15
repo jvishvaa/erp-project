@@ -27,7 +27,6 @@ const LikeButton = (props) => {
       axiosInstance
         .put(`/academic/${props.id}/post-like/`)
         .then((res) => {
-          console.log(res);
           setLikeCount(likeCount + 1);
           setIsLike(true);
         })
@@ -37,7 +36,6 @@ const LikeButton = (props) => {
       axiosInstance
         .put(`/academic/${props.id}/comment-like/`)
         .then((res) => {
-          console.log(res);
           setLikeCount(likeCount + 1);
           setIsLike(true);
         })

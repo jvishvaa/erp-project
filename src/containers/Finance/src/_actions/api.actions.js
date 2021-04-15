@@ -146,7 +146,6 @@ function listSections () {
 }
 
 function listAcademicSessions (moduleId) {
-  console.log('in api actions: ', moduleId)
   return dispatch => {
     dispatch(request())
     apiService.listAcademicSessions(moduleId)
@@ -378,7 +377,6 @@ function globalSearch (searchParameter, pageId, branchId, isDelete) {
   }
 }
 function globalSearchStudent (searchParameter, pageId, isDelete) {
-  console.log('List of students searched...')
   return {
     type: apiConstants.GLOBAL_SEARCH_STUDENT,
     promise: apiService.globalSearchStudent(searchParameter, pageId, isDelete)
@@ -426,7 +424,6 @@ function listChapter (sub, grd) {
 }
 
 function listGradeCategoryId (gradecategory) {
-  console.log(gradecategory, 'action file')
   return dispatch => {
     dispatch(request())
     apiService.listGradeCategoryId(gradecategory)

@@ -9,7 +9,6 @@ const Question = ({ question, onDeleteSection, onDeleteQuestion }) => {
       <div className='question-container'>
         <div className='sections-container'>
           {question.sections?.map((section) => {
-            console.log('sections: ', section)
             return (
               <Section
               question={question}

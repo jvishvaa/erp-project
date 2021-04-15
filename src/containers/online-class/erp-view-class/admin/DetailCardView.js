@@ -1023,7 +1023,6 @@ const DetailCardView = ({
       axiosInstance
         .get(detailsURL)
         .then((res) => {
-          // console.log(res.data);
           setNoOfPeriods(res.data.data);
         })
         .catch((error) => setAlert('error', error.message));

@@ -25,7 +25,6 @@ class EditBanks extends Component {
 
   componentDidMount () {
     let currentData = this.props.accountDetails.filter(val => val.id === this.props.row)
-    console.log('edit banksss', currentData)
     currentData.forEach(arr => {
       this.setState((state) => ({
         editData: arr,

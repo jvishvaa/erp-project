@@ -113,7 +113,6 @@ class FeeStructureAcc extends Component {
       unassignId: id
     }, () => {
       const currentData = this.props.feeTypwWise.filter(val => val.id === this.state.unassignId)[0]
-      console.log(currentData)
       this.setState({
         currentFeeData: currentData
       })
@@ -170,15 +169,12 @@ class FeeStructureAcc extends Component {
   }
 
   changeremarksHandler = (e) => {
-    console.log(e)
-    console.log(e.target.value)
     this.setState({
       remarksData: e.target.value
     })
   }
 
   handleAlignment = (e, newAlignment) => {
-    console.log(newAlignment)
     this.setState({
       alignment: newAlignment
     })
@@ -209,7 +205,6 @@ class FeeStructureAcc extends Component {
   }
 
   unassignSubmitHandler = () => {
-    console.log(this.state.remarksData)
     if (this.state.remarksData) {
       const data = {
         academic_year: this.props.session,

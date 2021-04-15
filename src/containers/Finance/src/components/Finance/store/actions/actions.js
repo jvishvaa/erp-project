@@ -460,7 +460,6 @@ export const downloadReports = (payload) => {
   return (dispatch) => {
     dispatch(dataLoading())
     let url = ''
-    // console.log('---------reports-------', payload.data)
     if (payload.reportName === 'TallyReport.xlsx' && payload.data.date_range === 2) {
       url = payload.url + '?session_year=' + payload.data.session_year + '&branch=' + payload.data.branch +
       '&fee_account=' + payload.data.fee_account + '&transactions=' + payload.data.transactions +
@@ -531,7 +530,6 @@ export const downloadReports = (payload) => {
       payload.data.FeeTypes_installments + '&student_status=' + payload.data.student_status + '&active=' +
       payload.data.active + '&inactive=' + payload.data.inactive + '&allStudents=' + payload.data.allStudents +
       '&other_fee_type=' + payload.data.other_fee_type + '&other_fee_installments=' + payload.data.other_fee_installments
-      console.log('---------reports url-----------', payload)
     }
     axios
       .get(url, {
@@ -540,7 +538,6 @@ export const downloadReports = (payload) => {
         },
         responseType: 'blob'
       }).then(response => {
-        // console.log('----response---------', response)
         // const url = urls.BASE + response.data
         // axios.get(url, {
         //   headers: {
@@ -548,9 +545,7 @@ export const downloadReports = (payload) => {
         //   },
         //   responseType: 'blob'
         // }).then(response => {
-        //   // console.log(urls.BASE)
         //   const url = window.URL.createObjectURL(new Blob([response.data]))
-        //   console.log('--url----------', url)
         //   const link = document.createElement('a')
         //   link.href = url
         //   link.target = '_blank'
@@ -558,7 +553,6 @@ export const downloadReports = (payload) => {
         //   document.body.appendChild(link)
         //   link.click()
         // }).catch(err => {
-        //   console.log('Error in Second Axios', err)
         // })
         // dispatch({
         //   type: DOWNLOAD_REPORTS,
@@ -567,7 +561,6 @@ export const downloadReports = (payload) => {
         //   }
         // })
         const url = window.URL.createObjectURL(new Blob([response.data]))
-        console.log('--url----------', url)
         const link = document.createElement('a')
         link.href = url
         link.target = '_blank'
@@ -594,7 +587,6 @@ export const downloadReports = (payload) => {
 //         }
 //         // responseType: 'blob'
 //       }).then(response => {
-//         console.log('----response---------', response)
 //         const url = urls.BASE + response.data
 //         axios.get(url, {
 //           headers: {
@@ -602,9 +594,7 @@ export const downloadReports = (payload) => {
 //           },
 //           responseType: 'blob'
 //         }).then(response => {
-//           // console.log(urls.BASE)
 //           const url = window.URL.createObjectURL(new Blob([response.data]))
-//           console.log('--url----------', url)
 //           const link = document.createElement('a')
 //           link.href = url
 //           link.target = '_blank'
@@ -612,7 +602,6 @@ export const downloadReports = (payload) => {
 //           document.body.appendChild(link)
 //           link.click()
 //         }).catch(err => {
-//           console.log('Error in Second Axios', err)
 //         })
 //         dispatch({
 //           type: DOWNLOAD_REPORTS,
@@ -625,7 +614,6 @@ export const downloadReports = (payload) => {
 //       }).catch(error => {
 //         dispatch(dataLoaded())
 //         payload.alert.error('Something Went Wrong')
-//         console.log(error)
 //       })
 //   }
 // }
@@ -638,7 +626,6 @@ export const fetchBranchAtAcc = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log('the accountant Branch', response)
       dispatch({
         type: GET_BRANCH,
         payload: {
@@ -850,7 +837,6 @@ export const fetchDeviceId = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      // console.log('the accountant Branch', response)
       dispatch({
         type: FETCH_DEVICE_ID,
         payload: {

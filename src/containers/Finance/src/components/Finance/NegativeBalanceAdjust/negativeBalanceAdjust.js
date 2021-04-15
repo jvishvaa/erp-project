@@ -46,7 +46,6 @@ const ExtraAmtAdjust = ({ classes, session, branches, fetchBranches, feeStructur
   // const [show, setShow] = useState(true)
   useEffect(() => {
     setFilterWalletErp(WalletAmtDetails)
-    console.log(WalletAmtDetails)
   }, [WalletAmtDetails])
   // useEffect(() => {
   //   if (transactionDetails && transactionDetails.debited_info && transactionDetails.credited_info) {
@@ -80,7 +79,6 @@ const ExtraAmtAdjust = ({ classes, session, branches, fetchBranches, feeStructur
     setShowWalletDeatilTable(false)
   }
   const gradeHandler = (e) => {
-    console.log(e.value)
     setGradeData(e)
     setShowWalletDeatilTable(false)
     fetchAllSectionsPerGradeAsAdmin(sessionData.value, alert, user, e && e.value, branchData.value)
@@ -345,8 +343,7 @@ const ExtraAmtAdjust = ({ classes, session, branches, fetchBranches, feeStructur
       ])
     })
     body && body1 && body.push(...body1)
-    console.log('body: ', body || body1
-    )
+
     const config = {
       filename: 'Transaction_info',
       sheet: {
@@ -642,7 +639,6 @@ const ExtraAmtAdjust = ({ classes, session, branches, fetchBranches, feeStructur
     setAmount({})
   }
   const addAmountButHandler = (other, otherIns, id) => {
-    console.log('amt', amount, amountWallet, amtPaid)
     if ((+amount) > 0) {
       if (amount && amount.length > 0 && fieldId === id) {
         if (fieldId === id && amount && (+amount) <= amtPaid) {
@@ -669,7 +665,6 @@ const ExtraAmtAdjust = ({ classes, session, branches, fetchBranches, feeStructur
           addWalletAmount(data, alert, user)
           setFeeDisplay(false)
           // fetchWalletAmount(sessionData && sessionData.value, branchData && branchData.value, gradeData && gradeData.value, alert, user)
-          console.log('data', data)
         } else {
           alert.warning('Amount should be less than or equal to Amount Paid!')
         }

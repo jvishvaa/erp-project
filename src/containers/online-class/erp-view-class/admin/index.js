@@ -443,15 +443,6 @@ const ErpAdminViewClass = ({ history }) => {
     }
     setDateRangeTechPer(v1);
   }
-  // console.log(
-  //   selectedClassType,
-  //   selectedBranch,
-  //   selectedGrade,
-  //   selectedSection,
-  //   selectedCourse,
-  //   selectedSubject,
-  //   '========================================='
-  // );
 
   return (
     <>

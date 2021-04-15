@@ -83,7 +83,6 @@ const pettyExpensesReducer = (state = intialState, action) => {
       const index = results.findIndex(item => +item.id === +action.payload.data.id)
       results[index] = action.payload.data
       ledgerReportList.results = results
-      console.log('STATUS', ledgerReportList, index)
       return {
         ...state,
         ledgerReportList: ledgerReportList
@@ -102,7 +101,6 @@ const pettyExpensesReducer = (state = intialState, action) => {
       }
     }
     case actionTypes.SENDING_DATA: {
-      console.log('data+', action.payload.data)
       return {
         ...state,
         sendData: action.payload.data

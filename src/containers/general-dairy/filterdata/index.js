@@ -232,7 +232,6 @@ if(clicked){
         axiosInstance.get(`${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${value.grade_id}&module_id=${moduleId}`)
         .then(result => {
           if (result.data.status_code === 200) {
-            //console.log(result.data)
             setSectionDropdown(result.data.data);
             setSectionIds([])
           }
@@ -258,8 +257,6 @@ if(clicked){
       axiosInstance
         .get(`${endpoints.masterManagement.branchMappingTable}?session_year=${value.id}&module_id=${moduleId}`)
         .then((result) => {
-          console.log('result ===', result)
-          console.log('result ===', result?.data?.data?.results)
           if (result?.data?.status_code) {
             setBranchDropdown(result?.data?.data?.results);
           } else {
@@ -278,7 +275,6 @@ if(clicked){
         sectionId.push(el.id);
         return el.section_id
       });
-      console.log(sectionId);
       setFilterData({...filterData, sections:value
       })
       //sectionId = value.map((el) => el.id);
@@ -290,7 +286,6 @@ if(clicked){
 
 
   const handleBranch = (event, value) => {
-    console.log('clicked', filterData)
     setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
     // setOverviewSynopsis([]);
     if (value) {
@@ -318,8 +313,6 @@ if(clicked){
   const handleFilter = (e) => {
     // setFilterStatus()
     setClicked(true)
-    console.log(e)
-    console.log(filterData)
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     // alert(filterData.grade.grade_id,sectionIds,startDateTechPer,endDateTechPer)
     if (e === undefined && activeTab === 0){

@@ -1454,7 +1454,6 @@ const ViewMoreCard = ({
                                   `${obj[`option${i + 1}`].images}`.split(',') || {};
                                 const attachmentsArray = [];
                                 images.forEach((image) => {
-                                  console.log(image, '++++++');
                                   const attachmentObj = {
                                     src: getS3DomainURL(image),
                                     name: `${image}`.split('.').slice(0, -1).join('.'),

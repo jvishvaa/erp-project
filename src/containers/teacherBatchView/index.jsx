@@ -89,7 +89,6 @@ const TeacherBatchView = ({ history }) => {
         setLoading(false);
       });
   }
-  console.log(UserDetails,'uuuuuuuuuuuuuuuuuu')
 
   function handleClose(data) {
     setSelectedViewMore('');

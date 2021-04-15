@@ -19,7 +19,6 @@ export const getStudentInfo = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('apppppp res: ', response.data)
         if (response.status === 200) {
           dispatch({
             type: FETCH_STUDENT_INFO,
@@ -39,7 +38,6 @@ export const getStudentInfo = (payload) => {
                 Authorization: 'Bearer ' + payload.user
               }
             }).then(res => {
-              console.log('payment res: ', res.data)
               payload.alert.success('Success')
               dispatch({
                 type: CREATE_REG_NUM,
@@ -50,7 +48,6 @@ export const getStudentInfo = (payload) => {
               dispatch(actionTypes.dataLoaded())
             }).catch(error => {
               dispatch(actionTypes.dataLoaded())
-              console.log(error)
               if (error.response && error.response.status === 400) {
                 payload.alert.warning(error.response.data.err_msg)
               } else {
@@ -60,7 +57,6 @@ export const getStudentInfo = (payload) => {
         }
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
-        console.log(error)
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
@@ -80,7 +76,6 @@ export const fetchRegistrationList = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        // console.log('apppppp res: ', response.data)
         if (response.status === 200) {
           dispatch({
             type: FETCH_REG_LIST,
@@ -149,7 +144,6 @@ export const sendAllPaymentReg = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('payment res: ', response.data)
         payload.alert.success('Success')
         dispatch({
           type: SAVE_ALL_PAYMENT,
@@ -179,7 +173,6 @@ export const createRegNum = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('payment res: ', response.data)
         payload.alert.success('Success')
         dispatch({
           type: CREATE_REG_NUM,

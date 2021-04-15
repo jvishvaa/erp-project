@@ -163,7 +163,6 @@ export const fetchAllTransactionsList = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       dispatch({
         type: ALL_TRANSACTIONS_LIST,
         payload: {
@@ -190,7 +189,6 @@ export const statusMakePaymentList = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       dispatch({
         type: STATUS_MAKE_PAYMENT,
         payload: {
@@ -219,7 +217,6 @@ export const cancelPaymentStudent = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: CANCEL_PAYMENT_STUDENT,
           payload: {

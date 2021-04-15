@@ -84,7 +84,6 @@ export default function JoinClassComponent(props) {
       const [anchorEl, setAnchorEl] = useState(null);
 
     // const date=props?.data?.online_class?.start_time.split('T')
-    //console.log(props.data.is_cancelled + " ==="+ isCancel );
     const params ={
         zoom_meeting_id: props?.data?.zoom_id,
         class_date: props?.data?.date

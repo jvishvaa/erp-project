@@ -17,7 +17,6 @@ class ReceiptSettingEdit extends Component {
 
   componentDidMount () {
     // let currentdata = this.props.receiptlists.filter(row => row.id === this.props.id)
-    console.log('props from edit', this.props)
   }
 
   // SrHandler = e => {
@@ -60,7 +59,6 @@ class ReceiptSettingEdit extends Component {
       receipt_sub_footer: this.props.subFooter,
       is_active: this.props.isActive
     }
-    console.log(data)
     this.props.updateReceipt(data, this.props.alert, this.props.user)
     this.props.close()
   }

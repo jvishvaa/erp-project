@@ -164,7 +164,6 @@ const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks, crea
                         type='number'
                         value={fetchMarks(option)}
                         onChange={(e) => {
-                          console.log('onchange');
                           onChangeMarks(
                             question.id,
                             true,

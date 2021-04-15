@@ -57,7 +57,6 @@ const UserDetailsForm = ({
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log('submit',values)
       onSubmit(values);
     },
     validateOnChange: false,

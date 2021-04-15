@@ -24,11 +24,9 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
     // if (role === 'financeaccountant') {
     //   fetchBranchAtAcc(alert, user)
     // }
-    console.log('grades', grades)
   }, [alert, grades, user])
 
   const handleAcademicyear = (e) => {
-    console.log(e)
     setSessionData(e)
     setValueGrade([])
     setBranchData(null)
@@ -57,14 +55,12 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
     const allLabel = event.filter(event => {
       return event.label === 'All Grades'
     })
-    console.log('event', event)
     if (allLabel.length === 1) {
       const allGrades = {
         value: 'all',
         label: 'All Grades'
       }
       const allGradeIds = grades.map(ele => ele.grade.id).filter(ele => ele !== 'all')
-      console.log('grades', grades)
       setGradeData(allGradeIds)
       setValueGrade(allGrades)
     } else {
@@ -93,7 +89,6 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
     //     // let url = `${urls.WalletReport}?session_year=${sessionData && sessionData.value}&grade=${gradeData}`
     //     let url = `${urls.WalletReport}?session_year=${sessionData && sessionData.value}&branch_id=${branchAtAcc && branchAtAcc.branch}&grade=${gradeData}`
     //     downloadReports('walletReport.xlsx', url, alert, user)
-    //     console.log('gradedata', gradeData)
     //     setSessionData([])
     //     setGradeData([])
     //     setBranchData(null)

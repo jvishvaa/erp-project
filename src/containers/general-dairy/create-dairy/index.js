@@ -173,7 +173,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const [overviewSynopsis, setOverviewSynopsis] = useState([]);
   const [doc, setDoc] = useState(null);
   useEffect(() => {
-    console.log('form :', filePath);
   })
 
   const selectionArray = [];
@@ -189,7 +188,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     selectionArray.push(0);
   }
 
-  console.log(selectedUsers, 'selectedUsers');
 
   const handleClear = () => {
     setFilterData({
@@ -325,7 +323,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   };
   const handleSection = (event, value) => {
     setFilterData({ ...filterData, ...(filterData.section = []) });
-    console.log(filterData);
     if (value) {
       setFilterData({ ...filterData, section: [...filterData.section, value] });
     }
@@ -358,10 +355,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         'section',
         filterData.section.map((s) => s.id)
       );
-      console.log('fd', fd)
       axiosInstance.post(`${endpoints.generalDairy.uploadFile}`, fd).then((result) => {
         if (result.data.status_code === 200) {
-          console.log(result.data, 'resp');
           setAlert('success', result.data.message);
           setLoading(false);
           setFilePath([...filePath, result.data.result]);
@@ -570,7 +565,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   // };
 
   const getGradeApi = async () => {
-    console.log('gradddee');
     try {
       setLoading(true);
       const result = await axiosInstance.get(
@@ -629,7 +623,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
             (sec) =>
               result.data.data.findIndex((obj) => obj.section__section_name == sec) > -1
           );
-          console.log('selected sections array ', selectedSectionsArray);
           setSelectedSections(selectedSectionsArray);
         }
         setLoading(false);
@@ -656,7 +649,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   };
 
   const handleSubmit = async () => {
-    console.log('file path: ', filePath)
     // if (!!filePath.length) {
     //   return setAlert('error', 'Upload attachment!');
     // }
@@ -803,11 +795,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const handleActiveTab = (tab) => {
     setActiveTab(tab);
   };
-  console.log(activeTab, 'activeTab');
   const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
 
   return (
-    // console.log(editData,"editData")
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
@@ -1014,7 +1004,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                 selectedUsers={selectedUsers}
                 changePage={setPageno}
                 setSelectedUsers={(data) => {
-                  console.log(data, 'selectedUsers data');
                   setSelectedUsers(data);
                 }}
               />

@@ -4,7 +4,6 @@ import './BarGraph.css'
 
 function MixedGraph (props) {
   const { Facebooklabels, data1 = [], data2 = [], plottedColors, fbClicks, fbImpressions } = props.properties
-  console.log(props.properties)
   const state = {
     type: 'line',
     datasets: [{

@@ -20,9 +20,7 @@ const feePlanReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.FEE_CREATE_INSTALLMENTS : {
-      console.log(action.payload.data)
       const newInstallmentList = [...state.feeInstallments]
-      console.log('--------before---------', newInstallmentList)
       action.payload.data.map(val => {
         return (
           newInstallmentList.push({
@@ -39,7 +37,6 @@ const feePlanReducer = (state = initialState, action) => {
           })
         )
       })
-      console.log('--------after---------', newInstallmentList)
       return {
         ...state,
         feeInstallments: newInstallmentList
@@ -47,11 +44,9 @@ const feePlanReducer = (state = initialState, action) => {
     }
     case actionTypes.DELETE_FEE_PLAN_INSTALLMENTS : {
       // const newInstallmentList = [...state.feeInstallments]
-      // console.log('------before-------------', newInstallmentList)
       // const deletedInstallmentList = newInstallmentList.filter(inst => {
       //   return inst.id !== action.payload.id
       // })
-      // console.log('=========afyer--------------', deletedInstallmentList)
       return {
         ...state,
         feeInstallments: []
@@ -93,15 +88,12 @@ const feePlanReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.CREATE_FEE_TYPE_MAPPING : {
-      console.log(action.payload)
       const updatedFeeTypesList = [...state.feeTypeList]
-      console.log('-------------before----------', updatedFeeTypesList)
       // updatedFeeTypesList.push({
       //   id: action.payload.data.id ? action.payload.data.id : '',
       //   amount: action.payload.data.amount ? action.payload.data.amount : ''
       // })
       updatedFeeTypesList.push(action.payload.data)
-      console.log('------------after-------', updatedFeeTypesList)
       return {
         ...state,
         feeTypeList: updatedFeeTypesList
@@ -136,7 +128,6 @@ const feePlanReducer = (state = initialState, action) => {
     }
 
     case actionTypes.UPDATE_INSTALLMENT_AMOUNT : {
-      // console.log('before changing++++', state.feeTypeList)
       const installmentList = [...state.feeInstallments]
       const updatedFeeTypesList = [...state.feeTypeList]
       const index = installmentList.findIndex(ele => {
@@ -147,12 +138,10 @@ const feePlanReducer = (state = initialState, action) => {
       installmentList[index] = { ...changeObj }
       const newAmount = installmentList[index].installment_amount
       const feeTypeIndex = updatedFeeTypesList.findIndex(ele => (+ele.fee_type_name.id) === (+action.payload.feeTypeId))
-      // console.log('fee type index++++', feeTypeIndex)
       if (feeTypeIndex !== -1) {
         const feeTypeObj = { ...updatedFeeTypesList[feeTypeIndex], amount: updatedFeeTypesList[feeTypeIndex].amount + newAmount - prevAmount }
         updatedFeeTypesList[feeTypeIndex] = feeTypeObj
       }
-      // console.log('after changing++++', updatedFeeTypesList)
       return {
         ...state,
         feeInstallments: installmentList,
@@ -168,7 +157,6 @@ const feePlanReducer = (state = initialState, action) => {
     }
     case actionTypes.UPDATE_FEE_PLAN : {
       const updatedFeePlanList = [...state.feePlanList]
-      console.log('----------feelist---------', updatedFeePlanList)
       const index = updatedFeePlanList.findIndex(ele => {
         return ele.id === action.payload.data.id
       })
@@ -184,14 +172,12 @@ const feePlanReducer = (state = initialState, action) => {
       // changeObj.is_this_a_limited_plan = !!action.payload.data.is_this_a_limited_plan
       // changeObj.plan_status = !!action.payload.data.plan_status
       updatedFeePlanList[index] = { ...changeObj }
-      console.log('------------after-----------', updatedFeePlanList)
       return {
         ...state,
         feePlanList: updatedFeePlanList
       }
     }
     case actionTypes.DELETE_FEE_PLAN_GRADES : {
-      // console.log(action.payload)
       const oldFeePlanList = [...state.feePlanList]
       const index = oldFeePlanList.findIndex(fee => {
         return fee.id === action.payload.typeId
@@ -225,7 +211,6 @@ const feePlanReducer = (state = initialState, action) => {
     case actionTypes.CREATE_FEE_PLAN : {
       const feePlanList = [...state.feePlanList]
       feePlanList.unshift(action.payload.data)
-      console.log('feePlanList', feePlanList)
       return {
         ...state,
         feePlanList: feePlanList

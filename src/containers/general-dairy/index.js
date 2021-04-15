@@ -96,7 +96,6 @@ const GeneralDairyList = () => {
       }, [location.pathname,page,deleteFlag]);
 
     const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate, activeTab,page, subjects) => {
-        console.log(page,'inside')
         setLoading(true);
         setPeriodData([]);
         setBranch(branchId)
@@ -111,7 +110,6 @@ const GeneralDairyList = () => {
         setSelectedIndex(-1)
         // setPeriodColor(false)
         const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
-        console.log(roleDetails);
         if (isTeacher){
 
             if(!branchId || !gradeId){

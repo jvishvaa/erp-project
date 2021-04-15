@@ -41,7 +41,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId= item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -177,7 +176,6 @@ class ReceiptSettings extends Component {
   renderTable = () => {
     let dataToShow = []
     dataToShow = this.props.receiptlists.map((val, i) => {
-      // console.log('from map function', val)
       return {
         Sr: i + 1,
         prefix: val.prefix ? val.prefix : '',

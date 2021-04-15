@@ -241,7 +241,6 @@ export default function FilterStudents() {
         selected.slice(selectedIndex + 1)
       );
     }
-    console.log({newSelected})
     dispatch(listFilteredStudents(newSelected));
     setSelected(newSelected);
   };

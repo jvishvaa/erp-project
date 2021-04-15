@@ -53,7 +53,6 @@ export const downloadChequeBounceReports = (payload) => {
         },
         responseType: 'blob'
       }).then(response => {
-        // console.log('----response---------', response)
         // const url = urls.BASE + response.data
         // axios.get(url, {
         //   headers: {
@@ -61,9 +60,7 @@ export const downloadChequeBounceReports = (payload) => {
         //   },
         //   responseType: 'blob'
         // }).then(response => {
-        //   // console.log(urls.BASE)
         // }).catch(err => {
-        //   console.log('Error in Second Axios', err)
         // })
         // dispatch({
         //   type: DOWNLOAD_CHEQUE_BOUNCE_REPORTS,
@@ -72,20 +69,17 @@ export const downloadChequeBounceReports = (payload) => {
         //   }
         // })
         const url = window.URL.createObjectURL(new Blob([response.data]))
-        console.log('--url----------', url)
         const link = document.createElement('a')
         link.href = url
         link.target = '_blank'
         link.setAttribute('download', payload.reportName)
         document.body.appendChild(link)
         link.click()
-        console.log('data', response.data)
         // payload.alert.success('Downloading...')
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         // payload.alert.error('Something Went Wrong')
-        console.log(error)
       })
   }
 }

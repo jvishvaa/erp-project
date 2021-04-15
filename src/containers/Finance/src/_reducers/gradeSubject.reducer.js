@@ -7,7 +7,6 @@ export function gradeSubject (state = {}, action) {
         loading: true
       }
     case apiConstants.GRADECHAPTER_SUCCESS:
-      console.log('grade', action)
       return {
         items: action.data
       }

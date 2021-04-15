@@ -64,12 +64,10 @@ export const fetchChapters = async (gradeSubjectMappingId, volume, academicYear)
 
 export const uploadLessonPlanFile = async (reqData) => {
   try {
-    console.log('success in Api');
     const response = await axios.post(`/lesson_plan/files/`, reqData);
 
     return response.data.result;
   } catch (e) {
-    console.log('error in Api');
     throw new Error();
   }
 };

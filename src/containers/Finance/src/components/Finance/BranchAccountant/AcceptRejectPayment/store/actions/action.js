@@ -15,7 +15,6 @@ export const getPaymentDetails = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: GET_PAYMENT_DETAILS,
           payload: {
@@ -26,7 +25,6 @@ export const getPaymentDetails = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && (error.response.status === 400 || error.response.status === 404)) {
         payload.alert.warning(error.response.data.err_msg)
       } else {
@@ -44,7 +42,6 @@ export const cancelPayment = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: CANCEL_PAYMENT,
           payload: {
@@ -56,7 +53,6 @@ export const cancelPayment = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && (error.response.status === 400 || error.response.status === 404)) {
         payload.alert.warning(error.response.data.err_msg)
       } else {
@@ -74,7 +70,6 @@ export const acceptPayment = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: ACCEPT_PAYMENT,
           payload: {
@@ -86,7 +81,6 @@ export const acceptPayment = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && (error.response.status === 400 || error.response.status === 404)) {
         payload.alert.warning(error.response.data.err_msg)
       } else {

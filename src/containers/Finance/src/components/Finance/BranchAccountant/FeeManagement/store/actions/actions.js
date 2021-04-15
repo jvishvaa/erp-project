@@ -10,9 +10,7 @@ export const EDIT_STUDENT_FEE = 'EDIT_STUDENT_FEE'
 
 // action creators
 export const fetchFeeManagementList = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
       .all([
@@ -27,8 +25,6 @@ export const fetchFeeManagementList = (payload) => {
           }
         })
       ]).then(axios.spread((response1, response2) => {
-        console.log('Status Actions response 1', response1)
-        console.log('Status Actions response 2', response2)
         dispatch({
           type: FEE_MANAGEMENT_LISTS,
           payload: {
@@ -58,16 +54,13 @@ export const fetchFeeManagementList = (payload) => {
     //     dispatch(actionTypes.dataLoaded())
     //   }).catch(error => {
     //     dispatch(actionTypes.dataLoaded())
-    //     console.log(error)
     //     payload.alert.warning('Unable to load data')
     //   })
   }
 }
 
 export const assignFeemanagementList = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
       .post(urls.ReassignFeemanagement, payload.data, {
@@ -92,9 +85,7 @@ export const assignFeemanagementList = (payload) => {
 }
 
 export const fetchFeePlanPerErp = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.FeePlanPerErp + '?erp=' + payload.erp + '&academic_year=' + payload.session, {

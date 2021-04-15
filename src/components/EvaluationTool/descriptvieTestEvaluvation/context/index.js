@@ -61,8 +61,7 @@ export function DescriptiveTestContextProvider({
   const delayedCallback = _.debounce((data) => {
     sendFormdata(data);
   }, 2000);
-  // console.log(evlRes.rotated_angle)
-  // console.log()
+
   const enableTool = (event, updateTool) => {
     if (updateTool !== tool) {
       setTool(updateTool);
@@ -138,7 +137,6 @@ export function DescriptiveTestContextProvider({
   };
 
   const enableZoom = (event, updateTool) => {
-    console.log(updateTool);
     let { x, y, mg } = handleZoomINOut(updateTool);
 
     setZoom({
@@ -150,7 +148,6 @@ export function DescriptiveTestContextProvider({
   };
   const enableRotation = (event, updateRotation) => {
     if (updateRotation !== rotation) {
-      console.log(event, updateRotation, 'rotatt');
       if (updateRotation === 'rRight') {
         rotateClockWise();
       } else {
@@ -163,21 +160,16 @@ export function DescriptiveTestContextProvider({
   };
   const getPaperImage = useCallback(
     (evlRes) => {
-      console.log(mediaId, 'medii');
       let res =
         evlRes &&
         evlRes.filter((e) => e.actual_paper_id === mediaId)[0] &&
         evlRes.filter((e) => e.actual_paper_id === mediaId)[0].corrected_paper_image;
-      // console.log(res, 'reee')
-      console.log(res, 'res');
       if (!res) {
-        // console.log(res, 'reee22')
         res =
           evlRes &&
           evlRes.filter((e) => e.actual_paper_id === mediaId)[0] &&
           evlRes.filter((e) => e.actual_paper_id === mediaId)[0]
             .pdf_corrected_paper_image;
-        console.log(res, 'res');
       }
 
       return res;
@@ -196,9 +188,7 @@ export function DescriptiveTestContextProvider({
     let angl = 0;
     let width = 0;
     let height = 0;
-    console.log(res, 'res in this');
     if (res) {
-      console.log(angl, 'inside');
       angl =
         res.rotated_angle === null || res.rotated_angle === undefined
           ? 0
@@ -206,7 +196,6 @@ export function DescriptiveTestContextProvider({
       width = res.width || 0;
       height = res.height || 0;
     }
-    console.log(angl, 'out side');
 
     return { angl, width, height };
   }, [evlRes, mediaId]);
@@ -221,7 +210,6 @@ export function DescriptiveTestContextProvider({
     setMediaId(mediaId);
     const { angl, width, height } = getResData();
     const totalPagesCount = splittedMedia && splittedMedia.length;
-    console.log(paperImage, 'pp');
     setDrawing(paperImage);
     setUrl(mediaUrl);
     setTotalPages(totalPagesCount);
@@ -257,24 +245,20 @@ export function DescriptiveTestContextProvider({
   //         } = {}
   //       } = {}
   //       } = res
-  //       console.log(pdfcpImg, pdfContent)
   //       setCorrectedPaper([res.data.data])
   //       setDrawing(pdfcpImg)
   //       setAngleInDegrees(rottedAngle || 0)
-  //       console.log(res)
   //     })
   //     .catch(err => {
   //       setLoading(false)
   //       setAngleInDegrees(0)
   //       setCorrectedPaper()
   //       setDrawing()
-  //       console.log(err)
   //     })
   // }, [mediaId])
 
   function rotateClockWise() {
     let anglDgree = angleInDegrees + 90;
-    console.log(angleInDegrees, 'clock wise', anglDgree);
     if (anglDgree > 360) {
       setAngleInDegrees(90);
     } else {
@@ -365,8 +349,6 @@ export function DescriptiveTestContextProvider({
       setWidth(data.viewWidth);
     }
 
-    console.log(data.viewHeight, data.viewWidth, 'eeee------>');
-
     const [
       { id, online_test_assessment: { assessment_id: assId } = {} } = {},
     ] = desTestDetails;
@@ -376,7 +358,6 @@ export function DescriptiveTestContextProvider({
     const urlCopy = url;
     let extenstion = urlCopy.split('.').pop();
     let ext = extenstion === 'JPG' ? 'jpg' : extenstion;
-    console.log(ext);
     window.scrollTo(0, 0);
     html2canvas(document.getElementById('editor-evaluvation-container'), {
       logging: false,
@@ -388,7 +369,6 @@ export function DescriptiveTestContextProvider({
       .then((canvas) => {
         // setTimeout(() => {
         correctedPaper = canvas.toDataURL();
-        // console.log(correctedPaper, '88888888888888888888888888')
         let myFilename = String(new Date().getTime()) + '.' + 'png';
         setCorrectionLoading(false);
         if (correctedPaper && data.image) {
@@ -420,7 +400,6 @@ export function DescriptiveTestContextProvider({
           //             if (data.operation === "manualSave") {
           //               setisSave(false);
           //             }
-          //             // console.log(res.data)
           //             const {
           //               data: {
           //                 data: [
@@ -428,19 +407,15 @@ export function DescriptiveTestContextProvider({
           //                 ] = [],
           //               } = {},
           //             } = res;
-          //             // console.log(res.data)
           //             setCorrectedPaper(evlRes);
           //             const image = getPaperImage(evlRes);
-          //             // console.log(image, evlRes)
           //             setDrawing(image);
           //           })
           //           .catch((err) => {
-          //             console.log(err);
           //             alert.error("Something went wrong with correction");
           //           });
         } else {
           // alert.warning("please make changes and save");
-          console.log('else case triggered ', correctedPaper, data.image);
         }
         // }, 3000);
       })
@@ -451,7 +426,6 @@ export function DescriptiveTestContextProvider({
     //   );
   };
   const onChange = (data) => {
-    console.log(data, '***ad');
     const mediaImg = data.containerImg;
     setMedia(mediaImg);
     if (data.image) {
@@ -480,7 +454,6 @@ export function DescriptiveTestContextProvider({
   };
 
   const downloadPdfFile = (type) => {
-    console.log('type** ', type);
     let media = url;
     const urlCopy = url;
     let params = '';
@@ -503,7 +476,6 @@ export function DescriptiveTestContextProvider({
       //   })
       //   .catch((err) => {
       //     setLoading(false);
-      //     console.log(err);
       //   });
     } else {
       if (type === 'corrected') {
