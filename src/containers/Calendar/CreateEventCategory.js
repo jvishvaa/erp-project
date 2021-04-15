@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Grid from '@material-ui/core/Grid';
 import Layout from '../Layout';
+import Loader from '../../components/loader/loader';
 // import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
@@ -180,7 +181,8 @@ const Cal1 = () => {
   const [eventType, setEventType] = useState([]);
   const [eventName, setEventName] = useState('');
   const [isEditId, setIsEditId] = useState('');
-  const [totalGenre, setTotalGenre] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [totalGenre, setTotalGenre] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [chaTitle, setChaTitle] = useState(false)
   const [deleteFlag, setDeleteFlag] = useState(false)
@@ -249,23 +251,36 @@ const Cal1 = () => {
 
 
   const handleFilter = (type) => {
+    setLoading(true)
     axiosInstance
       .get(`${endpoints.eventBat.filterEventCategory}?event_category_name=${type}&page_num=${pageNumber}&page_size=${limit}`) //queryparams pass need to done
       .then((result) => {
+        setLoading(false)
         setTotalGenre(result.data.data.count);
         setDummyData(result?.data.data.results);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        setLoading(false)
+        console.log(error)
+      });
   };
 
   const handleSave = () => {
+    setLoading(true)
     axiosInstance
       .post(`${endpoints.eventBat.postCreateEvent}`, {
         // event_category_type: eventName,
         event_category_name: eventName,
         event_category_color: custColor,
       })
-      .then((result) => result.data.data.results);
+      .then((result) => {
+        setLoading(false)
+        console.log(result.data.data.results)
+      })
+      .catch((err)=>{
+        setLoading(false)
+        console.log(err)
+      });
     setEventName('')
     let fullData = eventType
     console.log('This is full data', fullData)
@@ -634,6 +649,7 @@ const Cal1 = () => {
 
         </div>
       </form>
+      {loading && <Loader />}
     </Layout>
   );
 };
