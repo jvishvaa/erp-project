@@ -403,6 +403,7 @@ const AssesmentTest = ({
                           {section.questions.map((q) => (
                             <div className='question-detail-card-wrapper'>
                               <QuestionDetailCard
+                                createdAt={q?.created_at}
                                 question={q}
                                 expanded={marksAssignMode}
                                 onChangeMarks={onChangeTestMarks}

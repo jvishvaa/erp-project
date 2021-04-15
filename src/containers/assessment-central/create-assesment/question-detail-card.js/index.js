@@ -52,7 +52,7 @@ const menuOptions = [
   // 'Relative marking',
 ];
 
-const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks }) => {
+const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks, createdAt }) => {
   const themeContext = useTheme();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -81,6 +81,11 @@ const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks }) =>
       }
     }
 
+  }
+
+  const extractDate = (dateValue) => {
+    return dateValue.split("T")[0]
+    // date.split("-")
   }
 
   const debouncedOnChangeMarks = debounce(300, onChangeMarks);
@@ -183,7 +188,7 @@ const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks }) =>
             <div className='right'>
               <div className='created'>
                 <div>Created on</div>
-                <div style={{ fontWeight: 550, fontSize: '1rem' }}>30.12.2020</div>
+                <div style={{ fontWeight: 550, fontSize: '1rem' }}>{extractDate(createdAt)}</div>
               </div>
               {/* <div>
                 <Button variant='contained' color='primary'>
@@ -204,7 +209,7 @@ const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks }) =>
             <div className='is-published'> {'Published'}</div>
             <div className='created'>
               <div>Created on</div>
-              <div style={{ fontWeight: 550, fontSize: '1rem' }}>30.12.2020</div>
+              <div style={{ fontWeight: 550, fontSize: '1rem' }}>{createdAt}</div>
             </div>
             <AssignMarksMenu
               menuOptions={menuOptions}
