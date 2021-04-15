@@ -115,7 +115,7 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
   useEffect(() => {
     if (redirectPageStatus) {
       history.push({
-        pathname: '/finance/studentShuffle'
+        pathname: '/finance/StudentShuffleRequest'
       })
     }
   }, [history, redirectPageStatus])

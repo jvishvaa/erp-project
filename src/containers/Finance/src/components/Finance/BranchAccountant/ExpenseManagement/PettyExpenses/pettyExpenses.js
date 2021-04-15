@@ -75,12 +75,16 @@ class PettyExpenses extends Component {
 
   makeEntryClickHandler = () => {
     // this.props.history.push('/finance/Expanse Management/MakeEntry')
+    if (this.state.session &&  this.state.selectedBranches) {
     this.props.history.push({
       pathname: '/finance/Expanse Management/MakeEntry',
       state: {
         branch: this.state.selectedBranches && this.state.selectedBranches.value
       }
     })
+  } else {
+     this.props.alert.warning('Please Select Year and Branch!')
+  }
     let data = {
       branch:this.state.selectedBranches && this.state.selectedBranches.value,
       moduleId:moduleId
@@ -103,21 +107,29 @@ class PettyExpenses extends Component {
   }
 
   ledgerReportClickHandler = () => {
+    if (this.state.session &&  this.state.selectedBranches) {
     this.props.history.push('/finance/Expanse Management/LedgerReport')
     let data = {
       branch:this.state.selectedBranches && this.state.selectedBranches.value,
       moduleId:moduleId
     }
     this.props.sendData(data, this.props.alert, this.props.user)
+  } else {
+    this.props.alert.warning('Please Select Year and Branch!')
+ }
   }
 
   reportClickHandler = () => {
+    if (this.state.session &&  this.state.selectedBranches) {
     this.props.history.push('/finance/Expanse Management/FinancialLedgerReport')
     let data = {
       branch:this.state.selectedBranches && this.state.selectedBranches.value,
       moduleId:moduleId
     }
-    this.props.sendData(data, this.props.alert, this.props.user)
+    this.props.sendData(data, this.props.alert, this.props.user) 
+  } else {
+    this.props.alert.warning('Please Select Year and Branch!')
+ }
   }
 
   addMoneyHandler = (e) => {
