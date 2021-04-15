@@ -109,8 +109,8 @@ const MarkAttedance = () => {
   const themeContext = useTheme()
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [state, setState] = React.useState({
-    checkedA: true,
-    checkedB: true,
+    checkedA: false,
+    checkedB: false,
   });
 
   const handleChange = (event) => {
@@ -213,16 +213,17 @@ const MarkAttedance = () => {
         setLoading(false);
         console.log(res.data.result)
         setNewData(res.data.result)
-
+        const is_first_shift_present = false
+        const is_second_shift_present = false
         var result = res.data.result.map((item) => (
           {
             name: item.name,
             student_id: item.user,
             section_mapping_id: selectedSection.section_id,
             remarks: "none",
-            fullday_present: true,
-            is_first_shift_present: true,
-            is_second_shift_present: true,
+            is_first_shift_present: is_first_shift_present,
+            is_second_shift_present: is_second_shift_present,
+            fullday_present: (is_first_shift_present && is_second_shift_present) ? true : false,
             attendance_for_date: dateValue
           }
         ))
@@ -326,7 +327,7 @@ const MarkAttedance = () => {
     // console.log(products)
     setData(products)
     const remarks = "test"
-    const fullday_present = ( product.is_first_shift_present && product.is_second_shift_present) ? "true" : "false"
+    const fullday_present = (product.is_first_shift_present && product.is_second_shift_present) ? "true" : "false"
     console.log(selectedSection.section_id)
 
     const fullData = {
@@ -371,7 +372,7 @@ const MarkAttedance = () => {
     // console.log(products)
     setData(products)
     const remarks = "test"
-    const fullday_present = ( product.is_first_shift_present && product.is_second_shift_present) ? "true" : "false"
+    const fullday_present = (product.is_first_shift_present && product.is_second_shift_present) ? "true" : "false"
     console.log(selectedSection.section_id)
 
     const fullData = {
@@ -718,7 +719,7 @@ const MarkAttedance = () => {
         </Grid>
         {
           !data &&
-          (<div  style={{width:'10%', margin:'auto'}}>
+          (<div style={{ width: '10%', margin: 'auto' }}>
             <SvgIcon
               component={() => (
                 <img
@@ -732,7 +733,7 @@ const MarkAttedance = () => {
                   style={
                     isMobile
                       ? { height: '20px', width: '250px' }
-                      : { height: '50px', width: '400px'}
+                      : { height: '50px', width: '400px' }
                   }
                   src={selectfilter}
                 />
