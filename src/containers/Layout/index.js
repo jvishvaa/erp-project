@@ -1302,7 +1302,7 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>CreateEventCategory</ListItemText>
           </ListItem>
-          <ListItem
+          {/* <ListItem
             button
             className={classes.menuControlContainer}
             onClick={() => history.push('/OverallAttendance')}
@@ -1311,8 +1311,8 @@ const Layout = ({ children, history }) => {
               <TodayIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>OverallAttendance</ListItemText>
-          </ListItem>
-          <ListItem
+          </ListItem> */}
+          {/* <ListItem
             button
             className={classes.menuControlContainer}
             onClick={() => history.push('/attendance')}
@@ -1321,7 +1321,7 @@ const Layout = ({ children, history }) => {
               <TodayIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Attendance</ListItemText>
-          </ListItem>
+          </ListItem> */}
 
           <ListItem
             button
@@ -1333,7 +1333,7 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>AttedanceCalender</ListItemText>
           </ListItem>
-          <ListItem
+          {/* <ListItem
             button
             className={classes.menuControlContainer}
             onClick={() => history.push('/createEvent')}
@@ -1342,8 +1342,8 @@ const Layout = ({ children, history }) => {
               <TodayIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>CreateEvent</ListItemText>
-          </ListItem>
-          <ListItem
+          </ListItem> */}
+          {/* <ListItem
             button
             className={classes.menuControlContainer}
             onClick={() => history.push('/markattedance')}
@@ -1352,7 +1352,7 @@ const Layout = ({ children, history }) => {
               <TodayIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>MarkAttedance</ListItemText>
-          </ListItem>
+          </ListItem> */}
           <ListItem
             button
             className={classes.menuControlContainer}
