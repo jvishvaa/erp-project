@@ -21,9 +21,7 @@ export const FETCH_REFUND_VALUE = 'FETCH_REFUND_VALUE'
 // action creators
 
 export const fetchRefundValue = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.FetchRefund + '?erp_code=' + payload.erp + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
@@ -47,9 +45,7 @@ export const fetchRefundValue = (payload) => {
 }
 
 export const fetchFeeStructureList = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.StudentPaymentAcc + '?erp_code=' + payload.erp + '&session_year=' + payload.session + '&branch_id=' + payload.branch + '&module_id=' + payload.moduleId, {
@@ -124,9 +120,7 @@ export const saveConcessionRequest = (payload) => {
 }
 
 export const fetchFeeTypeListFeeStru = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.FeeStructureFeeWise + '?erp_code=' + payload.erp + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
@@ -134,7 +128,6 @@ export const fetchFeeTypeListFeeStru = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('response', response)
         dispatch({
           type: FEE_TYPE_WISE,
           payload: {
@@ -177,7 +170,6 @@ export const unassignFeeStructure = (payload) => {
 
 export const fetchOtherFeeTypeList = (payload) => {
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.OtherFeeTypeFeeStruc + '?erp_code=' + payload.erp + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
@@ -202,7 +194,6 @@ export const fetchOtherFeeTypeList = (payload) => {
 
 export const fetchOtherInstTypeList = (payload) => {
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.otherFeeInstWise + '?erp_code=' + payload.erp + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
@@ -253,9 +244,7 @@ export const saveOtherConcessionRequest = (payload) => {
 }
 
 export const fetchListConcessionsTypes = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.ConcessionListType, {

@@ -76,7 +76,6 @@ const ViewAssessments = ({ history, ...restProps }) => {
         `${endpoints.assessment.questionPaperList}?domain=${getSubDomainName()}&user=${user}&page=${page}&status=${status}`
       )
       .then((response) => {
-        console.log('qp result:', response);
         if (response.data.status_code === 200) {
           setQuestionPaperList(response.data.result.result);
           setTotalCount(response.data.result.count);

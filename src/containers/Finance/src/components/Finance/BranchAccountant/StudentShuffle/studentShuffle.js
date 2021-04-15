@@ -78,7 +78,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -99,7 +98,6 @@ const StudentShuffle = ({ classes, session, history, dataLoading, branchList, fe
 
   useEffect(() => {
     // Update the document title using the browser API
-    console.log('im calling the main func')
     if (sessionYear && shuffleStatus && branch) {
       fetchStudentShuffle(sessionYear.value, shuffleStatus.label, alert, user, branch && branch.value)
     }
@@ -123,7 +121,6 @@ const StudentShuffle = ({ classes, session, history, dataLoading, branchList, fe
     setBranch(e)
   }
   const handleShuffleStatus = (e) => {
-    console.log('changed status: ', e)
     setShuffleStatus(e)
   }
 

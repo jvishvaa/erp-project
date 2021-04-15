@@ -35,7 +35,6 @@ function GiveAwardDialog(props) {
     axiosInstance
       .post(endpoints.discussionForum.GiveAwardAPI, params)
       .then((res) => {
-        console.log(res.data);
         setAlert('success', res.data.message);
         if (res.data && res.data.status_code === 200) {
           onClose(selectedValue);

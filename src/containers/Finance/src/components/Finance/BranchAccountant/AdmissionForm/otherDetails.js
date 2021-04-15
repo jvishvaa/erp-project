@@ -45,7 +45,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -78,7 +77,6 @@ class OtherDetailsFormAcc extends Component {
   }
 
   componentDidUpdate () {
-    console.log('DID UPDATED', this.state.otherDetails)
     this.props.getOtherDetail(this.state.otherDetails)
   }
 
@@ -112,9 +110,7 @@ class OtherDetailsFormAcc extends Component {
   }
 
   otherDetailsDropdonHandler= (event, name) => {
-    console.log('other detail handler', event, name)
     const newotherDetails = { ...this.state.otherDetails }
-    console.log(event)
     switch (name) {
       case 'religion': {
         newotherDetails['religion'] = event.value

@@ -107,7 +107,7 @@ export default function Enviroment(props) {
       .get(`${endpoints.discussionForum.AwardListAPI}${list.id}/award-users-list/`)
       .then((res) => {
         if (res.data.status_code === 200) {
-          console.log(res.data.result.results, 'res.data.result.results');
+          //console.log(res.data.result.results, 'res.data.result.results');
           setAwardListRes(res.data.result.results);
         }
       })

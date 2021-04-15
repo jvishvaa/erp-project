@@ -184,7 +184,6 @@ function QuestionBulkCreation(props) {
             const href = window.URL.createObjectURL(blob);
             downloadSampleFile(href, 'question-creation-report.csv');
           } else {
-            console.log('response is not file');
             const {
               data: { status_code: statusCode, message },
             } = response;

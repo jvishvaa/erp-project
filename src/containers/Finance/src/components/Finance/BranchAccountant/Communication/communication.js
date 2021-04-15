@@ -103,7 +103,6 @@ const CommunicationSMS = ({ classes,
   // useEffect(() => {
   //   const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
   //   if (sessionYear && fromDate && toDate && role !== 'FinanceAdmin') {
-  //     console.log('Wihout admin +++++++')
   //     fetchFormCount(sessionYear.value, null, fromDate, toDate, alert, user)
   //   } else if (sessionYear && fromDate && toDate && (role === 'FinanceAdmin') && selectedBranch) {
   //     fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, alert, user)
@@ -134,7 +133,6 @@ const CommunicationSMS = ({ classes,
   //   setShowTable(true)
   //   const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
   //   if (sessionYear && fromDate && toDate && role !== 'FinanceAdmin') {
-  //     console.log('Wihout admin +++++++')
   //     fetchFormCount(sessionYear.value, null, fromDate, toDate, alert, user)
   //   } else if (sessionYear && fromDate && toDate && (role === 'FinanceAdmin') && selectedBranch) {
   //     fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, alert, user)

@@ -69,7 +69,6 @@ class RoleManagement extends Component {
   handlePageChange = (page) => {
     const { limit, fetchRoles, searchRoles } = this.props;
     const { searchInput } = this.state;
-    console.log('page change ', page);
     if (searchInput) {
       searchRoles({ roleName: searchInput, page, limit });
       //fetchRoles({ page, limit });

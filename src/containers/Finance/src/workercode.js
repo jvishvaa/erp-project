@@ -595,7 +595,6 @@ let workercode = () => {
   var queue = new SequentialTaskQueue();
   self.onmessage = function (e) {
     let data = JSON.parse(e.data)
-    console.log(data)
     if (data.newData.type === 'first_time') {
       root = firstTreeModel.parse(data.newData.content)
     } else if (data.newData.type === 'update') {

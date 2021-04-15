@@ -13,8 +13,6 @@ const useStyles = makeStyles({
 
 export default function CommentBlockComponent(props) {
   const classes = useStyles({});
-  console.log('CommentBlock');
-
   const [commentsList, setCommentsList] = React.useState([]);
 
   React.useEffect(() => {

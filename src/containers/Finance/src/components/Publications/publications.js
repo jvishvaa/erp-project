@@ -39,7 +39,6 @@ class Publications extends React.Component {
     publicationType: ''
   }
   magazine = (type, page) => {
-    // console.log('page', page)
     if (type === 'tabloid') {
       this.setState({ publicationType: 'tabloid', btnChange: false, clicked: false, loadingLabel: 'Loading newsletter...' })
     } else {
@@ -48,13 +47,10 @@ class Publications extends React.Component {
     let pageNo = ''
     if (page === 1) {
       pageNo = 1
-      console.log('pageNo', pageNo)
       this.setState({ currentPage: page })
     } else {
-      console.log('statepage', page)
       pageNo = this.state.currentPage
     }
-    // console.log('state page', this.state.currentPage)
     this.setState({
       loading: true
     })
@@ -67,13 +63,11 @@ class Publications extends React.Component {
       }
     })
       .then(({ data }) => {
-        console.log('Data', data.current_page)
         this.setState({ magazineData: data.result, currentPage: data.current_page, totalPage: data.total_pages, loading: false })
       })
       .catch(error => {
         if (error.response && error.response.status === 404) {
         }
-        console.log(error.response)
       })
   }
   newspaper = () => {
@@ -137,13 +131,11 @@ class Publications extends React.Component {
   //     }
   //   })
   //     .then(({ data }) => {
-  //       console.log('Data', data.result)
   //       this.setState({ PublicationZone: data.result })
   //     })
   //     .catch(error => {
   //       if (error.response && error.response.status === 404) {
   //       }
-  //       console.log(error.response)
   //     })
   // }
 

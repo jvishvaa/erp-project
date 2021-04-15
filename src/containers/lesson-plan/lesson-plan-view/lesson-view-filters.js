@@ -269,7 +269,6 @@ const LessonViewFilters = ({
 
         axiosInstance.get(`${endpoints.userManagement.academicYear}?module_id=${getModuleId()}`)
         .then(res => {
-            console.log(res.data);
             setAcademicYear(res.data.data);
         }).catch(error => {
             setAlert('error ', error);
@@ -309,7 +308,6 @@ const LessonViewFilters = ({
             let erp_year;
             const acad = academicYear.map((year) => {
                 if(year.session_year === filterData.year.session_year){
-                    console.log(year);
                     erp_year = year;
                     setErpYear(year);
                     setFilterData({ ...filterData, academic: year})

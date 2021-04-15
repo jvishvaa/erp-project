@@ -11,18 +11,14 @@ class FileSystemAPI {
   }
   onInitFS (fs) {
     fs.root.getFile('log.txt', { create: false }, (fileEntry) => {
-      console.log('Removing file')
       // Get a File object representing the file,
       fileEntry.remove(() => {
-        console.log('File removed. creating file....')
         fs.root.getFile('log.txt', { create: true, exclusive: true }, (fileEntry) => {
-          console.log('File not found, creating file')
         }, (e) => { console.log('error', e.name) })
       }, (e) => console('File removal', e))
     }, (e) => {
       if (e.name === 'NotFoundError') {
         fs.root.getFile('log.txt', { create: true, exclusive: true }, (fileEntry) => {
-          console.log('File not found, creating file')
         }, (e) => { console.log('error', e.name) })
       }
     })
@@ -33,7 +29,6 @@ class FileSystemAPI {
 
       navigator.webkitPersistentStorage ? navigator.webkitPersistentStorage.requestQuota(
         requestedBytes, (grantedBytes) => {
-          console.log(grantedBytes / (1024 * 1024))
           window.webkitRequestFileSystem(1, grantedBytes, (fs) => resolve(fs), (error) => {
             reject(error)
           })
@@ -66,12 +61,9 @@ class FileSystemAPI {
       this.initialize().then(fs => {
         fs.root.getFile(name, {}, (fileEntry) => {
           fileEntry.remove(() => {
-            console.log('File removed. creating file....')
             fs.root.getFile(name, { create: true, exclusive: true }, (fileEntry) => {
-              console.log('File not found, created file')
               fileEntry.createWriter(function (fileWriter) {
                 fileWriter.onwriteend = function (e) {
-                  console.log('Write completed.')
                   resolve()
                 }
 

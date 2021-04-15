@@ -38,7 +38,6 @@ const RejectedRequest = ({
       session
     } = location.state
     if (branch && session) {
-      console.log('Pending Called', branch, session)
       fetchRejectedList(session, branch, alert, user)
     } else {
       history.replace({

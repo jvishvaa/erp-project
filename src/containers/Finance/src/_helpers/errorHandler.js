@@ -3,7 +3,6 @@ import { urls } from '../urls'
 
 class ErrorHandler {
   reportError (url, error, info) {
-    console.log(error)
     if (window.location.hostname !== 'localhost') {
       this.sendError(url, error, info)
     }

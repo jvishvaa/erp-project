@@ -28,7 +28,6 @@ export const listGradeKit = (payload) => {
         Authorization: 'Bearer ' + user
       }
     }).then(response => {
-      console.log(response)
       dispatch({
         type: LIST_GRADE_KIT,
         payload: {
@@ -44,7 +43,6 @@ export const listGradeKit = (payload) => {
 }
 
 export const createGradeKit = (payload) => {
-  console.log(payload)
   return dispatch => {
     dispatch(actionTypes.dataLoading())
     const body = {
@@ -73,7 +71,6 @@ export const createGradeKit = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       payload.alert.success('Created Successfully!')
       dispatch({
         type: CREATE_GRADE_KIT,
@@ -91,7 +88,6 @@ export const createGradeKit = (payload) => {
 }
 
 export const updateKits = (payload) => {
-  console.log(payload)
   return dispatch => {
     dispatch(actionTypes.dataLoading())
     const body = {
@@ -121,7 +117,6 @@ export const updateKits = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       payload.alert.success('Saved!')
       dispatch({
         type: UPDATE_GRADE_KIT,
@@ -201,7 +196,6 @@ export const deleteGradeKit = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       dispatch({
         type: DELETE_GRADE_KIT,
         id: payload.id

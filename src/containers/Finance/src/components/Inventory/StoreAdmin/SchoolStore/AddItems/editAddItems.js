@@ -86,7 +86,6 @@ const EditAddItems = ({
   useEffect(() => {
     if (itemsList && itemsList.length > 0) {
       const data = itemsList.filter(ele => ele.id === itemid)[0]
-      console.log(data)
       const storeSub = {
         value: data.store_sub_category && data.store_sub_category.id,
         label: data.store_sub_category && data.store_sub_category.sub_category_name
@@ -297,9 +296,6 @@ const EditAddItems = ({
       item_compulsory: compulsoryValue && compulsoryValue.value
       // is_bundled: isBundled
     }
-    console.log(data)
-    // console.log('alert', alert)
-    // console.log('user', user)
     updateItems(data, alert, user)
     close()
   }

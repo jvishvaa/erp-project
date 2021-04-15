@@ -73,7 +73,6 @@ export default function FilterTabs(props) {
   let searchResult = filterResult.filter((names) => {
     return names.paper_name.toLowerCase().indexOf(values.toLowerCase()) !== -1;
   });
-    // console.log(draftResult, "draftResult")
     return (
         <div className={classes.root}>
             <AppBar position="static"className="assements-tabs-app" style={{ background: 'white', width: '80%',  boxShadow: 'none', marginLeft: 30,

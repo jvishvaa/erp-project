@@ -87,7 +87,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -165,7 +164,6 @@ const TotalFormCount = ({ classes,
   // useEffect(() => {
   //   const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
   //   if (sessionYear && fromDate && toDate && role !== 'FinanceAdmin') {
-  //     console.log('Wihout admin +++++++')
   //     fetchFormCount(sessionYear.value, null, fromDate, toDate, alert, user)
   //   } else if (sessionYear && fromDate && toDate && (role === 'FinanceAdmin') && selectedBranch) {
   //     fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, alert, user)
@@ -231,7 +229,6 @@ const TotalFormCount = ({ classes,
       const userProfile = JSON.parse(localStorage.getItem('userDetails'))
       const role = userProfile?.personal_info?.role?.toLowerCase()
       // if (sessionYear && fromDate && toDate && selectedReport && selectedDates && role !== 'financeadmin') {
-      //   console.log('Wihout admin +++++++')
       //   fetchFormCount(sessionYear.value, null, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
       // } else 
       if (sessionYear && fromDate && toDate && selectedBranch && selectedReport && selectedDates) {
@@ -242,7 +239,6 @@ const TotalFormCount = ({ classes,
       const userProfile = JSON.parse(localStorage.getItem('userDetails'))
       const role = userProfile?.personal_info?.role?.toLowerCase()
       // if (sessionYear && selectedReport && selectedDates && role !== 'financeadmin') {
-      //   console.log('Wihout admin +++++++')
       //   fetchFormCount(sessionYear.value, null, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
       // } else 
       if (sessionYear && selectedBranch && selectedReport && selectedDates) {

@@ -62,7 +62,6 @@ const ViewClassManagementFilters = () => {
   const [selectedSections, setSelectedSections] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
 
-  console.log("startDate : "+startDate);
   const {
     managementView: { currentPage },
     listOnlineClassesManagementView,
@@ -125,7 +124,6 @@ const ViewClassManagementFilters = () => {
       setSelectedSubjects([])
     }
   };
-  console.log(gradeIds,'hey')
 
   const handleSection = (event, value) => {
     setSelectedSections(value);

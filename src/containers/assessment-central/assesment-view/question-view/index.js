@@ -77,7 +77,6 @@ const QuestionView = ({ question, showHeader, index }) => {
                 <div className='options-container'>
                   {question?.question_answer[0]?.options?.map((optionObj, subIndex) => (
                     <div className='option' key={`option-item-${index}`}>
-                      {/* {console.log({ optionObj }, 'mk')} */}
                       {extractContent(optionObj[`option${subIndex + 1}`]?.optionValue)}
                     </div>
                   ))}
@@ -97,7 +96,6 @@ const QuestionView = ({ question, showHeader, index }) => {
                   <div className='options-container'>
                     {question.question_answer[0]?.options.map((optionObj, subIndex) => (
                       <div className='option' key={`option-item-${index}`}>
-                        {console.log({ optionObj }, 'mk')}
                         {extractContent(optionObj[`option${subIndex + 1}`].optionValue)}
                       </div>
                     ))}

@@ -63,7 +63,6 @@ const GuardianDetailsForm = ({
   useEffect(() => {
     // pageTop.current.scrollIntoView();
     containerRef.current.scrollTop = 0;
-    console.log('scrollTop ', containerRef.current.scrollTop);
   }, []);
   return (
     <>

@@ -72,7 +72,6 @@ function getSteps () {
 const validate = (email) => {
   const expression = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
   const result = expression.test(String(email).toLowerCase())
-  console.log('EXpression result', email + ' ' + result)
   return result
 }
 
@@ -90,7 +89,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -309,10 +307,8 @@ class ApplicationFormAcc extends Component {
     generatePdf = async (transid) => {
       try {
         const response = await this.getPdfData(transid)
-        console.log('App reg Response: ', response)
         appRegReceiptsPdf(response.data)
       } catch (e) {
-        console.log(e)
         this.props.alert.warning('Unable to generate PDF!')
       }
     }
@@ -348,7 +344,6 @@ class ApplicationFormAcc extends Component {
   isValidDate = (dateString) => {
     // console.log('inside ', dateString.match(regEx))
     // return dateString.match(regEx) != null
-    console.log('date: ', dateString)
     var data = dateString && dateString.split('-')
     // using ISO 8601 Date String
     if (data) {
@@ -363,7 +358,6 @@ class ApplicationFormAcc extends Component {
   }
 
   handleNext = () => {
-    console.log('active state: ', this.state.activeStep)
     if (this.state.activeStep < 1) {
       const { studentInfo, parentInfo } = this.state.formData
       if (parentInfo.fatherEmail && !validate(parentInfo.fatherEmail)) {
@@ -374,7 +368,6 @@ class ApplicationFormAcc extends Component {
         this.props.alert.warning('Enter Valid mother email')
         return false
       }
-      console.log('IsValid Date: ', this.isValidDate(studentInfo.studentDob))
       if (!this.isValidDate(studentInfo.studentDob)) {
         this.props.alert.warning('Enter Valid Date')
         return
@@ -410,7 +403,6 @@ class ApplicationFormAcc extends Component {
       })
       this.makeFinalPayment()
     } else if (this.state.activeStep > 2) {
-      console.log('BASE STATE', this.baseState === this.state)
       this.setState(this.baseState)
       // this.setState(prevState => {
       //   return {
@@ -1178,7 +1170,6 @@ class ApplicationFormAcc extends Component {
     let suited = true
     Object.keys(data).forEach((keys) => {
       if (data[keys] === null) {
-        console.log('not suited')
         // this.setState({validation : false}, ()=>{return false})
         suited = false
         return undefined
@@ -1233,7 +1224,6 @@ class ApplicationFormAcc extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('===received props', nextProps.micr)
     if (nextProps.micr && nextProps.micr.data && this.state.searchByCheque.value === 2) {
       const newPayment = { ...this.state.payment }
       const newCheque = { ...newPayment.cheque }
@@ -1754,11 +1744,9 @@ class ApplicationFormAcc extends Component {
   }
 
   onSearchChange = (e, selected) => {
-    console.log('onSearch click', e.target.value)
     this.setState({
       searchedValue: e.target.value, searchedLabel: e.target.label, showApp: false
     }, () => {
-      console.log(this.state.searchedValue)
       if (this.state.searchedValue.length >= 3) {
         // console.log('debounce')
         this.myErpFunc()

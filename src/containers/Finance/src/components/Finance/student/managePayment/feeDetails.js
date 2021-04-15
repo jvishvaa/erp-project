@@ -25,7 +25,6 @@ class FeeDetails extends Component {
 
   componentDidMount () {
     if (this.props.getList && this.props.sessionYear) {
-      // console.log('stuu: ', )
       let erpValue = JSON.parse(localStorage.getItem('userDetails')).erp
       this.props.fetchRefundValue(erpValue, this.props.sessionYear, this.props.alert, this.props.user)
       this.props.fetchListFeeDetails(this.props.sessionYear, this.props.alert, this.props.user)
@@ -35,8 +34,6 @@ class FeeDetails extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    console.log('------------prevProps-----------', prevProps)
-    console.log('sessionYear-------------', this.props.sessionYear)
     if (prevProps.sessionYear !== this.props.sessionYear && this.props.getList) {
       this.props.fetchListFeeDetails(this.props.sessionYear, this.props.alert, this.props.user)
     }
@@ -50,7 +47,6 @@ class FeeDetails extends Component {
         }
       })
       .then(res => {
-        // console.log("amount",res.data[0].total)
         if (+res.status === 200) {
           this.setState({ feeDetailsData: res.data })
         }

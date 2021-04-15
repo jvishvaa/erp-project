@@ -86,7 +86,6 @@ export const fetchBranch = (payload) => {
 }
 
 export const checkReturn = (payload) => {
-  console.log('hello manoj', urls.CheckReturn)
   return dispatch => {
     dispatch(actionTypes.dataLoading())
     axios.get(urls.CheckReturn, {
@@ -139,7 +138,6 @@ export const returnAdmin = (payload) => {
   const data = {
     'to_branch': 23
   }
-  console.log('hello manoj', urls.AdminReturn)
   return (dispatch) => {
     axios.put(urls.AdminReturn, data, {
       headers: {

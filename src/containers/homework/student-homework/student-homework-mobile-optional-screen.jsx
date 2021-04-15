@@ -105,7 +105,6 @@ export default function MobileOptional(props) {
     setOpen(false);
     setSelectedValue(value);
   };
-  //  console.log(props.options, "nameofSubject", selectedValue)
   return (
     <div className={"mobile-modal"} id="popUp">
       <Button variant="outlined" color="primary"  onClick={handleClickOpen} className="modal-optional-button-count">

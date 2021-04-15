@@ -152,7 +152,6 @@ export default function FiltersComponent() {
 
   const [expanded, setExpanded] = React.useState('panel1');
   const handleChange = (panel) => (event, newExpanded) => {
-    console.log(newExpanded);
     setExpanded(panel);
   };
 

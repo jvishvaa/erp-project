@@ -69,7 +69,6 @@ export const fetchAllPayment = (payload) => {
     // }).catch(err => {
     //   payload.alert.warning('Unable To Load')
     //   dispatch(actionTypes.dataLoaded())
-    //   console.log(err)
     // })
   }
 }
@@ -297,8 +296,6 @@ export const cardDetailsPayment = (payload) => {
           status: true
         }
       })
-      console.log('data2', response.data)
-      console.log('data3', response)
       dispatch(actionTypes.dataLoaded())
       payload.alert.success('Success')
     }).catch(err => {

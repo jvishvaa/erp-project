@@ -31,7 +31,6 @@ export const fetchShufflePendingReq = (payload) => {
         })
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
-        console.log(error)
         // payload.alert.warning('Unable To Load')
         dispatch(actionTypes.dataLoaded())
       })
@@ -54,8 +53,6 @@ export const fetchStudentFeeDetails = (payload) => {
           }
         })
       ]).then(axios.spread((response1, response2) => {
-        console.log('Status Actions response 1', response1)
-        console.log('Status Actions response 2', response2)
         dispatch({
           type: FETCH_STD_FEE_TYPE_DETAILS,
           payload: {
@@ -138,7 +135,6 @@ export const reassignStudentShuffle = (payload) => {
         dispatch(actionTypes.dataLoaded())
         payload.alert.success('Reassigned Successfully')
       }).catch(error => {
-        console.log(error.response)
         if (error.response && error.response.data && error.response.data.err_msg) {
           // payload.alert.error(error.response.data.err_msg)
         } else {

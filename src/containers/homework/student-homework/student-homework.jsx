@@ -266,14 +266,12 @@ const StudentHomework = withRouter(({ history, ...props }) => {
         });
       }
       temprows.push(tempobj);
-      // console.log(temprows, "temprows")
     });
     setMessageRows({ header: tempHeader, rows: temprows });
   };
 
   const handleOtherLanguage = (event, value) => {
     setSelectSub(event.target.value);
-    console.log(value, 'poopo', event.target.value);
     if (value) {
       setSelectedOtherLanguages({
         ...value,

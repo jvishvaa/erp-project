@@ -64,7 +64,6 @@ const Subjectgrade = (props) => {
     useEffect(() => {
         axiosInstance.get(`${endpoints.userManagement.academicYear}?module_id=8`).then(res => {
             if (res.data.data) {
-                console.log(res.data.data);
                 setAcademicYear(res.data.data);
             }
         }).catch(err => {
@@ -77,7 +76,6 @@ const Subjectgrade = (props) => {
         const getBranch = () => {
             axiosInstance.get(`${endpoints.communication.branches}?session_year=${selectedYear?.id}`).then(res => {
                 if (res.data.data) {
-                    //console.log(res.data.data.results);
                     setBranchRes(res.data.data.results)
                 }
             }).catch(err => {
@@ -110,7 +108,6 @@ const Subjectgrade = (props) => {
 
             axiosInstance.get(`${endpoints.mappingStudentGrade.grade}?session_year=${selectedYear?.id}&branch_id=${value?.branch.id}&module_id=8`).then(res => {
                 if (res.data.data) {
-                    console.log(res.data.data)
                     setGradeRes(res.data.data)
                 }
             }).catch(err => {
@@ -180,7 +177,6 @@ const Subjectgrade = (props) => {
         let centralSub = [];
         let centralGrade = []
         // axiosInstance.get(`${endpoints.mappingStudentGrade.central}`).then(res => {
-        //     // console.log(res.data.result)
         //     for (let filteCentral of res.data.result) {
         //         centralGrade.push({
         //             id: filteCentral.id,
@@ -223,7 +219,6 @@ const Subjectgrade = (props) => {
         const apiURL = `${endpoints.mappingStudentGrade.centralGradeSubjects}?domain_name=${domainTobeSent}&${moduleKey}=${value}`
         const headers = { headers: { 'x-api-key': 'vikash@12345#1231' }, }
         axios.get(apiURL, headers).then(res => {
-            // console.log(res.data.result)
             for (let filteCentral of res.data.result) {
                 centralGrade.push({
                     id: filteCentral.id,
@@ -242,7 +237,7 @@ const Subjectgrade = (props) => {
             setCentralSubject(centralSub)
             setCentralGrade(centralGrade)
         }).catch(err => {
-            // console.log(err)
+            console.log(err)
         })
     }
     const handleChangeCentralSubject = (value) => {
@@ -346,7 +341,6 @@ const Subjectgrade = (props) => {
 
             }else{
                 setError(valid && valid.error)
-                console.log(valid,"valid")
             }
 
         } else {
@@ -362,7 +356,6 @@ const Subjectgrade = (props) => {
                 central_subject_name: centralSubValue.subject_name
             }
             axiosInstance.put(`${endpoints.mappingStudentGrade.updateAssign}/${updateId}/update-school-gs-mapping/`, body).then(res => {
-                // console.log(res, "res")
                 if(res.data.status_code === 200){
                     setAlert('success', res.data.message);
                     props.history.push('/subject/grade');
@@ -435,7 +428,6 @@ const Subjectgrade = (props) => {
 
             }
             
-            // console.log(window.performance.navigation.type, "window.performance.navigation.type")
             // if (window.performance.navigation.type === 1 || local.length < 0) {
             //     props.history.push('/subject/grade')
 

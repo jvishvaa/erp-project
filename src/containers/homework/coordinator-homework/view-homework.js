@@ -90,7 +90,6 @@ const ViewHomework = withRouter(
         scrollableContainer.current.scrollLeft -= 150;
       } else {
         scrollableContainer.current.scrollLeft += 150;
-        console.log(scrollableContainer.current.scrollLeft);
       }
     };
 
@@ -166,7 +165,6 @@ const ViewHomework = withRouter(
                           ref={scrollableContainer}
                           onScroll={(e) => {
                             e.preventDefault();
-                            console.log('scrolled');
                           }}
                         >
                           {question.question_files.length === 0 && (

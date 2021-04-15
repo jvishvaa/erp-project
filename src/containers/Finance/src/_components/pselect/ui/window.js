@@ -251,7 +251,6 @@ function Window (props) {
   }, [db, initialized])
   function ButtonWithData (props) {
     const filterState = useSelector(state => state.filter)
-    console.log(filterState)
     return <Button {...props}>
     USE PowerSelector ({filterState.data && Object.keys(filterState.data.items).length} selected)
     </Button>
@@ -259,7 +258,6 @@ function Window (props) {
 
   function setCurrentItem (itemIndex) {
     if (itemIndex < (filteredBranches.length) && itemIndex >= 0) {
-      console.log(itemIndex)
       setCurrentIndex(itemIndex)
     }
   }

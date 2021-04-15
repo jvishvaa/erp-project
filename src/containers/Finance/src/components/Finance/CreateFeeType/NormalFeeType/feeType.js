@@ -37,7 +37,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -153,7 +152,6 @@ class FeeType extends Component {
 
   renderTable = () => {
     let dataToShow = []
-    console.log("render table: ", this.props.normalFeeList)
     dataToShow = this.props.normalFeeList.map((val, i) => {
       return {
         Sr: i + 1,
@@ -209,7 +207,6 @@ class FeeType extends Component {
               this.setState({
                 moduleId: item.child_id
               })
-              console.log('id+', item.child_id)
             } else {
               // setModulePermision(false);
             }

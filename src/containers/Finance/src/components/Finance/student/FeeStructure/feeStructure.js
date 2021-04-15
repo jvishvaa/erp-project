@@ -43,7 +43,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -90,12 +89,9 @@ class FeeStructure extends Component {
     //   }
     // }
     // document.addEventListener('contextmenu', event => event.preventDefault())
-    // console.log('dues', this.props.studentDues.dues)
   }
 
   // componentWillReceiveProps (nextProps) {
-  //   console.log('--------------nextProps-----------', nextProps.feeStructureList)
-  //   console.log('--------------myProps-----------', this.props.feeStructureList)
   //   if (nextProps.feeStructureList !== this.props.feeStructureList) {
   //     this.props.fetchListDefaultView(this.props.alert, this.props.user)
   //   } else {

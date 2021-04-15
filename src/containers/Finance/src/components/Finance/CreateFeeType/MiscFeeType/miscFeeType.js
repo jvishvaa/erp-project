@@ -41,7 +41,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId = item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -138,9 +137,7 @@ class MiscFeeType extends Component {
   }
 
   handleAcademicyear = (e) => {
-    console.log(e)
     this.setState({ session: e.value, branchData: [], sessionData: e }, () => {
-      console.log(this.state.sessionData)
     })
     this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
   }
@@ -161,7 +158,6 @@ class MiscFeeType extends Component {
   }
 
   deleteHandler = () => {
-    console.log(this.state.deleteId)
     this.props.deleteMiscFee(this.state.deleteId, this.props.alert, this.props.user)
     this.deleteModalCloseHandler()
   }
@@ -184,7 +180,6 @@ class MiscFeeType extends Component {
     //           this.setState({
     //             moduleId: item.child_id
     //           })
-    //           console.log('id+', item.child_id)
     //         } else {
     //           // setModulePermision(false);
     //         }

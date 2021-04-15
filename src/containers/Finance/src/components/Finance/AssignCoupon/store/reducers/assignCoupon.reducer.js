@@ -33,8 +33,6 @@ const assignCouponReducer = (state = initialState, action) => {
       //     b.push(a[i])
       //   }
       // }
-      // console.log('b++', b)
-      // console.log('a', a)
       return {
         ...state,
         erpList: notAssign,
@@ -43,7 +41,6 @@ const assignCouponReducer = (state = initialState, action) => {
     }
     case actionTypes.COUPON_ASSIGNED : {
       const studentList = [...state.erpList]
-      console.log('student', studentList)
       action.payload.data && action.payload.data.map((val) => val.student.erp).forEach((s) => {
         let index = studentList.findIndex((item) => {
           if (item.erp) {
@@ -57,13 +54,11 @@ const assignCouponReducer = (state = initialState, action) => {
           }
         })
         let index2 = action.payload.data.findIndex(item => item.student.erp === s)
-        console.log('index', index)
-        console.log('index2', index2)
         if (index !== -1) {
           studentList[index] = action.payload.data[index2]
         }
       })
-      console.log('studentList', studentList)
+
       return {
         ...state,
         erpList: studentList,
@@ -72,7 +67,6 @@ const assignCouponReducer = (state = initialState, action) => {
     }
     case actionTypes.COUPON_REASSIGNED : {
       const studentList = [...state.assignErp]
-      console.log('student', studentList)
       action.payload.data && action.payload.data.assign_data.map((val) => val.student.erp).forEach((s) => {
         let index = studentList.findIndex((item) => {
           if (item.erp) {
@@ -91,13 +85,10 @@ const assignCouponReducer = (state = initialState, action) => {
           // }
         })
         let index2 = action.payload.data.assign_data.findIndex(item => item.student.erp === s)
-        console.log('index', index)
-        console.log('index2', index2)
         if (index !== -1) {
           studentList[index] = action.payload.data.assign_data[index2]
         }
       })
-      console.log('studentList', studentList)
       return {
         ...state,
         assignErp: studentList,
@@ -105,13 +96,9 @@ const assignCouponReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.COUPON_DELETE : {
-      console.log('delete', action.payload.data)
       const a = [...state.assignErp]
-      console.log('1st', a)
       let idToDelete = action.payload.data.id
-      console.log('2st', idToDelete)
       let ids = idToDelete.split(',')
-      console.log('id++', ids)
       ids.forEach((val) => {
         a.map((e) => {
           if (+e.id === +val) {

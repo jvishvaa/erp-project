@@ -52,14 +52,12 @@ class OtherFee extends Component {
   }
 
   handleCheckbox = (e, id) => {
-    console.log(e.target.checked)
     let amount = 0
     let feeAccIds = ''
     let ids = ''
     const checkedIndex = this.props.studentOtherFee.findIndex(ele => {
       return ele.other_fee.id === id
     })
-    console.log(checkedIndex)
     const allCheckedIndexes = this.props.studentOtherFee.map((ele, index) => {
       if (index === checkedIndex && e.target.checked) {
         amount += ele.other_fee.amount
@@ -75,8 +73,7 @@ class OtherFee extends Component {
       }
       return false
     })
-    // console.log("-------CHECKED--------");
-    // console.log(allCheckedIndexes);
+
     this.setState({
       isSelectedPayments: allCheckedIndexes,
       isDisabled,
@@ -93,7 +90,6 @@ class OtherFee extends Component {
       fee_account_id: this.state.feeAccIds,
       total_paid_amount: this.state.amountToBePaid
     }]
-    console.log(data)
   }
 
   todayDate = () => {

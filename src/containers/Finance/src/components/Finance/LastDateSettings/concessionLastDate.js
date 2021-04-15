@@ -42,7 +42,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId= item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -68,7 +67,6 @@ class ConcessionLastDate extends Component {
 
   componentDidMount () {
     // this.fetchConcessionLastDate(this.props.session, this.props.alert, this.props.user)
-    console.log('did mount from concession last date')
     if (this.props.session) {
       this.props.fetchConcessionLastDate(this.props.session, this.props.alert, this.props.user, moduleId)
     }
@@ -77,7 +75,6 @@ class ConcessionLastDate extends Component {
   componentDidUpdate (prevProps, prevState) {
     if (this.props.session !== prevProps.session) {
       // I will make a fetch request
-      console.log('inside did update', this.props.session)
       this.props.fetchConcessionLastDate(this.props.session, this.props.alert, this.props.user, moduleId)
     }
   }

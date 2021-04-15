@@ -55,7 +55,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -256,7 +255,6 @@ class MakePayment extends Component {
       const response = await this.getPdfData(this.props.trnsId)
       feeReceiptss(response.data)
     } catch (e) {
-      console.log(e)
       this.props.alert.warning('Something Went Wrong')
     }
   }
@@ -422,7 +420,6 @@ class MakePayment extends Component {
   }
 
   partialAmountHandler = (e, id) => {
-    console.log('e and id', e, id)
     let ppValid = true
     let { partialAmount } = this.state
 
@@ -493,8 +490,6 @@ class MakePayment extends Component {
       })
     }
 
-    console.log('final state make payment', this.state.finalOtherFeeDet.installment_rows)
-
     if (this.state.finalOtherFeeDet && this.state.finalOtherFeeDet.installment_rows && this.state.finalOtherFeeDet.installment_rows.length > 0) {
       this.state.finalOtherFeeDet.installment_rows.map(row => {
         row.map(r => {
@@ -515,14 +510,11 @@ class MakePayment extends Component {
       })
     }
 
-    console.log('other fee details', otherDetails)
-
     // let currentOtherFee = this.props.otherFeesList.filter(val => val.id === this.state.otherFeeId)
     let wal = null
     let tot = this.state.selectedTotal + this.state.otherFeeAmount
     if (this.props.walletInfo.length && this.state.isWalletAgree) {
       let bal = this.props.walletInfo[0].reaming_amount
-      console.log('total and balnce: ', tot, bal)
       wal = {
         wallet_agree: this.state.isWalletAgree,
         wallet_data: this.props.walletInfo[0],
@@ -650,12 +642,10 @@ class MakePayment extends Component {
   }
 
   sendingToServer = (data) => {
-    console.log('final data', data)
     this.props.sendAllPayment(data, this.props.user, this.props.alert)
   }
 
   handleNext = () => {
-    console.log('index:', this.state.activeStep)
     if (this.state.activeStep < 1) {
       this.receiptDetailsTableHandler()
       this.setState(prevState => {
@@ -730,9 +720,7 @@ class MakePayment extends Component {
   };
 
   receiptDetailsTableHandler = () => {
-    console.log('Called from new func')
     const partialPayAmt = document.querySelectorAll('[name=partialAmount]')
-    console.log('mpa Partial amount: ', partialPayAmt)
     let bal = []
     let payed = []
     let checkedRowId = []
@@ -743,7 +731,6 @@ class MakePayment extends Component {
     checkedRowId.map((row, i) => {
       payInstall.push(this.props.feeDetailsList.filter(list => (+list.id === +row)))
     })
-    console.log('mpa payInstall 1st----', payInstall)
     // to calculate the paying amount and balance after that.
     payInstall.map((row, i) => {
       row.map((r) => {
@@ -762,15 +749,12 @@ class MakePayment extends Component {
         }
       })
     })
-    console.log(payed)
-    console.log(bal)
 
     const newPayInstall = payInstall.map((ele, i) => {
       ele.payment = payed[i]
       ele.balance = bal[i]
       return ele
     })
-    console.log('mpa Pay New Insyall-------', newPayInstall)
     this.setState({
       final: {
         finalAmt: this.state.selectedTotal,
@@ -790,7 +774,6 @@ class MakePayment extends Component {
   getPaymentDetailHandler = (confirm, wallet, paymentDetail, otherFee, total) => {
     if (confirm) {
       // this.setState({ disableNext: false })
-      console.log('other', otherFee)
       this.setState({
         disableNext: false,
         payment: paymentDetail,
@@ -798,7 +781,6 @@ class MakePayment extends Component {
         totalAmountToBePaid: total,
         isWalletAgree: wallet
       }, () => {
-        console.log('other Fee', this.state)
       })
     } else {
       // this.setState({ disableNext: true })
@@ -807,10 +789,8 @@ class MakePayment extends Component {
   }
   sendData = () => {
     let year = this.props.session && this.props.session.split('-')
-    console.log('year', year)
     let newYear = year.map((n) => n - 1)
     newYear = newYear.join('-')
-    console.log('previousYear', newYear)
     this.props.parentCallback(newYear)
     this.setState({
       selectedTotal: null,
@@ -819,7 +799,6 @@ class MakePayment extends Component {
   }
   render () {
     // let { classes } = this.props
-    // console.log('datefrom server: ', this.props.dateFromServer)
     const { classes } = this.props
     const steps = getSteps()
     const { activeStep } = this.state

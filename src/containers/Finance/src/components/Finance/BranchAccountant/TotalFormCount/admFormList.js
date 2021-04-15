@@ -95,7 +95,6 @@ const AdmFormList = ({ session,
   const [rowsPerPage, setRowsPerPage] = useState(null)
 
   useEffect(() => {
-    console.log('Mounted All Form List', history.location.state)
     const { session, fromDate, toDate, branch, isAdmin, selectedDates, selectedReport } = history.location.state
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile.personal_info.role.toLowerCase()
@@ -121,10 +120,8 @@ const AdmFormList = ({ session,
   const generatePdf = async (transid) => {
     try {
       const response = await getPdfData(transid)
-      console.log('App reg Response: ', response)
       feeReceiptss(response.data)
     } catch (e) {
-      console.log(e)
       alert.warning('Unable to generate PDF!')
     }
   }
@@ -211,7 +208,6 @@ const AdmFormList = ({ session,
 
   const removeForm = () => {
     // delete the form here deleteNum
-    console.log('Delete Form +++++++++++', deleteForm)
     const data = {
       type: 'admission',
       num: deleteForm

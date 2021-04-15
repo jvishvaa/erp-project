@@ -43,7 +43,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId= item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -93,7 +92,6 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
   // const [accReasonToApprove, setAccReason] = useState({})
 
   useEffect(() => {
-    // console.log('reason Data: ', studentShuffle)
     if (sessionRed) {
       setSession(sessionRed)
     }
@@ -114,12 +112,10 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
     setPage(0);
   };
   const handleAcademicyear = (e) => {
-    // console.log('acad years', e)
     setSession(e)
   }
 
   const pendingRequestHandler = (id) => {
-    console.log('calling pending ')
     history.push({
       pathname: '/finance/Approval/Requests/PendingPaymentRequests',
       session: sessionYear,
@@ -129,7 +125,6 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
   }
 
   const approvedRequestHandler = (id) => {
-    console.log('calling pending ')
     history.push({
       pathname: '/finance/Approval/Requests/ApprovedPaymentRequests',
       session: sessionYear,
@@ -138,7 +133,6 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
     })
   }
   const rejectedRequestHandler = (id) => {
-    console.log('calling pending ')
     history.push({
       pathname: '/finance/Approval/Requests/RejectedPaymentRequests',
       session: sessionYear,
@@ -147,7 +141,6 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
     })
   }
   const cancelledRequestHandler = (id) => {
-    console.log('calling pending ')
     history.push({
       pathname: '/finance/Approval/Requests/CancelledPaymentRequests',
       session: sessionYear,

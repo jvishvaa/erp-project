@@ -80,7 +80,6 @@ const CreateDailyDairy = (details, onSubmit) => {
     branch: '',
   });
 
-  console.log(editData, isEdit);
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -91,7 +90,6 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   useEffect(() => {
     if (NavData && NavData.length) {
-      console.log('NavData: ', NavData)
       NavData.forEach((item) => {
         if (
           item.parent_modules === 'Diary' &&
@@ -188,7 +186,6 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const fetchBranches = () => {
-    console.log('handle branch: ', searchAcademicYear, moduleId)
     fetchBranchesForCreateUser(searchAcademicYear, moduleId).then((data) => {
       const transformedData = data?.map((obj) => ({
         id: obj.id,
@@ -251,9 +248,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       });
   };
 
-  console.log(editData,'EEEEEEEEEEEEEEEEEEEEEE')
   const fetchSubjects = (branch, grade, section) => {
-    console.log('=== fetch sub:', branch, grade, section)
     if (branch && grade &&
       // grade.length > 0 &&
       section 
@@ -284,13 +279,11 @@ const CreateDailyDairy = (details, onSubmit) => {
     const {
       values: { branch = {}, grade = [] },
     } = formik;
-    console.log('values : ', value)
     fetchSubjects([branch], [grade], [value]);
   };
 
   const handleSubject = (event, value) => {
     setFilterData({ ...filterData });
-    console.log(value);
     setSubjectIds(value?.id);
     axiosInstance
       .get(
@@ -316,7 +309,6 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
     if (filePath.length < 10) {
       if (isEdit) {
-        console.log('Continue');
       } else if (
         !formik.values.section ||
         !formik.values.grade ||
@@ -328,7 +320,6 @@ const CreateDailyDairy = (details, onSubmit) => {
       }
       setLoading(true);
       const data = event.target.files[0];
-      console.log(formik.values);
       let fd = new FormData();
       fd.append('file', data);
       fd.append(
@@ -338,11 +329,8 @@ const CreateDailyDairy = (details, onSubmit) => {
       fd.append('grades', isEdit ? editData?.grade[0]?.id : formik.values.grade?.id);
       // fd.append('section', isEdit ? editData.section[0].id : formik.values.section[0].id);
       axiosInstance.post(`academic/dairy-upload/`, fd).then((result) => {
-        console.log(fd);
         if (result.data.status_code === 200) {
           setLoading(false);
-
-          console.log(result.data, 'resp');
           setAlert('success', result.data.message);
           setFilePath([...filePath, result.data.result]);
         } else {
@@ -358,11 +346,8 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleSubmit = async () => {
-    console.log('upload attach:', filePath);
 
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
-    console.log('handle Formik:', formik)
-    // console.log(formik.values.section,'++++++++++++++++++++++++')
     const mapId=formik.values.section.section_mapping_id
     const ids = formik.values.section
       ? [formik.values.section].map((el) => el.id)
@@ -379,9 +364,6 @@ const CreateDailyDairy = (details, onSubmit) => {
     ) {
       return setAlert('error', 'Please select all fields');
     }
-    console.log('===============');
-    console.log(subjectId);
-    console.log(formik.values.subjects);
     const teacherReport = [];
     try {
       const response = await axiosInstance.post(
@@ -446,7 +428,6 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleEdited = () => {
-    console.log(editData, isEdit);
     axiosInstance
       .put(
         `${endpoints.dailyDairy.updateDelete}${editData.id}/update-delete-dairy/`,
@@ -563,15 +544,12 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const removeFileHandler = (i) => {
     // const list = [...filePath];
-    console.log(filePath);
     filePath.splice(i, 1);
     setAlert('success', 'File successfully deleted');
   };
-console.log(editData,'|||||||||||||||||||||||||||||||')
   useEffect(() => {
     // fetchAcademicYears();
     // fetchBranches();
-    console.log('branches ', details.branch, details.grade);
     if (details.branch) {
       handleChangeBranch([details.branch]);
       if (details.grade && details.grade.length > 0) {
@@ -759,7 +737,7 @@ console.log(editData,'|||||||||||||||||||||||||||||||')
               className={classes.margin}
               variant='outlined'
             >
-              {console.log(editData.subject, 'editData.subject')}
+             
               <Autocomplete
                 // {...state.isEdit ? {}:{multiple:true}}
 

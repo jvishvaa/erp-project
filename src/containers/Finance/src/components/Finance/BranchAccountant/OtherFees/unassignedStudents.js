@@ -51,7 +51,6 @@ class UnassignedStudents extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('-------nextProps----', nextProps)
     if (this.props.studentLists !== nextProps.studentLists) {
       const checked = {}
       nextProps.studentLists.forEach(element => {
@@ -77,9 +76,6 @@ class UnassignedStudents extends Component {
       gradeId !== prevProps.gradeId || sectionId !== prevProps.sectionId)) {
       this.props.fetchStudentList(sessionId, otherFeeId, gradeId, sectionId, 'unassigned', alert, user, this.props.moduleId, this.props.branchId)
     }
-    console.log('---------Checked----------')
-    console.log(this.state.isChecked)
-    console.log(this.props.studentLists)
   }
 
   handleChangePage = (event, newPage) => {
@@ -99,7 +95,6 @@ class UnassignedStudents extends Component {
 
 
   // renderTable = () => {
-  //   console.log('from render method!!!')
   //   let dataToShow = []
   //   dataToShow = this.props.studentLists.map((val, i) => {
   //     return {
@@ -137,7 +132,6 @@ class UnassignedStudents extends Component {
         isChecked: checked,
         checkedAll: !this.state.checkedAll
       }, () => {
-        console.log(isChecked)
       })
     }
   }
@@ -176,7 +170,6 @@ class UnassignedStudents extends Component {
       section: this.props.sectionId,
       branch_id: this.props.branchId
     }
-    console.log('-------------data--------------', data)
     this.setState({
       rowChecked: checkedRowId
     }, () => {
@@ -201,7 +194,6 @@ class UnassignedStudents extends Component {
     // this.props.clearProps()
   }
   render () {
-    console.log('------------------is misc--------', this.props.isMisc)
     // let viewTable = null
     // if (this.props.studentLists) {
     //   viewTable = (<ReactTable

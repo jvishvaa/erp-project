@@ -15,7 +15,6 @@ export const getActiveStudentDetails = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: GET_ACTIVE_STUDENT_DETAILS,
           payload: {
@@ -40,7 +39,6 @@ export const getInActiveStudentDetails = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: GET_INACTIVE_STUDENT_DETAILS,
           payload: {

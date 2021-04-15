@@ -23,10 +23,8 @@ function AllStudentTransection (props) {
     } else {
       setMoreDetails(true)
     }
-    console.log(moreDetails)
     setModelData(allTransactions[props.index])
   }
-  console.log(modelData)
   const columns = [{
     Header: 'Transaction Id',
     accessor: 'TransactionId'
@@ -94,7 +92,6 @@ function AllStudentTransection (props) {
           }
         })
         .then(res => {
-          console.log(res.data.credited_info)
           setallTransactions(res.data.credited_info)
         })
         .catch(error => {
@@ -118,7 +115,6 @@ function AllStudentTransection (props) {
       data.push(temp)
     }
   }
-  console.log(allTransactions)
   return (
     <div>
       {

@@ -126,7 +126,6 @@ const Category = (props) => {
     axiosInstance
       .get(`${endpoints.discussionForum.postList}?page=1&my_activity=1`)
       .then((res) => {
-        console.log(res.data.data.results);
         setPostList(res.data.data.results);
       })
       .catch((error) => console.log(error));
@@ -148,7 +147,6 @@ const Category = (props) => {
     if (categoryId !== 0 && grades === '') {
       //postURL = `${endpoints.discussionForum.postList}?category=${categoryId}`;
       setPostURL(`${endpoints.discussionForum.filterCategory}?category=${categoryId}`);
-      console.log(categoryId + ' === ' + postURL);
     }
     if (categoryId === 0 && grades !== '' && sections !== '') {
       //postURL = `${endpoints.discussionForum.postList}?grade=${grades}&section=${sections}`;
@@ -165,7 +163,6 @@ const Category = (props) => {
     axiosInstance
       .get(postURL)
       .then((res) => {
-        console.log(res.data.data);
         setPostList(res.data.data.results);
       })
       .catch((error) => console.log(error));

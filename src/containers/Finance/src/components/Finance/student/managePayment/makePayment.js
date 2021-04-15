@@ -73,7 +73,6 @@ class MakePayment extends Component {
     this.erp = JSON.parse(localStorage.getItem('userDetails')).erp
   }
   componentDidMount () {
-    console.log(this.props.sessionYear, this.props.getList)
     this.props.fetchNormalWallet(this.props.sessionYear, this.props.erp, this.props.alert, this.props.user)
     this.todayDate()
     if (this.props.sessionYear || this.props.status) {
@@ -96,7 +95,6 @@ class MakePayment extends Component {
     }
   }
   componentDidUpdate (prevProps) {
-    console.log('did update: ', this.state.isSelected, this.state.partialAmount)
     if ((prevProps.sessionYear !== this.props.sessionYear && this.props.getList)) {
       this.props.fetchListMakePayment(this.props.sessionYear, this.props.alert, this.props.user)
     } else if (this.props.paymentStatus && this.props.orderId && this.props.amount) {
@@ -105,7 +103,6 @@ class MakePayment extends Component {
   }
 
   agreeWalletPayment = (event) => {
-    console.log('agree wallet: ', event.target.checked)
     this.setState((prevState) => ({
       isWalletAgree: !prevState.isWalletAgree
     }))
@@ -114,18 +111,16 @@ class MakePayment extends Component {
   todayDate = () => {
     let today = new Date()
     let dd = today.getDate()
-    console.log(today.getMonth())
     let mm = monthNames[today.getMonth()] // January is 0!
     let yyyy = today.getFullYear()
     if (dd < 10) {
       dd = '0' + dd
     }
     today = dd + ' ' + mm + ',' + yyyy
-    this.setState({ todayDate: today }, console.log(this.state.todayDate))
+    this.setState({ todayDate: today })
   }
 
   partialAmountHandler = (e, id) => {
-    console.log('e and id', e, id)
     let ppValid = true
     let { partialAmount } = this.state
 
@@ -152,7 +147,6 @@ class MakePayment extends Component {
       }
       return arr
     }, [])
-    console.log('dataArr: ', dataArr)
     const dataObj = dataArr.reduce((obj, item) => {
       if (item.isOtherFee) {
         obj.otherFee.push({
@@ -211,9 +205,7 @@ class MakePayment extends Component {
   }
 
   handleCheckBox = (event, feeTypeVal, index, installmentsIds) => {
-    console.log('feeTypeVal', feeTypeVal)
     if (!event.target.checked) {
-      console.log(this.calculateTotal())
       const isSelected = { ...this.state.isSelected }
       const amountToBePaid = { ...this.state.amountToBePaid }
       amountToBePaid[feeTypeVal] = 0
@@ -226,7 +218,6 @@ class MakePayment extends Component {
       return
     }
     const isSelected = { ...this.state.isSelected }
-    console.log(this.state.isSelected)
     const relativeIndex = this.getRelativeIndex(feeTypeVal, index)
     const selectedElements = this.state.feeType[feeTypeVal].filter((item, i) => (
       i <= (relativeIndex) && (item.upload_status !== 2)
@@ -238,16 +229,12 @@ class MakePayment extends Component {
       feeTypeId: item.fee_type_id,
       balance: item.balance
     }))
-    console.log('selected ele: ', selectedElements)
     isSelected[feeTypeVal] = selectedElements
-    console.log('isselected: ', isSelected)
     const changedAmount = isSelected[feeTypeVal].reduce((acc, item) => {
       return acc + item.amount
     }, 0)
-    console.log('changedAmount', changedAmount)
     const amountToBePaid = { ...this.state.amountToBePaid }
     amountToBePaid[feeTypeVal] = changedAmount
-    console.log('amountToBePaid', amountToBePaid)
     this.setState({
       isSelected,
       amountToBePaid
@@ -268,7 +255,6 @@ class MakePayment extends Component {
     ))[0].Installments_data.filter((item, i) => {
       return ((item.fee_type === feeType) && (i <= index))
     }).length
-    console.log(relativeIndex)
     return relativeIndex - 1
   }
   onAccountChangeHandler = (e) => {
@@ -299,7 +285,6 @@ class MakePayment extends Component {
         feeType,
         amountToBePaid
       }, () => {
-        console.log('Checkd Acc', this.state.checkedAccount)
       })
     }
   }
@@ -327,32 +312,24 @@ class MakePayment extends Component {
     //   this.setState({ selectedTotal: pay })
     // }
     // const amt = Object.keys(this.state.amountToBePaid).reduce((sum, item) => {
-    //   console.log('amt item: ', item, this.state.amountToBePaid[item])
     //   sum += this.state.amountToBePaid[item]
     //   return sum
     // }, 0)
     let { isSelected, partialAmount } = this.state
     let amt = 0
     for (const property in isSelected) {
-      console.log(`this is for in: ${property}: ${isSelected[property]}`)
-      console.log(property)
-      console.log(isSelected)
       if (isSelected[property].length) {
         for (let i = 0; i <= isSelected[property].length; i++) {
           if (isSelected[property][i]) {
-            console.log(isSelected)
-            console.log('inside normal for and if : ', isSelected[property][i], parseInt(partialAmount[isSelected[property][i].id]), partialAmount.keys)
             amt += Object.keys(partialAmount).length && parseInt(partialAmount[isSelected[property][i].id]) ? parseInt(partialAmount[isSelected[property][i].id]) : isSelected[property][i].amount
           }
         }
       }
     }
-    console.log('amount:::::::::', amt)
     return amt
   }
   handleClickViewDetails = (installmentsId) => {
     // this.props.statusMakePaymentList(this.props.sessionYear, this.props.erp, this.props.alert, this.props.user)
-    console.log(this.state.isModelData)
     this.props.status.map(items => {
       if (items.installments != null) {
         if (items.installments.id === installmentsId) {
@@ -363,7 +340,6 @@ class MakePayment extends Component {
         }
       } else {
         if (items.other_fee_installments.id === installmentsId) {
-          console.log('hii nitu singh k12', installmentsId, items.other_fee_installments.id)
           this.setState(prevState => ({
             allDataDetails: [...prevState.allDataDetails, items],
             isModelData: true
@@ -385,7 +361,6 @@ class MakePayment extends Component {
         return
       }
       list = checkedAccountData.Installments_data.map((inst, i) => {
-        console.log(inst)
         return (
           <React.Fragment>
             <TableRow hover >
@@ -464,7 +439,6 @@ class MakePayment extends Component {
       }
       return arr
     }, [])
-    console.log('dataArr: ', dataArr)
     const dataObj = dataArr.reduce((obj, item) => {
       if (item.isOtherFee) {
         obj.otherFee.push({
@@ -551,7 +525,6 @@ class MakePayment extends Component {
     this.setState({ cancelModal: false })
   }
   render () {
-    console.log(this.state.allDataDetails)
     let changeCancelModal = null
     if (this.state.cancelModal) {
       changeCancelModal = (
