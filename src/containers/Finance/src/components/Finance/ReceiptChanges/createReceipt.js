@@ -42,7 +42,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId= item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -203,17 +202,14 @@ class CreateReceipt extends Component {
     //     }
     //   })
     //   .then(res => {
-    //     // console.log(res.data.results);
     //     this.setState({ receiptType: res.data.results })
     //   })
     //   .catch((error) => {
     //     this.props.alert.error('Something Went Wrong')
-    //     console.log("Error: Couldn't fetch data from " + urls.ReceiptType + error)
     //   })
   }
 
   render () {
-    console.log('---list---------', this.props.receiptLists)
     // let receiptList = null
     // if (this.props.receiptLists.length > 0) {
     //   receiptList = (<ReactTable

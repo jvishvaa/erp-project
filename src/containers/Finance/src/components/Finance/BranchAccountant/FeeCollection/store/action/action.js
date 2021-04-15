@@ -44,7 +44,6 @@ export const paymentAction = (payload) => {
     }).then(response => {
       if (response.status === 200) {
         payload.alert.success('Payment Successful')
-        console.log(response)
         dispatch({
           type: PAY_NON_ORCHIDS,
           payload: {
@@ -71,7 +70,6 @@ export const saveOutsiders = (payload) => {
       }
     }).then(response => {
       if (response.status === 201) {
-        console.log(response)
         dispatch({
           type: SAVE_OUTSIDERS,
           payload: {
@@ -98,7 +96,6 @@ export const saveOutsiders = (payload) => {
 
 //     }).then(response => {
 //       if (response.status === 201) {
-//         console.log(response)
 //         dispatch({
 //           type: SEND_ALL_PAYMENTS,
 //           payload: {
@@ -112,7 +109,6 @@ export const saveOutsiders = (payload) => {
 //     }).catch(err => {
 //       payload.alert.error('Payment Failed')
 //       dispatch(actionTypes.dataLoaded())
-//       console.log(err)
 //     })
 //   }
 // }
@@ -125,7 +121,6 @@ export const fetchStudentErpDet = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response)
         dispatch({
           type: STUDENT_DETAILS,
           payload: {
@@ -153,7 +148,6 @@ export const orchidsStudentPay = (payload) => {
     }).then(response => {
       if (response.status === 201 || response.status === 200) {
         payload.alert.success('Payment Successful')
-        console.log(response)
         dispatch({
           type: ORCHIDS_STUDNET_PAY,
           payload: {
@@ -194,7 +188,6 @@ export const miscReport = (payload) => {
       }
     }).then(response => {
       if (+response.status === 200 && response.data && response.data.length > 0) {
-        console.log(response)
         dispatch({
           type: MISC_REPORT,
           payload: {
@@ -229,7 +222,6 @@ export const cancelTransaction = (payload) => {
       }
     }).then(response => {
       // if (response.status === 200) {
-      console.log(response)
       if (response.data === 'success') {
         dispatch({
           type: CANCEL_TRANS,
@@ -259,7 +251,6 @@ export const schoolDeatails = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response)
         dispatch({
           type: SCHOOL_DETAILS,
           payload: {

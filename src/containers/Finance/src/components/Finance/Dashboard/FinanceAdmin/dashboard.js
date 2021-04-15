@@ -98,7 +98,6 @@ class AdminDashboard extends Component {
   }
 
   componentDidUpdate () {
-    console.log('switchBranchAdminData: ', this.props.switchBranchAdminData)
     if (this.props.switchBranchAdminData) {
       localStorage.setItem('user_profile', JSON.stringify(this.props.switchBranchAdminData))
       this.props.history.push({

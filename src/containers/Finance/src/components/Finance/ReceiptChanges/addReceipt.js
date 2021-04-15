@@ -43,7 +43,6 @@ class AddReceipt extends Component {
     this.setState({ range_to: e.target.value })
     // let rangeFrom = document.getElementById('range_from').value
     // let rangeTo = document.getElementById('range_to').value
-    // console.log('rangefrom', rangeFrom)
     // if (rangeFrom > rangeTo) {
     //   this.props.alert.warning('Invalid Range')
     //   this.setState({ range_to: '' })
@@ -56,7 +55,6 @@ class AddReceipt extends Component {
 
   handlevalue = e => {
     e.preventDefault()
-    console.log('clicked')
     if (this.state.range_from > this.state.range_to) {
       this.props.alert.warning('Invalid Range')
       return

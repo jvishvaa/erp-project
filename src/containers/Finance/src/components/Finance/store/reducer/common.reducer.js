@@ -67,21 +67,18 @@ const commonReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.GRADE_LIST : {
-      console.log('===>grade<===', action.payload)
       return {
         ...state,
         gradeList: action.payload.data
       }
     }
     case actionTypes.SECTIONS_PER_GRADE: {
-      console.log('===>sections<===', action.payload)
       return {
         ...state,
         sectionsPerGrade: action.payload.data
       }
     }
     case actionTypes.SECTIONS_PER_GRADE_AS_ADMIN: {
-      console.log('===>sections<===', action.payload)
       const a = [...action.payload.data]
       // a.unshift({
       //   section: {
@@ -96,28 +93,24 @@ const commonReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.FETCH_SUBJECTS: {
-      console.log('===>subjects<===', action.payload)
       return {
         ...state,
         subjects: action.payload.data
       }
     }
     case actionTypes.FETCH_CLASS_GROUP: {
-      console.log('===>groups<===', action.payload)
       return {
         ...state,
         groups: action.payload.data
       }
     }
     case actionTypes.FETCH_STUDENT_SUGGESTIONS_BY_NAME_ADMIN: {
-      console.log('===>erpSuggetions<===', action.payload)
       return {
         ...state,
         studentSearchForAdmin: action.payload.data
       }
     }
     case actionTypes.FETCH_STUDENT_INFO_ADMIN: {
-      console.log('===>erpSuggetions<===', action.payload)
       return {
         ...state,
         studentSearchForAdmin: action.payload.data
@@ -136,7 +129,6 @@ const commonReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.GRADE_LIST_PER_BRANCH : {
-      // console.log('----GRade per branch-------------', action.payload)
       const allGrades = [...action.payload.data]
       const multipleGrades = [...action.payload.data]
       // multipleGrades.unshift({
@@ -152,7 +144,6 @@ const commonReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.GET_BRANCH : {
-      // console.log('----GEt Branch-------------', action.payload)
       return {
         ...state,
         branchAtAcc: action.payload.data

@@ -57,7 +57,6 @@ class StudentProfileImages extends React.Component {
           let { data: responseData = [] } = response || {}
           if (responseData.length) {
             let { id, erp: studentErp, name: studentName, studentprofileimages: studentAllProfileImages = [] } = responseData[0]
-            console.log(id)
             var studentProfileImages = studentAllProfileImages.filter(item => item.section_mapping === sectionMappingId)
             if (studentProfileImages.length) {
               let { frontal_image: frontalImage, left_sidewise: leftSidewise, right_sidewise: rightSidewise } = studentProfileImages[0]

@@ -22,7 +22,6 @@ const DateRangeSelector = ({ value, onChange, onClick, open }) => {
         value={value}
         // calendars='1'
         onChange={(newValue) => {
-          console.log('onChange truggered', newValue);
           const [startDate, endDate] = newValue;
           const sevenDaysAfter = moment(startDate).add(6, 'days');
           onChange([startDate, sevenDaysAfter]);

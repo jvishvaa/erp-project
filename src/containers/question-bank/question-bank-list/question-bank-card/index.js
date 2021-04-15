@@ -47,8 +47,6 @@ const QuestionBankCard = ({
 
   const [questionName, setQuestionName] = useState(period.question_answer);
 
-  // console.log(period, 'xxxxx');
-  // console.log(state,'contextttttt')
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
     setShowPeriodIndex(index);
@@ -97,11 +95,6 @@ const QuestionBankCard = ({
       });
   };
 
-  // console.log(
-  //   period,
-  //   'PPPPP',
-
-  // );
   const questionType = (type) => {
     switch (type) {
       case 1:
@@ -260,7 +253,7 @@ const QuestionBankCard = ({
               component='p'
               color='secondary'
             >
-              Created By: {period?.created_by?.first_name}
+              {/* Created By: {period?.created_by?.first_name} */}
             </Typography>
           </Box>
           <Box>

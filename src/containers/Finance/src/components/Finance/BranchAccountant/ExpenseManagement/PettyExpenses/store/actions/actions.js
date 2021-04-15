@@ -27,7 +27,6 @@ export const fetchPettyCashAcc = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       dispatch({
         type: FETCH_PETTY_CASH_ACC,
         payload: {
@@ -131,7 +130,6 @@ export const savePettyCashExpense = (payload) => {
         'Authorization': 'Bearer ' + user
       }
     }).then(response => {
-      console.log(response)
       if (+response.status === 201) {
         alert.success('Data Successfully Saved')
       } else {
@@ -203,7 +201,6 @@ export const fetchLedgerReport = (payload) => {
         }
       })
       dispatch(actionTypes.dataLoaded())
-      console.log(response.data)
     }).catch(err => {
       console.log(err)
       alert.warning('Something Went Wrong')
@@ -242,7 +239,6 @@ export const downloadLedgerAttachment = (payload) => {
     //   })
     //   dispatch(actionTypes.dataLoaded())
     // })).catch(err => {
-    //   console.log(err)
     //   payload.alert.warning('Unable To Download Some Files')
     //   dispatch(actionTypes.dataLoaded())
     // })
@@ -252,7 +248,6 @@ export const downloadLedgerAttachment = (payload) => {
     //   },
     //   responseType: 'blob'
     // }).then(response => {
-    //   // console.log(urls.BASE)
     //   const url = window.URL.createObjectURL(new Blob([response.data]))
     //   const link = document.createElement('a')
     //   link.href = url
@@ -261,7 +256,6 @@ export const downloadLedgerAttachment = (payload) => {
     //   document.body.appendChild(link)
     //   link.click()
     // }).catch(err => {
-    //   console.log('Error in Second Axios', err)
     // })
   }
 }
@@ -325,7 +319,6 @@ export const cashWithdraw = (payload) => {
         'Authorization': 'Bearer ' + user
       }
     }).then(response => {
-      console.log(response)
       if (+response.status === 201) {
         // alert.success('Saved Successfully')
         dispatch({
@@ -458,7 +451,6 @@ export const fetchReceiptHeader = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log('voucher header res:', response)
       dispatch({
         type: VOUCHER_RECEIPT_HEADERS,
         payload: {

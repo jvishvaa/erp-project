@@ -30,7 +30,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId= item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -73,7 +72,6 @@ const PartialPayment = ({ classes, session, branches, fetchBranches, partialPaym
     setShowTable(false)
   }
   const gradeHandler = (e) => {
-    console.log(e.value)
     setGradeData(e)
     setShowTable(false)
   }
@@ -95,11 +93,9 @@ const PartialPayment = ({ classes, session, branches, fetchBranches, partialPaym
     setShowActionModal(false)
   }
   const lastDateHandler = (e) => {
-    console.log('qqqqq', e.target.value)
     setPartPayLastDate(e.target.value)
   }
   const saveLastDate = (e) => {
-    console.log('jehhd', partialPaymentId)
     if (!partPayLastDate) {
       alert.warning('Select the required Fields!')
     }

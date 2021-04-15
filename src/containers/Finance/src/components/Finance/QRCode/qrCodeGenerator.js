@@ -67,7 +67,6 @@ const QRCodeGenerator = ({ classes, session, history, alert, user }) => {
   }, [])
 
   const fileChangeHandler = (event) => {
-    console.log('my file: ', event.target.files[0])
     const file = event.target.files[0]
     setBulkFile(file)
   }

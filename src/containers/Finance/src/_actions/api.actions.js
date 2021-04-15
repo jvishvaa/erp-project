@@ -146,7 +146,6 @@ function listSections () {
 }
 
 function listAcademicSessions (moduleId) {
-  console.log('in api actions: ', moduleId)
   return dispatch => {
     dispatch(request())
     apiService.listAcademicSessions(moduleId)
@@ -171,7 +170,6 @@ function listGrades () {
       )
   }
   // eslint-disable-next-line
-  debugger
   function request () { return { type: apiConstants.GRADE_REQUEST } }
   function success (data) { return { type: apiConstants.GRADE_SUCCESS, data } }
   function failure (error) { return { type: apiConstants.GRADE_FAILURE, error } }
@@ -379,7 +377,6 @@ function globalSearch (searchParameter, pageId, branchId, isDelete) {
   }
 }
 function globalSearchStudent (searchParameter, pageId, isDelete) {
-  console.log('List of students searched...')
   return {
     type: apiConstants.GLOBAL_SEARCH_STUDENT,
     promise: apiService.globalSearchStudent(searchParameter, pageId, isDelete)
@@ -427,7 +424,6 @@ function listChapter (sub, grd) {
 }
 
 function listGradeCategoryId (gradecategory) {
-  console.log(gradecategory, 'action file')
   return dispatch => {
     dispatch(request())
     apiService.listGradeCategoryId(gradecategory)

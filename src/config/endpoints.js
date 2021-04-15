@@ -268,6 +268,15 @@ export default {
     BlogView: '/academic/view_blog/',
     WordCountConfig: '/academic/word_count_config/',
   },
+  ebook: {
+    ebook: '/academic/ebook/',
+    EbookUser:'/academic/ebook_user/',
+    AnnotateEbook:'/academic/ebook_user_status/',
+    academicYearList: '/erp_user/list-academic_year/',
+    // academicYearList: '/erp_user/list-academic_year/',
+    gradeSubjectMappingList: '/lesson_plan/list-grade-subject-mapping/',
+    gradeList: '/lesson_plan/list-grade/',
+  },
   teacherViewBatches: {
     courseListApi: '/aol/courses/',
     batchSizeList: 'aol/aol-course-batch/',

@@ -165,7 +165,6 @@ class ViewDiposits extends Component {
       return
     }
 
-    console.log("the props:: ", this.props.pettyCashDeposit)
 
     const columns = [
       {
@@ -237,7 +236,6 @@ class ViewDiposits extends Component {
 
   // createData = () => {
   //   let dataToShow = []
-  //   console.log('Petty Cash Deposit', this.props.pettyCashDeposit)
   //   dataToShow = this.props.pettyCashDeposit.map((txn, index) => {
   //     return {
   //       sNo: index + 1,

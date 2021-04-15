@@ -17,7 +17,6 @@ export const fetchStudentShuffle = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('app res: ', response)
         if (response.status === 200) {
           dispatch({
             type: FETCH_STUDENT_SHUFFLE,

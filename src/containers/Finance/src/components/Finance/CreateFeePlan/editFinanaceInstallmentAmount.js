@@ -24,8 +24,6 @@ const EditFeeInstallmentAmount = ({
   const [installmentAmount, setInstallmentAmount] = useState(null)
   useEffect(() => {
     let currentInstallment = installmentList.filter(val => val.id === id)
-    console.log(id, '-------------------id----------------')
-    console.log(currentInstallment)
     currentInstallment.forEach((val) => {
       setInstallmentAmount(val.installment_amount)
       setInstallmentName(val.installment_name)
@@ -44,7 +42,6 @@ const EditFeeInstallmentAmount = ({
     close()
   }
   const installmentAmountHandler = e => {
-    console.log('Value++', e.target.value)
     setInstallmentAmount(e.target.value)
   }
 

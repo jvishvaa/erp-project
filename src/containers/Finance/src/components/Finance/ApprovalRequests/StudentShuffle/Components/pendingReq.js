@@ -140,7 +140,6 @@ const PendingReq = ({
   const getFeeRows = () => {
     let tableData = null
     if (stdFeeDetails.Fees && stdFeeDetails.Fees.length > 0) {
-      console.log('Status Modal', stdFeeDetails)
       tableData = stdFeeDetails.Fees.map((val, index) => (
         <TableRow key={val.id}>
           <TableCell>{index + 1}</TableCell>
@@ -162,7 +161,6 @@ const PendingReq = ({
   const getOthrFeeRows = () => {
     let othrRows = null
     if (stdFeeDetails.OtherFees && stdFeeDetails.OtherFees.length > 0) {
-      console.log('Status Modal', stdFeeDetails)
       othrRows = stdFeeDetails.OtherFees.map((val, index) => (
         <TableRow key={val.id}>
           <TableCell>{index + 1}</TableCell>
@@ -211,7 +209,6 @@ const PendingReq = ({
 
   const getFeeDetails = () => {
     let data = null
-    console.log(stdFeeDetails)
     if (stdFeeDetails && stdFeeDetails.Fees) {
       data = (
         <div style={{ border: '1px solid black' }}>

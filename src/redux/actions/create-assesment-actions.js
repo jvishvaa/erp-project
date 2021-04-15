@@ -74,7 +74,6 @@ export const fetchQuestionPaperDetails = (id) => async (dispatch) => {
         sec[sectionName].forEach((qId) => {
           //iterating question ids and finding corresponding questions
           const questionFound = questions.find((q) => q.id === qId);
-          console.log('questionsFound', questionFound);
           if (questionFound) {
             sectionObject.questions.push(questionFound);
           }
@@ -89,7 +88,6 @@ export const fetchQuestionPaperDetails = (id) => async (dispatch) => {
   } catch (e) {
     dispatch({ type: createAssesmentActions.FETCH_QUESTION_PAPER_DETAILS_FAILURE });
 
-    console.log('error in fetching q paper details');
   }
   // {
   // id: 1;

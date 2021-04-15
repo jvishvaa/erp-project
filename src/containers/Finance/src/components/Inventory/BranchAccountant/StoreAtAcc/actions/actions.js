@@ -101,7 +101,6 @@ export const subjectChoosen = (payload) => {
             if (res.data.length === 0) {
               payload.alert.warning('Kit Not Found!')
             }
-            console.log(res)
             dispatch({
               type: LIST_STORE,
               payload: {
@@ -203,7 +202,6 @@ export const storePayment = (payload) => {
         }
       })
       .then(res => {
-        console.log('--------RES------', res)
         if (+res.status === 201) {
           payload.alert.success('Payment Successful')
           dispatch({

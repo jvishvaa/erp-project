@@ -41,7 +41,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -69,7 +68,6 @@ class AddressDetailsFormAcc extends Component {
   }
 
   componentDidUpdate () {
-    console.log('DID UPDATED', this.state.addressDetails)
     this.props.getAddressDetail(this.state.addressDetails)
   }
 
@@ -83,17 +81,13 @@ class AddressDetailsFormAcc extends Component {
 
   handleCheckbox= (event, name) => {
     const newaddressDetails = { ...this.state.addressDetails }
-    console.log(event, name)
-    console.log(event.target.value)
     if (event.target.value !== 'true') {
-      console.log('printed')
       newaddressDetails['perAdd'] = newaddressDetails['tempAdd']
       newaddressDetails['perzip'] = newaddressDetails['tempzip']
       this.setState({
         addressDetails: newaddressDetails
       })
     } else if (event.target.value !== 'false') {
-      console.log('else printed')
       newaddressDetails['perAdd'] = ''
       newaddressDetails['perzip'] = ''
       this.setState({

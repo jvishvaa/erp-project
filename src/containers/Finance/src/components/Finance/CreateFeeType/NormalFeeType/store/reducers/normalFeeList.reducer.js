@@ -14,8 +14,6 @@ const normalFeeListReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.EDIT_NORMAL_FEE_LIST: {
-      // console.log("====ACTION dTAA=")
-      // console.log(action.payload.data)
       const feeList = [...state.normalFeeList]
       const index = feeList.findIndex(ele => {
         return ele.id === action.payload.data.id

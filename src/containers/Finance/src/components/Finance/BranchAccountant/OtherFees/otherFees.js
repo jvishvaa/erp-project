@@ -73,7 +73,6 @@ class OtherFeesAccountant extends Component {
     partialAmount: ''
   }
   componentDidMount () {
-    console.log('props--------------------', this.props)
     const { erp, session, alert } = this.props
     if (otherFeeState) {
       this.setState(otherFeeState)
@@ -123,7 +122,6 @@ class OtherFeesAccountant extends Component {
       erp: this.props.erp,
       other_fee: this.state.currentOtherFee.value
     }
-    console.log(data)
     this.props.assignOtherFees(data, this.props.alert, this.props.user)
     this.hideModalHandler()
     this.setState({
@@ -137,7 +135,6 @@ class OtherFeesAccountant extends Component {
     if (!this.state.currentSession || !this.props.erp) {
       this.props.alert.warning('Please Fill All The Fields')
     }
-    console.log(this.props.erp)
     this.props.listOtherFees(this.state.currentSession, this.props.erp, this.props.alert, this.props.user)
     // this.props.fetchOtherFees(this.state.currentSession, this.props.alert, this.props.user)
     this.setState({ showData: true, showAdd: true, amountToBePaid: 0, isSelectedPayments: [] })
@@ -219,11 +216,6 @@ class OtherFeesAccountant extends Component {
   }
 
   handleSubmitOtherFees = () => {
-    console.log('-clicked---------')
-    console.log('FeeAccount', this.state.currentFeeAccount)
-    console.log('Feetype', this.state.feeTypeName)
-    console.log('subFeeType', this.state.subFeeTypeName)
-    console.log('amount', this.state.amount)
     let data = {
       erp: this.props.erp,
       fee_account: this.state.currentFeeAccount.value,
@@ -322,7 +314,6 @@ class OtherFeesAccountant extends Component {
         const response = await this.getPdfData(this.props.trnsId)
         feeReceipts(response.data)
       } catch (e) {
-        console.log(e)
         this.props.alert.warning('Something Went Wrong')
       }
     }
@@ -342,9 +333,7 @@ class OtherFeesAccountant extends Component {
 
   checkOtherFeesHandler = (e) => {
     // adding partial amount
-    console.log('Called from new func')
     const partialPayAmt = document.querySelectorAll('[name=partialAmount]')
-    console.log('mpa Partial amount: ', partialPayAmt)
     let bal = []
     let payed = []
     let checkedRowId = []
@@ -355,7 +344,6 @@ class OtherFeesAccountant extends Component {
     checkedRowId.map((row, i) => {
       payInstall.push(this.props.otherFeesList.filter(list => (+list.id === +row)))
     })
-    console.log('mpa payInstall 1st----', payInstall)
     // to calculate the paying amount and balance after that.
     payInstall.map((row, i) => {
       row.map((r) => {
@@ -374,15 +362,12 @@ class OtherFeesAccountant extends Component {
         }
       })
     })
-    console.log(payed)
-    console.log(bal)
 
     const newPayInstall = payInstall.map((ele, i) => {
       ele.partial_payment = payed[i]
       ele.balance = bal[i]
       return ele
     })
-    console.log('mpa Pay New Insyall-------', newPayInstall)
     this.setState({
       final: {
         finalAmt: this.state.selectedTotal,
@@ -391,7 +376,6 @@ class OtherFeesAccountant extends Component {
         // balance: bal
       }
     }, () => {
-      console.log('final state', this.state.final)
     })
 
     if (this.state.amountToBePaid === 0 || this.state.amountToBePaid < 0) {
@@ -414,7 +398,6 @@ class OtherFeesAccountant extends Component {
         this.props.checkFee(this.state.agreeOther, this.state.amountToBePaid, checkedRowId, this.state.final)
       })
     } else if (!e.target.checked) {
-      console.log('false')
       this.setState({
         agreeOther: false
       }, () => {
@@ -456,7 +439,6 @@ class OtherFeesAccountant extends Component {
         this.props.clearProps()
         this.otherFeeHandler()
         this.setState({ amountToBePaid: 0, isSelectedPayments: [] }, () => {
-          console.log('--state---------', this.state)
         })
       })
     }
@@ -502,9 +484,7 @@ class OtherFeesAccountant extends Component {
 
   makeFinalPayment = () => {
     let fee = []
-    console.log(this.state.feesId)
     let currentData = this.props.otherFeesList.filter(val => val.id === this.state.feesId)
-    console.log('currentData------------', currentData)
     currentData.map(val => {
       return (
         fee.push({
@@ -516,7 +496,6 @@ class OtherFeesAccountant extends Component {
         })
       )
     })
-    console.log('fee------------', fee)
     if (+this.state.payment.mode === 1) {
       let cashData = {
         student: this.props.erp,
@@ -590,7 +569,6 @@ class OtherFeesAccountant extends Component {
   }
 
   sendingToServer = (data) => {
-    console.log('finalDara---------------------------', data)
     this.props.payFee(data, this.props.alert, this.props.user)
   }
 

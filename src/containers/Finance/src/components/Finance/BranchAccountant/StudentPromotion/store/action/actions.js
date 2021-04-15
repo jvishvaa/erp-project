@@ -17,7 +17,6 @@ export const studentPromotionList = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('app res: ', response)
         if (response.status === 200) {
           dispatch({
             type: STUDENT_PROMOTION_LIST,
@@ -47,7 +46,6 @@ export const sendStudentPromotionList = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('app res: ', response)
         if (response.status === 200) {
           dispatch({
             type: STUDENT_PROMOTED_LIST,

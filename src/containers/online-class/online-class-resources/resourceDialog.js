@@ -90,7 +90,6 @@ const Resource = (props) => {
         e.preventDefault();
         e.preventDefault();
         const download = (path) => {
-            //console.log(path);
              //window.location.href=path;
             window.open(path, '_blank');
         }

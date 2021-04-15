@@ -136,7 +136,6 @@ const BranchTable = () => {
     setAddFlag(false);
     setEditFlag(true);
     setBranchData(branch);
-    console.log({ branch });
   };
 
   const handleGoBack = () => {

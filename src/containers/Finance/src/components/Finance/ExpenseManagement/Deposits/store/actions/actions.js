@@ -82,7 +82,6 @@ export const fetchDepositTransaction = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       dispatch({
         type: FETCH_DEPOSIT_TRANSACTION,
         payload: {

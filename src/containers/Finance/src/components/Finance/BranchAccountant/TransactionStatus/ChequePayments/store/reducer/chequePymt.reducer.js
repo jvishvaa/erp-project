@@ -25,16 +25,13 @@ const accountantChequePaymentReducer = (state = initialState, action) => {
     case actionTypes.SAVE_CHEQUE_BOUNCE: {
       const chequeTrans = [...state.allChequeTransactions]
       // const newCheque = [...chequeTrans.results]
-      console.log('reducer: ', chequeTrans)
       const index = chequeTrans.findIndex(ele => {
         return +ele.transaction_id === +action.payload.data.transaction_id
       })
-      console.log('index: ', index)
       const changeObj = { ...chequeTrans[index] }
       changeObj.is_bounced = action.payload.data.is_bounced ? action.payload.data.is_bounced : null
       chequeTrans[index] = { ...changeObj }
       // chequeTrans = [...chequeTrans]
-      console.log('cheque: ', chequeTrans[index])
       return {
         ...state,
         allChequeTransactions: chequeTrans

@@ -165,9 +165,7 @@ const LessonPlan = () => {
                       style={isMobile ? { marginLeft: '-8px' } : null}
                       sm={viewMore && viewMoreData?.length > 0 ? 6 : 4}
                     >
-                      {
-                        console.log(completedStatus,'completedStatus')
-                      }
+                      
                       <PeriodCard
                         index={i}
                         filterDataDown={filterDataDown}

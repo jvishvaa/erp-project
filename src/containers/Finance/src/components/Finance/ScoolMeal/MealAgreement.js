@@ -87,7 +87,6 @@ const MealAgreement = ({ classes, session, history, dataLoading, fetchBranches, 
   }
 
   const getTermsHandler = () => {
-    console.log('fetch all terms')
   }
 
   return (

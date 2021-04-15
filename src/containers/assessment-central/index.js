@@ -241,7 +241,6 @@ const Assesment = () => {
     try {
       setFetchingTests(true);
       const { results, totalPages } = await fetchAssesmentTests(true, activeTab);
-      console.log('total pages');
       setShowFilteredList(false);
       setAssesmentTestsTotalPage(totalPages);
       setAssesmentTests(results);
@@ -354,7 +353,6 @@ const Assesment = () => {
   }
 
   const handleFilterAssessment = () => {
-    console.log('filter xx', formik);
     if (!formik?.values?.assesment_type) {
       setAlert('error', 'Select Assessment Type');
       return;
@@ -815,7 +813,6 @@ const Assesment = () => {
                     indicatorColor='primary'
                     textColor='primary'
                     onChange={(event, value) => {
-                      console.log(value);
                       setActiveTab(value);
                     }}
                     aria-label='disabled tabs example'

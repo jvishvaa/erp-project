@@ -298,7 +298,6 @@ const Filters = (props) => {
 
   const [expanded, setExpanded] = React.useState('panel1');
   const handleChange = (panel) => (event, newExpanded) => {
-    //console.log(newExpanded);
     setExpanded(panel);
   };
 
@@ -354,8 +353,7 @@ const Filters = (props) => {
   };
 
   const handleFilters = () => {
-    console.log(props.url);
-    console.log(branchId + ' ==== ' + gradeId + ' ====== ' + sectionId);
+
     let url = props.url;
     if (branchId !== 0) {
       url = `${url}?branch_id=${branchId}`;

@@ -25,7 +25,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -67,7 +66,6 @@ class FeeCollection extends Component {
     this.setState({ sessionData: e }, () => {
       this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
     })
-    console.log(e)
     // this.props.fetchReceiptRange(e.value, this.props.branchData && this.props.branchData.id, this.props.alert, this.props.user)
   }
 

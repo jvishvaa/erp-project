@@ -43,7 +43,6 @@ class PdfGenerator extends Component {
       this.renderPage(pageNumber, pdf)
       this.setState({ pdfDoc: pdf })
     }, function (reason) {
-      console.log('error while loading')
       // PDF loading error
       console.error(reason)
     })
@@ -59,13 +58,11 @@ class PdfGenerator extends Component {
      this.setState({ fetchingPdf: true })
      this.props.handleLoading(true)
      let{ pdfDoc, scale } = this.state
-     console.log(pdf, pdfDoc)
 
      let pdfDocObj = pdf || pdfDoc
      this.props.getTotalPages(pdfDocObj.numPages)
 
      pdfDocObj.getPage(pgNum).then((page) => {
-       console.log('rendering...........')
        var viewport = page.getViewport({ scale: scale })
        // Prepare canvas using PDF page dimensions
        var canvas = this.canvasElement.current
@@ -89,7 +86,6 @@ class PdfGenerator extends Component {
        }
        var renderTask = page.render(renderContext)
        renderTask.promise.then(() => {
-         console.log('Page rendered')
          this.setState({ fetchingPdf: false })
          this.props.handleLoading(false)
          this.setState({ open: true })

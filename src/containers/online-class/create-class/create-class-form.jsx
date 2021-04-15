@@ -360,7 +360,6 @@ const CreateClassForm = (props) => {
 
   const toggleDrawer = () => {
     const { gradeIds, sectionIds, courseId, subject } = onlineClass;
-    console.log({ onlineClass });
     if (
       selectedClassType?.id === 0 &&
       (!gradeIds?.length || !sectionIds?.length || !subject?.length)

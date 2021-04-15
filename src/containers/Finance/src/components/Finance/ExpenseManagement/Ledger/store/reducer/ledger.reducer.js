@@ -51,7 +51,6 @@ const ledgerReducer = (state = initialState, action) => {
         remarks: action.payload.data.remarks
       }
       const subHeader = [ledgerEntry, ...newLedgerList[index].sub_header]
-      console.log('subHead: ', subHeader)
       const newSubHeader = subHeader.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i)
       newLedgerList[index].sub_header = newSubHeader
       return {

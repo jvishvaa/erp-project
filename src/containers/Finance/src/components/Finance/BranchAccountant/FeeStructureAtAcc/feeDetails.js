@@ -56,7 +56,6 @@ class FeeDetailsAccountant extends Component {
     if (this.props.session) {
       this.props.fetchBackDatConcession(this.props.session, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
     }
-    console.log('fee deetees', this.props.refund)
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -103,7 +102,6 @@ class FeeDetailsAccountant extends Component {
       fee_amt: amount
     }, () => {
       const currentData = this.props.feeTypwWise.filter(val => val.id === this.state.unassignId)[0]
-      console.log(currentData)
       this.setState({
         currentFeeData: currentData
       })
@@ -205,8 +203,6 @@ class FeeDetailsAccountant extends Component {
   }
 
   changeremarksHandler = (e) => {
-    console.log(e)
-    console.log(e.target.value)
     this.setState({
       remarksData: e.target.value
     })
@@ -219,7 +215,6 @@ class FeeDetailsAccountant extends Component {
   }
 
   handleAlignment = (e, newAlignment) => {
-    console.log(newAlignment)
     this.setState({
       alignment: newAlignment
     })
@@ -258,7 +253,6 @@ class FeeDetailsAccountant extends Component {
   }
 
   unassignSubmitHandler = () => {
-    console.log(this.state.remarksData)
     if (this.state.remarksData) {
       const data = {
         academic_year: this.props.session,
@@ -290,7 +284,6 @@ class FeeDetailsAccountant extends Component {
         student: this.props.erp,
         branch_id: this.props.branchId
       }
-      // console.log(data)
       this.props.updateFineAmt(data, this.props.alert, this.props.user)
       this.hideFineAmtModalHandler()
     } else {
@@ -588,7 +581,6 @@ class FeeDetailsAccountant extends Component {
         </Modal>
       )
     }
-    // console.log('props fee type', this.props.feeTypwWise)
 
     if (this.props.feeStructure.length > 0 && this.state.selectFeeWise.value === 1) {
       feeDetailsTable = (

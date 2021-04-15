@@ -21,9 +21,7 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataFor
     const [data,setData]= useContext(Context)
     
         // let q=data.questions.map(p=>p.topic)
-        console.log(data.questions,'====')
     // let mappingData = queAnsDetails[1].map(p=>p.question)
-    // console.log(viewMoreData,'++++++',queAnsDetails[1],mappingData)
     return (
         <Paper className="rootViewMore">
             <div className="viewMoreHeader">

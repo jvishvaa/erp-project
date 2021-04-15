@@ -9,7 +9,6 @@ export const GET_FEE_ACCOUNT_PER_BRANCH = 'GET_FEE_ACCOUNT_PER_BRANCH'
 // action creators
 export const fetchFeeTypesPerType = (payload) => {
   return (dispatch) => {
-    console.log('---------from actions------', payload)
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.FeeTypesPerType + '?academic_year=' + payload.session + '&branch=' + payload.branch + '&type=' + payload.feeId, {
@@ -34,7 +33,6 @@ export const fetchFeeTypesPerType = (payload) => {
 
 export const fetchFeeAccountsReceiptBook = (payload) => {
   return (dispatch) => {
-    console.log('---------from actions------', payload)
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.GetFeeAccountsPerBranch + '?academic_year=' + payload.session + '&branch=' + payload.branch + '&types=' + payload.types + '&fee_types=' + payload.feetypes, {

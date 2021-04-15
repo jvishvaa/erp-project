@@ -20,14 +20,12 @@ function UploadPaymentFile (props) {
   const currBrnch = JSON.parse(localStorage.getItem('user_profile'))
   useEffect(() => {
   }, [])
-  console.log(props.location.state.dataObj, props.location.state.total_paid_amount, props.location.state.fee_account_id)
 
   const handleTransactionIdChange = (e) => {
     setTransactionId(e.target.value)
   }
   const today = new Date()
   const handleTransactionDateChange = (e) => {
-    console.log(today.getTime() - new Date(e.target.value).getTime())
     if ((today.getTime() - new Date(e.target.value).getTime()) > 0) {
       setTransactionDate(e.target.value)
     } else {
@@ -41,7 +39,6 @@ function UploadPaymentFile (props) {
   }
 
   const handleClickimage = () => {
-    console.log('hiii nitu')
   }
 
   const clearState = () => {
@@ -51,7 +48,6 @@ function UploadPaymentFile (props) {
     setIsUpload(false)
   }
   const handleClick = () => {
-    console.log('hiii submit')
     const formData = new FormData()
     if (transactionDate !== '') {
       formData.append('payment_screenshot', uploadImage)
@@ -87,7 +83,6 @@ function UploadPaymentFile (props) {
   }
 
   const GoBackHandler = () => {
-    console.log(props.history)
     props.history.goBack('/')
   }
 

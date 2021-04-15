@@ -68,7 +68,6 @@ export const bulkAccountantLogin = (payload) => {
         'Authorization': 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log('Login Accountant : ', response.data)
       if (response.status === 200) {
         payload.alert.success('Success')
       }
@@ -108,7 +107,6 @@ export const branchListing = (payload) => {
 }
 export const bulkReportUpload = (payload) => {
   let url = null
-  // console.log('report......', payload.reportId)
   if (payload.reportId === 1) {
     url = `${urls.BulkReportUpload}concession/`
   } else if (payload.reportId === 2) {
@@ -131,14 +129,11 @@ export const bulkReportUpload = (payload) => {
         // 'mimeType': 'multipart/form-data'
       }
     }).then(res => {
-      console.log('responseeeee', res)
       if (+res.status === 201) {
         payload.alert.success('Successfully Done')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      console.log('error response...', JSON.stringify(err))
-      // console.log('reponse+++', err.response.data.err_msg)
       if (err.response && err.response.status === 400) {
         payload.alert.warning(err.response.data.err_msg)
       } else {
@@ -211,14 +206,11 @@ export const bulkFeeUpload = (payload) => {
         // 'mimeType': 'multipart/form-data'
       }
     }).then(res => {
-      console.log('responseeeee', res)
       if (+res.status === 201) {
         payload.alert.success('Successfully Done')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      console.log('error response...', JSON.stringify(err))
-      // console.log('reponse+++', err.response.data.err_msg)
       if (err.response && err.response.status === 400) {
         payload.alert.warning(err.response.data.err_msg)
       } else {
