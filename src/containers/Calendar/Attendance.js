@@ -28,11 +28,15 @@ import {
   CardMedia,
   Typography,
   withStyles,
+  SvgIcon,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import MomentUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MediaQuery from 'react-responsive';
-
+import unfiltered from '../../assets/images/unfiltered.svg';
+import selectfilter from '../../assets/images/selectfilter.svg';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
@@ -70,6 +74,8 @@ const Attendance = () => {
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState()
   const history = useHistory()
+  const themeContext = useTheme()
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   useEffect(() => {
     console.log(history)
@@ -219,6 +225,7 @@ const Attendance = () => {
     setSelectedGrade([])
     setSelectedSection([])
     setDateValue(moment(date).format('YYYY-MM-DD'))
+    setData([])
   }
 
   const StyledClearButton = withStyles({
@@ -685,6 +692,31 @@ const Attendance = () => {
       <br />
 
       {/* </Grid> */}
+      {
+          !data &&
+          (<div  style={{width:'10%',marginLeft:'40%',}}>
+            <SvgIcon
+              component={() => (
+                <img
+                  src={unfiltered}
+                />
+              )}
+            />
+            <SvgIcon
+              component={() => (
+                <img
+                  style={
+                    isMobile
+                      ? { height: '20px', width: '250px' }
+                      : { height: '50px', width: '400px'}
+                  }
+                  src={selectfilter}
+                />
+              )}
+            />
+          </div>)
+
+        }
       <Grid container justify='center'>
         {' '}
         {

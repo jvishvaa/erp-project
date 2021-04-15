@@ -48,9 +48,16 @@ import {
   CardMedia,
   Tooltip,
   Typography,
+  SvgIcon,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import { result } from 'lodash';
 import e from 'cors';
+import unfiltered from '../../assets/images/unfiltered.svg';
+import selectfilter from '../../assets/images/selectfilter.svg';
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -191,6 +198,8 @@ const Cal1 = () => {
   const [dummyData, setDummyData] = useState([]);
   const { id } = useParams();
   const history = useHistory();
+  const themeContext = useTheme()
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   const [filterData, setFilterData] = useState({
     selectedEventType: '',
@@ -226,6 +235,7 @@ const Cal1 = () => {
     setEventName('');
     setCustColor('red');
     setDummyData([]);
+    setTotalGenre(null)
   };
   const handleEventName = (e, idx) => {
     // console.log("checknow",e,idx)
@@ -649,6 +659,31 @@ const Cal1 = () => {
 
         </div>
       </form>
+      {
+          !totalGenre &&
+          (<div  style={{width:'10%',marginLeft:'40%',}}>
+            <SvgIcon
+              component={() => (
+                <img
+                  src={unfiltered}
+                />
+              )}
+            />
+            <SvgIcon
+              component={() => (
+                <img
+                  style={
+                    isMobile
+                      ? { height: '20px', width: '250px' }
+                      : { height: '50px', width: '400px'}
+                  }
+                  src={selectfilter}
+                />
+              )}
+            />
+          </div>)
+
+        }
       {loading && <Loader />}
     </Layout>
   );

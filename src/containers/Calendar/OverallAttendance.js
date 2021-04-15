@@ -11,6 +11,9 @@ import {
   CardMedia,
   Typography,
   withStyles,
+  SvgIcon,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -23,7 +26,6 @@ import line from '../../assets/images/line.svg';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import ClearIcon from '../../components/icon/ClearIcon';
-import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MediaQuery from 'react-responsive';
 import moment from 'moment';
@@ -35,7 +37,9 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { useHistory } from 'react-router';
 import { useForm, Controller } from "react-hook-form";
 import { fi } from 'date-fns/locale';
-
+import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
+import unfiltered from '../../assets/images/unfiltered.svg';
+import selectfilter from '../../assets/images/selectfilter.svg';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
@@ -74,6 +78,8 @@ const Attend = () => {
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
   const [result, setResult] = useState()
+  const themeContext = useTheme()
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   useEffect(() => {
     console.log(history)
@@ -689,7 +695,31 @@ const Attend = () => {
           })}
       </Grid>
       <br />
+      {
+          !data &&
+          (<div  style={{width:'10%',marginLeft:'40%',}}>
+            <SvgIcon
+              component={() => (
+                <img
+                  src={unfiltered}
+                />
+              )}
+            />
+            <SvgIcon
+              component={() => (
+                <img
+                  style={
+                    isMobile
+                      ? { height: '20px', width: '250px' }
+                      : { height: '50px', width: '400px'}
+                  }
+                  src={selectfilter}
+                />
+              )}
+            />
+          </div>)
 
+        }
       <Grid container justify='center'>
         {' '}
         {
