@@ -11,6 +11,7 @@ import WebAsset from '@material-ui/icons/WebAsset';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import PeopleIcon from '@material-ui/icons/People';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import BookIcon from '@material-ui/icons/Book';
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import WifiTetheringIcon from '@material-ui/icons/WifiTethering';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
