@@ -236,7 +236,6 @@ const Category = (props) => {
     axiosInstance
       .get(`${endpoints.discussionForum.postList}?page=1&my_activity=1`)
       .then((res) => {
-        console.log(res.data.data.results);
         setPostList(res.data.data.results);
       })
       .catch((error) => console.log(error));

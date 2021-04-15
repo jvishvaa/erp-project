@@ -43,7 +43,6 @@ const PendingRequest = ({
       session
     } = location.state
     if (branch && session) {
-      console.log('Pending Called', branch, session)
       fetchPendingList(session, branch, alert, user)
     } else {
       history.replace({

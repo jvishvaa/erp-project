@@ -134,9 +134,7 @@ export const addWalletAmount = (payload) => {
 }
 
 export const fetchFeeStructureListErp = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.FeeStructure + '?erp_code=' + payload.erp + '&academic_year=' + payload.session, {
@@ -159,9 +157,7 @@ export const fetchFeeStructureListErp = (payload) => {
   }
 }
 export const fetchWalletAmtNotUsed = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.WalletAmtNotUsed + '?erp_code=' + payload.erp + '&academic_year=' + payload.session, {

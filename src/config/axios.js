@@ -25,7 +25,6 @@ axiosInstance.interceptors.response.use(
   },
   async function (error) {
     if (error.response?.status === 401) {
-      console.log('user logged out');
       await localStorage.removeItem('userDetails');
       // Show toast message login to continue
     } else {

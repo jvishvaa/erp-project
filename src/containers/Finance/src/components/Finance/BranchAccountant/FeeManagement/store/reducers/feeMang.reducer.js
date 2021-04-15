@@ -23,14 +23,12 @@ const feeManagementReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.EDIT_STUDENT_FEE : {
-      console.log('edit fee plan', action.payload.data)
       const editFeePlanStu = state.currentFeePlan
       editFeePlanStu[0].fee_plan_name = {
         'fee_plan_name': action.payload.data[0].fee_plan_name,
         'status': action.payload.data[0].Status,
         'fee_plan': action.payload.data[0].fee_plan
       }
-      console.log('editFeePlanStu', editFeePlanStu)
       return {
         ...state,
         currentFeePlan: editFeePlanStu

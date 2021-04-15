@@ -129,7 +129,6 @@ export default function CategoryScrollbarComponent(props) {
     axiosInstance
       .get(endpoints.discussionForum.categoryList)
       .then((res) => {
-        console.log(res.data.result);
         setCategoryList(res.data.result);
       })
       .catch((error) => console.log(error));

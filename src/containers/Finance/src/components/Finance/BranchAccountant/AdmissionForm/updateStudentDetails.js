@@ -45,7 +45,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -91,7 +90,6 @@ class UpdateStudentDetailsFormAcc extends Component {
   //   console.log('received props', prevProps)
   // }
   componentWillReceiveProps (nextProps) {
-    console.log('===received props', nextProps.admissionrecordbyerp)
     if (nextProps.admissionrecordbyerp) {
       const newstudentDetails = { ...this.state.studentDetails }
       newstudentDetails['firstName'] = nextProps.admissionrecordbyerp.name ? nextProps.admissionrecordbyerp.name : null
@@ -106,7 +104,6 @@ class UpdateStudentDetailsFormAcc extends Component {
       newstudentDetails['transport'] = nextProps.admissionrecordbyerp.using_transport ? nextProps.admissionrecordbyerp.using_transport.toString() : null
       newstudentDetails['enrollment_code'] = nextProps.admissionrecordbyerp.erp ? nextProps.admissionrecordbyerp.erp : null
       newstudentDetails['category'] = nextProps.admissionrecordbyerp.stay_category ? nextProps.admissionrecordbyerp.stay_category : null
-      console.log(nextProps.admissionrecordbyerp.stay_category)
       this.setState({
         studentDetails: newstudentDetails })
     } else {
@@ -124,14 +121,10 @@ class UpdateStudentDetailsFormAcc extends Component {
   }
 
   componentDidUpdate () {
-    console.log('DID UPDATED', this.state.studentDetails)
     this.props.getStudentDetail(this.state.studentDetails)
-    console.log(this.props.studentPrefillDetails)
-    console.log(this.props.classGroupList)
   }
 
   componentDidMount () {
-    console.log('alertttt', this.props.alert)
     this.props.fetchGradeList(this.props.alert, this.props.user, moduleId)
     this.props.fetchClassGroup(this.props.alert, this.props.user)
   }
@@ -159,9 +152,7 @@ class UpdateStudentDetailsFormAcc extends Component {
   }
 
   studentDetailsDropdonHandler= (event, name) => {
-    console.log('student detail handler', event, name)
     const newstudentDetails = { ...this.state.studentDetails }
-    console.log(event.value)
     switch (name) {
       case 'academicyear': {
         newstudentDetails['academicyear'] = event.value
@@ -195,7 +186,6 @@ class UpdateStudentDetailsFormAcc extends Component {
       studentDetails: newstudentDetails
     }, () => {
       if (name === 'class') {
-        console.log('This is api call', this.state.studentDetails.academicyear, this.props.alert, this.props.user, event.value)
         this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, event.value, moduleId)
       }
     })
@@ -250,7 +240,6 @@ class UpdateStudentDetailsFormAcc extends Component {
   }
 
   render () {
-    console.log('from nonRTE: ', this.props.studentDetailsForAdmission)
     const { classes } = this.props
     return (
       <React.Fragment>

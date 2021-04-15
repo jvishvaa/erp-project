@@ -338,7 +338,6 @@ class EditBlog extends Component {
       studentName,
       creationDate,wordCountLimit
     } = this.state;
-    console.log(image,"2222@@@@@@@@")
     return Preview ? (
       <PreviewBlog
         content={textEditorContent}

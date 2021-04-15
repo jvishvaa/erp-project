@@ -19,7 +19,6 @@ class ChangeStudentStatus extends Component {
     this.setState({
       studentErp: e.target.value
     }, () => {
-      console.log('entered erp: ', this.state.studentErp)
     })
   }
 
@@ -34,7 +33,6 @@ class ChangeStudentStatus extends Component {
   }
 
   handleSwitch = (e) => {
-    // console.log('switch state', e.target.checked)
     this.setState({
       mode: e.target.checked
     }, () => {
@@ -48,7 +46,6 @@ class ChangeStudentStatus extends Component {
   }
 
   render () {
-    // console.log('student status', this.props.studentStatus)
     let switcher = null
     let statusIndicator = null
     if (this.props.studentStatus) {

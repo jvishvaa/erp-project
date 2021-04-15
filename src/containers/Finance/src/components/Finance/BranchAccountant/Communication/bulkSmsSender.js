@@ -97,7 +97,6 @@ const BulkSms = ({ classes,
   }
 
   const fileChangeHandler = (event) => {
-    console.log('my file: ', event.target.files[0])
     const file = event.target.files[0]
     setBulkFile(file)
   }
@@ -129,10 +128,8 @@ const BulkSms = ({ classes,
           branch: branch
         }
         // dataLoaded()
-        console.log('body for bulk', body)
         sendBulkSms(body, alert, user)
       }).catch(err => {
-        console.log(err)
         alert.warning(err.message || 'Unable to Read Excel')
       // dataLoaded()
       })

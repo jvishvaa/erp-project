@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   IconButton,
   Divider,
@@ -10,6 +10,7 @@ import {
   FormControlLabel,
   Switch,
   Checkbox,
+  Grid,
   Popover,
   MenuItem,
   useTheme,
@@ -17,13 +18,13 @@ import {
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useHistory } from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react';
-
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { AutoSizer } from '@material-ui/data-grid';
 import minimizeIcon from '../../../../assets/images/minimize.svg';
 import maximizeIcon from '../../../../assets/images/maximize.svg';
 import productIcon from '../../../../assets/images/product-icons.svg';
 import infoicon from '../../../../assets/images/infoicon.svg';
-
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import './styles.scss';
 import { fetchQuestionPaperDetails } from '../../../../redux/actions';
 import QuestionDetailCard from '../question-detail-card.js';
@@ -65,11 +66,47 @@ const AssesmentTest = ({
   testDate,
   testInstructions,
   totalMarks,
+  testMarks,
 }) => {
   const [minimize, setMinimize] = useState(false);
   const [openEditor, setOpenEditor] = useState(false);
+  const { setAlert } = useContext(AlertNotificationContext);
+  const themeContext = useTheme();
   const history = useHistory();
-  console.log(questionPaper, '=====');
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+
+  const handleChange = (event) => {
+    let value = 0;
+    let fieldName = event.target.name;
+    if (fieldName === 'duration') {
+      value = Math.round(+event.target.value);
+      if (value <= 1440) {
+        onTestDurationChange(+value);
+      } else {
+        setAlert('error', "Duration can't be more than 1440 minutes / 24 hours / 1 day!");
+      }
+    }
+    if (fieldName === 'testid') {
+      value = event.target.value;
+      if (/^[a-zA-Z0-9]{0,10}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
+        onTestIdChange(value);
+      } else {
+        setAlert(
+          'error',
+          'Test ID can contain alphanumeric & must not exceed length of 10!'
+        );
+      }
+    }
+    if (fieldName === 'testmarks') {
+      value = Math.round(+event.target.value);
+      if (value <= 1000) {
+        onTotalMarksChange(+value);
+      } else {
+        setAlert('error', "Test marks can't be more than 1000!");
+      }
+    }
+  };
+
   return (
     <div className='create-container'>
       <div className='header'>
@@ -110,96 +147,130 @@ const AssesmentTest = ({
             <div className='test-detail-container'>
               <div className='form-field-header'>TEST DETAILS</div>
               <div className='test-details'>
-                <div className='detail'>
-                  <div className='label'>Test Name</div>
-                  <div className='input-container'>
-                    <TextField
-                      variant='outlined'
-                      size='small'
-                      className='bg-white'
-                      value={testName}
-                      onChange={(e) => {
-                        onTestNameChange(e.target.value);
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className='dividerVertical' />
-                <div className='detail'>
-                  <div className='label'>Test ID</div>
-                  <div className='input-container'>
-                    <TextField
-                      variant='outlined'
-                      size='small'
-                      className='bg-white'
-                      value={testId}
-                      onChange={(e) => {
-                        const { target: { value } = {} } = e || {};
-                        if (Number.isFinite(+value)) {
-                          onTestIdChange(+value);
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className='dividerVertical' />
-                <div className='detail'>
-                  <div className='label'>Test Date</div>
-                  <div className='input-container'>
-                    <TextField
-                      variant='outlined'
-                      type='datetime-local'
-                      size='small'
-                      className='date-time-picker bg-white'
-                      value={testDate}
-                      color='primary'
-                      onChange={(e) => {
-                        console.log('value ', e.target.value);
-                        onTestDateChange(e.target.value);
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className='detail'>
-                  <div className='label'>Test Duration</div>
-                  <div className='input-container duration'>
-                    <TextField
-                      variant='outlined'
-                      type='number'
-                      size='small'
-                      className='bg-white'
-                      value={testDuration}
-                      style={{ width: '70px' }}
-                      onChange={(e) => {
-                        const { target: { value } = {} } = e || {};
-                        if (Number.isFinite(+value)) {
-                          onTestDurationChange(+value);
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className='detail'>
-                  <div className='label'>Test Marks</div>
-                  <div className='input-container duration'>
-                    <TextField
-                      variant='outlined'
-                      type='number'
-                      size='small'
-                      className='bg-white'
-                      value={totalMarks}
-                      style={{ width: '70px' }}
-                      onChange={(e) => {
-                        const { target: { value } = {} } = e || {};
-                        if (Number.isFinite(+value)) {
-                          onTotalMarksChange(+value);
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
+                <Grid container spacing={5}>
+                  <Grid xs={12} sm={6}>
+                    <div className='detail'>
+                      <div className='label'>Test Name</div>
+                      <div className='input-container'>
+                        <TextField
+                          variant='outlined'
+                          size='small'
+                          className='bg-white'
+                          style={{ width: '100%' }}
+                          value={testName}
+                          onChange={(e) => {
+                            onTestNameChange(e.target.value);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </Grid>
+                  {/* <div className='dividerVertical' /> */}
+                  <Grid xs={12} sm={6}>
+                    <div className='detail'>
+                      <div className='label'>Test ID</div>
+                      <div className='input-container'>
+                        <TextField
+                          variant='outlined'
+                          size='small'
+                          style={{ width: '100%' }}
+                          className='bg-white'
+                          name='testid'
+                          value={testId}
+                          // onChange={(e) => {
+                          //   const { target: { value } = {} } = e || {};
+                          //   if (Number.isFinite(+value)) {
+                          //     onTestIdChange(+value);
+                          //   }
+                          // }}
+                          onChange={(e) => handleChange(e)}
+                        />
+                      </div>
+                    </div>
+                  </Grid>
+                  {/* <div className='dividerVertical' /> */}
+                  <Grid xs={12} sm={6}>
+                    <div className='detail'>
+                      <div className='label' style={{ marginRight: isMobile && '1rem' }}>
+                        Test Date
+                      </div>
+                      <div className='input-container'>
+                        <TextField
+                          variant='outlined'
+                          type='datetime-local'
+                          size='small'
+                          className='date-time-picker bg-white'
+                          value={testDate}
+                          color='primary'
+                          style={{ width: isMobile ? '50%' : '100%' }}
+                          onChange={(e) => {
+                            console.log('value ', e.target.value);
+                            onTestDateChange(e.target.value);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </Grid>
+                  <Grid xs={12} sm={6}>
+                    <div className='detail'>
+                      <div className='label'>Test Duration</div>
+                      <div className='input-container duration'>
+                        <TextField
+                          variant='outlined'
+                          type='number'
+                          inputProps={{
+                            min: 0,
+                            max: 1440,
+                            maxLength: 4,
+                          }}
+                          size='small'
+                          className='bg-white'
+                          name='duration'
+                          value={testDuration}
+                          style={{ width: '100%' }}
+                          // onChange={(e) => {
+                          // const { target: { value } = {} } = e || {};
+                          // if (Number.isFinite(+value)) {
+                          // onTestDurationChange(+value);
+                          // }
+                          // }}
+                          onChange={(e) => handleChange(e)}
+                        />
+                      </div>
+                    </div>
+                  </Grid>
+                  <Grid xs={12} sm={6}>
+                    <div className='detail'>
+                      <div className='label'>Test Marks</div>
+                      <div className='input-container duration'>
+                        <TextField
+                          variant='outlined'
+                          type='number'
+                          inputProps={{
+                            min: 0,
+                            max: 1000,
+                            maxLength: 4,
+                          }}
+                          size='small'
+                          className='bg-white'
+                          name='testmarks'
+                          value={totalMarks}
+                          style={{ width: '100%' }}
+                          // onChange={(e) => {
+                          //   const { target: { value } = {} } = e || {};
+                          //   if (Number.isFinite(+value)) {
+                          //     onTotalMarksChange(+value);
+                          //   }
+                          // }}
+                          onChange={(e) => handleChange(e)}
+                        />
+                      </div>
+                    </div>
+                  </Grid>
+                </Grid>
               </div>
             </div>
+
             <div className='form-field'>
               <div className='form-field-header'>GENERAL INSTRUCTIONS</div>
               {openEditor && (
@@ -291,7 +362,7 @@ const AssesmentTest = ({
                   }}
                   color='primary'
                   className='mv-20'
-                  style={{ margin: '1rem', borderRadius: '10px' }}
+                  style={{ color: 'white', margin: '1rem', borderRadius: '10px' }}
                 >
                   ADD QUESTION PAPER
                 </Button>
@@ -351,9 +422,11 @@ const AssesmentTest = ({
                           {section.questions.map((q) => (
                             <div className='question-detail-card-wrapper'>
                               <QuestionDetailCard
+                                createdAt={q?.created_at}
                                 question={q}
                                 expanded={marksAssignMode}
                                 onChangeMarks={onChangeTestMarks}
+                                testMarks={testMarks}
                               />
                             </div>
                           ))}

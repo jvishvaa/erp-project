@@ -24,7 +24,6 @@ const DiscussionCategory = (props) => {
   });
 
   const onPaginationChange = (start, end) => {
-    console.log(`${start} ---- ${end}`);
     setPagination({
       start,
       end,

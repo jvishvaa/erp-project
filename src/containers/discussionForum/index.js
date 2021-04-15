@@ -102,12 +102,6 @@ const Discussionforum = () => {
   });
 
   const handleFilterData = (years, branchs, grades, sections) => {
-    console.log('filter data branchId: ');
-    console.log(years);
-    console.log(branchs);
-    console.log(grades);
-    console.log(sections);
-
     setFilters({
       year: years,
       branch: branchs,

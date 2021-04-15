@@ -10,7 +10,8 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import Loading from '../../components/loader/loader';
-import MyTinyEditor from './tinymce-editor';
+// import MyTinyEditor from './tinymce-editor'
+import MyTinyEditor from '../question-bank/create-question/tinymce-editor'
 import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
@@ -258,7 +259,6 @@ const getSectionApi = async () => {
           (sec) =>
             result.data.data.findIndex((obj) => obj.section__section_name == sec) > -1
         );
-        console.log('selected sections array ', selectedSectionsArray);
         setSelectedSections(selectedSectionsArray);
       }
       setLoading(false);

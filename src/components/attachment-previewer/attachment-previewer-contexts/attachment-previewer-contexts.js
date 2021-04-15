@@ -39,7 +39,6 @@ export function AttachmentPreviewerContextProvider({ children }) {
     const isValidIndex = attachmentsArray[currentAttachmentIndex];
     if (isValidIndex) {
       // eslint-disable-next-line no-console
-      console.log('Invalid idex');
     } else {
       setAttachmentIndex(0);
     }

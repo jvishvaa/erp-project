@@ -265,7 +265,6 @@ export default function DiscussionPostComponent(props) {
     axiosInstance
       .get(`/academic/${postsId.id}/retrieve-post/`)
       .then((res) => {
-        //console.log(res.data);
         setPostsData(res.data.result);
         setCommentsCount(res.data.result.comment_count);
       })

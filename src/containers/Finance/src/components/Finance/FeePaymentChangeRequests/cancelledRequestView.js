@@ -72,7 +72,6 @@ const CancelledRequestView = ({ classes, history, dataLoading, fetchBranchTransa
   useEffect(() => {
     const { session, branchId, status } = history.location
     // Update the document title using the browser API
-    // console.log('im calling the main pending func', history.location.session.value)
     if (session && branchId && status) {
       fetchBranchTransaction(session.value, branchId, status, alert, user)
     }

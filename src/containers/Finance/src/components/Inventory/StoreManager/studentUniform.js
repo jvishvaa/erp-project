@@ -245,7 +245,6 @@ class StudentUniform extends Component {
   }
 
   handleAcademicyear = (e) => {
-    // console.log('current session: ', e.target.value)
     this.setState({
       session: e,
       getData: false
@@ -301,27 +300,20 @@ class StudentUniform extends Component {
     // winter wear shirt
     var overallSize = []
     let chest = defaultUniformShirt.chest
-    console.log('chest', chest)
     for (let i = 0; i < chest.length; i++) {
       if (chest[i] < this.state.chest) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', chest[i])
         this.setState({ updatedChest: chest[i] })
         this.setState({ overallChestSize: i * 2 + 2 })
-        console.log('overallchestsize', i * 2 + 2)
         overallSize.push(i * 2 + 2)
         break
       }
     }
 
     let length = defaultUniformShirt.length
-    console.log('length', length)
     for (let i = 0; i < length.length; i++) {
       if (length[i] < this.state.length) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', length[i])
         this.setState({ overallShirtLength: i * 2 + 2 })
         this.setState({ updatedLength: length[i] })
         overallSize.push(i * 2 + 2)
@@ -330,12 +322,9 @@ class StudentUniform extends Component {
     }
 
     let sleeveLength = defaultUniformShirt.sleeveLength
-    console.log('Sleeve Length', sleeveLength)
     for (let i = 0; i < sleeveLength.length; i++) {
       if (sleeveLength[i] < this.state.sleeveLength) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', sleeveLength[i])
         this.setState({ overallSleeveLength: i * 2 + 2 })
         this.setState({ updatedSleeveLength: sleeveLength[i] })
         overallSize.push(i * 2 + 2)
@@ -344,12 +333,9 @@ class StudentUniform extends Component {
     }
 
     let shoulder = defaultUniformShirt.shoulder
-    console.log('Shoulder', shoulder)
     for (let i = 0; i < shoulder.length; i++) {
       if (shoulder[i] < this.state.acrossShoulder) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', shoulder[i])
         this.setState({ overallAcrossShoulder: i * 2 + 2 })
         this.setState({ updatedAcrossShoulder: shoulder[i] })
         overallSize.push(i * 2 + 2)
@@ -357,188 +343,140 @@ class StudentUniform extends Component {
       }
     }
     const overallMax = Math.max(...overallSize)
-    console.log('overallSize', overallMax)
     this.setState({ overallShirtSize: overallMax })
 
     // Daywear Shirt
     var overallDaywearShirtSize = []
-    console.log('chest', defaultDaywearShirt.chest)
     for (let i = 0; i < defaultDaywearShirt.chest.length; i++) {
       if (defaultDaywearShirt.chest[i] < this.state.daywearShirtChest) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultDaywearShirt.chest[i])
         overallDaywearShirtSize.push(i)
         break
       }
     }
 
-    console.log('length', defaultDaywearShirt.length)
     for (let i = 0; i < defaultDaywearShirt.length.length; i++) {
       if (defaultDaywearShirt.length[i] < this.state.daywearShirtLength) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultDaywearShirt.length[i])
         overallDaywearShirtSize.push(i)
         break
       }
     }
 
-    console.log('Sleeve Length', defaultDaywearShirt.sleeveLength)
     for (let i = 0; i < defaultDaywearShirt.sleeveLength.length; i++) {
       if (defaultDaywearShirt.sleeveLength[i] < this.state.daywearShirtSleeveLength) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultDaywearShirt.sleeveLength[i])
         overallDaywearShirtSize.push(i)
         break
       }
     }
 
-    console.log('Shoulder', defaultDaywearShirt.shoulder)
     for (let i = 0; i < defaultDaywearShirt.shoulder.length; i++) {
       if (defaultDaywearShirt.shoulder[i] < this.state.daywearShirtAcrossShoulder) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultDaywearShirt.shoulder[i])
         overallDaywearShirtSize.push(i)
         break
       }
     }
     const overallDaywearShirtMax = Math.max(...overallDaywearShirtSize)
-    console.log('overallSize', overallDaywearShirtMax)
     this.setState({ overallDaywearShirtSize: overallDaywearShirtMax })
 
     // Sport-T-Shirt
     var overallSportsTshirtSize = []
-    console.log('chest', defaultSportsTshirt.chest)
     for (let i = 0; i < defaultSportsTshirt.chest.length; i++) {
       if (defaultSportsTshirt.chest[i] < this.state.sportsTshirtChest) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultSportsTshirt.chest[i])
         overallSportsTshirtSize.push(i * 2 + 2)
         break
       }
     }
 
-    console.log('length', defaultSportsTshirt.length)
     for (let i = 0; i < defaultSportsTshirt.length.length; i++) {
       if (defaultSportsTshirt.length[i] < this.state.sportsTshirtLength) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultSportsTshirt.length[i])
         overallSportsTshirtSize.push(i * 2 + 2)
         break
       }
     }
 
-    console.log('Collar', defaultSportsTshirt.collar)
     for (let i = 0; i < defaultSportsTshirt.collar.length; i++) {
       if (defaultSportsTshirt.collar[i] < this.state.sportsTshirtCollar) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultSportsTshirt.collar[i])
         overallSportsTshirtSize.push(i * 2 + 2)
         break
       }
     }
 
-    console.log('Shoulder', defaultSportsTshirt.shoulder)
     for (let i = 0; i < defaultSportsTshirt.shoulder.length; i++) {
       if (defaultSportsTshirt.shoulder[i] < this.state.sportsTshirtAcrossShoulder) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultSportsTshirt.shoulder[i])
         overallSportsTshirtSize.push(i * 2 + 2)
         break
       }
     }
     const overallSportsTshirtMax = Math.max(...overallSportsTshirtSize)
-    console.log('overallSize', overallSportsTshirtMax)
     this.setState({ overallSportsTshirtSize: overallSportsTshirtMax })
 
     // Denim Pant
     const overallSizeDenimPant = []
-    console.log('denimPantLength', defaultDenimPant.length.length)
     for (let i = 0; i < defaultDenimPant.length.length; i++) {
       if (defaultDenimPant.length[i] < this.state.denimPantOutseamLength) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultDenimPant.length[i])
         overallSizeDenimPant.push(i * 2 + 2)
         break
       }
     }
 
-    console.log('denimPantWaist', defaultDenimPant.waist.length)
     for (let i = 0; i < defaultDenimPant.waist.length; i++) {
       if (defaultDenimPant.waist[i] < this.state.denimPantWaist) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultDenimPant.waist[i])
         overallSizeDenimPant.push(i * 2 + 2)
         break
       }
     }
     const overallMaxDenimPant = Math.max(...overallSizeDenimPant)
-    console.log('overallDenimPantSize', overallMaxDenimPant)
     this.setState({ overallDenimPantSize: overallMaxDenimPant })
 
     // Denim Short
     const overallSizeDenimShort = []
-    console.log('denimShortLength', defaultDenimShort.length.length)
     for (let i = 0; i < defaultDenimShort.length.length; i++) {
       if (defaultDenimShort.length[i] < this.state.denimShortOutseamLength) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultDenimShort.length[i])
         overallSizeDenimShort.push(i)
         break
       }
     }
 
-    console.log('denimShortWaist', defaultDenimShort.waist.length)
     for (let i = 0; i < defaultDenimShort.waist.length; i++) {
       if (defaultDenimShort.waist[i] < this.state.denimShortWaist) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultDenimShort.waist[i])
         overallSizeDenimShort.push(i)
         break
       }
     }
     const overallMaxDenimShort = Math.max(...overallSizeDenimShort)
-    console.log('overallDenimPantSize', overallMaxDenimShort)
     this.setState({ overallDenimShortSize: overallMaxDenimShort })
 
     // Sport Track Pant
     const overallSizeSportTrackPant = []
-    console.log('sportTrackPantLength', defaultSportTrackPant.length.length)
     for (let i = 0; i < defaultSportTrackPant.length.length; i++) {
       if (defaultSportTrackPant.length[i] < this.state.sportTrackPantOutseamLength) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultSportTrackPant.length[i])
         // overallSizeSportTrackPant.push(i * 2 + 2)
         overallSizeSportTrackPant.push(i)
         break
       }
     }
 
-    console.log('sportTrackPantWaist', defaultSportTrackPant.waist.length)
     for (let i = 0; i < defaultSportTrackPant.waist.length; i++) {
       if (defaultSportTrackPant.waist[i] < this.state.sportTrackPantWaist) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultSportTrackPant.waist[i])
         // overallSizeSportTrackPant.push(i * 2 + 2)
         overallSizeSportTrackPant.push(i)
         break
       }
     }
     const overallMaxSportTrackPant = Math.max(...overallSizeSportTrackPant)
-    console.log('overallDenimPantSize', overallMaxSportTrackPant)
     this.setState({ overallSportTrackPantSize: overallMaxSportTrackPant })
   }
 

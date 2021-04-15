@@ -87,7 +87,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -142,7 +141,6 @@ class StudentLedgerTab extends Component {
   }
 
   componentDidMount() {
-    console.log('mounted on student: ', this.state.session, moduleId)
     if (this.state.session && moduleId) {
       this.props.fetchBranches(this.state.session.value, this.props.alert, this.props.user, moduleId)
       // this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
@@ -159,7 +157,6 @@ class StudentLedgerTab extends Component {
   }
 
   handleAcademicyear = (e) => {
-    console.log('current session: ', e)
     this.setState({
       session: e,
       getData: false,
@@ -326,9 +323,7 @@ class StudentLedgerTab extends Component {
       // getData: false,
       // showTabs: false
     }, () => {
-      console.log('realsession', this.state.session)
     })
-    console.log('Childdata', childData)
   }
 
 
@@ -343,7 +338,6 @@ class StudentLedgerTab extends Component {
     } else if (this.state.selectedNameStatus) {
       erpValue = this.state.studentErp
     }
-    // console.log('the session state: ', this.state.session)
     if (showTabs) {
       tabBar = (
         <React.Fragment>

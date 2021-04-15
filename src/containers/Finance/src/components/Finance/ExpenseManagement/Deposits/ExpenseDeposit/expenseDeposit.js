@@ -42,7 +42,6 @@ class ExpenseDeposit extends Component {
         bank_name: e.label
       }
     }, () => {
-      console.log(this.state)
     })
   }
 
@@ -52,7 +51,6 @@ class ExpenseDeposit extends Component {
         return +acc.bank_name.id === +e.value
       })
       if (selectedAcc.length !== 0) {
-        console.log('Balance ++', selectedAcc[0].bank_name.balance)
         this.setState({
           openingBalance: selectedAcc[0].bank_name.balance
         })
@@ -64,7 +62,6 @@ class ExpenseDeposit extends Component {
         bank_name: e.label
       }
     }, () => {
-      console.log(this.state)
     })
   }
 

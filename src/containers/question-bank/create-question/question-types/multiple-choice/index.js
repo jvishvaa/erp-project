@@ -48,6 +48,7 @@ const MultipleChoice = ({
   const [openEditor, setOpenEditor] = useState(true);
   const [isMinimized, setIsMinimized] = useState(false);
   const [answers, setAnswers] = useState([]);
+  const [toggle, setToggle] = useState(false);
   const [descriptiveAnswer, setDescriptiveAnswer] = useState('');
   const [optionsList, setOptionsList] = useState(
     showQuestionType?.FillInTheBlanks
@@ -83,12 +84,19 @@ const MultipleChoice = ({
   );
 
   useEffect(() => {
+    setToggle(prev=>!prev);
     if (editData?.id) {
       const {
         question_answer: [
           { answer, question: editQuestion, options, matchingOptions, matrixOptions },
         ],
       } = editData;
+      setQuestion(editQuestion);
+      setAnswers(answer);
+      // setToggle(prev=>!prev);
+      if (showQuestionType?.Descriptive) {
+        setDescriptiveAnswer(answer || '');
+      }
       if (
         showQuestionType?.MultipleChoiceMultipleSelect ||
         showQuestionType?.MultipleChoiceSingleSelect ||
@@ -104,9 +112,6 @@ const MultipleChoice = ({
         setOptionsList(options);
         setMatchingOptionsList(matchingOptions);
       }
-      setQuestion(editQuestion);
-      setDescriptiveAnswer(answer);
-      setAnswers(answer);
     }
   }, []);
 
@@ -459,9 +464,13 @@ const MultipleChoice = ({
         // axiosInstance[editData?'put':'post'](apiEndPoint, requestBody).then((e)=>{
         // })
         axios
-          .put(`${endpoints.baseURLCentral}/assessment/${editData?.id}/retrieve_update_question/`, requestBody, {
-            headers: { 'x-api-key': 'vikash@12345#1231' },
-          })
+          .put(
+            `${endpoints.baseURLCentral}/assessment/${editData?.id}/retrieve_update_question/`,
+            requestBody,
+            {
+              headers: { 'x-api-key': 'vikash@12345#1231' },
+            }
+          )
           .then((result) => {
             if (result.data?.status_code === 200) {
               setAlert('success', result.data?.message);
@@ -734,7 +743,7 @@ const MultipleChoice = ({
                   </div>
                   <div
                     onClick={() => {
-                      setIsMinimized(prev=>!prev);
+                      setIsMinimized((prev) => !prev);
                     }}
                   >
                     {isMinimized ? 'Maximize' : 'Minimize'}
@@ -745,6 +754,7 @@ const MultipleChoice = ({
           </div>
         )}
       </div>
+      {toggle ?              
       <div className='questionContainer'>
         {openEditor && (
           <MyTinyEditor
@@ -820,6 +830,7 @@ const MultipleChoice = ({
           />
         )}
       </div>
+      :'hidden editor'}
       {!isMinimized && (
         <>
           <div className='answerTag'>
@@ -828,6 +839,7 @@ const MultipleChoice = ({
               : 'Answers'}
           </div>
           {showQuestionType?.Descriptive ? (
+            toggle ?
             <div className='descriptiveAnswerEditor'>
               <MyTinyEditor
                 id={
@@ -845,6 +857,7 @@ const MultipleChoice = ({
                 filterDataBottom={filterDataBottom}
               />
             </div>
+            :null
           ) : (
             <div>
               <div

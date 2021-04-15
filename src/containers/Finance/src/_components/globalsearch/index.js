@@ -255,7 +255,6 @@ class GlobalSearch extends React.Component {
   }
 
   openStaffDetails (userId) {
-    console.log('Opened')
     this.setState({ openStaffDetails: true, staffDetailsLoading: true })
     var finalUrl = urls.Staff + userId + '/'
     axios
@@ -273,7 +272,6 @@ class GlobalSearch extends React.Component {
       })
   }
   openStudentDetails (userId) {
-    console.log('Opened')
     this.setState({ openStudentDetails: true, studentDetailsLoading: true })
     var finalUrl = urls.Student + userId + '/'
     axios
@@ -283,7 +281,6 @@ class GlobalSearch extends React.Component {
         }
       })
       .then(res => {
-        console.log(res)
         var studentDetails = res['data'][0]['student']
         this.setState({ studentDetailsLoading: false, studentDetails })
       })
@@ -296,7 +293,6 @@ class GlobalSearch extends React.Component {
     this.props.listSubjects()
     this.role = this.userProfile.personal_info.role
     let academicProfile = this.userProfile.academic_profile
-    console.log(academicProfile)
     if (this.role === 'Principal' || this.role === 'BDM') {
       this.setState({
         branchId: academicProfile.branch_id,
@@ -404,8 +400,6 @@ class GlobalSearch extends React.Component {
   }
   returnSubject = (id) => {
     let x = ' '
-    console.log(id, 'iddd')
-    console.log(this.props.subjects)
     this.props.subjects.forEach((v) => {
       if (v.id === id) {
         x = v
@@ -414,11 +408,9 @@ class GlobalSearch extends React.Component {
     return x.subject_name
   }
   handleScroll = (event, type) => {
-    console.log('Handling scroll...')
     let { currentStaffPage, currentStudentPage, totalStaffPages, totalStudentPages, branchId } = this.state
     let { target } = event
     // let { prevState } = this.props
-    console.log(target.scrollTop + target.clientHeight, target.scrollHeight)
     if (target.scrollTop + target.clientHeight === target.scrollHeight) {
       // if (this.props.globalSearchResults.staff) {
       if (type === 'staff') {

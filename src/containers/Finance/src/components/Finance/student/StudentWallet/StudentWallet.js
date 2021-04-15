@@ -17,7 +17,6 @@ function StudentWallet (props) {
   const [ allTransaction, setallTransaction ] = useState()
   const [ success, setSuccess ] = useState(false)
   const [loading, setLoading] = useState()
-  console.log(currBrnch)
 
   useEffect(() => {
     setLoading(true)
@@ -30,7 +29,6 @@ function StudentWallet (props) {
           }
         })
         .then(res => {
-          console.log(res.data[0])
           setLoading(false)
           setallTransaction(res.data[0])
         })
@@ -48,9 +46,7 @@ function StudentWallet (props) {
       setSuccess(true)
     }
   }
-  console.log(success)
   if (allTransaction) {
-    console.log(allTransaction.reaming_amount)
   }
 
   return (

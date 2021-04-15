@@ -24,10 +24,8 @@ export function loadScript(src, windowVariableKey) {
 // const ispdfjsViewerReady = loadScript(`${moduleBaseURL}/pdf_viewer.js`)
 
 // Promise.all([ispdfjsLibReady, ispdfjsViewerReady]).then(() => {
-//     debugger
 //     pdfjsLib = window.pdfjsLib
 //     pdfjsViewer = window.pdfjsViewer
-//     debugger
 //     if (!pdfjsLib.getDocument || !pdfjsViewer.PDFViewer) {
 //         alert("Please build the pdfjs-dist library using\n `gulp dist-install`");
 //     }
@@ -221,22 +219,7 @@ export function PDFViewerApplicationWarp() {
                 self.documentInfo = info;
                 self.metadata = metadata;
 
-                // Provides some basic debug information
-                console.log(
-                    "PDF " +
-                    pdfDocument.fingerprint +
-                    " [" +
-                    info.PDFFormatVersion +
-                    " " +
-                    (info.Producer || "-").trim() +
-                    " / " +
-                    (info.Creator || "-").trim() +
-                    "]" +
-                    " (PDF.js: " +
-                    (pdfjsLib.version || "-") +
-                    ")"
-                );
-
+ 
                 let pdfTitle;
                 if (metadata && metadata.has("dc:title")) {
                     const title = metadata.get("dc:title");

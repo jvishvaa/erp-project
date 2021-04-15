@@ -86,7 +86,6 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
         setShowTab(true)
       }
     }
-    console.log('history', couponHistory)
   }, [alert, allSectionsData, branchData, couponHistory, fetchErpList, gradeData, listCoupon, sectionData, sections, sessionData, user])
 
   useEffect(() => {
@@ -254,7 +253,6 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
     setDeleteCouponModal(true)
     // couponDelete(id, alert, user)
     // setShowTab(true)
-    console.log('data', data)
   }
   const studentAllcoupondetail = (erp) => {
     let arr = []
@@ -265,7 +263,6 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
     })
     erpCouponHistory(erp, alert, user)
     // setSingleErpAllcoupon(arr)
-    console.log('allcoupon', arr)
     setStudentdetailModal(true)
   }
   const hideDetailsModal = () => {
@@ -369,7 +366,6 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
   }
 
   const erpSearchHandler = (e) => {
-    console.log('studenrList', erpList)
     const filteredArr = assignErp && assignErp.filter(stu => (stu.student && +stu.student.erp.includes(+e.target.value)) || (stu.erp && +stu.erp.includes(+e.target.value)))
     setErpSearchValue(e.target.value)
     setStudentErpList(filteredArr)
@@ -584,7 +580,6 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
   }
   const saveMultiChangeHandler = (e) => {
     let rowId = []
-    console.log('ischecked', isChecked)
     Object.keys(isChecked).forEach((key) => {
       if (isChecked[key]) {
         rowId.push(key)
@@ -613,9 +608,7 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
         )
       }
     })
-    console.log('the erpArrrr', erpArr)
-    console.log('rowid', rowId)
-    console.log('erplist', erpList)
+   
     if (coupon && erpArr && erpArr.length > 0 && applicableTo) {
       if (sectionData.value === 'all') {
         const data = {
@@ -627,7 +620,6 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
           section: [...allsec],
           applicable_to: applicableTo.value
         }
-        console.log('data++', data)
         listCoupon(alert, user)
         couponReAssignedToStudent(data, alert, user)
         setisChecked(false)
@@ -642,7 +634,6 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
           section: [sectionData.value],
           applicable_to: applicableTo.value
         }
-        console.log('data++', data)
         couponReAssignedToStudent(data, alert, user)
         listCoupon(alert, user)
         setisChecked(false)
@@ -703,7 +694,6 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
   }
   const deleteAllCouponHandler = () => {
     let rowId = []
-    console.log('ischecked', isChecked)
     Object.keys(isChecked).forEach((key) => {
       if (isChecked[key]) {
         rowId.push(key)
@@ -720,7 +710,6 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
       }
     })
     let id = [...erpArr]
-    console.log('id', id)
     if (id && erpArr && erpArr.length > 0) {
       couponDelete(id, alert, user)
       // setIdtoDelete(erpArr)

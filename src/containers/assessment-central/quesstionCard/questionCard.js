@@ -62,7 +62,6 @@ const QuestionCard = (props) => {
   };
 
   const { result } = props;
-  console.log(result, 'result', data);
   return (
     <Paper
       className={classes.root}

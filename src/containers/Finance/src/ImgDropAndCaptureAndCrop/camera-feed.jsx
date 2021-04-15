@@ -9,7 +9,6 @@ export class CameraFeed extends Component {
      */
   processDevices (devices) {
     devices.forEach(device => {
-      console.log(device.label)
       this.setDevice(device)
     })
   }
@@ -58,8 +57,6 @@ export class CameraFeed extends Component {
      * @instance
      */
     takePhoto = (event) => {
-      // eslint-disable-next-line no-debugger
-      debugger
       if (event) {
         event.stopPropagation()
       }

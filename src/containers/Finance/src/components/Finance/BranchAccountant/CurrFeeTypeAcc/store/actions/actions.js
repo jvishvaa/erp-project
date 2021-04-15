@@ -10,9 +10,7 @@ export const SAVE_STUDENT_MISC = 'SAVE_STUDENT_MISC'
 
 // action creators
 export const fetchMiscFeeList = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.MiscList + '?academic_year=' + payload.session + '&module_id=' + payload.moduleId + '&branch_id=' + payload.branchId, {
@@ -40,7 +38,6 @@ export const fetchMiscFeeList = (payload) => {
 }
 
 export const fetchStudentMiscDetails = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
@@ -58,7 +55,6 @@ export const fetchStudentMiscDetails = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(err => {
         dispatch(actionTypes.dataLoaded())
-        console.log(err)
         if (err.response && (err.response.status === 400 || err.response.status === 404)) {
           // payload.alert.warning(err.response.data.err_msg)
         } else {
@@ -69,7 +65,6 @@ export const fetchStudentMiscDetails = (payload) => {
 }
 
 export const fetchMiscDetails = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
@@ -87,7 +82,6 @@ export const fetchMiscDetails = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(err => {
         dispatch(actionTypes.dataLoaded())
-        console.log(err)
         if (err.response && (err.response.status === 400 || err.response.status === 404)) {
           payload.alert.warning(err.response.data.err_msg)
         } else {
@@ -98,7 +92,6 @@ export const fetchMiscDetails = (payload) => {
 }
 
 export const saveStudentMiscType = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios

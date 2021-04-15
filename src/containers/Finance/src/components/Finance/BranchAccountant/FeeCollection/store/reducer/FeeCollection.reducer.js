@@ -14,7 +14,6 @@ const initialState = {
 export const feeCollectionReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.MISC_REPORT: {
-      console.log('p1+', action.payload.data)
       return {
         ...state,
         miscReports: action.payload.data ? action.payload.data : []
@@ -59,19 +58,14 @@ export const feeCollectionReducer = (state = initialState, action) => {
     //   }
     // }
     case actionTypes.STUDENT_DETAILS: {
-      console.log('q+', action.payload.data)
       return {
         ...state,
         studentDet: action.payload.data
       }
     }
     case actionTypes.CANCEL_TRANS: {
-      console.log('aa+', action.payload.data)
       let data = [...state.miscReports]
-      console.log('data++', data)
       let index = data.findIndex(val => +val.OMSTransaction_ID === +action.payload.data)
-      console.log('i', +action.payload.data)
-      console.log('index', index)
       data.splice(index, 1)
       return {
         ...state,

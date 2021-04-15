@@ -40,7 +40,6 @@ export const checkIsMisc = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log(response)
         dispatch({
           type: CHECK_IS_MISC,
           payload: {
@@ -115,7 +114,6 @@ export const receiptMessage = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log(response)
         dispatch({
           type: RECEIPT_RANGE_MESSAGE,
           payload: {
@@ -199,7 +197,6 @@ export const fetchAccountantOtherFee = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         payload.alert.warning('Unable to load data')
-        console.log(error.response)
       })
   }
 }
@@ -321,7 +318,6 @@ export const assignAccoutantOtherFees = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log(response)
         if (Array.isArray(response.data)) {
           dispatch({
             type: ACCOUNTANT_OTHER_FEES_UNASSIGN,
@@ -356,7 +352,6 @@ export const createOtherFeeForUnassigned = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log(response)
         dispatch({
           type: CREATE_OTHER_FEES_FOR_UNASSIGN,
           payload: {
@@ -368,7 +363,6 @@ export const createOtherFeeForUnassigned = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         payload.alert.error('Something Went Wrong')
-        console.log(error.response)
       })
   }
 }
@@ -382,7 +376,6 @@ export const deleteOtherFeeForAssigned = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log(response)
         dispatch({
           type: DELETE_OTHER_FEES_FOR_ASSIGNED,
           payload: {
@@ -394,7 +387,6 @@ export const deleteOtherFeeForAssigned = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         payload.alert.error('Something Went Wrong')
-        console.log(error.response)
       })
   }
 }
@@ -432,7 +424,6 @@ export const checkOtherFeesInstallment = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log(response)
         dispatch({
           type: CHECK_OTHER_FEES_INSTALLMENTS,
           payload: {
@@ -507,7 +498,6 @@ export const deleteOtherFeesInstallments = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log(response)
         dispatch({
           type: DELETE_OTHER_FEES_INSTALLMENTS,
           payload: {
@@ -533,7 +523,6 @@ export const fetchAdminOtherFees = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log(response)
         dispatch({
           type: FETCH_ADMIN_OTHER_LIST,
           payload: {
@@ -558,7 +547,6 @@ export const fetchInstallmentLists = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log(response)
         dispatch({
           type: FETCH_INSTALLMENT_LIST,
           payload: {

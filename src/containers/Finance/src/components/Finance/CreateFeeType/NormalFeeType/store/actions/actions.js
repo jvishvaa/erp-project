@@ -43,7 +43,6 @@ export const editNormalFeeList = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        // console.log(response)
         dispatch({
           type: EDIT_NORMAL_FEE_LIST,
           payload: {

@@ -57,7 +57,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -83,12 +82,10 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
   // const [searchBy, setSearchBy] = useState('')
 
   // useEffect(() => {
-  //   console.log('his', history)
-  //   console.log('his1', location && location.state && location.state.branch)
+
   // })
 
   useEffect(() => {
-    console.log('displayErp', displayErp)
   }, [displayErp])
 
   useEffect(() => {
@@ -118,24 +115,20 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
   useEffect(() => {
     if (redirectPageStatus) {
       history.push({
-        pathname: '/finance/studentShuffle'
+        pathname: '/finance/StudentShuffleRequest'
       })
     }
   }, [history, redirectPageStatus])
 
   useEffect(() => {
     if (studentName) {
-      // console.log('stude')
       const selectedStudent = ErpSuggestions && ErpSuggestions.length > 0 ? ErpSuggestions.filter(item => item.name === studentName)[0] : null
-      console.log('use effect NAme:', selectedStudent)
       setDisplayErp(selectedStudent && selectedStudent.erp ? selectedStudent.erp : displayErp)
     }
     if (erp) {
       const selectedStudent = ErpSuggestions && ErpSuggestions.length > 0 ? ErpSuggestions.filter(item => item.erp === erp)[0] : null
-      console.log('use effect ERp:', selectedStudent)
       setDisplayErp(selectedStudent && selectedStudent.erp ? selectedStudent.erp : displayErp)
     }
-    // console.log('displayErp: ', displayErp)
   }, [ErpSuggestions, displayErp, erp, studentName])
 
 //   const nameDebounceFunc = debounce(() => {
@@ -197,14 +190,12 @@ const erpDebounceFunc = () => {
       alert.warning('Select Academic Year and Branch!')
     } else {
       if (isNaN(Number(e.target.value))) {
-        console.log('its string')
         setErp(null)
         setStudentName(e.target.value)
         if (e.target.value && e.target.value.length >= 3) {
           nameDebounceFunc()
         }
       } else if (isFinite(Number(e.target.value))) {
-        console.log('its number')
         setStudentName(null)
         setErp(e.target.value)
         if (e.target.value && e.target.value.length >= 3) {
@@ -261,7 +252,6 @@ const erpDebounceFunc = () => {
   }
 
   const studentInfoHandler = useMemo(() => {
-    console.log('useMemo: ', studentName, erp, displayErp)
     if (studentName || erp) {
       return <Student erp={erp} branch={branches && branches.value} session={sessionYear && sessionYear.value} user={user} alert={alert} />
     }

@@ -92,7 +92,6 @@ const history=useHistory()
         axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`)
             .then(result => {
                 if (result.data.status_code === 200) {
-                    //console.log(result.data)
                     setSectionDropdown(result.data.data);
                 }
                 else {

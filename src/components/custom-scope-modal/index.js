@@ -149,7 +149,6 @@ const CustomScopeModal = ({
   }, []);
 
   const onCustomScopeChange = (scope, value) => {
-    console.log('custon scope before passing ', scope, value);
     onChange(scope, value);
   };
 

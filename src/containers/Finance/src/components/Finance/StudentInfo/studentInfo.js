@@ -51,7 +51,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -84,9 +83,7 @@ class StudentInfoAdm extends Component {
   }
 
   studentInfoDropdonHandler= (event, name) => {
-    console.log('student Info Handler', event, name)
     const newstudentInfo = { ...this.state.studentInfo }
-    console.log(event.value)
     switch (name) {
       case 'branch': {
         newstudentInfo['branch'] = event.value
@@ -112,11 +109,9 @@ class StudentInfoAdm extends Component {
       studentInfo: newstudentInfo
     }, () => {
       if (name === 'branch') {
-        console.log('api called', this.state.studentInfo.branch)
         this.setState({ selectedBranches: event})
         this.props.fetchGradesPerBranch(this.props.alert, this.props.user, this.state.studentInfo.academicyear, this.state.studentInfo.branch, moduleId)
       } else if (name === 'class') {
-        console.log('api called')
         this.props.fetchAllSectionsPerGradeAsAdmin(this.state.studentInfo.academicyear, this.props.alert, this.props.user, event.value, this.state.studentInfo.branch, moduleId)
       } if (name === 'academicyear') {
         // this.props.listBranches()

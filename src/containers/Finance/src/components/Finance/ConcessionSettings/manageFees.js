@@ -44,8 +44,6 @@ class AddFeeType extends Component {
   }
 
   componentDidMount () {
-    console.log(this.props.concessionId)
-    console.log(this.props.concessionName)
     if (this.props.concessionTypeId) {
       this.props.fetchConcessionFeeTypes(this.props.concessionTypeId, this.props.alert, this.props.user)
     } else {

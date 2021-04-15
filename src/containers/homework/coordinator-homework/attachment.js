@@ -22,8 +22,6 @@ const Attachment = (props) => {
   const [imagePreviewAvailable, setImagePreviewAvailable] = useState(true);
   const { openLightbox } = useLightbox();
 
-  console.log('actions fileurl', actions, fileUrl);
-
   return (
     <>
       <div className='file-card-container-coordinator'>

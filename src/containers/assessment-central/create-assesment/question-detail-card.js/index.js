@@ -52,11 +52,15 @@ const menuOptions = [
   // 'Relative marking',
 ];
 
-const QuestionDetailCard = ({ question, expanded, onChangeMarks }) => {
+const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks, createdAt }) => {
   const themeContext = useTheme();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
+
+  useEffect(() => {
+    console.log('testMarks: ', testMarks, question)
+  })
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -64,6 +68,25 @@ const QuestionDetailCard = ({ question, expanded, onChangeMarks }) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  const fetchMarks = (option) => {
+    // if (!testMarks.length) {
+    //   return
+    // }
+    for (let i = 0; i < testMarks.length; i++) {
+      if (option === 'Assign marks' && question.id === testMarks[i].question_id) {
+        return testMarks[i].question_mark[0]
+      } else if (option === 'Negative marking' && question.id === testMarks[i].question_id) {
+        return testMarks[i].question_mark[1]
+      }
+    }
+
+  }
+
+  const extractDate = (dateValue) => {
+    return dateValue.split("T")[0]
+    // date.split("-")
+  }
 
   const debouncedOnChangeMarks = debounce(300, onChangeMarks);
 
@@ -139,9 +162,9 @@ const QuestionDetailCard = ({ question, expanded, onChangeMarks }) => {
                         variant='outlined'
                         size='small'
                         type='number'
+                        value={fetchMarks(option)}
                         onChange={(e) => {
-                          console.log('onchange');
-                          debouncedOnChangeMarks(
+                          onChangeMarks(
                             question.id,
                             true,
                             option,
@@ -164,7 +187,7 @@ const QuestionDetailCard = ({ question, expanded, onChangeMarks }) => {
             <div className='right'>
               <div className='created'>
                 <div>Created on</div>
-                <div style={{ fontWeight: 550, fontSize: '1rem' }}>30.12.2020</div>
+                <div style={{ fontWeight: 550, fontSize: '1rem' }}>{extractDate(createdAt)}</div>
               </div>
               {/* <div>
                 <Button variant='contained' color='primary'>
@@ -185,7 +208,7 @@ const QuestionDetailCard = ({ question, expanded, onChangeMarks }) => {
             <div className='is-published'> {'Published'}</div>
             <div className='created'>
               <div>Created on</div>
-              <div style={{ fontWeight: 550, fontSize: '1rem' }}>30.12.2020</div>
+              <div style={{ fontWeight: 550, fontSize: '1rem' }}>{extractDate(createdAt)}</div>
             </div>
             <AssignMarksMenu
               menuOptions={menuOptions}

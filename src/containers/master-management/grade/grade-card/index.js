@@ -11,7 +11,6 @@ import useStyles from './useStyles';
 
 const GradeCard = ({ grade, onEdit, onDelete }) => {
   const classes = useStyles();
-  console.log(grade.created_by);
   return (
     <Paper className={classes.root}>
       <Grid container spacing={2}>

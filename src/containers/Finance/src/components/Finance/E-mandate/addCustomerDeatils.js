@@ -39,7 +39,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -144,7 +143,6 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
           setName('')
           setEmail('')
           setNumber(null)
-          console.log('data', data)
           setShowModal(false)
         } else {
           alert.warning('Contact number should be of 10 digits!')
@@ -156,7 +154,6 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
       alert.warning('Fill all the required Fields!')
     }
   }
-  // console.log(name, email, number, notekey1, notekey2, selectedDomain)
   const createCustomerDetailsHandler = (e) => {
     setShowModal(true)
   }
@@ -314,7 +311,6 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
             contact: updateNumber
           }
           updateCustDetails(data, user, alert)
-          console.log('data', data)
           setEditShowModal(false)
         } else {
           alert.warning('Contact number should be of 10 digits!')

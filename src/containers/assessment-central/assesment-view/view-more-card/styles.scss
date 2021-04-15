@@ -50,22 +50,25 @@
       }
       .test-detail-container {
         .test-details {
+          width: 100%;
           background-color: #efefef;
           border: 1px solid #dbdbdb;
           border-radius: 10px;
           display: flex;
           align-items: center;
-          padding: 1rem;
           .detail {
+            padding: 0.5rem;
             display: flex;
             align-items: center;
             .label {
               color: $secondary-color;
               margin-left: 1rem;
               font-size: 1.1rem;
+              width: 50%;
             }
             .input-container {
               margin: 0 1rem;
+              width: 100%;
               .bg-white {
                 background-color: #ffffff;
               }
@@ -124,8 +127,6 @@
                       font-size: 1.2rem;
                       font-weight: 400;
                     }
-                  }
-                  .right {
                   }
                 }
                 .section-content {

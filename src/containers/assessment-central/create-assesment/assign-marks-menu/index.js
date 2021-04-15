@@ -20,8 +20,6 @@ const AssignMarksMenu = ({ menuOptions, handleChange }) => {
   };
 
   useEffect(() => {
-    console.log('mounted menu');
-    console.log('marksmarks',marks);
   });
   return (
     <>

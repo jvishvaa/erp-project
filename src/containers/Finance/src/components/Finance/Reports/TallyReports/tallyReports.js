@@ -29,7 +29,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -86,8 +85,6 @@ class TallyReports extends Component {
       // role === 'BTM_Admin Venky' || role === 'F_acc'
     }
     componentWillReceiveProps (nextProps) {
-      // console.log('------nextprops----------', nextProps)
-      // console.log('-----state------', this.state)
       // if (this.state.confirmStatus) {
       //   this.setState({
       //     sessionData: [],
@@ -108,10 +105,8 @@ class TallyReports extends Component {
       e && e.forEach((val) => {
         sessions.push(val.value)
       })
-      console.log(e)
       this.setState({ session: sessions, selectedBranches: [], sessionData: e }, () => {
         // if (this.state.role === 'financeaccountant') {
-        //   // console.log('====>result<====', this.props.branchAtAcc.branch)
         //   // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
         //   let data = {
         //     session_year: this.state.session,
@@ -130,7 +125,6 @@ class TallyReports extends Component {
       let data = null
       let ids = []
       if (allLabel && allLabel.length === 1) {
-        console.log('All Branch')
         // const allBranches = this.props.branches.map(branch => {
         //   return {
         //     value: branch.branch.id,
@@ -144,19 +138,15 @@ class TallyReports extends Component {
         const allBranchIds = this.props.branches.map(branch => {
           return branch.branch.id
         })
-        console.log('-----alll branches id -------------', allBranchIds)
         this.setState({
           selectedBranches: allBranches,
           selectedbranchIds: 'all'
         }, () => {
-          console.log('-selectedbranch-----------', this.state.selectedBranches)
-          console.log('-selectedbranchId-----------', this.state.selectedbranchIds)
           data = {
             session_year: this.state.session,
             branch_id: this.state.selectedbranchIds,
             feeAccData: []
           }
-          console.log('--data-----', data)
           this.props.fetchFeeAccounts(data, this.props.alert, this.props.user)
         })
       } else {
@@ -166,13 +156,10 @@ class TallyReports extends Component {
         this.setState({
           selectedBranches: e, selectedbranchIds: ids, feeAccData: []
         }, () => {
-          console.log('-selectedbranch-----------', this.state.selectedBranches)
-          console.log('-selectedbranchId-----------', this.state.selectedbranchIds)
           data = {
             session_year: this.state.session,
             branch_id: this.state.selectedbranchIds
           }
-          console.log('--data-----', data)
           this.props.fetchFeeAccounts(data, this.props.alert, this.props.user)
         })
       }
@@ -188,7 +175,6 @@ class TallyReports extends Component {
       })
       let ids = []
       if (allLabel && allLabel.length === 1) {
-        console.log('All Fee Account')
         const allFeeAccs = {
           value: 'all',
           label: 'All Fee Accounts'
@@ -197,16 +183,12 @@ class TallyReports extends Component {
           feeAccData: allFeeAccs,
           feeAccId: 'all'
         }, () => {
-          console.log('-all fee accs-----------', this.state.feeAccData)
-          console.log('-all fee accs ids-----------', this.state.feeAccId)
         })
       } else {
         e && e.forEach(fee => {
           ids.push(fee.value)
         })
         this.setState({ feeAccData: e, feeAccId: ids }, () => {
-          console.log('-all fee accs-----------', this.state.feeAccData)
-          console.log('-all fee accs ids-----------', this.state.feeAccId)
         })
       }
     }
@@ -226,8 +208,6 @@ class TallyReports extends Component {
         this.setState({
           paymentModeId: 'all', paymentModeData: allPayment
         }, () => {
-          console.log('-all payment-----------', this.state.paymentModeId)
-          console.log('-all payment-----------', this.state.paymentModeData)
         })
       } else {
         e && e.forEach(payment => {
@@ -256,7 +236,6 @@ class TallyReports extends Component {
       this.setState({ typeId: e.value, typeData: e })
     }
     getReport = () => {
-      console.log('I am Called')
       if (!this.state.session || this.state.feeAccData.length < 1 ||
         !this.state.trnsId || this.state.paymentModeData.length < 1 || !this.state.typeId
       ) {
@@ -292,7 +271,6 @@ class TallyReports extends Component {
         data.from_date = this.state.startDate
         data.to_date = this.state.endDate
       }
-      console.log('-----final data----------', data)
       this.props.downloadReports('TallyReport.xlsx', urls.DownloadTallyReport, data, this.props.alert, this.props.user)
     }
     render () {

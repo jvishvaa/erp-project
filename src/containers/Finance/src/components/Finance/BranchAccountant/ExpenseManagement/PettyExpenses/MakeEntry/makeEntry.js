@@ -71,7 +71,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -101,8 +100,6 @@ class MakeEntry extends Component {
   }
   
   componentDidMount () {
-    console.log('his', this.props)
-    console.log('his1', this.props.history)
     const ledgerData = [...this.state.ledgerData]
     const data = {
       ledgerType: null,
@@ -137,7 +134,6 @@ class MakeEntry extends Component {
   deleteLedgerRow = (index) => {
     const ledgerData = [...this.state.ledgerData]
     ledgerData.splice(index, 1)
-    console.log('Ledger Data', ledgerData)
     this.setState({
       ledgerData
     })
@@ -210,10 +206,7 @@ class MakeEntry extends Component {
   }
 
   changeFileHandler = (e) => {
-    console.log('Array', Array.from(e.target.files))
     const newFile = [...this.state.file, ...Array.from(e.target.files)]
-    console.log('New File', newFile)
-    console.log('files', e.target.files)
     this.setState({
       file: newFile
     })

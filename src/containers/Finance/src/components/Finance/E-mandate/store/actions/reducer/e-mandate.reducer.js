@@ -42,10 +42,8 @@ const eMandateReducer = (state = initialState, action) => {
     case actionTypes.SET_DOMAIN_DETAILS: {
       let data = state.todayDetails
       // let index = data.map((val) => val.id).findIndex((res) => res === action.payload.id)
-      // console.log('index', index)
       // data[index] = [...action.payload.data]
       let index = data.findIndex((val) => +val.id === +action.payload.data.id)
-      console.log('payData', data)
       if (index !== -1) {
         data[index] = { ...action.payload.data }
       } else {
@@ -71,10 +69,7 @@ const eMandateReducer = (state = initialState, action) => {
     }
     case actionTypes.SET_CUSTOMER_DETAILS: {
       let data = state.custDetails
-      console.log('saf', action.payload.data)
-      console.log('data', data)
       data.unshift(action.payload.data)
-      console.log('data1', data)
       return {
         ...state,
         customerDetails: action.payload.data,
@@ -89,11 +84,7 @@ const eMandateReducer = (state = initialState, action) => {
     }
     case actionTypes.CREATE_ORDER_DETAILS: {
       let data = state.getOrderDetails
-      console.log('zzz', data)
-      console.log('ppp', action.payload.data)
       data.unshift(action.payload.data)
-      console.log('zzz', data)
-      console.log()
       return {
         ...state,
         createOrderrDetails: action.payload.data,
@@ -113,7 +104,6 @@ const eMandateReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.GET_SUBSEQUENT_PAYMENT: {
-      // console.log(action.payload.data)
       return {
         ...state,
         getSubsequentPayment: action.payload.data
@@ -132,7 +122,6 @@ const eMandateReducer = (state = initialState, action) => {
       }
     }
     // case actionTypes.ORDER_PAYMENT: {
-    //   console.log('url', action.payload.data)
     //   return {
     //     ...state,
     //     payment: action.payload.data
@@ -145,7 +134,6 @@ const eMandateReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.TOTAL_BILLING_DETAILS: {
-      console.log('url', action.payload.data)
       let data = null
       if (+action.payload.status === 200) {
         data = action.payload.data
@@ -160,11 +148,9 @@ const eMandateReducer = (state = initialState, action) => {
     case actionTypes.UPDATE_DOMAIN_NAME: {
       let data = state.domainNames
       let index = data.findIndex((val) => +val.id === +action.payload.data.id)
-      console.log('payData', data)
       if (index !== -1) {
         data[index] = { ...action.payload.data }
       }
-      console.log('url', action.payload.data)
       return {
         ...state,
         updatedDomainName: action.payload.data,
