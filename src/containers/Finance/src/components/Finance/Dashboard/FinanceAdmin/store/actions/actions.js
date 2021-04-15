@@ -172,7 +172,7 @@ export const switchBranchAdmin = (payload) => {
 export const getPendingOnlineAdmission = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.pendingOnlineAdmission, {
+    axios.get(urls.pendingOnlineAdmission + '?session_year=' + payload.session + '&branch_id=' + payload.branch, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
