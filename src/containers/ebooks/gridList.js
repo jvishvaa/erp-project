@@ -323,6 +323,7 @@ function GridList(props) {
         fullScreen
         open={open}
         onClose={handleClose}
+        style={{ zIndex: '10000' }}
         TransitionComponent={Transition}
       >
         <Grid>
