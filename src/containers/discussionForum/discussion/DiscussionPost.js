@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Paper, Divider } from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -31,6 +31,7 @@ import SilverAwards from '../../../assets/images/Silver.svg';
 import BronzeAwards from '../../../assets/images/Bronze.svg';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import GiveAwardDialog from './GiveAwardDialog';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 // import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 
 const useStyles = makeStyles({
@@ -125,7 +126,7 @@ const useStyles = makeStyles({
     border: '1px solid #FF6B6B',
   },
   discussionDivider: {
-    marginTop: '15px',
+    marginTop: '25px',
   },
   answersText: {
     color: '#042955',
@@ -141,6 +142,15 @@ const useStyles = makeStyles({
     marginBottom: '26px',
     marginRight: '32px',
   },
+  awardCount: {
+    color: '#754700',
+    position: 'absolute',
+    top: '63%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    fontSize: '36px',
+    fontWeight: 'bold',
+  }
 });
 
 const StyledOutlinedButton = withStyles({
@@ -213,13 +223,21 @@ export default function DiscussionPostComponent(props) {
   const [reply, setReply] = React.useState('');
   const [commentsList, setCommentsList] = React.useState([]);
   const [postsData, setPostsData] = React.useState('');
+  const [commentsCount, setCommentsCount] = React.useState(0);
+  const { setAlert } = useContext(AlertNotificationContext);
 
   const handleChange = (e) => {
     setReply(e.target.value);
   };
 
   const handleBackToPost = () => {
-    history.push('/discussion-forum');
+    //history.push('/discussion-forum');
+    if(location.pathname === `/student-forum/post/${postsId.id}`){
+      history.push('/student-forum');
+    }
+    else {
+      history.push('/teacher-forum');
+    }
     //<Redirect to="/dashboard" />
   };
 
@@ -233,6 +251,9 @@ export default function DiscussionPostComponent(props) {
     axiosInstance.post(endpoints.discussionForum.CreateCommentAndReplay, params)
     .then((res) => {
       console.log(res);
+      setReply('');
+      setCommentsCount(commentsCount + 1);
+      setAlert('success', res.data.message);
     })
     .catch((error) => {
       console.log(error);
@@ -246,22 +267,21 @@ export default function DiscussionPostComponent(props) {
       .then((res) => {
         //console.log(res.data);
         setPostsData(res.data.result);
+        setCommentsCount(res.data.result.comment_count);
       })
       .catch((error) => console.log(error));
   }, []);
 
   React.useEffect(() => {
-    const params = {
-      comment: postsId.id,
-    };
-    axiosInstance
+    if(commentsCount > 0){
+      axiosInstance
       .get(`${endpoints.discussionForum.postLike}?post=${postsId.id}&type=2`)
       .then((res) => {
-        //console.log(res.data.result.results);
         setCommentsList(res.data.result.results);
       })
       .catch((error) => console.log(error));
-  }, [props.rowData]);
+    }
+  }, [commentsCount]);
 
   // awards popover
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -292,6 +312,18 @@ export default function DiscussionPostComponent(props) {
     setOpenGiveAward(true);
   };
 
+  const handleAwardsCount = (id) =>{
+    if(id === 1){
+      setGoldCount(goldCount + 1);
+    }
+    if(id === 2){
+      setSilverCount(silverCount + 1);
+    }
+    if(id === 3){
+      setBronzeCount(bronzeCount + 1);
+    }
+    setAwardsCount(awardsCount + 1);
+  }
   const handleClose = (value) => {
     setOpenGiveAward(false);
     setSelectedValue(value);
@@ -344,7 +376,7 @@ export default function DiscussionPostComponent(props) {
                 <span style={{ marginLeft: '10px'}}>
                   <ChatIcon />
                   <span className={classes.discussionIcon}>
-                    {postsData ? postsData.comment_count : 0}
+                    {commentsCount}
                   </span>
                 </span>
                 <span
@@ -374,9 +406,21 @@ export default function DiscussionPostComponent(props) {
                       <div style={{ padding: '10px 20px', textAlign: 'center'}}>
                         {/* <SilverAwards /> */}
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          {goldCount !== 0 && (<img src={GoldAwards} alt="Silver Awards" />)}
-                          {silverCount !== 0 && (<img src={SilverAwards} alt="Silver Awards" />)}
-                          {bronzeCount !== 0 && (<img src={BronzeAwards} alt="Silver Awards" />)}
+                          {goldCount !== 0 && (
+                            <span style={{position: 'relative'}}>
+                              <img src={GoldAwards} alt="Silver Awards" />
+                              <div className={classes.awardCount}>{goldCount}</div>
+                            </span>)}
+                          {silverCount !== 0 && (
+                            <span style={{position: 'relative'}}>
+                              <img src={SilverAwards} alt="Silver Awards" />
+                              <div className={classes.awardCount}>{silverCount}</div>
+                            </span>)}
+                          {bronzeCount !== 0 && (
+                            <span style={{position: 'relative'}}>
+                              <img src={BronzeAwards} alt="Silver Awards" />
+                              <div className={classes.awardCount}>{bronzeCount}</div>
+                            </span>)}
                           {goldCount === 0 && silverCount === 0 && bronzeCount === 0 && (
                             <span className={classes.noAwardsText}>No Awards Found</span>
                           )}
@@ -436,7 +480,7 @@ export default function DiscussionPostComponent(props) {
                           <Typography className={classes.discussionParagraph}>
                               <div dangerouslySetInnerHTML={{__html: postsData && postsData.description}} />
                           </Typography>
-                          <Grid container spacing={1}>
+                          {/* <Grid container spacing={1}>
                               {[1,2].map((data, id) => (
                               <Grid
                                   item sm={3} xs={6} key={id} className={classes.attachmentsDiv}
@@ -448,7 +492,7 @@ export default function DiscussionPostComponent(props) {
                                 }}
                               ></Grid>
                             ))}
-                          </Grid>
+                          </Grid> */}
                           <Divider className={classes.discussionDivider} />
                           <Grid container spacing={2}>
                               <Grid item xs={10}>
@@ -483,6 +527,7 @@ export default function DiscussionPostComponent(props) {
                                                   isLikes={commentRow.is_like? commentRow.is_like : false}
                                                   replies={commentRow.replay? commentRow.replay : []}
                                                   replayCount={commentRow.replay_count ? commentRow.replay_count : 0}
+                                                  commentAt={commentRow.comment_at ? commentRow.comment_at : 0}
                                                   //commentRow={commentRow}
                                               />
                                       ))}
@@ -494,16 +539,22 @@ export default function DiscussionPostComponent(props) {
                   </Grid>
                   <Grid item xs={12}>
                       <span className={classes.bottomButton}>
-                          <StyledCancelButton>
+                          {/* <StyledCancelButton>
                               CANCEL
-                            </StyledCancelButton>
+                            </StyledCancelButton> */}
                           <StyledButton onClick={handleBackToPost}>
-                              Back to posts
-                            </StyledButton>
+                            Back to posts
+                          </StyledButton>
                       </span>
                   </Grid>
                 </Grid>
-              <GiveAwardDialog selectedValue={selectedValue} postId={postId} open={openGiveAward} onClose={handleClose} />
+              <GiveAwardDialog
+                selectedValue={selectedValue}
+                postId={postId}
+                open={openGiveAward}
+                onClose={handleClose}
+                handleAwardsCount={handleAwardsCount}
+              />
       </Paper>
     </Layout>
   );

@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Grid, makeStyles, withStyles, Button, InputBase } from '@material-ui/core';
 import LikeIcon from '../../../../components/icon/LikeIcon';
 import ProfileIcon from '../../../../components/icon/ProfileIcon';
 import LikeButton from '../../../../components/like-button/index';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
+import dayjs from "dayjs";
+var relativeTime = require('dayjs/plugin/relativeTime');
 // import Avatar from '@material-ui/core/Avatar';
 // import OutlinedButton from '../../core_themes/buttons/OutlinedButton';
 
@@ -62,6 +65,13 @@ const useStyles = makeStyles({
     fontFamily: 'Open Sans',
     marginLeft: '8.47px',
   },
+  timeAgo: {
+    marginLeft: '5px',
+    color: '#9A9A9A',
+    fontSize: '15px',
+    fontWeight: 'lighter',
+    lineHeight: '20px',
+  },
 });
 
 const StyledOutlinedButton = withStyles({
@@ -91,11 +101,14 @@ const StyledInput = withStyles({
 
 export default function CommentsComponent(props) {
   const classes = useStyles({});
+  dayjs.extend(relativeTime);
   // const commentRow = props.commentRow;
 
   const [reply, setReply] = React.useState('');
   const [isReply, setIsReply] = React.useState(false);
   const [isChildReply ] = React.useState(props.isChildReply ? props.isChildReply : false);
+  const { setAlert } = useContext(AlertNotificationContext);
+
   const handleChange = (e) => {
     setReply(e.target.value);
   };
@@ -112,6 +125,9 @@ export default function CommentsComponent(props) {
     axiosInstance.post(endpoints.discussionForum.replyToAnswer, params)
     .then((res) => {
       console.log(res);
+      setReply('');
+      props.handleNewReply(1);
+      setAlert('success', res.data.message);
     })
     .catch((error) => {
       console.log(error);
@@ -121,7 +137,7 @@ export default function CommentsComponent(props) {
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} className={classes.replyCommentBox}>
-        <div>
+        <div style={{marginTop: '10px'}}>
           <span className={classes.replyByText}>reply by</span>
           <ProfileIcon
             firstname={props.firstname}
@@ -129,8 +145,9 @@ export default function CommentsComponent(props) {
             bgColor='#3E9CF7'
           />
           <span className={classes.replyUsername}>
-            {`${props.firstname} ${props.lastname}`}
+            {`${props.firstname} ${props.lastname}`} /
           </span>
+          <span className={classes.timeAgo}>{dayjs(props.commentAt).fromNow()}</span>
         </div>
 
         <div className={classes.replyCommentDiv}>

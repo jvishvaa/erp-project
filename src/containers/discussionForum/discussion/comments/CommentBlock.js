@@ -13,12 +13,15 @@ const useStyles = makeStyles({
 
 export default function CommentBlockComponent(props) {
   const classes = useStyles({});
-  console.log('CommentBlock');
-
+  const [replayCount, setReplayCount] = React.useState(props.replayCount? props.replayCount : 0);
   const [commentsList, setCommentsList] = React.useState([]);
 
+  const handleNewReply = () =>{
+    setReplayCount(replayCount + 1);
+  }
+
   React.useEffect(() => {
-    if(props.replayCount >= 1) {
+    if(replayCount >= 1) {
       axiosInstance
       .get(`${endpoints.discussionForum.commentList}?comment=${props.id}`)
       .then((res) => {
@@ -26,7 +29,7 @@ export default function CommentBlockComponent(props) {
       })
       .catch((error) => console.log(error));
     }
-  }, [props.rowData]);
+  }, [props.rowData, replayCount]);
 
   return (
     <>
@@ -37,8 +40,10 @@ export default function CommentBlockComponent(props) {
         likes={props.likes}
         isLikes={props.isLikes}
         id={props.id}
+        commentAt={props.commentAt}
+        handleNewReply={handleNewReply}
       />
-      {props.replayCount && props.replayCount >= 1 && (
+      {replayCount >= 1 && (
         <div className={classes.childComment}>
           {commentsList.length > 0 &&  commentsList.map((rowData, id) => (
             <Comments
@@ -50,6 +55,8 @@ export default function CommentBlockComponent(props) {
               likes={rowData.like_count}
               isLikes={rowData.is_like}
               isChildReply={true}
+              commentAt={rowData.comment_at ? rowData.comment_at : 0}
+              handleNewReply={handleNewReply}
             />
           ))}
         </div>

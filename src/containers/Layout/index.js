@@ -481,11 +481,11 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Teacher Forum': {
-        history.push('/discussion-forum');
+        history.push('/teacher-forum');
         break;
       }
       case 'Student Forum': {
-        history.push('/discussion-forum');
+        history.push('/student-forum');
         break;
       }
       // case 'role-management': {
