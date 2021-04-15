@@ -180,8 +180,8 @@ const Attend = () => {
         `${endpoints.academics.attendance}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}`
       )
       .then(res => {
-        console.log(res.data)
         setLoading(false)
+        console.log(res.data)
         let temp = [...res.data.absent_list, ...res.data.present_list]
         console.log(temp)
         setResult(temp)

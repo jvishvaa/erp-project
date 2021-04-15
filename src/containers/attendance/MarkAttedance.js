@@ -330,7 +330,7 @@ const MarkAttedance = () => {
       attendance_for_date: dateValue,
       remarks: remarks,
       fullday_present: fullday_present,
-      is_first_shift_present: product.is_second_shift_present ? "true" : "false",
+      is_first_shift_present: product.is_first_shift_present ? "true" : "false",
       is_second_shift_present: product.is_second_shift_present ? "true" : "false"
     }
     console.log(fullData)
@@ -366,11 +366,28 @@ const MarkAttedance = () => {
     console.log(products)
     setData(products)
     const remarks = "test"
-    const fullday_present = true
+    const fullday_present = true ? "true" : "false"
+    console.log(selectedSection.section_id)
+
+    const fullData = {
+      section_mapping_id: selectedSection.section_id,
+      student_id: id,
+      attendance_for_date: dateValue,
+      remarks: remarks,
+      fullday_present: fullday_present,
+      is_first_shift_present: product.is_first_shift_present ? "true" : "false",
+      is_second_shift_present: product.is_second_shift_present ? "true" : "false"
+    }
+    console.log(fullData)
     axiosInstance
-      .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
+      .post(`${endpoints.academics.createAttendance}`,
+        fullData)
       .then(res => console.log(res))
       .catch(err => console.log(err))
+    // axiosInstance
+    //   .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
+    //   .then(res => console.log(res))
+    //   .catch(err => console.log(err))
 
   }
 
@@ -444,7 +461,7 @@ const MarkAttedance = () => {
                     <Divider />
                     <Grid container direction='row'>
                       <Typography className={[classes.contentList, classes.paperStyle]}>
-                        1stHalf
+                      1<sup>st</sup><span>&nbsp; Half</span>
                     </Typography>
 
                       <Grid style={{ marginLeft: '40%' }}>
@@ -456,7 +473,7 @@ const MarkAttedance = () => {
 
                     <Grid container direction='row'>
                       <Typography className={[classes.contentList, classes.paperStyle]}>
-                        2stHalf
+                        2<sup>nd</sup><span>&nbsp; Half</span>
                     </Typography>
 
                       <Grid style={{ marginLeft: '40%' }}>
