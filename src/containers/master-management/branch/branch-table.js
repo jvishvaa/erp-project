@@ -192,7 +192,7 @@ const BranchTable = () => {
   }, [goBackFlag, page, delFlag]);
 
   useEffect(() => {
-    let url = `${endpoints.masterManagement.branchList}?page=${page}&page_size=${limit}&module_id=${224}`;
+    let url = `${endpoints.masterManagement.branchList}?page=${page}&page_size=${limit}`;
     if (searchBranch) url += `&branch_name=${searchBranch}`;
     axiosInstance
       .get(url)
