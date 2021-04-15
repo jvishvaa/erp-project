@@ -408,6 +408,10 @@ const Layout = ({ children, history }) => {
         history.push('/user-management');
         break;
       }
+      case 'Ebook View':{
+        history.push('/ebook/view');
+        break;
+      }
       case 'Create User': {
         history.push('/user-management/create-user');
         break;
