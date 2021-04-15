@@ -1170,7 +1170,7 @@ function App({ alert }) {
                               <UploadPaymentFile match={match} alert={alert} />
                             )}
                           </Route>
-                          <Route exact path='/markattedance'>
+                          <Route exact path='/markattendance'>
                             {({ match }) => <MarkAttedance match={match} />}
                           </Route>
                           <Route exact path='/AttendanceCalendar'>

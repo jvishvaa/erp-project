@@ -1329,7 +1329,7 @@ const Layout = ({ children, history }) => {
             onClick={() => history.push('/AttendanceCalendar')}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-              <EventAvailableIcon />
+              <TodayIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>AttedanceCalender</ListItemText>
           </ListItem>

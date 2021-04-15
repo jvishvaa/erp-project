@@ -323,10 +323,10 @@ const MarkAttedance = () => {
     let product = { ...products[studentId] };
     product.is_first_shift_present = e.target.checked;
     products[studentId] = product;
-    console.log(products)
+    // console.log(products)
     setData(products)
     const remarks = "test"
-    const fullday_present = true ? "true" : "false"
+    const fullday_present = ( product.is_first_shift_present && product.is_second_shift_present) ? "true" : "false"
     console.log(selectedSection.section_id)
 
     const fullData = {
@@ -368,10 +368,10 @@ const MarkAttedance = () => {
     let product = { ...products[studentId] };
     product.is_second_shift_present = e.target.checked;
     products[studentId] = product;
-    console.log(products)
+    // console.log(products)
     setData(products)
     const remarks = "test"
-    const fullday_present = true ? "true" : "false"
+    const fullday_present = ( product.is_first_shift_present && product.is_second_shift_present) ? "true" : "false"
     console.log(selectedSection.section_id)
 
     const fullData = {

@@ -327,7 +327,7 @@ const AttedanceCalender = () => {
       endDate: endDate
     }
     history.push({
-      pathname: '/markattedance',
+      pathname: '/markattendance',
       state: {
         data: studentData,
         payload: payload
