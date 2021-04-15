@@ -92,9 +92,7 @@ const CreateAssesment = ({
       subject: selectedSubject,
       test_type: selectedTestType || testTypes[0],
     },
-    onSubmit: (values) => {
-      console.log(values);
-    },
+    onSubmit: (values) => {},
     validateOnChange: false,
     validateOnBlur: false,
   });
@@ -134,28 +132,30 @@ const CreateAssesment = ({
   const handleCreateAssesmentTest = async () => {
     const qMap = new Map();
 
-    if (totalMarks < 0 || totalMarks > 100) {
+    if (totalMarks < 0 || totalMarks > 1000) {
       setAlert('error', 'Please enter valid marks.');
       return;
     }
 
+    if (testDuration < 0 || testDuration > 1440) {
+      setAlert('error', 'Please enter valid duration.');
+      return;
+    }
+
+    if(!selectedQuestionPaper?.id) {
+      setAlert('error', 'Please add a question paper.');
+      return;
+    }
+
+    console.log(selectedQuestionPaper,'totalMarks');
+
     testMarks.forEach((obj) => {
       const { parentQuestionId } = obj;
       if (parentQuestionId) {
-        console.log('setting', parentQuestionId);
         if (qMap.has(parentQuestionId)) {
-          console.log(
-            parentQuestionId,
-            'already there so appending to ',
-            qMap.get(parentQuestionId)
-          );
-
           qMap.set(parentQuestionId, [...qMap.get(parentQuestionId), obj]);
         } else {
-          console.log(parentQuestionId, 'not there so setting');
-
           qMap.set(parentQuestionId, [obj]);
-          console.log(qMap);
         }
       }
     });
@@ -185,11 +185,6 @@ const CreateAssesment = ({
         totalAnswerMarks[0] += childMarks[0];
         totalAnswerMarks[1] += childMarks[1];
       });
-      console.log(
-        'total question marks for key key',
-        totalQuestionMarks,
-        totalAnswerMarks
-      );
 
       const finalMarksForParentQuestion = !totalQuestionMarks[0]
         ? totalAnswerMarks
@@ -221,8 +216,6 @@ const CreateAssesment = ({
       }
     });
 
-    console.log(qMap);
-
     const reqObj = {
       question_paper: selectedQuestionPaper?.id,
       test_id: testId,
@@ -235,8 +228,6 @@ const CreateAssesment = ({
       descriptions: 'Hello',
       test_mark: testMarksArr,
     };
-
-    console.log(reqObj);
     try {
       const response = await initCreateAssesment(reqObj);
       resetForm();
@@ -254,16 +245,11 @@ const CreateAssesment = ({
     option,
     parentQuestionId
   ) => {
-    console.log(`qid `, questionId, testMarks);
     const changedQuestionIndex = testMarks.findIndex((q) => {
-      // console.log(`qid `, q.question_id, questionId);
       return q.question_id === questionId;
     });
     const changedQuestion = testMarks[changedQuestionIndex];
-    console.log('changedQuestionIndex ', changedQuestionIndex);
     if (isQuestion) {
-      console.log(`!question`);
-
       if (changedQuestionIndex == -1) {
         const obj = {
           question_id: questionId,
@@ -283,7 +269,12 @@ const CreateAssesment = ({
       } else {
         if (field === 'Assign marks') {
           changedQuestion.question_mark[0] = value;
+          changedQuestion.question_mark[1] = 0;
         } else {
+          if (+value > +changedQuestion.question_mark[0]) {
+            setAlert('error', 'Enter less than Assign marks')
+            return
+          }
           changedQuestion.question_mark[1] = value;
         }
         if (parentQuestionId) {
@@ -296,7 +287,6 @@ const CreateAssesment = ({
         ]);
       }
     } else {
-      console.log(`changed question ${field} ${value} ${option}`, changedQuestion);
       if (changedQuestionIndex == -1) {
         const obj = {
           question_id: questionId,
@@ -309,17 +299,14 @@ const CreateAssesment = ({
         }
         if (field === 'Assign marks') {
           obj.child_mark[0] = { [option]: [value, 0] };
-          console.log('obj after assign', obj);
         } else {
           obj.child_mark[0] = { [option]: [0, value] };
-          console.log('obj after negative', obj);
         }
         setTestMarks((prev) => [...prev, obj]);
       } else {
         const optionIndex = changedQuestion.child_mark.findIndex((child) =>
           Object.keys(child).includes(option)
         );
-        console.log('option index ', optionIndex);
 
         if (optionIndex === -1) {
           if (field === 'Assign marks') {
@@ -347,7 +334,6 @@ const CreateAssesment = ({
   };
 
   const handleMarksAssignModeChange = (e) => {
-    console.log(e, e.target.checked);
     setMarksAssignMode(e.target.checked);
   };
   useEffect(() => {
@@ -363,7 +349,6 @@ const CreateAssesment = ({
   }, []);
   useEffect(() => {
     if (selectedQuestionPaper) {
-      console.log('qpaper ', selectedQuestionPaper);
       // initFetchQuestionPaperDetails(3);
       initFetchQuestionPaperDetails(selectedQuestionPaper?.id);
     }
@@ -394,14 +379,15 @@ const CreateAssesment = ({
                       setExpandFilter(true);
                     }}
                   >
-                    {!isMobile &&
-                    <Typography
-                      component='h4'
-                      color='secondary'
-                      style={{ marginRight: '5px' }}
-                    >
-                      Expand Filter
-                    </Typography>}
+                    {!isMobile && (
+                      <Typography
+                        component='h4'
+                        color='secondary'
+                        style={{ marginRight: '5px' }}
+                      >
+                        Expand Filter
+                      </Typography>
+                    )}
                     <FilterListIcon color='secondary' />
                   </IconButton>
                 ) : (
@@ -410,14 +396,15 @@ const CreateAssesment = ({
                       setExpandFilter(false);
                     }}
                   >
-                    {!isMobile &&
-                    <Typography
-                      component='h4'
-                      color='secondary'
-                      style={{ marginRight: '5px' }}
-                    >
-                      Close Filter
-                    </Typography>}
+                    {!isMobile && (
+                      <Typography
+                        component='h4'
+                        color='secondary'
+                        style={{ marginRight: '5px' }}
+                      >
+                        Close Filter
+                      </Typography>
+                    )}
                     <FilterListIcon color='secondary' />
                   </IconButton>
                 )}
@@ -580,6 +567,7 @@ const CreateAssesment = ({
             onMarksAssignModeChange={handleMarksAssignModeChange}
             marksAssignMode={marksAssignMode}
             onChangeTestMarks={handleChangeTestMarks}
+            testMarks={testMarks}
             onCreate={handleCreateAssesmentTest}
             testName={testName}
             testId={testId}

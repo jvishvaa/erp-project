@@ -64,6 +64,8 @@ const AssessmentCard = ({
         `${endpoints.baseURLCentral}/assessment/${period?.id}/update-status-question-paper/`,
         {
           is_verified: true,
+          is_draft: false,
+          is_review: false
         },
         {
           headers: { 'x-api-key': 'vikash@12345#1231' },

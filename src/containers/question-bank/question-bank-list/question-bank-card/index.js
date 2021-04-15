@@ -260,7 +260,7 @@ const QuestionBankCard = ({
               component='p'
               color='secondary'
             >
-              Created By: {period?.created_by?.first_name}
+              {/* Created By: {period?.created_by?.first_name} */}
             </Typography>
           </Box>
           <Box>
