@@ -270,6 +270,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const handleResetFilters = () => {
     setSearchText('');
     setSelectedYear('');
+    setSelectedRoles('')
     setSelectedBranch(null);
     setSelectedGrades([]);
     setSelectedRoles(null);
