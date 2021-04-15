@@ -308,10 +308,10 @@ function App({ alert }) {
                           <Route path='/profile'>
                             {({ match }) => <Profile match={match} />}
                           </Route>
-                           <Route path='/time-table/student-view'>
+                          <Route path='/time-table/student-view'>
                             {({ match }) => <TimeTable match={match} />}
                           </Route>
-                           <Route path='/time-table/teacher-view'>
+                          <Route path='/time-table/teacher-view'>
                             {({ match }) => <TimeTable match={match} />}
                           </Route>
                           <Route path='/role-management'>

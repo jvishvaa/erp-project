@@ -13,11 +13,12 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state'
-import {Link, useHistory} from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import RangeCalender from './calender.jsx';
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
+import Loader from '../../components/loader/loader';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import Group from '../../assets/images/noImg.jpg';
 import Avatar from '@material-ui/core/Avatar';
@@ -82,16 +83,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AttedanceCalender = () => {
-const history = useHistory();
+  const history = useHistory();
 
   const classes = useStyles();
   const moduleId = 178;
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
-  const [academicYear,setAcademicYear] = useState([]);
-  const [selectedAcademicYear,setSelectedAcadmeicYear] = useState('');  
-  const [branchList,setBranchList] = useState([])
-  const [selectedBranch,setSelectedBranch] = useState([])
+  const [academicYear, setAcademicYear] = useState([]);
+  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const [branchList, setBranchList] = useState([])
+  const [selectedBranch, setSelectedBranch] = useState([])
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [sectionList, setSectionList] = useState([]);
@@ -104,23 +105,28 @@ const history = useHistory();
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
   const [sevenDay, setSevenDay] = useState();
-  const [ studentData , setStudentData] = useState([]);
+  const [studentData, setStudentData] = useState([]);
 
 
   useEffect(() => {
-    callApi(`${endpoints.userManagement.academicYear}`,'academicYearList')
+    callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList')
   }, []);
 
-const handleClearAll = ()=>{
-  console.log("clear all")
-}
+  const handleClearAll = () => {
+    console.log("clear all")
+    setSelectedAcadmeicYear('')
+    setSelectedBranch([])
+    setSelectedBranch([])
+    setSelectedGrade([])
+    setSelectedSection([])
+  }
 
   function callApi(api, key) {
     setLoading(true);
     axiosInstance.get(api)
-    .then((result) => {
+      .then((result) => {
         if (result.status === 200) {
-          if(key === 'academicYearList'){
+          if (key === 'academicYearList') {
             console.log(result?.data?.data || [])
             setAcademicYear(result?.data?.data || [])
           }
@@ -128,25 +134,25 @@ const handleClearAll = ()=>{
             console.log(result?.data?.data || [])
             setBranchList(result?.data?.data?.results || []);
           }
-            if (key === 'gradeList') {
-              console.log(result?.data?.data || [])
-                setGradeList(result.data.data || []);
-            }
-            if (key === 'section') {
-              console.log(result?.data?.data || [])
-                setSectionList(result.data.data);
-              }
-            setLoading(false);
+          if (key === 'gradeList') {
+            console.log(result?.data?.data || [])
+            setGradeList(result.data.data || []);
+          }
+          if (key === 'section') {
+            console.log(result?.data?.data || [])
+            setSectionList(result.data.data);
+          }
+          setLoading(false);
         } else {
-            setAlert('error', result.data.message);
-            setLoading(false);
+          setAlert('error', result.data.message);
+          setLoading(false);
         }
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
         setAlert('error', error.message);
         setLoading(false);
-    });
-}
+      });
+  }
 
   const StyledClearButton = withStyles({
     root: {
@@ -240,8 +246,27 @@ const handleClearAll = ()=>{
     setStartDate(starttime);
     setEndDate(endDate);
   };
- 
+
   const getRangeData = () => {
+    if (!selectedAcademicYear) {
+      setAlert('warning', 'Select Academic Year');
+      return;
+    }
+    console.log(selectedBranch.length, "===============")
+    if (selectedBranch.length == 0) {
+      console.log(selectedBranch.length, "===============")
+      setAlert('warning', 'Select Branch');
+      return;
+    }
+    if (selectedGrade.length == 0) {
+      setAlert('warning', 'Select Grade');
+      return;
+    }
+    if (selectedSection.length == 0) {
+      setAlert('warning', 'Select Section');
+      return;
+    }
+    setLoading(true);
     if (counter === 2) {
       axiosInstance
         .get(`academic/student_attendance_between_date_range/`, {
@@ -258,12 +283,14 @@ const handleClearAll = ()=>{
           },
         })
         .then((res) => {
+          setLoading(false);
           console.log(res, 'respond student');
           setStudentDataAll(res.data);
-          let temp = [...res.data.present_list , ...res.data.absent_list ]
+          let temp = [...res.data.present_list, ...res.data.absent_list]
           setStudentData(temp);
         })
         .catch((error) => {
+          setLoading(false);
           console.log(error);
         });
     }
@@ -272,7 +299,7 @@ const handleClearAll = ()=>{
     }
   };
 
-  const handleViewDetails = ()=>{
+  const handleViewDetails = () => {
     const payload = {
       academic_year_id: selectedAcademicYear,
       branch_id: selectedBranch,
@@ -280,33 +307,33 @@ const handleClearAll = ()=>{
       section_id: selectedSection,
       startDate: startDate,
       endDate: endDate
-      }
-      history.push({
-      pathname:'/OverallAttendance',
-      state:{
-      data: studentData,
-      payload: payload
-      }
-    })
-}
-
-const handleMarkAttendance = ()=>{
-  const payload = {
-    academic_year_id: selectedAcademicYear,
-    branch_id: selectedBranch,
-    grade_id: selectedGrade,
-    section_id: selectedSection,
-    startDate: startDate,
-    endDate: endDate
     }
     history.push({
-    pathname:'/markattedance',
-    state:{
-    data: studentData,
-    payload: payload
-    }
+      pathname: '/OverallAttendance',
+      state: {
+        data: studentData,
+        payload: payload
+      }
     })
-}
+  }
+
+  const handleMarkAttendance = () => {
+    const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: startDate,
+      endDate: endDate
+    }
+    history.push({
+      pathname: '/markattedance',
+      state: {
+        data: studentData,
+        payload: payload
+      }
+    })
+  }
 
   const StyledFilterButton = withStyles({
     root: {
@@ -331,8 +358,8 @@ const handleMarkAttendance = ()=>{
 
   return (
     <Layout>
-      <div style={{marginTop:'20px', marginLeft:'-10px'}}>
-        <CommonBreadcrumbs componentName='Attendance + Calendar'/>
+      <div style={{ marginTop: '20px', marginLeft: '-10px' }}>
+        <CommonBreadcrumbs componentName='Attendance + Calendar' />
       </div>
       <Grid
         container
@@ -343,145 +370,145 @@ const handleMarkAttendance = ()=>{
       >
         <Grid item md={3} xs={12}>
           <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedAcadmeicYear(value)
-                console.log(value, "test")
-                if(value){
-                  callApi(
-                    `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                    'branchList'
-                  );
-                }
-                setSelectedGrade([]);
-                setSectionList([]);
-                setSelectedSection([]);
-                setSelectedBranch([])
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              setSelectedAcadmeicYear(value)
+              console.log(value, "test")
+              if (value) {
+                callApi(
+                  `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                  'branchList'
+                );
+              }
+              setSelectedGrade([]);
+              setSectionList([]);
+              setSelectedSection([]);
+              setSelectedBranch([])
 
-              }}
-              id='branch_id'
-              className='dropdownIcon'
-              value={selectedAcademicYear}
-              options={academicYear}
-              getOptionLabel={(option) => option?.session_year}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Academic Year'
-                  placeholder='Academic Year'
-                />
-              )}
-            />
+            }}
+            id='branch_id'
+            className='dropdownIcon'
+            value={selectedAcademicYear || ""}
+            options={academicYear || ""}
+            getOptionLabel={(option) => option?.session_year || ""}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Academic Year'
+                placeholder='Academic Year'
+              />
+            )}
+          />
         </Grid>
         <Grid item md={3} xs={12}>
           <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedBranch([])
-                if(value){
-                  // const ids = value.map((el)=>el)
-                  const selectedId=value.branch.id
-                  setSelectedBranch(value)
-                  console.log(value)
-                  callApi(
-                    `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-                    'gradeList'
-                  );
-                }
-                setSelectedGrade([]);
-                setSectionList([]);
-                setSelectedSection([]);
+            // multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              setSelectedBranch([])
+              if (value) {
+                // const ids = value.map((el)=>el)
+                const selectedId = value.branch.id
+                setSelectedBranch(value)
+                console.log(value)
+                callApi(
+                  `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                  'gradeList'
+                );
+              }
+              setSelectedGrade([]);
+              setSectionList([]);
+              setSelectedSection([]);
 
-              }}
-              id='branch_id'
-              className='dropdownIcon'
-              value={selectedBranch}
-              options={branchList}
-              getOptionLabel={(option) => option?.branch?.branch_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
-                />
-              )}
-            />
+            }}
+            id='branch_id'
+            className='dropdownIcon'
+            value={selectedBranch || ""}
+            options={branchList || ""}
+            getOptionLabel={(option) => option?.branch?.branch_name || ""}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Branch'
+                placeholder='Branch'
+              />
+            )}
+          />
         </Grid>
         <Grid item md={3} xs={12}>
           <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedGrade([])
-                if(value){
-                  // const ids = value.map((el)=>el)
-                  const selectedId=value.grade_id
-                  // console.log(selectedBranch.branch)
-                  const branchId=selectedBranch.branch.id
-                  setSelectedGrade(value)
-                  callApi(
-                    `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
-                    'section'
-                  );
-                }
-                  setSectionList([]);
-                  setSelectedSection([]);
+            // multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              setSelectedGrade([])
+              if (value) {
+                // const ids = value.map((el)=>el)
+                const selectedId = value.grade_id
+                // console.log(selectedBranch.branch)
+                const branchId = selectedBranch.branch.id
+                setSelectedGrade(value)
+                callApi(
+                  `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+                  'section'
+                );
+              }
+              setSectionList([]);
+              setSelectedSection([]);
 
-              }}
-              id='grade_id'
-              className='dropdownIcon'
-              value={selectedGrade}
-              options={gradeList}
-              getOptionLabel={(option) => option?.grade__grade_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Grade'
-                  placeholder='Grade'
-                />
-              )}
-            />
+            }}
+            id='grade_id'
+            className='dropdownIcon'
+            value={selectedGrade || ""}
+            options={gradeList || ""}
+            getOptionLabel={(option) => option?.grade__grade_name || ""}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Grade'
+                placeholder='Grade'
+              />
+            )}
+          />
         </Grid>
         <Grid item md={3} xs={12}>
           <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedSection([])
-                if (value) {
-                  const ids=value.id
-                  const secId=value.section_id
-                  setSelectedSection(value)
-                  setSecSelectedId(secId)
-                }
+            // multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              setSelectedSection([])
+              if (value) {
+                const ids = value.id
+                const secId = value.section_id
+                setSelectedSection(value)
+                setSecSelectedId(secId)
+              }
 
-              }}
-              id='section_id'
-              className='dropdownIcon'
-              value={selectedSection}
-              options={sectionList}
-              getOptionLabel={(option) => option?.section__section_name || option?.section_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Section'
-                  placeholder='Section'
-                />
-              )}
-            />
+            }}
+            id='section_id'
+            className='dropdownIcon'
+            value={selectedSection || ""}
+            options={sectionList || ""}
+            getOptionLabel={(option) => option?.section__section_name || option?.section_name || ""}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Section'
+                placeholder='Section'
+              />
+            )}
+          />
         </Grid>
         <Grid item md={11} xs={12}>
           <Divider />
@@ -529,7 +556,7 @@ const handleMarkAttendance = ()=>{
                   size='small'
                   color='secondary'
                   className={counter === 3 ? 'viewDetailsButtonClick' : 'viewDetails'}
-                  // onClick={getfuture}
+                // onClick={getfuture}
                 >
                   {/* <p className='btnLabel'>Secondary</p> */}
                   Monthly
@@ -709,7 +736,7 @@ const handleMarkAttendance = ()=>{
                 </Typography>
               </Grid>
               <Grid item md={6} xs={12} className='event-btn'>
-                <Button size='small'   href={`/createEvent`}>
+                <Button size='small' href={`/createEvent`}>
                   {/* ADD EVENT */}
                   <span className={classes.contentData} id='event-text'>
                     Add Event
@@ -776,6 +803,7 @@ const handleMarkAttendance = ()=>{
         </div>
         {/* </Grid> */}
       </Grid>
+      {loading && <Loader />}
     </Layout>
   );
 };
