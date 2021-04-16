@@ -56,6 +56,7 @@ import { result } from 'lodash';
 import e from 'cors';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
+import { FlashAutoTwoTone } from '@material-ui/icons';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -210,26 +211,28 @@ const Cal1 = () => {
   });
 
   useEffect(() => {
-    axiosInstance.get(`${endpoints.eventBat.getListCategories}`)
+    if(moduleId){
+      axiosInstance.get(`${endpoints.eventBat.getListCategories}?module_id=${moduleId}`)
       .then((result) => {
         console.log('useEffect Data', result.data);
         setEventType(result.data.data)
         // setDummyData(result?.data.data.results);
         // setCategoryType([{val:1,category_name:'cat'},{val:2,category_name:'dog'}])
       });
-  }, []);
+    }
+  }, [moduleId]);
 
 
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Calendar & Attendance' &&
+          item.parent_modules === 'Master Management' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher View' ) {
+            if (item.child_name === 'Event Category' ) {
               setModuleId(item.child_id);
             }
           });
@@ -251,7 +254,9 @@ const Cal1 = () => {
     setOpen(true);
     setChaTitle(true);
   };
-  const handleClickOpens = () => { setOpen(true); }
+  const handleClickOpens = () => { 
+    setOpen(true); 
+  }
 
   const handleClear = () => {
     setFilterData({ selectedEventType: '' });
@@ -297,24 +302,19 @@ const Cal1 = () => {
   };
 
   const handleSave = () => {
+    
     setLoading(true)
+    // setEditFlag(false)
+    if (eventName) {
     axiosInstance
-      .post(`${endpoints.eventBat.postCreateEvent}`, {
+      .post(`${endpoints.eventBat.postCreateEvent}?module_id=${moduleId}`, {
         // event_category_type: eventName,
         event_category_name: eventName,
         event_category_color: custColor,
       })
       .then((result) => {
         setLoading(false)
-        setAlert('success', 'Event Saved Successfully')
-        console.log(result.data.data.results)
-      })
-      .catch((err)=>{
-        setLoading(false)
-        setAlert('error', err)
-        console.log(err)
-      });
-    setEventName('')
+        setEventName('')
     let fullData = eventType
     console.log('This is full data', fullData)
     fullData.push({
@@ -323,6 +323,18 @@ const Cal1 = () => {
     })
     setEventType(fullData)
     setOpen(false);
+        setAlert('success', 'Event Saved Successfully')
+        console.log(result.data.data.results)
+      })
+      .catch((err)=>{
+        setLoading(false)
+        setAlert('error', err)
+        console.log(err)
+      }); 
+    } else {
+      setAlert('warning', 'Please Select Event Name First!')
+    }
+    
   };
 
 
@@ -375,21 +387,24 @@ const Cal1 = () => {
   };
 
   const handleDelete = (e, idx) => {
-    axiosInstance.delete(`${endpoints.eventBat.deleteEventCategory}${e.id}`).then((result) => {
+    axiosInstance.delete(`${endpoints.eventBat.deleteEventCategory}${e.id}?module_id=${moduleId}`)
+    .then((result) => {
       console.log('deleted Data', result.data.data);
       setDeleteFlag(!deleteFlag);
       setAnchorEl(null);
       setAlert('success', 'Event Delete Successfully')
-    }).catch((error) => console.log(error));
+    }).catch((error) => 
     setAlert('warning', 'Something went wrong')
+    );
+    
   };
 
   const handleEdit = (data) => {
     //history.push(`/calendar1/${e.id}`);
     console.log(data);
     setChaTitle(false)
+    setEditFlag(false)
     handleClickOpens();
-    setEditFlag(!editFlag)
     setAnchorEl(null);
     setIsEditId(data.id);
     setEventName(data.event_category_name);
@@ -416,13 +431,15 @@ const Cal1 = () => {
       event_category_color: custColor,
     }
     axiosInstance
-      .put(`${endpoints.eventBat.patchUpdateEvent}${isEditId}`, params)
+      .put(`${endpoints.eventBat.patchUpdateEvent}${isEditId} `, params)
       .then((result) => {
         console.log(result.data, 'Update Data');
-        setIsEditId('');
-        setEventName('');
-        setEditFlag(!editFlag)
-        setAlert('success', 'Event Updated Successfully')
+        if(result.data.status===200){
+          setIsEditId('');
+          setEventName('');
+          setEditFlag(true)
+          setAlert('success', 'Event Updated Successfully')
+        }
       })
       .catch((error) => console.log(error))
     //history.push('/calendar1')
@@ -572,11 +589,11 @@ const Cal1 = () => {
                     </Button>
               <Button
                 autoFocus
-                onClick={editFlag ? handleUpdate : handleSave}
+                onClick={editFlag ?  handleSave : handleUpdate}
                 // onClick={handleSave}
                 color='primary'
               >
-                {editFlag ? 'UPDATE' : 'Save'}
+                {chaTitle ? 'Save' : 'Update'}
               </Button>
             </DialogActions>
             {/* </Grid> */}
