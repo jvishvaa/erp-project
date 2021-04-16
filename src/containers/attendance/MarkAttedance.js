@@ -114,7 +114,9 @@ const MarkAttedance = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
-
+  const [totalGenre, setTotalGenre] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const limit = 8;
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
@@ -134,13 +136,14 @@ const MarkAttedance = () => {
 
       axiosInstance
         .get(
-          `${endpoints.academics.studentList}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}`
+          `${endpoints.academics.studentList}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&page_num=${pageNumber}&page_size=${limit}`
         )
         .then(res => {
-          console.log(res.data.result)
-          setNewData(res.data.result)
+          console.log(res.data.results)
+          setNewData(res.data.results)
+          setTotalGenre(res.data.count);
 
-          var result = res.data.result.map((item) => (
+          var result = res.data.results.map((item) => (
             {
               name: item.name,
               student_id: item.user,
@@ -210,15 +213,16 @@ const MarkAttedance = () => {
     // console.log(payload)
     axiosInstance
       .get(
-        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}`
+        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&page_num=${pageNumber}&page_size=${limit}`
       )
       .then(res => {
         setLoading(false);
-        console.log(res.data.result)
-        setNewData(res.data.result)
+        console.log(res.data)
+        setNewData(res.data.results)
+        setTotalGenre(res.data.count);
         const is_first_shift_present = false
         const is_second_shift_present = false
-        var result = res.data.result.map((item) => (
+        var result = res.data.results.map((item) => (
           {
             name: item.name,
             student_id: item.user,
@@ -317,6 +321,7 @@ const MarkAttedance = () => {
     setSelectedGrade([])
     setSelectedSection([])
     setDateValue(moment(date).format('YYYY-MM-DD'))
+    setTotalGenre(null)
   }
 
   const handleFirstHalf = (e, id) => {
@@ -363,6 +368,12 @@ const MarkAttedance = () => {
     // })
 
   }
+  const handlePagination = (event, page) => {
+    setPageNumber(page);
+    // setGenreActiveListResponse([]);
+    // setGenreInActiveListResponse([]);
+    // getData();
+  };
 
   const handleSecondHalf = (e, id) => {
     console.log(e.target.checked, id)
@@ -746,13 +757,18 @@ const MarkAttedance = () => {
 
         }
         <Grid item md={2} xs={12}></Grid>
-        {
-          data &&
-          <Grid container justify='center'>
-            {' '}
-            <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
+        <Grid container justify='center'>
+            { totalGenre > 9 && (
+              <Pagination
+                onChange={handlePagination}
+                style={{ paddingLeft: '150px' }}
+                count={Math.ceil(totalGenre / limit)}
+                color='primary'
+                page={pageNumber}
+                color='primary'
+              />
+            )}
           </Grid>
-        }
       </Grid>
       {loading && <Loader />}
     </Layout>

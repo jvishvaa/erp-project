@@ -84,6 +84,10 @@ const Attend = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
+  const [totalGenre, setTotalGenre] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const limit = 8;
+
   useEffect(() => {
     console.log(history)
 
@@ -102,15 +106,16 @@ const Attend = () => {
 
       axiosInstance.
       get(
-        `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${startDate}&end_date=${endDate}`
+        `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${startDate}&end_date=${endDate}&page_num=${pageNumber}&page_size=${limit}`
       )
       .then(res => {
         setLoading(false)
-        console.log(res.data, "multiple student data between date ranges")
-        console.log(res.data.data.map((item)=>console.log(item.user_id)))
+        setTotalGenre(res.data.count);
+        console.log(res.data.results, "multiple student data between date ranges")
+        console.log(res.data.results.map((item)=>console.log(item.user_id)))
         // let temp = [...res.data.absent_list, ...res.data.present_list]
         // console.log(temp)
-        setResult(res.data.data)
+        setResult(res.data.results)
       })
       .catch(err => {
         setLoading(false)
@@ -204,15 +209,15 @@ const Attend = () => {
 
     axiosInstance.
       get(
-        `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}`
+        `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&page_num=${pageNumber}&page_size=${limit}`
       )
       .then(res => {
         setLoading(false)
-        console.log(res.data, "multiple student data between date ranges")
-        console.log(res.data.data.map((item)=>console.log(item.user_id)))
-        // let temp = [...res.data.absent_list, ...res.data.present_list]
-        // console.log(temp)
-        setResult(res.data.data)
+        setTotalGenre(res.data.count);
+        console.log(res.data.count)
+        console.log(res.data.results, "multiple student data between date ranges")
+        console.log(res.data.results.map((item)=>console.log(item.user_id)))
+        setResult(res.data.results)
       })
       .catch(err => {
         setLoading(false)
@@ -279,6 +284,7 @@ const Attend = () => {
     setSelectedGrade([])
     setSelectedSection([])
     setDateValue(moment(date).format('YYYY-MM-DD'))
+    setTotalGenre(null)
   }
 
   const StyledClearButton = withStyles({
@@ -316,7 +322,12 @@ const Attend = () => {
     setDateValue(value);
     console.log('date', value);
   };
-
+  const handlePagination = (event, page) => {
+    setPageNumber(page);
+    // setGenreActiveListResponse([]);
+    // setGenreInActiveListResponse([]);
+    // getData();
+  };
   const handleSinlgeStudent = (id) => {
     console.log(id)
     const studentData = result.filter((item) => item.user_id == id)
@@ -742,6 +753,18 @@ const Attend = () => {
           </div>)
 
         }
+        <Grid container justify='center'>
+            { totalGenre > 9 && (
+              <Pagination
+                onChange={handlePagination}
+                style={{ paddingLeft: '150px' }}
+                count={Math.ceil(totalGenre / limit)}
+                color='primary'
+                page={pageNumber}
+                color='primary'
+              />
+            )}
+          </Grid>
       {loading && <Loader />}
     </Layout>
   );

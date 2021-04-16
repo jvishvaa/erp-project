@@ -81,6 +81,9 @@ const Attendance = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
+  const [totalGenre, setTotalGenre] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const limit = 8;
 
   useEffect(() => {
     console.log(history)
@@ -96,12 +99,14 @@ const Attendance = () => {
       console.log(history?.location?.state?.payload?.branch_id)
       // console.log(history?.location?.state?.studentData[0]?.student)
       axiosInstance
-        .get(`${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&user_id=${history?.location?.state?.studentData[0]?.user_id}`)
+        .get(`${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&user_id=${history?.location?.state?.studentData[0]?.user_id}&page_num=${pageNumber}&page_size=${limit}`)
         // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
         .then(res => {
           if (res.status == 200) {
-            console.log(res.data.Attendance_data, "single student data")
-            setData(res.data.Attendance_data)
+            setTotalGenre(res.data.count);
+            console.log(res.data.count)
+            console.log(res.data.results, "single student data")
+            setData(res.data.results)
             if (res?.data?.message) {
               // alert(res?.data?.message)
             }
@@ -232,7 +237,12 @@ const getAllStudents = ()=>{
         setLoading(false);
       });
   }
-
+  const handlePagination = (event, page) => {
+    setPageNumber(page);
+    // setGenreActiveListResponse([]);
+    // setGenreInActiveListResponse([]);
+    // getData();
+  }
   const handleClearAll = () => {
     setSelectedAcadmeicYear('')
     setSelectedBranch([])
@@ -241,6 +251,7 @@ const getAllStudents = ()=>{
     setSelectedSection([])
     setDateValue(moment(date).format('YYYY-MM-DD'))
     setData([])
+    setTotalGenre(null)
   }
 
   const StyledClearButton = withStyles({
@@ -515,7 +526,7 @@ const getAllStudents = ()=>{
           <Divider />
         </Grid>
         <Grid container direction='row' style={{ margin: '1%' }}>
-          <Grid item md={2} xs={6}>
+          {/* <Grid item md={2} xs={6}>
             <StyledClearButton
               variant='contained'
               startIcon={<ClearIcon />}
@@ -523,7 +534,7 @@ const getAllStudents = ()=>{
             >
               Clear all
           </StyledClearButton>
-          </Grid>
+          </Grid> */}
 
           <Grid item md={2} xs={6}>
             <StyledFilterButton
@@ -759,6 +770,18 @@ const getAllStudents = ()=>{
           </div>)
 
         }
+        <Grid container justify='center'>
+            { totalGenre > 9 && (
+              <Pagination
+                onChange={handlePagination}
+                style={{ paddingLeft: '150px' }}
+                count={Math.ceil(totalGenre / limit)}
+                color='primary'
+                page={pageNumber}
+                color='primary'
+              />
+            )}
+          </Grid>
       {loading && <Loader />}
     </Layout>
   );
