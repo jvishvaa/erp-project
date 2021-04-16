@@ -7,6 +7,7 @@ import {
   Divider,
   Typography,
   TablePagination,
+  IconButton,
 } from '@material-ui/core';
 import CountdownTimer from './CountdownTimer';
 import { withRouter } from 'react-router-dom';
@@ -25,6 +26,8 @@ import CardView from './CardView';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import Layout from '../../../Layout';
 import { mapValues } from 'lodash';
+import { InputAdornment } from '@material-ui/core';
+import DateRangeIcon from '@material-ui/icons/DateRange';
 import DetailCardView from './DetailCardView';
 import { LaptopWindowsSharp } from '@material-ui/icons';
 
@@ -793,11 +796,19 @@ const ErpAdminViewClass = ({ history }) => {
                                 {...startProps}
                                 inputProps={{
                                   ...inputProps,
-                                  value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                                  value: `${moment(inputProps.value).format('DD-MM-YYYY')} - ${moment(endProps.inputProps.value).format('DD-MM-YYYY')}`,
                                   readOnly: true,
+                                  endAdornment: (
+                                    // <InputAdornment position="end">
+                                    <IconButton>
+                                    <DateRangeIcon style={{ width: '35px' }} color='primary' />
+
+                                    </IconButton>
+                                    // </InputAdornment>
+                                  ),
                                 }}
                                 size='small'
-                                style={{ minWidth: '100%' }}
+                                // style={{ minWidth: '100%' }}
                               />
                             </>
                           );
