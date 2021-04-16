@@ -251,7 +251,7 @@ const Calander = (props) => {
               options={assignedTeacher}
               getOptionLabel={(option) => option?.name}
               style={{ width: 250 }}
-              onChange={(event, option) => setAssignedTeacherID(option?.id)}
+              onChange={(event, option) => setAssignedTeacherID(option?.user_id)}
               renderInput={(params) => (
                 <TextField
                   {...params}
