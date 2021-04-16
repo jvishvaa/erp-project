@@ -21,7 +21,9 @@ export default {
     // createAttendance: '/academic/create_attendance/',
     createAttendance: '/academic/create_or_update_attendance/',
     studentList: '/academic/get_user_details/',
-    singleStudentAttendance: '/academic/student_attendance_between_days/',
+    // singleStudentAttendance: '/academic/student_attendance_between_days/',
+    multipleStudentsAttendacne:'/academic/multiple_student_attendance_between_dates/',
+    singleStudentAttendance: '/academic/single_student_attendance_between_days/',
   },
   profile: {
     userDetails: '/erp_user/user-data/',

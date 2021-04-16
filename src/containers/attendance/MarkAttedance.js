@@ -179,6 +179,7 @@ const MarkAttedance = () => {
   }
 
   const handleFilter = () => {
+    console.log(selectedSection.id, "section_mapping_id")
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
       return;
@@ -221,7 +222,7 @@ const MarkAttedance = () => {
           {
             name: item.name,
             student_id: item.user,
-            section_mapping_id: selectedSection.section_id,
+            section_mapping_id: selectedSection.id,
             remarks: "none",
             is_first_shift_present: is_first_shift_present,
             is_second_shift_present: is_second_shift_present,
@@ -245,19 +246,19 @@ const MarkAttedance = () => {
       .then((result) => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
-            console.log(result?.data?.data || [])
+            console.log(result?.data?.data || [], "checking")
             setAcademicYear(result?.data?.data || [])
           }
           if (key === 'branchList') {
-            console.log(result?.data?.data || [])
+            console.log(result?.data?.data || [], "checking")
             setBranchList(result?.data?.data?.results || []);
           }
           if (key === 'gradeList') {
-            console.log(result?.data?.data || [])
+            console.log(result?.data?.data || [], "checking")
             setGradeList(result.data.data || []);
           }
           if (key === 'section') {
-            console.log(result?.data?.data || [])
+            console.log(result?.data?.data || [], "checking")
             setSectionList(result.data.data);
           }
           setLoading(false);
@@ -330,10 +331,10 @@ const MarkAttedance = () => {
     setData(products)
     const remarks = "test"
     const fullday_present = (product.is_first_shift_present && product.is_second_shift_present) ? "true" : "false"
-    console.log(selectedSection.section_id)
+    console.log(selectedSection.id, "section_mapping_id")
 
     const fullData = {
-      section_mapping_id: selectedSection.section_id,
+      section_mapping_id: selectedSection.id,
       student_id: id,
       attendance_for_date: dateValue,
       remarks: remarks,
@@ -375,10 +376,10 @@ const MarkAttedance = () => {
     setData(products)
     const remarks = "test"
     const fullday_present = (product.is_first_shift_present && product.is_second_shift_present) ? "true" : "false"
-    console.log(selectedSection.section_id)
+    console.log(selectedSection.id, "section_mapping_id")
 
     const fullData = {
-      section_mapping_id: selectedSection.section_id,
+      section_mapping_id: selectedSection.id,
       student_id: id,
       attendance_for_date: dateValue,
       remarks: remarks,

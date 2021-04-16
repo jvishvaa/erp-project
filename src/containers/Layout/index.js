@@ -1312,23 +1312,6 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/publications')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <PublishIcon /> */}
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Publication</ListItemText>
-          </ListItem>
-          {navigationData && drawerOpen && navigationData.length > 0 && (
-            <DrawerMenu
-              superUser={superUser}
-              navigationItems={navigationData}
-              onClick={handleRouting}
-            />
-          )}
         </List>
       </Drawer>
       <main className={classes.content}>

@@ -96,8 +96,26 @@ const Attend = () => {
       setStartDate(history?.location?.state?.payload?.startDate)
       setEndDate(history?.location?.state?.payload?.endDate)
       setResult(history?.location?.state?.data)
+      console.log(history?.location?.state?.payload?.section_id?.section_id, "section id in OverallAttendance")
       console.log(history?.location?.state?.payload?.branch_id)
       console.log(history?.location?.state?.data, "student data")
+
+      axiosInstance.
+      get(
+        `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${startDate}&end_date=${endDate}`
+      )
+      .then(res => {
+        setLoading(false)
+        console.log(res.data, "multiple student data between date ranges")
+        console.log(res.data.data.map((item)=>console.log(item.user_id)))
+        // let temp = [...res.data.absent_list, ...res.data.present_list]
+        // console.log(temp)
+        setResult(res.data.data)
+      })
+      .catch(err => {
+        setLoading(false)
+        console.log(err)
+      })
     }
 
     else {
@@ -186,14 +204,15 @@ const Attend = () => {
 
     axiosInstance.
       get(
-        `${endpoints.academics.attendance}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}`
+        `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}`
       )
       .then(res => {
         setLoading(false)
-        console.log(res.data)
-        let temp = [...res.data.absent_list, ...res.data.present_list]
-        console.log(temp)
-        setResult(temp)
+        console.log(res.data, "multiple student data between date ranges")
+        console.log(res.data.data.map((item)=>console.log(item.user_id)))
+        // let temp = [...res.data.absent_list, ...res.data.present_list]
+        // console.log(temp)
+        setResult(res.data.data)
       })
       .catch(err => {
         setLoading(false)
@@ -300,7 +319,7 @@ const Attend = () => {
 
   const handleSinlgeStudent = (id) => {
     console.log(id)
-    const studentData = result.filter((item) => item.id == id)
+    const studentData = result.filter((item) => item.user_id == id)
     console.log(studentData)
     const payload = {
       academic_year_id: selectedAcademicYear,
@@ -553,16 +572,16 @@ const Attend = () => {
       <br />
       <br />
       <MediaQuery minWidth={541}>
-        <Grid container direction='row' className={classes.root} spacing={2}>
+        <Grid container direction='row' justify="space-between"  className={classes.root} spacing={2} >
           {/* <Grid item md={1}></Grid> */}
 
           <Grid item sm={2} md={3}>
             <Typography color='primary'>{startDate && startDate} to {endDate && endDate} </Typography>
           </Grid>
-          <Grid item sm={1} md={1}>
+          {/* <Grid item sm={1} md={1}>
             <img src={line} className={classes.lines} />
-          </Grid>
-          <Grid item xs={12} md={5} >
+          </Grid> */}
+          {/* <Grid item xs={12} md={5} >
             <FormGroup row className='checkboxStyle'>
               <FormControlLabel
                 control={
@@ -615,12 +634,12 @@ const Attend = () => {
                 label="2nd half"
               />
             </FormGroup>
-          </Grid>
-          <Grid item sm={1} md={1}>
+          </Grid> */}
+          {/* <Grid item sm={1} md={1}>
             <img src={line} className={classes.lines} />
-          </Grid>
+          </Grid> */}
           <Grid item xs={8} sm={2} md={2} lg={2}>
-            <Typography variant='subtitle2' color='secondary'>
+            <Typography variant='subtitle1' color='secondary'>
               Number of students: {result && result.length || 0}
             </Typography>
           </Grid>
@@ -641,52 +660,52 @@ const Attend = () => {
         <br />
       </Grid>
       <Grid container spacing={2} direction='row'>
-        {data && data
-          .filter((item, index) => {
-            if (state.present) {
-              const pageCondition = index >= offset && index < offset + 8
-              return pageCondition && (item.is_first_shift_present && item.is_second_shift_present)
-            }
-            else if (state.absent) {
-              const pageCondition = index >= offset && index < offset + 8
-              return pageCondition && (item.is_first_shift_present || item.is_second_shift_present)
-            }
-            else if (state.first_half) {
-              const pageCondition = index >= offset && index < offset + 8
-              return pageCondition && item.is_first_shift_present
-            }
-            else if (state.second_half) {
-              const pageCondition = index >= offset && index < offset + 8
-              return pageCondition && item.is_second_shift_present
-            }
-            else if (state.first_half && state.second_half) {
-              const pageCondition = index >= offset && index < offset + 8
-              return pageCondition && (item.is_first_shift_present && item.is_second_shift_present)
-            }
-            else {
-              const pageCondition = index >= offset && index < offset + 8
-              return pageCondition && item
-            }
-          })
+        {result && result
+          // .filter((item, index) => {
+          //   if (state.present) {
+          //     const pageCondition = index >= offset && index < offset + 8
+          //     return pageCondition && (item.is_first_shift_present && item.is_second_shift_present)
+          //   }
+          //   else if (state.absent) {
+          //     const pageCondition = index >= offset && index < offset + 8
+          //     return pageCondition && (item.is_first_shift_present || item.is_second_shift_present)
+          //   }
+          //   else if (state.first_half) {
+          //     const pageCondition = index >= offset && index < offset + 8
+          //     return pageCondition && item.is_first_shift_present
+          //   }
+          //   else if (state.second_half) {
+          //     const pageCondition = index >= offset && index < offset + 8
+          //     return pageCondition && item.is_second_shift_present
+          //   }
+          //   else if (state.first_half && state.second_half) {
+          //     const pageCondition = index >= offset && index < offset + 8
+          //     return pageCondition && (item.is_first_shift_present && item.is_second_shift_present)
+          //   }
+          //   else {
+          //     const pageCondition = index >= offset && index < offset + 8
+          //     return pageCondition && item
+          //   }
+          // })
           .map((item) => {
             return (
-              <Grid item xs={12} sm={6} md={3} lg={3}>
-                <Card className={classes.bord} onClick={() => handleSinlgeStudent(item.id)} style={{ cursor: 'pointer' }}>
+              <Grid item xs={12} sm={6} md={4}>
+                <Card className={classes.bord} onClick={() => handleSinlgeStudent(item.user_id)} style={{cursor:'pointer'}} >
                   <CardMedia className={classes.cover} />
                   <div>
                     <CardContent>
-                      <Grid container direction='row' justify="space-between" alignItems="center" style={{ border: '1px solid red' }}>
+                      <Grid container direction='row' justify="space-between" alignItems="center">
                         <Grid item xs={1} sm={1} md={1} lg={1} style={{ marginTop: 15 }}>
-                          <Avatar>{item.student_first_name.slice(0, 1)}</Avatar>
+                          <Avatar>{item.name.slice(0, 1)}</Avatar>
                         </Grid>
                         <Grid item >
-                          <Typography>{item.student_first_name.slice(0, 6) || ""}</Typography>
-                          <Typography>{item.student}</Typography>
+                          <Typography>Name: {item.name.slice(0, 6) || ""}</Typography>
+                          <Typography>Roll_ no: {item.user_id}</Typography>
                         </Grid>
                         <Grid>
                           <p class='box'>
-                            <span class='content1'>1st</span>
-                            <span class='content'>2nd</span>
+                            <span class='content1'>{item.no_of_days_present}</span>
+                            <span class='content'>{item.no_of_days_absent}</span>
                           </p>
                         </Grid>
                       </Grid>
@@ -699,7 +718,7 @@ const Attend = () => {
       </Grid>
       <br />
       {
-          !data &&
+          !result &&
           (<div  style={{width:'10%',marginLeft:'40%',}}>
             <SvgIcon
               component={() => (
@@ -723,13 +742,6 @@ const Attend = () => {
           </div>)
 
         }
-      <Grid container justify='center'>
-        {' '}
-        {
-          data && <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
-
-        }
-      </Grid>
       {loading && <Loader />}
     </Layout>
   );
