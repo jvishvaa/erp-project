@@ -403,8 +403,8 @@ const Cal1 = () => {
     //history.push(`/calendar1/${e.id}`);
     console.log(data);
     setChaTitle(false)
-    setEditFlag(false)
     handleClickOpens();
+    setEditFlag(!editFlag)
     setAnchorEl(null);
     setIsEditId(data.id);
     setEventName(data.event_category_name);
@@ -431,13 +431,13 @@ const Cal1 = () => {
       event_category_color: custColor,
     }
     axiosInstance
-      .put(`${endpoints.eventBat.patchUpdateEvent}${isEditId} `, params)
+      .put(`${endpoints.eventBat.patchUpdateEvent}${isEditId}`, params)
       .then((result) => {
         console.log(result.data, 'Update Data');
         if(result.data.status===200){
           setIsEditId('');
           setEventName('');
-          setEditFlag(true)
+          setEditFlag(!editFlag)
           setAlert('success', 'Event Updated Successfully')
         }
       })
@@ -589,11 +589,11 @@ const Cal1 = () => {
                     </Button>
               <Button
                 autoFocus
-                onClick={editFlag ?  handleSave : handleUpdate}
+                onClick={editFlag ? handleUpdate : handleSave}
                 // onClick={handleSave}
                 color='primary'
               >
-                {chaTitle ? 'Save' : 'Update'}
+                {editFlag ? 'UPDATE' : 'Save'}
               </Button>
             </DialogActions>
             {/* </Grid> */}
