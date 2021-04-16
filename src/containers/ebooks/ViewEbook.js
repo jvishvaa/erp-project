@@ -18,8 +18,9 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../Layout';
 import { Pagination } from '@material-ui/lab';
 // import Filter from './Filter';
-import Filter from './filter';
+import Filter from './filter.jsx';
 import GridList from './gridList';
+import axios from 'axios';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 
@@ -161,6 +162,22 @@ class ViewEbook extends Component {
 
 
   getEbook = (acad, branch, grade, subject) => {
+    const {host}= new URL(axiosInstance.defaults.baseURL) // "dev.olvorchidnaigaon.letseduvate.com"
+    const hostSplitArray = host.split('.')
+    const subDomainLevels = hostSplitArray.length - 2
+    let domain = ''
+    let subDomain = ''
+    let subSubDomain = ''
+    if(hostSplitArray.length > 2){
+        domain = hostSplitArray.slice(hostSplitArray.length-2).join('')
+    }
+    if(subDomainLevels===2){
+        subSubDomain = hostSplitArray[0]
+        subDomain = hostSplitArray[1]
+    }else if(subDomainLevels===1){
+        subDomain = hostSplitArray[0]
+    }
+    const domainTobeSent =subDomain 
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch?.id}`:''}`;
     const filterGrade = `${grade ? `&grade=${grade?.grade_id}`: ''}`;
@@ -168,18 +185,20 @@ class ViewEbook extends Component {
     const { pageNo, pageSize,tabValue,moduleId } = this.state;
     let urlPath = ''
     if(tabValue === 0 || tabValue === 1){
-      urlPath =  `${endpoints.ebook.ebook}?page_number=${
+      urlPath =  `${endpoints.ebook.ebook}?domain_name=${domainTobeSent}&is_ebook=true&page_number=${
         pageNo 
       }&page_size=${pageSize}&ebook_type=${tabValue+1}${filterAcad}${filterBranch}${filterGrade}${filterSubject}`
     }else if(tabValue ===2){
-      urlPath = `${endpoints.ebook.ebook}?page_number=${
+      urlPath = `${endpoints.ebook.ebook}?domain_name=${domainTobeSent}&is_ebook=true&page_number=${
         pageNo 
       }&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}`
     }
-    axiosInstance
-      .get(urlPath
-       
-      )
+    axios
+      .get(urlPath, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
       .then((result) => {
         if (result.data.status_code === 200) {
           this.setState({ data: result.data && result.data.result && result.data.result.data && result.data.result.data,totalEbooks:result.data.result.total_ebooks });
@@ -241,7 +260,7 @@ class ViewEbook extends Component {
                           <Tab label='General' {...a11yProps(0)} />
                           <Tab label='Curriculum' {...a11yProps(1)} />
 
-                          <Tab label='Deleted' {...a11yProps(2)} />
+                          {/* <Tab label='Deleted' {...a11yProps(2)} /> */}
                         </Tabs>
                         <TabPanel value={tabValue} index={0}>
                           {data && (
