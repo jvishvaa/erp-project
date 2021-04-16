@@ -137,7 +137,7 @@ const AttedanceCalender = () => {
 
   useEffect(() => {
     if(moduleId){
-    callApi(`${endpoints.userManagement.academicYear}?moduleId=${moduleId}`, 'academicYearList')
+    callApi(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`, 'academicYearList')
     }
   }, [moduleId]);
 
