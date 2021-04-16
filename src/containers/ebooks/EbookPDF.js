@@ -7,6 +7,7 @@ import { Grid, makeStyles, AppBar, IconButton, Tooltip } from '@material-ui/core
 import { ArrowBack, ArrowForward, ZoomOutMap, Undo, Close } from '@material-ui/icons'
 import endpoints from '../../config/endpoints';
 import './canvas.css'
+import axios from 'axios';
 // import AnnotateCanvas from './annotate'
 
 const useStyles = makeStyles(theme => ({
@@ -37,6 +38,7 @@ const EbookPdf = (props) => {
   const [bookPage, setBookPage] = useState('')
   const [height, setHeight] = useState(0)
   const [width, setWidth] = useState(0)
+  const [domineName, setDomineName] = useState('')
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const restrictCopyAndSave = (event) => {
@@ -93,12 +95,14 @@ const EbookPdf = (props) => {
               'left_position': y,
               'type_of_activity': 0
             }
-      let AnnotateURL = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id }`
-
-      axiosInstance.post(AnnotateURL, data1, {
+      let AnnotateURL = `${endpoints.ebook.AnnotateEbook}?domain_name=${domineName}&is_ebook=true&ebook_id=${props.id }`
+      axios.post(AnnotateURL, data1, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          'x-api-key': 'vikash@12345#1231',
         },
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
       })
         .then(res => {
         })
@@ -117,6 +121,25 @@ const EbookPdf = (props) => {
   }, [props.id, page, props.user])
 
   useEffect(() => {
+    const {host}= new URL(axiosInstance.defaults.baseURL) // "dev.olvorchidnaigaon.letseduvate.com"
+    const hostSplitArray = host.split('.')
+    const subDomainLevels = hostSplitArray.length - 2
+    let domain = ''
+    let subDomain = ''
+    let subSubDomain = ''
+    if(hostSplitArray.length > 2){
+        domain = hostSplitArray.slice(hostSplitArray.length-2).join('')
+    }
+    if(subDomainLevels === 2){
+        subSubDomain = hostSplitArray[0]
+        subDomain = hostSplitArray[1]
+    } else if(subDomainLevels === 1){
+        subDomain = hostSplitArray[0]
+    }
+    const domainTobeSent = subDomain 
+    setDomineName(domainTobeSent);
+  },[])
+  useEffect(() => {
     // setClear(false)
     restrictCopyAndSave()
   }, [page, props.id])
@@ -126,35 +149,32 @@ const EbookPdf = (props) => {
   }, [props.pageNumber])
 
   useEffect(() => {
-    getSplittedImages()
+    if(props.id) {
+      getSplittedImages();
+    }
   }, [page, props.id, height, width])
 
   const getSplittedImages = useCallback(() => {
-    let imgUrl = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id }&page_number=${page}`
+    let imgUrl = `${endpoints.ebook.AnnotateEbook}?domain_name=${domineName}&is_ebook=true&ebook_id=${props.id}&page_number=${page}`
     setLoading(true)
-    axiosInstance
-      .get(imgUrl
-       
-      )
+    axios
+      .get(imgUrl, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
       .then(res => {
         setLoading(false)
-
         setBookPage(res.data.ebook_image)
         setTotalPages(res.data.total_page)
         let canvas = document.getElementById(`drawing-${page}`)
-
         let pageCanvas = document.getElementById('canvastyleview')
-
         console.log(pageCanvas, pageCanvas.width, pageCanvas.height)
-
-        canvas.width = width
-        canvas.height = height
-
-        let context = canvas.getContext('2d')
-
+        canvas.width = width;
+        canvas.height = height;
+        let context = canvas.getContext('2d');
         if (res.data.anotate_image !== undefined && res.data.anotate_image && res.data.anotate_image) {
           context.clearRect(0, 0, canvas.width, canvas.height)
-
           // eslint-disable-next-line no-undef
           let imgObj = new Image()
           imgObj.src = res.data.anotate_image
@@ -177,19 +197,23 @@ const EbookPdf = (props) => {
   }
 
   const goBack = () => {
-    props.goBackFunction()
-    
-    axiosInstance.post(endpoints.ebook.EbookUser,
+    axios
+    .post(`${endpoints.ebook.EbookUser}?domain_name=${domineName}&is_ebook=true`,
       {
         page_number: page,
         ebook_id: props.id,
-        // user_id: JSON.parse(localStorage.getItem('user_profile')).personal_info.user_id
+        user_id: localStorage.getItem('userDetails') &&
+        JSON.parse(localStorage.getItem('userDetails'))?.user_id,
       }, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          'x-api-key': 'vikash@12345#1231',
         },
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
       })
       .then(res => {
+        props.goBackFunction();
       })
       .catch(error => {
         console.log(error)
@@ -206,12 +230,16 @@ const EbookPdf = (props) => {
     document.getElementById('clear').addEventListener('click', function () {
       context.clearRect(0, 0, canv.width, canv.height)
     })
-    let deleteAnnotateURL = endpoints.ebook.AnnotateEbook + '?ebook_id=' + props.id + '&page_number=' + page
-    axiosInstance.delete(deleteAnnotateURL,
+    let deleteAnnotateURL = endpoints.ebook.AnnotateEbook + `?domain_name=${domineName}&is_ebook=true` + '&ebook_id=' + props.id + '&page_number=' + page
+    axios
+    .delete(deleteAnnotateURL,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          'x-api-key': 'vikash@12345#1231',
         },
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
       })
       .then(res => {
       })
@@ -258,11 +286,8 @@ const EbookPdf = (props) => {
                     <ul className='tools__annotate'>
                       <li>
                         <input type='range' className='js-line-range' min='3' max='72' value='1' />
-                        <Tooltip title='Undo' arrow>
-                          <Undo id='clear'
-                            style={{ color: 'white' }}
-                            onClick={deleteAnnotateData}
-                          />
+                        <Tooltip title='Undo' arrow style={{ color: 'white', cursor: 'pointer' }}>
+                          <Undo id='clear' onClick={deleteAnnotateData} />
                         </Tooltip>
                       </li>
                       &nbsp;
