@@ -187,6 +187,13 @@ const Calander = (props) => {
     //   if (lengthData > 0) setLengthFriday(lengthData);
     //   console.log(lengthData);
     // }
+    // console.log(
+    //   lengthMonday,
+    //   lengthTuesday,
+    //   lengthWednesday,
+    //   lengthThursday,
+    //   lengthFriday
+    // );
     // // if(monday)
     // let arrayLength = [
     //   lengthMonday,
@@ -331,6 +338,7 @@ const Calander = (props) => {
               label='Start Time'
               id='outlined-size-small'
               variant='outlined'
+              helperText="12-hour format"
               size='small'
               onChange={(e) => setStartTime(e.target.value)}
             />
@@ -340,6 +348,7 @@ const Calander = (props) => {
               label='End Time'
               id='outlined-size-small'
               variant='outlined'
+              helperText="12-hour format"
               size='small'
               onChange={(e) => setEndTime(e.target.value)}
             />

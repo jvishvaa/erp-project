@@ -67,7 +67,7 @@ const DisplayBox = (props) => {
         <>
           <div className='display-heading-container'>
             <div className='yellow-header'>
-              {data.period_start_time.slice(0, 5)}-{data.period_end_time.slice(0, 5)}
+              {data.period_start_time.slice(0, 5)}-{data.period_end_time.slice(0, 5)}AM
             </div>
             {props.teacherView ? (
               <div className='edit-button' onClick={() => setOpenEditForm(false)}>
