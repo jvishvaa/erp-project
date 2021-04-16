@@ -85,7 +85,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const MarkAttedance = () => {
-  const moduleId = 178;
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
@@ -112,6 +111,9 @@ const MarkAttedance = () => {
     checkedA: false,
     checkedB: false,
   });
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
 
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });

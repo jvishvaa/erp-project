@@ -41,8 +41,7 @@ function getDaysBefore(date, amount) {
 }
 
 const CreateEvent = () => {
-  const moduleId = 178;
-
+ 
   const [allDay, setAllDay] = useState(true);
   const [firstHalf, setFirstHalf] = useState(false);
   const [secondHalf, setSecondHalf] = useState(false);
@@ -63,6 +62,8 @@ const CreateEvent = () => {
   const [discripValue, setdiscripValue] = useState();
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
 
 
 
