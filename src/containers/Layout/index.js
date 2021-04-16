@@ -1315,67 +1315,6 @@ const Layout = ({ children, history }) => {
           <ListItem
             button
             className={classes.menuControlContainer}
-            onClick={() => history.push('/event-category')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <EventNoteIcon /> */}
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Event Category</ListItemText>
-          </ListItem>
-          {/* <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/OverallAttendance')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>OverallAttendance</ListItemText>
-          </ListItem> */}
-          {/* <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/attendance')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Attendance</ListItemText>
-          </ListItem> */}
-
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/attendance-calendar')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <TodayIcon /> */}
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Attendance Calender</ListItemText>
-          </ListItem>
-          {/* <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/createEvent')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>CreateEvent</ListItemText>
-          </ListItem> */}
-          {/* <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/markattedance')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>MarkAttedance</ListItemText>
-          </ListItem> */}
-          <ListItem
-            button
-            className={classes.menuControlContainer}
             onClick={() => history.push('/publications')}
           >
             <ListItemIcon className={classes.menuItemIcon}>
@@ -1383,24 +1322,6 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Publication</ListItemText>
           </ListItem>
-          {/* {drawerOpen ? (
-            <ListItem
-              button
-              className={
-                history.location.pathname === '/profile' ? 'menu_selection' : null
-              }
-              onClick={() => {
-                history.push('/profile');
-              }}
-            >
-              {' '}
-              <ListItemIcon className={classes.menuItemIcon}>
-                <AssignmentIndIcon />
-              </ListItemIcon>
-              <ListItemText className='menu-item-text'>View Profile</ListItemText>
-            </ListItem>
-          ) : null} */}
-
           {navigationData && drawerOpen && navigationData.length > 0 && (
             <DrawerMenu
               superUser={superUser}
