@@ -122,7 +122,6 @@ const UpdateGroup = () => {
       childModules.filter((item) => item.child_name === 'View&Edit Group').length !== 0 &&
       childModules.filter((item) => item.child_name === 'View&Edit Group')[0].child_id;
     setModuleid(Module);
-    console.log(location.state, 'ddddd');
     setSelectedRole(getIds(location.state.roleType, 'role'));
     setBranchId(getIds(location.state.branch, 'branch'));
     setGradeId(getIds(location.state.grades, 'grade'));

@@ -51,7 +51,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId= item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -86,7 +85,6 @@ class TabView extends Component {
   render () {
     let appBar = null
     if (this.state.currentSession) {
-      console.log('Event', this.state.value)
       appBar = (
         <React.Fragment>
           <AppBar position='static'>

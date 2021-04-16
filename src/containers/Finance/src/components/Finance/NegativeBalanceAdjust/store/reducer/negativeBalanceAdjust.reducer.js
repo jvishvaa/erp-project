@@ -54,9 +54,7 @@ const negativeBalanceAdjustReducer = (state = initialState, action) => {
           }
         }
       }
-      console.log('unassign', unassign)
       // }
-      console.log('data+', data)
       return {
         ...state,
         walletAmount: data

@@ -230,7 +230,6 @@ const DurationContainer = (props) => {
 
     // const hasData = true;
     // for(let k=0;k<batchData.length;k++) {
-    //   console.log(batchData[k],`batchData${k}`);
     //   const {course_price} = batchData[k];
     //   if(course_price[0]?.no_of_week>0 || course_price[0]?.price>0)
     // }

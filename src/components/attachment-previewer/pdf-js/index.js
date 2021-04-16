@@ -17,7 +17,7 @@ export default function PdfjsPreview({ url }) {
     // function fetchAndSetpdfjsLib() {
     //     const ispdfjsLibReadyProm = loadScript(`${moduleBaseURL}/pdf.js`, 'pdfjsLib')
     //     ispdfjsLibReadyProm.then((value) => {
-    //         debugger
+
     //         setPdfjsLib(value)
     //     })
     // }

@@ -209,6 +209,7 @@ export default {
 
   discussionForum: {
     categoryList: '/academic/categories/',
+    UpdateCategory: '/update-category/',
     branch: '/erp_user/branch/',
     grade: '/erp_user/grademapping/',
     filterCategory: '/academic/posts/',
@@ -216,7 +217,10 @@ export default {
     PostCategory: '/academic/create-category/',
     CreateDissusionForum: '/academic/add-post/',
     CreateCommentAndReplay: '/academic/create-answer-replay/',
-    AwardListAPI: '/academic/',
+    AwardListAPI: '/academic/awards-list/',
+    GiveAwardAPI: '/academic/create-award/',
+    commentList: '/academic/comments-list/',
+    replyToAnswer: '/academic/create-answer-replay/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     deletePost: '/academic/',
   },
@@ -264,11 +268,21 @@ export default {
     BlogView: '/academic/view_blog/',
     WordCountConfig: '/academic/word_count_config/',
   },
+  ebook: {
+    ebook: `${baseURLCentral}/ebook/ebook_school_wise_filter/`,
+    EbookUser:`${baseURLCentral}/ebook/ebook_user/`,
+    AnnotateEbook:`${baseURLCentral}/ebook/ebook_user_status/`,
+    // academicYearList: `${baseURLCentral}/erp_user/list-academic_year/`,
+    // // academicYearList: '/erp_user/list-academic_year/',
+    // gradeSubjectMappingList: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
+    // gradeList: `${baseURLCentral}/lesson_plan/list-grade/`,
+  },
   teacherViewBatches: {
     courseListApi: '/aol/courses/',
-    batchSizeList: 'aol/aol-course-batch/',
+    batchSizeList: '/aol/aol-course-batch/',
     getBatchList: '/erp_user/teacher_online_class/',
     cancelBatchApi: '/erp_user/cancel-online-class/',
+    hostApi:'/erp_user/redirection_zoom/',
   },
   studentViewBatchesApi: {
     getBatchesApi: '/erp_user/student_online_class/',

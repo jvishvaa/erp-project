@@ -24,7 +24,6 @@ const DiscussionCategory = (props) => {
   });
 
   const onPaginationChange = (start, end) => {
-    console.log(`${start} ---- ${end}`);
     setPagination({
       start,
       end,
@@ -84,8 +83,8 @@ const DiscussionCategory = (props) => {
                     id={data.id}
                     status={data.status}
                     category={data.category}
-                    subCategory={data.subCategory}
-                    subSubCategory={data.subSubCategory}
+                    subCategory={data.sub_category_name}
+                    subSubCategory={data.sub_sub_category_name}
                     editCategory={hadleEditCategory}
                     isEdit={editCategory}
                   />

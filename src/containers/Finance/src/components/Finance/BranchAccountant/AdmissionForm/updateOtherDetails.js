@@ -45,7 +45,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -82,13 +81,10 @@ class UpdateOtherDetailsFormAcc extends Component {
   }
 
   componentDidUpdate () {
-    console.log('DID UPDATED', this.state.otherDetails)
     this.props.getOtherDetail(this.state.otherDetails)
   }
   componentWillReceiveProps (nextProps) {
-    console.log('===received props', nextProps.admissionrecordbyerp)
     if (nextProps.admissionrecordbyerp) {
-      console.log('this is printed chandan')
       const newotherDetails = { ...this.state.otherDetails }
       newotherDetails['adharno'] = nextProps.admissionrecordbyerp.aadhar_number ? nextProps.admissionrecordbyerp.aadhar_number : null
       newotherDetails['qualifiedExamRank'] = nextProps.admissionrecordbyerp.qualified_exam_rank ? nextProps.admissionrecordbyerp.qualified_exam_rank : null
@@ -153,9 +149,7 @@ class UpdateOtherDetailsFormAcc extends Component {
   }
 
   otherDetailsDropdonHandler= (event, name) => {
-    console.log('other detail handler', event, name)
     const newotherDetails = { ...this.state.otherDetails }
-    console.log(event)
     switch (name) {
       case 'religion': {
         newotherDetails['religion'] = event.value

@@ -30,7 +30,6 @@ const McqQuestionMultiAnswer = (props) => {
     const answersArray = [...(existingAnswer || [])];
     if (checked) {
       if (answersArray.includes(value)) {
-        console.log('has already checked');
       } else {
         answersArray.push(value);
       }

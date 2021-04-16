@@ -67,7 +67,6 @@ export const fetchTeacherHomeworkDetailsById = (id) => async (dispatch) => {
   dispatch({ type: FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_REQUEST });
   try {
     const response = await axios.get(`/academic/${id}/hw-questions/?hw_status=1`);
-    console.log('dispatching action with ', response.data.data);
     dispatch({
       type: FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_SUCCESS,
       data: response.data.data.hw_questions,
@@ -137,7 +136,6 @@ export const fetchTeacherHomeworkDetails = (moduleId, startDate, endDate) => asy
       type: FETCH_TEACHER_HOMEWORK_SUCCESS,
       data: { homeworkColumns, homeworkRows },
     });
-    console.log(response);
   } catch (e) {
     console.log('error ', e);
     dispatch({ type: FETCH_TEACHER_HOMEWORK_FAILURE });
@@ -243,7 +241,6 @@ export const fetchCoordinateTeacherHomeworkDetails = (
           ? { hw_id: homeworkStatus.id, ...homeworkStatus.status }
           : {};
       });
-      // console.log(obj,"---------------");
       return obj;
     });
     homeworkColumns.unshift('Date');
@@ -251,9 +248,7 @@ export const fetchCoordinateTeacherHomeworkDetails = (
       type: FETCH_TEACHER_HOMEWORK_SUCCESS,
       data: { homeworkColumns, homeworkRows },
     });
-    console.log('teacher details', response);
   } catch (e) {
-    // console.log('error ', e);
     dispatch({ type: FETCH_TEACHER_HOMEWORK_FAILURE });
   }
 };

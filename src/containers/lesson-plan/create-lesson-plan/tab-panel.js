@@ -3,7 +3,6 @@ import { Box, Typography } from '@material-ui/core';
 
 function TabPanel(props) {
   const { children, name, value, activeTab, ...other } = props;
-  console.log('name ', name, value);
   return (
     <div
       role='tabpanel'

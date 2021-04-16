@@ -200,7 +200,6 @@ const Assesmentquestion = () => {
   };
 
   const handleTabs = (TabLevel) => {
-    // console.log(TabLevel, "TabLevel")
     if (TabLevel === 0) {
       axios
         .get(

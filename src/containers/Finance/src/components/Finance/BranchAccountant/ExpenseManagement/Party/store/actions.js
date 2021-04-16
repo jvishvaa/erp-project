@@ -82,7 +82,6 @@ export const editParty = (payload) => {
         'Authorization': 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       if (+response.status === 200) {
         // payload.alert.success('Updated Successfully')
         dispatch({
@@ -111,7 +110,6 @@ export const deleteParty = (payload) => {
         'Authorization': 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       if (+response.status === 204) {
         // payload.alert.success('Deleted Successfully')
         dispatch({

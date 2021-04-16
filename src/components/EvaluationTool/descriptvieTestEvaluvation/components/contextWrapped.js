@@ -99,7 +99,6 @@ function Evaluvation(props) {
   };
 
   const handleSave = (data) => {
-    console.log(data, 'data');
     setDrawedChanges(data);
   };
 
@@ -120,7 +119,6 @@ function Evaluvation(props) {
       // set the element's new position:
       elmnt.style.top = elmnt.offsetTop - pos2 + 'px';
       elmnt.style.left = elmnt.offsetLeft - pos1 + 'px';
-      console.log('mousedown', elmnt);
     }
 
     function closeDragElement() {
@@ -138,7 +136,6 @@ function Evaluvation(props) {
       document.onmouseup = closeDragElement;
       // call a function whenever the cursor moves:
       document.onmousemove = elementDrag;
-      console.log('mousedown');
     }
 
     elmnt.onmousedown = dragMouseDown;

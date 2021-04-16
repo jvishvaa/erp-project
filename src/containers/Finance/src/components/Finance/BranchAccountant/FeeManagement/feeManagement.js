@@ -43,14 +43,12 @@ const FeeManagement = ({
   useEffect(() => {
     if (getData && erp.length >= 10 && session) {
       fetchFeeMangement(session, erp, alert, user)
-      console.log('Fee Mangement Call')
     }
   }, [session, erp, getData, alert, user, fetchFeeMangement])
 
   useEffect(() => {
     const checked = {}
     if (feeManageMentLists && feeManageMentLists.length > 0) {
-      console.log('useEffect feeManagement: ', feeManageMentLists)
       feeManageMentLists.forEach(ele => {
         checked[ele.id] = false
       })
@@ -89,7 +87,6 @@ const FeeManagement = ({
 
   const getfeeDetails = () => {
     let feeList = null
-    console.log('Fee management list: ', feeManageMentLists.length)
     if (feeManageMentLists && feeManageMentLists.length > 0) {
       feeList = feeManageMentLists && feeManageMentLists.length > 0
         ? feeManageMentLists.map((val, index) => {
@@ -149,7 +146,6 @@ const FeeManagement = ({
   const feeMangTable = () => {
     let data = null
     if (session && erp && erp.length >= 0 && getData && feeManageMentLists && feeManageMentLists.length > 0) {
-      console.log('Fee Mangement Call table')
       data = (
         <React.Fragment>
           <div>
@@ -246,7 +242,6 @@ const FeeManagement = ({
   // const feeMangTable = useCallback(() => {
   //   let data = null
   //   if (session && erp && erp.length >= 0 && getData && feeManageMentLists && feeManageMentLists.length > 0) {
-  //     console.log('Fee Mangement Call table')
   //     data = (
   //       <Table>
   //         <TableHead>

@@ -4,7 +4,6 @@ import './BarGraph.css'
 
 function LineGraph (props) {
   const { labels, data = [], plottedColors, fill } = props.properties
-  console.log(fill)
   const state = {
 
     labels: labels,

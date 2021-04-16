@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -95,7 +95,6 @@ const MessageLog = withRouter(({ history, ...props }) => {
   const getAcademicApi = async () => {
     axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
       .then((res) => {
-        console.log(res.data);
 
         if (res.data.status_code === 200) {
           setAcademicYears(res.data.data);
@@ -106,7 +105,6 @@ const MessageLog = withRouter(({ history, ...props }) => {
         }
       })
       .catch((error) => {
-        console.log(error);
         setAlert('error', error.message);
         setLoading(false);
       })
@@ -114,7 +112,6 @@ const MessageLog = withRouter(({ history, ...props }) => {
 
   const getBranchApi = async () => {
     axiosInstance.get(`${endpoints.communication.branches}?session_year=${selectedAcademic?.id}&module_id=${moduleId}`).then((res) => {
-      console.log(res.data);
       if (res.data.status_code === 200) {
         setBranchList(res?.data?.data?.results.map(obj=>((obj&&obj.branch)||{})));
         setLoading(false);

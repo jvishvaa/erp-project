@@ -73,11 +73,9 @@ const ViewClassTableCell = (props) => {
   };
 
   const handleAudit = () => {
-    debugger;
   };
 
   const handleCancel =  async (classId) => {
-    console.log(classId)
     setCancelId(classId)
     setCancelAlert(true);
   
@@ -88,7 +86,6 @@ const ViewClassTableCell = (props) => {
    setCancelAlert(false);
  }
  const handleCancelConfirm =()=>{
-   console.log(cancelId)
   dispatch(cancelClass(cancelId));
   setCancelAlert(false);
   }

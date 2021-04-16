@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-use-before-define */
-/* eslint-disable no-debugger */
+
 /* eslint-disable react/prop-types */
 import React, { useContext, useState, useEffect, useRef, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -408,6 +408,10 @@ const Layout = ({ children, history }) => {
         history.push('/user-management');
         break;
       }
+      case 'Ebook View':{
+        history.push('/ebook/view');
+        break;
+      }
       case 'Create User': {
         history.push('/user-management/create-user');
         break;
@@ -480,7 +484,14 @@ const Layout = ({ children, history }) => {
         history.push('/subject/grade');
         break;
       }
-
+      case 'Teacher Forum': {
+        history.push('/teacher-forum');
+        break;
+      }
+      case 'Student Forum': {
+        history.push('/student-forum');
+        break;
+      }
       // case 'role-management': {
       //   history.push('/role-management');
       //   break;
@@ -1100,7 +1111,6 @@ const Layout = ({ children, history }) => {
                                               className='user_rows_details'
                                               button
                                               onClick={() => {
-                                                console.log('I amcalled...');
                                                 setSearching(false);
                                                 setUserId(result.id);
                                                 setDisplayUserDetails(true);

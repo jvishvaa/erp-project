@@ -25,7 +25,6 @@ const FinanaceInstallment = ({ ...props }) => {
   // const [modal, setModal] = useState(false)
   const [value, setValue] = useState('one')
   useEffect(() => {
-    console.log('user token +++ ', props.user)
   }, [props.user])
 
   // const closeModal = () => {

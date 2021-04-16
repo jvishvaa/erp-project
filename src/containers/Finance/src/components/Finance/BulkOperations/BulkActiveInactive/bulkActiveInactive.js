@@ -94,7 +94,6 @@ const BulkActiveInactive = ({
     //   dataLoaded()
     //   props.bulkActiveInactive(body, props.user, props.alert)
     // }).catch(err => {
-    //   console.log(err)
     //   props.alert.warning(err.message || 'Unable to Read Excel')
     //   dataLoaded()
     // })
@@ -107,7 +106,6 @@ const BulkActiveInactive = ({
       form.append('status', 'False')
     }
     for (var key of form.entries()) {
-      console.log(key[0] + ', ' + key[1])
     }
 
     if (statusFile && reason) {

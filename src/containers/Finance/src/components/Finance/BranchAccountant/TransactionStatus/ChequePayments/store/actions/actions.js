@@ -39,7 +39,6 @@ export const fetchChequeBounce = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log('response from cheque bounce ', response)
       if (response.status === 200) {
         dispatch({
           type: FETCH_CHEQUE_BOUNCE,

@@ -11,7 +11,10 @@ import WebAsset from '@material-ui/icons/WebAsset';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import PeopleIcon from '@material-ui/icons/People';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import BookIcon from '@material-ui/icons/Book';
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
+import WifiTetheringIcon from '@material-ui/icons/WifiTethering';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 import {
   AccountBalance,
   AccountBalanceWallet,
@@ -63,7 +66,7 @@ const menuIcon = (name) => {
       break;
     }
     case 'Communication': {
-      icon = <ForumIcon />;
+      icon = <WifiTetheringIcon />;
       break;
     }
     case 'Add Group': {
@@ -226,6 +229,14 @@ const menuIcon = (name) => {
     }
     case 'Assessment': {
       icon = <AssessmentIcon />;
+      break;
+    }
+    case 'Discussion Forum': {
+      icon = <ForumIcon />;
+      break;
+    }
+    case 'Ebook': {
+      icon = <MenuBookIcon />;
       break;
     }
     default:

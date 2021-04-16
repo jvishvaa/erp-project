@@ -43,13 +43,10 @@ class ViewProspectus extends Component {
     let pageNo = ''
     if (page === 1) {
       pageNo = 1
-      console.log('pageNo', pageNo)
       this.setState({ currentPage: page })
     } else {
-      console.log('statepage', page)
       pageNo = this.state.currentPage
     }
-    // console.log('state page', this.state.currentPage)
     this.setState({
       loading: true
     })
@@ -61,13 +58,11 @@ class ViewProspectus extends Component {
       }
     })
       .then(({ data }) => {
-        console.log('Data', data.current_page)
         this.setState({ prospectusData: data.result, currentPage: data.current_page, totalPage: data.total_pages, loading: false })
       })
       .catch(error => {
         if (error.response && error.response.status === 404) {
         }
-        console.log(error.response)
       })
   }
   handleClick=() => {

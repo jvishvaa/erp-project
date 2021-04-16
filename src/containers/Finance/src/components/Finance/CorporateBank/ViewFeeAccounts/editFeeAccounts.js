@@ -25,7 +25,6 @@ class editFeeAccounts extends Component {
 
   componentDidMount () {
     let currentData = this.props.accountDetails.filter(val => val.id === this.props.id)
-    console.log(currentData)
     currentData.forEach(arr => {
       this.setState((state) => ({
         fee_account_name: arr.fee_account_name ? arr.fee_account_name : '',
@@ -41,7 +40,6 @@ class editFeeAccounts extends Component {
   }
 
   componentDidUpdate () {
-    console.log('state from edit fee', this.state)
   }
 
     changedHandler = (name, event) => {
@@ -49,7 +47,6 @@ class editFeeAccounts extends Component {
     }
 
     handlevalue = e => {
-      console.log('clicked')
       e.preventDefault()
       if (this.state.fee_account_name && (this.state.is_shown_reports || this.state.is_trust || this.state.is_expense_account)) {
         var data = {
@@ -63,7 +60,6 @@ class editFeeAccounts extends Component {
           is_trust: this.state.is_trust ? this.state.is_trust : false,
           is_expenses_account: this.state.is_expense_account ? this.state.is_expense_account : false
         }
-        console.log('handled value', data)
         this.props.editFeeAccounts(data, this.props.id, this.props.alert, this.props.user)
         this.props.close()
       } else {

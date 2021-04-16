@@ -20,7 +20,6 @@ const unassignRequestReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.FETCH_PENDING_REQ_LIST : {
-      console.log('reducers', action.payload.data)
       return {
         ...state,
         pendingReqList: action.payload.data

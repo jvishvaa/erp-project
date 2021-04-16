@@ -119,7 +119,6 @@ class Ledger extends Component {
   }
 
   componentDidUpdate() {
-    console.log("===> expense main list: ", this.props.ledgerList)
   }
 
   showLedgerTypeModal = () => {
@@ -170,7 +169,6 @@ class Ledger extends Component {
 
   showEditHeadModalHandler = (name, type, id) => {
     const typeObj = this.props.ledgerTypeList.filter(item => item.id === type)[0]
-    console.log('TYPE OBJ ++++++++', typeObj)
     this.setState({
       updatedHeadName: name,
       updatedHeadType: { ...typeObj },
@@ -313,7 +311,6 @@ class Ledger extends Component {
       ledgerName
     } = this.state
     this.props.addLedgerEntry(updatedHeadId, ledgerName, ledgerRemark, this.props.user, this.props.alert)
-    console.log('addinggggg')
     this.setState({
       updatedHeadId: null,
       ledgerName: null,

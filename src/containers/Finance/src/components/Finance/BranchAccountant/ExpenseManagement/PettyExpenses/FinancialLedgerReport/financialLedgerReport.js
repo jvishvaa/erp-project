@@ -39,7 +39,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -100,7 +99,6 @@ const FinancialLedgerReport = ({ classes, session, alert, user, recData, ...prop
       excelData,
       columns
     }
-    console.log('qaz', data)
     generateExcel(data)
   }
 

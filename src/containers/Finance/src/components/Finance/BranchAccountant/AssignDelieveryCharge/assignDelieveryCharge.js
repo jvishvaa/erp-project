@@ -58,7 +58,6 @@ const AssignDelieveryCharge = ({ session, fetchGradeList, gradeList, fetchAllDel
     setShowdata(false)
   }
   const gradeHandler = (e) => {
-    console.log(e.value)
     setGradeData(e)
     setShowdata(false)
     fetchAllDelieverycharge(sessionData.value, e.value, alert, user)
@@ -117,7 +116,6 @@ const AssignDelieveryCharge = ({ session, fetchGradeList, gradeList, fetchAllDel
 
   // handler to search particular erp in table
   const erpSearchHandler = (e) => {
-    console.log('studenrList', erpList)
     const filteredArr = erpList && erpList.filter(stu => (stu.student && +stu.student.erp.includes(+e.target.value)) || (stu.erp && +stu.erp.includes(+e.target.value)))
     setErpSearchValue(e.target.value)
     setStudentErpList(filteredArr)
@@ -248,7 +246,6 @@ const AssignDelieveryCharge = ({ session, fetchGradeList, gradeList, fetchAllDel
   // Getting all the erp which are selected in table to send data
   const saveMultiChangeHandler = (e) => {
     let rowId = []
-    console.log('ischecked', isChecked)
     Object.keys(isChecked).forEach((key) => {
       if (isChecked[key]) {
         rowId.push(key)
@@ -290,10 +287,6 @@ const AssignDelieveryCharge = ({ session, fetchGradeList, gradeList, fetchAllDel
         )
       }
     })
-    console.log('the erpArrrr', erpArr)
-    console.log('rowid', rowId)
-    console.log('erplist', erpList)
-    console.log('finalItem', finalitems)
     if (erpArr && erpArr.length > 0 && delieveryCharge) {
       const data = {
         kit_id: delieveryCharge && delieveryCharge.value,
@@ -303,7 +296,6 @@ const AssignDelieveryCharge = ({ session, fetchGradeList, gradeList, fetchAllDel
         grade: gradeData && gradeData.value
         // applicable_to: applicableTo && applicableTo.value
       }
-      console.log('data++', data)
       assignDelieveryChargeStudent(data, alert, user)
       setCheckedAll(false)
       setisChecked(false)

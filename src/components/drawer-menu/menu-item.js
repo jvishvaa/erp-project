@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 /* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
@@ -73,6 +72,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Student Strength', Path: '/student-strength' },
     { name: 'Teacher Circular', Path: '/teacher-circular' },
     { name: 'Student Circular', Path: '/student-circular' },
+
+    //{ name: 'Discussion Forum', Path: '/discussion-forum' },
+    { name: 'Teacher Forum', Path: '/teacher-forum' },
+    { name: 'Student Forum', Path: '/student-forum' },
 
     { name: 'Question Bank', Path: '/question-bank' },
     { name: 'Question Paper', Path: '/assessment-question' },

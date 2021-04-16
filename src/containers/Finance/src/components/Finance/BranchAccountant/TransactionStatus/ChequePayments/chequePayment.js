@@ -61,7 +61,6 @@ class ChequePayment extends Component {
   }
 
   shouldComponentUpdate (nextProps, nextState) {
-    console.log('here i amm after update: ', nextProps)
     if (nextProps.erpNo === this.props.erpNo &&
         nextProps.session === this.props.session &&
         nextProps.getData === this.props.getData &&
@@ -89,7 +88,6 @@ class ChequePayment extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    console.log('the receivede data: ', this.props.chequeResponse)
     const erpLength = (this.props.erpNo + '').length
     if (!this.props.erpNo || !this.props.session || !this.props.getData) {
       return
@@ -111,7 +109,6 @@ class ChequePayment extends Component {
   }
 
   // componentWillReceiveProps (nextProps) {
-  //   console.log('nextProps: ', nextProps)
   //   if (nextProps.chequeResponse) {
   //     const {
   //       erpNo,
@@ -136,7 +133,6 @@ class ChequePayment extends Component {
       const response = await this.getPdfData(transactionId)
       feeReceiptss(response.data, isCancelled)
     } catch (e) {
-      console.log(e)
       this.props.alert.warning('Something Went Wrong')
     }
   }

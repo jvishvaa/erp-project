@@ -14,7 +14,6 @@ class RazorpayIntegration extends Component {
     // success: true
   }
   componentDidMount () {
-    console.log('mounted integration: ', this.props.location)
     if (!this.props.user) {
       this.props.alert.warning('Transaction cannot Be Proceed')
       this.props.history.goBack()
@@ -39,13 +38,11 @@ class RazorpayIntegration extends Component {
         //   success: false
         // })
       }
-      console.log('innHtml', `${response.data}`)
       this.setState({
         innHtml: `${response.data}`
       }, () => {
         setTimeout(() => {
           const form = document.forms[0]
-          console.log('form', form)
           form && form.submit()
         }, 500)
       })
@@ -88,7 +85,6 @@ class RazorpayIntegration extends Component {
     let content = null
     if (!this.state.isError) {
       content = (<div dangerouslySetInnerHTML={{ __html: this.state.innHtml }} style={{ color: 'black', width: '100px', margin: 'auto', marginTop: '200px' }} />)
-      console.log('content', content)
     } else {
       content = (
         <div className={classes.failurePage} id='paytm'>

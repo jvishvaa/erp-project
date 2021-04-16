@@ -54,7 +54,6 @@ const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trnsId])
   // useEffect(() => {
-  //   console.log('payment done, refreshing')
   //   if (role === 'financeaccountant') {
   //     fetchShipping(erpValue, alert, user)
   //     fetchDeliveryDetails(erpValue, alert, user)
@@ -64,11 +63,9 @@ const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, 
   //   }
   // }, [trnsId, alert, user, fetchShipping, fetchDeliveryDetails, erpValue, erp, role])
   useEffect(() => {
-    console.log('shipping data', history, erp)
   })
 
   const configHandler = (kit, tran) => {
-    console.log('kitId: ', kit)
     setKitId(kit)
     setTranId(tran)
     setShowConfigItem(!showConfigItem)
@@ -202,7 +199,6 @@ const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, 
   )
 
   const paymentHandler = (kit, tran) => {
-    console.log('kit to be paid: ', role, kit, tran)
     if (!deliveryList.length) {
       alert.warning('Enter shipping address to proceed!')
       return
@@ -220,7 +216,6 @@ const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, 
         delivery_data_kit_id: kit,
         t_no: tran
       }
-      console.log('kit to be paid inside else: ', kitTobePaid)
       if (shippingDetails.kit_data && shippingDetails.kit_data[0] && shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.kit_price) {
         del = {
           delivery: {

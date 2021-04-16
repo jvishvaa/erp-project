@@ -55,7 +55,6 @@ export const fetchFeeTypeAndAccountList = (payload) => {
         dispatch(actionTypes.dataLoaded())
       })).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
@@ -65,9 +64,7 @@ export const fetchFeeTypeAndAccountList = (payload) => {
   }
 }
 export const fetchFeeTypeList = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.FeeTypeList + '?fee_plan_id=' + payload.feePlanId, {
@@ -84,7 +81,6 @@ export const fetchFeeTypeList = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
@@ -95,7 +91,6 @@ export const fetchFeeTypeList = (payload) => {
 }
 
 export const updateFeePlanGrades = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios

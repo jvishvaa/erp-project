@@ -50,9 +50,6 @@ const ViewMoreCard = ({
   // const qData = viewMoreData?.questions;
   // const sData = viewMoreData?.sections
 
-  console.log(viewMoreData, '[[[[[[[');
-  // console.log(parsedResponse,'======')
-
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
 

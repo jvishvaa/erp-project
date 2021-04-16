@@ -22,11 +22,8 @@ const ConcessionDetails = ({
   // const data = null
 
   useEffect(() => {
-    console.log('erp', erp)
     if (erp && erp.length >= 10) {
-      console.log('Api Called')
     }
-    console.log('qwer1', moduleId, branchId )
   }, [getData, erp, session])
 
   const handleChange = (event) => {

@@ -40,7 +40,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -76,12 +75,16 @@ class PettyExpenses extends Component {
 
   makeEntryClickHandler = () => {
     // this.props.history.push('/finance/Expanse Management/MakeEntry')
+    if (this.state.session &&  this.state.selectedBranches) {
     this.props.history.push({
       pathname: '/finance/Expanse Management/MakeEntry',
       state: {
         branch: this.state.selectedBranches && this.state.selectedBranches.value
       }
     })
+  } else {
+     this.props.alert.warning('Please Select Year and Branch!')
+  }
     let data = {
       branch:this.state.selectedBranches && this.state.selectedBranches.value,
       moduleId:moduleId
@@ -104,21 +107,29 @@ class PettyExpenses extends Component {
   }
 
   ledgerReportClickHandler = () => {
+    if (this.state.session &&  this.state.selectedBranches) {
     this.props.history.push('/finance/Expanse Management/LedgerReport')
     let data = {
       branch:this.state.selectedBranches && this.state.selectedBranches.value,
       moduleId:moduleId
     }
     this.props.sendData(data, this.props.alert, this.props.user)
+  } else {
+    this.props.alert.warning('Please Select Year and Branch!')
+ }
   }
 
   reportClickHandler = () => {
+    if (this.state.session &&  this.state.selectedBranches) {
     this.props.history.push('/finance/Expanse Management/FinancialLedgerReport')
     let data = {
       branch:this.state.selectedBranches && this.state.selectedBranches.value,
       moduleId:moduleId
     }
-    this.props.sendData(data, this.props.alert, this.props.user)
+    this.props.sendData(data, this.props.alert, this.props.user) 
+  } else {
+    this.props.alert.warning('Please Select Year and Branch!')
+ }
   }
 
   addMoneyHandler = (e) => {
@@ -209,7 +220,6 @@ class PettyExpenses extends Component {
   }
 
   handleAcademicyear = (e) => {
-    console.log('acad years', this.props.session)
     this.setState({ session: e.value, sessionData: e}, () => {
       this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
     })

@@ -89,7 +89,7 @@ const CreateGenre = (props) => {
 
   const [gradeList, setGradeList] = useState([]);
   const [totalGenre,setTotalGenre]=useState('');
-  const branchId=roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
+  const [branchId]= useState(roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0])
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [anchorEl, setAnchorEl] = React.useState(null);

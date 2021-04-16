@@ -80,10 +80,12 @@ import {
   ContentViewPublishPrincipal,
   EditWordCountConfig,
 } from './containers/blog';
+import {CreateEbook , ViewEbook} from './containers/ebooks'
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
 import Discussionforum from './containers/discussionForum/index';
 import DiscussionPost from './containers/discussionForum/discussion/DiscussionPost';
 import CreateCategory from './containers/discussionForum/createCategory';
+import CategoryPage from './containers/discussionForum/discussion/CategoryPage';
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
 import CircularList from './containers/circular';
 import CreateCircular from './containers/circular/create-circular';
@@ -542,11 +544,29 @@ function App({ alert }) {
                           <Route exact path='/discussion-forum'>
                             {({ match }) => <Discussionforum match={match} />}
                           </Route>
+                          <Route exact path='/teacher-forum'>
+                            {({ match }) => <Discussionforum match={match} />}
+                          </Route>
+                          <Route exact path='/student-forum'>
+                            {({ match }) => <Discussionforum match={match} />}
+                          </Route>
                           <Route exact path='/category/create'>
                             {({ match }) => <CreateCategory match={match} />}
                           </Route>
                           <Route exact path='/discussion-forum/create'>
                             {({ match }) => <CreateDiscussionForum match={match} />}
+                          </Route>
+                          <Route exact path='/teacher-forum/create'>
+                            {({ match }) => <CreateDiscussionForum match={match} />}
+                          </Route>
+                          <Route exact path='/student-forum/create'>
+                            {({ match }) => <CreateDiscussionForum match={match} />}
+                          </Route>
+                          <Route exact path='/teacher-forum/post/:id'>
+                            {({ match }) => <DiscussionPost match={match} />}
+                          </Route>
+                          <Route exact path='/student-forum/post/:id'>
+                            {({ match }) => <DiscussionPost match={match} />}
                           </Route>
                           <Route exact path='/teacher-circular'>
                             {({ match }) => <CircularList match={match} />}
@@ -1187,6 +1207,12 @@ function App({ alert }) {
                             {({ match }) => (
                               <UploadPaymentFile match={match} alert={alert} />
                             )}
+                          </Route>
+                          <Route exact path='/ebook/create'>
+                            {({ match }) => <CreateEbook match={match} />}
+                          </Route>
+                          <Route exact path='/ebook/view'>
+                            {({ match }) => <ViewEbook match={match} />}
                           </Route>
                         </Switch>
                       </DailyDairyStore>

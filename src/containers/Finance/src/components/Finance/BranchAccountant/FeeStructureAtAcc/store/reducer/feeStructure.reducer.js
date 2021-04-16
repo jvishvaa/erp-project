@@ -76,7 +76,6 @@ const feeStructureReducer = (state = initialState, action) => {
     }
     case actionTypes.SAVE_OTHER_CON_REQUEST : {
       const instlist = [...state.otherInstStrucList]
-      console.log('reducers', instlist)
       const index = instlist.findIndex(ele => {
         return ele.id === action.payload.data.balance.id
       })
@@ -84,7 +83,6 @@ const feeStructureReducer = (state = initialState, action) => {
       changedObj.balance = action.payload.data.balance.balance ? action.payload.data.balance.balance : 0
       changedObj.discount = action.payload.data.concession_amount ? action.payload.data.concession_amount : 0
       instlist[index] = { ...changedObj }
-      console.log('reducers', instlist)
       return {
         ...state,
         otherInstStrucList: instlist
@@ -92,15 +90,10 @@ const feeStructureReducer = (state = initialState, action) => {
     }
     case actionTypes.UPDATE_INST_FINE_AMOUNT: {
       const instTypList = [...state.feeStructureList]
-      // console.log('feeStructure before', instTypList)
-      // console.log('feeStructure before state', state.feeStructureList)
-      // console.log('feeStructure actions data', action.payload.data)
       const index = instTypList.findIndex(ele => {
         return ele.id === action.payload.data.id
       })
-      // console.log('feeStructure index', index)
       instTypList[index] = action.payload.data
-      // console.log('feeStructure final data', instTypList)
       return {
         ...state,
         feeStructureList: instTypList
@@ -108,15 +101,10 @@ const feeStructureReducer = (state = initialState, action) => {
     }
     case actionTypes.UPDATE_OTHR_FINE_AMT: {
       const instOthrTypList = [...state.otherInstStrucList]
-      // console.log('feeStructure before', instTypList)
-      // console.log('feeStructure before state', state.feeStructureList)
-      // console.log('feeStructure actions data', action.payload.data)
       const index = instOthrTypList.findIndex(ele => {
         return ele.id === action.payload.data.id
       })
-      // console.log('feeStructure index', index)
       instOthrTypList[index] = action.payload.data
-      // console.log('feeStructure final data', instTypList)
       return {
         ...state,
         otherInstStrucList: instOthrTypList

@@ -46,10 +46,8 @@ const DNDFileUpload = ({ value, handleChange, fileType, typeNames }) => {
     handleChange(acceptedFiles[0]);
   };
 
-  console.log('fileType ', fileType);
 
   const onDropRejected = (files) => {
-    console.log('files', files);
     setAlert('error', `Upload only ${typeNames} format`);
   };
   const {

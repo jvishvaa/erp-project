@@ -79,7 +79,6 @@ const PendingRequests = ({ classes, history, dataLoading, fetchBranchTransaction
   }, [alert, fetchBranchTransaction, history.location, user])
 
   const editRequestHandler = (requestId) => {
-    console.log('requestId', requestId)
     history.push({
       pathname: '/finance/editTransactionDetails',
       requestId: requestId

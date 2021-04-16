@@ -106,7 +106,6 @@ const BulkReportStatus = ({ classes, reports, session, branches, bulkReportList,
   }
 
   const handleChangePage = (event, newPage) => {
-    console.log('change page: ', event, newPage)
     setPage(newPage)
     !rowsPerPage && setRowsPerPage(10)
   }

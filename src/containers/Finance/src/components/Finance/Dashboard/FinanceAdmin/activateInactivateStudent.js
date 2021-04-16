@@ -79,18 +79,14 @@ class ActivateInactivateStudentAdm extends Component {
     }
   }
   componentWillReceiveProps (nextProps) {
-    console.log(nextProps)
   }
   componentDidMount () {
     this.props.getActiveRequest('2019-20', this.props.user, this.props.alert)
-    console.log(this.props.session)
-    console.log(this.props.activeRequstList)
   }
   handleChange = (event, value) => {
     this.setState({ value })
   }
   approveRequestHandler= () => {
-    console.log(this.state.updaterow)
     this.setState({ showAcceptModal: false })
     this.setState({ showRejectModal: false })
     const body = {
@@ -113,21 +109,15 @@ class ActivateInactivateStudentAdm extends Component {
     this.setState({ updaterow: '' })
   }
   handleSwitch = (event, data) => {
-    // console.log('switch state', e.target.checked)
-    console.log('switch is pressed', event)
-    console.log('MAKE API CALL', data)
+   
   }
   showInfoModalAcceptHandler = (event, data) => {
     this.setState({ showAcceptModal: true })
-    console.log(data)
     this.setState({ updaterow: data })
-    console.log(this.state.updaterow)
   }
   showInfoModalRejectHandler = (event, data) => {
     this.setState({ showRejectModal: true })
-    console.log(data)
     this.setState({ updaterow: data })
-    console.log(this.state.updaterow)
   }
   hideInfoModalHandler= () => {
     this.setState({ showAcceptModal: false })
@@ -139,9 +129,7 @@ class ActivateInactivateStudentAdm extends Component {
     })
   }
   activeInactiveDropdonHandler= (event, name) => {
-    console.log('activeInactive detail handler', event, name)
     const newActiveInactive = { ...this.state.activeInactive }
-    console.log(event.value)
     switch (name) {
       case 'academicyear': {
         newActiveInactive['academicyear'] = event.value

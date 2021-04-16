@@ -41,8 +41,6 @@ export const fetchAssesmentTests = async (
   pageSize
 ) => {
   try {
-    console.log('entered');
-
     let url = '';
     if (fetchAll) {
       if (type === 'all') {
@@ -69,7 +67,6 @@ export const fetchAssesmentTests = async (
         }&start_date=${startDate}&end_date=${endDate}&test_mode=1&page=${page}&page_size=${pageSize}`;
       }
     }
-    console.log('api called with ', url);
     const response = await axios.get(url, {
       headers: { 'x-api-key': 'vikash@12345#1231' },
     });
@@ -78,13 +75,11 @@ export const fetchAssesmentTests = async (
     }
     throw new Error();
   } catch (e) {
-    console.log('error in api', e);
     throw new Error();
   }
 };
 
 export const fetchAssesmentTestDetail = async (id) => {
-  console.log('fetch test details');
   try {
     const response = await axios.get(
       `${endpoints.baseURLCentral}/assessment/tests/?test_id_in=${id}`,

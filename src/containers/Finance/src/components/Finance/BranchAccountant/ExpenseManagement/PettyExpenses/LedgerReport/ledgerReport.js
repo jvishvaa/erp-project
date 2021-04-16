@@ -46,7 +46,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -165,7 +164,6 @@ const LedgerReport = ({ classes,
     setLedgerChecked(e.target.checked)
   }
 
-  // console.log('Props In BAnK Report', props)
   const dateCheckHandler = (e) => {
     if (!e.target.checked) {
       setFromDate(null)
@@ -293,7 +291,6 @@ const LedgerReport = ({ classes,
     //   }))
     //   return [...acc, ...arr]
     // }, [])
-    // console.log('Excel Data', excelData)
     // const data = {
     //   fileName: 'Ledger Report',
     //   columns,
@@ -319,7 +316,6 @@ const LedgerReport = ({ classes,
 
   let reportList = null
   if (props.ledgerReportList && props.ledgerReportList.results) {
-    console.log('ledger main data: ', props.ledgerReportList.results)
     reportList = (
 
       <TableBody>

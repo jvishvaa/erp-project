@@ -14,7 +14,6 @@ const depositReducer = (state = initialState, action) => {
       const collectionAccounts = action.payload.data.filter(ele => {
         return ele.bank_name.is_income_account
       })
-      console.log('Collection Accounts', collectionAccounts)
       const expenseAccounts = action.payload.data.filter(ele => {
         return ele.bank_name.is_expenses_account
       })

@@ -49,7 +49,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -83,9 +82,7 @@ class AdmissionFormAcc extends Component {
 
   dropDownHandler= (event, name) => {
     this.props.fetchBranches(event && event.value, this.props.alert, this.props.user, moduleId)
-    console.log('student detail handler', event, name)
     const newstate = { ...this.state.dropdowns }
-    console.log(event.value)
     switch (name) {
       case 'session': {
         newstate['session'] = event.value
@@ -119,7 +116,6 @@ class AdmissionFormAcc extends Component {
     })
   }
   editButtonHandler = (event, data) => {
-    console.log(data)
     if (data.student_registered) {
       this.props.history.push({
         pathname: '/admissions/UpdateRegistrationForm/',
@@ -138,7 +134,6 @@ class AdmissionFormAcc extends Component {
     this.setState({ selectedBranches: e})
   }
   render () {
-    console.log('rendered')
     let admissionTable = null
     if (this.props.admissionrecords.length > 0) {
     admissionTable = (

@@ -100,7 +100,6 @@ class Kit extends Component {
 
   componentDidMount () {
     if (kitState) {
-      console.log('initial state -- Kit', kitState)
       this.setState(kitState, () => {
         const {
           currentBranch,
@@ -154,7 +153,6 @@ class Kit extends Component {
   }
 
   gradeChangeHandler = (e) => {
-    console.log(e)
     this.setState({
       currentGrade: {
         id: e.value,
@@ -486,7 +484,6 @@ class Kit extends Component {
   createGradeKitHandler = () => {
     const kitName = this.kitNameRef.current.value.length ? this.kitNameRef.current.value : null
     const kitDesc = this.kitDescriptionRef.current.value ? this.kitDescriptionRef.current.value : null
-    // console.log(kitName, kitDesc, kitPrice)
     const {
       currentBranch,
       currentGrade,

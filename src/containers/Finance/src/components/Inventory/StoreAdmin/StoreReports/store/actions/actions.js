@@ -56,7 +56,6 @@ export const fetchBranchLists = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(res => {
-      console.log(res)
       dispatch({
         type: BRANCHS_LISTS,
         payload: {

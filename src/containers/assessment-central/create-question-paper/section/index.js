@@ -74,13 +74,11 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
   };
 
   const handleDeleteQuestion = (q) => {
-    console.log('option: ', q, section)
     handleMenuClose();
     onDeleteQuestion(q?.id, section)
   };
   useEffect(() => {
-    console.log(section, 'mydata');
-    console.log(questionId, 'mydata');
+
   }, []);
 
   return (

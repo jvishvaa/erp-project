@@ -185,59 +185,44 @@ const BulkUniform = ({ classes, session, fetchAllSections, alert, user, fetchGra
       'old_shoulder': shoulder[id],
       'old_waist': waist[id]
     }
-    console.log('old value: ', data)
     setOldSize({ ...oldSize, [id]: data })
     let overallShirtSize = []
     let overallPantSize = []
-    console.log('chest', defaultUniformShirt.chest)
     for (let i = 0; i < defaultUniformShirt.chest.length; i++) {
       if (defaultUniformShirt.chest[i] < chest[id]) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultUniformShirt.chest[i])
         overallShirtSize.push(i)
         break
       }
     }
 
-    console.log('shoulder', defaultUniformShirt.shoulder)
     for (let i = 0; i < defaultUniformShirt.shoulder.length; i++) {
       if (defaultUniformShirt.shoulder[i] < shoulder[id]) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultUniformShirt.shoulder[i])
         overallShirtSize.push(i)
         break
       }
     }
-    console.log('waist', defaultDenimPant.waist)
     for (let i = 0; i < defaultDenimPant.waist.length; i++) {
       if (defaultDenimPant.waist[i] < waist[id]) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultDenimPant.waist[i])
         overallPantSize.push(i)
         break
       }
     }
-    console.log('waist', defaultDenimPant.length)
     for (let i = 0; i < defaultDenimPant.length.length; i++) {
       if (defaultDenimPant.length[i] < waist[id]) {
-        console.log('yes')
       } else {
-        console.log('your size will be: ', defaultDenimPant.length[i])
         overallPantSize.push(i)
         break
       }
     }
     const shirtMaxIndex = Math.max(...overallShirtSize)
-    console.log('overallShirt', shirtMaxIndex)
     const newOverallShirt = { ...overallShirt }
     newOverallShirt[id] = defaultUniformShirt.index[shirtMaxIndex]
     setOverallShirt(newOverallShirt)
 
     const pantMaxIndex = Math.max(...overallPantSize)
-    console.log('overallPant', shirtMaxIndex)
     const newOverallPant = { ...overallPant }
     newOverallPant[id] = defaultDenimPant.index[pantMaxIndex]
     setOverallPant(newOverallPant)
@@ -259,7 +244,6 @@ const BulkUniform = ({ classes, session, fetchAllSections, alert, user, fetchGra
   const updateEachHandler = (id, row) => {
     // compareHandler(id)
     let data = { ...row }
-    console.log('data: ', data)
     data['shirt'].chest = chest[id]
     data['shirt'].shoulder = shoulder[id]
     data['denim_pant'].waist = waist[id]
@@ -272,12 +256,10 @@ const BulkUniform = ({ classes, session, fetchAllSections, alert, user, fetchGra
     if (oldSize[id]) {
       data['actual_size'] = oldSize[id]
     }
-    console.log('after update', data)
     let sendObj = {
       data: data
     }
     sendEachUni(sendObj, user, alert)
-    console.log('send Obj: ', sendObj)
   }
 
   const sendSizeHandler = () => {
@@ -297,7 +279,6 @@ const BulkUniform = ({ classes, session, fetchAllSections, alert, user, fetchGra
         obj['actual_size'] = oldSize[obj.id]
       }
     })
-    console.log('updated Obj: ', updatedList)
     let myObj = {
       data: updatedList
     }
