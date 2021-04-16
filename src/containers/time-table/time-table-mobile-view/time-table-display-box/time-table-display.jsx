@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext,useEffect, useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import axiosInstance from '../../../../config/axios';
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import './time-table-display.scss';
 
 const DisplayBox = (props) => {
+  const { setAlert } = useContext(AlertNotificationContext);
   const [openEditForm, setOpenEditForm] = useState(true);
   const setMobileView = useMediaQuery('(min-width:800px)');
   const [data] = useState(props.dataOpenChange);
@@ -42,10 +44,13 @@ const DisplayBox = (props) => {
     axiosInstance
       .post('/academic/assign_class_periods/' + data.id + '/', obj)
       .then((responce) => {
-        console.log(responce);
+        if(responce.status===200){
+          setAlert('success', 'Period Edited');
+        }
       })
       .catch((error) => {
-        console.log(error);
+        
+        setAlert('error', "can't edit list");
       });
   };
   return (

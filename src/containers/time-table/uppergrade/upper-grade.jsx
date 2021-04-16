@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState } from 'react';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import axiosInstance from '../../../config/axios';
@@ -9,13 +9,15 @@ import LayersClearIcon from '@material-ui/icons/LayersClear';
 import WbIncandescentSharpIcon from '@material-ui/icons/WbIncandescentSharp';
 import { Button, IconButton } from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
-import { getModuleInfo }from '../../../utility-functions'
+import { getModuleInfo }from '../../../utility-functions';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './upper-grade.scss';
 import { set } from 'lodash';
 const UpperGrade = (props) => {
   const [dataMap, setDataMap] = useState();
   const [dataMapAcademicYear, setDataMapAcademicYear] = useState();
   const location = useLocation();
+  const { setAlert } = useContext(AlertNotificationContext);
   const [acadamicYearID, setAcadamicYear] = useState(1);
   const [gradeID, setGradeID] = useState(1);
   const [sectionID, setSectionID] = useState(1);
@@ -74,7 +76,6 @@ const UpperGrade = (props) => {
     axiosInstance
       .get(`/erp_user/grademapping/?session_year=${acadamicYearID}&branch_id=${branchID}`)
       .then((res) => {
-        console.log(res, 'grade');
         setDataMap(res.data.data);
       })
       .catch((error) => {
@@ -111,7 +112,6 @@ const UpperGrade = (props) => {
         `/erp_user/sectionmapping/?session_year=${acadamicYearID}&branch_id=${branchID}&grade_id=${gradeID}`
       )
       .then((res) => {
-        console.log(res, 'setion');
         if (res.status === 200) {
           setDataMap(res.data.data);
         }
@@ -135,8 +135,6 @@ const UpperGrade = (props) => {
     return getModuleInfo(moduleName).id;
   };
   const handleCounter = (value) => {
-    console.log('counter');
-
     if (value === 'back' && counter > 1) {
       setCounter(counter - 1);
     }
@@ -266,8 +264,7 @@ const UpperGrade = (props) => {
                             value={name.id}
                             onClick={() => setBranchName(name?.branch?.branch_name)}
                           >
-                            {/* {console.log(name, '=======')} */}
-                            {/* {name?.branch?.branch_name} */}
+                           
                             {name && name.branch && name.branch.branch_name}
                           </option>
                         ))}
