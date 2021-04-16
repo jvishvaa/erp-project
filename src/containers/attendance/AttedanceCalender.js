@@ -120,23 +120,26 @@ const AttedanceCalender = () => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher Calendar' && window.location.pathname === '/teacher-view') {
+            if (item.child_name === 'Teacher Calendar') {
               setModuleId(item.child_id);
+              console.log(item.child_id,"Chekkkkkkk")
             }
-            if (item.child_name === 'Student Calendar' && window.location.pathname === '/student-view') {
+            if (item.child_name === 'Student Calendar') {
               setModuleId(item.child_id);
             }
           });
         }
       });
     }
-  }, [window.location.pathname]);
+  }, []);
   console.log(moduleId,'MODULE_ID')
 
 
   useEffect(() => {
+    if(moduleId){
     callApi(`${endpoints.userManagement.academicYear}?moduleId=${moduleId}`, 'academicYearList')
-  }, []);
+    }
+  }, [moduleId]);
 
   const handleClearAll = () => {
     console.log("clear all")

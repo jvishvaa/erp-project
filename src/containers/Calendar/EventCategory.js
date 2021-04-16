@@ -56,6 +56,7 @@ import { result } from 'lodash';
 import e from 'cors';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
+import { FlashAutoTwoTone } from '@material-ui/icons';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -253,7 +254,9 @@ const Cal1 = () => {
     setOpen(true);
     setChaTitle(true);
   };
-  const handleClickOpens = () => { setOpen(true); }
+  const handleClickOpens = () => { 
+    setOpen(true); 
+  }
 
   const handleClear = () => {
     setFilterData({ selectedEventType: '' });
@@ -299,7 +302,10 @@ const Cal1 = () => {
   };
 
   const handleSave = () => {
+    
     setLoading(true)
+    // setEditFlag(false)
+    if (eventName) {
     axiosInstance
       .post(`${endpoints.eventBat.postCreateEvent}?module_id=${moduleId}`, {
         // event_category_type: eventName,
@@ -308,15 +314,7 @@ const Cal1 = () => {
       })
       .then((result) => {
         setLoading(false)
-        setAlert('success', 'Event Saved Successfully')
-        console.log(result.data.data.results)
-      })
-      .catch((err)=>{
-        setLoading(false)
-        setAlert('error', err)
-        console.log(err)
-      });
-    setEventName('')
+        setEventName('')
     let fullData = eventType
     console.log('This is full data', fullData)
     fullData.push({
@@ -325,6 +323,18 @@ const Cal1 = () => {
     })
     setEventType(fullData)
     setOpen(false);
+        setAlert('success', 'Event Saved Successfully')
+        console.log(result.data.data.results)
+      })
+      .catch((err)=>{
+        setLoading(false)
+        setAlert('error', err)
+        console.log(err)
+      }); 
+    } else {
+      setAlert('warning', 'Please Select Event Name First!')
+    }
+    
   };
 
 
@@ -377,21 +387,24 @@ const Cal1 = () => {
   };
 
   const handleDelete = (e, idx) => {
-    axiosInstance.delete(`${endpoints.eventBat.deleteEventCategory}${e.id}?module_id=${moduleId}`).then((result) => {
+    axiosInstance.delete(`${endpoints.eventBat.deleteEventCategory}${e.id}?module_id=${moduleId}`)
+    .then((result) => {
       console.log('deleted Data', result.data.data);
       setDeleteFlag(!deleteFlag);
       setAnchorEl(null);
       setAlert('success', 'Event Delete Successfully')
-    }).catch((error) => console.log(error));
+    }).catch((error) => 
     setAlert('warning', 'Something went wrong')
+    );
+    
   };
 
   const handleEdit = (data) => {
     //history.push(`/calendar1/${e.id}`);
     console.log(data);
     setChaTitle(false)
+    setEditFlag(false)
     handleClickOpens();
-    setEditFlag(!editFlag)
     setAnchorEl(null);
     setIsEditId(data.id);
     setEventName(data.event_category_name);
@@ -418,13 +431,15 @@ const Cal1 = () => {
       event_category_color: custColor,
     }
     axiosInstance
-      .put(`${endpoints.eventBat.patchUpdateEvent}${isEditId} ?module_id=${moduleId}`, params)
+      .put(`${endpoints.eventBat.patchUpdateEvent}${isEditId} `, params)
       .then((result) => {
         console.log(result.data, 'Update Data');
-        setIsEditId('');
-        setEventName('');
-        setEditFlag(!editFlag)
-        setAlert('success', 'Event Updated Successfully')
+        if(result.data.status===200){
+          setIsEditId('');
+          setEventName('');
+          setEditFlag(true)
+          setAlert('success', 'Event Updated Successfully')
+        }
       })
       .catch((error) => console.log(error))
     //history.push('/calendar1')
@@ -574,11 +589,11 @@ const Cal1 = () => {
                     </Button>
               <Button
                 autoFocus
-                onClick={editFlag ? handleUpdate : handleSave}
+                onClick={editFlag ?  handleSave : handleUpdate}
                 // onClick={handleSave}
                 color='primary'
               >
-                {editFlag ? 'UPDATE' : 'Save'}
+                {chaTitle ? 'Save' : 'Update'}
               </Button>
             </DialogActions>
             {/* </Grid> */}
