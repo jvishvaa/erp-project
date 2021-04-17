@@ -77,6 +77,7 @@ $font-roboto:  'Raleway', sans-serif;
   .yellow-header {
     color: #ff6b6b;
     margin: 6px 1px;
+    font-size: 15px;
   }
   p {
     font-size: 17px;
@@ -147,7 +148,7 @@ $font-roboto:  'Raleway', sans-serif;
       background-color: $text-color;
       border-radius: 50%;
       display: inline-block;
-      margin: 6px 1px;
+      margin: 6px 6px;
     }
     .table-header-data {
       color: $text-color;

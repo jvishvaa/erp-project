@@ -26,6 +26,13 @@ const TimeTable = (props) => {
   const [academicYear, setAcadamicYearName] = useState();
   const [gradeName, setGradeName] = useState();
   const [branchName, setBranchName] = useState();
+  const [loopMax, setLoopMax] = useState([0, 1, 2, 3, 4, 5]);
+  const [lengthMonday, setLengthMonday] = useState();
+  const [lengthTuesday, setLengthTuesday] = useState();
+  const [lengthWednesday, setLengthWednesday] = useState();
+  const [lengthThursday, setLengthThursday] = useState();
+  const [lengthFriday, setLengthFriday] = useState();
+  const [maxLength, setMaxLength] = useState();
   const [moduleId, setModuleId] = useState();
   const [sectinName, setSectionName] = useState();
   const [teacherView, setTeacherView] = useState(false);
@@ -83,6 +90,8 @@ const TimeTable = (props) => {
           if (tableData) {
             setLoading(false);
           }
+          console.log('calculateLength();')
+          calculateLength();
           setTableData(response.data.result);
         }
       })
@@ -116,6 +125,59 @@ const TimeTable = (props) => {
       section_id: section_ID,
     });
   };
+  const calculateLength = () =>{
+    if (tableData.Monday) {
+      let lengthData = tableData.Monday.length;
+      if (lengthData > 6) {
+        setLengthMonday(lengthData);
+      }
+      console.log(lengthData);
+    }
+    if (tableData.Tuesday) {
+      let lengthData = tableData.Tuesday.length;
+      if (lengthData > 6) {
+        setLengthTuesday(lengthData);
+      }
+      console.log(lengthData);
+    }
+    if (tableData.Wednesday) {
+      let lengthData = tableData.Wednesday.length;
+      if (lengthData > 6) {
+        setLengthWednesday(lengthData);
+      }
+      console.log(lengthData);
+    }
+    if (tableData.Thursday) {
+      let lengthData = tableData.Thursday.length;
+      if (lengthData > 6) {
+        setLengthThursday(lengthData);
+      }
+      console.log(lengthData);
+    }
+    if (tableData.Friday) {
+      let lengthData = tableData.Friday.length;
+      if (lengthData > 6) {
+        setLengthFriday(lengthData);
+      }
+      console.log(lengthData);
+    }
+    // if(monday)
+    let arrayLength = [
+      lengthMonday,
+      lengthTuesday,
+      lengthWednesday,
+      lengthThursday,
+      lengthFriday,
+    ];
+    let sortedArray = arrayLength.sort();
+    setMaxLength(lengthMonday);
+    console.log(sortedArray, 'sorted array');
+    console.log(maxLength, 'max length');
+    let mappingArray = Array.from(Array(maxLength).keys());
+    if (maxLength > 6) {
+      setLoopMax(mappingArray);
+    }
+  }
 
   const handleClickAPI = () => {
     callGetTimeTableAPI();

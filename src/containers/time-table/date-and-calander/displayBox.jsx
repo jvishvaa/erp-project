@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -14,6 +14,10 @@ const useStyles = makeStyles(() => ({
     color: '#014B7E',
     fontSize: '15px',
   },
+  autoCompColor: {
+    background: 'white',
+    color: '#014B7E',
+  },
 }));
 const DisplayBox = (props) => {
   const classes = useStyles();
@@ -22,17 +26,21 @@ const DisplayBox = (props) => {
   const setMobileView = useMediaQuery('(min-width:800px)');
   const currDate = moment('08:09:00').format(' h:mm: a');
   const [data] = useState(props.dataOpenChange);
-  const [assignedTeacherID, setAssignedTeacherID] = useState();
-  const [Description, setDescription] = useState(props.dataOpenChange.period_description);
-  const [startTime, setStartTime] = useState(
-    props.dataOpenChange.period_start_time + ' - ' + props.dataOpenChange.period_end_time
+  const [assignedTeacherID, setAssignedTeacherID] = useState(
+    props.dataOpenChange.assigned_teacher_id
   );
+  const [Description, setDescription] = useState(props.dataOpenChange.period_description);
+  const [startTime, setStartTime] = useState(props.dataOpenChange.period_start_time);
+  const [endTime, setEndTime] = useState(props.dataOpenChange.period_end_time);
   const [teacherDetails, setTeacherDetails] = useState(data.teacher_name.name);
   const [assignedTeacherName, setAssignedTeacherName] = useState(
     props.dataOpenChange.teacher_name.name
   );
-  const [subject, setSubject] = useState(props.dataOpenChange.period_name);
-  const [subjectID, setSubjectID] = useState(props.dataOpenChange.subject_id);
+  const [subjetName, setSubjectName] = useState(
+    props.dataOpenChange.subject_details.subject_name
+  );
+  const [captionName, setCaptionName] = useState(props.dataOpenChange.period_name);
+  const [subjectID, setSubjectID] = useState();
   const [MaterialRequired, setMaterialRequired] = useState(
     props.dataOpenChange.required_material
   );
@@ -43,21 +51,23 @@ const DisplayBox = (props) => {
     }
     props.handleChangeDisplayView();
     let obj = {
+      period_start_time: startTime,
+      period_end_time: endTime,
       period_description: Description,
       subject: subjectID,
       assigned_teacher: assignedTeacherID,
       required_material: MaterialRequired,
+      period_name: captionName,
     };
     axiosInstance
       .put('/academic/assign_class_periods/' + data.id + '/', obj)
       .then((responce) => {
-        if(responce.status===200){
+        if (responce.status === 200) {
           setAlert('success', 'Period Edited');
         }
         props.callGetAPI();
       })
       .catch((error) => {
-
         setAlert('error', "can't edit list");
       });
   };
@@ -67,7 +77,7 @@ const DisplayBox = (props) => {
         <>
           <div className='display-heading-container'>
             <div className='yellow-header'>
-              {data.period_start_time.slice(0, 5)}-{data.period_end_time.slice(0, 5)}AM
+              {data.period_start_time.slice(0, 5)} - {data.period_end_time.slice(0, 5)}
             </div>
             {props.teacherView ? (
               <div className='edit-button' onClick={() => setOpenEditForm(false)}>
@@ -92,7 +102,7 @@ const DisplayBox = (props) => {
           <div className='field-container'>
             <TextField
               fullWidth
-              label='Duration'
+              label='Start Time'
               id='outlined-size-small'
               variant='outlined'
               value={startTime}
@@ -104,13 +114,28 @@ const DisplayBox = (props) => {
             />
           </div>
           <div className='field-container'>
-            <Autocomplete
+            <TextField
+              fullWidth
+              label='End Time'
+              id='outlined-size-small'
+              variant='outlined'
+              value={endTime}
+              size='small'
+              InputProps={{
+                className: classes.multilineColor,
+              }}
+              onChange={(e) => setEndTime(e.target.value)}
+            />
+          </div>
+          <div className='field-container'>
+            {/* <Autocomplete
               id='combo-box-demo'
               size='samll'
               fullWidth
-              item={assignedTeacherName}
+              // item={assignedTeacherName}
               options={props.assignedTeacher}
-              getItemValue={(item) => item?.name}
+              // getItemValue={(item) => item?.name}
+              value={props.dataOpenChange.teacher_name.name || assignedTeacherName}
               // defaultValue={
               //   props.assignedTeacher &&
               //   props.assignedTeacher.find(assignedTeacherName)
@@ -128,22 +153,57 @@ const DisplayBox = (props) => {
                   variant='outlined'
                 />
               )}
+            /> */}
+            <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, option) => setAssignedTeacherID(option?.user_id)}
+              id='grade'
+              className='dropdownIconsession_year}'
+              value={props.dataOpenChange.teacher_name}
+              options={props.assignedTeacher}
+              getOptionLabel={(option) => option?.name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Conducted By'
+                  // style={{ width: '100%', color: '#014B7E' }}
+                  placeholder='Conducted By'
+                />
+              )}
             />
           </div>
-          {/* <div className='field-container'>
-            <TextField
+          <div className='field-container'>
+            <Autocomplete
+              id='combo-box-demo'
+              size='samll'
               fullWidth
-              label='Conducted By'
-              id='outlined-size-small'
-              variant='outlined'
-              size='small'
+              value={props.dataOpenChange.subject_details}
+              options={props.subject}
               InputProps={{
-                className: classes.multilineColor,
+                className: classes.autoCompColor,
               }}
-              value={teacherDetails}
-              onChange={(e) => setTeacherDetails(e.target.value)}
+              getOptionLabel={(option) => option?.subject_name}
+              style={{ width: '100%', color: '#014B7E' }}
+              onChange={(event, option) => setSubjectID(option?.id)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  size='small'
+                  fullWidth
+                  label='Subject'
+                  style={{ width: '100%', color: '#014B7E' }}
+                  // InputProps={{
+                  //   className: classes.multilineColor,
+                  // }}
+                  // label={assignedTeacherName}
+                  variant='outlined'
+                />
+              )}
             />
-          </div> */}
+          </div>
           <div className='field-container'>
             <TextField
               fullWidth
@@ -173,14 +233,14 @@ const DisplayBox = (props) => {
               fullWidth
               key='Caption Name'
               label='Caption Name'
-              value={subject}
+              value={captionName}
               id='outlined-size-small'
               variant='outlined'
               size='small'
               InputProps={{
                 className: classes.multilineColor,
               }}
-              onChange={(e) => setSubject(e.target.value)}
+              onChange={(e) => setCaptionName(e.target.value)}
             />
           </div>
           {/* <div className='field-container'>
