@@ -707,11 +707,11 @@ const Attend = () => {
                     <CardContent>
                       <Grid container direction='row' justify="space-between" alignItems="center">
                         <Grid item xs={1} sm={1} md={1} lg={1} style={{ marginTop: 15 }}>
-                          <Avatar>{item.name.slice(0, 1)}</Avatar>
+                          <Avatar>{item?.name?.slice(0, 1)}</Avatar>
                         </Grid>
                         <Grid item >
-                          <Typography>Name: {item.name.slice(0, 6) || ""}</Typography>
-                          <Typography>Roll_ no: {item.user_id}</Typography>
+                          <Typography>Name: {item?.name?.slice(0, 6) || ""}</Typography>
+                          <Typography>Roll_ no: {item?.user_id}</Typography>
                         </Grid>
                         <Grid>
                           <p class='box'>

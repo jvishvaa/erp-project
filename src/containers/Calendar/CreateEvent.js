@@ -166,7 +166,7 @@ const CreateEvent = () => {
     })
 
     history.push({
-      pathname: '/attendance-calendar'
+      pathname: '/attendance-calendar/teacher-view'
     })
   };
 

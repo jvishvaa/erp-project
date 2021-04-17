@@ -261,11 +261,13 @@ const AttedanceCalender = () => {
         },
       })
       .then((res) => {
+        setLoading(false)
         console.log(res.data.events, 'current eventssss');
         setCurrentEvent(res.data.events);
         setStudentDataAll(res.data);
       })
       .catch((error) => {
+        setLoading(false)
         console.log(error);
       });
   };
@@ -697,8 +699,8 @@ const AttedanceCalender = () => {
                   </div>
                   <Divider />
                   <div className='absentList'>
-                    {studentDataAll.absent_list &&
-                      studentDataAll.absent_list.map((data) => (
+                    {studentDataAll.absent_list.[0] &&
+                      studentDataAll.absent_list.[0].map((data) => (
                         <div className='eachAbsent'>
                           <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
                           <div className='studentName'>
