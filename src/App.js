@@ -80,7 +80,7 @@ import {
   ContentViewPublishPrincipal,
   EditWordCountConfig,
 } from './containers/blog';
-import {CreateEbook , ViewEbook} from './containers/ebooks'
+import { CreateEbook, ViewEbook } from './containers/ebooks';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
 import Discussionforum from './containers/discussionForum/index';
 import DiscussionPost from './containers/discussionForum/discussion/DiscussionPost';
@@ -248,6 +248,7 @@ import CreateQuestionPaper from './containers/assessment-central/create-question
 import Assesment from './containers/assessment-central';
 import AssessmentView from './containers/assessment-central/assesment-view';
 import CreateAssesment from './containers/assessment-central/create-assesment';
+import AssessmentReportTypes from './containers/assessment-central/assessment-report-types';
 
 const theme = createMuiTheme({
   palette: {
@@ -360,6 +361,9 @@ function App({ alert }) {
                           </Route>
                           <Route path='/create-assesment'>
                             {({ match }) => <CreateAssesment match={match} />}
+                          </Route>
+                          <Route exact path='/assessment-reports'>
+                            {({ match }) => <AssessmentReportTypes match={match} />}
                           </Route>
                           <Route exact path='/blog/genre'>
                             {({ match }) => <CreateGenre match={match} />}

@@ -270,8 +270,8 @@ export default {
   },
   ebook: {
     ebook: `${baseURLCentral}/ebook/ebook_school_wise_filter/`,
-    EbookUser:`${baseURLCentral}/ebook/ebook_user/`,
-    AnnotateEbook:`${baseURLCentral}/ebook/ebook_user_status/`,
+    EbookUser: `${baseURLCentral}/ebook/ebook_user/`,
+    AnnotateEbook: `${baseURLCentral}/ebook/ebook_user_status/`,
     // academicYearList: `${baseURLCentral}/erp_user/list-academic_year/`,
     // // academicYearList: '/erp_user/list-academic_year/',
     // gradeSubjectMappingList: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
@@ -282,7 +282,7 @@ export default {
     batchSizeList: '/aol/aol-course-batch/',
     getBatchList: '/erp_user/teacher_online_class/',
     cancelBatchApi: '/erp_user/cancel-online-class/',
-    hostApi:'/erp_user/redirection_zoom/',
+    hostApi: '/erp_user/redirection_zoom/',
   },
   studentViewBatchesApi: {
     getBatchesApi: '/erp_user/student_online_class/',
@@ -300,6 +300,12 @@ export default {
     userAssessmentSubmission: `${baseURLCentral}/assessment/user_response/`,
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+  },
+  assessmentReportTypes: {
+    reportSectionWise: `${baseURLCentral}/assessment/report-section-wise/`,
+    reportTopicWise: `${baseURLCentral}/assessment/report-topic-wise/`,
+    reportClassAverage: `${baseURLCentral}/assessment/report-class-average/`,
+    reportTopicStudentAverage: `${baseURLCentral}/assessment/report-topic-student-average/`,
   },
   assessmentApis: {
     gradesList: `/academic/sm-grades-list/`,

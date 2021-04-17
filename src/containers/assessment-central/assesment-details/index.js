@@ -42,7 +42,7 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
       <div className='parameters-container'>
         <div className='parameters-header'>
           <span className='header-text font-lg'>Test Parameters</span>
-          <span className='primary-text font-sm'>Edit details</span>
+          {/* <span className='primary-text font-sm'>Edit details</span> */}
         </div>
         <div className='parameters-content'>
           <Grid container>
