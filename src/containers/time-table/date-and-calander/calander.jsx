@@ -70,11 +70,9 @@ const Calander = (props) => {
   };
   useEffect(() => {
     OpenCalanderWeek();
-    // handlePassData();
     callingSubjectAPI();
     callingTeachersAPI();
     handleContextData();
-    // props.callGetAPI();
   }, [props.tableData]);
   const handleContextData = () => (
     <UserConsumer>{({ ids }) => setAcadamicYear(ids)}</UserConsumer>
@@ -121,10 +119,6 @@ const Calander = (props) => {
   };
   const createPeriodAPI = () => {
     let obj = {
-      // academic_year: props.passId.academic_year_id,
-      // section: props.passId.section_id,
-      // branch: props.passId.section_id,
-      // grade: props.passId.grade_id,
       academic_year: props.acadamicYear_ID,
       section: props.section_ID,
       branch: props.branch_ID,
@@ -338,6 +332,7 @@ const Calander = (props) => {
               label='Start Time'
               id='outlined-size-small'
               variant='outlined'
+              placeholder='eg:07:00'
               helperText="12-hour format"
               size='small'
               onChange={(e) => setStartTime(e.target.value)}
@@ -348,6 +343,7 @@ const Calander = (props) => {
               label='End Time'
               id='outlined-size-small'
               variant='outlined'
+              placeholder='eg:08:00'
               helperText="12-hour format"
               size='small'
               onChange={(e) => setEndTime(e.target.value)}
@@ -514,122 +510,6 @@ const Calander = (props) => {
                 )}
               </tr>
             ))}
-            {/* {props.tableData && props.tableData.map((data, index)=>{
-              <tr key={data}>
-              {index < DataMonday.length ? (
-                <td
-                  onClick={() => {
-                    handleChangeData(data.Monday[index]);
-                  }}
-                >
-                  <h4>{data.Monday[index].period_name}</h4>{' '}
-                  <p>
-                    {data.Monday[index].period_start_time.slice(0, 5)}-
-                    {data.Monday[index].period_end_time.slice(0, 5)}AM
-                  </p>
-                  <h4>
-                    {data.Monday[index].assigned_teacher__first_name}{' '}
-                    {data.Monday[index].assigned_teacher__last_name}
-                  </h4>
-                </td>
-              ) : (
-                <td>
-                  <h4> </h4> <p> </p>
-                  <h4> </h4>
-                </td>
-              )}
-
-              {index < DataTuesday.length ? (
-                <td
-                  onClick={() => {
-                    handleChangeData(data.Tuesday[index]);
-                  }}
-                >
-                  <h4>{data.Tuesday[index].period_name}</h4>{' '}
-                  <p>
-                    {data.Tuesday[index].period_start_time.slice(0, 5)}-
-                    {data.Tuesday[index].period_end_time.slice(0, 5)}AM
-                  </p>
-                  <h4>
-                    {data.Tuesday[index].assigned_teacher__first_name}{' '}
-                    {data.Tuesday[index].assigned_teacher__last_name}
-                  </h4>
-                </td>
-              ) : (
-                <td>
-                  <h4> </h4> <p> </p>
-                  <h4> </h4>
-                </td>
-              )}
-              {index < DataWednesday.length ? (
-                <td
-                  style={selectClick ? { borderStyle } : {}}
-                  onClick={() => {
-                    handleChangeData(data.Wednesday[index]);
-                  }}
-                >
-                  <h4>{data.Wednesday[index].period_name}</h4>{' '}
-                  <p>
-                    {data.Wednesday[index].period_start_time.slice(0, 5)}-
-                    {data.Wednesday[index].period_end_time.slice(0, 5)}AM
-                  </p>
-                  <h4>
-                    {data.Wednesday[index].assigned_teacher__first_name}{' '}
-                    {data.Wednesday[index].assigned_teacher__last_name}
-                  </h4>
-                </td>
-              ) : (
-                <td>
-                  <h4> </h4> <p> </p>
-                  <h4> </h4>
-                </td>
-              )}
-              {index < DataThursday.length ? (
-                <td
-                  onClick={() => {
-                    handleChangeData(data.Thursday[index]);
-                  }}
-                >
-                  <h4>{data.Thursday[index].period_name}</h4>{' '}
-                  <p>
-                    {data.Thursday[index].period_start_time.slice(0, 5)}-
-                    {data.Thursday[index].period_end_time.slice(0, 5)}.AM
-                  </p>
-                  <h4>
-                    {data.Thursday[index].assigned_teacher__first_name}{' '}
-                    {data.Thursday[index].assigned_teacher__last_name}
-                  </h4>
-                </td>
-              ) : (
-                <td>
-                  <h4> </h4> <p> </p>
-                  <h4> </h4>
-                </td>
-              )}
-              {index < DataFriday.length ? (
-                <td
-                  onClick={() => {
-                    handleChangeData(data.Friday[index]);
-                  }}
-                >
-                  <h4>{data.Friday[index].period_name}</h4>{' '}
-                  <p>
-                    {data.Friday[index].period_start_time.slice(0, 5)}-
-                    {data.Friday[index].period_end_time.slice(0, 5)}AM
-                  </p>
-                  <h4>
-                    {data.Friday[index].assigned_teacher__first_name}{' '}
-                    {data.Friday[index].assigned_teacher__last_name}
-                  </h4>
-                </td>
-              ) : (
-                <td>
-                  <h4> </h4> <p> </p>
-                  <h4> </h4>
-                </td>
-              )}
-            </tr>
-            }) }   */}
           </table>
         </div>
         <div className='display-container'>
