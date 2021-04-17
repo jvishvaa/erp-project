@@ -1304,16 +1304,6 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/event-category')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <EventNoteIcon /> */}
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Event Category</ListItemText>
-          </ListItem>
           {/* <ListItem
             button
             className={classes.menuControlContainer}
@@ -1335,16 +1325,6 @@ const Layout = ({ children, history }) => {
             <ListItemText className='menu-item-text'>Attendance</ListItemText>
           </ListItem> */}
 
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/attendance-calendar')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <TodayIcon /> */}
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Attendance Calender</ListItemText>
-          </ListItem>
           {/* <ListItem
             button
             className={classes.menuControlContainer}
@@ -1365,16 +1345,7 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>MarkAttedance</ListItemText>
           </ListItem> */}
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/publications')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <PublishIcon /> */}
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Publication</ListItemText>
-          </ListItem>
+ 
           {/* {drawerOpen ? (
             <ListItem
               button
