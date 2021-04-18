@@ -70,7 +70,6 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapStateToProps = (state) => ({
-  assessmentReportListData: state.assessmentReportReducer.assessmentReportListData,
   selectedReportType: state.assessmentReportReducer.selectedReportType,
 });
 

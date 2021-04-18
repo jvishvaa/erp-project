@@ -1,25 +1,29 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useContext, useEffect, useState } from 'react';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import {
+  SvgIcon,
+  Table,
+  TableContainer,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  Paper,
+  TablePagination
+} from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import TablePagination from '@material-ui/core/TablePagination';
 import Layout from '../../Layout';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import endpoints from '../../../config/endpoints';
-import axiosInstance from '../../../config/axios';
 import '../../../containers/master-management/master-management.css';
 import Loading from '../../../components/loader/loader';
 import ReportTypeFilter from '../assessment-report-types/report-type-filter';
 import AssessmentReportFilters from '../assessment-report-types/assessment-report-filters';
 import { connect } from 'react-redux';
+import { setClearFilters } from 'redux/actions';
+import unfiltered from '../../../assets/images/unfiltered.svg';
+import selectfilter from '../../../assets/images/selectfilter.svg';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,7 +55,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType }) => {
+const AssessmentReportTypes = ({
+  setClearFilters,
+  assessmentReportListData,
+  selectedReportType,
+}) => {
   const limit = 15;
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -65,6 +73,10 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
   const [totalCount, setTotalCount] = useState(0);
 
   const [columns, setColumns] = useState([]);
+
+  useEffect(() => {
+    setClearFilters();
+  }, []);
 
   useEffect(() => {
     switch (selectedReportType?.id) {
@@ -193,80 +205,86 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
         {selectedReportType?.id && (
           <AssessmentReportFilters widerWidth={widerWidth} isMobile={isMobile} />
         )}
-        <Paper className={`${classes.root} common-table`}>
-          <TableContainer className={classes.container}>
-            <Table stickyHeader aria-label='sticky table'>
-              <TableHead className='table-header-row'>
-                <TableRow>
-                  {[...columns].map((column) => (
-                    <TableCell
-                      key={column.id}
-                      align={column.align}
-                      style={{ minWidth: column.minWidth }}
-                      className={classes.columnHeader}
-                    >
-                      {column.label}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {assessmentReportListData?.map((rowData, index) => {
-                  return (
-                    <TableRow hover academicyear='checkbox' tabIndex={-1} key={index}>
-                      <TableCell className={classes.tableCell}>{index + 1}</TableCell>
-                      {selectedReportType?.id === 1 && (
-                        <TableCell className={classes.tableCell}>
-                          {rowData?.section_name}
-                        </TableCell>
-                      )}
-                      {selectedReportType?.id === 1 && (
-                        <TableCell className={classes.tableCell}>
-                          {rowData?.class_average}
-                        </TableCell>
-                      )}
-                      {selectedReportType?.id === 1 && (
-                        <TableCell className={classes.tableCell}>
-                          {rowData?.test__teacher}
-                        </TableCell>
-                      )}
-                      {selectedReportType?.id === 2 && (
-                        <TableCell className={classes.tableCell}>
-                          {rowData?.topic}
-                        </TableCell>
-                      )}
-                      {selectedReportType?.id === 2 && (
-                        <TableCell className={classes.tableCell}>
-                          {rowData?.average}
-                        </TableCell>
-                      )}
-                      {(selectedReportType?.id === 3 || selectedReportType?.id === 4) && (
-                        <TableCell className={classes.tableCell}>
-                          {rowData?.erp_no}
-                        </TableCell>
-                      )}
-                      {(selectedReportType?.id === 3 || selectedReportType?.id === 4) && (
-                        <TableCell className={classes.tableCell}>
-                          {rowData?.user_name}
-                        </TableCell>
-                      )}
-                      {(selectedReportType?.id === 3 || selectedReportType?.id === 4) && (
-                        <TableCell className={classes.tableCell}>
-                          {rowData?.marks_obtained}
-                        </TableCell>
-                      )}
-                      {(selectedReportType?.id === 3 || selectedReportType?.id === 4) && (
-                        <TableCell className={classes.tableCell}>
-                          {rowData?.comparison}
-                        </TableCell>
-                      )}
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <div className='paginateData'>
+
+        {selectedReportType?.id ? (
+          <Paper className={`${classes.root} common-table`}>
+            <TableContainer className={classes.container}>
+              <Table stickyHeader aria-label='sticky table'>
+                <TableHead className='table-header-row'>
+                  <TableRow>
+                    {[...columns].map((column) => (
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{ minWidth: column.minWidth }}
+                        className={classes.columnHeader}
+                      >
+                        {column.label}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {assessmentReportListData?.map((rowData, index) => {
+                    return (
+                      <TableRow hover academicyear='checkbox' tabIndex={-1} key={index}>
+                        <TableCell className={classes.tableCell}>{index + 1}</TableCell>
+                        {selectedReportType?.id === 1 && (
+                          <TableCell className={classes.tableCell}>
+                            {rowData?.section_name}
+                          </TableCell>
+                        )}
+                        {selectedReportType?.id === 1 && (
+                          <TableCell className={classes.tableCell}>
+                            {rowData?.class_average}
+                          </TableCell>
+                        )}
+                        {selectedReportType?.id === 1 && (
+                          <TableCell className={classes.tableCell}>
+                            {rowData?.test__teacher}
+                          </TableCell>
+                        )}
+                        {selectedReportType?.id === 2 && (
+                          <TableCell className={classes.tableCell}>
+                            {rowData?.topic}
+                          </TableCell>
+                        )}
+                        {selectedReportType?.id === 2 && (
+                          <TableCell className={classes.tableCell}>
+                            {rowData?.average}
+                          </TableCell>
+                        )}
+                        {(selectedReportType?.id === 3 ||
+                          selectedReportType?.id === 4) && (
+                          <TableCell className={classes.tableCell}>
+                            {rowData?.erp_no}
+                          </TableCell>
+                        )}
+                        {(selectedReportType?.id === 3 ||
+                          selectedReportType?.id === 4) && (
+                          <TableCell className={classes.tableCell}>
+                            {rowData?.user_name}
+                          </TableCell>
+                        )}
+                        {(selectedReportType?.id === 3 ||
+                          selectedReportType?.id === 4) && (
+                          <TableCell className={classes.tableCell}>
+                            {rowData?.marks_obtained}
+                          </TableCell>
+                        )}
+                        {(selectedReportType?.id === 3 ||
+                          selectedReportType?.id === 4) && (
+                          <TableCell className={classes.tableCell}>
+                            {rowData?.comparison}
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            {/* <div className='paginateData'>
             <TablePagination
               component='div'
               count={totalCount}
@@ -275,13 +293,43 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
               onChangePage={handleChangePage}
               rowsPerPageOptions={false}
             />
+          </div> */}
+          </Paper>
+        ) : (
+          <div className='periodDataUnavailable'>
+            <SvgIcon
+              component={() => (
+                <img
+                  style={
+                    isMobile
+                      ? { height: '100px', width: '200px' }
+                      : { height: '160px', width: '290px' }
+                  }
+                  src={unfiltered}
+                />
+              )}
+            />
+            <SvgIcon
+              component={() => (
+                <img
+                  style={
+                    isMobile
+                      ? { height: '20px', width: '250px' }
+                      : { height: '50px', width: '400px', marginLeft: '5%' }
+                  }
+                  src={selectfilter}
+                />
+              )}
+            />
           </div>
-        </Paper>
+        )}
       </Layout>
     </>
   );
 };
-const mapDispatchToProps = (dispatch) => ({});
+const mapDispatchToProps = (dispatch) => ({
+  setClearFilters: () => dispatch(setClearFilters()),
+});
 
 const mapStateToProps = (state) => ({
   selectedReportType: state.assessmentReportReducer.selectedReportType,
