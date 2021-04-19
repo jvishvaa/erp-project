@@ -8,7 +8,7 @@ export const assessmentReportActions = {
   ASSESSMENT_REPORT_LIST_DATA_FAILURE: 'ASSESSMENT_REPORT_LIST_DATA_FAILURE',
 
   SET_REPORT_TYPE: 'SET_REPORT_TYPE',
-  SET_REPORT_FILTERS: 'SET_REPORT_FILTERS',
+  // SET_REPORT_FILTERS: 'SET_REPORT_FILTERS',
   SET_CLEAR_FILTERS: 'SET_CLEAR_FILTERS',
 };
 
@@ -17,7 +17,7 @@ const {
   ASSESSMENT_REPORT_LIST_DATA_SUCCESS,
   ASSESSMENT_REPORT_LIST_DATA_FAILURE,
   SET_REPORT_TYPE,
-  SET_REPORT_FILTERS,
+  // SET_REPORT_FILTERS,
   SET_CLEAR_FILTERS,
 } = assessmentReportActions;
 
@@ -25,21 +25,21 @@ function request(type) {
   return {
     type,
   };
-};
+}
 
 function success(type, payload) {
   return {
     type,
     payload,
   };
-};
+}
 
 function failure(type, payload) {
   return {
     type,
     payload,
   };
-};
+}
 
 function reportTypeURL(reportTypeId) {
   let url = '';
@@ -61,17 +61,17 @@ function reportTypeURL(reportTypeId) {
       break;
   }
   return url;
-};
+}
 
 export const setClearFilters = () => ({
   type: SET_CLEAR_FILTERS,
 });
 
-export const setReportFilters = (filter, data) => ({
-  type: SET_REPORT_FILTERS,
-  filter,
-  data,
-});
+// export const setReportFilters = (filter, data) => ({
+//   type: SET_REPORT_FILTERS,
+//   filter,
+//   data,
+// });
 
 export const fetchAssessmentReportList = (reportType) => (dispatch) => {
   dispatch(success(SET_REPORT_TYPE, reportType));
