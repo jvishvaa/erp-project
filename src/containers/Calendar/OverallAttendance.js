@@ -106,16 +106,16 @@ const Attend = () => {
 
       axiosInstance.
       get(
-        `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${startDate}&end_date=${endDate}&page_num=${pageNumber}&page_size=${limit}`
+        `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${startDate}&end_date=${endDate}&page_num=${pageNumber}&page_size=${limit}`
       )
       .then(res => {
         setLoading(false)
+        setResult(res.data.results)
         setTotalGenre(res.data.count);
         console.log(res.data.results, "multiple student data between date ranges")
         console.log(res.data.results.map((item)=>console.log(item.user_id)))
         // let temp = [...res.data.absent_list, ...res.data.present_list]
         // console.log(temp)
-        setResult(res.data.results)
       })
       .catch(err => {
         setLoading(false)
@@ -149,14 +149,6 @@ const Attend = () => {
   // }, [history])
   //pagination
 
-  const [activePage, setActivePage] = useState(1)
-
-  let totalPages = result && Math.ceil(result.length / 8)
-  console.log(totalPages)
-  let offset = (activePage - 1) * 8
-  const handlePageChange = (e, value) => {
-    setActivePage(value)
-  }
 
   const [state, setState] = React.useState({
     present: false,

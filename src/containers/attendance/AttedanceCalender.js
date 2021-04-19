@@ -279,6 +279,16 @@ const AttedanceCalender = () => {
   };
 
   const getRangeData = () => {
+    const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: startDate,
+      endDate: endDate
+    }
+    console.log(payload, "attendance calendar")
+
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
       return;
