@@ -106,7 +106,7 @@ const Attend = () => {
 
       axiosInstance.
       get(
-        `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${startDate}&end_date=${endDate}&page_num=${pageNumber}&page_size=${limit}`
+        `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${startDate}&end_date=${endDate}&page_num=${pageNumber}&page_size=${limit}`
       )
       .then(res => {
         setLoading(false)

@@ -16,12 +16,10 @@ const acceptRejectPaymentReducer = (state = initialState, action) => {
     case actionTypes.CANCEL_PAYMENT : {
       let payData = [ ...state.paymentDetails ]
       let index = payData.findIndex((val) => +val.id === +action.payload.data.id)
-      console.log('payData', payData)
-      console.log('index', index)
+
       if (index !== -1) {
         payData[index] = { ...action.payload.data }
       }
-      console.log('payData', payData)
       return {
         ...state,
         paymentDetails: payData
@@ -30,15 +28,12 @@ const acceptRejectPaymentReducer = (state = initialState, action) => {
     case actionTypes.ACCEPT_PAYMENT : {
       let payData = [ ...state.paymentDetails ]
       let index = payData.findIndex((val) => +val.id === +action.payload.data.id)
-      console.log('payData', payData)
-      console.log('index', index)
       let dataPayload = null
       if (index !== -1) {
         dataPayload = action.payload.data
         // dataPayload.payment_screenshot = 'http://localhost:8000' + action.payload.data.payment_screenshot
         payData[index] = { ...dataPayload }
       }
-      console.log('payData', payData)
       return {
         ...state,
         paymentDetails: payData

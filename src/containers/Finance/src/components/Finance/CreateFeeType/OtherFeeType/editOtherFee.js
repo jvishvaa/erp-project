@@ -57,7 +57,6 @@ class EditOtherFeeType extends Component {
         }
       })
       .then(res => {
-        console.log(res.status)
         if (+res.status === 200) {
           this.props.alert.success('Updated Successfully')
           this.props.giveData('success', res.data)
@@ -65,7 +64,6 @@ class EditOtherFeeType extends Component {
       })
       .catch((error) => {
         this.props.alert.error('Something went Wrong')
-        console.log("Error: Couldn't fetch data from " + urls.OthersFeeType + error)
       })
   }
 

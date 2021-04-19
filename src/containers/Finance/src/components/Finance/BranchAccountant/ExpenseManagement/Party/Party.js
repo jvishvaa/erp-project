@@ -44,7 +44,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -150,7 +149,6 @@ const Party = ({ user, alert, fetchPartyList, classes, sessions, fetchBranches, 
   }, [fetchPartyList, user, alert])
 
   handleAcademicyear = (e) => {
-    // console.log('acad years', this.props.session)
     setSessionData(e)
     setSession(e.value)
     // this.setState({ session: e.value, sessionData: e}, () => {

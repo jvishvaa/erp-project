@@ -27,7 +27,6 @@ const assignDelieveryChargeReducer = (state = initialState, action) => {
     }
     case actionTypes.ASSIGN_DELIEVERY_CHARGE : {
       const studentLists = [...state.studentList]
-      console.log('student', studentLists)
       action.payload.data && action.payload.data.map((val) => val.student.erp).forEach((s) => {
         let index = studentLists.findIndex((item) => {
           if (item.erp) {
@@ -41,13 +40,11 @@ const assignDelieveryChargeReducer = (state = initialState, action) => {
           }
         })
         let index2 = action.payload.data.findIndex(item => item.student.erp === s)
-        console.log('index', index)
-        console.log('index2', index2)
+
         if (index !== -1) {
           studentLists[index] = action.payload.data[index2]
         }
       })
-      console.log('studentList', studentLists)
       return {
         ...state,
         assignedDelieveryErp: action.payload.data,

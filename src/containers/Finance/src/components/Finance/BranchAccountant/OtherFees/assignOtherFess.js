@@ -51,7 +51,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -88,7 +87,6 @@ class AssignOtherFees extends Component {
   }
 
   gradeHandler = (e) => {
-    console.log(e.value)
     this.setState({ gradeId: e.value, gradeData: e }, () => {
       this.props.fetchAllSections(this.state.session, this.state.gradeId, this.props.alert, this.props.user, moduleId, this.state.selectedBranches?.value)
     })
@@ -137,7 +135,6 @@ class AssignOtherFees extends Component {
   }
 
   handleAcademicyear = (e) => {
-    console.log(e)
     this.setState({ session: e.value, branchData: [], sessionData: e })
     this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId) 
     // this.props.fetchAllGrades(e.value, this.props.alert, this.props.user, moduleId, selectedBranches?.value)

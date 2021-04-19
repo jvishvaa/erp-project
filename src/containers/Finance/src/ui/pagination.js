@@ -15,7 +15,6 @@ class Pagination extends React.Component {
     let { noOfPages } = this.props
     let PageButtons = []
     for (let i = 1; i <= noOfPages; i++) {
-      console.log(i)
       PageButtons.push(
         <Button variant='outlined' component='span' onClick={() => this.props.goToPage && this.props.goToPage(i)}>
           {i}

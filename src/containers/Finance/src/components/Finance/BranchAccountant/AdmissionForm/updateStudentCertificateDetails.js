@@ -49,7 +49,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -72,11 +71,8 @@ class UpdateStudentCertiDetailsAcc extends Component {
     }
   }
   componentWillReceiveProps (nextProps) {
-    console.log('===received props', nextProps.admissionrecordbyerp)
     if (nextProps.admissionrecordbyerp) {
-      console.log('this is printed chandan')
       if (this.data.length > 0) {
-        console.log('not inserted')
       } else {
       this.data = nextProps.admissionrecordbyerp.student_certificate ? nextProps.admissionrecordbyerp.student_certificate : null
       this.state.certificates = nextProps.admissionrecordbyerp.student_certificate ? nextProps.admissionrecordbyerp.student_certificate : null
@@ -84,7 +80,6 @@ class UpdateStudentCertiDetailsAcc extends Component {
     }
   }
   buttonHandler = (e) => {
-    console.log(this.props.studentAdmissionCertificates)
   }
   handleGetButton = (e) => {
     this.props.getAdmissionRecords(this.props.user, this.props.alert)
@@ -93,19 +88,13 @@ class UpdateStudentCertiDetailsAcc extends Component {
     this.props.fetchStudentAdmissionCertificates(this.props.user, this.props.alert)
   }
   componentDidUpdate () {
-    console.log('DID UPDATED', this.state)
     this.props.getCertificateDetail(this.state.certificates)
   }
   certificateHandler = (event, data) => {
-    console.log('certificate check is pressed', event.target.checked, data)
     if (event.target.checked) {
-      console.log('push to data')
       this.data.push(data)
-      console.log(this.data)
     } else {
-      console.log('remove from the array', data.id)
       this.data = this.data.filter(a => {
-        console.log(a.id)
         return a.id !== data.id
 })
     //   for (let i = 0; i < this.data.length; i++) {
@@ -113,13 +102,10 @@ class UpdateStudentCertiDetailsAcc extends Component {
     //       this.data.splice(i, 1)
     //     }
     //  }
-     console.log(this.data)
     }
-    console.log(this.data)
     this.setState({ certificates: this.data })
   }
   editButtonHandler = (event, data) => {
-    console.log(data)
     this.props.history.push({
       pathname: '/finance/UpdateAdmissionForm',
       studentInformationForAdmission: data
@@ -127,7 +113,6 @@ class UpdateStudentCertiDetailsAcc extends Component {
   }
 
   render () {
-    console.log('rendered')
     let certificateTable = null
     if (this.props.studentAdmissionCertificates) {
       certificateTable = (

@@ -27,7 +27,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -143,7 +142,6 @@ const CreateLink = ({ setCustomerDetails, user, alert, domainNames, branches, fe
   //         setName('')
   //         setEmail('')
   //         setNumber(null)
-  //         console.log('data', data)
   //         // setShowModal(false)
   //       } else {
   //         alert.warning('Contact number should be of 10 digits!')
@@ -158,7 +156,6 @@ const CreateLink = ({ setCustomerDetails, user, alert, domainNames, branches, fe
   //     // setPaymnetMethod('')
   //   }
 
-  // console.log(listCustomerDetailsId)
 
   const handlePaymentMethodChange = (e) => {
     listCustomerDetails(selectedDomain && selectedDomain.value, user, alert)
@@ -208,7 +205,6 @@ const CreateLink = ({ setCustomerDetails, user, alert, domainNames, branches, fe
   //           ifsc_code: ifscCode.toLocaleUpperCase()
   //         }
   //         // createOrderDetails(data, user, alert)
-  //         console.log('data', data)
   //         // setIsCreateOrderModel(false)
   //       } else {
   //         alert.warning('IFSC code should be of 11 digits!')
@@ -266,7 +262,6 @@ const CreateLink = ({ setCustomerDetails, user, alert, domainNames, branches, fe
                 'note_key 2': notekey2
               }
             }
-            console.log('data', data)
             createLink(data, user, alert)
           } else {
             alert.warning('You entered invalid IFSC code')

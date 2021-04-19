@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-return-assign */
-/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 import * as React from 'react';
 import { DataGrid } from '@material-ui/data-grid';
@@ -22,12 +21,9 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
   } = props || {};
 
   React.useEffect(() => {
-    console.log('=== completeData: ', completeData)
-    console.log('=== selectedUsers: ', selectedUsers)
     //apiRef.current && apiRef.current.setRowModels(completeData);
   }, [completeData, selectedUsers]);
   const selectRow = (e) => {
-    console.log('=== on Select: ', e)
     if (name !== 'assign_role') {
       setSelectAll(false);
     }
@@ -55,7 +51,8 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
     }
   };
   const pageChange = (e) => {
-    changePage(e.page);
+    // console.log(e,'page',e.page+1) 
+    changePage(e.page+1);
   };
   const data = {
     rows: [...rows],
@@ -95,7 +92,6 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
         // }}
         onSelectionChange={(newSelection) => {
           // setSelection(newSelection.rows);
-          console.log('=== on selction Change: ', newSelection)
         }}
         // selectionModel={['8']}
         // onSelectionModelChange={(e) => {

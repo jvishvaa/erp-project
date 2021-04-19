@@ -85,7 +85,6 @@ const CategoryEdit = (props) => {
     props.hadleClose();
   };
 
-  console.log(props);
   return (
     <Box className={classes.paperStyles}>
         <div className={classes.closeIcon}>

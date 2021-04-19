@@ -483,10 +483,8 @@ class Receipt extends Component {
   generatePdf = async (transid) => {
     try {
       const response = await this.getPdfData(transid)
-      console.log('App reg Response: ', response)
       appRegReceiptsPdf(response.data)
     } catch (e) {
-      console.log(e)
       this.props.alert.warning('Unable to generate PDF!')
     }
   }

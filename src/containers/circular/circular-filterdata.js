@@ -191,7 +191,6 @@ const CircularFilters = ({
         )
         .then((result) => {
           if (result.data.status_code === 200) {
-            console.log(result.data);
             setSectionDropdown(result.data.data);
           } else {
             setAlert('error', result.data.message);

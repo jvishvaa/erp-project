@@ -32,7 +32,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -98,9 +97,7 @@ class StoreAtAcc extends Component {
     // TODO: acad year in studentdata
     const userProfile = JSON.parse(localStorage.getItem('user_profile'))
     const role = userProfile.personal_info.role.toLowerCase()
-    console.log('the role: ', role)
     const { session, getData, erp } = this.props
-    console.log('session getData erp', session, getData, erp)
     this.props.fetchWalletInfo(session, erp, this.props.alert, this.props.user)
     this.props.orderPaid(session, erp, this.props.alert, this.props.user)
     this.props.fetchKitSubjects(session, role, erp, this.props.alert, this.props.user)
@@ -141,7 +138,6 @@ class StoreAtAcc extends Component {
     //     subject_name: this.props.language && this.props.language[0] && this.props.language[0].third_lang && this.props.language[0].third_lang.third_lang
     //   }
     // })
-    // console.log('status', this.props.orderPaids)
   }
 
   // shouldComponentUpdate (nextProps, nextState) {
@@ -157,7 +153,6 @@ class StoreAtAcc extends Component {
   //   if (nextProps.erp === this.props.erp &&
   //     nextProps.session === this.props.session &&
   //     nextProps.getData === this.props.getData) {
-  //     console.log('inside should comp update')
   //     return false
   //   }
   //   return nextProps.getData
@@ -182,7 +177,6 @@ class StoreAtAcc extends Component {
       return
     }
     if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData)) {
-      console.log('inside did update')
       this.subjectCheckHandler()
     }
   }
@@ -370,7 +364,6 @@ class StoreAtAcc extends Component {
     //   erp = this.state.studentErp
     // }
     this.props.orderPaid(this.props.session, this.props.erp, this.props.alert, this.props.user)
-    // console.log('status', this.props.orderPaids)
     // this.setState({
     // })
     const {
@@ -430,7 +423,6 @@ class StoreAtAcc extends Component {
   }
 
   itemsHandler = () => {
-    // console.log(this.state.isChecked)
     // let erp = null
     // if (this.state.searchTypeData.value === 1) {
     //   erp = this.state.studentLabel
@@ -493,11 +485,9 @@ class StoreAtAcc extends Component {
       if (value) {
         ids.push(key)
       }
-      // console.log(`isChecked: ${key}: ${value}`)
     }
     let valid = true
     for (let i = 0; i < ids.length; i++) {
-      // console.log('ids: ', ids[i])
       for (let j = 0; j < this.props.storeList.length; j++) {
         if (+ids[i] === +this.props.storeList[j].id && !this.props.storeList[j].is_uniform_kit) {
           valid = false

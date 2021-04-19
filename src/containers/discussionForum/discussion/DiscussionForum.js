@@ -110,7 +110,7 @@ const StyledTab = withStyles((theme) => ({
   selected: {},
 }))((props) => <Tab disableRipple {...props} />);
 
-const DiscussionForum = () => {
+const DiscussionForum = (props) => {
   const classes = useStyles({});
   const [createCategory, setCreateCategory] = React.useState(false);
   const [tabValue, setTabValue] = React.useState('all');
@@ -185,7 +185,7 @@ const DiscussionForum = () => {
                 <Grid item xs={12}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
-                      <DiscussionCategory tabValue={tabValue} rowData={categoryData} />
+                      <DiscussionCategory tabValue={tabValue} rowData={props.categoryData? props.categoryData : categoryData} />
                     </Grid>
                   </Grid>
                 </Grid>

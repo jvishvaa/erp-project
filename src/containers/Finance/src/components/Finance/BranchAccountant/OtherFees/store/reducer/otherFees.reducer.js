@@ -46,7 +46,6 @@ const listOtherFeeReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.OTHER_FEE_PAYMENT: {
-      console.log('--------reducers------------', action.payload.data)
       return {
         ...state,
         transactionId: action.payload.data.transaction_id,
@@ -109,7 +108,6 @@ const listOtherFeeReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.UPDATE_ACC_OTHER_FEE_LIST: {
-      console.log(action.payload.data)
       const feeList = [...state.accountantOtherFees]
       const index = feeList.findIndex(ele => {
         return ele.id === action.payload.data.id
@@ -127,13 +125,10 @@ const listOtherFeeReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.DELETE_ACC_OTHER_FEE_LIST: {
-      // console.log(action.payload.id)
       const newOtherFeeList = [...state.accountantOtherFees]
-      // console.log('-------before---------', newOtherFeeList)
       const deletedFeeList = newOtherFeeList.filter(fee => {
         return fee.id !== action.payload.id
       })
-      // console.log('-------after---------', deletedFeeList)
       return {
         ...state,
         accountantOtherFees: deletedFeeList
@@ -166,18 +161,14 @@ const listOtherFeeReducer = (state = initialState, action) => {
     }
     case actionTypes.CREATE_OTHER_FEES_FOR_UNASSIGN: {
       const unassignStudentList = [...state.unassignedStudentList]
-      // console.log('-actions-----------', action.payload.data)
-      // console.log('------before------------', unassignStudentList)
       let updatedUnassignedStudents = []
       const assignedId = (action.payload.data.assigned.map(ele => +ele.id))
-      // console.log('--id--------------', assignedId)
       updatedUnassignedStudents = unassignStudentList.filter(ele => !assignedId.includes(ele.id))
       // action.payload.data.assigned.forEach(val => {
       //   updatedUnassignedStudents = unassignStudentList.filter(ele => {
       //     return ele.id !== val.id
       //   })
       // })
-      console.log('------after------------', updatedUnassignedStudents)
       return {
         ...state,
         unassignedStudentList: updatedUnassignedStudents,
@@ -186,11 +177,9 @@ const listOtherFeeReducer = (state = initialState, action) => {
     }
     case actionTypes.DELETE_OTHER_FEES_FOR_ASSIGNED: {
       const assignStudentLists = [...state.assignedStudentList]
-      // console.log('------before------------', assignStudentLists)
       let updatedAssignedStudents = []
       const unassignedId = action.payload.data.unassigned.map(ele => ele.id)
       updatedAssignedStudents = assignStudentLists.filter(ele => !unassignedId.includes(ele.id))
-      // console.log('------after------------', updatedAssignedStudents)
       return {
         ...state,
         assignedStudentList: updatedAssignedStudents,

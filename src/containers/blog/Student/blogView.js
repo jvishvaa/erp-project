@@ -85,7 +85,6 @@ class BlogView extends Component {
 blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
       overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
     };
-    console.log(this.state.tabValue,"@@@@@")
   }
   static contextType = AlertNotificationContext
 

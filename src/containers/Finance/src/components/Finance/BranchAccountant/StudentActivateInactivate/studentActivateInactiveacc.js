@@ -65,7 +65,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -147,7 +146,6 @@ class StudentActivateInactiveAcc extends Component {
         }
       ])
     })
-    console.log('body: ', body)
     // const body = [
     //   {
     //     value: promoted,
@@ -186,17 +184,13 @@ class StudentActivateInactiveAcc extends Component {
 
   showInfoModalRejectHandler = (event, data) => {
     this.setState({ showRejectModal: true })
-    console.log(data)
     this.setState({ updaterow: data })
-    console.log(this.state.updaterow)
-    this.props.fetchAllPayment(this.props.alert, this.props.user, data.erp, this.state.studentInfo.academicyear)
+    this.props.fetchAllPayment(this.props.alert, this.props.user, data.erp, this.state.studentInfo.academicyear, this.state.selectedBranches && this.state.selectedBranches.value, moduleId)
   }
 
   showInfoModalAcceptHandler = (event, data) => {
     this.setState({ showAcceptModal: true })
-    console.log(data)
     this.setState({ updaterow: data })
-    console.log(this.state.updaterow)
     // this.props.fetchAllPayment(this.props.alert, this.props.user, data.erp, this.state.studentInfo.academicyear)
   }
 
@@ -206,7 +200,6 @@ class StudentActivateInactiveAcc extends Component {
   }
 
   approveRequestHandler= () => {
-    console.log(this.state.updaterow)
     this.setState({ showAcceptModal: false })
     this.setState({ showRejectModal: false })
     const body = {
@@ -619,7 +612,7 @@ const mapDispatchToProps = dispatch => ({
   getInActiveStudentDetails: (alert, user, grade, section, session) => dispatch(actionTypes.getInActiveStudentDetails({ alert, user, grade, section, session })),
   fetchGradeList: (session, branch, alert, user, moduleId) => dispatch(actionTypes.fetchGradeList({session, branch, alert, user, moduleId })),
   fetchAllSectionsPerGrade: (session, alert, user, gradeId, branch, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, branch, moduleId })),
-  fetchAllPayment: (alert, user, erp, session, branch) => dispatch(actionTypes.fetchAllPayment({ alert, user, erp, session, branch })),
+  fetchAllPayment: (alert, user, erp, session, branchId, moduleId) => dispatch(actionTypes.fetchAllPayment({ alert, user, erp, session, branchId, moduleId })),
   postStudentActivateInactivate: (data, user, alert) => dispatch(actionTypes.postStudentActivateInactivate({ data, user, alert })),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
 })

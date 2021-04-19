@@ -13,7 +13,6 @@ const miscFeeListReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.UPDATE_MISC_FEE_LIST: {
-      // console.log(action.payload.data)
       const feeList = [...state.miscFeeList]
       const index = feeList.findIndex(ele => {
         return ele.id === action.payload.data.id

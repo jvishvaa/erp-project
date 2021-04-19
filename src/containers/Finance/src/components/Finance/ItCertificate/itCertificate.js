@@ -46,7 +46,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId= item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -98,7 +97,6 @@ class ItCertificate extends Component {
   }
 
   handleAcademicyear = (e) => {
-    console.log('acad years', this.props.session)
     this.setState({ session: e.value, branchData: [], sessionData: e }, () => {
       this.props.fetchBranches(this.state.session, this.props.alert, this.props.user, moduleId)
     })
@@ -143,7 +141,6 @@ class ItCertificate extends Component {
   }
 
   deleteFeeTypeHandler = () => {
-    console.log(this.state.itcID)
     this.props.deleteITCLIst(this.state.session, this.state.branchId, this.state.itcID, this.props.alert, this.props.user)
     this.deleteModalHandler()
   }
@@ -175,7 +172,6 @@ class ItCertificate extends Component {
 
   render () {
     // let { classes } = this.props
-    console.log('the fee typelist', this.props.feeTypeList)
     let feeTypeListTable = null
     let addFeeTypeModal = null
     let deleteFeeTypeModal = null

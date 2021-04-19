@@ -20,7 +20,6 @@ class GA {
   }
 
   testAnalytics (action, testId, testType, category) {
-    console.log('test analytics')
     if (!action || !testId || !testType) { return }
     category = category || 'Online test'
     let label = `id: ${testId}, type: ${testType}`

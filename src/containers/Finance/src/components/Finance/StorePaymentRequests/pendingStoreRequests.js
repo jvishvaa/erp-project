@@ -79,7 +79,6 @@ const PendingStoreRequests = ({ classes, history, dataLoading, fetchStoreBranchT
 
   const editRequestHandler = (trans) => {
     const { session, branchId, status, branch } = history.location
-    console.log('Transaction: ', trans, session, branchId, status, branch)
     history.push({
       pathname: '/finance/editStoreTransactionDetails',
       editDetailsRow: trans,

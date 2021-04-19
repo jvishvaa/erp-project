@@ -298,7 +298,6 @@ const Filters = (props) => {
 
   const [expanded, setExpanded] = React.useState('panel1');
   const handleChange = (panel) => (event, newExpanded) => {
-    //console.log(newExpanded);
     setExpanded(panel);
   };
 
@@ -354,8 +353,7 @@ const Filters = (props) => {
   };
 
   const handleFilters = () => {
-    console.log(props.url);
-    console.log(branchId + ' ==== ' + gradeId + ' ====== ' + sectionId);
+
     let url = props.url;
     if (branchId !== 0) {
       url = `${url}?branch_id=${branchId}`;
@@ -397,9 +395,10 @@ const Filters = (props) => {
   React.useEffect(() => {
     if (academicId !== 0) {
       axiosInstance
-        .get(endpoints.discussionForum.branch)
+        .get(`${endpoints.discussionForum.branch}?session_year=${academicId}`)
         .then((res) => {
-          setBranch(res.data.data);
+          console.log(res.data.data.results);
+          setBranch(res.data.data.results);
         })
         .catch((error) => console.log(error));
     }
@@ -409,7 +408,7 @@ const Filters = (props) => {
   React.useEffect(() => {
     if (branchId !== 0) {
       axiosInstance
-        .get(`${endpoints.discussionForum.grade}?branch_id=${branchId}&module_id=8`)
+        .get(`${endpoints.discussionForum.grade}?session_year=${academicId}&branch_id=${branchId}&module_id=8`)
         .then((res) => {
           setGrade(res.data.data);
         })
@@ -422,7 +421,7 @@ const Filters = (props) => {
     if (gradeId !== 0) {
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${branchId}&grade_id=${gradeId}`
+          `${endpoints.masterManagement.sections}?session_year=${academicId}&branch_id=${branchId}&grade_id=${gradeId}`
         )
         .then((res) => {
           console.log(res.data);
@@ -470,11 +469,11 @@ const Filters = (props) => {
                         <ListItem
                           key={id}
                           button
-                          selected={branchId === el?.id}
-                          onClick={(event) => handleBranchList(event, el?.id, el?.branch_name)}
+                          selected={branchId === el?.branch.id}
+                          onClick={(event) => handleBranchList(event, el?.branch.id, el?.branch.branch_name)}
                           className={classes.listItem}
                         >
-                          <ListItemText primary={`${el?.branch_name}`} />
+                          <ListItemText primary={`${el?.branch.branch_name}`} />
                         </ListItem>
                       ))}
                       {branch.length === 0 && (
@@ -592,37 +591,36 @@ const Filters = (props) => {
                                                       <ListItemText primary={`${el?.session_year}`} />
                                                   </ListItem>
                                                 ))}
-                        </List>
-                      </div>
-                    </Grid>
+                                          </List>
+                                      </div>
+                                  </Grid>
                                   <Grid item xs={4} className={classes.buttonGrid}>
                                       <StyledButton variant="text">Expand</StyledButton>
                                       <span className={classes.rightArrow}>
                                           <StyledIconButton onClick={handleChange('panel1')}>
                                               <LeftArrow />
-                        </StyledIconButton>
+                                          </StyledIconButton>
                                           <StyledIconButton onClick={handleChange('panel2')}>
                                               <RightArrow />
-                        </StyledIconButton>
-                      </span>
-                    </Grid>
-                  </Grid>
-                </div>
-
+                                          </StyledIconButton>
+                                      </span>
+                                  </Grid>
+                              </Grid>
+                          </div>
                           <div
-                              className={`${
-                    expanded === 'panel2'
-                      ? classes.item
-                      : expanded === 'panel1'
-                      ? classes.item2
-                      : expanded === 'panel3'
-                      ? classes.item2
-                      : classes.item3
-                  }`}
+                            className={`${
+                              expanded === 'panel2'
+                              ? classes.item
+                              : expanded === 'panel1'
+                              ? classes.item2
+                              : expanded === 'panel3'
+                              ? classes.item2
+                              : classes.item3
+                            }`}
                               onClick={handleChange('panel2')}
-                >
+                          >
                               <AcademicYear text="Branch" />
-                </div>
+                            </div>
                           <div className={`${expanded !== 'panel2' ? classes.content : classes.contentShow}`}>    
                               <Grid container>
                                   <Grid item xs={12}>
@@ -635,11 +633,11 @@ const Filters = (props) => {
                                                   <ListItem
                                                       key={id}
                                                       button
-                                                      selected={branchId === el?.id}
-                                                      onClick={(event) => handleBranchList(event, el?.id, el?.branch_name)}
+                                                      selected={branchId === el?.branch.id}
+                                                      onClick={(event) => handleBranchList(event, el?.branch.id, el?.branch.branch_name)}
                                                       className={classes.listItem}
                                                     >
-                                                      <ListItemText primary={`${el?.branch_name}`} />
+                                                      <ListItemText primary={`${el?.branch.branch_name}`} />
                                                 </ListItem>
                                               ))}
                                             {branch.length === 0 && (
@@ -699,33 +697,33 @@ const Filters = (props) => {
                                                       className={classes.listItem}
                                                     >
                                                       <ListItemText primary={`${el?.grade__grade_name}`} />
-                              </ListItem>
-                            ))}
+                                                  </ListItem>
+                                              ))}
                                               {grade.length === 0 && (
                                                 <ListItem
-                                                      button
-                                                      selected={selectedIndex === 0}
-                                                      className={classes.listItem}
-                            >
-                                                      <ListItemText primary="Please select Branch"/>
-                            </ListItem>
-                          )}
-                        </List>
-                      </div>
-                    </Grid>
+                                                  button
+                                                  selected={selectedIndex === 0}
+                                                  className={classes.listItem}
+                                                >
+                                                  <ListItemText primary="Please select Branch"/>
+                                                </ListItem>
+                                              )}
+                                          </List>
+                                        </div>
+                                  </Grid>
                                   <Grid item xs={4} className={classes.buttonGrid}>
                                       <StyledButton variant="text">Expand</StyledButton>
                                       <span className={classes.rightArrow}>
                                           <StyledIconButton onClick={handleChange('panel2')}>
                                               <LeftArrow />
-                        </StyledIconButton>
+                                          </StyledIconButton>
                                           <StyledIconButton onClick={handleChange('panel4')}>
                                               <RightArrow />
-                        </StyledIconButton>
-                      </span>
-                    </Grid>
-                  </Grid>
-                </div>
+                                         </StyledIconButton>
+                                      </span>
+                                  </Grid>
+                              </Grid>
+                          </div>
                           {/* new filter add here */}
                           <div
                               className={`${
@@ -761,32 +759,32 @@ const Filters = (props) => {
                                               ))}
                                               {sections.length === 0 && (
                                                 <ListItem
-                                                      button
-                                                      selected={selectedIndex === 0}
-                                                      className={classes.listItem}
-                            >
-                                                      <ListItemText primary="Please select Grade"/>
-                                              </ListItem>
-                                            )}
+                                                  button
+                                                  selected={selectedIndex === 0}
+                                                  className={classes.listItem}
+                                                >
+                                                  <ListItemText primary="Please select Grade"/>
+                                                </ListItem>
+                                              )}
                                           </List>
                                         </div>
                                       </Grid>
-                                  <Grid item xs={4} className={classes.buttonGrid}>
+                                    <Grid item xs={4} className={classes.buttonGrid}>
                                       <StyledButton variant="text">Expand</StyledButton>
-                                      <span className={classes.rightArrow}>
+                                        <span className={classes.rightArrow}>
                                           <StyledIconButton onClick={handleChange('panel3')}>
                                               <LeftArrow />
                                           </StyledIconButton>
                                           <StyledIconButton onClick={handleChange('panel4')}>
                                               <RightArrow />
-                        </StyledIconButton>
-                      </span>
-                    </Grid>
-                  </Grid>
-                </div>
-              </div>
-            </div>
-          </Grid>
+                                          </StyledIconButton>
+                                        </span>
+                                    </Grid>
+                                </Grid>
+                            </div>
+                        </div>
+                    </div>
+              </Grid>
               <Grid item sm={4} xs={12} style={{display: 'flex'}}>
                   <StyledClearButton
                       variant='contained'

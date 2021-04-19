@@ -96,11 +96,9 @@ class ReceiptDetails extends Component {
   }
 
   componentDidMount () {
-    // console.log('--------id--', this.props.otherFeeId)
     // this.setState({
     //   currentData: currentData
     // })
-    // console.log('money-----------', this.props.money)
     let today = new Date()
     let dd = today.getDate()
     let mm = today.getMonth() + 1 // January is 0!
@@ -135,8 +133,6 @@ class ReceiptDetails extends Component {
   }
 
   // componentDidUpdate (prevProps, prevState) {
-  //   console.log('--------prevState------------', prevState)
-  //   console.log('--------prevprops------------', prevProps)
   // }
 
     handlePayment = event => {
@@ -351,7 +347,6 @@ class ReceiptDetails extends Component {
       switch (event.target.name) {
         case 'creditDate': {
           newcredit['creditDate'] = event.target.value
-          console.log('date', event.target.value)
           break
         }
         case 'digits': {
@@ -436,8 +431,6 @@ class ReceiptDetails extends Component {
     }
 
     handleConfirm = (event) => {
-      console.log('make Pay', this.props.makePayAmt)
-      console.log('other fee', this.props.otherPayAmt)
       // if (this.props.makePayAmt === 0 || this.props.otherPayAmt === 0) {
       //   this.props.alert.warning('Cannot Proceed With Zero Amount')
       //   retur
@@ -554,7 +547,6 @@ class ReceiptDetails extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-      console.log('ifsc', nextProps.micr.data)
       if (nextProps.micr && nextProps.micr.data && this.state.searchByValue === 2) {
         const newPayment = { ...this.state.payment }
         const newCheque = { ...newPayment.cheque }
@@ -577,8 +569,6 @@ class ReceiptDetails extends Component {
         })
       }
 
-      console.log('componentWillReceiveProps', nextProps)
-      console.log('data+', this.props.cardDetailsData)
       if (this.state.isAxisPos) {
         if (this.props.cardDetailsData !== nextProps) {
           let cardtype = this.props.cardDetailsData && this.props.cardDetailsData.CardType
@@ -586,13 +576,8 @@ class ReceiptDetails extends Component {
           let appCode = this.props.cardDetailsData && this.props.cardDetailsData.ApprovalCode
           let bankName = this.props.cardDetailsData && this.props.cardDetailsData.AcquirerName
           let transDate = this.props.cardDetailsData && this.props.cardDetailsData.TransactionDate
-          console.log('date+', transDate)
           transDate && transDate.toString()
           // this.state.payment.credit.credit = cardtype
-          console.log('data++', this.props.cardDetailsData)
-          console.log('card', cardtype)
-          console.log('date++', transDate)
-          console.log('date', (transDate && transDate.slice(transDate.length - 4, transDate.length)) + '-' + (transDate && transDate.slice(transDate.length - 6, transDate.length - 4)) + '-' + (transDate && transDate.slice(transDate.length - 8, transDate.length - 6)))
           this.setState({
             payment: { credit: {
               credit: cardtype,
@@ -605,7 +590,6 @@ class ReceiptDetails extends Component {
           })
         }
       }
-      // console.log('nextprops', )
       // You don't have to do this check first, but it can help prevent an unneeded render
       // if (nextProps.startTime !== this.state.startTime) {
       //   this.setState({ startTime: nextProps.startTime })
@@ -622,7 +606,6 @@ class ReceiptDetails extends Component {
     }
 
     agreeWalletPayment = (event) => {
-      console.log('agree wallet: ', event.target.checked)
       this.setState((prevState) => ({
         isWalletAgree: !prevState.isWalletAgree,
         confirm: false

@@ -39,7 +39,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId= item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -90,7 +89,6 @@ export class ViewBanks extends Component {
   }
 
   componentDidUpdate () {
-    // console.log('update func', this.props.viewBanksList)
   }
 
   handleChangePage = (event, newPage) => {
@@ -181,7 +179,6 @@ export class ViewBanks extends Component {
   }
 
   renderTable = () => {
-    // console.log('from render method!!!')
     let dataToShow = []
     dataToShow = this.props.viewBanksList.map((val, i) => {
       return {
