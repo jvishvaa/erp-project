@@ -140,9 +140,9 @@ const MarkAttedance = () => {
         )
         .then(res => {
           console.log(res, "checking mark attendance list in useEffect")
-          setNewData(res.data.results)
+          setNewData(res.data.results);
           setTotalGenre(res.data.count);
-
+          console.log(res.data.count, "checking count")
           var result = res.data.results.map((item) => (
             {
               name: item.name,
@@ -426,15 +426,7 @@ const MarkAttedance = () => {
     // ))
   }
 
-  //pagination
-  const [activePage, setActivePage] = useState(1)
 
-  let totalPages = data && Math.ceil(data.length / 8)
-  console.log(totalPages)
-  let offset = (activePage - 1) * 8
-  const handlePageChange = (e, value) => {
-    setActivePage(value)
-  }
   const StudentData = () => {
     return (
       <>
@@ -449,10 +441,6 @@ const MarkAttedance = () => {
               return 1;
             }
             return 0;
-          })
-          .filter((item, index) => {
-            const pageCondition = index >= offset && index < offset + 8
-            return pageCondition
           })
           .map((options) => {
             return (
@@ -758,7 +746,7 @@ const MarkAttedance = () => {
         }
         <Grid item md={2} xs={12}></Grid>
         <Grid container justify='center'>
-            { totalGenre > 9 && (
+            { totalGenre > 8 && (
               <Pagination
                 onChange={handlePagination}
                 style={{ paddingLeft: '150px' }}
