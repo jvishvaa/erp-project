@@ -19,6 +19,35 @@ import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 // import { student } from '../../../masters'
 import Layout from '../../../../../../Layout'
 
+
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Student Promotion') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStudentPromotionList, studentList, studentPromotionList, fetchGradesPerBranch, fetchAllSection, alert, user, dataLoading, gradesPerBranch, sections }) => {
   const [sessionData, setSessionData] = useState([])
   const [branchData, setBranchData] = useState([])
@@ -44,10 +73,10 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
   const [listOfAllNotPromoStudent, setListOfAllNotPromoStudent] = useState([])
 
   useLayoutEffect(() => {
-    const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
-    if (role === 'FinanceAdmin') {
-      setIsAdmin(true)
-    }
+    // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
+    // if (role === 'FinanceAdmin') {
+    //   setIsAdmin(true)
+    // }
   }, [])
 
   useEffect(() => {
@@ -199,11 +228,11 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
   }
   const handleClickSessionYear = (e) => {
     setSessionData(e)
-    fetchBranches(e.value, alert, user)
+    fetchBranches(e.value, alert, user, moduleId)
   }
   const changehandlerbranch = (e) => {
     setBranchData(e)
-    fetchGradesPerBranch(alert, user, sessionData.value, e.value)
+    fetchGradesPerBranch(alert, user, sessionData.value, e.value, moduleId)
   }
   const gradeHandler = (e) => {
     setGradeData(e)
@@ -397,8 +426,9 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
             onChange={handleClickSessionYear}
           />
         </Grid>
-        { isAdmin
-          ? <Grid item xs={3}>
+        {/* { isAdmin */}
+          {/* ?  */}
+          <Grid item xs={3}>
             <label>Branch*</label>
             <Select
               placeholder='Select Branch'
@@ -414,7 +444,7 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
               onChange={changehandlerbranch}
             />
           </Grid>
-          : [] }
+          {/* : [] } */}
         <Grid item xs={3}>
           <label>Grades*</label>
           <Select
@@ -675,13 +705,13 @@ const mapStateToProps = state => ({
   studentList: state.finance.accountantReducer.studentPromotion.promotionStudentList
 })
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   sendStudentPromotionList: (data, alert, user) => dispatch(actionTypes.sendStudentPromotionList({ data, alert, user })),
   studentPromotionList: (data, alert, user) => dispatch(actionTypes.studentPromotionList({ data, alert, user })),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
-  fetchGradesPerBranch: (alert, user, session, branch) => dispatch(actionTypes.fetchGradesPerBranch({ alert, user, session, branch })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
+  fetchGradesPerBranch: (alert, user, session, branch, moduleId) => dispatch(actionTypes.fetchGradesPerBranch({ alert, user, session, branch, moduleId })),
   // fetchAllSectionsPerGradeAsAdmin: (session, alert, user, gradeId, branchId) => dispatch(actionTypes.fetchAllSectionsPerGradeAsAdmin({ session, alert, user, gradeId, branchId }))
-  fetchAllSection: (session, alert, user, gradeId, branchId) => dispatch(actionTypes.fetchAllSection({ session, alert, user, gradeId, branchId }))
+  fetchAllSection: (session, alert, user, gradeId, branchId, moduleId) => dispatch(actionTypes.fetchAllSection({ session, alert, user, gradeId, branchId, moduleId }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)((StudentPromotion))
