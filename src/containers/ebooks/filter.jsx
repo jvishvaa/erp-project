@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Grid, TextField, Button } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../config/endpoints';
+import axios from 'axios';
 import axiosInstance from '../../config/axios';
 import ClearIcon from '../../components/icon/ClearIcon';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
@@ -30,35 +31,31 @@ const Filter = ({ handleFilter, clearFilter }) => {
     setSelectedSubject('');
   },[clearFilter])
 
-  function getApiCalls(url, key) {
+  function withAxiosInstance(url, key) {
     setLoading(true);
     axiosInstance
-      .get(url)
-      .then((result) => {
-        setLoading(false);
-        if (result.data.status_code === 200) {
-          if (key === 'acad') {
-            setAcadList(result.data.data);
-          } else if (key === 'grade') {
-            setGradeList(result.data.data);
-          } else if (key === 'subject') {
-            setSubjectList(result.data.result);
-          } else if(key === 'branch') {
-            setBranchList(result.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean));
-          }
-        } else {
-          setAlert('error', result.data.message);
+     .get(url)
+     .then(response => {
+      setLoading(false);
+      if (response.data.status_code === 200) {
+        if (key === 'acad') {
+          setAcadList(response.data.data);
+        } else if(key === 'branch') {
+          setBranchList(response.data.data.results);
+        } else if (key === 'grade') {
+          setGradeList(response.data.data);
+        } else if (key === 'subject') {
+          setSubjectList(response.data.result);
         }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
+      }
+      }).catch(error => {
+          setLoading(false);
+          setAlert('error', error.message);
+    })
   }
 
   useEffect(() => {
-    getApiCalls(`${endpoints.ebook.academicYearList}`, 'acad');
-    getApiCalls(`${endpoints.communication.branches}?module_id=${getModuleInfo('Ebook View').id}`, 'branch');
+    withAxiosInstance(`${endpoints.userManagement.academicYear}?module_id=${getModuleInfo('Ebook View').id}`, 'acad');
   }, []);
 
   function handleClear() {
@@ -80,6 +77,9 @@ const Filter = ({ handleFilter, clearFilter }) => {
             size='small'
             className='dropdownIcon'
             onChange={(event, value) => {
+              if(value){
+                withAxiosInstance(`${endpoints.communication.branches}?session_year=${value?.id}&module_id=${getModuleInfo('Ebook View').id}`, 'branch');
+              }
               setSelectedAcad(value);
               setSelectedGrade('');
               setSelectedSubject('');
@@ -87,7 +87,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
             id='Acad_id'
             options={acadList}
             value={selectedAcad}
-            getOptionLabel={(option) => option?.session_year || ''}
+            getOptionLabel={(option) => option.session_year}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -106,14 +106,16 @@ const Filter = ({ handleFilter, clearFilter }) => {
             className='dropdownIcon'
             onChange={(event, value) => {
               setSelectedBranch(value);
-              getApiCalls(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${getModuleInfo('Ebook View').id}`, 'grade');
+              if(value) {
+                withAxiosInstance(`${endpoints.communication.grades}?session_year=${selectedAcad?.id}&branch_id=${value.id}&module_id=${getModuleInfo('Ebook View').id}`, 'grade');
+              }
               setSelectedGrade('');
               setSelectedSubject('');
             }}
             id='branch_id'
             options={branchList}
             value={selectedBranch}
-            getOptionLabel={(option) => option?.branch_name||''}
+            getOptionLabel={(option) => option?.branch?.branch_name}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -129,12 +131,14 @@ const Filter = ({ handleFilter, clearFilter }) => {
           <Autocomplete
             size='small'
             onChange={(event, value) => {
+              if(value) {
+                withAxiosInstance(
+                  `${endpoints.lessonPlan.gradeSubjectMappingList}?session_year=${selectedAcad?.id}&branch=${selectedBranch.id}&grade=${value.grade_id}&module_id=${getModuleInfo('Ebook View').id}`,
+                  'subject'
+                );
+              }
               setSelectedGrade(value);
               setSelectedSubject('');
-              getApiCalls(
-                `${endpoints.lessonPlan.gradeSubjectMappingList}?branch=${selectedBranch.id}&grade=${value.grade_id}`,
-                'subject'
-              );
             }}
             className='dropdownIcon'
             style={{ width: '100%' }}
@@ -182,21 +186,19 @@ const Filter = ({ handleFilter, clearFilter }) => {
           <Grid container spacing={2}>
             <Grid item md={6} xs={6}>
               <Button
-                startIcon={<ClearIcon />}
-                style={{ color: 'white' }}
-                size='small'
+                size='medium'
                 fullWidth
                 onClick={() => handleClear()}
                 variant='contained'
               >
-                &nbsp;Clear
+               Clear All
               </Button>
             </Grid>
             <Grid item md={6} xs={6}>
               <Button
                 startIcon={<FilterFilledIcon />}
                 style={{ color: 'white' }}
-                size='small'
+                size='medium'
                 variant='contained'
                 color='primary'
                 fullWidth

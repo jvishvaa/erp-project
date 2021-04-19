@@ -23,9 +23,9 @@ import { withRouter } from 'react-router-dom';
 // import Face from '@material-ui/icons/Face';
 // import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 // import moment from 'moment';
-// import axios from '../../config/axios';
 
 import endpoints from '../../config/endpoints';
+import axios from 'axios';
 import axiosInstance from '../../config/axios';
 // import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import EbookPdf from './EbookPDF';
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: 'ellipsis',
     margin: '0%',
     padding: '0%',
-    height: '25px !important',
+    height: '30px !important',
   },
 }));
 function Transition(props) {
@@ -94,20 +94,31 @@ function GridList(props) {
     if (ebookName && ebookName.includes('NCERT')) {
       window.open(necrtUrl);
     } else {
+      const {host}= new URL(axiosInstance.defaults.baseURL) // "dev.olvorchidnaigaon.letseduvate.com"
+      const hostSplitArray = host.split('.')
+      const subDomainLevels = hostSplitArray.length - 2
+      let domain = ''
+      let subDomain = ''
+      let subSubDomain = ''
+      if(hostSplitArray.length > 2){
+          domain = hostSplitArray.slice(hostSplitArray.length-2).join('')
+      }
+      if(subDomainLevels === 2){
+          subSubDomain = hostSplitArray[0]
+          subDomain = hostSplitArray[1]
+      } else if(subDomainLevels === 1){
+          subDomain = hostSplitArray[0]
+      }
+      const domainTobeSent = subDomain 
       setPdfUrl(url && url);
       setLoading(true);
-      // setEbookNum(data.id);
       setOpen(true);
-      // setClick(true);
-      axiosInstance
-        .get(
-          `${endpoints.ebook.EbookUser}?ebook_id=${data.id}`
-          // , {
-          // headers: {
-          //   Authorization: 'Bearer ' + props.user
-          // }
-          // }
-        )
+      axios
+        .get(`${endpoints.ebook.EbookUser}?domain_name=${domainTobeSent}&is_ebook=true&ebook_id=${data.id}`, {
+          headers: {
+            'x-api-key': 'vikash@12345#1231',
+          },
+        })
         .then(({ data }) => {
           console.log(data);
           setLoading(false);
@@ -139,6 +150,7 @@ function GridList(props) {
                         height: '160px',
                         borderRadius: 10,
                         padding: '5px',
+                        backgroundColor: item?.ebook_type === '2' ? '#fefbe8' : '',
                       }}
                     >
                       <Grid container spacing={2}>
@@ -161,6 +173,7 @@ function GridList(props) {
                                 padding: '0px 10px',
                                 margin: '0px',
                                 textAlign: 'right',
+                                display: 'none'
                               }}
                             >
                               <MoreHorizIcon
@@ -179,7 +192,6 @@ function GridList(props) {
                                   fontSize: '14px',
                                   fontWeight: 'bold',
                                   color: '#014B7E',
-                                  marginTop: '-15px',
                                 }}
                               >
                                 {item && item.ebook_name}
