@@ -18,9 +18,12 @@ export default {
     courses: '/aol/courses/',
     attendance: '/academic/student_attendance_between_date_range/',
     showAttendance: '/academic/show_attendance/',
-    createAttendance: '/academic/create_attendance/',
+    // createAttendance: '/academic/create_attendance/',
+    createAttendance: '/academic/create_or_update_attendance/',
     studentList: '/academic/get_user_details/',
-    singleStudentAttendance: '/academic/student_attendance_between_days/',
+    // singleStudentAttendance: '/academic/student_attendance_between_days/',
+    multipleStudentsAttendacne:'/academic/multiple_student_attendance_between_dates/',
+    singleStudentAttendance: '/academic/single_student_attendance_between_days/',
   },
   profile: {
     userDetails: '/erp_user/user-data/',
@@ -28,6 +31,10 @@ export default {
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
     academicYear: '/erp_user/list-academic_year/',
+  },
+  timeTable:{
+    tableData:'/academic/time_table/',
+    editTableData:'/academic/assign_class_periods/',
   },
   communication: {
     roles: '/erp_user/roles/',

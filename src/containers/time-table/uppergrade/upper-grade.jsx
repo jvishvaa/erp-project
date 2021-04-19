@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import axiosInstance from '../../../config/axios';
@@ -9,19 +9,21 @@ import LayersClearIcon from '@material-ui/icons/LayersClear';
 import WbIncandescentSharpIcon from '@material-ui/icons/WbIncandescentSharp';
 import { Button, IconButton } from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
-import { getModuleInfo }from '../../../utility-functions'
+import { getModuleInfo } from '../../../utility-functions';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './upper-grade.scss';
 import { set } from 'lodash';
 const UpperGrade = (props) => {
   const [dataMap, setDataMap] = useState();
   const [dataMapAcademicYear, setDataMapAcademicYear] = useState();
   const location = useLocation();
+  const { setAlert } = useContext(AlertNotificationContext);
   const [acadamicYearID, setAcadamicYear] = useState(1);
-  const [gradeID, setGradeID] = useState(1);
-  const [sectionID, setSectionID] = useState(1);
-  const [branchID, setBranchID] = useState([]);
+  const [gradeID, setGradeID] = useState(null);
+  const [sectionID, setSectionID] = useState(null);
+  const [branchID, setBranchID] = useState(null);
   const [counter, setCounter] = useState(1);
-  const [academicYear, setAcadamicYearName] = useState();
+  const [academicYear, setAcadamicYearName] = useState(null);
   const [gradeName, setGradeName] = useState();
   const [branchName, setBranchName] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -72,71 +74,64 @@ const UpperGrade = (props) => {
   };
   const callingGradeAPI = () => {
     axiosInstance
-      .get(`/erp_user/grademapping/?session_year=${acadamicYearID}&branch_id=${branchID}`)
+      .get(
+        `${endpoints.academics.grades}?session_year=${acadamicYearID}&branch_id=${branchID}&module_id=${props.moduleId}`
+      )
       .then((res) => {
-        console.log(res, 'grade');
         setDataMap(res.data.data);
       })
       .catch((error) => {
-        console.log(error);
+        
+        setAlert('error', "can't fetch grade list")
       });
   };
   const callingBranchAPI = () => {
     axiosInstance
-      .get(`/erp_user/branch/?session_year=${acadamicYearID}`)
+      .get(
+        `${endpoints.communication.branches}?session_year=${acadamicYearID}&module_id=${props.moduleId}`
+      )
       .then((res) => {
-        if(res.status === 200){
-          setDataMap(res.data.data.results);
+        if (res.status === 200) {
+          setDataMap(res?.data?.data?.results);
         }
-        
       })
       .catch((error) => {
-        console.log(error);
+        setDataMap(null);
+        setAlert('error', "can't fetch branch list")
       });
   };
   const callingAcadamicAPI = () => {
     axiosInstance
-      .get(`/erp_user/list-academic_year/`, {})
+      .get(`${endpoints.userManagement.academicYear}?module_id=${props.moduleId}`, {})
       .then((res) => {
         console.log(res, 'Academic');
         setDataMapAcademicYear(res.data.data);
       })
       .catch((error) => {
-        console.log(error);
+        setDataMapAcademicYear(null)
+        setAlert('error', "can't fetch academic year list")
       });
   };
   const callingSectionAPI = () => {
     axiosInstance
       .get(
-        `/erp_user/sectionmapping/?session_year=${acadamicYearID}&branch_id=${branchID}&grade_id=${gradeID}`
+        `${endpoints.academics.sections}?session_year=${acadamicYearID}&branch_id=${branchID}&grade_id=${gradeID}&module_id=${props.moduleId}`
       )
       .then((res) => {
-        console.log(res, 'setion');
         if (res.status === 200) {
           setDataMap(res.data.data);
         }
       })
       .catch((error) => {
-        console.log(error);
+        setDataMap(null);
+        setAlert('error', "can't fetch section list")
       });
   };
   const clearButtonColor = {
     color: 'gray',
   };
-  const getModuleId = () => {
-    const tempObj = {
-      '/time-table/teacher-view/': 'Teacher Time Table',
-      '/time-table/teacher-view': 'Teacher Time Table',
-      '/time-table/student-view': 'Student Time Table',
-      '/time-table/student-view/': 'Student Time Table',
-      default: 'Student Time Table',
-    };
-    const moduleName = tempObj[location.pathname] || tempObj['default'];
-    return getModuleInfo(moduleName).id;
-  };
-  const handleCounter = (value) => {
-    console.log('counter');
 
+  const handleCounter = (value) => {
     if (value === 'back' && counter > 1) {
       setCounter(counter - 1);
     }
@@ -145,21 +140,25 @@ const UpperGrade = (props) => {
     }
   };
   const handleGenerateData = () => {
-    props.handlePassData(
-      acadamicYearID,
-      gradeID,
-      sectionID,
-      branchID,
-      academicYear,
-      gradeName,
-      branchName,
-      sectinName
-    );
-    props.handleClickAPI();
-    handleClearData('generate');
+    if (academicYear === null || branchID === null || gradeID === null || sectionID === null) {
+      setAlert('warning', "please select all filters")
+    } else {
+      props.handlePassData(
+        acadamicYearID,
+        gradeID,
+        sectionID,
+        branchID,
+        academicYear,
+        gradeName,
+        branchName,
+        sectinName
+      );
+      props.handleClickAPI();
+      handleClearData('generate');
+    }
   };
-  const handleClearData = (data) =>{
-    if(data === 'clear'){
+  const handleClearData = (data) => {
+    if (data === 'clear') {
       props.handleCloseTable(false);
       setCounter(1);
       setAcadamicYear(null);
@@ -167,10 +166,10 @@ const UpperGrade = (props) => {
       setGradeID(null);
       setSectionID(null);
     }
-    if(data === 'generate'){
-      props.handleCloseTable(true)
+    if (data === 'generate') {
+      props.handleCloseTable(true);
     }
-}
+  };
   return (
     <>
       <div className='upper-table-container'>
@@ -214,12 +213,6 @@ const UpperGrade = (props) => {
                   </div>
                   <div className='text-fixed-last'>
                     Expand
-                    {/* <IconButton
-                      disabled color="primary"
-                      size='small'
-                    >
-                      <ArrowBackIcon className='arrow-button' />
-                    </IconButton> */}
                     <IconButton
                       aria-label='delete'
                       onClick={() => setCounter(counter + 1)}
@@ -262,12 +255,10 @@ const UpperGrade = (props) => {
                       {dataMap &&
                         dataMap?.map((name) => (
                           <option
-                            key={name.id}
-                            value={name.id}
+                            key={name?.branch?.id}
+                            value={name?.branch?.id}
                             onClick={() => setBranchName(name?.branch?.branch_name)}
                           >
-                            {/* {console.log(name, '=======')} */}
-                            {/* {name?.branch?.branch_name} */}
                             {name && name.branch && name.branch.branch_name}
                           </option>
                         ))}
@@ -320,11 +311,11 @@ const UpperGrade = (props) => {
                       {dataMap &&
                         dataMap.map((name) => (
                           <option
-                            key={name.id}
-                            value={name.id}
-                            onClick={() => setGradeName(name.grade_name)}
+                            key={name?.id}
+                            value={name?.grade_id}
+                            onClick={() => setGradeName(name?.grade__grade_name)}
                           >
-                            {name.grade_name}
+                            {name?.grade__grade_name}
                           </option>
                         ))}
                     </Select>
@@ -378,11 +369,11 @@ const UpperGrade = (props) => {
                       {dataMap &&
                         dataMap.map((name) => (
                           <option
-                            key={name.id}
-                            value={name.id}
-                            onClick={() => setSectionName(name.section_name)}
+                            key={name?.id}
+                            value={name?.section_id}
+                            onClick={() => setSectionName(name?.section__section_name)}
                           >
-                            {name.section_name}
+                            {name?.section__section_name}
                           </option>
                         ))}
                     </Select>

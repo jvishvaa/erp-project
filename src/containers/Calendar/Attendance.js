@@ -75,10 +75,15 @@ const Attendance = () => {
   const history = useHistory()
   const themeContext = useTheme()
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-
+  const [studentName, setStudentName] = useState()
+  const [allStudents, setAllStudents] = useState([])
+  const [setSelectedStudent, setSetSelectedStudent] = useState([])
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
+  const [totalGenre, setTotalGenre] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const limit = 8;
 
   useEffect(() => {
     console.log(history)
@@ -90,18 +95,20 @@ const Attendance = () => {
       setSelectedSection(history?.location?.state?.payload?.section_id)
       setStartDate(history?.location?.state?.payload?.startDate)
       setEndDate(history?.location?.state?.payload?.endDate)
-      setData(history?.location?.state?.studentData)
+      setStudentName(history?.location?.state?.studentData)
       console.log(history?.location?.state?.payload?.branch_id)
-      console.log(history?.location?.state?.studentData[0]?.student)
+      // console.log(history?.location?.state?.studentData[0]?.student)
       axiosInstance
-        .get(`${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.endDate}&end_date=${history?.location?.state?.payload?.startDate}&erp_id=${history?.location?.state?.studentData[0]?.student}`)
+        .get(`${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&user_id=${history?.location?.state?.studentData[0]?.user_id}&page_num=${pageNumber}&page_size=${limit}`)
         // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
         .then(res => {
           if (res.status == 200) {
-            console.log(res)
+            setTotalGenre(res.data.count);
+            console.log(res.data.count)
+            console.log(res.data.results, "single student data")
+            setData(res.data.results)
             if (res?.data?.message) {
               // alert(res?.data?.message)
-              // setData(res.data)
             }
             else
               console.log(res.data.message)
@@ -120,6 +127,16 @@ const Attendance = () => {
     }
 
   }, []);
+
+const getAllStudents = ()=>{
+  console.log("checking all students")
+  axiosInstance
+      .get(
+        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}`
+      )
+      .then(res=>console.log(res.data.result))
+      .catch((err)=>console.log(err))
+}
 
   const [activePage, setActivePage] = useState(1)
 
@@ -220,7 +237,12 @@ const Attendance = () => {
         setLoading(false);
       });
   }
-
+  const handlePagination = (event, page) => {
+    setPageNumber(page);
+    // setGenreActiveListResponse([]);
+    // setGenreInActiveListResponse([]);
+    // getData();
+  }
   const handleClearAll = () => {
     setSelectedAcadmeicYear('')
     setSelectedBranch([])
@@ -229,6 +251,7 @@ const Attendance = () => {
     setSelectedSection([])
     setDateValue(moment(date).format('YYYY-MM-DD'))
     setData([])
+    setTotalGenre(null)
   }
 
   const StyledClearButton = withStyles({
@@ -442,6 +465,7 @@ const Attendance = () => {
             size='small'
             onChange={(event, value) => {
               setSelectedSection([])
+              getAllStudents()
               if (value) {
                 const ids = value.id
                 const secId = value.section_id
@@ -466,11 +490,43 @@ const Attendance = () => {
             )}
           />
         </Grid>
+        {/* <Grid item md={3} xs={12}>
+          <Autocomplete
+            // multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              // setSelectedSection([])
+              setSelectedStudent([])
+              if (value) {
+                const ids = value.user
+                const secId = value.section_id
+                setSelectedSection(value)
+                setSecSelectedId(secId)
+              }
+
+            }}
+            id='section_id'
+            className='dropdownIcon'
+            value={selectedSection || ""}
+            options={sectionList || ""}
+            getOptionLabel={(option) => option?.section__section_name || option?.section_name || ""}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Section'
+                placeholder='Section'
+              />
+            )}
+          />
+        </Grid> */}
         <Grid item md={11} xs={12}>
           <Divider />
         </Grid>
         <Grid container direction='row' style={{ margin: '1%' }}>
-          <Grid item md={2} xs={6}>
+          {/* <Grid item md={2} xs={6}>
             <StyledClearButton
               variant='contained'
               startIcon={<ClearIcon />}
@@ -478,7 +534,7 @@ const Attendance = () => {
             >
               Clear all
           </StyledClearButton>
-          </Grid>
+          </Grid> */}
 
           <Grid item md={2} xs={6}>
             <StyledFilterButton
@@ -505,7 +561,7 @@ const Attendance = () => {
           <Grid item sm={2} md={2}>
             <Typography variant='subtitle2' color='primary'>
               <strong>
-                {data && data[0].student_first_name.slice(0, 6)}
+                {studentName && studentName[0].name.slice(0, 6)}
               </strong>
             </Typography>
           </Grid>
@@ -601,28 +657,22 @@ const Attendance = () => {
         {data && data
           .filter((item, index) => {
             if (state.present) {
-              const pageCondition = index >= offset && index < offset + 8
-              return pageCondition && (item.is_first_shift_present && item.is_second_shift_present)
+              return (item.first_shift && item.second_shift)
             }
             else if (state.absent) {
-              const pageCondition = index >= offset && index < offset + 8
-              return pageCondition && (item.is_first_shift_present || item.is_second_shift_present)
+              return (!item.first_shift || !item.second_shift)
             }
             else if (state.first_half) {
-              const pageCondition = index >= offset && index < offset + 8
-              return pageCondition && item.is_first_shift_present
+              return item.first_shift
             }
             else if (state.second_half) {
-              const pageCondition = index >= offset && index < offset + 8
-              return pageCondition && item.is_second_shift_present
+              return item.second_shift
             }
             else if (state.first_half && state.second_half) {
-              const pageCondition = index >= offset && index < offset + 8
-              return pageCondition && (item.is_first_shift_present && item.is_second_shift_present)
+              return  (item.first_shift && item.second_shift)
             }
             else {
-              const pageCondition = index >= offset && index < offset + 8
-              return pageCondition && item
+              return item
             }
           })
           .map((item) => {
@@ -646,9 +696,9 @@ const Attendance = () => {
                           lg={12}
                         // style={{ textAlign: 'start' }}
                         >
-                          <h3 style={{ color: '#014B7E', textAlign: 'center' }}>{item.attendance_for_date}</h3>
+                          <h3 style={{ color: '#014B7E', textAlign: 'center' }}>{item.date}</h3>
                           {
-                            (item.is_first_shift_present && item.is_second_shift_present) &&
+                            (item.first_shift && item.second_shift) &&
                             <Grid>
                               <p class='box3'>
                                 <span class='content1'>1st</span>
@@ -657,7 +707,7 @@ const Attendance = () => {
                             </Grid>
                           }
                           {
-                            (item.is_first_shift_present && !item.is_second_shift_present) &&
+                            (item.first_shift && !item.second_shift) &&
                             <Grid>
                               <p class='box'>
                                 <span class='content1'>1st</span>
@@ -666,7 +716,7 @@ const Attendance = () => {
                             </Grid>
                           }
                           {
-                            (!item.is_first_shift_present && item.is_second_shift_present) &&
+                            (!item.first_shift && item.second_shift) &&
                             <Grid>
                               <p class='box1'>
                                 <span class='content1'>1st</span>
@@ -675,7 +725,7 @@ const Attendance = () => {
                             </Grid>
                           }
                           {
-                            (!item.is_first_shift_present && !item.is_second_shift_present) &&
+                            (!item.first_shift && !item.second_shift) &&
                             <Grid>
                               <p class='box2'>
                                 <span class='content1'>1st</span>
@@ -720,13 +770,18 @@ const Attendance = () => {
           </div>)
 
         }
-      <Grid container justify='center'>
-        {' '}
-        {
-          data && <Pagination count={totalPages} page={activePage} onChange={handlePageChange} color='secondary' />
-
-        }
-      </Grid>
+        <Grid container justify='center'>
+            { totalGenre > 9 && (
+              <Pagination
+                onChange={handlePagination}
+                style={{ paddingLeft: '150px' }}
+                count={Math.ceil(totalGenre / limit)}
+                color='primary'
+                page={pageNumber}
+                color='primary'
+              />
+            )}
+          </Grid>
       {loading && <Loader />}
     </Layout>
   );

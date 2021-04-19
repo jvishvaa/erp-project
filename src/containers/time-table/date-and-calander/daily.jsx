@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import DisplayBox from './displayBox.jsx';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 const Daily = (props) => {
   const [daily, setDaily] = useState(null);
   const [loopData] = useState([1, 2, 3, 4, 5]);
+  const { setAlert } = useContext(AlertNotificationContext);
   const [selectData, setSelectData] = useState(false);
   const [currentDay, setCurrent] = useState(null);
   const [DataMonday, setDataMonday] = useState(props.tableData.Monday);
@@ -13,11 +15,10 @@ const Daily = (props) => {
 
   useEffect(() => {
     handleDailyData();
-    console.log(props.openToggleCalander, 'open===');
   }, [props.openToggleCalander]);
   const handleDailyData = () => {
     let newDate = new Date();
-    let days = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', ''];
+    let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     let day = days[newDate.getDay()];
     setCurrent(day);
     if (day === 'Monday') {
@@ -49,7 +50,8 @@ const Daily = (props) => {
               daily.map((data) => (
                 <tr key={data.id} onClick={() => setSelectData(data)}>
                   <td>
-                    <h4>{data.period_name}</h4>
+                    <h4>{data?.period_name}</h4>
+                    <h3>{data?.subject_details?.subject_name}</h3>
                     <p>
                       {data.period_start_time.slice(0, 5)}-
                       {data.period_end_time.slice(0, 5)}

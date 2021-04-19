@@ -26,48 +26,49 @@ const TimeTable = (props) => {
   const [academicYear, setAcadamicYearName] = useState();
   const [gradeName, setGradeName] = useState();
   const [branchName, setBranchName] = useState();
-  const [studentModuleId, setStudentModuleId] = useState();
-  const [teacherModuleId, setTeacherModuleId] = useState();
+  const [loopMax, setLoopMax] = useState([0, 1, 2, 3, 4, 5]);
+  const [lengthMonday, setLengthMonday] = useState();
+  const [lengthTuesday, setLengthTuesday] = useState();
+  const [lengthWednesday, setLengthWednesday] = useState();
+  const [lengthThursday, setLengthThursday] = useState();
+  const [lengthFriday, setLengthFriday] = useState();
+  const [maxLength, setMaxLength] = useState();
+  const [moduleId, setModuleId] = useState();
   const [sectinName, setSectionName] = useState();
   const [teacherView, setTeacherView] = useState(false);
   const [openCloseTable, setOpenCloseTable] = useState(false);
   const [ids, setIDS] = useState(false);
   useEffect(() => {
-//     if (NavData && NavData.length) {
-//       NavData.forEach((item) => {
-//         if (
-//           item.parent_modules === 'Time Table' &&
-//           item.child_module &&
-//           item.child_module.length > 0
-//         ) {
-//           item.child_module.forEach((item) => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Time Table' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
             if (
-              location.pathname === '/time-table/student-view'
-//               &&
-//               item.child_name === 'Teacher Time Table'
+              location.pathname === '/time-table/student-view' &&
+              item.child_name === 'Student Time Table'
             ) {
-//               setStudentModuleId(item?.child_id);
+              setModuleId(item?.child_id);
               setTeacherView(false);
               setOpenCloseTable(false);
             } else if (
-              location.pathname === '/time-table/teacher-view'
-//               &&
-//               item.child_name === 'Student Time Table'
+              location.pathname === '/time-table/teacher-view' &&
+              item.child_name === 'Teacher Time Table'
             ) {
-//               setTeacherModuleId(item?.child_id);
+              setModuleId(item?.child_id);
               setTeacherView(true);
-              setOpenCloseTable(false)
+              setOpenCloseTable(false);
             }
-//           });
-//         }
-//       });
-//     }
+          });
+        }
+      });
+    }
   }, [location.pathname]);
-  // console.log(getModuleId(), 'madule ids');
-  console.log(ids, 'all datas');
   useEffect(() => {
     if (openCloseTable) {
-      console.log('fetching');
       callGetTimeTableAPI();
     } else {
       setIDS(true);
@@ -89,13 +90,13 @@ const TimeTable = (props) => {
           if (tableData) {
             setLoading(false);
           }
+          console.log('calculateLength();')
+          calculateLength();
           setTableData(response.data.result);
-          console.log(response, 'table data');
         }
       })
       .catch((error) => {
         setLoading(false);
-        console.log(error);
       });
   };
   const handlePassData = (
@@ -124,6 +125,59 @@ const TimeTable = (props) => {
       section_id: section_ID,
     });
   };
+  const calculateLength = () =>{
+    if (tableData.Monday) {
+      let lengthData = tableData.Monday.length;
+      if (lengthData > 6) {
+        setLengthMonday(lengthData);
+      }
+      console.log(lengthData);
+    }
+    if (tableData.Tuesday) {
+      let lengthData = tableData.Tuesday.length;
+      if (lengthData > 6) {
+        setLengthTuesday(lengthData);
+      }
+      console.log(lengthData);
+    }
+    if (tableData.Wednesday) {
+      let lengthData = tableData.Wednesday.length;
+      if (lengthData > 6) {
+        setLengthWednesday(lengthData);
+      }
+      console.log(lengthData);
+    }
+    if (tableData.Thursday) {
+      let lengthData = tableData.Thursday.length;
+      if (lengthData > 6) {
+        setLengthThursday(lengthData);
+      }
+      console.log(lengthData);
+    }
+    if (tableData.Friday) {
+      let lengthData = tableData.Friday.length;
+      if (lengthData > 6) {
+        setLengthFriday(lengthData);
+      }
+      console.log(lengthData);
+    }
+    // if(monday)
+    let arrayLength = [
+      lengthMonday,
+      lengthTuesday,
+      lengthWednesday,
+      lengthThursday,
+      lengthFriday,
+    ];
+    let sortedArray = arrayLength.sort();
+    setMaxLength(lengthMonday);
+    console.log(sortedArray, 'sorted array');
+    console.log(maxLength, 'max length');
+    let mappingArray = Array.from(Array(maxLength).keys());
+    if (maxLength > 6) {
+      setLoopMax(mappingArray);
+    }
+  }
 
   const handleClickAPI = () => {
     callGetTimeTableAPI();
@@ -172,6 +226,7 @@ const TimeTable = (props) => {
               {Filter ? (
                 <>
                   <UpperGrade
+                    moduleId={moduleId}
                     handleCloseTable={handleCloseTable}
                     handlePassData={handlePassData}
                     handleClickAPI={handleClickAPI}
