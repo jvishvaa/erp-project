@@ -550,6 +550,9 @@ function App({ alert }) {
                           <Route exact path='/student-forum'>
                             {({ match }) => <Discussionforum match={match} />}
                           </Route>
+                          <Route exact path='/category'>
+                            {({ match }) => <CategoryPage match={match} />}
+                          </Route>
                           <Route exact path='/category/create'>
                             {({ match }) => <CreateCategory match={match} />}
                           </Route>
