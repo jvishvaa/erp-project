@@ -94,7 +94,6 @@ const AddGst = ({ classes, session, branches, alert, user, fetchBranches, fetchG
   }
 
   const changeMultibranch = (e) => {
-    console.log(e)
     setMultiBranch(e)
   }
 

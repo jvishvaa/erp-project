@@ -37,7 +37,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -74,7 +73,6 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
   //   setSelectedDomain(e)
   // }
   useEffect(() => {
-    console.log("New alert: ", setAlert)
     // setAlert('error', 'helloo world!')
     // let role = ''
     // role = JSON.parse(localStorage.getItem('userDetails')).user_role
@@ -104,7 +102,6 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
     setSessionData(e)
     setShowTable(false)
   }
-  console.log('nitu', branches)
   const getHandler = (e) => {
     // setShowDomainDetail(true)
     let branch
@@ -225,7 +222,6 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
       // let date = newDate.getDate()
       let month = (newDate.getMonth() + 1) < 10 ? '0' + (newDate.getMonth() + 1) : newDate.getMonth() + 1
       let year = newDate.getFullYear()
-      console.log('today')
       // setEnddate(date + '/' + month + '/' + year)
       // setStartdate(10 + '/' + month + '/' + year)
       // setDate(e.target.value)
@@ -242,7 +238,6 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
       //     setEndDate(year + '-' + 0 + 1 + '-' + 10)
       //   }
       // }
-      console.log('date', year + '-' + 0 + 1 + '-' + 10)
     } else {
       alert.warning('Select Year!')
     }
@@ -261,7 +256,6 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
     // let date = newDate.getDate()
     // let month = (newDate.getMonth() + 1) < 10 ? '0' + (newDate.getMonth() + 1) : newDate.getMonth() + 1
     // let year = newDate.getFullYear()
-    console.log('today')
     // setEnddate(date + '/' + month + '/' + year)
     // setStartdate(10 + '/' + month + '/' + year)
     // setDate(e.target.value)
@@ -274,7 +268,6 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
         if (e.target.value.split('-')[2] < 10) {
         //   setUpdateEndDate(year + '-' + months + '-' + 10)
         // } else {
-          console.log('qsd', e.target.value.split('-')[2], endDate.split[2])
           setEndDate(year + '-' + months + '-' + 10)
         } else {
           if (months < 10) {
@@ -286,12 +279,10 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
       } else {
         // if (e.target.value.split('-')[2] < 10) {
         if (e.target.value.split('-')[2] < 10) {
-          console.log('q1', e.target.value.split('-')[2], endDate.split[2])
           setEndDate(year + '-' + months + '-' + 10)
         } else {
           if (months < 10) {
             setEndDate(year + '-' + ('0' + (+months + 1)) + '-' + 10)
-            console.log('q2', year + '-' + ('0' + (+months + 1)) + '-' + 10)
           } else {
             setEndDate(year + '-' + (+months + 1) + '-' + 10)
           }
@@ -366,7 +357,6 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
       setDate('')
       // setEndDate('')
       setTodayDetails(false)
-      console.log('data', data)
     } else {
       alert.warning('Fill all the required Fields!')
     }
@@ -465,7 +455,6 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
     // let date = newDate.getDate()
     // let month = (newDate.getMonth() + 1) < 10 ? '0' + (newDate.getMonth() + 1) : newDate.getMonth() + 1
     // let year = newDate.getFullYear()
-    console.log('today')
     // setEnddate(date + '/' + month + '/' + year)
     // setStartdate(10 + '/' + month + '/' + year)
     // setDate(e.target.value)
@@ -478,7 +467,6 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
         if (e.target.value.split('-')[2] < 10) {
         //   setUpdateEndDate(year + '-' + months + '-' + 10)
         // } else {
-          console.log('qsd', e.target.value.split('-')[2], endDate.split[2])
           setUpdateEndDate(year + '-' + months + '-' + 10)
         } else {
           if (months < 10) {
@@ -490,12 +478,10 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
       } else {
         // if (e.target.value.split('-')[2] < 10) {
         if (e.target.value.split('-')[2] < 10) {
-          console.log('q1', e.target.value.split('-')[2], endDate.split[2])
           setUpdateEndDate(year + '-' + months + '-' + 10)
         } else {
           if (months < 10) {
             setUpdateEndDate(year + '-' + ('0' + (+months + 1)) + '-' + 10)
-            console.log('q2', year + '-' + ('0' + (+months + 1)) + '-' + 10)
           } else {
             setUpdateEndDate(year + '-' + (+months + 1) + '-' + 10)
           }
@@ -561,7 +547,6 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
       setUpdateDate('')
       setUpdateEndDate('')
       setEditModal(false)
-      console.log('data', data)
     } else {
       alert.warning('Fill all the required Fields!')
     }

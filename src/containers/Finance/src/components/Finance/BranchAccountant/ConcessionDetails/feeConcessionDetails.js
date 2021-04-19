@@ -25,9 +25,7 @@ const FeeConcession = ({
 }) => {
   // const [value, setValue] = useState(false)
   useEffect(() => {
-    console.log('qwer2', moduleId, branchId )
     if (getData && erp.length >= 10 && session) {
-      console.log('Fee Concession')
       fetchListConcession(session, erp, alert, user, branchId, moduleId)
       // setValue(true)
     } else {

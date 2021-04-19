@@ -79,7 +79,6 @@ const BulkActiveInactiveParent = ({
       form.append('status', 'False')
     }
     for (var key of form.entries()) {
-      console.log(key[0] + ', ' + key[1])
     }
     // if (isAdmin && !branchId) {
     //   alert.warning('Select Branch!')

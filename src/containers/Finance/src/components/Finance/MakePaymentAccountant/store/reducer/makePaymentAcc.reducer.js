@@ -80,7 +80,6 @@ const makePaymentAccReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.PAYMENT_CARD_DETAILS: {
-      console.log('data1++', action.payload.data)
       return {
         ...state,
         cardDetailsData: action.payload.data

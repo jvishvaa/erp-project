@@ -193,7 +193,9 @@ export {
   MISC_REPORT,
   miscReport,
   CANCEL_TRANS,
-  cancelTransaction
+  cancelTransaction,
+  SCHOOL_DETAILS,
+  schoolDeatails
 } from '../../FeeCollection/store/action/action'
 
 export {

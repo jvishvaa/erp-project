@@ -70,7 +70,6 @@ class OtherFeeType extends Component {
   }
 
   handleAcademicyear = (e) => {
-    console.log(e)
     this.setState({ session: e.value, branchData: [] })
     axios
       .get(urls.MiscFeeClass + '?session_year=' + e.value, {
@@ -80,7 +79,6 @@ class OtherFeeType extends Component {
       })
       .then(res => {
         if (+res.status === 200) {
-          // console.log(res.data);
           this.setState({ branchValue: res.data })
         }
       })
@@ -103,9 +101,7 @@ class OtherFeeType extends Component {
   }
 
   deleteHandler = id => {
-    console.log(id)
     var updatedList = urls.Finance + id + '/' + 'deleteotherfee/'
-    console.log(updatedList)
     axios
       .delete(updatedList, {
         headers: {
@@ -113,18 +109,15 @@ class OtherFeeType extends Component {
         }
       })
       .then(res => {
-        console.log(res)
         this.props.alert.success('Deleted Successfully')
         this.renderTable()
       })
       .catch((error) => {
-        // console.log("Error: Couldn't fetch data from " + urls.GRADE)
         this.props.alert.error('Something Went Wrong', error)
       })
   };
 
   renderTable = () => {
-    console.log('renderTable method invoked')
     if (this.state.session && this.state.branchId) {
       axios
         .get(urls.OthersFeeType + '?academic_year=' + this.state.session + '&branch_id=' + this.state.branchId, {
@@ -266,8 +259,6 @@ class OtherFeeType extends Component {
   }
 
   getBackTheUpdatedDataHandler = (status, data) => {
-    // console.log("----------UPDATED----------")
-    // console.log(data);
     if (status === 'success') {
       const feeList = [...this.state.data]
       const index = feeList.findIndex(ele => {
@@ -341,13 +332,10 @@ class OtherFeeType extends Component {
           />
         )
       })
-      console.log(feeList)
       this.setState({
         data: feeList,
         feeDetails: feeData
       }, () => {
-        console.log('--state---------')
-        console.log(this.state.feeDetails)
         this.hideModalHandler()
       })
     }

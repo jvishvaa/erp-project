@@ -248,8 +248,6 @@ function mainView (details) {
 }
 
 const appRegReceiptsPdf = (details) => {
-  console.log('App view', details)
-  // console.log('PDF VIEW', details.data)
   const title = details.application_number ? 'Application Fee' : 'Registration Fee'
   const header = (
     <React.Fragment>

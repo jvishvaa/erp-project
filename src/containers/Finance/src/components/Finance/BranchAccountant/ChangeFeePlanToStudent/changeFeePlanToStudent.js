@@ -53,7 +53,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -101,18 +100,15 @@ class ChangeFeePlanToStudent extends Component {
   }
 
   componentDidUpdate () {
-    // console.log('checked statuss: ', this.state.isChecked)
   }
 
   handleAcademicyear = (e) => {
-    console.log('acad years', this.props.session)
     this.setState({ session: e.value, gradeData: null, gradeId: null, sessionData: e, showTabs: false }, () => {
       this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
     })
   }
 
   gradeHandler = (e) => {
-    console.log(e.value)
     this.setState({ gradeId: e.value, gradeData: e, showTabs: false }, () => {
       this.props.fetchAllSections(this.state.session, this.state.gradeId, this.state.selectedBranches && this.state.selectedBranches.value, this.props.alert, this.props.user, moduleId)
     })
@@ -134,7 +130,6 @@ class ChangeFeePlanToStudent extends Component {
   }
 
   studentList = () => {
-    console.log('sections--------------', this.state.sectionId)
     this.setState({
       showTabs: true
     }, () => {
@@ -209,7 +204,6 @@ class ChangeFeePlanToStudent extends Component {
         isChecked: checked,
         checkedAll: !this.state.checkedAll
       }, () => {
-        console.log(isChecked)
       })
     }
   }
@@ -255,7 +249,7 @@ class ChangeFeePlanToStudent extends Component {
   }
 
   assignAutomatic = () => {
-    this.props.assignAtmtStudents(this.state.session, this.state.gradeId, this.state.sectionId, this.state.studentType, this.props.alert, this.props.user)
+    this.props.assignAtmtStudents(this.state.session, this.state.gradeId, this.state.sectionId, this.state.studentType, this.props.alert, this.props.user, this.state.selectedBranches && this.state.selectedBranches.value, moduleId)
   }
 
   showAdjustFeeHandler = () => {
@@ -268,7 +262,6 @@ class ChangeFeePlanToStudent extends Component {
   }
 
   // filterFeePlan = (e) => {
-  //   console.log('event from search: ', e)
   //   this.props.filterCurrentFeePlan(e.target.value)
   // }
 
@@ -291,7 +284,6 @@ class ChangeFeePlanToStudent extends Component {
     finalitems.forEach(ele => {
       erpArr.push(ele.student.erp)
     })
-    console.log('the erpArrrr', erpArr)
 
     let data = {
       fee_plan_name: this.state.changedFeePlanId,
@@ -814,7 +806,7 @@ const mapDispatchToProps = dispatch => ({
   fetchAllPlans: (session, gradeId, branch, sectionId, studentType, alert, user) => dispatch(actionTypes.fetchAllPlans({ session, gradeId, branch, sectionId, studentType, alert, user })),
   fetchAllFeePlans: (session, gradeId, branch, alert, user) => dispatch(actionTypes.fetchAllFeePlans({ session, branch, gradeId, alert, user })),
   editStudentFeePlan: (data, studentId, alert, user) => dispatch(actionTypes.editStudentFeePlan({ data, studentId, alert, user })),
-  assignAtmtStudents: (session, gradeId, sectionId, studentType, alert, user) => dispatch(actionTypes.assignAutomaticStudent({ session, gradeId, sectionId, studentType, alert, user })),
+  assignAtmtStudents: (session, gradeId, sectionId, studentType, alert, user, branch, moduleId) => dispatch(actionTypes.assignAutomaticStudent({ session, gradeId, sectionId, studentType, alert, user, branch, moduleId })),
   fetchInstallDetails: (feePlanId, alert, user) => dispatch(actionTypes.fetchInstallDetails({ feePlanId, alert, user })),
   fetchAdjustFee: (currentFeePlanId, targetFeePlanId, alert, user) => dispatch(actionTypes.fetchAdjustFee({ currentFeePlanId, targetFeePlanId, alert, user })),
   filterCurrentFeePlan: (text) => dispatch(actionTypes.filterCurrentFeePlan({ text })),

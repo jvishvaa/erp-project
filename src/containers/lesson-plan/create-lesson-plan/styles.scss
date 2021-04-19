@@ -1,0 +1,73 @@
+@import '../../../assets/styles/variables';
+.mv-20 {
+  margin: 20px 0;
+}
+.mb-20 {
+  margin: 0 0 20px;
+}
+.create-lesson-plan-container {
+  width: 95%;
+  margin: auto;
+
+  .lesson-plan-tab-content {
+    background-color: #fafafa;
+  }
+
+  .collapsible-section {
+    background: #fafafa;
+    box-shadow: none;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    .form-grid-container {
+      width: 100%;
+    }
+  }
+
+  .lesson-plan-second-view {
+    padding: 1rem 0;
+    .uploaded-files-container {
+      .uploaded-files-list-container {
+        .uploaded-file {
+          display: flex;
+          color: #014b7e;
+          /* margin: 20px 0; */
+          padding: 15px 0;
+
+          .name {
+            width: 70%;
+            flex-basis: 70%;
+            // display: flex;
+            // align-items: center;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+
+          .size {
+            flex-basis: 10%;
+            display: flex;
+            align-items: center;
+          }
+          .actions {
+            display: flex;
+          }
+        }
+      }
+      .btn-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        button {
+          width: 40%;
+          &:not(:last-child) {
+            margin: 20px 0;
+          }
+        }
+      }
+    }
+  }
+}

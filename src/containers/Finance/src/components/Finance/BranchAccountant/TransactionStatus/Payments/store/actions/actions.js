@@ -22,7 +22,6 @@ export const fetchAccountantTransaction = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       dispatch({
         type: FETCH_ACCOUNTANT_TRANSACTIONS,
         payload: {
@@ -72,7 +71,6 @@ export const editAccountantTransaction = (payload) => {
 
 export const updateAccountantTransaction = (payload) => {
   let url = null
-  console.log('payload ::', payload)
   if (payload.data && payload.data.kit_payment) {
     url = urls.StorePaymentCancelRequest
   } else {

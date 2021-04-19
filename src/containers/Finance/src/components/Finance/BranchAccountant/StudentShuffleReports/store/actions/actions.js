@@ -22,7 +22,6 @@ export const fetchInternalShuffle = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('app res: ', response)
         if (response.status === 200) {
           dispatch({
             type: FETCH_INTERNAL_SHUFFLE,
@@ -52,7 +51,6 @@ export const fetchExternalShuffle = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('app res: ', response.data)
         if (response.status === 200) {
           dispatch({
             type: FETCH_EXTERNAL_SHUFFLE,

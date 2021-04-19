@@ -3,7 +3,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -266,14 +266,12 @@ const StudentHomework = withRouter(({ history, ...props }) => {
         });
       }
       temprows.push(tempobj);
-      // console.log(temprows, "temprows")
     });
     setMessageRows({ header: tempHeader, rows: temprows });
   };
 
   const handleOtherLanguage = (event, value) => {
     setSelectSub(event.target.value);
-    console.log(value, 'poopo', event.target.value);
     if (value) {
       setSelectedOtherLanguages({
         ...value,

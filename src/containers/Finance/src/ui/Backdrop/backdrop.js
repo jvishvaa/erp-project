@@ -18,7 +18,6 @@ const styles = theme => ({
 
 const backdrop = (props) => (
   <div className={props.open ? classes.backdrop : classes.noBackdrop} onClick={props.click} style={props.zIndex ? { zIndex: +props.zIndex - 50 } : null}>
-    {/* <CloseIcon className={props.classes.icon} onClick={() => {console.log("Hii There")}}/> */}
   </div>
 )
 

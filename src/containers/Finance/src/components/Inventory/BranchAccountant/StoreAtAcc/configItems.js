@@ -111,7 +111,6 @@ class ConfigItems extends Component {
   }
 
   componentDidMount () {
-    // console.log('kitD in receip: ', this.props.selectedKits)
     this.props.fetchWalletInfo(this.props.session, this.props.erpCode, this.props.alert, this.props.user)
     this.props.fetchCouponDiscount(this.props.erpCode, this.props.session, this.props.selectedKits, this.props.alert, this.props.user)
     this.props.fetchSubCategoryStore(this.props.session, this.props.erpCode, this.props.alert, this.props.user)
@@ -241,7 +240,6 @@ class ConfigItems extends Component {
 
   componentDidUpdate (prevProps) {
     // this.calculateTotalAmount()
-    // console.log('CDU wallet agree: ', this.state.isWalletAgree)
     if (prevProps.couponDiscount.length !== this.props.couponDiscount.length) {
       this.calculateTotalAmount()
     }
@@ -264,7 +262,6 @@ class ConfigItems extends Component {
       return
     }
     if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData)) {
-      console.log('inside did update')
       // this.subjectCheckHandler()
       this.getBackPlease()
     }
@@ -300,7 +297,6 @@ class ConfigItems extends Component {
   }
 
   calculateTotalAmount = (isUniform) => {
-    console.log('CDM')
     const isChecked = { ...this.state.isChecked }
     const checkedItems = Object.keys(isChecked).filter(key => isChecked[key])
     let disAmt = 0
@@ -342,7 +338,6 @@ class ConfigItems extends Component {
       const extraAmount = this.props.storeItems.reduce((acc, curr) => {
         return acc + (this.state.quantity[curr.id] - this.props.itemsQuantity[curr.id]) * curr.final_price_after_gst
       }, 0)
-      console.log('CDM extra: ', extraAmount)
       // let value = false
       // if (this.props.walletInfo.length && (this.props.selectedTotal + extraAmount - disAmt) <= this.props.walletInfo[0].total_amount) {
       //   value = true
@@ -360,10 +355,8 @@ class ConfigItems extends Component {
         .filter(item => checkedItems.includes(item.id + '') && !item.is_uniform_item)
       let uniformItems = this.props.storeItems
         .filter(item => checkedItems.includes(item.id + '') && item.is_uniform_item)
-      console.log('store list: ', this.props.storeList)
       const uniformKitList = this.props.storeList.filter(item => item.is_uniform_kit)[0]
       const stationaryKitList = this.props.storeList.filter(item => !item.is_uniform_kit)[0]
-      console.log('stationary kit list', stationaryKitList)
 
       const uniformQuantity = uniformKitList ? uniformKitList.quantity.reduce((acc, curr) => {
         acc[curr.id] = curr.quantity
@@ -413,7 +406,6 @@ class ConfigItems extends Component {
         }, 0)
       }
       const total = stationaryPrice + uniformPrice - disAmt
-      console.log('CDM stationary price' + stationaryPrice + 'uniform Price: ' + uniformPrice + 'total: ' + total)
       // let value = false
       // if (this.props.walletInfo.length && total <= this.props.walletInfo[0].total_amount) {
       //   value = true
@@ -441,7 +433,6 @@ class ConfigItems extends Component {
     const subCat = this.props.subCategoryStore.length && this.props.subCategoryStore.filter(sub => {
       return sub.is_store_sub_category_applicable && sub.store_sub_category === item.store_sub_category
     })
-    console.log('subCat item: ', subCat, item)
     if (subCat && subCat.length) {
       return false
     }
@@ -473,7 +464,6 @@ class ConfigItems extends Component {
       isUniformBought,
       isStationaryBought
     } = this.props
-    console.log('disable: ', item.store_sub_category)
     // if (item.store_sub_category === 3) {
     if (!item.can_be_sold_alone_to_all && !item.is_uniform_item && !isStationaryBought) {
       return true
@@ -485,7 +475,6 @@ class ConfigItems extends Component {
   }
 
   checkChangeHandler = (e, row) => {
-    console.log('Check Change Handler', this.state.isChecked)
     let { isChecked } = this.state
     // const subCat = this.props.subCategoryStore.length && this.props.subCategoryStore[0].is_store_sub_category_applicable && this.props.subCategoryStore[0].store_sub_category
     const subCat = this.props.subCategoryStore.length && this.props.subCategoryStore.filter(sub => {
@@ -494,7 +483,6 @@ class ConfigItems extends Component {
     // check if the check box is checked or unchecked
     // for sub cat
     const ids = subCat.length && this.props.storeItems.filter(item => item.store_sub_category === subCat[0].store_sub_category && row.store_sub_category === subCat[0].store_sub_category)
-    console.log('subCat ids: ', ids)
     ids && ids.forEach((item) => {
       isChecked[item.id] = e.target.checked
     })
@@ -548,7 +536,6 @@ class ConfigItems extends Component {
         quantity: { ...prevState.quantity, [row.id]: count }
       }
     }, () => {
-      console.log(this.state)
       this.calculateTotalAmount(row.is_uniform_item)
     })
   }
@@ -597,7 +584,6 @@ class ConfigItems extends Component {
   }
 
   handlePayment = event => {
-    console.log('event: ', event)
     if (event.target.value === 'b') {
       this.setState({
         selectedPayment: event.target.value,
@@ -766,7 +752,6 @@ class ConfigItems extends Component {
   }
 
   agreeWalletPayment = (event) => {
-    console.log('agree wallet: ', event.target.checked)
     // if (event.target.checked && this.props.walletInfo.length && this.state.total > this.props.walletInfo[0].total_amount) {
     //   this.props.alert.warning('Wallet Balance is not enough!')
     //   return
@@ -837,7 +822,6 @@ class ConfigItems extends Component {
   }
 
   deviceHandler = (e) => {
-    console.log('device id: ', e)
     this.setState({
       swipeDevice: e
     })
@@ -903,7 +887,6 @@ class ConfigItems extends Component {
 
     if (event.target.checked) {
       this.setState({ confirm: true, disableNext: false }, () => {
-        // console.log(dataToSend)
         // this.props.getDetail(this.state.confirm, dataToSend)
       })
     } else {
@@ -1550,7 +1533,6 @@ class ConfigItems extends Component {
       }
     })
 
-    // console.log('size state : ', this.state.size)
 
     Object.keys(this.state.size).forEach((key) => {
       uniformItems.forEach(u => {
@@ -1676,7 +1658,6 @@ class ConfigItems extends Component {
       uniformId,
       stationaryId
     } = this.getFinalItems()
-    console.log('deli id', this.props.deliveryAmount[0])
     let del = null
     if (this.props.isDelivery === 'home') {
       if (!this.props.deliveryAmount.length) {
@@ -1701,7 +1682,6 @@ class ConfigItems extends Component {
     let tot = this.state.total + this.state.shippingAmount
     if (this.props.walletInfo.length && this.state.isWalletAgree) {
       let bal = this.props.walletInfo[0].reaming_amount
-      console.log('total and balnce: ', tot, bal)
       wal = {
         wallet_agree: this.state.isWalletAgree,
         wallet_data: this.props.walletInfo[0],
@@ -1744,7 +1724,6 @@ class ConfigItems extends Component {
     let coup = {
       coupon_discount: couponData
     }
-    console.log('payment wal::::', wal)
     if (this.state.isWalletAgree && (this.props.walletInfo[0].reaming_amount >= this.state.total + this.state.shippingAmount)) {
       let walletMoney = {
         academic_year: this.props.session,
@@ -1923,7 +1902,6 @@ class ConfigItems extends Component {
   }
 
   sendingToServer = (paymentObj) => {
-    console.log('payment obj::::', paymentObj)
     this.props.storePayment(paymentObj, this.props.alert, this.props.user)
   }
 
@@ -2021,8 +1999,6 @@ class ConfigItems extends Component {
     const steps = getSteps()
     const { activeStep } = this.state
     const someKey = true
-    console.log(this.props.deviceId)
-    // console.log('the session from confug items', this.props.session)
     return (
       <React.Fragment>
         <Button style={{ width: '40px' }} color='primary' className={classes.btn} onClick={this.props.shippingComponent ? this.props.getBack : this.getBackPlease}>

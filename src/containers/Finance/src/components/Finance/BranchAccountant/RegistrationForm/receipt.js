@@ -351,7 +351,6 @@ class Receipt extends Component {
         payment: newPayment
       })
     }
-    // console.log('nextprops', )
     // You don't have to do this check first, but it can help prevent an unneeded render
     // if (nextProps.startTime !== this.state.startTime) {
     //   this.setState({ startTime: nextProps.startTime })
@@ -390,7 +389,6 @@ class Receipt extends Component {
 
     let dataToSend = null
     if (isChequePaper) {
-      console.log('qwerty', this.dataIsSuitableToSend(payment.cheque))
       // if (!this.dataIsSuitableToSend(payment.cheque)) {
       //   this.props.alert.warning('Please Fill all the')
       //   // this.setState({ confirm: false })
@@ -450,7 +448,6 @@ class Receipt extends Component {
         current_date: todayDate
       }
     }
-    console.log(dataToSend)
     if (isChequePaper === true) {
       let chequeData = {
         branch_id: branchId,
@@ -560,7 +557,6 @@ class Receipt extends Component {
   }
 
   componentDidUpdate () {
-    // console.log('update: ', this.state.payment)
   }
 
   // Generation of PDF Start
@@ -575,10 +571,8 @@ class Receipt extends Component {
   generatePdf = async (transid) => {
     try {
       const response = await this.getPdfData(transid)
-      console.log('App reg Response: ', response)
       appRegReceiptsPdf(response.data)
     } catch (e) {
-      console.log(e)
       this.props.alert.warning('Unable to generate PDF!')
     }
   }

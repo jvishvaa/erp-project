@@ -21,7 +21,6 @@ export const fetchFormCount = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('app res: ', response)
         if (response.status === 200) {
           dispatch({
             type: FETCH_FORM_COUNT,
@@ -73,7 +72,6 @@ export const updateTotalFormDetails = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log('Response of Update', response)
       payload.alert.success('Updated!')
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
@@ -142,7 +140,6 @@ export const updateTransactionMode = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(res => {
-      console.log(res)
       payload.alert.success('Updated!')
       dispatch({
         type: UPDATE_TRANSACTION_MODE,
@@ -167,7 +164,6 @@ export const fetchBranchList = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(res => {
-      console.log(res)
       dispatch({
         type: BRANCH_LIST,
         payload: {

@@ -20,7 +20,6 @@ export const fetchInstallmentListPerFeeType = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('====>response from installemnt<======', response)
         dispatch({
           type: INSTALLMENTS_LIST_PER_FEE_TYPE,
           payload: {
@@ -79,7 +78,6 @@ export const fetchFeeTypesPaidReportsPerBranch = (payload) => {
 //       }).catch(error => {
 //         dispatch(actionTypes.dataLoaded())
 //         payload.alert.warning('Unable to load fee plans')
-//         console.log(error)
 //       })
 //   }
 // }

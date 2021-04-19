@@ -95,7 +95,6 @@ export const deleteRegistrationFeeType = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log(response)
         dispatch({
           type: DELETE_REGISTRATION_FEE_TYPES,
           payload: {

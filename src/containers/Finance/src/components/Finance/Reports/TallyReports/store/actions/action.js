@@ -41,7 +41,6 @@ export const downloadTallyReports = (payload) => {
         }
         // responseType: 'blob'
       }).then(response => {
-        console.log('----response---------', response)
         const url = urls.BASE + response.data
         axios.get(url, {
           headers: {
@@ -49,9 +48,7 @@ export const downloadTallyReports = (payload) => {
           },
           responseType: 'blob'
         }).then(response => {
-          // console.log(urls.BASE)
           const url = window.URL.createObjectURL(new Blob([response.data]))
-          console.log('--url----------', url)
           const link = document.createElement('a')
           link.href = url
           link.target = '_blank'

@@ -42,24 +42,54 @@ const styles = theme => ({
   }
 })
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Student Shuffle') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiateShuffleRequest, fetchGradesPerBranch, fetchErpSuggestions, ErpSuggestions, sectionList, fetchSections, gradeList, fetchBranchAtAcc, branchList, dataLoading, user, alert }) => {
   const [displayErp, setDisplayErp] = useState(null)
   const [erp, setErp] = useState(null)
   const [studentName, setStudentName] = useState(null)
   const [sessionYear, setSessionYear] = useState(null)
   const [branch, setBranch] = useState('')
+  const [branches, setBranches] = useState('')
   const [grade, setGrade] = useState('')
   const [section, setSection] = useState('')
   const [reason, setReason] = useState('')
   // const [searchBy, setSearchBy] = useState('')
 
+  // useEffect(() => {
+
+  // })
+
   useEffect(() => {
-    console.log('displayErp', displayErp)
   }, [displayErp])
 
   useEffect(() => {
     if (sessionYear) {
-      fetchBranchAtAcc(sessionYear.value, user, alert)
       setBranch('')
       setGrade('')
       setSection('')
@@ -69,7 +99,7 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
   useEffect(() => {
     // Update the document title using the browser API
     if (branch && sessionYear) {
-      fetchGradesPerBranch(sessionYear.value, branch.value, alert, user)
+      fetchGradesPerBranch(sessionYear.value, branch.value, alert, user, moduleId)
       setGrade('')
       setSection('')
     }
@@ -77,7 +107,7 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
 
   useEffect(() => {
     if (branch && sessionYear && grade) {
-      fetchSections(grade.value, sessionYear.value, branch.value, alert, user)
+      fetchSections(grade.value, sessionYear.value, branch.value, alert, user, moduleId)
       setSection('')
     }
   }, [sessionYear, branch, grade, fetchSections, alert, user])
@@ -85,24 +115,20 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
   useEffect(() => {
     if (redirectPageStatus) {
       history.push({
-        pathname: '/finance/studentShuffle'
+        pathname: '/finance/StudentShuffleRequest'
       })
     }
   }, [history, redirectPageStatus])
 
   useEffect(() => {
     if (studentName) {
-      // console.log('stude')
       const selectedStudent = ErpSuggestions && ErpSuggestions.length > 0 ? ErpSuggestions.filter(item => item.name === studentName)[0] : null
-      console.log('use effect NAme:', selectedStudent)
       setDisplayErp(selectedStudent && selectedStudent.erp ? selectedStudent.erp : displayErp)
     }
     if (erp) {
       const selectedStudent = ErpSuggestions && ErpSuggestions.length > 0 ? ErpSuggestions.filter(item => item.erp === erp)[0] : null
-      console.log('use effect ERp:', selectedStudent)
       setDisplayErp(selectedStudent && selectedStudent.erp ? selectedStudent.erp : displayErp)
     }
-    // console.log('displayErp: ', displayErp)
   }, [ErpSuggestions, displayErp, erp, studentName])
 
 //   const nameDebounceFunc = debounce(() => {
@@ -126,7 +152,8 @@ const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiat
       3,
       studentName,
       alert,
-      user
+      user, 
+      branches && branches.value
     )
   }
 
@@ -152,26 +179,26 @@ const erpDebounceFunc = () => {
       3,
       erp,
       alert,
-      user
+      user,
+      branches && branches.value
     )
   }
   const erpHandler = (e) => {
     // let searchBox = null
-    if (!sessionYear) {
-      alert.warning('Select Academic Year!')
+
+    if (!sessionYear || !branches) {
+      alert.warning('Select Academic Year and Branch!')
     } else {
       if (isNaN(Number(e.target.value))) {
-        console.log('its string')
         setErp(null)
         setStudentName(e.target.value)
-        if (e.target.value.length >= 3) {
+        if (e.target.value && e.target.value.length >= 3) {
           nameDebounceFunc()
         }
       } else if (isFinite(Number(e.target.value))) {
-        console.log('its number')
         setStudentName(null)
         setErp(e.target.value)
-        if (e.target.value.length >= 3) {
+        if (e.target.value && e.target.value.length >= 3) {
           erpDebounceFunc()
         }
       }
@@ -180,6 +207,7 @@ const erpDebounceFunc = () => {
 
   const academicYearChangeHandler = (e) => {
     setSessionYear(e)
+    fetchBranchAtAcc(e && e.value, user, alert, moduleId)
   }
 
   const branchChangeHandler = (e) => {
@@ -198,6 +226,10 @@ const erpDebounceFunc = () => {
     setReason(e.target.value)
   }
 
+  const branchHandler = (e) => {
+    setBranches(e)
+  }
+
   const handleSug = (e) => {
     if (ErpSuggestions && studentName) {
       return ErpSuggestions.map(item => ({ value: item.name ? item.name : null, label: item.name ? item.name : null }))
@@ -210,6 +242,7 @@ const erpDebounceFunc = () => {
     let data = {
       erp: displayErp,
       academic_year: sessionYear.value,
+      branch_id: branches && branches.value,
       reason: reason,
       branch_to: branch.value,
       grade_to: grade.value,
@@ -219,9 +252,8 @@ const erpDebounceFunc = () => {
   }
 
   const studentInfoHandler = useMemo(() => {
-    console.log('useMemo: ', studentName, erp, displayErp)
     if (studentName || erp) {
-      return <Student erp={displayErp} user={user} alert={alert} />
+      return <Student erp={erp} branch={branches && branches.value} session={sessionYear && sessionYear.value} user={user} alert={alert} />
     }
   }, [studentName, displayErp, erp, alert, user])
 
@@ -244,6 +276,22 @@ const erpDebounceFunc = () => {
                 : []
             }
             onChange={academicYearChangeHandler}
+          />
+        </Grid>
+        <Grid item className={classes.item} xs={3}>
+          <label>Branch* </label>
+          <Select
+            placeholder='Select Branch'
+            value={branches || ''}
+            options={
+              branchList
+                ? branchList.map(g => ({
+                  value: g.branch && g.branch.id ? g.branch.id : '',
+                  label: g.branch && g.branch.branch_name ? g.branch.branch_name : ''
+                }))
+                : []
+            }
+            onChange={branchHandler}
           />
         </Grid>
         <Grid item className={classes.item} xs={3}>
@@ -360,12 +408,12 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchGradesPerBranch: (session, branch, alert, user) => dispatch(actionTypes.fetchGradesPerBranch({ session, branch, alert, user })),
-  fetchBranchAtAcc: (session, user, alert) => dispatch(actionTypes.fetchBranchPerSession({ session, user, alert })),
-  fetchSections: (gradeId, session, branchId, alert, user) => dispatch(actionTypes.fetchAllSectionsPerGradeAsAdmin({ gradeId, session, branchId, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchGradesPerBranch: (session, branch, alert, user, moduleId) => dispatch(actionTypes.fetchGradesPerBranch({ session, branch, alert, user, moduleId })),
+  fetchBranchAtAcc: (session, user, alert, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, user, alert, moduleId })),
+  fetchSections: (gradeId, session, branchId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGradeAsAdmin({ gradeId, session, branchId, alert, user, moduleId })),
   initiateShuffleRequest: (data, alert, user) => dispatch(actionTypes.initiateShuffleRequest({ data, alert, user })),
-  fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user }))
+  fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user, branch) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user, branch }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(RequestShuffle)))

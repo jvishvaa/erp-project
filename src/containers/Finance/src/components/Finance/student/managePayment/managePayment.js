@@ -49,7 +49,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -73,11 +72,9 @@ class ManagePayment extends Component {
       erp: null
     }
     this.currBrnch = JSON.parse(localStorage.getItem('userDetails')).branch_id
-    // console.log(BranchId.includes(this.currBrnch))
   }
   componentDidMount () {
     // for disabling the terminal
-    console.log('manage Pay: ', JSON.parse(localStorage.getItem('userDetails')).erp)
     document.onkeydown = function (e) {
       if (e.keyCode === 123) {
         return false

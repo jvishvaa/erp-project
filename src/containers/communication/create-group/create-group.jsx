@@ -4,7 +4,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable dot-notation */
-/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useContext, useState, useEffect } from 'react';
@@ -152,7 +151,6 @@ const CreateGroup =({ history, ...props }) => {
   const getAcademicApi = () => {
     axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
       .then((res) => {
-        console.log(res.data);
 
         if (res.data.status_code === 200) {
           setAcademicYears(res.data.data);
@@ -163,7 +161,6 @@ const CreateGroup =({ history, ...props }) => {
         }
       })
       .catch((error) => {
-        console.log(error);
         setAlert('error', error.message);
         setLoading(false);
       })
@@ -268,7 +265,6 @@ const CreateGroup =({ history, ...props }) => {
             (sec) =>
               result.data.data.findIndex((obj) => obj.section__section_name == sec) > -1
           );
-          console.log('selected sections array ', selectedSectionsArray);
           setSelectedSections(selectedSectionsArray);
         }
         setLoading(false);
@@ -407,7 +403,6 @@ const CreateGroup =({ history, ...props }) => {
     }
   };
   const editGroup = async () => {
-    console.log(selectedUsers);
     const editGroupApiUrl = `${endpoints.communication.editGroup}${preSelectedGroupId}/retrieve-update-group/`;
     const rolesId = [];
     const branchId = [];

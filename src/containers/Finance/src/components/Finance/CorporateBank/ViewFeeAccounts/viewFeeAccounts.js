@@ -43,7 +43,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId= item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -193,7 +192,6 @@ class ViewFeeAccounts extends Component {
       //     this.hideDeleteModalHandler()
       //   })
       //   .catch((error) => {
-      //     console.log("Error: Couldn't fetch data from " + error)
       //   })
     };
 

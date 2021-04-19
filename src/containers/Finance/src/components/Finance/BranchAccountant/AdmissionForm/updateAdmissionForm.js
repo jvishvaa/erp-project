@@ -67,7 +67,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -97,7 +96,6 @@ class UpdateAdmissionFormAcc extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('RECIEVED PROPS', nextProps.redirect)
     if (nextProps.redirect === true) {
       this.props.history.push({
         pathname: '/finance/AdmissionForm'
@@ -106,12 +104,10 @@ class UpdateAdmissionFormAcc extends Component {
   }
 
   componentDidMount () {
-    console.log('props:', this.props.history.location.studentInformationForAdmission)
     if (this.props.history.location.studentInformationForAdmission) {
       this.setState({
         studentInformationForAdmission: this.props.history.location.studentInformationForAdmission
       }, () => {
-        // console.log(this.state.studentInformationForAdmission.student_registered)
         if (this.state.studentInformationForAdmission && this.state.studentInformationForAdmission.student_registered) {
           this.props.fetchAdmissionRecordByErp(this.state.studentInformationForAdmission.student_registered.erp, this.props.user, this.props.alert)
         }
@@ -121,14 +117,9 @@ class UpdateAdmissionFormAcc extends Component {
         studentInformationForAdmission: null
       })
     }
-    console.log(this.state.studentInformationForAdmission)
   }
   componentDidUpdate () {
-    console.log('DID UPDATED', this.state.studentdetails)
-    console.log('DID UPDATED', this.state.studentparentdetails)
-    console.log('DID UPDATED', this.state.adressdetails)
-    console.log('DID UPDATED', this.state.otherdetails)
-    console.log('did update', this.state.studentCertificateDetails)
+
   }
 
     getStepContent = (stepIndex) => {
@@ -151,47 +142,40 @@ class UpdateAdmissionFormAcc extends Component {
     }
 
     getStudentDetail = (dataOb) => {
-      console.log(dataOb)
       this.setState({
         studentdetails: dataOb
       })
     }
 
     getStudentParentDetail = (dataOb) => {
-      console.log(dataOb)
       this.setState({
         studentparentdetails: dataOb
       })
     }
 
     getAddressDetail = (dataOb) => {
-      console.log(dataOb)
       this.setState({
         adressdetails: dataOb
       })
     }
 
     getOtherDetail = (dataOb) => {
-      console.log(dataOb)
       this.setState({
         otherdetails: dataOb
       })
     }
     getSiblingDetail = (dataOb) => {
-      console.log(dataOb)
       this.setState({
         studentSiblingDetails: dataOb
       })
     }
     getCertificateDetail = (dataOb) => {
-      console.log(dataOb)
       this.setState({
         studentCertificateDetails: dataOb
       })
     }
 
     handleNext = () => {
-      console.log('handle next pressed')
       // if (this.state.activeStep < 5) {
       //   this.setState(prevState => {
       //     return {
@@ -242,7 +226,6 @@ class UpdateAdmissionFormAcc extends Component {
           }
         })
       } else if (this.state.activeStep === 5) {
-        console.log('make API Call')
         const { studentdetails, otherdetails, studentCertificateDetails, studentparentdetails, adressdetails, studentSiblingDetails } = this.state
         const body = {
           aadhar_number: otherdetails.adharno,
@@ -315,12 +298,10 @@ class UpdateAdmissionFormAcc extends Component {
           using_transport: studentdetails.transport,
           zip_code: adressdetails.tempzip
         }
-        console.log('this is body', body)
         this.props.putStudentAdmission(body, this.props.user, this.props.alert)
       }
     }
     handleBack = () => {
-      console.log('handle back pressed')
       this.setState(state => ({
         activeStep: state.activeStep - 1
       }), () => {

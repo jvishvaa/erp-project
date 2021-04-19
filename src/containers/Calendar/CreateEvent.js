@@ -68,6 +68,8 @@ const CreateEvent = () => {
 
 
 
+
+
   const handleStartTimeChange = (start_time) => {
     console.log("time", start_time.toString().slice(16, 21))
     const time = start_time.toString().slice(16, 21)
@@ -223,11 +225,29 @@ const CreateEvent = () => {
         setLoading(false);
       });
   }
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Calendar & Attendance' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Calendar' ) {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, [window.location.pathname]);
+  console.log(moduleId,'MODULE_ID')
 
   useEffect(() => {
 
-    callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList')
-
+    callApi(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`, 'academicYearList')
+    
     console.log("iuhiuhi")
     axiosInstance.get(endpoints.CreateEvent.getEventCategory)
       .then((res) => {
@@ -349,6 +369,7 @@ const CreateEvent = () => {
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
+                    console.log("moduleIdDDD",moduleId)
                     setSelectedAcadmeicYear(value)
                     if (value) {
                       callApi(

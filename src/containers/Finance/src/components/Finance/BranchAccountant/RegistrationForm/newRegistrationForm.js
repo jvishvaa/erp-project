@@ -52,7 +52,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -173,13 +172,10 @@ class NewRegistration extends Component {
   }
 
   // static getDerivedStateFromProps (nextProps, prevState) {
-  //   console.log('++++ newCycle nextProps: ', nextProps)
-  //   console.log('++++ newCycle prevState: ', prevState)
   //   if ((nextProps.registrationDetails && nextProps.registrationDetails.error) !== (this.props.registrationDetails.length && this.props.registrationDetails.error)) {
   //     // this.setState({
   //     //   showModal: true
   //     // })
-  //     console.log('errrrr')
   //   }
   // }
 

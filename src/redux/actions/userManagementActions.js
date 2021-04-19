@@ -51,7 +51,6 @@ export const fetchUsers = () => (dispatch) => {
         total_pages: response.data.total_pages,
         count: response.data.count,
       });
-      console.log(response.data);
     })
     .catch((error) => {
       console.log(error);
@@ -147,8 +146,6 @@ export const fetchUser = (id) => (dispatch) => {
         },
       };
       dispatch({ type: FETCH_USER_DETAIL_SUCCESS, data: transformedUser });
-
-      console.log('user detail ', response);
     })
 
     .catch((e) => {
@@ -159,12 +156,7 @@ export const fetchUser = (id) => (dispatch) => {
 
 export const createUser = (params) => (dispatch) => {
   dispatch({ type: CREATE_USER_REQUEST });
-  // console.log(
-  //   'before stringifying ',
-  //   params,
-  //   'after stringifying ',
-  //   qs.stringify(params)
-  // );
+
   return axios
     .post('/erp_user/add_user/', params)
     .then(() => {
@@ -196,7 +188,6 @@ export const fetchBranchesForCreateUser = (acadId,moduleId) => {
   //   .get(`/erp_user/list-all-branch/?session_year=${acadId}&module_id=${moduleId}`)
   //   .then((response) => {
   //     if (response.data.status_code === 200) return response?.data?.data;
-  //     else console.log('','xyzxyz');
   //   })
   //   .catch((error) => {
   //     throw error;

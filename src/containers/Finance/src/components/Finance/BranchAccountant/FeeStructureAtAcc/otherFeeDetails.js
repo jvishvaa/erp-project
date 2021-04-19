@@ -98,7 +98,6 @@ class OtherFeeDetails extends Component {
       unassignId: id
     }, () => {
       const currentData = this.props.feeTypwWise.filter(val => val.id === this.state.unassignId)[0]
-      console.log(currentData)
       this.setState({
         currentFeeData: currentData
       })
@@ -187,34 +186,26 @@ class OtherFeeDetails extends Component {
   }
 
   changeremarksHandler = (e) => {
-    console.log(e)
-    console.log(e.target.value)
     this.setState({
       remarksData: e.target.value
     })
   }
 
   handleAlignment = (e, newAlignment) => {
-    console.log(newAlignment)
     this.setState({
       alignment: newAlignment
     })
   }
 
   saveRequest = () => {
-    console.log('amount', this.state.feeStructAmt)
-    console.log('balance', this.state.feeStructBal)
     if (!this.state.concessionType || !this.state.remarks || !this.state.currentConcessionStatus) {
       this.props.alert.warning('Select All Fields')
-      console.log('1st attempt')
       return
     } else if (this.state.currentConcessionStatus.value === 'replace' && this.state.concessionRequestAmount > this.state.feeStructAmt) {
       this.props.alert.warning('Replacing Concession Should be less than Fee Amount')
-      console.log('2nd attempt')
       return
     } else if (this.state.currentConcessionStatus.value === 'add' && this.state.concessionRequestAmount > this.state.feeStructBal) {
       this.props.alert.warning('Adding Concession Should be less than balance')
-      console.log('3rd attempt')
       return
     }
     let data = {
@@ -228,13 +219,11 @@ class OtherFeeDetails extends Component {
       concession_given_by: this.state.conGivenBy,
       branch_id: this.props.branchId
     }
-    // console.log('data', data)
     this.props.saveConcessionRequest(data, this.props.alert, this.props.user)
     this.hideConcesionModalHandler()
   }
 
   unassignSubmitHandler = () => {
-    console.log(this.state.remarksData)
     if (this.state.remarksData) {
       const data = {
         academic_year: this.props.session,
@@ -281,7 +270,6 @@ class OtherFeeDetails extends Component {
         student: this.props.erp,
         branch_id: this.props.branchId
       }
-      // console.log(data)
       this.props.updateFineAmt(data, this.props.alert, this.props.user)
       this.hideFineAmtModalHandler()
     } else {

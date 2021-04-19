@@ -33,7 +33,6 @@ export const fetchAllTransaction = (payload) => {
     from_date: fromDate,
     to_date: toDate
   }]
-  console.log('Is Accountant', isAccountant)
   let url = `${urls.TransactionStatusList}?academic_year=${session}&mode=${mode}&payment_type=${fees}&fee_plan=${feePlanIds}&from_date=${fromDate}&to_date=${toDate}`
   // if (!isAccountant) {
     // body[0].branch_id = branchId
@@ -52,7 +51,6 @@ export const fetchAllTransaction = (payload) => {
       }
 
     }).then(response => {
-      console.log('**')
       dispatch({
         type: FETCH_ALL_TRANSACTION,
         payload: {
@@ -120,7 +118,6 @@ export const fetchMultiFeeTypeTransaction = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log('Tran Response', response)
       dispatch({
         type: FETCH_MULTI_FEETYPE_TRAN,
         payload: {

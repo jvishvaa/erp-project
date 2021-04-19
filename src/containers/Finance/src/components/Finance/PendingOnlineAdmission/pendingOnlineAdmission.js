@@ -14,6 +14,7 @@ import {
   TablePagination, Table,
    CircularProgress
 } from '@material-ui/core'
+import Select from 'react-select'
 
 // import ReactTable from 'react-table'
 // import 'react-table/react-table.css'
@@ -25,9 +26,40 @@ import Layout from '../../../../../Layout'
 // import Modal from '../../../ui/Modal/modal'
 // import { CircularProgress } from '../../../ui'
 
-const OnlineAdmission = ({ dataLoadingStatus, onlinePendingAdmissionData, getPendingOnlineAdmission, alert, airpayPayment, todayEMandateDetails, setDomainDetails, todayDetail, fetchBranches, user, domainNames, branches, session }) => {
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Admissions' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Online Admissions') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
+const OnlineAdmission = ({ dataLoadingStatus, branches, fetchBranches, getPendingOnlineAdmission, onlinePendingAdmissionData, alert, user, session }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [sessions, setSession] = useState('')
+  const [selectedBranches, setSelectedBranches] = useState('')
+  const [display, setDisplay] = useState(false)
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -37,9 +69,9 @@ const OnlineAdmission = ({ dataLoadingStatus, onlinePendingAdmissionData, getPen
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  useEffect(() => {
-    getPendingOnlineAdmission(alert, user)
-  }, [alert, getPendingOnlineAdmission, user])
+  // useEffect(() => {
+  //   getPendingOnlineAdmission(alert, user)
+  // }, [alert, getPendingOnlineAdmission, user])
 
   const renderStudentErpTable = () => {
     let dataToShow = []
@@ -122,10 +154,66 @@ const OnlineAdmission = ({ dataLoadingStatus, onlinePendingAdmissionData, getPen
   // // onPageChange={page => this.pageChangeHandler(page)}
   // />
 
+  const handleAcademicyear = (e) => {
+    console.log('acad years', session)
+      setSession(e)
+      fetchBranches(e.value, alert, user, moduleId)
+      setDisplay(false)
+      setSelectedBranches('')
+  }
+
+  const changehandlerbranch = (e) => {
+    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session)
+    setSelectedBranches(e)
+    if (e && session) {
+    getPendingOnlineAdmission(sessions?.value, e?.value, alert, user)
+    setDisplay(true)
+    } else {
+      alert.warning('Fill all the required Fields!')
+    }
+  }
+
   return (
     <Layout>
+      <Grid container spacing={3} style={{ padding: '15px' }}>      
+      <Grid item xs='3'>
+            <label>Academic Year*</label>
+            <Select
+              placeholder='Select Year'
+              value={sessions ? sessions : ''}
+              options={
+                session
+                  ? session.session_year.map(session => ({
+                    value: session,
+                    label: session
+                  }))
+                  : []
+              }
+              onChange={handleAcademicyear}
+            />
+          </Grid>
+          <Grid item xs='3'>
+            <label>Branch*</label>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={selectedBranches ? selectedBranches : ''}
+              options={
+                branches.length && branches
+                  ? branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : []
+              }
+
+              onChange={changehandlerbranch}
+            />
+          </Grid>
+     </Grid>
     <div>
       <Grid container spacing={3} style={{ padding: 15 }}>
+        {display ?
         <Grid item xs={12}>
           {/* {studentErpTable} */}
           <Table>
@@ -166,6 +254,7 @@ const OnlineAdmission = ({ dataLoadingStatus, onlinePendingAdmissionData, getPen
                 onChangeRowsPerPage={handleChangeRowsPerPage}
               />
         </Grid>
+         : []}
       </Grid>
       {dataLoadingStatus ? <CircularProgress open /> : null}
     </div>
@@ -179,13 +268,15 @@ const mapStateToProps = (state) => ({
   dataLoadingStatus: state.finance.common.dataLoader,
   todayDetail: state.finance.eMandateReducer.todayDetails,
   // domainNames: state.finance.eMandateReducer.domainNames
+  // branches: state.finance.common.branchPerSession,
+  onlinePendingAdmissionData: state.finance.financeAdminDashBoard.onlinePendingAdmissionData,
   branches: state.finance.common.branchPerSession,
-  onlinePendingAdmissionData: state.finance.financeAdminDashBoard.onlinePendingAdmissionData
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  getPendingOnlineAdmission: (alert, user) => dispatch(actionTypes.getPendingOnlineAdmission({ alert, user }))
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  getPendingOnlineAdmission: (session, branch, alert, user) => dispatch(actionTypes.getPendingOnlineAdmission({session, branch, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)((OnlineAdmission))

@@ -8,14 +8,12 @@ const initialState = {
 const studentShuffleReportsReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_INTERNAL_SHUFFLE : {
-      console.log('qwerty', action.payload.data)
       return {
         ...state,
         internalshuffleDetails: action.payload.data
       }
     }
     case actionTypes.FETCH_EXTERNAL_SHUFFLE : {
-      console.log('qwerty', action.payload.data)
       return {
         ...state,
         externalshuffleDetails: action.payload.data

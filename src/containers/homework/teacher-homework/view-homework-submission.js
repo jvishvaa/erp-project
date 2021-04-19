@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -107,10 +107,6 @@ const ViewHomework = withRouter(
         scrollableContainer.current.scrollLeft -= 150;
       } else {
         scrollableContainer.current.scrollLeft += 150;
-        console.log(
-          scrollableContainer.current.scrollLeft,
-          scrollableContainer.current.scrollRight
-        );
       }
     };
 
@@ -165,7 +161,6 @@ const ViewHomework = withRouter(
           return;
         }
       }
-      console.log('Evaluated answer ', currentQuestion);
       const { id, ...reqData } = currentQuestion;
       try {
         await evaluateHomework(id, reqData);
@@ -176,11 +171,9 @@ const ViewHomework = withRouter(
     };
 
     const handleChangeQuestionState = (fieldName, value) => {
-      console.log(fieldName, value, 'fffffff');
       const index = activeQuestion - 1;
       const currentQuestion = questionsState[index];
       currentQuestion[fieldName] = value;
-      console.log({ currentQuestion });
       setQuestionsState([
         ...questionsState.slice(0, index),
         currentQuestion,
@@ -202,7 +195,6 @@ const ViewHomework = withRouter(
         const currentQuestion = { ...collatedQuestionState };
         currentQuestion.corrected_submission.splice(index, 1);
         setCollatedQuestionState(currentQuestion);
-        // debugger;
       }
     };
 
@@ -223,7 +215,6 @@ const ViewHomework = withRouter(
         setQuestionsState(newQuestionsState);
       } else {
         const modifiedQuestion = collatedQuestionState;
-        console.log('collatedQuestionState', collatedQuestionState);
         modifiedQuestion.corrected_submission.push(filePath);
         modifiedQuestion.evaluated_files.push(currentEvaluatedFileName);
 
@@ -249,7 +240,6 @@ const ViewHomework = withRouter(
         overall_remark: overallRemark,
         score,
       } = data;
-      console.log('fetched data ', data, hwQuestions);
       setHomeworkId(id);
       setRemark(overallRemark);
       setScore(score);
@@ -263,7 +253,6 @@ const ViewHomework = withRouter(
         }));
         setQuestionsState(initialQuestionsState);
       } else {
-        // console.log('data homework ', hwQuestions, data);
         setCollatedQuestionState({
           id: hwQuestions.id,
           corrected_submission: hwQuestions.corrected_files,
@@ -300,12 +289,7 @@ const ViewHomework = withRouter(
       splitted_media: null,
     };
     const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }];
-    console.log(
-      fetchingSubmittedHomeworkDetails,
-      'reduxxxx',
-      submittedHomeworkDetails,
-      totalSubmittedQuestions
-    );
+   
     return (
       <div className='view-homework-container create_group_filter_container'>
         <Grid container spacing={2} className='message_log_container'>
@@ -418,7 +402,6 @@ const ViewHomework = withRouter(
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {collatedSubmissionFiles.map((url, i) => {
@@ -493,7 +476,6 @@ const ViewHomework = withRouter(
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {collatedQuestionState.corrected_submission.map((url, i) => (

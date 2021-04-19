@@ -8,7 +8,6 @@ import Button from '@material-ui/core/Button'
 import './publications.css'
 
 // The workerSrc property shall be specified.
-// console.log(pdfWorker, 'pp')
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js'
 const MyPdfViewer = ({ url }) => {
   const [scale] = useState(1)
@@ -27,7 +26,6 @@ const MyPdfViewer = ({ url }) => {
     loadingTask.promise.then(function (pdf) {
       // pdfPage.current.totalPage = pdf.numPages
       pdf.getPage(pageNumber).then(function (page) {
-        console.log('rendering...........')
         var viewport = page.getViewport({ scale: scale })
         // Prepare canvas using PDF page dimensions
         var canvas = canvasElement.current
@@ -47,24 +45,18 @@ const MyPdfViewer = ({ url }) => {
         }
         var renderTask = page.render(renderContext)
         renderTask.promise.then(function () {
-          console.log('Page rendered')
           setFetchingPdf(false)
         })
       })
     }, function (reason) {
-      console.log('error while loading')
       // PDF loading error
       console.error(reason)
     })
   }, [scale, pageNumber, url])
 
   const onNextPageClick = () => {
-    // console.log(pdfPage)
-    // console.log(pageNumber)
     if (pageNumber < totalpage) {
-      console.log('true', totalpage)
       setPageNumber(pageNumber + 1)
-      console.log(pageNumber)
     }
   }
   const onPreviousPageClick = () => {

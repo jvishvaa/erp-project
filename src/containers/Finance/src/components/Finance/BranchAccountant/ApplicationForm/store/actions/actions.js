@@ -31,7 +31,6 @@ export const appMobileChecker = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
           // payload.alert.warning(error.response.data.err_msg)
         } else {
@@ -50,7 +49,6 @@ export const fetchApplicationDetails = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('app res: ', response)
         if (response.status === 200) {
           dispatch({
             type: FETCH_ALL_APPLICATION_DETAILS,
@@ -62,7 +60,6 @@ export const fetchApplicationDetails = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
           // payload.alert.warning(error.response.data.err_msg)
         } else {
@@ -90,7 +87,6 @@ export const fetchGrade = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
           // payload.alert.warning(error.response.data.err_msg)
         } else {
@@ -109,7 +105,6 @@ export const saveAllFormData = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('res', response, response.data)
         // if (response.status === 200) {
           // payload.alert.success('Success')
           dispatch({
@@ -122,7 +117,6 @@ export const saveAllFormData = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
           // payload.alert.warning(error.response.data.err_msg)
         } else {
@@ -151,7 +145,6 @@ export const saveAppPayment = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
           // payload.alert.warning(error.response.data.err_msg)
         } else {
@@ -163,7 +156,6 @@ export const saveAppPayment = (payload) => {
 
 export const fetchStdSuggestions = (payload) => {
   let url = null
-  console.log(payload)
   if (payload.sType === 'enquiry_code') {
     url = urls.GetAppFormDet + '?search_by=enquiry_no' + '&academic_year=' + payload.session + '&search=' + payload.value
   } else if (payload.sType === 'father_name') {
@@ -173,7 +165,6 @@ export const fetchStdSuggestions = (payload) => {
   } else if (payload.sType === 'mobile_no') {
     url = urls.GetAppFormDet + '?search_by=contact_no' + '&academic_year=' + payload.session + '&search=' + payload.value
   }
-  console.log(url)
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
@@ -192,7 +183,6 @@ export const fetchStdSuggestions = (payload) => {
         }
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
-        console.log(error)
         dispatch(actionTypes.dataLoaded())
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
           // payload.alert.warning(error.response.data.err_msg)

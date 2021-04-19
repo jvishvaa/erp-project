@@ -44,7 +44,6 @@ const VideoQuestion = (props) => {
   const [textEditorContent, setTextEditorContent] = useState('');
   // const [isChecked, setIsChecked] = useState([]);
   useEffect(() => {
-    console.log('is CHecked: ', currentQuestionObj);
     // if (currentQuestionObj?.user_response?.attemptionStatus) {
     //   console.log('selected answer: ', currentQuestionObj?.user_response);
     //   setOptionSelected(currentQuestionObj?.user_response?.answer);
@@ -62,7 +61,6 @@ const VideoQuestion = (props) => {
   };
 
   const handleTextEditor = (event) => {
-    // console.log('from editor', e);
     setTextEditorContent(event);
     attemptQuestion(qId, { attemption_status: true, answer: event });
   };

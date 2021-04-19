@@ -16,6 +16,7 @@ export const FETCH_BANK_STATEMENT = 'FETCH_BANK_STATEMENT'
 export const FETCH_CASH_STATEMENT = 'FETCH_CASH_STATEMENT'
 export const FETCH_FINANCIAL_LEDGER_REPORT = 'FETCH_FINANCIAL_LEDGER_REPORT'
 export const VOUCHER_RECEIPT_HEADERS = 'VOUCHER_RECEIPT_HEADERS'
+export const SENDING_DATA = 'SENDING_DATA'
 
 // ACTION TYPES
 export const fetchPettyCashAcc = (payload) => {
@@ -26,7 +27,6 @@ export const fetchPettyCashAcc = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       dispatch({
         type: FETCH_PETTY_CASH_ACC,
         payload: {
@@ -98,7 +98,7 @@ export const listPettyCash = (payload) => {
       alert
     } = payload
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ListPettyCashAccounts, {
+    axios.get(urls.ListPettyCashAccounts + '?branch_id=' + payload.branch, {
       headers: {
         'Authorization': 'Bearer ' + user
       }
@@ -130,7 +130,6 @@ export const savePettyCashExpense = (payload) => {
         'Authorization': 'Bearer ' + user
       }
     }).then(response => {
-      console.log(response)
       if (+response.status === 201) {
         alert.success('Data Successfully Saved')
       } else {
@@ -148,7 +147,7 @@ export const savePettyCashExpense = (payload) => {
 export const fetchPartyList = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ListCreateParty, {
+    axios.get(urls.ListCreateParty + '?branch_id=' + payload.branch, {
       headers: {
         'Authorization': 'Bearer ' + payload.user
       }
@@ -179,15 +178,16 @@ export const fetchLedgerReport = (payload) => {
       toDate,
       user,
       alert,
-      page
+      page, 
+      branch
     } = payload
     dispatch(actionTypes.dataLoading())
-    let url = `${urls.ListCashSpent}?academic_year=${academicSession}&page_no=${page}`
+    let url = `${urls.ListCashSpent}?academic_year=${academicSession}&page_no=${page}&branch_id=${branch}`
     if (ledgerType && ledgerHead && ledgerName) {
-      url = `${url}&ledger_type=${ledgerType}&ledger_head=${ledgerHead}&ledger_name=${ledgerName}`
+      url = `${url}&ledger_type=${ledgerType}&ledger_head=${ledgerHead}&ledger_name=${ledgerName}&branch_id=${branch}`
     }
     if (fromDate && toDate) {
-      url = `${url}&from_date=${fromDate}&to_date=${toDate}`
+      url = `${url}&from_date=${fromDate}&to_date=${toDate}&branch_id=${branch}`
     }
     axios.get(url, {
       headers: {
@@ -201,7 +201,6 @@ export const fetchLedgerReport = (payload) => {
         }
       })
       dispatch(actionTypes.dataLoaded())
-      console.log(response.data)
     }).catch(err => {
       console.log(err)
       alert.warning('Something Went Wrong')
@@ -240,7 +239,6 @@ export const downloadLedgerAttachment = (payload) => {
     //   })
     //   dispatch(actionTypes.dataLoaded())
     // })).catch(err => {
-    //   console.log(err)
     //   payload.alert.warning('Unable To Download Some Files')
     //   dispatch(actionTypes.dataLoaded())
     // })
@@ -250,7 +248,6 @@ export const downloadLedgerAttachment = (payload) => {
     //   },
     //   responseType: 'blob'
     // }).then(response => {
-    //   // console.log(urls.BASE)
     //   const url = window.URL.createObjectURL(new Blob([response.data]))
     //   const link = document.createElement('a')
     //   link.href = url
@@ -259,7 +256,6 @@ export const downloadLedgerAttachment = (payload) => {
     //   document.body.appendChild(link)
     //   link.click()
     // }).catch(err => {
-    //   console.log('Error in Second Axios', err)
     // })
   }
 }
@@ -305,7 +301,8 @@ export const cashWithdraw = (payload) => {
       approvedBy,
       date,
       alert,
-      user
+      user, 
+      branch
     } = payload
     const body = {
       academic_year: session,
@@ -314,14 +311,14 @@ export const cashWithdraw = (payload) => {
       narration,
       cheque_no: chequeNo,
       approved_by: approvedBy,
-      date
+      date,
+      branch_id: branch
     }
     axios.post(urls.AddCashWithdraw, body, {
       headers: {
         'Authorization': 'Bearer ' + user
       }
     }).then(response => {
-      console.log(response)
       if (+response.status === 201) {
         // alert.success('Saved Successfully')
         dispatch({
@@ -423,9 +420,10 @@ export const fetchFinancialLedgerReport = (payload) => {
     const {
       session,
       user,
-      alert
+      alert,
+      branch 
     } = payload
-    axios.get(`${urls.LedgerFinancialReport}?session_year=${session}`, {
+    axios.get(`${urls.LedgerFinancialReport}?session_year=${session}&branch_id=${branch}`, {
       headers: {
         'Authorization': 'Bearer ' + user
       }
@@ -448,12 +446,11 @@ export const fetchFinancialLedgerReport = (payload) => {
 export const fetchReceiptHeader = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.VoucherReceiptHeaders + '?session_year=' + payload.session, {
+    axios.get(urls.VoucherReceiptHeaders + '?session_year=' + payload.session + '&branch_id=' + payload.branch, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log('voucher header res:', response)
       dispatch({
         type: VOUCHER_RECEIPT_HEADERS,
         payload: {
@@ -465,5 +462,19 @@ export const fetchReceiptHeader = (payload) => {
       console.log(err)
       dispatch(actionTypes.dataLoaded())
     })
+  }
+}
+
+export const sendingData = (payload) => {
+  return (dispatch) => {
+    dispatch(actionTypes.dataLoading())
+
+      dispatch({
+        type: SENDING_DATA,
+        payload: {
+          data: payload.data
+        }
+      })
+      dispatch(actionTypes.dataLoaded())
   }
 }

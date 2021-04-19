@@ -190,7 +190,6 @@ const FileRow = ({
     );
   }
   function exitFullScreen() {
-    // console.log("Exiting fullscreen...")
     try {
       if (document.fullscreenEnabled) {
         if (document.exitFullscreen) {
@@ -233,7 +232,6 @@ const FileRow = ({
   let attemptModal = null;
   if (attemptModalOpen) {
     window.addEventListener('message', function (event) {
-      console.log('received: ', event.origin, event.data);
       // can message back using event.source.postMessage(...)
       if (event.data === 'closeMe') {
         setAttemptModalOpen(false);

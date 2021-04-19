@@ -14,7 +14,6 @@ const changeStudentStatusReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.UPDATE_STUDENT_STATUS : {
-      console.log('clicked')
       return {
         ...state
       }

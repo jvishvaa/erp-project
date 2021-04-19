@@ -64,7 +64,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -102,40 +101,33 @@ const AdjustFeeType = ({
   // let newFeeTypes = []
 
   useEffect(() => {
-    console.log('props from adjust: ', studentList)
     const currFeePlan = studentList.map((list) => list.fee_plan_name)
     // const filteredFeePlan = currFeePlan.filter((item, index) => )
     const jsonObject = currFeePlan.map(JSON.stringify)
     const uniqueSet = new Set(jsonObject)
     const filteredFeePlan = Array.from(uniqueSet).map(JSON.parse)
-    console.log('before filter currFeePlan: ', filteredFeePlan)
     const uniqueFeePlan = Array.from(new Set(filteredFeePlan.map(a => a && a.id)))
       .map(id => {
         return filteredFeePlan.find(a => a && a.id === id)
       })
-    console.log('after currFeePlan: ', uniqueFeePlan)
     setCurrFeePlanList(uniqueFeePlan)
   }, [studentList])
 
   useEffect(() => {
     if (currFeePlanValue && currFeePlanValue.value) {
       const filteredStuList = studentList.filter((student, index) => +student.fee_plan_name.id === +currFeePlanValue.value)
-      console.log('====filteredStus: ', filteredStuList)
       setAdjustTableList(filteredStuList)
     }
   }, [studentList, currFeePlanValue])
 
   useEffect(() => {
     const newFee = adjustFeeData.filter(feeType => !feeType.Old)
-    console.log('newFeeTypes Horti Condition: ', newFee)
     setNewFeeTypes(newFee)
   }, [adjustFeeData])
 
   const currFeePlanHandler = (event) => {
-    console.log('cuure value: ', event)
     setCurrFeePlanValue(event)
     // const filteredStuList = studentList.filter((student, index) => +student.fee_plan_name.id === +event.value)
-    // console.log('====filteredStus: ', filteredStuList)
     // setAdjustTableList(filteredStuList)
   }
 
@@ -153,7 +145,6 @@ const AdjustFeeType = ({
     const checked = {}
     if (adjustTableList.length > 0) {
       adjustTableList.forEach((ele) => {
-        console.log(ele.student.erp)
         checked[ele.student.erp] = e.target.checked
       })
     }
@@ -187,7 +178,6 @@ const AdjustFeeType = ({
       alert.warning('No latest data!')
       return
     }
-    console.log(excelData)
     const headers = [
       {
         value: 'ERP',
@@ -223,7 +213,6 @@ const AdjustFeeType = ({
         })
       }
     }
-    console.log('erpList: ', erpList)
     const body = erpList.map(stu => {
       return ([
         {
@@ -265,7 +254,6 @@ const AdjustFeeType = ({
 
   const saveAdjustAmountHandler = () => {
     const verticalCondition = adjustFeeData.filter(feeType => feeType.Old)
-    console.log('vertical Condition', verticalCondition)
     if (Object.keys(adjustFeesIds).length === verticalCondition.length) {
       let erpList = []
       for (let [key, value] of Object.entries(isChecked)) {
@@ -292,7 +280,6 @@ const AdjustFeeType = ({
         student_list: erpList,
         adjust_fee_type: adjustFeesIds
       }
-      console.log(data)
       saveAdjustFeeTypes(data, alert, user)
       hideModalHandler()
     } else {

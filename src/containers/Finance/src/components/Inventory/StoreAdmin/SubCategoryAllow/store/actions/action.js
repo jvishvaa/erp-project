@@ -32,7 +32,6 @@ export const fetchSubCategory = (payload) => {
         payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
-      console.log(err)
     })
   }
 }
@@ -70,7 +69,6 @@ export const createSubCategory = (payload) => {
         payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
-      console.log(err)
     })
   }
 }

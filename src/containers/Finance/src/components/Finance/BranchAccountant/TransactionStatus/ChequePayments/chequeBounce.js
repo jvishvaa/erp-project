@@ -42,7 +42,6 @@ class ChequeBounce extends Component {
     }
   }
   componentDidMount () {
-    // console.log('helloo from bounce!', this.props.chequeId)
     this.props.fetchChequeBounce(this.props.erp, this.props.transId, this.props.user, this.props.alert)
   }
 
@@ -51,7 +50,6 @@ class ChequeBounce extends Component {
   }
 
   sendBounceHandler = () => {
-    console.log('sending the data')
     let data = {
       transaction_id: this.props.chequeBounceData[0].transaction_id,
       academic_year: this.props.session,
@@ -69,7 +67,6 @@ class ChequeBounce extends Component {
     let bounceTable = null
     let bounceFields = null
     if (this.props.chequeBounceData) {
-      // console.log('the data from cheque Bounce', this.props.chequeBounceData)
       bounceTable = (
         <Table>
           <TableHead>

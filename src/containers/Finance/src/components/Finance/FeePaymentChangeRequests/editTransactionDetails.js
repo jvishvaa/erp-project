@@ -98,7 +98,6 @@ const EditTransactionDetails = ({ classes, history, dataLoading, fetchEditDetail
   }, [editDetails])
 
   useEffect(() => {
-    // console.log('the details', editDetails)
     if (redirect) {
       history.push({
         pathname: '/finance/Approval/Requests/FeePaymentRequests'
@@ -109,7 +108,6 @@ const EditTransactionDetails = ({ classes, history, dataLoading, fetchEditDetail
   useEffect(() => {
     return () => {
       clearAll()
-      console.log('----------cleaning up-----')
       setNewAmount(null)
       setNewPayDate(null)
       setNewReceipt(null)
@@ -118,7 +116,6 @@ const EditTransactionDetails = ({ classes, history, dataLoading, fetchEditDetail
   }, [clearAll])
 
   const amountChangeHandler = (e, instaAmount, instaId) => {
-    console.log('amount requested', e.target.value, instaAmount, instaId)
     if (e.target.value <= instaAmount) {
       const newAmt = { ...newAmount }
       newAmt[instaId] = e.target.value
@@ -164,7 +161,6 @@ const EditTransactionDetails = ({ classes, history, dataLoading, fetchEditDetail
       newEditDetails.fee_amount_change.map((main) => {
         Object.keys(newAmount).map((val) => {
           if (+main.installment_id === +val) {
-            console.log('the changed amount', newAmount[val])
             // main.installment_amount = amountChange[val]
             main['new_amount'] = +newAmount[val]
           }

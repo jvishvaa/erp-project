@@ -91,7 +91,6 @@ const RegFormList = ({ session,
   const [rowsPerPage, setRowsPerPage] = useState(null)
 
   useEffect(() => {
-    console.log('Mounted All Form List', history.location.state)
     const { session, fromDate, toDate, branch, isAdmin, selectedDates, selectedReport } = history.location.state
     setIsAdmin(isAdmin)
     // const userProfile = JSON.parse(localStorage.getItem('user_profile'))
@@ -115,10 +114,8 @@ const RegFormList = ({ session,
   const generatePdf = async (transid) => {
     try {
       const response = await getPdfData(transid)
-      console.log('App reg Response: ', response)
       appRegReceiptsPdf(response.data)
     } catch (e) {
-      console.log(e)
       alert.warning('Unable to generate PDF!')
     }
   }
@@ -207,7 +204,6 @@ const RegFormList = ({ session,
 
   const removeForm = () => {
     // delete the form here deleteNum
-    console.log('Delete Form +++++++++++', deleteForm)
     const data = {
       type: 'registration',
       num: deleteForm
