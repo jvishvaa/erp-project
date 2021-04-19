@@ -122,7 +122,7 @@ const AttedanceCalender = () => {
           item.child_module.forEach((item) => {
             if (item.child_name === 'Teacher Calendar') {
               setModuleId(item.child_id);
-              console.log(item.child_id,"Chekkkkkkk")
+              console.log(item.child_id,"Chekk")
             }
             if (item.child_name === 'Student Calendar') {
               setModuleId(item.child_id);
