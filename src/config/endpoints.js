@@ -23,6 +23,14 @@ export default {
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
     courses: '/aol/courses/',
+    attendance: '/academic/student_attendance_between_date_range/',
+    showAttendance: '/academic/show_attendance/',
+    // createAttendance: '/academic/create_attendance/',
+    createAttendance: '/academic/create_or_update_attendance/',
+    studentList: '/academic/get_user_details/',
+    // singleStudentAttendance: '/academic/student_attendance_between_days/',
+    multipleStudentsAttendacne:'/academic/multiple_student_attendance_between_dates/',
+    singleStudentAttendance: '/academic/single_student_attendance_between_days/',
   },
   profile: {
     userDetails: '/erp_user/user-data/',
@@ -30,6 +38,10 @@ export default {
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
     academicYear: '/erp_user/list-academic_year/',
+  },
+  timeTable:{
+    tableData:'/academic/time_table/',
+    editTableData:'/academic/assign_class_periods/',
   },
   communication: {
     roles: '/erp_user/roles/',
@@ -288,6 +300,22 @@ export default {
     getBatchesApi: '/erp_user/student_online_class/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
+  
+  eventBat:{
+    getPaginatedCategories:"/academic/list_event_categories_p/",  //get
+    getListCategories:"/academic/list_event_categories/",  //get
+    postCreateEvent:"/academic/create_event_category/",  //post
+    patchUpdateEvent:"/academic/update_event_category/",//patch
+    deleteEventCategory:"/academic/delete_event_category/", //delete
+    filterEventCategory:"/academic/filter_event_categories/" //get 
+
+},
+
+CreateEvent:{
+  CreateEvent:'academic/events/',
+  getEventCategory:"academic/list_create_event_category/"
+},
+
   assessment: {
     assessmentResultAnalysis: `${baseURLCentral}/assessment/student-reports/`,
     questionPaperList: `/academic/assessment-list/`,
@@ -300,6 +328,10 @@ export default {
     userAssessmentSubmission: `${baseURLCentral}/assessment/user_response/`,
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+  },
+  publish: {
+    ebook: `erp_user/publication/`,
+    update_delete: `erp_user/update-destroy-publication/`,
   },
   assessmentApis: {
     gradesList: `/academic/sm-grades-list/`,
