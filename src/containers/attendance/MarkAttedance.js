@@ -746,17 +746,17 @@ const MarkAttedance = () => {
         }
         <Grid item md={2} xs={12}></Grid>
         <Grid container justify='center'>
-            { totalGenre > 8 && (
-              <Pagination
-                onChange={handlePagination}
-                style={{ paddingLeft: '150px' }}
-                count={Math.ceil(totalGenre / limit)}
-                color='primary'
-                page={pageNumber}
-                color='primary'
-              />
-            )}
-          </Grid>
+          {totalGenre > 8 && (
+            <Pagination
+              onChange={handlePagination}
+              style={{ paddingLeft: '150px' }}
+              count={Math.ceil(totalGenre / limit)}
+              color='primary'
+              page={pageNumber}
+              color='primary'
+            />
+          )}
+        </Grid>
       </Grid>
       {loading && <Loader />}
     </Layout>
