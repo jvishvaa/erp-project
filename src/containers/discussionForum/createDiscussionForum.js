@@ -49,10 +49,12 @@ const CreateDiscussionForum = () => {
   // const [description,setDescription]=useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
+  const [selectedSession, setSelectedSession] = useState(null);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const themeContext = useTheme();
+  const [sessionYear, setSessionYear] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [sectionList, setSectionList] = useState([]);
@@ -79,7 +81,7 @@ const CreateDiscussionForum = () => {
           "title": title,
           "description": descriptionDisplay,
           "category": selectedSubSubCategory,
-          "branch": selectedBranch.id,
+          "branch": selectedBranch.branch.id,
           "grade": selectedGradeIds,
           "section": selectedSectionIds
       }
@@ -100,10 +102,21 @@ const CreateDiscussionForum = () => {
     })
     };
 
+    const getAcademicYear = () =>{
+      axiosInstance.get(endpoints.userManagement.academicYear)
+      .then((res) => {
+        console.log(res.data);
+        if(res.data.status_code === 200){
+          setSessionYear(res.data.data);
+        }
+      })
+      .catch((error) => {console.log(error)});
+    }
+
     const getBranchApi = async () => {
       try {
         setLoading(true);
-        const result = await axiosInstance.get(`${endpoints.communication.branches}?session_year=${1}`, {
+        const result = await axiosInstance.get(`${endpoints.communication.branches}?session_year=${selectedSession?.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -122,11 +135,12 @@ const CreateDiscussionForum = () => {
         setLoading(false);
       }
     };
+
     const getGradeApi = async () => {
       try {
         setLoading(true);
         const result = await axiosInstance.get(
-          `${endpoints.communication.grades}?branch_id=${selectedBranch.id}&module_id=${moduleId}`,
+          `${endpoints.communication.grades}?branch_id=${selectedBranch?.branch?.id}&module_id=${moduleId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -150,6 +164,13 @@ const CreateDiscussionForum = () => {
         setLoading(false);
       }
     };
+    useEffect(() => {
+      if (selectedSession) {
+        setBranchList([]);
+        getBranchApi();
+      }
+    }, [selectedSession]);
+
     useEffect(() => {
       if (selectedBranch) {
         setGrade([]);
@@ -176,7 +197,8 @@ const CreateDiscussionForum = () => {
     }
 
     getCategoryList();
-    getBranchApi();
+    //getBranchApi();
+    getAcademicYear();
 }, []);
 
 const handleCategoryChange = (event,value) => {
@@ -240,7 +262,7 @@ const getSectionApi = async () => {
       });
     const result = await axiosInstance.get(
       `${endpoints.communication.sections}?session_year=${1}&branch_id=${
-        selectedBranch.id
+        selectedBranch.branch.id
       }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
       {
         headers: {
@@ -273,15 +295,22 @@ const getSectionApi = async () => {
 };
 
 const handleGrade = (event, value) => {
-  if (value) {
+    if (value) {
+      
+      setSelectedGrades(value);
     
-    setSelectedGrades(value);
-   
-  } else {
-    setSelectedBranch();
-  }
+    } else {
+      setSelectedBranch();
+    }
   }
 
+  const handleAcademic = (event, value) => {
+    if (value) {
+      setSelectedSession(value);
+    } else {
+      setSelectedSession();
+    }
+  };
 
 const handleBranch = (event, value) => {
   if (value) {
@@ -290,6 +319,7 @@ const handleBranch = (event, value) => {
     setSelectedBranch();
   }
 };
+
 const handleSection = (event, value) => {
   if (value) {
     const gradesId = [];
@@ -333,32 +363,53 @@ const handleEditorChange = (content, editor) => {
           />
         </div>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-                    <Grid xs={12} lg={4} className='create_group_items' item>
-                          <Autocomplete
-                            size='small'
-                            style={{ width: '100%' }}
-
-                            onChange={handleBranch}
-                            value={selectedBranch}
-                            id='message_log-branch'
-                            className='create_group_branch'
-                            options={branchList}
-                            getOptionLabel={(option) => option?.branch.branch_name}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                              <TextField
-                                className='message_log-textfield'
-                                {...params}
-                                variant='outlined'
-                                label='Branch'
-                                placeholder='Branch'
-                              />
-                            )}
-                          />
-                    </Grid>
-                    <Grid xs={12} lg={4} className='create_group_items' item>
-                    {selectedBranch && gradeList.length ? ( 
-                      <Autocomplete
+          <Grid xs={12} lg={4} className='create_group_items' item>
+            <Autocomplete
+              size='small'
+              style={{ width: '100%' }}
+              onChange={handleAcademic}
+              value={selectedSession}
+              id='message_log-branch'
+              className='create_group_branch'
+              options={sessionYear}
+              getOptionLabel={(option) => option?.session_year}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  className='message_log-textfield'
+                  {...params}
+                  variant='outlined'
+                  label='Acadmic Year'
+                  placeholder='Acadmic Year'
+                />
+              )}
+            />
+          </Grid>
+          <Grid xs={12} lg={4} className='create_group_items' item>
+            <Autocomplete
+              size='small'
+              style={{ width: '100%' }}
+              onChange={handleBranch}
+              value={selectedBranch}
+              id='message_log-branch'
+              className='create_group_branch'
+              options={branchList}
+              getOptionLabel={(option) => option?.branch.branch_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  className='message_log-textfield'
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  placeholder='Branch'
+                />
+              )}
+            />
+          </Grid>
+          <Grid xs={12} lg={4} className='create_group_items' item>
+            {selectedBranch && gradeList.length ? ( 
+            <Autocomplete
               multiple
               style={{ width: '100%' }}
               size='small'
@@ -492,16 +543,15 @@ const handleEditorChange = (content, editor) => {
         </Grid>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
 
-<Grid item xs={12} sm={12}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+      <Grid item xs={12} sm={12}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
         <MyTinyEditor
-                        id="Editor"
-                        description={description}
-                        handleEditorChange={handleEditorChange}
-                        setOpenEditor={setOpenEditor}
-                    />
-
-  </Grid>
-</Grid>
+          id="Editor"
+          description={description}
+          handleEditorChange={handleEditorChange}
+          setOpenEditor={setOpenEditor}
+        />
+      </Grid>
+    </Grid>
 
         <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '-1.25rem 1.5% 0 1.5%' }}>
           <Grid item xs={6} sm={2}>

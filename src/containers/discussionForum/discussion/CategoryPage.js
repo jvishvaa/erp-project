@@ -13,7 +13,7 @@ import DiscussionForum from './DiscussionForum';
 import FilterIcon from '../../../components/icon/FilterIcon';
 import Layout from '../../Layout/index';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchCategory } from '../../../redux/actions/discussionForumActions';
+import { fetchCategoryList } from '../../../redux/actions/discussionForumActions';
 // import CategoryCard from '../categoryData';
 
 const useStyles = makeStyles({
@@ -74,7 +74,7 @@ function CategoryPage() {
   };
 
   React.useEffect(() => {
-    dispatch(fetchCategory());
+    dispatch(fetchCategoryList());
   },[])
 
   return (

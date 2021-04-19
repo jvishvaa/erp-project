@@ -28,15 +28,15 @@ const discussionReducer = (state = initialState, action) => {
           section: '',
         },
       };
-    case types.FETCH_CATEGORY_LIST:
+    case types.FETCH_SUB_SUB_CATEGORY_LIST:
       return {
         category_list: true
       }
-    case types.FETCH_CATEGORY_SUCCESS:
+    case types.FETCH_SUB_SUB_CATEGORY_LIST_SUCCESS:
       return {
         categoryList: action.data
       }
-    case types.FETCH_CATEGORY_FAILURE:
+    case types.FETCH_SUB_SUB_CATEGORY_LIST_FAILURE:
       return {
         categoryList: action.data
       }
