@@ -49,10 +49,12 @@ const CreateDiscussionForum = () => {
   // const [description,setDescription]=useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
+  const [selectedSession, setSelectedSession] = useState(null);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const themeContext = useTheme();
+  const [sessionYear, setSessionYear] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [sectionList, setSectionList] = useState([]);
@@ -65,7 +67,10 @@ const CreateDiscussionForum = () => {
   const [selectedGradeIds,setSelectedGradeIds] = useState([]);
   const [selectedSectionIds, setSelectedSectionIds] = useState([]);
   const [openEditor, setOpenEditor] = useState(true);
-  const [moduleId, setModuleId] = useState(8);
+  //const [moduleId, setModuleId] = useState(8);
+  const [moduleId, setModuleId] = useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [description, setDescription] = useState('');
   const [descriptionDisplay, setDescriptionDisplay] = useState('');
   const history = useHistory();
@@ -79,7 +84,7 @@ const CreateDiscussionForum = () => {
           "title": title,
           "description": descriptionDisplay,
           "category": selectedSubSubCategory,
-          "branch": selectedBranch.id,
+          "branch": selectedBranch.branch.id,
           "grade": selectedGradeIds,
           "section": selectedSectionIds
       }
@@ -100,10 +105,21 @@ const CreateDiscussionForum = () => {
     })
     };
 
+    const getAcademicYear = () =>{
+      axiosInstance.get(endpoints.userManagement.academicYear)
+      .then((res) => {
+        console.log(res.data);
+        if(res.data.status_code === 200){
+          setSessionYear(res.data.data);
+        }
+      })
+      .catch((error) => {console.log(error)});
+    }
+
     const getBranchApi = async () => {
       try {
         setLoading(true);
-        const result = await axiosInstance.get(`${endpoints.communication.branches}?session_year=${1}`, {
+        const result = await axiosInstance.get(`${endpoints.communication.branches}?module_id=${moduleId}&session_year=${selectedSession?.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -122,11 +138,12 @@ const CreateDiscussionForum = () => {
         setLoading(false);
       }
     };
+
     const getGradeApi = async () => {
       try {
         setLoading(true);
         const result = await axiosInstance.get(
-          `${endpoints.communication.grades}?branch_id=${selectedBranch.id}&module_id=${moduleId}`,
+          `${endpoints.communication.grades}?branch_id=${selectedBranch?.branch?.id}&module_id=${moduleId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -150,6 +167,13 @@ const CreateDiscussionForum = () => {
         setLoading(false);
       }
     };
+    useEffect(() => {
+      if (selectedSession) {
+        setBranchList([]);
+        getBranchApi();
+      }
+    }, [selectedSession]);
+
     useEffect(() => {
       if (selectedBranch) {
         setGrade([]);
@@ -176,150 +200,176 @@ const CreateDiscussionForum = () => {
     }
 
     getCategoryList();
-    getBranchApi();
-}, []);
+    //getBranchApi();
+    getAcademicYear();
+  }, []);
 
-const handleCategoryChange = (event,value) => {
-  if (value && value.id) {
-    setSelectedCategory(value.id);
-    axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.id}&category_type=2`)
-        .then(result => {
-            if (result.data.status_code === 200) {
-              setSubCategoryListRes(result.data.result);
-            }
-            else {
-                setAlert('error', result.data.message);
-            }
-        })
-        .catch(error => {
-            setAlert('error', error.message);
-        })
-}
-else {
-  setSelectedCategory(null);
-  
+  const handleCategoryChange = (event,value) => {
+    if (value && value.id) {
+      setSelectedCategory(value.id);
+      axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.id}&category_type=2`)
+          .then(result => {
+              if (result.data.status_code === 200) {
+                setSubCategoryListRes(result.data.result);
+              }
+              else {
+                  setAlert('error', result.data.message);
+              }
+          })
+          .catch(error => {
+              setAlert('error', error.message);
+          })
   }
-}
-const handleSubCategoryChange = (event,value) => {
-  if (value && value.sub_category_id){
-  setSelectedSubCategory(value.sub_category_id)
-  axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.sub_category_id}&category_type=3`)
-  .then(result => {
-      if (result.data.status_code === 200) {
-        setSubSubCategoryListRes(result.data.result);
+  else {
+    setSelectedCategory(null);
+    
+    }
+  }
+  const handleSubCategoryChange = (event,value) => {
+    if (value && value.sub_category_id){
+    setSelectedSubCategory(value.sub_category_id)
+    axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.sub_category_id}&category_type=3`)
+    .then(result => {
+        if (result.data.status_code === 200) {
+          setSubSubCategoryListRes(result.data.result);
+        }
+        else {
+            setAlert('error', result.data.message);
+        }
+    })
+    .catch(error => {
+        setAlert('error', error.message);
+    })
+    }else{
+      setSelectedSubCategory(null)
+    }
+  }
+  const handleSubSubCategoryChange = (event,value) => {
+    if (value){
+      setSelectedSubSubCategory(value.sub_sub_category_id)
+    }
+    else{
+      setSelectedSubSubCategory(null)
+      
+      
+    }
+  }
+  const getSectionApi = async () => {
+    try {
+      setLoading(true);
+      const gradesId = [];
+      gradeList
+        .filter((item) => selectedGrades.includes(item['grade__grade_name']))
+        .forEach((items) => {
+          gradesId.push(items.grade_id);
+        });
+      const result = await axiosInstance.get(
+        `${endpoints.communication.sections}?session_year=${1}&branch_id=${
+          selectedBranch.branch.id
+        }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const resultOptions = [];
+      if (result.status === 200) {
+        result.data.data.map((items) => resultOptions.push(items.section__section_name));
+        setSection(resultOptions);
+        setSectionList(result.data.data);
+        if (selectedSections && selectedSections.length > 0) {
+          // for retaining neccessary selected sections when grade is changed
+          const selectedSectionsArray = selectedSections.filter(
+            (sec) =>
+              result.data.data.findIndex((obj) => obj.section__section_name == sec) > -1
+          );
+          setSelectedSections(selectedSectionsArray);
+        }
+        setLoading(false);
+      } else {
+        setAlert('error', result.data.message);
+        setLoading(false);
       }
-      else {
-          setAlert('error', result.data.message);
-      }
-  })
-  .catch(error => {
+    } catch (error) {
       setAlert('error', error.message);
-  })
-  }else{
-    setSelectedSubCategory(null)
-  }
-}
-const handleSubSubCategoryChange = (event,value) => {
-  if (value){
-    setSelectedSubSubCategory(value.sub_sub_category_id)
-  }
-  else{
-    setSelectedSubSubCategory(null)
-    
-    
-  }
-}
-const getSectionApi = async () => {
-  try {
-    setLoading(true);
-    const gradesId = [];
-    gradeList
+      setLoading(false);
+    }
+  };
+
+  const handleGrade = (event, value) => {
+      if (value) {
+        
+        setSelectedGrades(value);
+      
+      } else {
+        setSelectedBranch();
+      }
+    }
+
+    const handleAcademic = (event, value) => {
+      if (value) {
+        setSelectedSession(value);
+      } else {
+        setSelectedSession();
+      }
+    };
+
+  const handleBranch = (event, value) => {
+    if (value) {
+      setSelectedBranch(value);
+    } else {
+      setSelectedBranch();
+    }
+  };
+
+  const handleSection = (event, value) => {
+    if (value) {
+      const gradesId = [];
+      gradeList
       .filter((item) => selectedGrades.includes(item['grade__grade_name']))
       .forEach((items) => {
         gradesId.push(items.grade_id);
       });
-    const result = await axiosInstance.get(
-      `${endpoints.communication.sections}?session_year=${1}&branch_id=${
-        selectedBranch.id
-      }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const resultOptions = [];
-    if (result.status === 200) {
-      result.data.data.map((items) => resultOptions.push(items.section__section_name));
-      setSection(resultOptions);
-      setSectionList(result.data.data);
-      if (selectedSections && selectedSections.length > 0) {
-        // for retaining neccessary selected sections when grade is changed
-        const selectedSectionsArray = selectedSections.filter(
-          (sec) =>
-            result.data.data.findIndex((obj) => obj.section__section_name == sec) > -1
-        );
-        setSelectedSections(selectedSectionsArray);
-      }
-      setLoading(false);
+      setSelectedGradeIds(gradesId)
+      setSelectedSections(value);
     } else {
-      setAlert('error', result.data.message);
-      setLoading(false);
+      setSelectedSections();
     }
-  } catch (error) {
-    setAlert('error', error.message);
-    setLoading(false);
-  }
-};
+  };
 
-const handleGrade = (event, value) => {
-  if (value) {
-    
-    setSelectedGrades(value);
-   
-  } else {
-    setSelectedBranch();
-  }
-  }
-
-
-const handleBranch = (event, value) => {
-  if (value) {
-    setSelectedBranch(value);
-  } else {
-    setSelectedBranch();
-  }
-};
-const handleSection = (event, value) => {
-  if (value) {
-    const gradesId = [];
-    gradeList
-    .filter((item) => selectedGrades.includes(item['grade__grade_name']))
+  const handleTitleChange = (e) => {
+    const sectionsId = [];
+    sectionList
+    .filter((item) => selectedSections.includes(item['section__section_name']))
     .forEach((items) => {
-      gradesId.push(items.grade_id);
+      sectionsId.push(items.section_id);
     });
-    setSelectedGradeIds(gradesId)
-    setSelectedSections(value);
-  } else {
-    setSelectedSections();
+    setSelectedSectionIds(sectionsId)
+    setTitle(e.target.value);
+
   }
-};
-
-const handleTitleChange = (e) => {
-  const sectionsId = [];
-  sectionList
-  .filter((item) => selectedSections.includes(item['section__section_name']))
-  .forEach((items) => {
-    sectionsId.push(items.section_id);
-  });
-  setSelectedSectionIds(sectionsId)
-  setTitle(e.target.value);
-
-}
-const handleEditorChange = (content, editor) => {
-  setDescription(content);
-  setDescriptionDisplay(editor.getContent({ format: 'text' }));
-};
+  const handleEditorChange = (content, editor) => {
+    setDescription(content);
+    setDescriptionDisplay(editor.getContent({ format: 'text' }));
+  };
+  React.useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Discussion Forum' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Forum') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
 
 
   return (
@@ -333,32 +383,53 @@ const handleEditorChange = (content, editor) => {
           />
         </div>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-                    <Grid xs={12} lg={4} className='create_group_items' item>
-                          <Autocomplete
-                            size='small'
-                            style={{ width: '100%' }}
-
-                            onChange={handleBranch}
-                            value={selectedBranch}
-                            id='message_log-branch'
-                            className='create_group_branch'
-                            options={branchList}
-                            getOptionLabel={(option) => option?.branch.branch_name}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                              <TextField
-                                className='message_log-textfield'
-                                {...params}
-                                variant='outlined'
-                                label='Branch'
-                                placeholder='Branch'
-                              />
-                            )}
-                          />
-                    </Grid>
-                    <Grid xs={12} lg={4} className='create_group_items' item>
-                    {selectedBranch && gradeList.length ? ( 
-                      <Autocomplete
+          <Grid xs={12} lg={4} className='create_group_items' item>
+            <Autocomplete
+              size='small'
+              style={{ width: '100%' }}
+              onChange={handleAcademic}
+              value={selectedSession}
+              id='message_log-branch'
+              className='create_group_branch'
+              options={sessionYear}
+              getOptionLabel={(option) => option?.session_year}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  className='message_log-textfield'
+                  {...params}
+                  variant='outlined'
+                  label='Acadmic Year'
+                  placeholder='Acadmic Year'
+                />
+              )}
+            />
+          </Grid>
+          <Grid xs={12} lg={4} className='create_group_items' item>
+            <Autocomplete
+              size='small'
+              style={{ width: '100%' }}
+              onChange={handleBranch}
+              value={selectedBranch}
+              id='message_log-branch'
+              className='create_group_branch'
+              options={branchList}
+              getOptionLabel={(option) => option?.branch.branch_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  className='message_log-textfield'
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  placeholder='Branch'
+                />
+              )}
+            />
+          </Grid>
+          <Grid xs={12} lg={4} className='create_group_items' item>
+            {selectedBranch && gradeList.length ? ( 
+            <Autocomplete
               multiple
               style={{ width: '100%' }}
               size='small'
@@ -376,11 +447,11 @@ const handleEditorChange = (content, editor) => {
                 />
               )}
             />
-               ) : null }
-                    </Grid>
-                    <Grid xs={12} lg={4} className='create_group_items' item>
-                      {selectedGrades.length && sectionList.length ? (
-                       <Autocomplete
+          ) : null }
+          </Grid>
+          <Grid xs={12} lg={4} className='create_group_items' item>
+            {selectedGrades.length && sectionList.length ? (
+            <Autocomplete
               multiple
               style={{ width: '100%' }}
               size='small'
@@ -398,33 +469,28 @@ const handleEditorChange = (content, editor) => {
                 />
               )}
             />
-                      ) : null}
-                     
-                    </Grid>
-                  </Grid>
-         
-          <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-           <Grid item xs={12} sm={4}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-               <Autocomplete
-                   style={{ width: '100%' }}
-                   id="tags-outlined"
-                   options={categoryListRes}
-                   getOptionLabel={(option) => option.category_name}
-                   filterSelectedOptions
-                   size="small"
-                   renderInput={(params) => (
-                       <TextField
-                           {...params}
-                           variant="outlined"
-                           label=" Select category"
-
-                       />
-                   )}
-                   onChange={
-                       handleCategoryChange
-                   }
-               />
-               </Grid>
+            ) : null}
+          </Grid>
+        </Grid>
+        <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
+          <Grid item xs={12} sm={4}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+            <Autocomplete
+              style={{ width: '100%' }}
+              id="tags-outlined"
+              options={categoryListRes}
+              getOptionLabel={(option) => option.category_name}
+              filterSelectedOptions
+              size="small"
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label=" Select category"
+                />
+              )}
+              onChange={handleCategoryChange}
+            />
+          </Grid>
           <Grid item xs={12} sm={4}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
           {selectedCategory && subCategoryListRes.length ? ( 
           <Autocomplete
@@ -492,16 +558,15 @@ const handleEditorChange = (content, editor) => {
         </Grid>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
 
-<Grid item xs={12} sm={12}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+      <Grid item xs={12} sm={12}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
         <MyTinyEditor
-                        id="Editor"
-                        description={description}
-                        handleEditorChange={handleEditorChange}
-                        setOpenEditor={setOpenEditor}
-                    />
-
-  </Grid>
-</Grid>
+          id="Editor"
+          description={description}
+          handleEditorChange={handleEditorChange}
+          setOpenEditor={setOpenEditor}
+        />
+      </Grid>
+    </Grid>
 
         <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '-1.25rem 1.5% 0 1.5%' }}>
           <Grid item xs={6} sm={2}>

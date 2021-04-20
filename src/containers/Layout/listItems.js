@@ -63,6 +63,7 @@ const MainListItems = () => {
         </ListItemIcon>
         <ListItemText primary='Year-end sale' className={classes.menuItemText} />
       </ListItem>
+      
     </div>
   );
 };

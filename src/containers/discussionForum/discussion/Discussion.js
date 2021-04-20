@@ -52,6 +52,11 @@ const useStyles = makeStyles({
     fontFamily: 'Open Sans',
     lineHeight: '33px',
     marginRight: '8.5px',
+    '@media (max-width: 600px)': {
+      fontSize: '20px',
+      marginRight: '6px',
+      lineHeight: '24px',
+    },
   },
   dotSeparator: {
     height: '12px',
@@ -81,6 +86,10 @@ const useStyles = makeStyles({
   },
   discussionIconRow: {
     float: 'right',
+    '@media (max-width: 600px)': {
+      display: 'block',
+      justifyContent: 'right',
+    },
   },
   discussionIcon: {
     color: '#042955',
