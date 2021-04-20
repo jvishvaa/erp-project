@@ -295,6 +295,9 @@ const Filters = (props) => {
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const [moduleId, setModuleId] = React.useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  //const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [expanded, setExpanded] = React.useState('panel1');
   const handleChange = (panel) => (event, newExpanded) => {
@@ -381,21 +384,40 @@ const Filters = (props) => {
         */
   };
 
+  React.useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Discussion Forum' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Forum') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   // academicYear API call
   React.useEffect(() => {
-    axiosInstance
-      .get(endpoints.masterManagement.academicYear)
+    if(moduleId){
+      axiosInstance.get(endpoints.masterManagement.academicYear)
       .then((res) => {
         setAcademicYear(res.data.result.results);
       })
       .catch((error) => console.log(error));
-  }, []);
+    }
+  }, [moduleId]);
 
   // Branch API call
   React.useEffect(() => {
     if (academicId !== 0) {
       axiosInstance
-        .get(`${endpoints.discussionForum.branch}?session_year=${academicId}`)
+        .get(`${endpoints.discussionForum.branch}?module_id=${moduleId}&session_year=${academicId}`)
         .then((res) => {
           console.log(res.data.data.results);
           setBranch(res.data.data.results);
@@ -408,7 +430,7 @@ const Filters = (props) => {
   React.useEffect(() => {
     if (branchId !== 0) {
       axiosInstance
-        .get(`${endpoints.discussionForum.grade}?session_year=${academicId}&branch_id=${branchId}&module_id=8`)
+        .get(`${endpoints.discussionForum.grade}?module_id=${moduleId}&session_year=${academicId}&branch_id=${branchId}`)
         .then((res) => {
           setGrade(res.data.data);
         })
@@ -421,7 +443,7 @@ const Filters = (props) => {
     if (gradeId !== 0) {
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?session_year=${academicId}&branch_id=${branchId}&grade_id=${gradeId}`
+          `${endpoints.masterManagement.sections}?module_id=${moduleId}&session_year=${academicId}&branch_id=${branchId}&grade_id=${gradeId}`
         )
         .then((res) => {
           console.log(res.data);
