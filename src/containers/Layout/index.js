@@ -949,6 +949,9 @@ const Layout = ({ children, history }) => {
         history.push('/time-table/student-view');
         break;
       }
+      case 'Contact Us': {
+        history.push('/contact-us')
+      }
       default:
         break;
     }
@@ -1342,7 +1345,17 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-         
+          <ListItem
+            button
+            className={classes.menuControlContainer}
+            onClick={() => history.push('/contact-us')}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              <TodayIcon />
+            </ListItemIcon>
+            <ListItemText className='menu-item-text'>Contact Us</ListItemText>
+          </ListItem>
+
           {navigationData && drawerOpen && navigationData.length > 0 && (
             <DrawerMenu
               superUser={superUser}
