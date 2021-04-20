@@ -17,11 +17,12 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import DiscussionForum from './DiscussionForum';
 import FilterIcon from '../../../components/icon/FilterIcon';
+import { useHistory, useLocation } from 'react-router-dom';
 import Layout from '../../Layout/index';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import ClearIcon from '../../../components/icon/ClearIcon';
 //import categoryData from './categoryData';
-import CreateCategory from './CreateCategory';
+//import CreateCategory from './CreateCategory';
 import DiscussionCategory from './DiscussionCategory';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { useSelector, useDispatch } from 'react-redux';
@@ -166,8 +167,7 @@ const StyledCloseButton = withStyles({
 // Discusion_forum/Category
 function CategoryPage() {
   const classes = useStyles({});
-
-  const [category, setCategory] = React.useState('category1');
+  const history = useHistory();
   const categoryData = useSelector((state) => state.discussionReducers.categoryData);
   const categoryList = useSelector((state) => state.discussionReducers.categoryList);
   const subCategoryList = useSelector((state) => state.discussionReducers.subCategoryList);
@@ -234,20 +234,12 @@ function CategoryPage() {
     }
   },[selectedSubCategory]);
 
-  // category data
-  // React.useEffect(() => {
-  //   if(selectedCategory?.id){
-  //     dispatch(fetchCategoryData(selectedCategory?.id));
-  //   } else {
-  //     dispatch(fetchCategoryData());
-  //   }
-  // },[selectedCategory]);
-
   const [createCategory, setCreateCategory] = React.useState(false);
   const [tabValue, setTabValue] = React.useState('all');
 
   const handleCreateCategory = () => {
-    setCreateCategory(!createCategory);
+    //setCreateCategory(!createCategory);
+    history.push('/category/create-category');
   };
 
   const handleTabChange = (e, newValue) => {
@@ -289,7 +281,6 @@ function CategoryPage() {
                 )}
               />
             </Grid>
-
             <Grid item sm={3} xs={12}>
               <Autocomplete
                 size='small'
@@ -312,7 +303,6 @@ function CategoryPage() {
                 )}
               />
             </Grid>
-
             <Grid item sm={3} xs={12}>
               <Autocomplete
                 size='small'
@@ -341,80 +331,68 @@ function CategoryPage() {
           </Grid>
         </Grid>
         <Grid container>
-          {!createCategory && (
-            <Grid item xs={12} className={classes.actionButtonGrid}>
-              <Divider className={classes.dividerLine} />
-              <StyledClearButton
-                variant='contained'
-                startIcon={<ClearIcon />}
-                onClick={handleClearFilter}
-              >
-                Clear all
-              </StyledClearButton>
-              <StyledButton
-                variant='contained'
-                color='primary'
-                className={classes.filterButton}
-                onClick={handleFilter}
-              >
-                FILTER
-              </StyledButton>
+          <Grid item xs={12} className={classes.actionButtonGrid}>
+            <Divider className={classes.dividerLine} />
+            <StyledClearButton
+              variant='contained'
+              startIcon={<ClearIcon />}
+              onClick={handleClearFilter}
+            >
+              Clear all
+            </StyledClearButton>
+            <StyledButton
+              variant='contained'
+              color='primary'
+              className={classes.filterButton}
+              onClick={handleFilter}
+            >
+              FILTER
+            </StyledButton>
 
-              <Divider orientation='vertical' className={classes.verticalDivider} />
+            <Divider orientation='vertical' className={classes.verticalDivider} />
 
-              <StyledButton
-                variant='contained'
-                color='primary'
-                className={classes.createButton}
-                onClick={handleCreateCategory}
-              >
-                CREATE NEW
-              </StyledButton>
-            </Grid>
-          )}
+            <StyledButton
+              variant='contained'
+              color='primary'
+              className={classes.createButton}
+              onClick={handleCreateCategory}
+            >
+              CREATE NEW
+            </StyledButton>
+          </Grid>
           <Grid item xs={12}>
-            {createCategory ? (
-              <CreateCategory
-                selectedCategory={selectedCategory}
-                selectedSubCategory={selectedSubCategory}
-                selectedSubSubCategory={selectedSubSubCategory}
-              />
-            ) : (
-              <Paper>
-                <Grid container className={classes.disscustionContainer}>
-                  <Grid item xs={12}>
-                    <StyledTabs
-                      value={tabValue}
-                      indicatorColor='secondary'
-                      textColor='secondary'
-                      onChange={handleTabChange}
-                    >
-                      <span className={classes.statusText}>Status</span>
-                      <StyledTab label='All' value='all' />
-                      <StyledTab label='Active' value='active' />
-                      <StyledTab label='In-active' value='inactive' />
-                      <Typography className={classes.numberofDiscussionText}>
-                        Number of discussion : {discussion}
-                      </Typography>
-                    </StyledTabs>
-                    <Divider />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        {categoryData && categoryData.length > 0 && (
-                          <DiscussionCategory tabValue={tabValue} rowData={categoryData} />
-                        )}
-                      </Grid>
+            <Paper>
+              <Grid container className={classes.disscustionContainer}>
+                <Grid item xs={12}>
+                  <StyledTabs
+                    value={tabValue}
+                    indicatorColor='secondary'
+                    textColor='secondary'
+                    onChange={handleTabChange}
+                  >
+                    <span className={classes.statusText}>Status</span>
+                    <StyledTab label='All' value='all' />
+                    <StyledTab label='Active' value='active' />
+                    <StyledTab label='In-active' value='inactive' />
+                    <Typography className={classes.numberofDiscussionText}>
+                      Number of discussion : {discussion}
+                    </Typography>
+                  </StyledTabs>
+                  <Divider />
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      {categoryData && categoryData.length > 0 && (
+                        <DiscussionCategory tabValue={tabValue} rowData={categoryData} />
+                      )}
                     </Grid>
                   </Grid>
                 </Grid>
-              </Paper>
-            )}
+              </Grid>
+            </Paper>
           </Grid>
         </Grid>
-        {/* <DiscussionForum categoryData={categoryData}/> */}
       </Grid>
     </Layout>
   );
