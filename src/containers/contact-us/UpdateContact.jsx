@@ -58,6 +58,7 @@ function UpdateContact() {
   const [foe_contact, setFoeContact] = useState('');
   const [op_manager_contact, setOpManagerContact] = useState('');
   const [campus_incharge_contact, setCampusInchargeContact] = useState('');
+  const [contact_id, setContactId] = useState('');
   const moduleId = 175;
 
   useEffect(() => {
@@ -128,17 +129,33 @@ function UpdateContact() {
       branch: selectedBranch,
     };
     console.log(payload);
+    axiosInstance
+      .get(
+        `${endpoints.contactUs.filterContact}?academic_year=${selectedAcademicYear.id}&branch=${selectedBranch.branch.id}`
+      )
+      .then((res) => {
+        console.log(res, 'filter data');
+        setContactId(res.data.id);
+        setFoeContact(res.data.foe_contact_number);
+        setOpManagerContact(res.data.op_manager_contact);
+        setCampusInchargeContact(res.data.campus_incharge_contact);
+      })
+      .catch((err) => console.log(err));
   };
   const handleUpdate = () => {
     console.log('You Clicked on Update button');
     const payload = {
-      academicYear: selectedAcademicYear,
-      branch: selectedBranch,
+      // academicYear: selectedAcademicYear,
+      // branch: selectedBranch,
       foe_contact: foe_contact,
       op_manager_contact: op_manager_contact,
       campus_incharge_contact: campus_incharge_contact,
     };
     console.log(payload);
+    axiosInstance
+      .put(`${endpoints.contactUs.updateContact}?contactus_id=${contact_id}`, payload)
+      .then((res) => console.log(res, 'update contact'))
+      .catch((err) => console.log(err));
   };
 
   return (

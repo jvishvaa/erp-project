@@ -131,6 +131,12 @@ function AddContact() {
       campus_incharge_contact: campus_incharge_contact,
     };
     console.log(payload);
+    axiosInstance
+      .post(
+        `${endpoints.contactUs.createContact}?academic_year=${selectedAcademicYear.id}?branch=${selectedBranch.branch.id}?foe_contact_number=${foe_contact}?operation_manager_contact_number=${op_manager_contact}?campus_in_charge_contact_number=${campus_incharge_contact}`
+      )
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
 
   return (
