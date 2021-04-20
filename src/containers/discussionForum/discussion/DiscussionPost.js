@@ -161,6 +161,9 @@ const StyledOutlinedButton = withStyles({
     borderRadius: '10px',
     marginTop: '15px',
     backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   },
 })(Button);
 
@@ -207,6 +210,9 @@ const OutlinedButton = withStyles({
     color: '#0455A6',
     border: '1px solid #0455A6',
     borderRadius: '10px',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
     backgroundColor: 'transparent',
     '@media (min-width: 600px)': {
       marginTop: '20px!important',
@@ -452,9 +458,9 @@ export default function DiscussionPostComponent(props) {
                           <span>
                               <span className={classes.postByText}>post by</span>
                               <ProfileIcon
-                                  firstname={postsData.post_by ? postsData.post_by.first_name : ''}
-                                  lastname={postsData.post_by ? postsData.post_by.last_name : ''}
-                                  bgColor='#3E9CF7'
+                                firstname={postsData.post_by ? postsData.post_by.first_name : ''}
+                                lastname={postsData.post_by ? postsData.post_by.last_name : ''}
+                                bgColor='#3E9CF7'
                               />
                               <span className={classes.username}>
                                   {`${postsData.post_by ? postsData.post_by.first_name : ''} ${postsData.post_by ? postsData.post_by.last_name : ''}`}
@@ -477,7 +483,7 @@ export default function DiscussionPostComponent(props) {
                           </Typography>
                            
                           <Typography className={classes.discussionParagraph}>
-                              <div dangerouslySetInnerHTML={{__html: postsData && postsData.description}} />
+                            <div dangerouslySetInnerHTML={{__html: postsData && postsData.description}}/>
                           </Typography>
                           {/* <Grid container spacing={1}>
                               {[1,2].map((data, id) => (
@@ -496,19 +502,19 @@ export default function DiscussionPostComponent(props) {
                           <Grid container spacing={2}>
                               <Grid item xs={10}>
                                 <StyledInput
-                                      placeholder="Have your say"
-                                      value={reply}
-                                      onChange={handleChange}
-                                      fullWidth
+                                  placeholder="Have your say"
+                                  value={reply}
+                                  onChange={handleChange}
+                                  fullWidth
                                 />
                               </Grid>
                               <Grid item xs={2}>
-                                  <StyledOutlinedButton
-                                      fullWidth
-                                      onClick={handleReplie}
-                                    >
-                                      Reply
-                                    </StyledOutlinedButton>
+                                <StyledOutlinedButton
+                                  fullWidth
+                                  onClick={handleReplie}
+                                >
+                                  Reply
+                                </StyledOutlinedButton>
                               </Grid>
                               <Grid item xs={12}>
                                   {commentsList && commentsList.length > 0 && (

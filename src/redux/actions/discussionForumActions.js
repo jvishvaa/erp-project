@@ -4,6 +4,9 @@ import endpoints from '../../config/endpoints';
 export const types = {
   DISCUSSION_POST: 'DISCUSSION_POST',
   FILTER_DATA: 'FILTER_DATA',
+  CREATE_CATEGORY: 'CREATE_CATEGORY',
+  CREATE_CATEGORY_SUCCESS: 'CREATE_CATEGORY_SUCCESS',
+  CREATE_CATEGORY_FAILURE: 'CREATE_CATEGORY_FAILURE',
   FETCH_CATEGORY_DATA: 'FETCH_CATEGORY_DATA',
   FETCH_CATEGORY_LIST: 'FETCH_CATEGORY_LIST',
   FETCH_SUB_CATEGORY_LIST: 'FETCH_SUB_CATEGORY_LIST',
@@ -21,6 +24,9 @@ export const types = {
 const { 
   DISCUSSION_POST,
   FILTER_DATA,
+  CREATE_CATEGORY,
+  CREATE_CATEGORY_SUCCESS,
+  CREATE_CATEGORY_FAILURE,
   FETCH_CATEGORY_DATA,
   FETCH_CATEGORY_DATA_SUCCESS,
   FETCH_CATEGORY_DATA_FAILURE,
@@ -49,6 +55,19 @@ export const filterDataAction = (data) => {
   }
 }
 
+export const createAllCategory = params => dispatch => {
+  dispatch({type: CREATE_CATEGORY});
+  return axiosInstance.post(`${endpoints.discussionForum.PostCategory}`,params)
+  .then((res) => {
+    console.log(res.data);
+    dispatch({ type: CREATE_CATEGORY_SUCCESS, data: res.data.result});
+  })
+  .catch((error) => {
+    dispatch({ type: CREATE_CATEGORY_FAILURE, data: []});
+    throw error;
+  });
+}
+
 export const fetchCategoryData = params => dispatch => {
   dispatch({ type: FETCH_CATEGORY_DATA});
   if(params){
@@ -75,7 +94,7 @@ export const fetchCategoryData = params => dispatch => {
 
 export const fetchSubSubCategoryList = params => dispatch => {
   dispatch({ type: FETCH_SUB_SUB_CATEGORY_LIST});
-  return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=3`)
+  return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=3`)
   .then((res) => {
     dispatch({ type: FETCH_SUB_SUB_CATEGORY_LIST_SUCCESS, data: res.data.result});
   })

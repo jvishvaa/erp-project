@@ -179,10 +179,13 @@ const useStyles = makeStyles({
 
 const StyledClearButton = withStyles({
   root: {
-    backgroundColor: '#E2E2E2',
+    backgroundColor: '#E2E2E2 !important',
     color: '#8C8C8C',
     height: '42px',
     marginTop: 'auto',
+    '&:hover': {
+      backgroundColor: '#E2E2E2 !important',
+    },
   },
 })(Button);
 
@@ -807,21 +810,21 @@ const Filters = (props) => {
                         </div>
                     </div>
               </Grid>
-              <Grid item sm={4} xs={12} style={{display: 'flex'}}>
-                  <StyledClearButton
-                      variant='contained'
-                      startIcon={<ClearIcon />}
-                      onClick={clearFilter}
+            <Grid item sm={4} xs={12} style={{display: 'flex'}}>
+            <StyledClearButton
+              variant='contained'
+              startIcon={<ClearIcon />}
+              onClick={clearFilter}
             >
               Clear all
             </StyledClearButton>
-              <StyledFilterButton
-                      variant='contained'
-                      color='secondary'
-                      startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-                      className={classes.filterButton}
-                      onClick={handleFilters}
-              >
+            <StyledFilterButton
+              variant='contained'
+              color='secondary'
+              startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+              className={classes.filterButton}
+              onClick={handleFilters}
+            >
               filter
             </StyledFilterButton>
           </Grid>

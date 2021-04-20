@@ -98,13 +98,13 @@ const useStyles = makeStyles((theme) => ({
 
 const StyledButton = withStyles({
   root: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#FF6B6B !important',
     color: '#FFFFFF',
     height: '42px',
     borderRadius: '10px',
     marginTop: 'auto',
     '&:hover': {
-      backgroundColor: '#FF6B6B',
+      backgroundColor: '#FF6B6B !important',
     },
   },
   startIcon: {
@@ -120,6 +120,9 @@ const StyledOutlinedButton = withStyles({
     border: '1px solid #FF6B6B',
     borderRadius: '10px',
     backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   },
 })(Button);
 
@@ -133,6 +136,9 @@ const StyledFilterButton = withStyles({
     float: 'right',
     textTransform: 'capitalize',
     backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   },
   iconSize: {},
 })(Button);
