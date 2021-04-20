@@ -149,15 +149,72 @@ const HomeworkAdmin = () => {
   const [optionalSubjects, setOptionalSubjects] = useState([]);
   const [otherSubjects, setOtherSubjects] = useState([]);
   const [required, setRequired] = useState({ lower: '', upper: '', star: '', index: '' });
-  // else if((mandatorySubjects.length+optionalSubjects.length+otherSubjects.length)!==(rowData.subject_data.length)){
-  //   setAlert('error','A subject should be either mandatory, optional or other but can\'t be empty')
-  // }else if(mandatorySubjects.length===0 && rowData.subject_data.length>=3){
-  //   setAlert('error','Atleast one subject should be mandatory')
-  // }else if(optionalSubjects.length===0 && rowData.subject_data.length>=3){
-  //   setAlert('error','Atleast one subject should be optional')
-  // }else if(otherSubjects.length===0 && rowData.subject_data.length>=3){
-  //   setAlert('error','Atleast one subject should be other than mandatory and optional')
-  // }
+
+  const [academicYear, setAcademicYear] = useState([]);
+  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const [branchList, setBranchList] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState([]);
+
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Homework' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Configuration') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
+  function callApi(api, key) {
+    setLoading(true);
+    axiosInstance
+      .get(api)
+      .then((result) => {
+        if (result.status === 200) {
+          if (key === 'academicYearList') {
+            setAcademicYear(result?.data?.data || []);
+            setLoading(false);
+          }
+          if (key === 'branchList') {
+            handleGrade();
+            //setBranchList(result?.data?.data || []);
+            setBranchList(result?.data?.data?.results.map(obj=>((obj&&obj.branch)||{})) || []);
+            setLoading(false);
+          }
+          if (key === 'gradeList') {
+            setGrades(result.data.data || []);
+            setLoading(false);
+          }
+        } else {
+          setAlert('error', result.data.message);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+        setLoading(false);
+      });
+  }
+
+  useEffect(() => {
+    if (moduleId) {
+      callApi(
+        `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
+        'academicYearList'
+      );
+    }
+  }, [moduleId]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -234,11 +291,10 @@ const HomeworkAdmin = () => {
     } else if (mandatorySubjects.length > 5 || mandatorySubjects.length === 0) {
       setAlert('error', 'Number of mandatory subjects must lie between 1 and 5');
     } else if (clear) {
-      //debugger;
       setLoading(true);
       axiosInstance
         .post(endpoints.homework.createConfig, {
-          branch: role_details.branch[0],
+          branch: selectedBranch.id||'',
           grade: searchGrade,
           section: searchSection,
           subject_config: {
@@ -378,6 +434,54 @@ const HomeworkAdmin = () => {
     setRowData({ ...rowData, hw_ration: list });
   };
 
+  const handleYear = (event, value) => {
+    setSectionDisplay([]);
+    setOtherSubjects([]);
+    setMandatorySubjects([]);
+    setOptionalSubjects([]);
+    setPrior('');
+    setPost('');
+    setRatingData([]);
+    setGradeDisplay([]);
+    setBranchList([]);
+    setGrades([]);
+    setSections([]);
+    setSearchGrade('');
+    setSearchSection('');
+    setSelectedBranch([]);
+    setSelectedAcadmeicYear(value);
+    if (value) {
+      callApi(
+        `${endpoints.mappingStudentGrade.branch}?session_year=${value?.id}&module_id=${moduleId}`,
+        'branchList'
+      );
+    }
+  };
+
+  const handleBranch = (event, value) => {
+    setSectionDisplay([]);
+    setOtherSubjects([]);
+    setMandatorySubjects([]);
+    setOptionalSubjects([]);
+    setPrior('');
+    setGrades([]);
+    setSections([]);
+    setPost('');
+    setRatingData([]);
+    setGradeDisplay([]);
+    setSearchGrade('');
+    setSearchSection('');
+    setSelectedBranch([]);
+    if (value) {
+      setSelectedBranch(value);
+      // endpoints.masterManagement.gradesDrop
+      callApi(
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${value.id}&module_id=${moduleId}`,
+        'gradeList'
+      );
+    }
+  };
+
   const handleGrade = (event, value) => {
     setSectionDisplay([]);
     setSections([]);
@@ -391,11 +495,11 @@ const HomeworkAdmin = () => {
     setSearchGrade('');
     setSearchSection('');
     if (value) {
-      setSearchGrade(value?.id);
+      setSearchGrade(value?.grade_id);
       setGradeDisplay(value);
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${role_details.branch[0]}&grade_id=${value.id}`
+          `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.id}&grade_id=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -433,26 +537,26 @@ const HomeworkAdmin = () => {
     }
   };
 
-  useEffect(() => {
-    axiosInstance
-      .get(endpoints.masterManagement.gradesDrop)
-      .then((result) => {
-        if (result.status === 200) {
-          setGrades(result.data.data);
-        } else {
-          setAlert('error', result.data.message);
-          setGrades([]);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-        setGrades([]);
-      });
-  }, []);
+  // useEffect(() => {
+  //   axiosInstance
+  //     .get(endpoints.masterManagement.gradesDrop)
+  //     .then((result) => {
+  //       if (result.status === 200) {
+  //         setGrades(result.data.data);
+  //       } else {
+  //         setAlert('error', result.data.message);
+  //         setGrades([]);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setAlert('error', error.message);
+  //       setGrades([]);
+  //     });
+  // }, []);
 
   useEffect(() => {
     if (searchGrade && searchSection) {
-      let request = `${endpoints.homework.completeData}?branch=${role_details.branch[0]}&grade=${searchGrade}&section=${searchSection}`;
+      let request = `${endpoints.homework.completeData}?branch=${selectedBranch.id}&grade=${searchGrade}&section=${searchSection}`;
       axiosInstance
         .get(request)
         .then((result) => {
@@ -511,17 +615,60 @@ const HomeworkAdmin = () => {
           spacing={isMobile ? 3 : 5}
           style={{ width: widerWidth, margin: wider }}
         >
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Grid item xs={12} sm={3}>
+            <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              onChange={handleYear}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedAcademicYear || ''}
+              options={academicYear || []}
+              getOptionLabel={(option) => option?.session_year || ''}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Academic Year'
+                  placeholder='Academic Year'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              onChange={handleBranch}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedBranch || ''}
+              options={branchList || []}
+              getOptionLabel={(option) => option?.branch_name || ''}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  placeholder='Branch'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
               onChange={handleGrade}
               id='grade'
               required
-              value={gradeDisplay}
-              options={grades}
-              getOptionLabel={(option) => option?.grade_name}
+              value={gradeDisplay || ''}
+              options={grades || []}
+              getOptionLabel={(option) => option?.grade__grade_name || ''}
               filterSelectedOptions
+              className='dropdownIcon'
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -539,10 +686,11 @@ const HomeworkAdmin = () => {
               onChange={handleSection}
               id='section'
               required
-              value={sectionDisplay}
-              options={sections}
-              getOptionLabel={(option) => option?.section__section_name}
+              value={sectionDisplay || ''}
+              options={sections || []}
+              getOptionLabel={(option) => option?.section__section_name || ''}
               filterSelectedOptions
+              className='dropdownIcon'
               renderInput={(params) => (
                 <TextField
                   {...params}

@@ -7,6 +7,7 @@ import {
   Button,
   Typography,
   Grid,
+  withStyles,
   useMediaQuery,
 } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -25,10 +26,19 @@ const validateQuestions = (obj) => {
   let errorObj = { question: '' };
   if (!obj.question.trim()) {
     error = true;
-    errorObj = { ...errorObj, question: 'Required' };
+    errorObj = { ...errorObj, question: '*Question is required...' };
   }
   return { error, errorObj };
 };
+
+const StyledOutlinedButton = withStyles({
+  root: {
+    height: '42px',
+    color: '#FE6B6B',
+    border: '1px solid #FF6B6B',
+    backgroundColor: 'transparent',
+  },
+})(Button);
 
 const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const [name, setName] = useState('');
@@ -54,13 +64,13 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
     let isFormValid = true;
     if (!name.trim()) {
       isFormValid = false;
-      setErrors((prevState) => ({ ...prevState, name: 'Required' }));
+      setErrors((prevState) => ({ ...prevState, name: '*Title is required...' }));
     } else {
       setErrors((prevState) => ({ ...prevState, name: '' }));
     }
     if (!description.trim()) {
       isFormValid = false;
-      setErrors((prevState) => ({ ...prevState, description: 'Required' }));
+      setErrors((prevState) => ({ ...prevState, description: '*Description is required...' }));
     } else {
       setErrors((prevState) => ({ ...prevState, description: '' }));
     }
@@ -80,7 +90,6 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const handleAddHomeWork = async () => {
     const isFormValid = validateHomework();
     if (isFormValid) {
-      // console.log('submitting form');
       const reqObj = {
         name,
         description,
@@ -95,7 +104,6 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
       };
       try {
         const response = await onAddHomework(reqObj);
-        // console.log('add response ', response);
         setAlert('success', 'Homework added');
         history.push('/homework/teacher');
       } catch (error) {
@@ -191,6 +199,8 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                     onChange={(e) => {
                       setName(e.target.value);
                     }}
+                    //error={errors.name ? true : false}
+                    //helperText="Title is required"
                   />
                   <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
                 </FormControl>
@@ -209,6 +219,8 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                     rows={4}
                     rowsMax={6}
                     label='Description'
+                    //error={true}
+                    //helperText="Description required"
                   />
                   <FormHelperText style={{ color: 'red' }}>
                     {errors.description}
@@ -241,6 +253,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                 */}
                 <Grid item xs={12} md={6} className='form-field'>
                   <div className='finish-btn-container'>
+                    {/*
                     <Button
                       startIcon={<AddCircleOutlineIcon />}
                       onClick={() => {
@@ -254,6 +267,18 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                     >
                       Add another question
                     </Button>
+                    */}
+                    <StyledOutlinedButton
+                      startIcon={<AddCircleOutlineIcon />}
+                      onClick={() => {
+                        setQueIndexCounter(queIndexCounter + 1);
+                        addNewQuestion(queIndexCounter + 1);
+                      }}
+                      title='Add Question'
+                      fullWidth
+                    >
+                      Add another question
+                    </StyledOutlinedButton>
                   </div>
                 </Grid>
                 <Grid item xs={12} md={6} className='form-field'>

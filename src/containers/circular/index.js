@@ -71,9 +71,33 @@ const CircularList = () => {
   const handlePagination = (event, page) => {
     setPage(page);
   };
+  const [moduleId, setModuleId] = useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+  const { role_details } = JSON.parse(localStorage.getItem('userDetails') || {});
+  const userId= JSON.parse(localStorage.getItem('userDetails') || {});
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Circular' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Circular' && window.location.pathname === '/teacher-circular') {
+              setModuleId(item.child_id);
+            }
+            if (item.child_name === 'Student Circular' && window.location.pathname === '/student-circular') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, [window.location.pathname]);
 
   const handlePeriodList = (grade, branch, section, year, startDate, endDate) => {
-    // console.log(grade, branch, section, year, startDate, endDate, ']]]]]]]]]]]]]]]]]]');
     setLoading(true);
     if (window.location.pathname === '/teacher-circular') {
       setPeriodData([]);
@@ -87,7 +111,7 @@ const CircularList = () => {
       axiosInstance
         .get(
           `${endpoints.circular.circularList}?is_superuser=True&branch=${
-            branch.id
+            branch.branch?.id
           }&grade=${grade.grade_id}&section=${section.id}&academic_year=${
             year.id
           }&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format(
@@ -96,19 +120,19 @@ const CircularList = () => {
         )
         .then((result) => {
           if (result.data.status_code === 200) {
-            setTotalCount(result.data.count);
+            setTotalCount(result?.data?.count);
             setLoading(false);
-            setPeriodData(result.data.result);
+            setPeriodData(result?.data?.result);
             setViewMore(false);
             setViewMoreData({});
           } else {
             setLoading(false);
-            setAlert('error', result.data.description);
+            setAlert('error', result?.data?.description);
           }
         })
         .catch((error) => {
           setLoading(false);
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     } else {
       setPeriodData([]);
@@ -117,11 +141,11 @@ const CircularList = () => {
       setFilterDataDown(grade, branch);
       axiosInstance
         .get(
-          `${endpoints.circular.circularList}?user_id=9&&start_date=${grade.format(
+          `${endpoints.circular.circularList}?user_id=${userId?.user_id}&start_date=${grade.format(
             'YYYY-MM-DD'
           )}&end_date=${branch.format(
             'YYYY-MM-DD'
-          )}&page=${page}&page_size=${limit}&role_id=2&module_id=168&module_name=Student Circular`
+          )}&page=${page}&page_size=${limit}&role_id=${role_details?.role_id}&module_id=${moduleId}&module_name=Student Circular`
         )
         .then((result) => {
           if (result.data.status_code === 200) {

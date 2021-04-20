@@ -1,0 +1,19 @@
+.erpInputBox{
+    box-align: center;
+    align-items: center;
+    background-color: hsl(0,0%,100%);
+    border-color: hsl(0,0%,80%);
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+    cursor: default;
+    height: 38px;
+    width: 100%;
+    padding-left: 15px;
+}
+
+.pdf__table{
+    border: 1px solid black;
+    /* border-collapse: collapse; */
+    /* background-color: red;   */
+}

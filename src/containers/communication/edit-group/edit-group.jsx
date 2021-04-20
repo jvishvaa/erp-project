@@ -2,7 +2,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable no-debugger */
+
 import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import Chip from '@material-ui/core/Chip';
@@ -210,7 +210,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'View & Edit Group') {
+            if (item.child_name === 'View&Edit Group' || item.child_name === 'View & Edit Group') {
               setModuleId(item.child_id);
               setModulePermision(true);
             } else {

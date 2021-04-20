@@ -117,7 +117,7 @@ const AssessmentAnalysisUI = (props) => {
             </Grid>
             <Grid item xs={12} sm={12} md={6}>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                {/* <Grid item xs={12} sm={6}>
                   <Box className={classes.chartContainer}>
                     <div style={{ margin: 3 }}>
                       <Grid container justify='space-between'>
@@ -161,7 +161,7 @@ const AssessmentAnalysisUI = (props) => {
                       </Button>
                     </div>
                   </Box>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12} sm={6}>
                   <Box className={classes.chartContainer}>
                     <div

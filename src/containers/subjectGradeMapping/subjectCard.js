@@ -2,14 +2,15 @@ import React, { useContext } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import { Button, IconButton, withStyles, Popover } from '@material-ui/core';
+import { Button, IconButton, withStyles, Popover, SvgIcon } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 // import { makeStyles } from '@material-ui/core/styles';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Viewmore from './viewmore';
 import useStyles from './useStyles'
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
+import unfiltered from '../../assets/images/unfiltered.svg';
+// import EditIcon from '@material-ui/icons/Edit';
+// import DeleteIcon from '@material-ui/icons/Delete';
 import { withRouter, Link } from 'react-router-dom';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
@@ -92,11 +93,18 @@ const Subjectcard = (props) => {
 
     return (
         <>
-            <Grid item xs={10} style={{ display: 'flex', flexWrap: 'wrap', marginTop: 20 }}>
+            <Grid item md={12} xs={10} style={{ display: 'flex', flexWrap: 'wrap', marginTop: 20 }}>
                 {setFilters && schoolGsMapping.length === 0 && (
-                    <div style={{ margin: 'auto'}}>
-                        <Typography>NO DATA FOUND</Typography>
-                    </div>
+                  <Grid container spacing={2} style={{ textAlign: 'center', marginTop: '20px' }}>
+                    <Grid item md={12} xs={12}>
+                        <div className={classes.periodDataUnavailable}>
+                        <SvgIcon component={() => <img src={unfiltered} alt='crash' />} />
+                        <Typography variant='h6' color='secondary'>
+                            NO DATA FOUND
+                        </Typography>
+                        </div>
+                    </Grid>
+                  </Grid>
                 )}
                 {
                     schoolGsMapping && schoolGsMapping.length > 0 && schoolGsMapping.map((list, index) => {
@@ -148,8 +156,8 @@ const Subjectcard = (props) => {
                                                         style={{ display: 'flex', justifyContent: 'space-between' }}
                                                     >
                                                         <span className='tooltiptext'>
-                                                            <div  >
-                                                                <Link to={{ pathname: `/master-mgmt/subject/grade/mapping`, query: { list }, edit: true }}
+                                                            {/* <div  >
+                                                                <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }}
                                                                     activeClassName="active"
                                                                     className="link-grade"
                                                                 >
@@ -157,7 +165,7 @@ const Subjectcard = (props) => {
                                                                         Edit
                                                                     </p>
                                                                 </Link>
-                                                            </div>
+                                                            </div> */}
                                                             <div className='tooltip' title='Delete' onClick={(e) => handleClick(e)}>
                                                                 Delete
                                                             </div>
@@ -191,7 +199,7 @@ const Subjectcard = (props) => {
                                     </Grid>
                                     {/* <Grid item xs={12} className={classes.textRight} >
                                         <div className="navigate-link" style={{ display: 'flex' }}>
-                                            // <Link to={{ pathname: `/master-mgmt/subject/grade/mapping`, query: { list }, edit: true }} activeClassName="active" className="link-grade"><p> Edit <EditIcon style={{ fontSize: '16px' }} /></p></Link>
+                                            // <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }} activeClassName="active" className="link-grade"><p> Edit <EditIcon style={{ fontSize: '16px' }} /></p></Link>
                                             <p onClick={() => callDelete(list.id, index)} style={{ marginLeft: 5, color: '#014B7E' }}> Delete <DeleteIcon style={{ fontSize: '16px', color: '#014B7E' }} /></p>
                                         </div>
                                     </Grid> */}
@@ -199,7 +207,7 @@ const Subjectcard = (props) => {
                                     <Grid item xs={6}>
                                         {/*
                                             <Box style={{ display: 'flex' }}>
-                                            <Link to={{ pathname: `/master-mgmt/subject/grade/mapping`, query: { list }, edit: true }} activeClassName="active" className="link-grade">
+                                            <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }} activeClassName="active" className="link-grade">
                                                 <p> Edit <EditIcon style={{ fontSize: '16px' }} /></p>
                                             </Link>
                                             <p onClick={(e) => handleClick(e)} style={{ marginLeft: 5, color: '#014B7E' }}>

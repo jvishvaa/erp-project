@@ -90,7 +90,6 @@ const Resource = (props) => {
         e.preventDefault();
         e.preventDefault();
         const download = (path) => {
-            //console.log(path);
              //window.location.href=path;
             window.open(path, '_blank');
         }
@@ -166,7 +165,6 @@ export default function ResourceDialogComponent(props) {
     React.useEffect(() => {
         axiosInstance.get(`erp_user/${props.resourceId}/student-oc-details/`)
         .then((res) => {
-            console.log(res);
             setPeriodsData(res.data.data);
         })
         .catch((error) => console.log(error))

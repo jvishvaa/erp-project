@@ -108,7 +108,7 @@ class AdminBlog extends Component {
         if (result.data.status_code === 200) {
           this.setState({ data: result.data.result.data ,totalBlogs:result.data.result.total_blogs});
         } else {
-          console.log(result.data.message);
+          
         }
       })
       .catch((error) => {
@@ -139,7 +139,7 @@ class AdminBlog extends Component {
         if (result.data.status_code === 200) {
           this.setState({ data: result.data.result.data ,totalBlogs:result.data.result.total_blogs});
         } else {
-          console.log(result.data.message);
+          
         }
       })
       .catch((error) => {
@@ -156,7 +156,7 @@ class AdminBlog extends Component {
         if (result.data.status_code === 200) {
           this.setState({ branchList: result.data.data });
         } else {
-          console.log(result.data.message);
+          
         }
       })
       .catch((error) => {
@@ -181,7 +181,7 @@ class AdminBlog extends Component {
         if (result.data.status_code === 200) {
           this.setState({ gradeList: result.data.data });
         } else {
-          console.log(result.data.message);
+          
         }
       })
       .catch((error) => {
@@ -207,7 +207,7 @@ class AdminBlog extends Component {
           if (result.data.status_code === 200) {
             this.setState({ sectionList: result.data.data });
           } else {
-            console.log(result.data.message);
+            
           }
         })
         .catch((error) => {

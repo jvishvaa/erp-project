@@ -8,21 +8,23 @@ import useStyles from './useStyles';
 const QuestionPaperCard = ({
   // testTitle,
   descriptions: testDescription,
-  is_test_completed: { is_completed: isTestAttempted, completed_date: testAttemptedDate },
+  is_test_completed: { is_completed: isTestAttempted, completed_date: testAttemptedDate } = {},
   handleViewMore,
   test_date: testDate,
   test_name: testTitle,
-  question_paper: {
-    id: questionPaperId,
-    grade_name: gradeName,
-    subject_name: subjects = [],
-  },
+  question_paper: questionPaperObj = {},
 }) => {
   const themeContext = useTheme();
   // const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const { containerRef } = React.useContext(ContainerContext);
   const classes = useStyles();
+
+  const {
+    id: questionPaperId,
+    grade_name: gradeName,
+    subject_name: subjects = [],
+  } = questionPaperObj || {}
 
   return (
     <Paper elevation={2} className={classes.paper}>

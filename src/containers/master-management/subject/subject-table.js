@@ -104,26 +104,19 @@ const SubjectTable = () => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [page, setPage] = useState(1);
   const [subjects, setSubjects] = useState([]);
-  const [grades, setGrades] = useState([]);
-  const [sections, setSections] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [subjectId, setSubjectId] = useState();
   const [subjectName, setSubjectName] = useState('');
   const [addFlag, setAddFlag] = useState(false);
   const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
-  const [desc, setDesc] = useState('');
   const [delFlag, setDelFlag] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [searchGrade, setSearchGrade] = useState('');
-  const [searchSection, setSearchSection] = useState('');
-  const [sectionDisplay, setSectionDisplay] = useState([]);
   const [searchSubject, setSearchSubject] = useState('');
   const [loading, setLoading] = useState(false);
-  const [opt, setOpt] = useState(false);
-  const limit = 1;
+  const [subjectData, setSubjectData] = useState({});
+  const limit = 15;
   const [goBackFlag, setGoBackFlag] = useState(false);
-  const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
@@ -134,59 +127,17 @@ const SubjectTable = () => {
     setPage(newPage + 1);
   };
 
-  const handleGrade = (event, value) => {
-    if (value) {
-      setSearchGrade(value.id);
-      setPage(1);
-      axiosInstance
-        .get(
-          `${endpoints.masterManagement.sections}?branch_id=${role_details.branch[0]}&grade_id=${value.id}`
-        )
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setSections(result.data.data);
-          } else {
-            setAlert('error', result.data.message);
-            setSections([]);
-            setSectionDisplay([]);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
-          setSections([]);
-          setSectionDisplay([]);
-        });
-    } else {
-      setSearchGrade('');
-      setSearchSection('');
-      setSections([]);
-      setSectionDisplay([]);
-    }
-  };
-
-  const handleSection = (event, value) => {
-    setSearchSection('');
-    setSectionDisplay(value);
-    if (value) {
-      setPage(1);
-      setSearchSection(value.section_id);
-    }
-  };
-
   const handleAddSubject = () => {
     setTableFlag(false);
     setAddFlag(true);
     setEditFlag(false);
   };
 
-  const handleEditSubject = (id, name, desc, optional) => {
+  const handleEditSubject = (subj) => {
     setTableFlag(false);
     setAddFlag(false);
     setEditFlag(true);
-    setSubjectId(id);
-    setSubjectName(name);
-    setDesc(desc);
-    setOpt(optional);
+    setSubjectData(subj);
   };
 
   const handleGoBack = () => {
@@ -194,10 +145,8 @@ const SubjectTable = () => {
     setTableFlag(true);
     setAddFlag(false);
     setEditFlag(false);
-    setSearchGrade('');
     setSearchSubject('');
-    setSearchSection('');
-    setSectionDisplay([]);
+    setSubjectData({});
     setGoBackFlag(!goBackFlag);
   };
 
@@ -205,29 +154,27 @@ const SubjectTable = () => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .put(endpoints.masterManagement.updateSubject, {
-        is_delete: true,
-        subject_id: subjectId,
-      })
+      .delete(`${endpoints.masterManagement.updateSubject}${subjectId}`)
       .then((result) => {
-        if (result.data.status_code === 200) {
+        if (result.data.status_code === 204) {
           setDelFlag(!delFlag);
           setLoading(false);
-          setAlert('success', result.data.message);
+          setAlert('success', `Subject ${result.data.msg || result.data.message}`);
         } else {
           setLoading(false);
-          setAlert('error', result.data.message);
+          setAlert('error', result.data.msg || result.data.message);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', error.response.data.message||error.response.data.msg);
       });
     setOpenDeleteModal(false);
   };
 
-  const handleOpenDeleteModal = (id) => {
-    setSubjectId(id);
+  const handleOpenDeleteModal = (subject) => {
+    setSubjectId(subject?.id);
+    setSubjectName(subject?.subject_name);
     setOpenDeleteModal(true);
   };
 
@@ -240,47 +187,25 @@ const SubjectTable = () => {
     setTimeout(() => {
       setLoading(false);
     }, 450);
-  }, [goBackFlag, page, delFlag, searchGrade, searchSection]);
+  }, [goBackFlag, page, delFlag]);
 
   useEffect(() => {
+    let url = `${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}`;
+    if (searchSubject) url += `&subject_name=${searchSubject}`;
     axiosInstance
-      .get(endpoints.masterManagement.gradesDrop)
+      .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setGrades(result.data.data);
+          setTotalCount(result.data?.data?.count);
+          setSubjects(result.data?.data?.results);
         } else {
-          setAlert('error', result.data.message);
-          setGrades([]);
+          setAlert('error', result.data?.msg || result.data?.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
-        setGrades([]);
+        setAlert('error', error?.response?.data?.message||error?.response?.data?.msg);
       });
-  }, []);
-
-  useEffect(() => {
-    axiosInstance
-      .get(
-        `${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}&grade=${searchGrade}&subject=${searchSubject}&section=${searchSection}`
-      )
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setTotalCount(result.data.result.count);
-          setSubjects(result.data.result.results);
-        } else {
-          setAlert('error', result.data.error_message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
-  }, [goBackFlag, delFlag, page, searchGrade, searchSection, searchSubject]);
-
-  const handleDelete = (subj) => {
-    setSubjectName(subj.subject.subject_name);
-    handleOpenDeleteModal(subj.subject.id);
-  };
+  }, [goBackFlag, delFlag, page, searchSubject]);
 
   return (
     <>
@@ -303,20 +228,13 @@ const SubjectTable = () => {
         </div>
 
         {!tableFlag && addFlag && !editFlag && (
-          <CreateSubject
-            grades={grades}
-            setLoading={setLoading}
-            handleGoBack={handleGoBack}
-          />
+          <CreateSubject setLoading={setLoading} handleGoBack={handleGoBack} />
         )}
         {!tableFlag && !addFlag && editFlag && (
           <EditSubject
-            id={subjectId}
-            desc={desc}
-            name={subjectName}
             setLoading={setLoading}
             handleGoBack={handleGoBack}
-            opt={opt}
+            subjectData={subjectData}
           />
         )}
 
@@ -342,46 +260,7 @@ const SubjectTable = () => {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={handleGrade}
-                  id='grade'
-                  options={grades}
-                  getOptionLabel={(option) => option?.grade_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Grades'
-                      placeholder='Grades'
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={handleSection}
-                  id='section'
-                  value={sectionDisplay}
-                  options={sections}
-                  getOptionLabel={(option) => option?.section__section_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Sections'
-                      placeholder='Sections'
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs sm={3} className={isMobile ? 'hideGridItem' : ''} />
+              <Grid item xs sm={9} className={isMobile ? 'hideGridItem' : ''} />
               <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
                 <Button
                   startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
@@ -400,7 +279,7 @@ const SubjectTable = () => {
         )}
 
         <>
-          {!isMobile ? (
+          {/* {!isMobile ? ( */}
             <>
               {tableFlag && !addFlag && !editFlag && (
                 <Paper className={`${classes.root} common-table`}>
@@ -425,38 +304,28 @@ const SubjectTable = () => {
                           return (
                             <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
                               <TableCell className={classes.tableCell}>
-                                {subject.subject.subject_name}
+                                {subject?.subject_name}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {subject.subject.created_by
-                                  ? subject.subject.created_by.first_name
-                                  : ''}
+                                {subject?.created_by}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {subject.subject.subject_description}
+                                {subject?.subject_description}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {subject.subject.is_optional ? 'Yes' : 'No'}
+                                {subject?.is_optional ? 'Yes' : 'No'}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
                                 <IconButton
                                   onClick={(e) => {
-                                    handleDelete(subject);
+                                    handleOpenDeleteModal(subject);
                                   }}
                                   title='Delete Subject'
                                 >
                                   <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
                                 </IconButton>
-
                                 <IconButton
-                                  onClick={(e) =>
-                                    handleEditSubject(
-                                      subject.subject.id,
-                                      subject.subject.subject_name,
-                                      subject.subject.subject_description,
-                                      subject.subject.is_optional
-                                    )
-                                  }
+                                  onClick={(e) => handleEditSubject(subject)}
                                   title='Edit Subject'
                                 >
                                   <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
@@ -482,15 +351,15 @@ const SubjectTable = () => {
                 </Paper>
               )}
             </>
-          ) : (
+          {/* ) : (
             <>
               <>
                 {tableFlag && !addFlag && !editFlag && (
                   <>
-                    {subjects.map((subject) => (
+                    {subjects?.map((subject) => (
                       <SubjectCard
                         data={subject}
-                        handleDelete={handleDelete}
+                        handleOpenDeleteModal={handleOpenDeleteModal}
                         handleEditSubject={handleEditSubject}
                       />
                     ))}
@@ -509,7 +378,7 @@ const SubjectTable = () => {
                 )}
               </>
             </>
-          )}
+          )} */}
         </>
         <Dialog
           open={openDeleteModal}

@@ -14,7 +14,6 @@ export const AssessmentComparisionContext = createContext();
 
 export const AssessmentComparisionContextProvider = ({ children, ...restProps }) => {
   // eslint-disable-next-line no-console
-  console.log(restProps);
 
   const userTestHookProps = {
     url: userTestsAPIEndpoint,

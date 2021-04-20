@@ -8,6 +8,8 @@ import {
   TextField,
   Tooltip,
   IconButton,
+  withStyles,
+  Popover
 } from '@material-ui/core';
 import {
   CloudUpload as UploadIcon,
@@ -23,7 +25,7 @@ import { fileUploadStyles, fileUploadButton, fileRow } from './uploadModal.style
 import Modal from './modal';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-
+import Loading from '../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const allowedExtensions = [
@@ -68,6 +70,26 @@ const getResourceType = (file, type) => {
 const useStylesButton = makeStyles(fileUploadButton);
 const useStyles = makeStyles(fileUploadStyles);
 const useStyleRow = makeStyles(fileRow);
+
+const StyledButton = withStyles({
+  root: {
+      color: '#FFFFFF',
+      backgroundColor: '#FF6B6B',
+      '&:hover': {
+          backgroundColor: '#FF6B6B',
+      },
+  }
+})(Button);
+  
+const CancelButton = withStyles({
+  root: {
+      color: '#8C8C8C',
+      backgroundColor: '#e0e0e0',
+      '&:hover': {
+          backgroundColor: '#e0e0e0',
+      },
+  }
+})(Button);
 
 // CustomButton component
 const CustomFileUpload = (props) => {
@@ -238,6 +260,8 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
   const [disableButton, setDisableButton] = useState(false);
   const [filePath,setFilePath] = useState([]);
   const [ isDownload, setIsDownload ] = useState([]);
+  const [loading, setLoading] = useState(false);
+
 
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -247,17 +271,16 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
 
     axiosInstance.get(`${endpoints.onlineClass.resourceFile}?online_class_id=${id}&class_date=${classDate}`)
     .then((res) => {
-        const fileAr = [];
-        console.log(res.data);
+        let fileAr;
         setIsDownload(res.data.result);
         if(res.data.result) {
           fileAr = res.data.result;
-          fileAr.length > 0 && fileAr.map((file) => {
-            setFilePath([ ...filePath,file.files[0]]); 
+          fileAr?.length > 0 && fileAr.map((file) => {
+            file.files && file.files.map(path => {      
+              setFilePath(filePath => [ ...filePath,path]);   
+            })
           })
         }
-        // setFilePath([ ...filePath,result.data.result]);
-        //setIsDown(res.data.status_code);
     })
     .catch((error) => console.log(error))
   },[]);
@@ -294,13 +317,17 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
       .catch((err) => console.error(err));
   }, [id, type]);
 
+
   const uploadFileHandler = (e) => {
+    setLoading(true);
     if (e.target.files[0]) {
       const data  = e.target.files[0];
       const tempArr = e.target.files[0].name.split('.');
+     
       const ext = tempArr.length ? tempArr[tempArr.length - 1] : 'unsupported';
       if (!allowedExtensions.includes(ext)) {
         setAlert('error', 'Unsupported File Type');
+        setLoading(false);
         return;
       }
       else {
@@ -312,8 +339,9 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
         axiosInstance.post(`academic/dairy-upload/`, fd)
         .then((result)=>{
               if (result.data.status_code === 200) {
-                  setAlert('success',result.data.message);
-                  setFilePath([ ...filePath,result.data.result]);
+                setLoading(false);
+                setAlert('success',result.data.message);
+                setFilePath([ ...filePath,result.data.result]);
               }
               else {
                   setAlert('error',result.data.message)
@@ -329,66 +357,46 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
     const newFiles = files.filter((_, index) => index !== i);
     setFiles(newFiles);
     const delFile = {
-      file_name: filePath[0],
+      file_name: filePath[i],
     }
+
     axiosInstance.post(endpoints.deleteFromS3,delFile)
     .then((res) => {
       setAlert('success', res.data.message);
       setFilePath([]);
     })
     .catch((err) => console.log(err))
+    
   };
 
-  const deleteExistingFileHandler = (fileName, i) => {
-    //const newFiles = files.filter((_, index) => index !== i);
-    //setFiles(newFiles);
+  // Delete and Remove file
+  const deleteExistingFileHandler = (fileName, index) => {
+    
+    const newFiles = filePath.filter((_, index1) => index1 !== index);
+
     const delFile = {
       file_name: fileName,
     }
     axiosInstance.post(endpoints.deleteFromS3,delFile)
     .then((res) => {
       setAlert('success', res.data.message);
-      setFilePath([]);
       const param = {
+        files: newFiles,
         online_class_id : id,
         class_date: classDate
       };
-      axiosInstance.put(endpoints.onlineClass.resourceFile,param)
+      axiosInstance.post(endpoints.onlineClass.resourceFile,param)
       .then((res) => {
-        const newResources = isDownload.splice(i,1);
-        setIsDownload([]);
-        setAlert('success', "Deleted");
+        setFilePath(newFiles);
+        handleClose();
+        setAlert('success', "File deleted successfully");
       })
       .catch((err) => console.log(err))
     })
     .catch((err) => console.log(err))
   };
 
-  const removeExistingFileHandler = (fileId) => {
-    let url = endpoints.onlineClass.resourceFile;
-    let params = {
-      resource_id: fileId,
-    };
-    if (type === 'homework') {
-      url = endpoints.onlineClass.resourceFile;
-      params = {
-        homework_id: fileId,
-      };
-    }
-    axiosInstance
-      .delete(`${url}`, {
-        params,
-      })
-      .then((res) => {
-        const updatedFiles = existingUpload.filter((file) => file.id !== fileId);
-        setExistingUpload(updatedFiles);
-        setAlert('success', 'Deleted Permanently');
-      })
-      .catch((err) => {
-        setAlert('error', 'Failed To Delete Resource');
-      });
-  };
-
+  
   const errorCallback = (err, errorQueue, customMessage) => {
     errorQueue && errorQueue.push(customMessage);
     setAlert(
@@ -407,34 +415,6 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
   //     setDescriptionError(true)
   //   }
   // }
-
-  const handleImageChange = (event) => {
-    if(filePath.length<10) {
-      const data  = event.target.files[0];
-      const fileName = data? data.name : '';
-      console.log(data);
-      const fd = new FormData();
-      fd.append('file', data); 
-      fd.append('online_class_id', id);
-      fd.append('class_date', classDate);
-      fd.append('description', 'description123');
-      axiosInstance.post(`academic/dairy-upload/`, fd)
-      .then((result)=>{
-            console.log(fd);
-            if (result.data.status_code === 200) {
-                console.log(result.data,'resp')
-                setAlert('success',result.data.message);
-                setFilePath([ ...filePath,result.data.result]);
-            }
-            else {
-                setAlert('error',result.data.message)
-            }
-      })
-    } else {
-        setAlert('warning','Exceed Maximum Number Attachment')
-    }
-
-  }
   const handlerUpload = () => {
     if(filePath.length > 0) {
       const formData = new FormData();
@@ -452,7 +432,6 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
 
       axiosInstance.post(endpoints.onlineClass.resourceFile, data1)
       .then((res) => {
-        console.log(res);
         if (res.data.status_code === 200) {
           setAlert('success', 'Work Submitted Successfully');
           setDisableButton(false);
@@ -544,7 +523,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
       formData.set('description', description);
       formData.set('is_home_work_uploaded', 'true');
     }
-/** 
+ /** 
     files.forEach((file, index) => {
       formData.append(`files`, files[index]);
     });
@@ -644,6 +623,19 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
     }
   };
 
+  // Confirm Popover 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const handleClick = (event) => {
+      setAnchorEl(true);
+  };
+
+  const handleClose = () => {
+      setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const popoverId = open ? 'simple-popover' : undefined;
+
   const getResourceLink = (resources, isExisting) => {
     const addResourceLink = resources.map((item, i) => (
       <React.Fragment key={`item-${i}`}>
@@ -721,6 +713,9 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
   };
 
   return (
+    <>
+    {loading ? <Loading message='Loading...' /> : null}
+
     <div className={classes.container}>
       <Grid container justifyContent="space-between" alignItems='center'>
         <Grid item xs sm style={isMobile?{display:'none'}:{}}/>
@@ -748,33 +743,47 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
           />
         );
       }) */}
-      {isDownload.length > 0 && isDownload.map((file, i) => {
-          //setFilePath([ ...filePath,file.files[0]]);
-        return (
-          <div>
-                {file.files && file.files.map((path) => 
-                  <>
-                    <Grid container spacing={2} alignItems='center'>
-                      <Grid item xs={12} md={8}>
-                        <Typography variant='h6'>{path}</Typography>
-                      </Grid>
-                      <Grid item xs={6} md={2}>
-                        <HighlightOffIcon onClick={() => deleteExistingFileHandler(path, i)} className={classes.icon} />
-                      </Grid>
-                    </Grid>
-                     <Divider />
-                  </>
-                )}
-          </div>
-        );
-      })}
-      {files.map((file, i) => (
+      {filePath.length > 0 && filePath.map((path, i) => 
+        <div>
+          <Grid container spacing={2} alignItems='center'>
+            <Grid item xs={12} md={8}>
+              <Typography variant='h6'>{path}</Typography>
+            </Grid>
+            <Grid item xs={6} md={2}>
+              <HighlightOffIcon onClick={() => handleClick()}  className={classes.icon} />
+            </Grid>
+          </Grid>
+          <Popover
+            id={popoverId}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'center',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'center',
+              horizontal: 'center',
+            }}
+          >
+            <div style={{ padding: '20px 30px'}}>
+              <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure you want to delete?</Typography>
+              <div>
+                <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
+                <StyledButton onClick={() => deleteExistingFileHandler(path, i)} style={{float: 'right'}}>Confirm</StyledButton>
+              </div>
+            </div>
+          </Popover>
+        </div>
+      )}
+      {/* {files.map((file, i) => (
         <FileRow
           file={file}
           onClose={() => removeFileHandler(i)}
           className={classes.fileRow}
         />
-      ))}
+      ))} */}
       <CustomFileUpload
         className={classes.uploadButton}
         onChange={uploadFileHandler}
@@ -782,31 +791,6 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
         isMobile={isMobile}
         accept='image/*, audio/*, video/*, application/pdf'
       />
-      {/* existingLinks && existingLinks.length > 0 && (
-        <Grid container spacing={2} alignItems='center' style={{ marginTop: '15px' }}>
-          {getResourceLink(existingLinks, true)}
-        </Grid>
-      )}
-      {type.trim() === 'homework' ? (
-        <TextField
-          className={classes.description}
-          required
-          label='Description'
-          value={description}
-          variant='outlined'
-          multiline
-          placeholder='Homework Description'
-          rowsmax={6}
-          rows={6}
-          inputProps={{maxLength:250}}
-          fullWidth
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      ) : (
-        <Grid container spacing={2} alignItems='center' style={{ marginTop: '15px' }}>
-          {getResourceLink(resourceLinks, false)}
-        </Grid>
-      )  */}
       <div className={classes.submitButton}>
         <Button
           color='primary'
@@ -823,6 +807,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
         </Typography>
       </div>
     </div>
+    </>
   );
 };
 

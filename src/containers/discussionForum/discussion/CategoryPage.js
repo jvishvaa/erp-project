@@ -11,6 +11,9 @@ import {
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import DiscussionForum from './DiscussionForum';
 import FilterIcon from '../../../components/icon/FilterIcon';
+import Layout from '../../Layout/index';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchCategory } from '../../../redux/actions/discussionForumActions';
 // import CategoryCard from '../categoryData';
 
 const useStyles = makeStyles({
@@ -52,6 +55,7 @@ const StyledButton = withStyles({
     fontFamily: 'Raleway',
     textTransform: 'capitalize',
     verticalAlign: 'bottom',
+    backgroundColor: 'transparent',
   },
   iconSize: {},
 })(Button);
@@ -61,18 +65,25 @@ function CategoryPage() {
   const classes = useStyles({});
 
   const [category, setCategory] = React.useState('category1');
+  const categoryData = useSelector((state) => state.discussionReducers.categoryList);
+  const dispatch = useDispatch();
+
 
   const handleChange = (e) => {
     setCategory(e.target.value);
   };
 
+  React.useEffect(() => {
+    dispatch(fetchCategory());
+  },[])
+
   return (
-    <>
+    <Layout>
       <Grid container className={classes.root}>
         <Grid item xs={12} className={classes.categoryBox}>
           <Typography className={classes.cardTitle}>Dashboard</Typography>
           <Grid container className={classes.categoryContainer}>
-            <Grid item sm={3}>
+            <Grid item sm={3} xs={12}>
               <FormControl
                 variant='outlined'
                 color='primary'
@@ -94,7 +105,7 @@ function CategoryPage() {
               </FormControl>
             </Grid>
 
-            <Grid item sm={3}>
+            <Grid item sm={3} xs={12}>
               <FormControl
                 variant='outlined'
                 color='primary'
@@ -117,7 +128,7 @@ function CategoryPage() {
               </FormControl>
             </Grid>
 
-            <Grid item sm={3}>
+            <Grid item sm={3} xs={12}>
               <FormControl
                 variant='outlined'
                 color='primary'
@@ -144,9 +155,9 @@ function CategoryPage() {
             </StyledButton>
           </Grid>
         </Grid>
-        <DiscussionForum />
+        <DiscussionForum categoryData={categoryData}/>
       </Grid>
-    </>
+    </Layout>
   );
 }
 

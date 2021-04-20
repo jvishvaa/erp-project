@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useRef, useEffect, useContext, useCallback } from 'react';
 import {
   IconButton,
   OutlinedInput,
@@ -16,7 +16,7 @@ import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
+import { Grid, withStyles, Popover } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -37,8 +37,29 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import placeholder from '../../assets/images/placeholder_small.jpg';
 import Attachment from '../../containers/homework/teacher-homework/attachment';
 import endpoints from '../../config/endpoints';
+import FileValidators from '../../components/file-validation/FileValidators';
 
 import './styles.scss';
+
+const StyledButton = withStyles({
+  root: {
+      color: '#FFFFFF',
+      backgroundColor: '#FF6B6B',
+      '&:hover': {
+          backgroundColor: '#FF6B6B',
+      },
+  }
+})(Button);
+  
+const CancelButton = withStyles({
+  root: {
+      color: '#8C8C8C',
+      backgroundColor: '#e0e0e0',
+      '&:hover': {
+          backgroundColor: '#e0e0e0',
+      },
+  }
+})(Button);
 
 const QuestionCard = ({
   addNewQuestion,
@@ -56,13 +77,13 @@ const QuestionCard = ({
   const fileUploadInput = useRef(null);
   const attachmentsRef = useRef(null);
   const { setAlert } = useContext(AlertNotificationContext);
+  const [sizeValied, setSizeValied] = useState({});
 
   const handleScroll = (dir) => {
     if (dir === 'left') {
       attachmentsRef.current.scrollLeft -= 150;
     } else {
       attachmentsRef.current.scrollLeft += 150;
-      console.log(attachmentsRef.current.scrollLeft, attachmentsRef.current.scrollRight);
     }
   };
 
@@ -77,38 +98,68 @@ const QuestionCard = ({
   const onChange = (field, value) => {
     handleChange(index, field, value);
   };
+
   const handleFileUpload = async (file) => {
-    try {
-      // console.log(file,"=====File=====");
-      if (
-        file.name.lastIndexOf('.pdf') > 0 ||
-        file.name.lastIndexOf('.jpeg') > 0 ||
-        file.name.lastIndexOf('.jpg') > 0 ||
-        file.name.lastIndexOf('.png') > 0 ||
-        file.name.lastIndexOf('.mp3') > 0 ||
-        file.name.lastIndexOf('.mp4') > 0
-      ) {
-        const fd = new FormData();
-        fd.append('file', file);
-        setFileUploadInProgress(true);
-        const filePath = await uploadFile(fd);
-        if (file.type === 'application/pdf') {
-          setAttachments((prevState) => [...prevState, ...filePath]);
-          setAttachmentPreviews((prevState) => [...prevState, ...filePath]);
+    const isValid = FileValidators(file);
+    !isValid?.isValid && isValid?.msg && setAlert('error', isValid?.msg);
+
+    //setSizeValied(isValid);
+    // if(file.name.lastIndexOf('.mp3') || file.name.lastIndexOf('.mp4')){
+    //   if(file.size > 5242880){
+    //     setSizeValied(true);
+    //     return false
+    //   }
+    //   else {
+    //     setSizeValied(false);
+    //   }
+    // }
+    
+    if(isValid?.isValid) {
+      try {
+        if (
+          file.name.lastIndexOf('.pdf') > 0 ||
+          file.name.lastIndexOf('.jpeg') > 0 ||
+          file.name.lastIndexOf('.jpg') > 0 ||
+          file.name.lastIndexOf('.png') > 0 ||
+          file.name.lastIndexOf('.mp3') > 0 ||
+          file.name.lastIndexOf('.mp4') > 0
+        ) {
+          const fd = new FormData();
+          fd.append('file', file);
+          setFileUploadInProgress(true);
+          const filePath = await uploadFile(fd);
+          if (file.type === 'application/pdf') {
+            setAttachments((prevState) => [...prevState, ...filePath]);
+            setAttachmentPreviews((prevState) => [...prevState, ...filePath]);
+          } else {
+            setAttachments((prevState) => [...prevState, filePath]);
+            setAttachmentPreviews((prevState) => [...prevState, filePath]);
+          }
+          setFileUploadInProgress(false);
+          setAlert('success', 'File uploaded successfully');
+          setSizeValied('');
         } else {
-          setAttachments((prevState) => [...prevState, filePath]);
-          setAttachmentPreviews((prevState) => [...prevState, filePath]);
+          setAlert('error', 'Please upload valid file');
         }
+      } catch (e) {
         setFileUploadInProgress(false);
-        setAlert('success', 'File uploaded successfully');
-      } else {
-        setAlert('error', 'Please upload valid file');
+        setAlert('error', 'File upload failed');
       }
-    } catch (e) {
-      setFileUploadInProgress(false);
-      setAlert('error', 'File upload failed');
     }
   };
+
+  // Confirm Popover 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const handleClick = (event) => {
+      setAnchorEl(true);
+  };
+
+  const handleClose = () => {
+      setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
 
   const removeAttachment = (index) => {
     setAttachmentPreviews((prevState) => [
@@ -127,7 +178,6 @@ const QuestionCard = ({
       return;
     }
     onChange('attachments', attachments);
-    console.log('triggered attachment change');
   }, [attachments]);
 
   return (
@@ -210,6 +260,7 @@ const QuestionCard = ({
                         <small style={{ width: '100%', color: '#014b7e' }}>
                           {' '}
                           Accepted files: jpeg,jpg,mp3,mp4,pdf,png
+                          {/*sizeValied ? 'Accepted files: jpeg,jpg,mp3,mp4,pdf,png' : 'Document size should be less than 5MB !'*/}
                         </small>
                       </>
                     )}
@@ -251,7 +302,6 @@ const QuestionCard = ({
                         ref={attachmentsRef}
                         onScroll={(e) => {
                           e.preventDefault();
-                          console.log('scrolled');
                         }}
                       >
                         {attachmentPreviews.map((url, i) => (
@@ -387,7 +437,7 @@ const QuestionCard = ({
                 color='default'
                 startIcon={<DeleteIcon />}
                 onClick={() => {
-                  removeQuestion(index);
+                  handleClick();
                 }}
                 title='Remove Question'
                 className='btn remove-question-btn'
@@ -395,6 +445,28 @@ const QuestionCard = ({
                 Remove question
               </Button>
             </div>
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
+            >
+              <div style={{ padding: '20px 30px'}}>
+                <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure you want to delete?</Typography>
+                <div>
+                  <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
+                  <StyledButton onClick={() => removeQuestion(index)} style={{float: 'right'}}>Confirm</StyledButton>
+                </div>
+              </div>
+            </Popover>
           </Grid>
         )}
         {/*        
