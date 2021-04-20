@@ -8,6 +8,8 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import WbIncandescentIcon from '@material-ui/icons/WbIncandescent';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
+// import MobileDatePicker from '@material-ui/lab/MobileDatePicker';
+import MobileDateRange from './mobileDateRange.jsx';
 
 
 const GenerateReportForm = (props) => {
@@ -125,6 +127,30 @@ const GenerateReportForm = (props) => {
           setAlert('error', error.message)
         })
     }
+    function getDaysAfter(date, amount) {
+      return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
+    }
+    function getDaysBefore(date, amount) {
+      return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
+    }
+
+    const handleStartDateChange = (date) => {
+      console.log("startdate:", date.toISOString().split("T")[0])
+      // const endDate = getDaysAfter(date.clone(), 6);
+      // setEndDate(endDate);
+      setStartDate(date.toISOString().split("T")[0]);
+      // getTeacherHomeworkDetails(2, date, endDate);
+    };
+    
+  
+    const handleEndDateChange = (date) => {
+
+      // console.log("split:",new Date(date._d).toISOString().split('T'))
+      // const startDate = getDaysBefore(date.clone(), 6);
+      // setStartDate(startDate);
+      setEndDate(date.format('YYYY-MM-DD'));
+      // getTeacherHomeworkDetails(2, startDate, date);
+    };
 
     useEffect(() => {
        getBranches();
@@ -145,7 +171,13 @@ const GenerateReportForm = (props) => {
            <div style = {{display : 'flex', flexDirection : 'row', justifyContent : 'space-between'}}>
            <MuiPickersUtilsProvider utils={MomentUtils} >
 
-           <KeyboardDatePicker
+           <MobileDateRange 
+            onChange={(date) => handleEndDateChange(date)}
+            handleStartDateChange={handleStartDateChange}
+            handleEndDateChange={handleEndDateChange}
+           />
+
+           {/* <KeyboardDatePicker
               size='small'
               color='primary'
               variant='dialog'
@@ -180,7 +212,7 @@ const GenerateReportForm = (props) => {
                 'aria-label': 'change date',
               }}
               style={{  width : '30%' }}
-            />
+            /> */}
            </MuiPickersUtilsProvider>
            </div>
            
@@ -197,8 +229,8 @@ const GenerateReportForm = (props) => {
                 <MenuItem value="">
                     <em>None</em>
                 </MenuItem>
-                {branch_list.map (branch => (
-                  <MenuItem value={branch.id}>{branch.branch_name}</MenuItem>
+                {branch_list?.map (branch => (
+                  <MenuItem value={branch?.id}>{branch?.branch_name}</MenuItem>
                 ) )}
                 </Select>
             </FormControl>

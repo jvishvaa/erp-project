@@ -14,7 +14,7 @@ const UpperGrade = (props) => {
   const [acadamicYearID, setAcadamicYear] = useState(1);
   const [gradeID, setGradeID] = useState(1);
   const [branchID, setBranchID] = useState(1);
-  const [counter, setCounter] = useState(3);
+  const [counter, setCounter] = useState(1);
   const [academicYear, setAcadamicYearName] = useState();
   const [gradeName, setGradeName] = useState();
   const [branchName, setBranchName] = useState();
@@ -70,7 +70,8 @@ const UpperGrade = (props) => {
     axiosInstance
       .get('/erp_user/branch/', {})
       .then((res) => {
-        setDataMap(res.data.data);
+        console.log(res.data.data , " branches ");
+        setDataMap(res.data.data.results);
       })
       .catch((error) => {
         console.log(error);
@@ -190,13 +191,13 @@ const UpperGrade = (props) => {
                       onChange={handleChangeMultiple}
                     >
                       {dataMap &&
-                        dataMap.map((name) => (
+                        dataMap?.map((name) => (
                           <option
                             key={name.id}
                             value={name.id}
-                            onClick={() => setBranchName(name.branch_name)}
+                            onClick={() => setBranchName(name?.branch?.branch_name)}
                           >
-                            {name.branch_name}
+                            {name?.branch?.branch_name}
                           </option>
                         ))}
                     </Select>
