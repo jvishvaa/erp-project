@@ -26,8 +26,7 @@ const TimeTable = (props) => {
   const [academicYear, setAcadamicYearName] = useState();
   const [gradeName, setGradeName] = useState();
   const [branchName, setBranchName] = useState();
-  const [studentModuleId, setStudentModuleId] = useState();
-  const [teacherModuleId, setTeacherModuleId] = useState();
+  const [moduleId, setModuleId] = useState();
   const [sectinName, setSectionName] = useState();
   const [teacherView, setTeacherView] = useState(false);
   const [openCloseTable, setOpenCloseTable] = useState(false);
@@ -43,18 +42,18 @@ const TimeTable = (props) => {
           item.child_module.forEach((item) => {
             if (
               location.pathname === '/time-table/student-view' &&
-              item.child_name === 'Teacher Time Table'
+              item.child_name === 'Student Time Table'
             ) {
-              setStudentModuleId(item?.child_id);
+              setModuleId(item?.child_id);
               setTeacherView(false);
               setOpenCloseTable(false);
             } else if (
               location.pathname === '/time-table/teacher-view' &&
-              item.child_name === 'Student Time Table'
+              item.child_name === 'Teacher Time Table'
             ) {
-              setTeacherModuleId(item?.child_id);
+              setModuleId(item?.child_id);
               setTeacherView(true);
-              setOpenCloseTable(false)
+              setOpenCloseTable(false);
             }
           });
         }
@@ -165,6 +164,7 @@ const TimeTable = (props) => {
               {Filter ? (
                 <>
                   <UpperGrade
+                    moduleId={moduleId}
                     handleCloseTable={handleCloseTable}
                     handlePassData={handlePassData}
                     handleClickAPI={handleClickAPI}

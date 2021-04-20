@@ -95,7 +95,8 @@ const CreateNewForm = (props) => {
       .get('/erp_user/list-academic_year/', {})
       .then((res) => {
         if (res.status === 200) {
-          setAcadamicData(res.data.data[0].session_year);
+          console.log(res,'listyear');
+          setAcadamicData(res.data.data);
         }
         console.log(res.data.data);
       })
@@ -107,7 +108,9 @@ const CreateNewForm = (props) => {
     axiosInstance
       .get('/academic/grievance_types/')
       .then((res) => {
+        console.log(res,'res data');
         if (res.status === 200) {
+          console.log(res);
           setGrevancesData(res.data.data);
         }
         console.log(res, 'grievand');
@@ -118,28 +121,28 @@ const CreateNewForm = (props) => {
   };
   let Valid = true;
   const handlePostData = () => {
-    console.log(optionData);
-    if (optionData.trim().length === 0) {
-      console.log(false);
-      setErrorValue({ ...error, option: false });
-      Valid = false;
-    }
-    if (editorContent.trim().length === 0) {
-      console.log(false);
-      setErrorValue({ ...error, editor: false });
-      Valid = false;
-    }
-    if (titleData.trim().lenght === 0) {
-      console.log(false);
-      setErrorValue({ ...error, title: false });
-      Valid = false;
-    }
-    if (files.lenght === 0) {
-      console.log(false);
-      setErrorValue({ ...error, image: false });
-      Valid = false;
-    }
-    if (Valid) {
+    // console.log(optionData);
+    // if (optionData.trim().length === 0) {
+    //   console.log(false);
+    //   setErrorValue({ ...error, option: false });
+    //   Valid = false;
+    // }
+    // if (editorContent.trim().length === 0) {
+    //   console.log(false);
+    //   setErrorValue({ ...error, editor: false });
+    //   Valid = false;
+    // }
+    // if (titleData.trim().lenght === 0) {
+    //   console.log(false);
+    //   setErrorValue({ ...error, title: false });
+    //   Valid = false;
+    // }
+    // if (files.lenght === 0) {
+    //   console.log(false);
+    //   setErrorValue({ ...error, image: false });
+    //   Valid = false;
+    // }
+    // if (Valid) {
       let obj = {
         academic_year: 1,
         section: 1,
@@ -151,6 +154,7 @@ const CreateNewForm = (props) => {
         grievance_attachment: files,
         ticket_type: 'Grievance',
       };
+      console.log(obj,'objjdata');
       axiosInstance
         .post('/academic/create_ticket/', { obj })
         .then((res) => {
@@ -161,8 +165,8 @@ const CreateNewForm = (props) => {
         .catch((error) => {
           setAlert('error', error.message);
         });
-    }
-    console.log('data', error);
+    // }
+    // console.log('data', error);
   };
   return (
     <>

@@ -117,7 +117,7 @@ const DisplayBox = (props) => {
               // }
               getOptionLabel={(option) => option?.name}
               style={{ width: '100%' }}
-              onChange={(event, option) => setAssignedTeacherID(option?.id)}
+              onChange={(event, option) => setAssignedTeacherID(option?.user_id)}
               renderInput={(params) => (
                 <TextField
                   {...params}

@@ -47,11 +47,12 @@ const GravienceHome = () => {
         },
       })
       .then((result) => {
-        if (result.status == 200) {
-          setGravienceList(result.data.data.results);
-        } else {
-          setAlert('error', result.data.message);
-        }
+        console.log(result,'list data');
+        // if (result.status == 200) {
+        //   setGravienceList(result.data.data.results);
+        // } else {
+        //   setAlert('error', result.data.message);
+        // }
       })
       .catch((error) => {
         setAlert('error', error.message);

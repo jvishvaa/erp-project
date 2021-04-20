@@ -258,7 +258,7 @@ const Calander = (props) => {
               options={assignedTeacher}
               getOptionLabel={(option) => option?.name}
               style={{ width: 250 }}
-              onChange={(event, option) => setAssignedTeacherID(option?.id)}
+              onChange={(event, option) => setAssignedTeacherID(option?.user_id)}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -338,6 +338,7 @@ const Calander = (props) => {
               label='Start Time'
               id='outlined-size-small'
               variant='outlined'
+              helperText="12-hour format"
               size='small'
               onChange={(e) => setStartTime(e.target.value)}
             />
@@ -347,6 +348,7 @@ const Calander = (props) => {
               label='End Time'
               id='outlined-size-small'
               variant='outlined'
+              helperText="12-hour format"
               size='small'
               onChange={(e) => setEndTime(e.target.value)}
             />

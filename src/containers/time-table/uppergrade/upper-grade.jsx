@@ -42,6 +42,7 @@ const UpperGrade = (props) => {
       }
     }
     if (counter === 1) {
+      console.log(value,'value data');
       setAcadamicYear(value);
     }
     if (counter === 2) {
@@ -74,7 +75,7 @@ const UpperGrade = (props) => {
   };
   const callingGradeAPI = () => {
     axiosInstance
-      .get(`/erp_user/grademapping/?session_year=${acadamicYearID}&branch_id=${branchID}`)
+      .get(`${endpoints.academics.grades}?session_year=${acadamicYearID}&branch_id=${branchID}&module_id=${props.moduleId}`)
       .then((res) => {
         setDataMap(res.data.data);
       })
@@ -84,10 +85,10 @@ const UpperGrade = (props) => {
   };
   const callingBranchAPI = () => {
     axiosInstance
-      .get(`/erp_user/branch/?session_year=${acadamicYearID}`)
+      .get(`${endpoints.communication.branches}?session_year=${acadamicYearID}&module_id=${props.moduleId}`)
       .then((res) => {
         if(res.status === 200){
-          setDataMap(res.data.data.results);
+          setDataMap(res?.data?.data?.results);
         }
         
       })
@@ -97,7 +98,7 @@ const UpperGrade = (props) => {
   };
   const callingAcadamicAPI = () => {
     axiosInstance
-      .get(`/erp_user/list-academic_year/`, {})
+      .get(`${endpoints.userManagement.academicYear}?module_id=${props.moduleId}`, {})
       .then((res) => {
         console.log(res, 'Academic');
         setDataMapAcademicYear(res.data.data);
@@ -109,7 +110,7 @@ const UpperGrade = (props) => {
   const callingSectionAPI = () => {
     axiosInstance
       .get(
-        `/erp_user/sectionmapping/?session_year=${acadamicYearID}&branch_id=${branchID}&grade_id=${gradeID}`
+        `${endpoints.academics.sections}?session_year=${acadamicYearID}&branch_id=${branchID}&grade_id=${gradeID}&module_id=${props.moduleId}`
       )
       .then((res) => {
         if (res.status === 200) {
@@ -123,17 +124,7 @@ const UpperGrade = (props) => {
   const clearButtonColor = {
     color: 'gray',
   };
-  const getModuleId = () => {
-    const tempObj = {
-      '/time-table/teacher-view/': 'Teacher Time Table',
-      '/time-table/teacher-view': 'Teacher Time Table',
-      '/time-table/student-view': 'Student Time Table',
-      '/time-table/student-view/': 'Student Time Table',
-      default: 'Student Time Table',
-    };
-    const moduleName = tempObj[location.pathname] || tempObj['default'];
-    return getModuleInfo(moduleName).id;
-  };
+
   const handleCounter = (value) => {
     if (value === 'back' && counter > 1) {
       setCounter(counter - 1);
@@ -260,8 +251,8 @@ const UpperGrade = (props) => {
                       {dataMap &&
                         dataMap?.map((name) => (
                           <option
-                            key={name.id}
-                            value={name.id}
+                            key={name.branch.id}
+                            value={name.branch.id}
                             onClick={() => setBranchName(name?.branch?.branch_name)}
                           >
                            
@@ -318,10 +309,10 @@ const UpperGrade = (props) => {
                         dataMap.map((name) => (
                           <option
                             key={name.id}
-                            value={name.id}
-                            onClick={() => setGradeName(name.grade_name)}
+                            value={name?.grade_id}
+                            onClick={() => setGradeName(name?.grade__grade_name)}
                           >
-                            {name.grade_name}
+                            {name.grade__grade_name}
                           </option>
                         ))}
                     </Select>
@@ -376,10 +367,10 @@ const UpperGrade = (props) => {
                         dataMap.map((name) => (
                           <option
                             key={name.id}
-                            value={name.id}
-                            onClick={() => setSectionName(name.section_name)}
+                            value={name?.section_id}
+                            onClick={() => setSectionName(name?.section__section_name)}
                           >
-                            {name.section_name}
+                            {name?.section__section_name}
                           </option>
                         ))}
                     </Select>

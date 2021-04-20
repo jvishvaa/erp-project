@@ -255,6 +255,12 @@ export default {
     getBatchList: '/erp_user/teacher_online_class/',
     cancelBatchApi: '/erp_user/cancel-online-class/',
   },
+  grievances: {
+    section : '/erp_user/section/',
+    downloadTicket : '/academic/download_tickets/',
+    listTickets : '/academic/list_tickets/',
+    grievance_reply: '/academic/grievance_reply/'
+  },
   studentViewBatchesApi: {
     getBatchesApi: '/erp_user/student_online_class/',
     rejetBatchApi: '/erp_user/mark_attendance/',
