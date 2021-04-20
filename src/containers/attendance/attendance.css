@@ -1,14 +1,20 @@
-.attendanceDataUnavailable{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 5%;
-    margin-left: 85%;
-    margin-top: 21%;
-  }
+.attendanceDataUnavailable {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 5%;
+  margin-left: 85%;
+  margin-top: 21%;
+}
 
-  /* .downloadButton.MuiButton-root{
+/* .downloadButton.MuiButton-root{
     background-color: #ff6b6b;
     
   } */
+.arrow .MuiSvgIcon-root {
+  color: #ff6b6b;
+}
+.button .MuiSvgIcon-root {
+  color: #ff6b6b;
+}
