@@ -282,8 +282,8 @@ export default {
   },
   ebook: {
     ebook: `${baseURLCentral}/ebook/ebook_school_wise_filter/`,
-    EbookUser:`${baseURLCentral}/ebook/ebook_user/`,
-    AnnotateEbook:`${baseURLCentral}/ebook/ebook_user_status/`,
+    EbookUser:`/academic/ebook_user/`,
+    AnnotateEbook:`/academic/ebook_user_status/`,
     // academicYearList: `${baseURLCentral}/erp_user/list-academic_year/`,
     // // academicYearList: '/erp_user/list-academic_year/',
     // gradeSubjectMappingList: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
