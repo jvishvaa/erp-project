@@ -113,12 +113,8 @@ function GridList(props) {
       setPdfUrl(url && url);
       setLoading(true);
       setOpen(true);
-      axios
-        .get(`${endpoints.ebook.EbookUser}?domain_name=${domainTobeSent}&is_ebook=true&ebook_id=${data.id}`, {
-          headers: {
-            'x-api-key': 'vikash@12345#1231',
-          },
-        })
+      axiosInstance
+        .get(`${endpoints.ebook.EbookUser}?ebook_id=${data.id}`)
         .then(({ data }) => {
           console.log(data);
           setLoading(false);
