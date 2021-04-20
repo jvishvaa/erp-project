@@ -234,7 +234,7 @@ const Category = (props) => {
 
   const handleMYActivity = () => {
     axiosInstance
-      .get(`${endpoints.discussionForum.postList}?page=1&my_activity=1`)
+      .get(`${endpoints.discussionForum.filterCategory}?page=1&my_activity=1`)
       .then((res) => {
         setPostList(res.data.data.results);
       })
@@ -264,14 +264,20 @@ const Category = (props) => {
 
   React.useEffect(() => {
     if (NavData && NavData.length) {
+      let isModuleId = false;
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Homework' &&
+          item.parent_modules === 'Discussion Forum' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Student Homework') {
+            if (item.child_name === 'Teacher Forum' && !isModuleId) {
+              isModuleId = true;
+              setModuleId(item.child_id);
+            }
+            else if (item.child_name === 'Student Forum' && !isModuleId) {
+              isModuleId = true;
               setModuleId(item.child_id);
             }
           });
@@ -336,21 +342,21 @@ const Category = (props) => {
             ? props.filters.section.id
             : '';
         if (categoryId === 0 && grades === '' && sections === ''){
-          getDiscussionPost(`${endpoints.discussionForum.filterCategory}`);
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}`);
         }
         if (categoryId !== 0 && grades === '') {
-          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?category=${categoryId}`);
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&category=${categoryId}`);
           console.log(categoryId + ' === ' + postURL);
         }
         if (categoryId === 0 && grades !== '' && sections !== '') {
           getDiscussionPost(
-            `${endpoints.discussionForum.filterCategory}?grade=${grades}&section=${sections}`
+            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&grade=${grades}&section=${sections}`
           );
         }
         if (categoryId !== 0 && grades !== '' && sections !== '') {
           //postURL = `${endpoints.discussionForum.postList}?category=${categoryId}&grade=${grades}&section=${sections}`;
           getDiscussionPost(
-            `${endpoints.discussionForum.filterCategory}?category=${categoryId}&grade=${grades}&section=${sections}`
+            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&category=${categoryId}&grade=${grades}&section=${sections}`
           );
         }
       }

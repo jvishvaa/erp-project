@@ -95,16 +95,16 @@ const CategoryCard = (props) => {
             </Typography>
           </Grid>
           <Grid item xs={2}>
-            {props.status !== 'undefined' && props.status === 'active' ?
-              <CheckCircleIcon className={classes.activeIcon} />
-              : <CancelIcon className={classes.inactiveIcon} />
+            {props.status !== 'undefined' && props.status
+              ? <CancelIcon className={classes.inactiveIcon} />
+              : <CheckCircleIcon className={classes.activeIcon} />
             }
           </Grid>
           <Grid itxm xs={12} className={classes.actionGrid}>
               {!isEdit && (
                 <StyledButton
                   variant='contained'
-                  color='secondary'
+                  color='primary'
                   className={classes.editButton}
                   onClick={handleEdit}
                 >

@@ -50,11 +50,11 @@ const StyledInput = withStyles({
   },
 })(InputBase);
 
-const CreateCategory = () => {
+const CreateCategory = ({selectedCategory, selectedSubCategory, selectedSubSubCategory}) => {
   const classes = useStyles({});
 
-  const [category, setCategory] = React.useState();
-  const [subCategory, setSubCategory] = React.useState();
+  const [category, setCategory] = React.useState(selectedCategory? selectedCategory.category_name : '');
+  const [subCategory, setSubCategory] = React.useState(selectedSubCategory? selectedSubCategory.sub_category_name : '');
   const [subSubCategory, setSubSubCategory] = React.useState();
 
   const handleChangeCategory = (e) => {
