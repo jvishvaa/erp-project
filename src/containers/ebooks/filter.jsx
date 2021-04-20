@@ -96,29 +96,6 @@ const Filter = ({ handleFilter, clearFilter }) => {
   return (
     <>
       <Grid container spacing={2} style={{ padding: '0px 10px' }}>
-         <Grid item md={3} xs={12}>
-          <Autocomplete
-            style={{ width: '100%' }}
-            size='small'
-            className='dropdownIcon'
-            onChange={(event, value) => {
-              setSelectedVolume(value);
-            }}
-            id='volume_id'
-            options={volumeList}
-            value={selectedVolume}
-            getOptionLabel={(option) => option.volume_name || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Volume'
-                placeholder='Volume'
-              />
-            )}
-          />
-        </Grid>
         <Grid item md={3} xs={12}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -227,6 +204,29 @@ const Filter = ({ handleFilter, clearFilter }) => {
                 label='Subject'
                 placeholder='Subject'
                 required
+              />
+            )}
+          />
+        </Grid>
+        <Grid item md={3} xs={12}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            className='dropdownIcon'
+            onChange={(event, value) => {
+              setSelectedVolume(value);
+            }}
+            id='volume_id'
+            options={volumeList}
+            value={selectedVolume}
+            getOptionLabel={(option) => option.volume_name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Volume'
+                placeholder='Volume'
               />
             )}
           />
