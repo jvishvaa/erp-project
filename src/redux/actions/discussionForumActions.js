@@ -4,6 +4,10 @@ import endpoints from '../../config/endpoints';
 export const types = {
   DISCUSSION_POST: 'DISCUSSION_POST',
   FILTER_DATA: 'FILTER_DATA',
+  EDIT_CATEGORI_DATA: 'EDIT_CATEGORI_DATA',
+  UPDATE_CATAGORY: 'UPDATE_CATAGORY',
+  UPDATE_CATAGORY_SUCCESS: 'UPDATE_CATAGORY_SUCCESS',
+  UPDATE_CATAGORY_FAILURE: 'UPDATE_CATAGORY_FAILURE',
   CREATE_CATEGORY: 'CREATE_CATEGORY',
   CREATE_CATEGORY_SUCCESS: 'CREATE_CATEGORY_SUCCESS',
   CREATE_CATEGORY_FAILURE: 'CREATE_CATEGORY_FAILURE',
@@ -24,6 +28,10 @@ export const types = {
 const { 
   DISCUSSION_POST,
   FILTER_DATA,
+  UPDATE_CATAGORY,
+  UPDATE_CATAGORY_SUCCESS,
+  UPDATE_CATAGORY_FAILURE,
+  EDIT_CATEGORI_DATA,
   CREATE_CATEGORY,
   CREATE_CATEGORY_SUCCESS,
   CREATE_CATEGORY_FAILURE,
@@ -55,6 +63,13 @@ export const filterDataAction = (data) => {
   }
 }
 
+export const editCategoryDataAction = (data) => {
+  return {
+    type: EDIT_CATEGORI_DATA,
+    payload: data,
+  }
+}
+
 export const createAllCategory = params => dispatch => {
   dispatch({type: CREATE_CATEGORY});
   return axiosInstance.post(`${endpoints.discussionForum.PostCategory}`,params)
@@ -64,6 +79,19 @@ export const createAllCategory = params => dispatch => {
   })
   .catch((error) => {
     dispatch({ type: CREATE_CATEGORY_FAILURE, data: []});
+    throw error;
+  });
+}
+
+export const updateAllCategory = (params, id) => dispatch => {
+  dispatch({type: UPDATE_CATAGORY});
+  return axiosInstance.put(`/academic/${id}/update-category/`,params)
+  .then((res) => {
+    console.log(res.data);
+    dispatch({ type: UPDATE_CATAGORY_SUCCESS, data: res.data.result});
+  })
+  .catch((error) => {
+    dispatch({ type: UPDATE_CATAGORY_FAILURE, data: []});
     throw error;
   });
 }

@@ -440,7 +440,6 @@ const Category = (props) => {
                   />
                 ))}
               </StyledTabs>
-              <TabPanel value={value} index={0} />
             </div>
             {/* <CategoryScrollbar categoryList={props.categoryList} categoryId={handleCategoryId} /> */}
           </Grid>

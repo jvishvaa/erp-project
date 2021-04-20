@@ -16,7 +16,7 @@ const initialState = {
   categoryList: [],
   subCategoryList: [],
   subSubCategoryList: [],
-
+  editCategoryData: '',
 };
 
 const discussionReducer = (state = initialState, action) => {
@@ -33,6 +33,11 @@ const discussionReducer = (state = initialState, action) => {
           grade: '',
           section: '',
         },
+      };
+    case types.EDIT_CATEGORI_DATA:
+      return {
+        ...state,
+        editCategoryData: action.payload,
       };
     case types.FETCH_CATEGORY_DATA:
       return {
