@@ -52,6 +52,11 @@ const useStyles = makeStyles({
     fontFamily: 'Open Sans',
     lineHeight: '33px',
     marginRight: '8.5px',
+    '@media (max-width: 600px)': {
+      fontSize: '20px',
+      marginRight: '6px',
+      lineHeight: '24px',
+    },
   },
   dotSeparator: {
     height: '12px',
@@ -81,6 +86,10 @@ const useStyles = makeStyles({
   },
   discussionIconRow: {
     float: 'right',
+    '@media (max-width: 600px)': {
+      display: 'block',
+      justifyContent: 'right',
+    },
   },
   discussionIcon: {
     color: '#042955',
@@ -154,7 +163,10 @@ const StyledOutlinedButton = withStyles({
     color: '#FE6B6B',
     border: '1px solid #FF6B6B',
     borderRadius: '10px',
-    backgroundColor: 'transparent',
+    backgroundColor: 'transparent !important',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
     position: 'absolute',
     bottom: '15px',
     width: '178px',
@@ -170,6 +182,9 @@ const OutlinedButton = withStyles({
     color: '#0455A6',
     border: '1px solid #0455A6',
     borderRadius: '10px',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
     backgroundColor: 'transparent',
     '@media (min-width: 600px)': {
       marginTop: '20px!important',
@@ -330,32 +345,36 @@ export default function DiscussionComponent(props) {
     <Grid container className={classes.discussionContainer}>
       <Grid item xs={12}>
         <div className={classes.discussionTitleBox}>
-          <span className={classes.discussionTitle}>
-            {`${props.rowData && props.rowData.categories.category_name} /`}
-          </span>
-          <span className={classes.discussionTitle}>
-            {`${props.rowData && props.rowData.categories.sub_category_name} /`}
-          </span>
-          <span className={classes.discussionTitle}>
-            {props.rowData && props.rowData.categories.sub_sub_category_name}
-          </span>
           <span>
-            <FiberManualRecordIcon className={classes.dotSeparator} />
-            <span className={classes.postByText}>post by</span>
-            <ProfileIcon
-              firstname={props.rowData.post_by.first_name}
-              lastname={props.rowData.post_by.last_name}
-              bgColor='#14B800'
-            />
-            <span className={classes.username}>
-              {`${props.rowData.post_by.first_name} ${props.rowData.post_by.last_name} /`}
-            </span>
-            <span className={classes.discussionTime}>
-              {`${moment(props.rowData.post_at).format('hh : mm ')} /`}
-            </span>
-            <span className={classes.discussionTime}>
-              {moment(props.rowData.post_at).format('DD.MM.YYYY')}
-            </span>
+            <div>
+              <span className={classes.discussionTitle}>
+                {`${props.rowData && props.rowData.categories.category_name} /`}
+              </span>
+              <span className={classes.discussionTitle}>
+                {`${props.rowData && props.rowData.categories.sub_category_name} /`}
+              </span>
+              <span className={classes.discussionTitle}>
+                {props.rowData && props.rowData.categories.sub_sub_category_name}
+              </span>
+            </div>
+            <div style={{ display: 'inline-block'}}>
+              {/* <FiberManualRecordIcon className={classes.dotSeparator} /> */}
+              <span className={classes.postByText}>post by</span>
+              <ProfileIcon
+                firstname={props.rowData.post_by.first_name}
+                lastname={props.rowData.post_by.last_name}
+                bgColor='#14B800'
+              />
+              <span className={classes.username}>
+                {`${props.rowData.post_by.first_name} ${props.rowData.post_by.last_name} /`}
+              </span>
+              <span className={classes.discussionTime}>
+                {`${moment(props.rowData.post_at).format('hh : mm ')} /`}
+              </span>
+              <span className={classes.discussionTime}>
+                {moment(props.rowData.post_at).format('DD.MM.YYYY')}
+              </span>
+            </div>
           </span>
           <span className={classes.discussionIconRow}>
             <span>

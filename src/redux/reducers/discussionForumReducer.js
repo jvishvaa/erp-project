@@ -8,9 +8,15 @@ const initialState = {
     grade: '',
     section: '',
   },
-  categoryList: [],
+  category_data: '',
   category_list: '',
-
+  sub_category_list: '',
+  sub_sub_category_list: '',
+  categoryData: [],
+  categoryList: [],
+  subCategoryList: [],
+  subSubCategoryList: [],
+  editCategoryData: '',
 };
 
 const discussionReducer = (state = initialState, action) => {
@@ -28,17 +34,73 @@ const discussionReducer = (state = initialState, action) => {
           section: '',
         },
       };
+    case types.EDIT_CATEGORI_DATA:
+      return {
+        ...state,
+        editCategoryData: action.payload,
+      };
+    case types.FETCH_CATEGORY_DATA:
+      return {
+        ...state,
+        category_data: true
+      }
+    case types.FETCH_CATEGORY_DATA_SUCCESS:
+      return {
+        ...state,
+        categoryData: action.data
+      }
+    case types.FETCH_CATEGORY_DATA_FAILURE:
+      return {
+        ...state,
+        categoryData: action.data
+      }
+    
     case types.FETCH_CATEGORY_LIST:
       return {
+        ...state,
         category_list: true
       }
-    case types.FETCH_CATEGORY_SUCCESS:
+    case types.FETCH_CATEGORY_LIST_SUCCESS:
       return {
+        ...state,
         categoryList: action.data
       }
-    case types.FETCH_CATEGORY_FAILURE:
+    case types.FETCH_CATEGORY_LIST_FAILURE:
       return {
+        ...state,
         categoryList: action.data
+      }
+    
+    case types.FETCH_SUB_CATEGORY_LIST:
+      return {
+        ...state,
+        sub_category_list: true
+      }
+    case types.FETCH_SUB_CATEGORY_LIST_SUCCESS:
+      return {
+        ...state,
+        subCategoryList: action.data
+      }
+    case types.FETCH_SUB_CATEGORY_LIST_FAILURE:
+      return {
+        ...state,
+        subCategoryList: action.data
+      }
+    
+    case types.FETCH_SUB_SUB_CATEGORY_LIST:
+      return {
+        ...state,
+        sub_sub_category_list: true
+      }
+    case types.FETCH_SUB_SUB_CATEGORY_LIST_SUCCESS:
+      return {
+        ...state,
+        subSubCategoryList: action.data
+      }
+    case types.FETCH_SUB_SUB_CATEGORY_LIST_FAILURE:
+      return {
+        ...state,
+        subSubCategoryList: action.data
       }
     default:
       return state;
