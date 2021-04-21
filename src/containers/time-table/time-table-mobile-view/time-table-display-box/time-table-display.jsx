@@ -14,10 +14,15 @@ const DisplayBox = (props) => {
   const { role_details: roleDetailes } =
     JSON.parse(localStorage.getItem('navigationData')) || {};
   const [Description, setDescription] = useState(props.dataOpenChange.period_description);
-  const [startTime, setStartTime] = useState(
-    props.dataOpenChange.period_start_time + ' - ' + props.dataOpenChange.period_end_time
+  const [startTime, setStartTime] = useState(props.dataOpenChange.period_start_time);
+  const [endTime, setEndTime] = useState(props.dataOpenChange.period_end_time);
+  const [teacherDetails, setTeacherDetails] = useState(data.teacher_name.name);
+  const [assignedTeacherName, setAssignedTeacherName] = useState(
+    props.dataOpenChange.teacher_name.name
   );
-  const [subject, setSubject] = useState(props.dataOpenChange.subject__subject_name);
+  const [assignedTeacherID, setAssignedTeacherID] = useState();
+  const [subjectID, setSubjectID] = useState(props.dataOpenChange.subject_id);
+  const [captionName, setCaptionName] = useState(props.dataOpenChange.period_name);
   const [ConductedBy, setConductedBy] = useState(
     props.dataOpenChange.teacher_name?.name
   );
@@ -32,14 +37,13 @@ const DisplayBox = (props) => {
       props.handleOpenChangeMobile(data, false);
     }
     let obj = {
+      period_start_time: startTime,
+      period_end_time: endTime,
       period_description: Description,
-      subject: subject,
-      assigned_teacher: ConductedBy,
+      subject: subjectID,
+      assigned_teacher: assignedTeacherID,
       required_material: MaterialRequired,
-      // period_description: 'New Data',
-      // subject: 'Maths',
-      // assigned_teacher: 'Alex',
-      // required_material: 'ABC,CDE,KBC',
+      period_name: captionName,
     };
     axiosInstance
       .post('/academic/assign_class_periods/' + data.id + '/', obj)
@@ -89,12 +93,24 @@ const DisplayBox = (props) => {
         <>
           <div className='field-container'>
             <TextField
-              label='Duration'
+              fullWidth
+              label='Start Time'
               id='outlined-size-small'
               variant='outlined'
               value={startTime}
               size='small'
               onChange={(e) => setStartTime(e.target.value)}
+            />
+          </div>
+          <div className='field-container'>
+            <TextField
+              fullWidth
+              label='End Time'
+              id='outlined-size-small'
+              variant='outlined'
+              value={endTime}
+              size='small'
+              onChange={(e) => setEndTime(e.target.value)}
             />
           </div>
           {/* <div className='field-container'>
@@ -118,12 +134,14 @@ const DisplayBox = (props) => {
           </div>
           <div className='field-container'>
             <TextField
+              fullWidth
+              key='Caption Name'
               label='Caption Name'
-              value={subject}
+              value={captionName}
               id='outlined-size-small'
               variant='outlined'
               size='small'
-              onChange={(e) => setSubject(e.target.value)}
+              onChange={(e) => setCaptionName(e.target.value)}
             />
           </div>
           <div className='field-container'>

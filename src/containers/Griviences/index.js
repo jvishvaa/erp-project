@@ -41,18 +41,19 @@ const GravienceHome = () => {
 
   const getGrivienceData = async () => {
     await axiosInstance
+      // .get(endpoints.grievances.listTickets + `?academic_year_id=${1}&branch_id=${1}&grade_id=${1}&section_id=${1}""start_date""end_date" grade_id=${1}`, {
       .get(endpoints.grievances.listTickets, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((result) => {
-        console.log(result,'list data');
-        // if (result.status == 200) {
-        //   setGravienceList(result.data.data.results);
-        // } else {
-        //   setAlert('error', result.data.message);
-        // }
+        console.log(result, 'list data');
+        if (result.status == 200) {
+          setGravienceList(result.data.data.results);
+        } else {
+          setAlert('error', result.data.message);
+        }
       })
       .catch((error) => {
         setAlert('error', error.message);
@@ -67,6 +68,7 @@ const GravienceHome = () => {
         },
       })
       .then((result) => {
+        
         if (result.status == 200) {
           setAlert('success', 'Download Started');
         } else {

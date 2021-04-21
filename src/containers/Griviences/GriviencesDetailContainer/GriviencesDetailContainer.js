@@ -174,7 +174,7 @@ const GriviencesDetailContainer = (props) => {
               </Avatar>
             </div>
             <div>
-              <label className={style.text_color}>Pawan Kumar</label>
+              <label className={style.text_color}>swaggy</label>
             </div>
             <Divider
               orientation='vertical'

@@ -23,7 +23,8 @@ const Reply = (props) => {
             src={props.Replys.user.profile}
           >
             {' '}
-            {props.Replys.user.name.charAt(0)}{' '}
+            Harsh
+            {/* {props.Replys.user.name.charAt(0)}{' '} */}
           </Avatar>
           <Typography
             style={{ fontSize: '12px', fontWeight: 'bold', marginLeft: '10px' }}

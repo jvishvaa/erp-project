@@ -9,6 +9,8 @@ import Button from '@material-ui/core/Button';
 import axiosInstance from '../../../config/axios';
 import DialogActions from '@material-ui/core/DialogActions';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -34,7 +36,7 @@ const Calander = (props) => {
   const [DataTuesday, setDataTuesday] = useState(0);
   const [DataWednesday, setDataWednesday] = useState(0);
   const [DataThursday, setDataThursday] = useState(0);
-  const [loopMax, setLoopMax] = useState([0, 1, 2, 3, 4]);
+  const [loopMax, setLoopMax] = useState([0, 1, 2, 3, 4, 5, 6]);
   const [DataFriday, setDataFriday] = useState(0);
   const [SelectData, setSelectData] = useState();
   const [selectClick, setSelectClick] = useState(false);
@@ -44,7 +46,7 @@ const Calander = (props) => {
   const [lengthWednesday, setLengthWednesday] = useState();
   const [lengthThursday, setLengthThursday] = useState();
   const [lengthFriday, setLengthFriday] = useState();
-  const [section, setSection] = useState();
+  const [subject, setSubject] = useState();
   const [sectionIdOption, setSectionIdOption] = useState();
   const [maxLength, setMaxLength] = useState();
   const [assignedTeacher, setAssignedTeacher] = useState();
@@ -53,10 +55,20 @@ const Calander = (props) => {
   const [periodName, setPeriodName] = useState();
   const [periodDescription, setPeriodDescription] = useState();
   const [day, setDay] = useState('Monday');
-  const [startTime, setStartTime] = useState();
+  const [startTime, setStartTime] = useState(new Date('2014-08-18T21:11:54'));
   const [acadamicYearID, setAcadamicYear] = useState();
   const [dayName, setDayName] = useState('Monday');
-  const [endTime, setEndTime] = useState();
+  const [endTime, setEndTime] = useState(new Date('2014-08-18T21:11:54'));
+  // const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
+
+  const handleDateStartTimeChange = (time) => {
+    // let dataTime = time.toString().slice(16, 21)
+    setStartTime(time);
+  };
+  const handleDateEndTimeChange = (time) =>{
+    // let dataTime = time.toString().slice(16, 21)
+    setEndTime(time);
+  }
   // const [openDialog, setOpenDialog] = useState(false);
 
   const borderStyle = {
@@ -70,11 +82,9 @@ const Calander = (props) => {
   };
   useEffect(() => {
     OpenCalanderWeek();
-    // handlePassData();
     callingSubjectAPI();
     callingTeachersAPI();
     handleContextData();
-    // props.callGetAPI();
   }, [props.tableData]);
   const handleContextData = () => (
     <UserConsumer>{({ ids }) => setAcadamicYear(ids)}</UserConsumer>
@@ -98,11 +108,10 @@ const Calander = (props) => {
         },
       })
       .then((res) => {
-       
-        setSection(res.data.data.results);
+        setSubject(res.data.data.results);
       })
       .catch((error) => {
-        setAlert('error', "can't fetch subjects")
+        setAlert('error', "can't fetch subjects");
       });
   };
   const callingTeachersAPI = () => {
@@ -116,15 +125,11 @@ const Calander = (props) => {
         setAssignedTeacher(res.data.result);
       })
       .catch((error) => {
-        setAlert('error', "can't fetch teachers list")
+        setAlert('error', "can't fetch teachers list");
       });
   };
   const createPeriodAPI = () => {
     let obj = {
-      // academic_year: props.passId.academic_year_id,
-      // section: props.passId.section_id,
-      // branch: props.passId.section_id,
-      // grade: props.passId.grade_id,
       academic_year: props.acadamicYear_ID,
       section: props.section_ID,
       branch: props.branch_ID,
@@ -134,8 +139,8 @@ const Calander = (props) => {
       day: day,
       period_name: periodName,
       period_description: periodDescription,
-      period_start_time: startTime,
-      period_end_time: endTime,
+      period_start_time: startTime.toString().slice(16, 21),
+      period_end_time: endTime.toString().slice(16, 21),
       required_material: requiredMaterial,
     };
     axiosInstance
@@ -148,7 +153,7 @@ const Calander = (props) => {
         }
       })
       .catch((error) => {
-        setAlert('error', error?.data?.message);
+        setAlert('error', 'please fill all fields');
       });
   };
   const OpenCalanderWeek = () => {
@@ -162,38 +167,39 @@ const Calander = (props) => {
     // // }
     // if (DataMonday) {
     //   let lengthData = DataMonday.length;
-    //   if (lengthData > 0) {
+    //   if (lengthData > 6) {
     //     setLengthMonday(lengthData);
     //   }
     //   console.log(lengthData);
     // }
     // if (DataTuesday) {
     //   let lengthData = DataTuesday.length;
-    //   if (lengthData > 0) setLengthTuesday(lengthData);
+    //   if (lengthData > 6) {
+    //     setLengthTuesday(lengthData);
+    //   }
     //   console.log(lengthData);
     // }
     // if (DataWednesday) {
     //   let lengthData = DataWednesday.length;
-    //   if (lengthData > 0) setLengthWednesday(lengthData);
+    //   if (lengthData > 6) {
+    //     setLengthWednesday(lengthData);
+    //   }
     //   console.log(lengthData);
     // }
     // if (DataThursday) {
     //   let lengthData = DataTuesday.length;
-    //   if (lengthData > 0) setLengthThursday(lengthData);
+    //   if (lengthData > 6) {
+    //     setLengthThursday(lengthData);
+    //   }
     //   console.log(lengthData);
     // }
     // if (DataFriday) {
     //   let lengthData = DataFriday.length;
-    //   if (lengthData > 0) setLengthFriday(lengthData);
+    //   if (lengthData > 6) {
+    //     setLengthFriday(lengthData);
+    //   }
     //   console.log(lengthData);
     // }
-    // console.log(
-    //   lengthMonday,
-    //   lengthTuesday,
-    //   lengthWednesday,
-    //   lengthThursday,
-    //   lengthFriday
-    // );
     // // if(monday)
     // let arrayLength = [
     //   lengthMonday,
@@ -207,7 +213,9 @@ const Calander = (props) => {
     // console.log(sortedArray, 'sorted array');
     // console.log(maxLength, 'max length');
     // let mappingArray = Array.from(Array(maxLength).keys());
-    // setLoopMax(mappingArray);
+    // if (maxLength > 6) {
+    //   setLoopMax(mappingArray);
+    // }
   };
   const handleChangeDay = (e) => {
     setDayName(e.target.value);
@@ -237,7 +245,7 @@ const Calander = (props) => {
           <div className={classes.formTextFields}>
             <Autocomplete
               id='combo-box-demo'
-              options={section}
+              options={subject}
               getOptionLabel={(option) => option?.subject_name}
               style={{ width: 250 }}
               onChange={(event, option) => setSectionIdOption(option?.id)}
@@ -333,25 +341,59 @@ const Calander = (props) => {
               onChange={(e) => setDay(e.target.value)}
             />
           </div> */}
-          <div className={classes.formTextFields}>
-            <TextField
+          <div className={classes.formTextFields} style={{width: '43%'}} >
+            {/* <TextField
               label='Start Time'
               id='outlined-size-small'
               variant='outlined'
-              helperText="12-hour format"
+              placeholder='eg:07:00:00'
+              helperText='24-hour format'
               size='small'
               onChange={(e) => setStartTime(e.target.value)}
-            />
+            /> */}
+            <MuiPickersUtilsProvider variant='outlined' fullWidth utils={DateFnsUtils}>
+              <KeyboardTimePicker
+                margin='normal'
+                id='time-picker'
+                variant='outlined'
+                label='Start Time'
+                fullWidth
+                ampm={false}
+                helperText='24-hour format'
+                value={startTime}
+                onChange={handleDateStartTimeChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change time',
+                }}
+              />
+            </MuiPickersUtilsProvider>
           </div>
-          <div className={classes.formTextFields}>
-            <TextField
+          <div className={classes.formTextFields} style={{width: '43%'}}>
+            {/* <TextField
               label='End Time'
               id='outlined-size-small'
               variant='outlined'
-              helperText="12-hour format"
+              placeholder='eg:08:00:00'
+              helperText='24-hour format'
               size='small'
               onChange={(e) => setEndTime(e.target.value)}
-            />
+            /> */}
+            <MuiPickersUtilsProvider variant='outlined' fullWidth utils={DateFnsUtils}>
+              <KeyboardTimePicker
+                margin='normal'
+                id='time-picker'
+                variant='outlined'
+                label='End Time'
+                fullWidth
+                ampm={false}
+                helperText='24-hour format'
+                value={endTime}
+                onChange={handleDateEndTimeChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change time',
+                }}
+              />
+            </MuiPickersUtilsProvider>
           </div>
         </div>
         <DialogActions>
@@ -421,10 +463,11 @@ const Calander = (props) => {
                       handleChangeData(DataMonday[index]);
                     }}
                   >
-                    <h4>{DataMonday[index].period_name}</h4>{' '}
+                    <h4>{DataMonday[index].period_name}</h4>
+                    <h3>{DataMonday[index].subject_details?.subject_name}</h3>
                     <p>
                       {DataMonday[index].period_start_time.slice(0, 5)}-
-                      {DataMonday[index].period_end_time.slice(0, 5)}AM
+                      {DataMonday[index].period_end_time.slice(0, 5)}
                     </p>
                     <h4>{DataMonday[index].teacher_name?.name}</h4>
                   </td>
@@ -441,10 +484,11 @@ const Calander = (props) => {
                       handleChangeData(DataTuesday[index]);
                     }}
                   >
-                    <h4>{DataTuesday[index].period_name}</h4>{' '}
+                    <h4>{DataTuesday[index].period_name}</h4>
+                    <h3>{DataTuesday[index].subject_details?.subject_name}</h3>{' '}
                     <p>
                       {DataTuesday[index].period_start_time.slice(0, 5)}-
-                      {DataTuesday[index].period_end_time.slice(0, 5)}AM
+                      {DataTuesday[index].period_end_time.slice(0, 5)}
                     </p>
                     <h4>{DataTuesday[index].teacher_name?.name}</h4>
                   </td>
@@ -461,10 +505,11 @@ const Calander = (props) => {
                       handleChangeData(DataWednesday[index]);
                     }}
                   >
-                    <h4>{DataWednesday[index].period_name}</h4>{' '}
+                    <h4>{DataWednesday[index].period_name}</h4>
+                    <h3>{DataWednesday[index].subject_details?.subject_name}</h3>{' '}
                     <p>
                       {DataWednesday[index].period_start_time.slice(0, 5)}-
-                      {DataWednesday[index].period_end_time.slice(0, 5)}AM
+                      {DataWednesday[index].period_end_time.slice(0, 5)}
                     </p>
                     <h4>{DataWednesday[index].teacher_name?.name}</h4>
                   </td>
@@ -480,10 +525,11 @@ const Calander = (props) => {
                       handleChangeData(DataThursday[index]);
                     }}
                   >
-                    <h4>{DataThursday[index].period_name}</h4>{' '}
+                    <h4>{DataThursday[index].period_name}</h4>
+                    <h3>{DataThursday[index].subject_details?.subject_name}</h3>{' '}
                     <p>
                       {DataThursday[index].period_start_time.slice(0, 5)}-
-                      {DataThursday[index].period_end_time.slice(0, 5)}.AM
+                      {DataThursday[index].period_end_time.slice(0, 5)}
                     </p>
                     <h4>{DataThursday[index].teacher_name?.name}</h4>
                   </td>
@@ -499,10 +545,11 @@ const Calander = (props) => {
                       handleChangeData(DataFriday[index]);
                     }}
                   >
-                    <h4>{DataFriday[index].period_name}</h4>{' '}
+                    <h4>{DataFriday[index]?.period_name}</h4>
+                    <h3>{DataFriday[index]?.subject_details?.subject_name}</h3>
                     <p>
                       {DataFriday[index].period_start_time.slice(0, 5)}-
-                      {DataFriday[index].period_end_time.slice(0, 5)}AM
+                      {DataFriday[index].period_end_time.slice(0, 5)}
                     </p>
                     <h4>{DataFriday[index].teacher_name?.name}</h4>
                   </td>
@@ -514,128 +561,13 @@ const Calander = (props) => {
                 )}
               </tr>
             ))}
-            {/* {props.tableData && props.tableData.map((data, index)=>{
-              <tr key={data}>
-              {index < DataMonday.length ? (
-                <td
-                  onClick={() => {
-                    handleChangeData(data.Monday[index]);
-                  }}
-                >
-                  <h4>{data.Monday[index].period_name}</h4>{' '}
-                  <p>
-                    {data.Monday[index].period_start_time.slice(0, 5)}-
-                    {data.Monday[index].period_end_time.slice(0, 5)}AM
-                  </p>
-                  <h4>
-                    {data.Monday[index].assigned_teacher__first_name}{' '}
-                    {data.Monday[index].assigned_teacher__last_name}
-                  </h4>
-                </td>
-              ) : (
-                <td>
-                  <h4> </h4> <p> </p>
-                  <h4> </h4>
-                </td>
-              )}
-
-              {index < DataTuesday.length ? (
-                <td
-                  onClick={() => {
-                    handleChangeData(data.Tuesday[index]);
-                  }}
-                >
-                  <h4>{data.Tuesday[index].period_name}</h4>{' '}
-                  <p>
-                    {data.Tuesday[index].period_start_time.slice(0, 5)}-
-                    {data.Tuesday[index].period_end_time.slice(0, 5)}AM
-                  </p>
-                  <h4>
-                    {data.Tuesday[index].assigned_teacher__first_name}{' '}
-                    {data.Tuesday[index].assigned_teacher__last_name}
-                  </h4>
-                </td>
-              ) : (
-                <td>
-                  <h4> </h4> <p> </p>
-                  <h4> </h4>
-                </td>
-              )}
-              {index < DataWednesday.length ? (
-                <td
-                  style={selectClick ? { borderStyle } : {}}
-                  onClick={() => {
-                    handleChangeData(data.Wednesday[index]);
-                  }}
-                >
-                  <h4>{data.Wednesday[index].period_name}</h4>{' '}
-                  <p>
-                    {data.Wednesday[index].period_start_time.slice(0, 5)}-
-                    {data.Wednesday[index].period_end_time.slice(0, 5)}AM
-                  </p>
-                  <h4>
-                    {data.Wednesday[index].assigned_teacher__first_name}{' '}
-                    {data.Wednesday[index].assigned_teacher__last_name}
-                  </h4>
-                </td>
-              ) : (
-                <td>
-                  <h4> </h4> <p> </p>
-                  <h4> </h4>
-                </td>
-              )}
-              {index < DataThursday.length ? (
-                <td
-                  onClick={() => {
-                    handleChangeData(data.Thursday[index]);
-                  }}
-                >
-                  <h4>{data.Thursday[index].period_name}</h4>{' '}
-                  <p>
-                    {data.Thursday[index].period_start_time.slice(0, 5)}-
-                    {data.Thursday[index].period_end_time.slice(0, 5)}.AM
-                  </p>
-                  <h4>
-                    {data.Thursday[index].assigned_teacher__first_name}{' '}
-                    {data.Thursday[index].assigned_teacher__last_name}
-                  </h4>
-                </td>
-              ) : (
-                <td>
-                  <h4> </h4> <p> </p>
-                  <h4> </h4>
-                </td>
-              )}
-              {index < DataFriday.length ? (
-                <td
-                  onClick={() => {
-                    handleChangeData(data.Friday[index]);
-                  }}
-                >
-                  <h4>{data.Friday[index].period_name}</h4>{' '}
-                  <p>
-                    {data.Friday[index].period_start_time.slice(0, 5)}-
-                    {data.Friday[index].period_end_time.slice(0, 5)}AM
-                  </p>
-                  <h4>
-                    {data.Friday[index].assigned_teacher__first_name}{' '}
-                    {data.Friday[index].assigned_teacher__last_name}
-                  </h4>
-                </td>
-              ) : (
-                <td>
-                  <h4> </h4> <p> </p>
-                  <h4> </h4>
-                </td>
-              )}
-            </tr>
-            }) }   */}
           </table>
         </div>
         <div className='display-container'>
           {selectClick ? (
             <DisplayBox
-            assignedTeacher={assignedTeacher}
+              subject={subject}
+              assignedTeacher={assignedTeacher}
               handleChangeDisplayView={handleChangeDisplayView}
               teacherView={props.teacherView}
               callGetAPI={props.callGetAPI}

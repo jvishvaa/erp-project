@@ -283,6 +283,7 @@ const UpperGrade = (props) => {
           >
             Clear All
           </Button>
+          <div className='generate-button'>
           <Button
             size='small'
             variant='contained'
@@ -291,8 +292,9 @@ const UpperGrade = (props) => {
             onClick={handleGenerateData}
             startIcon={<EmojiObjectsSharpIcon />}
           >
-            Genrate
+            Filter
           </Button>
+          </div>
         </div>
       </div>
     </>
