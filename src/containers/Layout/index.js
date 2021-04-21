@@ -605,6 +605,10 @@ const Layout = ({ children, history }) => {
         history.push('/assessment');
         break;
       }
+      case 'Assessment Report': {
+        history.push('/assessment-reports');
+        break;
+      }
       //   { name: 'Question Bank', Path: '/question-bank' },
       // { name: 'Question Paper', Path: '/assessment-question' },
       // { name: 'Create Test', Path: '/assesment' },
@@ -807,6 +811,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Active/Inactive': {
         history.push('/finance/Student/ActiveInactive');
+        break;
+      }
+      case 'Student Active/Inactive': {
+        history.push('/finance/Student/ActiveInactive/Admin');
         break;
       }
       case 'Student Promotion': {

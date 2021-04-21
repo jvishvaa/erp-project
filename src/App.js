@@ -260,6 +260,7 @@ import CreateQuestionPaper from './containers/assessment-central/create-question
 import Assesment from './containers/assessment-central';
 import AssessmentView from './containers/assessment-central/assesment-view';
 import CreateAssesment from './containers/assessment-central/create-assesment';
+import AssessmentReportTypes from './containers/assessment-central/assessment-report-types';
 import ContactUs from 'containers/contact-us';
 import BookAppointment from './containers/BookAppointments/BookAppointment';
 import Appointments from './containers/BookAppointments/Appointments';
@@ -394,6 +395,9 @@ function App({ alert }) {
                           </Route>
                           <Route path='/create-assesment'>
                             {({ match }) => <CreateAssesment match={match} />}
+                          </Route>
+                          <Route exact path='/assessment-reports'>
+                            {({ match }) => <AssessmentReportTypes match={match} />}
                           </Route>
                           <Route exact path='/blog/genre'>
                             {({ match }) => <CreateGenre match={match} />}
