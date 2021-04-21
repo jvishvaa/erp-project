@@ -8,7 +8,6 @@ export const assessmentReportActions = {
   ASSESSMENT_REPORT_LIST_DATA_FAILURE: 'ASSESSMENT_REPORT_LIST_DATA_FAILURE',
 
   SET_REPORT_TYPE: 'SET_REPORT_TYPE',
-  // SET_REPORT_FILTERS: 'SET_REPORT_FILTERS',
   SET_CLEAR_FILTERS: 'SET_CLEAR_FILTERS',
 };
 
@@ -17,7 +16,6 @@ const {
   ASSESSMENT_REPORT_LIST_DATA_SUCCESS,
   ASSESSMENT_REPORT_LIST_DATA_FAILURE,
   SET_REPORT_TYPE,
-  // SET_REPORT_FILTERS,
   SET_CLEAR_FILTERS,
 } = assessmentReportActions;
 
@@ -67,17 +65,12 @@ export const setClearFilters = () => ({
   type: SET_CLEAR_FILTERS,
 });
 
-// export const setReportFilters = (filter, data) => ({
-//   type: SET_REPORT_FILTERS,
-//   filter,
-//   data,
-// });
-
-export const fetchAssessmentReportList = (reportType) => (dispatch) => {
+export const fetchAssessmentReportList = (reportType, params) => (dispatch) => {
   dispatch(success(SET_REPORT_TYPE, reportType));
   dispatch(request(ASSESSMENT_REPORT_LIST_DATA_REQUEST));
   if (reportType?.id) {
-    let url = reportTypeURL(reportType?.id);
+    let url = `${reportTypeURL(reportType?.id)}`;
+    if (params) url += `${params}`;
     return axios
       .get(url, {
         headers: { 'x-api-key': 'vikash@12345#1231' },

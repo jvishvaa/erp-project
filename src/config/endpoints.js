@@ -309,6 +309,7 @@ export default {
   },
   assessmentApis: {
     gradesList: `/academic/sm-grades-list/`,
+    testList: `${baseURLCentral}/assessment/subject-test-list/`,
   },
   questionBank: {
     grades: `${baseURLCentral}/lesson_plan/list-grade/`,

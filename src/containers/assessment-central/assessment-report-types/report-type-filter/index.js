@@ -18,7 +18,7 @@ const ReportTypeFilter = ({
   widerWidth,
   isMobile,
   fetchAssessmentReportList,
-  selectedReportType = {},
+  selectedReportType,
 }) => {
   const handleReportType = (event, value) => {
     if (value) fetchAssessmentReportList(value);
@@ -66,11 +66,7 @@ const ReportTypeFilter = ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchAssessmentReportList: (reportType) =>
-    dispatch(fetchAssessmentReportList(reportType)),
+    dispatch(fetchAssessmentReportList(reportType, '')),
 });
 
-const mapStateToProps = (state) => ({
-  selectedReportType: state.assessmentReportReducer.selectedReportType,
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ReportTypeFilter);
+export default connect(null, mapDispatchToProps)(ReportTypeFilter);

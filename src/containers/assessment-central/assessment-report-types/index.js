@@ -9,7 +9,7 @@ import {
   TableHead,
   TableCell,
   Paper,
-  TablePagination
+  TablePagination,
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -21,7 +21,7 @@ import Loading from '../../../components/loader/loader';
 import ReportTypeFilter from '../assessment-report-types/report-type-filter';
 import AssessmentReportFilters from '../assessment-report-types/assessment-report-filters';
 import { connect } from 'react-redux';
-import { setClearFilters } from 'redux/actions';
+import { filterDataAction, setClearFilters } from 'redux/actions';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 
@@ -71,7 +71,6 @@ const AssessmentReportTypes = ({
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-
   const [columns, setColumns] = useState([]);
 
   useEffect(() => {
@@ -80,39 +79,6 @@ const AssessmentReportTypes = ({
 
   useEffect(() => {
     switch (selectedReportType?.id) {
-      case 1:
-      default:
-        setColumns([
-          {
-            id: 'serial_number',
-            label: 'S.No',
-            minWidth: 100,
-            align: 'center',
-            labelAlign: 'center',
-          },
-          {
-            id: 'section',
-            label: 'Section',
-            minWidth: 170,
-            align: 'center',
-            labelAlign: 'center',
-          },
-          {
-            id: 'class_avg',
-            label: 'Class Average',
-            minWidth: 170,
-            align: 'center',
-            labelAlign: 'center',
-          },
-          {
-            id: 'teacher_name',
-            label: 'Teacher Name',
-            minWidth: 170,
-            align: 'center',
-            labelAlign: 'center',
-          },
-        ]);
-        break;
       case 2:
         setColumns([
           {
@@ -178,6 +144,39 @@ const AssessmentReportTypes = ({
           },
         ]);
         break;
+      case 1:
+      default:
+        setColumns([
+          {
+            id: 'serial_number',
+            label: 'S.No',
+            minWidth: 100,
+            align: 'center',
+            labelAlign: 'center',
+          },
+          {
+            id: 'section',
+            label: 'Section',
+            minWidth: 170,
+            align: 'center',
+            labelAlign: 'center',
+          },
+          {
+            id: 'class_avg',
+            label: 'Class Average',
+            minWidth: 170,
+            align: 'center',
+            labelAlign: 'center',
+          },
+          {
+            id: 'teacher_name',
+            label: 'Teacher Name',
+            minWidth: 170,
+            align: 'center',
+            labelAlign: 'center',
+          },
+        ]);
+        break;
     }
   }, [selectedReportType?.id]);
 
@@ -201,9 +200,17 @@ const AssessmentReportTypes = ({
             <CommonBreadcrumbs componentName='Assessment' childComponentName='Reports' />
           </div>
         </div>
-        <ReportTypeFilter widerWidth={widerWidth} isMobile={isMobile} />
+        <ReportTypeFilter
+          selectedReportType={selectedReportType}
+          widerWidth={widerWidth}
+          isMobile={isMobile}
+        />
         {selectedReportType?.id && (
-          <AssessmentReportFilters widerWidth={widerWidth} isMobile={isMobile} />
+          <AssessmentReportFilters
+            selectedReportType={selectedReportType}
+            widerWidth={widerWidth}
+            isMobile={isMobile}
+          />
         )}
 
         {selectedReportType?.id ? (

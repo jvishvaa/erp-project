@@ -771,6 +771,7 @@ const Assesment = () => {
                     variant='contained'
                     style={{ borderRadius: '10px' }}
                     className='disabled-btn'
+                    onClick={()=>history.push('/assessment-reports')}
                   >
                     REPORTS
                   </Button>
