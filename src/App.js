@@ -259,8 +259,6 @@ import CreateQuestionPaper from './containers/assessment-central/create-question
 import Assesment from './containers/assessment-central';
 import AssessmentView from './containers/assessment-central/assesment-view';
 import CreateAssesment from './containers/assessment-central/create-assesment';
-import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP'
-import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz'
 
 const theme = createMuiTheme({
   palette: {
