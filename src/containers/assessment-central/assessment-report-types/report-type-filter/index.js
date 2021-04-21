@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid, TextField, Divider } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { connect } from 'react-redux';
-import { fetchAssessmentReportList,setReportType } from '../../../../redux/actions';
+import { fetchAssessmentReportList, setReportType } from '../../../../redux/actions';
 
 const reportTypes = [
   { id: 1, type: 'Class Average marks Subject wise with Teacher name' },
@@ -19,12 +19,13 @@ const ReportTypeFilter = ({
   isMobile,
   setReportType,
   selectedReportType,
+  setIsFilter,
 }) => {
-
-  const handleReportType = (event,value) => {
-    if(value) setReportType(value);
+  const handleReportType = (event, value) => {
+    setIsFilter(false);
+    if (value) setReportType(value);
     else setReportType({});
-  }
+  };
 
   return (
     <Grid

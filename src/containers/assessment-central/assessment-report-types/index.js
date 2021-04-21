@@ -201,6 +201,7 @@ const AssessmentReportTypes = ({
           </div>
         </div>
         <ReportTypeFilter
+          setIsFilter={setIsFilter}
           selectedReportType={selectedReportType}
           widerWidth={widerWidth}
           isMobile={isMobile}
