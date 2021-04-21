@@ -123,20 +123,57 @@ function AddContact() {
   }
   const handleSend = () => {
     console.log('You Clicked on Send button');
+    if (!selectedAcademicYear) {
+      setAlert('warning', 'Select Academic Year');
+      return;
+    }
+    console.log(selectedBranch.length, '===============');
+    if (selectedBranch.length == 0) {
+      console.log(selectedBranch.length, '===============');
+      setAlert('warning', 'Select Branch');
+      return;
+    }
+    if (!foe_contact) {
+      console.log(foe_contact, 'foe_contact');
+      setAlert('warning', 'foe contact should not be empty');
+      return;
+    }
+    if (!op_manager_contact) {
+      console.log(op_manager_contact, 'op_manager_contact');
+      setAlert('warning', 'op_manager contact should not be empty');
+      return;
+    }
+    if (!campus_incharge_contact) {
+      console.log(campus_incharge_contact, 'campus_incharge_contact');
+      setAlert('warning', 'campus_incharge contact should not be empty');
+      return;
+    }
     const payload = {
-      academicYear: selectedAcademicYear,
-      branch: selectedBranch,
-      foe_contact: foe_contact,
-      op_manager_contact: op_manager_contact,
-      campus_incharge_contact: campus_incharge_contact,
+      academic_year: selectedAcademicYear.id,
+      branch: selectedBranch.branch.id,
+      foe_contact_number: foe_contact,
+      operation_manager_contact_number: op_manager_contact,
+      campus_in_charge_contact_number: campus_incharge_contact,
     };
     console.log(payload);
+    setLoading(true);
     axiosInstance
-      .post(
-        `${endpoints.contactUs.createContact}?academic_year=${selectedAcademicYear.id}?branch=${selectedBranch.branch.id}?foe_contact_number=${foe_contact}?operation_manager_contact_number=${op_manager_contact}?campus_in_charge_contact_number=${campus_incharge_contact}`
-      )
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+      .post(`${endpoints.contactUs.createContact}`, payload)
+      .then((res) => {
+        setLoading(false);
+        setAlert('success', 'Contacts posted successfully');
+        console.log(res);
+      })
+      .catch((err) => {
+        setLoading(false);
+        setAlert('error', 'something went wrong');
+        console.log(err);
+      });
+    setSelectedAcadmeicYear('');
+    setSelectedBranch([]);
+    setFoeContact('');
+    setOpManagerContact('');
+    setCampusInchargeContact('');
   };
 
   return (
@@ -257,6 +294,7 @@ function AddContact() {
           </Button>
         </form>
       </Grid>{' '}
+      {loading && <Loader />}
     </>
   );
 }

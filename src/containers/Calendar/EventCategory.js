@@ -222,6 +222,18 @@ const Cal1 = () => {
     }
   }, [moduleId]);
 
+  useEffect(() => {
+    if(moduleId){
+      axiosInstance.get(`${endpoints.eventBat.getListCategories}?module_id=${moduleId}`)
+      .then((result) => {
+        console.log('useEffect Data', result.data);
+        setDummyData(result.data.data)
+        // setDummyData(result?.data.data.results);
+        // setCategoryType([{val:1,category_name:'cat'},{val:2,category_name:'dog'}])
+      });
+    }
+  }, [moduleId]);
+
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -684,11 +696,11 @@ const Cal1 = () => {
             <br />
           </Grid> */}
           <Grid container justify='center'>
-            { totalGenre > 9 && (
+            { dummyData && dummyData.length > 9 && (
               <Pagination
                 onChange={handlePagination}
                 style={{ paddingLeft: '150px' }}
-                count={Math.ceil(totalGenre / limit)}
+                count={dummyData && dummyData.length}
                 color='primary'
                 page={pageNumber}
                 color='primary'
@@ -699,13 +711,13 @@ const Cal1 = () => {
         </div>
       </form>
       {
-          !totalGenre &&
+         !dummyData  ?  (!totalGenre &&
           (<div  style={{width:'10%',marginLeft:'40%',}}>
             <SvgIcon
               component={() => (
-                <img
+            <img
                   src={unfiltered}
-                />
+                /> 
               )}
             />
             <SvgIcon
@@ -720,7 +732,8 @@ const Cal1 = () => {
                 />
               )}
             />
-          </div>)
+          </div>))
+          : []
 
         }
       {loading && <Loader />}

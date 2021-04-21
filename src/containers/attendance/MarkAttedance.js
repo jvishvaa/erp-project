@@ -32,9 +32,7 @@ import { deepOrange, deepPurple } from '@material-ui/core/colors';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import Axios from 'axios';
 import { useHistory } from 'react-router';
-import axios from 'axios';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
 const useStyles = makeStyles((theme) => ({
@@ -158,7 +156,7 @@ const MarkAttedance = () => {
         })
         .catch((err) => {
           console.log(err);
-          setAlert('error', err);
+          setAlert('error', 'something went wrong');
         });
     } else {
       const date = new Date();
@@ -237,7 +235,7 @@ const MarkAttedance = () => {
       .catch((err) => {
         setLoading(false);
         console.log(err);
-        setAlert('error', err);
+        setAlert('error', 'something went wrong');
       });
   };
 
