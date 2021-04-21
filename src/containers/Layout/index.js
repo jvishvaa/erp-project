@@ -410,7 +410,7 @@ const Layout = ({ children, history }) => {
         history.push('/user-management');
         break;
       }
-      case 'Ebook View':{
+      case 'Ebook View': {
         history.push('/ebook/view');
         break;
       }
@@ -522,11 +522,11 @@ const Layout = ({ children, history }) => {
         history.push('/feeType/RegistrationFee');
         break;
       }
-      case 'Teacher Calendar':{
+      case 'Teacher Calendar': {
         history.push('/attendance-calendar/teacher-view');
         break;
       }
-      case 'Student Calendar':{
+      case 'Student Calendar': {
         history.push('/attendance-calendar/student-view');
         break;
       }
@@ -589,26 +589,26 @@ const Layout = ({ children, history }) => {
       //   history.push('/assessment/view-assessment');
       //   break;
       // }
-    case 'Question Bank' : {
-      history.push('/question-bank');
-      break;
-    }
-    case 'Question Paper' : {
-      history.push('/assessment-question');
-      break;
-    }
-    case 'Create Test': {
-      history.push('/assesment');
-      break;
-    }
-    case 'Take Test': {
-      history.push('/assessment');
-      break;
-    }
-    //   { name: 'Question Bank', Path: '/question-bank' },
-    // { name: 'Question Paper', Path: '/assessment-question' },
-    // { name: 'Create Test', Path: '/assesment' },
-    // { name: 'Take Test', Path: '/assessment' }
+      case 'Question Bank': {
+        history.push('/question-bank');
+        break;
+      }
+      case 'Question Paper': {
+        history.push('/assessment-question');
+        break;
+      }
+      case 'Create Test': {
+        history.push('/assesment');
+        break;
+      }
+      case 'Take Test': {
+        history.push('/assessment');
+        break;
+      }
+      //   { name: 'Question Bank', Path: '/question-bank' },
+      // { name: 'Question Paper', Path: '/assessment-question' },
+      // { name: 'Create Test', Path: '/assesment' },
+      // { name: 'Take Test', Path: '/assessment' }
       // case 'ID Cards': {
       //   history.push('/student-id-card');
       //   break;
@@ -950,7 +950,12 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Contact Us': {
-        history.push('/contact-us')
+        history.push('/contact-us');
+        break;
+      }
+      case 'Student View': {
+        history.push('/contact-us/student-view');
+        break;
       }
       default:
         break;
@@ -1355,65 +1360,16 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Contact Us</ListItemText>
           </ListItem>
-         
-
           <ListItem
             button
-            // className={classes.menuControlContainer}
-            onClick={() => history.push('/BookAppointment')}
+            className={classes.menuControlContainer}
+            onClick={() => history.push('/contact-us/student-view')}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-          
-            <img src={online_classpng} style={{ width: 'inherit' ,color: 'white'}} />
+              <TodayIcon />
             </ListItemIcon>
-            <ListItemText className='menu-item-text'>BookAppointment</ListItemText>
+            <ListItemText className='menu-item-text'>Student View</ListItemText>
           </ListItem>
-          <ListItem
-            button
-            // className={classes.menuControlContainer}
-            onClick={() => history.push('/EditAppointment')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-          
-            <img src={online_classpng} style={{ width: 'inherit' ,color: 'white'}} />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>EditAppointment</ListItemText>
-          </ListItem>
-
-
-
-
-
-
-          <ListItem
-            button
-            // className={classes.menuControlContainer}
-            onClick={() => history.push('/Appointments')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-          
-            <img src={online_classpng} style={{ width: 'inherit' ,color: 'white'}} />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Appointments</ListItemText>
-          </ListItem>
-
-
-
-
-
-
-          <ListItem
-            button
-            // className={classes.menuControlContainer}
-            onClick={() => history.push('/ResponderView')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-          
-            <img src={online_classpng} style={{ width: 'inherit' ,color: 'white'}} />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>ResponderView</ListItemText>
-          </ListItem>
-
 
           {navigationData && drawerOpen && navigationData.length > 0 && (
             <DrawerMenu

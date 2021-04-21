@@ -80,7 +80,7 @@ import {
   ContentViewPublishPrincipal,
   EditWordCountConfig,
 } from './containers/blog';
-import {CreateEbook , ViewEbook} from './containers/ebooks'
+import { CreateEbook, ViewEbook } from './containers/ebooks';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
 import Discussionforum from './containers/discussionForum/index';
 import DiscussionPost from './containers/discussionForum/discussion/DiscussionPost';
@@ -1255,7 +1255,7 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/publications'>
                             {({ match }) => <Publications match={match} />}
-                            </Route>
+                          </Route>
                           <Route exact path='/ebook/create'>
                             {({ match }) => <CreateEbook match={match} />}
                           </Route>
