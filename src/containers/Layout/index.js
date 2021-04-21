@@ -953,10 +953,6 @@ const Layout = ({ children, history }) => {
         history.push('/contact-us');
         break;
       }
-      case 'Student View': {
-        history.push('/contact-us/student-view');
-        break;
-      }
       default:
         break;
     }
@@ -1360,17 +1356,6 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Contact Us</ListItemText>
           </ListItem>
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/contact-us/student-view')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Student View</ListItemText>
-          </ListItem>
-
           {navigationData && drawerOpen && navigationData.length > 0 && (
             <DrawerMenu
               superUser={superUser}
