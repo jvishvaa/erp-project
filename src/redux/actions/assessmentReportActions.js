@@ -65,8 +65,13 @@ export const setClearFilters = () => ({
   type: SET_CLEAR_FILTERS,
 });
 
+export const setReportType = (reportType) => ({
+  type: SET_REPORT_TYPE,
+  payload: reportType,
+});
+
 export const fetchAssessmentReportList = (reportType, params) => (dispatch) => {
-  dispatch(success(SET_REPORT_TYPE, reportType));
+  // dispatch(success(SET_REPORT_TYPE, reportType));
   dispatch(request(ASSESSMENT_REPORT_LIST_DATA_REQUEST));
   if (reportType?.id) {
     let url = `${reportTypeURL(reportType?.id)}`;

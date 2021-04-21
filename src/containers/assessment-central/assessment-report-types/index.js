@@ -63,12 +63,12 @@ const AssessmentReportTypes = ({
   const limit = 15;
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
 
   const [page, setPage] = useState(1);
+  const [isFilter, setIsFilter] = useState(false);
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [columns, setColumns] = useState([]);
@@ -207,13 +207,14 @@ const AssessmentReportTypes = ({
         />
         {selectedReportType?.id && (
           <AssessmentReportFilters
+            setIsFilter={setIsFilter}
             selectedReportType={selectedReportType}
             widerWidth={widerWidth}
             isMobile={isMobile}
           />
         )}
 
-        {selectedReportType?.id ? (
+        {isFilter ? (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>

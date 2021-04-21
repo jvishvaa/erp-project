@@ -14,8 +14,8 @@ const AssessmentReportFilters = ({
   widerWidth,
   isMobile,
   fetchAssessmentReportList,
-  setClearFilters,
   selectedReportType,
+  setIsFilter,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = useState('');
@@ -62,6 +62,7 @@ const AssessmentReportFilters = ({
 
   useEffect(() => {
     url = '';
+    setIsFilter(false);
     if (selectedReportType?.id) {
       if (dropdownData.academic.length === 0 && moduleId) getAcademicYear();
       setDropdownData({
@@ -96,24 +97,21 @@ const AssessmentReportFilters = ({
       subject: filterData.subject?.subject?.central_subject_id,
       test: filterData.test?.test_id,
     };
+    if (selectedReportType?.id === 3) {
+      paramObj = { ...paramObj, section: filterData.section?.section_id };
+    }
+    if (selectedReportType?.id === 4) {
+      paramObj = {
+        ...paramObj,
+        section: filterData.section?.section_id,
+        topic: filterData.topic?.id,
+      };
+    }
     const filterFlag = Object.values(paramObj).every(Boolean);
-    if ((selectedReportType?.id === 1 || selectedReportType?.id === 2) && filterFlag) {
-      url = `?${generateQueryParamSting(paramObj)}`;
-    }
-    if (selectedReportType?.id === 3 && filterFlag) {
-      if (filterData.section)
-        paramObj = { ...paramObj, section: filterData.section?.section_id };
-      url = `?${generateQueryParamSting(paramObj)}`;
-    }
-    if (selectedReportType?.id === 4 && filterFlag) {
-      if (filterData.section)
-        paramObj = { ...paramObj, section: filterData.section?.section_id };
-      if (filterData.chapter && filterData.topic)
-        paramObj = { ...paramObj, topic: filterData.topic?.id };
-      url = `?${generateQueryParamSting(paramObj)}`;
-    }
     if (filterFlag) {
+      url = `?${generateQueryParamSting(paramObj)}`;
       fetchAssessmentReportList(selectedReportType, url);
+      setIsFilter(true);
     } else {
       for (const [key, value] of Object.entries(paramObj).reverse()) {
         if (key === 'academic_year_id' && !Boolean(value))
@@ -394,8 +392,9 @@ const AssessmentReportFilters = ({
 
   const handleClear = () => {
     url = '';
+    setIsFilter(false);
     setDropdownData({
-      academic: [],
+      ...dropdownData,
       branch: [],
       grade: [],
       section: [],
@@ -415,7 +414,6 @@ const AssessmentReportFilters = ({
       chapter: '',
       topic: '',
     });
-    // setClearFilters();
   };
 
   return (
