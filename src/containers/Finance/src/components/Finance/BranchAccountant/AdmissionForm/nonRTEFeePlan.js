@@ -53,7 +53,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -79,17 +78,14 @@ class NonRTEFeeDetailsFormAcc extends Component {
 
   componentDidMount () {
     // this.props.fetchGradeList(this.props.alert, this.props.user)
-    console.log('session and grade', this.props.session, this.props.stuGrade)
     if (this.props.session && this.props.stuGrade) {
-      this.props.fetchFeePlan(this.props.alert, this.props.user, this.props.session, this.props.stuGrade.value)
+      this.props.fetchFeePlan(this.props.alert, this.props.user, this.props.session, this.props.stuGrade.value, this.props.branch)
     }
   }
 
   componentDidUpdate () {
-    console.log('DID UPDATED', this.state.addressDetails)
     if (this.state.selectedTotal > 0) {
       const partialPayAmt = document.querySelectorAll('[name=partialAmount]')
-      console.log('mpa Partial amount: ', partialPayAmt)
       let bal = []
       let payed = []
       let checkedRowId = []
@@ -127,7 +123,6 @@ class NonRTEFeeDetailsFormAcc extends Component {
         ele.balance = bal[i]
         return ele
       })
-      console.log('checked installments: ', newPayInstall)
       let insta = []
       newPayInstall.map(row => {
         row.map(r => {
@@ -168,7 +163,6 @@ class NonRTEFeeDetailsFormAcc extends Component {
 
   // adding the balance amount based on checkbox
   addBalance = (id) => e => {
-    console.log('Add balance: ', id, e.target.checked)
     let { isChecked } = this.state
     // check if the check box is checked or unchecked
     if (e.target.checked) {
@@ -284,7 +278,6 @@ class NonRTEFeeDetailsFormAcc extends Component {
   }
 
   render () {
-    console.log('from nonRTE: ', this.props.studentDetailsForAdmission)
     const { classes } = this.props
     return (
       <React.Fragment>
@@ -332,7 +325,7 @@ const mapDispatchToProps = dispatch => ({
   fetchGradeList: (alert, user, moduleId) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId })),
   fetchClassGroup: (alert, user) => dispatch(actionTypes.fetchClassGroup({ alert, user })),
   fetchAllSectionsPerGrade: (session, alert, user, gradeId, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, moduleId })),
-  fetchFeePlan: (alert, user, session, gradeValue) => dispatch(actionTypes.fetchFeePlan({ alert, user, session, gradeValue })),
+  fetchFeePlan: (alert, user, session, gradeValue, branch) => dispatch(actionTypes.fetchFeePlan({ alert, user, session, gradeValue, branch })),
   fetchInstallment: (alert, user, feePlanId) => dispatch(actionTypes.fetchInstallment({ alert, user, feePlanId }))
 })
 export default connect(

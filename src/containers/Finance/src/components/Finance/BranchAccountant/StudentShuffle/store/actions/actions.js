@@ -12,12 +12,11 @@ export const fetchStudentShuffle = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.FetchStudentShuffle + '?academic_year=' + payload.session + '&status=' + payload.status, {
+      .get(urls.FetchStudentShuffle + '?academic_year=' + payload.session + '&status=' + payload.status + '&branch_id=' + payload.branch, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('app res: ', response)
         if (response.status === 200) {
           dispatch({
             type: FETCH_STUDENT_SHUFFLE,

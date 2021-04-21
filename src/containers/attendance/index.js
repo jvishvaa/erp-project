@@ -97,7 +97,6 @@ const AttendeeListRemake = (props) => {
   };
 
   const handleCheck = (index, checked, student) => {
-    // console.log(student.id, 'index')
     setIsUpdating(true);
     // checked= !checked
     const { match } = props;

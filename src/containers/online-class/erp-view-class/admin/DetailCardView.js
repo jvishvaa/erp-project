@@ -774,6 +774,25 @@ const JoinClass = (props) => {
     }
   }
 
+
+  function handleHost(data) {
+    setLoading(true);
+    axiosInstance
+    .get(`${endpoints.teacherViewBatches.hostApi}?id=${data.id}`)
+    .then((res) => {
+      setLoading(false);
+      if(res?.data?.url){
+        window.open(res?.data?.url, '_blank');
+      } else {
+        setAlert('error', res?.data?.message); 
+      }
+    })
+    .catch((error) => {
+      setLoading(false);
+      setAlert('error', error.message);
+    });
+  }
+
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   const openJoin = Boolean(joinAnchor);
@@ -849,9 +868,10 @@ const JoinClass = (props) => {
                     color='secondary'
                     fullWidth
                     variant='contained'
-                    onClick={() =>
-                      window.open(fullData && fullData.presenter_url, '_blank')
-                    }
+                    onClick={()=> handleHost(fullData)}
+                    // onClick={() =>
+                    //   window.open(fullData && fullData.presenter_url, '_blank')
+                    // }
                     className='teacherFullViewSmallButtons'
                   >
                     Host
@@ -1023,7 +1043,6 @@ const DetailCardView = ({
       axiosInstance
         .get(detailsURL)
         .then((res) => {
-          // console.log(res.data);
           setNoOfPeriods(res.data.data);
         })
         .catch((error) => setAlert('error', error.message));

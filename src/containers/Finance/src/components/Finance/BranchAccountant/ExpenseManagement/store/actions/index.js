@@ -26,7 +26,9 @@ export {
   fetchCashStatement,
   downloadLedgerAttachment,
   VOUCHER_RECEIPT_HEADERS,
-  fetchReceiptHeader
+  fetchReceiptHeader,
+  SENDING_DATA,
+  sendingData
 } from '../../PettyExpenses/store/actions/actions'
 
 export {

@@ -48,7 +48,6 @@ class AllTransactions extends Component {
 
   componentDidMount () {
     // this.allTransactionsDetails()
-    // console.log('-------props---------', this.props.user)
     if (this.props.getList && this.props.sessionYear) {
       this.props.fetchAccountantTransaction(this.props.sessionYear, this.props.user, this.props.alert)
     } else {
@@ -57,8 +56,6 @@ class AllTransactions extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    // console.log('------------prevProps-----------', prevProps)
-    // console.log('sessionYear-------------', this.props.sessionYear)
     if (prevProps.sessionYear !== this.props.sessionYear && this.props.getList) {
       this.props.fetchAccountantTransaction(this.props.sessionYear, this.props.user, this.props.alert)
     }
@@ -72,7 +69,6 @@ class AllTransactions extends Component {
         }
       })
       .then(res => {
-        console.log(res.data.results)
         if (+res.status === 200) {
           this.setState({ transactionsDetails: res.data.results })
         }

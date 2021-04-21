@@ -49,7 +49,6 @@ class MiscFeeClass extends Component {
   }
 
   deleteHandler = id => {
-    console.log(id)
     axios
       .delete(urls.MiscFee + id, {
         headers: {
@@ -57,7 +56,6 @@ class MiscFeeClass extends Component {
         }
       })
       .then(res => {
-        console.log(res)
         this.props.alert.success('Deleted Successfully')
         this.renderTable()
       })
@@ -77,14 +75,12 @@ class MiscFeeClass extends Component {
         })
         .then(res => {
           var arr = res['data']
-          console.log(arr)
           var feelist = []
           var feetable = []
           arr.forEach((data, index) => {
             feelist.push({ sr: index + 1, type: data.type })
             grade.forEach((grade) => {
               let curentGrade = data.grades.filter(gradelist => gradelist.grade_id === grade.id)
-              console.log(curentGrade)
               feelist[feelist.length - 1][grade.grade] = (curentGrade.length > 0 ? curentGrade[0].amount : 0)
             })
             feelist[feelist.length - 1]['edit'] =
@@ -163,7 +159,6 @@ class MiscFeeClass extends Component {
       })
       .then(res => {
         grade = res.data
-        console.log(grade)
       })
       .catch((error) => {
         console.log("Error: Couldn't fetch data from " + urls.GRADE + error)

@@ -42,7 +42,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId= item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -143,7 +142,6 @@ class BackDateSelection extends Component {
 
   render () {
     // let { classes } = this.props
-    // console.log('back Date', this.props.backDateList)
     // let backDateTable = null
     // if (this.props.backDateList) {
     //   backDateTable = (

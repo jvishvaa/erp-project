@@ -27,7 +27,6 @@ const studentactivateInactivateaccReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.POST_STUDENT_ACTIVATE : {
-      console.log('came to reducer')
       const newactiveStudentList = [...state.activeStudentList]
       const newinactiveStudentList = [...state.inactiveStudentList]
       const postactiveStudentList = newactiveStudentList.filter(list => {

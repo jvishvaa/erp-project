@@ -33,7 +33,6 @@ export const getStudentActiveStatus = (payload) => {
       // dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       payload.alert.warning('Unable to load data')
     })
   }
@@ -59,7 +58,6 @@ export const updateStudentStatus = (payload) => {
       }
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       payload.alert.warning('Unable to load data')
     })
   }

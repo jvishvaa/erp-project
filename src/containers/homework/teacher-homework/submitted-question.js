@@ -52,7 +52,6 @@ const SubmittedQuestion = ({
 
   // const [remark, setRemark] = useState('');
 
-  console.log(defaultCommentRemarks, 'yessss', totalSubmittedQuestions);
   const handleScroll = (dir) => {
     if (dir === 'left') {
       submittedAttachmentsInnerContainer.current.scrollLeft -= 150;
@@ -69,31 +68,12 @@ const SubmittedQuestion = ({
   };
   // useEffect(() => {
   //   // if(scrollableContainer.current.offsetWidth > = )
-  //   console.log(
-  //     'scroll width offset width ',
-  //     scrollableContainer.current.offsetWidth,
-  //     scrollableContainer.current.scrollWidth
-  //   );
   // }, [scrollableContainer.current]);
 
   useEffect(() => {
-    // console.log(
-    //   'scroll widths outer inner ',
-    //   submittedAttachmentsInnerContainer.current.clientWidth,
-    //   submittedAttachmentsInnerContainer.current.scrollWidth
-    // );
-
-    // console.log(
-    //   'scroll widths outer inner ',
-    //   submittedAttachmentsOuterContainer.current.scrollWidth,
-    //   submittedAttachmentsInnerContainer.current.scrollWidth
-    // );
+    
     if (submittedAttachmentsInnerContainer.current) {
-      console.log(
-        'submittedscroll widths outer inner ',
-        submittedAttachmentsOuterContainer.current.clientWidth,
-        submittedAttachmentsInnerContainer.current.scrollWidth
-      );
+     
       if (
         submittedAttachmentsInnerContainer.current.clientWidth <
         submittedAttachmentsInnerContainer.current.scrollWidth
@@ -104,11 +84,7 @@ const SubmittedQuestion = ({
       }
     }
     if (evaluatedAttachmentsInnerContainer.current) {
-      console.log(
-        'evaluated scroll widths outer inner ',
-        evaluatedAttachmentsInnerContainer.current.clientWidth,
-        evaluatedAttachmentsInnerContainer.current.scrollWidth
-      );
+    
       if (
         evaluatedAttachmentsInnerContainer.current.clientWidth <
         evaluatedAttachmentsInnerContainer.current.scrollWidth
@@ -132,8 +108,7 @@ const SubmittedQuestion = ({
   if (question) {
     qu.push(question);
   }
-  // console.log(submittedHomeworkDetails,'helllllllll',totalSubmittedQuestions,'ques',qu,question)
-  console.log(qu, 'uuuuuuu', question);
+  
   return (
     <div className='homework-question-container' key={`homework_student_question_${1}`}>
       <div
@@ -195,7 +170,6 @@ const SubmittedQuestion = ({
               // ref={scrollableContainer}
               onScroll={(e) => {
                 e.preventDefault();
-                console.log('scrolled');
               }}
               ref={submittedAttachmentsInnerContainer}
             >
@@ -274,7 +248,6 @@ const SubmittedQuestion = ({
                 // ref={scrollableContainer}
                 onScroll={(e) => {
                   e.preventDefault();
-                  console.log('scrolled');
                 }}
                 ref={evaluatedAttachmentsInnerContainer}
               >

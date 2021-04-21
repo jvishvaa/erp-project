@@ -1,7 +1,7 @@
 /* eslint-disable dot-notation */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable no-debugger */
+
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import React, { useContext, useState, useEffect } from 'react';
@@ -136,15 +136,14 @@ const ViewUsers = withRouter(({ history, ...props }) => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'View User') {
-              setModuleId(item.child_id);
+            if (item?.child_name === 'View User') {
+              setModuleId(item?.child_id);
             }
           });
         }
       });
     }
   }, []);
-
   const getRoleApi = async () => {
     try {
       const result = await axiosInstance.get(endpoints.communication.roles, {
@@ -222,7 +221,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         });
     }
     */
-    let getUserListUrl = `${endpoints.communication.userList}?page=${currentPage}&page_size=${limit}`;
+    let getUserListUrl = `${endpoints.communication.userList}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}`;
     if (rolesId.length && selectedRoles !== 'All') {
       getUserListUrl += `&role=${rolesId.toString()}`;
     }
@@ -271,6 +270,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const handleResetFilters = () => {
     setSearchText('');
     setSelectedYear('');
+    setSelectedRoles('')
     setSelectedBranch(null);
     setSelectedGrades([]);
     setSelectedRoles(null);
@@ -365,8 +365,10 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   }, [moduleId]);
 
   useEffect(() => {
-    getUsersData();
-  }, [currentPage]);
+    if(moduleId) {
+      getUsersData();
+    }
+  }, [currentPage,moduleId]);
 
   useEffect(() => {
     if (selectedYear) {
@@ -383,12 +385,12 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   }, [selectedBranch]);
 
   useEffect(() => {
-    if (isNewSeach) {
+    if (isNewSeach && moduleId) {
       setIsNewSearch(false);
       setCurrentPage(1);
       getUsersData();
     }
-  }, [isNewSeach]);
+  }, [isNewSeach,moduleId]);
 
   const handleYear = (event, value) => {
     setSelectedYear('');
@@ -411,8 +413,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   const handleGrade = (event, value) => {
     setSelectedGrades(value);
-    console.log(value);
-
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);

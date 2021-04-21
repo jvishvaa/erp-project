@@ -49,17 +49,13 @@ const DailyDairyList = () => {
     
     const [state,setState] = useContext(Context)
 
-    console.log(state,'@@@@')
-
     const handlePagination = (event, page) => {
         setPage(page);
     };
 
     const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate) => {
-        console.log(branchId, gradeId, sectionIds, startDate, endDate, '===');
         setLoading(true);
         setPeriodData([]);
-        debugger
         axiosInstance
             .get(
                 `${endpoints.generalDairy.dairyList
@@ -70,12 +66,10 @@ const DailyDairyList = () => {
             // axiosInstance.get(`${endpoints.generalDairy.dairyList}?start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}`)
             // axiosInstance.get(`${endpoints.generalDairy.dairyList}?grades=${gradeId}&sections=${sectionIds}`)
             .then((result) => {
-                console.log(result);
                 if (result.data.status_code === 200) {
                     setTotalCount(result.data.result.count);
                     setLoading(false);
                     setPeriodData(result.data.result.results);
-                    console.log(result.data.result.results);
                     setViewMore(false);
                     setViewMoreData({});
                 } else {
@@ -89,9 +83,7 @@ const DailyDairyList = () => {
             });
     };
     const handleDairyType = (type) => {
-        console.log(type);
     }
-console.log("BBBBB",editData)
 
     return (
         <>

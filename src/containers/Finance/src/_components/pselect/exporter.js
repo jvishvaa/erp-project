@@ -23,8 +23,7 @@ class Exporter {
         }
       })
     }
-    console.log(Array.from(this.subjectDBIds))
-    console.log(Array.from(this.sectionDBIds))
+
   }
   getJSON () {
     return this.filter
@@ -34,11 +33,9 @@ class Exporter {
     return { branches, grades, sections, subjects }
   }
   getBranches () {
-    console.log(this.branches)
     return Array.from(this.branches)
   }
   getGrades () {
-    console.log(this.grades)
     return Array.from(this.grades)
   }
   getSections () {

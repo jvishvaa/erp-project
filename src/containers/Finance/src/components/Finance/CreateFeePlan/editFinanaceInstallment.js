@@ -26,8 +26,6 @@ class EditFeeInstallment extends Component {
 
   componentDidMount () {
     let currentInstallment = this.props.installmentList.filter(val => val.id === this.props.id)
-    console.log(this.props.id, '-------------------id----------------')
-    console.log(currentInstallment)
     currentInstallment.forEach((val) => {
       this.setState((state) => ({
         sessionId: val.academic_year ? val.academic_year : '',
@@ -40,10 +38,8 @@ class EditFeeInstallment extends Component {
         fine_amount: val.fine_amount ? val.fine_amount : false,
         feeAccount: val.fee_account
       }), () => {
-        console.log('SetState ----', this.state.installment_name)
       })
     })
-    console.log('user inside modal +++ ', this.props.user)
     this.props.feeAccountList(this.props.acadId, this.props.alert, this.props.user)
   }
 
@@ -56,13 +52,11 @@ class EditFeeInstallment extends Component {
   //     })
   //     .then(res => {
   //       var arr = res.data
-  //       // console.log(arr)
   //       arr.forEach((val) => {
   //         this.setState({ feeAccountData: val.fee_account_name })
   //       })
   //     })
   //     .catch(function (error) {
-  //       console.log("Error: Couldn't fetch data from " + urls.FeeAccountBranches + error)
   //     })
   // }
 
@@ -77,7 +71,6 @@ class EditFeeInstallment extends Component {
   }
 
   handleFeeAcount = e => {
-    console.log('acc', e)
     const feeAccount = {
       id: e.value,
       fee_account_name: e.label
@@ -125,15 +118,12 @@ class EditFeeInstallment extends Component {
     //     }
     //   })
     //   .then(res => {
-    //     console.log(res)
     //     if (res.status == "200") {
     //       this.props.alert.success('Created Successfully')
     //       this.props.close()
     //     }
     //   })
     //   .catch(function (error) {
-    //     console.log(error)
-    //     console.log("Error: Couldn't fetch data from " + urls.NormalFeeType)
     //   })
   }
 

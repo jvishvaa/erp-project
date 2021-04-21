@@ -62,7 +62,6 @@ const ViewMoreCard = ({
   };
   const pic=viewMoreData?.documents?.map(a=>a)
   const gradeName= viewMoreData?.grade?.map(a=>a.grade_name)
-  console.log(viewMoreData, '=====', branch);
   return (
     <>
       <Paper className='rootViewMoreGeneral'>

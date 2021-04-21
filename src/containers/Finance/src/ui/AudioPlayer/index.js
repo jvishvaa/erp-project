@@ -115,7 +115,6 @@ const AudioPlayer = ({
     // progressBarRef.current.completed = percentComplete
 
     const value = (100 / event.target.duration) * event.target.currentTime
-    console.log(value)
     progressBarRef.current.style.width = value + '%'
 
     const totalLength = secondsToTime(parseInt(isNaN(duration) ? 0 : duration))

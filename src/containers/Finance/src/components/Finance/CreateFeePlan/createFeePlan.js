@@ -37,7 +37,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId= item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -94,8 +93,6 @@ class CreateFeePlan extends Component {
   }
 
   showAddGradeModalHandler = (grade, id) => {
-    console.log('-----grades-------', grade)
-    console.log('----id--------', id)
     this.setState({
       addGradeModal: true,
       gradeList: grade,
@@ -108,9 +105,6 @@ class CreateFeePlan extends Component {
         })
         return value
       })
-      console.log('state grades', this.state.gradeList)
-      console.log('props grade', this.props.gradeList)
-      console.log(data)
     })
   }
 
@@ -149,7 +143,7 @@ class CreateFeePlan extends Component {
   }
 
   handleClickSessionYear = (e) => {
-    this.setState({ session: e.value, branchData: [], sessionData: e })
+    this.setState({ session: e.value, sessionData: e })
     this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
   }
 
@@ -175,7 +169,6 @@ class CreateFeePlan extends Component {
 
   // to delete the grade
   deleteHandler = () => {
-    console.log('deletehandler : ' + this.state.gradeid + ',' + this.state.typeid)
     this.props.deleteGrades(this.state.gradeid, this.state.typeid, this.props.alert, this.props.user)
     this.deleteModalCloseHandler()
   }
@@ -192,16 +185,11 @@ class CreateFeePlan extends Component {
   }
 
   getBackTheUpdatedDataHandler = (status, data) => {
-    console.log('----------UPDATED----------')
-    console.log(data)
-    console.log('-------before--------')
-    console.log(this.state.feeList)
     if (status === 'success') {
       const feeList = [...this.state.feeList]
       const index = feeList.findIndex(ele => {
         return ele.id === data.id
       })
-      console.log(index)
       const changeObj = { ...feeList[index] }
       changeObj.id = data.id ? data.id : ''
       changeObj.fee_plan_name = data.fee_plan_name ? data.fee_plan_name : ''
@@ -218,8 +206,6 @@ class CreateFeePlan extends Component {
       this.setState({
         feeList: [...feeList]
       }, () => {
-        console.log('--after-----------')
-        console.log(this.state.feeList)
         this.hideModalHandler()
       })
     }
@@ -273,6 +259,7 @@ class CreateFeePlan extends Component {
     if (this.state.addGradeModal) {
       addFeePlanGradeModal = (
         <EModal open={this.state.addGradeModal} click={this.closeAddGradeHandler} medium>
+          <React.Fragment>
           <Grid container spacing={3} style={{ padding: 25 }}>
             <Grid item xs='12' >
               <h3>Add Grade</h3>
@@ -303,6 +290,7 @@ class CreateFeePlan extends Component {
               >Add </Button>
             </Grid>
           </Grid>
+          </React.Fragment>
         </EModal>
       )
     }

@@ -10,7 +10,7 @@ export const DELETE_PARTY = 'DELETE_PARTY'
 export const partyList = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ListCreateParty, {
+    axios.get(urls.ListCreateParty + '?branch_id=' + payload.branch, {
       headers: {
         'Authorization': 'Bearer ' + payload.user
       }
@@ -37,7 +37,8 @@ export const saveParty = (payload) => {
       address_no: payload.address,
       contact_no: payload.contact,
       gstin_no: payload.gst,
-      pan_no: payload.pan
+      pan_no: payload.pan,
+      branch_id: payload.branch
     }
     dispatch(actionTypes.dataLoading())
     axios.post(urls.ListCreateParty, body, {
@@ -81,7 +82,6 @@ export const editParty = (payload) => {
         'Authorization': 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       if (+response.status === 200) {
         // payload.alert.success('Updated Successfully')
         dispatch({
@@ -110,7 +110,6 @@ export const deleteParty = (payload) => {
         'Authorization': 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       if (+response.status === 204) {
         // payload.alert.success('Deleted Successfully')
         dispatch({

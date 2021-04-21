@@ -89,7 +89,6 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
   const handleAddHomeWork = async () => {
     const isFormValid = validateHomework();
     if (isFormValid) {
-      // console.log('submitting COORDINATOR form');
       const reqObj = {
         name,
         description,
@@ -105,7 +104,6 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
       };
       try {
         const response = await onAddHomework(reqObj);
-        // console.log('add response bycoordinator====== ', response);
         setAlert('success', 'Homework added');
         history.push('/homework/coordinator/');
       } catch (error) {

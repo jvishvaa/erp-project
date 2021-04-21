@@ -39,7 +39,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId= item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -131,7 +130,6 @@ class RegistrationFee extends Component {
   }
 
   handleAcademicyear = (e) => {
-    console.log(e)
     this.setState({ session: e.value, branchData: [], sessionData: e }, () => {
       this.props.fetchBranches(this.state.session, this.props.alert, this.props.user, moduleId)
     })
@@ -318,6 +316,7 @@ class RegistrationFee extends Component {
             typeId={this.state.currentFeetype.value}
             user={this.props.user}
             alert={this.props.alert}
+            feeType={this.state.currentFeetype.label}
             close={this.hideModalHandler}
           />
         </Modal>

@@ -59,7 +59,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -100,16 +99,12 @@ class AddOtherFees extends Component {
 
   componentDidMount () {
     if (!this.props.location.state.currentYear.value || !this.props.location.state.currentBranch.value) {
-      // console.log('Redirect')
-      // console.log()
-      // console.log('Redirect', this.props.location.state.currentYear.value, this.props.location.state.currentBranch.value)
       this.props.alert.warning('Select Academic Year & Branch')
       this.props.history.push({
         pathname: '/feeType/OtherFeeType'
       })
     } else {
-      // console.log('Inside Add Other fee')
-      // console.log('Inside Add Other fee', this.props.location.state.currentYear.value, this.props.location.state.currentBranch.value)
+ 
       this.setState({
         sessionData: this.props.location.state.currentYear,
         session: this.props.location.state.currentYear.value,
@@ -232,7 +227,6 @@ class AddOtherFees extends Component {
   }
 
   handleAcademicyear = (e) => {
-    console.log(e)
     this.setState({ session: e.value, branchData: [], sessionData: e })
     this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
   }
@@ -330,10 +324,7 @@ class AddOtherFees extends Component {
     let amt = e.target.value
     let percentage = 0
     let totalAmt = this.state.amount
-    console.log('amt', amt)
-    console.log('totalAmt outside', totalAmt)
     if (+amt <= +totalAmt) {
-      console.log('totalAmt inside', totalAmt)
       percentage = (amt / totalAmt) * 100
       percentage = +percentage.toFixed(2)
     } else {
@@ -341,15 +332,10 @@ class AddOtherFees extends Component {
     }
     let cent = [...this.state.installPercentage]
     cent[e.target.id] = percentage
-    console.log('cent', cent)
 
     let installmentAmt = [...this.state.installAmountValue]
     installmentAmt[e.target.id] = amt
-    console.log('installmentAmt', installmentAmt)
     this.setState({ installAmountValue: installmentAmt, installPercentage: cent }, () => {
-      console.log('amount', this.state.amount)
-      console.log('installAmountValue', this.state.installAmountValue)
-      console.log('installPercentage', this.state.installPercentage)
     })
   }
 
@@ -361,19 +347,14 @@ class AddOtherFees extends Component {
     if (percent <= 100) {
       amt = (totalAmt / 100) * percent
       amt = +amt.toFixed(2)
-      console.log('amt', amt)
 
       let installmentAmt = [...this.state.installAmountValue]
       installmentAmt[e.target.id] = amt
-      console.log('installmentAmt', installmentAmt)
 
       let cent = [...this.state.installPercentage]
       cent[e.target.id] = percent
-      console.log('cent', cent)
       this.setState({ installPercentage: cent, installAmountValue: installmentAmt }, () => {
-        console.log('amount', this.state.amount)
-        console.log('installAmountValue', this.state.installAmountValue)
-        console.log('installPercentage', this.state.installPercentage)
+
       })
     } else {
       this.props.alert.warning('Entered percent is greater than 100!')
@@ -500,7 +481,6 @@ class AddOtherFees extends Component {
   }
 
   fileChangeHandler = (event) => {
-    console.log('my file: ', event.target.files[0])
     const file = event.target.files[0]
     this.setState({
       bulkFile: file
@@ -551,7 +531,6 @@ class AddOtherFees extends Component {
     const installEndDate = document.querySelectorAll('[name=end_date]')
     const installFeeAcc = document.querySelectorAll('[name=feeAccountInfo]')
     const installFine = document.querySelectorAll('input[type=checkbox]')
-    console.log('fee account', installFeeAcc)
     // capturing fines in an array
     installFine.forEach((v) => {
       if (v.checked) {
@@ -591,8 +570,6 @@ class AddOtherFees extends Component {
     // checking for amount
     for (let i in this.state.installAmountValue) { amount += +this.state.installAmountValue[i] }
     // const totalFeeAmt = this.state.amount
-    console.log('totalAmt', totalAmt)
-    console.log('amount', amount)
     if (+totalAmt !== +amount) {
       this.props.alert.warning('Check the amounts entered!')
       return false

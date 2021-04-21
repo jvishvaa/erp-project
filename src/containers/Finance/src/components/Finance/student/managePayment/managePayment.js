@@ -35,6 +35,32 @@ TabContainer.propTypes = {
 const BranchIdBangalore = [ 10, 8, 7, 57, 12, 18, 17, 21, 27, 24, 67, 72, 81, 82, 92, 77, 69, 14 ]
 const BranchIdMumbai = [70, 26, 3, 15, 11, 13, 22, 4, 67, 41, 5, 6, 73, 76]
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Finance' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Manage Payment') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 class ManagePayment extends Component {
   constructor (props) {
     super(props)
@@ -46,11 +72,9 @@ class ManagePayment extends Component {
       erp: null
     }
     this.currBrnch = JSON.parse(localStorage.getItem('userDetails')).branch_id
-    // console.log(BranchId.includes(this.currBrnch))
   }
   componentDidMount () {
     // for disabling the terminal
-    console.log('manage Pay: ', JSON.parse(localStorage.getItem('userDetails')).erp)
     document.onkeydown = function (e) {
       if (e.keyCode === 123) {
         return false
@@ -211,7 +235,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions())
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)((withRouter(ManagePayment)))

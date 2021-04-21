@@ -41,7 +41,6 @@ class AddOtherFeeType extends Component {
   }
 
   handleAcademicyear = (e) => {
-    // console.log(e)
     this.setState({ session: e.value, sessionValue: e, branchData: [] })
     axios
       .get(urls.MiscFeeClass + '?session_year=' + e.value, {
@@ -51,12 +50,11 @@ class AddOtherFeeType extends Component {
       })
       .then(res => {
         if (+res.status === 200) {
-          // console.log(res.data);
           this.setState({ branchValue: res.data })
         }
       })
       .catch((error) => {
-        console.log("Error: Couldn't fetch data from " + urls.MiscFeeClass + 'error' + error)
+        console.log(error)
       })
   }
 
@@ -82,7 +80,6 @@ class AddOtherFeeType extends Component {
         }
       })
       .then(res => {
-        console.log(res)
         if (+res.status === 201) {
           this.props.alert.success('Created Successfully')
           this.props.giveData('success', res.data)
@@ -102,12 +99,11 @@ class AddOtherFeeType extends Component {
         }
       })
       .catch((error) => {
-        console.log(error.response)
+        console.log(error)
         if (+error.response.status === 400) {
           // alert(`${Object.keys(error.response.data)[0]} : ${error.response.data[Object.keys(error.response.data)[0]]}`)
           this.props.alert.error('Something Went Wrong')
         }
-        console.log("Error: Couldn't fetch data from " + urls.createOtherFeeType)
       })
   }
 

@@ -50,7 +50,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -85,7 +84,6 @@ class StudentParentDetailsFormAcc extends Component {
   }
 
   componentDidUpdate () {
-    console.log('DID UPDATED', this.state.studentParentDetails)
     this.props.getStudentParentDetail(this.state.studentParentDetails)
   }
 
@@ -98,7 +96,6 @@ class StudentParentDetailsFormAcc extends Component {
   }
 
   studentParentDroponHandler= (event, name) => {
-    console.log(event, name)
     const newstudentParentDetails = { ...this.state.studentParentDetails }
     switch (name) {
       case 'poc': {
@@ -115,7 +112,6 @@ class StudentParentDetailsFormAcc extends Component {
   }
 
   studentParentInputHandler= (event) => {
-    console.log(event.target.name)
     const newstudentParentDetails = { ...this.state.studentParentDetails }
     switch (event.target.name) {
       case 'fatherName': {

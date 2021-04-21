@@ -9,14 +9,12 @@ import GSelectBLOC from './bloc'
 class UI extends React.Component {
   constructor (props) {
     super(props)
-    console.log(props.initialValue, 'Properties')
     this.bloc = new GSelectBLOC(props.onChange, props.config, props.initialValue)
   }
   componentDidMount () {
     let userProfile = JSON.parse(localStorage.getItem('user_profile'))
     let personalInfo = userProfile.personal_info
     let { role } = personalInfo
-    console.log(role)
     this.bloc.role = role
   }
   render () {

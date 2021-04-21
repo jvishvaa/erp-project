@@ -24,7 +24,6 @@ const ShuffleModal = ({ openShuffleModal, setOpenShuffleModal }) => {
             }
         })
         .catch(error=>{
-            console.log('No batches found');
             setBatchList([]);
         })
     },[]);

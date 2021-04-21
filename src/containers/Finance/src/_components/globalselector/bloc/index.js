@@ -15,7 +15,6 @@ class GSelectBLOC {
     this.config = config ? new ConfigManager(config) : new ConfigManager(COMBINATIONS)
     this.selectorStorage = new rxjs.BehaviorSubject([])
     this.globalOnChange = globalOnChange
-    console.log(initialData, 'Initial data')
     this.initialData = initialData
   }
 
@@ -43,11 +42,9 @@ class GSelectBLOC {
       finalData[outputIdentifier] = []
       finalDataWithDetails[selection] = []
       selections[selection].forEach(item => {
-        console.log(outputIdentifier)
         let selectedDataDetails = this.storage._fetchStorage[selection].filter(storageItem => {
           return storageItem[valueIdentifier] === item.value
         })[0]
-        console.log(selectedDataDetails, valueIdentifier, this.storage._fetchStorage[selection])
         finalData[outputIdentifier].push(selectedDataDetails[outputIdentifier])
         finalDataWithDetails[selection].push(selectedDataDetails)
       })
@@ -63,11 +60,9 @@ class GSelectBLOC {
    * @param  {} selectorIndex
    */
   onChange (data, selectorIndex) {
-    console.log('Onchange data', data)
     let selectedOptions = !Array.isArray(data[0]) ? [data[0]] : data[0]
     this.storage.setValue(selectedOptions, selectorIndex, data[1])
     if (data[1].action === 'select-option') {
-      console.log(selectedOptions)
       if (selectedOptions.length === 1) {
         let children = this.config.getChildDependencies(selectorIndex)
         children.forEach(child => {
@@ -115,7 +110,6 @@ class GSelectBLOC {
   }
 
   async fetchAndStore (selectorIndex) {
-    console.log('initial_data', this.initialData)
     let url = this.config.getUrl(selectorIndex)
     let params = this.config.getParams(selectorIndex)
     let additionalParams = this.config.getAdditionalParams(selectorIndex)
@@ -131,8 +125,6 @@ class GSelectBLOC {
     fetch(url + '?' + query + '&' + additionalQuery, { ...requestOptions, signal })
       .then((response) => {
         if (response.status !== 200) {
-          console.log('Looks like there was a problem. Status Code: ' +
-          response.status)
           return
         }
         // Examine the text in the response
@@ -148,7 +140,6 @@ class GSelectBLOC {
           } else if (this.initialData) {
             if (this.config.getValue(selectorIndex) in this.initialData && data[0][this.config.getLabel(selectorIndex)]) {
               let itemValue = this.config.getValue(selectorIndex)
-              console.log(itemValue, data)
               let selectedItems = []
               /* eslint-disable */
               if (Array.isArray(this.initialData[itemValue])) {
@@ -159,7 +150,6 @@ class GSelectBLOC {
                 selectedItems = await data.filter(item => item[itemValue] == this.initialData[itemValue])
               }
               if (selectedItems.length > 1) {
-                console.log("Selected Items", 148, selectedItems, this.config.getValue(selectorIndex),itemValue)
                 this.onChange([selectedItems.map(selectedItem => {
                   return {
                     value: selectedItem[itemValue],

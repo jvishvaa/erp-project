@@ -50,7 +50,6 @@ class AddFeePlanType extends Component {
 
   handlevalue = e => {
     e.preventDefault()
-    console.log('clicked')
     var data = {
       fee_plan_name: this.props.location.state,
       is_compulsory: this.state.is_compulsory,
@@ -66,15 +65,12 @@ class AddFeePlanType extends Component {
     //     }
     //   })
     //   .then(res => {
-    //     console.log(res)
     //     if (res.status == "201") {
     //       this.props.alert.success('Added Successfully')
     //       this.props.close()
     //     }
     //   })
     //   .catch(function (error) {
-    //     console.log(error)
-    //     console.log("Error: Couldn't fetch data from " + urls.createMiscFeeType)
     //   })
   }
 

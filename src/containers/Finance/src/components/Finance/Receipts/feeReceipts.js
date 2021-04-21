@@ -69,8 +69,6 @@ function paymentmodeSpecificView (data) {
 }
 
 function mainView (data) {
-  console.log('====main Data===')
-  console.log(data)
   const infoStyle = {
     display: 'flex',
     justifyContent: 'space-between',
@@ -172,7 +170,6 @@ function mainView (data) {
 }
 
 const feeReceipts = (data, isCancelled) => {
-  console.log('PDF VIEW', data)
   const title = 'Receipt'
   const header = (
     <React.Fragment>

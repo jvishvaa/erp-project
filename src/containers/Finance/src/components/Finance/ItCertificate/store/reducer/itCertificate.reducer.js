@@ -9,7 +9,6 @@ const initialState = {
 const itCertificateReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_ALL_FEE_TYPE: {
-      console.log('---reducers-----------', action.payload.data)
       return {
         ...state,
         feeTypeList: action.payload.data
@@ -24,7 +23,6 @@ const itCertificateReducer = (state = initialState, action) => {
     }
     case actionTypes.SAVE_FEE_TYPE: {
       const ITList = [...state.itcList]
-      console.log(action.payload.data)
       action.payload.data.forEach(data => {
         ITList.push({
           id: data.id ? data.id : '',

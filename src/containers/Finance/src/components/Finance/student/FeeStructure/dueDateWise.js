@@ -39,7 +39,6 @@ class DueDateWise extends Component {
         }
       })
       .then(res => {
-        console.log('Result: ', res.data)
         if (res.data === 'wrong') {
           this.props.alert.warning('No Data')
         } else

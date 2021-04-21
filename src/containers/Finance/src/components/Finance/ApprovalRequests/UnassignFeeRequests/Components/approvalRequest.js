@@ -38,7 +38,6 @@ const ApprovalRequest = ({
       session
     } = location.state
     if (branch && session) {
-      console.log('Pending Called', branch, session)
       fetchApprovalList(session, branch, alert, user)
     } else {
       history.replace({

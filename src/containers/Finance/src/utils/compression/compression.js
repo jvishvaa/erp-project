@@ -7,7 +7,6 @@ import CompressionWorker from './compression.worker'
 class Compression {
   constructor () {
     this.worker = new CompressionWorker()
-    console.log('Compression Worker initialised')
   }
 
   /**

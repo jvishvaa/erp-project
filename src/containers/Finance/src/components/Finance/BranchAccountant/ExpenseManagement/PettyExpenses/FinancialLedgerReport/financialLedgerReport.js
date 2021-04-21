@@ -24,7 +24,34 @@ import * as actionTypes from '../../../../store/actions'
 import generateExcel from '../../../../../../utils/generateExcel'
 import Layout from '../../../../../../../../Layout'
 
-const FinancialLedgerReport = ({ classes, session, alert, user, ...props }) => {
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Expanse Management' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Petty Cash Expense') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
+const FinancialLedgerReport = ({ classes, session, alert, user, recData, ...props }) => {
   const [academicSession, setAcademicSession] = useState(null)
 
   const getLedgerReport = () => {
@@ -32,7 +59,7 @@ const FinancialLedgerReport = ({ classes, session, alert, user, ...props }) => {
       alert.warning('Please Fill All Fields')
       return
     }
-    props.fetchLedgerReport(academicSession, user, alert)
+    props.fetchLedgerReport(academicSession, recData && recData.branch, user, alert)
   }
 
   const createExcel = () => {
@@ -72,7 +99,6 @@ const FinancialLedgerReport = ({ classes, session, alert, user, ...props }) => {
       excelData,
       columns
     }
-    console.log('qaz', data)
     generateExcel(data)
   }
 
@@ -164,12 +190,13 @@ const FinancialLedgerReport = ({ classes, session, alert, user, ...props }) => {
 const mapStateToProps = (state) => ({
   user: state.authentication.user,
   session: state.finance.common.financialYear,
-  ledgerReport: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.financialLedgerReport
+  ledgerReport: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.financialLedgerReport,
+  recData: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.sendData
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loadFinancialYear: dispatch(actionTypes.fetchFinancialYear()),
-  fetchLedgerReport: (session, user, alert) => dispatch(actionTypes.fetchFinancialLedgerReport({ session, user, alert }))
+  loadFinancialYear: dispatch(actionTypes.fetchFinancialYear(moduleId)),
+  fetchLedgerReport: (session, branch, user, alert) => dispatch(actionTypes.fetchFinancialLedgerReport({ session, branch, user, alert }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(FinancialLedgerReport))

@@ -19,7 +19,7 @@ export const fetchAllGrades = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.StudentGradeAcc + '?academic_year=' + payload.session + '&module_id=' + payload.moduleId, {
+      .get(urls.StudentGradeAcc + '?academic_year=' + payload.session + '&module_id=' + payload.moduleId + '&branch_id=' + payload.branch, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -33,7 +33,6 @@ export const fetchAllGrades = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         // payload.alert.warning('Unable to load data')
       })
   }
@@ -57,7 +56,6 @@ export const fetchAdjustFee = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         // payload.alert.warning('Unable to load data')
       })
   }
@@ -87,14 +85,12 @@ export const fetchAllSections = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         // payload.alert.warning('Unable to load data')
       })
   }
 }
 
 export const fetchAllPlans = (payload) => {
-  console.log('feeConsole', payload)
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
@@ -112,14 +108,12 @@ export const fetchAllPlans = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         payload.alert.warning('Unable to load data')
       })
   }
 }
 
 export const fetchAllFeePlans = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
     // dispatch(actionTypes.dataLoading())
     axios
@@ -137,7 +131,6 @@ export const fetchAllFeePlans = (payload) => {
         // dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         payload.alert.warning('Unable to load data')
       })
   }
@@ -165,7 +158,6 @@ export const editStudentFeePlan = (payload) => {
         }
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         payload.alert.warning('Unable to load data')
       })
   }
@@ -190,7 +182,6 @@ export const saveAdjustFeeTypes = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         // payload.alert.warning('Unable to load data')
       })
   }
@@ -200,7 +191,7 @@ export const assignAutomaticStudent = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.StudentListForAcc + '?academic_year=' + payload.session + '&grade=' + payload.gradeId + '&section=' + payload.sectionId + '&type=' + payload.studentType, {
+      .get(urls.StudentListForAcc + '?academic_year=' + payload.session + '&grade=' + payload.gradeId + '&section=' + payload.sectionId + '&type=' + payload.studentType + '&branch_id=' + payload.branch + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -214,7 +205,6 @@ export const assignAutomaticStudent = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         // payload.alert.warning('Unable to load data')
       })
   }

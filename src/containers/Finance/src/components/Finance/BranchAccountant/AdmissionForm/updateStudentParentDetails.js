@@ -50,7 +50,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -99,13 +98,10 @@ class UpdateStudentParentDetailsFormAcc extends Component {
   }
 
   componentDidUpdate () {
-    console.log('DID UPDATED', this.state.studentParentDetails)
     this.props.getStudentParentDetail(this.state.studentParentDetails)
   }
   componentWillReceiveProps (nextProps) {
-    console.log('===received props', nextProps.admissionrecordbyerp)
     if (nextProps.admissionrecordbyerp) {
-      console.log('this is printed chandan')
       const newstudentParentDetails = { ...this.state.studentParentDetails }
       newstudentParentDetails['fatherName'] = nextProps.admissionrecordbyerp.father_name ? nextProps.admissionrecordbyerp.father_name : ''
       newstudentParentDetails['fatherphone'] = nextProps.admissionrecordbyerp.father_mobile ? nextProps.admissionrecordbyerp.father_mobile : ''
@@ -136,7 +132,6 @@ class UpdateStudentParentDetailsFormAcc extends Component {
   }
 
   studentParentDroponHandler= (event, name) => {
-    console.log(event, name)
     const newstudentParentDetails = { ...this.state.studentParentDetails }
     switch (name) {
       case 'poc': {
@@ -153,7 +148,6 @@ class UpdateStudentParentDetailsFormAcc extends Component {
   }
 
   studentParentInputHandler= (event) => {
-    console.log(event.target.name)
     const newstudentParentDetails = { ...this.state.studentParentDetails }
     switch (event.target.name) {
       case 'fatherName': {

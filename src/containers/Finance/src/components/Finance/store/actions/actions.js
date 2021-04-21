@@ -390,7 +390,7 @@ export const fetchAllSectionsPerGrade = (payload) => {
   return (dispatch) => {
     dispatch(dataLoading())
     axios
-      .get(urls.StudentGradeSectionAcc + '?grade=' + payload.gradeId + '&academic_year=' + payload.session + '&module_id=' + payload.moduleId, {
+      .get(urls.StudentGradeSectionAcc + '?grade=' + payload.gradeId + '&academic_year=' + payload.session + '&module_id=' + payload.moduleId + '&branch_id=' + payload.branch, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -414,7 +414,7 @@ export const fetchAllSectionsPerGradeAsAdmin = (payload) => {
   return (dispatch) => {
     dispatch(dataLoading())
     axios
-      .get(urls.StudentGradeSectionAcc + '?grade=' + payload.gradeId + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId, {
+      .get(urls.StudentGradeSectionAcc + '?grade=' + payload.gradeId + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -460,7 +460,6 @@ export const downloadReports = (payload) => {
   return (dispatch) => {
     dispatch(dataLoading())
     let url = ''
-    // console.log('---------reports-------', payload.data)
     if (payload.reportName === 'TallyReport.xlsx' && payload.data.date_range === 2) {
       url = payload.url + '?session_year=' + payload.data.session_year + '&branch=' + payload.data.branch +
       '&fee_account=' + payload.data.fee_account + '&transactions=' + payload.data.transactions +
@@ -518,11 +517,11 @@ export const downloadReports = (payload) => {
       url = payload.url
     } else if (payload.reportName === 'LedgerReport.xlsx') {
       if (payload.data.academic_year && payload.data.ledger_type && payload.data.ledger_head && payload.data.ledger_name) {
-        url = payload.url + '?academic_year=' + payload.data.academic_year + '&ledger_type=' + payload.data.ledger_type + '&ledger_head=' + payload.data.ledger_head + '&ledger_name=' + payload.data.ledger_name
+        url = payload.url + '?academic_year=' + payload.data.academic_year + '&ledger_type=' + payload.data.ledger_type + '&ledger_head=' + payload.data.ledger_head + '&ledger_name=' + payload.data.ledger_name + '&branch_id=' + payload.data.branch
       } else if (payload.data.academic_year && payload.data.from_date && payload.data.to_date) {
-        url = payload.url + '?academic_year=' + payload.data.academic_year + '&fromDate=' + payload.data.from_date + '&toDate=' + payload.data.to_date
+        url = payload.url + '?academic_year=' + payload.data.academic_year + '&fromDate=' + payload.data.from_date + '&toDate=' + payload.data.to_date + '&branch_id=' + payload.data.branch
       } else if (payload.data.academic_year) {
-        url = payload.url + '?academic_year=' + payload.data.academic_year
+        url = payload.url + '?academic_year=' + payload.data.academic_year + '&branch_id=' + payload.data.branch
       }
     } else if (payload.reportName === 'Other_fee_total_paid_and_due_reports.csv') {
       url = payload.url + '?academic_year=' + payload.data.academic_year + '&branches=' + payload.data.branches +
@@ -531,7 +530,6 @@ export const downloadReports = (payload) => {
       payload.data.FeeTypes_installments + '&student_status=' + payload.data.student_status + '&active=' +
       payload.data.active + '&inactive=' + payload.data.inactive + '&allStudents=' + payload.data.allStudents +
       '&other_fee_type=' + payload.data.other_fee_type + '&other_fee_installments=' + payload.data.other_fee_installments
-      console.log('---------reports url-----------', payload)
     }
     axios
       .get(url, {
@@ -540,7 +538,6 @@ export const downloadReports = (payload) => {
         },
         responseType: 'blob'
       }).then(response => {
-        // console.log('----response---------', response)
         // const url = urls.BASE + response.data
         // axios.get(url, {
         //   headers: {
@@ -548,9 +545,7 @@ export const downloadReports = (payload) => {
         //   },
         //   responseType: 'blob'
         // }).then(response => {
-        //   // console.log(urls.BASE)
         //   const url = window.URL.createObjectURL(new Blob([response.data]))
-        //   console.log('--url----------', url)
         //   const link = document.createElement('a')
         //   link.href = url
         //   link.target = '_blank'
@@ -558,7 +553,6 @@ export const downloadReports = (payload) => {
         //   document.body.appendChild(link)
         //   link.click()
         // }).catch(err => {
-        //   console.log('Error in Second Axios', err)
         // })
         // dispatch({
         //   type: DOWNLOAD_REPORTS,
@@ -567,7 +561,6 @@ export const downloadReports = (payload) => {
         //   }
         // })
         const url = window.URL.createObjectURL(new Blob([response.data]))
-        console.log('--url----------', url)
         const link = document.createElement('a')
         link.href = url
         link.target = '_blank'
@@ -594,7 +587,6 @@ export const downloadReports = (payload) => {
 //         }
 //         // responseType: 'blob'
 //       }).then(response => {
-//         console.log('----response---------', response)
 //         const url = urls.BASE + response.data
 //         axios.get(url, {
 //           headers: {
@@ -602,9 +594,7 @@ export const downloadReports = (payload) => {
 //           },
 //           responseType: 'blob'
 //         }).then(response => {
-//           // console.log(urls.BASE)
 //           const url = window.URL.createObjectURL(new Blob([response.data]))
-//           console.log('--url----------', url)
 //           const link = document.createElement('a')
 //           link.href = url
 //           link.target = '_blank'
@@ -612,7 +602,6 @@ export const downloadReports = (payload) => {
 //           document.body.appendChild(link)
 //           link.click()
 //         }).catch(err => {
-//           console.log('Error in Second Axios', err)
 //         })
 //         dispatch({
 //           type: DOWNLOAD_REPORTS,
@@ -625,7 +614,6 @@ export const downloadReports = (payload) => {
 //       }).catch(error => {
 //         dispatch(dataLoaded())
 //         payload.alert.error('Something Went Wrong')
-//         console.log(error)
 //       })
 //   }
 // }
@@ -638,7 +626,6 @@ export const fetchBranchAtAcc = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log('the accountant Branch', response)
       dispatch({
         type: GET_BRANCH,
         payload: {
@@ -850,7 +837,6 @@ export const fetchDeviceId = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      // console.log('the accountant Branch', response)
       dispatch({
         type: FETCH_DEVICE_ID,
         payload: {

@@ -31,16 +31,13 @@ const currFeeTypeAccReducer = (state = initialState, action) => {
       const index = newstudentMiscFee.findIndex(ele => {
         return ele.id === action.payload.data.id
       })
-      console.log('the indexxx: ', index)
       if (index !== -1) {
-        console.log('editing')
         newstudentMiscFee[index] = { ...action.payload.data }
         return {
           ...state,
           studentMiscFee: newstudentMiscFee
         }
       } else {
-        console.log('pushinggg')
         // newstudentMiscFee.push(action.payload.data)
         const studentMiscFee = [ action.payload.data, ...state.studentMiscFee ]
         return {

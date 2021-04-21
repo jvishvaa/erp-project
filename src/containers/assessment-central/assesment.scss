@@ -1,0 +1,57 @@
+.assesment-breadcrum{
+    padding-left: 20px;
+}
+
+.assesment-breadcrum .page_title{
+    font-size: 16px;
+}
+
+.createButton button{
+    padding: 4.8px;
+}
+
+.MuiSvgIcon-root .dropdownIcon {
+    color: #ff6b6b;
+}
+
+.MuiIconButton-root.moreHorizIcon {
+    padding: 0px;
+    color: #ff6b6b;
+}
+
+.cardsContainer {
+    display: flex;
+}
+
+@media screen and (max-width:768px) {
+    .cardsContainer {
+        flex-direction: column;
+    }
+}
+.periodDataUnavailable {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5%;
+}
+
+//////tabs
+.assesment-tabs .MuiTabs-root .MuiTabs-fixed .all-tab{
+    min-width: 0px !important;
+}
+.assesment-tabs .MuiTabs-root .MuiTabs-fixed .draft-tab{
+    min-width: 0px !important;
+}
+.assesment-tabs .MuiTabs-root .MuiTabs-fixed .review-tab{
+    min-width: 0px !important;
+}
+
+.assesment-tabs .MuiTabs-root .MuiTabs-fixed .published-tab{
+    min-width: 0px !important;
+}
+
+.assesment-tabs .MuiTabs-root .MuiTabs-fixed .all-tab .MuiTabs-indicator{
+    width: 56px;
+    left: 413.85px;
+}

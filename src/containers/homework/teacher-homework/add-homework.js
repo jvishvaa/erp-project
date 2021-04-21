@@ -90,7 +90,6 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const handleAddHomeWork = async () => {
     const isFormValid = validateHomework();
     if (isFormValid) {
-      // console.log('submitting form');
       const reqObj = {
         name,
         description,
@@ -105,7 +104,6 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
       };
       try {
         const response = await onAddHomework(reqObj);
-        // console.log('add response ', response);
         setAlert('success', 'Homework added');
         history.push('/homework/teacher');
       } catch (error) {

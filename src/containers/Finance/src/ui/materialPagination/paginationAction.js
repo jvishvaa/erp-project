@@ -48,7 +48,6 @@ class PaginationActions extends React.Component {
     };
 
     handleNextButtonClick = event => {
-      // console.log(this.props.page + 1)
       let { item } = this.state
 
       this.setState({ item: Number(item) + 1 })
@@ -64,9 +63,7 @@ class PaginationActions extends React.Component {
       )
     };
     handlePage = (e) => {
-      console.log(e.target.value, 'll')
       let { item } = this.state
-      console.log(e.target.value)
       if (e.target.value === item) {
         // eslint-disable-next-line eqeqeq
         if (e.target.value == 0) {
@@ -80,14 +77,12 @@ class PaginationActions extends React.Component {
     handlePageInput =(e, PageCount) => {
       let { item } = this.state
       let value = e.target.value
-      console.log(value)
       if (value <= PageCount && value !== null && value !== item) {
         // eslint-disable-next-line eqeqeq
         this.setState({ item: value })
       }
     }
     handleKeyDown = (e) => {
-      console.log(e.target.value)
       if (e.key === 'Enter') {
         this.handlePage(e)
       }

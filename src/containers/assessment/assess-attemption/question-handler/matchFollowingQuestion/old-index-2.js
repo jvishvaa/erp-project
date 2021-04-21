@@ -248,7 +248,6 @@ const MatchFollowingQuestion = (props) => {
                     <span>
                       <img
                         onClick={(event) => {
-                          console.log(event.target.value, 'event.target.value');
                           const { name: starPoint } = dragStart || {};
                           if (dragStart && starPoint !== event.target.name) {
                             onDragEnd(event);

@@ -11,7 +11,8 @@ const intialState = {
   bankStatements: null,
   financialLedgerReport: null,
   cashStatements: null,
-  receiptHeader: null
+  receiptHeader: null,
+  sendData: null
 }
 
 const pettyExpensesReducer = (state = intialState, action) => {
@@ -82,7 +83,6 @@ const pettyExpensesReducer = (state = intialState, action) => {
       const index = results.findIndex(item => +item.id === +action.payload.data.id)
       results[index] = action.payload.data
       ledgerReportList.results = results
-      console.log('STATUS', ledgerReportList, index)
       return {
         ...state,
         ledgerReportList: ledgerReportList
@@ -98,6 +98,12 @@ const pettyExpensesReducer = (state = intialState, action) => {
       return {
         ...state,
         receiptHeader: action.payload.data
+      }
+    }
+    case actionTypes.SENDING_DATA: {
+      return {
+        ...state,
+        sendData: action.payload.data
       }
     }
     default: {
