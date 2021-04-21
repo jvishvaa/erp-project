@@ -73,6 +73,9 @@ const StyledButton = withStyles({
     fontFamily: 'Raleway',
     textTransform: 'capitalize',
     backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   },
   iconSize: {},
 })(Button);
