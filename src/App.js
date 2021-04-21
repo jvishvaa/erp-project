@@ -257,7 +257,6 @@ import Assesment from './containers/assessment-central';
 import AssessmentView from './containers/assessment-central/assesment-view';
 import CreateAssesment from './containers/assessment-central/create-assesment';
 import ContactUs from 'containers/contact-us';
-import ViewContacts from 'containers/contact-us/ViewContacts';
 
 const theme = createMuiTheme({
   palette: {
@@ -1259,9 +1258,6 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/contact-us'>
                             {({ match }) => <ContactUs match={match} />}
-                          </Route>
-                          <Route exact path='/contact-us/student-view'>
-                            {({ match }) => <ViewContacts match={match} />}
                           </Route>
                         </Switch>
                       </DailyDairyStore>
