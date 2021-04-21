@@ -297,8 +297,9 @@ const Category = (props) => {
     if(moduleId){
       if(location.pathname === '/student-forum'){
         const grade_id = userDetails.role_details?.grades[0]?.grade_id;
+        const branch_id = userDetails.role_details?.branch[0]?.id;
         axiosInstance
-        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&grade=${grade_id}`)
+        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch_id=${branch_id}&grade=${grade_id}`)
         .then((res) => {
           console.log(res.data.result);
           setCategoryList(res.data.result);
