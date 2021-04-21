@@ -5,42 +5,37 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-const EditSection = ({ id, name, handleGoBack, setLoading }) => {
-  const secName = name.split('_').pop();
-
-const EditSection = ({sectionData,handleGoBack,setLoading}) => {
-
-  const {id, section_name} =sectionData;
+const EditSection = ({ sectionData, handleGoBack, setLoading }) => {
+  const { id, section_name } = sectionData;
   const { setAlert } = useContext(AlertNotificationContext);
-  const [sectionName,setSectionName]=useState(section_name || '')
+  const [sectionName, setSectionName] = useState(section_name || '');
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    let request={}
-    if(sectionName!==section_name && sectionName!=="")
-    {
-      request['section_name']=sectionName;
-      axiosInstance.put(`${endpoints.masterManagement.updateSection}${id}`,request)
-      .then(result=>{
-        if (result.data.status_code === 201) {
-          handleGoBack();
-          setSectionName('')
+    let request = {};
+    if (sectionName !== section_name && sectionName !== '') {
+      request['section_name'] = sectionName;
+      axiosInstance
+        .put(`${endpoints.masterManagement.updateSection}${id}`, request)
+        .then((result) => {
+          if (result.data.status_code === 201) {
+            handleGoBack();
+            setSectionName('');
+            setLoading(false);
+            setAlert('success', `Section ${result.data?.msg || result.data?.message}`);
+          } else {
+            setLoading(false);
+            setAlert('error', result.data?.msg || result.data?.message);
+          }
+        })
+        .catch((error) => {
           setLoading(false);
-          setAlert('success', `Section ${result.data?.msg||result.data?.message}`);
-        } else {
-          setLoading(false);
-          setAlert('error', result.data?.msg||result.data?.message);
-        }
-      }).catch((error)=>{
-        setLoading(false);
-        setAlert('error', error.response.data.msg);
-      })
-    }
-    else
-    {
+          setAlert('error', error.response.data.msg);
+        });
+    } else {
       setLoading(false);
       setAlert('error', 'No Fields to Update');
     }

@@ -83,7 +83,7 @@ const ResponderView = () => {
       setLoading(false);
     }, 1500);
     console.log('in useeffect');
-    axiosInstance.get(endpoints.communication.branches).then((res) => {
+    axiosInstance.get(endpoints.masterManagement.branchList).then((res) => {
       console.log('res', res.data.data);
       setBranches(res.data.data);
     });
@@ -219,9 +219,9 @@ const ResponderView = () => {
             <Grid item xs={6} sm={5} md={3} lg={2}>
               <Autocomplete
                 id='size-small-standard'
-                // size='small'
+                size='small'
                 options={branches}
-                // className={classes.root}
+                className={classes.root}
                 onChange={handleBranche}
                 style={{ marginTop: '40px', marginLeft: '20px' }}
                 fullWidth

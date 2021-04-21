@@ -16,6 +16,9 @@ import {
 } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
+// import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
+// import moment from 'moment';
 
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
@@ -78,7 +81,8 @@ const useStyles = makeStyles((theme) => ({
 
 const BookAppointment = ({ setLoading, handleGoBack }) => {
   const { setAlert } = useContext(AlertNotificationContext);
-
+  const [date, setDate] = useState(new Date());
+  const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
   const [selectedDate, setSelectedDate] = useState(new Date());
   const classes = useStyles();
   const [currentPage, setCurrentPage] = useState(1);
@@ -162,6 +166,7 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
                 size='small'
                 onChange={handleRole}
                 id='role'
+                className='arrow  '
                 // value={selectedGrade}
                 style={{ width: '100%' }}
                 options={roles}
@@ -174,7 +179,7 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
                     variant='outlined'
                     label='Appointment with'
                     placeholder='role'
-                    required
+                    // required
                   />
                 )}
               />
@@ -188,12 +193,34 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
               type='date'
               variant='outlined'
               fullWidth
+              className='button'
               size='small'
               onChange={handleChange}
               style={{ marginTop: 25 }}
 
               // defaultValue={values.someDate}
             />
+            {/* <MuiPickersUtilsProvider utils={MomentUtils}>
+              <KeyboardDatePicker
+                size='small'
+                variant='dialog'
+                format='YYYY-MM-DD'
+                margin='none'
+                className='button'
+                id='date-picker'
+                label='Appointment Date'
+                maxDate={new Date()}
+                inputVariant='outlined'
+                fullWidth
+                value={dateValue}
+                onChange={handleDateChange}
+                // className='dropdown'
+                style={{ width: '100%', marginTop: '9%' }}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </MuiPickersUtilsProvider> */}
           </Grid>
 
           <Grid item xs={12} sm={5} md={3} lg={2}>
@@ -202,6 +229,7 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
               label='Appointment Time'
               InputLabelProps={{ shrink: true, required: true }}
               type='time'
+              className='button'
               variant='outlined'
               size='small'
               fullWidth
@@ -224,6 +252,7 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
                 style={{ marginTop: '0px' }}
                 onChange={handleChange}
                 labelWidth={170}
+                // className='arrow'
               >
                 <MenuItem value={1}>Zoom Meeting</MenuItem>
                 <MenuItem value={2}>Telephonic</MenuItem>

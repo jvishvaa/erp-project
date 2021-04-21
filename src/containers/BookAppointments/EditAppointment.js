@@ -184,6 +184,7 @@ const EditAppointment = ({
                 labelId='demo-simple-select-outlined-label'
                 id='demo-simple-select-outlined'
                 name='role'
+                className='arrow'
                 onChange={handleChange}
                 labelWidth={170}
                 defaultValue={role?.id}
@@ -205,6 +206,7 @@ const EditAppointment = ({
               label='Appointment Date'
               InputLabelProps={{ shrink: true, required: true }}
               type='date'
+              className='button'
               variant='outlined'
               fullWidth
               size='small'
@@ -222,6 +224,7 @@ const EditAppointment = ({
               InputLabelProps={{ shrink: true, required: true }}
               type='time'
               format='12'
+              className='button'
               variant='outlined'
               size='small'
               fullWidth

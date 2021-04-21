@@ -21,7 +21,8 @@ import TodayIcon from '@material-ui/icons/Today';
 import MoreIcon from '@material-ui/icons/More';
 import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
-import TodayIcon from '@material-ui/icons/Today';
+import ContactPhoneRoundedIcon from '@material-ui/icons/ContactPhoneRounded';
+// import TodayIcon from '@material-ui/icons/Today';
 import AssessmentSharpIcon from '@material-ui/icons/AssessmentSharp';
 import {
   Popper,
@@ -66,6 +67,7 @@ import logo from '../../assets/images/logo.png';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserInfo from '../../components/user-info';
 import PublishIcon from '@material-ui/icons/Publish';
@@ -412,7 +414,7 @@ const Layout = ({ children, history }) => {
         history.push('/user-management');
         break;
       }
-      case 'Ebook View':{
+      case 'Ebook View': {
         history.push('/ebook/view');
         break;
       }
@@ -524,11 +526,11 @@ const Layout = ({ children, history }) => {
         history.push('/feeType/RegistrationFee');
         break;
       }
-      case 'Teacher Calendar':{
+      case 'Teacher Calendar': {
         history.push('/attendance-calendar/teacher-view');
         break;
       }
-      case 'Student Calendar':{
+      case 'Student Calendar': {
         history.push('/attendance-calendar/student-view');
         break;
       }
@@ -591,26 +593,26 @@ const Layout = ({ children, history }) => {
       //   history.push('/assessment/view-assessment');
       //   break;
       // }
-    case 'Question Bank' : {
-      history.push('/question-bank');
-      break;
-    }
-    case 'Question Paper' : {
-      history.push('/assessment-question');
-      break;
-    }
-    case 'Create Test': {
-      history.push('/assesment');
-      break;
-    }
-    case 'Take Test': {
-      history.push('/assessment');
-      break;
-    }
-    //   { name: 'Question Bank', Path: '/question-bank' },
-    // { name: 'Question Paper', Path: '/assessment-question' },
-    // { name: 'Create Test', Path: '/assesment' },
-    // { name: 'Take Test', Path: '/assessment' }
+      case 'Question Bank': {
+        history.push('/question-bank');
+        break;
+      }
+      case 'Question Paper': {
+        history.push('/assessment-question');
+        break;
+      }
+      case 'Create Test': {
+        history.push('/assesment');
+        break;
+      }
+      case 'Take Test': {
+        history.push('/assessment');
+        break;
+      }
+      //   { name: 'Question Bank', Path: '/question-bank' },
+      // { name: 'Question Paper', Path: '/assessment-question' },
+      // { name: 'Create Test', Path: '/assesment' },
+      // { name: 'Take Test', Path: '/assessment' }
       // case 'ID Cards': {
       //   history.push('/student-id-card');
       //   break;
@@ -952,7 +954,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Contact Us': {
-        history.push('/contact-us')
+        history.push('/contact-us');
       }
       default:
         break;
@@ -1347,7 +1349,7 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-          <ListItem
+          {/* <ListItem
             button
             className={classes.menuControlContainer}
             onClick={() => history.push('/contact-us')}
@@ -1356,6 +1358,37 @@ const Layout = ({ children, history }) => {
               <TodayIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Contact Us</ListItemText>
+          </ListItem> */}
+          <ListItem
+            button
+            // className={classes.menuControlContainer}
+            onClick={() => history.push('/Contact')}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              <ContactPhoneRoundedIcon />
+            </ListItemIcon>
+            <ListItemText className='menu-item-text'>Contact</ListItemText>
+          </ListItem>
+          <ListItem
+            button
+            className={classes.menuControlContainer}
+            onClick={() => history.push('/appointments')}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              <AssignmentLateIcon />
+            </ListItemIcon>
+            <ListItemText className='menu-item-text'>Appointments</ListItemText>
+          </ListItem>
+
+          <ListItem
+            button
+            className={classes.menuControlContainer}
+            onClick={() => history.push('/responder-view')}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              <EventNoteIcon />
+            </ListItemIcon>
+            <ListItemText className='menu-item-text'>Responder View</ListItemText>
           </ListItem>
 
           {navigationData && drawerOpen && navigationData.length > 0 && (

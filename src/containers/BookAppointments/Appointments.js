@@ -70,6 +70,7 @@ const useStyles = makeStyles((theme) => ({
     width: '92%',
     borderRadius: '10px',
     background: '#ACF5B8',
+    position: 'static',
   },
   papermain: {
     margin: 30,
@@ -177,6 +178,7 @@ const Appointments = () => {
     console.log('evt', evt.target);
     console.log('index:', index);
   };
+  // const postRowClick = (id, basePath, record) => (record.editable ? 'edit' : 'edit');
 
   return (
     <>
@@ -219,75 +221,428 @@ const Appointments = () => {
             {data.map((item, index) => {
               return (
                 <Paper elevation={3} className={classes.paper}>
-                  <Grid container direction='row'>
-                    {/* <Grid item md={1}></Grid> */}
-                    <Grid md={1}></Grid>
-                    <Grid item md={1}>
-                      <Typography variant='subtitle2'>Appointment With</Typography>
+                  <MediaQuery minWidth={1316}>
+                    <Grid container direction='row' style={{ marginLeft: 10 }}>
+                      {/* <Grid item md={1}></Grid> */}
+                      <Grid item md={2}>
+                        <Typography variant='subtitle2'>Appointment With</Typography>
 
-                      <Typography>{item.role?.role_name} </Typography>
-                    </Grid>
-                    <Grid item md={1}>
-                      <img src={line} className={classes.lines} />
-                    </Grid>
+                        <Typography>{item.role?.role_name} </Typography>
+                      </Grid>
+                      <Grid item md={1}>
+                        <img src={line} className={classes.lines} />
+                      </Grid>
 
-                    <Grid item md={1}>
-                      <Typography variant='subtitle2'> Appointment Date </Typography>
-                      <Typography>{item.appointment_date}</Typography>
-                    </Grid>
-                    <Grid item md={1}>
-                      <img src={line} className={classes.lines} />
-                    </Grid>
+                      <Grid item md={1}>
+                        <Typography variant='subtitle2'> Date </Typography>
+                        <Typography>{item.appointment_date}</Typography>
+                      </Grid>
+                      <Grid item md={1}>
+                        <img src={line} className={classes.lines} />
+                      </Grid>
 
-                    <Grid item md={1}>
-                      <Typography variant='subtitle2'>Appointment Time</Typography>
-                      <Typography>
-                        {item.appointment_time ? item.appointment_time.slice(0, 5) : ''}
-                      </Typography>
-                    </Grid>
-                    <Grid item md={1}>
-                      {' '}
-                      <img src={line} className={classes.lines} />
-                    </Grid>
+                      <Grid item md={1}>
+                        <Typography variant='subtitle2'>Time</Typography>
+                        <Typography>
+                          {item.appointment_time ? item.appointment_time.slice(0, 5) : ''}
+                        </Typography>
+                      </Grid>
+                      <Grid item md={1}>
+                        {' '}
+                        <img src={line} className={classes.lines} />
+                      </Grid>
 
-                    <Grid item md={1}>
-                      <Typography variant='subtitle2'>Appointment Mode</Typography>
-                      <Typography> {item.booking_mode} </Typography>
+                      <Grid item md={1}>
+                        <Typography variant='subtitle2'>Mode</Typography>
+                        <Typography> {item.booking_mode} </Typography>
+                      </Grid>
+                      <Grid item md={1}>
+                        {' '}
+                        <img src={line} className={classes.lines} />
+                      </Grid>
+                      <Grid item md={1}>
+                        <Typography variant='subtitle2'>Status</Typography>
+                        <Typography> {item.appointment_status}</Typography>
+                      </Grid>
+                      <Grid item xs={12} md={1} sm={12}>
+                        {' '}
+                        <img src={line} className={classes.lines} />
+                      </Grid>
+                      <Grid item xs={12} md={1} sm={12}>
+                        <IconButton
+                          onClick={(e) =>
+                            handleEditAppointment(
+                              item.id,
+                              item.role,
+                              item.appointment_date,
+                              item.appointment_time,
+                              item.booking_mode,
+                              item.message
+                            )
+                          }
+                          title='Edit Appointmant'
+                        >
+                          <EditOutlinedIcon
+                            color='primary'
+                            className={classes.icon}
+                            fontSize='small'
+                          />
+                        </IconButton>
+                      </Grid>
                     </Grid>
-                    <Grid item md={1}>
-                      {' '}
-                      <img src={line} className={classes.lines} />
+                  </MediaQuery>
+                  <MediaQuery maxWidth={1315} minWidth={960}>
+                    <Grid container direction='row' style={{ marginLeft: 10 }}>
+                      {/* <Grid item md={1}></Grid> */}
+                      <Grid item md={2}>
+                        <Typography variant='subtitle2'>Appointment With</Typography>
+
+                        <Typography>{item.role?.role_name} </Typography>
+                      </Grid>
+                      <Grid item md={1}>
+                        <img src={line} className={classes.lines} />
+                      </Grid>
+
+                      <Grid item md={2}>
+                        <Typography variant='subtitle2'> Date </Typography>
+                        <Typography>{item.appointment_date}</Typography>
+                      </Grid>
+                      <Grid item md={1}>
+                        <img src={line} className={classes.lines} />
+                      </Grid>
+
+                      <Grid item md={1}>
+                        <Typography variant='subtitle2'>Time</Typography>
+                        <Typography>
+                          {item.appointment_time ? item.appointment_time.slice(0, 5) : ''}
+                        </Typography>
+                      </Grid>
+                      <Grid item md={1}>
+                        {' '}
+                        <img src={line} className={classes.lines} />
+                      </Grid>
+
+                      {/* <Grid item md={1}>
+                        <Typography variant='subtitle2'>Mode</Typography>
+                        <Typography> {item.booking_mode} </Typography>
+                      </Grid>
+                      <Grid item md={1}>
+                        {' '}
+                        <img src={line} className={classes.lines} />
+                      </Grid> */}
+                      <Grid item md={1}>
+                        <Typography variant='subtitle2'>Status</Typography>
+                        <Typography> {item.appointment_status}</Typography>
+                      </Grid>
+                      <Grid item xs={12} md={1} sm={12}>
+                        {' '}
+                        <img src={line} className={classes.lines} />
+                      </Grid>
+                      <Grid item xs={12} md={1} sm={12}>
+                        <IconButton
+                          onClick={(e) =>
+                            handleEditAppointment(
+                              item.id,
+                              item.role,
+                              item.appointment_date,
+                              item.appointment_time,
+                              item.booking_mode,
+                              item.message
+                            )
+                          }
+                          title='Edit Appointmant'
+                        >
+                          <EditOutlinedIcon
+                            color='primary'
+                            className={classes.icon}
+                            fontSize='small'
+                          />
+                        </IconButton>
+                      </Grid>
                     </Grid>
-                    <Grid item md={1}>
-                      <Typography variant='subtitle2'>Status</Typography>
-                      <Typography> {item.appointment_status}</Typography>
+                  </MediaQuery>
+                  <MediaQuery maxWidth={959} minWidth={900}>
+                    <Grid container direction='row'>
+                      {/* <Grid item md={1}></Grid> */}
+                      {/* <Grid sm={1} md={1}></Grid> */}
+                      <Grid item sm={2} md={2} style={{ marginLeft: 10 }}>
+                        <Typography variant='subtitle2'>Appointment With</Typography>
+
+                        <Typography>{item.role?.role_name} </Typography>
+                      </Grid>
+                      <Grid item sm={1} md={1}>
+                        <img src={line} className={classes.lines} />
+                      </Grid>
+
+                      <Grid item sm={2} md={2}>
+                        <Typography variant='subtitle2'> Date </Typography>
+                        <Typography>{item.appointment_date}</Typography>
+                      </Grid>
+                      <Grid item sm={1} md={1}>
+                        <img src={line} className={classes.lines} />
+                      </Grid>
+
+                      {/* <Grid item sm={1} md={1}>
+                        <Typography variant='subtitle2'>Time</Typography>
+                        <Typography>
+                          {item.appointment_time ? item.appointment_time.slice(0, 5) : ''}
+                        </Typography>
+                      </Grid>
+                      <Grid item sm={1} md={1}>
+                        {' '}
+                        <img src={line} className={classes.lines} />
+                      </Grid> */}
+
+                      {/* <Grid item md={1}>
+                        <Typography variant='subtitle2'>Mode</Typography>
+                        <Typography> {item.booking_mode} </Typography>
+                      </Grid>
+                      <Grid item md={1}>
+                        {' '}
+                        <img src={line} className={classes.lines} />
+                      </Grid> */}
+                      <Grid item sm={2} md={1}>
+                        <Typography variant='subtitle2'>Status</Typography>
+                        <Typography> {item.appointment_status}</Typography>
+                      </Grid>
+                      <Grid item xs={1} md={1} sm={1}>
+                        {' '}
+                        <img src={line} className={classes.lines} />
+                      </Grid>
+                      <Grid item xs={1} md={1} sm={1}>
+                        <IconButton
+                          onClick={(e) =>
+                            handleEditAppointment(
+                              item.id,
+                              item.role,
+                              item.appointment_date,
+                              item.appointment_time,
+                              item.booking_mode,
+                              item.message
+                            )
+                          }
+                          title='Edit Appointmant'
+                        >
+                          <EditOutlinedIcon
+                            color='primary'
+                            className={classes.icon}
+                            fontSize='small'
+                          />
+                        </IconButton>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={12} md={1} sm={12}>
-                      {' '}
-                      <img src={line} className={classes.lines} />
+                  </MediaQuery>
+                  <MediaQuery maxWidth={899} minWidth={678}>
+                    <Grid container direction='row'>
+                      {/* <Grid item md={1}></Grid> */}
+                      {/* <Grid sm={1} md={1}></Grid> */}
+                      <Grid item xs={3} sm={3} md={2} style={{ marginLeft: 10 }}>
+                        <Typography variant='subtitle2'>Appointment With</Typography>
+
+                        <Typography>{item.role?.role_name} </Typography>
+                      </Grid>
+                      <Grid item xs={1} sm={1} md={1}>
+                        <img src={line} className={classes.lines} />
+                      </Grid>
+
+                      <Grid item xs={3} sm={2} md={2}>
+                        <Typography variant='subtitle2'> Date </Typography>
+                        <Typography>{item.appointment_date}</Typography>
+                      </Grid>
+                      <Grid item sm={1} md={1}>
+                        <img src={line} className={classes.lines} />
+                      </Grid>
+
+                      {/* <Grid item sm={1} md={1}>
+                        <Typography variant='subtitle2'>Time</Typography>
+                        <Typography>
+                          {item.appointment_time ? item.appointment_time.slice(0, 5) : ''}
+                        </Typography>
+                      </Grid>
+                      <Grid item sm={1} md={1}>
+                        {' '}
+                        <img src={line} className={classes.lines} />
+                      </Grid> */}
+
+                      {/* <Grid item md={1}>
+                        <Typography variant='subtitle2'>Mode</Typography>
+                        <Typography> {item.booking_mode} </Typography>
+                      </Grid>
+                      <Grid item md={1}>
+                        {' '}
+                        <img src={line} className={classes.lines} />
+                      </Grid> */}
+                      <Grid item sm={2} md={1}>
+                        <Typography variant='subtitle2'>Status</Typography>
+                        <Typography> {item.appointment_status}</Typography>
+                      </Grid>
+                      <Grid item xs={1} md={1} sm={1}>
+                        {' '}
+                        <img src={line} className={classes.lines} />
+                      </Grid>
+                      <Grid item xs={1} md={1} sm={1}>
+                        <IconButton
+                          onClick={(e) =>
+                            handleEditAppointment(
+                              item.id,
+                              item.role,
+                              item.appointment_date,
+                              item.appointment_time,
+                              item.booking_mode,
+                              item.message
+                            )
+                          }
+                          title='Edit Appointmant'
+                        >
+                          <EditOutlinedIcon
+                            color='primary'
+                            className={classes.icon}
+                            fontSize='small'
+                          />
+                        </IconButton>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={12} md={1} sm={12}>
-                      <IconButton
-                        onClick={(e) =>
-                          handleEditAppointment(
-                            item.id,
-                            item.role,
-                            item.appointment_date,
-                            item.appointment_time,
-                            item.booking_mode,
-                            item.message
-                          )
-                        }
-                        title='Edit Appointmant'
+                  </MediaQuery>
+                  <MediaQuery maxWidth={677} minWidth={385}>
+                    <Grid container direction='row' style={{ marginRight: 20 }}>
+                      {/* <Grid item md={1}></Grid> */}
+                      {/* <Grid sm={1} md={1}></Grid> */}
+                      <Grid item xs={9} sm={9} md={2} style={{ marginLeft: 40 }}>
+                        <Typography variant='subtitle2' style={{ display: 'inline' }}>
+                          Appointment With :
+                          <Typography style={{ display: 'inline' }}>
+                            {item.role?.role_name}{' '}
+                          </Typography>
+                        </Typography>
+                        <Typography variant='subtitle2'>
+                          Date {'      '}:
+                          <Typography style={{ display: 'inline', marginLeft: 60 }}>
+                            {item.appointment_date}
+                          </Typography>
+                        </Typography>
+                        <Typography variant='subtitle2'>
+                          Time:
+                          <Typography style={{ display: 'inline', marginLeft: 60 }}>
+                            {item.appointment_time
+                              ? item.appointment_time.slice(0, 5)
+                              : ''}
+                          </Typography>
+                        </Typography>
+                        <Typography variant='subtitle2' style={{ display: 'inline' }}>
+                          Mode:
+                          <Typography style={{ display: 'inline', marginLeft: 55 }}>
+                            {item.booking_mode}{' '}
+                          </Typography>
+                        </Typography>
+                        <Typography variant='subtitle2'>
+                          Status :
+                          <Typography style={{ display: 'inline', marginLeft: 55 }}>
+                            {item.appointment_status}{' '}
+                          </Typography>
+                        </Typography>
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs={1}
+                        md={1}
+                        sm={1}
+                        container
+                        justify='center'
+                        alignItems='center'
                       >
-                        <EditOutlinedIcon
-                          color='primary'
-                          className={classes.icon}
-                          fontSize='small'
-                        />
-                      </IconButton>
+                        <IconButton
+                          onClick={(e) =>
+                            handleEditAppointment(
+                              item.id,
+                              item.role,
+                              item.appointment_date,
+                              item.appointment_time,
+                              item.booking_mode,
+                              item.message
+                            )
+                          }
+                          title='Edit Appointmant'
+                        >
+                          <EditOutlinedIcon
+                            color='primary'
+                            className={classes.icon}
+                            fontSize='small'
+                          />
+                        </IconButton>
+                      </Grid>
                     </Grid>
-                  </Grid>
+                  </MediaQuery>
+                  <MediaQuery maxWidth={384} minWidth={200}>
+                    <Grid container direction='row'>
+                      {/* <Grid item md={1}></Grid> */}
+                      {/* <Grid sm={1} md={1}></Grid> */}
+                      <Grid item xs={8} sm={8} md={2}>
+                        <Typography variant='subtitle2' style={{ display: 'inline' }}>
+                          Appointment With :
+                          <Typography style={{ display: 'inline' }}>
+                            {item.role?.role_name}{' '}
+                          </Typography>
+                        </Typography>
+                        <Typography variant='subtitle2'>
+                          Date {'      '}:
+                          <Typography style={{ display: 'inline' }}>
+                            {item.appointment_date}
+                          </Typography>
+                        </Typography>
+                        <Typography variant='subtitle2'>
+                          Time:
+                          <Typography style={{ display: 'inline' }}>
+                            {item.appointment_time
+                              ? item.appointment_time.slice(0, 5)
+                              : ''}
+                          </Typography>
+                        </Typography>
+                        <Typography variant='subtitle2' style={{ display: 'inline' }}>
+                          Mode:
+                          <Typography style={{ display: 'inline' }}>
+                            {item.booking_mode}{' '}
+                          </Typography>
+                        </Typography>
+                        <Typography variant='subtitle2'>
+                          Status :
+                          <Typography style={{ display: 'inline' }}>
+                            {item.appointment_status}{' '}
+                          </Typography>
+                        </Typography>
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs={1}
+                        md={1}
+                        sm={1}
+                        container
+                        justify='center'
+                        alignItems='center'
+                      >
+                        <IconButton
+                          onClick={(e) =>
+                            handleEditAppointment(
+                              item.id,
+                              item.role,
+                              item.appointment_date,
+                              item.appointment_time,
+                              item.booking_mode,
+                              item.message
+                            )
+                          }
+                          title='Edit Appointmant'
+                        >
+                          <EditOutlinedIcon
+                            color='primary'
+                            className={classes.icon}
+                            fontSize='small'
+                          />
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+                  </MediaQuery>
                 </Paper>
               );
             })}
@@ -320,7 +675,7 @@ const Appointments = () => {
                   variant='contained'
                   // href={`/book-appointment`}
                   color='primary'
-                  style={{ margin: 25 }}
+                  style={{ marginLeft: '25%' }}
                   onClick={handleAddAppointment}
                 >
                   BookAppointment
