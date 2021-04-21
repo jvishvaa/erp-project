@@ -17,6 +17,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import TodayIcon from '@material-ui/icons/Today';
 import MoreIcon from '@material-ui/icons/More';
 import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
@@ -38,11 +39,11 @@ import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import clsx from 'clsx';
-
+import EventAvailableIcon from '@material-ui/icons/EventAvailable';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-
+import EventNoteIcon from '@material-ui/icons/EventNote';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Grow from '@material-ui/core/Grow';
@@ -57,7 +58,7 @@ import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
 import logoMobile from '../../assets/images/logo_mobile.png';
-
+import online_classpng from '../../assets/images/Online classes-01.svg';
 import logo from '../../assets/images/logo.png';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -65,6 +66,7 @@ import { useTheme } from '@material-ui/core/styles';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserInfo from '../../components/user-info';
+import PublishIcon from '@material-ui/icons/Publish';
 
 export const ContainerContext = createContext();
 
@@ -472,6 +474,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-management/signature-upload');
         break;
       }
+      case 'Event Category': {
+        history.push('/master-management/event-category');
+        break;
+      }
       case 'Course': {
         history.push('/course-list');
         break;
@@ -514,6 +520,14 @@ const Layout = ({ children, history }) => {
       }
       case 'App/Reg Fee Type': {
         history.push('/feeType/RegistrationFee');
+        break;
+      }
+      case 'Teacher Calendar': {
+        history.push('/attendance-calendar/teacher-view');
+        break;
+      }
+      case 'Student Calendar': {
+        history.push('/attendance-calendar/student-view');
         break;
       }
       case 'Management Report': {
@@ -935,6 +949,18 @@ const Layout = ({ children, history }) => {
         history.push('/finance/TransactionStatus');
         break;
       }
+      case 'Teacher Time Table': {
+        history.push('/time-table/teacher-view');
+        break;
+      }
+      case 'Student Time Table': {
+        history.push('/time-table/student-view');
+        break;
+      }
+      case 'Contact Us': {
+        history.push('/contact-us');
+        break;
+      }
       default:
         break;
     }
@@ -1328,24 +1354,6 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-          {/* {drawerOpen ? (
-            <ListItem
-              button
-              className={
-                history.location.pathname === '/profile' ? 'menu_selection' : null
-              }
-              onClick={() => {
-                history.push('/profile');
-              }}
-            >
-              {' '}
-              <ListItemIcon className={classes.menuItemIcon}>
-                <AssignmentIndIcon />
-              </ListItemIcon>
-              <ListItemText className='menu-item-text'>View Profile</ListItemText>
-            </ListItem>
-          ) : null} */}
-
           {navigationData && drawerOpen && navigationData.length > 0 && (
             <DrawerMenu
               superUser={superUser}
