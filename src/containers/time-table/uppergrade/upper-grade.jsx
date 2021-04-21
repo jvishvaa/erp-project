@@ -422,7 +422,7 @@ const UpperGrade = (props) => {
               onClick={handleGenerateData}
               startIcon={<EmojiObjectsSharpIcon />}
             >
-              Generate
+              Filter
             </Button>
           </div>
         </div>
