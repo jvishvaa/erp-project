@@ -29,7 +29,7 @@ export default {
     createAttendance: '/academic/create_or_update_attendance/',
     studentList: '/academic/get_user_details/',
     // singleStudentAttendance: '/academic/student_attendance_between_days/',
-    multipleStudentsAttendacne:'/academic/multiple_student_attendance_between_dates/',
+    multipleStudentsAttendacne: '/academic/multiple_student_attendance_between_dates/',
     singleStudentAttendance: '/academic/single_student_attendance_between_days/',
   },
   profile: {
@@ -39,9 +39,9 @@ export default {
     bulkUpload: '/erp_user/uploaded-users-status/',
     academicYear: '/erp_user/list-academic_year/',
   },
-  timeTable:{
-    tableData:'/academic/time_table/',
-    editTableData:'/academic/assign_class_periods/',
+  timeTable: {
+    tableData: '/academic/time_table/',
+    editTableData: '/academic/assign_class_periods/',
   },
   communication: {
     roles: '/erp_user/roles/',
@@ -282,15 +282,19 @@ export default {
   },
   ebook: {
     ebook: `${baseURLCentral}/ebook/ebook_school_wise_filter/`,
-    EbookUser:`/academic/ebook_user/`,
-    AnnotateEbook:`/academic/ebook_user_status/`,
+    EbookUser: `${baseURLCentral}/ebook/ebook_user/`,
+    AnnotateEbook: `${baseURLCentral}/ebook/ebook_user_status/`,
+    // academicYearList: `${baseURLCentral}/erp_user/list-academic_year/`,
+    // // academicYearList: '/erp_user/list-academic_year/',
+    // gradeSubjectMappingList: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
+    // gradeList: `${baseURLCentral}/lesson_plan/list-grade/`,
   },
   teacherViewBatches: {
     courseListApi: '/aol/courses/',
     batchSizeList: '/aol/aol-course-batch/',
     getBatchList: '/erp_user/teacher_online_class/',
     cancelBatchApi: '/erp_user/cancel-online-class/',
-    hostApi:'/erp_user/redirection_zoom/',
+    hostApi: '/erp_user/redirection_zoom/',
   },
   grievances: {
     section : '/erp_user/section/',
@@ -302,21 +306,20 @@ export default {
     getBatchesApi: '/erp_user/student_online_class/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
-  
-  eventBat:{
-    getPaginatedCategories:"/academic/list_event_categories_p/",  //get
-    getListCategories:"/academic/list_event_categories/",  //get
-    postCreateEvent:"/academic/create_event_category/",  //post
-    patchUpdateEvent:"/academic/update_event_category/",//patch
-    deleteEventCategory:"/academic/delete_event_category/", //delete
-    filterEventCategory:"/academic/filter_event_categories/" //get 
 
-},
+  eventBat: {
+    getPaginatedCategories: '/academic/list_event_categories_p/', //get
+    getListCategories: '/academic/list_event_categories/', //get
+    postCreateEvent: '/academic/create_event_category/', //post
+    patchUpdateEvent: '/academic/update_event_category/', //patch
+    deleteEventCategory: '/academic/delete_event_category/', //delete
+    filterEventCategory: '/academic/filter_event_categories/', //get
+  },
 
-CreateEvent:{
-  CreateEvent:'academic/events/',
-  getEventCategory:"academic/list_create_event_category/"
-},
+  CreateEvent: {
+    CreateEvent: 'academic/events/',
+    getEventCategory: 'academic/list_create_event_category/',
+  },
 
   assessment: {
     assessmentResultAnalysis: `${baseURLCentral}/assessment/student-reports/`,
@@ -362,6 +365,13 @@ CreateEvent:{
     BulkUploadTrueOrFalse: `${baseURLCentral}/assessment/bulk_upload_tf/`,
     BulkUploadSingleChoiceQuestion: `${baseURLCentral}/assessment/upload-sc-questions/`,
     FillBlankUploadQuestion: `${baseURLCentral}/assessment/fill_bulk_upload/`,
+  },
+  // contact us api
+  contactUs: {
+    createContact: '/academic/contact_us/',
+    getContact: '/academic/contact_us/',
+    updateContact: '/academic/contact_us_update/',
+    filterContact: '/academic/contact_us/',
   },
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,

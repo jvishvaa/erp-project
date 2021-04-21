@@ -80,7 +80,7 @@ import {
   ContentViewPublishPrincipal,
   EditWordCountConfig,
 } from './containers/blog';
-import {CreateEbook , ViewEbook} from './containers/ebooks'
+import { CreateEbook, ViewEbook } from './containers/ebooks';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
 import Discussionforum from './containers/discussionForum/index';
 import DiscussionPost from './containers/discussionForum/discussion/DiscussionPost';
@@ -260,7 +260,11 @@ import CreateQuestionPaper from './containers/assessment-central/create-question
 import Assesment from './containers/assessment-central';
 import AssessmentView from './containers/assessment-central/assesment-view';
 import CreateAssesment from './containers/assessment-central/create-assesment';
-
+import ContactUs from 'containers/contact-us';
+import BookAppointment from './containers/BookAppointments/BookAppointment';
+import Appointments from './containers/BookAppointments/Appointments';
+import ResponderView from './containers/BookAppointments/ ResponderView';
+import EditAppointment from './containers/BookAppointments/EditAppointment';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -1263,20 +1267,38 @@ function App({ alert }) {
                             {({ match }) => <OverallAttendance match={match} />}
                           </Route>
                           <Route exact path='/createEvent'>
-                            {({ match }) => <CreateEvent match={match} />}
+                          
+                            {({ match, history }) => (
+                              <CreateEvent match={match} history={history} />
+                            )}
                           </Route>
                           <Route exact path='/event-category'>
                             {({ match }) => <EventCategory match={match} />}
                           </Route>
                           <Route exact path='/publications'>
                             {({ match }) => <Publications match={match} />}
-                            </Route>
+                          </Route>
                           <Route exact path='/ebook/create'>
                             {({ match }) => <CreateEbook match={match} />}
                           </Route>
                           <Route exact path='/ebook/view'>
                             {({ match }) => <ViewEbook match={match} />}
                           </Route>
+                          <Route exact path='/contact-us'>
+                            {({ match }) => <ContactUs match={match} />}
+                          </Route>
+                          <Route exact path='/BookAppointment'>
+                          {({ match }) => <BookAppointment match={match} />}
+                        </Route>
+                        <Route exact path='/ResponderView'>
+                          {({ match }) => <ResponderView match={match} />}
+                        </Route>
+                        <Route exact path='/Appointments'>
+                          {({ match }) => <Appointments match={match} />}
+                        </Route>
+                        <Route exact path='/EditAppointment'>
+                          {({ match }) => <EditAppointment match={match} />}
+                        </Route>
                         </Switch>
                       </DailyDairyStore>
                     </ViewStore>

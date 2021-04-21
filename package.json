@@ -52,6 +52,7 @@
     "react-redux": "^7.2.1",
     "react-responsive": "^8.2.0",
     "react-responsive-carousel": "^3.2.11",
+    "react-responsive-tabs": "^4.4.0",
     "react-router-dom": "^5.2.0",
     "react-router-redux": "^4.0.8",
     "react-scripts": "^3.4.3",
