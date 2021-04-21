@@ -171,6 +171,11 @@ const CreateEvent = () => {
       pathname: '/attendance-calendar/teacher-view'
     })
   };
+  const handleBackButtonClick = (e) => {
+    history.push({
+      pathname: '/attendance-calendar/teacher-view'
+    })
+  };
 
   const styles = {
     crossButton: {
@@ -319,7 +324,7 @@ const CreateEvent = () => {
 
       <Layout>
         <div className='profile_breadcrumb_wrapper' style={{ marginLeft: '-10px' }}>
-          <CommonBreadcrumbs componentName='CreateEvent' />
+          <CommonBreadcrumbs componentName='Create Event' />
         </div>
         <form>
           <MediaQuery minWidth={785}>
@@ -343,7 +348,6 @@ const CreateEvent = () => {
                     <TextField {...params} label='Event Type' variant='outlined' />
                   )}
                 />
-
               </Grid>
 
               <Grid item md={4} lg={2} sm={6} xs={12}>
@@ -508,7 +512,151 @@ const CreateEvent = () => {
                     />
                   )}
                 />
-              </Grid>
+              </Grid> 
+              <Grid item md={2} xs={12}>
+            <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedAcadmeicYear(value)
+                if(value){
+                  callApi(
+                    `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                    'branchList'
+                  );
+                }
+                setSelectedGrade([]);
+                setSectionList([]);
+                setSelectedSection([]);
+                setSelectedBranch([])
+
+              }}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedAcademicYear}
+              options={academicYear}
+              getOptionLabel={(option) => option?.session_year}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Academic Year'
+                  name='Academic'
+                  placeholder='Academic Year'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={2} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedBranch([])
+                if(value){
+                  // const ids = value.map((el)=>el)
+                  const selectedId=value.branch.id
+                  setSelectedBranch(value)
+                  callApi(
+                    `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                    'gradeList'
+                  );
+                }
+                setSelectedGrade([]);
+                setSectionList([]);
+                setSelectedSection([]);
+
+              }}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedBranch}
+              options={branchList}
+              getOptionLabel={(option) => option?.branch?.branch_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  name='branch'
+                  placeholder='Branch'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={2} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedGrade([])
+                if(value){
+                  // const ids = value.map((el)=>el)
+                  const selectedId=value.grade_id
+                  // console.log(selectedBranch.branch)
+                  const branchId=selectedBranch.branch.id
+                  setSelectedGrade(value)
+                  callApi(
+                    `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+                    'section'
+                  );
+                }
+                  setSectionList([]);
+                  setSelectedSection([]);
+
+              }}
+              id='grade_id'
+              className='dropdownIcon'
+              value={selectedGrade}
+              options={gradeList}
+              getOptionLabel={(option) => option?.grade__grade_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Grade'
+                  name='grade'
+                  placeholder='Grade'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={2} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedSection([])
+                if (value) {
+                  const ids=value.id
+                  const secId=value.section_id
+                  setSelectedSection(value)
+                  setSecSelectedId(secId)
+                }
+
+              }}
+              id='section_id'
+              className='dropdownIcon'
+              value={selectedSection}
+              options={sectionList}
+              getOptionLabel={(option) => option?.section__section_name || option?.section_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Section'
+                  name='section'
+                  placeholder='Section'
+                />
+              )}
+            />
+          </Grid>
             </Grid>
             <Grid container direction='row'>
               <Grid item md={12} xs={12}>
@@ -633,18 +781,20 @@ const CreateEvent = () => {
                 <Button variant='contained' onClick={onunHandleClearAll}>Clear All</Button>
               </Grid>
               <Grid item md={3} lg={2} xs={12}>
+                <Button  size='large' onClick={handleBackButtonClick} >
+                  Back
+                </Button>
+              </Grid>
+              <Grid item md={3} lg={2} xs={12}>
                 <Button variant='contained' type="submit" value="Submit" color='primary' onClick={handleSubmit}>
                   SAVE EVENT
                 </Button>
               </Grid>
+             
             </Grid>
           </MediaQuery>
           <MediaQuery maxWidth={784}>
-            <Grid container direction='row'>
-              <Grid item md={4} lg={2} sm={6} xs={12}>
-                <Breadcrumbs componentName='CreateEvent' />
-              </Grid>
-            </Grid>
+           
             <Grid container direction='row' spacing={2} className={classes.root}>
               <Grid item md={4} lg={2} sm={6} xs={12}>
                 <Autocomplete
@@ -662,7 +812,7 @@ const CreateEvent = () => {
               </Grid>
 
               <Grid item md={4} lg={2} sm={6} xs={12}>
-                <TextField
+              <TextField
                   name='event_name'
                   variant='outlined'
                   size='small'
@@ -916,7 +1066,7 @@ const CreateEvent = () => {
             </Grid>
             <Grid container direction='row' className={classes.root}>
               <Grid item md={6} xs={12}>
-                <TextField
+              <TextField
                   id='outlined-multiline-static'
                   label='ADD Event Description'
                   labelwidth='170'
@@ -931,6 +1081,11 @@ const CreateEvent = () => {
               <Grid item md={3} lg={2} xs={12}>
                 <Button variant='contained' type="submit" value="Submit" size='large' onClick={handleSubmit} style={{ marginLeft: '25%', marginTop: '7%' }}>
                   SAVE EVENT
+                </Button>
+              </Grid>
+              <Grid item md={3} lg={2} xs={12}>
+              <Button  onClick={handleBackButtonClick} style={{ marginLeft: '36%', marginTop: '7%',paddingLeft:'4%', paddingRight:'4%'}}size='large'>
+                  Back
                 </Button>
               </Grid>
             </Grid>

@@ -58,7 +58,7 @@ import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
 import logoMobile from '../../assets/images/logo_mobile.png';
-
+import online_classpng from '../../assets/images/Online classes-01.svg';
 import logo from '../../assets/images/logo.png';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -953,10 +953,6 @@ const Layout = ({ children, history }) => {
         history.push('/contact-us');
         break;
       }
-      case 'Student View': {
-        history.push('/contact-us/student-view');
-        break;
-      }
       default:
         break;
     }
@@ -1360,17 +1356,6 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Contact Us</ListItemText>
           </ListItem>
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/contact-us/student-view')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Student View</ListItemText>
-          </ListItem>
-
           {navigationData && drawerOpen && navigationData.length > 0 && (
             <DrawerMenu
               superUser={superUser}
