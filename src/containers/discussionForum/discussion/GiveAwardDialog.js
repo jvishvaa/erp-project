@@ -35,8 +35,8 @@ function GiveAwardDialog(props) {
     axiosInstance
       .post(endpoints.discussionForum.GiveAwardAPI, params)
       .then((res) => {
-        setAlert('success', res.data.message);
         if (res.data && res.data.status_code === 200) {
+          setAlert('success', 'Successfully Award Given');
           props.handleAwardsCount(awardId);
           onClose(selectedValue);
         }
