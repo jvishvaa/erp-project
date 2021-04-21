@@ -257,7 +257,10 @@ import Assesment from './containers/assessment-central';
 import AssessmentView from './containers/assessment-central/assesment-view';
 import CreateAssesment from './containers/assessment-central/create-assesment';
 import ContactUs from 'containers/contact-us';
-
+import BookAppointment from './containers/BookAppointments/BookAppointment';
+import Appointments from './containers/BookAppointments/Appointments';
+import ResponderView from './containers/BookAppointments/ ResponderView';
+import EditAppointment from './containers/BookAppointments/EditAppointment';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -1242,7 +1245,10 @@ function App({ alert }) {
                             {({ match }) => <OverallAttendance match={match} />}
                           </Route>
                           <Route exact path='/createEvent'>
-                            {({ match }) => <CreateEvent match={match} />}
+                          
+                            {({ match, history }) => (
+                              <CreateEvent match={match} history={history} />
+                            )}
                           </Route>
                           <Route exact path='/event-category'>
                             {({ match }) => <EventCategory match={match} />}
@@ -1259,6 +1265,18 @@ function App({ alert }) {
                           <Route exact path='/contact-us'>
                             {({ match }) => <ContactUs match={match} />}
                           </Route>
+                          <Route exact path='/BookAppointment'>
+                          {({ match }) => <BookAppointment match={match} />}
+                        </Route>
+                        <Route exact path='/ResponderView'>
+                          {({ match }) => <ResponderView match={match} />}
+                        </Route>
+                        <Route exact path='/Appointments'>
+                          {({ match }) => <Appointments match={match} />}
+                        </Route>
+                        <Route exact path='/EditAppointment'>
+                          {({ match }) => <EditAppointment match={match} />}
+                        </Route>
                         </Switch>
                       </DailyDairyStore>
                     </ViewStore>

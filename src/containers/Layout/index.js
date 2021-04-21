@@ -58,7 +58,7 @@ import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
 import logoMobile from '../../assets/images/logo_mobile.png';
-
+import online_classpng from '../../assets/images/Online classes-01.svg';
 import logo from '../../assets/images/logo.png';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';

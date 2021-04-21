@@ -2,10 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import Layout from '../Layout/index';
 // import Avatar from '@material-ui/core/Avatar';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
+import './attendance.scss' 
 import {
   Button,
   Divider,
   Grid,
+  Hidden,
   makeStyles,
   Paper,
   TextField,
@@ -113,6 +115,7 @@ const AttedanceCalender = () => {
 let path = window.location.pathname;
 console.log(path , "path");
 
+  
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
