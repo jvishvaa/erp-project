@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-array-index-key */
-/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { DataGrid } from '@material-ui/data-grid';
@@ -10,7 +9,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Divider, Grid, TextField, Button } from '@material-ui/core';
+import { Divider, Grid, TextField, Button, OutlinedInput } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -26,6 +25,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import './styles.scss';
 
 import Layout from '../../Layout';
+import { SearchOutlined } from '@material-ui/icons';
 // import './assign-role.css';
 
 const AssignRole = (props) => {
@@ -60,7 +60,7 @@ const AssignRole = (props) => {
   const [selectAllObj, setSelectAllObj] = useState([]);
   const [viewMore, setViewMore] = useState(false);
   const [isSelected, setISselected] = useState(false);
-
+  const [isNewSeach, setIsNewSearch] = useState(true);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('xs'));
 
@@ -123,7 +123,7 @@ const AssignRole = (props) => {
   }, [selectedGrades]);
 
   useEffect(() => {
-    displayUsersList();
+   if(moduleId) displayUsersList();
     if (assignedRole) {
       setAssigenedRole(false);
     }
@@ -133,7 +133,14 @@ const AssignRole = (props) => {
     if (filterCheck) {
       setFilterCheck(false);
     }
-  }, [pageno, assignedRole, clearAll, filterCheck]);
+  }, [pageno, assignedRole, clearAll, filterCheck,moduleId]);
+
+  useEffect(() => {
+    if (isNewSeach) {
+      setIsNewSearch(false);
+      displayUsersList();
+    }
+  }, [isNewSeach]);
 
   const getRoleApi = async () => {
     try {
@@ -219,7 +226,7 @@ const AssignRole = (props) => {
   };
 
   const displayUsersList = async () => {
-    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
+    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
 
     if (selectedMultipleRoles.length) {
       const selectedRoleId = selectedMultipleRoles.map((el) => el.id);
@@ -229,7 +236,7 @@ const AssignRole = (props) => {
       getUserListUrl += `&session_year=${selectedYear.id}`;
     }
     if (selectedBranch) {
-      getUserListUrl += `&branch=${selectedBranch.id}`;
+      getUserListUrl += `&branch_id=${selectedBranch.id}`;
     }
     if (selectedGrades.length) {
       const selectedGradeId = selectedGrades.map((el) => el.grade_id);
@@ -264,7 +271,6 @@ const AssignRole = (props) => {
         ]);
         const rows = [];
         const selectionRows = [];
-        console.log('results ', result.data.results);
 
         result.data.results.forEach((items) => {
           rows.push({
@@ -349,10 +355,13 @@ const AssignRole = (props) => {
       setPageno(1);
       setClearAll(true);
       setClearAllActive(false);
+      setIsNewSearch(false);
+      setSearchText('');
     }
   };
 
   const handleTextSearch = (e) => {
+    setIsNewSearch(true);
     setSearchText(e.target.value);
   };
 
@@ -402,7 +411,6 @@ const AssignRole = (props) => {
   };
 
   const handleSelectAll = (e) => {
-    console.log('on click', e.target.checked)
     // set select all to true/false 
 
     // turn all the states to true/ False
@@ -410,7 +418,6 @@ const AssignRole = (props) => {
 
     // tempSelectObj[pageno - 1].selectAll = !tempSelectObj[pageno - 1].selectAll;
     tempSelectObj[pageno - 1].selectAll = e.target.checked;
-    console.log('=== textClick checked: ', tempSelectObj)
     setSelectAllObj(tempSelectObj);
     const testclick = document.querySelectorAll('input[type=checkbox]');
     if (!selectAllObj[pageno - 1].selectAll) {
@@ -443,7 +450,6 @@ const AssignRole = (props) => {
   const assignRole = async () => {
     const assignRoleApi = endpoints.communication.assignRole;
     const selectionArray = [];
-    console.log('=== selected user assign: ', selectedUsers)
     selectedUsers.forEach((item) => {
       item.selected.forEach((ids) => {
         selectionArray.push(ids);
@@ -532,6 +538,23 @@ const AssignRole = (props) => {
 
         </Grid> */}
           <Grid container spacing={2} className={classes.spacer}>
+          <Grid item xs={12} md={3}>
+              <FormControl
+                variant='outlined'
+                className={classes.formControl}
+                fullWidth
+                size='small'
+              >
+                <InputLabel>Search</InputLabel>
+                <OutlinedInput
+                  endAdornment={<SearchOutlined color='primary' />}
+                  placeholder='Search users ..'
+                  label='Search'
+                  value={searchText}
+                  onChange={handleTextSearch}
+                />
+              </FormControl>
+            </Grid>
             <Grid item xs={12} md={3}>
               <Autocomplete
                 multiple

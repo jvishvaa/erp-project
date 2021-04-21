@@ -24,7 +24,6 @@ class EditFeePlanName extends Component {
 
   componentDidMount () {
     let currentFeePlan = this.props.listFeePlan.filter(val => val.id === this.props.id)
-    // console.log(currentFeePlan)
     currentFeePlan.forEach(arr => {
       this.setState((state) => ({
         feeplan_name: arr.fee_plan_name ? arr.fee_plan_name : '',
@@ -96,14 +95,12 @@ class EditFeePlanName extends Component {
     //   })
     //   .then(res => {
     //     if (res.status === 200) {
-    //       console.log(res)
     //       this.props.alert.success('Updated Successfully')
     //       this.props.giveData("success", res.data)
     //     }
     //   })
     //   .catch((error) => {
     //     this.props.alert.error('Something Went Wrong')
-    //     console.log("Error: Couldn't fetch data from " + urls.NormalFeeType + error)
     //   })
   }
 

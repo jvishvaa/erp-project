@@ -23,7 +23,6 @@ let { BRANCHv2, SUBJECTMAPPINGv2, SECTIONMAPPINGv2, GRADEMAPPINGv2 } = urls
 */
 
 export const COMBINATIONS = academicSession => {
-  console.log(academicSession, 'gsel pr')
   const OBJ = { [ROLES.ADMIN]: [{
     name: BRANCH + academicSession,
     dependencies: [GRADE],

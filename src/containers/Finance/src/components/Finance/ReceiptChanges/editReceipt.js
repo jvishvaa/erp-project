@@ -41,7 +41,6 @@ class EditReceipt extends Component {
 
   handlevalue = e => {
     e.preventDefault()
-    console.log('clicked')
     if (this.state.range_from > this.state.range_to) {
       this.props.alert.warning('Invalid Range')
       return
@@ -56,7 +55,6 @@ class EditReceipt extends Component {
       sequence_no: this.state.sequence_no,
       is_active: this.state.is_active
     }
-    console.log('data : ', data)
     this.props.updateReceipts(this.props.id, data, this.props.alert, this.props.user)
     this.props.close()
   }
@@ -69,7 +67,6 @@ class EditReceipt extends Component {
     this.setState({ range_to: finalRange })
     // let rangeFrom = document.getElementById('range_from').value
     // let rangeTo = document.getElementById('range_to').value
-    // console.log('rangefrom', rangeFrom)
     // if (rangeFrom > rangeTo) {
     //   this.props.alert.warning('Invalid Range')
     //   this.setState({ range_to: '' })
@@ -91,7 +88,6 @@ class EditReceipt extends Component {
   componentDidMount () {
     this.props.fetchFeeAccount(this.props.acadId, this.props.branchId, this.props.alert, this.props.user)
     let currentData = this.props.receiptLists.filter(val => val.id === this.props.id)
-    console.log('currentData: ', currentData)
     currentData.forEach(arr => {
       this.setState({
         range_from: arr.range_from ? arr.range_from : '',
@@ -102,13 +98,11 @@ class EditReceipt extends Component {
         fee_accountValue: arr.fee_account ? arr.fee_account : '',
         branchValue: this.props.branchId ? this.props.branchId : ''
       }, () => {
-        console.log('Mounting states: ', this.state.fee_accountValue)
       })
     })
   }
 
   render () {
-    // console.log('state', this.state)
     return (
       <React.Fragment>
         <Form onSubmit={this.handlevalue}>

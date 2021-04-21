@@ -52,7 +52,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -82,14 +81,28 @@ class NewRegistration extends Component {
       appNo: null,
       appAmount: null,
       receiptNo: null,
-      showModal: false
+      showModal: false,
+      selectedBranches: null
+    }
+  }
+
+  componentDidMount() {
+    if (this.state.academicYearValue) {
+      this.props.fetchBranches(this.state.academicYearValue.value, this.props.alert, this.props.user, moduleId)
     }
   }
 
   onAcademicYearChange = (e) => {
     this.setState({
       academicYearValue: e
+    }, () => {
+      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
     })
+  }
+
+  changehandlerbranch = (e) => {
+    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    this.setState({ selectedBranches: e})
   }
 
   onSearchByChange = (e) => {
@@ -111,11 +124,13 @@ class NewRegistration extends Component {
   // }, 500) // rajneesh
   myErpFunc =() => {
     this.props.fetchRegistrationSugg(
-      this.state.academicYearValue.value,
+      this.state.academicYearValue?.value,
       this.state.searchByValue.value,
       this.state.searchedValue,
       this.props.user,
-      this.props.alert
+      this.props.alert,
+      this.state.selectedBranches.value,
+      moduleId
     )
   }
 
@@ -131,7 +146,7 @@ class NewRegistration extends Component {
 
   onSubmit = () => {
     const { searchedValue, academicYearValue } = this.state
-    this.props.getStudentInfo(academicYearValue.value, searchedValue, this.props.user, this.props.alert)
+    this.props.getStudentInfo(academicYearValue.value, searchedValue, this.props.user, this.props.alert, this.state.selectedBranches.value, moduleId)
     // if (this.props.registrationDetails.error && this.props.registrationDetails.error.length > 0) {
     //   this.setState({ showModal: true })
     // } else {
@@ -151,25 +166,22 @@ class NewRegistration extends Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.registrationDetails && nextProps.registrationDetails.error && nextProps.registrationDetails.error.length) {
       this.setState({
-        showModal: true
+        showModal: false
       })
     }
   }
 
   // static getDerivedStateFromProps (nextProps, prevState) {
-  //   console.log('++++ newCycle nextProps: ', nextProps)
-  //   console.log('++++ newCycle prevState: ', prevState)
   //   if ((nextProps.registrationDetails && nextProps.registrationDetails.error) !== (this.props.registrationDetails.length && this.props.registrationDetails.error)) {
   //     // this.setState({
   //     //   showModal: true
   //     // })
-  //     console.log('errrrr')
   //   }
   // }
 
   render () {
     const { registrationDetails, regNum } = this.props
-    const { academicYearValue, searchByValue } = this.state
+    const { academicYearValue, searchByValue, selectedBranches } = this.state
     let regModal
 
     if (this.state.showModal) {
@@ -242,7 +254,7 @@ class NewRegistration extends Component {
     return (
       <Layout>
       <Grid container spacing={3} style={{ flexGrow: 1, padding: '20px' }}>
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           <Select
             placeholder='Select Year'
             // style={{ height: '30px' }}
@@ -257,8 +269,26 @@ class NewRegistration extends Component {
             }
             onChange={(e) => { this.onAcademicYearChange(e) }}
           />
-        </Grid>
-        <Grid item xs={3}>
+          </Grid>
+          <Grid item xs={2}>
+            {/* <label>Branch*</label> */}
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+              options={
+                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+
+              onChange={this.changehandlerbranch}
+            />
+          </Grid>
+        <Grid item xs={2}>
           {/* <FormControl className={useStyles.formControl} style={{ width: '100%' }}>
             <InputLabel htmlFor='search'>Search By</InputLabel>
             <Select
@@ -296,7 +326,7 @@ class NewRegistration extends Component {
             onChange={(e) => { this.onSearchByChange(e) }}
           />
         </Grid>
-        <Grid item xs={4} style={{ padding: '5px' }}>
+        <Grid item xs={3} style={{ padding: '5px' }}>
           {/* <TextField
             style={{ width: '100%' }}
             id='outlined-search'
@@ -408,8 +438,11 @@ class NewRegistration extends Component {
             </Grid>
             <Grid item xs={12}>
               <Receipt
-                acadYear={academicYearValue.value}
-                alert={this.props.alert}
+                  acadYear={academicYearValue.value}
+                  branchId={selectedBranches.value}
+                  alert={this.props.alert}
+                  user={this.props.user}
+                  moduleId={moduleId}
               />
             </Grid>
             <div><hr /></div>
@@ -431,14 +464,16 @@ const mapStateToProps = state => ({
   registrationDetails: state.finance.accountantReducer.regForm.registrationDetails,
   appSugg: state.finance.accountantReducer.regForm.appSugg,
   regNum: state.finance.accountantReducer.regForm.regNum,
-  dataLoading: state.finance.common.dataLoader
+  dataLoading: state.finance.common.dataLoader,
+  branches: state.finance.common.branchPerSession
 })
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  getStudentInfo: (session, data, user, alert) => dispatch(actionTypes.getStudentInfo({ session, data, user, alert })),
-  fetchRegistrationSugg: (session, type, value, user, alert) => dispatch(actionTypes.fetchRegistrationSugg({ session, type, value, user, alert })),
-  clearProps: () => dispatch(actionTypes.clearNewRegFormProps())
+  getStudentInfo: (session, data, user, alert, branchId, moduleId) => dispatch(actionTypes.getStudentInfo({ session, data, user, alert, branchId, moduleId })),
+  fetchRegistrationSugg: (session, type, value, user, alert, branchId, moduleId) => dispatch(actionTypes.fetchRegistrationSugg({ session, type, value, user, alert, branchId, moduleId })),
+  clearProps: () => dispatch(actionTypes.clearNewRegFormProps()),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(NewRegistration))

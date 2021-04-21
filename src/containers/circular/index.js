@@ -98,7 +98,6 @@ const CircularList = () => {
   }, [window.location.pathname]);
 
   const handlePeriodList = (grade, branch, section, year, startDate, endDate) => {
-    // console.log(grade, branch, section, year, startDate, endDate, ']]]]]]]]]]]]]]]]]]');
     setLoading(true);
     if (window.location.pathname === '/teacher-circular') {
       setPeriodData([]);
@@ -112,7 +111,7 @@ const CircularList = () => {
       axiosInstance
         .get(
           `${endpoints.circular.circularList}?is_superuser=True&branch=${
-            branch.id
+            branch.branch?.id
           }&grade=${grade.grade_id}&section=${section.id}&academic_year=${
             year.id
           }&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format(

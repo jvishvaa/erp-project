@@ -41,7 +41,6 @@ class CollectionDeposit extends Component {
         return +acc.bank_name.id === +e.value
       })
       if (selectedAcc.length !== 0) {
-        console.log('Balance ++', selectedAcc[0].bank_name.balance)
         this.setState({
           openingBalance: selectedAcc[0].bank_name.balance
         })
@@ -137,7 +136,6 @@ class CollectionDeposit extends Component {
   }
 
   transferTypeChangeHandler = (e) => {
-    console.log('Tranfer Value', e.target.value)
     this.setState({
       transferType: e.target.value
     })

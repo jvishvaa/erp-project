@@ -95,18 +95,15 @@ const StudenthomeworkMobileScreen = (props) => {
         : null;
       const subjects = [];
       for (let k of options) {
-        // console.log(k, "opo")
         if (k.isOptional === true) {
           subjects.push(k.subject_slag);
         }
       }
-      // console.log(subjects, 'subjects')
       setOptionalLength(subjects);
     };
     findOptional();
   }, [props]);
 
-  // console.log(props.mobileScreenResponse, " props.mobileScreenResponse")
   return (
     <div className='mobile-screen-container'>
       <div
@@ -115,7 +112,6 @@ const StudenthomeworkMobileScreen = (props) => {
       >
         {props &&
           props.mobileScreenResponse.header.map((headerName, index) => {
-            // console.log(headerName, "headerName")
             return (
               <div className='mobile-button-without-opt'>
                 {!headerName.isOptional &&

@@ -25,12 +25,9 @@ class editOtherFeeType extends Component {
     if (!this.props.acadId || !this.props.otherFeeId) {
       this.props.alert.warning('Select the required Fields')
     } else {
-      console.log('aleret----------------', this.props.alert)
       this.props.fetchFeeAccount(this.props.acadId, this.props.branchId, this.props.alert, this.props.user)
       let currentData = this.props.otherFees.filter(val => val.id === this.props.otherFeeId)
-      console.log('-currentdata--------', currentData)
       currentData.forEach(arr => {
-        console.log(arr)
         this.setState({
           currentFeeAccount: arr.fee_account ? arr.fee_account : '',
           feeTypeName: arr.fee_type_name ? arr.fee_type_name : '',
@@ -113,7 +110,6 @@ class editOtherFeeType extends Component {
         fee_type_name: this.state.feeTypeName,
         sub_type: this.state.subFeeTypeName
       }
-      console.log('data-----------', data)
       this.props.updateListOtherFee(data, this.props.alert, this.props.user)
       this.props.close()
     } else {

@@ -97,7 +97,7 @@ class Payments extends Component {
 
   componentDidMount () {
     const erpLength = (this.props.erpNo + '').length
-    if (!this.props.erpNo || erpLength !== 14 || !this.props.session || !this.props.getData) {
+    if (!this.props.erpNo || !this.props.session || !this.props.getData) {
       return
     }
     const {
@@ -106,8 +106,8 @@ class Payments extends Component {
       alert,
       user
     } = this.props
-    this.props.fetchReceiptRange(session, erpNo, alert, user)
-    this.props.fetchAccountantTransaction(erpNo, session, user, alert)
+    this.props.fetchReceiptRange(session, erpNo, alert, user, this.props.branchId, this.props.moduleId)
+    this.props.fetchAccountantTransaction(erpNo, session, user, alert, this.props.branchId, this.props.moduleId)
   }
 
   componentDidUpdate (prevProps) {
@@ -122,7 +122,7 @@ class Payments extends Component {
     // if (refresh !== prevProps.refresh) {
     //   this.props.fetchAccountantTransaction(erpNo, session, user, alert)
     // }
-    if (!this.props.erpNo || !this.props.session || !this.props.getData || erpLength !== 14) {
+    if (!this.props.erpNo || !this.props.session || !this.props.getData) {
       return
     }
     if (this.props.erpNo === prevProps.erpNo && this.props.session === prevProps.session && this.props.getData === prevProps.getData) {
@@ -133,13 +133,9 @@ class Payments extends Component {
     }
   }
 
-  // componentWillReceiveProps (prevProps) {
-  //   console.log('from receive props: ', prevProps)
-
-  // }
 
   getPdfData = (transactionId) => {
-    return (axios.get(`${urls.FeeTransactionReceipt}?transaction_id=${transactionId}&academic_year=${this.props.session}`, {
+    return (axios.get(`${urls.FeeTransactionReceipt}?transaction_id=${transactionId}&academic_year=${this.props.session}&branch_id=${this.props.branchId}&module_id=${this.props.moduleId}`, {
       headers: {
         Authorization: 'Bearer ' + this.props.user
       }
@@ -147,7 +143,7 @@ class Payments extends Component {
   }
 
   getKitPdfData = (transactionId) => {
-    return (axios.get(`${urls.StoreReceiptPdfData}?transaction_id=${transactionId}&academic_year=${this.props.session}`, {
+    return (axios.get(`${urls.StoreReceiptPdfData}?transaction_id=${transactionId}&academic_year=${this.props.session}&branch_id=${this.props.branchId}&module_id=${this.props.moduleId}`, {
       headers: {
         Authorization: 'Bearer ' + this.props.user
       }
@@ -165,14 +161,14 @@ class Payments extends Component {
       } else {
         const response = await this.getPdfData(transactionId)
         let feeType = response.data.feeType
-        if (feeType === 'Application Fee' || feeType === 'Registration Fee') {
+        // if (feeType === 'Application Fee' || feeType === 'Registration Fee') {
+          if (feeType === 'Application Fee' || feeType === 'Registration Fee') {
           appRegReceiptsPdf(response.data, isCancelled)
         } else {
           feeReceiptss(response.data, isCancelled)
         }
       }
     } catch (error) {
-      // console.log(e)
       console.error(error)
       if (error.response && (error.response.status === 400 || error.response.status === 404)) {
         this.props.alert.error(error.response.data)
@@ -184,7 +180,6 @@ class Payments extends Component {
   }
 
   editTransaction = (id, chequeNumber, isKit, mode) => {
-    console.log('transss id: ', id)
     this.setState({
       showEditModal: true,
       editId: id,
@@ -193,7 +188,7 @@ class Payments extends Component {
       chequeNumber: chequeNumber,
       payMode: mode
     })
-    this.props.editAccountantTransaction(id, this.props.user, this.props.alert)
+    this.props.editAccountantTransaction(id, this.props.user, this.props.alert, this.props.branchId, this.props.moduleId)
   }
 
   hideEditModalHandler = () => {
@@ -270,12 +265,10 @@ class Payments extends Component {
   }
 
   amountChangeHandler = (e, instaAmount, instaId) => {
-    console.log('amount requested', e.target.value, instaAmount, instaId)
     if (e.target.value <= instaAmount) {
       const { amountChange } = this.state
       this.setState({ amountChange: { ...amountChange, [instaId]: e.target.value } },
         () => {
-          console.log('amountchange: ', amountChange)
         })
     } else {
       this.props.alert.warning('Amount cant be greater than paid amount')
@@ -285,13 +278,11 @@ class Payments extends Component {
   updateTransactionHandler = () => {
     // cloning the og object and modifying with updated data
     let newEditTrans = JSON.parse(JSON.stringify(this.props.editTrans))
-    console.log('newEditTrans: ', newEditTrans)
     const { amountChange, isAmountRequest, isDateRequest, isWrongPayment, isWrongKitPayment, isReceiptRequest, isChequeNoRequest, remarks } = this.state
     if (newEditTrans) {
       newEditTrans.fee.map((main) => {
         Object.keys(amountChange).map((val) => {
           if (+main.installment_id === +val) {
-            console.log('the changed amount', amountChange[val])
             // main.installment_amount = amountChange[val]
             main['new_amount'] = +amountChange[val]
           }
@@ -318,6 +309,8 @@ class Payments extends Component {
         newEditTrans['old_cheque_number'] = this.state.oldChequeNumber
       }
       newEditTrans['session_year'] = this.props.session
+      newEditTrans['branch_id'] = this.props.branchId
+      newEditTrans['module_id'] = this.props.moduleId
       newEditTrans['student_id'] = this.props.erpNo
       newEditTrans['change_date_of_payment_status'] = isDateRequest
       newEditTrans['change_receipt_number_status'] = isReceiptRequest
@@ -326,7 +319,6 @@ class Payments extends Component {
       newEditTrans['request_reason'] = remarks
       newEditTrans['kit_payment'] = this.state.isKitPayment
     }
-    console.log('updated data: ', newEditTrans)
     if (isReceiptRequest || isChequeNoRequest || isAmountRequest || isDateRequest || isWrongKitPayment || isWrongPayment) {
       if (isReceiptRequest && isDateRequest) {
         if (!this.state.receiptNoChange) {
@@ -415,10 +407,8 @@ class Payments extends Component {
     let transactionData = null
     let editTransModal = null
     if (this.props.transactions && this.props.transactions.results && this.props.transactions.results.length) {
-      console.log(this.props.transactions.results)
       transactionData = this.props.transactions.results.map((transaction, index) => {
         let feeTypes = transaction.Fee_type[0]['fee-type-installment']
-        console.log(feeTypes)
         let feeTotal = 0
         return (
           <div className={customClasses.table__bodyRecords} key={transaction.transaction_id}>
@@ -736,10 +726,10 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchReceiptRange: (session, erp, alert, user) => dispatch(actionTypes.fetchReceiptRange({ session, erp, alert, user })),
-  fetchAccountantTransaction: (erpNo, session, user, alert) => dispatch(actionTypes.fetchAccountantTransaction({ erpNo, session, user, alert })),
-  editAccountantTransaction: (transactionId, user, alert) => dispatch(actionTypes.editAccountantTransaction({ transactionId, user, alert })),
-  updateAccountantTransaction: (data, user, alert) => dispatch(actionTypes.updateAccountantTransaction({ data, user, alert }))
+  fetchReceiptRange: (session, erp, alert, user, branchId, moduleId) => dispatch(actionTypes.fetchReceiptRange({ session, erp, alert, user, branchId, moduleId })),
+  fetchAccountantTransaction: (erpNo, session, user, alert, branchId, moduleId) => dispatch(actionTypes.fetchAccountantTransaction({ erpNo, session, user, alert, branchId, moduleId })),
+  editAccountantTransaction: (transactionId, user, alert, branchId, moduleId) => dispatch(actionTypes.editAccountantTransaction({ transactionId, user, alert, branchId, moduleId })),
+  updateAccountantTransaction: (data, user, alert, branchId, moduleId) => dispatch(actionTypes.updateAccountantTransaction({ data, user, alert, branchId, moduleId }))
 })
 
 export default connect(

@@ -14,19 +14,14 @@ const accToStoreReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.ACTIVE_INACTIVE_FEE_ACCOUNTS: {
-      console.log('z++++', action.payload.data)
       const accTostore = [...state.feeAccToStoreMapping]
-      console.log('AcctoStore: ', accTostore)
       const index = accTostore.findIndex((n) => {
         return n.branch.id === action.payload.data.branch
       })
-      console.log('index : ', index)
       const index2 = accTostore[index].store_fee_account.findIndex((n) => {
         return n.id === action.payload.data.fee_account_store
       })
-      console.log('index2 : ', index2)
       accTostore[index].store_fee_account[index2].is_active = action.payload.data.is_active
-      console.log('AcctoStore after: ', accTostore)
       return {
         ...state,
         feeAccToStoreMapping: accTostore
@@ -44,7 +39,6 @@ const accToStoreReducer = (state = initialState, action) => {
       // const index2 = storeAcc[index].store_fee_account.findIndex((n) => {
       //   return n.id === action.payload.data.old_fee_account_store
       // })
-      // console.log('1st index', index, '2 index', index2)
       // storeAcc[index].store_fee_account[index2].fee_account_name = action.payload.data.store_fee_account.fee_account_name
       return {
         ...state,
@@ -59,7 +53,6 @@ const accToStoreReducer = (state = initialState, action) => {
       // const index = addStoreAcc.findIndex((n) => {
       //   return n.branch.id === action.payload.data.branch.id
       // })
-      // console.log('index+++', index)
       // if (addStoreAcc[index].branch.id === action.payload.data.branch.id) {
       //   addStoreAcc[index].store_fee_account.unshift(action.payload.data)
       // } else {

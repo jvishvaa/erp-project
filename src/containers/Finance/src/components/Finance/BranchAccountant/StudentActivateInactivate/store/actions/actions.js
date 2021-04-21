@@ -9,13 +9,12 @@ export const POST_STUDENT_ACTIVATE = 'POST_STUDENT_ACTIVATE'
 export const getActiveStudentDetails = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.Studentstatusfilter + '?academic_year=' + payload.session + '&status=' + payload.status + '&section=' + payload.section + '&grade=' + payload.grade, {
+    axios.get(urls.Studentstatusfilter + '?academic_year=' + payload.session + '&status=' + payload.status + '&section=' + payload.section + '&grade=' + payload.grade + '&branch_id=' + payload.branch, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: GET_ACTIVE_STUDENT_DETAILS,
           payload: {
@@ -40,7 +39,6 @@ export const getInActiveStudentDetails = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: GET_INACTIVE_STUDENT_DETAILS,
           payload: {

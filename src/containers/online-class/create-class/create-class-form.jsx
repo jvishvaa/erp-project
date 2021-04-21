@@ -108,7 +108,7 @@ const CreateClassForm = (props) => {
   } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const fetchBranches = (acadId) => {
-    fetchBranchesForCreateUser(acadId,moduleId).then((data) => {
+    fetchBranchesForCreateUser(acadId, moduleId).then((data) => {
       const transformedData = data?.map((obj) => ({
         id: obj.id,
         branch_name: obj.branch_name,
@@ -360,7 +360,6 @@ const CreateClassForm = (props) => {
 
   const toggleDrawer = () => {
     const { gradeIds, sectionIds, courseId, subject } = onlineClass;
-    console.log({ onlineClass });
     if (
       selectedClassType?.id === 0 &&
       (!gradeIds?.length || !sectionIds?.length || !subject?.length)
@@ -424,20 +423,38 @@ const CreateClassForm = (props) => {
   //   verifyTutorEmail(tutorEmail, selectedDate, selectedTime, duration, data);
   // }
   // };
+  const resolveSelectedDays = (val) => {
+    if (toggle && [...selectedDays].length) {
+      // if ([...selectedDays].length)
+      return [...selectedDays].map((obj) => obj.send);
+      // else
+      // return [daysList[new Date(val).getDay() - 1]?.send] || [];
+    }
+    else if (!toggle && new Date(val).getDay() === 0) {
+      // if (new Date(val).getDay() === 0)
+      return ['S'];
+      // else
+      // return [daysList[new Date(val).getDay() - 1]?.send] || [];
+    }
+    else
+      return [daysList[new Date(val).getDay() - 1]?.send] || [];
+  }
 
   const handleDateChange = (event, value) => {
     const isFutureTime = onlineClass.selectedTime > new Date();
     if (!isFutureTime) {
       setOnlineClass((prevState) => ({ ...prevState, selectedTime: new Date() }));
     }
+
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({
       ...prevState,
       selectedDate: value,
-      days:
-        !toggle && new Date(value).getDay() === 0
-          ? ['S']
-          : [daysList[new Date(value).getDay() - 1]?.send] || [],
+      days: resolveSelectedDays(value),
+      // days:
+      //   !toggle && new Date(value).getDay() === 0
+      //     ? ['S']
+      //     : [daysList[new Date(value).getDay() - 1]?.send] || [],
     }));
   };
 
@@ -687,7 +704,6 @@ const CreateClassForm = (props) => {
     };
     listTutorEmails(data);
   };
-  // console.log(onlineClass.acadId,'=========================')
 
   const checkTutorAvailability = async () => {
     const { selectedDate, selectedTime, duration } = onlineClass;
@@ -698,9 +714,11 @@ const CreateClassForm = (props) => {
       } ${getFormatedTime(selectedTime)}`;
 
     try {
-      const { data } = await axiosInstance.get(
-        `/erp_user/check-tutor-time/?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}`
-      );
+      let url = toggle ?
+        `/erp_user/check-tutor-time/?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}&no_of_week=${onlineClass.weeks}&is_recurring=1&week_days=${[...selectedDays].map((obj) => obj.send).join(',')}`
+        : `/erp_user/check-tutor-time/?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}`
+
+      const { data } = await axiosInstance.get(url);
       if (data.status_code === 200) {
         if (data.status === 'success') {
           setTutorNotAvailableMessage('');
@@ -728,14 +746,24 @@ const CreateClassForm = (props) => {
     }
   }, [toggle]);
 
+  const checkTutorFlag = toggle ? onlineClass.duration &&
+    onlineClass.subject &&
+    onlineClass.gradeIds?.length &&
+    onlineClass.selectedDate &&
+    onlineClass.selectedTime &&
+    onlineClass.tutorEmail &&
+    onlineClass.weeks &&
+    [...selectedDays].length :
+    onlineClass.duration &&
+    onlineClass.subject &&
+    onlineClass.gradeIds?.length &&
+    onlineClass.selectedDate &&
+    onlineClass.selectedTime &&
+    onlineClass.tutorEmail;
+
   useEffect(() => {
     if (
-      onlineClass.duration &&
-      onlineClass.subject &&
-      onlineClass.gradeIds?.length &&
-      onlineClass.selectedDate &&
-      onlineClass.selectedTime &&
-      onlineClass.tutorEmail
+      checkTutorFlag
     ) {
       // fetchTutorEmails();
       checkTutorAvailability();
@@ -747,7 +775,9 @@ const CreateClassForm = (props) => {
     onlineClass.selectedDate,
     onlineClass.selectedTime,
     onlineClass.tutorEmail,
-  ]);
+    onlineClass.weeks,
+    [...selectedDays].length]
+  );
 
   useEffect(() => {
     if (onlineClass.branchIds?.length && selectedGrades?.length && onlineClass.acadId) {

@@ -46,7 +46,6 @@ const storeAccountant = (state = initialState, action) => {
           quantity[ele.id] = (+ele.quantity) + (quantity[ele.id] || 0)
         })
       })
-      console.log('quantity in reducer: ', quantity)
       return {
         ...state,
         storeList: action.payload.data,
@@ -81,7 +80,6 @@ const storeAccountant = (state = initialState, action) => {
       // const newShippingList = { ...state.shippingDetails }
       // if (action.payload.data && action.payload.data.kitId) {
       //   const index = newShippingList.paid_data.findIndex(ele => {
-      //     console.log('from reducer: ', ele.kit, action.payload.data.kitId)
       //     return +ele.kit === +action.payload.data.kitId
       //   })
       //   const changeObj = { ...newShippingList.paid_data[index] }
@@ -108,7 +106,6 @@ const storeAccountant = (state = initialState, action) => {
       let a = []
       a = action.payload.data
       a.unshift({ id: 'none', subject_name: 'none' })
-      console.log('a', a)
       return {
         ...state,
         kitSubjectList: a
@@ -124,7 +121,6 @@ const storeAccountant = (state = initialState, action) => {
       const studata = state.language
       studata[0].second_lang = action.payload.data.second_lang
       studata[0].third_lang = action.payload.data.third_lang
-      console.log('studentlan', studata)
       return {
         ...state,
         updatestu: action.payload.data,
@@ -146,14 +142,12 @@ const storeAccountant = (state = initialState, action) => {
       }
     }
     case actionTypes.SEND_DELIVERY_DETAILS: {
-      console.log('deliveryList: ', action.payload.data)
       return {
         ...state,
         deliveryList: [action.payload.data]
       }
     }
     case actionTypes.FETCH_DELIVERY_AMOUNT: {
-      console.log('delivery amount: ', action.payload.data)
       return {
         ...state,
         deliveryAmount: action.payload.data

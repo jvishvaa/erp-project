@@ -7,21 +7,22 @@ import {
 
 import FeeConcession from './feeConcessionDetails'
 import OtherFeeConcession from './otherFeeConcession'
+import concessionLastDate from '../../LastDateSettings/concessionLastDate'
 
 const ConcessionDetails = ({
   session,
   alert,
   user,
   getData,
-  erp
+  erp,
+  moduleId,
+  branchId
 }) => {
   const [selectedValue, setSelectedValue] = useState('one')
   // const data = null
 
   useEffect(() => {
-    console.log('erp', erp)
     if (erp && erp.length >= 10) {
-      console.log('Api Called')
     }
   }, [getData, erp, session])
 
@@ -39,6 +40,8 @@ const ConcessionDetails = ({
           user={user}
           alert={alert}
           getData={getData}
+          branchId={branchId}
+          moduleId={moduleId}
         />
       )
     } else if (selectedValue === 'two') {
@@ -49,6 +52,8 @@ const ConcessionDetails = ({
           user={user}
           alert={alert}
           getData={getData}
+          branchId={branchId}
+          moduleId={moduleId}
         />
       )
     }

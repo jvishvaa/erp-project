@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Paper, Divider } from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -31,6 +31,7 @@ import SilverAwards from '../../../assets/images/Silver.svg';
 import BronzeAwards from '../../../assets/images/Bronze.svg';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import GiveAwardDialog from './GiveAwardDialog';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 // import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 
 const useStyles = makeStyles({
@@ -125,7 +126,7 @@ const useStyles = makeStyles({
     border: '1px solid #FF6B6B',
   },
   discussionDivider: {
-    marginTop: '15px',
+    marginTop: '25px',
   },
   answersText: {
     color: '#042955',
@@ -141,6 +142,15 @@ const useStyles = makeStyles({
     marginBottom: '26px',
     marginRight: '32px',
   },
+  awardCount: {
+    color: '#754700',
+    position: 'absolute',
+    top: '63%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    fontSize: '36px',
+    fontWeight: 'bold',
+  }
 });
 
 const StyledOutlinedButton = withStyles({
@@ -151,6 +161,9 @@ const StyledOutlinedButton = withStyles({
     borderRadius: '10px',
     marginTop: '15px',
     backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   },
 })(Button);
 
@@ -197,6 +210,9 @@ const OutlinedButton = withStyles({
     color: '#0455A6',
     border: '1px solid #0455A6',
     borderRadius: '10px',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
     backgroundColor: 'transparent',
     '@media (min-width: 600px)': {
       marginTop: '20px!important',
@@ -209,22 +225,45 @@ export default function DiscussionPostComponent(props) {
   const history = useHistory();
   const location = useLocation();
   const postsId = useParams();
-  const postData = useSelector((state) => state.postReducers.post);
+  const postData = useSelector((state) => state.discussionReducers.post);
   const [reply, setReply] = React.useState('');
   const [commentsList, setCommentsList] = React.useState([]);
   const [postsData, setPostsData] = React.useState('');
+  const [commentsCount, setCommentsCount] = React.useState(0);
+  const { setAlert } = useContext(AlertNotificationContext);
 
   const handleChange = (e) => {
     setReply(e.target.value);
   };
 
   const handleBackToPost = () => {
-    history.push('/discussion-forum');
+    //history.push('/discussion-forum');
+    if(location.pathname === `/student-forum/post/${postsId.id}`){
+      history.push('/student-forum');
+    }
+    else {
+      history.push('/teacher-forum');
+    }
     //<Redirect to="/dashboard" />
   };
 
   const handleReplie = () => {
-    alert(reply);
+    //alert(reply);
+    const params = {
+      answer: reply,
+      post: postsData.id
+    }
+
+    axiosInstance.post(endpoints.discussionForum.CreateCommentAndReplay, params)
+    .then((res) => {
+      console.log(res);
+      setReply('');
+      setCommentsCount(commentsCount + 1);
+      setAlert('success', res.data.message);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   };
 
   React.useEffect(() => {
@@ -232,24 +271,22 @@ export default function DiscussionPostComponent(props) {
     axiosInstance
       .get(`/academic/${postsId.id}/retrieve-post/`)
       .then((res) => {
-        //console.log(res.data);
         setPostsData(res.data.result);
+        setCommentsCount(res.data.result.comment_count);
       })
       .catch((error) => console.log(error));
   }, []);
 
   React.useEffect(() => {
-    const params = {
-      comment: postsId.id,
-    };
-    axiosInstance
-      .get(`${endpoints.discussionForum.postLike}?comment=${postsId.id}`)
+    if(commentsCount > 0){
+      axiosInstance
+      .get(`${endpoints.discussionForum.postLike}?post=${postsId.id}&type=2`)
       .then((res) => {
-        //console.log(res.data.result.results);
         setCommentsList(res.data.result.results);
       })
       .catch((error) => console.log(error));
-  }, [props.rowData]);
+    }
+  }, [commentsCount]);
 
   // awards popover
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -280,6 +317,18 @@ export default function DiscussionPostComponent(props) {
     setOpenGiveAward(true);
   };
 
+  const handleAwardsCount = (id) =>{
+    if(id === 1){
+      setGoldCount(goldCount + 1);
+    }
+    if(id === 2){
+      setSilverCount(silverCount + 1);
+    }
+    if(id === 3){
+      setBronzeCount(bronzeCount + 1);
+    }
+    setAwardsCount(awardsCount + 1);
+  }
   const handleClose = (value) => {
     setOpenGiveAward(false);
     setSelectedValue(value);
@@ -328,17 +377,11 @@ export default function DiscussionPostComponent(props) {
                     isLike={postsData.is_like}
                     likeCounts={postsData? postsData.like_count : 0}
                   />
-                              {/*
-                                <LikeIcon/>
-                                <span className={classes.discussionIcon}>
-                                    {postsData? postsData.like_count : 0}
-                                </span>
-                                */}
                 </span>
                 <span style={{ marginLeft: '10px'}}>
                   <ChatIcon />
                   <span className={classes.discussionIcon}>
-                    {postsData ? postsData.comment_count : 0}
+                    {commentsCount}
                   </span>
                 </span>
                 <span
@@ -368,9 +411,21 @@ export default function DiscussionPostComponent(props) {
                       <div style={{ padding: '10px 20px', textAlign: 'center'}}>
                         {/* <SilverAwards /> */}
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          {goldCount !== 0 && (<img src={GoldAwards} alt="Silver Awards" />)}
-                          {silverCount !== 0 && (<img src={SilverAwards} alt="Silver Awards" />)}
-                          {bronzeCount !== 0 && (<img src={BronzeAwards} alt="Silver Awards" />)}
+                          {goldCount !== 0 && (
+                            <span style={{position: 'relative'}}>
+                              <img src={GoldAwards} alt="Silver Awards" />
+                              <div className={classes.awardCount}>{goldCount}</div>
+                            </span>)}
+                          {silverCount !== 0 && (
+                            <span style={{position: 'relative'}}>
+                              <img src={SilverAwards} alt="Silver Awards" />
+                              <div className={classes.awardCount}>{silverCount}</div>
+                            </span>)}
+                          {bronzeCount !== 0 && (
+                            <span style={{position: 'relative'}}>
+                              <img src={BronzeAwards} alt="Silver Awards" />
+                              <div className={classes.awardCount}>{bronzeCount}</div>
+                            </span>)}
                           {goldCount === 0 && silverCount === 0 && bronzeCount === 0 && (
                             <span className={classes.noAwardsText}>No Awards Found</span>
                           )}
@@ -403,9 +458,9 @@ export default function DiscussionPostComponent(props) {
                           <span>
                               <span className={classes.postByText}>post by</span>
                               <ProfileIcon
-                                  firstname={postsData.post_by ? postsData.post_by.first_name : ''}
-                                  lastname={postsData.post_by ? postsData.post_by.last_name : ''}
-                                  bgColor='#3E9CF7'
+                                firstname={postsData.post_by ? postsData.post_by.first_name : ''}
+                                lastname={postsData.post_by ? postsData.post_by.last_name : ''}
+                                bgColor='#3E9CF7'
                               />
                               <span className={classes.username}>
                                   {`${postsData.post_by ? postsData.post_by.first_name : ''} ${postsData.post_by ? postsData.post_by.last_name : ''}`}
@@ -413,25 +468,24 @@ export default function DiscussionPostComponent(props) {
                               </span>
                               {postsData.post_at && (
                                 <>
-                                      <span className={classes.discussionTime}>
-                                          {moment(postsData.post_at).format('hh:mm')}
-                                          {' '}/
-                                      </span>
-                                      <span className={classes.discussionTime}>{moment(postsData.post_at).format('DD.MM.YYYY')}</span>
+                                  <span className={classes.discussionTime}>
+                                    {moment(postsData.post_at).format('hh:mm')}
+                                    {' '}/
+                                  </span>
+                                  <span className={classes.discussionTime}>{moment(postsData.post_at).format('DD.MM.YYYY')}</span>
                                 </>
                               )}
                             </span>
                           </div>
                       <Box className={classes.discussionDetailsBox}>
-                          {/*
-                            <Typography className={classes.discussionTitle}>
-                                {postsData && postsData.title}
-                            </Typography>
-                            */}
-                          <Typography className={classes.discussionParagraph}>
-                              <div dangerouslySetInnerHTML={{__html: postsData && postsData.description}} />
+                          <Typography className={classes.discussionTitle}>
+                            {postsData && postsData.title}
                           </Typography>
-                          <Grid container spacing={1}>
+                           
+                          <Typography className={classes.discussionParagraph}>
+                            <div dangerouslySetInnerHTML={{__html: postsData && postsData.description}}/>
+                          </Typography>
+                          {/* <Grid container spacing={1}>
                               {[1,2].map((data, id) => (
                               <Grid
                                   item sm={3} xs={6} key={id} className={classes.attachmentsDiv}
@@ -443,31 +497,31 @@ export default function DiscussionPostComponent(props) {
                                 }}
                               ></Grid>
                             ))}
-                          </Grid>
+                          </Grid> */}
                           <Divider className={classes.discussionDivider} />
                           <Grid container spacing={2}>
                               <Grid item xs={10}>
                                 <StyledInput
-                                      placeholder="Have your say"
-                                      value={reply}
-                                      onChange={handleChange}
-                                      fullWidth
+                                  placeholder="Have your say"
+                                  value={reply}
+                                  onChange={handleChange}
+                                  fullWidth
                                 />
                               </Grid>
                               <Grid item xs={2}>
-                                  <StyledOutlinedButton
-                                      fullWidth
-                                      onClick={handleReplie}
-                                    >
-                                      Reply
-                                    </StyledOutlinedButton>
+                                <StyledOutlinedButton
+                                  fullWidth
+                                  onClick={handleReplie}
+                                >
+                                  Reply
+                                </StyledOutlinedButton>
                               </Grid>
                               <Grid item xs={12}>
                                   {commentsList && commentsList.length > 0 && (
                                     <Box className={classes.commentReplyBox}>
-                      {commentsList &&
-                        commentsList.length > 0 &&
-                        commentsList.map((commentRow, id) => (
+                                      {commentsList &&
+                                        commentsList.length > 0 &&
+                                            commentsList.map((commentRow, id) => (
                                               <PostComments
                                                   key={commentRow.id}
                                                   id={commentRow.id}
@@ -477,27 +531,35 @@ export default function DiscussionPostComponent(props) {
                                                   likes={commentRow.like_count? commentRow.like_count : 0}
                                                   isLikes={commentRow.is_like? commentRow.is_like : false}
                                                   replies={commentRow.replay? commentRow.replay : []}
-                            //commentRow={commentRow}
-                          />
-                        ))}
-                    </Box>
-                  )}
-                </Grid>
-              </Grid>
-            </Box>
-          </Grid>
+                                                  replayCount={commentRow.replay_count ? commentRow.replay_count : 0}
+                                                  commentAt={commentRow.comment_at ? commentRow.comment_at : 0}
+                                                  //commentRow={commentRow}
+                                              />
+                                      ))}
+                                    </Box>
+                                  )}
+                              </Grid>
+                          </Grid>
+                      </Box>
+                  </Grid>
                   <Grid item xs={12}>
                       <span className={classes.bottomButton}>
-                          <StyledCancelButton>
+                          {/* <StyledCancelButton>
                               CANCEL
-                            </StyledCancelButton>
+                            </StyledCancelButton> */}
                           <StyledButton onClick={handleBackToPost}>
-                              Back to posts
-                            </StyledButton>
-            </span>
-          </Grid>
-        </Grid>
-              <GiveAwardDialog selectedValue={selectedValue} postId={postId} open={openGiveAward} onClose={handleClose} />
+                            Back to posts
+                          </StyledButton>
+                      </span>
+                  </Grid>
+                </Grid>
+              <GiveAwardDialog
+                selectedValue={selectedValue}
+                postId={postId}
+                open={openGiveAward}
+                onClose={handleClose}
+                handleAwardsCount={handleAwardsCount}
+              />
       </Paper>
     </Layout>
   );

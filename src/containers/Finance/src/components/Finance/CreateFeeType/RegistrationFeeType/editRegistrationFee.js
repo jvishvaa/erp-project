@@ -56,7 +56,6 @@ class EditRegistrationFee extends Component {
   }
 
   feeAccountHandler = (e) => {
-    console.log('feeAccountHandlers: ', e)
     this.setState({
       feeAccount: {
         label: e.label,
@@ -75,7 +74,6 @@ class EditRegistrationFee extends Component {
         amount: this.state.amount,
         type: this.props.typeId
       }
-      console.log(data)
       this.props.updateFeeType(this.props.id, data, this.props.alert, this.props.user)
       this.props.close()
     } else {
@@ -92,6 +90,7 @@ class EditRegistrationFee extends Component {
           <Grid item xs='5'>
             <label>Fee Type Name</label>
             <input
+              disabled={true}
               placeholder='Fee Type Name'
               type='text'
               className='form-control'

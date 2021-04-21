@@ -37,7 +37,6 @@ const DiscussionPagination = ({ showPerPage, onPaginationChange, totalCategory }
 
   React.useEffect(() => {
     const value = showPerPage * page;
-    console.log(`${value} === ${page}`);
     onPaginationChange(value - showPerPage, value);
   }, [page]);
 
@@ -65,6 +64,7 @@ const DiscussionPagination = ({ showPerPage, onPaginationChange, totalCategory }
         color='primary'
         startIcon={<ArrowBackIosIcon />}
         onClick={() => onButtonClick('prev')}
+        style={{backgroundColor: 'transparent'}}
       >
         Previous
       </Button>
@@ -84,6 +84,7 @@ const DiscussionPagination = ({ showPerPage, onPaginationChange, totalCategory }
         color='primary'
         endIcon={<ArrowForwardIosIcon />}
         onClick={() => onButtonClick('next')}
+        style={{backgroundColor: 'transparent'}}
       >
         Next
       </Button>

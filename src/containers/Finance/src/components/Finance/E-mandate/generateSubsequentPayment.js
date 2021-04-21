@@ -32,7 +32,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -75,7 +74,6 @@ const GenerateSubsequentPayment = ({ user, alert, getGenerateSubsequent, generat
   }
 
   const subsequentPaymentHandle = (id) => {
-    console.log(id)
     const data = {
       branch: id
     }

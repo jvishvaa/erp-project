@@ -35,6 +35,33 @@ const styles = theme => ({
   }
 })
 
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Student Info') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class StudentInfoAdm extends Component {
   constructor (props) {
     super(props)
@@ -46,18 +73,17 @@ class StudentInfoAdm extends Component {
         grade: null,
         section: null,
         academicyear: null
-      }
+      },
+      selectedBranches: ''
     }
   }
   componentDidMount () {
-    this.props.listBranches()
-    this.props.fetchGradeList(this.props.alert, this.props.user)
+    // this.props.listBranches()
+    // this.props.fetchGradeList(this.props.alert, this.props.user)
   }
 
   studentInfoDropdonHandler= (event, name) => {
-    console.log('student Info Handler', event, name)
     const newstudentInfo = { ...this.state.studentInfo }
-    console.log(event.value)
     switch (name) {
       case 'branch': {
         newstudentInfo['branch'] = event.value
@@ -83,11 +109,13 @@ class StudentInfoAdm extends Component {
       studentInfo: newstudentInfo
     }, () => {
       if (name === 'branch') {
-        console.log('api called', this.state.studentInfo.branch)
-        this.props.fetchGradesPerBranch(this.props.alert, this.props.user, this.state.studentInfo.academicyear, this.state.studentInfo.branch)
+        this.setState({ selectedBranches: event})
+        this.props.fetchGradesPerBranch(this.props.alert, this.props.user, this.state.studentInfo.academicyear, this.state.studentInfo.branch, moduleId)
       } else if (name === 'class') {
-        console.log('api called')
-        this.props.fetchAllSectionsPerGradeAsAdmin(this.state.studentInfo.academicyear, this.props.alert, this.props.user, event.value, this.state.studentInfo.branch)
+        this.props.fetchAllSectionsPerGradeAsAdmin(this.state.studentInfo.academicyear, this.props.alert, this.props.user, event.value, this.state.studentInfo.branch, moduleId)
+      } if (name === 'academicyear') {
+        // this.props.listBranches()
+        this.props.fetchBranches(event && event.value, this.props.alert, this.props.user, moduleId)
       }
     })
   }
@@ -198,7 +226,7 @@ class StudentInfoAdm extends Component {
                 onChange={(e) => { this.studentInfoDropdonHandler(e, 'academicyear') }}
               />
             </Grid>
-            <Grid item xs={3} className={classes.spacing}>
+            {/* <Grid item xs={3} className={classes.spacing}>
               <label>Branch</label>
               <Select
                 placeholder='Select'
@@ -211,7 +239,24 @@ class StudentInfoAdm extends Component {
                 }
                 onChange={(e) => { this.studentInfoDropdonHandler(e, 'branch') }}
               />
-            </Grid>
+            </Grid> */}
+             <Grid item xs='3'>
+            <label>Branch*</label>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+              options={
+                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+              onChange={(e) => { this.studentInfoDropdonHandler(e, 'branch') }}
+            />
+          </Grid>
             <Grid item xs={3} className={classes.spacing}>
               <label>Grade</label>
               <Select
@@ -266,20 +311,22 @@ const mapStateToProps = state => ({
   grades: state.gradeMap.items,
   sections: state.sectionMap.items,
   sectionsPerGradeAdmin: state.finance.common.sectionsPerGradeAdmin,
-  branch: state.finance.common.branchAtAcc,
-  branches: state.branches.items,
+  // branch: state.finance.common.branchAtAcc,
+  // branches: state.branches.items,
+  branches: state.finance.common.branchPerSession,
   studentSearchForAdmin: state.finance.common.studentSearchForAdmin,
   dataLoading: state.finance.common.dataLoader
 })
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchGradeList: (alert, user) => dispatch(actionTypes.fetchGradeList({ alert, user })),
-  listBranches: () => dispatch(apiActions.listBranches()),
-  fetchGradesPerBranch: (alert, user, session, branch) => dispatch(actionTypes.fetchGradesPerBranch({ alert, user, session, branch })),
+  fetchGradeList: (branch, moduleId, alert, user) => dispatch(actionTypes.fetchGradeList({branch, moduleId, alert, user })),
+  // listBranches: () => dispatch(apiActions.listBranches()),
+  fetchGradesPerBranch: (alert, user, session, branch, moduleId) => dispatch(actionTypes.fetchGradesPerBranch({ alert, user, session, branch, moduleId })),
   gradeMapBranch: (branchId) => dispatch(apiActions.getGradeMapping(branchId)),
   sectionMap: (acadMapId) => dispatch(apiActions.getSectionMapping(acadMapId)),
-  fetchAllSectionsPerGradeAsAdmin: (session, alert, user, gradeId, branchId) => dispatch(actionTypes.fetchAllSectionsPerGradeAsAdmin({ session, alert, user, gradeId, branchId })),
+  fetchAllSectionsPerGradeAsAdmin: (session, alert, user, gradeId, branchId, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGradeAsAdmin({ session, alert, user, gradeId, branchId, moduleId })),
   fetchBranchAtAcc: (alert, user) => dispatch(actionTypes.fetchBranchAtAcc({ alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchErpSuggestionsStudentName: (alert, user, session, grade, section, branch, erp) => dispatch(actionTypes.fetchErpSuggestionsStudentName({ alert, user, session, grade, section, branch, erp })),
   fetchStudentInfoForAdmin: (alert, user, session, grade, section, branch) => dispatch(actionTypes.fetchStudentInfoForAdmin({ alert, user, session, grade, section, branch }))
 })

@@ -50,7 +50,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -91,11 +90,9 @@ class NonRTEStudentParentDetailsFormAcc extends Component {
   }
 
   componentDidUpdate () {
-    console.log('DID UPDATED', this.state.studentParentDetails)
     this.props.getStudentParentDetail(this.state.studentParentDetails)
   }
   componentWillReceiveProps (nextProps) {
-    console.log('===received props', nextProps.studentDetailsForAdmission)
     if (nextProps.studentDetailsForAdmission) {
       const newstudentParentDetails = { ...this.state.studentParentDetails }
       newstudentParentDetails['fatherName'] = nextProps.studentDetailsForAdmission.parent && nextProps.studentDetailsForAdmission.parent.father_name ? nextProps.studentDetailsForAdmission.parent.father_name : ''
@@ -110,7 +107,6 @@ class NonRTEStudentParentDetailsFormAcc extends Component {
   }
 
   studentParentDroponHandler= (event, name) => {
-    console.log(event, name)
     const newstudentParentDetails = { ...this.state.studentParentDetails }
     switch (name) {
       case 'poc': {
@@ -127,7 +123,6 @@ class NonRTEStudentParentDetailsFormAcc extends Component {
   }
 
   studentParentInputHandler= (event) => {
-    console.log(event.target.name)
     const newstudentParentDetails = { ...this.state.studentParentDetails }
     switch (event.target.name) {
       case 'fatherName': {

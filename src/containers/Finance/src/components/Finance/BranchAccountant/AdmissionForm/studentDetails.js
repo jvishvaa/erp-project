@@ -45,7 +45,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -83,9 +82,7 @@ class StudentDetailsFormAcc extends Component {
   }
 
   componentDidUpdate () {
-    console.log('DID UPDATED', this.state.studentDetails)
     this.props.getStudentDetail(this.state.studentDetails)
-    console.log(this.props.classGroupList)
   }
 
   componentDidMount () {
@@ -94,7 +91,7 @@ class StudentDetailsFormAcc extends Component {
       this.setState({
         studentDetails: newstudentDetails })
     }
-    this.props.fetchGradeList(this.props.alert, this.props.user)
+    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId)
     this.props.fetchClassGroup(this.props.alert, this.props.user)
   }
 
@@ -121,9 +118,7 @@ class StudentDetailsFormAcc extends Component {
   }
 
   studentDetailsDropdonHandler= (event, name) => {
-    console.log('student detail handler', event, name)
     const newstudentDetails = { ...this.state.studentDetails }
-    console.log(event.value)
     switch (name) {
       case 'academicyear': {
         newstudentDetails['academicyear'] = event.value
@@ -153,7 +148,6 @@ class StudentDetailsFormAcc extends Component {
       studentDetails: newstudentDetails
     }, () => {
       if (name === 'class') {
-        console.log('This is api call', this.state.studentDetails.academicyear, this.props.alert, this.props.user, event.value)
         this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, event.value)
       }
     })
@@ -205,7 +199,6 @@ class StudentDetailsFormAcc extends Component {
 
   render () {
     const { classes } = this.props
-    console.log('in student details')
     return (
       <React.Fragment>
         <div className={classes.root}>

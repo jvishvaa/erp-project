@@ -15,7 +15,6 @@ class Database {
           if (database.name === 'PSDB') {
             if (database.version !== 20) {
               indexedDB.deleteDatabase('PSDB')
-              console.log("Old indexDB 'PSDB' deleted..")
               // to avoid error after delete.. cause pselect may look for db
               window.location.reload()
             } else {

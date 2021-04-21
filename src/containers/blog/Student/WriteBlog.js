@@ -178,7 +178,6 @@ class WriteBlog extends Component {
       if(item.length){
         count=count+1
       }
-      console.log(count,"@@@")
     })
 
     // const textWordCount = parsedTextEditorContent.length

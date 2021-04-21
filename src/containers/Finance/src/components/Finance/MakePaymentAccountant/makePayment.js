@@ -55,7 +55,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -122,11 +121,11 @@ class MakePayment extends Component {
     if (makePayState) {
       this.setState(makePayState)
     }
-    this.props.fetchAllPayment(this.props.session, this.props.erp, this.props.user, this.props.alert)
-    this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user)
+    this.props.fetchAllPayment(this.props.session, this.props.erp, this.props.user, this.props.alert, this.props.moduleId, this.props.branchId)
+    this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
     this.props.fetchNormalWallet(this.props.session, this.props.erp, this.props.alert, this.props.user)
     this.props.fetchDate(this.props.alert, this.props.user)
-    this.props.fetchStudentDues(this.props.erp, this.props.session, this.props.alert, this.props.user)
+    this.props.fetchStudentDues(this.props.erp, this.props.session, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
   }
   // componentWillUnmount () {
   //   this.setState({
@@ -165,8 +164,8 @@ class MakePayment extends Component {
       return
     }
     if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData)) {
-      this.props.fetchAllPayment(session, erp, user, alert)
-      this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user)
+      this.props.fetchAllPayment(session, erp, user, alert, this.props.moduleId, this.props.branchId)
+      this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
       this.props.fetchDate(this.props.alert, this.props.user)
     }
     if (session !== prevProps.session) {
@@ -244,7 +243,7 @@ class MakePayment extends Component {
 
   // Generation of PDF Start
   getPdfData = (transactionId) => {
-    return (axios.get(`${urls.FeeTransactionReceipt}?transaction_id=${transactionId}&academic_year=${this.props.session}`, {
+    return (axios.get(`${urls.FeeTransactionReceipt}?transaction_id=${transactionId}&academic_year=${this.props.session}&branch_id=${this.props.branchId}&module_id=${this.props.moduleId}`, {
       headers: {
         Authorization: 'Bearer ' + this.props.user
       }
@@ -256,7 +255,6 @@ class MakePayment extends Component {
       const response = await this.getPdfData(this.props.trnsId)
       feeReceiptss(response.data)
     } catch (e) {
-      console.log(e)
       this.props.alert.warning('Something Went Wrong')
     }
   }
@@ -288,6 +286,7 @@ class MakePayment extends Component {
           getData={this.getAxisPosDataHandler}
           totalAmountToBePaid={this.state.totalAmountToBePaid}
           alert={this.props.alert}
+          branch={this.props.branchId}
           // walletInfo={this.props.walletInfo}
         />
       case 3:
@@ -421,7 +420,6 @@ class MakePayment extends Component {
   }
 
   partialAmountHandler = (e, id) => {
-    console.log('e and id', e, id)
     let ppValid = true
     let { partialAmount } = this.state
 
@@ -492,8 +490,6 @@ class MakePayment extends Component {
       })
     }
 
-    console.log('final state make payment', this.state.finalOtherFeeDet.installment_rows)
-
     if (this.state.finalOtherFeeDet && this.state.finalOtherFeeDet.installment_rows && this.state.finalOtherFeeDet.installment_rows.length > 0) {
       this.state.finalOtherFeeDet.installment_rows.map(row => {
         row.map(r => {
@@ -514,14 +510,11 @@ class MakePayment extends Component {
       })
     }
 
-    console.log('other fee details', otherDetails)
-
     // let currentOtherFee = this.props.otherFeesList.filter(val => val.id === this.state.otherFeeId)
     let wal = null
     let tot = this.state.selectedTotal + this.state.otherFeeAmount
     if (this.props.walletInfo.length && this.state.isWalletAgree) {
       let bal = this.props.walletInfo[0].reaming_amount
-      console.log('total and balnce: ', tot, bal)
       wal = {
         wallet_agree: this.state.isWalletAgree,
         wallet_data: this.props.walletInfo[0],
@@ -544,7 +537,8 @@ class MakePayment extends Component {
         // receipt_number_online: this.state.payment.payment.receiptOnline ? this.state.payment.payment.receiptOnline : null,
         current_date: this.props.dateFromServer[0] ? this.props.dateFromServer[0] : null,
         fee: insta,
-        other_fee: otherDetails
+        other_fee: otherDetails,
+        branch_id: this.props.branchId
       }
       this.sendingToServer(walletData)
       return
@@ -554,6 +548,8 @@ class MakePayment extends Component {
       let cashData = {
         ...this.props.walletInfo.length && this.state.isWalletAgree ? wal : null,
         session_year: this.props.session,
+        branch_id: this.props.branchId,
+        module_id: this.props.moduleId,
         student: this.props.erpCode,
         date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
         total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -565,13 +561,16 @@ class MakePayment extends Component {
         // receipt_number_online: this.state.payment.payment.receiptOnline ? this.state.payment.payment.receiptOnline : null,
         current_date: this.props.dateFromServer[0] ? this.props.dateFromServer[0] : null,
         fee: insta,
-        other_fee: otherDetails
+        other_fee: otherDetails,
+        branch_id: this.props.branchId
       }
       this.sendingToServer(cashData)
     } else if (+this.state.payment.mode === 2) {
       let chequeData = {
         ...this.props.walletInfo.length && this.state.isWalletAgree ? wal : null,
         session_year: this.props.session,
+        branch_id: this.props.branchId,
+        module_id: this.props.moduleId,
         student: this.props.erpCode,
         date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
         total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -588,13 +587,16 @@ class MakePayment extends Component {
         bank_name: this.state.payment.payment.cheque.chequeBankName ? this.state.payment.payment.cheque.chequeBankName : null,
         bank_branch: this.state.payment.payment.cheque.chequeBankBranch ? this.state.payment.payment.cheque.chequeBankBranch : null,
         fee: insta,
-        other_fee: otherDetails
+        other_fee: otherDetails,
+        branch_id: this.props.branchId
       }
       this.sendingToServer(chequeData)
     } else if (+this.state.payment.mode === 3) {
       let internetData = {
         ...this.props.walletInfo.length && this.state.isWalletAgree ? wal : null,
         session_year: this.props.session,
+        branch_id: this.props.branchId,
+        module_id: this.props.moduleId,
         student: this.props.erpCode,
         date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
         total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -607,13 +609,16 @@ class MakePayment extends Component {
         remarks: this.state.payment.payment.internet.remarks ? this.state.payment.payment.internet.remarks : null,
         current_date: this.props.dateFromServer[0] ? this.props.dateFromServer[0] : null,
         fee: insta,
-        other_fee: otherDetails
+        other_fee: otherDetails,
+        branch_id: this.props.branchId
       }
       this.sendingToServer(internetData)
     } else if (+this.state.payment.mode === 4) {
       let creditData = {
         ...this.props.walletInfo.length && this.state.isWalletAgree ? wal : null,
         session_year: this.props.session,
+        branch_id: this.props.branchId,
+        module_id: this.props.moduleId,
         student: this.props.erpCode,
         date_of_payment: this.state.payment.payment.dateOfPayment ? this.state.payment.payment.dateOfPayment : null,
         total_amount: this.state.totalAmountToBePaid ? this.state.totalAmountToBePaid : 0,
@@ -629,19 +634,18 @@ class MakePayment extends Component {
         credit_date: this.state.payment.payment.credit.creditDate ? this.state.payment.payment.credit.creditDate : null,
         current_date: this.props.dateFromServer[0] ? this.props.dateFromServer[0] : null,
         fee: insta,
-        other_fee: otherDetails
+        other_fee: otherDetails,
+        branch_id: this.props.branchId
       }
       this.sendingToServer(creditData)
     }
   }
 
   sendingToServer = (data) => {
-    console.log('final data', data)
     this.props.sendAllPayment(data, this.props.user, this.props.alert)
   }
 
   handleNext = () => {
-    console.log('index:', this.state.activeStep)
     if (this.state.activeStep < 1) {
       this.receiptDetailsTableHandler()
       this.setState(prevState => {
@@ -685,8 +689,8 @@ class MakePayment extends Component {
         }
       }, () => {
         this.props.clearAllProps()
-        this.props.fetchAllPayment(this.props.session, this.props.erp, this.props.user, this.props.alert)
-        this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user)
+        this.props.fetchAllPayment(this.props.session, this.props.erp, this.props.user, this.props.alert, this.props.moduleId, this.props.branchId)
+        this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
         this.props.fetchNormalWallet(this.props.session, this.props.erp, this.props.alert, this.props.user)
         // this.props.fetchAllPayment(this.props.erpCode, this.props.user, this.props.alert)
       })
@@ -716,9 +720,7 @@ class MakePayment extends Component {
   };
 
   receiptDetailsTableHandler = () => {
-    console.log('Called from new func')
     const partialPayAmt = document.querySelectorAll('[name=partialAmount]')
-    console.log('mpa Partial amount: ', partialPayAmt)
     let bal = []
     let payed = []
     let checkedRowId = []
@@ -729,7 +731,6 @@ class MakePayment extends Component {
     checkedRowId.map((row, i) => {
       payInstall.push(this.props.feeDetailsList.filter(list => (+list.id === +row)))
     })
-    console.log('mpa payInstall 1st----', payInstall)
     // to calculate the paying amount and balance after that.
     payInstall.map((row, i) => {
       row.map((r) => {
@@ -748,15 +749,12 @@ class MakePayment extends Component {
         }
       })
     })
-    console.log(payed)
-    console.log(bal)
 
     const newPayInstall = payInstall.map((ele, i) => {
       ele.payment = payed[i]
       ele.balance = bal[i]
       return ele
     })
-    console.log('mpa Pay New Insyall-------', newPayInstall)
     this.setState({
       final: {
         finalAmt: this.state.selectedTotal,
@@ -776,7 +774,6 @@ class MakePayment extends Component {
   getPaymentDetailHandler = (confirm, wallet, paymentDetail, otherFee, total) => {
     if (confirm) {
       // this.setState({ disableNext: false })
-      console.log('other', otherFee)
       this.setState({
         disableNext: false,
         payment: paymentDetail,
@@ -784,7 +781,6 @@ class MakePayment extends Component {
         totalAmountToBePaid: total,
         isWalletAgree: wallet
       }, () => {
-        console.log('other Fee', this.state)
       })
     } else {
       // this.setState({ disableNext: true })
@@ -793,10 +789,8 @@ class MakePayment extends Component {
   }
   sendData = () => {
     let year = this.props.session && this.props.session.split('-')
-    console.log('year', year)
     let newYear = year.map((n) => n - 1)
     newYear = newYear.join('-')
-    console.log('previousYear', newYear)
     this.props.parentCallback(newYear)
     this.setState({
       selectedTotal: null,
@@ -805,7 +799,6 @@ class MakePayment extends Component {
   }
   render () {
     // let { classes } = this.props
-    // console.log('datefrom server: ', this.props.dateFromServer)
     const { classes } = this.props
     const steps = getSteps()
     const { activeStep } = this.state
@@ -879,15 +872,15 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   // loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchAllPayment: (session, erp, user, alert) => dispatch(actionTypes.fetchAllPayment({ session, erp, user, alert })),
-  listOtherFees: (session, erp, alert, user) => dispatch(actionTypes.fetchAccountantOtherFee({ session, erp, alert, user })),
+  fetchAllPayment: (session, erp, user, alert, moduleId, branchId) => dispatch(actionTypes.fetchAllPayment({ session, erp, user, alert, moduleId, branchId })),
+  listOtherFees: (session, erp, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchAccountantOtherFee({ session, erp, alert, user, moduleId, branchId })),
   sendAllPayment: (data, user, alert) => dispatch(actionTypes.sendAllPayment({ data, user, alert })),
   clearAllProps: () => dispatch(actionTypes.clearAllProps()),
   fetchGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, alert, user, moduleId })),
   fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
   fetchAllSections: (session, gradeId, alert, user, moduleId ) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId })),
   fetchDate: (alert, user) => dispatch(actionTypes.fetchDateFromServer({ alert, user })),
-  fetchStudentDues: (erp, session, alert, user) => dispatch(actionTypes.fetchStudentDues({ erp, session, alert, user })),
+  fetchStudentDues: (erp, session, alert, user, moduleId, branchId ) => dispatch(actionTypes.fetchStudentDues({ erp, session, alert, user, moduleId, branchId })),
   fetchNormalWallet: (session, erp, alert, user) => dispatch(actionTypes.fetchNormalWallet({ session, erp, alert, user }))
 })
 

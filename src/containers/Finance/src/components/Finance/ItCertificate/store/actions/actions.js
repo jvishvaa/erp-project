@@ -18,7 +18,6 @@ export const fetchAllFeeType = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log('----actions--------', response)
       dispatch({
         type: FETCH_ALL_FEE_TYPE,
         payload: {
@@ -65,7 +64,6 @@ export const saveFeeType = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log('the response from save fee type', response)
       dispatch({
         type: SAVE_FEE_TYPE,
         payload: {
@@ -90,7 +88,6 @@ export const deleteITCList = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log('the response from save fee type', response)
       dispatch({
         type: DELETE_ITC_LIST,
         payload: {

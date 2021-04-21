@@ -71,12 +71,9 @@ const managePaymentReducer = (state = initialState, action) => {
     case actionTypes.CANCEL_PAYMENT_STUDENT : {
       let payData = [ ...state.status ]
       let index = payData.findIndex((val) => +val.id === +action.payload.data.id)
-      console.log('payData', payData)
-      console.log('index', index)
       if (index !== -1) {
         payData[index] = { ...action.payload.data }
       }
-      console.log('payData', payData)
       return {
         ...state,
         status: payData

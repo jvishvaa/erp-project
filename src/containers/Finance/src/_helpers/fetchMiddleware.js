@@ -4,7 +4,6 @@ const setAction = action => {
     phase: action.meta['redux-pack/LIFECYCLE'],
     transactionId: action.meta['redux-pack/TRANSACTION']
   }
-  console.log(actions)
 }
 
 const getAction = action => actions[action.type]
@@ -22,7 +21,6 @@ const isStaleAction = newAction => {
 }
 const isActionPresentInStartPhase = newAction => {
   const oldAction = getAction(newAction)
-  console.log(oldAction, 'Old Action here')
   return oldAction && oldAction.phase === 'start'
 }
 const isReduxPackAction = action =>
@@ -36,7 +34,6 @@ export default () => next => action => {
       next(action)
     } else if (isSuccessAction(action)) {
       if (isActionPresentInStartPhase(action)) {
-        console.log('Action Present in Start Phase')
         if (isStaleAction(action)) {
           next({
             ...action,

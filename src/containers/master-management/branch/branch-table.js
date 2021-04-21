@@ -136,7 +136,6 @@ const BranchTable = () => {
     setAddFlag(false);
     setEditFlag(true);
     setBranchData(branch);
-    console.log({ branch });
   };
 
   const handleGoBack = () => {
@@ -397,7 +396,7 @@ const BranchTable = () => {
           <DialogContent>
             <DialogContentText>{`Confirm Delete Branch ${branchName}`}</DialogContentText>
           </DialogContent>
-          <DialogActions>
+          <DialogActions style={{display:'flex',justifyContent:'space-around'}}>
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>

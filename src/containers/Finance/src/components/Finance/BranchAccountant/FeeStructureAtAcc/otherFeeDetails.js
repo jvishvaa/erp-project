@@ -52,7 +52,7 @@ class OtherFeeDetails extends Component {
 
   componentDidMount () {
     if (this.props.getData && this.state.selectFeeWiseOther.value === 1) {
-      this.props.fetchOtherInstallmentTypeList(this.props.session, this.props.erp, this.props.alert, this.props.user)
+      this.props.fetchOtherInstallmentTypeList(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
     }
   }
 
@@ -75,7 +75,7 @@ class OtherFeeDetails extends Component {
       return
     }
     if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData) && this.state.selectFeeWiseOther.value === 1) {
-      this.props.fetchOtherInstallmentTypeList(session, erp, alert, user)
+      this.props.fetchOtherInstallmentTypeList(session, erp, alert, user,this.props.moduleId, this.props.branchId)
     } else if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData) && this.state.selectFeeWiseOther.value === 2) {
       this.props.fetchList(session, erp, alert, user)
     }
@@ -98,7 +98,6 @@ class OtherFeeDetails extends Component {
       unassignId: id
     }, () => {
       const currentData = this.props.feeTypwWise.filter(val => val.id === this.state.unassignId)[0]
-      console.log(currentData)
       this.setState({
         currentFeeData: currentData
       })
@@ -161,9 +160,9 @@ class OtherFeeDetails extends Component {
       selectFeeWiseOther: e
     }, () => {
       if (this.state.selectFeeWiseOther.value === 1) {
-        this.props.fetchOtherInstallmentTypeList(this.props.session, this.props.erp, this.props.alert, this.props.user)
+        this.props.fetchOtherInstallmentTypeList(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
       } else {
-        this.props.fetchOtherFeeTypeList(this.props.session, this.props.erp, this.props.alert, this.props.user)
+        this.props.fetchOtherFeeTypeList(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
       }
     })
   }
@@ -187,34 +186,26 @@ class OtherFeeDetails extends Component {
   }
 
   changeremarksHandler = (e) => {
-    console.log(e)
-    console.log(e.target.value)
     this.setState({
       remarksData: e.target.value
     })
   }
 
   handleAlignment = (e, newAlignment) => {
-    console.log(newAlignment)
     this.setState({
       alignment: newAlignment
     })
   }
 
   saveRequest = () => {
-    console.log('amount', this.state.feeStructAmt)
-    console.log('balance', this.state.feeStructBal)
     if (!this.state.concessionType || !this.state.remarks || !this.state.currentConcessionStatus) {
       this.props.alert.warning('Select All Fields')
-      console.log('1st attempt')
       return
     } else if (this.state.currentConcessionStatus.value === 'replace' && this.state.concessionRequestAmount > this.state.feeStructAmt) {
       this.props.alert.warning('Replacing Concession Should be less than Fee Amount')
-      console.log('2nd attempt')
       return
     } else if (this.state.currentConcessionStatus.value === 'add' && this.state.concessionRequestAmount > this.state.feeStructBal) {
       this.props.alert.warning('Adding Concession Should be less than balance')
-      console.log('3rd attempt')
       return
     }
     let data = {
@@ -225,15 +216,14 @@ class OtherFeeDetails extends Component {
       remarks: this.state.remarks,
       concession_id: this.state.concessionType,
       concession_type: this.state.currentConcessionStatus.value,
-      concession_given_by: this.state.conGivenBy
+      concession_given_by: this.state.conGivenBy,
+      branch_id: this.props.branchId
     }
-    // console.log('data', data)
     this.props.saveConcessionRequest(data, this.props.alert, this.props.user)
     this.hideConcesionModalHandler()
   }
 
   unassignSubmitHandler = () => {
-    console.log(this.state.remarksData)
     if (this.state.remarksData) {
       const data = {
         academic_year: this.props.session,
@@ -277,9 +267,9 @@ class OtherFeeDetails extends Component {
         id: instWiseId,
         reason: fineRemarks,
         academic_year: this.props.session,
-        student: this.props.erp
+        student: this.props.erp,
+        branch_id: this.props.branchId
       }
-      // console.log(data)
       this.props.updateFineAmt(data, this.props.alert, this.props.user)
       this.hideFineAmtModalHandler()
     } else {
@@ -754,7 +744,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchOtherFeeTypeList: (session, erp, alert, user) => dispatch(actionTypes.fetchOtherFeeTypeList({ session, erp, alert, user })),
-  fetchOtherInstallmentTypeList: (session, erp, alert, user) => dispatch(actionTypes.fetchOtherInstTypeList({ session, erp, alert, user })),
+  fetchOtherInstallmentTypeList: (session, erp, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchOtherInstTypeList({ session, erp, alert, user, moduleId, branchId })),
   // fetchFeeStructureList: (erp, alert, user) => dispatch(actionTypes.fetchFeeStructureList({ erp, alert, user })),
   // fetchConcessionTypes: (alert, user) => dispatch(actionTypes.ListConcessionTypes({ alert, user })),
   saveConcessionRequest: (data, alert, user) => dispatch(actionTypes.saveOtherConcessionRequest({ data, alert, user })),

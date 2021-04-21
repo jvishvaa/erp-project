@@ -51,6 +51,31 @@ const styles = theme => ({
   }
 })
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Active/Inactive') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class StudentActivateInactiveAcc extends Component {
   constructor (props) {
     super(props)
@@ -66,11 +91,12 @@ class StudentActivateInactiveAcc extends Component {
         academicyear: '2019-20',
         status: 'True',
         request_by_relative: null
-      }
+      },
+      selectedBranches:''
     }
   }
   componentDidMount () {
-    this.props.fetchGradeList(this.props.alert, this.props.user)
+    // this.props.fetchGradeList(this.props.alert, this.props.user)
   }
   downloadStu = () => {
     const headers = [
@@ -120,7 +146,6 @@ class StudentActivateInactiveAcc extends Component {
         }
       ])
     })
-    console.log('body: ', body)
     // const body = [
     //   {
     //     value: promoted,
@@ -154,22 +179,18 @@ class StudentActivateInactiveAcc extends Component {
   }
 
   handleGetButton = (e) => {
-    this.props.getActiveStudentDetails(this.props.alert, this.props.user, this.state.studentInfo.grade, this.state.studentInfo.section, this.state.studentInfo.academicyear, this.state.studentInfo.status)
+    this.props.getActiveStudentDetails(this.props.alert, this.props.user, this.state.studentInfo.grade, this.state.studentInfo.section, this.state.studentInfo.academicyear, this.state.studentInfo.status, this.state.selectedBranches?.value)
   }
 
   showInfoModalRejectHandler = (event, data) => {
     this.setState({ showRejectModal: true })
-    console.log(data)
     this.setState({ updaterow: data })
-    console.log(this.state.updaterow)
-    this.props.fetchAllPayment(this.props.alert, this.props.user, data.erp, this.state.studentInfo.academicyear)
+    this.props.fetchAllPayment(this.props.alert, this.props.user, data.erp, this.state.studentInfo.academicyear, this.state.selectedBranches && this.state.selectedBranches.value, moduleId)
   }
 
   showInfoModalAcceptHandler = (event, data) => {
     this.setState({ showAcceptModal: true })
-    console.log(data)
     this.setState({ updaterow: data })
-    console.log(this.state.updaterow)
     // this.props.fetchAllPayment(this.props.alert, this.props.user, data.erp, this.state.studentInfo.academicyear)
   }
 
@@ -179,7 +200,6 @@ class StudentActivateInactiveAcc extends Component {
   }
 
   approveRequestHandler= () => {
-    console.log(this.state.updaterow)
     this.setState({ showAcceptModal: false })
     this.setState({ showRejectModal: false })
     const body = {
@@ -187,7 +207,8 @@ class StudentActivateInactiveAcc extends Component {
       is_active: false,
       erp: this.state.updaterow.erp,
       remarks: this.state.remark,
-      request_by_relative: this.state.studentInfo.request_by_relative
+      request_by_relative: this.state.studentInfo.request_by_relative,
+      branch_id:this.state.selectedBranches?.value
     }
     this.props.postStudentActivateInactivate(body, this.props.user, this.props.alert)
     this.setState({ updaterow: '' })
@@ -238,10 +259,16 @@ class StudentActivateInactiveAcc extends Component {
     }, () => {
       if (name === 'status') {
       } else if (name === 'class') {
-        this.props.fetchAllSectionsPerGrade(this.state.studentInfo.academicyear, this.props.alert, this.props.user, event.value)
+        this.props.fetchAllSectionsPerGrade(this.state.studentInfo.academicyear, this.props.alert, this.props.user, event.value, this.state.selectedBranches?.value, moduleId)
       } else if (name === 'section') {
+      } else if (name === 'academicyear') {
+        this.props.fetchBranches(event.value, this.props.alert, this.props.user, moduleId)
       }
     })
+  }
+  changehandlerbranch = (e) => {
+    this.props.fetchGradeList(this.state.studentInfo.academicyear, e &&e.value, this.props.alert, this.props.user, moduleId)
+    this.setState({ selectedBranches: e})
   }
   render () {
     const { classes } = this.props
@@ -482,6 +509,24 @@ class StudentActivateInactiveAcc extends Component {
                 onChange={(e) => { this.studentDropdonHandler(e, 'academicyear') }}
               />
             </Grid>
+            <Grid item xs='3'>
+            <label>Branch*</label>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+              options={
+                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+
+              onChange={this.changehandlerbranch}
+            />
+          </Grid>
             <Grid item xs={3}>
               <label>Status</label>
               <Select
@@ -501,8 +546,8 @@ class StudentActivateInactiveAcc extends Component {
                 placeholder='Select'
                 // value={this.state.class ? this.state.class : null}
                 options={this.props.gradeList ? this.props.gradeList.map(grades => ({
-                  value: grades.id,
-                  label: grades.grade
+                  value: grades.grade.id,
+                  label: grades.grade.grade
                 }))
                   : []
                 }
@@ -558,16 +603,18 @@ const mapStateToProps = state => ({
   gradeList: state.finance.common.gradeList,
   sectionList: state.finance.common.sectionsPerGrade,
   feeStructure: state.finance.accountantReducer.studentactivateInactivate.feeStructure,
-  dataLoading: state.finance.common.dataLoader
+  dataLoading: state.finance.common.dataLoader,
+  branches: state.finance.common.branchPerSession,
 })
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  getActiveStudentDetails: (alert, user, grade, section, session, status) => dispatch(actionTypes.getActiveStudentDetails({ alert, user, grade, section, session, status })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  getActiveStudentDetails: (alert, user, grade, section, session, status, branch) => dispatch(actionTypes.getActiveStudentDetails({ alert, user, grade, section, session, status, branch })),
   getInActiveStudentDetails: (alert, user, grade, section, session) => dispatch(actionTypes.getInActiveStudentDetails({ alert, user, grade, section, session })),
-  fetchGradeList: (alert, user) => dispatch(actionTypes.fetchGradeList({ alert, user })),
-  fetchAllSectionsPerGrade: (session, alert, user, gradeId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId })),
-  fetchAllPayment: (alert, user, erp, session) => dispatch(actionTypes.fetchAllPayment({ alert, user, erp, session })),
-  postStudentActivateInactivate: (data, user, alert) => dispatch(actionTypes.postStudentActivateInactivate({ data, user, alert }))
+  fetchGradeList: (session, branch, alert, user, moduleId) => dispatch(actionTypes.fetchGradeList({session, branch, alert, user, moduleId })),
+  fetchAllSectionsPerGrade: (session, alert, user, gradeId, branch, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, branch, moduleId })),
+  fetchAllPayment: (alert, user, erp, session, branchId, moduleId) => dispatch(actionTypes.fetchAllPayment({ alert, user, erp, session, branchId, moduleId })),
+  postStudentActivateInactivate: (data, user, alert) => dispatch(actionTypes.postStudentActivateInactivate({ data, user, alert })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
 })
 export default connect(
   mapStateToProps,

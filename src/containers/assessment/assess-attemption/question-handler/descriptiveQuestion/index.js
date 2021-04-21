@@ -37,7 +37,6 @@ const DescriptiveQuestion = () => {
   const [{ answer, options, question }] = question_answer;
   const [textEditorContent, setTextEditorContent] = useState('');
   const handleTextEditor = (event) => {
-    // console.log('from editor', e);
     setTextEditorContent(event);
     attemptQuestion(qId, { attemption_status: true, answer: event });
   };

@@ -21,12 +21,10 @@ export const FETCH_REFUND_VALUE = 'FETCH_REFUND_VALUE'
 // action creators
 
 export const fetchRefundValue = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.FetchRefund + '?erp_code=' + payload.erp + '&academic_year=' + payload.session, {
+      .get(urls.FetchRefund + '?erp_code=' + payload.erp + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -47,12 +45,10 @@ export const fetchRefundValue = (payload) => {
 }
 
 export const fetchFeeStructureList = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.StudentPaymentAcc + '?erp_code=' + payload.erp + '&session_year=' + payload.session, {
+      .get(urls.StudentPaymentAcc + '?erp_code=' + payload.erp + '&session_year=' + payload.session + '&branch_id=' + payload.branch + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -76,7 +72,7 @@ export const ListConcessionTypes = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.ConcessionFeeTypes, {
+      .get(urls.ConcessionFeeTypes + '?branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -124,17 +120,14 @@ export const saveConcessionRequest = (payload) => {
 }
 
 export const fetchFeeTypeListFeeStru = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.FeeStructureFeeWise + '?erp_code=' + payload.erp + '&academic_year=' + payload.session, {
+      .get(urls.FeeStructureFeeWise + '?erp_code=' + payload.erp + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('response', response)
         dispatch({
           type: FEE_TYPE_WISE,
           payload: {
@@ -177,10 +170,9 @@ export const unassignFeeStructure = (payload) => {
 
 export const fetchOtherFeeTypeList = (payload) => {
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.OtherFeeTypeFeeStruc + '?erp_code=' + payload.erp + '&academic_year=' + payload.session, {
+      .get(urls.OtherFeeTypeFeeStruc + '?erp_code=' + payload.erp + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -202,10 +194,9 @@ export const fetchOtherFeeTypeList = (payload) => {
 
 export const fetchOtherInstTypeList = (payload) => {
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.otherFeeInstWise + '?erp_code=' + payload.erp + '&academic_year=' + payload.session, {
+      .get(urls.otherFeeInstWise + '?erp_code=' + payload.erp + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -253,9 +244,7 @@ export const saveOtherConcessionRequest = (payload) => {
 }
 
 export const fetchListConcessionsTypes = (payload) => {
-  // console.log(payload)
   return (dispatch) => {
-    console.log(payload)
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.ConcessionListType, {
@@ -334,7 +323,7 @@ export const updateOthrInstFineAmount = (payload) => {
 
 export const fetchStudentDues = (payload) => {
   return (dispatch) => {
-    let url = `${urls.StudentDues}?erp_code=${payload.erp}&session_year=${payload.session}`
+    let url = `${urls.StudentDues}?erp_code=${payload.erp}&session_year=${payload.session}` + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId
     if (payload.branch) {
       url = url + `&branch=${payload.branch}`
     }
@@ -362,7 +351,7 @@ export const fetchStudentDues = (payload) => {
 export const fetchBackDatConcession = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ConcessionBackdate + '?academic_year=' + payload.session, {
+    axios.get(urls.ConcessionBackdate + '?academic_year=' + payload.session + '&branch_id=' + payload.branch + '&module_id=' + payload.moduleId, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }

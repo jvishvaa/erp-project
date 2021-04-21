@@ -164,10 +164,8 @@ const AccountantLogin = ({
     readXlsxFile(statusFile, { schema }).then(({ rows, errors }) => {
       // `errors` have shape `{ row, column, error, value }`.
       // if (errors.length !== 0) {
-      //   console.log('Error', errors)
       //   throw new Error(`${errors[0].error}: Row - ${errors[0].row} | Column - ${errors[0].column} | Value - ${errors[0].value}`)
       // }
-      console.log('rows', rows)
       dataLoaded()
       const form = new FormData()
       form.append('file', statusFile)

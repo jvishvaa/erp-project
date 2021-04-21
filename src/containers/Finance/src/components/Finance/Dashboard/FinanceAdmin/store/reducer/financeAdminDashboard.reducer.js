@@ -24,20 +24,16 @@ const financeAdminDashBoardReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.APPROVE_REQUEST : {
-      console.log('came to reducer')
-      console.log(action.payload.data)
       const newactiveRequstList = [...state.activeRequstList.reactive]
       const newInactivateRequestList = [...state.activeRequstList.inactive]
       let putactiveRequstList = newactiveRequstList
       let putinactiveRequstList = newInactivateRequestList
       if (action.payload.data.is_active_request === true) {
         putactiveRequstList = newactiveRequstList.filter(list => {
-          console.log(list)
           return list.student.id !== action.payload.data.student
         })
       } else if (action.payload.data.is_active_request === false) {
         putinactiveRequstList = newInactivateRequestList.filter(list => {
-          console.log(list)
           return list.student.id !== action.payload.data.student
         })
       }
@@ -59,7 +55,6 @@ const financeAdminDashBoardReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.SWITCH_BRANCH_ADMIN : {
-      console.log('switchBranchAdminDatahhh', action.payload)
       return {
         ...state,
         switchBranchAdminData: action.payload.data

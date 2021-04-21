@@ -25,8 +25,6 @@ const ViewMoreDailyDairyCard = ({
   const { setAlert } = useContext(AlertNotificationContext);
   //const sectionId = viewMoreData.section[0].id ?? '';
   //const gradeId =  viewMoreData.grade.id ?? 0;
-  console.log(grade +" === "+ section);
-  console.log(viewMoreData.grade);
   const handleBulkDownload = () => {
     const formData = new FormData();
     // formData.append('branch',[5]);
@@ -59,7 +57,6 @@ const ViewMoreDailyDairyCard = ({
       });
   };
   // const pic=viewMoreData?.media?.map(a=>a)
-  console.log(viewMoreData, '=====');
   const pic=viewMoreData?.documents?.map(a=>a)
 
   return (

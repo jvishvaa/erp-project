@@ -46,7 +46,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -58,7 +57,6 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
-
 class NonRTEStudentDetailsFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -92,7 +90,6 @@ class NonRTEStudentDetailsFormAcc extends Component {
   //   console.log('received props', prevProps)
   // }
   componentWillReceiveProps (nextProps) {
-    console.log('===received props', nextProps.studentDetailsForAdmission)
     if (nextProps.studentDetailsForAdmission) {
       const newstudentDetails = { ...this.state.studentDetails }
       newstudentDetails['dateOfBir'] = nextProps.studentDetailsForAdmission.date_of_birth ? nextProps.studentDetailsForAdmission.date_of_birth : null
@@ -108,7 +105,7 @@ class NonRTEStudentDetailsFormAcc extends Component {
 
       if (nextProps.studentDetailsForAdmission && nextProps.studentDetailsForAdmission.error && nextProps.studentDetailsForAdmission.error.length) {
         this.setState({
-          showModal: true,
+          showModal: false,
           studentDetails: newstudentDetails
         })
       } else {
@@ -121,15 +118,13 @@ class NonRTEStudentDetailsFormAcc extends Component {
 
   componentDidUpdate (prevProps, prevState) {
     this.props.getStudentDetail(this.state.studentDetails)
-    console.log('prev prop and next: ', prevProps, prevState)
     if (prevProps.studentDetailsForAdmission && prevProps.studentDetailsForAdmission.opting_class && !this.props.sectionList.length) {
-      this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, this.state.studentDetails.class.value, moduleId)
+      this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, this.state.studentDetails.class.value, moduleId, this.props.branch)
     }
   }
 
   componentDidMount () {
-    console.log('alertttt', this.props.alert)
-    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId)
+    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId, this.props.branch, this.state.studentDetails.academicyear)
     this.props.fetchClassGroup(this.props.alert, this.props.user)
   }
 
@@ -156,7 +151,6 @@ class NonRTEStudentDetailsFormAcc extends Component {
   }
 
   studentDetailsDropdonHandler= (event, name) => {
-    console.log('student detail handler', event, name)
     const newstudentDetails = { ...this.state.studentDetails }
     switch (name) {
       case 'academicyear': {
@@ -528,9 +522,9 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchGradeList: (alert, user, moduleId) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId })),
+  fetchGradeList: (alert, user, moduleId, branch, session) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch, session })),
   fetchClassGroup: (alert, user) => dispatch(actionTypes.fetchClassGroup({ alert, user })),
-  fetchAllSectionsPerGrade: (session, alert, user, gradeId, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, moduleId }))
+  fetchAllSectionsPerGrade: (session, alert, user, gradeId, moduleId, branch) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, moduleId, branch }))
 
 })
 export default connect(

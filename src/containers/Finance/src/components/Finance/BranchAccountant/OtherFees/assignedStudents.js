@@ -21,7 +21,6 @@ class UnassignedStudents extends Component {
       page: 0,
     rowsPerPage: 10
     }
-    console.log(this.state)
   }
   componentDidMount () {
     if (
@@ -37,7 +36,9 @@ class UnassignedStudents extends Component {
         this.props.sectionId,
         'assigned',
         this.props.alert,
-        this.props.user
+        this.props.user,
+        this.props.moduleId,
+        this.props.branchId
       )
     } else {
       this.props.alert.warning('Please fill All madatory Filled')
@@ -52,9 +53,7 @@ class UnassignedStudents extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('------nextprops----------', nextProps)
     if (this.props.studentLists !== nextProps.studentLists) {
-      console.log('Yaaaa1')
       const checked = {}
       nextProps.studentLists.forEach(element => {
         checked[element.id] = false
@@ -63,12 +62,10 @@ class UnassignedStudents extends Component {
         isChecked: checked,
         due_date: nextProps.dueDate
       }, () => {
-        console.log('---state--------', this.state.due_date)
-        console.log('-----props', this.props.dueDate)
+
       })
     }
     // if (this.props.dueDate !== nextProps.dueDate) {
-    //   console.log('yaaaa2')
     //   this.setState({ due_date: this.props.dueDate })
     // }
   }
@@ -85,7 +82,7 @@ class UnassignedStudents extends Component {
     if (this.props.getState && (sessionId !== prevProps.sessionId ||
       otherFeeId !== prevProps.otherFeeId ||
       gradeId !== prevProps.gradeId || sectionId !== prevProps.sectionId)) {
-      this.props.fetchStudentList(sessionId, otherFeeId, gradeId, sectionId, 'assigned', alert, user)
+      this.props.fetchStudentList(sessionId, otherFeeId, gradeId, sectionId, 'assigned', alert, user, this.props.moduleId, this.props.branchId)
     }
   }
   handleChangePage = (event, newPage) => {
@@ -154,7 +151,6 @@ class UnassignedStudents extends Component {
       isChecked: checked,
       selectAll: !this.state.selectAll
     }, () => {
-      console.log('handler fuction', isChecked)
     })
   }
 
@@ -168,14 +164,12 @@ class UnassignedStudents extends Component {
       other_fee: this.props.otherFeeId,
       academic_year: this.props.sessionId,
       grade: this.props.gradeId,
-      section: this.props.sectionId
+      section: this.props.sectionId,
+      branch_id: this.props.branchId
     }
-    console.log('-------------data--------------', data)
     this.setState({
       rowUnchecked: uncheckedRowId
     }, () => {
-      console.log('-checked-------------', this.state.rowUnchecked)
-      console.log('-row-------------', uncheckedRowId)
       if (this.state.rowUnchecked.length < 1) {
         this.props.alert.warning('Unassign Students')
         return false
@@ -188,8 +182,6 @@ class UnassignedStudents extends Component {
     // })
   }
   render () {
-    // console.log('------------------is misc--------', this.props.isMisc)
-    // console.log(this.state)
     // let viewTable = null
     // if (this.props.studentLists) {
     //   viewTable = (<ReactTable
@@ -336,7 +328,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchStudentList: (session, otherFeeId, grade, section, type, alert, user) => dispatch(actionTypes.assignAccoutantOtherFees({ session, otherFeeId, grade, section, type, alert, user })),
+  fetchStudentList: (session, otherFeeId, grade, section, type, alert, user, moduleId, branchId) => dispatch(actionTypes.assignAccoutantOtherFees({ session, otherFeeId, grade, section, type, alert, user, moduleId, branchId })),
   deleteOtherFees: (data, alert, user) => dispatch(actionTypes.deleteOtherFeeForAssigned({ data, alert, user }))
 })
 

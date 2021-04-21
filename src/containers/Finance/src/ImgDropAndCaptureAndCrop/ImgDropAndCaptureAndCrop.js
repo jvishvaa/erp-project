@@ -68,7 +68,6 @@ class ImgDropAndCaptureAndCrop extends Component {
         Object.assign(currentFile, { preview: URL.createObjectURL(currentFile) })
         const myFileItemReader = new FileReader()
         myFileItemReader.addEventListener('load', () => {
-          // console.log(myFileItemReader.result)
           const myResult = myFileItemReader.result
           this.setState({
             imgSrc: myResult,
@@ -83,11 +82,8 @@ class ImgDropAndCaptureAndCrop extends Component {
   }
 
   handleImageLoaded = (image) => {
-    // console.log(image)
   }
   handleOnCropChange = (crop) => {
-    // eslint-disable-next-line no-debugger
-    //   debugger
     this.setState({ crop: {
       ...crop
       // width: 500,
@@ -95,7 +91,6 @@ class ImgDropAndCaptureAndCrop extends Component {
     } })
   }
   handleOnCropComplete = (crop, pixelCrop) => {
-    // console.log(crop, pixelCrop)
     const canvasRef = this.imagePreviewCanvasRef.current
     const { imgSrc } = this.state
     //   image64toCanvasRef(canvasRef, imgSrc, pixelCrop)
@@ -118,7 +113,6 @@ class ImgDropAndCaptureAndCrop extends Component {
 
       // file to be uploaded
       const myNewCroppedFile = base64StringtoFile(imageData64, myFilename)
-      console.log(myNewCroppedFile)
       // download file
       downloadBase64File(imageData64, myFilename)
       // this.handleClearToDefault()
@@ -169,7 +163,6 @@ class ImgDropAndCaptureAndCrop extends Component {
   }
 
   handleFileSelect = event => {
-    // console.log(event)
     const files = event.target.files
     if (files && files.length > 0) {
       const isVerified = this.verifyFile(files)
@@ -178,7 +171,6 @@ class ImgDropAndCaptureAndCrop extends Component {
         const currentFile = files[0]
         const myFileItemReader = new FileReader()
         myFileItemReader.addEventListener('load', () => {
-          // console.log(myFileItemReader.result)
           const myResult = myFileItemReader.result
           this.setState({
             imgSrc: myResult,
@@ -216,7 +208,6 @@ class ImgDropAndCaptureAndCrop extends Component {
   }
   render () {
     const { imgSrc } = this.state
-    console.log(this.state, 'mk')
     return (
       <div>
         {/* <h1>Drop and Crop</h1> */}

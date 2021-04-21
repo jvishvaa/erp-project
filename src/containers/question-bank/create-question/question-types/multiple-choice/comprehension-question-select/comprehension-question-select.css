@@ -1,0 +1,61 @@
+.modalForComprehension .MuiDialog-container .MuiPaper-elevation24 {
+  width: 25%;
+  height: 50%;
+}
+
+.modalForComprehension .MuiPaper-rounded {
+  border: 1px solid #949394;
+  border-radius: 10px;
+}
+
+.closeIconInModal {
+  margin-left: auto;
+  margin-right: 2%;
+}
+
+.closeIconInModal .MuiIconButton-root {
+  padding: 0;
+}
+
+.comprehensionModalButton.MuiButtonBase-root {
+  width: 105%;
+  text-transform: none;
+  font-size: 15px;
+  background: none;
+  border-radius: 0px;
+  border-bottom: 1px solid #ededed;
+  padding: 15px 10px;
+}
+
+.comprehensionModalButton .MuiButton-label {
+  color: #014b7e;
+}
+
+/* width */
+.comprehensionModalContent::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+.comprehensionModalContent::-webkit-scrollbar-track {
+  background: #fff;
+  border-radius: 10px;
+}
+
+/* Handle */
+.comprehensionModalContent::-webkit-scrollbar-thumb {
+  background: #949394;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.comprehensionModalContent::-webkit-scrollbar-thumb:hover {
+  background: #949090;
+}
+
+@media screen and (max-width: 768px) {
+  .modalForComprehension .MuiDialog-container .MuiPaper-elevation24 {
+    width: 75%;
+    height: 50%;
+  }
+}

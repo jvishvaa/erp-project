@@ -65,7 +65,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -92,7 +91,6 @@ const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downlo
   }, [])
 
   const handleAcademicyear = (e) => {
-    // console.log('acad years', e)
     setSession(e)
     // if (roleState === 'financeadmin') {
       fetchBranches(e.value, alert, user, moduleId)

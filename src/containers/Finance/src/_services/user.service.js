@@ -24,7 +24,6 @@ function login (username, password, webLink) {
           localStorage.setItem('user_profile', JSON.stringify({ personal_info: user.personal_info }))
           localStorage.setItem('parent_profile', JSON.stringify(user))
           localStorage.setItem('id_token', user.personal_info.token)
-          console.log(user)
           window.location.reload()
           return user.personal_info.token
         }

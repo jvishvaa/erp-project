@@ -40,7 +40,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -100,7 +99,6 @@ class PostDateCheque extends Component {
               this.setState({
                 moduleId: item.child_id
               })
-              console.log('id+', item.child_id)
             } else {
               // setModulePermision(false);
             }
@@ -115,14 +113,15 @@ class PostDateCheque extends Component {
   }
 
   handleAcademicyear = (e) => {
-    // console.log('acad years', this.props.session)
     this.setState({ session: e.value, sessionData: e })
     this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
   }
 
   gradeHandler = (e) => {
-    console.log(e.value)
-    this.setState({ gradeId: e.value })
+    this.setState({ 
+    gradeId: e.value,
+    gradeData: e
+    })
   }
 
   fromDateHandler = (e) => {
@@ -152,8 +151,8 @@ class PostDateCheque extends Component {
   }
 
   pdcHandler = () => {
-    if (this.state.session && this.state.gradeId && this.state.fromDate && this.state.toDate && this.props.selectedBranches) {
-      this.props.fetchPdc(this.state.session, this.state.gradeId, this.state.fromDate, this.state.toDate, this.props.selectedBranches && this.props.selectedBranches.value, this.props.alert, this.props.user)
+    if (this.state.session && this.state.gradeData && this.state.fromDate && this.state.toDate && this.state.selectedBranches) {
+      this.props.fetchPdc(this.state.session, this.state.gradeId, this.state.fromDate, this.state.toDate, this.state.selectedBranches && this.state.selectedBranches.value, this.props.alert, this.props.user)
     } else {
       this.props.alert.warning('Fill all the Fields!')
     }
@@ -167,7 +166,7 @@ class PostDateCheque extends Component {
     this.setState({ pdcShowModal: false })
   }
   changehandlerbranch = (e) => {
-    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    this.props.fetchGrades(this.state.session, this.props.alert, this.props.user, moduleId, e.value)
     // this.props.fetchGrades(this.state.session, this.props.alert, this.props.user, moduleId, e.value)
     this.setState({ selectedBranches: e})
   }
@@ -252,7 +251,7 @@ class PostDateCheque extends Component {
             <label>Branch*</label>
             <Select
               placeholder='Select Branch'
-              value={this.state.branchData}
+              value={this.state.selectedBranches}
               options={
                 this.props.branches.length
                   ? this.props.branches.map(branch => ({
@@ -268,10 +267,10 @@ class PostDateCheque extends Component {
             <label>Grade*</label>
             <Select
               placeholder='Select Grade'
-              // value={this.state.gradeData}
+              value={this.state.gradeData}
               options={
-                this.props.gradeData
-                  ? this.props.gradeData.map(grades => ({
+                this.props.gradeList
+                  ? this.props.gradeList.map(grades => ({
                     value: grades.grade.id,
                     label: grades.grade.grade
                   }))
@@ -366,15 +365,16 @@ class PostDateCheque extends Component {
 const mapStateToProps = state => ({
   user: state.authentication.user,
   session: state.academicSession.items,
-  gradeData: state.finance.accountantReducer.pdc.gradeData,
+  // gradeData: state.finance.accountantReducer.pdc.gradeData,
   pdcDetails: state.finance.accountantReducer.pdc.pdcList,
   dataLoading: state.finance.common.dataLoader,
   branches: state.finance.common.branchPerSession,
+  gradeList: state.finance.common.gradeList,
 })
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchGrades: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
+  fetchGrades: (session, alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ session, alert, user, moduleId, branch })),
   // fetchGrades: (session, alert, user, moduleId, branch) => dispatch(actionTypes.fetchGrades({ session, alert, user, moduleId, branch })),
   fetchPdc: (session, grade, fromDate, toDate, branch, alert, user) => dispatch(actionTypes.fetchPdc({ session, grade, fromDate, toDate, branch, alert, user })),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId }))

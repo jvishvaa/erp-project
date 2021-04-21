@@ -107,7 +107,6 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
     setShowTab(false)
   }
   const gradeHandler = (e) => {
-    console.log(e.value)
     setGradeData(e)
     setShowTab(false)
     // setGradeId(e.value)
@@ -162,7 +161,6 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
       }
     })
     setSingleErpAllcoupon(arr)
-    console.log('allcoupon', arr)
     setStudentdetailModal(true)
   }
   const hideDetailsModal = () => {
@@ -254,7 +252,6 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
   }
 
   const erpSearchHandler = (e) => {
-    console.log('studenrList', erpList)
     const filteredArr = erpList && erpList.filter(stu => (stu.student && +stu.student.erp.includes(+e.target.value)) || (stu.erp && +stu.erp.includes(+e.target.value)))
     setErpSearchValue(e.target.value)
     setStudentErpList(filteredArr)
@@ -453,7 +450,6 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
   }
   const saveMultiChangeHandler = (e) => {
     let rowId = []
-    console.log('ischecked', isChecked)
     Object.keys(isChecked).forEach((key) => {
       if (isChecked[key]) {
         rowId.push(key)
@@ -482,9 +478,7 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
         )
       }
     })
-    console.log('the erpArrrr', erpArr)
-    console.log('rowid', rowId)
-    console.log('erplist', erpList)
+ 
     if (coupon && erpArr && erpArr.length > 0 && applicableTo) {
       const data = {
         coupon: coupon.value,
@@ -494,7 +488,6 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
         grade_id: gradeData && gradeData.value,
         applicable_to: applicableTo && applicableTo.value
       }
-      console.log('data++', data)
       couponAssignedToStudent(data, alert, user)
       listCoupon(alert, user)
       setCheckedAll(false)

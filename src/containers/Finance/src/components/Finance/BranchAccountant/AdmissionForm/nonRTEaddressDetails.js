@@ -44,7 +44,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -72,14 +71,11 @@ class NonRTEAddressDetailsFormAcc extends Component {
   }
 
   componentDidUpdate () {
-    console.log('DID UPDATED', this.state.addressDetails)
     this.props.getAddressDetail(this.state.addressDetails)
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('===received props', nextProps.studentDetailsForAdmission)
     if (nextProps.studentDetailsForAdmission) {
-      console.log('this is printed chandan')
       const newaddressDetails = { ...this.state.addressDetails }
       newaddressDetails['tempAdd'] = nextProps.studentDetailsForAdmission.parent.address ? nextProps.studentDetailsForAdmission.parent.address : null
       this.setState({
@@ -89,17 +85,13 @@ class NonRTEAddressDetailsFormAcc extends Component {
 
   handleCheckbox= (event, name) => {
     const newaddressDetails = { ...this.state.addressDetails }
-    console.log(event, name)
-    console.log(event.target.value)
     if (event.target.value !== 'true') {
-      console.log('printed')
       newaddressDetails['perAdd'] = newaddressDetails['tempAdd']
       newaddressDetails['perzip'] = newaddressDetails['tempzip']
       this.setState({
         addressDetails: newaddressDetails
       })
     } else if (event.target.value !== 'false') {
-      console.log('else printed')
       newaddressDetails['perAdd'] = ''
       newaddressDetails['perzip'] = ''
       this.setState({

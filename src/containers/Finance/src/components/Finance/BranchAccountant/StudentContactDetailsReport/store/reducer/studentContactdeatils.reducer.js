@@ -7,7 +7,6 @@
 // const studentContactDetailsReportsReducer = (state = initialState, action) => {
 //   switch (action.type) {
 //     case actionTypes.FETCH_STUDENT_DETAIL : {
-//       console.log('qwerty', action.payload.data)
 //       return {
 //         ...state,
 //         contactDeatils: action.payload.data

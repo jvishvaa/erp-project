@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -139,7 +139,6 @@ const CoordinatorTeacherHomework = withRouter(
 
     const handleSelectCol = (col) => {
       const { homeworkId } = col;
-      console.log('homework id', homeworkId);
       fetchStudentLists(homeworkId);
       setSelectedCol(col);
       onSetSelectedHomework(col);
@@ -370,12 +369,10 @@ const mapDispatchToProps = (dispatch) => ({
 
 export default connect(mapStateToProps, mapDispatchToProps)(CoordinatorTeacherHomework);
 
-=============================================================================================================
-
 
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -520,7 +517,6 @@ const CoordinatorTeacherHomework = withRouter(
 
     const handleSelectCol = (col) => {
       const { homeworkId } = col;
-      console.log('homework id', homeworkId);
       fetchStudentLists(homeworkId);
       setSelectedCol(col);
       onSetSelectedHomework(col);
@@ -571,7 +567,6 @@ const CoordinatorTeacherHomework = withRouter(
         );
         // const resultOptions = [];
         if (result.status === 200) {
-          // console.log(result.data.result[0],"jjjjjjjjjjjjjjjj")
           setSelectedCoTeacherOpt(result.data.result);          
           setselectedCoTeacherOptValue(result.data.result[0]);
           getTeacherHomeworkDetails(2, startDate, endDate);

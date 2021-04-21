@@ -157,7 +157,6 @@ class AddItems extends Component {
   }
 
   gradeChangeHandler = (e) => {
-    console.log(e)
     this.setState({
       currentGrade: {
         id: e.value,
@@ -254,15 +253,12 @@ class AddItems extends Component {
   }
 
   uploadFileChangeHandler = (e) => {
-    console.log('INside Change')
     const name = this.fileInputRef.current.value.split(/\\|\//).pop()
     const truncated = name.length > 20
       ? name.substr(name.length - 20)
       : name
     const formData = new FormData()
     formData.append('Details', this.fileInputRef.current.files[0])
-    console.log('file')
-    console.log(formData)
     this.setState({
       uploadFileName: truncated,
       uploadFile: formData
@@ -270,8 +266,6 @@ class AddItems extends Component {
   }
 
   browseButtonClickHandler = () => {
-    console.log('Refffff')
-    console.log(this.fileInputRef.current)
     this.fileInputRef.current.click()
   }
 
@@ -461,7 +455,6 @@ class AddItems extends Component {
   }
 
   bulkItemShowHandler = (e) => {
-    console.log('switch value: ', e.target.value)
     this.setState({
       showBulk: e.target.checked
     })
@@ -476,7 +469,6 @@ class AddItems extends Component {
     form.append('grade', currentGrade.id)
     form.append('file', bulkFile)
     for (var key of form.entries()) {
-      console.log(key[0] + ', ' + key[1])
     }
     this.props.bulkItemsUpload(form, this.props.alert, this.props.user)
     this.hideEntryModal()

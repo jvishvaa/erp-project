@@ -31,8 +31,8 @@ class CurrFeeTypeAcc extends Component {
   }
 
   componentDidMount () {
-    this.props.fetchMiscFeeList(this.props.session, this.props.alert, this.props.user)
-    this.props.fetchStudentMiscDetails(this.props.session, this.props.erp, this.props.alert, this.props.user)
+    this.props.fetchMiscFeeList(this.props.session, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
+    this.props.fetchStudentMiscDetails(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -50,7 +50,6 @@ class CurrFeeTypeAcc extends Component {
     const { erp, feeType, feeTypeAmount, dueDate } = this.state
     if (!erp || !feeType || !feeTypeAmount || !dueDate) {
       if (nextProps.studentMiscFee && nextProps.studentMiscFee.length > 0) {
-        console.log('inside 1st props eill')
         nextProps.studentMiscFee.map((student) => {
           this.setState({
             feeType: {
@@ -66,7 +65,6 @@ class CurrFeeTypeAcc extends Component {
     }
 
     if (nextProps.miscDetails && Object.keys(nextProps.miscDetails)) {
-      console.log('inside 2nd will receive props: ', nextProps.miscDetails)
       this.setState({
         feeType: {
           label: nextProps.miscDetails.fee_type_name ? nextProps.miscDetails.fee_type_name : '',
@@ -80,11 +78,10 @@ class CurrFeeTypeAcc extends Component {
   }
 
   feeTypeHandler = (e) => {
-    console.log('feetType:', e)
     this.setState({
       feeType: e
     }, () => {
-      this.props.fetchMiscDetails(this.props.session, e.value, this.props.alert, this.props.user)
+      this.props.fetchMiscDetails(this.props.session, e.value, this.props.alert, this.props.user, this.props.branchId)
     })
   }
 
@@ -122,11 +119,12 @@ class CurrFeeTypeAcc extends Component {
     const { erp, feeType, feeTypeAmount, dueDate, changeType } = this.state
     let data = {
       session_year: this.props.session,
-      erp_code: +erp,
+      erp_code: this.props.erp,
       id: feeType.value,
       amount: +feeTypeAmount || 0,
       due_date: dueDate,
-      update: changeType && changeType.value ? changeType.value : ''
+      update: changeType && changeType.value ? changeType.value : '',
+      branch_id: this.props.branchId
     }
     this.props.saveStudentMiscType(data, this.props.alert, this.props.user)
     // this.props.fetchStudentMiscDetails(this.props.session, this.props.erp, this.props.alert, this.props.user)
@@ -251,10 +249,10 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchMiscFeeList: (session, alert, user) => dispatch(actionTypes.fetchMiscFeeList({ session, alert, user })),
-  fetchStudentMiscDetails: (session, erp, alert, user) => dispatch(actionTypes.fetchStudentMiscDetails({ session, erp, alert, user })),
+  fetchMiscFeeList: (session, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchMiscFeeList({ session, alert, user, moduleId, branchId })),
+  fetchStudentMiscDetails: (session, erp, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchStudentMiscDetails({ session, erp, alert, user, moduleId, branchId })),
   saveStudentMiscType: (data, alert, user) => dispatch(actionTypes.saveStudentMiscType({ data, alert, user })),
-  fetchMiscDetails: (session, miscId, alert, user) => dispatch(actionTypes.fetchMiscDetails({ session, miscId, alert, user }))
+  fetchMiscDetails: (session, miscId, alert, user, branch) => dispatch(actionTypes.fetchMiscDetails({ session, miscId, alert, user, branch }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(CurrFeeTypeAcc)))

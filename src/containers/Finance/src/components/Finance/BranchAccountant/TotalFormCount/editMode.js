@@ -190,7 +190,6 @@ const EditMode = ({
   }, [modeDetails])
 
   useEffect(() => {
-    console.log('the States: ', ifsc, micr)
   })
 
   const changeSearchByHandler = (e) => {
@@ -208,15 +207,12 @@ const EditMode = ({
 
   const changeIfscHandler = (e) => {
     setIfsc(e.target.value)
-    console.log('Value', e.target.value)
     if (+searchBy === 1 && e.target.value.length === 11) {
-      console.log('Inside IFSC')
       fetchIfsc(e.target.value, alert, user)
     }
   }
 
   const editClickHandler = () => {
-    console.log('Insiode Edit')
     if (+changedMode === 2 &&
       (!changedChequeDate ||
         !changedChequeNo ||

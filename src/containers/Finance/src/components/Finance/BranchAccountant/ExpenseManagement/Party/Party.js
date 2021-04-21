@@ -24,7 +24,37 @@ import {
 import * as actionTypes from '../../../store/actions'
 import styles from './party.styles'
 import Layout from '../../../../../../../Layout'
+import Select from 'react-select'
 // import { Modal, CircularProgress } from '../../../../../ui'
+
+
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Expanse Management' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Petty Cash Expense') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 
 const initialState = {
   editName: null,
@@ -32,7 +62,11 @@ const initialState = {
   editGst: null,
   editPan: null,
   editAddress: null,
-  editId: null
+  editId: null,
+  session: {
+    label: '2021-22',
+    value: '2021-22'
+  }
 }
 
 const editReducer = (state, action) => {
@@ -95,7 +129,7 @@ const editReducer = (state, action) => {
   }
 }
 
-const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
+const Party = ({ user, alert, fetchPartyList, classes, sessions, fetchBranches, handleAcademicyear, changehandlerbranch, branches, selectedbranchIds, ...props }) => {
   const [showAddModal, setShowAddModal] = useState(false)
   const [name, setName] = useState(null)
   const [phone, setPhone] = useState(null)
@@ -107,11 +141,27 @@ const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteId, setDeleteId] = useState(null)
-
+  const [sessionData, setSessionData] = useState('')
+  const [selectedBranches, setSelectedBranches] = useState('')
+  const [session, setSession] = useState('')
   useEffect(() => {
-    fetchPartyList(user, alert)
+    // fetchPartyList(user, alert)
   }, [fetchPartyList, user, alert])
 
+  handleAcademicyear = (e) => {
+    setSessionData(e)
+    setSession(e.value)
+    // this.setState({ session: e.value, sessionData: e}, () => {
+    fetchBranches(e.value, alert, user, moduleId)
+    // })
+  }
+
+  changehandlerbranch = (e) => {
+    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session)
+    // this.setState({ selectedBranches: e})
+    setSelectedBranches(e)
+   fetchPartyList(user, alert, session, e?.value)
+  }
   let circularProgress = null
   if (props.dataLoading) {
     circularProgress = (
@@ -133,7 +183,7 @@ const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
       alert.warning('Phone Number should be of 10 Digits')
       return
     }
-    props.saveParty(name, phone, gst, pan, address, user, alert)
+    props.saveParty(name, phone, gst, pan, address, user, alert, selectedBranches && selectedBranches.value)
     setShowAddModal(false)
   }
 
@@ -434,6 +484,42 @@ const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
   return (
     <Layout>
     <React.Fragment>
+    <Grid container spacing={3} style={{ padding: 15 }}>
+      <Grid item xs='3'>
+            <label>Academic Year*</label>
+            <Select
+              placeholder='Select Year'
+              value={sessionData ? sessionData : ''}
+              options={
+                sessions
+                  ? sessions && sessions.map(session => ({
+                    value: session?.session_year,
+                    label: session?.session_year
+                  }))
+                  : []
+              }
+              onChange={handleAcademicyear}
+            />
+          </Grid>
+          <Grid item xs='3'>
+            <label>Branch*</label>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={selectedBranches ? selectedBranches : ''}
+              options={
+                selectedbranchIds !== 'all' ? branches.length && branches
+                  ? branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+
+              onChange={changehandlerbranch}
+            />
+          </Grid>
+          </Grid>
   <Grid container spacing={3} style={{ padding: 15 }}>
     <Grid item xs ='10'>
 
@@ -496,14 +582,18 @@ const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
 const mapStateToProps = (state) => ({
   user: state.authentication.user,
   partyList: state.finance.accountantReducer.expenseMngmtAcc.party.partyList,
-  dataLoading: state.finance.common.dataLoader
+  dataLoading: state.finance.common.dataLoader,
+  branches: state.finance.common.branchPerSession,
+  sessions: state.finance.common.financialYear,
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchPartyList: (user, alert) => dispatch(actionTypes.partyList({ user, alert })),
-  saveParty: (name, contact, gst, pan, address, user, alert) => dispatch(actionTypes.saveParty({ name, contact, gst, pan, address, user, alert })),
+  loadFinancialYear: dispatch(actionTypes.fetchFinancialYear(moduleId)),
+  fetchPartyList: (user, alert, session, branch) => dispatch(actionTypes.partyList({ user, alert, session, branch })),
+  saveParty: (name, contact, gst, pan, address, user, alert, branch) => dispatch(actionTypes.saveParty({ name, contact, gst, pan, address, user, alert, branch })),
   editParty: (id, name, contact, gst, pan, address, user, alert) => dispatch(actionTypes.editParty({ id, name, contact, gst, pan, address, user, alert })),
-  deleteParty: (id, user, alert) => dispatch(actionTypes.deleteParty({ id, user, alert }))
+  deleteParty: (id, user, alert) => dispatch(actionTypes.deleteParty({ id, user, alert })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Party))

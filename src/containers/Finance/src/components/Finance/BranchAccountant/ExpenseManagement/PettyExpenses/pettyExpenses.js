@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { Button, Grid } from '@material-ui/core'
 import { Link } from 'react-router-dom'
+import Select from 'react-select'
 
 import {
   Typography,
@@ -30,7 +31,7 @@ let moduleId
 if (NavData && NavData.length) {
   NavData.forEach((item) => {
     if (
-      item.parent_modules === 'Expense Management' &&
+      item.parent_modules === 'Expanse Management' &&
       item.child_module &&
       item.child_module.length > 0
     ) {
@@ -39,7 +40,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -63,18 +63,33 @@ class PettyExpenses extends Component {
     selectedSession: null
   }
   componentDidMount () {
-    this.props.fetchPettyCashAcc(this.props.user)
-    this.props.listCashOpeningBalance(this.props.user, this.props.alert)
+    // this.props.fetchPettyCashAcc(this.props.user)
+    // this.props.listCashOpeningBalance(this.props.user, this.props.alert)
   }
 
   componentDidUpdate (prevProps, prevState) {
     if (prevProps.user !== this.props.user) {
-      this.props.fetchPettyCashAcc(this.props.user)
+      this.props.fetchPettyCashAcc(this.props.user, this.state.session, this.state.selectedBranches?.value)
     }
   }
 
   makeEntryClickHandler = () => {
-    this.props.history.push('/finance/Expanse Management/MakeEntry')
+    // this.props.history.push('/finance/Expanse Management/MakeEntry')
+    if (this.state.session &&  this.state.selectedBranches) {
+    this.props.history.push({
+      pathname: '/finance/Expanse Management/MakeEntry',
+      state: {
+        branch: this.state.selectedBranches && this.state.selectedBranches.value
+      }
+    })
+  } else {
+     this.props.alert.warning('Please Select Year and Branch!')
+  }
+    let data = {
+      branch:this.state.selectedBranches && this.state.selectedBranches.value,
+      moduleId:moduleId
+    }
+    this.props.sendData(data, this.props.alert, this.props.user)
   }
 
   bankAccClickHandler = (id) => {
@@ -92,11 +107,29 @@ class PettyExpenses extends Component {
   }
 
   ledgerReportClickHandler = () => {
+    if (this.state.session &&  this.state.selectedBranches) {
     this.props.history.push('/finance/Expanse Management/LedgerReport')
+    let data = {
+      branch:this.state.selectedBranches && this.state.selectedBranches.value,
+      moduleId:moduleId
+    }
+    this.props.sendData(data, this.props.alert, this.props.user)
+  } else {
+    this.props.alert.warning('Please Select Year and Branch!')
+ }
   }
 
   reportClickHandler = () => {
+    if (this.state.session &&  this.state.selectedBranches) {
     this.props.history.push('/finance/Expanse Management/FinancialLedgerReport')
+    let data = {
+      branch:this.state.selectedBranches && this.state.selectedBranches.value,
+      moduleId:moduleId
+    }
+    this.props.sendData(data, this.props.alert, this.props.user) 
+  } else {
+    this.props.alert.warning('Please Select Year and Branch!')
+ }
   }
 
   addMoneyHandler = (e) => {
@@ -168,7 +201,8 @@ class PettyExpenses extends Component {
       approvedBy,
       date,
       user,
-      alert
+      alert,
+      this.state.selectedBranches  && this.state.selectedBranches.value
     )
 
     this.setState({
@@ -178,9 +212,26 @@ class PettyExpenses extends Component {
       chequeNo: null,
       approvedBy: null,
       date: null,
-      selectedSession: null
+      selectedSession: null,
+      selectedBranches: null,
+      session: '',
+      sessionData: ''
     })
   }
+
+  handleAcademicyear = (e) => {
+    this.setState({ session: e.value, sessionData: e}, () => {
+      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+    })
+  }
+
+  changehandlerbranch = (e) => {
+    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session)
+    this.setState({ selectedBranches: e})
+    this.props.fetchPettyCashAcc(this.props.user, this.state.session, e.value)
+    this.props.listCashOpeningBalance(this.props.user, this.props.alert, this.state.session, e.value)
+  }
+
 
   render () {
     let bankList = null
@@ -342,7 +393,43 @@ class PettyExpenses extends Component {
     }
     return (
       <Layout>
-      <div>
+      <Grid container spacing={3} style={{ padding: 15 }}>
+      <Grid item xs='3'>
+            <label>Academic Year*</label>
+            <Select
+              placeholder='Select Year'
+              value={this.state.sessionData ? this.state.sessionData : ''}
+              options={
+                this.props.session
+                  ? this.props.session && this.props.session.map(session => ({
+                    value: session?.session_year,
+                    label: session?.session_year
+                  }))
+                  : []
+              }
+              onChange={this.handleAcademicyear}
+            />
+          </Grid>
+          <Grid item xs='3'>
+            <label>Branch*</label>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+              options={
+                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+
+              onChange={this.changehandlerbranch}
+            />
+          </Grid>
+          </Grid>
+          <div>
         <Grid container spacing={3} style={{ padding: 15 }}>
             <Grid item xs='1'>
             </Grid>
@@ -398,14 +485,18 @@ const mapStateToProps = (state) => ({
   pettyCashAccounts: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.pettyCashAccounts,
   cashInHand: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.cashInHand,
   dataLoading: state.finance.common.dataLoader,
-  session: state.finance.common.financialYear
+  session: state.finance.common.financialYear,
+  // session: state.academicSession.items,
+  branches: state.finance.common.branchPerSession,
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchPettyCashAcc: (user) => dispatch(actionTypes.fetchPettyCashAcc({ user })),
+  fetchPettyCashAcc: (user, session, branch) => dispatch(actionTypes.fetchPettyCashAcc({ user, session, branch })),
   loadFinancialYear: dispatch(actionTypes.fetchFinancialYear(moduleId)),
-  listCashOpeningBalance: (user, alert) => dispatch(actionTypes.listCashOpeningBalance({ user, alert })),
-  saveCashWithdraw: (session, bank, amount, narration, chequeNo, approvedBy, date, user, alert) => dispatch(actionTypes.cashWithdraw({ session, bank, amount, narration, chequeNo, approvedBy, date, user, alert }))
+  listCashOpeningBalance: (user, alert, session, branch) => dispatch(actionTypes.listCashOpeningBalance({ user, alert, session, branch })),
+  saveCashWithdraw: (session, bank, amount, narration, chequeNo, approvedBy, date, user, alert, branch) => dispatch(actionTypes.cashWithdraw({ session, bank, amount, narration, chequeNo, approvedBy, date, user, alert, branch })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
+  sendData: (data, alert, user) => dispatch(actionTypes.sendingData({ data, alert, user})),
 })
 
 export default withRouter(connect(

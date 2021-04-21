@@ -31,7 +31,6 @@ class AddBanks extends Component {
   }
 
   componentDidMount () {
-    console.log('Add banks buds', this.props.currentSession)
   }
 
   bankTypeHandler = (event) => {

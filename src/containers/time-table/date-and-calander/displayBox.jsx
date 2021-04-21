@@ -6,8 +6,6 @@ import axiosInstance from '../../../config/axios';
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import moment from 'moment';
-import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import '../timetable.scss';
 const useStyles = makeStyles(() => ({
@@ -46,17 +44,6 @@ const DisplayBox = (props) => {
   const [MaterialRequired, setMaterialRequired] = useState(
     props.dataOpenChange.required_material
   );
-  const handleDateStartTimeChange = (time) => {
-    let dataTime = time.toString().slice(16, 21)
-    setStartTime(dataTime);
-    console.log(time.toString().slice(16, 21)
-    , 'starttime');
-  };
-  const handleDateEndTimeChange = (time) =>{
-    let dataTime = time.toString().slice(16, 21)
-    setEndTime(dataTime);
-
-  }
   const sendUpdatedData = () => {
     setOpenEditForm(true);
     if (!setMobileView) {
@@ -112,23 +99,7 @@ const DisplayBox = (props) => {
         </>
       ) : (
         <>
-          <div className='field-container' >
-          {/* <MuiPickersUtilsProvider variant='outlined' fullWidth utils={DateFnsUtils}>
-              <KeyboardTimePicker
-                margin='normal'
-                id='time-picker'
-                variant='outlined'
-                label='Start Time'
-                fullWidth
-                ampm={false}
-                value={startTime}
-                defaultValue={startTime}
-                onChange={handleDateStartTimeChange}
-                KeyboardButtonProps={{
-                  'aria-label': 'change time',
-                }}
-              />
-            </MuiPickersUtilsProvider> */}
+          <div className='field-container'>
             <TextField
               fullWidth
               label='Start Time'
@@ -142,24 +113,7 @@ const DisplayBox = (props) => {
               onChange={(e) => setStartTime(e.target.value)}
             />
           </div>
-          <div className='field-container' >
-          {/* <MuiPickersUtilsProvider variant='outlined' fullWidth utils={DateFnsUtils}>
-              <KeyboardTimePicker
-                margin='normal'
-                id='time-picker'
-                variant='outlined'
-                label='End Time'
-                fullWidth
-                helperText={null}
-                ampm={false}
-                value={endTime}
-                defaultValue={endTime}
-                onChange={handleDateEndTimeChange}
-                KeyboardButtonProps={{
-                  'aria-label': 'change time',
-                }}
-              />
-            </MuiPickersUtilsProvider> */}
+          <div className='field-container'>
             <TextField
               fullWidth
               label='End Time'
@@ -174,6 +128,32 @@ const DisplayBox = (props) => {
             />
           </div>
           <div className='field-container'>
+            {/* <Autocomplete
+              id='combo-box-demo'
+              size='samll'
+              fullWidth
+              // item={assignedTeacherName}
+              options={props.assignedTeacher}
+              // getItemValue={(item) => item?.name}
+              value={props.dataOpenChange.teacher_name.name || assignedTeacherName}
+              // defaultValue={
+              //   props.assignedTeacher &&
+              //   props.assignedTeacher.find(assignedTeacherName)
+              // }
+              getOptionLabel={(option) => option?.name}
+              style={{ width: '100%' }}
+              onChange={(event, option) => setAssignedTeacherID(option?.user_id)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  size='small'
+                  fullWidth
+                  label='Conducted By'
+                  // label={assignedTeacherName}
+                  variant='outlined'
+                />
+              )}
+            /> */}
             <Autocomplete
               style={{ width: '100%' }}
               size='small'

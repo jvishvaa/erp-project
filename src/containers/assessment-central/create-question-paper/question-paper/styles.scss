@@ -1,0 +1,167 @@
+@import '../../../../assets/styles/variables';
+.create-question-paper-container {
+  .create-container {
+    .header {
+      margin: 20px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .applied-filters {
+        display: flex;
+        align-items: center;
+        .filter {
+          color: $secondary-color;
+          font-size: 1.2rem;
+          font-weight: 550;
+        }
+        .dot {
+          background-color: $secondary-color;
+          margin: 0 10px;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+        }
+      }
+      .icon {
+        width: 30px;
+      }
+    }
+    .questions-paper-container {
+      padding: 10px 20px;
+      border: 1px solid #dbdbdb;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      .minimize-container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        .info {
+          color: $secondary-color;
+          margin-right: 5px;
+        }
+      }
+      .form-field {
+        margin: 20px 0;
+      }
+      .questions-container {
+        .questions-header {
+          color: $primary-color;
+          font-size: 1.2rem;
+        }
+        .questions-content {
+          .question-container {
+            .sections-container {
+              .section-container {
+                margin: 20px 0;
+                .section-header {
+                  display: flex;
+                  justify-content: space-between;
+                  padding: 20px 0;
+                  background-color: #f3f3f3;
+                  border-radius: 11px;
+                  .left {
+                    display: flex;
+                    align-items: center;
+                    .section-name {
+                      color: $secondary-color;
+                      font-size: 1.2rem;
+                      font-weight: 400;
+                    }
+                  }
+                }
+                .section-content {
+                  display: flex;
+                  flex-wrap: wrap;
+
+                  .selected-question-card {
+                    padding: 0.5rem 1rem;
+                    border: 1px solid #dbdbdb;
+                    border-radius: 10px;
+                    width: 500px;
+                    margin: 20px 10px;
+                    .selected-question-card-header {
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      .header-name {
+                        color: #ff6b6b;
+                        font-size: 1.1rem;
+                      }
+                    }
+                    .content {
+                      display: flex;
+                      .left {
+                        width: 50%;
+                        color: $secondary-color;
+                      }
+
+                      .right {
+                        width: 50%;
+                        display: flex;
+                        justify-content: space-evenly;
+                        width: 50%;
+                        .created {
+                          color: #168d00;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          .add-new {
+            border-radius: 10px;
+            margin: 20px 0;
+            padding: 10px 20px;
+            border: 1px solid #dbdbdb;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            .add-section-popup {
+              position: absolute;
+              width: 300px;
+              height: max-content;
+              right: 5px;
+              bottom: 0;
+              border: 1px solid $primary-color;
+              border-radius: 10px;
+              padding: 1rem;
+              background-color: #ffffff;
+              border-bottom: none;
+              border-bottom-left-radius: 0;
+              border-bottom-right-radius: 0;
+              div {
+                &:first-child {
+                  margin-bottom: 1rem;
+                }
+              }
+            }
+
+            .info {
+              color: $secondary-color;
+              font-size: 1.1rem;
+            }
+
+            .add-new-btn-container {
+              .action {
+                display: flex;
+                color: $primary-color;
+                font-size: 1.1rem;
+                align-items: center;
+                position: relative;
+              }
+            }
+          }
+        }
+      }
+      .submit-btn-conntainer {
+        display: flex;
+        button {
+          margin-right: 1rem;
+          min-width: 145px;
+        }
+      }
+    }
+  }
+}

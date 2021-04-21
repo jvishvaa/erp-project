@@ -59,7 +59,6 @@ export const sendBulkSms = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         payload.alert.warning('Unable to send sms')
       })
   }
@@ -92,7 +91,6 @@ export const fetchAllStuList = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         payload.alert.warning('Unable to send sms')
       })
   }
@@ -119,7 +117,6 @@ export const sendClassWiseSms = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        console.log(error)
         payload.alert.warning('Unable to send sms')
       })
   }
@@ -162,7 +159,6 @@ export const sendDefaulterSms = (payload) => {
       }
     }).then(res => {
       payload.alert.success('SMS Sent Successfully')
-      console.log(res)
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       dispatch(actionTypes.dataLoaded())

@@ -28,7 +28,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -91,7 +90,6 @@ class ReceiptBookAdm extends Component {
       // }
     }
     handleAcademicyear = (e) => {
-      console.log(e)
       this.setState({ session: e.value, selectedBranches: [], sessionData: e }, () => {
         // if (this.state.role === 'financeaccountant') {
         //   // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
@@ -119,7 +117,6 @@ class ReceiptBookAdm extends Component {
           branchId: allBranchIds,
           selectedTypes: []
         }, () => {
-          console.log(this.state.selectedBranches)
           this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.props.alert, this.props.user)
         })
       } else {
@@ -131,8 +128,7 @@ class ReceiptBookAdm extends Component {
           branchId: ids,
           selectedTypes: []
         }, () => {
-          console.log(this.state.selectedBranches)
-          console.log(this.state.branchId)
+       
           this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.props.alert, this.props.user)
         })
       }
@@ -189,8 +185,7 @@ class ReceiptBookAdm extends Component {
         this.setState({
           paymentModeId: [1, 2, 3, 4], paymentModeData: allPayment
         }, () => {
-          console.log('-all payment-----------', this.state.paymentModeId)
-          console.log('-all payment-----------', this.state.paymentModeData)
+       
         })
       } else {
         e && e.forEach(payment => {
@@ -200,7 +195,6 @@ class ReceiptBookAdm extends Component {
       }
     }
     getReport = () => {
-      console.log('I am Called rookreportadm: ', this.state.feeAccId)
       if (!this.state.session || !this.state.endDate ||
         !this.state.startDate || !this.state.feeAccId
       ) {
@@ -227,35 +221,9 @@ class ReceiptBookAdm extends Component {
           to_date: this.state.endDate
         }
       // }
-      console.log(data)
       this.props.downloadReports('AdmReceiptBook.xlsx', urls.DownloadAdmRecptBook, data, this.props.alert, this.props.user)
     }
     render () {
-      let selectBranch = null
-      const { role } = this.state
-      // if (role === 'financeadmin') {
-        selectBranch = (
-          <Grid item xs='3' >
-            <label>Branch*</label>
-            <Select
-              isMulti
-              placeholder='Select Branch'
-              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
-              options={
-                // this.state.selectedBranches && this.state.selectedBranches.value !== 'all' ? this.props.branches.length && this.props.branches
-                this.props.branches ? this.props.branches && this.props.branches.length && this.props.branches
-                  ? this.props.branches.map(branch => ({
-                    value: branch.branch ? branch.branch.id : '',
-                    label: branch.branch ? branch.branch.branch_name : ''
-                  }))
-                  : [] : []
-              }
-
-              onChange={this.changehandlerbranch}
-            />
-          </Grid>
-        )
-      // }
       return (
         <Layout>
         <React.Fragment>
@@ -272,7 +240,25 @@ class ReceiptBookAdm extends Component {
                 onChange={this.handleAcademicyear}
               />
             </Grid>
-            {selectBranch}
+            <Grid item xs='3' >
+              <label>Branch*</label>
+              <Select
+                isMulti
+                placeholder='Select Branch'
+                value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+                options={
+                  // this.state.selectedBranches && this.state.selectedBranches.value !== 'all' ? this.props.branches.length && this.props.branches
+                  this.props.branches ? this.props.branches && this.props.branches.length && this.props.branches
+                    ? this.props.branches.map(branch => ({
+                      value: branch.branch ? branch.branch.id : '',
+                      label: branch.branch ? branch.branch.branch_name : ''
+                    }))
+                    : [] : []
+                }
+
+                onChange={this.changehandlerbranch}
+              />
+            </Grid>
             <Grid item xs={3}>
               <label>Fee Account*</label>
               <Select

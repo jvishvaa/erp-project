@@ -14,12 +14,11 @@ export const getStudentInfo = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.GetStudentInfoRegistration + '?application_number=' + payload.data + '&academic_year=' + payload.session, {
+      .get(urls.GetStudentInfoRegistration + '?application_number=' + payload.data + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('apppppp res: ', response.data)
         if (response.status === 200) {
           dispatch({
             type: FETCH_STUDENT_INFO,
@@ -30,7 +29,8 @@ export const getStudentInfo = (payload) => {
           let data = {
             acad_session_id: response.data.academic_year.id,
             student: response.data.id,
-            session_year: payload.session
+            session_year: payload.session,
+            branch_id: payload.branchId
           }
           axios
             .post(urls.AddRegForm, data, {
@@ -38,7 +38,6 @@ export const getStudentInfo = (payload) => {
                 Authorization: 'Bearer ' + payload.user
               }
             }).then(res => {
-              console.log('payment res: ', res.data)
               payload.alert.success('Success')
               dispatch({
                 type: CREATE_REG_NUM,
@@ -49,7 +48,6 @@ export const getStudentInfo = (payload) => {
               dispatch(actionTypes.dataLoaded())
             }).catch(error => {
               dispatch(actionTypes.dataLoaded())
-              console.log(error)
               if (error.response && error.response.status === 400) {
                 payload.alert.warning(error.response.data.err_msg)
               } else {
@@ -59,7 +57,6 @@ export const getStudentInfo = (payload) => {
         }
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
-        console.log(error)
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
@@ -74,12 +71,11 @@ export const fetchRegistrationList = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.GetRegistrationList + '?year=' + payload.session.value + '&from_date=' + payload.fromDate + '&to_date=' + payload.toDate, {
+      .get(urls.GetRegistrationList + '?year=' + payload.session.value + '&from_date=' + payload.fromDate + '&to_date=' + payload.toDate + '&branch_id=' + payload.branchId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        // console.log('apppppp res: ', response.data)
         if (response.status === 200) {
           dispatch({
             type: FETCH_REG_LIST,
@@ -104,11 +100,11 @@ export const fetchRegistrationList = (payload) => {
 export const fetchRegistrationSugg = (payload) => {
   let url = null
   if (payload.type === 'Application No') {
-    url = urls.SearchAppNumber + '?application_no=' + payload.value + '&academic_year=' + payload.session
+    url = urls.SearchAppNumber + '?application_no=' + payload.value + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId
   } else if (payload.type === 'Student Name') {
-    url = urls.SearchAppNumber + '?student_name=' + payload.value + '&academic_year=' + payload.session
+    url = urls.SearchAppNumber + '?student_name=' + payload.value + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId
   } else {
-    url = urls.SearchAppNumber + '?Phone_no=' + payload.value + '&academic_year=' + payload.session
+    url = urls.SearchAppNumber + '?Phone_no=' + payload.value + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId
   }
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
@@ -148,7 +144,6 @@ export const sendAllPaymentReg = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('payment res: ', response.data)
         payload.alert.success('Success')
         dispatch({
           type: SAVE_ALL_PAYMENT,
@@ -178,7 +173,6 @@ export const createRegNum = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        console.log('payment res: ', response.data)
         payload.alert.success('Success')
         dispatch({
           type: CREATE_REG_NUM,
