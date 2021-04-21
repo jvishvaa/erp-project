@@ -1915,6 +1915,11 @@
     "@types/scheduler" "*"
     "csstype" "^3.0.2"
 
+"@types/resize-observer-browser@^0.1.5":
+  "integrity" "sha512-8k/67Z95Goa6Lznuykxkfhq9YU3l1Qe6LNZmwde1u7802a3x8v44oq0j91DICclxatTr0rNnhXx7+VTIetSrSQ=="
+  "resolved" "https://registry.npmjs.org/@types/resize-observer-browser/-/resize-observer-browser-0.1.5.tgz"
+  "version" "0.1.5"
+
 "@types/scheduler@*":
   "integrity" "sha512-EaCxbanVeyxDRTQBkdLb3Bvl/HK7PBK6UJjsSixB0iHKoWxE5uu2Q/DgtpOhPIojN0Zl1whvOd7PoHs2P0s5eA=="
   "resolved" "https://registry.npmjs.org/@types/scheduler/-/scheduler-0.16.1.tgz"
@@ -7843,6 +7848,11 @@
   dependencies:
     "lodash._reinterpolate" "^3.0.0"
 
+"lodash.throttle@^4.1.1":
+  "integrity" "sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ="
+  "resolved" "https://registry.npmjs.org/lodash.throttle/-/lodash.throttle-4.1.1.tgz"
+  "version" "4.1.1"
+
 "lodash.uniq@^4.5.0":
   "integrity" "sha1-0CJTc662Uq3BvILklFM5qEJ1R3M="
   "resolved" "https://registry.npmjs.org/lodash.uniq/-/lodash.uniq-4.5.0.tgz"
@@ -10289,7 +10299,7 @@
     "strip-ansi" "6.0.0"
     "text-table" "0.2.0"
 
-"react-dom@^16.14.0", "react-dom@^16.5.2":
+"react-dom@^15.1.0 || ^16.0.0 || ^17.0.0", "react-dom@^16.0.0 || ^17.0.0", "react-dom@^16.14.0", "react-dom@^16.5.2":
   "integrity" "sha512-1gCeQXDLoIqMgqD3IO2Ah9bnf0w9kzhwN5q4FGnHZ67hBm9yePzB5JJAIQCc8x3pFnNlwFq4RidZggNAAkzWWw=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-16.14.0.tgz"
   "version" "16.14.0"
@@ -10487,6 +10497,16 @@
     "prop-types" "^15.7.2"
     "react-is" "^16.13.1"
 
+"react-resize-detector@^6.6.4":
+  "integrity" "sha512-khKS1IpC2cfx5+6G9HkAU/9CGjDV8woE57pVeH8nP5Ji52yXz6MpQEHEzJZ2obGghWrewN4php8ArxB4yWNqZA=="
+  "resolved" "https://registry.npmjs.org/react-resize-detector/-/react-resize-detector-6.6.5.tgz"
+  "version" "6.6.5"
+  dependencies:
+    "@types/resize-observer-browser" "^0.1.5"
+    "lodash.debounce" "^4.0.8"
+    "lodash.throttle" "^4.1.1"
+    "resize-observer-polyfill" "^1.5.1"
+
 "react-responsive-carousel@^3.2.11":
   "integrity" "sha512-z3gVaq25YVAfBS+OOqRMUH9POUUu6nuEtHDrlAOQelHSKC+N62gSRPF+6HtBfrAvlOEEwUS9RzTaItF8gSeMaQ=="
   "resolved" "https://registry.npmjs.org/react-responsive-carousel/-/react-responsive-carousel-3.2.15.tgz"
@@ -10495,6 +10515,16 @@
     "classnames" "^2.2.5"
     "prop-types" "^15.5.8"
     "react-easy-swipe" "^0.0.21"
+
+"react-responsive-tabs@^4.4.0":
+  "integrity" "sha512-hAqPjeUp94m/10SE1XmvR9Aq81i9Eyowv2RghptCiBltpi9DoW3/F0CRgk7akrzHNb9UpvrctTPIowyJSFaokQ=="
+  "resolved" "https://registry.npmjs.org/react-responsive-tabs/-/react-responsive-tabs-4.4.0.tgz"
+  "version" "4.4.0"
+  dependencies:
+    "classnames" "^2.2.6"
+    "lodash.throttle" "^4.1.1"
+    "prop-types" "^15.7.2"
+    "react-resize-detector" "^6.6.4"
 
 "react-responsive@^8.2.0":
   "integrity" "sha512-iagCqVrw4QSjhxKp3I/YK6+ODkWY6G+YPElvdYKiUUbywwh9Ds0M7r26Fj2/7dWFFbOpcGnJE6uE7aMck8j5Qg=="
@@ -10678,7 +10708,7 @@
   "resolved" "https://registry.npmjs.org/react-zoom-pan-pinch/-/react-zoom-pan-pinch-1.6.1.tgz"
   "version" "1.6.1"
 
-"react@^16.14.0", "react@^16.5.2":
+"react@^15.1.0 || ^16.0.0 || ^17.0.0", "react@^16.0.0 || ^17.0.0", "react@^16.14.0", "react@^16.5.2":
   "integrity" "sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g=="
   "resolved" "https://registry.npmjs.org/react/-/react-16.14.0.tgz"
   "version" "16.14.0"
