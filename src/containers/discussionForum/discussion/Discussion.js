@@ -163,10 +163,7 @@ const StyledOutlinedButton = withStyles({
     color: '#FE6B6B',
     border: '1px solid #FF6B6B',
     borderRadius: '10px',
-    backgroundColor: 'transparent !important',
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
+    backgroundColor: 'transparent',
     position: 'absolute',
     bottom: '15px',
     width: '178px',
@@ -182,9 +179,6 @@ const OutlinedButton = withStyles({
     color: '#0455A6',
     border: '1px solid #0455A6',
     borderRadius: '10px',
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
     backgroundColor: 'transparent',
     '@media (min-width: 600px)': {
       marginTop: '20px!important',
@@ -369,7 +363,7 @@ export default function DiscussionComponent(props) {
                 {`${props.rowData.post_by.first_name} ${props.rowData.post_by.last_name} /`}
               </span>
               <span className={classes.discussionTime}>
-                {`${moment(props.rowData.post_at).format('hh : mm ')} /`}
+                {`${moment(props.rowData.post_at).format('hh : mm A')} /`}
               </span>
               <span className={classes.discussionTime}>
                 {moment(props.rowData.post_at).format('DD.MM.YYYY')}
