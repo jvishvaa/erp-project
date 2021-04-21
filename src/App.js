@@ -241,6 +241,9 @@ import TransactionStatus from './containers/Finance/src/components/Finance/Trans
 import AdmFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/admFormList.js';
 import Airpay from './containers/Finance/src/components/Finance/PaymentGateways/Airpay/airpayIntegration.js';
 import UploadPaymentFile from './containers/Finance/src/components/Finance/student/managePayment/UploadPaymentFile.js';
+import TimeTable from './containers/time-table/index';
+import Griviences from './containers/Griviences/index';
+import GriviencesCreate from './containers/Griviences/CreateNew/create-new';
 import MarkAttedance from './containers/attendance/MarkAttedance';
 import AttedanceCalender from './containers/attendance/AttedanceCalender';
 import EventCategory from './containers/Calendar/EventCategory';
@@ -248,7 +251,7 @@ import Attendance from './containers/Calendar/Attendance';
 import CreateEvent from './containers/Calendar/CreateEvent';
 import OverallAttendance from './containers/Calendar/OverallAttendance';
 import Publications from './containers/publications/Publications';
-import TimeTable from './containers/time-table/index';
+// import TimeTable from './containers/time-table/index';
 import ActivateInactivateStudentAdm from './containers/Finance/src/components/Finance/Dashboard/FinanceAdmin/activateInactivateStudent.js';
 import QuestionBankList from './containers/question-bank/question-bank-list';
 import CreateQuestion from './containers/question-bank/create-question';
@@ -331,6 +334,18 @@ function App({ alert }) {
                           </Route>
                           <Route path='/user-management'>
                             {({ match }) => <UserManagement match={match} />}
+                          </Route>
+                          <Route path='/time-table/student-view'>
+                            {({ match }) => <TimeTable match={match} />}
+                          </Route>
+                          <Route path='/time-table/teacher-view'>
+                            {({ match }) => <TimeTable match={match} />}
+                          </Route>
+                          <Route path='/griviences'>
+                            {({ match }) => <Griviences match={match} />}
+                          </Route>
+                          <Route path='/greviences/createnew'>
+                            {({ match }) => <GriviencesCreate match={match} />}
                           </Route>
                           {/*
                         <Route exact path='/view-users'>
