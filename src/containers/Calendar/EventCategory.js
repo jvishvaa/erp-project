@@ -185,6 +185,7 @@ const Cal1 = () => {
   const [chaTitle, setChaTitle] = useState(false);
   const [deleteFlag, setDeleteFlag] = useState(false);
   const [editFlag, setEditFlag] = useState(false);
+  const [updateFlag, setUpdateFlag] = useState(false);
   const limit = 9;
   const [dummyData, setDummyData] = useState([]);
   const { id } = useParams();
@@ -194,32 +195,33 @@ const Cal1 = () => {
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
-
+  const [element_id, setElementId] = useState('');
+  const [flag, setFlag] = useState(true);
   const [filterData, setFilterData] = useState({
     selectedEventType: '',
   });
 
-  useEffect(() => {
-    if (moduleId) {
-      axiosInstance
-        .get(`${endpoints.eventBat.getListCategories}?module_id=${moduleId}`)
-        .then((result) => {
-          console.log('useEffect Data', result.data);
-          setEventType(result.data.data);
-        });
-    }
-  }, [moduleId]);
+  // useEffect(() => {
+  //   if (moduleId) {
+  //     axiosInstance
+  //       .get(`${endpoints.eventBat.getListCategories}?module_id=${moduleId}`)
+  //       .then((result) => {
+  //         console.log('useEffect Data', result.data);
+  //         setEventType(result.data.data);
+  //       });
+  //   }
+  // }, [moduleId]);
 
   useEffect(() => {
     if (moduleId) {
       axiosInstance
         .get(`${endpoints.eventBat.getListCategories}?module_id=${moduleId}`)
         .then((result) => {
-          console.log('useEffect Data', result.data);
+          console.log('useEffect dummy data', result.data.data);
           setDummyData(result.data.data);
         });
     }
-  }, [moduleId]);
+  }, [moduleId, deleteFlag, editFlag]);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -243,6 +245,7 @@ const Cal1 = () => {
   const handleClickOpen = () => {
     setOpen(true);
     setChaTitle(true);
+    setFlag(true);
   };
   const handleClickOpens = () => {
     setOpen(true);
@@ -345,8 +348,10 @@ const Cal1 = () => {
     //setEventName('');
   }, [deleteFlag, editFlag, pageNumber]);
 
-  const handleClicknew = (event) => {
+  const handleClicknew = (event, id) => {
     setAnchorEl(event.currentTarget);
+    setElementId(id);
+    console.log(id, 'checking id');
   };
   const handleCloseMenu = () => {
     setAnchorEl(null);
@@ -359,9 +364,11 @@ const Cal1 = () => {
     setEventName('');
   };
 
-  const handleDelete = (e, idx) => {
+  const handleDelete = () => {
     axiosInstance
-      .delete(`${endpoints.eventBat.deleteEventCategory}${e.id}?module_id=${moduleId}`)
+      .delete(
+        `${endpoints.eventBat.deleteEventCategory}${element_id}?module_id=${moduleId}`
+      )
       .then((result) => {
         console.log('deleted Data', result.data.data);
         setDeleteFlag(!deleteFlag);
@@ -371,14 +378,19 @@ const Cal1 = () => {
       .catch((error) => setAlert('warning', 'Something went wrong'));
   };
 
-  const handleEdit = (data) => {
-    console.log(data);
+  const handleEdit = () => {
+    setFlag(false);
+    console.log(element_id, 'item id');
+    const temp = dummyData.find((item) => item.id == element_id);
+    console.log(temp);
     setChaTitle(false);
     handleClickOpens();
     setEditFlag(!editFlag);
     setAnchorEl(null);
-    setIsEditId(data.id);
-    setEventName(data.event_category_name);
+    setIsEditId(temp.id);
+    setEventName(temp.event_category_name);
+    // setCustColor(temp.event_category_color);
+    // console.log(temp.event_category_color);
   };
   function handleUpdate() {
     //api call for update
@@ -399,6 +411,7 @@ const Cal1 = () => {
       })
       .catch((error) => console.log(error));
     setOpen(false);
+    setUpdateFlag(!updateFlag);
   }
 
   return (
@@ -516,7 +529,7 @@ const Cal1 = () => {
                 // onClick={handleSave}
                 color='primary'
               >
-                {editFlag ? 'UPDATE' : 'Save'}
+                {flag ? 'save' : 'update'}
               </Button>
             </DialogActions>
             {/* </Grid> */}
@@ -529,18 +542,18 @@ const Cal1 = () => {
             spacing={2}
             direction='row'
           >
-            {dummyData.map((data) => {
+            {dummyData.map((item) => {
               return (
                 <div>
                   <Grid container>
-                    <Grid item xs={12} md={4} >
+                    <Grid item xs={12} md={4}>
                       <Card className={classes.cardstyle}>
                         <CardContent>
                           <Grid container spacing={2} direction='row'>
                             <Grid
                               item
                               style={{
-                                backgroundColor: data.event_category_color,
+                                backgroundColor: item.event_category_color,
                                 marginTop: '13px',
                                 fontFamily: 'Arial',
                                 borderRadius: '10px',
@@ -560,7 +573,7 @@ const Cal1 = () => {
                                   fontweight: 'Bold',
                                 }}
                               >
-                                {data.event_category_name}
+                                {item.event_category_name}
                               </Typography>
                             </Grid>
 
@@ -568,7 +581,7 @@ const Cal1 = () => {
                               <IconButton
                                 aria-controls='simple-menu'
                                 aria-haspopup='true'
-                                onClick={handleClicknew}
+                                onClick={(event) => handleClicknew(event, item.id)}
                               >
                                 <MoreHorizIcon style={{ color: '#F7324D' }} />
                               </IconButton>
@@ -578,12 +591,8 @@ const Cal1 = () => {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                               >
-                                <MenuItem onClick={(e) => handleEdit(data)}>
-                                  Edit
-                                </MenuItem>
-                                <MenuItem onClick={(e) => handleDelete(data)}>
-                                  Delete
-                                </MenuItem>
+                                <MenuItem onClick={handleEdit}>Edit</MenuItem>
+                                <MenuItem onClick={handleDelete}>Delete</MenuItem>
                               </Menu>
                             </Grid>
                           </Grid>
@@ -601,7 +610,7 @@ const Cal1 = () => {
               <Pagination
                 onChange={handlePagination}
                 style={{ paddingLeft: '150px' }}
-                count={dummyData && dummyData.length/limit}
+                count={dummyData && dummyData.length / limit}
                 color='primary'
                 page={pageNumber}
                 color='primary'
