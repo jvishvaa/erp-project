@@ -39,7 +39,6 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
     setShowMenu(false);
     setShowPeriodIndex();
   };
-  console.log(lesson,'======DailyDairy')
 
   const handleViewMore = () => {
     setLoading(true)
@@ -74,7 +73,6 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
     //   })
   }
   const handleDelete=(e,index)=>{
-    console.log(e,index,'event')
     axiosInstance.delete(`${endpoints.dailyDairy.updateDelete}${e.id}/update-delete-dairy/`)
     .then((result)=>{
 
@@ -90,15 +88,11 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
 
   }
   const handleEdit=(data)=>{
-    debugger
-
-    console.log(data,'PPP')
     // // setEditData(e)
     setState({editData:data,isEdit:true});
     history.push('/create/daily-diary')
   }
 
-  console.log("DailyDairy");
   return (
     <Paper className={periodColor?classes.selectedRoot:classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' } }>
       <Grid container spacing={2}>
@@ -109,6 +103,7 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
               variant='p'
               component='p'
               color='primary'
+              noWrap
             >
               {lesson.subject.subject_name}
             </Typography>
@@ -121,7 +116,7 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
               color='secondary'
               noWrap
             >
-              Homework
+              Daily Diary
             </Typography>
             <Divider className='divider'/>
             <Typography

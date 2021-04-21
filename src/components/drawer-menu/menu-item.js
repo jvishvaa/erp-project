@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 /* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
@@ -23,14 +22,21 @@ const MenuItem = withRouter(({ history, ...props }) => {
     // { name: 'Teacher View Class', Path: '/online-class/teacher-view-class' },
     { name: 'Role Management', Path: '/role-management' },
     { name: 'View Role', Path: '/role-management' },
-    { name: 'Master Management', Path: '/master-mgmt' },
-    { name: 'Subject', Path: '/master-mgmt/subject-table' },
-    { name: 'Section', Path: '/master-mgmt/section-table' },
-    { name: 'Grade', Path: '/master-mgmt/grade-table' },
-    { name: 'Academic Year', Path: '/master-mgmt/academic-year-table' },
-    { name: 'Chapter Creation', Path: '/master-mgmt/chapter-type-table' },
-    { name: 'Message Type', Path: '/master-mgmt/message-type-table' },
-    { name: 'Signature Upload', Path: '/master-mgmt/signature-upload' },
+    { name: 'Master Management', Path: '/master-management' },
+    { name: 'Branch', Path: '/master-management/branch-table' },
+    { name: 'Branch Acad Mapping', Path: '/master-management/branch-acad-table' },
+    { name: 'Subject', Path: '/master-management/subject-table' },
+    { name: 'Subject Mapping', Path: '/master-management/subject-mapping-table' },
+    { name: 'Section', Path: '/master-management/section-table' },
+    { name: 'Section Mapping', Path: '/master-management/section-mapping-table' },
+    { name: 'Grade', Path: '/master-management/grade-table' },
+    { name: 'Academic Year', Path: '/master-management/academic-year-table' },
+    { name: 'Chapter Creation', Path: '/master-management/chapter-type-table' },
+    { name: 'Message Type', Path: '/master-management/message-type-table' },
+    { name: 'Signature Upload', Path: '/master-management/signature-upload' },
+    { name: 'Event Category', Path: '/master-management/event-category' },
+    {name:'Teacher Calendar',Path:'/attendance-calendar/teacher-view'}, //attendance
+    {name:'Student Calendar',Path:'/attendance-calendar/student-view'}, //
     { name: 'Course', Path: '/course-list' },
     { name: 'Course Price', Path: '/course-price' },
     { name: 'Lesson Plan Mapping', Path: '/subject/grade' },
@@ -50,10 +56,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Assessment', Path: '/assessment' },
     { name: 'Communication', Path: '/communication' },
     { name: 'Add Group', Path: '/communication/addgroup' },
-    { name: 'View & Edit Group', Path: '/communication/viewgroup' },
+    { name: 'View&Edit Group', Path: '/communication/viewgroup' },
     { name: 'Send Message', Path: '/communication/sendmessage' },
     { name: 'Add SMS Credit', Path: '/communication/smscredit' },
-    { name: 'SMS & Email Log', Path: '/communication/messageLog' },
+    { name: 'SMS&Email Log', Path: '/communication/messageLog' },
     { name: 'Teacher View', Path: '/lesson-plan/teacher-view' },
     { name: 'Student View', Path: '/lesson-plan/student-view' },
     { name: 'Management Report', Path: '/lesson-plan/report' },
@@ -64,10 +70,20 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Principal Blogs', Path: '/blog/principal' },
     { name: 'Genre', Path: '/blog/genre' },
     { name: 'Word Count Cofiguration', Path: '/blog/wordcount-config' },
-    { name: 'ID Cards', Path: '/student-id-card' },
+    // { name: 'ID Cards', Path: '/student-id-card' },
+    { name: 'ID Card View', Path: '/student-id-card' },
     { name: 'Student Strength', Path: '/student-strength' },
     { name: 'Teacher Circular', Path: '/teacher-circular' },
-    { name: 'Student Circular', Path: '/studnet-circular' },
+    { name: 'Student Circular', Path: '/student-circular' },
+
+    //{ name: 'Discussion Forum', Path: '/discussion-forum' },
+    { name: 'Teacher Forum', Path: '/teacher-forum' },
+    { name: 'Student Forum', Path: '/student-forum' },
+
+    { name: 'Question Bank', Path: '/question-bank' },
+    { name: 'Question Paper', Path: '/assessment-question' },
+    { name: 'Create Test', Path: '/assesment' },
+    { name: 'Take Test', Path: '/assessment' },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

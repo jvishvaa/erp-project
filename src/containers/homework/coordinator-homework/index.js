@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -212,9 +212,7 @@ const CoordinatorTeacherHomework = withRouter(
     // };
 
     const handleSelectCol = (col, view) => {
-      console.log(col, 'teacher_id');
       const { homeworkId, subjectId, coord_selected_teacher_id } = col;
-      console.log('homework id', homeworkId);
       fetchStudentLists(homeworkId, subjectId, coord_selected_teacher_id);
       setSelectedCol(col);
       if (isMobile) {
@@ -343,7 +341,6 @@ const CoordinatorTeacherHomework = withRouter(
 
     const downloadGetTeacherPerformanceListApi = async () => {
       const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-      // console.log('file will downloade', startDateTechPer, endDateTechPer);
       try {
         setLoading(true);
         if (startDateTechPer && startDateTechPer) {
@@ -362,7 +359,6 @@ const CoordinatorTeacherHomework = withRouter(
             responseType: 'blob', //important
           });
           if (result.status === 200) {
-            // console.log(result, '===========================');
             setLoading(false);
             const downloadUrl = window.URL.createObjectURL(new Blob([result.data]));
             const link = document.createElement('a');
@@ -393,7 +389,6 @@ const CoordinatorTeacherHomework = withRouter(
 
     const tableContainer = useRef(null);
 
-    // console.log('popper open', datePopperOpen);
 
     return (
       <>
@@ -439,7 +434,6 @@ const CoordinatorTeacherHomework = withRouter(
                           value={dateRange}
                           // calendars='1'
                           onChange={(newValue) => {
-                            console.log('onChange truggered', newValue);
                             const [startDate, endDate] = newValue;
                             const sevenDaysAfter = moment(startDate).add(6, 'days');
                             setDateRange([startDate, sevenDaysAfter]);
@@ -458,7 +452,6 @@ const CoordinatorTeacherHomework = withRouter(
                             // startProps,
                             endProps
                           ) => {
-                            //console.log('startProps ', startProps, 'endProps', endProps);
                             return (
                               <>
                                 <TextField
@@ -471,7 +464,6 @@ const CoordinatorTeacherHomework = withRouter(
                                   size='small'
                                   style={{ minWidth: '100%' }}
                                   onClick={() => {
-                                    // console.log('triggered');
                                     setDatePopperOpen(true);
                                   }}
                                 />

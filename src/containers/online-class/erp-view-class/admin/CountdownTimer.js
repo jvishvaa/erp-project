@@ -22,7 +22,6 @@ function CountdownTimer({timer}) {
 //       return null;
 //     }
 //   }
-console.log(timer,'=================')
   const getTimerStartsOn =()=>{
     const timeNow = new Date().getTime();
     return ((classStartsAt||defaultStartTime) - countStartWithInMIn*60*1000)-timeNow

@@ -16,6 +16,7 @@ import {
   editRole,
   setModulePermissionsRequestData,
   setRoleName,
+  fetchAcademicYears,
 } from '../../redux/actions';
 import styles from './useStyles';
 
@@ -41,8 +42,16 @@ class EditRole extends Component {
     if (id) {
       fetchRoleDataById(id);
     }
+    // fetchBranches();
 
-    fetchBranches();
+    fetchAcademicYears().then((data) => {
+      let transformedData = '';
+      transformedData = data?.map((obj) => ({
+        id: obj.id,
+        session_year: obj.session_year,
+      }));
+      this.setState({ academicYearList: transformedData });
+    });
   }
 
   alterEditRolePermissions = (module) => {
@@ -74,21 +83,11 @@ class EditRole extends Component {
         const includeInRequest = Object.keys(currentSubModule).some((key) => {
           if (key.includes('my_')) {
             if (currentSubModule[key]) {
-              console.log(
-                'included in request because non custom scope is true',
-                currentSubModule
-              );
-
               return true;
             }
           }
           if (key.includes('custom_')) {
             if (currentSubModule[key].length > 0) {
-              console.log(
-                'included in request because custom scope is true',
-                currentSubModule
-              );
-
               return true;
             }
           }
@@ -101,6 +100,7 @@ class EditRole extends Component {
             my_grade: currentSubModule.my_grade,
             my_section: currentSubModule.my_section,
             my_subject: currentSubModule.my_subject,
+            custom_year: currentSubModule.custom_year.map((year) => year.id),
             custom_grade: currentSubModule.custom_grade.map((grade) => grade.id),
             custom_section: currentSubModule.custom_section.map((section) => section.id),
             custom_branch: currentSubModule.custom_branch.map((branch) => branch.id),
@@ -141,7 +141,6 @@ class EditRole extends Component {
           setAlert('success', 'Role updated successfully');
         })
         .catch((error) => {
-          console.log('update role error ', error);
           setAlert('error', 'Update failed');
         });
     } else {
@@ -222,6 +221,7 @@ class EditRole extends Component {
                   module={module}
                   alterCreateRolePermissions={this.alterEditRolePermissions}
                   branches={branches}
+                  academicYear={this.state.academicYearList}
                   modulePermissionsRequestData={modulePermissionsRequestData}
                   setModulePermissionsRequestData={setModulePermissionsRequestData}
                 />
@@ -249,6 +249,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   fetchBranches: () => {
     dispatch(fetchBranches());
+  },
+  fetchAcademicYears: () => {
+    dispatch(fetchAcademicYears());
   },
   alterEditRolePermissionsState: (params) => {
     dispatch(setEditRolePermissionsState(params));

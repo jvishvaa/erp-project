@@ -1,5 +1,18 @@
+import ENVCONFIG from './config';
+
+const {
+  apiGateway: { baseURLCentral },
+  s3: { BUCKET: s3BUCKET },
+} = ENVCONFIG;
+
 // const baseURLCentral = 'http://13.232.30.169/qbox';
-const baseURLCentral ='https://dev.mgmt.letseduvate.com/qbox';
+// const appBaseURL = window.location.hostname;
+// const baseURLCentral = (appBaseURL.includes("dev.") || appBaseURL.includes("localhost"))
+//   ? 'http://dev.mgmt.letseduvate.com/qbox'
+//   : 'https://mgmt.letseduvate.com/qbox';
+// const baseURLCentral = 'http://dev.mgmt.letseduvate.com/qbox'
+// const baseURLCentral = 'https://mgmt.letseduvate.com/qbox';
+
 export default {
   auth: {
     login: '/auth/login/',
@@ -10,6 +23,14 @@ export default {
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
     courses: '/aol/courses/',
+    attendance: '/academic/student_attendance_between_date_range/',
+    showAttendance: '/academic/show_attendance/',
+    // createAttendance: '/academic/create_attendance/',
+    createAttendance: '/academic/create_or_update_attendance/',
+    studentList: '/academic/get_user_details/',
+    // singleStudentAttendance: '/academic/student_attendance_between_days/',
+    multipleStudentsAttendacne:'/academic/multiple_student_attendance_between_dates/',
+    singleStudentAttendance: '/academic/single_student_attendance_between_days/',
   },
   profile: {
     userDetails: '/erp_user/user-data/',
@@ -17,6 +38,10 @@ export default {
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
     academicYear: '/erp_user/list-academic_year/',
+  },
+  timeTable:{
+    tableData:'/academic/time_table/',
+    editTableData:'/academic/assign_class_periods/',
   },
   communication: {
     roles: '/erp_user/roles/',
@@ -60,12 +85,27 @@ export default {
     subjects: '/erp_user/subjects-list/',
     grades: '/erp_user/grades-list/',
     sectionsTable: '/erp_user/grades-section-list/',
+    fetchSectionMap: '/erp_user/section/',
+    sectionsTable: '/erp_user/list-section/',
+    branchMappingTable: '/erp_user/branch/',
+    sectionMappingTable: '/erp_user/list-section-mapping/',
+    subjectMappingTable: '/erp_user/list-subjectmapping/',
+    deleteSectionMapping: '/erp_user/delete-section-mapping/',
+    deleteSubjectMapping: '/erp_user/delete-subject-mapping/',
+    createBranch: '/erp_user/create-branch/',
+    deleteBranch: '/erp_user/delete-branch-mapping/',
     createSubject: '/erp_user/create-subject/',
+    createSubjectMapping: '/erp_user/create-subject-mapping/',
     createSection: '/erp_user/create-section/',
+    listSectionMap: '/erp_user/list-section-map/',
+    createSectionMapping: '/erp_user/create-grade-section-mapping',
     createGrade: '/erp_user/create-grade/',
+    branchList: '/erp_user/list-all-branch/',
+    branchMapping: '/erp_user/create-branch-mapping',
     updateSubject: '/erp_user/update-subject/',
     updateSection: '/erp_user/update-section/',
     updateGrade: '/erp_user/update-grade/',
+    updateBranch: '/erp_user/update-branch/',
     gradesDrop: '/erp_user/grade/',
     sections: '/erp_user/sectionmapping/',
     academicYear: '/erp_user/academic-year-list/',
@@ -75,8 +115,7 @@ export default {
     updateMessageType: '/communication/',
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
-    editChapter: '/academic/'
-
+    editChapter: '/academic/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -132,14 +171,21 @@ export default {
     assign: '/academic/school-subjects-mapping/',
     updateAssign: '/academic',
     delete: '/academic',
+    chapter: '/academic/chapters/',
+    ViewChapter: '/academic/chapters/',
+    editChapter: '/academic/',
+    centralGradeSubjects: `${baseURLCentral}/lesson_plan/erp_lesson_mapping/`, //'https://dev.mgmt.letseduvate.com/qbox/lesson_plan/erp_lesson_mapping/?domain_name=olvorchidnaigaon'
   },
   lessonPlan: {
+    gradeSubjectMappingListCentral: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
     periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
     periodCardData: `${baseURLCentral}/lesson_plan/lesson/`,
     academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
     gradeSubjectMappingList: `/academic/lesson-plan-subjects/`,
     chapterList: `/academic/central-chapters-list/`,
+    gradeListCentral: `${baseURLCentral}/lesson_plan/list-grade/`,
+    chapterListCentral: `${baseURLCentral}/lesson_plan/chapter/`,
     periodCompleted: '/academic/lessonplan-completed-status/',
     periodCompletedStatus: '/academic/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
@@ -176,6 +222,7 @@ export default {
 
   discussionForum: {
     categoryList: '/academic/categories/',
+    UpdateCategory: '/update-category/',
     branch: '/erp_user/branch/',
     grade: '/erp_user/grademapping/',
     filterCategory: '/academic/posts/',
@@ -183,7 +230,10 @@ export default {
     PostCategory: '/academic/create-category/',
     CreateDissusionForum: '/academic/add-post/',
     CreateCommentAndReplay: '/academic/create-answer-replay/',
-    AwardListAPI: '/academic/',
+    AwardListAPI: '/academic/awards-list/',
+    GiveAwardAPI: '/academic/create-award/',
+    commentList: '/academic/comments-list/',
+    replyToAnswer: '/academic/create-answer-replay/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     deletePost: '/academic/',
   },
@@ -194,6 +244,7 @@ export default {
     createCircular: '/circular/upload-circular/',
     deleteCircular: '/circular/delete-circular/',
     updateCircular: '/circular/update-circular/',
+    deleteFile: '/academic/delete-file/',
   },
   generalDairy: {
     dairyList: '/academic/general-dairy-messages/',
@@ -201,13 +252,12 @@ export default {
     updateDelete: '/academic/',
     SubmitDairy: '/academic/create-dairy/',
     uploadFile: '/academic/dairy-upload/',
-
   },
   dailyDairy: {
     createDailyDairy: '/academic/create-dairy/',
     branches: '/academic/chapters/',
     updateDelete: '/academic/',
-    chapterList: '/academic/logged-in-users-subjects/'
+    chapterList: '/academic/logged-in-users-subjects/',
   },
   onlineCourses: {
     createCourse: '/aol/courses/',
@@ -231,17 +281,40 @@ export default {
     BlogView: '/academic/view_blog/',
     WordCountConfig: '/academic/word_count_config/',
   },
+  ebook: {
+    ebook: `${baseURLCentral}/ebook/ebook_school_wise_filter/`,
+    EbookUser:`/academic/ebook_user/`,
+    AnnotateEbook:`/academic/ebook_user_status/`,
+  },
   teacherViewBatches: {
     courseListApi: '/aol/courses/',
-    batchSizeList: 'aol/aol-course-batch/',
+    batchSizeList: '/aol/aol-course-batch/',
     getBatchList: '/erp_user/teacher_online_class/',
     cancelBatchApi: '/erp_user/cancel-online-class/',
+    hostApi:'/erp_user/redirection_zoom/',
   },
   studentViewBatchesApi: {
     getBatchesApi: '/erp_user/student_online_class/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
+  
+  eventBat:{
+    getPaginatedCategories:"/academic/list_event_categories_p/",  //get
+    getListCategories:"/academic/list_event_categories/",  //get
+    postCreateEvent:"/academic/create_event_category/",  //post
+    patchUpdateEvent:"/academic/update_event_category/",//patch
+    deleteEventCategory:"/academic/delete_event_category/", //delete
+    filterEventCategory:"/academic/filter_event_categories/" //get 
+
+},
+
+CreateEvent:{
+  CreateEvent:'academic/events/',
+  getEventCategory:"academic/list_create_event_category/"
+},
+
   assessment: {
+    assessmentResultAnalysis: `${baseURLCentral}/assessment/student-reports/`,
     questionPaperList: `/academic/assessment-list/`,
     viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
     userTests: `${baseURLCentral}/assessment/user-tests/`, // ?user=20&subject=1,
@@ -259,7 +332,42 @@ export default {
     AssignQP:'/mp_quiz/'
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+  publish: {
+    ebook: `erp_user/publication/`,
+    update_delete: `erp_user/update-destroy-publication/`,
+  },
+  assessmentApis: {
+    gradesList: `/academic/sm-grades-list/`,
+  },
+  questionBank: {
+    grades: `${baseURLCentral}/lesson_plan/list-grade/`,
+    subjects: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
+    topics: `${baseURLCentral}/assessment/topic/`,
+    examType: `${baseURLCentral}/assessment/question_type/`,
+    questionData: `${baseURLCentral}/assessment/question-list/`,
+    viewMoreData: `${baseURLCentral}/assessment/question-details/`,
+    uploadFile: `${baseURLCentral}/assessment/upload-question-file/`,
+    removeFile: `${baseURLCentral}/assessment/delete-s3file/`,
+    deleteQuestion: `${baseURLCentral}/assessment/publish-question/`,
+  },
+  assementQP: {
+    assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,
+    assementViewmore: `${baseURLCentral}/assessment/`,
+  },
+  createQuestionApis: {
+    topicList: `${baseURLCentral}/assessment/topic/`,
+    questionType: `${baseURLCentral}/assessment/question_type/`,
+    createQuestion: `${baseURLCentral}/assessment/create-question/`,
+  },
+  createQuestionBulk: {
+    BulkUploadTrueOrFalse: `${baseURLCentral}/assessment/bulk_upload_tf/`,
+    BulkUploadSingleChoiceQuestion: `${baseURLCentral}/assessment/upload-sc-questions/`,
+    FillBlankUploadQuestion: `${baseURLCentral}/assessment/fill_bulk_upload/`,
+  },
+  // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+  s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',
-  aolConfirmURL:'aol.letseduvate.com', //WARNING: Uncomment this code before pushing  
+  aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
   // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing
+  baseURLCentral,
 };

@@ -34,8 +34,8 @@ class CreateUser extends Component {
         last_name: '',
         email: '',
         academic_year: '',
-        academic_year_value:'',
-        branch: '',
+        academic_year_value: '',
+        branch: [],
         grade: [],
         section: [],
         subjects: [],
@@ -45,7 +45,7 @@ class CreateUser extends Component {
         profile: '',
         address: '',
         // erp_user:'',
-        branch_code:'',
+        branch_code: '',
         parent: {
           father_first_name: '',
           father_last_name: '',
@@ -92,14 +92,11 @@ class CreateUser extends Component {
   };
 
   onSubmitSchoolDetails = (details) => {
-    console.log('school details!!', details);
-
     this.setState((prevState) => ({ user: { ...prevState.user, ...details } }));
     this.handleNext();
   };
 
   onSubmitUserDetails = (details) => {
-    console.log('user details!!', details);
     const { showParentForm, showGuardianForm } = this.state;
     this.setState((prevState) => ({ user: { ...prevState.user, ...details } }));
     if (showParentForm || showGuardianForm) {
@@ -110,7 +107,6 @@ class CreateUser extends Component {
   };
 
   onSubmitGuardianDetails = (details) => {
-    console.log('guardian details!!', details);
 
     this.setState(
       (prevState) => ({
@@ -125,7 +121,6 @@ class CreateUser extends Component {
   onCreateUser = (requestWithParentorGuradianDetails) => {
     const { user } = this.state;
     const { createUser, history } = this.props;
-    console.log('user ', user);
     let requestObj = user;
     const {
       academic_year,
@@ -147,7 +142,6 @@ class CreateUser extends Component {
       profile,
       parent,
     } = requestObj;
-    console.log('profile ', profile);
     const {
       father_first_name,
       father_middle_name,
@@ -172,9 +166,10 @@ class CreateUser extends Component {
 
     requestObj = {
       academic_year: academic_year.id,
-      academic_year_value:academic_year.session_year,
-      branch: branch.id,
-      branch_code:branch.branch_code,
+      academic_year_value: academic_year.session_year,
+      // branch: branch.id,
+      branch: branch.map(({id}) => id).join(),
+      branch_code: branch.map(branch => branch.branch_code).join(),
       grade: grade.map((grade) => grade.id).join(),
       section: section.map((section) => section.id).join(),
       subjects: subjects.map((sub) => sub.id).join(),
@@ -220,7 +215,6 @@ class CreateUser extends Component {
     const { setAlert } = this.context;
     const requestObjFormData = jsonToFormData(requestObj);
 
-    console.log('requestObject ', requestObjFormData);
     createUser(requestObjFormData)
       .then(() => {
         history.push('/user-management/view-users');

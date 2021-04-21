@@ -1,0 +1,18 @@
+li.assesment-card-popup-menu-item {
+  display: flex;
+  justify-content: space-between !important;
+  .value-input {
+    width: 45px;
+    margin: 0 1rem;
+    color: $secondary-color;
+    fieldset {
+      border: 1px solid $primary-color;
+    }
+    .MuiInputBase-root {
+      height: 30px;
+      input {
+        padding: 2px;
+      }
+    }
+  }
+}

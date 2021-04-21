@@ -12,7 +12,7 @@ import AttachmentIcon from '../../../components/icon/AttachmentIcon';
 import ProfileIcon from '../../../components/icon/ProfileIcon';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import LikeButton from '../../../components/like-button/index';
 import { useDispatch } from 'react-redux';
 import { postAction } from '../../../redux/actions/discussionForumActions';
@@ -52,6 +52,11 @@ const useStyles = makeStyles({
     fontFamily: 'Open Sans',
     lineHeight: '33px',
     marginRight: '8.5px',
+    '@media (max-width: 600px)': {
+      fontSize: '20px',
+      marginRight: '6px',
+      lineHeight: '24px',
+    },
   },
   dotSeparator: {
     height: '12px',
@@ -81,6 +86,10 @@ const useStyles = makeStyles({
   },
   discussionIconRow: {
     float: 'right',
+    '@media (max-width: 600px)': {
+      display: 'block',
+      justifyContent: 'right',
+    },
   },
   discussionIcon: {
     color: '#042955',
@@ -125,6 +134,27 @@ const useStyles = makeStyles({
   paper: {
     padding: '8px',
   },
+  mobileButtons: {
+    position: 'relative',
+    '@media (max-width: 600px)': {
+      padding: '10px',
+    },
+  },
+  replyButtons: {
+    marginTop: 'auto',
+    '@media (max-width: 600px)': {
+      marginTop: '10px!important',
+    },
+  },
+  awardCount: {
+    color: '#754700',
+    position: 'absolute',
+    top: '63%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    fontSize: '36px',
+    fontWeight: 'bold',
+  }
 });
 
 const StyledOutlinedButton = withStyles({
@@ -136,6 +166,7 @@ const StyledOutlinedButton = withStyles({
     backgroundColor: 'transparent',
     position: 'absolute',
     bottom: '15px',
+    width: '178px',
     '@media (max-width: 600px)': {
       width: '170px',
     },
@@ -164,6 +195,9 @@ const StyledButton = withStyles({
     backgroundColor: '#FF6B6B',
     '&:hover': {
       backgroundColor: '#FF6B6B',
+    },
+    '@media (min-width: 600px)': {
+      marginTop: '0px!important',
     },
   },
   startIcon: {
@@ -195,11 +229,13 @@ function createMarkup() {
 export default function DiscussionComponent(props) {
   const classes = useStyles({});
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
   const { setAlert } = useContext(AlertNotificationContext);
   const [reply, setReply] = React.useState('');
-  const [ addComment, setAddComment] = React.useState(0);
+  const [ addComment, setAddComment] = React.useState(props.rowData.comment_count? props.rowData.comment_count: 0);
   const [commentList, setCommentList] = React.useState([]);
+
   const handleChange = (e) => {
     setReply(e.target.value);
   };
@@ -212,16 +248,23 @@ export default function DiscussionComponent(props) {
     axiosInstance
       .post(endpoints.discussionForum.CreateCommentAndReplay, param)
       .then((res) => {
-        //console.log(res);
         setReply('');
         setAlert('success', res.data.message);
-        setAddComment(addComment + 1);
+        if(res.data.status_code === 200){
+          setAddComment(addComment + 1);
+        }
       })
       .catch((error) => console.log(error));
   };
   const handlePost = () => {
     dispatch(postAction(props.rowData));
-    history.push('/discussion-forum/post/' + props.rowData.id);
+    if(location.pathname === '/student-forum'){
+      history.push('/student-forum/post/' + props.rowData.id);
+    }
+    else {
+      history.push('/teacher-forum/post/' + props.rowData.id);
+    }
+    //history.push('/discussion-forum/post/' + props.rowData.id);
   };
 
   React.useEffect(() => {
@@ -231,7 +274,6 @@ export default function DiscussionComponent(props) {
     axiosInstance
       .get(`${endpoints.discussionForum.postLike}?post=${props.rowData.id}&type=2`)
       .then((res) => {
-        //console.log(res.data.result.results);
         setCommentList(res.data.result.results);
       })
       .catch((error) => console.log(error));
@@ -270,6 +312,19 @@ export default function DiscussionComponent(props) {
     setOpenGiveAward(false);
     setSelectedValue(value);
   };
+
+  const handleAwardsCount = (id) =>{
+    if(id === 1){
+      setGoldCount(goldCount + 1);
+    }
+    if(id === 2){
+      setSilverCount(silverCount + 1);
+    }
+    if(id === 3){
+      setBronzeCount(bronzeCount + 1);
+    }
+    setAwardsCount(awardsCount + 1);
+  }
 
   React.useEffect(() => {
     props.rowData && props.rowData.awards.map((award) => {
@@ -322,7 +377,7 @@ export default function DiscussionComponent(props) {
             <span style={{ marginLeft: '10px'}}>
               <ChatIcon />
               <span className={classes.discussionIcon}>
-                {props.rowData.comment_count}
+                {addComment}
               </span>
             </span>
             <span
@@ -352,9 +407,21 @@ export default function DiscussionComponent(props) {
                 <div style={{ padding: '10px 20px', textAlign: 'center'}}>
                   {/* <SilverAwards /> */}
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    {goldCount !== 0 && (<img src={GoldAwards} alt="Silver Awards" />)}
-                    {silverCount !== 0 && (<img src={SilverAwards} alt="Silver Awards" />)}
-                    {bronzeCount !== 0 && (<img src={BronzeAwards} alt="Silver Awards" />)}
+                    {goldCount !== 0 && (
+                      <span style={{position: 'relative'}}>
+                        <img src={GoldAwards} alt="Silver Awards" />
+                        <div className={classes.awardCount}>{goldCount}</div>
+                      </span>)}
+                    {silverCount !== 0 && (
+                      <span style={{position: 'relative'}}>
+                        <img src={SilverAwards} alt="Silver Awards" />
+                        <div className={classes.awardCount}>{silverCount}</div>
+                      </span>)}
+                    {bronzeCount !== 0 && (
+                      <span style={{position: 'relative'}}>
+                        <img src={BronzeAwards} alt="Silver Awards" />
+                        <div className={classes.awardCount}>{bronzeCount}</div>
+                      </span>)}
                     {goldCount === 0 && silverCount === 0 && bronzeCount === 0 && (<span className={classes.noAwardsText}>No Awards Found</span>)}
                   </div>
                   <Divider />
@@ -405,7 +472,7 @@ export default function DiscussionComponent(props) {
                 fullWidth
               />
             </Grid>
-            <Grid item sm={2} xs={12} style={{ position: 'relative'}}>
+            <Grid item sm={2} xs={12} className={classes.mobileButtons}>
               <Grid container spacing={2}>
                 <Grid item sm={12} xs={6}>
                   <StyledButton
@@ -417,7 +484,7 @@ export default function DiscussionComponent(props) {
                     Read post
                   </StyledButton>
                 </Grid>
-                <Grid item sm={12} xs={6} style={{marginTop: 'auto',}}>
+                <Grid item sm={12} xs={6} className={classes.replyButtons}>
                   <StyledOutlinedButton fullWidth onClick={handleReply}>
                     Reply
                   </StyledOutlinedButton>
@@ -446,6 +513,7 @@ export default function DiscussionComponent(props) {
           postId={postId}
           open={openGiveAward}
           onClose={handleClose}
+          handleAwardsCount={handleAwardsCount}
         />
       </Grid>
     </Grid>

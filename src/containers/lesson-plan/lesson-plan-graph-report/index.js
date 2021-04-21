@@ -140,7 +140,6 @@ const LessonPlanGraphReport = ({
     //         const aa=a?.map(a=>a.central_gs_mapping_id)
     //         // centralGsMappingId=aa?.pop()
     //         setCentralGsMappingId(aa?.pop())
-    //         // console.log(result.data.result.results,'OOOO',centralGsMappingId)
     //         }else {
     //             setAlert('error', result.data.message);
     //         }
@@ -168,10 +167,10 @@ const LessonPlanGraphReport = ({
           setAlert('error', error.message);
           setSubjectDropdown([]);
         });
-
+        const {year:{school:schoolSectionYear}={}} = filterData||{}
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&session_year=${schoolSectionYear?.id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -202,15 +201,15 @@ const LessonPlanGraphReport = ({
   const handleSubject = (event, value) => {
     setSubjectList([]);
     if (value.length > 0) {
-      //   console.log(value, 'vvvvvv');
       const ids = value.map((el) => el.subject_id);
       setSubjectIds(ids);
       const sIds = value.map((el) => el.id);
       setSubjId(sIds);
       setSubjectList(value);
+      const {year:{school:{id:schoolAcademicId}}={}}=filterData||{}
       axiosInstance
         .get(
-          `${endpoints.lessonReport.teacherList}?branch=${filterData?.branch?.id}&grade=${filterData?.grade?.grade_id}&section=${filterData.section?.section_id}&subject=${ids}&academic_year=${filterData?.year?.id}`
+          `${endpoints.lessonReport.teacherList}?branch=${filterData?.branch?.id}&grade=${filterData?.grade?.grade_id}&section=${filterData.section?.section_id}&subject=${ids}&academic_year=${schoolAcademicId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -225,10 +224,9 @@ const LessonPlanGraphReport = ({
           setTeacherDropdown([]);
         });
     }
-    // console.log(value[0].id, filterData.grade.grade_id, 'GRADEEE');
     axiosInstance
       .get(
-        `${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value[0].id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&branch=${filterData.grade.grade_id}`
+        `${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value[0].id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&grade_id=${filterData.grade.grade_id}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -245,7 +243,6 @@ const LessonPlanGraphReport = ({
 
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: '' });
-    console.log(value, '=======')
     if (value) {
       setFilterData({ ...filterData, branch: value });
       axiosInstance
@@ -283,7 +280,6 @@ const LessonPlanGraphReport = ({
         )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`
       )
       .then((result) => {
-        //   console.log(result.data)
         if (result.data.status_code === 200) {
           setLoading(false);
           setGraphData(result.data.result);
@@ -297,26 +293,69 @@ const LessonPlanGraphReport = ({
         setAlert('error', error.message);
       });
   };
+  const fetchCentralAndSchoolsSessions = ()=>{
+    const headers= {headers: {'x-api-key': 'vikash@12345#1231'}}
+    const schoolSessionApiURL = endpoints.masterManagement.academicYear
+    const schoolSessionProm = axiosInstance.get(schoolSessionApiURL)
+
+    const centralSessionsApiURL = `${endpoints.baseURLCentral}/lesson_plan/list-session/`
+    const centralSessionProm = axios.get(centralSessionsApiURL, headers)
+    const promises = [schoolSessionProm,centralSessionProm]
+    Promise.all(promises).then(res=>{
+      const academicYears= []
+      const [schoolAcademicYearsObj, centralAcademicYearsObj]= res
+
+      const {data:{result:{results:schoolAcademicYears}={}}={}}=schoolAcademicYearsObj||{}
+      let {data:{result:{results:centralAcademicYears}={}}={}}=centralAcademicYearsObj||{}
+      let schoolAcademicYearsObjMap = {}
+      schoolAcademicYears.forEach(item=>{
+        schoolAcademicYearsObjMap[item.session_year] = item
+      })
+      centralAcademicYears.forEach(item=>{
+        const obj = {...item, school:schoolAcademicYearsObjMap[item.session_year]}
+        academicYears.push(obj)
+      })
+      setAcademicYearDropdown(academicYears)
+    }).catch(e=>{
+        setAlert('error', 'Failed to fetch academic sessions.');
+    })
+//     axios
+//       .get(`${endpoints.baseURLCentral}/lesson_plan/list-session/`, {
+//         headers: {
+//           'x-api-key': 'vikash@12345#1231',
+//         },
+//       })
+//       .then((result) => {
+//         if (result.data.status_code === 200) {
+//           setAcademicYearDropdown(result.data.result.results);
+//         } else {
+//           setAlert('error', result.data.message);
+//         }
+//       })
+//       .catch((error) => {
+//         setAlert('error', error.message);
+//       });
+// // fetch erp academic years
+      
+//       axiosInstance
+//       .get(apiURL)
+//       .then((result) => {
+//         if (result.data.status_code === 200) {
+//           setAcademicYearDropdown(result.data.result.results);
+//         } else {
+//           setAlert('error', result.data.message);
+//         }
+//       })
+//       .catch((error) => {
+//         setAlert('error', error.message);
+//       });
+// 
+  }
 
   useEffect(() => {
+    fetchCentralAndSchoolsSessions()
     axios
-      .get(`https://dev.mgmt.letseduvate.com/qbox/lesson_plan/list-session/`, {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
-      })
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setAcademicYearDropdown(result.data.result.results);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
-    axios
-      .get('https://dev.mgmt.letseduvate.com/qbox/lesson_plan/list-volume/', {
+      .get(`${endpoints.baseURLCentral}/lesson_plan/list-volume/`, {
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },
@@ -336,7 +375,8 @@ const LessonPlanGraphReport = ({
       .get(`${endpoints.communication.branches}`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setBranchDropdown(result.data.data);
+          // setBranchDropdown(result.data.data);
+          setBranchDropdown(result.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean))
           // setBranchId(result.data.data[1].id);
           // a = result.data.data[0].id
         } else {

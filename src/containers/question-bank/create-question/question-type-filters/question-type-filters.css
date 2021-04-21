@@ -1,0 +1,245 @@
+.typeFilterParent {
+  padding-bottom: 10px;
+}
+
+.dropdownIcon .MuiInputBase-root {
+  border-radius: 10px;
+}
+
+.questionTypeFilter .MuiInputBase-root {
+  background-color: #f9f9f9;
+}
+
+.dropdownIcon .MuiFormLabel-root {
+  color: #014b7e;
+}
+
+.dropdownIcon .MuiInputLabel-outlined.MuiInputLabel-shrink {
+  font-weight: 600;
+}
+
+.questionTypeFilter .MuiAutocomplete-input {
+  color: #ff6b6b;
+}
+
+.dropdownIcon .MuiFormLabel-root.Mui-focused {
+  color: #014b7e;
+  font-weight: 600;
+}
+
+.dropdownIcon .MuiButtonBase-root {
+  color: #ff6b6b;
+}
+
+.modifyDesign.MuiButton-root {
+  border-radius: 10px;
+}
+
+.typeFilterContainers {
+  border: 1px solid #dbdbdb;
+  border-radius: 10px;
+  width: 95%;
+  margin: 0px auto 20px auto;
+}
+
+.questionTypefiltersContainer {
+  margin: 10px 30px 20px 30px;
+}
+
+.questionPaperTypeTag {
+  color: #014b7e;
+  margin: 15px 0 15px 30px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.minMaxContainer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.minMaxText {
+  color: #014b7e;
+  font-size: 16px;
+  font-weight: 600;
+  margin-right: 10px;
+  margin-bottom: 5px;
+}
+
+.lctBoxes {
+  flex-grow: 1;
+  display: flex;
+  font-size: 16px;
+  color: #ff6b6b;
+  margin-left: 10px;
+}
+
+.levelBox {
+  padding: 5px 10px;
+  background-color: #e4f4b6;
+  border-radius: 5px;
+  align-self: center;
+  margin-right: 10px;
+}
+
+.categoryBox {
+  padding: 5px 10px;
+  background-color: #ffe4d7;
+  border-radius: 5px;
+  align-self: center;
+  margin-right: 10px;
+}
+
+.typeBox {
+  padding: 5px 10px;
+  background-color: #f8dfff;
+  border-radius: 5px;
+  align-self: center;
+}
+
+.descriptionInTextfield {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ff6b6b;
+  margin: 15px auto;
+}
+
+.descBox .MuiInputBase-input {
+  color: #014b7e;
+}
+
+.dividerVertical {
+  background: rgb(150, 150, 150);
+  content: '';
+  height: 30px;
+  width: 1px;
+}
+
+.buttonsAtBottom {
+  /* border: 1px solid #dbdbdb; */
+  border-radius: 10px;
+  /* width: 95%; */
+  margin: 15px auto 30px auto;
+  /* padding: 20px; */
+}
+
+.createManuallyButton.MuiButtonBase-root {
+  border: 1px solid #ff6b6b;
+  background: white;
+}
+
+.createManuallyButton .MuiButton-label {
+  color: #014b7e;
+}
+
+.addPassageQuestionButtonContainer {
+  padding: 20px 30px 0 30px;
+}
+
+.addPassageQuestionButton.MuiButtonBase-root {
+  border: 1px solid #dbdbdb;
+  background: white;
+  box-shadow: none;
+  padding: 15px;
+  width: 100%;
+}
+
+.addPassageQuestionButton .MuiButton-label {
+  color: #014b7e;
+}
+
+.comprehensionButtons {
+  border: 1px solid #dbdbdb;
+  border-radius: 10px;
+  margin: 20px auto;
+  width: 95%;
+  padding: 20px;
+}
+
+.multipleChoiceBox {
+  padding-bottom: 1px;
+}
+
+.comprehensionQuestionEditor {
+  width: 95%;
+  margin: 20px auto 0 auto;
+}
+
+.comprehensionQuestionEditor .tox-tbtn:nth-last-child(1) {
+  background: white !important;
+  padding: 0px !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+}
+
+.comprehensionQuestionEditor .tox-toolbar__primary {
+  background: none !important;
+  margin: 1% 0 -2% 51% !important;
+  margin-bottom: 1px !important;
+}
+
+.videoContainer {
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+  margin: 20px auto 0 auto;
+}
+
+.player-wrapper {
+  width: 75%;
+  margin: 0 auto;
+}
+
+.react-player {
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.react-player video {
+  border-radius: 10px;
+  border: none;
+  background: #3d3d3d;
+}
+
+.removeNoteContainer {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  justify-content: space-between;
+}
+
+.noteContainer {
+  align-self: flex-end;
+  vertical-align: bottom;
+}
+
+.removeVideoButton.MuiButtonBase-root {
+  border: 1px solid #dbdbdb;
+  background: white;
+  box-shadow: none;
+  padding: 15px;
+}
+
+.removeVideoButton .MuiButton-label {
+  color: #014b7e;
+}
+
+@media screen and (max-width: 768px) {
+  .addPassageQuestionButtonContainer {
+    padding: 0px 10px 15px 10px;
+    margin-top: 20px ;
+  }
+
+  .comprehensionButtons {
+    margin-top: 5px;
+  }
+
+  .lctBoxes {
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 5px;
+    margin-left: 0;
+    height: 100px;
+  }
+}

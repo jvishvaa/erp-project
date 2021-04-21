@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -180,7 +180,6 @@ const TeacherHomework = withRouter(
     const handleSelectCol = (col, view) => {
       //  setClassNameForcontainer("home-wrapper")
       const { homeworkId, subjectId } = col;
-      console.log('homework id', homeworkId);
       fetchStudentLists(homeworkId, subjectId);
       setSelectedCol(col);
       if (isMobile) {
@@ -240,7 +239,6 @@ const TeacherHomework = withRouter(
       const homeworkModule = NavData?.filter(
         (parent) => parent.parent_modules === 'Homework'
       );
-      console.log('homeworkModule ', homeworkModule);
       const teacherModuleId =
         homeworkModule.length > 0
           ? homeworkModule[0].child_module.filter(
@@ -258,7 +256,6 @@ const TeacherHomework = withRouter(
             item.child_module.forEach((item) => {
               if (item.child_name === 'Teacher Homework') {
                 setTeacherModuleId(item.child_id);
-                console.log('item.child_id ', item.child_id);
               }
             });
           }
@@ -272,7 +269,6 @@ const TeacherHomework = withRouter(
 
     const tableContainer = useRef(null);
 
-    console.log('homeworkCols', homeworkCols);
 
     return (
       <>
@@ -302,7 +298,6 @@ const TeacherHomework = withRouter(
                         value={dateRange}
                         // calendars='1'
                         onChange={(newValue) => {
-                          console.log('onChange truggered', newValue);
                           const [startDate, endDate] = newValue;
                           const sevenDaysAfter = moment(startDate).add(6, 'days');
                           setDateRange([startDate, sevenDaysAfter]);
@@ -321,7 +316,6 @@ const TeacherHomework = withRouter(
                           // startProps,
                           endProps
                         ) => {
-                          //console.log('startProps ', startProps, 'endProps', endProps);
                           return (
                             <>
                               <TextField
@@ -346,7 +340,6 @@ const TeacherHomework = withRouter(
                                 size='small'
                                 style={{ minWidth: '250px' }}
                                 onClick={() => {
-                                  console.log('triggered');
                                   setDatePopperOpen(true);
                                 }}
                               />
@@ -624,17 +617,23 @@ const TeacherHomework = withRouter(
                                           }}
                                         >
                                           {!data.hasOwnProperty('student_submitted') ? (
-                                            <IconButton
-                                              onClick={() => {
-                                                navigateToAddScreen({
-                                                  date: row.date,
-                                                  subject: col.subject_name,
-                                                  subjectId: col.id,
-                                                });
-                                              }}
-                                            >
-                                              <AddCircleOutlineIcon color='primary' />
-                                            </IconButton>
+                                            <>
+                                              {row.canUpload ? (
+                                                <IconButton
+                                                  onClick={() => {
+                                                    navigateToAddScreen({
+                                                      date: row.date,
+                                                      subject: col.subject_name,
+                                                      subjectId: col.id,
+                                                    });
+                                                  }}
+                                                >
+                                                  <AddCircleOutlineIcon color='primary' />
+                                                </IconButton>
+                                              ) : (
+                                                <></>
+                                              )}
+                                            </>
                                           ) : (
                                             <>
                                               <IconButton

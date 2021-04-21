@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -70,12 +70,12 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
       const result = await axiosInstance.get(request);
       if (result.data.status_code === 200) {
         let res = result.data.data;
-        console.log(result.data.data,'nkr1');
         setTotalHomework(res?.hw_given);
+        setSubmittedHomework(res?.hw_submitted);
         if (Object.keys(res).length > 0) {
           if (res.subject_rating.length > 0) {
             //setTotalHomework(res?.hw_given);
-            setSubmittedHomework(res?.hw_submitted);
+            //setSubmittedHomework(res?.hw_submitted);
             setRating(res?.subject_rating);
             setHomeworkTimelineDisplay(true);
           }

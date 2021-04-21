@@ -203,7 +203,6 @@ class StudentDashboard extends Component {
   };
   handleFilter = () => {
     const { pageNo, pageSize ,tabValue,startDate,endDate,status,moduleId} = this.state;
-    console.log(startDate,endDate,"@@@")
     let tabStatus= []
     if(tabValue === 0){
       tabStatus= [8,5]

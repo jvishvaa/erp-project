@@ -17,6 +17,7 @@ export const initialFormStructure = {
   startDate: '',
   startTime: '',
   tutorEmail: '',
+  acadId: '',
   branchIds: [],
   gradeIds: [],
   sectionIds: [],

@@ -44,7 +44,6 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
     setLoading(true)
     // axiosInstance.get(`${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${lesson.academic_year_id}&completed_by=${lesson.completed_by}`)
     //   .then(result => {
-    //     // console.log(result.data,'ooo')
     //     if (result.data.status_code === 200) {
           setLoading(false);
           setViewMore(true);
@@ -73,7 +72,6 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
     //   })
   }
   const handleDelete=(e,index)=>{
-    console.log(e,index,'event')
     axiosInstance.delete(`${endpoints.generalDairy.updateDelete}${e.id}/update-delete-dairy/`)
     .then((result)=>{
 
@@ -89,9 +87,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
 
   }
   const handleEdit=(data)=>{
-    // console.log(data,'PPP')
     // // setEditData(e)
-    debugger
     setState({isEdit:true,editData:data});
     history.push('/create/general-diary')
   }
@@ -99,18 +95,19 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   return (
     <Paper className={periodColor?classes.selectedRoot:classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}>
       <Grid container spacing={2}>
-        <Grid item xs={8}>
+        <Grid item xs={10}>
           <Box>
             <Typography
               className={classes.title}
               variant='p'
               component='p'
               color='primary'
+              noWrap
             >
-              Topic / {lesson.title}
+              Topic: <span style={{ color: 'red'}}>{lesson.title}</span>
             </Typography>
           </Box>
-        <Typography style={{fontSize: '15px',marginTop: '10px'}}> GeneralDiary</Typography>
+          <Typography style={{fontSize: '15px',marginTop: '10px'}}> General Diary</Typography>
           <Divider className='divider'/>
           <Box mt={2}>
             <Typography
@@ -124,7 +121,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
             </Typography>
           </Box>
         </Grid>
-        <Grid item xs={4} className={classes.textRight}>
+        <Grid item xs={2} className={classes.textRight}>
           <Box>
             <span
               className='period_card_menu'

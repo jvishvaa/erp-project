@@ -333,7 +333,6 @@ const UpcomingClasses = () => {
         // setToggledData(data);
         setSelected(data.id);
         if (isTabDivice) {
-            // console.log('**** TAb *****');
         }
     }
 

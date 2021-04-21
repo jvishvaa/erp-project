@@ -1,4 +1,4 @@
-/* eslint-disable no-debugger */
+
 import React, { useState, useContext } from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -127,6 +127,7 @@ function union(arra1, arra2) {
 function findAndApplyCustomScope(subModules, id, customScopeObj, applyUnion) {
   const clonedArray = JSON.parse(JSON.stringify(subModules));
   const index = clonedArray.findIndex((obj) => obj.module_child_id == id);
+  const customYear = clonedArray[index].custom_year;
   const customBranch = clonedArray[index].custom_branch;
   const customGrade = clonedArray[index].custom_grade;
   const customSection = clonedArray[index].custom_section;
@@ -134,6 +135,7 @@ function findAndApplyCustomScope(subModules, id, customScopeObj, applyUnion) {
   let scopeObj = { ...customScopeObj };
   if (applyUnion) {
     scopeObj = {
+      custom_year: union(customYear, customScopeObj.custom_year),
       custom_branch: union(customBranch, customScopeObj.custom_branch),
       custom_grade: union(customGrade, customScopeObj.custom_grade),
       custom_section: union(customSection, customScopeObj.custom_section),
@@ -151,6 +153,7 @@ export default function ModuleCard({
   module,
   alterCreateRolePermissions,
   branches,
+  academicYear,
   modulePermissionsRequestData,
   setModulePermissionsRequestData,
 }) {
@@ -205,11 +208,7 @@ export default function ModuleCard({
     } else if (unCheckDependency.length === 0) {
       const unCheckScopeDependencies = [];
       const currSubModule = subModules.find((obj) => obj.module_child_id === subModuleId);
-      console.log(
-        'currSubModule ',
-        currSubModule,
-        unCheckScopeDependenciesForModules[scope]
-      );
+
       // unCheckScopeDependenciesForModules[scope].forEach((scopeName) => {
       //   if (currSubModule[scopeName] == true) {
       //     // parent scope is checked
@@ -251,11 +250,7 @@ export default function ModuleCard({
         return true;
       });
       const currSubModule = subModules.find((obj) => obj.module_child_id === subModuleId);
-      console.log(
-        'currSubModule ',
-        currSubModule,
-        unCheckScopeDependenciesForModules[scope]
-      );
+ 
       // unCheckScopeDependenciesForModules[scope].forEach((scopeName) => {
       //   if (currSubModule[scopeName] == true) {
       //     // parent scope is checked
@@ -281,7 +276,6 @@ export default function ModuleCard({
           );
         }
       } else {
-        console.log('not safe to uncheck dependency', unCheckDependencies);
         setAlert('error', `Uncheck  ${unCheckDependencies.join(', ')} modules first`);
       }
     }
@@ -308,6 +302,7 @@ export default function ModuleCard({
         my_grade: subModule.my_grade,
         my_section: subModule.my_section,
         my_subject: subModule.my_subject,
+        custom_year: subModule.custom_year.map((year) => year.id),
         custom_grade: subModule.custom_grade.map((grade) => grade.id),
         custom_section: subModule.custom_section.map((section) => section.id),
         custom_branch: subModule.custom_branch.map((branch) => branch.id),
@@ -327,7 +322,6 @@ export default function ModuleCard({
     unCheckDependency,
     scope
   ) => {
-    console.log('custom scope obj ', customScopeObj);
     const moduleObj = JSON.parse(JSON.stringify(module));
     const subModules = module.module_child;
     // const changedModuleIndices = [];
@@ -339,7 +333,6 @@ export default function ModuleCard({
     );
     moduleObj.module_child = clonedArray;
 
-    console.log('module state', moduleObj);
 
     // if (unCheckDependency.length == 0) {
     //   const { clonedArray, index } = findAndApplyCustomScope(
@@ -423,6 +416,7 @@ export default function ModuleCard({
         my_grade: obj.my_grade,
         my_section: obj.my_section,
         my_subject: obj.my_subject,
+        custom_year: obj.custom_year.map((year) => year.id),
         custom_grade: obj.custom_grade.map((grade) => grade.id),
         custom_section: obj.custom_section.map((section) => section.id),
         custom_branch: obj.custom_branch.map((branch) => branch.id),
@@ -575,6 +569,7 @@ export default function ModuleCard({
                   <SubModule
                     subModule={subModule}
                     columns={columns}
+                    academicYear={academicYear}
                     onCheckPermission={onCheckPermission}
                     onChangeCustomScope={onChangeCustomScope}
                     branches={branches}

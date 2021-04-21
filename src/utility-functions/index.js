@@ -68,3 +68,28 @@ export function timeDeltaDiff(startTimeField, endTimeField, getAsString) {
   }
   return '';
 }
+
+export function getModuleInfo(moduleName){
+  const navData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  function getModuleId(moduleName){
+    let returnObj= {}
+    navData.every(parentModule=>{
+      const {id:parentId,parent_modules:parentName, child_module:childModules}=parentModule||{}
+      if(parentName===moduleName){
+        returnObj= {id: parentId, name:parentName,isParentModule:true, parent:parentModule}
+        return false
+      }
+      return childModules.every(childModule=>{
+        const {child_id:childId,child_name:chuldName}=childModule||{}
+        if(chuldName===moduleName){
+          returnObj= {id: childId, name:chuldName,isParentModule:false, parent:parentModule,child:childModule}
+          return false
+        } else{
+          return true
+        }
+      })
+    })
+    return returnObj
+  }
+  return moduleName ?getModuleId(moduleName):navData
+}

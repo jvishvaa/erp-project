@@ -8,8 +8,7 @@ const { Provider } = ClapContext;
 
 export const Tabs = ({ defaultActiveTab, children }) => {
   const [activeTab, setActiveTab] = useState(defaultActiveTab);
-  console.log('default activeTab', activeTab, '11', defaultActiveTab);
-
+ 
   const onClickTabItem = (activeTab) => {
     setActiveTab(activeTab);
   };
@@ -23,8 +22,6 @@ export const Tabs = ({ defaultActiveTab, children }) => {
       <ol className='tab-list'>
         {children.map((child, index) => {
           const { label } = child.props;
-          console.log('childLabel ', label, activeTab);
-
           return (
             <TabButton
               activeTab={activeTab}
@@ -67,8 +64,6 @@ const TabButton = ({ activeTab, label, onClick }) => {
   if (activeTab === label) {
     isActive = true;
   }
-
-  console.log(label, 'matchLabel', activeTab);
 
   const handleClick = () => {
     onClick(label);

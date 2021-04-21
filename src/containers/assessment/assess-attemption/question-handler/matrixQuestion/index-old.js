@@ -41,9 +41,6 @@ const MatrixQuestion = (props) => {
 
   const [{ answer, options, question, matrixOptions }] = question_answer;
   // const [isChecked, setIsChecked] = useState([]);
-  useEffect(() => {
-    console.log('is CHecked: ', currentQuestionObj);
-  }, []);
 
   const handleNextQuestion = () => {
     nextQues(qId);

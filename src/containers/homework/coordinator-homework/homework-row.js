@@ -6,7 +6,6 @@ import HomeworkCol from './homework-col';
 import moment from 'moment';
 
 const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomework, coord_selected_teacher_id}) => {
-  // console.log(coord_selected_teacher_id,"dddd")
   const history = useHistory();
   const navigateToAddScreen = ({ date, subject, subjectId }) => {
     history.push(`/homework/cadd/${date}/${subject}/${subjectId}/${coord_selected_teacher_id}`);

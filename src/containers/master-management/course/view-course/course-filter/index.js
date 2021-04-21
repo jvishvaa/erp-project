@@ -35,6 +35,27 @@ const CourseFilter = ({
     grade: [],
   });
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Master Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Course') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   // const branchDrop = [{ branch_name: 'AOL' }];
 
   const handleClear = () => {
@@ -53,25 +74,28 @@ const CourseFilter = ({
   };
 
   useEffect(() => {
-    let url = `${endpoints.communication.grades}`;
-    if (aolHostURL === endpoints.aolConfirmURL) url += `?branch_id=1`;
-    else url += `?branch_id=1`;
+    if (moduleId) {
+      let url = `${endpoints.masterManagement.grades}`;
+      if (aolHostURL === endpoints.aolConfirmURL)
+        url += `?branch_id=1&module_id=${moduleId}`;
+      else url += `?module_id=${moduleId}`;
 
-    axiosInstance
-      .get(url)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setGradeDropdown(result?.data?.data);
-        } else {
-          setAlert('error', result?.data?.message);
+      axiosInstance
+        .get(url)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setGradeDropdown(result?.data?.result.results);
+          } else {
+            setAlert('error', result?.data?.message);
+            setGradeDropdown([]);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
           setGradeDropdown([]);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-        setGradeDropdown([]);
-      });
-  }, []);
+        });
+    }
+  }, [moduleId]);
 
   // const handleBranch = (event, value) => {
   //   setFilterData({ ...filterData, branch: '' });
@@ -101,17 +125,18 @@ const CourseFilter = ({
 
   useEffect(() => {
     if (gradeKey) {
-      let url = `${endpoints.communication.grades}`;
-      if (aolHostURL === endpoints.aolConfirmURL) url += `?branch_id=1`;
-      else url += `?branch_id=1`;
+      let url = `${endpoints.masterManagement.grades}`;
+      if (aolHostURL === endpoints.aolConfirmURL)
+        url += `?branch_id=1&module_id=${moduleId}`;
+      else url += `?module_id=${moduleId}`;
 
       axiosInstance
         .get(url)
         .then((result) => {
           if (result.data.status_code === 200) {
-            setGradeDropdown(result?.data?.data);
-            const gradeObj = result.data?.data?.find(
-              ({ grade_id }) => grade_id === Number(gradeKey)
+            setGradeDropdown(result?.data?.result.results);
+            const gradeObj = result.data?.result.results?.find(
+              ({ id }) => id === Number(gradeKey)
             );
             if (gradeKey > 0) {
               setFilterData({
@@ -135,7 +160,7 @@ const CourseFilter = ({
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: '' });
     if (value) {
-      setGradeIds(value.grade_id);
+      setGradeIds(value.id || '');
       setFilterData({
         ...filterData,
         grade: value,
@@ -178,9 +203,9 @@ const CourseFilter = ({
             onChange={handleGrade}
             id='volume'
             className='dropdownIcon'
-            value={filterData?.grade}
-            options={gradeDropdown}
-            getOptionLabel={(option) => option?.grade__grade_name}
+            value={filterData?.grade || ''}
+            options={gradeDropdown || []}
+            getOptionLabel={(option) => option?.grade_name || ''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -247,7 +272,7 @@ const CourseFilter = ({
             onClick={() => {
               sessionStorage.removeItem('isAol');
               sessionStorage.removeItem('gradeKey');
-              sessionStorage.setItem('createCourse',1);
+              sessionStorage.setItem('createCourse', 1);
               sessionStorage.removeItem('periodDetails');
               sessionStorage.removeItem('isErpClass');
               history.push('/create/course');

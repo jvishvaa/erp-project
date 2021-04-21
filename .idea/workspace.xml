@@ -1,14 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="12e30880-aaa5-4a06-8f95-cea5433c2102" name="Default Changelist" comment="" />
+    <list default="true" id="12e30880-aaa5-4a06-8f95-cea5433c2102" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/containers/attendance/AttedanceCalender.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/attendance/AttedanceCalender.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitToolBoxStore">
+    <option name="projectConfigVersion" value="2" />
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="branch-acad-finance" />
+                    <option name="lastUsedInstant" value="1615374114" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="frontend-revamp_finance" />
+                    <option name="lastUsedInstant" value="1615373948" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="merge-finance-acad" />
+                    <option name="lastUsedInstant" value="1615373927" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
   </component>
   <component name="ProblemsViewState">
     <option name="selectedIndex" value="1" />
@@ -39,6 +78,7 @@
       <updated>1612733130185</updated>
       <workItem from="1612733133222" duration="329000" />
       <workItem from="1612871722991" duration="49000" />
+      <workItem from="1617772391644" duration="60000" />
     </task>
     <servers />
   </component>

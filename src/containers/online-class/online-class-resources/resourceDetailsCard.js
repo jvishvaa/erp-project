@@ -133,7 +133,6 @@ export default function ResourceDetailsCardComponent(props) {
     else {
         periods = Math.floor(Difference_In_Days + 1);
     }
-    //console.log(startDate.setDate(startDate.getDate() + 1));
 
     let dateArray = [];
     for(var i = 0; i <= periods; i++){
@@ -145,7 +144,6 @@ export default function ResourceDetailsCardComponent(props) {
             day = startDate.setDate(startDate.getDate() + 1);
         }
         dateArray.push(day);
-        //console.log(moment(day).format('ll'));
     }
     ////Periods date end
 /**
@@ -156,7 +154,6 @@ export default function ResourceDetailsCardComponent(props) {
         };
         axiosInstance.get(endpoints.onlineClass.resourceFile,params)
         .then((res) => {
-            console.log(res.data);
             //setPeriodsData(res.data.data);
         })
         .catch((error) => console.log(error))
@@ -181,7 +178,6 @@ export default function ResourceDetailsCardComponent(props) {
             axiosInstance
             .get(`erp_user/${props.resourceData && props.resourceData.id}/online-class-details/`)
             .then((res) => {
-              console.log(res.data );
               setNoOfPeriods(res.data.data);
             })
             .catch((error) => setAlert('error', error.message));

@@ -1,15 +1,13 @@
 import axios from 'axios';
+import ENVCONFIG from './config';
 
-const axiosInstance = axios.create({
-  baseURL: `${window.location.origin}/qbox`,
-  // baseURL:'https://revamperp.letseduvate.com/qbox',
-  // baseURL: 'https://erpnew.letseduvate.com/qbox',
-  // baseURL: 'https://aol.letseduvate.com/qbox',
-  // baseURL: 'http://olvorchidnaigaon.letseduvate.com/qbox',
-  // baseURL: 'http://13.234.252.195:443',
-  // baseURL: 'http://localhost:8000/qbox',
+const {
+  apiGateway: { baseURL },
+} = ENVCONFIG;
 
-});
+//require('dotenv').config();
+
+const axiosInstance = axios.create({ baseURL });
 
 // ****** enable the following code to attach authorization headers on each request and for logging out when an unauthorize request is send *****//
 
@@ -27,7 +25,6 @@ axiosInstance.interceptors.response.use(
   },
   async function (error) {
     if (error.response?.status === 401) {
-      console.log('user logged out');
       await localStorage.removeItem('userDetails');
       // Show toast message login to continue
     } else {
@@ -38,3 +35,9 @@ axiosInstance.interceptors.response.use(
 );
 
 export default axiosInstance;
+
+// Upload: document file size
+export const FileSize = {
+  img_pdf: 1048576,
+  audio_video: 52428800
+}

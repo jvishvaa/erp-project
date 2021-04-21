@@ -1,0 +1,6 @@
+export const filterConstants = {
+  UPDATE: 'FILTER_UPDATE',
+  CLEAR: 'FILTER_CLEAR',
+  REQUEST: 'FILTER_REQUEST',
+  APPLY_ALL: 'FILTER_APPLY_ALL'
+}

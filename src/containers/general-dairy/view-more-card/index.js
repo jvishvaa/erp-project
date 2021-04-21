@@ -62,7 +62,6 @@ const ViewMoreCard = ({
   };
   const pic=viewMoreData?.documents?.map(a=>a)
   const gradeName= viewMoreData?.grade?.map(a=>a.grade_name)
-  console.log(viewMoreData, '=====', branch);
   return (
     <>
       <Paper className='rootViewMoreGeneral'>
@@ -70,7 +69,7 @@ const ViewMoreCard = ({
           <div className='leftHeader'>
             <div className='headerTitle'>{viewMoreData.title}</div>
             <div className='headerTitle'>
-              Created On:{viewMoreData.created_at.substring(0, 10)}
+              Created On: {viewMoreData.created_at.substring(0, 10)}
             </div>
             {/* <div className='headerContent'>{periodDataForView?.section_name}</div> */}
           </div>

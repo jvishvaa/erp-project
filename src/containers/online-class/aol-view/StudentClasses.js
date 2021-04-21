@@ -153,7 +153,6 @@ const StudentClasses = () => {
     //api call
     const getClasses = () => {
         // student view api
-        console.log(location.pathname);
         setClassesdata([]);
         setIsLoding(false);
         //if (location.pathname === "/online-class/attend-class") {
@@ -184,15 +183,11 @@ const StudentClasses = () => {
     }
 
     const handleSelctedClass = (data) => {
-        console.log(data);
         setItemSize(4);
         setSize(9);
         setClassData(data);
         setSelected(data.id);
-
-        console.log('TAb : ' + isTabDivice);
         if (isTabDivice) {
-            console.log('**** TAb *****');
         }
     }
 

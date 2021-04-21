@@ -123,23 +123,20 @@ const GradeTable = () => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .put(endpoints.masterManagement.updateGrade, {
-        is_delete: true,
-        grade_id: gradeId,
-      })
+      .delete(`${endpoints.masterManagement.updateGrade}${gradeId}`)
       .then((result) => {
-        if (result.data.status_code === 200) {
+        if (result.data.status_code > 199 && result.data.status_code < 300) {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', result.data.message);
+            setAlert('success', `Grade ${result.data.message||result.data.msg}`);
         } else {
           setLoading(false);
-          setAlert('error', result.data.message);
+          setAlert('error', result.data.message||result.data.msg);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error',error.response.data.message||error.response.data.msg);
       });
     setOpenDeleteModal(false);
   };
@@ -161,20 +158,22 @@ const GradeTable = () => {
   }, [page, delFlag, goBackFlag]);
 
   useEffect(() => {
+
+    let url = `${endpoints.masterManagement.grades}?page=${page}&page_size=${limit}`;
+    if (searchGrade) url += `&grade_name=${searchGrade}`;
+
     axiosInstance
-      .get(
-        `${endpoints.masterManagement.grades}?page=${page}&page_size=${limit}&grade_name=${searchGrade}`
-      )
+      .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
             setTotalCount(result.data.result.count);
             setGrades(result.data.result.results);
         } else {
-          setAlert('error', result.data.error_message);
+          setAlert('error', result?.data?.msg||result?.data?.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', error?.response?.data.message||error?.response?.data.msg);
       });
   }, [delFlag, goBackFlag, page, searchGrade]);
 
@@ -233,7 +232,7 @@ const GradeTable = () => {
           </Grid>
         )}
 
-        {!isMobile && tableFlag && !addFlag && !editFlag && (
+        {tableFlag && !addFlag && !editFlag && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
@@ -256,13 +255,13 @@ const GradeTable = () => {
                     return (
                       <TableRow hover grade='checkbox' tabIndex={-1} key={index}>
                         <TableCell className={classes.tableCell}>
-                          {grade.grade_name}
+                          {grade?.grade_name}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          {grade.grade_type}
+                          {grade?.grade_type}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          {grade.created_by ? grade.created_by.first_name : ''}
+                          {grade?.created_by||''}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
 
@@ -307,7 +306,7 @@ const GradeTable = () => {
             </div>
           </Paper>
         )}
-        {isMobile && !addFlag && !editFlag && (
+        {/* {isMobile && !addFlag && !editFlag && (
           <>
             <Container className={classes.cardsContainer}>
               {grades.map((grade, i) => (
@@ -334,7 +333,7 @@ const GradeTable = () => {
             />
             </div>
           </>
-        )}
+        )} */}
         <Dialog
           open={openDeleteModal}
           onClose={handleCloseDeleteModal}

@@ -15,6 +15,7 @@ const SubModule = ({
   columns,
   onCheckPermission,
   branches,
+  academicYear,
   onChangeCustomScope,
 }) => {
   const [modalOpen, setModalState] = useState(false);
@@ -29,6 +30,7 @@ const SubModule = ({
   };
 
   const customScopeApplied =
+    subModule.custom_year.length > 0 ||
     subModule.custom_branch.length > 0 ||
     subModule.custom_grade.length > 0 ||
     subModule.custom_section.length > 0 ||
@@ -94,6 +96,7 @@ const SubModule = ({
         open={modalOpen}
         handleClose={handleCloseModal}
         branches={branches}
+        academicYear={academicYear}
         onChange={(scope, value) => {
           onChangeCustomScope(
             value,
@@ -104,6 +107,7 @@ const SubModule = ({
           );
         }}
         customScope={{
+          custom_year: subModule.custom_year,
           custom_branch: subModule.custom_branch,
           custom_grade: subModule.custom_grade,
           custom_section: subModule.custom_section,

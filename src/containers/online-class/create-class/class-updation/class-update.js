@@ -10,7 +10,6 @@ import endpoints from '../../../../config/endpoints';
 const ClassUpdate = (props) => {
   // const tutorEmailRef = useRef(null);
   const { classData = {}, handleClose = () => {} } = props || {};
-  console.log(handleClose, 'handleClose');
   const {
     online_class: {
       grade: classGrades = [],
