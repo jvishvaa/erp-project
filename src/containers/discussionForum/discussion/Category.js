@@ -98,13 +98,13 @@ const useStyles = makeStyles((theme) => ({
 
 const StyledButton = withStyles({
   root: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#FF6B6B !important',
     color: '#FFFFFF',
     height: '42px',
     borderRadius: '10px',
     marginTop: 'auto',
     '&:hover': {
-      backgroundColor: '#FF6B6B',
+      backgroundColor: '#FF6B6B !important',
     },
   },
   startIcon: {
@@ -120,6 +120,9 @@ const StyledOutlinedButton = withStyles({
     border: '1px solid #FF6B6B',
     borderRadius: '10px',
     backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   },
 })(Button);
 
@@ -133,6 +136,9 @@ const StyledFilterButton = withStyles({
     float: 'right',
     textTransform: 'capitalize',
     backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   },
   iconSize: {},
 })(Button);
@@ -291,8 +297,9 @@ const Category = (props) => {
     if(moduleId){
       if(location.pathname === '/student-forum'){
         const grade_id = userDetails.role_details?.grades[0]?.grade_id;
+        const branch_id = userDetails.role_details?.branch[0]?.id;
         axiosInstance
-        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&grade=${grade_id}`)
+        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch_id=${branch_id}&grade=${grade_id}`)
         .then((res) => {
           console.log(res.data.result);
           setCategoryList(res.data.result);
@@ -434,7 +441,6 @@ const Category = (props) => {
                   />
                 ))}
               </StyledTabs>
-              <TabPanel value={value} index={0} />
             </div>
             {/* <CategoryScrollbar categoryList={props.categoryList} categoryId={handleCategoryId} /> */}
           </Grid>
