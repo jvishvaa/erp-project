@@ -80,16 +80,16 @@ const ViewContacts = () => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  useEffect(() => {
-    get(
-      `${endpoints.contactUs.filterContact}?academic_year=${selectedAcademicYear.id}&branch=${selectedBranch.branch.id}`
-    )
-      .then((res) => {
-        console.log(res, 'getting the contact details');
-        setData(res.data);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  // useEffect(() => {
+  //   get(
+  //     `${endpoints.contactUs.filterContact}?academic_year=${selectedAcademicYear.id}&branch=${selectedBranch.branch.id}`
+  //   )
+  //     .then((res) => {
+  //       console.log(res, 'getting the contact details');
+  //       setData(res.data);
+  //     })
+  //     .catch((err) => console.log(err));
+  // }, []);
   return (
     <Layout>
       <div style={{ marginTop: '20px', marginLeft: '-10px' }}>
