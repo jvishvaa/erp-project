@@ -38,6 +38,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import endpoints from '../../config/endpoints';
 import { shadows } from '@material-ui/system';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import SearchBar from "material-ui-search-bar";
 
 import {
   Box,
@@ -472,25 +473,11 @@ const Cal1 = () => {
       <form>
 
 
-        {/* <Grid container direction='row'>
-          <Grid item md={2} xs={12} sm={3} lg={2}>
-            <Breadcrumbs
-              separator={<NavigateNextIcon fontSize='medium' color='primary' />}
-              aria-label='breadcrumb'
-            >
-              <Link color='textPrimary' onClick={handleClick}>
-                Dashboard
-              </Link>
-              <Link color='textPrimary' onClick={handleClick}>
-                Create event category
-              </Link>
-            </Breadcrumbs>
-          </Grid>
-        </Grid> */}
+        
         <div className={classes.root}>
           <Grid container spacing={2} direction='row'>
             <Grid item xs={12} sm={5} md={3} className='arrow'>
-              <Autocomplete
+              {/* <Autocomplete
                 size='small'
                 id='role'
                 fullWidth
@@ -508,11 +495,16 @@ const Cal1 = () => {
                     required
                   />
                 )}
+              /> */}
+              <SearchBar
+                // value={this.state.value}
+                // onChange={(newValue) => this.setState({ value: newValue })}
+                // onRequestSearch={() => doSomethingWith(this.state.value)}
               />
             </Grid>
 
             <Grid item xs={12}>
-              <Divider />
+              {/* <Divider /> */}
             </Grid>
           </Grid>
           <Grid container spacing={2} direction='row'>
@@ -526,7 +518,7 @@ const Cal1 = () => {
                 Clear
                 </Button>
             </Grid>
-            <Grid item xs={12} sm={4} md={2} lg={1}>
+            {/* <Grid item xs={12} sm={4} md={2} lg={1}>
               <Button
                 variant='contained'
                 className='custom_button_master '
@@ -538,7 +530,7 @@ const Cal1 = () => {
               >
                 Filter
                 </Button>
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} sm={4} md={2} lg={1}>
               <Button
                 variant='contained'
@@ -549,7 +541,20 @@ const Cal1 = () => {
                 Create
                 </Button>
             </Grid>
+            {/* <Grid item xs={12} sm={4} md={2} lg={4}>
+            
+            </Grid>
+            <Grid item xs={12} sm={4} md={2} lg={5}>
+            <SearchBar 
+              
+              value={this.state.value}
+              onChange={(newValue) => this.setState({ value: newValue })}
+              onRequestSearch={() => doSomethingWith(this.state.value)}
+            />
+            </Grid> */}
           </Grid>
+          <br/>
+          <Divider />
           <Dialog
             onClose={handleClose}
             aria-labelledby='customized-dialog-title'
