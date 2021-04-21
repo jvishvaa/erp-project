@@ -11,10 +11,10 @@ import Breadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import moment from 'moment';
 import MobileDatepicker from './mobile-datepicker';
 import './overallattendance.scss';
-import FormGroup from "@material-ui/core/FormGroup";
+import FormGroup from '@material-ui/core/FormGroup';
 import { useHistory } from 'react-router';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state'
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import {
   Card,
   Grid,
@@ -56,28 +56,28 @@ const Attendance = () => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
-  const [attendanceType, setAttendanceType] = useState([])
-  const [date, setDate] = useState(new Date())
-  const [dateString, setDateString] = useState('')
+  const [attendanceType, setAttendanceType] = useState([]);
+  const [date, setDate] = useState(new Date());
+  const [dateString, setDateString] = useState('');
   const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
   const [academicYear, setAcademicYear] = useState([]);
   const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
-  const [branchList, setBranchList] = useState([])
-  const [selectedBranch, setSelectedBranch] = useState([])
+  const [branchList, setBranchList] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
-  const [secSelectedId, setSecSelectedId] = useState([])
-  const [data, setData] = useState()
+  const [secSelectedId, setSecSelectedId] = useState([]);
+  const [data, setData] = useState();
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
-  const [endDate, setEndDate] = useState()
-  const history = useHistory()
-  const themeContext = useTheme()
+  const [endDate, setEndDate] = useState();
+  const history = useHistory();
+  const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const [studentName, setStudentName] = useState()
-  const [allStudents, setAllStudents] = useState([])
-  const [setSelectedStudent, setSetSelectedStudent] = useState([])
+  const [studentName, setStudentName] = useState();
+  const [allStudents, setAllStudents] = useState([]);
+  const [setSelectedStudent, setSetSelectedStudent] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
@@ -86,66 +86,72 @@ const Attendance = () => {
   const limit = 8;
 
   useEffect(() => {
-    console.log(history)
+    console.log(history);
     if (history?.location?.state?.payload) {
-      console.log(history?.location?.state?.payload?.academic_year_id?.session_year)
-      setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id)
-      setSelectedBranch(history?.location?.state?.payload?.branch_id)
-      setSelectedGrade(history?.location?.state?.payload?.grade_id)
-      setSelectedSection(history?.location?.state?.payload?.section_id)
-      setStartDate(history?.location?.state?.payload?.startDate)
-      setEndDate(history?.location?.state?.payload?.endDate)
-      setStudentName(history?.location?.state?.studentData)
-      console.log(history?.location?.state?.payload?.branch_id)
+      console.log(history?.location?.state?.payload?.academic_year_id?.session_year);
+      setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id);
+      setSelectedBranch(history?.location?.state?.payload?.branch_id);
+      setSelectedGrade(history?.location?.state?.payload?.grade_id);
+      setSelectedSection(history?.location?.state?.payload?.section_id);
+      setStartDate(history?.location?.state?.payload?.startDate);
+      setEndDate(history?.location?.state?.payload?.endDate);
+      setStudentName(history?.location?.state?.studentData);
+      console.log(history?.location?.state?.payload?.branch_id);
       // console.log(history?.location?.state?.studentData[0]?.student)
       axiosInstance
-        .get(`${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&user_id=${history?.location?.state?.studentData[0]?.user_id}&page_num=${pageNumber}&page_size=${limit}`)
+        .get(
+          `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&user_id=${history?.location?.state?.studentData[0]?.user_id}&page_num=${pageNumber}&page_size=${limit}`
+        )
         // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
-        .then(res => {
+        .then((res) => {
           if (res.status == 200) {
             setTotalGenre(res.data.count);
-            console.log(res.data.count)
-            console.log(res.data.results, "single student data")
-            setData(res.data.results)
+            console.log(res.data.count);
+            console.log(res.data.results, 'single student data');
+            setData(res.data.results);
+            setAlert('success', 'Data Successfully fetched');
             if (res?.data?.message) {
               // alert(res?.data?.message)
-            }
-            else
-              console.log(res.data.message)
+            } else console.log(res.data.message);
           }
           if (res.status == 400) {
-            console.log(res.message)
+            console.log(res.message);
+            setAlert('error', res.message);
           }
         })
-        .catch(err => console.log(err))
-
-    }
-    else {
+        .catch((err) => {
+          console.log(err);
+          setAlert('error', err);
+        });
+    } else {
       const date = new Date();
-      console.log(new Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'long' }).format(date))
-      callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList')
+      console.log(
+        new Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'long' }).format(
+          date
+        )
+      );
+      callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
     }
-
   }, []);
 
-const getAllStudents = ()=>{
-  console.log("checking all students")
-  axiosInstance
+  const getAllStudents = () => {
+    console.log('checking all students');
+    axiosInstance
       .get(
         `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}`
       )
-      .then(res=>console.log(res.data.result))
-      .catch((err)=>console.log(err))
-}
+      .then((res) => console.log(res.data.result))
+      .catch((err) => console.log(err));
+  };
 
-  const [activePage, setActivePage] = useState(1)
+  const [activePage, setActivePage] = useState(1);
 
-  let totalPages = data && Math.ceil(data.length / 8)
-  console.log(totalPages)
-  let offset = (activePage - 1) * 8
+  let totalPages = data && Math.ceil(data.length / 8);
+  console.log(totalPages);
+  let offset = (activePage - 1) * 8;
   const handlePageChange = (e, value) => {
-    setActivePage(value)
-  }
+    setActivePage(value);
+  };
 
   const [state, setState] = React.useState({
     present: false,
@@ -156,26 +162,25 @@ const getAllStudents = ()=>{
 
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
-    console.log(state)
+    console.log(state);
   };
 
   const handleOpenOnViewDetails = () => {
     if (history?.location?.state?.payload) {
-      callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList')
+      callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
       // console.log("history data is there")
+    } else {
     }
-    else {
-    }
-  }
+  };
 
   const handleFilter = () => {
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
       return;
     }
-    console.log(selectedBranch.length, "===============")
+    console.log(selectedBranch.length, '===============');
     if (selectedBranch.length == 0) {
-      console.log(selectedBranch.length, "===============")
+      console.log(selectedBranch.length, '===============');
       setAlert('warning', 'Select Branch');
       return;
     }
@@ -195,35 +200,32 @@ const getAllStudents = ()=>{
       section_id: selectedSection.section_id,
       dateValue: dateValue,
       attendanceType: attendanceType,
-    }
-    console.log(payload, "testing")
-  }
+    };
+    console.log(payload, 'testing');
+  };
 
-
-
-  const handleDateChange = () => {
-
-  }
+  const handleDateChange = () => {};
 
   function callApi(api, key) {
     setLoading(true);
-    axiosInstance.get(api)
+    axiosInstance
+      .get(api)
       .then((result) => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
-            console.log(result?.data?.data || [])
-            setAcademicYear(result?.data?.data || [])
+            console.log(result?.data?.data || []);
+            setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
-            console.log(result?.data?.data || [])
+            console.log(result?.data?.data || []);
             setBranchList(result?.data?.data?.results || []);
           }
           if (key === 'gradeList') {
-            console.log(result?.data?.data || [])
+            console.log(result?.data?.data || []);
             setGradeList(result.data.data || []);
           }
           if (key === 'section') {
-            console.log(result?.data?.data || [])
+            console.log(result?.data?.data || []);
             setSectionList(result.data.data);
           }
           setLoading(false);
@@ -242,17 +244,17 @@ const getAllStudents = ()=>{
     // setGenreActiveListResponse([]);
     // setGenreInActiveListResponse([]);
     // getData();
-  }
+  };
   const handleClearAll = () => {
-    setSelectedAcadmeicYear('')
-    setSelectedBranch([])
-    setSelectedBranch([])
-    setSelectedGrade([])
-    setSelectedSection([])
-    setDateValue(moment(date).format('YYYY-MM-DD'))
-    setData([])
-    setTotalGenre(null)
-  }
+    setSelectedAcadmeicYear('');
+    setSelectedBranch([]);
+    setSelectedBranch([]);
+    setSelectedGrade([]);
+    setSelectedSection([]);
+    setDateValue(moment(date).format('YYYY-MM-DD'));
+    setData([]);
+    setTotalGenre(null);
+  };
 
   const StyledClearButton = withStyles({
     root: {
@@ -338,9 +340,9 @@ const getAllStudents = ()=>{
               label='Date'
               maxDate={new Date()}
               inputVariant='outlined'
-              value={dateValue || ""}
+              value={dateValue || ''}
               onChange={handleDateChange}
-              className="dropdown"
+              className='dropdown'
               style={{ width: '100%' }}
               KeyboardButtonProps={{
                 'aria-label': 'change date',
@@ -354,7 +356,7 @@ const getAllStudents = ()=>{
             size='small'
             onOpen={() => handleOpenOnViewDetails()}
             onChange={(event, value) => {
-              setSelectedAcadmeicYear(value)
+              setSelectedAcadmeicYear(value);
               if (value) {
                 callApi(
                   `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
@@ -364,14 +366,13 @@ const getAllStudents = ()=>{
               setSelectedGrade([]);
               setSectionList([]);
               setSelectedSection([]);
-              setSelectedBranch([])
-
+              setSelectedBranch([]);
             }}
             id='branch_id'
             className='dropdownIcon'
-            value={selectedAcademicYear || ""}
-            options={academicYear || ""}
-            getOptionLabel={(option) => option?.session_year || ""}
+            value={selectedAcademicYear || ''}
+            options={academicYear || ''}
+            getOptionLabel={(option) => option?.session_year || ''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -389,26 +390,27 @@ const getAllStudents = ()=>{
             style={{ width: '100%' }}
             size='small'
             onChange={(event, value) => {
-              setSelectedBranch([])
+              setSelectedBranch([]);
               if (value) {
                 // const ids = value.map((el)=>el)
-                const selectedId = value.branch.id
-                setSelectedBranch(value)
+                const selectedId = value.branch.id;
+                setSelectedBranch(value);
                 callApi(
-                  `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                  `${endpoints.academics.grades}?session_year=${
+                    selectedAcademicYear.id
+                  }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
                   'gradeList'
                 );
               }
               setSelectedGrade([]);
               setSectionList([]);
               setSelectedSection([]);
-
             }}
             id='branch_id'
             className='dropdownIcon'
-            value={selectedBranch || ""}
-            options={branchList || ""}
-            getOptionLabel={(option) => option?.branch?.branch_name || ""}
+            value={selectedBranch || ''}
+            options={branchList || ''}
+            getOptionLabel={(option) => option?.branch?.branch_name || ''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -426,13 +428,13 @@ const getAllStudents = ()=>{
             style={{ width: '100%' }}
             size='small'
             onChange={(event, value) => {
-              setSelectedGrade([])
+              setSelectedGrade([]);
               if (value) {
                 // const ids = value.map((el)=>el)
-                const selectedId = value.grade_id
+                const selectedId = value.grade_id;
                 // console.log(selectedBranch.branch)
-                const branchId = selectedBranch.branch.id
-                setSelectedGrade(value)
+                const branchId = selectedBranch.branch.id;
+                setSelectedGrade(value);
                 callApi(
                   `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
                   'section'
@@ -440,13 +442,12 @@ const getAllStudents = ()=>{
               }
               setSectionList([]);
               setSelectedSection([]);
-
             }}
             id='grade_id'
             className='dropdownIcon'
-            value={selectedGrade || ""}
-            options={gradeList || ""}
-            getOptionLabel={(option) => option?.grade__grade_name || ""}
+            value={selectedGrade || ''}
+            options={gradeList || ''}
+            getOptionLabel={(option) => option?.grade__grade_name || ''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -464,21 +465,22 @@ const getAllStudents = ()=>{
             style={{ width: '100%' }}
             size='small'
             onChange={(event, value) => {
-              setSelectedSection([])
-              getAllStudents()
+              setSelectedSection([]);
+              getAllStudents();
               if (value) {
-                const ids = value.id
-                const secId = value.section_id
-                setSelectedSection(value)
-                setSecSelectedId(secId)
+                const ids = value.id;
+                const secId = value.section_id;
+                setSelectedSection(value);
+                setSecSelectedId(secId);
               }
-
             }}
             id='section_id'
             className='dropdownIcon'
-            value={selectedSection || ""}
-            options={sectionList || ""}
-            getOptionLabel={(option) => option?.section__section_name || option?.section_name || ""}
+            value={selectedSection || ''}
+            options={sectionList || ''}
+            getOptionLabel={(option) =>
+              option?.section__section_name || option?.section_name || ''
+            }
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -545,11 +547,10 @@ const getAllStudents = ()=>{
               onClick={handleFilter}
             >
               filter
-          </StyledFilterButton>
+            </StyledFilterButton>
           </Grid>
         </Grid>
       </Grid>
-
 
       <br />
       <br />
@@ -560,9 +561,7 @@ const getAllStudents = ()=>{
 
           <Grid item sm={2} md={2}>
             <Typography variant='subtitle2' color='primary'>
-              <strong>
-                {studentName && studentName[0].name.slice(0, 6)}
-              </strong>
+              <strong>{studentName && studentName[0].name.slice(0, 6)}</strong>
             </Typography>
           </Grid>
           <Grid item sm={1} md={1}>
@@ -578,57 +577,55 @@ const getAllStudents = ()=>{
             <img src={line} className={classes.lines} />
           </Grid>
 
-          <Grid item xs={12} md={5} >
+          <Grid item xs={12} md={5}>
             <FormGroup row className='checkboxStyle'>
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={state.present}
                     onChange={handleChange}
-                    name="present"
+                    name='present'
                     disabled={state.absent}
-                    color="primary"
+                    color='primary'
                   />
                 }
-                label="Present"
+                label='Present'
               />
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={state.absent}
                     onChange={handleChange}
-                    name="absent"
-                    color="primary"
-                    disabled={
-                      state.present || (state.first_half && state.second_half)
-                    }
+                    name='absent'
+                    color='primary'
+                    disabled={state.present || (state.first_half && state.second_half)}
                   />
                 }
-                label="Absent"
+                label='Absent'
               />
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={state.first_half}
                     onChange={handleChange}
-                    name="first_half"
-                    color="primary"
+                    name='first_half'
+                    color='primary'
                     disabled={state.present || state.absent}
                   />
                 }
-                label="1st half"
+                label='1st half'
               />
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={state.second_half}
                     onChange={handleChange}
-                    name="second_half"
-                    color="primary"
+                    name='second_half'
+                    color='primary'
                     disabled={state.present || state.absent}
                   />
                 }
-                label="2nd half"
+                label='2nd half'
               />
             </FormGroup>
           </Grid>
@@ -654,138 +651,123 @@ const getAllStudents = ()=>{
       </Grid>
 
       <Grid container direction='row' className={classes.root} spacing={3}>
-        {data && data
-          .filter((item, index) => {
-            if (state.present) {
-              return (item.first_shift && item.second_shift)
-            }
-            else if (state.absent) {
-              return (!item.first_shift || !item.second_shift)
-            }
-            else if (state.first_half) {
-              return item.first_shift
-            }
-            else if (state.second_half) {
-              return item.second_shift
-            }
-            else if (state.first_half && state.second_half) {
-              return  (item.first_shift && item.second_shift)
-            }
-            else {
-              return item
-            }
-          })
-          .map((item) => {
-            return (
-              <Grid item>
-                <Card className={classes.bord}>
-                  <CardMedia className={classes.cover} />
-                  <div>
-                    <CardContent >
-                      <Grid
-                        container
-                        direction='row'
-                        justify='flex-start'
-                        align='flex-start'
-                      >
+        {data &&
+          data
+            .filter((item, index) => {
+              if (state.present) {
+                return item.first_shift && item.second_shift;
+              } else if (state.absent) {
+                return !item.first_shift || !item.second_shift;
+              } else if (state.first_half) {
+                return item.first_shift;
+              } else if (state.second_half) {
+                return item.second_shift;
+              } else if (state.first_half && state.second_half) {
+                return item.first_shift && item.second_shift;
+              } else {
+                return item;
+              }
+            })
+            .map((item) => {
+              return (
+                <Grid item>
+                  <Card className={classes.bord}>
+                    <CardMedia className={classes.cover} />
+                    <div>
+                      <CardContent>
                         <Grid
-                          item
-                          xs={12}
-                          sm={6}
-                          md={2}
-                          lg={12}
-                        // style={{ textAlign: 'start' }}
+                          container
+                          direction='row'
+                          justify='flex-start'
+                          align='flex-start'
                         >
-                          <h3 style={{ color: '#014B7E', textAlign: 'center' }}>{item.date}</h3>
-                          {
-                            (item.first_shift && item.second_shift) &&
-                            <Grid>
-                              <p class='box3'>
-                                <span class='content1'>1st</span>
-                                <span class='content'>2nd</span>
-                              </p>
-                            </Grid>
-                          }
-                          {
-                            (item.first_shift && !item.second_shift) &&
-                            <Grid>
-                              <p class='box'>
-                                <span class='content1'>1st</span>
-                                <span class='content'>2nd</span>
-                              </p>
-                            </Grid>
-                          }
-                          {
-                            (!item.first_shift && item.second_shift) &&
-                            <Grid>
-                              <p class='box1'>
-                                <span class='content1'>1st</span>
-                                <span class='content'>2nd</span>
-                              </p>
-                            </Grid>
-                          }
-                          {
-                            (!item.first_shift && !item.second_shift) &&
-                            <Grid>
-                              <p class='box2'>
-                                <span class='content1'>1st</span>
-                                <span class='content'>2nd</span>
-                              </p>
-                            </Grid>
-                          }
+                          <Grid
+                            item
+                            xs={12}
+                            sm={6}
+                            md={2}
+                            lg={12}
+                            // style={{ textAlign: 'start' }}
+                          >
+                            <h3 style={{ color: '#014B7E', textAlign: 'center' }}>
+                              {item.date}
+                            </h3>
+                            {item.first_shift && item.second_shift && (
+                              <Grid>
+                                <p class='box3'>
+                                  <span class='content1'>1st</span>
+                                  <span class='content'>2nd</span>
+                                </p>
+                              </Grid>
+                            )}
+                            {item.first_shift && !item.second_shift && (
+                              <Grid>
+                                <p class='box'>
+                                  <span class='content1'>1st</span>
+                                  <span class='content'>2nd</span>
+                                </p>
+                              </Grid>
+                            )}
+                            {!item.first_shift && item.second_shift && (
+                              <Grid>
+                                <p class='box1'>
+                                  <span class='content1'>1st</span>
+                                  <span class='content'>2nd</span>
+                                </p>
+                              </Grid>
+                            )}
+                            {!item.first_shift && !item.second_shift && (
+                              <Grid>
+                                <p class='box2'>
+                                  <span class='content1'>1st</span>
+                                  <span class='content'>2nd</span>
+                                </p>
+                              </Grid>
+                            )}
+                          </Grid>
                         </Grid>
-                      </Grid>
-                    </CardContent>
-                  </div>
-                </Card>
-              </Grid>
-            );
-          })}
+                      </CardContent>
+                    </div>
+                  </Card>
+                </Grid>
+              );
+            })}
       </Grid>
       <br />
 
       {/* </Grid> */}
-      {
-          !data &&
-          (<div  style={{width:'10%',marginLeft:'40%',}}>
-            <SvgIcon
-              component={() => (
-                <img
-                  src={unfiltered}
-                />
-              )}
-            />
-            <SvgIcon
-              component={() => (
-                <img
-                  style={
-                    isMobile
-                      ? { height: '20px', width: '250px' }
-                      : { height: '50px', width: '400px'}
-                  }
-                  src={selectfilter}
-                />
-              )}
-            />
-          </div>)
-
-        }
-        <Grid container justify='center'>
-            { totalGenre > 9 && (
-              <Pagination
-                onChange={handlePagination}
-                style={{ paddingLeft: '150px' }}
-                count={Math.ceil(totalGenre / limit)}
-                color='primary'
-                page={pageNumber}
-                color='primary'
+      {!data && (
+        <div style={{ width: '10%', marginLeft: '40%' }}>
+          <SvgIcon component={() => <img src={unfiltered} />} />
+          <SvgIcon
+            component={() => (
+              <img
+                style={
+                  isMobile
+                    ? { height: '20px', width: '250px' }
+                    : { height: '50px', width: '400px' }
+                }
+                src={selectfilter}
               />
             )}
-          </Grid>
+          />
+        </div>
+      )}
+      <Grid container justify='center'>
+        {totalGenre > 9 && (
+          <Pagination
+            onChange={handlePagination}
+            style={{ paddingLeft: '150px' }}
+            count={Math.ceil(totalGenre / limit)}
+            color='primary'
+            page={pageNumber}
+            color='primary'
+          />
+        )}
+      </Grid>
       {loading && <Loader />}
     </Layout>
   );
 };
 
 export default Attendance;
-
