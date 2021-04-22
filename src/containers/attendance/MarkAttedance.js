@@ -280,7 +280,7 @@ const MarkAttedance = () => {
       borderRadius: '10px',
       marginLeft: '20px',
       height: '42px',
-      width: '7%',
+      width: '15%',
       marginTop: 'auto',
     },
   })(Button);
@@ -698,7 +698,6 @@ const MarkAttedance = () => {
         <StyledClearButton
           variant='contained'
           startIcon={<ClearIcon />}
-          style={{ width: 'auto' }}
           onClick={handleClearAll}
         >
           Clear all
