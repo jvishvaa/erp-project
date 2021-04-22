@@ -155,7 +155,10 @@ const MarkAttedance = () => {
           }));
           setData(result);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          // setAlert('error', 'something went wrong');
+        });
     } else {
       const date = new Date();
       console.log(
@@ -232,6 +235,7 @@ const MarkAttedance = () => {
       .catch((err) => {
         setLoading(false);
         console.log(err);
+        // setAlert('error', 'something went wrong');
       });
   };
 
@@ -276,7 +280,7 @@ const MarkAttedance = () => {
       borderRadius: '10px',
       marginLeft: '20px',
       height: '42px',
-      width: '7%',
+      width: '15%',
       marginTop: 'auto',
     },
   })(Button);
