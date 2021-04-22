@@ -140,16 +140,16 @@ class AdminBlog extends Component {
     if(selectedSection){
       urlPath = `${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=114&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch.id}&grade_id=${selectedGrade.grade_id}`
+            }&page_size=${pageSize}&status=${status}&module_id=114&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}&grade_id=${selectedGrade.grade_id}`
     }else if(selectedGrade){
       urlPath = `${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=114&grade_id=${selectedGrade.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch.id}`
+            }&page_size=${pageSize}&status=${status}&module_id=114&grade_id=${selectedGrade.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}`
     }
     else if(selectedBranch){
       urlPath =`${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=114&branch_id=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}`
+            }&page_size=${pageSize}&status=${status}&module_id=114&branch_id=${selectedBranch?.branch.id}&start_date=${startDate}&end_date=${endDate}`
     }
     axios
       .get(
@@ -193,11 +193,11 @@ class AdminBlog extends Component {
   getGrade = () => {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
-   let {selectedBranch, moduleId,gradeList}=this.state
+   let {selectedBranch, moduleId,gradeList,selectedYear}=this.state
     axios
       .get(
         
-  `${endpoints.communication.grades}?branch_id=${selectedBranch.id}&module_id=${moduleId}`,
+  `${endpoints.communication.grades}?branch_id=${selectedBranch?.branch.id}&module_id=${moduleId}&session_year=${selectedYear.id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -217,13 +217,13 @@ class AdminBlog extends Component {
   getSection = () => {
     const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   
-     let {selectedBranch, moduleId,gradeList,selectedGrade}=this.state
+     let {selectedBranch, moduleId,gradeList,selectedGrade,selectedYear}=this.state
       axios
         .get(
           
           `${endpoints.communication.sections}?branch_id=${
-            selectedBranch.id
-          }&grade_id=${selectedGrade.grade_id}&module_id=${moduleId}`,
+            selectedBranch?.branch.id    
+                }&grade_id=${selectedGrade.grade_id}&module_id=${moduleId}&session_year=${selectedYear.id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
