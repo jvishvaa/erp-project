@@ -121,7 +121,7 @@ const handleGenreNameEditChange = (e) => {
               size='small'
               id='grade'
               className='dropdownIcon'
-              options={gradeList}
+              options={gradeList || []}
               value={gradeObj}
               filterSelectedOptions
               disableClearable
