@@ -73,7 +73,6 @@ const CreateGenre = (props) => {
   const [currentTab,setCurrentTab] =useState(0)
   const [genreActiveListRes,setGenreActiveListResponse] = useState('');
   const [genreInActiveListRes,setGenreInActiveListResponse] = useState('');
-  const [genreNameEdit,setGenreNameEdit] =useState('');
 
   const [genreName,setGenreName] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);

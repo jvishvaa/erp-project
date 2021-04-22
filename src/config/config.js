@@ -3,6 +3,8 @@ const local = {
     BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
   },
   apiGateway: {
+    baseURL:'http://dev.olvorchidnaigaon.letseduvate.com/qbox',
+    // baseURL:'http://localhost:8000/qbox',
     // baseURL: 'https://orchids.letseduvate.com/qbox',
     // baseURL: `http://127.0.0.1:8000/qbox/`,
     baseURL: `http://dev.olvorchidnaigaon.letseduvate.com/qbox`,

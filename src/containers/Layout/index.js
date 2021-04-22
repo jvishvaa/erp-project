@@ -556,6 +556,7 @@ const Layout = ({ children, history }) => {
       }
       case 'Principal Blogs': {
         history.push('/blog/principal');
+        break;
       }
       case 'Application/registration Receipt Book': {
         history.push('/finance/Application/registration/ReceiptBook');
@@ -603,6 +604,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Take Test': {
         history.push('/assessment');
+        break;
+      }
+      case 'Assessment Report': {
+        history.push('/assessment-reports');
         break;
       }
       //   { name: 'Question Bank', Path: '/question-bank' },
@@ -807,6 +812,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Active/Inactive': {
         history.push('/finance/Student/ActiveInactive');
+        break;
+      }
+      case 'Student Active/Inactive': {
+        history.push('/finance/Student/ActiveInactive/Admin');
         break;
       }
       case 'Student Promotion': {

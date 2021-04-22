@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import moment from 'moment';
+<<<<<<< HEAD
 import {
   Grid,
   Box,
@@ -11,6 +12,9 @@ import {
   Popover,
   Divider,
 } from '@material-ui/core';
+=======
+import { Grid, Box, Typography, makeStyles, Button, withStyles, InputBase, Popover, Divider, IconButton} from '@material-ui/core';
+>>>>>>> f355ad933bbb3763c24654127b4554d52534d856
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import DiscussionReplies from './DiscussionReplies';
@@ -32,6 +36,8 @@ import BronzeAwards from '../../../assets/images/Bronze.svg';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import GiveAwardDialog from './GiveAwardDialog';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { Edit } from '@material-ui/icons';
+import { editPostDataAction } from '../../../redux/actions/discussionForumActions';
 
 const useStyles = makeStyles({
   discussionContainer: {
@@ -96,6 +102,7 @@ const useStyles = makeStyles({
   },
   discussionIconRow: {
     float: 'right',
+    textAlign: 'center',
     '@media (max-width: 600px)': {
       display: 'block',
       justifyContent: 'right',
@@ -279,8 +286,13 @@ export default function DiscussionComponent(props) {
     }
   };
   const handlePost = () => {
+<<<<<<< HEAD
     dispatch(postAction(props.rowData));
     if (location.pathname === '/student-forum') {
+=======
+    //dispatch(postAction(props.rowData));
+    if(location.pathname === '/student-forum'){
+>>>>>>> f355ad933bbb3763c24654127b4554d52534d856
       history.push('/student-forum/post/' + props.rowData.id);
     } else {
       history.push('/teacher-forum/post/' + props.rowData.id);
@@ -302,6 +314,7 @@ export default function DiscussionComponent(props) {
 
   // awards popover
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorE2, setAnchorE2] = React.useState(null);
 
   const handlePopoverOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -322,6 +335,7 @@ export default function DiscussionComponent(props) {
   const [silverCount, setSilverCount] = React.useState(0);
   const [bronzeCount, setBronzeCount] = React.useState(0);
   const [postId, setPostId] = React.useState('');
+  const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handleClickOpen = (id) => {
     //handlePopoverClose();
@@ -357,6 +371,38 @@ export default function DiscussionComponent(props) {
       });
   }, [props.rowData]);
 
+  const handleDiscussionAction = (event) => {
+    if(props.rowData.post_by.id === userDetails.user_id){
+      setAnchorE2(event.currentTarget)
+    }
+  }
+
+  const handlePopoverActionClose = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setAnchorE2(null);
+  }
+
+  const open2 = Boolean(anchorE2);
+  const id2 = open2 ? 'simple-popover1' : undefined;
+
+  const handleDelete = (id) => {
+    axiosInstance
+      .delete(`/academic/${id}/update-post/`)
+      .then((res) => {
+        if(res.data.status_code === 200){
+          setAlert('success', res.data.message);
+          props.deleteEdit();
+          handlePopoverActionClose();
+        }
+      })
+      .catch((error) => console.log(error));
+  }
+
+  const handleEditPost = () => {
+    dispatch(editPostDataAction(props.rowData));
+  }
+
   return (
     <Grid container className={classes.discussionContainer}>
       <Grid item xs={12}>
@@ -376,11 +422,13 @@ export default function DiscussionComponent(props) {
             <div style={{ display: 'inline-block' }}>
               {/* <FiberManualRecordIcon className={classes.dotSeparator} /> */}
               <span className={classes.postByText}>post by</span>
-              <ProfileIcon
-                firstname={props.rowData.post_by.first_name}
-                lastname={props.rowData.post_by.last_name}
-                bgColor='#14B800'
-              />
+              <span style={{verticalAlign: 'middle'}}>
+                <ProfileIcon
+                  firstname={props.rowData.post_by.first_name}
+                  lastname={props.rowData.post_by.last_name}
+                  bgColor='#14B800'
+                />
+              </span>
               <span className={classes.username}>
                 {`${props.rowData.post_by.first_name} ${props.rowData.post_by.last_name} /`}
               </span>
@@ -472,7 +520,31 @@ export default function DiscussionComponent(props) {
                 </span>
               </span>
             )}
-            <MoreVertIcon className={classes.discussionDotIcon} />
+            <IconButton onClick={handleDiscussionAction} style={{verticalAlign: 'baseline',}}>
+              <MoreVertIcon className={classes.discussionDotIcon}/>
+            </IconButton>
+            {/* <ClickAwayListener onClickAway={handlePopoverActionClose}> */}
+              <Popover
+                id={id2}
+                open={open2}
+                anchorEl={anchorE2}
+                onClose={handlePopoverActionClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+              >
+                <div style={{padding: '10px', borderRadius: '5px'}}>
+                  <Typography onClick={handleEditPost}>Edit</Typography>
+                  <Divider style={{marginBottom:'10px', marginTop: '10px'}}/>
+                  <Typography onClick={() => handleDelete(props.rowData.id)}>Delete</Typography>
+                </div>
+              </Popover>
+            {/* </ClickAwayListener> */}
           </span>
         </div>
         <Box className={classes.discussionDetailsBox}>
