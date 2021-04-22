@@ -8,6 +8,8 @@ const initialState = {
     grade: '',
     section: '',
   },
+  isEditPost: '',
+  postEditData: '',
   category_data: '',
   category_list: '',
   sub_category_list: '',
@@ -33,6 +35,11 @@ const discussionReducer = (state = initialState, action) => {
           grade: '',
           section: '',
         },
+      };
+    case types.EDIT_DISCCUSION_POST:
+      return {
+        ...state,
+        postEditData: action.payload,
       };
     case types.EDIT_CATEGORI_DATA:
       return {

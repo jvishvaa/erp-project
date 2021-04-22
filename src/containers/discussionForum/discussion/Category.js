@@ -228,10 +228,15 @@ const Category = (props) => {
   const personalInfo = JSON.parse(localStorage.getItem('personal_info')) || {};
   const [categoryList, setCategoryList] = React.useState([]);
   const [value, setValue] = React.useState(0);
+  const [deleteEdit, setDeleteEdit] = React.useState(true);
 
   const hideFilter = () => {
     props.handleFilter();
   };
+
+  const handleDeleteEdit = () => {
+    setDeleteEdit(!deleteEdit);
+  }
 
   console.log(userDetails, 'userDetails');
 
@@ -343,6 +348,7 @@ const Category = (props) => {
         }
       }
       else {
+        const branchId = props.filters.branch && props.filters.branch.id !== 0 ? props.filters.branch.id : '';
         const grades =
           props.filters.grade && props.filters.grade.id !== 0 ? props.filters.grade.id : '';
         const sections =
@@ -357,20 +363,25 @@ const Category = (props) => {
           console.log(categoryId + ' === ' + postURL);
         }
         if (categoryId === 0 && grades !== '' && sections !== '') {
+          // getDiscussionPost(
+          //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}&section=${sections}`
+          // );
           getDiscussionPost(
-            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&grade=${grades}&section=${sections}`
+            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}`
           );
         }
         if (categoryId !== 0 && grades !== '' && sections !== '') {
-          //postURL = `${endpoints.discussionForum.postList}?category=${categoryId}&grade=${grades}&section=${sections}`;
+          // getDiscussionPost(
+          //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch_id=${branchId}&category=${categoryId}&grade=${grades}&section=${sections}`
+          // );
           getDiscussionPost(
-            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&category=${categoryId}&grade=${grades}&section=${sections}`
+            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&category=${categoryId}&grade=${grades}`
           );
         }
       }
     }
     //let postURL = endpoints.discussionForum.postList;
-  }, [props.url, props.filters, categoryId, moduleId]);
+  }, [props.url, props.filters, categoryId, moduleId, deleteEdit]);
 
   return (
     <Paper className={classes.paperStyle}>
@@ -466,7 +477,7 @@ const Category = (props) => {
         <Grid container>
           <Grid item xs={12}>
             {postList.map((data, id) => (
-              <Discussion rowData={data} key={id} />
+              <Discussion rowData={data} key={id} deleteEdit={handleDeleteEdit}/>
             ))}
           </Grid>
       </Grid>
