@@ -151,7 +151,7 @@ class PrincipalBlog extends Component {
   getGrade = () => {
     const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   
-     let {selectedBranch, moduleId,gradeList}=this.state
+     let {selectedBranch, moduleId,gradeList,selectedYear}=this.state
       axios
         .get(
           
@@ -175,7 +175,7 @@ class PrincipalBlog extends Component {
     getSection = () => {
       const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
     
-       let {selectedBranch, moduleId,gradeList,selectedGrade}=this.state
+       let {selectedBranch, moduleId,gradeList,selectedGrade,selectedYear}=this.state
         axios
           .get(
             
