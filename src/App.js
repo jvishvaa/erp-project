@@ -68,7 +68,6 @@ import {
   TeacherPublishBlogView,
   BlogView,
   CreateGenre,
-  ViewGenre,
   ContentViewPublish,
   ContentViewPublishStudent,
   AdminBlog,
