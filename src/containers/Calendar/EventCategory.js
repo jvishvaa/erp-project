@@ -192,7 +192,7 @@ const Cal1 = () => {
   const history = useHistory();
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const [searchData,setSearchData]=useState('')
+  const [searchData,setSearchData]=useState('abhishek')
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const [element_id, setElementId] = useState('');
@@ -217,13 +217,14 @@ const Cal1 = () => {
       axiosInstance
         .get(`${endpoints.eventBat.getPaginatedCategories}?page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`)
         .then((result) => {
-          console.log('useEffect dummy data', result.data.data);
-          setDummyData(result.data.data.results);
-          setTotalGenre(result.data.data.count)
+          setDummyData(result?.data?.data?.results);
+
+          setTotalGenre(result?.data?.data?.count)
+
         });
     }
     setEditFlag(false)
-  }, [moduleId, updateFlag]);
+  }, [moduleId, updateFlag,pageNumber]);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -343,11 +344,13 @@ const Cal1 = () => {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  useEffect(() => {
-    handleSearch(searchData);
-    //setIsEditId('');
-    //setEventName('');
-  }, [deleteFlag, editFlag, pageNumber]);
+  // useEffect(() => {
+  //   if(searchData && pageNumber){
+  //   handleSearch(searchData);
+  //    }
+  //   //setIsEditId('');
+  //   //setEventName('');
+  // }, [deleteFlag, editFlag, pageNumber]);
 
   const handleClicknew = (event, id) => {
     setAnchorEl(event.currentTarget);
@@ -378,17 +381,21 @@ const Cal1 = () => {
       .catch((error) => setAlert('warning', 'Something went wrong'));
   };
 const handleSearch=(e,value)=>{
+  if(e.length>0){
   axiosInstance
-  .get(`${endpoints.eventBat.getPaginatedCategories}?event_category_name=${e}&page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`)
+  .get(`${endpoints.eventBat.filterEventCategory}?event_category_name=${e}&page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`)
   .then((result)=>{
-    setDummyData(result?.data?.data.results)
+    setDummyData(result?.data?.data?.results)
     setTotalGenre(result?.data?.data?.count)
   })
+
+//  // setDummyData([])
   .catch((err)=>{
     setAlert("warning",err)
   })
+}
   setSearchData(e)
-  console.log(e,"chhhhh")
+  console.log(e.length,"chhhhh")
 }
 console.log(searchData,"fffff")   
   const handleEdit = () => {
