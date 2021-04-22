@@ -260,7 +260,7 @@ import Assesment from './containers/assessment-central';
 import AssessmentView from './containers/assessment-central/assesment-view';
 import CreateAssesment from './containers/assessment-central/create-assesment';
 import ContactUs from 'containers/contact-us';
-import Contact from './containers/contact/Contact';
+// import Contact from './containers/contact/Contact';
 
 const theme = createMuiTheme({
   palette: {
@@ -1260,9 +1260,9 @@ function App({ alert }) {
                           <Route exact path='/ebook/view'>
                             {({ match }) => <ViewEbook match={match} />}
                           </Route>
-                          {/* <Route exact path='/contact-us'>
+                          <Route exact path='/contact-us'>
                             {({ match }) => <ContactUs match={match} />}
-                          </Route> */}
+                          </Route>
                           <Route exact path='/book-appointment'>
                             {({ match }) => <BookAppointment match={match} />}
                           </Route>
@@ -1272,14 +1272,7 @@ function App({ alert }) {
                           <Route exact path='/responder-view'>
                             {({ match }) => <ResponderView match={match} />}
                           </Route>
-			<Route exact path='/contact'>
-                          {({ match }) => <Contact match={match} />}
-                        </Route>
-                        <Route exact path='/update_contact'>
-                          {({ match }) => <update_contact match={match} />}
-                        </Route>
                         </Switch>
-
                       </DailyDairyStore>
                     </ViewStore>
                   </GeneralDairyStore>

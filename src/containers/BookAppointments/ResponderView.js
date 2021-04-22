@@ -39,6 +39,10 @@ const useStyles = makeStyles((theme) => ({
 const ResponderView = () => {
   const classes = useStyles();
   const [branches, setBranches] = useState([]);
+  const [academicYear, setAcademicYear] = useState([]);
+  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const [branchList, setBranchList] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState([]);
   const [searchBranch, setSearchBranches] = useState('');
   const [page, setPage] = useState(1);
   const [filterPage, setFilterPage] = useState(1);
@@ -50,6 +54,7 @@ const ResponderView = () => {
   const [totalCount, setTotalCount] = useState(0);
   const { setAlert } = useContext(AlertNotificationContext);
   const [opened, setOpened] = useState(false);
+  const [moduleId, setModuleId] = useState('');
 
   const getAppointments = () => {
     if (searchBranch) {
@@ -78,6 +83,10 @@ const ResponderView = () => {
   };
 
   useEffect(() => {
+    callApi(
+      `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
+      'academicYearList'
+    );
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -187,6 +196,45 @@ const ResponderView = () => {
       setSearchBranches('');
     }
   };
+  function callApi(api, key) {
+    setLoading(true);
+    axiosInstance
+      .get(api)
+      .then((result) => {
+        if (result.status === 200) {
+          if (key === 'academicYearList') {
+            console.log('this academic year', result?.data?.data || []);
+            setAcademicYear(result?.data?.data || []);
+          }
+          if (key === 'branchList') {
+            console.log(result?.data?.data || []);
+            setBranchList(result?.data?.data?.results || []);
+          }
+          // if (key === 'gradeList') {
+          //   console.log(result?.data?.data || []);
+          //   setGradeList(result.data.data || []);
+          // }
+          // if (key === 'section') {
+          //   console.log(result?.data?.data || []);
+          //   setSectionList(result.data.data);
+          // }
+          setLoading(false);
+        } else {
+          setAlert('error', result.data.message);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+        setLoading(false);
+      });
+  }
+  // useEffect(() => {
+  //   callApi(
+  //     `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
+  //     'academicYearList'
+  //   );
+  // });
 
   const handleFilter = (e) => {
     e.preventDefault();
@@ -216,33 +264,91 @@ const ResponderView = () => {
         </Grid>
         <form>
           <Grid container direction='row' spacing={2}>
-            <Grid item xs={6} sm={5} md={3} lg={2}>
+            <Grid item xs={10} sm={5} md={3} lg={2}>
               <Autocomplete
                 id='size-small-standard'
                 size='small'
-                options={branches}
+                // options={branches}
                 className={classes.root}
-                onChange={handleBranche}
+                // onChange={handleBranche}
                 style={{ marginTop: '40px', marginLeft: '20px' }}
                 fullWidth
-                getOptionLabel={(option) => option.branch_name}
+                // getOptionLabel={(option) => option.branch_name}
+                onChange={(event, value) => {
+                  console.log('moduleIdDDD', moduleId);
+                  setSelectedAcadmeicYear(value);
+                  if (value) {
+                    callApi(
+                      `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                      'branchList'
+                    );
+                  }
+                }}
+                id='branch_id'
+                className='dropdownIcon'
+                value={selectedAcademicYear || ''}
+                options={academicYear || ''}
+                getOptionLabel={(option) => option?.session_year || ''}
+                filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    variant='standard'
-                    label='Branch'
-                    placeholder='select Branch'
+                    variant='outlined'
+                    label='Academic Year'
+                    name='Academic'
+                    placeholder='Academic Year'
                   />
                 )}
               />
             </Grid>
 
-            <Grid item xs={1}>
+            <Grid item xs={10} sm={5} md={3} lg={2}>
+              <Autocomplete
+                id='size-small-standard'
+                size='small'
+                // options={branches}
+                className={classes.root}
+                style={{ marginTop: '40px', marginLeft: '20px' }}
+                fullWidth
+                // onChange={handleBranche}
+                onChange={(event, value) => {
+                  setSelectedBranch([]);
+                  if (value) {
+                    // const ids = value.map((el)=>el)
+                    const selectedId = value.branch.id;
+                    setSelectedBranch(value);
+                    callApi(
+                      `${endpoints.academics.grades}?session_year=${
+                        selectedAcademicYear.id
+                      }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                      'gradeList'
+                    );
+                  }
+                }}
+                id='branch_id'
+                className='dropdownIcon'
+                value={selectedBranch || ''}
+                options={branchList || ''}
+                getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Branch'
+                    name='branch'
+                    placeholder='Branch'
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid item xs={4} sm={5} md={3} lg={2}>
               <Button
                 variant='contained'
                 type='submit'
                 color='primary'
-                style={{ marginTop: 45 }}
+                style={{ marginTop: '15%', marginLeft: '20%' }}
                 onClick={handleFilter}
               >
                 Filter

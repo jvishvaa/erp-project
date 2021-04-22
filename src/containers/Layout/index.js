@@ -1349,7 +1349,7 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-          {/* <ListItem
+          <ListItem
             button
             className={classes.menuControlContainer}
             onClick={() => history.push('/contact-us')}
@@ -1358,8 +1358,8 @@ const Layout = ({ children, history }) => {
               <TodayIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Contact Us</ListItemText>
-          </ListItem> */}
-          <ListItem
+          </ListItem>
+          {/* <ListItem
             button
             // className={classes.menuControlContainer}
             onClick={() => history.push('/Contact')}
@@ -1368,7 +1368,7 @@ const Layout = ({ children, history }) => {
               <ContactPhoneRoundedIcon />
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Contact</ListItemText>
-          </ListItem>
+          </ListItem> */}
           <ListItem
             button
             className={classes.menuControlContainer}
