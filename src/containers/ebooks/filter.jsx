@@ -21,15 +21,38 @@ const Filter = ({ handleFilter, clearFilter }) => {
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [loading, setLoading] = useState(false);
+  const [volumeList, setVolumeList] = useState([]);
+  const [selectedVolume, setSelectedVolume] = useState('');
 
   useEffect(() => {
     setSelectedAcad('');
+    setSelectedVolume('');
+    setBranchList([]);
     setGradeList([]);
     setSubjectList([]);
     setSelectedBranch('');
     setSelectedGrade('');
     setSelectedSubject('');
   },[clearFilter])
+
+  function ApiCal() {
+    axios
+    .get(`${endpoints.lessonPlan.volumeList}`, {
+      headers: {
+        'x-api-key': 'vikash@12345#1231',
+      },
+    })
+    .then((result) => {
+      if (result.data.status_code === 200) {
+        setVolumeList(result.data.result.results);
+      } else {
+        setAlert('error', result.data.message);
+      }
+    })
+    .catch((error) => {
+      setAlert('error', error.message);
+    });
+  }
 
   function withAxiosInstance(url, key) {
     setLoading(true);
@@ -56,11 +79,13 @@ const Filter = ({ handleFilter, clearFilter }) => {
 
   useEffect(() => {
     withAxiosInstance(`${endpoints.userManagement.academicYear}?module_id=${getModuleInfo('Ebook View').id}`, 'acad');
+    ApiCal();
   }, []);
 
   function handleClear() {
     handleFilter();
     setSelectedAcad('');
+    setSelectedVolume('');
     setGradeList([]);
     setSubjectList([]);
     setSelectedBranch('');
@@ -70,7 +95,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
 
   return (
     <>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} style={{ padding: '0px 10px' }}>
         <Grid item md={3} xs={12}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -83,6 +108,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
               setSelectedAcad(value);
               setSelectedGrade('');
               setSelectedSubject('');
+              setSelectedBranch('');
             }}
             id='Acad_id'
             options={acadList}
@@ -96,7 +122,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                 label='Acadmic Year'
                 placeholder='Acadmic Year'
               />
-            )}
+            )}  
           />
         </Grid>
         <Grid item md={3} xs={12}>
@@ -183,6 +209,30 @@ const Filter = ({ handleFilter, clearFilter }) => {
           />
         </Grid>
         <Grid item md={3} xs={12}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            className='dropdownIcon'
+            onChange={(event, value) => {
+              setSelectedVolume(value);
+            }}
+            id='volume_id'
+            options={volumeList}
+            value={selectedVolume}
+            getOptionLabel={(option) => option.volume_name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Volume'
+                placeholder='Volume'
+              />
+            )}
+          />
+        </Grid>
+        <Grid item md={9}></Grid>
+        <Grid item md={3} xs={12}>
           <Grid container spacing={2}>
             <Grid item md={6} xs={6}>
               <Button
@@ -202,7 +252,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                 variant='contained'
                 color='primary'
                 fullWidth
-                onClick={()=> handleFilter(selectedAcad, selectedBranch, selectedGrade, selectedSubject)}
+                onClick={()=> handleFilter(selectedAcad, selectedBranch, selectedGrade, selectedSubject, selectedVolume)}
               >
                 Filter
               </Button>

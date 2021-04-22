@@ -2,10 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import Layout from '../Layout/index';
 // import Avatar from '@material-ui/core/Avatar';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
+import './attendance.scss' 
 import {
   Button,
   Divider,
   Grid,
+  Hidden,
   makeStyles,
   Paper,
   TextField,
@@ -105,12 +107,15 @@ const AttedanceCalender = () => {
   const [endDate, setEndDate] = useState();
   const [sevenDay, setSevenDay] = useState();
   const [studentData, setStudentData] = useState([]);
+  const [teacherView , setTeacherView ] = useState(true);
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
+let path = window.location.pathname;
+console.log(path , "path");
 
-
+  
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -122,6 +127,7 @@ const AttedanceCalender = () => {
           item.child_module.forEach((item) => {
             if (item.child_name === 'Teacher Calendar') {
               setModuleId(item.child_id);
+              console.log(teacherView , "teacher view");
               console.log(item.child_id,"Chekk")
             }
             if (item.child_name === 'Student Calendar') {
@@ -134,6 +140,16 @@ const AttedanceCalender = () => {
   }, []);
   console.log(moduleId,'MODULE_ID')
 
+useEffect(()=>{
+  if( path === "/attendance-calendar/teacher-view" ){
+    console.log(path , "path");
+    setTeacherView(true);
+  } 
+  if( path === "/attendance-calendar/student-view" ){
+    console.log(path , "path");
+    setTeacherView(false);
+  } 
+},[path]);
 
   useEffect(() => {
     if(moduleId){
@@ -329,6 +345,7 @@ const AttedanceCalender = () => {
           setStudentDataAll(res.data);
           let temp = [...res.data.present_list, ...res.data.absent_list]
           setStudentData(temp);
+          setAlert("success","Data Sucessfully Fetched")
         })
         .catch((error) => {
           setLoading(false);
@@ -400,7 +417,7 @@ const AttedanceCalender = () => {
   return (
     <Layout>
       <div style={{ marginTop: '20px', marginLeft: '-10px' }}>
-        <CommonBreadcrumbs componentName='Attendance + Calendar' />
+        <CommonBreadcrumbs componentName='Attendance & Calendar' />
       </div>
       <Grid
         container
@@ -685,19 +702,21 @@ const AttedanceCalender = () => {
                 </Typography>
               </Grid>
               <Grid item md={6} xs={12} className='mark-btn-grid'>
-                <Button size='small' onClick={handleMarkAttendance}  >
+                { teacherView === true ?
+               ( <Button size='small' onClick={handleMarkAttendance}  >
                   <span className={classes.contentData} id='mark-para'>
                     Mark Attendance
                   </span>
-                </Button>
+                </Button> )
+                : <div></div> }
               </Grid>
               <div className='stu-icon'>
                 <Grid item md={3}>
                   <Typography className={classes.content} id='studentPara'>
-                    Student
+                    Students
                   </Typography>
                 </Grid>
-                <KeyboardArrowDownIcon className='downIcon' />
+                {/* <KeyboardArrowDownIcon className='downIcon' /> */}
               </div>
             </Grid>
             {studentDataAll != null ? (
@@ -777,12 +796,13 @@ const AttedanceCalender = () => {
                 </Typography>
               </Grid>
               <Grid item md={6} xs={12} className='event-btn'>
-                <Button size='small' href={`/createEvent`}>
+              { teacherView === true ?
+                (<Button size='small' href={`/createEvent`}>
                   {/* ADD EVENT */}
                   <span className={classes.contentData} id='event-text'>
                     Add Event
                   </span>
-                </Button>
+                </Button>) : <div></div> }
               </Grid>
               <div className='event-details'>
                 <Grid item md={5}>

@@ -1,0 +1,57 @@
+.attendanceDataUnavailable{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5%;
+    margin-left: 85%;
+    margin-top: 21%;
+  }
+
+  #eventContainer{
+    /* 
+    height: fit-content !important; */
+    // height: 495px !important ;
+    width: auto;
+    // margin-left: 28%;
+    // overflow:auto;
+    overflow-x:hidden;
+    #eventData{
+        margin: 0;
+       }
+    .noEventImg{
+        height: 300px;
+        margin-bottom: 100px;
+    }
+    .dateTimeEvent{
+        display: flex;
+        justify-content: space-between;
+        .timeEvent{
+            display: flex;
+            justify-content: space-evenly;
+            width: 75px;
+        }
+        .dateEvent{
+            display: flex;
+    justify-content: space-evenly;
+    width: 115px;
+        }
+    }
+    .eventPara{
+        font-size: 15px;
+    }
+    #updated{
+        margin-left: 23px;
+    }
+}
+.textt{
+    background-color:rgb(235,103,104);
+    font-size: 20px;
+    text-decoration: none;
+    
+    border-radius: 5%;
+
+
+
+}
+
