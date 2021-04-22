@@ -33,14 +33,18 @@ import EditAppointment from './EditAppointment';
 import Loading from '../../components/loader/loader';
 import line from '../../assets/images/line.svg';
 import MediaQuery from 'react-responsive';
+import CallIcon from '@material-ui/icons/Call';
+import MessageIcon from '@material-ui/icons/Message';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
   },
+
   container: {
     maxHeight: '70vh',
   },
+
   columnHeader: {
     color: `${theme.palette.secondary.main} !important`,
     fontWeight: 600,
@@ -60,8 +64,8 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
   },
   card: {
-    width: '300px',
-    height: '300px',
+    width: '270px',
+    height: '240px',
     borderRadius: '15px',
     marginLeft: '32px',
   },
@@ -77,8 +81,9 @@ const useStyles = makeStyles((theme) => ({
     width: '92%',
   },
   imageStyles: {
-    marginTop: '20px',
-    height: '200px',
+    margin: '10%',
+    width: '200px',
+    height: '150px',
   },
   lines: {
     marginLeft: '40%',
@@ -577,6 +582,7 @@ const Appointments = () => {
                     <Grid container direction='row'>
                       {/* <Grid item md={1}></Grid> */}
                       {/* <Grid sm={1} md={1}></Grid> */}
+
                       <Grid item xs={8} sm={8} md={2}>
                         <Typography variant='subtitle2' style={{ display: 'inline' }}>
                           Appointment With :
@@ -658,30 +664,265 @@ const Appointments = () => {
                 rowsPerPageOptions={false}
               />
             </div>
+            <Grid container direction='row' spacing={2}>
+              <Grid item md={3}>
+                <Card className={classes.card}>
+                  <CardActionArea>
+                    <CardMedia
+                      component='img'
+                      alt='Contemplative Reptile'
+                      // height='200'
+                      className={classes.imageStyles}
+                      image={image}
+                      title='Contemplative Reptile'
+                    />
+                  </CardActionArea>
+                  <CardActions>
+                    <Button
+                      variant='contained'
+                      // href={`/book-appointment`}
+                      color='primary'
+                      style={{ marginLeft: '25%', marginTop: '-10%' }}
+                      onClick={handleAddAppointment}
+                    >
+                      BookAppointment
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
 
-            <Card className={classes.card}>
-              <CardActionArea>
-                <CardMedia
-                  component='img'
-                  alt='Contemplative Reptile'
-                  // height='200'
-                  className={classes.imageStyles}
-                  image={image}
-                  title='Contemplative Reptile'
-                />
-              </CardActionArea>
-              <CardActions>
-                <Button
-                  variant='contained'
-                  // href={`/book-appointment`}
-                  color='primary'
-                  style={{ marginLeft: '25%' }}
-                  onClick={handleAddAppointment}
-                >
-                  BookAppointment
-                </Button>
-              </CardActions>
-            </Card>
+              <Grid item md={3}>
+                <Card className={classes.card}>
+                  <CardActionArea className='cardsStyles'>
+                    <Typography
+                      variant='h5'
+                      gutterBottom
+                      color='secondary'
+                      align='center'
+                      style={{ marginTop: '10%' }}
+                    >
+                      FRONT OFFICE EXECUTIVE
+                    </Typography>
+
+                    <Typography
+                      variant='h6'
+                      gutterBottom
+                      color='secondary'
+                      align='center'
+                    >
+                      Available at these timings
+                    </Typography>
+                    <Typography
+                      variant='h6'
+                      gutterBottom
+                      color='secondary'
+                      align='center'
+                    >
+                      9:00 am - 8:00 pm
+                    </Typography>
+                    <Typography
+                      variant='h6'
+                      gutterBottom
+                      color='secondary'
+                      align='center'
+                    >
+                      EST Monday – Friday
+                    </Typography>
+
+                    <Grid container direction='row' justify='center'>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        align='center'
+                      >
+                        <CallIcon color='secondary' fontSize='large' clss/>
+                      </Typography>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        align='center'
+                      >
+                        +91 99999999999
+                      </Typography>
+                      <Grid container direction='row' justify='center'>
+                        <Typography
+                          variant='h5'
+                          gutterBottom
+                          color='secondary'
+                          align='center'
+                        >
+                          <MessageIcon color='secondary' fontSize='large' />
+                        </Typography>
+                        <Typography
+                          variant='h5'
+                          gutterBottom
+                          color='secondary'
+                          align='center'
+                        >
+                          Send Whatsapp
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </CardActionArea>
+                </Card>
+              </Grid>
+              <Grid item md={3}>
+                <Card className={classes.card}>
+                  <CardActionArea className='cardsStyles'>
+                    <Typography
+                      variant='h5'
+                      gutterBottom
+                      color='secondary'
+                      align='center'
+                      style={{ marginTop: '10%' }}
+                    >
+                      OPS MANAGEMENT
+                    </Typography>
+
+                    <Typography
+                      variant='h6'
+                      gutterBottom
+                      color='secondary'
+                      align='center'
+                    >
+                      Available at these timings
+                    </Typography>
+                    <Typography
+                      variant='h6'
+                      gutterBottom
+                      color='secondary'
+                      align='center'
+                    >
+                      9:00 am - 8:00 pm
+                    </Typography>
+                    <Typography
+                      variant='h6'
+                      gutterBottom
+                      color='secondary'
+                      align='center'
+                    >
+                      EST Monday – Friday
+                    </Typography>
+
+                    <Grid container direction='row' justify='center'>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        align='center'
+                      >
+                        <CallIcon color='secondary' fontSize='large' />
+                      </Typography>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        align='center'
+                      >
+                        +91 99999999999
+                      </Typography>
+                      <Grid container direction='row' justify='center'>
+                        <Typography
+                          variant='h5'
+                          gutterBottom
+                          color='secondary'
+                          align='center'
+                        >
+                          <MessageIcon color='secondary' fontSize='large' />
+                        </Typography>
+                        <Typography
+                          variant='h5'
+                          gutterBottom
+                          color='secondary'
+                          align='center'
+                        >
+                          Send Whatsapp
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </CardActionArea>
+                </Card>
+              </Grid>
+              <Grid item md={3}>
+                <Card className={classes.card}>
+                  <CardActionArea className='cardsStyles'>
+                    <Typography
+                      variant='h5'
+                      gutterBottom
+                      color='secondary'
+                      align='center'
+                      style={{ marginTop: '10%' }}
+                    >
+                      CAMPUS-IN-CHARGE
+                    </Typography>
+
+                    <Typography
+                      variant='h6'
+                      gutterBottom
+                      color='secondary'
+                      align='center'
+                    >
+                      Available at these timings
+                    </Typography>
+                    <Typography
+                      variant='h6'
+                      gutterBottom
+                      color='secondary'
+                      align='center'
+                    >
+                      9:00 am - 8:00 pm
+                    </Typography>
+                    <Typography
+                      variant='h6'
+                      gutterBottom
+                      color='secondary'
+                      align='center'
+                    >
+                      EST Monday – Friday
+                    </Typography>
+
+                    <Grid container direction='row' justify='center'>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        align='center'
+                      >
+                        <CallIcon color='secondary' fontSize='large' />
+                      </Typography>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        align='center'
+                      >
+                        +91 99999999999
+                      </Typography>
+                      <Grid container direction='row' justify='center'>
+                        <Typography
+                          variant='h5'
+                          gutterBottom
+                          color='secondary'
+                          align='center'
+                        >
+                          <MessageIcon color='secondary' fontSize='large' />
+                        </Typography>
+                        <Typography
+                          variant='h5'
+                          gutterBottom
+                          color='secondary'
+                          align='center'
+                        >
+                          Send Whatsapp
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </CardActionArea>
+                </Card>
+              </Grid>
+            </Grid>
           </Grid>
         )}
       </Layout>
