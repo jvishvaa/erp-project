@@ -65,10 +65,10 @@ const Daily = (props) => {
             </tr>
             {mapData &&
               mapData.map((data) => (
-                <tr key={data.id} onClick={() => setSelectData(data)}>
+                <tr key={data.id} >
                   {daily &&
                     daily.map((data) => (
-                      <td>
+                      <td onClick={() => setSelectData(data)}>
                         <h4>{data?.period_name}</h4>
                         <h3>{data?.subject_details?.subject_name}</h3>
                         <p>
