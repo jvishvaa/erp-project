@@ -635,14 +635,15 @@ const CreateEvent = () => {
           <MediaQuery maxWidth={784}>
             <Grid container direction='row' spacing={2} className={classes.root}>
               <Grid item md={4} lg={2} sm={6} xs={12}>
-                <Autocomplete
+              <Autocomplete
                   className='arrow'
                   size='small'
                   id='combo-box-demo'
-                  labelplaceholder='Event Type'
+                  name='event_category'
+                  labelplaceholder='Event_Type'
                   onChange={handleEventTypeChange}
                   options={evnetcategoryType || ''}
-                  getOptionLabel={(option) => option.event_category_type || ''}
+                  getOptionLabel={(option) => option.event_category_name || ''}
                   renderInput={(params) => (
                     <TextField {...params} label='Event Type' variant='outlined' />
                   )}

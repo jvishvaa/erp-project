@@ -13,6 +13,7 @@ const {
 // const baseURLCentral = 'http://dev.mgmt.letseduvate.com/qbox'
 // const baseURLCentral = 'https://mgmt.letseduvate.com/qbox';
 
+
 export default {
   auth: {
     login: '/auth/login/',
