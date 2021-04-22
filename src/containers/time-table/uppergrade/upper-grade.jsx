@@ -164,6 +164,7 @@ const UpperGrade = (props) => {
   };
   const handleClearData = (data) => {
     if (data === 'clear') {
+      setShowAddPeriodButton(false);
       props.handleCloseTable(false);
       setCounter(1);
       setAcadamicYear(null);
@@ -194,7 +195,7 @@ const UpperGrade = (props) => {
           >
             {counter === 1 ? (
               <>
-                <div className='text-fixed'>Acadamic Year</div>
+                <div className='text-fixed'>Academic Year</div>
                 <div className='inner-grade-container'>
                   <div className='change-grade-options'>
                     <Select
@@ -229,7 +230,7 @@ const UpperGrade = (props) => {
                 </div>
               </>
             ) : (
-              <div className='text-rotate'>AcadamicYear</div>
+              <div className='text-rotate'>Academic_Year</div>
             )}
           </div>
           <div
