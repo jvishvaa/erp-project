@@ -274,6 +274,12 @@ const Attend = () => {
     gender: 'male',
   };
 
+  const handleBack = () => {
+    history.push({
+      pathname: '/attendance-calendar/teacher-view',
+    });
+  };
+
   const handleClearAll = () => {
     setSelectedAcadmeicYear('');
     setSelectedBranch([]);
@@ -401,7 +407,7 @@ const Attend = () => {
   return (
     <Layout>
       <div className='profile_breadcrumb_wrapper' style={{ marginLeft: '-10px' }}>
-        <CommonBreadcrumbs componentName='OverallAttendance' />
+        <CommonBreadcrumbs componentName='Overall Attendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
         <Grid item md={3} xs={12} className='items'>
@@ -558,6 +564,13 @@ const Attend = () => {
         </Grid>
       </Grid>
       <Grid container direction='row'>
+        <StyledClearButton
+          variant='contained'
+          startIcon={<ClearIcon />}
+          onClick={handleBack}
+        >
+          Back
+        </StyledClearButton>
         <StyledClearButton
           variant='contained'
           startIcon={<ClearIcon />}

@@ -172,7 +172,11 @@ const Attendance = () => {
     } else {
     }
   };
-
+  const handleBack = () => {
+    history.push({
+      pathname: '/attendance-calendar/teacher-view',
+    });
+  };
   const handleFilter = () => {
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
@@ -535,10 +539,18 @@ const Attendance = () => {
               onClick={handleClearAll}
             >
               Clear all
-          </StyledClearButton>
+            </StyledClearButton>
           </Grid> */}
-
           <Grid item md={2} xs={6}>
+            <StyledClearButton
+              variant='contained'
+              startIcon={<ClearIcon />}
+              onClick={handleBack}
+            >
+              back
+            </StyledClearButton>
+          </Grid>
+          {/* <Grid item md={2} xs={6}>
             <StyledFilterButton
               variant='contained'
               color='secondary'
@@ -548,7 +560,7 @@ const Attendance = () => {
             >
               filter
             </StyledFilterButton>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Grid>
 
