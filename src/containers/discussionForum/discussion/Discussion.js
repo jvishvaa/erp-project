@@ -339,32 +339,36 @@ export default function DiscussionComponent(props) {
     <Grid container className={classes.discussionContainer}>
       <Grid item xs={12}>
         <div className={classes.discussionTitleBox}>
-          <span className={classes.discussionTitle}>
-            {`${props.rowData && props.rowData.categories.category_name} /`}
-          </span>
-          <span className={classes.discussionTitle}>
-            {`${props.rowData && props.rowData.categories.sub_category_name} /`}
-          </span>
-          <span className={classes.discussionTitle}>
-            {props.rowData && props.rowData.categories.sub_sub_category_name}
-          </span>
           <span>
-            <FiberManualRecordIcon className={classes.dotSeparator} />
-            <span className={classes.postByText}>post by</span>
-            <ProfileIcon
-              firstname={props.rowData.post_by.first_name}
-              lastname={props.rowData.post_by.last_name}
-              bgColor='#14B800'
-            />
-            <span className={classes.username}>
-              {`${props.rowData.post_by.first_name} ${props.rowData.post_by.last_name} /`}
-            </span>
-            <span className={classes.discussionTime}>
-              {`${moment(props.rowData.post_at).format('hh : mm ')} /`}
-            </span>
-            <span className={classes.discussionTime}>
-              {moment(props.rowData.post_at).format('DD.MM.YYYY')}
-            </span>
+            <div>
+              <span className={classes.discussionTitle}>
+                {`${props.rowData && props.rowData.categories.category_name} /`}
+              </span>
+              <span className={classes.discussionTitle}>
+                {`${props.rowData && props.rowData.categories.sub_category_name} /`}
+              </span>
+              <span className={classes.discussionTitle}>
+                {props.rowData && props.rowData.categories.sub_sub_category_name}
+              </span>
+            </div>
+            <div style={{ display: 'inline-block'}}>
+              {/* <FiberManualRecordIcon className={classes.dotSeparator} /> */}
+              <span className={classes.postByText}>post by</span>
+              <ProfileIcon
+                firstname={props.rowData.post_by.first_name}
+                lastname={props.rowData.post_by.last_name}
+                bgColor='#14B800'
+              />
+              <span className={classes.username}>
+                {`${props.rowData.post_by.first_name} ${props.rowData.post_by.last_name} /`}
+              </span>
+              <span className={classes.discussionTime}>
+                {`${moment(props.rowData.post_at).format('hh : mm A')} /`}
+              </span>
+              <span className={classes.discussionTime}>
+                {moment(props.rowData.post_at).format('DD.MM.YYYY')}
+              </span>
+            </div>
           </span>
           <span className={classes.discussionIconRow}>
             <span>

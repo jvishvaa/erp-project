@@ -9,6 +9,8 @@ import Button from '@material-ui/core/Button';
 import axiosInstance from '../../../config/axios';
 import DialogActions from '@material-ui/core/DialogActions';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -53,10 +55,20 @@ const Calander = (props) => {
   const [periodName, setPeriodName] = useState();
   const [periodDescription, setPeriodDescription] = useState();
   const [day, setDay] = useState('Monday');
-  const [startTime, setStartTime] = useState();
+  const [startTime, setStartTime] = useState(new Date('2014-08-18T21:11:54'));
   const [acadamicYearID, setAcadamicYear] = useState();
   const [dayName, setDayName] = useState('Monday');
-  const [endTime, setEndTime] = useState();
+  const [endTime, setEndTime] = useState(new Date('2014-08-18T21:11:54'));
+  // const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
+
+  const handleDateStartTimeChange = (time) => {
+    // let dataTime = time.toString().slice(16, 21)
+    setStartTime(time);
+  };
+  const handleDateEndTimeChange = (time) =>{
+    // let dataTime = time.toString().slice(16, 21)
+    setEndTime(time);
+  }
   // const [openDialog, setOpenDialog] = useState(false);
 
   const borderStyle = {
@@ -127,8 +139,8 @@ const Calander = (props) => {
       day: day,
       period_name: periodName,
       period_description: periodDescription,
-      period_start_time: startTime,
-      period_end_time: endTime,
+      period_start_time: startTime.toString().slice(16, 21),
+      period_end_time: endTime.toString().slice(16, 21),
       required_material: requiredMaterial,
     };
     axiosInstance
@@ -141,7 +153,7 @@ const Calander = (props) => {
         }
       })
       .catch((error) => {
-        setAlert('error', error?.data?.message);
+        setAlert('error', 'please fill all fields');
       });
   };
   const OpenCalanderWeek = () => {
@@ -329,8 +341,8 @@ const Calander = (props) => {
               onChange={(e) => setDay(e.target.value)}
             />
           </div> */}
-          <div className={classes.formTextFields}>
-            <TextField
+          <div className={classes.formTextFields} style={{width: '43%'}} >
+            {/* <TextField
               label='Start Time'
               id='outlined-size-small'
               variant='outlined'
@@ -338,10 +350,26 @@ const Calander = (props) => {
               helperText='24-hour format'
               size='small'
               onChange={(e) => setStartTime(e.target.value)}
-            />
+            /> */}
+            <MuiPickersUtilsProvider variant='outlined' fullWidth utils={DateFnsUtils}>
+              <KeyboardTimePicker
+                margin='normal'
+                id='time-picker'
+                variant='outlined'
+                label='Start Time'
+                fullWidth
+                ampm={false}
+                helperText='24-hour format'
+                value={startTime}
+                onChange={handleDateStartTimeChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change time',
+                }}
+              />
+            </MuiPickersUtilsProvider>
           </div>
-          <div className={classes.formTextFields}>
-            <TextField
+          <div className={classes.formTextFields} style={{width: '43%'}}>
+            {/* <TextField
               label='End Time'
               id='outlined-size-small'
               variant='outlined'
@@ -349,7 +377,23 @@ const Calander = (props) => {
               helperText='24-hour format'
               size='small'
               onChange={(e) => setEndTime(e.target.value)}
-            />
+            /> */}
+            <MuiPickersUtilsProvider variant='outlined' fullWidth utils={DateFnsUtils}>
+              <KeyboardTimePicker
+                margin='normal'
+                id='time-picker'
+                variant='outlined'
+                label='End Time'
+                fullWidth
+                ampm={false}
+                helperText='24-hour format'
+                value={endTime}
+                onChange={handleDateEndTimeChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change time',
+                }}
+              />
+            </MuiPickersUtilsProvider>
           </div>
         </div>
         <DialogActions>
@@ -365,7 +409,6 @@ const Calander = (props) => {
         <div className='calander-week'>
           <table>
             <tr>
-              
               <th>
                 <Box
                   justifyContent='center'

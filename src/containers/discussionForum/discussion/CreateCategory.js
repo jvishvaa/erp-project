@@ -15,11 +15,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import Layout from '../../Layout/index';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import { fetchCategory, fetchSubCategory, fetchSubSubCategoryList } from '../../../redux/actions/discussionForumActions';
+import { fetchCategory, fetchSubCategory, fetchSubSubCategoryList, createAllCategory } from '../../../redux/actions/discussionForumActions';
 
 const useStyles = makeStyles({
   paperStyle: {
-    height: '100%',
+    height: '100vh',
     width: '100%',
     marginTop: '15px',
   },
@@ -78,9 +78,6 @@ const CreateCategories = () => {
   const [selectedSubCategory, setSelectedSubCategory] = React.useState(null);
   const [selectedSubSubCategory, setSelectedSubSubCategory] = React.useState(null);
 
-  const handleBack = () => {
-    history.push('/category');
-  }
   const handleCategory = (e) => {
     setCategory(e.target.value);
   };
@@ -135,6 +132,25 @@ const CreateCategories = () => {
       dispatch(fetchSubSubCategoryList(selectedSubCategory?.sub_category_id));
     }
   },[selectedSubCategory]);
+
+  const handleBack = () => {
+    history.push('/category');
+  }
+
+  const handleSubmit = () => {
+    if(!selectedCategory && !selectedSubCategory && !selectedSubSubCategory){
+      const params = {category_type: '1', category_name: category}
+      dispatch(createAllCategory(params));
+    }
+    else if(selectedCategory && !selectedSubCategory && !selectedSubSubCategory) {
+      const params = {category_type: '2', category_name: subCategory, category_parent_id: selectedCategory?.id}
+      dispatch(createAllCategory(params));
+    }
+    else if(selectedCategory && selectedSubCategory && !selectedSubSubCategory) {
+      const params = {category_type: '3', category_name: subSubCategory, category_parent_id: selectedSubCategory?.sub_category_id}
+      dispatch(createAllCategory(params));
+    }
+  }
 
   return (
     <Layout>
@@ -228,7 +244,7 @@ const CreateCategories = () => {
                   value={category}
                   onChange={handleCategory}
                   fullWidth
-                  disabled={true}
+                  disabled={selectedCategory? true : false}
                 />
                 {selectedCategory && (
                 <>
@@ -238,7 +254,7 @@ const CreateCategories = () => {
                     value={subCategory}
                     onChange={handleSubCategory}
                     fullWidth
-                    disabled={true}
+                    disabled={selectedSubCategory? true : false}
                   />
                 </>
                 )}
@@ -250,7 +266,7 @@ const CreateCategories = () => {
                       value={subSubCategory}
                       onChange={handleSubSubCategory}
                       fullWidth
-                      disabled={true}
+                      //disabled={true}
                     />
                   </>
                 )}
@@ -261,7 +277,7 @@ const CreateCategories = () => {
                   <StyledButton variant='contained' color='inherit' onClick={handleBack}>
                     Back
                   </StyledButton>
-                  <StyledButton variant='contained' color='inherit' style={{float:'right'}}>
+                  <StyledButton variant='contained' color='inherit' onClick={handleSubmit} style={{float:'right'}}>
                     Submit
                   </StyledButton>
                 </div>

@@ -8,3 +8,4 @@ export * from './onlineClassActions';
 export * from './assesmentActions';
 export * from './create-question-paper-actions';
 export * from './create-assesment-actions';
+export * from './assessmentReportActions';

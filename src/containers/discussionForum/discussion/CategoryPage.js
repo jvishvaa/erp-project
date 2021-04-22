@@ -72,7 +72,7 @@ const useStyles = makeStyles({
   disscustionContainer: {
     padding: '15px 57px 0px 44px',
     height: '100%',
-    minHeight: '400px',
+    minHeight: '500px',
   },
   statusText: {
     display: 'inline',
@@ -106,6 +106,9 @@ const StyledClearButton = withStyles({
     backgroundColor: '#E2E2E2',
     color: '#8C8C8C',
     height: '42px',
+    '&:hover': {
+      backgroundColor: '#E2E2E2 !important',
+    },
   },
 })(Button);
 
@@ -187,7 +190,7 @@ function CategoryPage() {
 
   const handleFilter = () => {
     if(selectedCategory?.id && selectedSubCategory?.sub_category_id && selectedSubSubCategory.sub_sub_category_name){
-      dispatch(fetchCategoryData(selectedCategory?.id));
+      dispatch(fetchCategoryData(selectedSubCategory?.sub_category_id));
     } else {
       setAlert('warning',`Please Select Category`);
     }
@@ -234,11 +237,9 @@ function CategoryPage() {
     }
   },[selectedSubCategory]);
 
-  const [createCategory, setCreateCategory] = React.useState(false);
   const [tabValue, setTabValue] = React.useState('all');
 
   const handleCreateCategory = () => {
-    //setCreateCategory(!createCategory);
     history.push('/category/create-category');
   };
 
