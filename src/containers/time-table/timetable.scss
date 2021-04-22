@@ -8,11 +8,12 @@ $font-roboto: 'Raleway', sans-serif;
   cursor: pointer;
 }
 @mixin box-border {
-  border-color: #ff6b6b;
+  border-color: rgba(255, 107, 107, 0.8);
+  // border-color: #ff6b6b ;
   border-style: solid;
   border-width: 2px;
   border-radius: 10px;
-  opacity: 80%;
+  // opacity: 80%;
 }
 @mixin box-right {
   width: 8%;
@@ -41,11 +42,14 @@ $font-roboto: 'Raleway', sans-serif;
     padding: 13px;
     color: $text-color;
     cursor: pointer;
+    transition-duration: 500ms;
   }
-  & td:hover {
-    z-index: 5;
+  td:hover {
+    // z-index: 5;
+    transition-duration: 500ms;
+    transform: scale(1.1);
     padding: 10px;
-    border: 2px solid #ff6b6b;
+    // border: 2px solid #ff6b6b;
     border-radius: 8px;
   }
 
@@ -247,7 +251,39 @@ $font-roboto: 'Raleway', sans-serif;
       border-right: 2px solid;
     }
 
-    @include tableData();
+    table {
+      font-family: $font-roboto;
+      border-collapse: collapse;
+      width: 100%;
+      border: none;
+    }
+    td {
+      text-align: left;
+      width: 10px;
+      border: none;
+      padding: 13px;
+      color: $text-color;
+      cursor: pointer;
+      // transition-duration: 500ms;
+    }
+    td:hover {
+      z-index: -1;
+      // position:absolute;
+      // transition-duration: 500ms;
+      // transform: scale(1.1);
+      padding: 10px;
+      border: 2px solid #ff6b6b;
+      border-radius: 8px;
+    }
+  
+    .header {
+      color: $text-color;
+    }
+    tr:nth-child(even) {
+      background-color: #ffebeb;
+      color: $text-color;
+      border: none;
+    }
     .daily-header {
       display: flex;
       justify-content: flex-start;
