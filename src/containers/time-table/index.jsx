@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Layout from '../Layout/index';
+import { makeStyles, useTheme } from '@material-ui/core/styles'; 
 import Loader from '../../components/loader/loader';
 import FilterImage from '../../assets/images/Filter_Icon.svg';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
@@ -14,8 +15,10 @@ import TimeTableMobile from './time-table-mobile-view/time-table-mobile';
 import FilterMobile from './filterMobile/filterMobile';
 import './timetable.scss';
 const TimeTable = (props) => {
+  const themeContext = useTheme();
+  const setMobileView  = !useMediaQuery(themeContext.breakpoints.down('sm')); 
   const [loading, setLoading] = useState(false);
-  const setMobileView = useMediaQuery('(min-width:950px)');
+  // const setMobileView = useMediaQuery('(min-width:768px)');
   const [tableData, setTableData] = useState([]);
   const [Filter, setFilter] = useState(true);
   const [acadamicYearID, setAcadamicYear] = useState();
@@ -39,6 +42,7 @@ const TimeTable = (props) => {
   const [teacherView, setTeacherView] = useState(false);
   const [openCloseTable, setOpenCloseTable] = useState(false);
   const [ids, setIDS] = useState(false);
+  const [openNewPeriod, setOpenNewPeriod] = useState(false)
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -75,6 +79,10 @@ const TimeTable = (props) => {
       setIDS(true);
     }
   }, [branchID]);
+  const handlePassOpenNewPeriod = () =>{
+    console.log('openNewPeriod');
+    setOpenNewPeriod(true);
+  }
   const callGetTimeTableAPI = async () => {
     setLoading(true);
     await axiosInstance
@@ -195,6 +203,9 @@ const TimeTable = (props) => {
       setSectionName(null);
     }
   };
+  const handlePassCloseNewPeriod = () =>{
+    setOpenNewPeriod(false);
+  }
   return (
     <>
       <Layout>
@@ -228,9 +239,11 @@ const TimeTable = (props) => {
                 <>
                   <UpperGrade
                     moduleId={moduleId}
+                    teacherView={teacherView}
                     handleCloseTable={handleCloseTable}
                     handlePassData={handlePassData}
                     handleClickAPI={handleClickAPI}
+                    handlePassOpenNewPeriod={handlePassOpenNewPeriod}
                   />
                   <div
                     className='filter-container'
@@ -262,6 +275,8 @@ const TimeTable = (props) => {
                 {openCloseTable ? (
                   <UserProvider value={ids}>
                     <DateAndCalander
+                    handlePassCloseNewPeriod={handlePassCloseNewPeriod}
+                    openNewPeriod={openNewPeriod}
                       passId={ids}
                       section_ID={sectionID}
                       grade_ID={gradeID}
