@@ -135,6 +135,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
               grade_name: grade.grade__grade_name,
             }))
           : [];
+        transformedData.unshift({ item_id: 'all', id: 'all', grade_name: 'Select All' });
         setGrades(transformedData);
       });
     }
@@ -143,6 +144,11 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   const handleChangeGrade = (values, acadId, branch) => {
     setSections([]);
     setSubjects([]);
+    values =
+      values.filter(({ id }) => id === 'all').length === 1
+        ? [...grades].filter(({ id }) => id !== 'all')
+        : values;
+    formik.setFieldValue('grade', values);
     if (values?.length > 0) {
       fetchSections(acadId, branch, values, moduleId).then((data) => {
         const transformedData = data
@@ -152,6 +158,11 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
               section_name: `${section.section__section_name}`,
             }))
           : [];
+        transformedData.unshift({
+          id: 'all',
+          item_id: 'all',
+          section_name: 'Select All',
+        });
         // const filteredSelectedSections = formik.values.section.filter(
         //   (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1
         // );
@@ -166,8 +177,12 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
     setSubjects([]);
     formik.setFieldValue('subjects', []);
     formik.setFieldValue('section', []);
+    values =
+      values.filter(({ id }) => id === 'all').length === 1
+        ? [...sections].filter(({ id }) => id !== 'all')
+        : values;
+    formik.setFieldValue('section', values);
     if (values?.length > 0) {
-      formik.setFieldValue('section', values);
       getSubjects(acadId, branch, grade, values, moduleId).then((data) => {
         const transformedData =
           data &&
@@ -175,6 +190,10 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             id: obj.subject__id,
             subject_name: obj.subject__subject_name,
           }));
+        transformedData.unshift({
+          id: 'all',
+          subject_name: 'Select All',
+        });
         setSubjects(transformedData);
         // const filteredSelectedSections = formik.values.section.filter(
         //   (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1
@@ -184,6 +203,17 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
       // fetchSubjects(branch, values);
     }
   };
+
+  // const handleChangeSubject = (event, value) => {
+  //   formik.setFieldValue('subjects', []);
+  //   value =
+  //     value.filter(({ id }) => id === 'all').length === 1
+  //       ? [...subjects].filter(({ id }) => id !== 'all')
+  //       : value;
+  //   if (value.length > 0) {
+  //     formik.setFieldValue('subjects', value);
+  //   }
+  // };
 
   // const handleSection = (e, value) => {
   //   formik.setFieldValue('section', value);
@@ -303,7 +333,6 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             id='grade'
             name='grade'
             onChange={(e, value) => {
-              formik.setFieldValue('grade', value);
               formik.setFieldValue('section', []);
               formik.setFieldValue('subjects', []);
               handleChangeGrade(
@@ -314,8 +343,9 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             }}
             multiple
             value={formik.values.grade || []}
-            options={grades || []}
+            options={grades}
             filterSelectedOptions
+            limitTags={2}
             getOptionLabel={(option) => option.grade_name || ''}
             renderInput={(params) => (
               <TextField
@@ -349,6 +379,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             value={formik.values.section || []}
             options={sections || []}
             multiple
+            limitTags={2}
             filterSelectedOptions
             getOptionLabel={(option) => option.section_name || ''}
             renderInput={(params) => (
@@ -378,10 +409,14 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             id='subjects'
             name='subjects'
             onChange={(e, value) => {
+              value =
+                value.filter(({ id }) => id === 'all').length === 1
+                  ? [...subjects].filter(({ id }) => id !== 'all')
+                  : value;
               formik.setFieldValue('subjects', value);
             }}
             value={formik.values.subjects || []}
-            // limitTags={2}
+            limitTags={2}
             multiple
             options={subjects || []}
             filterSelectedOptions

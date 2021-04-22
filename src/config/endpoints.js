@@ -296,6 +296,12 @@ export default {
     cancelBatchApi: '/erp_user/cancel-online-class/',
     hostApi: '/erp_user/redirection_zoom/',
   },
+  grievances: {
+    section: '/erp_user/section/',
+    downloadTicket: '/academic/download_tickets/',
+    listTickets: '/academic/list_tickets/',
+    grievance_reply: '/academic/grievance_reply/',
+  },
   studentViewBatchesApi: {
     getBatchesApi: '/erp_user/student_online_class/',
     rejetBatchApi: '/erp_user/mark_attendance/',
@@ -328,12 +334,19 @@ export default {
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
+  assessmentReportTypes: {
+    reportSectionWise: `${baseURLCentral}/assessment/report-section-wise/`,
+    reportTopicWise: `${baseURLCentral}/assessment/report-topic-wise/`,
+    reportClassAverage: `${baseURLCentral}/assessment/report-class-average/`,
+    reportTopicStudentAverage: `${baseURLCentral}/assessment/report-topic-student-average/`,
+  },
   publish: {
     ebook: `erp_user/publication/`,
     update_delete: `erp_user/update-destroy-publication/`,
   },
   assessmentApis: {
     gradesList: `/academic/sm-grades-list/`,
+    testList: `${baseURLCentral}/assessment/subject-test-list/`,
   },
   questionBank: {
     grades: `${baseURLCentral}/lesson_plan/list-grade/`,

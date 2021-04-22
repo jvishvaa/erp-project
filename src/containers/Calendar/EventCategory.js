@@ -35,7 +35,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import endpoints from '../../config/endpoints';
 import { shadows } from '@material-ui/system';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-
+import SearchBar from "material-ui-search-bar";
 import {
   Box,
   Paper,
@@ -180,7 +180,7 @@ const Cal1 = () => {
   const [eventName, setEventName] = useState('');
   const [isEditId, setIsEditId] = useState('');
   const [loading, setLoading] = useState(false);
-  const [totalGenre, setTotalGenre] = useState(null);
+  const [totalGenre, setTotalGenre] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const [chaTitle, setChaTitle] = useState(false);
   const [deleteFlag, setDeleteFlag] = useState(false);
@@ -192,15 +192,15 @@ const Cal1 = () => {
   const history = useHistory();
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-
+  const [searchData,setSearchData]=useState('abhishek')
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const [element_id, setElementId] = useState('');
-  const [flag, setFlag] = useState(true);
   const [filterData, setFilterData] = useState({
     selectedEventType: '',
   });
 
+  console.log(searchData,"searchinggggggg")
   // useEffect(() => {
   //   if (moduleId) {
   //     axiosInstance
@@ -210,18 +210,21 @@ const Cal1 = () => {
   //         setEventType(result.data.data);
   //       });
   //   }
-  // }, [moduleId]);
+  // }, [moduleId, updateFlag]);
 
   useEffect(() => {
     if (moduleId) {
       axiosInstance
-        .get(`${endpoints.eventBat.getListCategories}?module_id=${moduleId}`)
+        .get(`${endpoints.eventBat.getPaginatedCategories}?page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`)
         .then((result) => {
-          console.log('useEffect dummy data', result.data.data);
-          setDummyData(result.data.data);
+          setDummyData(result?.data?.data?.results);
+
+          setTotalGenre(result?.data?.data?.count)
+
         });
     }
-  }, [moduleId, deleteFlag, editFlag]);
+    setEditFlag(false)
+  }, [moduleId, updateFlag,pageNumber]);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -245,7 +248,6 @@ const Cal1 = () => {
   const handleClickOpen = () => {
     setOpen(true);
     setChaTitle(true);
-    setFlag(true);
   };
   const handleClickOpens = () => {
     setOpen(true);
@@ -278,22 +280,22 @@ const Cal1 = () => {
     setDummyData([]);
   };
 
-  const handleFilter = (type) => {
-    setLoading(true);
-    axiosInstance
-      .get(
-        `${endpoints.eventBat.filterEventCategory}?event_category_name=${type}&page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
-      ) //queryparams pass need to done
-      .then((result) => {
-        setLoading(false);
-        setTotalGenre(result.data.data.count);
-        setDummyData(result?.data.data.results);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.log(error);
-      });
-  };
+  // const handleFilter = (type) => {
+  //   setLoading(true);
+  //   axiosInstance
+  //     .get(
+  //       `${endpoints.eventBat.filterEventCategory}?event_category_name=${type}&page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
+  //     ) //queryparams pass need to done
+  //     .then((result) => {
+  //       setLoading(false);
+  //       setTotalGenre(result.data.data.count);
+  //       setDummyData(result?.data.data.results);
+  //     })
+  //     .catch((error) => {
+  //       setLoading(false);
+  //       console.log(error);
+  //     });
+  // };
 
   const handleSave = () => {
     setLoading(true);
@@ -342,11 +344,13 @@ const Cal1 = () => {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  useEffect(() => {
-    handleFilter(filterData.selectedEventType.event_category_name);
-    //setIsEditId('');
-    //setEventName('');
-  }, [deleteFlag, editFlag, pageNumber]);
+  // useEffect(() => {
+  //   if(searchData && pageNumber){
+  //   handleSearch(searchData);
+  //    }
+  //   //setIsEditId('');
+  //   //setEventName('');
+  // }, [deleteFlag, editFlag, pageNumber]);
 
   const handleClicknew = (event, id) => {
     setAnchorEl(event.currentTarget);
@@ -361,14 +365,13 @@ const Cal1 = () => {
     setOpen(false);
     setAnchorEl(null);
     setIsEditId('');
+    setEditFlag(false)
     setEventName('');
   };
 
-  const handleDelete = () => {
+  const handleDelete = (e, idx) => {
     axiosInstance
-      .delete(
-        `${endpoints.eventBat.deleteEventCategory}${element_id}?module_id=${moduleId}`
-      )
+      .delete(`${endpoints.eventBat.deleteEventCategory}${e.id}?module_id=${moduleId}`)
       .then((result) => {
         console.log('deleted Data', result.data.data);
         setDeleteFlag(!deleteFlag);
@@ -377,15 +380,31 @@ const Cal1 = () => {
       })
       .catch((error) => setAlert('warning', 'Something went wrong'));
   };
+const handleSearch=(e,value)=>{
+  if(e.length>0){
+  axiosInstance
+  .get(`${endpoints.eventBat.filterEventCategory}?event_category_name=${e}&page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`)
+  .then((result)=>{
+    setDummyData(result?.data?.data?.results)
+    setTotalGenre(result?.data?.data?.count)
+  })
 
+//  // setDummyData([])
+  .catch((err)=>{
+    setAlert("warning",err)
+  })
+}
+  setSearchData(e)
+  console.log(e.length,"chhhhh")
+}
+console.log(searchData,"fffff")   
   const handleEdit = () => {
-    setFlag(false);
     console.log(element_id, 'item id');
     const temp = dummyData.find((item) => item.id == element_id);
     console.log(temp);
     setChaTitle(false);
     handleClickOpens();
-    setEditFlag(!editFlag);
+    setEditFlag(true);
     setAnchorEl(null);
     setIsEditId(temp.id);
     setEventName(temp.event_category_name);
@@ -407,6 +426,7 @@ const Cal1 = () => {
           setEventName('');
           setEditFlag(!editFlag);
           setAlert('success', 'Event Updated Successfully');
+          handleSearch(searchData)
         }
       })
       .catch((error) => console.log(error));
@@ -423,7 +443,7 @@ const Cal1 = () => {
         <div className={classes.root}>
           <Grid container spacing={2} direction='row'>
             <Grid item xs={12} sm={5} md={3} className='arrow'>
-              <Autocomplete
+              {/* <Autocomplete
                 size='small'
                 id='role'
                 fullWidth
@@ -441,6 +461,12 @@ const Cal1 = () => {
                     required
                   />
                 )}
+              /> */}
+              <SearchBar
+                // value={filterData?.selectedEventType || ''}
+                
+                onChange={handleSearch}
+                
               />
             </Grid>
 
@@ -459,7 +485,7 @@ const Cal1 = () => {
                 Clear
               </Button>
             </Grid>
-            <Grid item xs={12} sm={4} md={2} lg={1}>
+            {/* <Grid item xs={12} sm={4} md={2} lg={1}>
               <Button
                 variant='contained'
                 className='custom_button_master '
@@ -471,7 +497,7 @@ const Cal1 = () => {
               >
                 Filter
               </Button>
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} sm={4} md={2} lg={1}>
               <Button
                 variant='contained'
@@ -529,7 +555,7 @@ const Cal1 = () => {
                 // onClick={handleSave}
                 color='primary'
               >
-                {flag ? 'save' : 'update'}
+                {editFlag ? 'UPDATE' : 'Save'}
               </Button>
             </DialogActions>
             {/* </Grid> */}
@@ -606,11 +632,11 @@ const Cal1 = () => {
           </Grid>
 
           <Grid container justify='center'>
-            {dummyData && dummyData.length > 9 && (
+            {dummyData && totalGenre > 9 && (
               <Pagination
                 onChange={handlePagination}
                 style={{ paddingLeft: '150px' }}
-                count={dummyData && dummyData.length / limit}
+                count={Math.ceil(totalGenre/limit)}
                 color='primary'
                 page={pageNumber}
                 color='primary'

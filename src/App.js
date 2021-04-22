@@ -85,6 +85,7 @@ import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-re
 import Discussionforum from './containers/discussionForum/index';
 import DiscussionPost from './containers/discussionForum/discussion/DiscussionPost';
 import CreateCategory from './containers/discussionForum/createCategory';
+import CreateCategories from './containers/discussionForum/discussion/CreateCategory';
 import CategoryPage from './containers/discussionForum/discussion/CategoryPage';
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
 import CircularList from './containers/circular';
@@ -240,6 +241,9 @@ import TransactionStatus from './containers/Finance/src/components/Finance/Trans
 import AdmFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/admFormList.js';
 import Airpay from './containers/Finance/src/components/Finance/PaymentGateways/Airpay/airpayIntegration.js';
 import UploadPaymentFile from './containers/Finance/src/components/Finance/student/managePayment/UploadPaymentFile.js';
+import TimeTable from './containers/time-table/index';
+import Griviences from './containers/Griviences/index';
+import GriviencesCreate from './containers/Griviences/CreateNew/create-new';
 import MarkAttedance from './containers/attendance/MarkAttedance';
 import AttedanceCalender from './containers/attendance/AttedanceCalender';
 import EventCategory from './containers/Calendar/EventCategory';
@@ -247,7 +251,7 @@ import Attendance from './containers/Calendar/Attendance';
 import CreateEvent from './containers/Calendar/CreateEvent';
 import OverallAttendance from './containers/Calendar/OverallAttendance';
 import Publications from './containers/publications/Publications';
-import TimeTable from './containers/time-table/index';
+// import TimeTable from './containers/time-table/index';
 import ActivateInactivateStudentAdm from './containers/Finance/src/components/Finance/Dashboard/FinanceAdmin/activateInactivateStudent.js';
 import QuestionBankList from './containers/question-bank/question-bank-list';
 import CreateQuestion from './containers/question-bank/create-question';
@@ -256,6 +260,7 @@ import CreateQuestionPaper from './containers/assessment-central/create-question
 import Assesment from './containers/assessment-central';
 import AssessmentView from './containers/assessment-central/assesment-view';
 import CreateAssesment from './containers/assessment-central/create-assesment';
+import AssessmentReportTypes from './containers/assessment-central/assessment-report-types';
 import ContactUs from 'containers/contact-us';
 import BookAppointment from './containers/BookAppointments/BookAppointment';
 import Appointments from './containers/BookAppointments/Appointments';
@@ -335,6 +340,18 @@ function App({ alert }) {
                           <Route path='/user-management'>
                             {({ match }) => <UserManagement match={match} />}
                           </Route>
+                          <Route path='/time-table/student-view'>
+                            {({ match }) => <TimeTable match={match} />}
+                          </Route>
+                          <Route path='/time-table/teacher-view'>
+                            {({ match }) => <TimeTable match={match} />}
+                          </Route>
+                          <Route path='/griviences'>
+                            {({ match }) => <Griviences match={match} />}
+                          </Route>
+                          <Route path='/greviences/createnew'>
+                            {({ match }) => <GriviencesCreate match={match} />}
+                          </Route>
                           {/*
                         <Route exact path='/view-users'>
                             {({ match }) => <ViewUsers match={match} />}
@@ -378,6 +395,9 @@ function App({ alert }) {
                           </Route>
                           <Route path='/create-assesment'>
                             {({ match }) => <CreateAssesment match={match} />}
+                          </Route>
+                          <Route exact path='/assessment-reports'>
+                            {({ match }) => <AssessmentReportTypes match={match} />}
                           </Route>
                           <Route exact path='/blog/genre'>
                             {({ match }) => <CreateGenre match={match} />}
@@ -570,6 +590,12 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/student-forum'>
                             {({ match }) => <Discussionforum match={match} />}
+                          </Route>
+                          <Route exact path='/category'>
+                            {({ match }) => <CategoryPage match={match} />}
+                          </Route>
+                          <Route exact path='/category/create-category'>
+                            {({ match }) => <CreateCategories match={match} />}
                           </Route>
                           <Route exact path='/category/create'>
                             {({ match }) => <CreateCategory match={match} />}

@@ -86,6 +86,8 @@ class TeacherBlog extends Component {
       branchList:[],
       gradeList:[],
       sectionList:[],
+      selectedYear :'',
+      AcadYearList:[],
       moduleId :113,
       endDate :moment().format('YYYY-MM-DD'),
       startDate: this.getDaysBefore(moment(), 6)
@@ -94,7 +96,8 @@ class TeacherBlog extends Component {
   componentDidMount() {
     let {status} =this.state
     this.getBlog(status);
-    this.getBranch();
+    this.getAcadYear();
+    // this.getBranch();
   }
   getBlog = (status) => {
     const { pageNo, pageSize,tabValue ,moduleId} = this.state;
@@ -203,15 +206,29 @@ handleFilter = () => {
     });
 
 }
+getAcadYear = () =>{
+  let {moduleId} =this.state
+  axios
+    .get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
+    .then((result) => {
+      if (result.data.status_code === 200) {
+        this.setState({ AcadYearList: result.data.data });
+      } else {
+        console.log(result.data.message);
+      }
+    })
+    .catch((error) => {
+    });
+}
 getBranch = () => {
-   let {moduleId} =this.state
+   let {moduleId,selectedYear} =this.state
   axios
     .get(
-      `${endpoints.communication.branches}?module_id=${moduleId}`
+      `${endpoints.communication.branches}?module_id=${moduleId}&session_year=${selectedYear.id}`
     )
     .then((result) => {
       if (result.data.status_code === 200) {
-        this.setState({ branchList: result.data.data });
+        this.setState({ branchList: result.data.data.results});
       } else {
         console.log(result.data.message);
       }
@@ -271,6 +288,12 @@ getSection = () => {
       .catch((error) => {
       });
   };
+  handleYear = (event, value) => {
+    console.log(value,"@@@@@@@@@@@@")
+    this.setState({data:[],selectedYear:value,selectedBranch:'',selectedGrade:'',selectedSection:''},()=>{
+      this.getBranch()
+    })
+  };
 handleBranch = (event, value) => {
   this.setState({data:[],selectedBranch:value,selectedGrade:'',selectedSection:''},()=>{
     this.getGrade()
@@ -301,7 +324,7 @@ clearSelection = () => {
 
   render() {
     const { classes } = this.props;
-    const {startDate,endDate, tabValue ,data,pageNo,pageSize,totalBlogs,selectedBranch,selectedGrade,gradeList,sectionList,selectedSection,branchList} = this.state;
+    const {startDate,endDate, tabValue ,data,pageNo,pageSize,totalBlogs,selectedBranch,selectedGrade,gradeList,sectionList,selectedSection,branchList,selectedYear,AcadYearList} = this.state;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -313,7 +336,32 @@ clearSelection = () => {
               <CommonBreadcrumbs componentName='Blog' />
               <div className='create_group_filter_container'>
               <Grid container spacing={3}>
-             
+              <Grid xs={12} sm={3} item>
+<div className='blog_input'>
+      <Autocomplete
+        size='small'
+        style={{ width: '100%' }}
+
+        onChange={this.handleYear}
+        value={selectedYear}
+        disableClearable
+        id='message_log-branch'
+        className='create_group_branch'
+        options={AcadYearList || []}
+        getOptionLabel={(option) => option?.session_year || ''}
+        filterSelectedOptions
+        renderInput={(params) => (
+          <TextField
+            className='message_log-textfield'
+            {...params}
+            variant='outlined'
+            label='Academic Year'
+            placeholder='Academic Year'
+          />
+        )}
+      />
+      </div>
+      </Grid>       
 <Grid xs={12} sm={3} item>
 <div className='blog_input'>
       <Autocomplete
@@ -325,8 +373,9 @@ clearSelection = () => {
         disableClearable
         id='message_log-branch'
         className='create_group_branch'
-        options={branchList}
-        getOptionLabel={(option) => option?.branch_name}
+        options={branchList || []}
+        getOptionLabel={(option) => option?.branch?.branch_name || ''}
+
         filterSelectedOptions
         renderInput={(params) => (
           <TextField
@@ -351,7 +400,7 @@ clearSelection = () => {
          value={selectedGrade}
          id='message_log-branch'
          className='create_group_branch'
-         options={gradeList}
+         options={gradeList || []}
          disableClearable
          getOptionLabel={(option) => option?.grade__grade_name}
          filterSelectedOptions

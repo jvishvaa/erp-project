@@ -32,7 +32,9 @@ import { deepOrange, deepPurple } from '@material-ui/core/colors';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import Axios from 'axios';
 import { useHistory } from 'react-router';
+import axios from 'axios';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
 const useStyles = makeStyles((theme) => ({
@@ -140,7 +142,6 @@ const MarkAttedance = () => {
           console.log(res, 'checking mark attendance list in useEffect');
           setNewData(res.data.results);
           setTotalGenre(res.data.count);
-          setAlert('success', 'Data succesfully fetched');
           console.log(res.data.count, 'checking count');
           var result = res.data.results.map((item) => ({
             name: item.name,
@@ -216,7 +217,6 @@ const MarkAttedance = () => {
         console.log(res.data);
         setNewData(res.data.results);
         setTotalGenre(res.data.count);
-        setAlert('success', 'Data successfully fetchd');
         const is_first_shift_present = false;
         const is_second_shift_present = false;
         var result = res.data.results.map((item) => ({
@@ -280,10 +280,10 @@ const MarkAttedance = () => {
       borderRadius: '10px',
       marginLeft: '20px',
       height: '42px',
+      width: '7%',
       marginTop: 'auto',
     },
   })(Button);
-
   const StyledFilterButton = withStyles({
     root: {
       backgroundColor: '#FF6B6B',
@@ -534,7 +534,7 @@ const MarkAttedance = () => {
               fullWidth
               value={dateValue}
               onChange={handleDateChange}
-              className='dropdown'
+              // className='dropdown'
               style={{ width: '100%' }}
               KeyboardButtonProps={{
                 'aria-label': 'change date',
@@ -700,7 +700,7 @@ const MarkAttedance = () => {
           onClick={handleClearAll}
           startIcon={<ClearIcon />}
         >
-          Clear all
+          Clear All
         </StyledClearButton>
 
         <StyledFilterButton

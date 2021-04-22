@@ -378,6 +378,7 @@ class WriteBlog extends Component {
                     <Typography style={{ margin: 10 }} variant='body1'>
                       Write the blog with atleast {wordCountLimit} words
                     </Typography>
+                    
                     <TinyMce
                       key={key}
                       id={key}
