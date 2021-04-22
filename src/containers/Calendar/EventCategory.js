@@ -35,7 +35,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import endpoints from '../../config/endpoints';
 import { shadows } from '@material-ui/system';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import SearchBar from "material-ui-search-bar";
+import SearchBar from 'material-ui-search-bar';
 import {
   Box,
   Paper,
@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #E2E2E2',
     opacity: 1,
     margin: '20px',
-    width: '350px',
+    width: '330px',
     [theme.breakpoints.down('xs')]: {
       width: '290px',
     },
@@ -192,7 +192,7 @@ const Cal1 = () => {
   const history = useHistory();
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const [searchData,setSearchData]=useState('abhishek')
+  const [searchData, setSearchData] = useState('abhishek');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const [element_id, setElementId] = useState('');
@@ -200,7 +200,7 @@ const Cal1 = () => {
     selectedEventType: '',
   });
 
-  console.log(searchData,"searchinggggggg")
+  console.log(searchData, 'searchinggggggg');
   // useEffect(() => {
   //   if (moduleId) {
   //     axiosInstance
@@ -215,16 +215,17 @@ const Cal1 = () => {
   useEffect(() => {
     if (moduleId) {
       axiosInstance
-        .get(`${endpoints.eventBat.getPaginatedCategories}?page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`)
+        .get(
+          `${endpoints.eventBat.getPaginatedCategories}?page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
+        )
         .then((result) => {
           setDummyData(result?.data?.data?.results);
 
-          setTotalGenre(result?.data?.data?.count)
-
+          setTotalGenre(result?.data?.data?.count);
         });
     }
-    setEditFlag(false)
-  }, [moduleId, updateFlag,pageNumber]);
+    setEditFlag(false);
+  }, [moduleId, updateFlag, pageNumber]);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -365,13 +366,15 @@ const Cal1 = () => {
     setOpen(false);
     setAnchorEl(null);
     setIsEditId('');
-    setEditFlag(false)
+    setEditFlag(false);
     setEventName('');
   };
 
   const handleDelete = (e, idx) => {
     axiosInstance
-      .delete(`${endpoints.eventBat.deleteEventCategory}${e.id}?module_id=${moduleId}`)
+      .delete(
+        `${endpoints.eventBat.deleteEventCategory}${element_id}?module_id=${moduleId}`
+      )
       .then((result) => {
         console.log('deleted Data', result.data.data);
         setDeleteFlag(!deleteFlag);
@@ -380,24 +383,26 @@ const Cal1 = () => {
       })
       .catch((error) => setAlert('warning', 'Something went wrong'));
   };
-const handleSearch=(e,value)=>{
-  if(e.length>0){
-  axiosInstance
-  .get(`${endpoints.eventBat.filterEventCategory}?event_category_name=${e}&page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`)
-  .then((result)=>{
-    setDummyData(result?.data?.data?.results)
-    setTotalGenre(result?.data?.data?.count)
-  })
+  const handleSearch = (e, value) => {
+    if (e.length > 0) {
+      axiosInstance
+        .get(
+          `${endpoints.eventBat.filterEventCategory}?event_category_name=${e}&page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
+        )
+        .then((result) => {
+          setDummyData(result?.data?.data?.results);
+          setTotalGenre(result?.data?.data?.count);
+        })
 
-//  // setDummyData([])
-  .catch((err)=>{
-    setAlert("warning",err)
-  })
-}
-  setSearchData(e)
-  console.log(e.length,"chhhhh")
-}
-console.log(searchData,"fffff")   
+        //  // setDummyData([])
+        .catch((err) => {
+          setAlert('warning', err);
+        });
+    }
+    setSearchData(e);
+    console.log(e.length, 'chhhhh');
+  };
+  console.log(searchData, 'fffff');
   const handleEdit = () => {
     console.log(element_id, 'item id');
     const temp = dummyData.find((item) => item.id == element_id);
@@ -426,7 +431,7 @@ console.log(searchData,"fffff")
           setEventName('');
           setEditFlag(!editFlag);
           setAlert('success', 'Event Updated Successfully');
-          handleSearch(searchData)
+          handleSearch(searchData);
         }
       })
       .catch((error) => console.log(error));
@@ -464,9 +469,8 @@ console.log(searchData,"fffff")
               /> */}
               <SearchBar
                 // value={filterData?.selectedEventType || ''}
-                
+
                 onChange={handleSearch}
-                
               />
             </Grid>
 
@@ -636,7 +640,7 @@ console.log(searchData,"fffff")
               <Pagination
                 onChange={handlePagination}
                 style={{ paddingLeft: '150px' }}
-                count={Math.ceil(totalGenre/limit)}
+                count={Math.ceil(totalGenre / limit)}
                 color='primary'
                 page={pageNumber}
                 color='primary'
