@@ -31,7 +31,7 @@ const MyTinyEditor = ({
         toolbar:
           'fontselect fontsizeselect bold italic alignleft aligncenter alignright underline bullist numlist file image customInsertButton',
         setup:
-          id.startsWith('questionEditor') &&
+          id?.startsWith('questionEditor') &&
           function (editor) {
             editor.ui.registry.addButton('customInsertButton', {
               text: 'Finish',

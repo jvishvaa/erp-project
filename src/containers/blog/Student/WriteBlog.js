@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 // import { connect } from 'react-redux';
 import ReactHtmlParser from 'react-html-parser'
-
+import MyTinyEditor from '../../question-bank/create-question/tinymce-editor';
 import {
   Grid,
   Card,
@@ -202,6 +202,12 @@ class WriteBlog extends Component {
 
     // localStorage.setItem('blogContent', content);
   };
+  handleEditorChange = (content, editor) => {
+    content = content.replace(/&nbsp;/g, '');
+
+    this.setState({ textEditorContent: content, fadeIn: false });
+    const subceededWordCount = this.isWordCountSubceeded()
+  };
 
   handleTitle = (event) => {
     this.setState({ title: event.target.value });
@@ -379,13 +385,22 @@ class WriteBlog extends Component {
                       Write the blog with atleast {wordCountLimit} words
                     </Typography>
                     
-                    <TinyMce
+                    {/* <TinyMce
                       key={key}
                       id={key}
                       get={this.handleTextEditor}
                       content={textEditorContent}
                       
-                    />
+                    /> */}
+                     <MyTinyEditor
+            id="blog"
+            content={textEditorContent}
+            handleEditorChange={this.handleEditorChange}
+            // setOpenEditor={setOpenEditor}
+            placeholder='Description...'
+            // filterDataTop={filterDataTop}
+            // filterDataBottom={filterDataBottom}
+          />
                     
 
                   </Grid>
