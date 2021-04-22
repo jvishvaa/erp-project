@@ -1,6 +1,7 @@
 .MuiButton-root:hover {
   background-color: #ff6b6b !important;
   opacity: 0.8 !important;
+  color: white !important;
 }
 .absentContainer {
   .absentHeader {
@@ -61,7 +62,6 @@
     display: flex;
     justify-content: center;
     .MuiButton-outlinedSecondary {
-      color: #ff6b6b;
       border: 1px solid #ff6b6b;
     }
   }

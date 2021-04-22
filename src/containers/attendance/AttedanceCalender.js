@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import Layout from '../Layout/index';
 // import Avatar from '@material-ui/core/Avatar';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
-import './attendance.scss' 
+import './attendance.scss';
 import {
   Button,
   Divider,
@@ -14,7 +14,7 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state'
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { Link, useHistory } from 'react-router-dom';
 import RangeCalender from './calender.jsx';
 import { Autocomplete, Pagination } from '@material-ui/lab';
@@ -92,13 +92,13 @@ const AttedanceCalender = () => {
   const [loading, setLoading] = useState(false);
   const [academicYear, setAcademicYear] = useState([]);
   const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
-  const [branchList, setBranchList] = useState([])
-  const [selectedBranch, setSelectedBranch] = useState([])
+  const [branchList, setBranchList] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
-  const [secSelectedId, setSecSelectedId] = useState([])
+  const [secSelectedId, setSecSelectedId] = useState([]);
   const [studentDataAll, setStudentDataAll] = useState(null);
   const [counter, setCounter] = useState(2);
   const [todayDate, setTodayDate] = useState();
@@ -107,15 +107,14 @@ const AttedanceCalender = () => {
   const [endDate, setEndDate] = useState();
   const [sevenDay, setSevenDay] = useState();
   const [studentData, setStudentData] = useState([]);
-  const [teacherView , setTeacherView ] = useState(true);
+  const [teacherView, setTeacherView] = useState(true);
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
-let path = window.location.pathname;
-console.log(path , "path");
+  let path = window.location.pathname;
+  console.log(path, 'path');
 
-  
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -127,8 +126,8 @@ console.log(path , "path");
           item.child_module.forEach((item) => {
             if (item.child_name === 'Teacher Calendar') {
               setModuleId(item.child_id);
-              console.log(teacherView , "teacher view");
-              console.log(item.child_id,"Chekk")
+              console.log(teacherView, 'teacher view');
+              console.log(item.child_id, 'Chekk');
             }
             if (item.child_name === 'Student Calendar') {
               setModuleId(item.child_id);
@@ -138,53 +137,57 @@ console.log(path , "path");
       });
     }
   }, []);
-  console.log(moduleId,'MODULE_ID')
-
-useEffect(()=>{
-  if( path === "/attendance-calendar/teacher-view" ){
-    console.log(path , "path");
-    setTeacherView(true);
-  } 
-  if( path === "/attendance-calendar/student-view" ){
-    console.log(path , "path");
-    setTeacherView(false);
-  } 
-},[path]);
+  console.log(moduleId, 'MODULE_ID');
 
   useEffect(() => {
-    if(moduleId){
-    callApi(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`, 'academicYearList')
+    if (path === '/attendance-calendar/teacher-view') {
+      console.log(path, 'path');
+      setTeacherView(true);
+    }
+    if (path === '/attendance-calendar/student-view') {
+      console.log(path, 'path');
+      setTeacherView(false);
+    }
+  }, [path]);
+
+  useEffect(() => {
+    if (moduleId) {
+      callApi(
+        `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
+        'academicYearList'
+      );
     }
   }, [moduleId]);
 
   const handleClearAll = () => {
-    console.log("clear all")
-    setSelectedAcadmeicYear('')
-    setSelectedBranch([])
-    setSelectedBranch([])
-    setSelectedGrade([])
-    setSelectedSection([])
-  }
+    console.log('clear all');
+    setSelectedAcadmeicYear('');
+    setSelectedBranch([]);
+    setSelectedBranch([]);
+    setSelectedGrade([]);
+    setSelectedSection([]);
+  };
 
   function callApi(api, key) {
     setLoading(true);
-    axiosInstance.get(api)
+    axiosInstance
+      .get(api)
       .then((result) => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
-            console.log(result?.data?.data || [])
-            setAcademicYear(result?.data?.data || [])
+            console.log(result?.data?.data || []);
+            setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
-            console.log(result?.data?.data || [])
+            console.log(result?.data?.data || []);
             setBranchList(result?.data?.data?.results || []);
           }
           if (key === 'gradeList') {
-            console.log(result?.data?.data || [])
+            console.log(result?.data?.data || []);
             setGradeList(result.data.data || []);
           }
           if (key === 'section') {
-            console.log(result?.data?.data || [])
+            console.log(result?.data?.data || []);
             setSectionList(result.data.data);
           }
           setLoading(false);
@@ -277,13 +280,13 @@ useEffect(()=>{
         },
       })
       .then((res) => {
-        setLoading(false)
+        setLoading(false);
         console.log(res.data.events, 'current eventssss');
         setCurrentEvent(res.data.events);
         setStudentDataAll(res.data);
       })
       .catch((error) => {
-        setLoading(false)
+        setLoading(false);
         console.log(error);
       });
   };
@@ -301,17 +304,17 @@ useEffect(()=>{
       grade_id: selectedGrade,
       section_id: selectedSection,
       startDate: startDate,
-      endDate: endDate
-    }
-    console.log(payload, "attendance calendar")
+      endDate: endDate,
+    };
+    console.log(payload, 'attendance calendar');
 
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
       return;
     }
-    console.log(selectedBranch.length, "===============")
+    console.log(selectedBranch.length, '===============');
     if (selectedBranch.length == 0) {
-      console.log(selectedBranch.length, "===============")
+      console.log(selectedBranch.length, '===============');
       setAlert('warning', 'Select Branch');
       return;
     }
@@ -343,9 +346,9 @@ useEffect(()=>{
           setLoading(false);
           console.log(res.data.absent_list, 'respond student');
           setStudentDataAll(res.data);
-          let temp = [...res.data.present_list, ...res.data.absent_list]
+          let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
-          setAlert("success","Data Sucessfully Fetched")
+          setAlert('success', 'Data Sucessfully Fetched');
         })
         .catch((error) => {
           setLoading(false);
@@ -364,16 +367,16 @@ useEffect(()=>{
       grade_id: selectedGrade,
       section_id: selectedSection,
       startDate: startDate,
-      endDate: endDate
-    }
+      endDate: endDate,
+    };
     history.push({
       pathname: '/OverallAttendance',
       state: {
         data: studentData,
-        payload: payload
-      }
-    })
-  }
+        payload: payload,
+      },
+    });
+  };
 
   const handleMarkAttendance = () => {
     const payload = {
@@ -382,16 +385,16 @@ useEffect(()=>{
       grade_id: selectedGrade,
       section_id: selectedSection,
       startDate: startDate,
-      endDate: endDate
-    }
+      endDate: endDate,
+    };
     history.push({
       pathname: '/markattendance',
       state: {
         data: studentData,
-        payload: payload
-      }
-    })
-  }
+        payload: payload,
+      },
+    });
+  };
 
   const StyledFilterButton = withStyles({
     root: {
@@ -431,8 +434,8 @@ useEffect(()=>{
             style={{ width: '100%' }}
             size='small'
             onChange={(event, value) => {
-              setSelectedAcadmeicYear(value)
-              console.log(value, "test")
+              setSelectedAcadmeicYear(value);
+              console.log(value, 'test');
               if (value) {
                 callApi(
                   `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
@@ -442,14 +445,13 @@ useEffect(()=>{
               setSelectedGrade([]);
               setSectionList([]);
               setSelectedSection([]);
-              setSelectedBranch([])
-
+              setSelectedBranch([]);
             }}
             id='branch_id'
             className='dropdownIcon'
-            value={selectedAcademicYear || ""}
-            options={academicYear || ""}
-            getOptionLabel={(option) => option?.session_year || ""}
+            value={selectedAcademicYear || ''}
+            options={academicYear || ''}
+            getOptionLabel={(option) => option?.session_year || ''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -467,27 +469,28 @@ useEffect(()=>{
             style={{ width: '100%' }}
             size='small'
             onChange={(event, value) => {
-              setSelectedBranch([])
+              setSelectedBranch([]);
               if (value) {
                 // const ids = value.map((el)=>el)
-                const selectedId = value.branch.id
-                setSelectedBranch(value)
-                console.log(value)
+                const selectedId = value.branch.id;
+                setSelectedBranch(value);
+                console.log(value);
                 callApi(
-                  `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                  `${endpoints.academics.grades}?session_year=${
+                    selectedAcademicYear.id
+                  }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
                   'gradeList'
                 );
               }
               setSelectedGrade([]);
               setSectionList([]);
               setSelectedSection([]);
-
             }}
             id='branch_id'
             className='dropdownIcon'
-            value={selectedBranch || ""}
-            options={branchList || ""}
-            getOptionLabel={(option) => option?.branch?.branch_name || ""}
+            value={selectedBranch || ''}
+            options={branchList || ''}
+            getOptionLabel={(option) => option?.branch?.branch_name || ''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -505,13 +508,13 @@ useEffect(()=>{
             style={{ width: '100%' }}
             size='small'
             onChange={(event, value) => {
-              setSelectedGrade([])
+              setSelectedGrade([]);
               if (value) {
                 // const ids = value.map((el)=>el)
-                const selectedId = value.grade_id
+                const selectedId = value.grade_id;
                 // console.log(selectedBranch.branch)
-                const branchId = selectedBranch.branch.id
-                setSelectedGrade(value)
+                const branchId = selectedBranch.branch.id;
+                setSelectedGrade(value);
                 callApi(
                   `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
                   'section'
@@ -519,13 +522,12 @@ useEffect(()=>{
               }
               setSectionList([]);
               setSelectedSection([]);
-
             }}
             id='grade_id'
             className='dropdownIcon'
-            value={selectedGrade || ""}
-            options={gradeList || ""}
-            getOptionLabel={(option) => option?.grade__grade_name || ""}
+            value={selectedGrade || ''}
+            options={gradeList || ''}
+            getOptionLabel={(option) => option?.grade__grade_name || ''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -543,20 +545,21 @@ useEffect(()=>{
             style={{ width: '100%' }}
             size='small'
             onChange={(event, value) => {
-              setSelectedSection([])
+              setSelectedSection([]);
               if (value) {
-                const ids = value.id
-                const secId = value.section_id
-                setSelectedSection(value)
-                setSecSelectedId(secId)
+                const ids = value.id;
+                const secId = value.section_id;
+                setSelectedSection(value);
+                setSecSelectedId(secId);
               }
-
             }}
             id='section_id'
             className='dropdownIcon'
-            value={selectedSection || ""}
-            options={sectionList || ""}
-            getOptionLabel={(option) => option?.section__section_name || option?.section_name || ""}
+            value={selectedSection || ''}
+            options={sectionList || ''}
+            getOptionLabel={(option) =>
+              option?.section__section_name || option?.section_name || ''
+            }
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -578,7 +581,7 @@ useEffect(()=>{
         className={classes.root}
         spacing={3}
         style={{ background: 'white' }}
-        id="completeContainer"
+        id='completeContainer'
       >
         <div className='whole-calender-filter'>
           <Grid className='calenderGrid'>
@@ -614,7 +617,7 @@ useEffect(()=>{
                   size='small'
                   color='secondary'
                   className={counter === 3 ? 'viewDetailsButtonClick' : 'viewDetails'}
-                // onClick={getfuture}
+                  // onClick={getfuture}
                 >
                   {/* <p className='btnLabel'>Secondary</p> */}
                   Monthly
@@ -702,13 +705,15 @@ useEffect(()=>{
                 </Typography>
               </Grid>
               <Grid item md={6} xs={12} className='mark-btn-grid'>
-                { teacherView === true ?
-               ( <Button size='small' onClick={handleMarkAttendance}  >
-                  <span className={classes.contentData} id='mark-para'>
-                    Mark Attendance
-                  </span>
-                </Button> )
-                : <div></div> }
+                {teacherView === true ? (
+                  <Button size='small' onClick={handleMarkAttendance}>
+                    <span className={classes.contentData} id='mark-para'>
+                      Mark Attendance
+                    </span>
+                  </Button>
+                ) : (
+                  <div></div>
+                )}
               </Grid>
               <div className='stu-icon'>
                 <Grid item md={3}>
@@ -728,8 +733,8 @@ useEffect(()=>{
                   </div>
                   <Divider />
                   <div className='absentList'>
-                    {studentDataAll.absent_list.[0] &&
-                      studentDataAll.absent_list.[0].map((data) => (
+                    {studentDataAll.absent_list[0] &&
+                      studentDataAll.absent_list[0].map((data) => (
                         <div className='eachAbsent'>
                           <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
                           <div className='studentName'>
@@ -746,8 +751,13 @@ useEffect(()=>{
                       ))}
                   </div>
                   <div className='btnArea'>
-                    <Button variant='outlined' color='secondary' className='viewDetails' onClick={handleViewDetails} >
-                      <p className='btnLabel'>View Details</p>
+                    <Button
+                      variant='outlined'
+                      color='secondary'
+                      className='viewDetails'
+                      onClick={handleViewDetails}
+                    >
+                      <p className='btnLabel'>View More</p>
                     </Button>
                   </div>
                 </div>
@@ -796,13 +806,16 @@ useEffect(()=>{
                 </Typography>
               </Grid>
               <Grid item md={6} xs={12} className='event-btn'>
-              { teacherView === true ?
-                (<Button size='small' href={`/createEvent`}>
-                  {/* ADD EVENT */}
-                  <span className={classes.contentData} id='event-text'>
-                    Add Event
-                  </span>
-                </Button>) : <div></div> }
+                {teacherView === true ? (
+                  <Button size='small' href={`/createEvent`}>
+                    {/* ADD EVENT */}
+                    <span className={classes.contentData} id='event-text'>
+                      Add Event
+                    </span>
+                  </Button>
+                ) : (
+                  <div></div>
+                )}
               </Grid>
               <div className='event-details'>
                 <Grid item md={5}>
