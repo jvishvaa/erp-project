@@ -156,7 +156,7 @@ const MarkAttedance = () => {
         })
         .catch((err) => {
           console.log(err);
-          setAlert('error', 'something went wrong');
+          // setAlert('error', 'something went wrong');
         });
     } else {
       const date = new Date();
@@ -235,7 +235,7 @@ const MarkAttedance = () => {
       .catch((err) => {
         setLoading(false);
         console.log(err);
-        setAlert('error', 'something went wrong');
+        // setAlert('error', 'something went wrong');
       });
   };
 

@@ -124,7 +124,7 @@ const Attend = () => {
         .catch((err) => {
           setLoading(false);
           console.log(err);
-          setAlert('error', err);
+          // setAlert('error', err);
         });
     } else {
       const date = new Date();
@@ -218,7 +218,7 @@ const Attend = () => {
       .catch((err) => {
         setLoading(false);
         console.log(err);
-        setAlert('error', err);
+        // setAlert('error', err);
       });
   };
 
