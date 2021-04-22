@@ -153,7 +153,7 @@ const Calander = (props) => {
         }
       })
       .catch((error) => {
-        setAlert('error', 'please fill all fields');
+        setAlert('error', 'please fill all fields or change time range');
       });
   };
   const OpenCalanderWeek = () => {
@@ -321,14 +321,13 @@ const Calander = (props) => {
               onChange={(e) => handleChangeDay(e)}
               label='Day'
             >
-              <MenuItem value=''>
-                <em>None</em>
-              </MenuItem>
+              <MenuItem value='Sunday'>Sunday</MenuItem>
               <MenuItem value='Monday'>Monday</MenuItem>
               <MenuItem value='Tuesday'>Tuesday</MenuItem>
               <MenuItem value='Wednesday'>Wednesday</MenuItem>
               <MenuItem value='Thursday'>Thursday</MenuItem>
               <MenuItem value='Friday'>Friday</MenuItem>
+              <MenuItem value='Saturday'>Saturday</MenuItem>
             </Select>
           </FormControl>
 
@@ -409,6 +408,16 @@ const Calander = (props) => {
         <div className='calander-week'>
           <table>
             <tr>
+            {/* <th>
+                <Box
+                  justifyContent='center'
+                  alignItems='center'
+                  borderRight={1}
+                  {...defaultProps}
+                >
+                  <div className='header'>Sunday</div>
+                </Box>
+              </th> */}
               <th>
                 <Box
                   justifyContent='center'
@@ -449,6 +458,16 @@ const Calander = (props) => {
                   <div className='header'>Thursday</div>
                 </Box>
               </th>
+              {/* <th>
+                <Box
+                  justifyContent='center'
+                  alignItems='center'
+                  borderRight={1}
+                  {...defaultProps}
+                >
+                  <div className='header'>Friday</div>
+                </Box>
+              </th> */}
               <th>
                 <Box justifyContent='center' alignItems='center'>
                   <div className='header'>Friday</div>
