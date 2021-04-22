@@ -101,12 +101,12 @@ const CategoryEdit = ({cardData, hadleClose}) => {
     if(category !== categoryData.category) {
       const params = {category_name: category, category_type: "1"}
       const id = categoryData.category_id;
-      //dispatch(updateAllCategory(params));
+      dispatch(updateAllCategory(params, id));
     }
     if(subCategory !== categoryData.sub_category_name) {
       const params = {category_name: subCategory, category_type: "2", category_parent_id: categoryData.category_id}
       const id = categoryData.sub_category_id;
-      //dispatch(updateAllCategory(params));
+      dispatch(updateAllCategory(params, id));
     }
     if(subSubCategory !== categoryData.sub_sub_category_name) {
       const id = categoryData.sub_sub_category_id;

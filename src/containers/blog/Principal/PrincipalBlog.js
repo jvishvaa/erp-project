@@ -81,6 +81,9 @@ class PrincipalBlog extends Component {
       branchList:[],
       gradeList:[],
       sectionList:[],
+      selectedYear :'',
+      AcadYearList:[],
+
       tabValue: 0,
       pageNo: 1,
       pageSize: 6,
@@ -95,24 +98,40 @@ class PrincipalBlog extends Component {
   componentDidMount() {
     let {status} =this.state
     this.getBlog(status);
-    this.getBranch();
+    this.getAcadYear();
+
   }
+  getAcadYear = () =>{
+    let {moduleId} =this.state
+    axios
+      .get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          this.setState({ AcadYearList: result.data.data });
+        } else {
+          console.log(result.data.message);
+        }
+      })
+      .catch((error) => {
+      });
+  }
+  
   handleFilter = () => {
     const { pageNo, pageSize ,tabValue,status,selectedBranch,selectedGrade,selectedSection,moduleId,startDate,endDate} = this.state
     let urlPath = ''
     if(selectedSection){
       urlPath = `${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch.id}&grade_id=${selectedGrade.grade_id}`
+            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}&grade_id=${selectedGrade.grade_id}`
     }else if(selectedGrade){
       urlPath = `${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&grade_id=${selectedGrade.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch.id}`
+            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&grade_id=${selectedGrade.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}`
     }
     else if(selectedBranch){
       urlPath =`${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&branch_id=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}`
+            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&branch_id=${selectedBranch?.branch.id}&start_date=${startDate}&end_date=${endDate}`
     }
     axios
       .get(
@@ -132,11 +151,11 @@ class PrincipalBlog extends Component {
   getGrade = () => {
     const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   
-     let {selectedBranch, moduleId,gradeList}=this.state
+     let {selectedBranch, moduleId,gradeList,selectedYear}=this.state
       axios
         .get(
           
-    `${endpoints.communication.grades}?branch_id=${selectedBranch.id}&module_id=${moduleId}`,
+    `${endpoints.communication.grades}?branch_id=${selectedBranch?.branch.id}&module_id=${moduleId}&session_year=${selectedYear.id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -156,13 +175,12 @@ class PrincipalBlog extends Component {
     getSection = () => {
       const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
     
-       let {selectedBranch, moduleId,gradeList,selectedGrade}=this.state
+       let {selectedBranch, moduleId,gradeList,selectedGrade,selectedYear}=this.state
         axios
           .get(
             
             `${endpoints.communication.sections}?branch_id=${
-              selectedBranch.id
-            }&grade_id=${selectedGrade.grade_id}&module_id=${moduleId}`,
+              selectedBranch?.branch.id            }&grade_id=${selectedGrade.grade_id}&module_id=${moduleId}&session_year=${selectedYear.id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -180,14 +198,15 @@ class PrincipalBlog extends Component {
           });
       };
   getBranch = () => {
-   
+    let {moduleId,selectedYear} =this.state
+
     axios
       .get(
-        `${endpoints.communication.branches}`
-      )
+        `${endpoints.communication.branches}?module_id=${moduleId}&session_year=${selectedYear.id}`
+        )
       .then((result) => {
         if (result.data.status_code === 200) {
-          this.setState({ branchList: result.data.data });
+          this.setState({ branchList: result.data.data.results});
         } else {
           console.log(result.data.message);
         }
@@ -195,6 +214,13 @@ class PrincipalBlog extends Component {
       .catch((error) => {
       });
   };
+  handleYear = (event, value) => {
+    console.log(value,"@@@@@@@@@@@@")
+    this.setState({data:[],selectedYear:value,selectedBranch:'',selectedGrade:'',selectedSection:''},()=>{
+      this.getBranch()
+    })
+  };
+
   getBlog = (status) => {
     const { pageNo, pageSize,tabValue,moduleId } = this.state;
     
@@ -287,7 +313,7 @@ handleSection = (event,value) =>{
 }
 clearSelection = () => {
   let {status}=this.state
-  this.setState({   selectedBranch :'',
+  this.setState({ selectedYear:'',  selectedBranch :'',
   selectedGrade:'',
   selectedSection:'',
 }
@@ -300,7 +326,7 @@ clearSelection = () => {
 
   render() {
     const { classes } = this.props;
-    const {startDate,endDate,branchList, tabValue ,data,pageNo,pageSize,totalBlogs,selectedBranch,selectedGrade,gradeList,sectionList,selectedSection} = this.state;
+    const {startDate,endDate,branchList, tabValue ,data,pageNo,pageSize,totalBlogs,selectedBranch,selectedGrade,gradeList,sectionList,selectedSection,selectedYear,AcadYearList} = this.state;
 
     return (
       <div className='layout-container-div'>
@@ -313,7 +339,33 @@ clearSelection = () => {
               <CommonBreadcrumbs componentName='Blog' />
               <div className='create_group_filter_container'>
                 <Grid container>
-                  
+                <Grid xs={12} sm={3} item>
+<div className='blog_input'>
+      <Autocomplete
+        size='small'
+        style={{ width: '100%' }}
+
+        onChange={this.handleYear}
+        value={selectedYear}
+        disableClearable
+        id='message_log-branch'
+        className='create_group_branch'
+        options={AcadYearList || []}
+        getOptionLabel={(option) => option?.session_year || ''}
+        filterSelectedOptions
+        renderInput={(params) => (
+          <TextField
+            className='message_log-textfield'
+            {...params}
+            variant='outlined'
+            label='Academic Year'
+            placeholder='Academic Year'
+          />
+        )}
+      />
+      </div>
+      </Grid>      
+
              
                 <Grid xs={12} sm={3} item>
               <div className='blog_input'>
@@ -325,9 +377,10 @@ clearSelection = () => {
                       value={selectedBranch}
                       id='message_log-branch'
                       className='create_group_branch'
-                      options={branchList}
+                      options={branchList || []}
+                      getOptionLabel={(option) => option?.branch?.branch_name || ''}
+              
                       disableClearable
-                      getOptionLabel={(option) => option?.branch_name}
                       filterSelectedOptions
                       renderInput={(params) => (
                         <TextField
@@ -352,7 +405,7 @@ clearSelection = () => {
                        value={selectedGrade}
                        id='message_log-branch'
                        className='create_group_branch'
-                       options={gradeList}
+                       options={gradeList || []}
                        getOptionLabel={(option) => option?.grade__grade_name}
                        filterSelectedOptions
                        renderInput={(params) => (

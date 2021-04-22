@@ -44,6 +44,9 @@ const DisplayBox = (props) => {
   const [MaterialRequired, setMaterialRequired] = useState(
     props.dataOpenChange.required_material
   );
+  const handleCloseBox = () => {
+    props.handleClosePass();
+  };
   const sendUpdatedData = () => {
     setOpenEditForm(true);
     if (!setMobileView) {
@@ -79,15 +82,22 @@ const DisplayBox = (props) => {
             <div className='yellow-header'>
               {data.period_start_time.slice(0, 5)} - {data.period_end_time.slice(0, 5)}
             </div>
+            <div style={{ display: 'flex' }}></div>
             {props.teacherView ? (
               <div className='edit-button' onClick={() => setOpenEditForm(false)}>
                 <EditTwoToneIcon size='small' /> Edit
               </div>
             ) : (
-              <></>
+              <div className='edit-button' onClick={() => handleCloseBox()}>
+                Close
+              </div>
             )}
           </div>
-          <h3>{data.period_name}</h3>
+          <div style={{ display: 'flex' }}>
+            <div className='yellow-header'>Period Name:</div>
+            <h3>{data.period_name}</h3>
+          </div>
+
           <h4>
             {data.teacher_name.name}
             {/* {data.assigned_teacher__first_name} {data.assigned_teacher__last_name} */}

@@ -12,61 +12,95 @@ const Daily = (props) => {
   const [DataWednesday, setDataWednesday] = useState(props.tableData.Wednesday);
   const [DataThursday, setDataThursday] = useState(props.tableData.Thursday);
   const [DataFriday, setDataFriday] = useState(props.tableData.Friday);
-
+  const [DataSaturday, setDataSaturday] = useState(props.tableData.Saturday);
+  const [DataSunday, setDataSunday] = useState(props.tableData.Sunday);
+  const [mapData, setMapData] = useState([1]);
+  const [showBox, setShowBox] = useState(false);
   useEffect(() => {
     handleDailyData();
   }, [props.openToggleCalander]);
   const handleDailyData = () => {
     let newDate = new Date();
-    let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    let days = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ];
     let day = days[newDate.getDay()];
     setCurrent(day);
     if (day === 'Monday') {
       setDaily(DataMonday);
+      // if (DataMonday) {
+      //   let lengthDaily = DataMonday.length;
+      //   setMapData(lengthDaily);
+      // }
     }
     if (day === 'Tuesday') {
       setDaily(DataTuesday);
+    }
+    if (day === 'Sunday') {
+      setDaily(DataSunday);
+    }
+    if (day === 'Saturday') {
+      setDaily(DataSaturday);
     }
     if (day === 'Wednesday') {
       setDaily(DataWednesday);
     }
     if (day === 'Thursday') {
       setDaily(DataThursday);
+      // if (DataThursday) {
+      //   let lengthDaily = DataThursday.length;
+      //   let mappingArray = Array.from(Array(lengthDaily).keys());
+      //   setMapData(mappingArray);
+      // }
     }
     if (day === 'Friday') {
       setDaily(DataFriday);
     }
   };
+  const handleClosePass = () =>{
+    setShowBox(false);
+  }
+  const handlePassData = (data) =>{
+    setSelectData(data);
+    setShowBox(true);
+  }
 
   return (
     <>
-      <div className='calander-container'>
-        <div className='calander-daily'>
+      <div className='calander-container-time-table-module'>
+        <div className='calander-daily-time-table-module'>
           <table>
             <tr>
               <div className='daily-header'>{currentDay}</div>
             </tr>
-            {daily &&
-              daily.map((data) => (
-                <tr key={data.id} onClick={() => setSelectData(data)}>
-                  <td>
-                    <h4>{data?.period_name}</h4>
-                    <h3>{data?.subject_details?.subject_name}</h3>
-                    <p>
-                      {data.period_start_time.slice(0, 5)}-
-                      {data.period_end_time.slice(0, 5)}
-                    </p>
-                    <h4>
-                      {data.teacher_name?.name}
-                    </h4>
-                  </td>
+            {mapData &&
+              mapData.map((data) => (
+                <tr key={data.id} >
+                  {daily &&
+                    daily.map((data) => (
+                      <td onClick={() => handlePassData(data)}>
+                        <h4>{data?.period_name}</h4>
+                        <h3>{data?.subject_details?.subject_name}</h3>
+                        <p>
+                          {data.period_start_time.slice(0, 5)}-
+                          {data.period_end_time.slice(0, 5)}
+                        </p>
+                        <h4>{data.teacher_name?.name}</h4>
+                      </td>
+                    ))}
                 </tr>
               ))}
           </table>
         </div>
-        <div className='display-container'>
-          {selectData ? (
-            <DisplayBox dataOpenChange={selectData} />
+        <div className='display-container-time-table-module'>
+          {showBox? (
+            <DisplayBox handleClosePass={handleClosePass} dataOpenChange={selectData} />
           ) : (
             <div className='message'>Select card to view further details</div>
           )}

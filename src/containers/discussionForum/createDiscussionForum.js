@@ -115,7 +115,12 @@ const CreateDiscussionForum = () => {
       if (result.data.status_code === 200) {
         setLoading(false);
         setAlert('success', result.data.message);
-        history.push('/discussion-forum');
+        if(location.pathname === '/student-forum/create'){
+          history.push('/student-forum');
+        }
+        else {
+          history.push('/teacher-forum');
+        }
       } else {        
         setLoading(false);
         setAlert('error', result.data.message);

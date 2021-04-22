@@ -23,6 +23,7 @@ export const types = {
   FETCH_SUB_CATEGORY_LIST_FAILURE: 'FETCH_SUB_CATEGORY_LIST_FAILURE',
   FETCH_SUB_SUB_CATEGORY_LIST_SUCCESS: 'FETCH_SUB_SUB_CATEGORY_LIST_SUCCESS',
   FETCH_SUB_SUB_CATEGORY_LIST_FAILURE: 'FETCH_SUB_SUB_CATEGORY_LIST_FAILURE',
+  EDIT_DISCCUSION_POST: 'EDIT_DISCCUSION_POST',
 };
 
 const { 
@@ -47,6 +48,7 @@ const {
   FETCH_SUB_SUB_CATEGORY_LIST,
   FETCH_SUB_SUB_CATEGORY_LIST_SUCCESS,
   FETCH_SUB_SUB_CATEGORY_LIST_FAILURE,
+  EDIT_DISCCUSION_POST,
 } = types;
 
 export const postAction = (data) => {
@@ -66,6 +68,13 @@ export const filterDataAction = (data) => {
 export const editCategoryDataAction = (data) => {
   return {
     type: EDIT_CATEGORI_DATA,
+    payload: data,
+  }
+}
+
+export const editPostDataAction = (data) => {
+  return {
+    type: EDIT_DISCCUSION_POST,
     payload: data,
   }
 }
