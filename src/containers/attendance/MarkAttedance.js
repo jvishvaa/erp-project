@@ -695,14 +695,14 @@ const MarkAttedance = () => {
         >
           Back
         </StyledClearButton>
-        <StyledFilterButton
+        <StyledClearButton
           variant='contained'
-          onClick={handleClearAll}
           startIcon={<ClearIcon />}
-          style={{ backgroundColor: '#E2E2E2', color: '#8C8C8C' }}
+          style={{ width: 'auto' }}
+          onClick={handleClearAll}
         >
-          Clear All
-        </StyledFilterButton>
+          Clear all
+        </StyledClearButton>
 
         <StyledFilterButton
           variant='contained'
