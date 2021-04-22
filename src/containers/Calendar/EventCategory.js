@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #E2E2E2',
     opacity: 1,
     margin: '20px',
-    width: '350px',
+    width: '330px',
     [theme.breakpoints.down('xs')]: {
       width: '290px',
     },
@@ -256,8 +256,8 @@ const Cal1 = () => {
   const handleClear = () => {
     setFilterData({ selectedEventType: '' });
     setEventName('');
-    setCustColor('red');
-    setDummyData([]);
+    setCustColor('');
+    // setDummyData([]);
     setTotalGenre('');
   };
   const handleEventName = (e, idx) => {
@@ -335,7 +335,7 @@ const Cal1 = () => {
     console.info('You clicked a breadcrumb.');
   }
 
-  const [custColor, setCustColor] = useState('red');
+  const [custColor, setCustColor] = useState('');
 
   const handleColor = (e) => {
     console.log('color:', e.target.value);
@@ -371,7 +371,7 @@ const Cal1 = () => {
 
   const handleDelete = (e, idx) => {
     axiosInstance
-      .delete(`${endpoints.eventBat.deleteEventCategory}${e.id}?module_id=${moduleId}`)
+      .delete(`${endpoints.eventBat.deleteEventCategory}${element_id}?module_id=${moduleId}`)
       .then((result) => {
         console.log('deleted Data', result.data.data);
         setDeleteFlag(!deleteFlag);
@@ -408,6 +408,7 @@ console.log(searchData,"fffff")
     setAnchorEl(null);
     setIsEditId(temp.id);
     setEventName(temp.event_category_name);
+    setCustColor(temp.event_category_color)
     // setCustColor(temp.event_category_color);
     // console.log(temp.event_category_color);
   };
@@ -425,9 +426,9 @@ console.log(searchData,"fffff")
           setIsEditId('');
           setEventName('');
           setEditFlag(!editFlag);
-          setAlert('success', 'Event Updated Successfully');
           handleSearch(searchData)
         }
+        setAlert('success', 'Event Updated Successfully');
       })
       .catch((error) => console.log(error));
     setOpen(false);

@@ -305,11 +305,19 @@ const MarkAttedance = () => {
     setDateValueShow(value);
     console.log('date', value);
   };
-
   const handleBack = () => {
     history.push({
-      pathname: '/markattendance',
+      pathname: '/attendance-calendar/teacher-view',
     });
+  };
+  const handleClearAll = () => {
+    setSelectedAcadmeicYear('');
+    setSelectedBranch([]);
+    setSelectedBranch([]);
+    setSelectedGrade([]);
+    setSelectedSection([]);
+    setDateValue(moment(date).format('YYYY-MM-DD'));
+    setTotalGenre(null);
   };
 
   const handleFirstHalf = (e, id) => {
@@ -678,11 +686,17 @@ const MarkAttedance = () => {
       <Grid container direction='row'>
         <StyledClearButton
           variant='contained'
-          href={'/attendance-calendar/teacher-view'}
           onClick={handleBack}
-          // startIcon={<ClearIcon />}
+          startIcon={<ClearIcon />}
         >
           Back
+        </StyledClearButton>
+        <StyledClearButton
+          variant='contained'
+          startIcon={<ClearIcon />}
+          onClick={handleClearAll}
+        >
+          Clear all
         </StyledClearButton>
 
         <StyledFilterButton
