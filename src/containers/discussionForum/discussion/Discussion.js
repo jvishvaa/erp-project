@@ -168,6 +168,9 @@ const StyledOutlinedButton = withStyles({
     borderRadius: '10px',
     backgroundColor: 'transparent',
     position: 'absolute',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
     bottom: '15px',
     width: '178px',
     '@media (max-width: 600px)': {
@@ -182,6 +185,9 @@ const OutlinedButton = withStyles({
     color: '#0455A6',
     border: '1px solid #0455A6',
     borderRadius: '10px',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
     backgroundColor: 'transparent',
     '@media (min-width: 600px)': {
       marginTop: '20px!important',
@@ -251,15 +257,21 @@ export default function DiscussionComponent(props) {
     axiosInstance
       .post(endpoints.discussionForum.CreateCommentAndReplay, param)
       .then((res) => {
-        setReply('');
-        setAlert('success', res.data.message);
         if(res.data.status_code === 200){
+          setReply('');
+          setAlert('success', res.data.message);
           setAddComment(addComment + 1);
         }
+        else {
+          setAlert('error', res.data.message);
+        }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setAlert('error', error.message);
+      });
   };
-  const handlePost = () => {
+  const handleReadPost = () => {
     //dispatch(postAction(props.rowData));
     if(location.pathname === '/student-forum'){
       history.push('/student-forum/post/' + props.rowData.id);
@@ -369,7 +381,13 @@ export default function DiscussionComponent(props) {
   }
 
   const handleEditPost = () => {
-    dispatch(editPostDataAction(props.rowData));
+    //dispatch(editPostDataAction(props.rowData));
+    if(location.pathname === '/student-forum'){
+      history.push('/student-forum/edit/' + props.rowData.id);
+    }
+    else {
+      history.push('/teacher-forum/edit/' + props.rowData.id);
+    }
   }
 
   return (
@@ -546,7 +564,7 @@ export default function DiscussionComponent(props) {
                     color="secondary"
                     variant="contained"
                     fullWidth
-                    onClick={handlePost}
+                    onClick={handleReadPost}
                   >
                     Read post
                   </StyledButton>

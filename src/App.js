@@ -591,10 +591,10 @@ function App({ alert }) {
                           <Route exact path='/student-forum'>
                             {({ match }) => <Discussionforum match={match} />}
                           </Route>
-                          <Route exact path='/category'>
+                          <Route exact path='/master-management/discussion-category'>
                             {({ match }) => <CategoryPage match={match} />}
                           </Route>
-                          <Route exact path='/category/create-category'>
+                          <Route exact path='/master-management/discussion-category/create'>
                             {({ match }) => <CreateCategories match={match} />}
                           </Route>
                           <Route exact path='/category/create'>
@@ -614,6 +614,12 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/student-forum/post/:id'>
                             {({ match }) => <DiscussionPost match={match} />}
+                          </Route>
+                          <Route exact path='/teacher-forum/edit/:id'>
+                            {({ match }) => <CreateDiscussionForum match={match} />}
+                          </Route>
+                          <Route exact path='/student-forum/edit/:id'>
+                            {({ match }) => <CreateDiscussionForum match={match} />}
                           </Route>
                           <Route exact path='/teacher-circular'>
                             {({ match }) => <CircularList match={match} />}
