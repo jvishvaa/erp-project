@@ -1,20 +1,6 @@
 import React, { useContext } from 'react';
 import moment from 'moment';
-<<<<<<< HEAD
-import {
-  Grid,
-  Box,
-  Typography,
-  makeStyles,
-  Button,
-  withStyles,
-  InputBase,
-  Popover,
-  Divider,
-} from '@material-ui/core';
-=======
 import { Grid, Box, Typography, makeStyles, Button, withStyles, InputBase, Popover, Divider, IconButton} from '@material-ui/core';
->>>>>>> f355ad933bbb3763c24654127b4554d52534d856
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import DiscussionReplies from './DiscussionReplies';
@@ -257,11 +243,11 @@ export default function DiscussionComponent(props) {
 
   const handleChange = (e) => {
     let checkReply = e.target.value;
-    if (checkReply.trim().length === 0) {
-      setAlert('warning', 'Fill Reply Field');
-    } else {
+    // if (checkReply.trim().length === 0) {
+    //   setAlert('warning', 'Fill Reply Field');
+    // } else {
       setReply(e.target.value);
-    }
+    // }
     // setReply(e.target.value);
   };
   const handleReply = () => {
@@ -286,13 +272,8 @@ export default function DiscussionComponent(props) {
     }
   };
   const handlePost = () => {
-<<<<<<< HEAD
-    dispatch(postAction(props.rowData));
-    if (location.pathname === '/student-forum') {
-=======
     //dispatch(postAction(props.rowData));
     if(location.pathname === '/student-forum'){
->>>>>>> f355ad933bbb3763c24654127b4554d52534d856
       history.push('/student-forum/post/' + props.rowData.id);
     } else {
       history.push('/teacher-forum/post/' + props.rowData.id);
