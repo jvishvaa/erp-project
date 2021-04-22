@@ -27,6 +27,9 @@ const useStyles = makeStyles(() => ({
     background: 'white',
     color: '#014B7E',
   },
+  boxStyle:{
+    margin: '0px',
+  }
 }));
 const Calander = (props) => {
   const classes = useStyles();
@@ -38,6 +41,8 @@ const Calander = (props) => {
   const [DataThursday, setDataThursday] = useState(0);
   const [loopMax, setLoopMax] = useState([0, 1, 2, 3, 4, 5, 6]);
   const [DataFriday, setDataFriday] = useState(0);
+  const [DataSaturday, setDataSaturday] = useState(0);
+  const [DataSunday, setDataSunday] = useState(0);
   const [SelectData, setSelectData] = useState();
   const [selectClick, setSelectClick] = useState(false);
   // const [newPeriod, setAddPeriod] = useState(props.openNewPeriod || false);
@@ -163,6 +168,8 @@ const Calander = (props) => {
     setDataWednesday(props.tableData.Wednesday);
     setDataThursday(props.tableData.Thursday);
     setDataFriday(props.tableData.Friday);
+    setDataSunday(props.tableData.Sunday);
+    setDataSaturday(props.tableData.Saturday);
     // while (1) {
     //   if (props.tableData.Monday) [counterLength];
     // // }
@@ -409,22 +416,24 @@ const Calander = (props) => {
         <div className='calander-week-time-table-module'>
           <table>
             <tr>
-            {/* <th>
+            <th>
                 <Box
                   justifyContent='center'
                   alignItems='center'
                   borderRight={1}
                   {...defaultProps}
+                  className={classes.boxStyle}
                 >
                   <div className='header'>Sunday</div>
                 </Box>
-              </th> */}
+              </th>
               <th>
                 <Box
                   justifyContent='center'
                   alignItems='center'
                   borderRight={1}
                   {...defaultProps}
+                  className={classes.boxStyle}
                 >
                   <div className='header'>Monday</div>
                 </Box>
@@ -435,6 +444,7 @@ const Calander = (props) => {
                   alignItems='center'
                   borderRight={1}
                   {...defaultProps}
+                  className={classes.boxStyle}
                 >
                   <div className='header'>Tuesday</div>
                 </Box>
@@ -445,6 +455,7 @@ const Calander = (props) => {
                   alignItems='center'
                   borderRight={1}
                   {...defaultProps}
+                  className={classes.boxStyle}
                 >
                   <div className='header'>Wednesday</div>
                 </Box>
@@ -455,28 +466,51 @@ const Calander = (props) => {
                   alignItems='center'
                   borderRight={1}
                   {...defaultProps}
+                  className={classes.boxStyle}
                 >
                   <div className='header'>Thursday</div>
                 </Box>
               </th>
-              {/* <th>
+              <th>
                 <Box
                   justifyContent='center'
                   alignItems='center'
                   borderRight={1}
                   {...defaultProps}
+                  className={classes.boxStyle}
                 >
                   <div className='header'>Friday</div>
                 </Box>
-              </th> */}
+              </th>
               <th>
-                <Box justifyContent='center' alignItems='center'>
-                  <div className='header'>Friday</div>
+                <Box justifyContent='center' className={classes.boxStyle} alignItems='center'>
+                  <div className='header'>Saturday</div>
                 </Box>
               </th>
             </tr>
+            
             {loopMax.map((data, index) => (
               <tr key={data}>
+                {index < DataSunday?.length ? (
+                  <td
+                    onClick={() => {
+                      handleChangeData(DataSunday[index]);
+                    }}
+                  >
+                    <h4>{DataSunday[index].period_name}</h4>
+                    <h3>{DataSunday[index].subject_details?.subject_name}</h3>
+                    <p>
+                      {DataSunday[index].period_start_time.slice(0, 5)}-
+                      {DataSunday[index].period_end_time.slice(0, 5)}
+                    </p>
+                    <h4>{DataSunday[index].teacher_name?.name}</h4>
+                  </td>
+                ) : (
+                  <td>
+                    <h4> </h4> <p> </p>
+                    <h4> </h4>
+                  </td>
+                )}
                 {index < DataMonday?.length ? (
                   <td
                     onClick={() => {
@@ -572,6 +606,26 @@ const Calander = (props) => {
                       {DataFriday[index].period_end_time.slice(0, 5)}
                     </p>
                     <h4>{DataFriday[index].teacher_name?.name}</h4>
+                  </td>
+                ) : (
+                  <td>
+                    <h4> </h4> <p> </p>
+                    <h4> </h4>
+                  </td>
+                )}
+                  {index < DataSaturday?.length ? (
+                  <td
+                    onClick={() => {
+                      handleChangeData(DataSaturday[index]);
+                    }}
+                  >
+                    <h4>{DataSaturday[index].period_name}</h4>
+                    <h3>{DataSaturday[index].subject_details?.subject_name}</h3>
+                    <p>
+                      {DataSaturday[index].period_start_time.slice(0, 5)}-
+                      {DataSaturday[index].period_end_time.slice(0, 5)}
+                    </p>
+                    <h4>{DataSaturday[index].teacher_name?.name}</h4>
                   </td>
                 ) : (
                   <td>

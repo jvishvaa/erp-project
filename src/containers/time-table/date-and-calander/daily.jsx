@@ -12,7 +12,10 @@ const Daily = (props) => {
   const [DataWednesday, setDataWednesday] = useState(props.tableData.Wednesday);
   const [DataThursday, setDataThursday] = useState(props.tableData.Thursday);
   const [DataFriday, setDataFriday] = useState(props.tableData.Friday);
+  const [DataSaturday, setDataSaturday] = useState(props.tableData.Saturday);
+  const [DataSunday, setDataSunday] = useState(props.tableData.Sunday);
   const [mapData, setMapData] = useState([1]);
+  const [showBox, setShowBox] = useState(false);
   useEffect(() => {
     handleDailyData();
   }, [props.openToggleCalander]);
@@ -39,6 +42,12 @@ const Daily = (props) => {
     if (day === 'Tuesday') {
       setDaily(DataTuesday);
     }
+    if (day === 'Sunday') {
+      setDaily(DataSunday);
+    }
+    if (day === 'Saturday') {
+      setDaily(DataSaturday);
+    }
     if (day === 'Wednesday') {
       setDaily(DataWednesday);
     }
@@ -54,6 +63,13 @@ const Daily = (props) => {
       setDaily(DataFriday);
     }
   };
+  const handleClosePass = () =>{
+    setShowBox(false);
+  }
+  const handlePassData = (data) =>{
+    setSelectData(data);
+    setShowBox(true);
+  }
 
   return (
     <>
@@ -68,7 +84,7 @@ const Daily = (props) => {
                 <tr key={data.id} >
                   {daily &&
                     daily.map((data) => (
-                      <td onClick={() => setSelectData(data)}>
+                      <td onClick={() => handlePassData(data)}>
                         <h4>{data?.period_name}</h4>
                         <h3>{data?.subject_details?.subject_name}</h3>
                         <p>
@@ -83,8 +99,8 @@ const Daily = (props) => {
           </table>
         </div>
         <div className='display-container-time-table-module'>
-          {selectData ? (
-            <DisplayBox dataOpenChange={selectData} />
+          {showBox? (
+            <DisplayBox handleClosePass={handleClosePass} dataOpenChange={selectData} />
           ) : (
             <div className='message'>Select card to view further details</div>
           )}
