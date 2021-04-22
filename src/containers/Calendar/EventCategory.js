@@ -5,6 +5,7 @@ import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Grid from '@material-ui/core/Grid';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import Layout from '../Layout';
 import Loader from '../../components/loader/loader';
 import FormControl from '@material-ui/core/FormControl';
@@ -174,7 +175,7 @@ const Cal1 = () => {
   const classes = useStyles();
 
   const { setAlert } = useContext(AlertNotificationContext);
-
+  const [Diaopen, setdiaOpen] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [eventType, setEventType] = useState([]);
   const [eventName, setEventName] = useState('');
@@ -224,7 +225,7 @@ const Cal1 = () => {
         });
     }
     setEditFlag(false)
-  }, [moduleId, updateFlag,pageNumber]);
+  }, [moduleId, updateFlag,pageNumber,deleteFlag]);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -251,6 +252,13 @@ const Cal1 = () => {
   };
   const handleClickOpens = () => {
     setOpen(true);
+  };
+  const DiaClickOpen = () => {
+    setdiaOpen(true);
+  };
+
+  const DiaClose = () => {
+    setdiaOpen(false);
   };
 
   const handleClear = () => {
@@ -369,6 +377,9 @@ const Cal1 = () => {
     setEventName('');
   };
 
+
+
+  
   const handleDelete = (e, idx) => {
     axiosInstance
       .delete(`${endpoints.eventBat.deleteEventCategory}${element_id}?module_id=${moduleId}`)
@@ -376,7 +387,11 @@ const Cal1 = () => {
         console.log('deleted Data', result.data.data);
         setDeleteFlag(!deleteFlag);
         setAnchorEl(null);
+        setdiaOpen(false);
         setAlert('success', 'Event Delete Successfully');
+        // history.push({
+        //   pathname: '/event-category',
+        // });
       })
       .catch((error) => setAlert('warning', 'Something went wrong'));
   };
@@ -632,7 +647,29 @@ console.log(searchData,"fffff")
                                 onClose={handleClose}
                               >
                                 <MenuItem onClick={handleEdit}>Edit</MenuItem>
-                                <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                                {/* <MenuItem onClick={handleDelete}>Delete</MenuItem> */}
+                                <MenuItem variant="outlined" color="primary" onClick={DiaClickOpen}>Delete</MenuItem>
+                                 <Dialog
+                                    open={Diaopen}
+                                    onClose={DiaClose}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                  >
+                                    <DialogTitle id="alert-dialog-title">{"Conformation For Delete"}</DialogTitle>
+                                    <DialogContent>
+                                      <DialogContentText id="alert-dialog-description">
+                                        Are You Sure to Delete the EventCategory.
+                                      </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                      <Button onClick={handleDelete} color="primary">
+                                        yes
+                                      </Button>
+                                      <Button onClick={DiaClose} color="primary" autoFocus>
+                                        No
+                                      </Button>
+                                    </DialogActions>
+                                  </Dialog>
                               </Menu>
                             </Grid>
                           </Grid>
