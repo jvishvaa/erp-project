@@ -258,7 +258,7 @@ const Cal1 = () => {
     setFilterData({ selectedEventType: '' });
     setEventName('');
     setCustColor('');
-    // setDummyData([]);
+    setDummyData([]);
     setTotalGenre('');
   };
   const handleEventName = (e, idx) => {
@@ -336,6 +336,7 @@ const Cal1 = () => {
     console.info('You clicked a breadcrumb.');
   }
 
+
   const [custColor, setCustColor] = useState('');
 
   const handleColor = (e) => {
@@ -372,9 +373,7 @@ const Cal1 = () => {
 
   const handleDelete = (e, idx) => {
     axiosInstance
-      .delete(
-        `${endpoints.eventBat.deleteEventCategory}${element_id}?module_id=${moduleId}`
-      )
+      .delete(`${endpoints.eventBat.deleteEventCategory}${element_id}?module_id=${moduleId}`)
       .then((result) => {
         console.log('deleted Data', result.data.data);
         setDeleteFlag(!deleteFlag);
@@ -431,8 +430,7 @@ const Cal1 = () => {
           setIsEditId('');
           setEventName('');
           setEditFlag(!editFlag);
-          setAlert('success', 'Event Updated Successfully');
-          handleSearch(searchData);
+          handleSearch(searchData)
         }
         setAlert('success', 'Event Updated Successfully');
       })
