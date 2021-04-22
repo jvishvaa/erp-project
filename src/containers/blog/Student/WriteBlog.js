@@ -32,7 +32,7 @@ import { withRouter } from 'react-router-dom';
 // import { withRouter } from 'react-router-dom';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
-import TinyMce from '../../../components/TinyMCE/tinyMce';
+// import TinyMce from '../../../components/TinyMCE/tinyMce';
 import PreviewBlog from './PreviewBlog';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -378,13 +378,14 @@ class WriteBlog extends Component {
                     <Typography style={{ margin: 10 }} variant='body1'>
                       Write the blog with atleast {wordCountLimit} words
                     </Typography>
-                    <TinyMce
+                    
+                    {/* <TinyMce
                       key={key}
                       id={key}
                       get={this.handleTextEditor}
                       content={textEditorContent}
                       
-                    />
+                    /> */}
                     
 
                   </Grid>
