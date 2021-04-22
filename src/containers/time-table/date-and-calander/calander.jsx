@@ -40,7 +40,8 @@ const Calander = (props) => {
   const [DataFriday, setDataFriday] = useState(0);
   const [SelectData, setSelectData] = useState();
   const [selectClick, setSelectClick] = useState(false);
-  const [newPeriod, setAddPeriod] = useState(false);
+  // const [newPeriod, setAddPeriod] = useState(props.openNewPeriod || false);
+  // console.log(props.openNewPeriod,'calander add period')
   const [lengthMonday, setLengthMonday] = useState();
   const [lengthTuesday, setLengthTuesday] = useState();
   const [lengthWednesday, setLengthWednesday] = useState();
@@ -69,7 +70,6 @@ const Calander = (props) => {
     // let dataTime = time.toString().slice(16, 21)
     setEndTime(time);
   }
-  // const [openDialog, setOpenDialog] = useState(false);
 
   const borderStyle = {
     border: 'border: 2px solid #ff6b6b;',
@@ -95,11 +95,12 @@ const Calander = (props) => {
     setSelectClick(!selectClick);
   };
   const handleCloseNewPeriod = () => {
-    setAddPeriod(false);
+    // setAddPeriod(false);
+    props.handlePassCloseNewPeriod();
   };
-  const handleOpenNewPeriod = () => {
-    setAddPeriod(true);
-  };
+  // const handleOpenNewPeriod = () => {
+  //   setAddPeriod(true);
+  // };
   const callingSubjectAPI = () => {
     axiosInstance
       .get('/erp_user/subjects-list/', {
@@ -227,15 +228,15 @@ const Calander = (props) => {
 
   return (
     <>
-      {props.teacherView ? (
+      {/* {props.teacherView ? (
         <div className='add-new-period-button' onClick={() => handleOpenNewPeriod()}>
           Add Period
         </div>
       ) : (
         <></>
-      )}
+      )} */}
       <Dialog
-        open={newPeriod}
+        open={props.openNewPeriod}
         onClose={handleCloseNewPeriod}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
@@ -590,7 +591,6 @@ const Calander = (props) => {
               handleChangeDisplayView={handleChangeDisplayView}
               teacherView={props.teacherView}
               callGetAPI={props.callGetAPI}
-              newPeriod={newPeriod}
               handleCloseNewPeriod={handleCloseNewPeriod}
               dataOpenChange={SelectData}
             />

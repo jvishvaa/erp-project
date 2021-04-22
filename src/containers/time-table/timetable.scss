@@ -218,8 +218,8 @@ $font-roboto: 'Raleway', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 16px 23px;
-    margin-left: 84%;
+    // margin: 16px 23px;
+    // margin-left: 84%;
     cursor: pointer;
   }
   .calander-close {
@@ -264,6 +264,14 @@ $font-roboto: 'Raleway', sans-serif;
     height: fit-content;
     h4 {
       margin: 1px 0px;
+    }
+    td {
+      text-align: left;
+      width: 0px;
+      border: none;
+      padding: 13px;
+      color: #014b7e;
+      cursor: pointer;
     }
     p {
       font-size: 13px;
