@@ -196,6 +196,7 @@ const TimeTable = (props) => {
   };
   const handleCloseTable = (value) => {
     setOpenCloseTable(value);
+    
     if (!value) {
       setGradeName(null);
       setAcadamicYearName(null);
