@@ -157,7 +157,7 @@ const useStyles = makeStyles({
     transform: 'translate(-50%, -50%)',
     fontSize: '36px',
     fontWeight: 'bold',
-  }
+  },
 });
 
 const StyledOutlinedButton = withStyles({
@@ -236,35 +236,46 @@ export default function DiscussionComponent(props) {
   const dispatch = useDispatch();
   const { setAlert } = useContext(AlertNotificationContext);
   const [reply, setReply] = React.useState('');
-  const [ addComment, setAddComment] = React.useState(props.rowData.comment_count? props.rowData.comment_count: 0);
+  const [addComment, setAddComment] = React.useState(
+    props.rowData.comment_count ? props.rowData.comment_count : 0
+  );
   const [commentList, setCommentList] = React.useState([]);
 
   const handleChange = (e) => {
-    setReply(e.target.value);
+    let checkReply = e.target.value;
+    // if (checkReply.trim().length === 0) {
+    //   setAlert('warning', 'Fill Reply Field');
+    // } else {
+      setReply(e.target.value);
+    // }
+    // setReply(e.target.value);
   };
   const handleReply = () => {
-    const param = {
-      answer: reply,
-      post: props.rowData.id,
-    };
+    if (reply.trim().length === 0) {
+      setAlert('warning', 'Write Your Reply');
+    } else {
+      const param = {
+        answer: reply,
+        post: props.rowData.id,
+      };
 
-    axiosInstance
-      .post(endpoints.discussionForum.CreateCommentAndReplay, param)
-      .then((res) => {
-        setReply('');
-        setAlert('success', res.data.message);
-        if(res.data.status_code === 200){
-          setAddComment(addComment + 1);
-        }
-      })
-      .catch((error) => console.log(error));
+      axiosInstance
+        .post(endpoints.discussionForum.CreateCommentAndReplay, param)
+        .then((res) => {
+          setReply('');
+          setAlert('success', res.data.message);
+          if (res.data.status_code === 200) {
+            setAddComment(addComment + 1);
+          }
+        })
+        .catch((error) => console.log(error));
+    }
   };
   const handlePost = () => {
     //dispatch(postAction(props.rowData));
     if(location.pathname === '/student-forum'){
       history.push('/student-forum/post/' + props.rowData.id);
-    }
-    else {
+    } else {
       history.push('/teacher-forum/post/' + props.rowData.id);
     }
     //history.push('/discussion-forum/post/' + props.rowData.id);
@@ -318,26 +329,27 @@ export default function DiscussionComponent(props) {
     setSelectedValue(value);
   };
 
-  const handleAwardsCount = (id) =>{
-    if(id === 1){
+  const handleAwardsCount = (id) => {
+    if (id === 1) {
       setGoldCount(goldCount + 1);
     }
-    if(id === 2){
+    if (id === 2) {
       setSilverCount(silverCount + 1);
     }
-    if(id === 3){
+    if (id === 3) {
       setBronzeCount(bronzeCount + 1);
     }
     setAwardsCount(awardsCount + 1);
-  }
+  };
 
   React.useEffect(() => {
-    props.rowData && props.rowData.awards.map((award) => {
-      setAwardsCount(awardsCount + award.gold + award.silver + award.bronze);
-      award.gold && setGoldCount(award.gold);
-      award.silver && setSilverCount(award.silver);
-      award.bronze && setBronzeCount(award.bronze);
-    })
+    props.rowData &&
+      props.rowData.awards.map((award) => {
+        setAwardsCount(awardsCount + award.gold + award.silver + award.bronze);
+        award.gold && setGoldCount(award.gold);
+        award.silver && setSilverCount(award.silver);
+        award.bronze && setBronzeCount(award.bronze);
+      });
   }, [props.rowData]);
 
   const handleDiscussionAction = (event) => {
@@ -388,7 +400,7 @@ export default function DiscussionComponent(props) {
                 {props.rowData && props.rowData.categories.sub_sub_category_name}
               </span>
             </div>
-            <div style={{ display: 'inline-block'}}>
+            <div style={{ display: 'inline-block' }}>
               {/* <FiberManualRecordIcon className={classes.dotSeparator} /> */}
               <span className={classes.postByText}>post by</span>
               <span style={{verticalAlign: 'middle'}}>
@@ -417,11 +429,9 @@ export default function DiscussionComponent(props) {
                 likeCounts={props.rowData.like_count}
               />
             </span>
-            <span style={{ marginLeft: '10px'}}>
+            <span style={{ marginLeft: '10px' }}>
               <ChatIcon />
-              <span className={classes.discussionIcon}>
-                {addComment}
-              </span>
+              <span className={classes.discussionIcon}>{addComment}</span>
             </span>
             <span
               aria-describedby={id}
@@ -447,30 +457,35 @@ export default function DiscussionComponent(props) {
                   horizontal: 'right',
                 }}
               >
-                <div style={{ padding: '10px 20px', textAlign: 'center'}}>
+                <div style={{ padding: '10px 20px', textAlign: 'center' }}>
                   {/* <SilverAwards /> */}
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     {goldCount !== 0 && (
-                      <span style={{position: 'relative'}}>
-                        <img src={GoldAwards} alt="Silver Awards" />
+                      <span style={{ position: 'relative' }}>
+                        <img src={GoldAwards} alt='Silver Awards' />
                         <div className={classes.awardCount}>{goldCount}</div>
-                      </span>)}
+                      </span>
+                    )}
                     {silverCount !== 0 && (
-                      <span style={{position: 'relative'}}>
-                        <img src={SilverAwards} alt="Silver Awards" />
+                      <span style={{ position: 'relative' }}>
+                        <img src={SilverAwards} alt='Silver Awards' />
                         <div className={classes.awardCount}>{silverCount}</div>
-                      </span>)}
+                      </span>
+                    )}
                     {bronzeCount !== 0 && (
-                      <span style={{position: 'relative'}}>
-                        <img src={BronzeAwards} alt="Silver Awards" />
+                      <span style={{ position: 'relative' }}>
+                        <img src={BronzeAwards} alt='Silver Awards' />
                         <div className={classes.awardCount}>{bronzeCount}</div>
-                      </span>)}
-                    {goldCount === 0 && silverCount === 0 && bronzeCount === 0 && (<span className={classes.noAwardsText}>No Awards Found</span>)}
+                      </span>
+                    )}
+                    {goldCount === 0 && silverCount === 0 && bronzeCount === 0 && (
+                      <span className={classes.noAwardsText}>No Awards Found</span>
+                    )}
                   </div>
                   <Divider />
                   <OutlinedButton
-                    variant="outlined"
-                    color="secondary"
+                    variant='outlined'
+                    color='secondary'
                     onClick={(e) => handleClickOpen(props.rowData.id)}
                   >
                     GIVE AWARD
@@ -519,7 +534,7 @@ export default function DiscussionComponent(props) {
           </Typography>
           {props.rowData && props.rowData.description && (
             <Typography className={classes.discussionParagraph}>
-              <div dangerouslySetInnerHTML={{__html: props.rowData.description}} />
+              <div dangerouslySetInnerHTML={{ __html: props.rowData.description }} />
             </Typography>
           )}
           <Typography className={classes.answersText}>Top answers</Typography>
@@ -533,7 +548,7 @@ export default function DiscussionComponent(props) {
                 </Box>
               )}
               <StyledInput
-                placeholder="Have your say"
+                placeholder='Have your say'
                 value={reply}
                 onChange={handleChange}
                 fullWidth
@@ -543,8 +558,8 @@ export default function DiscussionComponent(props) {
               <Grid container spacing={2}>
                 <Grid item sm={12} xs={6}>
                   <StyledButton
-                    color="secondary"
-                    variant="contained"
+                    color='secondary'
+                    variant='contained'
                     fullWidth
                     onClick={handlePost}
                   >
