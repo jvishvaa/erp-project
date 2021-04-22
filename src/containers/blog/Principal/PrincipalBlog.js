@@ -122,16 +122,16 @@ class PrincipalBlog extends Component {
     if(selectedSection){
       urlPath = `${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch.id}&grade_id=${selectedGrade.grade_id}`
+            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}&grade_id=${selectedGrade.grade_id}`
     }else if(selectedGrade){
       urlPath = `${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&grade_id=${selectedGrade.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch.id}`
+            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&grade_id=${selectedGrade.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}`
     }
     else if(selectedBranch){
       urlPath =`${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&branch_id=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}`
+            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&branch_id=${selectedBranch?.branch.id}&start_date=${startDate}&end_date=${endDate}`
     }
     axios
       .get(
@@ -155,7 +155,7 @@ class PrincipalBlog extends Component {
       axios
         .get(
           
-    `${endpoints.communication.grades}?branch_id=${selectedBranch.id}&module_id=${moduleId}`,
+    `${endpoints.communication.grades}?branch_id=${selectedBranch?.branch.id}&module_id=${moduleId}&session_year=${selectedYear.id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -180,8 +180,7 @@ class PrincipalBlog extends Component {
           .get(
             
             `${endpoints.communication.sections}?branch_id=${
-              selectedBranch.id
-            }&grade_id=${selectedGrade.grade_id}&module_id=${moduleId}`,
+              selectedBranch?.branch.id            }&grade_id=${selectedGrade.grade_id}&module_id=${moduleId}&session_year=${selectedYear.id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
