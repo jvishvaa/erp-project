@@ -79,7 +79,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     //{ name: 'Discussion Forum', Path: '/discussion-forum' },
     { name: 'Teacher Forum', Path: '/teacher-forum' },
     { name: 'Student Forum', Path: '/student-forum' },
-
+    { name: 'Assessment Report', Path: '/assessment-reports' },
     { name: 'Question Bank', Path: '/question-bank' },
     { name: 'Question Paper', Path: '/assessment-question' },
     { name: 'Create Test', Path: '/assesment' },
