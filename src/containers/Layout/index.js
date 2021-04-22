@@ -560,6 +560,7 @@ const Layout = ({ children, history }) => {
       }
       case 'Principal Blogs': {
         history.push('/blog/principal');
+        break;
       }
       case 'Application/registration Receipt Book': {
         history.push('/finance/Application/registration/ReceiptBook');

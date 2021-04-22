@@ -28,6 +28,7 @@ const UpperGrade = (props) => {
   const [branchName, setBranchName] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [sectinName, setSectionName] = useState();
+  const [addPeriodButton, setShowAddPeriodButton] = useState(false);
 
   const handleChangeMultiple = (event) => {
     const { options } = event.target;
@@ -58,6 +59,9 @@ const UpperGrade = (props) => {
   useEffect(() => {
     callingAPI();
   }, [counter]);
+  const handleOpenNewPeriod = () =>{
+    props.handlePassOpenNewPeriod();
+  }
   const callingAPI = () => {
     if (counter === 1) {
       callingAcadamicAPI();
@@ -140,6 +144,7 @@ const UpperGrade = (props) => {
     }
   };
   const handleGenerateData = () => {
+    setShowAddPeriodButton(true);
     if (academicYear === null || branchID === null || gradeID === null || sectionID === null) {
       setAlert('warning', "please select all filters")
     } else {
@@ -159,6 +164,7 @@ const UpperGrade = (props) => {
   };
   const handleClearData = (data) => {
     if (data === 'clear') {
+      setShowAddPeriodButton(false);
       props.handleCloseTable(false);
       setCounter(1);
       setAcadamicYear(null);
@@ -189,7 +195,7 @@ const UpperGrade = (props) => {
           >
             {counter === 1 ? (
               <>
-                <div className='text-fixed'>Acadamic Year</div>
+                <div className='text-fixed'>Academic Year</div>
                 <div className='inner-grade-container'>
                   <div className='change-grade-options'>
                     <Select
@@ -224,7 +230,7 @@ const UpperGrade = (props) => {
                 </div>
               </>
             ) : (
-              <div className='text-rotate'>AcadamicYear</div>
+              <div className='text-rotate'>Academic_Year</div>
             )}
           </div>
           <div
@@ -425,6 +431,13 @@ const UpperGrade = (props) => {
               Filter
             </Button>
           </div>
+          {props.teacherView && addPeriodButton ? (
+        <div className='add-new-period-button' onClick={() => handleOpenNewPeriod()}>
+          Add Period
+        </div>
+      ) : (
+        <></>
+      )}
         </div>
       </div>
     </>
