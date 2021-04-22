@@ -67,7 +67,7 @@ import {
   StudentDashboard,
   TeacherPublishBlogView,
   BlogView,
-  CreateGenre,
+  CreateGenre,EditGenre,
   ContentViewPublish,
   ContentViewPublishStudent,
   AdminBlog,
@@ -378,9 +378,9 @@ function App({ alert }) {
                           <Route exact path='/blog/genre'>
                             {({ match }) => <CreateGenre match={match} />}
                           </Route>
-                          {/* <Route exact path='/blog/genre/edit'>
+                          <Route exact path='/blog/genre/edit'>
                           {({ match }) => <EditGenre match={match} />}
-                        </Route> */}
+                        </Route>
                           <Route exact path='/blog/wordcount-config'>
                             {({ match }) => <CreateWordCountConfig match={match} />}
                           </Route>
