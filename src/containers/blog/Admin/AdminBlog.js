@@ -313,7 +313,8 @@ handleSection = (event,value) =>{
 }
 clearSelection = () => {
   let {status}=this.state
-  this.setState({   selectedBranch :'',
+  this.setState({ selectedYear
+    :'',  selectedBranch :'',
   selectedGrade:'',
   selectedSection:'',
 }
