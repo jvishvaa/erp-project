@@ -104,11 +104,12 @@ const Attend = () => {
         'section id in OverallAttendance'
       );
       console.log(history?.location?.state?.payload?.branch_id);
+      console.log(history?.location?.state?.payload?.grade_id?.grade_id, 'grade_id');
       console.log(history?.location?.state?.data, 'student data');
 
       axiosInstance
         .get(
-          `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${startDate}&end_date=${endDate}&page_num=${pageNumber}&page_size=${limit}`
+          `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${startDate}&end_date=${endDate}&page_num=${pageNumber}&page_size=${limit}`
         )
         .then((res) => {
           setLoading(false);
@@ -123,7 +124,7 @@ const Attend = () => {
         .catch((err) => {
           setLoading(false);
           console.log(err);
-          setAlert('error', err);
+          // setAlert('error', err);
         });
     } else {
       const date = new Date();
@@ -217,7 +218,7 @@ const Attend = () => {
       .catch((err) => {
         setLoading(false);
         console.log(err);
-        setAlert('error', err);
+        // setAlert('error', err);
       });
   };
 
@@ -271,6 +272,12 @@ const Attend = () => {
     firstName: 'Elon',
     lastName: 'Musk',
     gender: 'male',
+  };
+
+  const handleBack = () => {
+    history.push({
+      pathname: '/attendance-calendar/teacher-view',
+    });
   };
 
   const handleClearAll = () => {
@@ -400,7 +407,7 @@ const Attend = () => {
   return (
     <Layout>
       <div className='profile_breadcrumb_wrapper' style={{ marginLeft: '-10px' }}>
-        <CommonBreadcrumbs componentName='OverallAttendance' />
+        <CommonBreadcrumbs componentName='Overall Attendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
         <Grid item md={3} xs={12} className='items'>
@@ -557,6 +564,13 @@ const Attend = () => {
         </Grid>
       </Grid>
       <Grid container direction='row'>
+        <StyledClearButton
+          variant='contained'
+          startIcon={<ClearIcon />}
+          onClick={handleBack}
+        >
+          Back
+        </StyledClearButton>
         <StyledClearButton
           variant='contained'
           startIcon={<ClearIcon />}

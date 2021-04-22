@@ -155,7 +155,10 @@ const MarkAttedance = () => {
           }));
           setData(result);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          // setAlert('error', 'something went wrong');
+        });
     } else {
       const date = new Date();
       console.log(
@@ -232,6 +235,7 @@ const MarkAttedance = () => {
       .catch((err) => {
         setLoading(false);
         console.log(err);
+        // setAlert('error', 'something went wrong');
       });
   };
 
@@ -276,7 +280,7 @@ const MarkAttedance = () => {
       borderRadius: '10px',
       marginLeft: '20px',
       height: '42px',
-      width: '7%',
+      width: '15%',
       marginTop: 'auto',
     },
   })(Button);
@@ -305,11 +309,19 @@ const MarkAttedance = () => {
     setDateValueShow(value);
     console.log('date', value);
   };
-
   const handleBack = () => {
     history.push({
-      pathname: '/markattendance',
+      pathname: '/attendance-calendar/teacher-view',
     });
+  };
+  const handleClearAll = () => {
+    setSelectedAcadmeicYear('');
+    setSelectedBranch([]);
+    setSelectedBranch([]);
+    setSelectedGrade([]);
+    setSelectedSection([]);
+    setDateValue(moment(date).format('YYYY-MM-DD'));
+    setTotalGenre(null);
   };
 
   const handleFirstHalf = (e, id) => {
@@ -678,11 +690,17 @@ const MarkAttedance = () => {
       <Grid container direction='row'>
         <StyledClearButton
           variant='contained'
-          href={'/attendance-calendar/teacher-view'}
           onClick={handleBack}
-          // startIcon={<ClearIcon />}
+          startIcon={<ClearIcon />}
         >
           Back
+        </StyledClearButton>
+        <StyledClearButton
+          variant='contained'
+          startIcon={<ClearIcon />}
+          onClick={handleClearAll}
+        >
+          Clear all
         </StyledClearButton>
 
         <StyledFilterButton
