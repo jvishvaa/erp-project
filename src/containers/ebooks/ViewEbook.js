@@ -139,23 +139,23 @@ class ViewEbook extends Component {
     this.setState({ tabValue: newValue, pageNo:1, pageSize:8});
     if(newValue === 0){
       this.setState({tabValue:newValue,data:[]},()=>{
-        this.getEbook();
-        this.state.clearFilter = 1;
-        this.handleClearFilter();
+        this.getEbook(this.state.acadmicYear, this.state.selectedBranch, this.state.selectedGrade, this.state.selectedSubject, this.state.selectedVolume);
+        // this.state.clearFilter = 1;
+        // this.handleClearFilter();
       })
     }
     else if (newValue === 1){
       this.setState({tabValue:newValue,data:[]},()=>{
-        this.getEbook();
-        this.state.clearFilter = 2;
-        this.handleClearFilter();
+        this.getEbook(this.state.acadmicYear, this.state.selectedBranch, this.state.selectedGrade, this.state.selectedSubject, this.state.selectedVolume);
+        // this.state.clearFilter = 2;
+        // this.handleClearFilter();
       })
     }
     else if (newValue === 2){
       this.setState({tabValue:newValue,data:[]},()=>{
-        this.getEbook();
-        this.state.clearFilter = 3;
-        this.handleClearFilter();
+        this.getEbook(this.state.acadmicYear, this.state.selectedBranch, this.state.selectedGrade, this.state.selectedSubject, this.state.selectedVolume);
+        // this.state.clearFilter = 3;
+        // this.handleClearFilter();
       })
     }
     

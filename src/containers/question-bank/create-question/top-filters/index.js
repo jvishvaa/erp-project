@@ -200,7 +200,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.assessmentApis.gradesList}?gs_id=${value.id}&branch=${filterData.branch.id}`
+          `${endpoints.assessmentApis.gradesList}?gs_id=${value.id}&branch=${filterData.branch.branch.id}`
         ) //new_changes
         .then((result) => {
           if (result.data.status_code === 200) {

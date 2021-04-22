@@ -81,8 +81,7 @@ const CreateWordCountConfig = (props) => {
   const [totalWc,setTotalWc]=useState(0);
 
   const [gradeList, setGradeList] = useState([]);
-
-  const branchId=roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
+  const [branchId]= useState(roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0])
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handleDelete = (data) => {

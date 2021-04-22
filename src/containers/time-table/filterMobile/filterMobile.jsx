@@ -11,169 +11,170 @@ import { Button, IconButton } from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
 import { getModuleInfo } from '../../../utility-functions';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import './upper-grade.scss';
+import './filterMobile.scss';
+// import '../uppergrade/upper-grade.scss'
 import { set } from 'lodash';
-const UpperGrade = (props) => {
-  const [dataMap, setDataMap] = useState();
-  const [dataMapAcademicYear, setDataMapAcademicYear] = useState();
-  const location = useLocation();
-  const { setAlert } = useContext(AlertNotificationContext);
-  const [acadamicYearID, setAcadamicYear] = useState(1);
-  const [gradeID, setGradeID] = useState(null);
-  const [sectionID, setSectionID] = useState(null);
-  const [branchID, setBranchID] = useState(null);
-  const [counter, setCounter] = useState(1);
-  const [academicYear, setAcadamicYearName] = useState(null);
-  const [gradeName, setGradeName] = useState();
-  const [branchName, setBranchName] = useState();
-  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  const [sectinName, setSectionName] = useState();
-
-  const handleChangeMultiple = (event) => {
-    const { options } = event.target;
-    const value = [];
-    for (
-      let noOfOption = 0, length = options.length;
-      noOfOption < length;
-      noOfOption += 1
-    ) {
-      if (options[noOfOption].selected) {
-        value.push(options[noOfOption].value);
+const FilterMobile = (props) => {
+    const [dataMap, setDataMap] = useState();
+    const [dataMapAcademicYear, setDataMapAcademicYear] = useState();
+    const location = useLocation();
+    const { setAlert } = useContext(AlertNotificationContext);
+    const [acadamicYearID, setAcadamicYear] = useState(1);
+    const [gradeID, setGradeID] = useState(null);
+    const [sectionID, setSectionID] = useState(null);
+    const [branchID, setBranchID] = useState(null);
+    const [counter, setCounter] = useState(1);
+    const [academicYear, setAcadamicYearName] = useState(null);
+    const [gradeName, setGradeName] = useState();
+    const [branchName, setBranchName] = useState();
+    const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+    const [sectinName, setSectionName] = useState();
+  
+    const handleChangeMultiple = (event) => {
+      const { options } = event.target;
+      const value = [];
+      for (
+        let noOfOption = 0, length = options.length;
+        noOfOption < length;
+        noOfOption += 1
+      ) {
+        if (options[noOfOption].selected) {
+          value.push(options[noOfOption].value);
+        }
       }
-    }
-    if (counter === 1) {
-      setAcadamicYear(value);
-    }
-    if (counter === 2) {
-      setBranchID(value);
-    }
-    if (counter === 3) {
-      setGradeID(value);
-    }
-    if (counter === 4) {
-      setSectionID(value);
-    }
-  };
-  // '/erp_user/branch/'
-  useEffect(() => {
-    callingAPI();
-  }, [counter]);
-  const callingAPI = () => {
-    if (counter === 1) {
-      callingAcadamicAPI();
-    }
-    if (counter === 2) {
-      callingBranchAPI();
-    }
-    if (counter === 3) {
-      callingGradeAPI();
-    }
-    if (counter === 4) {
-      callingSectionAPI();
-    }
-  };
-  const callingGradeAPI = () => {
-    axiosInstance
-      .get(
-        `${endpoints.academics.grades}?session_year=${acadamicYearID}&branch_id=${branchID}&module_id=${props.moduleId}`
-      )
-      .then((res) => {
-        setDataMap(res.data.data);
-      })
-      .catch((error) => {
-        
-        setAlert('error', "can't fetch grade list")
-      });
-  };
-  const callingBranchAPI = () => {
-    axiosInstance
-      .get(
-        `${endpoints.communication.branches}?session_year=${acadamicYearID}&module_id=${props.moduleId}`
-      )
-      .then((res) => {
-        if (res.status === 200) {
-          setDataMap(res?.data?.data?.results);
-        }
-      })
-      .catch((error) => {
-        setDataMap(null);
-        setAlert('error', "can't fetch branch list")
-      });
-  };
-  const callingAcadamicAPI = () => {
-    axiosInstance
-      .get(`${endpoints.userManagement.academicYear}?module_id=${props.moduleId}`, {})
-      .then((res) => {
-        console.log(res, 'Academic');
-        setDataMapAcademicYear(res.data.data);
-      })
-      .catch((error) => {
-        setDataMapAcademicYear(null)
-        setAlert('error', "can't fetch academic year list")
-      });
-  };
-  const callingSectionAPI = () => {
-    axiosInstance
-      .get(
-        `${endpoints.academics.sections}?session_year=${acadamicYearID}&branch_id=${branchID}&grade_id=${gradeID}&module_id=${props.moduleId}`
-      )
-      .then((res) => {
-        if (res.status === 200) {
+      if (counter === 1) {
+        setAcadamicYear(value);
+      }
+      if (counter === 2) {
+        setBranchID(value);
+      }
+      if (counter === 3) {
+        setGradeID(value);
+      }
+      if (counter === 4) {
+        setSectionID(value);
+      }
+    };
+    // '/erp_user/branch/'
+    useEffect(() => {
+      callingAPI();
+    }, [counter]);
+    const callingAPI = () => {
+      if (counter === 1) {
+        callingAcadamicAPI();
+      }
+      if (counter === 2) {
+        callingBranchAPI();
+      }
+      if (counter === 3) {
+        callingGradeAPI();
+      }
+      if (counter === 4) {
+        callingSectionAPI();
+      }
+    };
+    const callingGradeAPI = () => {
+      axiosInstance
+        .get(
+          `${endpoints.academics.grades}?session_year=${acadamicYearID}&branch_id=${branchID}&module_id=${props.moduleId}`
+        )
+        .then((res) => {
           setDataMap(res.data.data);
-        }
-      })
-      .catch((error) => {
-        setDataMap(null);
-        setAlert('error', "can't fetch section list")
-      });
-  };
-  const clearButtonColor = {
-    color: 'gray',
-  };
-
-  const handleCounter = (value) => {
-    if (value === 'back' && counter > 1) {
-      setCounter(counter - 1);
-    }
-    if (value === 'forward' && counter < 4) {
-      setCounter(counter + 1);
-    }
-  };
-  const handleGenerateData = () => {
-    if (academicYear === null || branchID === null || gradeID === null || sectionID === null) {
-      setAlert('warning', "please select all filters")
-    } else {
-      props.handlePassData(
-        acadamicYearID,
-        gradeID,
-        sectionID,
-        branchID,
-        academicYear,
-        gradeName,
-        branchName,
-        sectinName
-      );
-      props.handleClickAPI();
-      handleClearData('generate');
-    }
-  };
-  const handleClearData = (data) => {
-    if (data === 'clear') {
-      props.handleCloseTable(false);
-      setCounter(1);
-      setAcadamicYear(null);
-      setBranchID(null);
-      setGradeID(null);
-      setSectionID(null);
-    }
-    if (data === 'generate') {
-      props.handleCloseTable(true);
-    }
-  };
+        })
+        .catch((error) => {
+          
+          setAlert('error', "can't fetch grade list")
+        });
+    };
+    const callingBranchAPI = () => {
+      axiosInstance
+        .get(
+          `${endpoints.communication.branches}?session_year=${acadamicYearID}&module_id=${props.moduleId}`
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            setDataMap(res?.data?.data?.results);
+          }
+        })
+        .catch((error) => {
+          setDataMap(null);
+          setAlert('error', "can't fetch branch list")
+        });
+    };
+    const callingAcadamicAPI = () => {
+      axiosInstance
+        .get(`${endpoints.userManagement.academicYear}?module_id=${props.moduleId}`, {})
+        .then((res) => {
+          console.log(res, 'Academic');
+          setDataMapAcademicYear(res.data.data);
+        })
+        .catch((error) => {
+          setDataMapAcademicYear(null)
+          setAlert('error', "can't fetch academic year list")
+        });
+    };
+    const callingSectionAPI = () => {
+      axiosInstance
+        .get(
+          `${endpoints.academics.sections}?session_year=${acadamicYearID}&branch_id=${branchID}&grade_id=${gradeID}&module_id=${props.moduleId}`
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            setDataMap(res.data.data);
+          }
+        })
+        .catch((error) => {
+          setDataMap(null);
+          setAlert('error', "can't fetch section list")
+        });
+    };
+    const clearButtonColor = {
+      color: 'gray',
+    };
+  
+    const handleCounter = (value) => {
+      if (value === 'back' && counter > 1) {
+        setCounter(counter - 1);
+      }
+      if (value === 'forward' && counter < 4) {
+        setCounter(counter + 1);
+      }
+    };
+    const handleGenerateData = () => {
+      if (academicYear === null || branchID === null || gradeID === null || sectionID === null) {
+        setAlert('warning', "please select all filters")
+      } else {
+        props.handlePassData(
+          acadamicYearID,
+          gradeID,
+          sectionID,
+          branchID,
+          academicYear,
+          gradeName,
+          branchName,
+          sectinName
+        );
+        props.handleClickAPI();
+        handleClearData('generate');
+      }
+    };
+    const handleClearData = (data) => {
+      if (data === 'clear') {
+        props.handleCloseTable(false);
+        setCounter(1);
+        setAcadamicYear(null);
+        setBranchID(null);
+        setGradeID(null);
+        setSectionID(null);
+      }
+      if (data === 'generate') {
+        props.handleCloseTable(true);
+      }
+    };
   return (
     <>
-      <div className='upper-table-container'>
-        <div className='all-box-container'>
+      <div className='upper-table-container-mobile'>
+        <div className='all-box-container-mobile'>
           <div
             className={
               counter === 1
@@ -211,20 +212,10 @@ const UpperGrade = (props) => {
                         ))}
                     </Select>
                   </div>
-                  <div className='text-fixed-last'>
-                    Expand
-                    <IconButton
-                      aria-label='delete'
-                      onClick={() => setCounter(counter + 1)}
-                      size='small'
-                    >
-                      <ArrowForwardIcon className='arrow-button' />
-                    </IconButton>
-                  </div>
                 </div>
               </>
             ) : (
-              <div className='text-rotate'>AcadamicYear</div>
+              <div className='text-mobile' onClick={() => setCounter(1)}>AcadamicYear</div>
             )}
           </div>
           <div
@@ -264,23 +255,10 @@ const UpperGrade = (props) => {
                         ))}
                     </Select>
                   </div>
-                  <div className='text-fixed-last'>
-                    Expand
-                    <IconButton
-                      aria-label='delete'
-                      onClick={() => setCounter(counter - 1)}
-                      size='small'
-                    >
-                      <ArrowBackIcon className='arrow-button' />
-                    </IconButton>
-                    <IconButton onClick={() => setCounter(counter + 1)} size='small'>
-                      <ArrowForwardIcon className='arrow-button' />
-                    </IconButton>
-                  </div>
                 </div>
               </>
             ) : (
-              <label className='text-rotate'>Branch</label>
+              <label className='text-mobile' onClick={() => setCounter(2)}>Branch</label>
             )}
           </div>
           <div
@@ -320,27 +298,10 @@ const UpperGrade = (props) => {
                         ))}
                     </Select>
                   </div>
-                  <div className='text-fixed-last'>
-                    Expand
-                    <IconButton
-                      aria-label='delete'
-                      onClick={() => setCounter(counter - 1)}
-                      size='small'
-                    >
-                      <ArrowBackIcon className='arrow-button' />
-                    </IconButton>
-                    <IconButton
-                      aria-label='delete'
-                      onClick={() => setCounter(counter + 1)}
-                      size='small'
-                    >
-                      <ArrowForwardIcon className='arrow-button' />
-                    </IconButton>
-                  </div>
                 </div>
               </>
             ) : (
-              <div className='text-rotate'>Grade</div>
+              <div className='text-mobile' onClick={() => setCounter(3)}>Grade</div>
             )}
           </div>
           <div
@@ -378,26 +339,10 @@ const UpperGrade = (props) => {
                         ))}
                     </Select>
                   </div>
-                  <div className='text-fixed-last'>
-                    Expand
-                    <IconButton
-                      aria-label='delete'
-                      onClick={() => handleCounter('back')}
-                      size='small'
-                    >
-                      <ArrowBackIcon className='arrow-button' />
-                    </IconButton>
-                    {/* <IconButton
-                      disabled color="primary"
-                      size='small'
-                    >
-                      <ArrowForwardIcon className='arrow-button' />
-                    </IconButton> */}
-                  </div>
                 </div>
               </>
             ) : (
-              <label className='text-rotate'>Section</label>
+              <label className='text-mobile' onClick={() => setCounter(4)}>Section</label>
             )}
           </div>
         </div>
@@ -422,7 +367,7 @@ const UpperGrade = (props) => {
               onClick={handleGenerateData}
               startIcon={<EmojiObjectsSharpIcon />}
             >
-              Filter
+              Generate
             </Button>
           </div>
         </div>
@@ -431,4 +376,4 @@ const UpperGrade = (props) => {
   );
 };
 
-export default UpperGrade;
+export default FilterMobile;
