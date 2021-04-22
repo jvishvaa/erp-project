@@ -164,6 +164,7 @@ const UpperGrade = (props) => {
   };
   const handleClearData = (data) => {
     if (data === 'clear') {
+      setShowAddPeriodButton(false);
       props.handleCloseTable(false);
       setCounter(1);
       setAcadamicYear(null);
