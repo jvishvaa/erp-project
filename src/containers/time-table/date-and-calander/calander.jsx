@@ -404,8 +404,8 @@ const Calander = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <div className='calander-container'>
-        <div className='calander-week'>
+      <div className='calander-container-time-table-module'>
+        <div className='calander-week-time-table-module'>
           <table>
             <tr>
             {/* <th>
@@ -582,7 +582,7 @@ const Calander = (props) => {
             ))}
           </table>
         </div>
-        <div className='display-container'>
+        <div className='display-container-time-table-module'>
           {selectClick ? (
             <DisplayBox
               subject={subject}

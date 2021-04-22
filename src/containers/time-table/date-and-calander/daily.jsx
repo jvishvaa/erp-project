@@ -40,8 +40,8 @@ const Daily = (props) => {
 
   return (
     <>
-      <div className='calander-container'>
-        <div className='calander-daily'>
+      <div className='calander-container-time-table-module'>
+        <div className='calander-daily-time-table-module'>
           <table>
             <tr>
               <div className='daily-header'>{currentDay}</div>
@@ -64,7 +64,7 @@ const Daily = (props) => {
               ))}
           </table>
         </div>
-        <div className='display-container'>
+        <div className='display-container-time-table-module'>
           {selectData ? (
             <DisplayBox dataOpenChange={selectData} />
           ) : (

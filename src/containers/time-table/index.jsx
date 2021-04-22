@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Layout from '../Layout/index';
+import { makeStyles, useTheme } from '@material-ui/core/styles'; 
 import Loader from '../../components/loader/loader';
 import FilterImage from '../../assets/images/Filter_Icon.svg';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
@@ -14,8 +15,10 @@ import TimeTableMobile from './time-table-mobile-view/time-table-mobile';
 import FilterMobile from './filterMobile/filterMobile';
 import './timetable.scss';
 const TimeTable = (props) => {
+  const themeContext = useTheme();
+  const setMobileView  = !useMediaQuery(themeContext.breakpoints.down('sm')); 
   const [loading, setLoading] = useState(false);
-  const setMobileView = useMediaQuery('(min-width:950px)');
+  // const setMobileView = useMediaQuery('(min-width:768px)');
   const [tableData, setTableData] = useState([]);
   const [Filter, setFilter] = useState(true);
   const [acadamicYearID, setAcadamicYear] = useState();
