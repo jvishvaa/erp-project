@@ -18,13 +18,17 @@ const AssessmentReportFilters = ({
   isMobile,
   fetchAssessmentReportList,
   selectedReportType,
+  isFilter,
   setIsFilter,
   classTopicAverage,
+  page,
+  setPage,
+  pageSize,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  const [classTopicAvg,setClassTopicAvg] = useState(classTopicAverage);
+  const [classTopicAvg, setClassTopicAvg] = useState(classTopicAverage);
   const [dropdownData, setDropdownData] = useState({
     academic: [],
     branch: [],
@@ -66,9 +70,13 @@ const AssessmentReportFilters = ({
   });
 
   useEffect(() => {
+    if (page && isFilter) handleFilter();
+  }, [page]);
+
+  useEffect(() => {
     url = '';
-    setClassTopicAvg('');
     setIsFilter(false);
+    setPage(1);
     if (selectedReportType?.id) {
       if (dropdownData.academic.length === 0 && moduleId) getAcademicYear();
       setDropdownData({
@@ -122,6 +130,7 @@ const AssessmentReportFilters = ({
     }
     const filterFlag = Object.values(paramObj).every(Boolean);
     if (filterFlag) {
+      paramObj = { ...paramObj, page: page, page_size: pageSize };
       url = `?${generateQueryParamSting(paramObj)}`;
       fetchAssessmentReportList(selectedReportType, url);
       setIsFilter(true);
@@ -409,8 +418,8 @@ const AssessmentReportFilters = ({
 
   const handleClear = () => {
     url = '';
+    setPage(1);
     setIsFilter(false);
-    setClassTopicAvg('');
     setDropdownData({
       ...dropdownData,
       branch: [],
@@ -613,16 +622,18 @@ const AssessmentReportFilters = ({
             />
           </Grid>
         )}
-        {(selectedReportType?.id === 3 || selectedReportType?.id === 4) && (
-          <Grid item xs={12} sm={3}>
-            <div className='classTopicContainer'>
-              <div className='classTopicTag'>
-                {selectedReportType?.id === 3 ? 'Class Average' : 'Topic Average'}:
+        {isFilter &&
+          classTopicAverage &&
+          (selectedReportType?.id === 3 || selectedReportType?.id === 4) && (
+            <Grid item xs={12} sm={3}>
+              <div className='classTopicContainer'>
+                <div className='classTopicTag'>
+                  {selectedReportType?.id === 3 ? 'Class Average' : 'Topic Average'}:
+                </div>
+                <div className='classTopicIcon'>{classTopicAverage}</div>
               </div>
-              <div className='classTopicIcon'>{classTopicAvg||''}</div>
-            </div>
-          </Grid>
-        )}
+            </Grid>
+          )}
       </Grid>
       <Grid
         container
