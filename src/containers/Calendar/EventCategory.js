@@ -345,7 +345,7 @@ const Cal1 = () => {
   }
 
 
-  const [custColor, setCustColor] = useState('');
+  const [custColor, setCustColor] = useState('black');
 
   const handleColor = (e) => {
     console.log('color:', e.target.value);
@@ -566,6 +566,7 @@ const Cal1 = () => {
               <TextField
                 type='color'
                 value={custColor || ''}
+                defaultValue="#000000"
                 backgroundColor='custColor'
                 label='Assign color'
                 variant='outlined'
