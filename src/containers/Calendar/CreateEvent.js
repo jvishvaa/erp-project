@@ -514,7 +514,7 @@ const CreateEvent = () => {
 <KeyboardDatePicker
                   size='small'
                   variant='dialog'
-                  format='DD-MM-YYYY'
+                  format='YYYY-MM-DD'
                   margin='none'
                   // className='button'
                   id='date-picker'
@@ -540,7 +540,7 @@ const CreateEvent = () => {
                 <KeyboardDatePicker
                   size='small'
                   variant='dialog'
-                  format='DD-MM-YYYY'
+                  format='YYYY-MM-DD'
                   margin='none'
                   // className='button'
                   id='date-picker'
@@ -872,7 +872,7 @@ const CreateEvent = () => {
                 <KeyboardDatePicker
                                   size='small'
                                   // variant='dialog'
-                                  format='DD-MM-YYYY'
+                                  format='YYYY-MM-DD'
                                   margin='none'
                                   // className='button'
                                   id='date-picker'
@@ -898,7 +898,7 @@ const CreateEvent = () => {
                                 <KeyboardDatePicker
                                   size='small'
                                   variant='dialog'
-                                  format='DD-MM-YYYY'
+                                  format='YYYY-MM-DD'
                                   margin='none'
                                   // className='button'
                                   id='date-picker'
