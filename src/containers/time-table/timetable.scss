@@ -83,16 +83,19 @@ $font-roboto: 'Raleway', sans-serif;
     color: #ff6b6b;
     margin: 6px 1px;
     font-size: 18px;
+    font-family: $font-roboto;
   }
   p {
     font-size: 17px;
     color: $text-color;
     margin: 6px 1px;
+    font-family: $font-roboto;
   }
   h3 {
     color: $text-color;
     margin: 6px 1px;
     font-size: 16px;
+    font-family: $font-roboto;
   }
   h4 {
     color: $text-color;
@@ -118,16 +121,19 @@ $font-roboto: 'Raleway', sans-serif;
       font-size: 10px;
       color: $text-color;
       margin: 6px 1px;
+      font-family: $font-roboto;
     }
     h3 {
       color: $text-color;
       margin: 6px 1px;
       font-weight: 600;
+      font-family: $font-roboto;
     }
     h4 {
       color: $text-color;
       margin: 6px 1px;
       font-weight: 600;
+      font-family: $font-roboto;
     }
   }
 }
@@ -160,6 +166,7 @@ $font-roboto: 'Raleway', sans-serif;
       font-size: 19px;
       color: $text-color;
       font-weight: 600;
+      font-family: $font-roboto;
     }
   }
   //************************table***********************//
