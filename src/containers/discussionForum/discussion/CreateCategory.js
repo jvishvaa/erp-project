@@ -134,7 +134,7 @@ const CreateCategories = () => {
   },[selectedSubCategory]);
 
   const handleBack = () => {
-    history.push('/category');
+    history.push('/master-management/discussion-category');
   }
 
   const handleSubmit = () => {
