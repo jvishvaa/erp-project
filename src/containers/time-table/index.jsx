@@ -30,7 +30,7 @@ const TimeTable = (props) => {
   const [academicYear, setAcadamicYearName] = useState();
   const [gradeName, setGradeName] = useState();
   const [branchName, setBranchName] = useState();
-  const [loopMax, setLoopMax] = useState([0, 1, 2, 3, 4, 5]);
+  const [loopMax, setLoopMax] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8]);
   const [lengthMonday, setLengthMonday] = useState();
   const [lengthTuesday, setLengthTuesday] = useState();
   const [lengthWednesday, setLengthWednesday] = useState();
@@ -196,6 +196,7 @@ const TimeTable = (props) => {
   };
   const handleCloseTable = (value) => {
     setOpenCloseTable(value);
+    
     if (!value) {
       setGradeName(null);
       setAcadamicYearName(null);

@@ -39,21 +39,22 @@ $font-roboto: 'Raleway', sans-serif;
     text-align: left;
     width: 10px;
     border: none;
-    padding: 13px;
+    padding: 3px;
     color: $text-color;
     cursor: pointer;
     transition-duration: 500ms;
   }
-  td:hover {
-    // z-index: 5;
-    transition-duration: 500ms;
-    transform: scale(1.1);
-    padding: 10px;
-    // border: 2px solid #ff6b6b;
-    border-radius: 8px;
-  }
+  // td:hover {
+  //   // z-index: 5;
+  //   transition-duration: 500ms;
+  //   transform: scale(1.1);
+  //   padding: 10px;
+  //   // border: 2px solid #ff6b6b;
+  //   border-radius: 8px;
+  // }
 
   .header {
+    margin: 15px;
     color: $text-color;
   }
   tr:nth-child(even) {
@@ -69,9 +70,9 @@ $font-roboto: 'Raleway', sans-serif;
     justify-content: space-between;
   }
   .edit-button {
-    background: #ff6b6b;
-    width: 30%;
+    width: 24%;
     border-radius: 8px;
+    background: #ff6b6b;
     color: white;
     display: flex;
     justify-content: center;
@@ -81,7 +82,7 @@ $font-roboto: 'Raleway', sans-serif;
   .yellow-header {
     color: #ff6b6b;
     margin: 6px 1px;
-    font-size: 15px;
+    font-size: 18px;
   }
   p {
     font-size: 17px;
@@ -91,6 +92,7 @@ $font-roboto: 'Raleway', sans-serif;
   h3 {
     color: $text-color;
     margin: 6px 1px;
+    font-size: 16px;
   }
   h4 {
     color: $text-color;
@@ -101,7 +103,7 @@ $font-roboto: 'Raleway', sans-serif;
 //   width: 39%;
 // }
 .page_title {
-  width: 44%;
+  width: 39%;
 }
 .select-click {
   border: 2px solid #ff6b6b;
@@ -109,7 +111,7 @@ $font-roboto: 'Raleway', sans-serif;
     text-align: left;
     width: 10px;
     border: none;
-    padding: 13px;
+    padding: 4px 6px;
     color: $text-color;
     cursor: pointer;
     p {
@@ -215,7 +217,7 @@ $font-roboto: 'Raleway', sans-serif;
   }
   .add-new-period-button {
     background: #ff6b6b;
-    width: 111px;
+    width: 120px;
     height: 36px;
     border-radius: 8px;
     color: white;
@@ -231,8 +233,9 @@ $font-roboto: 'Raleway', sans-serif;
   }
   .calander-container-time-table-module {
     width: 100%;
-    height: 100%;
+    height: fit-content;
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     justify-content: space-between;
     padding: 2%;
@@ -240,6 +243,67 @@ $font-roboto: 'Raleway', sans-serif;
 
   .calander-daily-time-table-module {
     width: 68%;
+    // .daily-outer-card:nth-child(odd) {
+    //   background-color: #ffebeb;
+    //   color: $text-color;
+    //   border: none;
+    // }
+    .daily-outer-card {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    .daily-inner-card {
+      text-align: left;
+      width: 32%;
+      border: none;
+      padding: 13px;
+      color: #014b7e;
+      background: #ffebeb;
+      cursor: pointer;
+      p {
+        font-size: 17px;
+        color: $text-color;
+        margin: 6px 1px;
+      }
+      h3 {
+        color: $text-color;
+        margin: 6px 1px;
+        font-size: 16px;
+      }
+      h4 {
+        color: $text-color;
+        margin: 6px 1px;
+      }
+    }
+    // .daily-inner-card:hover {
+    //   z-index: -1;
+    //   // position:absolute;
+    //   // transition-duration: 500ms;
+    //   // transform: scale(1.1);
+    //   padding: 10px;
+    //   border: 2px solid #ff6b6b;
+    //   border-radius: 8px;
+    //   text-align: left;
+    //   width: 32%;
+    //   color: #014b7e;
+    //   // background: #ffebeb;
+    //   cursor: pointer;
+    //   p {
+    //     font-size: 17px;
+    //     color: $text-color;
+    //     margin: 6px 1px;
+    //   }
+    //   h3 {
+    //     color: $text-color;
+    //     margin: 6px 1px;
+    //     font-size: 16px;
+    //   }
+    //   h4 {
+    //     color: $text-color;
+    //     margin: 6px 1px;
+    //   }
+    // }
     h4 {
       margin: 1px 0px;
     }
@@ -259,23 +323,23 @@ $font-roboto: 'Raleway', sans-serif;
     }
     td {
       text-align: left;
-      width: 10px;
+      width: 0px;
       border: none;
       padding: 13px;
       color: $text-color;
       cursor: pointer;
       // transition-duration: 500ms;
     }
-    td:hover {
-      z-index: -1;
-      // position:absolute;
-      // transition-duration: 500ms;
-      // transform: scale(1.1);
-      padding: 10px;
-      border: 2px solid #ff6b6b;
-      border-radius: 8px;
-    }
-  
+    // td:hover {
+    //   z-index: -1;
+    //   // position:absolute;
+    //   // transition-duration: 500ms;
+    //   // transform: scale(1.1);
+    //   padding: 10px;
+    //   border: 2px solid #ff6b6b;
+    //   border-radius: 8px;
+    // }
+
     .header {
       color: $text-color;
     }
@@ -284,24 +348,29 @@ $font-roboto: 'Raleway', sans-serif;
       color: $text-color;
       border: none;
     }
-    .daily-header {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      color: $text-color;
-      font-weight: 500;
-      font-size: 31px;
-      font-family: $font-roboto;
-    }
+  }
+
+  .daily-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: $text-color;
+    font-weight: 500;
+    font-size: 36px;
+    margin-left: 29px;
+    margin-top: 20px;
+    font-family: $font-roboto;
   }
   .calander-week-time-table-module {
     @include box-border();
     width: 68%;
     height: fit-content;
     h4 {
+      font-size: 14px;
       margin: 1px 0px;
     }
     td {
+      font-size: 15px;
       text-align: left;
       width: 0px;
       border: none;
