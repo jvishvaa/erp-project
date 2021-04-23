@@ -688,9 +688,9 @@ const Cal1 = () => {
 
           <Grid container justify='center'>
             {dummyData && totalGenre > 9 && (
-              <Pagination
+              <Pagination 
                 onChange={handlePagination}
-                style={{ paddingLeft: '150px' }}
+                // style={{ paddingLeft: '150px' }}
                 count={Math.ceil(totalGenre / limit)}
                 color='primary'
                 page={pageNumber}

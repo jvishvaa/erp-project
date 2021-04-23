@@ -35,8 +35,9 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Message Type', Path: '/master-management/message-type-table' },
     { name: 'Signature Upload', Path: '/master-management/signature-upload' },
     { name: 'Event Category', Path: '/master-management/event-category' },
-    {name:'Teacher Calendar',Path:'/attendance-calendar/teacher-view'}, //attendance
-    {name:'Student Calendar',Path:'/attendance-calendar/student-view'}, //
+    { name: 'Discussion Category', Path: '/master-management/discussion-category' },
+    { name:'Teacher Calendar',Path:'/attendance-calendar/teacher-view'}, //attendance
+    { name:'Student Calendar',Path:'/attendance-calendar/student-view'}, //
     { name: 'Course', Path: '/course-list' },
     { name: 'Course Price', Path: '/course-price' },
     { name: 'Lesson Plan Mapping', Path: '/subject/grade' },

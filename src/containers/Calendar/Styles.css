@@ -8,6 +8,7 @@
   color: #ff6b6b;
 }
 .response .MuiFormControlLabel-root {
+  
   min-width: 0px;
   margin-left: 23px;
 }
@@ -19,4 +20,11 @@
 .items .MuiPickersDateRangePickerInput-root {
   align-items: inherit;
   flex-direction: column;
+}
+.im {
+ padding-left: 100px;
+  padding-top: 15px;
+}   
+.dat {
+  padding-top: 45px;
 }
