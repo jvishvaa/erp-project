@@ -12,7 +12,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import Input from '@material-ui/core/Input';
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import FormHelperText from '@material-ui/core/FormHelperText';
+// import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -277,14 +277,8 @@ const Calander = (props) => {
 
   return (
     <>
-      {/* {props.teacherView ? (
-        <div className='add-new-period-button' onClick={() => handleOpenNewPeriod()}>
-          Add Period
-        </div>
-      ) : (
-        <></>
-      )} */}
-      <Dialog
+     
+      {/* <Dialog
         open={props.openNewPeriod}
         onClose={handleCloseNewPeriod}
         aria-labelledby='alert-dialog-title'
@@ -363,22 +357,7 @@ const Calander = (props) => {
             className={classes.formTextFields}
           >
             <InputLabel id='demo-mutiple-chip-label'>Day</InputLabel>
-            {/* <Select
-              labelId='demo-simple-select-outlined-label'
-              value={dayName}
-              fullWidth
-              size='small'
-              onChange={(e) => handleChangeDay(e)}
-              label='Day'
-            >
-              <MenuItem value='Sunday'>Sunday</MenuItem>
-              <MenuItem value='Monday'>Monday</MenuItem>
-              <MenuItem value='Tuesday'>Tuesday</MenuItem>
-              <MenuItem value='Wednesday'>Wednesday</MenuItem>
-              <MenuItem value='Thursday'>Thursday</MenuItem>
-              <MenuItem value='Friday'>Friday</MenuItem>
-              <MenuItem value='Saturday'>Saturday</MenuItem>
-            </Select> */}
+         
             <Select
               labelId='demo-mutiple-chip-label'
               id='demo-mutiple-chip'
@@ -427,15 +406,7 @@ const Calander = (props) => {
             </MuiPickersUtilsProvider>
           </div>
           <div className={classes.formTextFields} style={{ width: '43%' }}>
-            {/* <TextField
-              label='End Time'
-              id='outlined-size-small'
-              variant='outlined'
-              placeholder='eg:08:00:00'
-              helperText='24-hour format'
-              size='small'
-              onChange={(e) => setEndTime(e.target.value)}
-            /> */}
+        
             <MuiPickersUtilsProvider variant='outlined' fullWidth utils={DateFnsUtils}>
               <KeyboardTimePicker
                 margin='normal'
@@ -462,7 +433,7 @@ const Calander = (props) => {
             Create
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
       <div className='calander-container-time-table-module'>
         <div className='calander-week-time-table-module'>
           <table>
@@ -700,7 +671,6 @@ const Calander = (props) => {
               handleChangeDisplayView={handleChangeDisplayView}
               teacherView={props.teacherView}
               callGetAPI={props.callGetAPI}
-              handleCloseNewPeriod={handleCloseNewPeriod}
               dataOpenChange={SelectData}
             />
           ) : (
