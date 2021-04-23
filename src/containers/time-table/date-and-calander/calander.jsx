@@ -2,19 +2,21 @@ import React, { useContext, useEffect, useState } from 'react';
 import DisplayBox from './displayBox.jsx';
 import Box from '@material-ui/core/Box';
 import Dialog from '@material-ui/core/Dialog';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import axiosInstance from '../../../config/axios';
 import DialogActions from '@material-ui/core/DialogActions';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import Input from '@material-ui/core/Input';
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import { UserConsumer } from '../tableContext/userContext';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -27,9 +29,43 @@ const useStyles = makeStyles(() => ({
     background: 'white',
     color: '#014B7E',
   },
+  boxStyle: {
+    margin: '0px',
+  },
 }));
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const dayNames = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
+
+function getStyles(name, personName, theme) {
+  return {
+    fontWeight:
+      personName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+  };
+}
+
 const Calander = (props) => {
   const classes = useStyles();
+  const theme = useTheme();
   // const [dataCalander, setDataCalander] = useState(props.tableData);
   const { setAlert } = useContext(AlertNotificationContext);
   const [DataMonday, setDataMonday] = useState(0);
@@ -38,38 +74,40 @@ const Calander = (props) => {
   const [DataThursday, setDataThursday] = useState(0);
   const [loopMax, setLoopMax] = useState([0, 1, 2, 3, 4, 5, 6]);
   const [DataFriday, setDataFriday] = useState(0);
+  const [DataSaturday, setDataSaturday] = useState(0);
+  const [DataSunday, setDataSunday] = useState(0);
   const [SelectData, setSelectData] = useState();
   const [selectClick, setSelectClick] = useState(false);
-  const [newPeriod, setAddPeriod] = useState(false);
+  // const [newPeriod, setAddPeriod] = useState(props.openNewPeriod || false);
+  // console.log(props.openNewPeriod,'calander add period')
   const [lengthMonday, setLengthMonday] = useState();
   const [lengthTuesday, setLengthTuesday] = useState();
   const [lengthWednesday, setLengthWednesday] = useState();
   const [lengthThursday, setLengthThursday] = useState();
   const [lengthFriday, setLengthFriday] = useState();
   const [subject, setSubject] = useState();
-  const [sectionIdOption, setSectionIdOption] = useState();
+  const [sectionIdOption, setSectionIdOption] = useState(null);
   const [maxLength, setMaxLength] = useState();
   const [assignedTeacher, setAssignedTeacher] = useState();
   const [assignedTeacherID, setAssignedTeacherID] = useState();
   const [requiredMaterial, setRequiredMaterial] = useState();
   const [periodName, setPeriodName] = useState();
   const [periodDescription, setPeriodDescription] = useState();
-  const [day, setDay] = useState('Monday');
-  const [startTime, setStartTime] = useState(new Date('2014-08-18T21:11:54'));
+  const [days, setDays] = useState(['Monday']);
+  const [startTime, setStartTime] = useState(new Date('2014-08-18T00:00:00'));
   const [acadamicYearID, setAcadamicYear] = useState();
-  const [dayName, setDayName] = useState('Monday');
-  const [endTime, setEndTime] = useState(new Date('2014-08-18T21:11:54'));
+  // const [dayName, setDayName] = useState('Monday');
+  const [endTime, setEndTime] = useState(new Date('2014-08-18T00:00:00'));
   // const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
 
   const handleDateStartTimeChange = (time) => {
     // let dataTime = time.toString().slice(16, 21)
     setStartTime(time);
   };
-  const handleDateEndTimeChange = (time) =>{
+  const handleDateEndTimeChange = (time) => {
     // let dataTime = time.toString().slice(16, 21)
     setEndTime(time);
-  }
-  // const [openDialog, setOpenDialog] = useState(false);
+  };
 
   const borderStyle = {
     border: 'border: 2px solid #ff6b6b;',
@@ -95,11 +133,12 @@ const Calander = (props) => {
     setSelectClick(!selectClick);
   };
   const handleCloseNewPeriod = () => {
-    setAddPeriod(false);
+    // setAddPeriod(false);
+    props.handlePassCloseNewPeriod();
   };
-  const handleOpenNewPeriod = () => {
-    setAddPeriod(true);
-  };
+  // const handleOpenNewPeriod = () => {
+  //   setAddPeriod(true);
+  // };
   const callingSubjectAPI = () => {
     axiosInstance
       .get('/erp_user/subjects-list/', {
@@ -129,32 +168,41 @@ const Calander = (props) => {
       });
   };
   const createPeriodAPI = () => {
-    let obj = {
-      academic_year: props.acadamicYear_ID,
-      section: props.section_ID,
-      branch: props.branch_ID,
-      grade: props.grade_ID,
-      subject: sectionIdOption,
-      assigned_teacher: assignedTeacherID,
-      day: day,
-      period_name: periodName,
-      period_description: periodDescription,
-      period_start_time: startTime.toString().slice(16, 21),
-      period_end_time: endTime.toString().slice(16, 21),
-      required_material: requiredMaterial,
-    };
-    axiosInstance
-      .post('/academic/assign_class_periods/', obj)
-      .then((response) => {
-        if (response.status === 200) {
-          setAlert('success', 'Period Added');
-          handleCloseNewPeriod();
-          props.callGetAPI();
-        }
-      })
-      .catch((error) => {
-        setAlert('error', 'please fill all fields or change time range');
-      });
+    if (sectionIdOption === null) {
+      setAlert('', 'Please Add Subjects');
+    } else {
+      let obj = {
+        academic_year: props.acadamicYear_ID,
+        section: props.section_ID,
+        branch: props.branch_ID,
+        grade: props.grade_ID,
+        subject: sectionIdOption,
+        assigned_teacher: assignedTeacherID,
+        // days: day,
+        days: days,
+        period_name: periodName,
+        period_description: periodDescription,
+        period_start_time: startTime.toString().slice(16, 21),
+        period_end_time: endTime.toString().slice(16, 21),
+        required_material: requiredMaterial,
+      };
+      axiosInstance
+        .post('/academic/assign_multiple_class_periods/', obj)
+        .then((response) => {
+          if (response.status === 200) {
+            setAlert('success', 'Period Added');
+            handleCloseNewPeriod();
+            props.callGetAPI();
+          }
+        })
+        .catch((error) => {
+          setAlert('error', 'please fill all fields or change time range');
+        });
+    }
+  };
+  const handleChangeMultipleDays = (event) => {
+    setDays(event.target.value);
+    console.log(days,'selected days')
   };
   const OpenCalanderWeek = () => {
     setDataMonday(props.tableData.Monday);
@@ -162,6 +210,8 @@ const Calander = (props) => {
     setDataWednesday(props.tableData.Wednesday);
     setDataThursday(props.tableData.Thursday);
     setDataFriday(props.tableData.Friday);
+    setDataSunday(props.tableData.Sunday);
+    setDataSaturday(props.tableData.Saturday);
     // while (1) {
     //   if (props.tableData.Monday) [counterLength];
     // // }
@@ -217,25 +267,25 @@ const Calander = (props) => {
     //   setLoopMax(mappingArray);
     // }
   };
-  const handleChangeDay = (e) => {
-    setDayName(e.target.value);
-    setDay(e.target.value);
-  };
+  // const handleChangeDay = (e) => {
+  //   // setDayName(e.target.value);
+  //   setDay(e.target.value);
+  // };
   const handleChangeDisplayView = () => {
     setSelectClick(false);
   };
 
   return (
     <>
-      {props.teacherView ? (
+      {/* {props.teacherView ? (
         <div className='add-new-period-button' onClick={() => handleOpenNewPeriod()}>
           Add Period
         </div>
       ) : (
         <></>
-      )}
+      )} */}
       <Dialog
-        open={newPeriod}
+        open={props.openNewPeriod}
         onClose={handleCloseNewPeriod}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
@@ -312,8 +362,8 @@ const Calander = (props) => {
             id='select-day'
             className={classes.formTextFields}
           >
-            <InputLabel id='demo-simple-select-outlined-label'>Day</InputLabel>
-            <Select
+            <InputLabel id='demo-mutiple-chip-label'>Day</InputLabel>
+            {/* <Select
               labelId='demo-simple-select-outlined-label'
               value={dayName}
               fullWidth
@@ -328,28 +378,37 @@ const Calander = (props) => {
               <MenuItem value='Thursday'>Thursday</MenuItem>
               <MenuItem value='Friday'>Friday</MenuItem>
               <MenuItem value='Saturday'>Saturday</MenuItem>
+            </Select> */}
+            <Select
+              labelId='demo-mutiple-chip-label'
+              id='demo-mutiple-chip'
+              variant='outlined'
+              multiple
+              value={days}
+              onChange={handleChangeMultipleDays}
+              input={<Input id='select-multiple-chip' />}
+              renderValue={(selected) => (
+                <div className={classes.chips}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} className={classes.chip} />
+                  ))}
+                </div>
+              )}
+              MenuProps={MenuProps}
+            >
+              {dayNames.map((name) => (
+                <MenuItem
+                  key={name}
+                  value={name}
+                  style={getStyles(dayNames, days, theme)}
+                >
+                  {name}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
 
-          {/* <div className={classes.formTextFields}>
-            <TextField
-              label='Day'
-              id='outlined-size-small'
-              variant='outlined'
-              size='small'
-              onChange={(e) => setDay(e.target.value)}
-            />
-          </div> */}
-          <div className={classes.formTextFields} style={{width: '43%'}} >
-            {/* <TextField
-              label='Start Time'
-              id='outlined-size-small'
-              variant='outlined'
-              placeholder='eg:07:00:00'
-              helperText='24-hour format'
-              size='small'
-              onChange={(e) => setStartTime(e.target.value)}
-            /> */}
+          <div className={classes.formTextFields} style={{ width: '43%' }}>
             <MuiPickersUtilsProvider variant='outlined' fullWidth utils={DateFnsUtils}>
               <KeyboardTimePicker
                 margin='normal'
@@ -367,7 +426,7 @@ const Calander = (props) => {
               />
             </MuiPickersUtilsProvider>
           </div>
-          <div className={classes.formTextFields} style={{width: '43%'}}>
+          <div className={classes.formTextFields} style={{ width: '43%' }}>
             {/* <TextField
               label='End Time'
               id='outlined-size-small'
@@ -404,26 +463,28 @@ const Calander = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <div className='calander-container'>
-        <div className='calander-week'>
+      <div className='calander-container-time-table-module'>
+        <div className='calander-week-time-table-module'>
           <table>
             <tr>
-            {/* <th>
-                <Box
-                  justifyContent='center'
-                  alignItems='center'
-                  borderRight={1}
-                  {...defaultProps}
-                >
-                  <div className='header'>Sunday</div>
-                </Box>
-              </th> */}
               <th>
                 <Box
                   justifyContent='center'
                   alignItems='center'
                   borderRight={1}
                   {...defaultProps}
+                  className={classes.boxStyle}
+                >
+                  <div className='header'>Sunday</div>
+                </Box>
+              </th>
+              <th>
+                <Box
+                  justifyContent='center'
+                  alignItems='center'
+                  borderRight={1}
+                  {...defaultProps}
+                  className={classes.boxStyle}
                 >
                   <div className='header'>Monday</div>
                 </Box>
@@ -434,6 +495,7 @@ const Calander = (props) => {
                   alignItems='center'
                   borderRight={1}
                   {...defaultProps}
+                  className={classes.boxStyle}
                 >
                   <div className='header'>Tuesday</div>
                 </Box>
@@ -444,6 +506,7 @@ const Calander = (props) => {
                   alignItems='center'
                   borderRight={1}
                   {...defaultProps}
+                  className={classes.boxStyle}
                 >
                   <div className='header'>Wednesday</div>
                 </Box>
@@ -454,28 +517,55 @@ const Calander = (props) => {
                   alignItems='center'
                   borderRight={1}
                   {...defaultProps}
+                  className={classes.boxStyle}
                 >
                   <div className='header'>Thursday</div>
                 </Box>
               </th>
-              {/* <th>
+              <th>
                 <Box
                   justifyContent='center'
                   alignItems='center'
                   borderRight={1}
                   {...defaultProps}
+                  className={classes.boxStyle}
                 >
                   <div className='header'>Friday</div>
                 </Box>
-              </th> */}
+              </th>
               <th>
-                <Box justifyContent='center' alignItems='center'>
-                  <div className='header'>Friday</div>
+                <Box
+                  justifyContent='center'
+                  className={classes.boxStyle}
+                  alignItems='center'
+                >
+                  <div className='header'>Saturday</div>
                 </Box>
               </th>
             </tr>
+
             {loopMax.map((data, index) => (
               <tr key={data}>
+                {index < DataSunday?.length ? (
+                  <td
+                    onClick={() => {
+                      handleChangeData(DataSunday[index]);
+                    }}
+                  >
+                    <h4>{DataSunday[index].period_name}</h4>
+                    <h3>{DataSunday[index].subject_details?.subject_name}</h3>
+                    <p>
+                      {DataSunday[index].period_start_time.slice(0, 5)}-
+                      {DataSunday[index].period_end_time.slice(0, 5)}
+                    </p>
+                    <h4>{DataSunday[index].teacher_name?.name}</h4>
+                  </td>
+                ) : (
+                  <td>
+                    <h4> </h4> <p> </p>
+                    <h4> </h4>
+                  </td>
+                )}
                 {index < DataMonday?.length ? (
                   <td
                     onClick={() => {
@@ -578,11 +668,31 @@ const Calander = (props) => {
                     <h4> </h4>
                   </td>
                 )}
+                {index < DataSaturday?.length ? (
+                  <td
+                    onClick={() => {
+                      handleChangeData(DataSaturday[index]);
+                    }}
+                  >
+                    <h4>{DataSaturday[index].period_name}</h4>
+                    <h3>{DataSaturday[index].subject_details?.subject_name}</h3>
+                    <p>
+                      {DataSaturday[index].period_start_time.slice(0, 5)}-
+                      {DataSaturday[index].period_end_time.slice(0, 5)}
+                    </p>
+                    <h4>{DataSaturday[index].teacher_name?.name}</h4>
+                  </td>
+                ) : (
+                  <td>
+                    <h4> </h4> <p> </p>
+                    <h4> </h4>
+                  </td>
+                )}
               </tr>
             ))}
           </table>
         </div>
-        <div className='display-container'>
+        <div className='display-container-time-table-module'>
           {selectClick ? (
             <DisplayBox
               subject={subject}
@@ -590,7 +700,6 @@ const Calander = (props) => {
               handleChangeDisplayView={handleChangeDisplayView}
               teacherView={props.teacherView}
               callGetAPI={props.callGetAPI}
-              newPeriod={newPeriod}
               handleCloseNewPeriod={handleCloseNewPeriod}
               dataOpenChange={SelectData}
             />

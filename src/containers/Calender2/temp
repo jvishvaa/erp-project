@@ -1,0 +1,776 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable max-len */
+/* eslint-disable key-spacing */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable jsx-a11y/label-has-associated-control */
+import React, { useState, useEffect } from 'react';
+import {
+  withStyles,
+  Grid,
+  Typography,
+  Divider,
+  IconButton,
+  TextField,
+  Button,
+  Avatar,
+  Select,
+  MenuItem,
+  FormControl,
+  Radio,
+  InputLabel,
+} from '@material-ui/core';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+import CloseIcon from '@material-ui/icons/Close';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import PropTypes from 'prop-types';
+import axios from 'axios';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import urls from '../../../url';
+import Loader from '../../../hoc/loader';
+import useFetch from '../../../hoc/useFetch';
+import TinyTextEditor from '../../../hoc/tinyMce/tinyTextEditor';
+import { useAlert } from '../../../hoc/alert/alert';
+import styles from './wibenarSchedule.style';
+import './style.css';
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+function CreateUpdateWibenar({
+  classes, handleClose, open, edit, fullData,
+}) {
+  const [auth] = useState(JSON.parse(localStorage.getItem('UserLogin')));
+  const alert = useAlert();
+  const [loading, setLoading] = useState(false);
+  const [speakerErp, setSpeakerErp] = useState('');
+  const [topicName, setTopicName] = useState('');
+  const [scheduleTime, setScheduleTime] = useState('');
+  const [durationTime, setDurationTime] = useState('');
+  const [aboutSession, setAboutSession] = useState('');
+  const [aboutSpeaker, setAboutSpeaker] = useState('');
+  const [choosePhoto, setChoosePhoto] = useState('');
+  const [selectedbranch, setselectedBranch] = useState([]);
+  const [selectedRole, setSelectedRole] = useState([]);
+  const [SelectedAll, setSelectedAll] = useState(false);
+  const [scheduledDate, setscheduledDate] = useState('');
+  const [joinLink, setJoinLink] = useState('');
+  const [startLink, setStartLink] = useState('');
+  const [onlineClassType, setOnlineClassType] = useState('');
+  const [joinLimit, setJoinLimit] = useState('');
+  const [gradeList, setGradeList] = useState([]);
+  const [subjectList, setsubjectList] = useState([]);
+  const [gradeIdArr, setgradeIdArr] = useState([]);
+  const [subjectIdArr, setsubjectIdArr] = useState([]);
+  const [SelectedGrade, setSelectedGrade] = useState([]);
+  const [SelectedSubject, setSelectedSubject] = useState([]);
+
+  const {
+    data: roleList,
+    isLoding: gettingRolesList,
+    doFetch: fetchRolesList,
+  } = useFetch([]);
+
+  const {
+    data: branchList,
+    isLoding: gettingBranchList,
+    doFetch: fetchBranchList,
+  } = useFetch([]);
+
+  useEffect(() => {
+    if (auth) {
+      fetchRolesList({
+        url: `${urls.meetingRoleAPI}`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${auth.personal_info.token}`,
+        },
+      });
+      fetchBranchList({
+        url: `${urls.getBranchNames}`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${auth.personal_info.token}`,
+        },
+      });
+    }
+  }, [auth.personal_info.token]);
+  useEffect(() => {
+    axios.get(`${urls.grades}`, {
+      headers: {
+        Authorization: `Bearer ${auth.personal_info.token}`,
+      },
+
+    }).then((res) => {
+      res.data.unshift({ id:0, type_name:'Select All' });
+      setGradeList(res.data);
+    }).catch((err) => {
+      console.log(err);
+    });
+  }, []);
+  let loader = null;
+  if (loading || gettingBranchList || gettingRolesList) {
+    loader = <Loader open />;
+  }
+  function handleSelectALl(e) {
+    if (SelectedAll === true && e.target.value.length - 1 === branchList.length) {
+      setSelectedAll(false);
+      setselectedBranch([]);
+      return;
+    }
+    if (e.target.value.length !== 0) {
+      if (e.target.value.filter((data) => data === '0').length === 1 && SelectedAll === false) {
+        const setarray = [];
+        for (let i = 0; i < branchList.length; i += 1) {
+          setarray.push(branchList[i].id);
+        }
+        setSelectedAll(true);
+        setselectedBranch(setarray);
+      } else {
+        setselectedBranch(e.target.value);
+        setSelectedAll(false);
+      }
+    } else {
+      setselectedBranch([]);
+      setSelectedAll(false);
+    }
+  }
+
+  function dateFormate(dateInd) {
+    // const dateInfo = data.split('/');
+    const dataNu = dateInd.getDate() && dateInd.getDate() > 9 ? dateInd.getDate() : `0${dateInd.getDate()}`;
+    const MounthNu = dateInd.getMonth() + 1 && dateInd.getMonth() + 1 > 9 ? dateInd.getMonth() + 1 : `0${dateInd.getMonth() + 1}`;
+    const YearNu = dateInd.getDate() && dateInd.getFullYear();
+    return `${YearNu}-${MounthNu}-${dataNu}`;
+  }
+
+  useEffect(() => {
+    if (fullData) {
+      setSpeakerErp((fullData && fullData.speakerErp) || '');
+      setTopicName((fullData && fullData.topicName) || '');
+      setScheduleTime((fullData && fullData.schedule) || '');
+      setDurationTime((fullData && fullData.duration) || '');
+      setAboutSession((fullData && fullData.aboutSession) || '');
+      setAboutSpeaker((fullData && fullData.aboutSpeaker) || '');
+      setselectedBranch((fullData && fullData.branches) || []);
+      setSelectedRole((fullData && fullData.roles) || []);
+      setChoosePhoto((fullData && fullData.profileImage) || '');
+      setSelectedGrade((fullData && fullData.grade) || []);
+      setSelectedSubject((fullData && fullData.subject) || []);
+      setgradeIdArr((fullData && fullData.grade !== undefined ? [...fullData.grade].map((item) => item.id) : '') || []);
+      setsubjectIdArr((fullData && fullData.subject !== undefined ? [...fullData.subject].map((item) => item.id) : '') || []);
+      // new Date(fullData.date).toLocaleDateString()
+      setscheduledDate(dateFormate(fullData && new Date(fullData.date)));
+      setJoinLink((fullData && fullData.joinLink) || '');
+      setStartLink((fullData && fullData.startLink) || '');
+      setOnlineClassType((fullData && fullData.onlineClassType) || '');
+      setJoinLimit((fullData && fullData.joinLimit) || '');
+    }
+  }, [fullData]);
+
+  function createUpdateWibenar() {
+    if (!speakerErp) {
+      alert.warning('enter speaker name');
+      return;
+    }
+    if (!topicName) {
+      alert.warning('enter topic name');
+      return;
+    }
+    if (!scheduleTime) {
+      alert.warning('enter schedule time');
+      return;
+    }
+    if (!durationTime) {
+      alert.warning('enter duration time');
+      return;
+    }
+    if (!selectedRole || selectedRole.length === 0) {
+      alert.warning('select Role');
+      return;
+    }
+    if (!selectedbranch || selectedbranch.length === 0) {
+      alert.warning('select branch');
+      return;
+    }
+    if (!onlineClassType) {
+      alert.warning('select Class type');
+      return;
+    }
+    if (!joinLimit && onlineClassType === '1' && !edit) {
+      alert.warning('enter participant join limit');
+      return;
+    }
+
+    const RoleConditon = selectedRole.includes(9) || selectedRole.includes(13);
+    if (RoleConditon) {
+      if (!gradeIdArr || gradeIdArr.length === 0) {
+        alert.warning('select grade');
+        return;
+      }
+      if (!subjectIdArr || subjectIdArr.length === 0) {
+        alert.warning('select subject');
+        return;
+      }
+    }
+    const data = {
+      erp: speakerErp,
+      date: scheduledDate,
+      topic:topicName,
+      duration: durationTime,
+      time: scheduleTime,
+      role:selectedRole,
+      branch: selectedbranch,
+      grade: RoleConditon ? gradeIdArr : [],
+      subject: RoleConditon ? subjectIdArr : [],
+      about_speaker:aboutSpeaker,
+      about_session: aboutSession,
+      speaker_photo: choosePhoto,
+      online_class_type: onlineClassType,
+      join_limit: joinLimit || 0,
+    };
+    const path = edit ? `${urls.updateWibemarApi}${fullData.idNo}/create_webinar/` : `${urls.createwibenarApi}`;
+    setLoading(true);
+    fetch(path, {
+      method: edit ? 'PUT' : 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        Authorization: `Bearer ${auth.personal_info.token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          setLoading(false);
+          return res.json();
+        }
+        if (res.status !== 200) {
+          setLoading(false);
+          alert.warning('something went wrong please try again ');
+        }
+        return 0;
+      }).then((info) => {
+        if (info.status_code === 404) {
+          alert.warning(info.message);
+          return;
+        }
+        if (info.status_code === 201) {
+          alert.success(info.message);
+          handleClose('success');
+        } else {
+          alert.error(info.message || 'somthing went wrong please try again');
+        }
+      });
+  }
+
+  function cancelWibenar() {
+    setLoading(true);
+    fetch(`${urls.updateWibemarApi}${fullData.idNo}/create_webinar/?type=${onlineClassType}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${auth.personal_info.token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          setLoading(false);
+          handleClose('success');
+          alert.success('wibenar Cancled successfully');
+          return res.json();
+        }
+        if (res.status !== 200) {
+          setLoading(false);
+          alert.warning('something went wrong please try again ');
+        }
+        return 0;
+      });
+  }
+
+  function setProfileImageFUnction(data) {
+    if ((data && data.type === 'image/jpeg') || (data && data.type === 'image/png')) {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('file', data);
+      fetch(`${urls.convetVideoToS3LinkApi}`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${auth.personal_info.token}`,
+        },
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            setLoading(false);
+            alert.success('Uploaded');
+            return res.json();
+          }
+          if (res.status !== 200) {
+            setLoading(false);
+            alert.warning('something went wrong please try again ');
+          }
+          return 0;
+        }).then((res) => {
+          if (res && res.url) {
+            setChoosePhoto(res.url);
+          } else {
+            setChoosePhoto('error');
+          }
+        });
+    } else {
+      alert.warning('Upload image in JPEG and PNG Format only');
+    }
+  }
+  function handleGradeChange(data) {
+    const gradeidArr = [];
+    data.forEach((item) => {
+      gradeidArr.push(item.id);
+    });
+
+    // if (gradeIdArr !== []) {
+    axios.get(`${urls.subjectSelector_Webinar}?grade_id=${gradeidArr.toString()}`, {
+      headers: {
+        Authorization: `BearRegistration Page Changeser ${auth.personal_info.token}`,
+      },
+    }).then((res) => {
+      const subjectArr = res.data.map((item) => (item.subject_fk));
+      setgradeIdArr(gradeidArr);
+      setsubjectList(subjectArr);
+    }).catch((err) => {
+      console.log(err);
+    });
+    // }
+  }
+  function handleSubjectChange(data) {
+    const subjectidArr = [];
+    data.forEach((item) => {
+      subjectidArr.push(item.id);
+    });
+    setsubjectIdArr(subjectidArr);
+    console.log(subjectIdArr, gradeIdArr);
+  }
+  const DialogTitle = (props) => {
+    const { children, onClose, ...other } = props;
+    return (
+      <MuiDialogTitle disableTypography className={classes.root} {...other}>
+        <Typography variant="h6">{children}</Typography>
+        {onClose ? (
+          <IconButton
+            aria-label="close"
+            className={classes.closeButton}
+            onClick={onClose}
+          >
+            <CloseIcon />
+          </IconButton>
+        ) : null}
+      </MuiDialogTitle>
+    );
+  };
+  DialogTitle.propTypes = {
+    children: PropTypes.instanceOf(Array).isRequired,
+    onClose: PropTypes.func.isRequired,
+  };
+
+  function copyStartLinkFunction() {
+    const copyText = document.getElementById('startLink');
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    alert.success('Start Link Successfully Copied');
+  }
+
+  function copyJoinFunction() {
+    const copyText = document.getElementById('joinLink');
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    alert.success('Join Link Successfully Copied');
+  }
+
+
+  const radioChange = (e) => {
+    setOnlineClassType(e.target.value);
+  };
+
+  return (
+    <Dialog
+      maxWidth="sm"
+      className={classes.modal}
+      open={open}
+      disableEnforceFocus
+      aria-labelledby="transition-modal-title"
+      aria-describedby="transition-modal-description"
+      closeAfterTransition
+    >
+      <DialogTitle id="alert-dialog-title" onClose={handleClose}>
+        {edit ? `Re Schedule ${onlineClassType === '0' ? 'Meeting on ' : 'Webinar on '}  ` : 'Schedule Webinar or Meeting on  '}
+        <b style={{ color:'blue' }}>{(fullData && fullData.date && fullData.date && new Date(fullData.date).toString().split('G')[0].substring(0, 16))}</b>
+      </DialogTitle>
+      <Divider />
+      <DialogContent>
+        <>
+          {!edit
+          && (
+            <>
+              <Grid container spacing={2} style={{ textAlign: 'center', padding: '10px' }}>
+                <Grid item md={12} xs={12}>
+                  <Typography>Select Class Type :</Typography>
+                </Grid>
+                <Grid item md={6} xs={6}>
+                  <Radio
+                    disabled={edit}
+                    checked={onlineClassType === '0'}
+                    onChange={radioChange}
+                    value="0"
+                    color="primary"
+                    name="radio-button-demo"
+                    inputProps={{ 'aria-label': 'A' }}
+                  />
+                  Meeting
+                </Grid>
+                <Grid item md={6} xs={6}>
+                  <Radio
+                    disabled={edit}
+                    checked={onlineClassType === '1'}
+                    onChange={radioChange}
+                    value="1"
+                    color="primary"
+                    name="radio-button-demo"
+                    inputProps={{ 'aria-label': 'A' }}
+                  />
+                  Webinar
+                </Grid>
+              </Grid>
+              <Divider />
+            </>
+          )}
+          <Grid container spacing={2}>
+            <Grid item md={12} xs={12}>
+              {edit
+              && (
+              <>
+                <Grid item md={12} xs={12} style={{ textAlign: 'center' }}>
+                  Copy Start Link :
+                  {' '}
+                  <input id="startLink" style={{ textAlign: 'center', width: '50%' }} value={startLink} />
+                  <IconButton toolTip="Copy Link" onClick={() => copyStartLinkFunction()}><FileCopyIcon size="small" /></IconButton>
+                </Grid>
+                <Grid item md={12} xs={12} style={{ textAlign: 'center' }}>
+                  Copy Join Link :
+                  {' '}
+                  <input id="joinLink" style={{ textAlign: 'center', width: '50%' }} value={joinLink} />
+                  <IconButton toolTip="Copy Link" onClick={() => copyJoinFunction()}><FileCopyIcon size="small" /></IconButton>
+                </Grid>
+              </>
+              )}
+            </Grid>
+          </Grid>
+          {edit && <Divider className={classes.divider} />}
+          <Grid container spacing={2}>
+            <Grid item md={12} xs={12}>
+              <Grid container spacing={2}>
+                <Grid item md={8} xs={12}>
+                  <Grid container spacing={2}>
+                    <Grid item md={12} xs={12}>
+                      <TextField
+                        className={classes.textField}
+                        margin="dense"
+                        type="number"
+                        label="Speaker Erp"
+                        required
+                        value={speakerErp || ''}
+                        onChange={(e) => (e.target.value.length > 0 || e.target.value.length === 0) && e.target.value.length < 12 && setSpeakerErp(e.target.value)}
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item md={12} xs={12}>
+                      <TextField
+                        className={classes.textField}
+                        margin="dense"
+                        label="Topic Name"
+                        required
+                        value={topicName || ''}
+                        onChange={(e) => setTopicName(e.target.value)}
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item md={onlineClassType === '1' && !edit ? 4 : 6} xs={onlineClassType === '1' && !edit ? 4 : 6}>
+                      <TextField
+                        className={classes.textField}
+                        margin="dense"
+                        type="time"
+                        helperText="Schedule (hh:mm)"
+                        required
+                        value={scheduleTime || ''}
+                        onChange={(e) => setScheduleTime(e.target.value)}
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item md={onlineClassType === '1' && !edit ? 4 : 6} xs={onlineClassType === '1' && !edit ? 4 : 6}>
+                      <TextField
+                        className={classes.textField}
+                        margin="dense"
+                        type="time"
+                        helperText="Duration (hh:mm)"
+                        required
+                        value={durationTime || ''}
+                        onChange={(e) => setDurationTime(e.target.value)}
+                        variant="outlined"
+                      />
+                    </Grid>
+                    {onlineClassType === '1' && !edit && (
+                      <Grid item md={4} xs={4}>
+                        <TextField
+                          disabled={edit}
+                          className={classes.textField}
+                          margin="dense"
+                          type="number"
+                          helperText="Join Limit"
+                          required
+                          value={joinLimit || ''}
+                          onChange={(e) => setJoinLimit(e.target.value)}
+                          variant="outlined"
+                        />
+                      </Grid>
+                    )}
+                  </Grid>
+                </Grid>
+                <Grid item md={4} xs={12} className={classes.imageAlignment}>
+                  <input
+                    style={{ display: 'none' }}
+                    accept="image/*"
+                    className={classes.fileUpload}
+                    id="outlined-button-file"
+                    type="file"
+                    onChange={(e) => setProfileImageFUnction(e.target.files[0])}
+                  />
+                  <label htmlFor="outlined-button-file">
+                    <Avatar variant="square" className={classes.square} src={choosePhoto || require('./Upp3.png')} alt="Remy Sharp" />
+                  </label>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <FormControl className={classes.formControl} fullWidth>
+                <InputLabel id="demo-controlled-open-select-label">
+                  Select Role
+                </InputLabel>
+                <Select
+                  multiple
+                  labelId="demo-controlled-open-select-label"
+                  id="demo-controlled-open-select"
+                  value={selectedRole || []}
+                  style={{ minWidth: 120, maxWidth: 550 }}
+                  MenuProps={MenuProps}
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                >
+                  <MenuItem value={1} key={1} disabled>
+                    Select Role
+                  </MenuItem>
+                  {roleList
+                    && roleList.length !== 0
+                    && roleList.map((dropItem) => (
+                      <MenuItem
+                        style={{
+                          color: selectedRole && selectedRole.filter((gradeData) => gradeData === dropItem.id).length === 1 ? 'white' : '',
+                          backgroundColor: selectedRole && selectedRole.filter((gradeData) => gradeData === dropItem.id).length === 1 ? 'darkslateblue' : '',
+                        }}
+                        value={dropItem.id}
+                        key={dropItem.id}
+                      >
+                        {dropItem.name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            {selectedRole.includes(9) || selectedRole.includes(13)
+              ? (
+                edit && edit
+                  ? (
+                    <>
+                      <Grid item xs>
+                        <Autocomplete
+                          multiple
+                          id="Grade"
+                          options={gradeList}
+                          defaultValue={SelectedGrade}
+                          // defaultValue={[{ type_name: 'hi' }]}
+                          getOptionLabel={(option) => option.type_name}
+                          style={{ width: 300 }}
+                          renderInput={(params) => <TextField {...params} label="Grade" variant="outlined" />}
+                          onChange={(e, data) => (data.length ? handleGradeChange(data) : '')}
+                        />
+                      </Grid>
+                      <Grid item xs>
+                        <Autocomplete
+                          multiple
+                          id="Subject"
+                          options={subjectList}
+                          defaultValue={SelectedSubject}
+                          // defaultValue={[{ type_name: 'hi' }]}
+                          getOptionLabel={(option) => option.sub_type_name}
+                          style={{ width: 300 }}
+                          renderInput={(params) => <TextField {...params} label="Subject" variant="outlined" />}
+                          onChange={(e, data) => handleSubjectChange(data)}
+                        />
+                      </Grid>
+                    </>
+                  )
+                  : (
+                    <>
+                      <Grid item xs>
+                        <Autocomplete
+                          multiple
+                          id="Grade"
+                          options={gradeList}
+                          getOptionLabel={(option) => option.type_name}
+                          style={{ width: 300 }}
+                          renderInput={(params) => <TextField {...params} label="Grade" variant="outlined" />}
+                          onChange={(e, data) => (data.length ? handleGradeChange(data) : '')}
+                        />
+                      </Grid>
+                      <Grid item xs>
+                        <Autocomplete
+                          multiple
+                          id="Subject"
+                          options={subjectList}
+                          getOptionLabel={(option) => option.sub_type_name}
+                          style={{ width: 300 }}
+                          renderInput={(params) => <TextField {...params} label="Subject" variant="outlined" />}
+                          onChange={(e, data) => handleSubjectChange(data)}
+                        />
+                      </Grid>
+                    </>
+                  )
+              )
+
+              : ''}
+            <Grid item md={6} xs={12}>
+              <FormControl className={classes.formControl} fullWidth>
+                <InputLabel id="demo-controlled-open-select-label">
+                  Select branches
+                </InputLabel>
+                <Select
+                  multiple
+                  labelId="demo-controlled-open-select-label"
+                  id="demo-controlled-open-select"
+                  value={selectedbranch || []}
+                  style={{ minWidth: 120, maxWidth: 550 }}
+                  onChange={(e) => handleSelectALl(e)}
+                  className={classes.normal}
+                  MenuProps={MenuProps}
+                >
+                  <MenuItem disabled>
+                    Select Branch
+                  </MenuItem>
+                  <MenuItem key="0" value="0">
+                    Select All
+                  </MenuItem>
+                  {branchList
+                    && branchList.length !== 0
+                    && branchList.map((dropItem) => (
+                      <MenuItem
+                        style={{
+                          color: selectedbranch && selectedbranch.filter((gradeData) => gradeData === dropItem.id).length === 1 ? 'white' : '',
+                          backgroundColor: selectedbranch && selectedbranch.filter((gradeData) => gradeData === dropItem.id).length === 1 ? 'darkslateblue' : '',
+                        }}
+                        value={dropItem.id}
+                        key={dropItem.id}
+                      >
+                        {dropItem.branch_name ? dropItem.branch_name : ''}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item md={12} xs={12}>
+              <Typography variant="h6">Enter About Speaker : </Typography>
+              <TinyTextEditor
+                id="aboutSpeakerDesc"
+                initialValue={aboutSpeaker || ''}
+                value={aboutSpeaker || ''}
+                onChange={(content) => setAboutSpeaker(content)}
+              />
+            </Grid>
+            <Grid item md={12} xs={12}>
+              <Typography variant="h6">Enter About Session : </Typography>
+              <TinyTextEditor
+                id="aboutSessionDesc"
+                initialValue={aboutSession || ''}
+                value={aboutSession || ''}
+                onChange={(content) => setAboutSession(content)}
+              />
+            </Grid>
+            <Divider className={classes.divider} />
+            {!edit
+            && (
+            <Grid item md={12} xs={12}>
+              <Button
+                color="primary"
+                variant="contained"
+                className={classes.textField}
+                onClick={() => createUpdateWibenar()}
+              >
+                Schedule
+                {onlineClassType === '0' ? ' Meeting' : ' Webinar'}
+              </Button>
+            </Grid>
+            )}
+            {edit
+            && (
+            <>
+              <Grid item md={6} xs={6}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  disabled={fullData.user_id !== fullData.createdBy}
+                  className={classes.textField}
+                  onClick={() => createUpdateWibenar()}
+                >
+                  Re Schedule
+                  {onlineClassType === '0' ? ' Meeting' : ' Webinar'}
+                </Button>
+              </Grid>
+              <Grid item md={6} xs={6}>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  disabled={fullData.user_id !== fullData.createdBy}
+                  className={classes.textField}
+                  onClick={() => cancelWibenar()}
+                >
+                  Cancel
+                  {onlineClassType === '0' ? ' Meeting' : ' Webinar'}
+                </Button>
+              </Grid>
+            </>
+            )}
+          </Grid>
+        </>
+      </DialogContent>
+      {loader}
+    </Dialog>
+  );
+}
+
+CreateUpdateWibenar.propTypes = {
+  classes: PropTypes.instanceOf(Object).isRequired,
+  fullData: PropTypes.instanceOf(Object).isRequired,
+  handleClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  edit: PropTypes.bool.isRequired,
+};
+
+export default withStyles(styles)(CreateUpdateWibenar);

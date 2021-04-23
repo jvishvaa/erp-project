@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import axiosInstance from '../../../config/axios';
+import CloseIcon from '@material-ui/icons/Close';
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import moment from 'moment';
@@ -30,8 +31,12 @@ const DisplayBox = (props) => {
     props.dataOpenChange.assigned_teacher_id
   );
   const [Description, setDescription] = useState(props.dataOpenChange.period_description);
-  const [startTime, setStartTime] = useState(props.dataOpenChange.period_start_time);
-  const [endTime, setEndTime] = useState(props.dataOpenChange.period_end_time);
+  const [startTime, setStartTime] = useState(
+    props.dataOpenChange.period_start_time.slice(0, 5)
+  );
+  const [endTime, setEndTime] = useState(
+    props.dataOpenChange.period_end_time.slice(0, 5)
+  );
   const [teacherDetails, setTeacherDetails] = useState(data.teacher_name.name);
   const [assignedTeacherName, setAssignedTeacherName] = useState(
     props.dataOpenChange.teacher_name.name
@@ -44,6 +49,13 @@ const DisplayBox = (props) => {
   const [MaterialRequired, setMaterialRequired] = useState(
     props.dataOpenChange.required_material
   );
+  const handleCloseBox = () => {
+    try {
+      props.handleClosePass();
+    } catch (e) {
+      props.handleChangeDisplayView();
+    }
+  };
   const sendUpdatedData = () => {
     setOpenEditForm(true);
     if (!setMobileView) {
@@ -71,6 +83,9 @@ const DisplayBox = (props) => {
         setAlert('error', "can't edit list");
       });
   };
+  // const handleCloseBox = () =>{
+  //   props.handleChangeDisplayView();
+  // };
   return (
     <>
       {openEditForm ? (
@@ -79,6 +94,7 @@ const DisplayBox = (props) => {
             <div className='yellow-header'>
               {data.period_start_time.slice(0, 5)} - {data.period_end_time.slice(0, 5)}
             </div>
+            <div style={{ display: 'flex' }}></div>
             {props.teacherView ? (
               <div className='edit-button' onClick={() => setOpenEditForm(false)}>
                 <EditTwoToneIcon size='small' /> Edit
@@ -86,8 +102,16 @@ const DisplayBox = (props) => {
             ) : (
               <></>
             )}
+              <div className='edit-button' onClick={() => handleCloseBox()}>
+                <CloseIcon size='small' />
+                Close
+              </div>
           </div>
-          <h3>{data.period_name}</h3>
+          <div style={{ display: 'flex' }}>
+            <div className='yellow-header'>Period Name:</div>
+            <h3>{data.period_name}</h3>
+          </div>
+
           <h4>
             {data.teacher_name.name}
             {/* {data.assigned_teacher__first_name} {data.assigned_teacher__last_name} */}
@@ -272,6 +296,15 @@ const DisplayBox = (props) => {
             }}
           >
             Save
+          </div>
+          <div
+            className='field-container-button'
+            onClick={() => {
+              handleCloseBox();
+            }}
+          >
+            <CloseIcon size='small' />
+            Close
           </div>
         </>
       )}

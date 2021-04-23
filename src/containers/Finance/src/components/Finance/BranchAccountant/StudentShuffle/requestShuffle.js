@@ -189,13 +189,16 @@ const erpDebounceFunc = () => {
     if (!sessionYear || !branches) {
       alert.warning('Select Academic Year and Branch!')
     } else {
+      // console.log('erp', e.target.value)
       if (isNaN(Number(e.target.value))) {
-        setErp(null)
+        console.log('1')
+        // setErp(null)
         setStudentName(e.target.value)
         if (e.target.value && e.target.value.length >= 3) {
           nameDebounceFunc()
         }
       } else if (isFinite(Number(e.target.value))) {
+        console.log('2')
         setStudentName(null)
         setErp(e.target.value)
         if (e.target.value && e.target.value.length >= 3) {
@@ -253,7 +256,7 @@ const erpDebounceFunc = () => {
 
   const studentInfoHandler = useMemo(() => {
     if (studentName || erp) {
-      return <Student erp={erp} branch={branches && branches.value} session={sessionYear && sessionYear.value} user={user} alert={alert} />
+      return <Student erp={displayErp} branch={branches && branches.value} session={sessionYear && sessionYear.value} user={user} alert={alert} />
     }
   }, [studentName, displayErp, erp, alert, user])
 
