@@ -88,6 +88,7 @@ const AttedanceCalender = () => {
   const history = useHistory();
 
   const classes = useStyles();
+
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const [academicYear, setAcademicYear] = useState([]);
@@ -484,8 +485,8 @@ const AttedanceCalender = () => {
       branch_id: selectedBranch,
       grade_id: selectedGrade,
       section_id: selectedSection,
-      startDate: startDate,
-      endDate: endDate,
+      startDate: moment(startDate).format('YYYY-MM-DD'),
+      endDate: moment(endDate).format('YYYY-MM-DD'),
     };
 
     if (path === '/attendance-calendar/teacher-view') {

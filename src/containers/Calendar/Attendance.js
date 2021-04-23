@@ -146,32 +146,32 @@ const Attendance = () => {
       setStudentName(history?.location?.state?.data[0]?.student_name);
       setStudentView(true);
       console.log();
+      axiosInstance
+        .get(
+          `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&user_id=${history?.location?.state?.data[0]?.student_id}&page_num=${pageNumber}&page_size=${limit}`
+        )
+        // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
+        .then((res) => {
+          if (res.status == 200) {
+            setTotalGenre(res.data.count);
+            console.log(res.data.count);
+            console.log(res.data.results, 'single student data');
+            setData(res.data.results);
+            setAlert('success', 'Data Successfully fetched');
+            if (res?.data?.message) {
+              // alert(res?.data?.message)
+            } else console.log(res.data.message);
+          }
+          if (res.status == 400) {
+            console.log(res.message);
+            setAlert('error', res.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          // setAlert('error', 'something went wrong');
+        });
     }
-    axiosInstance
-      .get(
-        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&user_id=${history?.location?.state?.data[0]?.student_id}&page_num=${pageNumber}&page_size=${limit}`
-      )
-      // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
-      .then((res) => {
-        if (res.status == 200) {
-          setTotalGenre(res.data.count);
-          console.log(res.data.count);
-          console.log(res.data.results, 'single student data');
-          setData(res.data.results);
-          setAlert('success', 'Data Successfully fetched');
-          if (res?.data?.message) {
-            // alert(res?.data?.message)
-          } else console.log(res.data.message);
-        }
-        if (res.status == 400) {
-          console.log(res.message);
-          setAlert('error', res.message);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        // setAlert('error', 'something went wrong');
-      });
   }, []);
 
   const getAllStudents = () => {
@@ -204,9 +204,16 @@ const Attendance = () => {
     }
   };
   const handleBack = () => {
-    history.push({
-      pathname: '/attendance-calendar/teacher-view',
-    });
+    if (history?.location?.pathname === '/teacher-view/attendance') {
+      history.push({
+        pathname: '/attendance-calendar/teacher-view',
+      });
+    }
+    if (history?.location?.pathname === '/student-view/attendance') {
+      history.push({
+        pathname: '/attendance-calendar/student-view',
+      });
+    }
   };
   const handleFilter = () => {
     if (!selectedAcademicYear) {
