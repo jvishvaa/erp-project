@@ -28,3 +28,13 @@
 .dat {
   padding-top: 45px;
 }
+
+  @media only screen and (max-width:  1562px){
+    .arrow-1  {
+    display:block;
+    }
+  }
+.conte .MuiOutlinedInput-inputAdornedEnd {
+  font-size:revert;
+}
+

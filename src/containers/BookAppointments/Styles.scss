@@ -16,7 +16,7 @@
             border-radius: 5px;
             right: 0;
             transform: translateY(-10%);
-          } 
+          }
         }
       }
     }
@@ -39,4 +39,17 @@
   border: 1px solid #e2e2e2;
   border-radius: 12px;
   opacity: 1;
+}
+.arrow .MuiSvgIcon-root {
+  color: #ff6b6b;
+}
+.button .MuiSvgIcon-root {
+  color: #ff6b6b;
+}
+
+.cardsStyles h5:hover {
+  color: #ff6b6b !important;
+}
+.cardsStyles h6:hover {
+  color: #ff6b6b !important;
 }
