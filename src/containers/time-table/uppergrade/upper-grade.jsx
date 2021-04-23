@@ -28,6 +28,7 @@ const UpperGrade = (props) => {
   const [branchName, setBranchName] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [sectinName, setSectionName] = useState();
+  const [addPeriodButton, setShowAddPeriodButton] = useState(false);
 
   const handleChangeMultiple = (event) => {
     const { options } = event.target;
@@ -58,6 +59,9 @@ const UpperGrade = (props) => {
   useEffect(() => {
     callingAPI();
   }, [counter]);
+  const handleOpenNewPeriod = () =>{
+    props.handlePassOpenNewPeriod();
+  }
   const callingAPI = () => {
     if (counter === 1) {
       callingAcadamicAPI();
@@ -140,6 +144,7 @@ const UpperGrade = (props) => {
     }
   };
   const handleGenerateData = () => {
+    setShowAddPeriodButton(true);
     if (academicYear === null || branchID === null || gradeID === null || sectionID === null) {
       setAlert('warning', "please select all filters")
     } else {
@@ -422,9 +427,16 @@ const UpperGrade = (props) => {
               onClick={handleGenerateData}
               startIcon={<EmojiObjectsSharpIcon />}
             >
-              Generate
+              Filter
             </Button>
           </div>
+          {props.teacherView && addPeriodButton ? (
+        <div className='add-new-period-button' onClick={() => handleOpenNewPeriod()}>
+          Add Period
+        </div>
+      ) : (
+        <></>
+      )}
         </div>
       </div>
     </>

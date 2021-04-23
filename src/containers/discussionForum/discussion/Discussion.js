@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import moment from 'moment';
-import { Grid, Box, Typography, makeStyles, Button, withStyles, InputBase, Popover, Divider} from '@material-ui/core';
+import { Grid, Box, Typography, makeStyles, Button, withStyles, InputBase, Popover, Divider, IconButton} from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import DiscussionReplies from './DiscussionReplies';
@@ -22,6 +22,8 @@ import BronzeAwards from '../../../assets/images/Bronze.svg';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import GiveAwardDialog from './GiveAwardDialog';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { Edit } from '@material-ui/icons';
+import { editPostDataAction } from '../../../redux/actions/discussionForumActions';
 
 const useStyles = makeStyles({
   discussionContainer: {
@@ -52,6 +54,11 @@ const useStyles = makeStyles({
     fontFamily: 'Open Sans',
     lineHeight: '33px',
     marginRight: '8.5px',
+    '@media (max-width: 600px)': {
+      fontSize: '20px',
+      marginRight: '6px',
+      lineHeight: '24px',
+    },
   },
   dotSeparator: {
     height: '12px',
@@ -81,6 +88,11 @@ const useStyles = makeStyles({
   },
   discussionIconRow: {
     float: 'right',
+    textAlign: 'center',
+    '@media (max-width: 600px)': {
+      display: 'block',
+      justifyContent: 'right',
+    },
   },
   discussionIcon: {
     color: '#042955',
@@ -248,7 +260,7 @@ export default function DiscussionComponent(props) {
       .catch((error) => console.log(error));
   };
   const handlePost = () => {
-    dispatch(postAction(props.rowData));
+    //dispatch(postAction(props.rowData));
     if(location.pathname === '/student-forum'){
       history.push('/student-forum/post/' + props.rowData.id);
     }
@@ -272,6 +284,7 @@ export default function DiscussionComponent(props) {
 
   // awards popover
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorE2, setAnchorE2] = React.useState(null);
 
   const handlePopoverOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -292,6 +305,7 @@ export default function DiscussionComponent(props) {
   const [silverCount, setSilverCount] = React.useState(0);
   const [bronzeCount, setBronzeCount] = React.useState(0);
   const [postId, setPostId] = React.useState('');
+  const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handleClickOpen = (id) => {
     //handlePopoverClose();
@@ -326,36 +340,74 @@ export default function DiscussionComponent(props) {
     })
   }, [props.rowData]);
 
+  const handleDiscussionAction = (event) => {
+    if(props.rowData.post_by.id === userDetails.user_id){
+      setAnchorE2(event.currentTarget)
+    }
+  }
+
+  const handlePopoverActionClose = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setAnchorE2(null);
+  }
+
+  const open2 = Boolean(anchorE2);
+  const id2 = open2 ? 'simple-popover1' : undefined;
+
+  const handleDelete = (id) => {
+    axiosInstance
+      .delete(`/academic/${id}/update-post/`)
+      .then((res) => {
+        if(res.data.status_code === 200){
+          setAlert('success', res.data.message);
+          props.deleteEdit();
+          handlePopoverActionClose();
+        }
+      })
+      .catch((error) => console.log(error));
+  }
+
+  const handleEditPost = () => {
+    dispatch(editPostDataAction(props.rowData));
+  }
+
   return (
     <Grid container className={classes.discussionContainer}>
       <Grid item xs={12}>
         <div className={classes.discussionTitleBox}>
-          <span className={classes.discussionTitle}>
-            {`${props.rowData && props.rowData.categories.category_name} /`}
-          </span>
-          <span className={classes.discussionTitle}>
-            {`${props.rowData && props.rowData.categories.sub_category_name} /`}
-          </span>
-          <span className={classes.discussionTitle}>
-            {props.rowData && props.rowData.categories.sub_sub_category_name}
-          </span>
           <span>
-            <FiberManualRecordIcon className={classes.dotSeparator} />
-            <span className={classes.postByText}>post by</span>
-            <ProfileIcon
-              firstname={props.rowData.post_by.first_name}
-              lastname={props.rowData.post_by.last_name}
-              bgColor='#14B800'
-            />
-            <span className={classes.username}>
-              {`${props.rowData.post_by.first_name} ${props.rowData.post_by.last_name} /`}
-            </span>
-            <span className={classes.discussionTime}>
-              {`${moment(props.rowData.post_at).format('hh : mm ')} /`}
-            </span>
-            <span className={classes.discussionTime}>
-              {moment(props.rowData.post_at).format('DD.MM.YYYY')}
-            </span>
+            <div>
+              <span className={classes.discussionTitle}>
+                {`${props.rowData && props.rowData.categories.category_name} /`}
+              </span>
+              <span className={classes.discussionTitle}>
+                {`${props.rowData && props.rowData.categories.sub_category_name} /`}
+              </span>
+              <span className={classes.discussionTitle}>
+                {props.rowData && props.rowData.categories.sub_sub_category_name}
+              </span>
+            </div>
+            <div style={{ display: 'inline-block'}}>
+              {/* <FiberManualRecordIcon className={classes.dotSeparator} /> */}
+              <span className={classes.postByText}>post by</span>
+              <span style={{verticalAlign: 'middle'}}>
+                <ProfileIcon
+                  firstname={props.rowData.post_by.first_name}
+                  lastname={props.rowData.post_by.last_name}
+                  bgColor='#14B800'
+                />
+              </span>
+              <span className={classes.username}>
+                {`${props.rowData.post_by.first_name} ${props.rowData.post_by.last_name} /`}
+              </span>
+              <span className={classes.discussionTime}>
+                {`${moment(props.rowData.post_at).format('hh : mm A')} /`}
+              </span>
+              <span className={classes.discussionTime}>
+                {moment(props.rowData.post_at).format('DD.MM.YYYY')}
+              </span>
+            </div>
           </span>
           <span className={classes.discussionIconRow}>
             <span>
@@ -434,7 +486,31 @@ export default function DiscussionComponent(props) {
                 </span>
               </span>
             )}
-            <MoreVertIcon className={classes.discussionDotIcon} />
+            <IconButton onClick={handleDiscussionAction} style={{verticalAlign: 'baseline',}}>
+              <MoreVertIcon className={classes.discussionDotIcon}/>
+            </IconButton>
+            {/* <ClickAwayListener onClickAway={handlePopoverActionClose}> */}
+              <Popover
+                id={id2}
+                open={open2}
+                anchorEl={anchorE2}
+                onClose={handlePopoverActionClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+              >
+                <div style={{padding: '10px', borderRadius: '5px'}}>
+                  <Typography onClick={handleEditPost}>Edit</Typography>
+                  <Divider style={{marginBottom:'10px', marginTop: '10px'}}/>
+                  <Typography onClick={() => handleDelete(props.rowData.id)}>Delete</Typography>
+                </div>
+              </Popover>
+            {/* </ClickAwayListener> */}
           </span>
         </div>
         <Box className={classes.discussionDetailsBox}>
