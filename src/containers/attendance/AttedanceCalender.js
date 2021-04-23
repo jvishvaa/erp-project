@@ -442,13 +442,25 @@ const AttedanceCalender = () => {
       startDate: startDate,
       endDate: endDate,
     };
-    history.push({
-      pathname: '/OverallAttendance',
-      state: {
-        data: studentData,
-        payload: payload,
-      },
-    });
+
+    if (path === '/attendance-calendar/teacher-view') {
+      history.push({
+        pathname: '/OverallAttendance',
+        state: {
+          data: studentData,
+          payload: payload,
+        },
+      });
+    }
+    if (path === '/attendance-calendar/student-view') {
+      history.push({
+        pathname: '/student-view/attendance',
+        state: {
+          data: studentData,
+          payload: payload,
+        },
+      });
+    }
   };
 
   const handleMarkAttendance = () => {

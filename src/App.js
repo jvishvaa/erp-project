@@ -1265,7 +1265,10 @@ function App({ alert }) {
                           <Route exact path='/attendance-calendar/student-view'>
                             {({ match }) => <AttedanceCalender match={match} />}
                           </Route>
-                          <Route exact path='/Attendance'>
+                          <Route exact path='/teacher-view/attendance'>
+                            {({ match }) => <Attendance match={match} />}
+                          </Route>
+                          <Route exact path='/student-view/attendance'>
                             {({ match }) => <Attendance match={match} />}
                           </Route>
                           <Route exact path='/OverallAttendance'>

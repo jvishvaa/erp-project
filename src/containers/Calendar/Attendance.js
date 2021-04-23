@@ -83,55 +83,95 @@ const Attendance = () => {
 
   const [totalGenre, setTotalGenre] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
+  const [studentView, setStudentView] = useState(false);
   const limit = 8;
-
+  //  let path = window.location.pathname;
+  //  console.log(path, 'path');
   useEffect(() => {
+    let path = window.location.pathname;
+    console.log(path, 'path');
     console.log(history);
-    if (history?.location?.state?.payload) {
-      console.log(history?.location?.state?.payload?.academic_year_id?.session_year);
-      setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id);
-      setSelectedBranch(history?.location?.state?.payload?.branch_id);
-      setSelectedGrade(history?.location?.state?.payload?.grade_id);
-      setSelectedSection(history?.location?.state?.payload?.section_id);
+    if (history?.location?.pathname === '/teacher-view/attendance') {
+      if (history?.location?.state?.payload) {
+        console.log(history?.location?.state?.payload?.academic_year_id?.session_year);
+        setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id);
+        setSelectedBranch(history?.location?.state?.payload?.branch_id);
+        setSelectedGrade(history?.location?.state?.payload?.grade_id);
+        setSelectedSection(history?.location?.state?.payload?.section_id);
+        setStartDate(history?.location?.state?.payload?.startDate);
+        setEndDate(history?.location?.state?.payload?.endDate);
+        setStudentName(history?.location?.state?.studentData);
+        console.log(history?.location?.state?.payload?.branch_id);
+        // console.log(history?.location?.state?.studentData[0]?.student)
+        axiosInstance
+          .get(
+            `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&user_id=${history?.location?.state?.studentData[0]?.user_id}&page_num=${pageNumber}&page_size=${limit}`
+          )
+          // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
+          .then((res) => {
+            if (res.status == 200) {
+              setTotalGenre(res.data.count);
+              console.log(res.data.count);
+              console.log(res.data.results, 'single student data');
+              setData(res.data.results);
+              setAlert('success', 'Data Successfully fetched');
+              if (res?.data?.message) {
+                // alert(res?.data?.message)
+              } else console.log(res.data.message);
+            }
+            if (res.status == 400) {
+              console.log(res.message);
+              setAlert('error', res.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            // setAlert('error', 'something went wrong');
+          });
+      } else {
+        const date = new Date();
+        console.log(
+          new Intl.DateTimeFormat('en-GB', {
+            dateStyle: 'full',
+            timeStyle: 'long',
+          }).format(date)
+        );
+        callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
+      }
+    }
+    if (history?.location?.pathname === '/student-view/attendance') {
+      // setAlert('warning', 'testing');
       setStartDate(history?.location?.state?.payload?.startDate);
       setEndDate(history?.location?.state?.payload?.endDate);
-      setStudentName(history?.location?.state?.studentData);
-      console.log(history?.location?.state?.payload?.branch_id);
-      // console.log(history?.location?.state?.studentData[0]?.student)
-      axiosInstance
-        .get(
-          `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&user_id=${history?.location?.state?.studentData[0]?.user_id}&page_num=${pageNumber}&page_size=${limit}`
-        )
-        // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
-        .then((res) => {
-          if (res.status == 200) {
-            setTotalGenre(res.data.count);
-            console.log(res.data.count);
-            console.log(res.data.results, 'single student data');
-            setData(res.data.results);
-            setAlert('success', 'Data Successfully fetched');
-            if (res?.data?.message) {
-              // alert(res?.data?.message)
-            } else console.log(res.data.message);
-          }
-          if (res.status == 400) {
-            console.log(res.message);
-            setAlert('error', res.message);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          // setAlert('error', 'something went wrong');
-        });
-    } else {
-      const date = new Date();
-      console.log(
-        new Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'long' }).format(
-          date
-        )
-      );
-      callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
+      setStudentName(history?.location?.state?.data[0]?.student_name);
+      setStudentView(true);
+      console.log();
     }
+    axiosInstance
+      .get(
+        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&user_id=${history?.location?.state?.data[0]?.student_id}&page_num=${pageNumber}&page_size=${limit}`
+      )
+      // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
+      .then((res) => {
+        if (res.status == 200) {
+          setTotalGenre(res.data.count);
+          console.log(res.data.count);
+          console.log(res.data.results, 'single student data');
+          setData(res.data.results);
+          setAlert('success', 'Data Successfully fetched');
+          if (res?.data?.message) {
+            // alert(res?.data?.message)
+          } else console.log(res.data.message);
+        }
+        if (res.status == 400) {
+          console.log(res.message);
+          setAlert('error', res.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        // setAlert('error', 'something went wrong');
+      });
   }, []);
 
   const getAllStudents = () => {
@@ -142,15 +182,6 @@ const Attendance = () => {
       )
       .then((res) => console.log(res.data.result))
       .catch((err) => console.log(err));
-  };
-
-  const [activePage, setActivePage] = useState(1);
-
-  let totalPages = data && Math.ceil(data.length / 8);
-  console.log(totalPages);
-  let offset = (activePage - 1) * 8;
-  const handlePageChange = (e, value) => {
-    setActivePage(value);
   };
 
   const [state, setState] = React.useState({
@@ -371,148 +402,152 @@ const Attendance = () => {
             />
           </MuiPickersUtilsProvider>
         </Grid>
-        <Grid item md={3} xs={12}>
-          <Autocomplete
-            style={{ width: '100%' }}
-            size='small'
-            onOpen={() => handleOpenOnViewDetails()}
-            onChange={(event, value) => {
-              setSelectedAcadmeicYear(value);
-              if (value) {
-                callApi(
-                  `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                  'branchList'
-                );
-              }
-              setSelectedGrade([]);
-              setSectionList([]);
-              setSelectedSection([]);
-              setSelectedBranch([]);
-            }}
-            id='branch_id'
-            className='dropdownIcon'
-            value={selectedAcademicYear || ''}
-            options={academicYear || ''}
-            getOptionLabel={(option) => option?.session_year || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Academic Year'
-                placeholder='Academic Year'
+        {!studentView && (
+          <>
+            <Grid item md={3} xs={12}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onOpen={() => handleOpenOnViewDetails()}
+                onChange={(event, value) => {
+                  setSelectedAcadmeicYear(value);
+                  if (value) {
+                    callApi(
+                      `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                      'branchList'
+                    );
+                  }
+                  setSelectedGrade([]);
+                  setSectionList([]);
+                  setSelectedSection([]);
+                  setSelectedBranch([]);
+                }}
+                id='branch_id'
+                className='dropdownIcon'
+                value={selectedAcademicYear || ''}
+                options={academicYear || ''}
+                getOptionLabel={(option) => option?.session_year || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Academic Year'
+                    placeholder='Academic Year'
+                  />
+                )}
               />
-            )}
-          />
-        </Grid>
-        <Grid item md={3} xs={12}>
-          <Autocomplete
-            // multiple
-            style={{ width: '100%' }}
-            size='small'
-            onChange={(event, value) => {
-              setSelectedBranch([]);
-              if (value) {
-                // const ids = value.map((el)=>el)
-                const selectedId = value.branch.id;
-                setSelectedBranch(value);
-                callApi(
-                  `${endpoints.academics.grades}?session_year=${
-                    selectedAcademicYear.id
-                  }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-                  'gradeList'
-                );
-              }
-              setSelectedGrade([]);
-              setSectionList([]);
-              setSelectedSection([]);
-            }}
-            id='branch_id'
-            className='dropdownIcon'
-            value={selectedBranch || ''}
-            options={branchList || ''}
-            getOptionLabel={(option) => option?.branch?.branch_name || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Branch'
-                placeholder='Branch'
+            </Grid>
+            <Grid item md={3} xs={12}>
+              <Autocomplete
+                // multiple
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(event, value) => {
+                  setSelectedBranch([]);
+                  if (value) {
+                    // const ids = value.map((el)=>el)
+                    const selectedId = value.branch.id;
+                    setSelectedBranch(value);
+                    callApi(
+                      `${endpoints.academics.grades}?session_year=${
+                        selectedAcademicYear.id
+                      }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                      'gradeList'
+                    );
+                  }
+                  setSelectedGrade([]);
+                  setSectionList([]);
+                  setSelectedSection([]);
+                }}
+                id='branch_id'
+                className='dropdownIcon'
+                value={selectedBranch || ''}
+                options={branchList || ''}
+                getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Branch'
+                    placeholder='Branch'
+                  />
+                )}
               />
-            )}
-          />
-        </Grid>
-        <Grid item md={3} xs={12}>
-          <Autocomplete
-            // multiple
-            style={{ width: '100%' }}
-            size='small'
-            onChange={(event, value) => {
-              setSelectedGrade([]);
-              if (value) {
-                // const ids = value.map((el)=>el)
-                const selectedId = value.grade_id;
-                // console.log(selectedBranch.branch)
-                const branchId = selectedBranch.branch.id;
-                setSelectedGrade(value);
-                callApi(
-                  `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
-                  'section'
-                );
-              }
-              setSectionList([]);
-              setSelectedSection([]);
-            }}
-            id='grade_id'
-            className='dropdownIcon'
-            value={selectedGrade || ''}
-            options={gradeList || ''}
-            getOptionLabel={(option) => option?.grade__grade_name || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Grade'
-                placeholder='Grade'
+            </Grid>
+            <Grid item md={3} xs={12}>
+              <Autocomplete
+                // multiple
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(event, value) => {
+                  setSelectedGrade([]);
+                  if (value) {
+                    // const ids = value.map((el)=>el)
+                    const selectedId = value.grade_id;
+                    // console.log(selectedBranch.branch)
+                    const branchId = selectedBranch.branch.id;
+                    setSelectedGrade(value);
+                    callApi(
+                      `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+                      'section'
+                    );
+                  }
+                  setSectionList([]);
+                  setSelectedSection([]);
+                }}
+                id='grade_id'
+                className='dropdownIcon'
+                value={selectedGrade || ''}
+                options={gradeList || ''}
+                getOptionLabel={(option) => option?.grade__grade_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Grade'
+                    placeholder='Grade'
+                  />
+                )}
               />
-            )}
-          />
-        </Grid>
-        <Grid item md={3} xs={12}>
-          <Autocomplete
-            // multiple
-            style={{ width: '100%' }}
-            size='small'
-            onChange={(event, value) => {
-              setSelectedSection([]);
-              getAllStudents();
-              if (value) {
-                const ids = value.id;
-                const secId = value.section_id;
-                setSelectedSection(value);
-                setSecSelectedId(secId);
-              }
-            }}
-            id='section_id'
-            className='dropdownIcon'
-            value={selectedSection || ''}
-            options={sectionList || ''}
-            getOptionLabel={(option) =>
-              option?.section__section_name || option?.section_name || ''
-            }
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Section'
-                placeholder='Section'
+            </Grid>
+            <Grid item md={3} xs={12}>
+              <Autocomplete
+                // multiple
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(event, value) => {
+                  setSelectedSection([]);
+                  getAllStudents();
+                  if (value) {
+                    const ids = value.id;
+                    const secId = value.section_id;
+                    setSelectedSection(value);
+                    setSecSelectedId(secId);
+                  }
+                }}
+                id='section_id'
+                className='dropdownIcon'
+                value={selectedSection || ''}
+                options={sectionList || ''}
+                getOptionLabel={(option) =>
+                  option?.section__section_name || option?.section_name || ''
+                }
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Section'
+                    placeholder='Section'
+                  />
+                )}
               />
-            )}
-          />
-        </Grid>
+            </Grid>
+          </>
+        )}
         {/* <Grid item md={3} xs={12}>
           <Autocomplete
             // multiple
@@ -590,7 +625,14 @@ const Attendance = () => {
 
           <Grid item sm={2} md={2}>
             <Typography variant='subtitle2' color='primary'>
-              <strong>{studentName && studentName[0].name.slice(0, 6)}</strong>
+              {!studentView && (
+                <strong>{studentName && studentName[0].name.slice(0, 6)}</strong>
+              )}
+              {studentView && (
+                <strong>
+                  {history?.location?.state?.data[0]?.student_name.slice(0, 6)}
+                </strong>
+              )}
             </Typography>
           </Grid>
           <Grid item sm={1} md={1}>

@@ -342,7 +342,7 @@ const Attend = () => {
       endDate: endDate,
     };
     history.push({
-      pathname: '/attendance',
+      pathname: '/teacher-view/attendance',
       state: {
         studentData,
         payload,

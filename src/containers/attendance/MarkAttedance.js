@@ -218,8 +218,8 @@ const MarkAttedance = () => {
         console.log(res.data);
         setNewData(res.data.results);
         setTotalGenre(res.data.count);
-        const is_first_shift_present = false;
-        const is_second_shift_present = false;
+        const is_first_shift_present = true;
+        const is_second_shift_present = true;
         var result = res.data.results.map((item) => ({
           name: item.name,
           student_id: item.user,
@@ -480,7 +480,7 @@ const MarkAttedance = () => {
                           {/* <Switch color='primary'  /> */}
                           <Switch
                             color='primary'
-                            checked={options.is_first_shift_present || true}
+                            checked={options.is_first_shift_present}
                             onChange={(e) => handleFirstHalf(e, options.student_id)}
                           />
                         </Grid>
@@ -497,7 +497,7 @@ const MarkAttedance = () => {
                           {/* <Switch color='primary' /> */}
                           <Switch
                             color='primary'
-                            checked={options.is_second_shift_present || true}
+                            checked={options.is_second_shift_present}
                             onChange={(e) => handleSecondHalf(e, options.student_id)}
                           />
                         </Grid>
