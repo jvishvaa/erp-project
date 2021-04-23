@@ -332,7 +332,7 @@ useEffect(()=>{
       return;
     }
     setLoading(true);
-    if (counter === 2 || 3 ) {
+    if (counter === 2 ) {
       axiosInstance
         .get(`academic/student_attendance_between_date_range/`, {
           params: {
@@ -349,7 +349,7 @@ useEffect(()=>{
         })
         .then((res) => {
           setLoading(false);
-          console.log(res.data.absent_list, 'respond student');
+          console.log(res, 'respond teacher');
           setStudentDataAll(res.data);
           let temp = [...res.data.present_list, ...res.data.absent_list]
           setStudentData(temp);
@@ -391,7 +391,7 @@ useEffect(()=>{
 
 
   const getStudentRange = () => {
-    if (counter === 2 || 3 ) {
+    if (counter === 2 ) {
     axiosInstance
         .get(`academic/student_calender/`, {
           params: {
@@ -402,7 +402,7 @@ useEffect(()=>{
         })
         .then((res) => {
           setLoading(false);
-          console.log(res.data.absent_list, 'respond student');
+          console.log(res, 'respond student');
           setStudentDataAll(res.data);
           let temp = [...res.data.present_list, ...res.data.absent_list]
           setStudentData(temp);
@@ -812,12 +812,12 @@ useEffect(()=>{
                   <Divider />
                   <div className='absentList'>
                     {studentDataAll.absent_list &&
-                      studentDataAll.absent_list.[0].map((data) => (
+                      studentDataAll.absent_list.map((data) => (
                         <div className='eachAbsent'>
                           <Avatar alt={data?.student_name} src='/static/images/avatar/1.jpg' />
                           <div className='studentName'>
                             <p className='absentName'>
-                              {data?.student_name} {' '}
+                              {data?.student_name?.slice(0,10)}
                             </p>
                             {/* <p className='absentName'>{data.student_last_name}</p> */}
                             {/* <Chip  className='chipDays' > {data.absent_count}  </Chip> */}
@@ -843,10 +843,10 @@ useEffect(()=>{
                     {studentDataAll.present_list &&
                       studentDataAll.present_list.map((data) => (
                         <div className='presentList'>
-                          <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
+                          <Avatar alt={data?.student_name} src='/static/images/avatar/1.jpg' />
                           <div className='presentStudent'>
                             <p className='presentFName'>
-                              {data?.student_name}
+                              {data?.student_name.slice(0,10)}
                             </p>
                             {/* <p className='presentLName'> {data.student_last_name}</p> */}
                           </div>
