@@ -108,8 +108,8 @@ const MarkAttedance = () => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [state, setState] = React.useState({
-    checkedA: false,
-    checkedB: false,
+    checkedA: true,
+    checkedB: true,
   });
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -117,6 +117,7 @@ const MarkAttedance = () => {
   const [totalGenre, setTotalGenre] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const limit = 8;
+
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
@@ -479,7 +480,7 @@ const MarkAttedance = () => {
                           {/* <Switch color='primary'  /> */}
                           <Switch
                             color='primary'
-                            checked={options.is_first_shift_present}
+                            checked={options.is_first_shift_present || true}
                             onChange={(e) => handleFirstHalf(e, options.student_id)}
                           />
                         </Grid>
@@ -496,7 +497,7 @@ const MarkAttedance = () => {
                           {/* <Switch color='primary' /> */}
                           <Switch
                             color='primary'
-                            checked={options.is_second_shift_present}
+                            checked={options.is_second_shift_present || true}
                             onChange={(e) => handleSecondHalf(e, options.student_id)}
                           />
                         </Grid>
@@ -752,7 +753,7 @@ const MarkAttedance = () => {
           className={classes.root}
           spacing={2}
           item
-          justify='center'
+          justify='left'
         >
           <StudentData />
         </Grid>

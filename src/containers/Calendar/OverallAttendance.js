@@ -409,7 +409,13 @@ const Attend = () => {
       <div className='profile_breadcrumb_wrapper' style={{ marginLeft: '-10px' }}>
         <CommonBreadcrumbs componentName='Overall Attendance' />
       </div>
-      <Grid container direction='row' className={classes.root} spacing={3}>
+      <Grid
+        container
+        direction='row'
+        className={classes.root}
+        spacing={2}
+        style={{ border: '1x solid red' }}
+      >
         <Grid item md={3} xs={12} className='items'>
           <MobileDatepicker
             style={{ width: '100%' }}
@@ -688,7 +694,7 @@ const Attend = () => {
         </Grid>
         <br />
       </Grid>
-      <Grid container spacing={2} direction='row'>
+      <Grid container direction='row' className={classes.root} spacing={2}>
         {result &&
           result
             // .filter((item, index) => {

@@ -666,15 +666,15 @@ const Attendance = () => {
         {data &&
           data
             .filter((item, index) => {
-              if (state.present) {
+              if (state.first_half && state.second_half) {
                 return item.first_shift && item.second_shift;
               } else if (state.absent) {
-                return !item.first_shift || !item.second_shift;
+                return !item.first_shift && !item.second_shift;
               } else if (state.first_half) {
                 return item.first_shift;
               } else if (state.second_half) {
                 return item.second_shift;
-              } else if (state.first_half && state.second_half) {
+              } else if (state.present) {
                 return item.first_shift && item.second_shift;
               } else {
                 return item;
