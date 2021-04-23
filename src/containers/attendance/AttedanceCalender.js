@@ -447,6 +447,28 @@ useEffect(()=>{
     if (counter === 1) {
       getTodayStudent();
     }
+    if (counter === 3 ) {
+      axiosInstance
+          .get(`academic/student_calender/`, {
+            params: {
+              start_date: startDate,
+              end_date: endDate,
+              erp_id: userName[0]
+            },
+          })
+          .then((res) => {
+            setLoading(false);
+            console.log(res, 'respond student');
+            setStudentDataAll(res.data);
+            let temp = [...res.data.present_list, ...res.data.absent_list]
+            setStudentData(temp);
+            setAlert("success","Data Sucessfully Fetched")
+          })
+          .catch((error) => {
+            setLoading(false);
+            console.log(error);
+          });
+      }
   }
 
   const selectModule = () => {
