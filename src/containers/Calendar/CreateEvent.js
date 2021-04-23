@@ -33,6 +33,7 @@ import { KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { dateFormat } from 'highcharts';
 import { useHistory } from 'react-router';
+import { size } from 'lodash';
 function getDaysAfter(date, amount) {
   return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
 }
@@ -144,8 +145,8 @@ const CreateEvent = () => {
         event_category: eventType,
         
         branch: selectedBranch.branch.id,
-        grade: selectedGrade.grade_id.id,
-        section: selectedSection.section_id.id,
+        grade: selectedGrade.grade_id,
+        section: selectedSection.section_id,
         
         is_full_day: allDay,
         is_first_half: firstHalf,
@@ -392,15 +393,17 @@ const CreateEvent = () => {
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
+                    
                     setSelectedBranch([]);
                     if (value) {
                       // const ids = value.map((el)=>el)
                       const selectedId = value.branch.id;
+                     
                       setSelectedBranch(value);
                       callApi(
                         `${endpoints.academics.grades}?session_year=${
                           selectedAcademicYear.id
-                        }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                        }&branch_id=${selectedId}&module_id=${moduleId}`,
                         'gradeList'
                       );
                     }
@@ -438,6 +441,7 @@ const CreateEvent = () => {
                       // console.log(selectedBranch.branch)
                       const branchId = selectedBranch.branch.id;
                       setSelectedGrade(value);
+                      console.log("the grade",value.grade_id);
                       callApi(
                         `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
                         'section'
@@ -503,7 +507,7 @@ const CreateEvent = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={3} lg={3} sm={5} xs={10}>
+              <Grid item md={5} lg={3} sm={6} xs={10}  className='arrow-1'>
                 <MuiPickersUtilsProvider utils={MomentUtils}>
                 
 
@@ -518,7 +522,7 @@ const CreateEvent = () => {
                   minDate={new Date()}
               name="start_date"
                   inputVariant='outlined'
-                  className='arrow'
+                  className='arrow conte'
                   onChange={handleStartDateChange}
                   // handleStartDateChange={handleStartDateChange}
                       // handleEndDateChange={handleEndDateChange}
@@ -543,9 +547,9 @@ const CreateEvent = () => {
                   label='EndDate'
                   minDate={new Date()}
                   variant='standard'
-              name="end_date"
+                name="end_date"
                   inputVariant='outlined'
-                  className='arrow'
+                  className='arrow conte'
                   onChange={handleEndDateChange}
                   value={endDate}
                   style={{ background: 'white',width: '50%'}}
@@ -570,15 +574,13 @@ const CreateEvent = () => {
                   </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={2} lg={3} sm={5} xs={10}>
+              <Grid item md={5} lg={3} sm={6} xs={10}  className='arrow-1'>
                 <div className='time-ranger-border'>
                   <MuiPickersUtilsProvider utils={MomentUtils}>
                     <KeyboardTimePicker
                       size='small'
-                     
-
                       style={{ width: '50%' }}
-                      className='arrow'
+                      className='arrow conte'
                       id='time-picker'
                       label='Start Time'
                       inputVariant='outlined'
@@ -597,7 +599,7 @@ const CreateEvent = () => {
                       // margin="normal"
                       style={{ width: '50%' }}
                       className='helperText'
-                      className='arrow'
+                      className='arrow conte'
                       id='time-picker'
                       label='End Time'
                       name='end_time'
@@ -762,7 +764,7 @@ const CreateEvent = () => {
                       callApi(
                         `${endpoints.academics.grades}?session_year=${
                           selectedAcademicYear.id
-                        }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                        }&branch_id=${selectedId}&module_id=${moduleId}`,
                         'gradeList'
                       );
                     }
@@ -869,22 +871,22 @@ const CreateEvent = () => {
 
                 <KeyboardDatePicker
                                   size='small'
-                                  variant='dialog'
+                                  // variant='dialog'
                                   format='YYYY-MM-DD'
                                   margin='none'
                                   // className='button'
                                   id='date-picker'
                                   label='StartDate'
                                   minDate={new Date()}
-                              name="start_date"
+                                  name="start_date"
                                   inputVariant='outlined'
-                                  className='arrow'
+                                  className='arrow conte'
                                   onChange={handleStartDateChange}
                                   // handleStartDateChange={handleStartDateChange}
                                       // handleEndDateChange={handleEndDateChange}
                                 
                                   value={startDate}
-                                  style={{ background: 'white',width: '50%'}}
+                                  style={{ background: 'white',width: '50%' }}
                                   // onChange={handleDateChange}
                                   KeyboardButtonProps={{
                                     'aria-label': 'change date',
@@ -905,7 +907,7 @@ const CreateEvent = () => {
                                   variant='standard'
                               name="end_date"
                                   inputVariant='outlined'
-                                  className='arrow'
+                                  className='arrow conte'
                                   onChange={handleEndDateChange}
                                   value={endDate}
                                   style={{ background: 'white',width: '50%'}}
@@ -942,7 +944,7 @@ const CreateEvent = () => {
                      
 
                       style={{ width: '50%' }}
-                      className='arrow'
+                      className='arrow conte'
                       id='time-picker'
                       label='Start Time'
                       inputVariant='outlined'
@@ -961,7 +963,7 @@ const CreateEvent = () => {
                       // margin="normal"
                       style={{ width: '50%' }}
                       className='helperText'
-                      className='arrow'
+                      className='arrow conte'
                       id='time-picker'
                       label='End Time'
                       name='end_time'

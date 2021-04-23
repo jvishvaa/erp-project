@@ -1,0 +1,353 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+@import url(https://fonts.googleapis.com/icon?family=Material+Icons);
+
+.icon {
+  font-family: 'Material Icons', serif;
+  font-style: normal;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+}
+
+* {
+  box-sizing: border-box;
+}
+.buttonstyle1More {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: violet;
+  font-size: 15px;
+}
+
+.buttonstyle2More {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: tomato;
+  font-size: 15px;
+}
+
+.buttonstyle {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+.fontStyle {
+  font-family: fantasy;
+}
+
+.dot {
+  background-color: blue;
+  width: 50px;
+  height: 50px;
+  margin-top: 25px;
+  padding: 10;
+  border-radius: 50%;
+  color: blue;
+}
+
+.dot1 {
+  background-color: tomato;
+  width: 50px;
+  height: 50px;
+  padding: 10;
+  margin-top: 25px;
+  border-radius: 50%;
+  color: tomato;
+}
+.dot2 {
+  background-color: rgb(205, 119, 255);
+  width: 50px;
+  height: 50px;
+  margin-top: 25px;
+  padding: 10;
+  border-radius: 50%;
+  color: rgb(205, 119, 255);
+}
+
+.dot3 {
+  background-color: rgb(9, 255, 0);
+  width: 50px;
+  height: 50px;
+  margin-top: 25px;
+  padding: 10;
+  border-radius: 50%;
+  color: rgb(9, 255, 0);
+}
+
+.row {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.row-middle {
+  align-items: center;
+}
+
+.col {
+  flex-grow: 1;
+  flex-basis: 0;
+  max-width: 100%;
+}
+
+.col-start {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.col-center {
+  justify-content: center;
+  text-align: center;
+}
+
+.col-end {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+/* Calendar */
+
+.calendar {
+  /* display: block; */
+  margin: 0 auto;
+  margin-top: 1em;
+  max-width: 100em;
+  display: block;
+  position: relative;
+  width: 100%;
+  background: rgb(255, 255, 255);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+}
+
+.calendar .header {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 115%;
+  padding: 0.5em 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.calendar .header .icon {
+  cursor: pointer;
+  transition: 0.15s ease-out;
+}
+
+.calendar .header .icon:hover {
+  transform: scale(1.75);
+  transition: 0.25s ease-out;
+  color: var(--main-color);
+}
+
+.calendar .header .icon:first-of-type {
+  margin-left: 1em;
+}
+
+.calendar .header .icon:last-of-type {
+  margin-right: 1em;
+}
+
+.calendar .days {
+  margin-right: 10em;
+  text-transform: uppercase;
+  font-weight: 900;
+  color: var(--text-color-light);
+  font-size: 80%;
+  /* padding: .75em 0; */
+  border-bottom: 1px solid var(--border-color);
+}
+
+.calendar .body .cell {
+  color: var(--text-color);
+  /* background: #d4cccb; */
+  box-sizing: border-box;
+  /* margin: 0.1px; */
+  position: relative;
+  height: 6em;
+  border-right: 1px solid var(--border-color);
+  overflow: hidden;
+  cursor: pointer;
+  /* background: var(--neutral-color); */
+  transition: 0.25s ease-out;
+}
+
+.calendar .body .cell:hover {
+  background: var(--bg-color);
+  transition: 0.5s ease-out;
+}
+
+.calendar .body .selected {
+  border: 5px solid transparent;
+  border-image: linear-gradient(45deg, #53cbf1 0%, #53cbf1 10%);
+  border-image-slice: 1;
+}
+
+#meetingRec {
+  border-left: 7px solid tomato;
+  /* border-left: 7px solid transparent;
+    border-image: linear-gradient(45deg, #1a8fff 0%,#53cbf1 10%);
+    border-image-slice: 1; */
+}
+
+#webniarRec {
+  border-left: 7px solid rgb(205, 119, 255);
+}
+
+#onlineClassRec {
+  border-left: 7px solid rgb(0, 255, 13);
+}
+#meetingWebinar {
+  border-left: 7px solid rgb(0, 255, 170);
+}
+#meetingOnline {
+  border-left: 7px solid rgb(255, 0, 170);
+}
+#WebinarOnline {
+  border-left: 7px solid rgb(229, 255, 0);
+}
+
+#allRes {
+  border-left: 7px solid rgba(0, 26, 255, 0.952);
+  /* border-left: 5px solid transparent;
+    border-image: linear-gradient(45deg,#d91aff 0%,#f15353 40%);
+    border-image-slice: 1; */
+}
+
+.calendar .body .row {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.calendar .body .row:last-child {
+  border-bottom: none;
+}
+
+.calendar .body .cell:last-child {
+  border-right: none;
+}
+
+.calendar .body .cell .number {
+  margin-right: 1em;
+  text-align: center;
+  top: 1em;
+  position: absolute;
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.calendar .body .disabled {
+  /* color: var(--text-color-light); */
+  color: rgb(255, 255, 255);
+  pointer-events: none;
+}
+
+.calendar .body .cell .bg {
+  font-weight: 700;
+  line-height: 1;
+  color: var(--main-color);
+  opacity: 0;
+  font-size: 8em;
+  position: absolute;
+  top: -0.2em;
+  right: -0.05em;
+  transition: 0.25s ease-out;
+  letter-spacing: -0.07em;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgb(255, 251, 251);
+  background: rgba(255, 255, 255, 0.5);
+  color: #f1f1f1;
+  width: 25%;
+  height: 25%;
+  border-radius: 15px;
+  transition: 0.5s ease;
+  opacity: 0;
+  color: rgb(255, 0, 0);
+  text-align: center;
+}
+.understandColor {
+  text-transform: initial;
+  margin-top: 25px;
+}
+
+.arrowButtons {
+  font-weight: 400;
+  color: black;
+  font-size: 50px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.scheduledText {
+  line-height: 0.5;
+  text-align: center;
+  text-transform: initial;
+  font-weight: 100;
+}
+
+.calendar .body .cell:hover .overlay {
+  opacity: 1;
+}
+
+.calendar .body .cell:hover .bg,
+.calendar .body .selected .bg {
+  opacity: 0.05;
+  transition: 0.1s ease-in;
+}
+
+.calendar .body .col {
+  flex-grow: 0;
+  flex-basis: calc(100% / 7);
+  width: calc(100% / 10);
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: white;
+  color: black;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+.nextBackButtons {
+  font-weight: 400;
+  color: black;
+  font-size: 50px;
+  margin-left: 25px;
+  margin-right: 25px;
+}

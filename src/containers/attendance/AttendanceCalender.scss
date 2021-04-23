@@ -1,7 +1,3 @@
-.MuiButton-root:hover {
-  // background-color: #ff6b6b !important;
-  // opacity: 0.8 !important;
-}
 .absentContainer {
   .absentHeader {
     display: flex;
@@ -15,7 +11,7 @@
   .absentList {
     display: flex;
     flex-direction: column;
-    min-height: 105px;
+    height: 105px;
     overflow: auto;
     overflow-x: hidden;
     .absentName {
@@ -56,12 +52,19 @@
       font-size: 10px;
     }
   }
+  .viewDetails:hover {
+    background-color: white !important ;
+    width: 37%;
+    height: 23px;
+    .btnLabel {
+      font-size: 10px;
+    }
+  }
 
   .btnArea {
     display: flex;
     justify-content: center;
     .MuiButton-outlinedSecondary {
-      color: #ff6b6b;
       border: 1px solid #ff6b6b;
     }
   }
@@ -129,23 +132,32 @@
     overflow-x: hidden;
   }
   .presentList {
+    margin-left: 7%;
     display: flex;
+    flex-direction: row;
   }
   .presentStudent {
+    height: 39px;
     display: flex;
-    margin: auto 0;
-    width: 28%;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
   }
   .presentHeader {
     margin-left: 30px;
   }
-  .MuiAvatar-root {
-    margin-right: 12px;
-    margin-left: 28px;
-  }
+ 
   .presentFName {
     font-size: 12px;
     color: #042955;
+  }
+  .absentCount {
+    padding: 3px 14px;
+    height: 21px;
+    font-size: 12px;
+    background: red;
+    border-radius: 30px;
+    color: white;
   }
 }
 .todayEventContainer {

@@ -44,7 +44,7 @@ const CreateDiscussionForum = () => {
   const location = useLocation();
   const postsId = useParams();
   const dispatch = useDispatch();
-  const postEditData = useSelector((state) => state.discussionReducers.postEditData);
+  const hasEdited = useSelector((state) => state.discussionReducers.hasEdited);
   const [categoryListRes, setcategoryListRes] = useState([]);
   const [subCategoryListRes,setSubCategoryListRes] =useState([]);
   const [subSubCategoryListRes,setSubSubCategoryListRes] =useState([]);
@@ -452,10 +452,14 @@ const CreateDiscussionForum = () => {
   }, []);
 
   React.useEffect(() => {
-    if(postsId?.id){
-      dispatch(editPostDataAction(postsId?.id));
+    if(hasEdited){
+      //dispatch(editPostDataAction());
+      setAlert('success', 'Post Updated Successfully');
     }
-  },[postsId])
+    if(hasEdited === false){
+      setAlert('error', 'Something wrong');
+    }
+  },[hasEdited])
 
   React.useEffect(() => {
     if(postsId?.id){
