@@ -98,6 +98,12 @@ export const createNewCategory = () => {
   }
 }
 
+export const editPostDataAction = () => {
+  return {
+    type: EDIT_DISCCUSION_POST,
+  }
+}
+
 export const createAllCategory = params => dispatch => {
   dispatch({type: CREATE_CATEGORY});
   return axiosInstance.post(`${endpoints.discussionForum.PostCategory}`,params)
@@ -185,23 +191,28 @@ export const fetchSubCategory = params => dispatch => {
   });
 }
 
-export const editPostDataAction = postId => dispatch => {
-  dispatch({ type: EDIT_DISCCUSION_POST});
-  return axiosInstance.get(`/academic/${postId}/retrieve-post/`)
-    .then((res) => {
-      dispatch({ type: EDIT_DISCCUSION_POST_SUCCESS, data: res.data.result});
-    })
-    .catch((error) => {
-      console.log(error)
-      dispatch({ type: EDIT_DISCCUSION_POST_FAILURE, data: {}});
-    });
-}
+// export const editPostDataAction = postId => dispatch => {
+//   dispatch({ type: EDIT_DISCCUSION_POST});
+//   return axiosInstance.get(`/academic/${postId}/retrieve-post/`)
+//     .then((res) => {
+//       dispatch({ type: EDIT_DISCCUSION_POST_SUCCESS, data: res.data.result});
+//     })
+//     .catch((error) => {
+//       console.log(error)
+//       dispatch({ type: EDIT_DISCCUSION_POST_FAILURE, data: {}});
+//     });
+// }
 
 export const editPostData = (params, postId) => dispatch => {
   dispatch({ type: UPADATE_DISCCUSION_POST});
   return axiosInstance.put(`/academic/${postId}/update-post/`, params)
   .then((res) => {
-    dispatch({ type: UPADATE_DISCCUSION_POST_SUCCESS, data: res.data});
+    if(res.data.status_code === 200){
+      dispatch({ type: UPADATE_DISCCUSION_POST_SUCCESS, data: res.data});
+    }
+    else {
+      dispatch({ type: UPADATE_DISCCUSION_POST_FAILURE, data: {}});
+    }
   })
   .catch((error) => {
     console.log(error);

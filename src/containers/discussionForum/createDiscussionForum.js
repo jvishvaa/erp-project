@@ -160,13 +160,13 @@ const CreateDiscussionForum = () => {
     e.preventDefault()
     //setLoading(true);
     let requestData = {}
-    if(location.pathname === '/student-forum/create'){
+    if(location.pathname === `/student-forum/edit/${postsId.id}`) {
       const grade_id = userDetails.role_details?.grades[0]?.grade_id;
       const branch_id = userDetails.role_details?.branch[0]?.id;
       requestData = {
         "title": title,
         "description": descriptionDisplay,
-        "category": selectedSubSubCategory.sub_sub_category_id,
+        "category": selectedSubSubCategory.sub_sub_category_id ?? selectedSubSubCategory.id,
         "branch": branch_id,
         "grade": [grade_id],
         //"section": selectedSectionIds
@@ -452,12 +452,25 @@ const CreateDiscussionForum = () => {
   }, []);
 
   React.useEffect(() => {
-    if(hasEdited){
-      //dispatch(editPostDataAction());
+    if(hasEdited && hasEdited !== ''){
       setAlert('success', 'Post Updated Successfully');
+      setTitle('');
+      setDescription('');
+      setSelectedCategory('');
+      setSelectedSubCategory('');
+      setSelectedSubSubCategory('');
+      setEditData('');
+      dispatch(editPostDataAction());
+      if(location.pathname === `/student-forum/edit/${postsId.id}`) {
+        history.push('/student-forum');
+      }
+      if(location.pathname === `/teacher-forum/edit/${postsId.id}`) {
+        history.push('/teacher-forum');
+      }
     }
     if(hasEdited === false){
       setAlert('error', 'Something wrong');
+      dispatch(editPostDataAction());
     }
   },[hasEdited])
 
@@ -490,7 +503,7 @@ const CreateDiscussionForum = () => {
             childComponentName='Create'
           />
         </div>
-        {(location.pathname !== '/student-forum/create' || location.pathname !== `/student-forum/edit/${postsId.id}`) && (
+        {(location.pathname !== '/student-forum/create' && location.pathname !== `/student-forum/edit/${postsId.id}`) && (
           <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
             <Grid xs={12} lg={4} className='create_group_items' item>
               <Autocomplete
