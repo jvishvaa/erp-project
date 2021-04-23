@@ -1,0 +1,18 @@
+.classTopicContainer {
+  display: flex;
+  padding: 10px;
+  font-weight: 600;
+  width: 80%;
+  color: #014b7e;
+}
+
+.classTopicTag {
+  font-size: 16px;
+  font-weight: 800;
+  width: 75%;
+}
+
+.classTopicIcon {
+  width: 10%;
+  font-weight: 800;
+}

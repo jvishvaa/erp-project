@@ -208,6 +208,7 @@ const AssessmentReportTypes = ({
         />
         {selectedReportType?.id && (
           <AssessmentReportFilters
+            classTopicAverage={assessmentReportListData?.[0]?.class_average}
             setIsFilter={setIsFilter}
             selectedReportType={selectedReportType}
             widerWidth={widerWidth}

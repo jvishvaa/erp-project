@@ -8,7 +8,10 @@ import axiosInstance from 'config/axios';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
+import { getSubDomainName } from '../../../../utility-functions';
+import './assessment-report-filters.css';
 
+const subDomain = getSubDomainName();
 let url = '';
 const AssessmentReportFilters = ({
   widerWidth,
@@ -16,10 +19,12 @@ const AssessmentReportFilters = ({
   fetchAssessmentReportList,
   selectedReportType,
   setIsFilter,
+  classTopicAverage,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [classTopicAvg,setClassTopicAvg] = useState(classTopicAverage);
   const [dropdownData, setDropdownData] = useState({
     academic: [],
     branch: [],
@@ -62,6 +67,7 @@ const AssessmentReportFilters = ({
 
   useEffect(() => {
     url = '';
+    setClassTopicAvg('');
     setIsFilter(false);
     if (selectedReportType?.id) {
       if (dropdownData.academic.length === 0 && moduleId) getAcademicYear();
@@ -91,19 +97,26 @@ const AssessmentReportFilters = ({
 
   const handleFilter = () => {
     let paramObj = {
-      academic_year_id: filterData.academic?.id,
-      branch: filterData.branch?.branch?.id,
-      grade: filterData.grade?.central_grade_id,
-      subject: filterData.subject?.subject?.central_subject_id,
-      test: filterData.test?.test_id,
+      school: subDomain,
+      // academic_year_id: filterData.academic?.id,
+      // branch: filterData.branch?.branch?.id,
+      // grade: filterData.grade?.central_grade_id,
+      // subject: filterData.subject?.subject?.central_subject_id,
+      test: filterData.test?.id,
     };
+    if (selectedReportType?.id === 1) {
+      paramObj = {
+        ...paramObj,
+        central_gs_id: filterData.subject?.subject?.central_mp_id,
+      };
+    }
     if (selectedReportType?.id === 3) {
-      paramObj = { ...paramObj, section: filterData.section?.section_id };
+      paramObj = { ...paramObj, section_mapping: filterData.section?.id };
     }
     if (selectedReportType?.id === 4) {
       paramObj = {
         ...paramObj,
-        section: filterData.section?.section_id,
+        section_mapping: filterData.section?.id,
         topic: filterData.topic?.id,
       };
     }
@@ -114,8 +127,12 @@ const AssessmentReportFilters = ({
       setIsFilter(true);
     } else {
       for (const [key, value] of Object.entries(paramObj).reverse()) {
-        if (key === 'academic_year_id' && !Boolean(value))
-          setAlert('error', `Please select Academic Year.`);
+        // if (key === 'academic_year_id' && !Boolean(value))
+        // setAlert('error', `Please select Academic Year.`);
+        if (key === 'central_gs_id' && !Boolean(value))
+          setAlert('error', `Please select Subject.`);
+        if (key === 'section_mapping' && !Boolean(value))
+          setAlert('error', `Please select Section.`);
         else if (!Boolean(value)) setAlert('error', `Please select ${key}.`);
       }
     }
@@ -393,6 +410,7 @@ const AssessmentReportFilters = ({
   const handleClear = () => {
     url = '';
     setIsFilter(false);
+    setClassTopicAvg('');
     setDropdownData({
       ...dropdownData,
       branch: [],
@@ -595,7 +613,16 @@ const AssessmentReportFilters = ({
             />
           </Grid>
         )}
-        {/* <Grid item xs={3} sm={9} /> */}
+        {(selectedReportType?.id === 3 || selectedReportType?.id === 4) && (
+          <Grid item xs={12} sm={3}>
+            <div className='classTopicContainer'>
+              <div className='classTopicTag'>
+                {selectedReportType?.id === 3 ? 'Class Average' : 'Topic Average'}:
+              </div>
+              <div className='classTopicIcon'>{classTopicAvg||''}</div>
+            </div>
+          </Grid>
+        )}
       </Grid>
       <Grid
         container
