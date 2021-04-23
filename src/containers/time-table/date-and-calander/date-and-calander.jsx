@@ -27,6 +27,8 @@ const DateAndCalander = (props) => {
       <Divider variant='middle' className='date-week-underline' />
       {openToggleCalander ? (
         <Calander
+        handlePassCloseNewPeriod={props.handlePassCloseNewPeriod}
+        openNewPeriod={props.openNewPeriod}
           passId={props.passId}
           section_ID={props.section_ID}
           grade_ID={props.grade_ID}
@@ -38,7 +40,7 @@ const DateAndCalander = (props) => {
           tableData={props.tableData}
         />
       ) : (
-        <Daily openToggleCalander={openToggleCalander} tableData={props.tableData} />
+        <Daily openToggleCalander={openToggleCalander} teacherView={props.teacherView} tableData={props.tableData} />
       )}
     </>
   );

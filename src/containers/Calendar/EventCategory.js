@@ -5,6 +5,7 @@ import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Grid from '@material-ui/core/Grid';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import Layout from '../Layout';
 import Loader from '../../components/loader/loader';
 import FormControl from '@material-ui/core/FormControl';
@@ -174,7 +175,7 @@ const Cal1 = () => {
   const classes = useStyles();
 
   const { setAlert } = useContext(AlertNotificationContext);
-
+  const [Diaopen, setdiaOpen] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [eventType, setEventType] = useState([]);
   const [eventName, setEventName] = useState('');
@@ -224,8 +225,8 @@ const Cal1 = () => {
           setTotalGenre(result?.data?.data?.count);
         });
     }
-    setEditFlag(false);
-  }, [moduleId, updateFlag, pageNumber]);
+    setEditFlag(false)
+  }, [moduleId, updateFlag,pageNumber,deleteFlag]);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -253,11 +254,18 @@ const Cal1 = () => {
   const handleClickOpens = () => {
     setOpen(true);
   };
+  const DiaClickOpen = () => {
+    setdiaOpen(true);
+  };
+
+  const DiaClose = () => {
+    setdiaOpen(false);
+  };
 
   const handleClear = () => {
     setFilterData({ selectedEventType: '' });
     setEventName('');
-    setCustColor('red');
+    setCustColor('');
     setDummyData([]);
     setTotalGenre('');
   };
@@ -336,7 +344,8 @@ const Cal1 = () => {
     console.info('You clicked a breadcrumb.');
   }
 
-  const [custColor, setCustColor] = useState('red');
+
+  const [custColor, setCustColor] = useState('black');
 
   const handleColor = (e) => {
     console.log('color:', e.target.value);
@@ -370,16 +379,21 @@ const Cal1 = () => {
     setEventName('');
   };
 
+
+
+  
   const handleDelete = (e, idx) => {
     axiosInstance
-      .delete(
-        `${endpoints.eventBat.deleteEventCategory}${element_id}?module_id=${moduleId}`
-      )
+      .delete(`${endpoints.eventBat.deleteEventCategory}${element_id}?module_id=${moduleId}`)
       .then((result) => {
         console.log('deleted Data', result.data.data);
         setDeleteFlag(!deleteFlag);
         setAnchorEl(null);
+        setdiaOpen(false);
         setAlert('success', 'Event Delete Successfully');
+        // history.push({
+        //   pathname: '/event-category',
+        // });
       })
       .catch((error) => setAlert('warning', 'Something went wrong'));
   };
@@ -413,6 +427,7 @@ const Cal1 = () => {
     setAnchorEl(null);
     setIsEditId(temp.id);
     setEventName(temp.event_category_name);
+    setCustColor(temp.event_category_color)
     // setCustColor(temp.event_category_color);
     // console.log(temp.event_category_color);
   };
@@ -430,9 +445,9 @@ const Cal1 = () => {
           setIsEditId('');
           setEventName('');
           setEditFlag(!editFlag);
-          setAlert('success', 'Event Updated Successfully');
-          handleSearch(searchData);
+          handleSearch(searchData)
         }
+        setAlert('success', 'Event Updated Successfully');
       })
       .catch((error) => console.log(error));
     setOpen(false);
@@ -475,7 +490,7 @@ const Cal1 = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Divider />
+              {/* <Divider /> */}
             </Grid>
           </Grid>
           <Grid container spacing={2} direction='row'>
@@ -512,7 +527,20 @@ const Cal1 = () => {
                 Create
               </Button>
             </Grid>
+            {/* <Grid item xs={12} sm={4} md={2} lg={4}>
+            
+            </Grid>
+            <Grid item xs={12} sm={4} md={2} lg={5}>
+            <SearchBar 
+              
+              value={this.state.value}
+              onChange={(newValue) => this.setState({ value: newValue })}
+              onRequestSearch={() => doSomethingWith(this.state.value)}
+            />
+            </Grid> */}
           </Grid>
+          <br/>
+          <Divider />
           <Dialog
             onClose={handleClose}
             aria-labelledby='customized-dialog-title'
@@ -538,6 +566,7 @@ const Cal1 = () => {
               <TextField
                 type='color'
                 value={custColor || ''}
+                defaultValue="#000000"
                 backgroundColor='custColor'
                 label='Assign color'
                 variant='outlined'
@@ -622,7 +651,29 @@ const Cal1 = () => {
                                 onClose={handleClose}
                               >
                                 <MenuItem onClick={handleEdit}>Edit</MenuItem>
-                                <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                                {/* <MenuItem onClick={handleDelete}>Delete</MenuItem> */}
+                                <MenuItem variant="outlined" color="primary" onClick={DiaClickOpen}>Delete</MenuItem>
+                                 <Dialog
+                                    open={Diaopen}
+                                    onClose={DiaClose}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                  >
+                                    <DialogTitle id="alert-dialog-title">{"Conformation For Delete"}</DialogTitle>
+                                    <DialogContent>
+                                      <DialogContentText id="alert-dialog-description">
+                                        Are You Sure to Delete the EventCategory.
+                                      </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                      <Button onClick={handleDelete} color="primary">
+                                        yes
+                                      </Button>
+                                      <Button onClick={DiaClose} color="primary" autoFocus>
+                                        No
+                                      </Button>
+                                    </DialogActions>
+                                  </Dialog>
                               </Menu>
                             </Grid>
                           </Grid>
@@ -637,9 +688,9 @@ const Cal1 = () => {
 
           <Grid container justify='center'>
             {dummyData && totalGenre > 9 && (
-              <Pagination
+              <Pagination 
                 onChange={handlePagination}
-                style={{ paddingLeft: '150px' }}
+                // style={{ paddingLeft: '150px' }}
                 count={Math.ceil(totalGenre / limit)}
                 color='primary'
                 page={pageNumber}

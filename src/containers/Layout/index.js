@@ -482,6 +482,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-management/event-category');
         break;
       }
+      case 'Discussion Category': {
+        history.push('/master-management/discussion-category');
+        break;
+      }
       case 'Course': {
         history.push('/course-list');
         break;
