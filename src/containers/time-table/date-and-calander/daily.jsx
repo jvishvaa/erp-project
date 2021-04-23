@@ -3,6 +3,7 @@ import DisplayBox from './displayBox.jsx';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 const Daily = (props) => {
   const [daily, setDaily] = useState(null);
+  // const [daily, setDaily] = useState([1, 2, 4, 3, 4, 5]);
   const [loopData] = useState([1, 2, 3, 4, 5]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectData, setSelectData] = useState(false);
@@ -14,7 +15,7 @@ const Daily = (props) => {
   const [DataFriday, setDataFriday] = useState(props.tableData.Friday);
   const [DataSaturday, setDataSaturday] = useState(props.tableData.Saturday);
   const [DataSunday, setDataSunday] = useState(props.tableData.Sunday);
-  const [mapData, setMapData] = useState([1]);
+  // const [mapData, setMapData] = useState([1]);
   const [showBox, setShowBox] = useState(false);
   useEffect(() => {
     handleDailyData();
@@ -73,6 +74,7 @@ const Daily = (props) => {
 
   return (
     <>
+    <div className='daily-header'>{currentDay}</div>
       <div className='calander-container-time-table-module'>
         <div className='calander-daily-time-table-module'>
           {/* <table>
@@ -97,8 +99,8 @@ const Daily = (props) => {
                 </tr>
               ))}
           </table> */}
-          <div className='daily-header'>{currentDay}</div>
-          <div classname='daily-outer-card'>
+          
+          <div classname='daily-outer-card' style={{display: 'flex', flexWrap:'wrap', flexDirection:'row'}}>
             {daily &&
               daily.map((data) => (
                 <div className='daily-inner-card' key={data.id} onClick={() => handlePassData(data)}>

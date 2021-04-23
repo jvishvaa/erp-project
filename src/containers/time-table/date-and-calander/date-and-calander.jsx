@@ -40,7 +40,7 @@ const DateAndCalander = (props) => {
           tableData={props.tableData}
         />
       ) : (
-        <Daily openToggleCalander={openToggleCalander} tableData={props.tableData} />
+        <Daily openToggleCalander={openToggleCalander} teacherView={props.teacherView} tableData={props.tableData} />
       )}
     </>
   );

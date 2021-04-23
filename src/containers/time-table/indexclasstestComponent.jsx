@@ -1,163 +1,112 @@
-import React, { useEffect, useState } from 'react';
-import Layout from '../Layout/index';
-import Loading from '../../components/loader/loader';
-import FilterImage from '../../assets/images/Filter_Icon.svg';
-import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
-import UpperGrade from './uppergrade/upper-grade.jsx';
-import DateAndCalander from './date-and-calander/date-and-calander.jsx';
-import Divider from '@material-ui/core/Divider';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import axiosInstance from '../../config/axios';
-import TimeTableMobile from './time-table-mobile-view/time-table-mobile';
-import './timetable.scss';
+import React from 'react';
+import clsx from 'clsx';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import ListItemText from '@material-ui/core/ListItemText';
+import Select from '@material-ui/core/Select';
+import Checkbox from '@material-ui/core/Checkbox';
+import Chip from '@material-ui/core/Chip';
 
-// let al = useMediaQuery('(min-width:800px)');
-class TimeTable extends React.Component {
-  
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading : false,
-      setMobileView : true,
-      tableData : [],
-      Filter : true,
-      acadamicYearID : 1,
-      gradeID : 1,
-      sectionID : 1,
-      branchID : 1,
-    };
-  }
-  componentDidMount() {
-    this.callGetAPI();
-  }
-  componentDidUpdate(prevProps,PrevState){
-    // this.callGetAPI();
-    
-    console.warn('calling parrent component', PrevState);
-  }
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+    maxWidth: 300,
+  },
+  chips: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  chip: {
+    margin: 2,
+  },
+  noLabel: {
+    marginTop: theme.spacing(3),
+  },
+}));
 
-  callGetAPI = async () => {
-    // console.log(acadamicYearID, gradeID, sectionID, branchID, 'API');
-    await axiosInstance
-      .get('/academic/time_table/', {
-        params: {
-          academic_year_id: this.state.acadamicYearID,
-          branch_id: this.state.branchID,
-          grade_id: this.state.gradeID,
-          section_id: this.state.sectionID,
-        },
-      })
-      .then((responce) => {
-        if (responce.status === 200) {
-          // setLoading(false);
-          this.setState({
-            ...this.state,
-            tableData : responce.data.result,
-          })
-        }
-        console.log(responce.data.result, 'table data');
-      })
-      .catch((error) => {
-        // setLoading(false);
-        console.log(error);
-      });
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const dayNames = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
+
+function getStyles(name, personName, theme) {
+  return {
+    fontWeight:
+      personName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
   };
-  handlePassData = (acadamicYear_ID, grade_ID, section_ID, branch_ID) => {
-    this.setState({
-      acadamicYearID : acadamicYear_ID,
-      gradeID : grade_ID,
-      sectionID : section_ID,
-      branchID : branch_ID,
-    })
-  };
-  handleFilter = (value) => {
-    // setFilter(value);
-    this.setState({
-      Filter : false,
-    })
-
-  };
-
-  render() {
-    return (
-      <>
-        <Layout>
-          {this.state.setMobileView ? (
-            <>
-              <div className='time-table-container'>
-                <div className='time-table-breadcrums-container'>
-                  <CommonBreadcrumbs componentName='Time Table' />
-                  <div
-                    className={
-                      this.state.Filter ? 'filter-container-hidden' : 'filter-container-show'
-                    }
-                    onClick={() => {
-                      this.handleFilter(true);
-                    }}
-                  >
-                    <div className='table-top-header'>
-                      <div className='table-header-data'>2020-2021</div>
-                      <span class='dot'></span>
-                      <div className='table-header-data'>Jalahalli</div>
-                      <span class='dot'></span>
-                      <div className='table-header-data'>Grade</div>
-                      <span class='dot'></span>
-                    </div>
-                    <div className='filter-show'>
-                      <div className='filter'>SHOW FILTER</div>
-                      <img className='filterImage' src={FilterImage} />
-                    </div>
-                  </div>
-                </div>
-                {this.state.Filter ? (
-                  <>
-                    <UpperGrade handlePassData={this.handlePassData} />
-                    <div
-                      className='filter-container'
-                      onClick={() => {
-                        this.handleFilter(false);
-                      }}
-                    >
-                      <div className='filter'>HIDE FILTER</div>
-                      <img src={FilterImage} />
-                    </div>
-                    <div className='devider-top'>
-                      <Divider variant='middle' />
-                    </div>
-                    <div className='table-top-header'>
-                      <div className='table-header-data'>2020-2021</div>
-                      <span class='dot'></span>
-                      <div className='table-header-data'>Jalahalli</div>
-                      <span class='dot'></span>
-                      <div className='table-header-data'>Grade</div>
-                      <span class='dot'></span>
-                    </div>
-                  </>
-                ) : (
-                  <> </>
-                )}
-
-                <div className='date-container'>
-                  <DateAndCalander callGetAPI={this.callGetAPI} tableData={this.state.tableData} />
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className='mobile-table-view'>
-              <div className='time-table-breadcrums-container'>
-                <CommonBreadcrumbs componentName='Time Table' />
-                <div>
-                  <img className='filter-button' src={FilterImage} />
-                </div>
-              </div>
-              <TimeTableMobile callGetAPI={this.callGetAPI} tableData={this.state.tableData} />
-            </div>
-          )}
-          {/* {loading && <Loader />} */}
-        </Layout>
-      </>
-    );
-  }
 }
 
-export default TimeTable;
+export default function MultipleSelect() {
+  const classes = useStyles();
+  const theme = useTheme();
+  const [days, setDays] = React.useState([]);
+
+  const handleChange = (event) => {
+    setDays(event.target.value);
+  };
+console.log(days,'selected days')
+  // const handleChangeMultiple = (event) => {
+  //   const { options } = event.target;
+  //   const value = [];
+  //   for (let i = 0, l = options.length; i < l; i += 1) {
+  //     if (options[i].selected) {
+  //       value.push(options[i].value);
+  //     }
+  //   }
+  //   setDays(value);
+  // };
+
+  return (
+    <div>
+      
+      <FormControl className={classes.formControl}>
+        <InputLabel id='demo-mutiple-chip-label'>Chip</InputLabel>
+        <Select
+          labelId='demo-mutiple-chip-label'
+          id='demo-mutiple-chip'
+          multiple
+          value={days}
+          onChange={handleChange}
+          input={<Input id='select-multiple-chip' />}
+          renderValue={(selected) => (
+            <div className={classes.chips}>
+              {selected.map((value) => (
+                <Chip key={value} label={value} className={classes.chip} />
+              ))}
+            </div>
+          )}
+          MenuProps={MenuProps}
+        >
+          {dayNames.map((name) => (
+            <MenuItem key={name} value={name} style={getStyles(dayNames, days, theme)}>
+              {name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    
+    </div>
+  );
+}

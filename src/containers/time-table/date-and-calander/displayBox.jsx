@@ -100,11 +100,12 @@ const DisplayBox = (props) => {
                 <EditTwoToneIcon size='small' /> Edit
               </div>
             ) : (
+              <></>
+            )}
               <div className='edit-button' onClick={() => handleCloseBox()}>
                 <CloseIcon size='small' />
                 Close
               </div>
-            )}
           </div>
           <div style={{ display: 'flex' }}>
             <div className='yellow-header'>Period Name:</div>
