@@ -240,7 +240,7 @@ function CategoryPage() {
   const [tabValue, setTabValue] = React.useState('all');
 
   const handleCreateCategory = () => {
-    history.push('/category/create-category');
+    history.push('/master-management/discussion-category/create');
   };
 
   const handleTabChange = (e, newValue) => {

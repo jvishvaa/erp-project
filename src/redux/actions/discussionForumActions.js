@@ -24,6 +24,11 @@ export const types = {
   FETCH_SUB_SUB_CATEGORY_LIST_SUCCESS: 'FETCH_SUB_SUB_CATEGORY_LIST_SUCCESS',
   FETCH_SUB_SUB_CATEGORY_LIST_FAILURE: 'FETCH_SUB_SUB_CATEGORY_LIST_FAILURE',
   EDIT_DISCCUSION_POST: 'EDIT_DISCCUSION_POST',
+  EDIT_DISCCUSION_POST_SUCCESS: 'EDIT_DISCCUSION_POST_SUCCESS',
+  EDIT_DISCCUSION_POST_FAILURE: 'EDIT_DISCCUSION_POST_FAILURE',
+  UPADATE_DISCCUSION_POST: 'UPADATE_DISCCUSION_POST',
+  UPADATE_DISCCUSION_POST_SUCCESS: 'UPADATE_DISCCUSION_POST_SUCCESS',
+  UPADATE_DISCCUSION_POST_FAILURE: 'UPADATE_DISCCUSION_POST_FAILURE',
 };
 
 const { 
@@ -49,6 +54,11 @@ const {
   FETCH_SUB_SUB_CATEGORY_LIST_SUCCESS,
   FETCH_SUB_SUB_CATEGORY_LIST_FAILURE,
   EDIT_DISCCUSION_POST,
+  EDIT_DISCCUSION_POST_SUCCESS,
+  EDIT_DISCCUSION_POST_FAILURE,
+  UPADATE_DISCCUSION_POST,
+  UPADATE_DISCCUSION_POST_SUCCESS,
+  UPADATE_DISCCUSION_POST_FAILURE,
 } = types;
 
 export const postAction = (data) => {
@@ -68,13 +78,6 @@ export const filterDataAction = (data) => {
 export const editCategoryDataAction = (data) => {
   return {
     type: EDIT_CATEGORI_DATA,
-    payload: data,
-  }
-}
-
-export const editPostDataAction = (data) => {
-  return {
-    type: EDIT_DISCCUSION_POST,
     payload: data,
   }
 }
@@ -163,4 +166,28 @@ export const fetchSubCategory = params => dispatch => {
     dispatch({ type: FETCH_SUB_CATEGORY_LIST_FAILURE, data: []});
     throw error;
   });
+}
+
+export const editPostDataAction = postId => dispatch => {
+  dispatch({ type: EDIT_DISCCUSION_POST});
+  return axiosInstance.get(`/academic/${postId}/retrieve-post/`)
+    .then((res) => {
+      dispatch({ type: EDIT_DISCCUSION_POST_SUCCESS, data: res.data.result});
+    })
+    .catch((error) => {
+      console.log(error)
+      dispatch({ type: EDIT_DISCCUSION_POST_FAILURE, data: {}});
+    });
+}
+
+export const editPostData = (params, postId) => dispatch => {
+  dispatch({ type: UPADATE_DISCCUSION_POST});
+  return axiosInstance.put(`/academic/${postId}/update-post/`, params)
+  .then((res) => {
+    dispatch({ type: UPADATE_DISCCUSION_POST_SUCCESS, data: res.data});
+  })
+  .catch((error) => {
+    console.log(error);
+    dispatch({ type: UPADATE_DISCCUSION_POST_FAILURE, data: {}});
+  })
 }
