@@ -51,6 +51,7 @@ const CreateEvent = () => {
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
+  const [DateEnd, setDateEnd] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
   const [evnetcategoryType, setEventcategoryType] = useState([]);
   const [selectedStartTime, setSelectedStartTime] = useState(new Date());
@@ -92,26 +93,23 @@ const CreateEvent = () => {
     },
   }));
 
-  const handleStartDateChange = (date) => {
-    console.log('startdate:', date.toISOString().split('T')[0]);
-    const endDate = getDaysAfter(date.clone(), 6);
-    setEndDate(endDate);
-    setStartDate(date.toISOString().split('T')[0]);
-    // getTeacherHomeworkDetails(2, date, endDate);
+  const handleStartDateChange = (e,value) => {
+    // console.log('startdate:', date.toISOString().split('T')[0]);
+    // const endDate = getDaysAfter(date.clone(), 6);
+    console.log("startDate:",value)
+ 
+    setStartDate(value);
+   
   };
   const returnFunction = (time) => {
     console.log('timeeeee:', time);
   };
 
-  const handleEndDateChange = (date) => {
-    console.log('dateeee:', date);
-    console.log('convert', date._d.toISOString());
-    // console.log("split:",new Date(date._d).toISOString().split('T'))
-    const startDate = getDaysBefore(date.clone(), 6);
-    setStartDate(startDate);
-    setEndDate(date.format('YYYY-MM-DD'));
-    // getTeacherHomeworkDetails(2, startDate, date);
+  const handleEndDateChange = (e,value) => {
+    console.log('endDate',value);
+    setEndDate(value);
   };
+  
 
   const handleChange = (event) => {
     setdiscripValue(event.target.value);
@@ -128,6 +126,13 @@ const CreateEvent = () => {
     console.log('Starttime:', startTime);
     console.log('Endtime:', endTime);
     console.log('evne:', eventType);
+    console.log('branch:', selectedBranch.id,);
+    console.log('grade:', selectedGrade.id,);
+    console.log('sect:', selectedSection.id,);
+    
+    console.log('testing1branch',selectedBranch)
+    console.log('testing2grade',selectedGrade)
+    console.log('testing3grade',selectedSection)
     axiosInstance
       .post(endpoints.CreateEvent.CreateEvent, {
         event_name: state.event_name,
@@ -137,23 +142,18 @@ const CreateEvent = () => {
         start_time: startTime,
         end_time: endTime,
         event_category: eventType,
-        branch: selectedBranch.id,
-        grade: selectedGrade.id,
-        section: selectedSection.id,
-        branch: selectedBranch.id,
+        
+        branch: selectedBranch.branch.id,
+        grade: selectedGrade.grade_id.id,
+        section: selectedSection.section_id.id,
+        
         is_full_day: allDay,
         is_first_half: firstHalf,
         is_second_half: secondHalf,
       })
       .then((result) => {
         setAlert('success', result.data.message);
-        // if (result.data.status_code === 200) {
-        //   setLoading(false);
-        //   console.log('success', result.data.message);
-
-        // } else {
-
-        // }
+        
         history.push({
           pathname: '/attendance-calendar/teacher-view',
         });
@@ -189,6 +189,7 @@ const CreateEvent = () => {
   const [selectedSection, setSelectedSection] = useState([]);
   const [secSelectedId, setSecSelectedId] = useState([]);
   const [eventType, seteventType] = useState();
+  const [dateValue, setDateValue] = useState(moment(new Date()).format('YYYY-MM-DD'));
 
   function callApi(api, key) {
     setLoading(true);
@@ -502,27 +503,71 @@ const CreateEvent = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={4} lg={3} sm={5} xs={10}>
-                <MobileDatepicker
+              <Grid item md={3} lg={3} sm={5} xs={10}>
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                
+
+<KeyboardDatePicker
+                  size='small'
+                  variant='dialog'
+                  format='YYYY-MM-DD'
+                  margin='none'
+                  // className='button'
+                  id='date-picker'
+                  label='StartDate'
+                  minDate={new Date()}
+              name="start_date"
+                  inputVariant='outlined'
                   className='arrow'
-                  onChange={(date) => handleEndDateChange(date)}
-                  handleStartDateChange={handleStartDateChange}
-                  handleEndDateChange={handleEndDateChange}
+                  onChange={handleStartDateChange}
+                  // handleStartDateChange={handleStartDateChange}
+                      // handleEndDateChange={handleEndDateChange}
+                
+                  value={startDate}
+                  style={{ background: 'white',width: '50%'}}
+                  // onChange={handleDateChange}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
                 />
-              </Grid>
-              <Grid item md={1} sm={1}>
-                <img src={LineAtt} />
-              </Grid>
-              <Grid item lg={1} md={1} sm={1}>
-                <FormControlLabel
-                  name
-                  control={<Checkbox onChange={is_full_day} />}
-                  label='All Day'
-                  variant='outlined'
-                  labelPlacement='top'
-                  // oncheck={}
+              </MuiPickersUtilsProvider>
+             
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <KeyboardDatePicker
+                  size='small'
+                  variant='dialog'
+                  format='YYYY-MM-DD'
+                  margin='none'
+                  // className='button'
+                  id='date-picker'
+                  label='EndDate'
+                  minDate={new Date()}
+                  variant='standard'
+              name="end_date"
+                  inputVariant='outlined'
+                  className='arrow'
+                  onChange={handleEndDateChange}
+                  value={endDate}
+                  style={{ background: 'white',width: '50%'}}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
                 />
+              </MuiPickersUtilsProvider>
               </Grid>
+                  <Grid item md={1} sm={1}>
+                    <img src={LineAtt} className='im' />
+                  </Grid>
+                  <Grid item lg={1} md={1} sm={1}>
+                    <FormControlLabel
+                      name
+                      control={<Checkbox onChange={is_full_day} />}
+                      label='All Day'
+                      variant='outlined'
+                      labelPlacement='top'
+                      
+                    />
+                  </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
               <Grid item md={2} lg={3} sm={5} xs={10}>
@@ -530,16 +575,17 @@ const CreateEvent = () => {
                   <MuiPickersUtilsProvider utils={MomentUtils}>
                     <KeyboardTimePicker
                       size='small'
-                      // margin="normal"
+                     
 
-                      style={{ width: '38%' }}
+                      style={{ width: '50%' }}
                       className='arrow'
                       id='time-picker'
                       label='Start Time'
+                      inputVariant='outlined'
                       name='start_time'
                       value={selectedStartTime}
                       onChange={handleStartTimeChange}
-                      // helperText={helperTextMsg}
+                      
                       KeyboardButtonProps={{
                         'aria-label': 'change time',
                       }}
@@ -549,12 +595,13 @@ const CreateEvent = () => {
                     <KeyboardTimePicker
                       size='small'
                       // margin="normal"
-                      style={{ width: '38%' }}
+                      style={{ width: '50%' }}
                       className='helperText'
                       className='arrow'
                       id='time-picker'
                       label='End Time'
                       name='end_time'
+                      inputVariant='outlined'
                       value={selectedEndTime}
                       onChange={handleEndTimeChange}
                       // helperText={helperTextMsg}
@@ -567,7 +614,7 @@ const CreateEvent = () => {
                 </div>
               </Grid>
               <Grid item md={1} sm={1}>
-                <img src={LineAtt} />
+                <img src={LineAtt} className='im' />
               </Grid>
               <Grid item md={1} sm={2}>
                 <FormControlLabel
@@ -815,17 +862,62 @@ const CreateEvent = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={4} lg={3} sm={10} xs={11} className='items'>
-                <MobileDatepicker
-                  className='arrow'
-                  id='coustom-date'
-                  onChange={(date) => handleEndDateChange(date)}
-                  handleStartDateChange={handleStartDateChange}
-                  handleEndDateChange={handleEndDateChange}
-                />
+            <Grid item md={2} lg={3} sm={12} xs={12}>
+              <div className='time-ranger-border'>
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                
+
+                <KeyboardDatePicker
+                                  size='small'
+                                  variant='dialog'
+                                  format='YYYY-MM-DD'
+                                  margin='none'
+                                  // className='button'
+                                  id='date-picker'
+                                  label='StartDate'
+                                  minDate={new Date()}
+                              name="start_date"
+                                  inputVariant='outlined'
+                                  className='arrow'
+                                  onChange={handleStartDateChange}
+                                  // handleStartDateChange={handleStartDateChange}
+                                      // handleEndDateChange={handleEndDateChange}
+                                
+                                  value={startDate}
+                                  style={{ background: 'white',width: '50%'}}
+                                  // onChange={handleDateChange}
+                                  KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                  }}
+                                />
+                              </MuiPickersUtilsProvider>
+                             
+                              <MuiPickersUtilsProvider utils={MomentUtils}>
+                                <KeyboardDatePicker
+                                  size='small'
+                                  variant='dialog'
+                                  format='YYYY-MM-DD'
+                                  margin='none'
+                                  // className='button'
+                                  id='date-picker'
+                                  label='EndDate'
+                                  minDate={new Date()}
+                                  variant='standard'
+                              name="end_date"
+                                  inputVariant='outlined'
+                                  className='arrow'
+                                  onChange={handleEndDateChange}
+                                  value={endDate}
+                                  style={{ background: 'white',width: '50%'}}
+                                  KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                  }}
+                                />
+                              </MuiPickersUtilsProvider>
+                </div>
               </Grid>
             </Grid>
-            <Grid container direction='row'>
+            <Grid container direction='row' className={classes.root}>
               <Grid item md={1} sm={3} className='responsesecond'>
                 <FormControlLabel
                   value='top'
@@ -834,7 +926,7 @@ const CreateEvent = () => {
                   labelPlacement='top'
                 />
               </Grid>
-              <Grid item md={1} sm={3} className='response'>
+              <Grid item md={1} sm={3} className='response '>
                 <FormControlLabel
                   value='top'
                   control={<Checkbox onChange={is_second_half} />}
@@ -843,20 +935,21 @@ const CreateEvent = () => {
                 />
               </Grid>
               <Grid item md={2} lg={3} sm={12} xs={12}>
-                <div className='time-ranger-border'>
+              <div className='time-ranger-border'>
                   <MuiPickersUtilsProvider utils={MomentUtils}>
                     <KeyboardTimePicker
                       size='small'
-                      // margin="normal"
+                     
 
-                      style={{ width: '30%', marginLeft: '15%' }}
+                      style={{ width: '50%' }}
                       className='arrow'
                       id='time-picker'
                       label='Start Time'
+                      inputVariant='outlined'
                       name='start_time'
                       value={selectedStartTime}
                       onChange={handleStartTimeChange}
-                      // helperText={helperTextMsg}
+                      
                       KeyboardButtonProps={{
                         'aria-label': 'change time',
                       }}
@@ -866,12 +959,13 @@ const CreateEvent = () => {
                     <KeyboardTimePicker
                       size='small'
                       // margin="normal"
-                      style={{ width: '30%', marginLeft: '7%' }}
+                      style={{ width: '50%' }}
                       className='helperText'
                       className='arrow'
                       id='time-picker'
                       label='End Time'
                       name='end_time'
+                      inputVariant='outlined'
                       value={selectedEndTime}
                       onChange={handleEndTimeChange}
                       // helperText={helperTextMsg}
