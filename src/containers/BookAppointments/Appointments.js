@@ -69,17 +69,25 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '15px',
     marginLeft: '32px',
   },
+
   paper: {
     margin: 30,
     width: '92%',
     borderRadius: '10px',
     background: '#ACF5B8',
     position: 'static',
+    [theme.breakpoints.down('xs')]: {
+      width: '75%',
+    },
   },
   papermain: {
     margin: 30,
     width: '92%',
+    [theme.breakpoints.down('xs')]: {
+      width: '75%',
+    },
   },
+
   imageStyles: {
     margin: '10%',
     width: '200px',
@@ -586,19 +594,19 @@ const Appointments = () => {
                       <Grid item xs={8} sm={8} md={2}>
                         <Typography variant='subtitle2' style={{ display: 'inline' }}>
                           Appointment With :
-                          <Typography style={{ display: 'inline' }}>
+                          <Typography style={{ display: 'inline', marginLeft: 5 }}>
                             {item.role?.role_name}{' '}
                           </Typography>
                         </Typography>
                         <Typography variant='subtitle2'>
                           Date {'      '}:
-                          <Typography style={{ display: 'inline' }}>
+                          <Typography style={{ display: 'inline', marginLeft: 66 }}>
                             {item.appointment_date}
                           </Typography>
                         </Typography>
                         <Typography variant='subtitle2'>
                           Time:
-                          <Typography style={{ display: 'inline' }}>
+                          <Typography style={{ display: 'inline', marginLeft: 66 }}>
                             {item.appointment_time
                               ? item.appointment_time.slice(0, 5)
                               : ''}
@@ -606,13 +614,13 @@ const Appointments = () => {
                         </Typography>
                         <Typography variant='subtitle2' style={{ display: 'inline' }}>
                           Mode:
-                          <Typography style={{ display: 'inline' }}>
+                          <Typography style={{ display: 'inline', marginLeft: 65 }}>
                             {item.booking_mode}{' '}
                           </Typography>
                         </Typography>
                         <Typography variant='subtitle2'>
                           Status :
-                          <Typography style={{ display: 'inline' }}>
+                          <Typography style={{ display: 'inline', marginLeft: 60 }}>
                             {item.appointment_status}{' '}
                           </Typography>
                         </Typography>
@@ -694,231 +702,231 @@ const Appointments = () => {
               <Grid item md={3}>
                 <Card className={classes.card}>
                   <CardActionArea className='cardsStyles'>
-                    <Typography
-                      variant='h5'
-                      gutterBottom
-                      color='secondary'
-                      align='center'
-                      style={{ marginTop: '10%' }}
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: '12%',
+                      }}
                     >
-                      FRONT OFFICE EXECUTIVE
-                    </Typography>
-
-                    <Typography
-                      variant='h6'
-                      gutterBottom
-                      color='secondary'
-                      align='center'
-                    >
-                      Available at these timings
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      gutterBottom
-                      color='secondary'
-                      align='center'
-                    >
-                      9:00 am - 8:00 pm
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      gutterBottom
-                      color='secondary'
-                      align='center'
-                    >
-                      EST Monday – Friday
-                    </Typography>
-
-                    <Grid container direction='row' justify='center'>
+                      <Typography variant='h6' gutterBottom color='secondary'>
+                        {' '}
+                        FRONT OFFICE EXECUTIVE{' '}
+                      </Typography>
+                    </div>{' '}
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <Typography
                         variant='h5'
                         gutterBottom
                         color='secondary'
-                        align='center'
+                        // className='cardStyles'
                       >
-                        <CallIcon color='secondary' fontSize='large' clss/>
+                        Available at these timings
+                      </Typography>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        // className='cardStyles'
+                      >
+                        <strong>9:00am to 8:00pm</strong>
+                      </Typography>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        // className='cardStyles'
+                      >
+                        EST Monday - Friday
+                      </Typography>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        // className='cardStyles'
+                      >
+                        <CallIcon color='secondary' fontSize='large' clss />
                       </Typography>
                       <Typography
                         variant='h5'
                         gutterBottom
                         color='secondary'
-                        align='center'
+                        // className='cardStyles'
                       >
-                        +91 99999999999
+                        +91-1234567890
                       </Typography>
-                      <Grid container direction='row' justify='center'>
-                        <Typography
-                          variant='h5'
-                          gutterBottom
-                          color='secondary'
-                          align='center'
-                        >
-                          <MessageIcon color='secondary' fontSize='large' />
-                        </Typography>
-                        <Typography
-                          variant='h5'
-                          gutterBottom
-                          color='secondary'
-                          align='center'
-                        >
-                          Send Whatsapp
-                        </Typography>
-                      </Grid>
-                    </Grid>
+                    </div>
+                    <div
+                      style={{ display: 'flex', justifyContent: 'center' }}
+                      className='cardStyles'
+                    >
+                      <Typography variant='h5' gutterBottom color='secondary'>
+                        <MessageIcon color='secondary' fontSize='large' />
+                      </Typography>
+                      <Typography variant='h5' gutterBottom color='secondary'>
+                        Send Whatsapp
+                      </Typography>
+                    </div>
                   </CardActionArea>
                 </Card>
               </Grid>
               <Grid item md={3}>
                 <Card className={classes.card}>
                   <CardActionArea className='cardsStyles'>
-                    <Typography
-                      variant='h5'
-                      gutterBottom
-                      color='secondary'
-                      align='center'
-                      style={{ marginTop: '10%' }}
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: '12%',
+                      }}
                     >
-                      OPS MANAGEMENT
-                    </Typography>
-
-                    <Typography
-                      variant='h6'
-                      gutterBottom
-                      color='secondary'
-                      align='center'
-                    >
-                      Available at these timings
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      gutterBottom
-                      color='secondary'
-                      align='center'
-                    >
-                      9:00 am - 8:00 pm
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      gutterBottom
-                      color='secondary'
-                      align='center'
-                    >
-                      EST Monday – Friday
-                    </Typography>
-
-                    <Grid container direction='row' justify='center'>
+                      <Typography variant='h6' gutterBottom color='secondary'>
+                        {' '}
+                        OPS MANAGEMENT{' '}
+                      </Typography>
+                    </div>{' '}
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <Typography
                         variant='h5'
                         gutterBottom
                         color='secondary'
-                        align='center'
+                        // className='cardStyles'
                       >
-                        <CallIcon color='secondary' fontSize='large' />
+                        Available at these timings
+                      </Typography>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        // className='cardStyles'
+                      >
+                        <strong>9:00am to 8:00pm</strong>
+                      </Typography>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        // className='cardStyles'
+                      >
+                        EST Monday - Friday
+                      </Typography>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        // className='cardStyles'
+                      >
+                        <CallIcon color='secondary' fontSize='large' clss />
                       </Typography>
                       <Typography
                         variant='h5'
                         gutterBottom
                         color='secondary'
-                        align='center'
+                        // className='cardStyles'
                       >
-                        +91 99999999999
+                        +91-1234567890
                       </Typography>
-                      <Grid container direction='row' justify='center'>
-                        <Typography
-                          variant='h5'
-                          gutterBottom
-                          color='secondary'
-                          align='center'
-                        >
-                          <MessageIcon color='secondary' fontSize='large' />
-                        </Typography>
-                        <Typography
-                          variant='h5'
-                          gutterBottom
-                          color='secondary'
-                          align='center'
-                        >
-                          Send Whatsapp
-                        </Typography>
-                      </Grid>
-                    </Grid>
+                    </div>
+                    <div
+                      style={{ display: 'flex', justifyContent: 'center' }}
+                      className='cardStyles'
+                    >
+                      <Typography variant='h5' gutterBottom color='secondary'>
+                        <MessageIcon color='secondary' fontSize='large' />
+                      </Typography>
+                      <Typography variant='h5' gutterBottom color='secondary'>
+                        Send Whatsapp
+                      </Typography>
+                    </div>
                   </CardActionArea>
                 </Card>
               </Grid>
               <Grid item md={3}>
                 <Card className={classes.card}>
                   <CardActionArea className='cardsStyles'>
-                    <Typography
-                      variant='h5'
-                      gutterBottom
-                      color='secondary'
-                      align='center'
-                      style={{ marginTop: '10%' }}
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: '12%',
+                      }}
                     >
-                      CAMPUS-IN-CHARGE
-                    </Typography>
-
-                    <Typography
-                      variant='h6'
-                      gutterBottom
-                      color='secondary'
-                      align='center'
-                    >
-                      Available at these timings
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      gutterBottom
-                      color='secondary'
-                      align='center'
-                    >
-                      9:00 am - 8:00 pm
-                    </Typography>
-                    <Typography
-                      variant='h6'
-                      gutterBottom
-                      color='secondary'
-                      align='center'
-                    >
-                      EST Monday – Friday
-                    </Typography>
-
-                    <Grid container direction='row' justify='center'>
+                      <Typography variant='h6' gutterBottom color='secondary'>
+                        {' '}
+                        CAMPUS IN-CHARGE{' '}
+                      </Typography>
+                    </div>{' '}
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <Typography
                         variant='h5'
                         gutterBottom
                         color='secondary'
-                        align='center'
+                        // className='cardStyles'
                       >
-                        <CallIcon color='secondary' fontSize='large' />
+                        Available at these timings
+                      </Typography>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        // className='cardStyles'
+                      >
+                        <strong>9:00am to 8:00pm</strong>
+                      </Typography>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        // className='cardStyles'
+                      >
+                        EST Monday - Friday
+                      </Typography>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Typography
+                        variant='h5'
+                        gutterBottom
+                        color='secondary'
+                        // className='cardStyles'
+                      >
+                        <CallIcon color='secondary' fontSize='large' clss />
                       </Typography>
                       <Typography
                         variant='h5'
                         gutterBottom
                         color='secondary'
-                        align='center'
+                        // className='cardStyles'
                       >
-                        +91 99999999999
+                        +91-1234567890
                       </Typography>
-                      <Grid container direction='row' justify='center'>
-                        <Typography
-                          variant='h5'
-                          gutterBottom
-                          color='secondary'
-                          align='center'
-                        >
-                          <MessageIcon color='secondary' fontSize='large' />
-                        </Typography>
-                        <Typography
-                          variant='h5'
-                          gutterBottom
-                          color='secondary'
-                          align='center'
-                        >
-                          Send Whatsapp
-                        </Typography>
-                      </Grid>
-                    </Grid>
+                    </div>
+                    <div
+                      style={{ display: 'flex', justifyContent: 'center' }}
+                      className='cardStyles'
+                    >
+                      <Typography variant='h5' gutterBottom color='secondary'>
+                        <MessageIcon color='secondary' fontSize='large' />
+                      </Typography>
+                      <Typography variant='h5' gutterBottom color='secondary'>
+                        Send Whatsapp
+                      </Typography>
+                    </div>
                   </CardActionArea>
                 </Card>
               </Grid>

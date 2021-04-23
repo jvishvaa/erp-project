@@ -311,6 +311,15 @@ const MarkAttedance = () => {
       pathname: '/markattendance',
     });
   };
+  const handleClearAll = () => {
+    setSelectedAcadmeicYear('');
+    setSelectedBranch([]);
+    setSelectedBranch([]);
+    setSelectedGrade([]);
+    setSelectedSection([]);
+    setDateValue(moment(date).format('YYYY-MM-DD'));
+    setTotalGenre(null);
+  };
 
   const handleFirstHalf = (e, id) => {
     console.log(e.target.checked, id);
@@ -683,6 +692,15 @@ const MarkAttedance = () => {
           // startIcon={<ClearIcon />}
         >
           Back
+        </StyledClearButton>
+        <StyledClearButton
+          variant='contained'
+          // href={'/attendance-calendar/teacher-view'}
+          // onClick={handleBack}
+          onClick={handleClearAll}
+          startIcon={<ClearIcon />}
+        >
+          Clear all
         </StyledClearButton>
 
         <StyledFilterButton
