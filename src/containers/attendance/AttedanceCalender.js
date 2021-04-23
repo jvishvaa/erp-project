@@ -2,10 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import Layout from '../Layout/index';
 // import Avatar from '@material-ui/core/Avatar';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
+import './attendance.scss';
 import {
   Button,
   Divider,
   Grid,
+  Hidden,
   makeStyles,
   Paper,
   TextField,
@@ -105,9 +107,16 @@ const AttedanceCalender = () => {
   const [endDate, setEndDate] = useState();
   const [sevenDay, setSevenDay] = useState();
   const [studentData, setStudentData] = useState([]);
+  const [teacherView, setTeacherView] = useState(true);
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+
+  let path = window.location.pathname;
+  console.log(path, 'path');
+
+  let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
+  console.log(userName[0], 'userName');
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -120,6 +129,7 @@ const AttedanceCalender = () => {
           item.child_module.forEach((item) => {
             if (item.child_name === 'Teacher Calendar') {
               setModuleId(item.child_id);
+              console.log(teacherView, 'teacher view');
               console.log(item.child_id, 'Chekk');
             }
             if (item.child_name === 'Student Calendar') {
@@ -131,6 +141,19 @@ const AttedanceCalender = () => {
     }
   }, []);
   console.log(moduleId, 'MODULE_ID');
+
+  useEffect(() => {
+    if (path === '/attendance-calendar/teacher-view') {
+      console.log(path, 'path');
+      setTeacherView(true);
+      setStudentDataAll(null);
+    }
+    if (path === '/attendance-calendar/student-view') {
+      console.log(path, 'path');
+      setTeacherView(false);
+      setStudentDataAll(null);
+    }
+  }, [path]);
 
   useEffect(() => {
     if (moduleId) {
@@ -195,6 +218,7 @@ const AttedanceCalender = () => {
 
   const setDate = () => {
     setStudentDataAll(null);
+    console.log(startDate, 'startDs');
     var date = new Date();
     var formatDate = moment(date).format('YYYY-MM-DD');
     console.log(formatDate, 'format date');
@@ -224,8 +248,8 @@ const AttedanceCalender = () => {
     }
     setTodayDate(currentDay + ' ' + moment(date).format('DD-MM-YYYY'));
     console.log(currentDay, 'todays Date');
-    setStartDate(moment(date).format('DD-MM-YYYY'));
-    setEndDate(moment(date).format('DD-MM-YYYY'));
+    setStartDate(date);
+    setEndDate(date);
     // getToday();
     // axiosInstance
     //   .get(`academic/events_list/?date=${formatDate}`)
@@ -240,6 +264,11 @@ const AttedanceCalender = () => {
 
   const weeklyData = () => {
     setCounter(2);
+    setStudentDataAll(null);
+  };
+
+  const monthlyData = () => {
+    setCounter(3);
     setStudentDataAll(null);
   };
 
@@ -326,10 +355,11 @@ const AttedanceCalender = () => {
         })
         .then((res) => {
           setLoading(false);
-          console.log(res.data.absent_list, 'respond student');
+          console.log(res, 'respond teacher');
           setStudentDataAll(res.data);
           let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
+          setAlert('success', 'Data Sucessfully Fetched');
         })
         .catch((error) => {
           setLoading(false);
@@ -338,6 +368,68 @@ const AttedanceCalender = () => {
     }
     if (counter === 1) {
       getToday();
+    }
+  };
+
+  const getTodayStudent = () => {
+    var date = new Date();
+    var formatDate = moment(date).format('YYYY-MM-DD');
+    console.log(formatDate, 'format date');
+    axiosInstance
+      .get(`academic/single_student_calender/`, {
+        params: {
+          start_date: formatDate,
+          erp_id: userName[0],
+        },
+      })
+      .then((res) => {
+        setLoading(false);
+        console.log(res.data.events, 'current eventssss');
+        setCurrentEvent(res.data.events);
+        setStudentDataAll(res.data);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
+
+  const getStudentRange = () => {
+    if (counter === 2) {
+      axiosInstance
+        .get(`academic/student_calender/`, {
+          params: {
+            start_date: startDate,
+            end_date: endDate,
+            erp_id: userName[0],
+          },
+        })
+        .then((res) => {
+          setLoading(false);
+          console.log(res, 'respond student');
+          setStudentDataAll(res.data);
+          let temp = [...res.data.present_list, ...res.data.absent_list];
+          setStudentData(temp);
+          setAlert('success', 'Data Sucessfully Fetched');
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
+    }
+    if (counter === 1) {
+      getTodayStudent();
+    }
+  };
+
+  const selectModule = () => {
+    if (path === '/attendance-calendar/teacher-view') {
+      console.log(path, 'path');
+      getRangeData();
+    }
+    if (path === '/attendance-calendar/student-view') {
+      console.log(userName, 'path');
+      getStudentRange();
     }
   };
 
@@ -403,159 +495,163 @@ const AttedanceCalender = () => {
       <div style={{ marginTop: '20px', marginLeft: '-10px' }}>
         <CommonBreadcrumbs componentName='Attendance & Calendar' />
       </div>
-      <Grid
-        container
-        direction='row'
-        className={classes.root}
-        spacing={3}
-        id='selectionContainer'
-      >
-        <Grid item md={3} xs={12}>
-          <Autocomplete
-            style={{ width: '100%' }}
-            size='small'
-            onChange={(event, value) => {
-              setSelectedAcadmeicYear(value);
-              console.log(value, 'test');
-              if (value) {
-                callApi(
-                  `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                  'branchList'
-                );
+      {teacherView === true ? (
+        <Grid
+          container
+          direction='row'
+          className={classes.root}
+          spacing={3}
+          id='selectionContainer'
+        >
+          <Grid item md={3} xs={12}>
+            <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedAcadmeicYear(value);
+                console.log(value, 'test');
+                if (value) {
+                  callApi(
+                    `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                    'branchList'
+                  );
+                }
+                setSelectedGrade([]);
+                setSectionList([]);
+                setSelectedSection([]);
+                setSelectedBranch([]);
+              }}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedAcademicYear || ''}
+              options={academicYear || ''}
+              getOptionLabel={(option) => option?.session_year || ''}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Academic Year'
+                  placeholder='Academic Year'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={3} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedBranch([]);
+                if (value) {
+                  // const ids = value.map((el)=>el)
+                  const selectedId = value.branch.id;
+                  setSelectedBranch(value);
+                  console.log(value);
+                  callApi(
+                    `${endpoints.academics.grades}?session_year=${
+                      selectedAcademicYear.id
+                    }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                    'gradeList'
+                  );
+                }
+                setSelectedGrade([]);
+                setSectionList([]);
+                setSelectedSection([]);
+              }}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedBranch || ''}
+              options={branchList || ''}
+              getOptionLabel={(option) => option?.branch?.branch_name || ''}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  placeholder='Branch'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={3} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedGrade([]);
+                if (value) {
+                  // const ids = value.map((el)=>el)
+                  const selectedId = value.grade_id;
+                  // console.log(selectedBranch.branch)
+                  const branchId = selectedBranch.branch.id;
+                  setSelectedGrade(value);
+                  callApi(
+                    `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+                    'section'
+                  );
+                }
+                setSectionList([]);
+                setSelectedSection([]);
+              }}
+              id='grade_id'
+              className='dropdownIcon'
+              value={selectedGrade || ''}
+              options={gradeList || ''}
+              getOptionLabel={(option) => option?.grade__grade_name || ''}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Grade'
+                  placeholder='Grade'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={3} xs={12}>
+            <Autocomplete
+              // multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={(event, value) => {
+                setSelectedSection([]);
+                if (value) {
+                  const ids = value.id;
+                  const secId = value.section_id;
+                  setSelectedSection(value);
+                  setSecSelectedId(secId);
+                }
+              }}
+              id='section_id'
+              className='dropdownIcon'
+              value={selectedSection || ''}
+              options={sectionList || ''}
+              getOptionLabel={(option) =>
+                option?.section__section_name || option?.section_name || ''
               }
-              setSelectedGrade([]);
-              setSectionList([]);
-              setSelectedSection([]);
-              setSelectedBranch([]);
-            }}
-            id='branch_id'
-            className='dropdownIcon'
-            value={selectedAcademicYear || ''}
-            options={academicYear || ''}
-            getOptionLabel={(option) => option?.session_year || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Academic Year'
-                placeholder='Academic Year'
-              />
-            )}
-          />
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Section'
+                  placeholder='Section'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item md={11} xs={12}>
+            <Divider />
+          </Grid>
         </Grid>
-        <Grid item md={3} xs={12}>
-          <Autocomplete
-            // multiple
-            style={{ width: '100%' }}
-            size='small'
-            onChange={(event, value) => {
-              setSelectedBranch([]);
-              if (value) {
-                // const ids = value.map((el)=>el)
-                const selectedId = value.branch.id;
-                setSelectedBranch(value);
-                console.log(value);
-                callApi(
-                  `${endpoints.academics.grades}?session_year=${
-                    selectedAcademicYear.id
-                  }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-                  'gradeList'
-                );
-              }
-              setSelectedGrade([]);
-              setSectionList([]);
-              setSelectedSection([]);
-            }}
-            id='branch_id'
-            className='dropdownIcon'
-            value={selectedBranch || ''}
-            options={branchList || ''}
-            getOptionLabel={(option) => option?.branch?.branch_name || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Branch'
-                placeholder='Branch'
-              />
-            )}
-          />
-        </Grid>
-        <Grid item md={3} xs={12}>
-          <Autocomplete
-            // multiple
-            style={{ width: '100%' }}
-            size='small'
-            onChange={(event, value) => {
-              setSelectedGrade([]);
-              if (value) {
-                // const ids = value.map((el)=>el)
-                const selectedId = value.grade_id;
-                // console.log(selectedBranch.branch)
-                const branchId = selectedBranch.branch.id;
-                setSelectedGrade(value);
-                callApi(
-                  `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
-                  'section'
-                );
-              }
-              setSectionList([]);
-              setSelectedSection([]);
-            }}
-            id='grade_id'
-            className='dropdownIcon'
-            value={selectedGrade || ''}
-            options={gradeList || ''}
-            getOptionLabel={(option) => option?.grade__grade_name || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Grade'
-                placeholder='Grade'
-              />
-            )}
-          />
-        </Grid>
-        <Grid item md={3} xs={12}>
-          <Autocomplete
-            // multiple
-            style={{ width: '100%' }}
-            size='small'
-            onChange={(event, value) => {
-              setSelectedSection([]);
-              if (value) {
-                const ids = value.id;
-                const secId = value.section_id;
-                setSelectedSection(value);
-                setSecSelectedId(secId);
-              }
-            }}
-            id='section_id'
-            className='dropdownIcon'
-            value={selectedSection || ''}
-            options={sectionList || ''}
-            getOptionLabel={(option) =>
-              option?.section__section_name || option?.section_name || ''
-            }
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Section'
-                placeholder='Section'
-              />
-            )}
-          />
-        </Grid>
-        <Grid item md={11} xs={12}>
-          <Divider />
-        </Grid>
-      </Grid>
+      ) : (
+        <div></div>
+      )}
       <Grid
         container
         direction='row'
@@ -598,7 +694,7 @@ const AttedanceCalender = () => {
                   size='small'
                   color='secondary'
                   className={counter === 3 ? 'viewDetailsButtonClick' : 'viewDetails'}
-                  // onClick={getfuture}
+                  onClick={() => monthlyData()}
                 >
                   {/* <p className='btnLabel'>Secondary</p> */}
                   Monthly
@@ -613,6 +709,7 @@ const AttedanceCalender = () => {
                 academicYearID={selectedAcademicYear}
                 handlePassData={handlePassData}
                 sevenDay={sevenDay}
+                counter={counter}
               />
             ) : counter === 1 ? (
               <div className='todayEventContainer'>
@@ -650,7 +747,15 @@ const AttedanceCalender = () => {
                 )}
               </div>
             ) : counter === 3 ? (
-              <div> month </div>
+              <RangeCalender
+                gradeID={selectedGrade}
+                branchID={selectedBranch}
+                sectionID={selectedSection}
+                academicYearID={selectedAcademicYear}
+                handlePassData={handlePassData}
+                sevenDay={sevenDay}
+                counter={counter}
+              />
             ) : (
               <></>
             )}
@@ -669,7 +774,7 @@ const AttedanceCalender = () => {
               color='secondary'
               startIcon={<FilterFilledIcon className={classes.filterIcon} />}
               className={classes.filterButton}
-              onClick={getRangeData}
+              onClick={selectModule}
             >
               filter
             </StyledFilterButton>
@@ -677,7 +782,7 @@ const AttedanceCalender = () => {
         </div>
         {/* <Grid item md={2} className='topGrid'> */}
         <div className='attendenceWhole'>
-          <div className='startDate'> From {startDate}</div>
+          <div className='startDate'> From {moment(startDate).format('DD-MM-YYYY')}</div>
           <Paper elevation={3} className={classes.paperSize} id='attendanceContainer'>
             <Grid container direction='row' className={classes.root} id='attendanceGrid'>
               <Grid item md={6} xs={12}>
@@ -686,19 +791,23 @@ const AttedanceCalender = () => {
                 </Typography>
               </Grid>
               <Grid item md={6} xs={12} className='mark-btn-grid'>
-                <Button size='small' onClick={handleMarkAttendance}>
-                  <span className={classes.contentData} id='mark-para'>
-                    Mark Attendance
-                  </span>
-                </Button>
+                {teacherView === true ? (
+                  <Button size='small' onClick={handleMarkAttendance}>
+                    <span className={classes.contentData} id='mark-para'>
+                      Mark Attendance
+                    </span>
+                  </Button>
+                ) : (
+                  <div></div>
+                )}
               </Grid>
               <div className='stu-icon'>
                 <Grid item md={3}>
                   <Typography className={classes.content} id='studentPara'>
-                    Student
+                    Students
                   </Typography>
                 </Grid>
-                <KeyboardArrowDownIcon className='downIcon' />
+                {/* <KeyboardArrowDownIcon className='downIcon' /> */}
               </div>
             </Grid>
             {studentDataAll != null ? (
@@ -710,18 +819,24 @@ const AttedanceCalender = () => {
                   </div>
                   <Divider />
                   <div className='absentList'>
-                    {studentDataAll.absent_list[0] &&
-                      studentDataAll.absent_list[0].map((data) => (
+                    {studentDataAll.absent_list &&
+                      studentDataAll.absent_list.map((data) => (
                         <div className='eachAbsent'>
-                          <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
+                          <Avatar
+                            alt={data?.student_name}
+                            src='/static/images/avatar/1.jpg'
+                          />
                           <div className='studentName'>
                             <p className='absentName'>
-                              {data?.student_first_name} {data?.student_last_name}{' '}
+                              {data?.student_name?.slice(0, 10)}
                             </p>
                             {/* <p className='absentName'>{data.student_last_name}</p> */}
                             {/* <Chip  className='chipDays' > {data.absent_count}  </Chip> */}
                             <div className='absentCount'>
-                              <p className='absentChip'> {data.student_count} Days </p>
+                              <div className='absentChip'>
+                                {' '}
+                                {data.student_count} Days{' '}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -734,7 +849,7 @@ const AttedanceCalender = () => {
                       className='viewDetails'
                       onClick={handleViewDetails}
                     >
-                      <p className='btnLabel'>View Details</p>
+                      <p className='btnLabel'>View More</p>
                     </Button>
                   </div>
                 </div>
@@ -747,10 +862,13 @@ const AttedanceCalender = () => {
                     {studentDataAll.present_list &&
                       studentDataAll.present_list.map((data) => (
                         <div className='presentList'>
-                          <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
+                          <Avatar
+                            alt={data?.student_name}
+                            src='/static/images/avatar/1.jpg'
+                          />
                           <div className='presentStudent'>
                             <p className='presentFName'>
-                              {data?.student_first_name} {data?.student_last_name}
+                              {data?.student_name.slice(0, 10)}
                             </p>
                             {/* <p className='presentLName'> {data.student_last_name}</p> */}
                           </div>
@@ -770,7 +888,7 @@ const AttedanceCalender = () => {
         {/* <Grid item md={1} className="hello" ></Grid> */}
         {/* <Grid item md={2} className='topGrid'> */}
         <div className='eventWhole'>
-          <div className='startDate'> To {endDate}</div>
+          <div className='startDate'> To {moment(endDate).format('DD-MM-YYYY')}</div>
           <Paper
             elevation={3}
             className={[classes.root, classes.paperSize]}
@@ -783,12 +901,16 @@ const AttedanceCalender = () => {
                 </Typography>
               </Grid>
               <Grid item md={6} xs={12} className='event-btn'>
-                <Button size='small' href={`/createEvent`}>
-                  {/* ADD EVENT */}
-                  <span className={classes.contentData} id='event-text'>
-                    Add Event
-                  </span>
-                </Button>
+                {teacherView === true ? (
+                  <Button size='small' href={`/createEvent`}>
+                    {/* ADD EVENT */}
+                    <span className={classes.contentData} id='event-text'>
+                      Add Event
+                    </span>
+                  </Button>
+                ) : (
+                  <div></div>
+                )}
               </Grid>
               <div className='event-details'>
                 <Grid item md={5}>

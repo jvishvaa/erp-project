@@ -11,10 +11,11 @@ import axiosInstance from '../../config/axios';
 import { useLocation } from 'react-router-dom';
 import { UserProvider } from './tableContext/userContext';
 import TimeTableMobile from './time-table-mobile-view/time-table-mobile';
+import FilterMobile from './filterMobile/filterMobile';
 import './timetable.scss';
 const TimeTable = (props) => {
   const [loading, setLoading] = useState(false);
-  const setMobileView = useMediaQuery('(min-width:800px)');
+  const setMobileView = useMediaQuery('(min-width:950px)');
   const [tableData, setTableData] = useState([]);
   const [Filter, setFilter] = useState(true);
   const [acadamicYearID, setAcadamicYear] = useState();
@@ -90,7 +91,7 @@ const TimeTable = (props) => {
           if (tableData) {
             setLoading(false);
           }
-          console.log('calculateLength();')
+          console.log('calculateLength();');
           calculateLength();
           setTableData(response.data.result);
         }
@@ -125,7 +126,7 @@ const TimeTable = (props) => {
       section_id: section_ID,
     });
   };
-  const calculateLength = () =>{
+  const calculateLength = () => {
     if (tableData.Monday) {
       let lengthData = tableData.Monday.length;
       if (lengthData > 6) {
@@ -177,7 +178,7 @@ const TimeTable = (props) => {
     if (maxLength > 6) {
       setLoopMax(mappingArray);
     }
-  }
+  };
 
   const handleClickAPI = () => {
     callGetTimeTableAPI();
@@ -283,6 +284,12 @@ const TimeTable = (props) => {
             <div className='time-table-breadcrums-container'>
               <CommonBreadcrumbs componentName='Time Table' />
             </div>
+            {/* <FilterMobile
+              moduleId={moduleId}
+              handleCloseTable={handleCloseTable}
+              handlePassData={handlePassData}
+              handleClickAPI={handleClickAPI}
+            /> */}
             <TimeTableMobile
               teacherView={teacherView}
               callGetAPI={callGetTimeTableAPI}

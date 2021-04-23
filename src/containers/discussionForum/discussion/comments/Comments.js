@@ -167,7 +167,7 @@ export default function CommentsComponent(props) {
             </span>
             {!isChildReply && !isReply && (
               <span onClick={handleOnClick} className={classes.commentsCount}>
-                / reply to this user
+                Reply to this user
               </span>
             )}
           </div>

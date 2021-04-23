@@ -108,8 +108,8 @@ const MarkAttedance = () => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [state, setState] = React.useState({
-    checkedA: false,
-    checkedB: false,
+    checkedA: true,
+    checkedB: true,
   });
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -117,6 +117,7 @@ const MarkAttedance = () => {
   const [totalGenre, setTotalGenre] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const limit = 8;
+
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
@@ -155,7 +156,10 @@ const MarkAttedance = () => {
           }));
           setData(result);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          // setAlert('error', 'something went wrong');
+        });
     } else {
       const date = new Date();
       console.log(
@@ -232,6 +236,7 @@ const MarkAttedance = () => {
       .catch((err) => {
         setLoading(false);
         console.log(err);
+        // setAlert('error', 'something went wrong');
       });
   };
 
@@ -276,7 +281,7 @@ const MarkAttedance = () => {
       borderRadius: '10px',
       marginLeft: '20px',
       height: '42px',
-      width: '7%',
+      width: '15%',
       marginTop: 'auto',
     },
   })(Button);
@@ -305,10 +310,9 @@ const MarkAttedance = () => {
     setDateValueShow(value);
     console.log('date', value);
   };
-
   const handleBack = () => {
     history.push({
-      pathname: '/markattendance',
+      pathname: '/attendance-calendar/teacher-view',
     });
   };
   const handleClearAll = () => {
@@ -476,7 +480,7 @@ const MarkAttedance = () => {
                           {/* <Switch color='primary'  /> */}
                           <Switch
                             color='primary'
-                            checked={options.is_first_shift_present}
+                            checked={options.is_first_shift_present || true}
                             onChange={(e) => handleFirstHalf(e, options.student_id)}
                           />
                         </Grid>
@@ -493,7 +497,7 @@ const MarkAttedance = () => {
                           {/* <Switch color='primary' /> */}
                           <Switch
                             color='primary'
-                            checked={options.is_second_shift_present}
+                            checked={options.is_second_shift_present || true}
                             onChange={(e) => handleSecondHalf(e, options.student_id)}
                           />
                         </Grid>
@@ -687,18 +691,15 @@ const MarkAttedance = () => {
       <Grid container direction='row'>
         <StyledClearButton
           variant='contained'
-          href={'/attendance-calendar/teacher-view'}
           onClick={handleBack}
-          // startIcon={<ClearIcon />}
+          startIcon={<ClearIcon />}
         >
           Back
         </StyledClearButton>
         <StyledClearButton
           variant='contained'
-          // href={'/attendance-calendar/teacher-view'}
-          // onClick={handleBack}
-          onClick={handleClearAll}
           startIcon={<ClearIcon />}
+          onClick={handleClearAll}
         >
           Clear all
         </StyledClearButton>
@@ -752,7 +753,7 @@ const MarkAttedance = () => {
           className={classes.root}
           spacing={2}
           item
-          justify='center'
+          justify='left'
         >
           <StudentData />
         </Grid>

@@ -179,10 +179,13 @@ const useStyles = makeStyles({
 
 const StyledClearButton = withStyles({
   root: {
-    backgroundColor: '#E2E2E2',
+    backgroundColor: '#E2E2E2 !important',
     color: '#8C8C8C',
     height: '42px',
     marginTop: 'auto',
+    '&:hover': {
+      backgroundColor: '#E2E2E2 !important',
+    },
   },
 })(Button);
 
@@ -295,6 +298,9 @@ const Filters = (props) => {
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const [moduleId, setModuleId] = React.useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  //const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [expanded, setExpanded] = React.useState('panel1');
   const handleChange = (panel) => (event, newExpanded) => {
@@ -381,21 +387,40 @@ const Filters = (props) => {
         */
   };
 
+  React.useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Discussion Forum' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Forum') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   // academicYear API call
   React.useEffect(() => {
-    axiosInstance
-      .get(endpoints.masterManagement.academicYear)
+    if(moduleId){
+      axiosInstance.get(endpoints.masterManagement.academicYear)
       .then((res) => {
         setAcademicYear(res.data.result.results);
       })
       .catch((error) => console.log(error));
-  }, []);
+    }
+  }, [moduleId]);
 
   // Branch API call
   React.useEffect(() => {
     if (academicId !== 0) {
       axiosInstance
-        .get(`${endpoints.discussionForum.branch}?session_year=${academicId}`)
+        .get(`${endpoints.discussionForum.branch}?module_id=${moduleId}&session_year=${academicId}`)
         .then((res) => {
           console.log(res.data.data.results);
           setBranch(res.data.data.results);
@@ -408,7 +433,7 @@ const Filters = (props) => {
   React.useEffect(() => {
     if (branchId !== 0) {
       axiosInstance
-        .get(`${endpoints.discussionForum.grade}?session_year=${academicId}&branch_id=${branchId}&module_id=8`)
+        .get(`${endpoints.discussionForum.grade}?module_id=${moduleId}&session_year=${academicId}&branch_id=${branchId}`)
         .then((res) => {
           setGrade(res.data.data);
         })
@@ -421,7 +446,7 @@ const Filters = (props) => {
     if (gradeId !== 0) {
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?session_year=${academicId}&branch_id=${branchId}&grade_id=${gradeId}`
+          `${endpoints.masterManagement.sections}?module_id=${moduleId}&session_year=${academicId}&branch_id=${branchId}&grade_id=${gradeId}`
         )
         .then((res) => {
           console.log(res.data);
@@ -785,21 +810,21 @@ const Filters = (props) => {
                         </div>
                     </div>
               </Grid>
-              <Grid item sm={4} xs={12} style={{display: 'flex'}}>
-                  <StyledClearButton
-                      variant='contained'
-                      startIcon={<ClearIcon />}
-                      onClick={clearFilter}
+            <Grid item sm={4} xs={12} style={{display: 'flex'}}>
+            <StyledClearButton
+              variant='contained'
+              startIcon={<ClearIcon />}
+              onClick={clearFilter}
             >
               Clear all
             </StyledClearButton>
-              <StyledFilterButton
-                      variant='contained'
-                      color='secondary'
-                      startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-                      className={classes.filterButton}
-                      onClick={handleFilters}
-              >
+            <StyledFilterButton
+              variant='contained'
+              color='secondary'
+              startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+              className={classes.filterButton}
+              onClick={handleFilters}
+            >
               filter
             </StyledFilterButton>
           </Grid>

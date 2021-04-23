@@ -88,6 +88,7 @@ class ViewEbook extends Component {
       selectedBranch: '',
       selectedGrade: '',
       selectedSubject: '',
+      selectedVolume:'',
     };
 
   }
@@ -114,17 +115,17 @@ class ViewEbook extends Component {
     let {tabValue,status} = this.state   
     if(tabValue === 0){
       this.setState({pageNo:page},()=>{
-        this.getEbook(this.state.acadmicYear, this.state.selectedBranch, this.state.selectedGrade, this.state.selectedSubject)})
+        this.getEbook(this.state.acadmicYear, this.state.selectedBranch, this.state.selectedGrade, this.state.selectedSubject, this.state.selectedVolume)})
     }
     else if (tabValue === 1){
       this.setState({pageNo:page},()=>{
-        this.getEbook(this.state.acadmicYear, this.state.selectedBranch, this.state.selectedGrade, this.state.selectedSubject)})
+        this.getEbook(this.state.acadmicYear, this.state.selectedBranch, this.state.selectedGrade, this.state.selectedSubject, this.state.selectedVolume)})
     } else if (tabValue === 2){
       this.setState({pageNo:page},()=>{
-        this.getEbook(this.state.acadmicYear, this.state.selectedBranch, this.state.selectedGrade, this.state.selectedSubject)})
+        this.getEbook(this.state.acadmicYear, this.state.selectedBranch, this.state.selectedGrade, this.state.selectedSubject, this.state.selectedVolume)})
     } else if (tabValue === 3){
       this.setState({pageNo:page},()=>{
-        this.getEbook(this.state.acadmicYear, this.state.selectedBranch, this.state.selectedGrade, this.state.selectedSubject)}) 
+        this.getEbook(this.state.acadmicYear, this.state.selectedBranch, this.state.selectedGrade, this.state.selectedSubject, this.state.selectedVolume)}) 
     }   
   };
 
@@ -138,30 +139,30 @@ class ViewEbook extends Component {
     this.setState({ tabValue: newValue, pageNo:1, pageSize:8});
     if(newValue === 0){
       this.setState({tabValue:newValue,data:[]},()=>{
-        this.getEbook();
-        this.state.clearFilter = 1;
-        this.handleClearFilter();
+        this.getEbook(this.state.acadmicYear, this.state.selectedBranch, this.state.selectedGrade, this.state.selectedSubject, this.state.selectedVolume);
+        // this.state.clearFilter = 1;
+        // this.handleClearFilter();
       })
     }
     else if (newValue === 1){
       this.setState({tabValue:newValue,data:[]},()=>{
-        this.getEbook();
-        this.state.clearFilter = 2;
-        this.handleClearFilter();
+        this.getEbook(this.state.acadmicYear, this.state.selectedBranch, this.state.selectedGrade, this.state.selectedSubject, this.state.selectedVolume);
+        // this.state.clearFilter = 2;
+        // this.handleClearFilter();
       })
     }
     else if (newValue === 2){
       this.setState({tabValue:newValue,data:[]},()=>{
-        this.getEbook();
-        this.state.clearFilter = 3;
-        this.handleClearFilter();
+        this.getEbook(this.state.acadmicYear, this.state.selectedBranch, this.state.selectedGrade, this.state.selectedSubject, this.state.selectedVolume);
+        // this.state.clearFilter = 3;
+        // this.handleClearFilter();
       })
     }
     
   };
 
 
-  getEbook = (acad, branch, grade, subject) => {
+  getEbook = (acad, branch, grade, subject, vol) => {
     const {host}= new URL(axiosInstance.defaults.baseURL) // "dev.olvorchidnaigaon.letseduvate.com"
     const hostSplitArray = host.split('.')
     const subDomainLevels = hostSplitArray.length - 2
@@ -182,16 +183,17 @@ class ViewEbook extends Component {
     const filterBranch = `${branch ? `&branch=${branch?.id}`:''}`;
     const filterGrade = `${grade ? `&grade=${grade?.grade_id}`: ''}`;
     const filterSubject = `${subject ? `&subject=${subject?.subject_id}`: ''}`;
+    const filterVolumes = `${vol ? `&volume=${vol?.id}`: ''}`;
     const { pageNo, pageSize,tabValue,moduleId } = this.state;
     let urlPath = ''
     if(tabValue === 0 || tabValue === 1){
       urlPath =  `${endpoints.ebook.ebook}?domain_name=${domainTobeSent}&is_ebook=true&page_number=${
         pageNo 
-      }&page_size=${pageSize}&ebook_type=${tabValue+1}${filterAcad}${filterBranch}${filterGrade}${filterSubject}`
+      }&page_size=${pageSize}&ebook_type=${tabValue+1}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`
     }else if(tabValue ===2){
       urlPath = `${endpoints.ebook.ebook}?domain_name=${domainTobeSent}&is_ebook=true&page_number=${
         pageNo 
-      }&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}`
+      }&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`
     }
     axios
       .get(urlPath, {
@@ -210,19 +212,21 @@ class ViewEbook extends Component {
       });
   };
   
-  handleFilter = (acad, branch, grade, sub) => {
+  handleFilter = (acad, branch, grade, sub, vol) => {
     this.state.pageNo = 1;
     this.state.acadmicYear = acad;
     this.state.selectedBranch = branch;
     this.state.selectedGrade = grade;
     this.state.selectedSubject = sub;
-    this.getEbook(acad, branch, grade, sub);
+    this.state.selectedVolume = vol;
+    this.getEbook(acad, branch, grade, sub, vol);
   }
   handleClearFilter = () => {
     this.state.acadmicYear= '';
     this.state.selectedBranch= '';
     this.state.selectedGrade= '';
     this.state.selectedSubject= '';
+    this.state.selectedVolume='';
   }
 
 
@@ -237,8 +241,8 @@ class ViewEbook extends Component {
           <div className='message_log_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
             <div style={{ backgroundColor: '#F9F9F9' }}>
               <div className='create_group_filter_container'>
-                <Grid container style={{ padding: '10px' }}>
-                  <Grid item md={12} xs={12}>
+                <Grid container spacing={2}>
+                  <Grid item md={12} xs={12} style={{ textAlign: 'left' }}>
                     <CommonBreadcrumbs componentName='Ebook' childComponentName='View Ebook' />
                   </Grid>
                   <Grid item md={12} xs={12} style={{ margin: '10px 0px' }}>
