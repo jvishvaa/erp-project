@@ -1,6 +1,17 @@
 import React, { useContext } from 'react';
 import moment from 'moment';
-import { Grid, Box, Typography, makeStyles, Button, withStyles, InputBase, Popover, Divider, IconButton} from '@material-ui/core';
+import {
+  Grid,
+  Box,
+  Typography,
+  makeStyles,
+  Button,
+  withStyles,
+  InputBase,
+  Popover,
+  Divider,
+  IconButton,
+} from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import DiscussionReplies from './DiscussionReplies';
@@ -168,6 +179,9 @@ const StyledOutlinedButton = withStyles({
     borderRadius: '10px',
     backgroundColor: 'transparent',
     position: 'absolute',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
     bottom: '15px',
     width: '178px',
     '@media (max-width: 600px)': {
@@ -182,6 +196,9 @@ const OutlinedButton = withStyles({
     color: '#0455A6',
     border: '1px solid #0455A6',
     borderRadius: '10px',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
     backgroundColor: 'transparent',
     '@media (min-width: 600px)': {
       marginTop: '20px!important',
@@ -224,7 +241,7 @@ const StyledInput = withStyles({
 function createMarkup() {
     return {__html: 'First &middot; Second'};
   }
-  
+
   function MyComponent() {
     return <div dangerouslySetInnerHTML={createMarkup()} />;
   }
@@ -242,17 +259,11 @@ export default function DiscussionComponent(props) {
   const [commentList, setCommentList] = React.useState([]);
 
   const handleChange = (e) => {
-    let checkReply = e.target.value;
-    // if (checkReply.trim().length === 0) {
-    //   setAlert('warning', 'Fill Reply Field');
-    // } else {
-      setReply(e.target.value);
-    // }
-    // setReply(e.target.value);
+    setReply(e.target.value);
   };
   const handleReply = () => {
     if (reply.trim().length === 0) {
-      setAlert('warning', 'Write Your Reply');
+      setAlert('warning', 'Write your reply here');
     } else {
       const param = {
         answer: reply,
@@ -262,18 +273,23 @@ export default function DiscussionComponent(props) {
       axiosInstance
         .post(endpoints.discussionForum.CreateCommentAndReplay, param)
         .then((res) => {
-          setReply('');
-          setAlert('success', res.data.message);
           if (res.data.status_code === 200) {
+            setReply('');
+            setAlert('success', res.data.message);
             setAddComment(addComment + 1);
+          } else {
+            setAlert('error', res.data.message);
           }
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          setAlert('error', error.message);
+        });
     }
   };
-  const handlePost = () => {
+  const handleReadPost = () => {
     //dispatch(postAction(props.rowData));
-    if(location.pathname === '/student-forum'){
+    if (location.pathname === '/student-forum') {
       history.push('/student-forum/post/' + props.rowData.id);
     } else {
       history.push('/teacher-forum/post/' + props.rowData.id);
@@ -353,16 +369,16 @@ export default function DiscussionComponent(props) {
   }, [props.rowData]);
 
   const handleDiscussionAction = (event) => {
-    if(props.rowData.post_by.id === userDetails.user_id){
-      setAnchorE2(event.currentTarget)
+    if (props.rowData.post_by.id === userDetails.user_id) {
+      setAnchorE2(event.currentTarget);
     }
-  }
+  };
 
   const handlePopoverActionClose = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setAnchorE2(null);
-  }
+  };
 
   const open2 = Boolean(anchorE2);
   const id2 = open2 ? 'simple-popover1' : undefined;
@@ -371,18 +387,23 @@ export default function DiscussionComponent(props) {
     axiosInstance
       .delete(`/academic/${id}/update-post/`)
       .then((res) => {
-        if(res.data.status_code === 200){
+        if (res.data.status_code === 200) {
           setAlert('success', res.data.message);
           props.deleteEdit();
           handlePopoverActionClose();
         }
       })
       .catch((error) => console.log(error));
-  }
+  };
 
   const handleEditPost = () => {
-    dispatch(editPostDataAction(props.rowData));
-  }
+    //dispatch(editPostDataAction(props.rowData));
+    if (location.pathname === '/student-forum') {
+      history.push('/student-forum/edit/' + props.rowData.id);
+    } else {
+      history.push('/teacher-forum/edit/' + props.rowData.id);
+    }
+  };
 
   return (
     <Grid container className={classes.discussionContainer}>
@@ -403,7 +424,7 @@ export default function DiscussionComponent(props) {
             <div style={{ display: 'inline-block' }}>
               {/* <FiberManualRecordIcon className={classes.dotSeparator} /> */}
               <span className={classes.postByText}>post by</span>
-              <span style={{verticalAlign: 'middle'}}>
+              <span style={{ verticalAlign: 'middle' }}>
                 <ProfileIcon
                   firstname={props.rowData.post_by.first_name}
                   lastname={props.rowData.post_by.last_name}
@@ -501,30 +522,35 @@ export default function DiscussionComponent(props) {
                 </span>
               </span>
             )}
-            <IconButton onClick={handleDiscussionAction} style={{verticalAlign: 'baseline',}}>
-              <MoreVertIcon className={classes.discussionDotIcon}/>
+            <IconButton
+              onClick={handleDiscussionAction}
+              style={{ verticalAlign: 'baseline' }}
+            >
+              <MoreVertIcon className={classes.discussionDotIcon} />
             </IconButton>
             {/* <ClickAwayListener onClickAway={handlePopoverActionClose}> */}
-              <Popover
-                id={id2}
-                open={open2}
-                anchorEl={anchorE2}
-                onClose={handlePopoverActionClose}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-              >
-                <div style={{padding: '10px', borderRadius: '5px'}}>
-                  <Typography onClick={handleEditPost}>Edit</Typography>
-                  <Divider style={{marginBottom:'10px', marginTop: '10px'}}/>
-                  <Typography onClick={() => handleDelete(props.rowData.id)}>Delete</Typography>
-                </div>
-              </Popover>
+            <Popover
+              id={id2}
+              open={open2}
+              anchorEl={anchorE2}
+              onClose={handlePopoverActionClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <div style={{ padding: '10px', borderRadius: '5px' }}>
+                <Typography onClick={handleEditPost}>Edit</Typography>
+                <Divider style={{ marginBottom: '10px', marginTop: '10px' }} />
+                <Typography onClick={() => handleDelete(props.rowData.id)}>
+                  Delete
+                </Typography>
+              </div>
+            </Popover>
             {/* </ClickAwayListener> */}
           </span>
         </div>
@@ -561,7 +587,7 @@ export default function DiscussionComponent(props) {
                     color='secondary'
                     variant='contained'
                     fullWidth
-                    onClick={handlePost}
+                    onClick={handleReadPost}
                   >
                     Read post
                   </StyledButton>

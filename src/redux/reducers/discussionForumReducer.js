@@ -39,7 +39,17 @@ const discussionReducer = (state = initialState, action) => {
     case types.EDIT_DISCCUSION_POST:
       return {
         ...state,
-        postEditData: action.payload,
+        isEditPost: true,
+      };
+    case types.EDIT_DISCCUSION_POST_SUCCESS:
+      return {
+        ...state,
+        postEditData: action.data,
+      };
+    case types.EDIT_DISCCUSION_POST_FAILURE:
+      return {
+        ...state,
+        postEditData: action.data,
       };
     case types.EDIT_CATEGORI_DATA:
       return {

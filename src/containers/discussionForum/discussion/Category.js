@@ -238,8 +238,6 @@ const Category = (props) => {
     setDeleteEdit(!deleteEdit);
   }
 
-  console.log(userDetails, 'userDetails');
-
   // const handleCategoryId = (id) => {
   //   setCategoryId(id);
   // };
@@ -266,12 +264,6 @@ const Category = (props) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
     setCategoryId(newValue)
-    // categoryList.map((tab, id) => {
-    //   if(id === newValue){
-    //     setCategoryId(tab.id)
-    //   }
-    // })
-    console.log('value:', newValue+ " -- " );
   };
 
   React.useEffect(() => {
@@ -307,7 +299,6 @@ const Category = (props) => {
         axiosInstance
         .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch_id=${branch_id}&grade=${grade_id}`)
         .then((res) => {
-          console.log(res.data.result);
           setCategoryList(res.data.result);
         })
         .catch((error) => console.log(error));
@@ -316,7 +307,6 @@ const Category = (props) => {
         axiosInstance
         .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}`)
         .then((res) => {
-          console.log(res.data.result);
           setCategoryList(res.data.result);
         })
         .catch((error) => console.log(error));
@@ -327,7 +317,6 @@ const Category = (props) => {
   const getDiscussionPost = (url) => {
     axiosInstance.get(url)
     .then((res) => {
-      console.log(res.data.data);
       setPostList(res.data.data.results);
     })
     .catch((error) => console.log(error));
@@ -335,11 +324,9 @@ const Category = (props) => {
 
   // post list API
   React.useEffect(() => {
-    console.log(categoryId,' categoryId')
     if(moduleId) {
       if(location.pathname === '/student-forum'  && personalInfo?.role !== "SuperUser"){
         const grade_id = userDetails.role_details?.grades[0]?.grade_id;
-        console.log(' categoryId',categoryId + ' === ' + postURL);
         if(categoryId > 0) {
           getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&grade=${grade_id}&category=${categoryId}`);
         }
@@ -360,23 +347,22 @@ const Category = (props) => {
         }
         if (categoryId !== 0 && grades === '') {
           getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&category=${categoryId}`);
-          console.log(categoryId + ' === ' + postURL);
         }
         if (categoryId === 0 && grades !== '' && sections !== '') {
-          // getDiscussionPost(
-          //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}&section=${sections}`
-          // );
           getDiscussionPost(
-            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}`
+            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}&section_mapping=${sections}`
           );
+          // getDiscussionPost(
+          //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}`
+          // );
         }
         if (categoryId !== 0 && grades !== '' && sections !== '') {
-          // getDiscussionPost(
-          //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch_id=${branchId}&category=${categoryId}&grade=${grades}&section=${sections}`
-          // );
           getDiscussionPost(
-            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&category=${categoryId}&grade=${grades}`
+            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch_id=${branchId}&category=${categoryId}&grade=${grades}&section_mapping=${sections}`
           );
+          // getDiscussionPost(
+          //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&category=${categoryId}&grade=${grades}`
+          // );
         }
       }
     }
