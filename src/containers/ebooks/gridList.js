@@ -23,9 +23,9 @@ import { withRouter } from 'react-router-dom';
 // import Face from '@material-ui/icons/Face';
 // import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 // import moment from 'moment';
-// import axios from '../../config/axios';
 
 import endpoints from '../../config/endpoints';
+import axios from 'axios';
 import axiosInstance from '../../config/axios';
 // import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import EbookPdf from './EbookPDF';
@@ -55,12 +55,14 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     display: '-webkit-box',
     maxWidth: '100%',
-    '-webkit-line-clamp': '2',
+    '-webkit-line-clamp': '3',
     '-webkit-box-orient': 'vertical',
     textOverflow: 'ellipsis',
     margin: '0%',
     padding: '0%',
-    height: '25px !important',
+    height: '65px !important',
+    whiteSpace: 'pre-wrap',
+    wordWrap: 'break-word',
   },
 }));
 function Transition(props) {
@@ -94,20 +96,27 @@ function GridList(props) {
     if (ebookName && ebookName.includes('NCERT')) {
       window.open(necrtUrl);
     } else {
+      const {host}= new URL(axiosInstance.defaults.baseURL) // "dev.olvorchidnaigaon.letseduvate.com"
+      const hostSplitArray = host.split('.')
+      const subDomainLevels = hostSplitArray.length - 2
+      let domain = ''
+      let subDomain = ''
+      let subSubDomain = ''
+      if(hostSplitArray.length > 2){
+          domain = hostSplitArray.slice(hostSplitArray.length-2).join('')
+      }
+      if(subDomainLevels === 2){
+          subSubDomain = hostSplitArray[0]
+          subDomain = hostSplitArray[1]
+      } else if(subDomainLevels === 1){
+          subDomain = hostSplitArray[0]
+      }
+      const domainTobeSent = subDomain 
       setPdfUrl(url && url);
       setLoading(true);
-      // setEbookNum(data.id);
       setOpen(true);
-      // setClick(true);
       axiosInstance
-        .get(
-          `${endpoints.ebook.EbookUser}?ebook_id=${data.id}`
-          // , {
-          // headers: {
-          //   Authorization: 'Bearer ' + props.user
-          // }
-          // }
-        )
+        .get(`${endpoints.ebook.EbookUser}?ebook_id=${data.id}`)
         .then(({ data }) => {
           console.log(data);
           setLoading(false);
@@ -130,7 +139,7 @@ function GridList(props) {
         <Grid container spacing={2}>
           {data &&
             data.map((item) => (
-              <Grid item md={3} xs={12} key={item.id}>
+              <Grid item md={4} xs={12} key={item.id}>
                 <Grid container spacing={2}>
                   <Grid item md={12} xs={12}>
                   <Card
@@ -139,10 +148,11 @@ function GridList(props) {
                         height: '160px',
                         borderRadius: 10,
                         padding: '5px',
+                        backgroundColor: item?.ebook_type === '2' ? '#fefbe8' : '',
                       }}
                     >
                       <Grid container spacing={2}>
-                        <Grid item md={6} xs={6}>
+                        <Grid item md={5} xs={6}>
                           <img
                             src={item && item.ebook_thumbnail}
                             alt='crash'
@@ -151,7 +161,7 @@ function GridList(props) {
                             style={{ borderRadius: '8px', border: '1px solid lightgray' }}
                           />
                         </Grid>
-                        <Grid item md={6} xs={6} style={{ textAlign: 'left' }}>
+                        <Grid item md={7} xs={6} style={{ textAlign: 'left' }}>
                           <Grid container spacing={1}>
                             <Grid
                               item
@@ -161,6 +171,7 @@ function GridList(props) {
                                 padding: '0px 10px',
                                 margin: '0px',
                                 textAlign: 'right',
+                                display: 'none'
                               }}
                             >
                               <MoreHorizIcon
@@ -179,13 +190,14 @@ function GridList(props) {
                                   fontSize: '14px',
                                   fontWeight: 'bold',
                                   color: '#014B7E',
-                                  marginTop: '-15px',
+                                  marginTop: '5px',
+                                  marginRight: '2px'
                                 }}
                               >
                                 {item && item.ebook_name}
                               </Typography>
                             </Grid>
-                            <Grid item md={12} xs={12}>
+                            {/* <Grid item md={12} xs={12}>
                               <Typography
                                 title={item && item.ebook_author}
                                 className={classes.textEffect}
@@ -194,7 +206,7 @@ function GridList(props) {
                                 Author :&nbsp;
                                 {item && item.ebook_author}
                               </Typography>
-                            </Grid>
+                            </Grid> */}
                             <Grid item md={12} xs={12}>
                               <Typography
                                 title={
@@ -202,7 +214,7 @@ function GridList(props) {
                                   item.updated_at &&
                                   new Date(item.updated_at).toLocaleDateString()
                                 }
-                                className={classes.textEffect}
+                                // className={classes.textEffect}
                                 style={{ fontSize: '10px', color: '#042955' }}
                               >
                                 Publication on&nbsp;

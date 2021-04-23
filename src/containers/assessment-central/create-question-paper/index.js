@@ -265,6 +265,8 @@ const CreateQuestionPaper = ({
         // ],
         section: sectionData,
         sections: sectionData,
+        is_review:'True',
+        is_draft:'False',
       };
 
       if (isDraft) {

@@ -1,0 +1,6 @@
+.MuiDialog-root.custom_scope_modal .MuiDialog-paperScrollPaper {
+  border: 10px solid #e2e2e2;
+  border-radius: 10px;
+  margin-top: 6%;
+  max-height: 80%;
+}

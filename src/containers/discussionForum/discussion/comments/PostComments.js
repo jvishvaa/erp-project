@@ -15,9 +15,13 @@ const useStyles = makeStyles({
 export default function PostCommentsComponent(props) {
   const classes = useStyles({});
   const [commentsList, setCommentsList] = React.useState([]);
+  const [replayCount, setReplayCount] = React.useState(props.replayCount? props.replayCount : 0);
 
+  const handleNewReply = () =>{
+    setReplayCount(replayCount + 1);
+  }
   React.useEffect(() => {
-    if(props.replayCount >= 1) {
+    if(replayCount >= 1) {
       axiosInstance
       .get(`${endpoints.discussionForum.commentList}?comment=${props.id}`)
       .then((res) => {
@@ -25,7 +29,7 @@ export default function PostCommentsComponent(props) {
       })
       .catch((error) => console.log(error));
     }
-  }, [props.rowData]);
+  }, [props.rowData, replayCount]);
 
   return (
     <>
@@ -36,6 +40,8 @@ export default function PostCommentsComponent(props) {
         likes={props.likes}
         isLikes={props.isLikes}
         id={props.id}
+        commentAt={props.commentAt}
+        handleNewReply={handleNewReply}
       />
       {/* {props.replies !== undefined && props.replies !== null && props.replies.length > 0 && (
         <div className={classes.childComment}>
@@ -53,7 +59,7 @@ export default function PostCommentsComponent(props) {
           ))}
         </div>
       )} */}
-      {props.replayCount && props.replayCount >= 1 && (
+      {replayCount >= 1 && (
         <div className={classes.childComment}>
           {commentsList.length > 0 && commentsList.map((rowData, id) => (
             <CommentBlock
@@ -66,6 +72,7 @@ export default function PostCommentsComponent(props) {
               isLikes={rowData.is_like}
               replies={rowData.commnet_reply}
               replayCount={rowData.replay_count ? rowData.replay_count : 0}
+              commentAt={rowData.comment_at ? rowData.comment_at : 0}
             />
           ))}
         </div>

@@ -1,0 +1,30 @@
+.style .MuiOutlinedInput-input {
+  height: 100px;
+}
+.bodyMargin {
+  margin: 25px;
+}
+.arrow .MuiSvgIcon-root {
+  color: #ff6b6b;
+}
+.response .MuiFormControlLabel-root {
+  
+  min-width: 0px;
+  margin-left: 23px;
+}
+.responsesecond .MuiFormControlLabel-root {
+  min-width: 0px;
+  margin-left: 80px;
+  margin-bottom: 25px;
+}
+.items .MuiPickersDateRangePickerInput-root {
+  align-items: inherit;
+  flex-direction: column;
+}
+.im {
+ padding-left: 100px;
+  padding-top: 15px;
+}   
+.dat {
+  padding-top: 45px;
+}

@@ -3,6 +3,8 @@ import { Typography, Button, withStyles, makeStyles, Grid } from '@material-ui/c
 import MuiPaper from '@material-ui/core/Paper';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
+import { useSelector, useDispatch } from 'react-redux';
+import { editCategoryDataAction } from '../../../redux/actions/discussionForumActions';
 
 const useStyles = makeStyles({
   categoryTitle: {
@@ -72,39 +74,41 @@ const StyledPaper = withStyles({
   },
 })(MuiPaper);
 
-const CategoryCard = (props) => {
+const CategoryCard = ({selectedId, data, editCategory}) => {
   const classes = useStyles({});
-  const [isEdit, setIsEdit] = React.useState(props.isEdit);
+  const dispatch = useDispatch();
+  const [isEdit, setIsEdit] = React.useState(false);
+  //console.log(data)
   const handleEdit = () => {
-    props.editCategory(props);
+    editCategory(data);
     setIsEdit(true);
+    dispatch(editCategoryDataAction(data));
   };
 
   return (
-      <StyledPaper className={`${isEdit? classes.selectedCard : ''}`}>
+      <StyledPaper className={`${selectedId === data.sub_sub_category_id ? classes.selectedCard : ''}`}>
         <Grid container>
           <Grid item xs={10}>
             <Typography className={classes.categoryTitle}>
-              {props.category}
+              {data.category}
             </Typography>
             <Typography className={classes.subCategoryTitle}>
-              {props.subCategory}
+              {data.sub_category_name}
             </Typography>
             <Typography className={classes.subSubCategoryTitle}>
-              {props.subSubCategory}
+              {data.sub_sub_category_name}
             </Typography>
           </Grid>
           <Grid item xs={2}>
-            {props.status !== 'undefined' && props.status === 'active' ?
-              <CheckCircleIcon className={classes.activeIcon} />
-              : <CancelIcon className={classes.inactiveIcon} />
+            {data.is_delete ? <CancelIcon className={classes.inactiveIcon} />
+              : <CheckCircleIcon className={classes.activeIcon} />
             }
           </Grid>
           <Grid itxm xs={12} className={classes.actionGrid}>
-              {!isEdit && (
+              {selectedId !== data.sub_sub_category_id && (
                 <StyledButton
                   variant='contained'
-                  color='secondary'
+                  color='primary'
                   className={classes.editButton}
                   onClick={handleEdit}
                 >

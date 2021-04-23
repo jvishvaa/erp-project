@@ -1,0 +1,38 @@
+.upper-table-container-mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-evenly;
+  .all-box-container-mobile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .grade-container {
+    width: 361px;
+    border-radius: 10px;
+    height: 225px;
+    background: #ffd9d9;
+  }
+  .text-fixed {
+    color: #014b7e;
+    font-size: 20px;
+    padding: 13px;
+    font-family: 'Roboto', sans-serif;
+  }
+  .inner-grade-container {
+    display: flex;
+    flex-direction: row;
+    width: 91%;
+    margin-left: 14px;
+    background: white;
+    justify-content: center;
+  }
+  .table-button-container{
+    display: flex;
+    justify-content: space-around;
+    padding-bottom: 30px;
+    padding-top: 30px;
+  }
+}

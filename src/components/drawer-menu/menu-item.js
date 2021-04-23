@@ -34,6 +34,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Chapter Creation', Path: '/master-management/chapter-type-table' },
     { name: 'Message Type', Path: '/master-management/message-type-table' },
     { name: 'Signature Upload', Path: '/master-management/signature-upload' },
+    { name: 'Event Category', Path: '/master-management/event-category' },
+    { name: 'Discussion Category', Path: '/master-management/discussion-category' },
+    { name:'Teacher Calendar',Path:'/attendance-calendar/teacher-view'}, //attendance
+    { name:'Student Calendar',Path:'/attendance-calendar/student-view'}, //
     { name: 'Course', Path: '/course-list' },
     { name: 'Course Price', Path: '/course-price' },
     { name: 'Lesson Plan Mapping', Path: '/subject/grade' },
@@ -73,6 +77,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Teacher Circular', Path: '/teacher-circular' },
     { name: 'Student Circular', Path: '/student-circular' },
 
+    //{ name: 'Discussion Forum', Path: '/discussion-forum' },
+    { name: 'Teacher Forum', Path: '/teacher-forum' },
+    { name: 'Student Forum', Path: '/student-forum' },
+    { name: 'Assessment Report', Path: '/assessment-reports' },
     { name: 'Question Bank', Path: '/question-bank' },
     { name: 'Question Paper', Path: '/assessment-question' },
     { name: 'Create Test', Path: '/assesment' },
