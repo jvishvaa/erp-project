@@ -48,7 +48,7 @@ if (NavData && NavData.length) {
   // setModulePermision(false);
 }
 
-const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStudentPromotionList, studentList, studentPromotionList, fetchGradesPerBranch, fetchAllSection, alert, user, dataLoading, gradesPerBranch, sections }) => {
+const StudentPromotion = ({ classes, session, branches, fetchAllFeePlans, feePlans, fetchBranches, sendStudentPromotionList, studentList, studentPromotionList, fetchGradesPerBranch, fetchAllSection, alert, user, dataLoading, gradesPerBranch, sections }) => {
   const [sessionData, setSessionData] = useState([])
   const [branchData, setBranchData] = useState([])
   const [isAdmin, setIsAdmin] = useState(false)
@@ -71,6 +71,7 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
   const [reasonNotPromotedData, setReasonNotPromotedData] = useState(null)
   const [listOfAllPromoStudent, setListOfAllPromoStudent] = useState([])
   const [listOfAllNotPromoStudent, setListOfAllNotPromoStudent] = useState([])
+  const [ChangedFeePlanId, setChangedFeePlanId] = useState(null)
 
   useLayoutEffect(() => {
     // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
@@ -298,6 +299,7 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
         section: sectionData && sectionData.value
       }
       studentPromotionList(data, alert, user)
+      fetchAllFeePlans(sessionData && sessionData.value, gradeData && gradeData.value, branchData && branchData.value, alert, user)
     }
     setDisplayStudentList(true)
   }
@@ -347,18 +349,23 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
   //   }
   // }
   const sendStudentPromotionListHandler = () => {
+    if (ChangedFeePlanId) {
     const data = {
       academic_year: sessionData && sessionData.value,
       branch: branchData && branchData.value,
       grade: gradeData && gradeData.value,
       section: sectionId && sectionId,
-      promoted_student_list: studentListCanPromoted
+      promoted_student_list: studentListCanPromoted,
+      fee_plan:ChangedFeePlanId
     }
     sendStudentPromotionList(data, alert, user)
     setStudentListCanPromoted(null)
     setPromotedStudent(false)
     setAllStuPromoted(false)
     setErpSearchValue('')
+  } else {
+    alert.warning('Please Select Fee Plan!')
+  }
   }
 
   const erpSearchHandler = (e) => {
@@ -405,6 +412,10 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
       setErpSearchValue(null)
       setNotProErpValue(null)
     }
+  }
+
+  const feePlansHandler = (e) => {
+    setChangedFeePlanId(e.value)
   }
 
   return (
@@ -564,7 +575,24 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
                   {studentPromotedList()}
                 </TableBody>
               </Table>
-              <Grid item xs='12'>
+              <Grid container spacing={3} style={{ display: 'flex'}}>
+              <Grid item xs='4'>
+            <label>Fee Plans*</label>
+            <Select
+              placeholder='Select Fee Plan'
+              style={{ width: '100px' }}
+              options={
+                feePlans
+                  ? feePlans.map(fp => ({
+                    value: fp.id,
+                    label: fp.fee_plan_name
+                  }))
+                  : []
+              }
+              onChange={feePlansHandler}
+            />
+          </Grid>
+              <Grid item xs='3'>
                 <Button
                   variant='contained'
                   color='primary'
@@ -572,6 +600,7 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
                   style={{ marginTop: '20px', float: 'right', marginBottom: 10 }}
                   onClick={sendStudentPromotionListHandler}>
                 PROMOTE</Button>
+              </Grid>
               </Grid>
             </Grid>
             <Grid item xs={6}>
@@ -702,10 +731,12 @@ const mapStateToProps = state => ({
   // sections: state.finance.common.sectionsPerGradeAdmin,
   sections: state.finance.accountantReducer.studentPromotion.sectionsPerGrade,
   dataLoading: state.finance.common.dataLoader,
-  studentList: state.finance.accountantReducer.studentPromotion.promotionStudentList
+  studentList: state.finance.accountantReducer.studentPromotion.promotionStudentList,
+  feePlans: state.finance.accountantReducer.changeFeePlan.feePlans
 })
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchAllFeePlans: (session, gradeId, branch, alert, user) => dispatch(actionTypes.fetchAllFeePlans({ session, branch, gradeId, alert, user })),
   sendStudentPromotionList: (data, alert, user) => dispatch(actionTypes.sendStudentPromotionList({ data, alert, user })),
   studentPromotionList: (data, alert, user) => dispatch(actionTypes.studentPromotionList({ data, alert, user })),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
