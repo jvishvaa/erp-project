@@ -147,6 +147,23 @@ const AttedanceCalender = () => {
       console.log(path, 'path');
       setTeacherView(true);
       setStudentDataAll(null);
+      setSelectedAcadmeicYear('');
+      setSelectedBranch([]);
+      setSelectedGrade([]);
+      setSelectedSection([]);
+    }
+    if (path === '/attendance-calendar/student-view') {
+      console.log(path, 'path');
+      setTeacherView(false);
+      setStudentDataAll(null);
+    }
+  }, [path]);
+
+  useEffect(() => {
+    if (path === '/attendance-calendar/teacher-view') {
+      console.log(path, 'path');
+      setTeacherView(true);
+      setStudentDataAll(null);
     }
     if (path === '/attendance-calendar/student-view') {
       console.log(path, 'path');
@@ -368,6 +385,34 @@ const AttedanceCalender = () => {
     }
     if (counter === 1) {
       getToday();
+    }
+    if (counter === 3) {
+      axiosInstance
+        .get(`academic/student_attendance_between_date_range/`, {
+          params: {
+            start_date: startDate,
+            end_date: endDate,
+            branch_id: selectedBranch.branch.id,
+            grade_id: selectedGrade.grade_id,
+            // grade_id: 2,
+
+            section_id: selectedSection.section_id,
+            // section_id: 2,
+            academic_year: selectedAcademicYear.id,
+          },
+        })
+        .then((res) => {
+          setLoading(false);
+          console.log(res, 'respond teacher');
+          setStudentDataAll(res.data);
+          let temp = [...res.data.present_list, ...res.data.absent_list];
+          setStudentData(temp);
+          setAlert('success', 'Data Sucessfully Fetched');
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
     }
   };
 
@@ -882,6 +927,16 @@ const AttedanceCalender = () => {
                             <p className='presentFName'>
                               {data?.student_name.slice(0, 10)}
                             </p>
+                            {counter != 1 ? (
+                              <div className='absentCount'>
+                                <div className='absentChip'>
+                                  {' '}
+                                  {data.student_count} Days{' '}
+                                </div>
+                              </div>
+                            ) : (
+                              <div> </div>
+                            )}
                             {/* <p className='presentLName'> {data.student_last_name}</p> */}
                           </div>
                         </div>
@@ -945,7 +1000,8 @@ const AttedanceCalender = () => {
                       className={[classes.contentsmall, classes.root]}
                       id='eventData'
                     >
-                      {data.start_time.slice(0, 10)}
+                      {/* {data.start_time.slice(0, 10)} */}
+                      {moment(data.start_time.slice(0, 10)).format('DD-MM-YYYY')}
                       <br />
                       <Grid container direction='row'>
                         <OutlinedFlagRoundedIcon
