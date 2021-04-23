@@ -113,6 +113,9 @@ const AttedanceCalender = () => {
 let path = window.location.pathname;
 console.log(path , "path");
 
+let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
+console.log(userName[0] , "userName");
+
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -141,10 +144,12 @@ useEffect(()=>{
   if( path === "/attendance-calendar/teacher-view" ){
     console.log(path , "path");
     setTeacherView(true);
+    setStudentDataAll(null)
   } 
   if( path === "/attendance-calendar/student-view" ){
     console.log(path , "path");
     setTeacherView(false);
+    setStudentDataAll(null)
   } 
 },[path]);
 
@@ -207,6 +212,7 @@ useEffect(()=>{
 
   const setDate = () => {
     setStudentDataAll(null);
+    console.log(startDate , "startDs");
     var date = new Date();
     var formatDate = moment(date).format('YYYY-MM-DD');
     console.log(formatDate, 'format date');
@@ -236,8 +242,8 @@ useEffect(()=>{
     }
     setTodayDate(currentDay + ' ' + moment(date).format('DD-MM-YYYY'));
     console.log(currentDay, 'todays Date');
-    setStartDate(moment(date).format('DD-MM-YYYY'));
-    setEndDate(moment(date).format('DD-MM-YYYY'));
+    setStartDate(date);
+    setEndDate(date);
     // getToday();
     // axiosInstance
     //   .get(`academic/events_list/?date=${formatDate}`)
@@ -252,6 +258,11 @@ useEffect(()=>{
 
   const weeklyData = () => {
     setCounter(2);
+    setStudentDataAll(null);
+  };
+
+  const monthlyData = () => {
+    setCounter(3);
     setStudentDataAll(null);
   };
 
@@ -321,7 +332,7 @@ useEffect(()=>{
       return;
     }
     setLoading(true);
-    if (counter === 2) {
+    if (counter === 2 || 3 ) {
       axiosInstance
         .get(`academic/student_attendance_between_date_range/`, {
           params: {
@@ -352,6 +363,70 @@ useEffect(()=>{
     if (counter === 1) {
       getToday();
     }
+   
+  };
+
+  const getTodayStudent = () => {
+    var date = new Date();
+    var formatDate = moment(date).format('YYYY-MM-DD');
+    console.log(formatDate, 'format date');
+    axiosInstance
+      .get(`academic/single_student_calender/`, {
+        params: {
+          start_date: formatDate,
+         erp_id: userName[0]
+        },
+      })
+      .then((res) => {
+        setLoading(false)
+        console.log(res.data.events, 'current eventssss');
+        setCurrentEvent(res.data.events);
+        setStudentDataAll(res.data);
+      })
+      .catch((error) => {
+        setLoading(false)
+        console.log(error);
+      });
+  };
+
+
+  const getStudentRange = () => {
+    if (counter === 2 || 3 ) {
+    axiosInstance
+        .get(`academic/student_calender/`, {
+          params: {
+            start_date: startDate,
+            end_date: endDate,
+            erp_id: userName[0]
+          },
+        })
+        .then((res) => {
+          setLoading(false);
+          console.log(res.data.absent_list, 'respond student');
+          setStudentDataAll(res.data);
+          let temp = [...res.data.present_list, ...res.data.absent_list]
+          setStudentData(temp);
+          setAlert("success","Data Sucessfully Fetched")
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
+    }
+    if (counter === 1) {
+      getTodayStudent();
+    }
+  }
+
+  const selectModule = () => {
+    if( path === "/attendance-calendar/teacher-view" ){
+      console.log(path , "path");
+      getRangeData();
+    } 
+    if( path === "/attendance-calendar/student-view" ){
+      console.log(userName , "path");
+      getStudentRange();
+    } 
   };
 
   const handleViewDetails = () => {
@@ -416,6 +491,7 @@ useEffect(()=>{
       <div style={{ marginTop: '20px', marginLeft: '-10px' }}>
         <CommonBreadcrumbs componentName='Attendance & Calendar' />
       </div>
+      { teacherView === true ?
       <Grid
         container
         direction='row'
@@ -569,6 +645,7 @@ useEffect(()=>{
           <Divider />
         </Grid>
       </Grid>
+      : <div></div> }
       <Grid
         container
         direction='row'
@@ -611,7 +688,7 @@ useEffect(()=>{
                   size='small'
                   color='secondary'
                   className={counter === 3 ? 'viewDetailsButtonClick' : 'viewDetails'}
-                // onClick={getfuture}
+                onClick={()=>monthlyData()}
                 >
                   {/* <p className='btnLabel'>Secondary</p> */}
                   Monthly
@@ -626,6 +703,7 @@ useEffect(()=>{
                 academicYearID={selectedAcademicYear}
                 handlePassData={handlePassData}
                 sevenDay={sevenDay}
+                counter={counter}
               />
             ) : counter === 1 ? (
               <div className='todayEventContainer'>
@@ -663,7 +741,15 @@ useEffect(()=>{
                 )}
               </div>
             ) : counter === 3 ? (
-              <div> month </div>
+              <RangeCalender
+                gradeID={selectedGrade}
+                branchID={selectedBranch}
+                sectionID={selectedSection}
+                academicYearID={selectedAcademicYear}
+                handlePassData={handlePassData}
+                sevenDay={sevenDay}
+                counter={counter}
+              />
             ) : (
               <></>
             )}
@@ -682,7 +768,7 @@ useEffect(()=>{
               color='secondary'
               startIcon={<FilterFilledIcon className={classes.filterIcon} />}
               className={classes.filterButton}
-              onClick={getRangeData}
+              onClick={selectModule}
             >
               filter
             </StyledFilterButton>
@@ -690,7 +776,7 @@ useEffect(()=>{
         </div>
         {/* <Grid item md={2} className='topGrid'> */}
         <div className='attendenceWhole'>
-          <div className='startDate'> From {startDate}</div>
+          <div className='startDate'> From {moment(startDate).format("DD-MM-YYYY")}</div>
           <Paper elevation={3} className={classes.paperSize} id='attendanceContainer'>
             <Grid container direction='row' className={classes.root} id='attendanceGrid'>
               <Grid item md={6} xs={12}>
@@ -725,18 +811,18 @@ useEffect(()=>{
                   </div>
                   <Divider />
                   <div className='absentList'>
-                    {studentDataAll.absent_list.[0] &&
+                    {studentDataAll.absent_list &&
                       studentDataAll.absent_list.[0].map((data) => (
                         <div className='eachAbsent'>
-                          <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
+                          <Avatar alt={data?.student_name} src='/static/images/avatar/1.jpg' />
                           <div className='studentName'>
                             <p className='absentName'>
-                              {data?.student_first_name} {data?.student_last_name}{' '}
+                              {data?.student_name} {' '}
                             </p>
                             {/* <p className='absentName'>{data.student_last_name}</p> */}
                             {/* <Chip  className='chipDays' > {data.absent_count}  </Chip> */}
                             <div className='absentCount'>
-                              <p className='absentChip'> {data.student_count} Days </p>
+                              <div className='absentChip'> {data.student_count} Days </div>
                             </div>
                           </div>
                         </div>
@@ -760,7 +846,7 @@ useEffect(()=>{
                           <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
                           <div className='presentStudent'>
                             <p className='presentFName'>
-                              {data?.student_first_name} {data?.student_last_name}
+                              {data?.student_name}
                             </p>
                             {/* <p className='presentLName'> {data.student_last_name}</p> */}
                           </div>
@@ -780,7 +866,7 @@ useEffect(()=>{
         {/* <Grid item md={1} className="hello" ></Grid> */}
         {/* <Grid item md={2} className='topGrid'> */}
         <div className='eventWhole'>
-          <div className='startDate'> To {endDate}</div>
+          <div className='startDate'> To {moment(endDate).format("DD-MM-YYYY")}</div>
           <Paper
             elevation={3}
             className={[classes.root, classes.paperSize]}
