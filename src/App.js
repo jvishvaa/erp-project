@@ -1264,14 +1264,16 @@ function App({ alert }) {
                           <Route exact path='/attendance-calendar/student-view'>
                             {({ match }) => <AttedanceCalender match={match} />}
                           </Route>
-                          <Route exact path='/Attendance'>
+                          <Route exact path='/teacher-view/attendance'>
+                            {({ match }) => <Attendance match={match} />}
+                          </Route>
+                          <Route exact path='/student-view/attendance'>
                             {({ match }) => <Attendance match={match} />}
                           </Route>
                           <Route exact path='/OverallAttendance'>
                             {({ match }) => <OverallAttendance match={match} />}
                           </Route>
                           <Route exact path='/createEvent'>
-                          
                             {({ match, history }) => (
                               <CreateEvent match={match} history={history} />
                             )}
@@ -1292,17 +1294,17 @@ function App({ alert }) {
                             {({ match }) => <ContactUs match={match} />}
                           </Route>
                           <Route exact path='/BookAppointment'>
-                          {({ match }) => <BookAppointment match={match} />}
-                        </Route>
-                        <Route exact path='/ResponderView'>
-                          {({ match }) => <ResponderView match={match} />}
-                        </Route>
-                        <Route exact path='/Appointments'>
-                          {({ match }) => <Appointments match={match} />}
-                        </Route>
-                        <Route exact path='/EditAppointment'>
-                          {({ match }) => <EditAppointment match={match} />}
-                        </Route>
+                            {({ match }) => <BookAppointment match={match} />}
+                          </Route>
+                          <Route exact path='/ResponderView'>
+                            {({ match }) => <ResponderView match={match} />}
+                          </Route>
+                          <Route exact path='/Appointments'>
+                            {({ match }) => <Appointments match={match} />}
+                          </Route>
+                          <Route exact path='/EditAppointment'>
+                            {({ match }) => <EditAppointment match={match} />}
+                          </Route>
                         </Switch>
                       </DailyDairyStore>
                     </ViewStore>
