@@ -6,11 +6,13 @@ export const types = {
   FILTER_DATA: 'FILTER_DATA',
   EDIT_CATEGORI_DATA: 'EDIT_CATEGORI_DATA',
   UPDATE_CATAGORY: 'UPDATE_CATAGORY',
+  UPDATE_CATAGORY_DATA: 'UPDATE_CATAGORY_DATA',
   UPDATE_CATAGORY_SUCCESS: 'UPDATE_CATAGORY_SUCCESS',
   UPDATE_CATAGORY_FAILURE: 'UPDATE_CATAGORY_FAILURE',
   CREATE_CATEGORY: 'CREATE_CATEGORY',
   CREATE_CATEGORY_SUCCESS: 'CREATE_CATEGORY_SUCCESS',
   CREATE_CATEGORY_FAILURE: 'CREATE_CATEGORY_FAILURE',
+  NEW_CATEGORY_CREATED: 'NEW_CATEGORY_CREATED',
   FETCH_CATEGORY_DATA: 'FETCH_CATEGORY_DATA',
   FETCH_CATEGORY_LIST: 'FETCH_CATEGORY_LIST',
   FETCH_SUB_CATEGORY_LIST: 'FETCH_SUB_CATEGORY_LIST',
@@ -35,9 +37,11 @@ const {
   DISCUSSION_POST,
   FILTER_DATA,
   UPDATE_CATAGORY,
+  UPDATE_CATAGORY_DATA,
   UPDATE_CATAGORY_SUCCESS,
   UPDATE_CATAGORY_FAILURE,
   EDIT_CATEGORI_DATA,
+  NEW_CATEGORY_CREATED,
   CREATE_CATEGORY,
   CREATE_CATEGORY_SUCCESS,
   CREATE_CATEGORY_FAILURE,
@@ -82,12 +86,25 @@ export const editCategoryDataAction = (data) => {
   }
 }
 
+export const editCategoryDataUpdated = () => {
+  return {
+    type: UPDATE_CATAGORY_DATA,
+  }
+}
+
+export const createNewCategory = () => {
+  return {
+    type: NEW_CATEGORY_CREATED,
+  }
+}
+
 export const createAllCategory = params => dispatch => {
   dispatch({type: CREATE_CATEGORY});
   return axiosInstance.post(`${endpoints.discussionForum.PostCategory}`,params)
   .then((res) => {
-    console.log(res.data);
-    dispatch({ type: CREATE_CATEGORY_SUCCESS, data: res.data.result});
+    if(res.data.status_code === 200){
+      dispatch({ type: CREATE_CATEGORY_SUCCESS, data: res.data.result});
+    }
   })
   .catch((error) => {
     dispatch({ type: CREATE_CATEGORY_FAILURE, data: []});

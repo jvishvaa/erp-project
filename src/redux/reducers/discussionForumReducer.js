@@ -9,6 +9,7 @@ const initialState = {
     section: '',
   },
   isEditPost: '',
+  hasEdited: '',
   postEditData: '',
   category_data: '',
   category_list: '',
@@ -19,6 +20,8 @@ const initialState = {
   subCategoryList: [],
   subSubCategoryList: [],
   editCategoryData: '',
+  updateCategory: '',
+  categoryCreadted: '',
 };
 
 const discussionReducer = (state = initialState, action) => {
@@ -45,11 +48,13 @@ const discussionReducer = (state = initialState, action) => {
       return {
         ...state,
         postEditData: action.data,
+        hasEdited: true,
       };
     case types.EDIT_DISCCUSION_POST_FAILURE:
       return {
         ...state,
         postEditData: action.data,
+        hasEdited: false,
       };
     case types.EDIT_CATEGORI_DATA:
       return {
@@ -118,6 +123,26 @@ const discussionReducer = (state = initialState, action) => {
       return {
         ...state,
         subSubCategoryList: action.data
+      }
+    case types.UPDATE_CATAGORY_SUCCESS:
+      return {
+        ...state,
+        updateCategory: action.data
+      }
+    case types.UPDATE_CATAGORY_DATA:
+      return {
+        ...state,
+        updateCategory: ''
+      }
+    case types.CREATE_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        categoryCreadted: action.data
+      }
+    case types.NEW_CATEGORY_CREATED:
+      return {
+        ...state,
+        categoryCreadted: ''
       }
     default:
       return state;
