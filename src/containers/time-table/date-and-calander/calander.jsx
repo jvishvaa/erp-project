@@ -60,7 +60,7 @@ const Calander = (props) => {
   const [requiredMaterial, setRequiredMaterial] = useState();
   const [periodName, setPeriodName] = useState();
   const [periodDescription, setPeriodDescription] = useState();
-  const [day, setDay] = useState('Monday');
+  const [day, setDay] = useState(['Monday']);
   const [startTime, setStartTime] = useState(new Date('2014-08-18T21:11:54'));
   const [acadamicYearID, setAcadamicYear] = useState();
   const [dayName, setDayName] = useState('Monday');
@@ -145,7 +145,8 @@ const Calander = (props) => {
         grade: props.grade_ID,
         subject: sectionIdOption,
         assigned_teacher: assignedTeacherID,
-        day: day,
+        // days: day,
+        days: ['Wednesday'],
         period_name: periodName,
         period_description: periodDescription,
         period_start_time: startTime.toString().slice(16, 21),
@@ -153,7 +154,7 @@ const Calander = (props) => {
         required_material: requiredMaterial,
       };
       axiosInstance
-        .post('/academic/assign_class_periods/', obj)
+        .post('/academic/assign_multiple_class_periods/', obj)
         .then((response) => {
           if (response.status === 200) {
             setAlert('success', 'Period Added');

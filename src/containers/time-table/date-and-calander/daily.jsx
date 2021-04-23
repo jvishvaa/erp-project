@@ -63,19 +63,19 @@ const Daily = (props) => {
       setDaily(DataFriday);
     }
   };
-  const handleClosePass = () =>{
+  const handleClosePass = () => {
     setShowBox(false);
-  }
-  const handlePassData = (data) =>{
+  };
+  const handlePassData = (data) => {
     setSelectData(data);
     setShowBox(true);
-  }
+  };
 
   return (
     <>
       <div className='calander-container-time-table-module'>
         <div className='calander-daily-time-table-module'>
-          <table>
+          {/* <table>
             <tr>
               <div className='daily-header'>{currentDay}</div>
             </tr>
@@ -96,10 +96,26 @@ const Daily = (props) => {
                     ))}
                 </tr>
               ))}
-          </table>
+          </table> */}
+          <div className='daily-header'>{currentDay}</div>
+          <div classname='daily-outer-card'>
+            {daily &&
+              daily.map((data) => (
+                <div className='daily-inner-card' key={data.id} onClick={() => handlePassData(data)}>
+                  {' '}
+                  <h4>{data?.period_name}</h4>{' '}
+                  <h3>{data?.subject_details?.subject_name}</h3>
+                  <p>
+                    {data.period_start_time.slice(0, 5)}-
+                    {data.period_end_time.slice(0, 5)}
+                  </p>
+                  <h4>{data.teacher_name?.name}</h4>
+                </div>
+              ))}
+          </div>
         </div>
         <div className='display-container-time-table-module'>
-          {showBox? (
+          {showBox ? (
             <DisplayBox handleClosePass={handleClosePass} dataOpenChange={selectData} />
           ) : (
             <div className='message'>Select card to view further details</div>

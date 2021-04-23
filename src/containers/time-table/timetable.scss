@@ -82,7 +82,7 @@ $font-roboto: 'Raleway', sans-serif;
   .yellow-header {
     color: #ff6b6b;
     margin: 6px 1px;
-    font-size: 15px;
+    font-size: 18px;
   }
   p {
     font-size: 17px;
@@ -366,6 +366,34 @@ $font-roboto: 'Raleway', sans-serif;
     color: white;
     border-radius: 8px;
     cursor: pointer;
+  }
+  .daily-outer-card:nth-child(odd) {
+    background-color: #ffebeb;
+    color: $text-color;
+    border: none;
+  }
+  .daily-inner-card{
+    text-align: left;
+    width: 32%;
+    border: none;
+    padding: 13px;
+    color: #014b7e;
+    background: #FFEBEB;
+    cursor: pointer;
+    p {
+      font-size: 17px;
+      color: $text-color;
+      margin: 6px 1px;
+    }
+    h3 {
+      color: $text-color;
+      margin: 6px 1px;
+      font-size: 16px;
+    }
+    h4 {
+      color: $text-color;
+      margin: 6px 1px;
+    }
   }
 }
 .dialog-data-container {
