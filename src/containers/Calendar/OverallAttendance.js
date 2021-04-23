@@ -222,19 +222,17 @@ const Attend = () => {
       });
   };
 
-  const handleStartDateChange = (date) => {
-    const endDate = getDaysAfter(date.clone(), 6);
-    setEndDate(endDate);
-    setStartDate(date.format('YYYY-MM-DD'));
-    // getTeacherHomeworkDetails(2, date, endDate);
+  const handleStartDateChange = (e, value) => {
+    console.log('startDate:', value);
+
+    setStartDate(value);
   };
 
-  const handleEndDateChange = (date) => {
-    const startDate = getDaysBefore(date.clone(), 6);
-    setStartDate(startDate);
-    setEndDate(date.format('YYYY-MM-DD'));
-    // getTeacherHomeworkDetails(2, startDate, date);
+  const handleEndDateChange = (e, value) => {
+    console.log('endDate', value);
+    setEndDate(value);
   };
+
   function callApi(api, key) {
     setLoading(true);
     axiosInstance
@@ -416,13 +414,53 @@ const Attend = () => {
         spacing={2}
         style={{ border: '1x solid red' }}
       >
-        <Grid item md={3} xs={12} className='items'>
-          <MobileDatepicker
-            style={{ width: '100%' }}
-            onChange={(date) => handleEndDateChange(date)}
-            handleStartDateChange={handleStartDateChange}
-            handleEndDateChange={handleEndDateChange}
-          />
+        <Grid item md={6} xs={12} className='items'>
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <KeyboardDatePicker
+              size='small'
+              variant='dialog'
+              format='YYYY-MM-DD'
+              margin='none'
+              // className='button'
+              id='date-picker'
+              label='StartDate'
+              name='start_date'
+              inputVariant='outlined'
+              className='arrow'
+              onChange={handleStartDateChange}
+              // handleStartDateChange={handleStartDateChange}
+              // handleEndDateChange={handleEndDateChange}
+
+              value={startDate}
+              style={{ background: 'white', width: '50%' }}
+              // onChange={handleDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+          </MuiPickersUtilsProvider>
+
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <KeyboardDatePicker
+              size='small'
+              variant='dialog'
+              format='YYYY-MM-DD'
+              margin='none'
+              // className='button'
+              id='date-picker'
+              label='EndDate'
+              variant='standard'
+              name='end_date'
+              inputVariant='outlined'
+              className='arrow'
+              onChange={handleEndDateChange}
+              value={endDate}
+              style={{ background: 'white', width: '50%' }}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+          </MuiPickersUtilsProvider>
         </Grid>
         <Grid item md={3} xs={12}>
           <Autocomplete

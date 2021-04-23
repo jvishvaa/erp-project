@@ -298,33 +298,24 @@ const Attendance = () => {
     moment().startOf('isoWeek'),
     moment().endOf('week'),
   ]);
+  const handleStartDateChange = (e, value) => {
+    // console.log('startdate:', date.toISOString().split('T')[0]);
+    // const endDate = getDaysAfter(date.clone(), 6);
+    console.log('startDate:', value);
 
-  const dummyData = [
-    {
-      date: '12 December 2021',
-    },
-    {
-      date: '13 December 2021',
-    },
-    {
-      date: '14 December 2021',
-    },
-    {
-      date: '15 December 2021',
-    },
-    {
-      date: '16 December 2021',
-    },
-    {
-      date: '17 December 2021',
-    },
-    {
-      date: '18 December 2021',
-    },
-    {
-      date: '19 December 2021',
-    },
-  ];
+    setStartDate(value);
+  };
+
+  // const handleEndDateChange = (date) => {
+  //   const startDate = getDaysBefore(date.clone(), 6);
+  //   setStartDate(startDate);
+  //   setEndDate(date.format('YYYY-MM-DD'));
+  //   // getTeacherHomeworkDetails(2, startDate, date);
+  // };
+  const handleEndDateChange = (e, value) => {
+    console.log('endDate', value);
+    setEndDate(value);
+  };
 
   return (
     <Layout>
@@ -332,22 +323,48 @@ const Attendance = () => {
         <CommonBreadcrumbs componentName='Attendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
-        <Grid item md={3} xs={12}>
+        <Grid item md={6} xs={12} className='items'>
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <KeyboardDatePicker
               size='small'
               variant='dialog'
               format='YYYY-MM-DD'
               margin='none'
-              className='button'
+              // className='button'
               id='date-picker'
-              label='Date'
-              maxDate={new Date()}
+              label='StartDate'
+              name='start_date'
               inputVariant='outlined'
-              value={dateValue || ''}
-              onChange={handleDateChange}
-              className='dropdown'
-              style={{ width: '100%' }}
+              className='arrow'
+              onChange={handleStartDateChange}
+              // handleStartDateChange={handleStartDateChange}
+              // handleEndDateChange={handleEndDateChange}
+
+              value={startDate}
+              style={{ background: 'white', width: '50%' }}
+              // onChange={handleDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+          </MuiPickersUtilsProvider>
+
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <KeyboardDatePicker
+              size='small'
+              variant='dialog'
+              format='YYYY-MM-DD'
+              margin='none'
+              // className='button'
+              id='date-picker'
+              label='EndDate'
+              variant='standard'
+              name='end_date'
+              inputVariant='outlined'
+              className='arrow'
+              onChange={handleEndDateChange}
+              value={endDate}
+              style={{ background: 'white', width: '50%' }}
               KeyboardButtonProps={{
                 'aria-label': 'change date',
               }}
