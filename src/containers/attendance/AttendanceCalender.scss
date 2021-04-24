@@ -100,6 +100,7 @@
   width: 100%;
   height: fit-content;
   height: 452px;
+  min-width: 310px;
   padding-bottom: 30px;
   overflow: auto;
     overflow-x: hidden;
@@ -137,11 +138,17 @@
     height: 145px;
     overflow: auto;
     overflow-x: hidden;
+    .presentProfilePic{
+      height: 25px;
+    width: 25px;
+    font-size: 15px;
+    }
   }
   .presentList {
     margin-left: 7%;
     display: flex;
     flex-direction: row;
+    align-items: center;
   }
   .presentStudent {
     height: 39px;
@@ -176,6 +183,11 @@
     margin-left: 25%;
     width: 100px;
   }
+  .dateToday{
+    font-size: 15px;
+    color: #042955;
+    font-weight: 600;
+  }
   .noEvent{
     display: flex;
     justify-content: center;
@@ -193,6 +205,8 @@
     text-align: center;
     width: 25%;
     border-right: 1px solid;
+    font-size: 13px;
+    color: #042955;
   }
   .event-name {
     margin-left: 10px;
@@ -202,6 +216,22 @@
     width: 40%;
     background: #f3b8b4;
     border-radius: 7px;
+    align-items: center;
+    font-size: 13px;
+    color: #042955;
+    .eventFlagToday{
+      background: #FF6B6B;
+    height: 20px;
+    align-items: center;
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    }
+    .flagImgToday{
+      width: 15px;
+    height: 15px;
+    }
   }
   .MuiSvgIcon-root {
     color: white;
@@ -235,6 +265,9 @@
     justify-content: space-between;
     width: 100%;
     color: #014b7e;
+    .erpId{
+      font-size: 13px;
+    }
   }
   .downIcon {
     height: 22px;
@@ -269,8 +302,9 @@
   flex-direction: row;
   align-items: center;
   .absentProfilePic{
-    height: 30px;
-    width: 30px;
+    height: 25px;
+    width: 25px;
+    font-size: 15px;
   }
 }
 .eventGrid {
@@ -287,6 +321,19 @@
     .noDataImgEvent {
       height: 200px;
       width: 200px;
+    }
+  }
+  .flagBg{
+    background: #78B5F3;
+    height: 20px;
+    align-items: center;
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    .flagImg{
+      width: 15px;
+    height: 15px;
     }
   }
   .event-btn {
@@ -311,6 +358,14 @@
   }
   #eventData {
     margin: 0;
+    padding-bottom: 0;
+    .eventNameData{
+      font-size: 13px;
+      margin-left: 3%;
+    }
+    .eventDetailsfirst{
+      padding-top: 5px;
+    }
   }
   .noEventImg {
     height: 300px;
@@ -319,15 +374,29 @@
   .dateTimeEvent {
     display: flex;
     justify-content: space-between;
+    .eventClock{
+      color: #FF6B6B;
+      height: 15px;
+    width: 15px;
+    }
     .timeEvent {
       display: flex;
-      justify-content: space-evenly;
-      width: 75px;
+      justify-content: space-between;
+      width: 55px;
+      align-items: center;
+      font-size: 13px;
     }
     .dateEvent {
       display: flex;
       justify-content: space-evenly;
       width: 115px;
+      font-size: 13px;
+    align-items: center;
+    .calLogo{
+      height: 15px;
+      width: 15px;
+      color: #FF6B6B;
+    }
     }
   }
   .eventPara {
