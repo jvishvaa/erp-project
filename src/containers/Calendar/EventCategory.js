@@ -193,7 +193,7 @@ const Cal1 = () => {
   const history = useHistory();
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const [searchData, setSearchData] = useState('abhishek');
+  const [searchData, setSearchData] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const [element_id, setElementId] = useState('');
@@ -266,7 +266,8 @@ const Cal1 = () => {
     setFilterData({ selectedEventType: '' });
     setEventName('');
     setCustColor('');
-    setDummyData([]);
+    setSearchData('')
+    // setDummyData([]);
     setTotalGenre('');
   };
   const handleEventName = (e, idx) => {
@@ -484,7 +485,7 @@ const Cal1 = () => {
               /> */}
               <SearchBar
                 // value={filterData?.selectedEventType || ''}
-
+                value={searchData}
                 onChange={handleSearch}
               />
             </Grid>
