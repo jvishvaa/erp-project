@@ -15,6 +15,8 @@ import BookIcon from '@material-ui/icons/Book';
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import WifiTetheringIcon from '@material-ui/icons/WifiTethering';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
 import {
   AccountBalance,
   AccountBalanceWallet,
@@ -239,6 +241,11 @@ const menuIcon = (name) => {
       icon = <MenuBookIcon />;
       break;
     }
+    case 'Calendar & Attendance': {
+      icon = <CalendarTodayIcon />;
+      break;
+    }
+    
     default:
       break;
   }
