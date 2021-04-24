@@ -297,7 +297,7 @@ const Category = (props) => {
         const grade_id = userDetails.role_details?.grades[0]?.grade_id;
         const branch_id = userDetails.role_details?.branch[0]?.id;
         axiosInstance
-        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch_id=${branch_id}&grade=${grade_id}`)
+        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}`)
         .then((res) => {
           setCategoryList(res.data.result);
         })
@@ -327,11 +327,12 @@ const Category = (props) => {
     if(moduleId) {
       if(location.pathname === '/student-forum'  && personalInfo?.role !== "SuperUser"){
         const grade_id = userDetails.role_details?.grades[0]?.grade_id;
+        const branch_id = userDetails.role_details?.branch[0]?.id;
         if(categoryId > 0) {
-          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&grade=${grade_id}&category=${categoryId}`);
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&category=${categoryId}`);
         }
         else {
-          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&grade=${grade_id}`);
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}`);
         }
       }
       else {
