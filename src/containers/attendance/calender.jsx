@@ -25,17 +25,20 @@ const RangeCalender = (props) => {
   useEffect(() => {
     getAttendance()
     setStartDate((moment(state[0].startDate).format("YYYY-MM-DD")));
-    console.log(postSeven , "dcdcdcdccdd");
-    // autoEndDate();
+    console.log(state , "dcdcdcdccdd");
+    autoEndDate();
     // setState(endDate : postSeven.setDate(postSeven).getDate()+7);
     // setEndDate((moment(state[0].endDate).format("YYYY-MM-DD")));
   }, state);
 
-  // const autoEndDate = () => {
-  // if (props.counter == 3) {
-  //   setState([{ ...state, [endDate]: "hello"}])
-  // }
-  // }
+  const autoEndDate = () => {
+  if (props.counter == 3) {
+    if (state[0].endDate === state[0].startDate || state[0].endDate === null) {
+        console.log(JSON.stringify(state) , "hittttt");
+         
+    }
+  }
+  }
 
   useEffect(()=>{
     getfuture();
