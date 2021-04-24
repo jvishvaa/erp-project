@@ -38,6 +38,7 @@ const MultipleChoice = ({
   subQuestions,
   parentQuestionType,
   setLoading,
+  domainName,
 }) => {
   const themeContext = useTheme();
   const history = useHistory();
@@ -84,7 +85,7 @@ const MultipleChoice = ({
   );
 
   useEffect(() => {
-    setToggle(prev=>!prev);
+    setToggle((prev) => !prev);
     if (editData?.id) {
       const {
         question_answer: [
@@ -93,7 +94,6 @@ const MultipleChoice = ({
       } = editData;
       setQuestion(editQuestion);
       setAnswers(answer);
-      // setToggle(prev=>!prev);
       if (showQuestionType?.Descriptive) {
         setDescriptiveAnswer(answer || '');
       }
@@ -416,6 +416,7 @@ const MultipleChoice = ({
     }
 
     let requestBody = {
+      domainName: domainName,
       question_answer: questionAndAnswer,
       question_level: filterDataBottom.level?.id,
       question_categories: filterDataBottom.category.id,
@@ -434,6 +435,7 @@ const MultipleChoice = ({
 
     if (submitFlag || saveFlag) {
       let req = {
+        domainName: domainName,
         question_answer: questionAndAnswer,
         question_type: showQuestionType?.id,
         question_level: filterDataBottom.level.id,
@@ -754,83 +756,88 @@ const MultipleChoice = ({
           </div>
         )}
       </div>
-      {toggle ?              
-      <div className='questionContainer'>
-        {openEditor && (
-          <MyTinyEditor
-            id={
-              parentQuestionType?.ComprehensionQuestions ||
-              parentQuestionType?.VideoQuestion
-                ? `questionEditor${index}`
-                : 'questionEditor'
-            }
-            content={question}
-            handleEditorChange={handleEditorChange}
-            setOpenEditor={setOpenEditor}
-            placeholder='Question goes here...'
-            filterDataTop={filterDataTop}
-            filterDataBottom={filterDataBottom}
-          />
-        )}
-        {!openEditor && (
-          <TextField
-            style={{ width: '100%' }}
-            id={
-              parentQuestionType?.ComprehensionQuestions ||
-              parentQuestionType?.VideoQuestion
-                ? `questionDisplay${index}`
-                : 'questionDisplay'
-            }
-            variant='outlined'
-            size='small'
-            className='dropdownIcon questionDisplay'
-            placeholder='Click on format text to create a question'
-            value={questionDisplay}
-            name={
-              parentQuestionType?.ComprehensionQuestions ||
-              parentQuestionType?.VideoQuestion
-                ? `questionDisplay${index}`
-                : 'questionDisplay'
-            }
-            inputProps={{
-              readOnly: true,
-              autoComplete: 'off',
-            }}
-            InputProps={{
-              endAdornment: (
-                <>
-                  <div className='dividerVertical'></div>
-                  <Button
-                    variant='contained'
-                    style={{
-                      color: 'white',
-                      textTransform: 'none',
-                      width: '12%',
-                      margin: '0px 0px 0px 15px',
-                    }}
-                    color='primary'
-                    className='modifyDesign'
-                    size='small'
-                    onClick={() => setOpenEditor(true)}
-                  >
-                    {isMobile ? 'Format' : 'Format Text'}
-                  </Button>
-                  <IconButton>
-                    <div>
-                      <SvgIcon
-                        component={() => (
-                          <img style={{ height: '24px', width: '25px' }} src={infoicon} />
-                        )}
-                      />
-                    </div>
-                  </IconButton>
-                </>
-              ),
-            }}
-          />
-        )}
-      </div>
-      :'hidden editor'}
+      {toggle ? (
+        <div className='questionContainer'>
+          {openEditor && (
+            <MyTinyEditor
+              id={
+                parentQuestionType?.ComprehensionQuestions ||
+                parentQuestionType?.VideoQuestion
+                  ? `questionEditor${index}`
+                  : 'questionEditor'
+              }
+              content={question}
+              handleEditorChange={handleEditorChange}
+              setOpenEditor={setOpenEditor}
+              placeholder='Question goes here...'
+              filterDataTop={filterDataTop}
+              filterDataBottom={filterDataBottom}
+            />
+          )}
+          {!openEditor && (
+            <TextField
+              style={{ width: '100%' }}
+              id={
+                parentQuestionType?.ComprehensionQuestions ||
+                parentQuestionType?.VideoQuestion
+                  ? `questionDisplay${index}`
+                  : 'questionDisplay'
+              }
+              variant='outlined'
+              size='small'
+              className='dropdownIcon questionDisplay'
+              placeholder='Click on format text to create a question'
+              value={questionDisplay}
+              name={
+                parentQuestionType?.ComprehensionQuestions ||
+                parentQuestionType?.VideoQuestion
+                  ? `questionDisplay${index}`
+                  : 'questionDisplay'
+              }
+              inputProps={{
+                readOnly: true,
+                autoComplete: 'off',
+              }}
+              InputProps={{
+                endAdornment: (
+                  <>
+                    <div className='dividerVertical'></div>
+                    <Button
+                      variant='contained'
+                      style={{
+                        color: 'white',
+                        textTransform: 'none',
+                        width: '12%',
+                        margin: '0px 0px 0px 15px',
+                      }}
+                      color='primary'
+                      className='modifyDesign'
+                      size='small'
+                      onClick={() => setOpenEditor(true)}
+                    >
+                      {isMobile ? 'Format' : 'Format Text'}
+                    </Button>
+                    <IconButton>
+                      <div>
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              style={{ height: '24px', width: '25px' }}
+                              src={infoicon}
+                            />
+                          )}
+                        />
+                      </div>
+                    </IconButton>
+                  </>
+                ),
+              }}
+            />
+          )}
+        </div>
+      ) : (
+        'hidden editor'
+      )}
       {!isMinimized && (
         <>
           <div className='answerTag'>
@@ -839,25 +846,25 @@ const MultipleChoice = ({
               : 'Answers'}
           </div>
           {showQuestionType?.Descriptive ? (
-            toggle ?
-            <div className='descriptiveAnswerEditor'>
-              <MyTinyEditor
-                id={
-                  parentQuestionType?.ComprehensionQuestions ||
-                  parentQuestionType?.VideoQuestion
-                    ? `answerEditor${index}`
-                    : 'answerEditor'
-                }
-                className='answerEditor'
-                content={descriptiveAnswer}
-                handleEditorChange={handleEditorChange}
-                setOpenEditor={setOpenEditor}
-                placeholder='Answer goes here...'
-                filterDataTop={filterDataTop}
-                filterDataBottom={filterDataBottom}
-              />
-            </div>
-            :null
+            toggle ? (
+              <div className='descriptiveAnswerEditor'>
+                <MyTinyEditor
+                  id={
+                    parentQuestionType?.ComprehensionQuestions ||
+                    parentQuestionType?.VideoQuestion
+                      ? `answerEditor${index}`
+                      : 'answerEditor'
+                  }
+                  className='answerEditor'
+                  content={descriptiveAnswer}
+                  handleEditorChange={handleEditorChange}
+                  setOpenEditor={setOpenEditor}
+                  placeholder='Answer goes here...'
+                  filterDataTop={filterDataTop}
+                  filterDataBottom={filterDataBottom}
+                />
+              </div>
+            ) : null
           ) : (
             <div>
               <div
