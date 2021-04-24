@@ -47,6 +47,9 @@ import AddHomeworkCoord from './containers/homework/coordinator-homework/add-hom
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
 import endpoints from '../src/config/endpoints';
+import BookAppointment from './containers/BookAppointments/BookAppointment';
+import Appointments from './containers/BookAppointments/Appointments';
+import ResponderView from './containers/BookAppointments/ResponderView';
 import {
   ViewAssessments,
   AssessmentAttemption,
@@ -261,10 +264,8 @@ import AssessmentView from './containers/assessment-central/assesment-view';
 import CreateAssesment from './containers/assessment-central/create-assesment';
 import AssessmentReportTypes from './containers/assessment-central/assessment-report-types';
 import ContactUs from 'containers/contact-us';
-import BookAppointment from './containers/BookAppointments/BookAppointment';
-import Appointments from './containers/BookAppointments/Appointments';
-import ResponderView from './containers/BookAppointments/ ResponderView';
-import EditAppointment from './containers/BookAppointments/EditAppointment';
+// import Contact from './containers/contact/Contact';
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -590,10 +591,10 @@ function App({ alert }) {
                           <Route exact path='/student-forum'>
                             {({ match }) => <Discussionforum match={match} />}
                           </Route>
-                          <Route exact path='/category'>
+                          <Route exact path='/master-management/discussion-category'>
                             {({ match }) => <CategoryPage match={match} />}
                           </Route>
-                          <Route exact path='/category/create-category'>
+                          <Route exact path='/master-management/discussion-category/create'>
                             {({ match }) => <CreateCategories match={match} />}
                           </Route>
                           <Route exact path='/category/create'>
@@ -613,6 +614,12 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/student-forum/post/:id'>
                             {({ match }) => <DiscussionPost match={match} />}
+                          </Route>
+                          <Route exact path='/teacher-forum/edit/:id'>
+                            {({ match }) => <CreateDiscussionForum match={match} />}
+                          </Route>
+                          <Route exact path='/student-forum/edit/:id'>
+                            {({ match }) => <CreateDiscussionForum match={match} />}
                           </Route>
                           <Route exact path='/teacher-circular'>
                             {({ match }) => <CircularList match={match} />}
@@ -1263,14 +1270,16 @@ function App({ alert }) {
                           <Route exact path='/attendance-calendar/student-view'>
                             {({ match }) => <AttedanceCalender match={match} />}
                           </Route>
-                          <Route exact path='/Attendance'>
+                          <Route exact path='/teacher-view/attendance'>
+                            {({ match }) => <Attendance match={match} />}
+                          </Route>
+                          <Route exact path='/student-view/attendance'>
                             {({ match }) => <Attendance match={match} />}
                           </Route>
                           <Route exact path='/OverallAttendance'>
                             {({ match }) => <OverallAttendance match={match} />}
                           </Route>
                           <Route exact path='/createEvent'>
-                          
                             {({ match, history }) => (
                               <CreateEvent match={match} history={history} />
                             )}
@@ -1290,18 +1299,15 @@ function App({ alert }) {
                           <Route exact path='/contact-us'>
                             {({ match }) => <ContactUs match={match} />}
                           </Route>
-                          <Route exact path='/BookAppointment'>
-                          {({ match }) => <BookAppointment match={match} />}
-                        </Route>
-                        <Route exact path='/ResponderView'>
-                          {({ match }) => <ResponderView match={match} />}
-                        </Route>
-                        <Route exact path='/Appointments'>
-                          {({ match }) => <Appointments match={match} />}
-                        </Route>
-                        <Route exact path='/EditAppointment'>
-                          {({ match }) => <EditAppointment match={match} />}
-                        </Route>
+                          <Route exact path='/book-appointment'>
+                            {({ match }) => <BookAppointment match={match} />}
+                          </Route>
+                          <Route exact path='/appointments'>
+                            {({ match }) => <Appointments match={match} />}
+                          </Route>
+                          <Route exact path='/responder-view'>
+                            {({ match }) => <ResponderView match={match} />}
+                          </Route>
                         </Switch>
                       </DailyDairyStore>
                     </ViewStore>

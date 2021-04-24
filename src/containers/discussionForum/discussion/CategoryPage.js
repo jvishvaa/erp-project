@@ -175,10 +175,12 @@ function CategoryPage() {
   const categoryList = useSelector((state) => state.discussionReducers.categoryList);
   const subCategoryList = useSelector((state) => state.discussionReducers.subCategoryList);
   const subSubCategoryList = useSelector((state) => state.discussionReducers.subSubCategoryList);
+  const updateCategory = useSelector((state) => state.discussionReducers.updateCategory);
   const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = React.useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = React.useState(null);
   const [selectedSubSubCategory, setSelectedSubSubCategory] = React.useState(null);
+  const [tabValue, setTabValue] = React.useState('all');
   const { setAlert } = useContext(AlertNotificationContext);
 
   const handleClearFilter = () => {
@@ -189,7 +191,7 @@ function CategoryPage() {
   }
 
   const handleFilter = () => {
-    if(selectedCategory?.id && selectedSubCategory?.sub_category_id && selectedSubSubCategory.sub_sub_category_name){
+    if(selectedCategory?.id && selectedSubCategory?.sub_category_id && selectedSubSubCategory?.sub_sub_category_name){
       dispatch(fetchCategoryData(selectedSubCategory?.sub_category_id));
     } else {
       setAlert('warning',`Please Select Category`);
@@ -221,9 +223,13 @@ function CategoryPage() {
   };
 
   React.useEffect(() => {
-    dispatch(fetchCategory());
-    dispatch(fetchCategoryData());
-  },[])
+    if(selectedCategory?.id && selectedSubCategory?.sub_category_id){
+      dispatch(fetchCategoryData(selectedSubCategory?.sub_category_id));
+    } else {
+      dispatch(fetchCategory());
+      dispatch(fetchCategoryData());
+    }
+  },[tabValue, updateCategory])
 
   React.useEffect(() => {
     if(selectedCategory?.id){
@@ -235,12 +241,10 @@ function CategoryPage() {
     if(selectedSubCategory?.sub_category_id){
       dispatch(fetchSubSubCategoryList(selectedSubCategory?.sub_category_id));
     }
-  },[selectedSubCategory]);
-
-  const [tabValue, setTabValue] = React.useState('all');
+  },[selectedSubCategory ]);
 
   const handleCreateCategory = () => {
-    history.push('/category/create-category');
+    history.push('/master-management/discussion-category/create');
   };
 
   const handleTabChange = (e, newValue) => {

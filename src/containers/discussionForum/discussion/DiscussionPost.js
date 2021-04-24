@@ -161,6 +161,9 @@ const StyledOutlinedButton = withStyles({
     borderRadius: '10px',
     marginTop: '15px',
     backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   },
 })(Button);
 

@@ -8,6 +8,7 @@
   color: #ff6b6b;
 }
 .response .MuiFormControlLabel-root {
+  
   min-width: 0px;
   margin-left: 23px;
 }
@@ -20,3 +21,20 @@
   align-items: inherit;
   flex-direction: column;
 }
+.im {
+ padding-left: 100px;
+  padding-top: 15px;
+}   
+.dat {
+  padding-top: 45px;
+}
+
+  @media only screen and (max-width:  1562px){
+    .arrow-1  {
+    display:block;
+    }
+  }
+.conte .MuiOutlinedInput-inputAdornedEnd {
+  font-size:revert;
+}
+

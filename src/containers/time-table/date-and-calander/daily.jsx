@@ -3,6 +3,7 @@ import DisplayBox from './displayBox.jsx';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 const Daily = (props) => {
   const [daily, setDaily] = useState(null);
+  // const [daily, setDaily] = useState([1, 2, 4, 3, 4, 5]);
   const [loopData] = useState([1, 2, 3, 4, 5]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectData, setSelectData] = useState(false);
@@ -14,11 +15,14 @@ const Daily = (props) => {
   const [DataFriday, setDataFriday] = useState(props.tableData.Friday);
   const [DataSaturday, setDataSaturday] = useState(props.tableData.Saturday);
   const [DataSunday, setDataSunday] = useState(props.tableData.Sunday);
-  const [mapData, setMapData] = useState([1]);
+  // const [mapData, setMapData] = useState([1]);
   const [showBox, setShowBox] = useState(false);
   useEffect(() => {
     handleDailyData();
-  }, [props.openToggleCalander]);
+  }, [props.openToggleCalander, props.tableData]);
+  useEffect(() =>{
+    handleDailyData();
+  }, [props.tableData])
   const handleDailyData = () => {
     let newDate = new Date();
     let days = [
@@ -63,19 +67,20 @@ const Daily = (props) => {
       setDaily(DataFriday);
     }
   };
-  const handleClosePass = () =>{
+  const handleClosePass = () => {
     setShowBox(false);
-  }
-  const handlePassData = (data) =>{
+  };
+  const handlePassData = (data) => {
     setSelectData(data);
-    setShowBox(true);
-  }
+    setShowBox(!showBox);
+  };
 
   return (
     <>
+    <div className='daily-header'>{currentDay}</div>
       <div className='calander-container-time-table-module'>
         <div className='calander-daily-time-table-module'>
-          <table>
+          {/* <table>
             <tr>
               <div className='daily-header'>{currentDay}</div>
             </tr>
@@ -96,10 +101,26 @@ const Daily = (props) => {
                     ))}
                 </tr>
               ))}
-          </table>
+          </table> */}
+          
+          <div classname='daily-outer-card' style={{display: 'flex', flexWrap:'wrap', flexDirection:'row'}}>
+            {daily &&
+              daily.map((data) => (
+                <div className='daily-inner-card' key={data.id} onClick={() => handlePassData(data)}>
+                  {' '}
+                  <h4>{data?.period_name}</h4>{' '}
+                  <h3>{data?.subject_details?.subject_name}</h3>
+                  <p>
+                    {data.period_start_time.slice(0, 5)}-
+                    {data.period_end_time.slice(0, 5)}
+                  </p>
+                  <h4>{data.teacher_name?.name}</h4>
+                </div>
+              ))}
+          </div>
         </div>
         <div className='display-container-time-table-module'>
-          {showBox? (
+          {showBox ? (
             <DisplayBox handleClosePass={handleClosePass} dataOpenChange={selectData} />
           ) : (
             <div className='message'>Select card to view further details</div>

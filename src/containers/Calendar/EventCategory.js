@@ -345,7 +345,7 @@ const Cal1 = () => {
   }
 
 
-  const [custColor, setCustColor] = useState('');
+  const [custColor, setCustColor] = useState('black');
 
   const handleColor = (e) => {
     console.log('color:', e.target.value);
@@ -566,6 +566,7 @@ const Cal1 = () => {
               <TextField
                 type='color'
                 value={custColor || ''}
+                defaultValue="#000000"
                 backgroundColor='custColor'
                 label='Assign color'
                 variant='outlined'
@@ -687,9 +688,9 @@ const Cal1 = () => {
 
           <Grid container justify='center'>
             {dummyData && totalGenre > 9 && (
-              <Pagination
+              <Pagination 
                 onChange={handlePagination}
-                style={{ paddingLeft: '150px' }}
+                // style={{ paddingLeft: '150px' }}
                 count={Math.ceil(totalGenre / limit)}
                 color='primary'
                 page={pageNumber}

@@ -21,6 +21,9 @@ import TodayIcon from '@material-ui/icons/Today';
 import MoreIcon from '@material-ui/icons/More';
 import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
+import ContactPhoneRoundedIcon from '@material-ui/icons/ContactPhoneRounded';
+// import TodayIcon from '@material-ui/icons/Today';
+import AssessmentSharpIcon from '@material-ui/icons/AssessmentSharp';
 import {
   Popper,
   Fade,
@@ -64,6 +67,7 @@ import logo from '../../assets/images/logo.png';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserInfo from '../../components/user-info';
 import PublishIcon from '@material-ui/icons/Publish';
@@ -476,6 +480,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Event Category': {
         history.push('/master-management/event-category');
+        break;
+      }
+      case 'Discussion Category': {
+        history.push('/master-management/discussion-category');
         break;
       }
       case 'Course': {
