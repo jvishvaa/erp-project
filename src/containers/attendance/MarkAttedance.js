@@ -232,6 +232,7 @@ const MarkAttedance = () => {
           attendance_for_date: dateValue,
         }));
         setData(result);
+        console.log(result, 'result checking');
       })
       .catch((err) => {
         setLoading(false);
@@ -333,7 +334,7 @@ const MarkAttedance = () => {
     let product = { ...products[studentId] };
     product.is_first_shift_present = e.target.checked;
     products[studentId] = product;
-    // console.log(products)
+    console.log(products);
     setData(products);
     const remarks = 'test';
     const fullday_present =
@@ -352,10 +353,10 @@ const MarkAttedance = () => {
       is_second_shift_present: product.is_second_shift_present ? 'true' : 'false',
     };
     console.log(fullData);
-    axiosInstance
-      .post(`${endpoints.academics.createAttendance}`, fullData)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    // axiosInstance
+    //   .post(`${endpoints.academics.createAttendance}`, fullData)
+    //   .then((res) => console.log(res))
+    //   .catch((err) => console.log(err));
     // .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
     // .post(`${endpoints.academics.createAttendance}`)
     // console.log(`${endpoints.academics.createAttendance}`)
@@ -387,7 +388,7 @@ const MarkAttedance = () => {
     let product = { ...products[studentId] };
     product.is_second_shift_present = e.target.checked;
     products[studentId] = product;
-    // console.log(products)
+    console.log(products);
     setData(products);
     const remarks = 'test';
     const fullday_present =
@@ -406,11 +407,11 @@ const MarkAttedance = () => {
       is_second_shift_present: product.is_second_shift_present ? 'true' : 'false',
     };
     console.log(fullData);
-    axiosInstance
-      .post(`${endpoints.academics.createAttendance}`, fullData)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
     // axiosInstance
+    //   .post(`${endpoints.academics.createAttendance}`, fullData)
+    //   .then((res) => console.log(res))
+    //   .catch((err) => console.log(err));
+    // // axiosInstance
     //   .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
     //   .then(res => console.log(res))
     //   .catch(err => console.log(err))
@@ -431,6 +432,9 @@ const MarkAttedance = () => {
     // ))
   };
 
+  const handleSave = () => {
+    axiosInstance.post(`${endpoints.academics.markAttendance}`, data);
+  };
   const StudentData = () => {
     return (
       <>
@@ -742,6 +746,9 @@ const MarkAttedance = () => {
           <Grid>
             <Typography style={{ textAlign: 'center' }}>
               Number of Students: {totalGenre && totalGenre}
+              <StyledClearButton variant='contained' onClick={handleSave}>
+                Save
+              </StyledClearButton>
             </Typography>
           </Grid>
         </Grid>
@@ -777,7 +784,7 @@ const MarkAttedance = () => {
           </div>
         )}
         <Grid item md={2} xs={12}></Grid>
-        <Grid container justify='center'>
+        {/* <Grid container justify='center'>
           {data && totalGenre > 8 && (
             <Pagination
               onChange={handlePagination}
@@ -787,7 +794,7 @@ const MarkAttedance = () => {
               color='primary'
             />
           )}
-        </Grid>
+        </Grid> */}
       </Grid>
       {loading && <Loader />}
     </Layout>

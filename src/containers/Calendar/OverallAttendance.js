@@ -82,6 +82,7 @@ const Attend = () => {
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+  console.log(moduleId, 'module id =======================');
 
   const [totalGenre, setTotalGenre] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
@@ -204,7 +205,7 @@ const Attend = () => {
 
     axiosInstance
       .get(
-        `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&page_num=${pageNumber}&page_size=${limit}`
+        `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}`
       )
       .then((res) => {
         setLoading(false);
@@ -773,7 +774,7 @@ const Attend = () => {
           />
         </div>
       )}
-      <Grid container justify='center'>
+      {/* <Grid container justify='center'>
         {result && totalGenre > 8 && (
           <Pagination
             onChange={handlePagination}
@@ -784,7 +785,7 @@ const Attend = () => {
             color='primary'
           />
         )}
-      </Grid>
+      </Grid> */}
       {loading && <Loader />}
     </Layout>
   );
