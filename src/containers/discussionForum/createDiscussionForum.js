@@ -83,9 +83,6 @@ const CreateDiscussionForum = () => {
 
   // edit discussion state
   const [editData, setEditData] = useState('');
-  const [editBranch, setEditBranch] = useState('');
-  const [editGrade, setEditGrade] = useState('');
-  const [editSection, setEditSection] = useState('');
 
   const handleBackButton = () => {
     setDescription('');
@@ -106,7 +103,7 @@ const CreateDiscussionForum = () => {
     sectionList
     .filter((item) => selectedSections.includes(item['section__section_name']))
     .forEach((items) => {
-      sectionsId.push(items.section_id);
+      sectionsId.push(items.id);
     });
     //setSelectedSectionIds(sectionsId)
 
@@ -224,7 +221,7 @@ const CreateDiscussionForum = () => {
       try {
         setLoading(true);
         const result = await axiosInstance.get(
-          `${endpoints.communication.grades}?branch_id=${selectedBranch?.branch?.id}&module_id=${moduleId}`,
+          `${endpoints.communication.grades}?session_year=${selectedSession?.id}&branch_id=${selectedBranch?.branch?.id}&module_id=${moduleId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -344,7 +341,7 @@ const CreateDiscussionForum = () => {
           gradesId.push(items.grade_id);
         });
       const result = await axiosInstance.get(
-        `${endpoints.communication.sections}?session_year=${1}&branch_id=${
+        `${endpoints.communication.sections}?&session_year=${selectedSession?.id}&branch_id=${
           selectedBranch.branch.id
         }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
         {
@@ -527,30 +524,32 @@ const CreateDiscussionForum = () => {
                 )}
               />
             </Grid>
+            {selectedSession && branchList.length && (
+              <Grid xs={12} lg={4} className='create_group_items' item>
+                <Autocomplete
+                  size='small'
+                  style={{ width: '100%' }}
+                  onChange={handleBranch}
+                  value={selectedBranch}
+                  id='message_log-branch'
+                  className='create_group_branch'
+                  options={branchList}
+                  getOptionLabel={(option) => option?.branch.branch_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      className='message_log-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                    />
+                  )}
+                />
+              </Grid>
+            )}
             <Grid xs={12} lg={4} className='create_group_items' item>
-              <Autocomplete
-                size='small'
-                style={{ width: '100%' }}
-                onChange={handleBranch}
-                value={selectedBranch}
-                id='message_log-branch'
-                className='create_group_branch'
-                options={branchList}
-                getOptionLabel={(option) => option?.branch.branch_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    className='message_log-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid xs={12} lg={4} className='create_group_items' item>
-              {selectedBranch && gradeList.length ? ( 
+              {selectedSession && selectedBranch.length && gradeList.length ? ( 
               <Autocomplete
                 multiple
                 style={{ width: '100%' }}
@@ -572,7 +571,7 @@ const CreateDiscussionForum = () => {
             ) : null }
             </Grid>
             <Grid xs={12} lg={4} className='create_group_items' item>
-              {selectedGrades.length && sectionList.length ? (
+              {selectedSession && selectedBranch.length && selectedGrades.length && sectionList.length ? (
               <Autocomplete
                 multiple
                 style={{ width: '100%' }}
@@ -616,7 +615,7 @@ const CreateDiscussionForum = () => {
             />
           </Grid>
           <Grid item xs={12} sm={4}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-            {/* {selectedCategory && subCategoryListRes.length ? (  */}
+            {selectedCategory && subCategoryListRes.length ? ( 
             <Autocomplete
               style={{ width: '100%' }}
               id="tags-outlined"
@@ -637,10 +636,10 @@ const CreateDiscussionForum = () => {
                   handleSubCategoryChange
               }
             />
-            {/* ) : null} */}
+             ) : null}
           </Grid>
           <Grid item xs={12} sm={4}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-            {/* {selectedSubCategory && subSubCategoryListRes.length ? (  */}
+            {selectedCategory && selectedSubCategory && subSubCategoryListRes.length ? ( 
             <Autocomplete
               style={{ width: '100%' }}
               id="tags-outlined"
@@ -661,7 +660,7 @@ const CreateDiscussionForum = () => {
                   handleSubSubCategoryChange
               }
             />
-            {/* ) : null} */}
+             ) : null}
           </Grid>
         </Grid>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
