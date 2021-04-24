@@ -83,7 +83,7 @@ const Attend = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
-  const [totalGenre, setTotalGenre] = useState(null);
+  const [totalGenre, setTotalGenre] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const limit = 8;
 
@@ -328,6 +328,7 @@ const Attend = () => {
     // setGenreActiveListResponse([]);
     // setGenreInActiveListResponse([]);
     // getData();
+    handleFilter();
   };
   const handleSinlgeStudent = (id) => {
     console.log(id);
@@ -349,58 +350,6 @@ const Attend = () => {
       },
     });
   };
-
-  const dummyData = [
-    {
-      student_first_name: 'Akash',
-      is_first_shift_present: true,
-      is_second_shift_present: false,
-      student: '11',
-      ERPno: '123456789',
-    },
-    {
-      student_first_name: 'Sharma',
-      is_first_shift_present: true,
-      is_second_shift_present: false,
-      student: '12',
-      ERPno: '123456789',
-    },
-    {
-      student_first_name: 'Akash',
-      is_first_shift_present: true,
-      is_second_shift_present: false,
-      student: '13',
-      ERPno: '123456789',
-    },
-    {
-      student_first_name: 'Sharma',
-      is_first_shift_present: true,
-      is_second_shift_present: false,
-      student: '14',
-      ERPno: '123456789',
-    },
-    {
-      student_first_name: 'Akash',
-      is_first_shift_present: true,
-      is_second_shift_present: false,
-      student: '15',
-      ERPno: '123456789',
-    },
-    {
-      student_first_name: 'Sharma',
-      is_first_shift_present: true,
-      is_second_shift_present: false,
-      student: '16',
-      ERPno: '123456789',
-    },
-    {
-      student_first_name: 'Akash',
-      is_first_shift_present: true,
-      is_second_shift_present: false,
-      student: '17',
-      ERPno: '123456789',
-    },
-  ];
 
   return (
     <Layout>
@@ -713,7 +662,7 @@ const Attend = () => {
           </Grid> */}
           <Grid item xs={8} sm={2} md={2} lg={2}>
             <Typography variant='subtitle1' color='secondary'>
-              Number of students: {(result && result.length) || 0}
+              Number of students: {totalGenre && totalGenre}
             </Typography>
           </Grid>
           {/* <Grid item xs={8} sm={2} md={2} lg={2}>
@@ -825,10 +774,10 @@ const Attend = () => {
         </div>
       )}
       <Grid container justify='center'>
-        {totalGenre > 9 && (
+        {result && totalGenre > 8 && (
           <Pagination
             onChange={handlePagination}
-            style={{ paddingLeft: '150px' }}
+            // style={{ paddingLeft: '150px' }}
             count={Math.ceil(totalGenre / limit)}
             color='primary'
             page={pageNumber}

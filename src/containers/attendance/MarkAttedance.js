@@ -114,7 +114,7 @@ const MarkAttedance = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
-  const [totalGenre, setTotalGenre] = useState(null);
+  const [totalGenre, setTotalGenre] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const limit = 8;
 
@@ -372,6 +372,8 @@ const MarkAttedance = () => {
   };
   const handlePagination = (event, page) => {
     setPageNumber(page);
+    console.log(page, 'page number checking');
+    handleFilter();
     // setGenreActiveListResponse([]);
     // setGenreInActiveListResponse([]);
     // getData();
@@ -739,7 +741,7 @@ const MarkAttedance = () => {
           </Grid>
           <Grid>
             <Typography style={{ textAlign: 'center' }}>
-              Number of Students: {data && data.length}
+              Number of Students: {totalGenre && totalGenre}
             </Typography>
           </Grid>
         </Grid>
@@ -776,10 +778,9 @@ const MarkAttedance = () => {
         )}
         <Grid item md={2} xs={12}></Grid>
         <Grid container justify='center'>
-          {totalGenre > 8 && (
+          {data && totalGenre > 8 && (
             <Pagination
               onChange={handlePagination}
-              style={{ paddingLeft: '150px' }}
               count={Math.ceil(totalGenre / limit)}
               color='primary'
               page={pageNumber}

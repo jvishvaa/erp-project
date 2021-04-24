@@ -81,7 +81,7 @@ const Attendance = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
-  const [totalGenre, setTotalGenre] = useState(null);
+  const [totalGenre, setTotalGenre] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const [studentView, setStudentView] = useState(false);
   const limit = 8;
@@ -286,6 +286,7 @@ const Attendance = () => {
     // setGenreActiveListResponse([]);
     // setGenreInActiveListResponse([]);
     // getData();
+    handleFilter();
   };
   const handleClearAll = () => {
     setSelectedAcadmeicYear('');
@@ -832,7 +833,7 @@ const Attendance = () => {
         </div>
       )}
       <Grid container justify='center'>
-        {totalGenre > 9 && (
+        {data && totalGenre > 8 && (
           <Pagination
             onChange={handlePagination}
             style={{ paddingLeft: '150px' }}
