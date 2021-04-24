@@ -495,7 +495,7 @@ const Cal1 = () => {
             </Grid>
           </Grid>
           <Grid container spacing={2} direction='row'>
-            <Grid item xs={12} sm={4} md={2} lg={1}>
+            {/* <Grid item xs={12} sm={4} md={2} lg={1}>
               <Button
                 variant='contained'
                 className='custom_button_master '
@@ -504,7 +504,7 @@ const Cal1 = () => {
               >
                 Clear
               </Button>
-            </Grid>
+            </Grid> */}
             {/* <Grid item xs={12} sm={4} md={2} lg={1}>
               <Button
                 variant='contained'
