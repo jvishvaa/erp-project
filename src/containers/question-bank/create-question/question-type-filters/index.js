@@ -48,6 +48,7 @@ const questionType = [
 
 const bulkCreationSupportTypes = [1, 8, 9];
 const QuestionTypeFilters = ({
+  domainName,
   editData,
   setEditData,
   setLoading,
@@ -234,6 +235,7 @@ const QuestionTypeFilters = ({
     }
     let requestBody = {
       sub_questions: subQuestions,
+      school: domainName,
       question_answer: questionAndAnswer,
       question_level: filterData.level.id,
       question_categories: filterData.category.id,
@@ -542,6 +544,7 @@ const QuestionTypeFilters = ({
               setIsQuestionFilterOpen={setIsQuestionFilterOpen}
               setIsCreateManuallyOpen={setIsCreateManuallyOpen}
               parentQuestionType={setShowQuestionType}
+              domainName={domainName}
             />
           </div>
         )}
@@ -676,6 +679,7 @@ const QuestionTypeFilters = ({
                     setIsQuestionFilterOpen={setIsQuestionFilterOpen}
                     setIsCreateManuallyOpen={setIsCreateManuallyOpen}
                     parentQuestionType={showQuestionType} // Flag used for comprehension, video, ppt
+                    domainName={domainName}
                   />
                 </div>
               )

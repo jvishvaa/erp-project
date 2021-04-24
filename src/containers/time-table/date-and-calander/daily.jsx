@@ -19,7 +19,10 @@ const Daily = (props) => {
   const [showBox, setShowBox] = useState(false);
   useEffect(() => {
     handleDailyData();
-  }, [props.openToggleCalander]);
+  }, [props.openToggleCalander, props.tableData]);
+  useEffect(() =>{
+    handleDailyData();
+  }, [props.tableData])
   const handleDailyData = () => {
     let newDate = new Date();
     let days = [
@@ -69,7 +72,7 @@ const Daily = (props) => {
   };
   const handlePassData = (data) => {
     setSelectData(data);
-    setShowBox(true);
+    setShowBox(!showBox);
   };
 
   return (

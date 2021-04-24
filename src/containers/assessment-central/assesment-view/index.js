@@ -21,6 +21,9 @@ import selectfilter from '../../../assets/images/selectfilter.svg';
 import hidefilter from '../../../assets/images/hidefilter.svg';
 import showfilter from '../../../assets/images/showfilter.svg';
 import axios from 'axios';
+import { getSubDomainName } from '../../../utility-functions';
+
+const subDomainName = getSubDomainName();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,7 +90,7 @@ const AssessmentView = () => {
       // }
       axios
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}${tabVal}&page=${page}&page_size=${limit}`,
+          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}${tabVal}&page=${page}&page_size=${limit}&school=${subDomainName}`,
           {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           }
@@ -113,7 +116,7 @@ const AssessmentView = () => {
       setTabValue(1);
       axios
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_draft=True&page=${page}&page_size=${limit}`,
+          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_draft=True&page=${page}&page_size=${limit}&school=${subDomainName}`,
           {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           }
@@ -139,7 +142,7 @@ const AssessmentView = () => {
       setTabValue(2);
       axios
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_review=True&page=${page}&page_size=${limit}`,
+          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_review=True&page=${page}&page_size=${limit}&school=${subDomainName}`,
           {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           }
@@ -165,7 +168,7 @@ const AssessmentView = () => {
       setTabValue(3);
       axios
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_verified=True&page=${page}&page_size=${limit}`,
+          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_verified=True&page=${page}&page_size=${limit}&school=${subDomainName}`,
           {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           }

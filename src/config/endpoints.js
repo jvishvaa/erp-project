@@ -321,6 +321,15 @@ export default {
     CreateEvent: 'academic/events/',
     getEventCategory: 'academic/list_create_event_category/',
   },
+  Appointments: {
+    bookedAppointmentList: 'academic/booked-appointment-list/',
+    bookAppointment: 'academic/book-appointment/',
+    updateAppointment: 'update-appointment/',
+  },
+  ContactUsAPI: {
+    getContactUsAPI: '/academic/contact/',
+    updatedeleteContact: '/academic/update_contact/',
+  },
 
   assessment: {
     assessmentResultAnalysis: `${baseURLCentral}/assessment/student-reports/`,

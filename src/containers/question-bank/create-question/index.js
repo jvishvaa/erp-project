@@ -19,6 +19,7 @@ import TopFilters from './top-filters';
 import QuestionTypeFilters from './question-type-filters';
 import './create-question.css';
 import axios from 'axios';
+import { getSubDomainName } from '../../../utility-functions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: 'none',
   },
 }));
-
+const domainName = getSubDomainName();
 const CreateQuestion = () => {
   const classes = useStyles();
   const { qId } = useParams();
@@ -38,7 +39,6 @@ const CreateQuestion = () => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [isTopFilterOpen, setIsTopFilterOpen] = useState(true);
   const [isFilter, setIsFilter] = useState(false);
-
   const [filterDataDisplay, setFilterDataDisplay] = useState({
     grade: '',
     subject: '',
@@ -163,6 +163,7 @@ const CreateQuestion = () => {
               </div>
               <QuestionTypeFilters
                 editData={editData}
+                domainName={domainName}
                 setEditData={setEditData}
                 setLoading={setLoading}
                 attributes={filterDataDisplay || {}}
