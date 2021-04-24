@@ -1,21 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Layout from '../Layout/index';
-import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DateFnsUtils from '@date-io/date-fns';
-import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Loader from '../../components/loader/loader';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Chip from '@material-ui/core/Chip';
-import MenuItem from '@material-ui/core/MenuItem';
-import Input from '@material-ui/core/Input';
 import FilterImage from '../../assets/images/Filter_Icon.svg';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import UpperGrade from './uppergrade/upper-grade.jsx';
@@ -70,7 +64,7 @@ const TimeTable = (props) => {
   const themeContext = useTheme();
   // const setMobileView  = !useMediaQuery(themeContext.breakpoints.down('sm'));
   const [loading, setLoading] = useState(false);
-  const setMobileView = useMediaQuery('(min-width:400px)');
+  const setMobileView = useMediaQuery('(min-width:650px)');
   const [tableData, setTableData] = useState([]);
   const [Filter, setFilter] = useState(true);
   const [acadamicYearID, setAcadamicYear] = useState();
@@ -91,14 +85,8 @@ const TimeTable = (props) => {
   const [gradeName, setGradeName] = useState();
   const [sectionIdOption, setSectionIdOption] = useState(null);
   const [branchName, setBranchName] = useState();
-  const [loopMax, setLoopMax] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+  const [loopMax, setLoopMax] = useState([]);
   const [assignedTeacher, setAssignedTeacher] = useState();
-  const [lengthMonday, setLengthMonday] = useState();
-  const [lengthTuesday, setLengthTuesday] = useState();
-  const [lengthWednesday, setLengthWednesday] = useState();
-  const [lengthThursday, setLengthThursday] = useState();
-  const [lengthFriday, setLengthFriday] = useState();
-  const [maxLength, setMaxLength] = useState();
   const [moduleId, setModuleId] = useState();
   const [sectinName, setSectionName] = useState();
   const [subject, setSubject] = useState();
@@ -153,6 +141,8 @@ const TimeTable = (props) => {
     console.log('openNewPeriod');
     setOpenNewPeriod(true);
   };
+  let lengthMon, lengthTue, lengthThurs, lengthfri, lengthSat, lengthWed, lengthSun;
+
   const callGetTimeTableAPI = async () => {
     setLoading(true);
     await axiosInstance
@@ -169,9 +159,15 @@ const TimeTable = (props) => {
           if (tableData) {
             setLoading(false);
           }
-          console.log('calculateLength();');
-          calculateLength();
           setTableData(response.data.result);
+          lengthMon = response?.data?.result?.Monday?.length;
+          lengthTue = response?.data?.result?.Tuesday?.length;
+          lengthWed = response?.data?.result?.Wednesday?.length;
+          lengthThurs = response?.data?.result?.Thursday?.length;
+          lengthfri = response?.data?.result?.Friday?.length ;
+          lengthSat = response?.data?.result?.Saturday?.length;
+          lengthSun = response?.data?.result?.Sunday?.length;
+          calculateLength();
         }
       })
       .catch((error) => {
@@ -207,57 +203,27 @@ const TimeTable = (props) => {
     });
   };
   const calculateLength = () => {
-    if (tableData.Monday) {
-      let lengthData = tableData.Monday.length;
-      if (lengthData > 6) {
-        setLengthMonday(lengthData);
-      }
-      console.log(lengthData);
-    }
-    if (tableData.Tuesday) {
-      let lengthData = tableData.Tuesday.length;
-      if (lengthData > 6) {
-        setLengthTuesday(lengthData);
-      }
-      console.log(lengthData);
-    }
-    if (tableData.Wednesday) {
-      let lengthData = tableData.Wednesday.length;
-      if (lengthData > 6) {
-        setLengthWednesday(lengthData);
-      }
-      console.log(lengthData);
-    }
-    if (tableData.Thursday) {
-      let lengthData = tableData.Thursday.length;
-      if (lengthData > 6) {
-        setLengthThursday(lengthData);
-      }
-      console.log(lengthData);
-    }
-    if (tableData.Friday) {
-      let lengthData = tableData.Friday.length;
-      if (lengthData > 6) {
-        setLengthFriday(lengthData);
-      }
-      console.log(lengthData);
-    }
-    // if(monday)
+    console.log(lengthMon,
+      lengthTue,
+      lengthWed,
+      lengthThurs,
+      lengthfri,
+      lengthSun,
+      lengthSat, 'all lengths');
     let arrayLength = [
-      lengthMonday,
-      lengthTuesday,
-      lengthWednesday,
-      lengthThursday,
-      lengthFriday,
+      lengthMon,
+      lengthTue,
+      lengthWed,
+      lengthThurs,
+      lengthfri,
+      lengthSun,
+      lengthSat,
     ];
     let sortedArray = arrayLength.sort();
-    setMaxLength(lengthMonday);
     console.log(sortedArray, 'sorted array');
-    console.log(maxLength, 'max length');
-    let mappingArray = Array.from(Array(maxLength).keys());
-    if (maxLength > 6) {
+    let mappingArray = Array.from(Array(sortedArray[6]).keys());
       setLoopMax(mappingArray);
-    }
+
   };
   const handleDateEndTimeChange = (time) => {
     // let dataTime = time.toString().slice(16, 21)
@@ -433,7 +399,7 @@ const TimeTable = (props) => {
                   id='select-day'
                   className={classes.formTextFields}
                 >
-                  <InputLabel id='demo-mutiple-chip-label'>Day</InputLabel>
+                 
 
                   {/* <Select
                     labelId='demo-mutiple-chip-label'
@@ -474,7 +440,7 @@ const TimeTable = (props) => {
                       getOptionLabel={(option) => option || ''}
                       filterSelectedOptions
                       renderInput={(params) => (
-                        <TextField {...params} variant='outlined' label='Days' />
+                        <TextField {...params} variant='outlined' label='Day' />
                       )}
                     />
                   </div>
@@ -598,9 +564,9 @@ const TimeTable = (props) => {
                 {openCloseTable ? (
                   <UserProvider value={ids}>
                     <DateAndCalander
+                    loopMax={loopMax}
                       handleCloseNewPeriod={handleCloseNewPeriod}
                       openNewPeriod={openNewPeriod}
-                      passId={ids}
                       section_ID={sectionID}
                       grade_ID={gradeID}
                       branch_ID={branchID}
