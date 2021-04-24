@@ -11,7 +11,7 @@ import { AlertNotificationContext } from '../../../../context-api/alert-context/
 import { getSubDomainName } from '../../../../utility-functions';
 import './assessment-report-filters.css';
 
-const subDomain = getSubDomainName();
+const subDomainName = getSubDomainName();
 let url = '';
 const AssessmentReportFilters = ({
   widerWidth,
@@ -105,7 +105,7 @@ const AssessmentReportFilters = ({
 
   const handleFilter = () => {
     let paramObj = {
-      school: subDomain,
+      school: subDomainName,
       // academic_year_id: filterData.academic?.id,
       // branch: filterData.branch?.branch?.id,
       // grade: filterData.grade?.central_grade_id,
