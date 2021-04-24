@@ -285,6 +285,8 @@ const CreateDiscussionForum = () => {
   const handleCategoryChange = (event,value) => {
     if (value && value.id) {
       setSelectedCategory(value);
+      setSelectedSubCategory(null);
+      setSelectedSubSubCategory(null);
       axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.id}&category_type=2`)
           .then(result => {
               if (result.data.status_code === 200) {
@@ -306,6 +308,7 @@ const CreateDiscussionForum = () => {
   const handleSubCategoryChange = (event,value) => {
     if (value && value.sub_category_id){
     setSelectedSubCategory(value)
+    setSelectedSubSubCategory(null);
     axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.sub_category_id}&category_type=3`)
     .then(result => {
         if (result.data.status_code === 200) {
@@ -524,7 +527,7 @@ const CreateDiscussionForum = () => {
                 )}
               />
             </Grid>
-            {selectedSession && branchList.length && (
+            {/* {selectedSession && branchList.length && ( */}
               <Grid xs={12} lg={4} className='create_group_items' item>
                 <Autocomplete
                   size='small'
@@ -547,9 +550,9 @@ const CreateDiscussionForum = () => {
                   )}
                 />
               </Grid>
-            )}
+            {/* )} */}
             <Grid xs={12} lg={4} className='create_group_items' item>
-              {selectedSession && selectedBranch.length && gradeList.length ? ( 
+              {/* {selectedSession && selectedBranch.length && gradeList.length ? (  */}
               <Autocomplete
                 multiple
                 style={{ width: '100%' }}
@@ -568,10 +571,10 @@ const CreateDiscussionForum = () => {
                   />
                 )}
               />
-            ) : null }
+            {/* ) : null } */}
             </Grid>
             <Grid xs={12} lg={4} className='create_group_items' item>
-              {selectedSession && selectedBranch.length && selectedGrades.length && sectionList.length ? (
+              {/* {selectedSession && selectedBranch.length && selectedGrades.length && sectionList.length ? ( */}
               <Autocomplete
                 multiple
                 style={{ width: '100%' }}
@@ -590,7 +593,7 @@ const CreateDiscussionForum = () => {
                   />
                 )}
               />
-              ) : null}
+              {/* ) : null} */}
             </Grid>
           </Grid>
         )}
@@ -615,7 +618,7 @@ const CreateDiscussionForum = () => {
             />
           </Grid>
           <Grid item xs={12} sm={4}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-            {selectedCategory && subCategoryListRes.length ? ( 
+            {/* {selectedCategory && subCategoryListRes.length ? (  */}
             <Autocomplete
               style={{ width: '100%' }}
               id="tags-outlined"
@@ -636,10 +639,10 @@ const CreateDiscussionForum = () => {
                   handleSubCategoryChange
               }
             />
-             ) : null}
+             {/* ) : null} */}
           </Grid>
           <Grid item xs={12} sm={4}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-            {selectedCategory && selectedSubCategory && subSubCategoryListRes.length ? ( 
+            {/* {selectedCategory && selectedSubCategory && subSubCategoryListRes.length ? (  */}
             <Autocomplete
               style={{ width: '100%' }}
               id="tags-outlined"
@@ -660,7 +663,7 @@ const CreateDiscussionForum = () => {
                   handleSubSubCategoryChange
               }
             />
-             ) : null}
+             {/* ) : null} */}
           </Grid>
         </Grid>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
