@@ -88,12 +88,12 @@ const AssesmentTest = ({
     }
     if (fieldName === 'testid') {
       value = event.target.value;
-      if (/^[a-zA-Z0-9]{0,10}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
+      if (/^[0-9]{0,9}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
         onTestIdChange(value);
       } else {
         setAlert(
           'error',
-          'Test ID can contain alphanumeric & must not exceed length of 10!'
+          'Test ID can contain numbers & must not exceed length of 9!'
         );
       }
     }
