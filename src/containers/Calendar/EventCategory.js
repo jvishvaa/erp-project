@@ -55,6 +55,7 @@ import e from 'cors';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
 import { FlashAutoTwoTone } from '@material-ui/icons';
+import { string } from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -212,6 +213,7 @@ const Cal1 = () => {
   //       });
   //   }
   // }, [moduleId, updateFlag]);
+  
 
   useEffect(() => {
     if (moduleId) {
@@ -249,6 +251,7 @@ const Cal1 = () => {
 
   const handleClickOpen = () => {
     setOpen(true);
+    setCustColor("black")
     setChaTitle(true);
   };
   const handleClickOpens = () => {
@@ -316,7 +319,9 @@ const Cal1 = () => {
           event_category_name: eventName,
           event_category_color: custColor,
         })
+        
         .then((result) => {
+          console.log(result,"yuj")
           setLoading(false);
           setEventName('');
           let fullData = eventType;
@@ -325,7 +330,17 @@ const Cal1 = () => {
             event_category_name: eventName,
             event_category_color: custColor,
           });
-          setEventType(fullData);
+          axiosInstance
+        .get(
+          `${endpoints.eventBat.getPaginatedCategories}?page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
+        )
+        .then((result) => {
+          setDummyData(result?.data?.data?.results);
+
+          setTotalGenre(result?.data?.data?.count);
+        });
+          // setDummyData([...dummyData,result.data.data])
+          // setEventType(fullData);
           setOpen(false);
           setAlert('success', 'Event Saved Successfully');
           console.log(result.data.data.results);
@@ -366,6 +381,7 @@ const Cal1 = () => {
   const handleClicknew = (event, id) => {
     setAnchorEl(event.currentTarget);
     setElementId(id);
+    setEventName('')
     console.log(id, 'checking id');
   };
   const handleCloseMenu = () => {
@@ -399,6 +415,18 @@ const Cal1 = () => {
       .catch((error) => setAlert('warning', 'Something went wrong'));
   };
   const handleSearch = (e, value) => {
+    console.log(typeof(e) ,pageNumber,"checking search")
+    if(e.length===0){
+      axiosInstance
+      .get(
+        `${endpoints.eventBat.getPaginatedCategories}?page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
+      )
+      .then((result) => {
+        setDummyData(result?.data?.data?.results);
+
+        setTotalGenre(result?.data?.data?.count);
+      });
+    }
     if (e.length > 0) {
       axiosInstance
         .get(
@@ -406,12 +434,14 @@ const Cal1 = () => {
         )
         .then((result) => {
           setDummyData(result?.data?.data?.results);
+
           setTotalGenre(result?.data?.data?.count);
         })
 
-        //  // setDummyData([])
+         // setDummyData([])
         .catch((err) => {
-          setAlert('warning', err);
+          setDummyData([])
+          setAlert('warning', "something went Wrong");
         });
     }
     setSearchData(e);
@@ -441,10 +471,19 @@ const Cal1 = () => {
     axiosInstance
       .put(`${endpoints.eventBat.patchUpdateEvent}${isEditId}`, params)
       .then((result) => {
-        console.log(result.data, 'Update Data');
-        if (result.data.status === 200) {
+        console.log(result,"kopila")
+        if (result.status === 200) {
+          console.log(result.data, 'Update Data');
           setIsEditId('');
           setEventName('');
+          for(let i=0;i<dummyData.length;i++){
+            if(dummyData[i].id===isEditId){
+              dummyData[i].event_category_color=result.data.event_category_color
+              dummyData[i].event_category_name=result.data.event_category_name
+            }
+          }
+          console.log(dummyData,"chkkl")
+          setDummyData([...dummyData])
           setEditFlag(!editFlag);
           handleSearch(searchData)
         }
@@ -486,7 +525,7 @@ const Cal1 = () => {
               <SearchBar
                 // value={filterData?.selectedEventType || ''}
                 value={searchData}
-                onChange={handleSearch}
+                onChange={(e)=>handleSearch(e)}
               />
             </Grid>
 
@@ -602,9 +641,11 @@ const Cal1 = () => {
             spacing={2}
             direction='row'
           >
+              {console.log(dummyData,"dummmm")}
             {dummyData.map((item) => {
-              return (
-                <div>
+              
+            return (
+                <div key={item.event_category_name}>
                   <Grid container>
                     <Grid item xs={12} md={4}>
                       <Card className={classes.cardstyle}>
