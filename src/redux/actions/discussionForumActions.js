@@ -6,11 +6,13 @@ export const types = {
   FILTER_DATA: 'FILTER_DATA',
   EDIT_CATEGORI_DATA: 'EDIT_CATEGORI_DATA',
   UPDATE_CATAGORY: 'UPDATE_CATAGORY',
+  UPDATE_CATAGORY_DATA: 'UPDATE_CATAGORY_DATA',
   UPDATE_CATAGORY_SUCCESS: 'UPDATE_CATAGORY_SUCCESS',
   UPDATE_CATAGORY_FAILURE: 'UPDATE_CATAGORY_FAILURE',
   CREATE_CATEGORY: 'CREATE_CATEGORY',
   CREATE_CATEGORY_SUCCESS: 'CREATE_CATEGORY_SUCCESS',
   CREATE_CATEGORY_FAILURE: 'CREATE_CATEGORY_FAILURE',
+  NEW_CATEGORY_CREATED: 'NEW_CATEGORY_CREATED',
   FETCH_CATEGORY_DATA: 'FETCH_CATEGORY_DATA',
   FETCH_CATEGORY_LIST: 'FETCH_CATEGORY_LIST',
   FETCH_SUB_CATEGORY_LIST: 'FETCH_SUB_CATEGORY_LIST',
@@ -29,15 +31,18 @@ export const types = {
   UPADATE_DISCCUSION_POST: 'UPADATE_DISCCUSION_POST',
   UPADATE_DISCCUSION_POST_SUCCESS: 'UPADATE_DISCCUSION_POST_SUCCESS',
   UPADATE_DISCCUSION_POST_FAILURE: 'UPADATE_DISCCUSION_POST_FAILURE',
+  CATEGORI_PAGE_COUNT: 'CATEGORI_PAGE_COUNT',
 };
 
 const { 
   DISCUSSION_POST,
   FILTER_DATA,
   UPDATE_CATAGORY,
+  UPDATE_CATAGORY_DATA,
   UPDATE_CATAGORY_SUCCESS,
   UPDATE_CATAGORY_FAILURE,
   EDIT_CATEGORI_DATA,
+  NEW_CATEGORY_CREATED,
   CREATE_CATEGORY,
   CREATE_CATEGORY_SUCCESS,
   CREATE_CATEGORY_FAILURE,
@@ -59,6 +64,7 @@ const {
   UPADATE_DISCCUSION_POST,
   UPADATE_DISCCUSION_POST_SUCCESS,
   UPADATE_DISCCUSION_POST_FAILURE,
+  CATEGORI_PAGE_COUNT,
 } = types;
 
 export const postAction = (data) => {
@@ -82,12 +88,31 @@ export const editCategoryDataAction = (data) => {
   }
 }
 
+export const editCategoryDataUpdated = () => {
+  return {
+    type: UPDATE_CATAGORY_DATA,
+  }
+}
+
+export const createNewCategory = () => {
+  return {
+    type: NEW_CATEGORY_CREATED,
+  }
+}
+
+export const editPostDataAction = () => {
+  return {
+    type: EDIT_DISCCUSION_POST,
+  }
+}
+
 export const createAllCategory = params => dispatch => {
   dispatch({type: CREATE_CATEGORY});
   return axiosInstance.post(`${endpoints.discussionForum.PostCategory}`,params)
   .then((res) => {
-    console.log(res.data);
-    dispatch({ type: CREATE_CATEGORY_SUCCESS, data: res.data.result});
+    if(res.data.status_code === 200){
+      dispatch({ type: CREATE_CATEGORY_SUCCESS, data: res.data.result});
+    }
   })
   .catch((error) => {
     dispatch({ type: CREATE_CATEGORY_FAILURE, data: []});
@@ -108,12 +133,65 @@ export const updateAllCategory = (params, id) => dispatch => {
   });
 }
 
-export const fetchCategoryData = params => dispatch => {
+export const fetchCategoryData = (tab, page, params) => dispatch => {
   dispatch({ type: FETCH_CATEGORY_DATA});
-  if(params){
-    return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=3`)
+  if(params && tab === 'all'){
+    return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=3&page=${page}&page_size=12`)
     .then((res) => {
-      dispatch({ type: FETCH_CATEGORY_DATA_SUCCESS, data: res.data.result});
+      if(res.data.status_code === 200) {
+        dispatch({ type: FETCH_CATEGORY_DATA_SUCCESS, data: res.data.result.results});
+        dispatch({ type: CATEGORI_PAGE_COUNT, count: res.data.result.count});
+      }
+    })
+    .catch((error) => {
+      dispatch({ type: FETCH_CATEGORY_DATA_FAILURE, data: []});
+      throw error;
+    });
+  }
+  else if(params && tab === 'inactive') {
+    return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=3&is_delete=True&page=${page}&page_size=12`)
+    .then((res) => {
+      if(res.data.status_code === 200) {
+        dispatch({ type: FETCH_CATEGORY_DATA_SUCCESS, data: res.data.result.results});
+        dispatch({ type: CATEGORI_PAGE_COUNT, count: res.data.result.count});
+      }
+    })
+    .catch((error) => {
+      dispatch({ type: FETCH_CATEGORY_DATA_FAILURE, data: []});
+      throw error;
+    });
+  } else if(params && tab === 'active') {
+    return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=3&is_delete=False&page=${page}&page_size=12`)
+    .then((res) => {
+      if(res.data.status_code === 200) {
+        dispatch({ type: FETCH_CATEGORY_DATA_SUCCESS, data: res.data.result.results});
+        dispatch({ type: CATEGORI_PAGE_COUNT, count: res.data.result.count});
+      }
+    })
+    .catch((error) => {
+      dispatch({ type: FETCH_CATEGORY_DATA_FAILURE, data: []});
+      throw error;
+    });
+  } else if (!params && tab === 'active'){
+    return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=3&is_delete=False&page=${page}&page_size=12`)
+    .then((res) => {
+      if(res.data.status_code === 200) {
+        dispatch({ type: FETCH_CATEGORY_DATA_SUCCESS, data: res.data.result.results});
+        dispatch({ type: CATEGORI_PAGE_COUNT, count: res.data.result.count});
+      }
+    })
+    .catch((error) => {
+      dispatch({ type: FETCH_CATEGORY_DATA_FAILURE, data: []});
+      throw error;
+    });
+  }
+  else if(!params && tab === 'inactive'){
+    return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=3&is_delete=True&page=${page}&page_size=12`)
+    .then((res) => {
+      if(res.data.status_code === 200) {
+        dispatch({ type: FETCH_CATEGORY_DATA_SUCCESS, data: res.data.result.results});
+        dispatch({ type: CATEGORI_PAGE_COUNT, count: res.data.result.count});
+      }
     })
     .catch((error) => {
       dispatch({ type: FETCH_CATEGORY_DATA_FAILURE, data: []});
@@ -121,9 +199,12 @@ export const fetchCategoryData = params => dispatch => {
     });
   }
   else {
-    return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=3`)
+    return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=3&page=${page}&page_size=12`)
     .then((res) => {
-      dispatch({ type: FETCH_CATEGORY_DATA_FAILURE, data: res.data.result});
+      if(res.data.status_code === 200) {
+        dispatch({ type: FETCH_CATEGORY_DATA_SUCCESS, data: res.data.result.results});
+        dispatch({ type: CATEGORI_PAGE_COUNT, count: res.data.result.count});
+      }
     })
     .catch((error) => {
       dispatch({ type: FETCH_CATEGORY_DATA_FAILURE, data: []});
@@ -134,7 +215,7 @@ export const fetchCategoryData = params => dispatch => {
 
 export const fetchSubSubCategoryList = params => dispatch => {
   dispatch({ type: FETCH_SUB_SUB_CATEGORY_LIST});
-  return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=3`)
+  return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=3&is_delete=False`)
   .then((res) => {
     dispatch({ type: FETCH_SUB_SUB_CATEGORY_LIST_SUCCESS, data: res.data.result});
   })
@@ -146,7 +227,7 @@ export const fetchSubSubCategoryList = params => dispatch => {
 
 export const fetchCategory = params => dispatch => {
   dispatch({ type: FETCH_CATEGORY_LIST});
-  return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=1`)
+  return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=1&is_delete=False`)
   .then((res) => {
     dispatch({ type: FETCH_CATEGORY_LIST_SUCCESS, data: res.data.result});
   })
@@ -158,7 +239,7 @@ export const fetchCategory = params => dispatch => {
 
 export const fetchSubCategory = params => dispatch => {
   dispatch({ type: FETCH_SUB_CATEGORY_LIST});
-  return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=2`)
+  return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=2&is_delete=False`)
   .then((res) => {
     dispatch({ type: FETCH_SUB_CATEGORY_LIST_SUCCESS, data: res.data.result});
   })
@@ -168,23 +249,28 @@ export const fetchSubCategory = params => dispatch => {
   });
 }
 
-export const editPostDataAction = postId => dispatch => {
-  dispatch({ type: EDIT_DISCCUSION_POST});
-  return axiosInstance.get(`/academic/${postId}/retrieve-post/`)
-    .then((res) => {
-      dispatch({ type: EDIT_DISCCUSION_POST_SUCCESS, data: res.data.result});
-    })
-    .catch((error) => {
-      console.log(error)
-      dispatch({ type: EDIT_DISCCUSION_POST_FAILURE, data: {}});
-    });
-}
+// export const editPostDataAction = postId => dispatch => {
+//   dispatch({ type: EDIT_DISCCUSION_POST});
+//   return axiosInstance.get(`/academic/${postId}/retrieve-post/`)
+//     .then((res) => {
+//       dispatch({ type: EDIT_DISCCUSION_POST_SUCCESS, data: res.data.result});
+//     })
+//     .catch((error) => {
+//       console.log(error)
+//       dispatch({ type: EDIT_DISCCUSION_POST_FAILURE, data: {}});
+//     });
+// }
 
 export const editPostData = (params, postId) => dispatch => {
   dispatch({ type: UPADATE_DISCCUSION_POST});
   return axiosInstance.put(`/academic/${postId}/update-post/`, params)
   .then((res) => {
-    dispatch({ type: UPADATE_DISCCUSION_POST_SUCCESS, data: res.data});
+    if(res.data.status_code === 200){
+      dispatch({ type: UPADATE_DISCCUSION_POST_SUCCESS, data: res.data});
+    }
+    else {
+      dispatch({ type: UPADATE_DISCCUSION_POST_FAILURE, data: {}});
+    }
   })
   .catch((error) => {
     console.log(error);

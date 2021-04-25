@@ -331,7 +331,7 @@ const Attend = () => {
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper' style={{ marginLeft: '-10px' }}>
+      <div className='profile_breadcrumb_wrapper' >
         <CommonBreadcrumbs componentName='Overall Attendance' />
       </div>
       <Grid
