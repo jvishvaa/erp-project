@@ -94,8 +94,11 @@
   border-radius: 10px;
   width: 100%;
   height: fit-content;
-  min-height: 443px;
+  height: 452px;
+  min-width: 310px;
   padding-bottom: 30px;
+  overflow: auto;
+    overflow-x: hidden;
   .buttonContainer {
     display: flex;
     margin: 10px;
@@ -130,11 +133,17 @@
     height: 145px;
     overflow: auto;
     overflow-x: hidden;
+    .presentProfilePic{
+      height: 25px;
+    width: 25px;
+    font-size: 15px;
+    }
   }
   .presentList {
     margin-left: 7%;
     display: flex;
     flex-direction: row;
+    align-items: center;
   }
   .presentStudent {
     height: 39px;
@@ -142,9 +151,12 @@
     justify-content: space-between;
     align-items: center;
     width: 80%;
+    padding-left: 10px;
   }
   .presentHeader {
-    margin-left: 30px;
+    display: flex;
+    justify-content: space-around;
+    color: #042955;
   }
  
   .presentFName {
@@ -155,9 +167,9 @@
     padding: 3px 14px;
     height: 21px;
     font-size: 12px;
-    background: red;
+    background: lightgreen;
     border-radius: 30px;
-    color: white;
+    color: black;
   }
 }
 .todayEventContainer {
@@ -165,6 +177,11 @@
     display: flex;
     margin-left: 25%;
     width: 100px;
+  }
+  .dateToday{
+    font-size: 15px;
+    color: #042955;
+    font-weight: 600;
   }
   .noEvent{
     display: flex;
@@ -183,18 +200,43 @@
     text-align: center;
     width: 25%;
     border-right: 1px solid;
+    font-size: 13px;
+    color: #042955;
   }
   .event-name {
     margin-left: 10px;
     padding: 0 10px;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     width: 40%;
     background: #f3b8b4;
     border-radius: 7px;
+    align-items: center;
+    font-size: 13px;
+    color: #042955;
+    .eventFlagToday{
+      background: #FF6B6B;
+    height: 20px;
+    align-items: center;
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    }
+    .flagImgToday{
+      width: 15px;
+    height: 15px;
+    }
   }
   .MuiSvgIcon-root {
     color: white;
+  }
+}
+.attendenceWhole{
+  .attendanceBtnornot{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
   }
 }
 .topGrid {
@@ -216,7 +258,11 @@
   .stu-icon {
     display: flex;
     justify-content: space-between;
-    width: 28%;
+    width: 100%;
+    color: #014b7e;
+    .erpId{
+      font-size: 13px;
+    }
   }
   .downIcon {
     height: 22px;
@@ -249,6 +295,12 @@
   margin-left: 7%;
   display: flex;
   flex-direction: row;
+  align-items: center;
+  .absentProfilePic{
+    height: 25px;
+    width: 25px;
+    font-size: 15px;
+  }
 }
 .eventGrid {
   box-shadow: none !important;
@@ -264,6 +316,19 @@
     .noDataImgEvent {
       height: 200px;
       width: 200px;
+    }
+  }
+  .flagBg{
+    background: #78B5F3;
+    height: 20px;
+    align-items: center;
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    .flagImg{
+      width: 15px;
+    height: 15px;
     }
   }
   .event-btn {
@@ -288,6 +353,14 @@
   }
   #eventData {
     margin: 0;
+    padding-bottom: 0;
+    .eventNameData{
+      font-size: 13px;
+      margin-left: 3%;
+    }
+    .eventDetailsfirst{
+      padding-top: 5px;
+    }
   }
   .noEventImg {
     height: 300px;
@@ -296,15 +369,29 @@
   .dateTimeEvent {
     display: flex;
     justify-content: space-between;
+    .eventClock{
+      color: #FF6B6B;
+      height: 15px;
+    width: 15px;
+    }
     .timeEvent {
       display: flex;
-      justify-content: space-evenly;
-      width: 75px;
+      justify-content: space-between;
+      width: 55px;
+      align-items: center;
+      font-size: 13px;
     }
     .dateEvent {
       display: flex;
       justify-content: space-evenly;
       width: 115px;
+      font-size: 13px;
+    align-items: center;
+    .calLogo{
+      height: 15px;
+      width: 15px;
+      color: #FF6B6B;
+    }
     }
   }
   .eventPara {
