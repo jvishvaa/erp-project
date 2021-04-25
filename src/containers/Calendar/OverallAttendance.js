@@ -73,8 +73,8 @@ const Attend = () => {
   const [secSelectedId, setSecSelectedId] = useState([]);
   const history = useHistory();
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
-  const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
-  const [result, setResult] = useState();
+  const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
+  const [result, setResult] = useState([]);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
@@ -98,6 +98,22 @@ const Attend = () => {
       setStartDate(history?.location?.state?.payload?.startDate);
       setEndDate(history?.location?.state?.payload?.endDate);
       // setResult(history?.location?.state?.data);
+      axiosInstance
+        .get(
+          `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&page=${pageNumber}`
+        )
+        .then((res) => {
+          setResult(res.data.results);
+          setLoading(false);
+          console.log(res.data.results);
+          setAlert('success', 'Data Successfully fetched');
+        })
+        .catch((err) => {
+          setResult([]);
+          setLoading(false);
+          console.log(err);
+          // setAlert('error', err);
+        });
     } else {
       const date = new Date();
       console.log(
@@ -129,12 +145,6 @@ const Attend = () => {
     console.log(state);
   };
 
-  function getDaysAfter(date, amount) {
-    return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
-  }
-  function getDaysBefore(date, amount) {
-    return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
-  }
   const handleFilter = () => {
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
@@ -161,57 +171,20 @@ const Attend = () => {
       start_date: startDate,
       end_date: endDate,
     };
-    console.log(payload);
-    console.log(selectedAcademicYear.length < 0);
+    // console.log(payload);
 
     axiosInstance
       .get(
-        `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}`
+        `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&page=${pageNumber}`
       )
       .then((res) => {
+        setResult(res.data.results);
         setLoading(false);
-        // console.log(res.data.results, 'mutliple student data');
-        let present_length = res?.data?.results?.present_list?.length;
-        let absent_length = res?.data?.results?.absent_list?.length;
-        let present = res?.data?.results?.present_list;
-        let absent = res?.data?.results?.absent_list;
-
-        console.log(present);
-        console.log(absent);
-        let student_list = [];
-        console.log(present, 'present list');
-        console.log(absent, 'absent list');
-        if (present_length > absent_length) {
-          console.log('present length');
-          for (let i = 0; i < present_length; i++) {
-            const student_id = absent.filter(
-              (item) => item.student === present[i].student
-            );
-            console.log(student_id, 'id found');
-            const studentDetails = {
-              name: present[i].student_name,
-              roll_no: present[i].student,
-              no_of_absent_days: present[i].student_count,
-            };
-          }
-        }
-        if (present_length < absent_length) {
-          console.log('absent length');
-          for (let i = 0; i < absent_length; i++) {
-            const student_id = present.filter(
-              (item) => item.student === absent[i].student
-            );
-            console.log(student_id, 'id found');
-            const studentDetails = {
-              name: present[i].student_name,
-              roll_no: present[i].student,
-              no_of_absent_days: present[i].student_count,
-            };
-          }
-        }
+        console.log(res.data.results);
         setAlert('success', 'Data Successfully fetched');
       })
       .catch((err) => {
+        setResult([]);
         setLoading(false);
         console.log(err);
         // setAlert('error', err);
@@ -335,26 +308,26 @@ const Attend = () => {
     setPageNumber(page);
     handleFilter();
   };
-  // const handleSinlgeStudent = (id) => {
-  //   console.log(id);
-  //   const studentData = result.filter((item) => item.user_id == id);
-  //   console.log(studentData);
-  //   const payload = {
-  //     academic_year_id: selectedAcademicYear,
-  //     branch_id: selectedBranch,
-  //     grade_id: selectedGrade,
-  //     section_id: selectedSection,
-  //     startDate: startDate,
-  //     endDate: endDate,
-  //   };
-  //   history.push({
-  //     pathname: '/teacher-view/attendance',
-  //     state: {
-  //       studentData,
-  //       payload,
-  //     },
-  //   });
-  // };
+  const handleSinlgeStudent = (id) => {
+    console.log(id);
+    const studentData = result.filter((item) => item.erp_id == id);
+    console.log(studentData);
+    const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: startDate,
+      endDate: endDate,
+    };
+    history.push({
+      pathname: '/teacher-view/attendance',
+      state: {
+        studentData,
+        payload,
+      },
+    });
+  };
 
   return (
     <Layout>
@@ -584,9 +557,6 @@ const Attend = () => {
           filter
         </StyledFilterButton>
       </Grid>
-
-      <br />
-      <br />
       <MediaQuery minWidth={541}>
         <Grid
           container
@@ -620,14 +590,14 @@ const Attend = () => {
         </Grid>
         <br />
       </Grid>
-      {/* <Grid container direction='row' className={classes.root} spacing={2}>
+      <Grid container direction='row' className={classes.root} spacing={2}>
         {result &&
           result.map((item) => {
             return (
-              <Grid item xs={12} sm={6} md={6}>
+              <Grid item xs={12} sm={6} md={4}>
                 <Card
                   className={classes.bord}
-                  // onClick={() => handleSinlgeStudent(item.user_id)}
+                  onClick={() => handleSinlgeStudent(item.erp_id)}
                   style={{ cursor: 'pointer' }}
                 >
                   <CardMedia className={classes.cover} />
@@ -640,16 +610,16 @@ const Attend = () => {
                         alignItems='center'
                       >
                         <Grid item xs={1} sm={1} md={1} lg={1} style={{ marginTop: 15 }}>
-                          <Avatar>{item?.name?.slice(0, 1)}</Avatar>
+                          <Avatar>{item?.student_name?.slice(0, 1)}</Avatar>
                         </Grid>
                         <Grid item>
-                          <Typography>{item?.name?.slice(0, 6) || ''}</Typography>
-                          <Typography>{item?.roll_no}</Typography>
+                          <Typography>{item?.student_name?.slice(0, 6) || ''}</Typography>
+                          <Typography>{item?.erp_id}</Typography>
                         </Grid>
                         <Grid>
-                          <p class='box'>
-                            <span class='test1'>{item.no_of_present_days}</span>
-                            <span class='test'>{item.no_of_absent_days}</span>
+                          <p class='box5'>
+                            <span class='test1'>{item.student_present_count || 0}</span>
+                            <span class='test'>{item.student_absent_count || 0}</span>
                           </p>
                         </Grid>
                       </Grid>
@@ -659,7 +629,7 @@ const Attend = () => {
               </Grid>
             );
           })}
-      </Grid> */}
+      </Grid>
       <br />
       {!result && (
         <div style={{ width: '10%', marginLeft: '40%' }}>
@@ -678,7 +648,7 @@ const Attend = () => {
           />
         </div>
       )}
-      {/* <Grid container justify='center'>
+      <Grid container justify='center'>
         {result && totalGenre > 8 && (
           <Pagination
             onChange={handlePagination}
@@ -689,7 +659,7 @@ const Attend = () => {
             color='primary'
           />
         )}
-      </Grid> */}
+      </Grid>
       {loading && <Loader />}
     </Layout>
   );

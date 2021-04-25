@@ -37,6 +37,7 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import MediaQuery from 'react-responsive';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
+import { id } from 'date-fns/locale';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
@@ -103,31 +104,7 @@ const Attendance = () => {
         setStudentName(history?.location?.state?.studentData);
         console.log(history?.location?.state?.payload?.branch_id);
         // console.log(history?.location?.state?.studentData[0]?.student)
-        axiosInstance
-          .get(
-            `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&user_id=${history?.location?.state?.studentData[0]?.user_id}&page_num=${pageNumber}&page_size=${limit}`
-          )
-          // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
-          .then((res) => {
-            if (res.status == 200) {
-              setTotalGenre(res.data.count);
-              console.log(res.data.count);
-              console.log(res.data.results, 'single student data');
-              setData(res.data.results);
-              setAlert('success', 'Data Successfully fetched');
-              if (res?.data?.message) {
-                // alert(res?.data?.message)
-              } else console.log(res.data.message);
-            }
-            if (res.status == 400) {
-              console.log(res.message);
-              setAlert('error', res.message);
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            // setAlert('error', 'something went wrong');
-          });
+        getAllData();
       } else {
         const date = new Date();
         console.log(
@@ -141,39 +118,69 @@ const Attendance = () => {
     }
     if (history?.location?.pathname === '/student-view/attendance') {
       // setAlert('warning', 'testing');
-      setStartDate(history?.location?.state?.payload?.startDate);
-      setEndDate(history?.location?.state?.payload?.endDate);
-      setStudentName(history?.location?.state?.data[0]?.student_name);
-      setStudentView(true);
-      console.log();
-      axiosInstance
-        .get(
-          `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&user_id=${history?.location?.state?.data[0]?.student_id}&page_num=${pageNumber}&page_size=${limit}`
-        )
-        // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
-        .then((res) => {
-          if (res.status == 200) {
-            setTotalGenre(res.data.count);
-            console.log(res.data.count);
-            console.log(res.data.results, 'single student data');
-            setData(res.data.results);
-            setAlert('success', 'Data Successfully fetched');
-            if (res?.data?.message) {
-              // alert(res?.data?.message)
-            } else console.log(res.data.message);
-          }
-          if (res.status == 400) {
-            console.log(res.message);
-            setAlert('error', res.message);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          // setAlert('error', 'something went wrong');
-        });
+      getAllStudentsData();
     }
   }, []);
 
+  const getAllData = () => {
+    axiosInstance
+      .get(
+        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${history?.location?.state?.studentData[0]?.erp_id}&page=${pageNumber}`
+      )
+      .then((res) => {
+        if (res.status == 200) {
+          setTotalGenre(res.data.count);
+          console.log(res.data.count);
+          console.log(res.data.results, 'single student data');
+          setData(res.data.results);
+          setAlert('success', 'Data Successfully fetched');
+          if (res?.data?.message) {
+            // alert(res?.data?.message)
+          } else console.log(res.data.message);
+        }
+        if (res.status == 400) {
+          console.log(res.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        // setAlert('error', 'something went wrong');
+      });
+  };
+
+  const getAllStudentsData = () => {
+    setStartDate(history?.location?.state?.payload?.startDate);
+    setEndDate(history?.location?.state?.payload?.endDate);
+    setStudentName(history?.location?.state?.data[0]?.student_name);
+    setStudentView(true);
+    let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
+    console.log(userName[0], 'userName');
+    axiosInstance
+      .get(
+        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName[0]}&page=${pageNumber}`
+      )
+      // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
+      .then((res) => {
+        if (res.status == 200) {
+          setTotalGenre(res.data.count);
+          console.log(res.data.count);
+          console.log(res.data.results, 'single student data');
+          setData(res.data.results);
+          setAlert('success', 'Data Successfully fetched');
+          if (res?.data?.message) {
+            // alert(res?.data?.message)
+          } else console.log(res.data.message);
+        }
+        if (res.status == 400) {
+          console.log(res.message);
+          setAlert('error', res.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        // setAlert('error', 'something went wrong');
+      });
+  };
   const getAllStudents = () => {
     console.log('checking all students');
     axiosInstance
@@ -298,11 +305,15 @@ const Attendance = () => {
       });
   }
   const handlePagination = (event, page) => {
-    setPageNumber(page);
-    // setGenreActiveListResponse([]);
-    // setGenreInActiveListResponse([]);
-    // getData();
-    handleFilter();
+    console.log(page, 'page number checking');
+    if (history?.location?.pathname === '/student-view/attendance') {
+      setPageNumber(page);
+      getAllStudentsData();
+    }
+    if (history?.location?.pathname === '/teacher-view/attendance') {
+      setPageNumber(page);
+      getAllData();
+    }
   };
   const handleClearAll = () => {
     setSelectedAcadmeicYear('');
@@ -636,19 +647,32 @@ const Attendance = () => {
           </Grid> */}
         </Grid>
       </Grid>
-
-      <br />
-      <br />
-
       <MediaQuery minWidth={541}>
-        <Grid container direction='row' className={classes.root} spacing={3}>
+        <Grid
+          container
+          direction='row'
+          className={classes.root}
+          spacing={3}
+          alignItems='center'
+          alignContent='center'
+        >
           {/* <Grid item md={1}></Grid> */}
 
-          <Grid item xs={12} md={6} container direction='row'>
+          <Grid
+            item
+            xs={12}
+            md={4}
+            container
+            direction='row'
+            alignItems='center'
+            alignContent='center'
+          >
             <Grid item sm={2} md={2}>
               <Typography variant='subtitle2' color='primary'>
                 {!studentView && (
-                  <strong>{studentName && studentName[0].name.slice(0, 6)}</strong>
+                  <strong>
+                    {studentName && studentName[0].student_name.slice(0, 6)}
+                  </strong>
                 )}
                 {studentView && (
                   <strong>
@@ -661,7 +685,7 @@ const Attendance = () => {
               <img src={line} className={classes.lines} />
             </Grid>
 
-            <Grid item sm={2} md={3}>
+            <Grid item sm={2} md={7}>
               <Typography variant='subtitle2' color='primary'>
                 {startDate} to {endDate}
               </Typography>
@@ -678,7 +702,7 @@ const Attendance = () => {
                     checked={state.present}
                     onChange={handleChange}
                     name='present'
-                    disabled={state.absent}
+                    disabled={state.absent || state.first_half || state.second_half}
                     color='primary'
                   />
                 }
@@ -691,7 +715,7 @@ const Attendance = () => {
                     onChange={handleChange}
                     name='absent'
                     color='primary'
-                    disabled={state.present || (state.first_half && state.second_half)}
+                    disabled={state.present || state.first_half || state.second_half}
                   />
                 }
                 label='Absent'
@@ -703,7 +727,7 @@ const Attendance = () => {
                     onChange={handleChange}
                     name='first_half'
                     color='primary'
-                    disabled={state.present || state.absent}
+                    disabled={state.present || state.absent || state.second_half}
                   />
                 }
                 label='1st half'
@@ -715,7 +739,7 @@ const Attendance = () => {
                     onChange={handleChange}
                     name='second_half'
                     color='primary'
-                    disabled={state.present || state.absent}
+                    disabled={state.present || state.absent || state.first_half}
                   />
                 }
                 label='2nd half'
@@ -740,12 +764,12 @@ const Attendance = () => {
         <Grid item xs={12} md={12}>
           <Divider />
         </Grid>
-        <br />
       </Grid>
 
       <Grid container direction='row' className={classes.root} spacing={3}>
         {data &&
           data
+            .sort((a, b) => b.date - a.date)
             .filter((item, index) => {
               if (state.first_half && state.second_half) {
                 return item.first_shift && item.second_shift;
@@ -788,32 +812,32 @@ const Attendance = () => {
                             {item.first_shift && item.second_shift && (
                               <Grid>
                                 <p class='box3'>
-                                  <span class='content1'>1st</span>
-                                  <span class='content'>2nd</span>
+                                  <span class='test1'>1st</span>
+                                  <span class='test'>2nd</span>
                                 </p>
                               </Grid>
                             )}
                             {item.first_shift && !item.second_shift && (
                               <Grid>
-                                <p class='box'>
-                                  <span class='content1'>1st</span>
-                                  <span class='content'>2nd</span>
+                                <p class='box5'>
+                                  <span class='test1'>1st</span>
+                                  <span class='test'>2nd</span>
                                 </p>
                               </Grid>
                             )}
                             {!item.first_shift && item.second_shift && (
                               <Grid>
                                 <p class='box1'>
-                                  <span class='content1'>1st</span>
-                                  <span class='content'>2nd</span>
+                                  <span class='test1'>1st</span>
+                                  <span class='test'>2nd</span>
                                 </p>
                               </Grid>
                             )}
                             {!item.first_shift && !item.second_shift && (
                               <Grid>
                                 <p class='box2'>
-                                  <span class='content1'>1st</span>
-                                  <span class='content'>2nd</span>
+                                  <span class='test1'>1st</span>
+                                  <span class='test'>2nd</span>
                                 </p>
                               </Grid>
                             )}
