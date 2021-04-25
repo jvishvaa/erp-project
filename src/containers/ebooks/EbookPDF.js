@@ -7,7 +7,7 @@ import { Grid, makeStyles, AppBar, IconButton, Tooltip } from '@material-ui/core
 import { ArrowBack, ArrowForward, ZoomOutMap, Undo, Close } from '@material-ui/icons'
 import endpoints from '../../config/endpoints';
 import './canvas.css'
-import axios from 'axios';
+// import axios from 'axios';
 // import AnnotateCanvas from './annotate'
 
 const useStyles = makeStyles(theme => ({
@@ -95,15 +95,9 @@ const EbookPdf = (props) => {
               'left_position': y,
               'type_of_activity': 0
             }
-      let AnnotateURL = `${endpoints.ebook.AnnotateEbook}?domain_name=${domineName}&is_ebook=true&ebook_id=${props.id }`
-      axios.post(AnnotateURL, data1, {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
-      })
+      let AnnotateURL = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}`
+      axiosInstance
+      .post(AnnotateURL, data1)
         .then(res => {
         })
         .catch(error => {
@@ -155,14 +149,11 @@ const EbookPdf = (props) => {
   }, [page, props.id, height, width])
 
   const getSplittedImages = useCallback(() => {
-    let imgUrl = `${endpoints.ebook.AnnotateEbook}?domain_name=${domineName}&is_ebook=true&ebook_id=${props.id}&page_number=${page}`
+    if(props.id && page) {
+    let imgUrl = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}&page_number=${page}`
     setLoading(true)
-    axios
-      .get(imgUrl, {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
-      })
+    axiosInstance
+      .get(imgUrl)
       .then(res => {
         setLoading(false)
         setBookPage(res.data.ebook_image)
@@ -190,6 +181,7 @@ const EbookPdf = (props) => {
         setLoading(false)
         console.log(error)
       })
+    }
   }, [props.id, page, height, width])
   const onZoomHandler = () => {
     setZoomStatus(!isZoomed)
@@ -197,20 +189,13 @@ const EbookPdf = (props) => {
   }
 
   const goBack = () => {
-    axios
-    .post(`${endpoints.ebook.EbookUser}?domain_name=${domineName}&is_ebook=true`,
+    axiosInstance
+    .post(`${endpoints.ebook.EbookUser}`,
       {
         page_number: page,
         ebook_id: props.id,
         user_id: localStorage.getItem('userDetails') &&
         JSON.parse(localStorage.getItem('userDetails'))?.user_id,
-      }, {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
       })
       .then(res => {
         props.goBackFunction();
@@ -224,23 +209,14 @@ const EbookPdf = (props) => {
   }
 
   const deleteAnnotateData = () => {
-    // setClear(true)
     const canv = document.getElementById(`drawing-${page}`)
     const context = canv.getContext('2d')
     document.getElementById('clear').addEventListener('click', function () {
       context.clearRect(0, 0, canv.width, canv.height)
     })
-    let deleteAnnotateURL = endpoints.ebook.AnnotateEbook + `?domain_name=${domineName}&is_ebook=true` + '&ebook_id=' + props.id + '&page_number=' + page
-    axios
-    .delete(deleteAnnotateURL,
-      {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
-      })
+    let deleteAnnotateURL = endpoints.ebook.AnnotateEbook + '?ebook_id=' + props.id + '&page_number=' + page
+    axiosInstance
+    .delete(deleteAnnotateURL)
       .then(res => {
       })
       .catch(error => {

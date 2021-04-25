@@ -104,11 +104,12 @@ const Attend = () => {
         'section id in OverallAttendance'
       );
       console.log(history?.location?.state?.payload?.branch_id);
+      console.log(history?.location?.state?.payload?.grade_id?.grade_id, 'grade_id');
       console.log(history?.location?.state?.data, 'student data');
 
       axiosInstance
         .get(
-          `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${startDate}&end_date=${endDate}&page_num=${pageNumber}&page_size=${limit}`
+          `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&page_num=${pageNumber}&page_size=${limit}`
         )
         .then((res) => {
           setLoading(false);
@@ -123,7 +124,7 @@ const Attend = () => {
         .catch((err) => {
           setLoading(false);
           console.log(err);
-          setAlert('error', err);
+          // setAlert('error', err);
         });
     } else {
       const date = new Date();
@@ -217,23 +218,21 @@ const Attend = () => {
       .catch((err) => {
         setLoading(false);
         console.log(err);
-        setAlert('error', err);
+        // setAlert('error', err);
       });
   };
 
-  const handleStartDateChange = (date) => {
-    const endDate = getDaysAfter(date.clone(), 6);
-    setEndDate(endDate);
-    setStartDate(date.format('YYYY-MM-DD'));
-    // getTeacherHomeworkDetails(2, date, endDate);
+  const handleStartDateChange = (e, value) => {
+    console.log('startDate:', value);
+
+    setStartDate(value);
   };
 
-  const handleEndDateChange = (date) => {
-    const startDate = getDaysBefore(date.clone(), 6);
-    setStartDate(startDate);
-    setEndDate(date.format('YYYY-MM-DD'));
-    // getTeacherHomeworkDetails(2, startDate, date);
+  const handleEndDateChange = (e, value) => {
+    console.log('endDate', value);
+    setEndDate(value);
   };
+
   function callApi(api, key) {
     setLoading(true);
     axiosInstance
@@ -271,6 +270,12 @@ const Attend = () => {
     firstName: 'Elon',
     lastName: 'Musk',
     gender: 'male',
+  };
+
+  const handleBack = () => {
+    history.push({
+      pathname: '/attendance-calendar/teacher-view',
+    });
   };
 
   const handleClearAll = () => {
@@ -337,7 +342,7 @@ const Attend = () => {
       endDate: endDate,
     };
     history.push({
-      pathname: '/attendance',
+      pathname: '/teacher-view/attendance',
       state: {
         studentData,
         payload,
@@ -400,16 +405,62 @@ const Attend = () => {
   return (
     <Layout>
       <div className='profile_breadcrumb_wrapper' style={{ marginLeft: '-10px' }}>
-        <CommonBreadcrumbs componentName='OverallAttendance' />
+        <CommonBreadcrumbs componentName='Overall Attendance' />
       </div>
-      <Grid container direction='row' className={classes.root} spacing={3}>
-        <Grid item md={3} xs={12} className='items'>
-          <MobileDatepicker
-            style={{ width: '100%' }}
-            onChange={(date) => handleEndDateChange(date)}
-            handleStartDateChange={handleStartDateChange}
-            handleEndDateChange={handleEndDateChange}
-          />
+      <Grid
+        container
+        direction='row'
+        className={classes.root}
+        spacing={2}
+        style={{ border: '1x solid red' }}
+      >
+        <Grid item md={6} xs={12} className='items'>
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <KeyboardDatePicker
+              size='small'
+              variant='dialog'
+              format='YYYY-MM-DD'
+              margin='none'
+              // className='button'
+              id='date-picker'
+              label='StartDate'
+              name='start_date'
+              inputVariant='outlined'
+              className='arrow'
+              onChange={handleStartDateChange}
+              // handleStartDateChange={handleStartDateChange}
+              // handleEndDateChange={handleEndDateChange}
+
+              value={startDate}
+              style={{ background: 'white', width: '50%' }}
+              // onChange={handleDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+          </MuiPickersUtilsProvider>
+
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <KeyboardDatePicker
+              size='small'
+              variant='dialog'
+              format='YYYY-MM-DD'
+              margin='none'
+              // className='button'
+              id='date-picker'
+              label='EndDate'
+              variant='standard'
+              name='end_date'
+              inputVariant='outlined'
+              className='arrow'
+              onChange={handleEndDateChange}
+              value={endDate}
+              style={{ background: 'white', width: '50%' }}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+          </MuiPickersUtilsProvider>
         </Grid>
         <Grid item md={3} xs={12}>
           <Autocomplete
@@ -560,6 +611,13 @@ const Attend = () => {
         <StyledClearButton
           variant='contained'
           startIcon={<ClearIcon />}
+          onClick={handleBack}
+        >
+          Back
+        </StyledClearButton>
+        <StyledClearButton
+          variant='contained'
+          startIcon={<ClearIcon />}
           onClick={handleClearAll}
         >
           Clear all
@@ -674,7 +732,7 @@ const Attend = () => {
         </Grid>
         <br />
       </Grid>
-      <Grid container spacing={2} direction='row'>
+      <Grid container direction='row' className={classes.root} spacing={2}>
         {result &&
           result
             // .filter((item, index) => {
@@ -736,8 +794,8 @@ const Attend = () => {
                           </Grid>
                           <Grid>
                             <p class='box'>
-                              <span class='content1'>{item.no_of_days_present}</span>
-                              <span class='content'>{item.no_of_days_absent}</span>
+                              <span class='test1'>{item.no_of_days_present}</span>
+                              <span class='test'>{item.no_of_days_absent}</span>
                             </p>
                           </Grid>
                         </Grid>

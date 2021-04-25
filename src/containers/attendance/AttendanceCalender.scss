@@ -1,7 +1,3 @@
-.MuiButton-root:hover {
-  background-color: #ff6b6b !important;
-  opacity: 0.8 !important;
-}
 .absentContainer {
   .absentHeader {
     display: flex;
@@ -69,13 +65,12 @@
     display: flex;
     justify-content: center;
     .MuiButton-outlinedSecondary {
-      color: #ff6b6b;
       border: 1px solid #ff6b6b;
     }
   }
 }
 .page_title {
-  margin-left: 3%;
+  // margin-left: 3%;
 }
 #selectionContainer {
   padding-bottom: 0;

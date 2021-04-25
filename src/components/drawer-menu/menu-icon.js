@@ -6,6 +6,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import MessageIcon from '@material-ui/icons/Message';
 import SmsIcon from '@material-ui/icons/Sms';
 import EmailIcon from '@material-ui/icons/Email';
+import TableChartIcon from '@material-ui/icons/TableChart';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import WebAsset from '@material-ui/icons/WebAsset';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
@@ -67,6 +68,10 @@ const menuIcon = (name) => {
     }
     case 'Communication': {
       icon = <WifiTetheringIcon />;
+      break;
+    }
+    case 'Time Table': {
+      icon = <TableChartIcon />;
       break;
     }
     case 'Add Group': {

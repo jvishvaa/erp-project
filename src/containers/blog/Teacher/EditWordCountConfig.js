@@ -81,7 +81,6 @@ const EditWordCountConfig = (props) => {
       }else{
 
     setLoading(true);
-   
     let requestData= {}
    
       requestData = {

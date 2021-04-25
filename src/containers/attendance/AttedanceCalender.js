@@ -2,10 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import Layout from '../Layout/index';
 // import Avatar from '@material-ui/core/Avatar';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
+import './attendance.scss';
 import {
   Button,
   Divider,
   Grid,
+  Hidden,
   makeStyles,
   Paper,
   TextField,
@@ -86,6 +88,7 @@ const AttedanceCalender = () => {
   const history = useHistory();
 
   const classes = useStyles();
+
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const [academicYear, setAcademicYear] = useState([]);
@@ -156,6 +159,19 @@ const AttedanceCalender = () => {
       setTeacherView(false);
       setStudentDataAll(null);
       setCurrentEvent(null);
+    }
+  }, [path]);
+
+  useEffect(() => {
+    if (path === '/attendance-calendar/teacher-view') {
+      console.log(path, 'path');
+      setTeacherView(true);
+      setStudentDataAll(null);
+    }
+    if (path === '/attendance-calendar/student-view') {
+      console.log(path, 'path');
+      setTeacherView(false);
+      setStudentDataAll(null);
     }
   }, [path]);
 
@@ -498,16 +514,28 @@ const AttedanceCalender = () => {
       branch_id: selectedBranch,
       grade_id: selectedGrade,
       section_id: selectedSection,
-      startDate: startDate,
-      endDate: endDate,
+      startDate: moment(startDate).format('YYYY-MM-DD'),
+      endDate: moment(endDate).format('YYYY-MM-DD'),
     };
-    history.push({
-      pathname: '/OverallAttendance',
-      state: {
-        data: studentData,
-        payload: payload,
-      },
-    });
+
+    if (path === '/attendance-calendar/teacher-view') {
+      history.push({
+        pathname: '/OverallAttendance',
+        state: {
+          data: studentData,
+          payload: payload,
+        },
+      });
+    }
+    if (path === '/attendance-calendar/student-view') {
+      history.push({
+        pathname: '/student-view/attendance',
+        state: {
+          data: studentData,
+          payload: payload,
+        },
+      });
+    }
   };
 
   const handleMarkAttendance = () => {
