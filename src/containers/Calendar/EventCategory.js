@@ -293,22 +293,7 @@ const Cal1 = () => {
     setDummyData([]);
   };
 
-  // const handleFilter = (type) => {
-  //   setLoading(true);
-  //   axiosInstance
-  //     .get(
-  //       `${endpoints.eventBat.filterEventCategory}?event_category_name=${type}&page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
-  //     ) //queryparams pass need to done
-  //     .then((result) => {
-  //       setLoading(false);
-  //       setTotalGenre(result.data.data.count);
-  //       setDummyData(result?.data.data.results);
-  //     })
-  //     .catch((error) => {
-  //       setLoading(false);
-  //       console.log(error);
-  //     });
-  // };
+  
 
   const handleSave = () => {
     setLoading(true);
