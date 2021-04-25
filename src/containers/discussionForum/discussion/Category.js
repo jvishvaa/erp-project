@@ -301,7 +301,7 @@ const Category = (props) => {
         const grade_id = userDetails.role_details?.grades[0]?.grade_id;
         const branch_id = userDetails.role_details?.branch[0]?.id;
         axiosInstance
-        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}`)
+        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&is_delete=False`)
         .then((res) => {
           setCategoryList(res.data.result);
         })
@@ -309,7 +309,7 @@ const Category = (props) => {
       }
       else {
         axiosInstance
-        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}`)
+        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&category_type=1&is_delete=False`)
         .then((res) => {
           setCategoryList(res.data.result);
         })
