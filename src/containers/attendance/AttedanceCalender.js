@@ -550,7 +550,7 @@ const AttedanceCalender = () => {
 
   return (
     <Layout>
-      <div style={{ marginTop: '20px', marginLeft: '-10px' }}>
+      <div className='profile_breadcrumb_wrapper' >
         <CommonBreadcrumbs componentName='Attendance & Calendar' />
       </div>
       {teacherView === true ? (
