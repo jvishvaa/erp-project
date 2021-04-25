@@ -224,12 +224,15 @@ function CategoryPage() {
 
   React.useEffect(() => {
     if(selectedCategory?.id && selectedSubCategory?.sub_category_id){
-      dispatch(fetchCategoryData(selectedSubCategory?.sub_category_id));
+      dispatch(fetchCategoryData(tabValue, selectedSubCategory?.sub_category_id));
     } else {
-      dispatch(fetchCategory());
-      dispatch(fetchCategoryData());
+      dispatch(fetchCategoryData(tabValue));
     }
   },[tabValue, updateCategory])
+
+  React.useEffect(() => {
+    dispatch(fetchCategory());
+  },[])
 
   React.useEffect(() => {
     if(selectedCategory?.id){

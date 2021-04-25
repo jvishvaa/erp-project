@@ -131,12 +131,50 @@ export const updateAllCategory = (params, id) => dispatch => {
   });
 }
 
-export const fetchCategoryData = params => dispatch => {
+export const fetchCategoryData = (tab, params) => dispatch => {
   dispatch({ type: FETCH_CATEGORY_DATA});
-  if(params){
+  if(params && tab === 'all'){
     return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=3`)
     .then((res) => {
       dispatch({ type: FETCH_CATEGORY_DATA_SUCCESS, data: res.data.result});
+    })
+    .catch((error) => {
+      dispatch({ type: FETCH_CATEGORY_DATA_FAILURE, data: []});
+      throw error;
+    });
+  }
+  else if(params && tab === 'inactive') {
+    return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=3&is_delete=True`)
+    .then((res) => {
+      dispatch({ type: FETCH_CATEGORY_DATA_SUCCESS, data: res.data.result});
+    })
+    .catch((error) => {
+      dispatch({ type: FETCH_CATEGORY_DATA_FAILURE, data: []});
+      throw error;
+    });
+  } else if(params && tab === 'active') {
+    return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=3&is_delete=False`)
+    .then((res) => {
+      dispatch({ type: FETCH_CATEGORY_DATA_SUCCESS, data: res.data.result});
+    })
+    .catch((error) => {
+      dispatch({ type: FETCH_CATEGORY_DATA_FAILURE, data: []});
+      throw error;
+    });
+  } else if (!params && tab === 'active'){
+    return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=3&is_delete=False`)
+    .then((res) => {
+      dispatch({ type: FETCH_CATEGORY_DATA_FAILURE, data: res.data.result});
+    })
+    .catch((error) => {
+      dispatch({ type: FETCH_CATEGORY_DATA_FAILURE, data: []});
+      throw error;
+    });
+  }
+  else if(!params && tab === 'inactive'){
+    return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=3&is_delete=True`)
+    .then((res) => {
+      dispatch({ type: FETCH_CATEGORY_DATA_FAILURE, data: res.data.result});
     })
     .catch((error) => {
       dispatch({ type: FETCH_CATEGORY_DATA_FAILURE, data: []});
@@ -157,7 +195,7 @@ export const fetchCategoryData = params => dispatch => {
 
 export const fetchSubSubCategoryList = params => dispatch => {
   dispatch({ type: FETCH_SUB_SUB_CATEGORY_LIST});
-  return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=3`)
+  return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=3&is_delete=False`)
   .then((res) => {
     dispatch({ type: FETCH_SUB_SUB_CATEGORY_LIST_SUCCESS, data: res.data.result});
   })
@@ -169,7 +207,7 @@ export const fetchSubSubCategoryList = params => dispatch => {
 
 export const fetchCategory = params => dispatch => {
   dispatch({ type: FETCH_CATEGORY_LIST});
-  return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=1`)
+  return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=1&is_delete=False`)
   .then((res) => {
     dispatch({ type: FETCH_CATEGORY_LIST_SUCCESS, data: res.data.result});
   })
@@ -181,7 +219,7 @@ export const fetchCategory = params => dispatch => {
 
 export const fetchSubCategory = params => dispatch => {
   dispatch({ type: FETCH_SUB_CATEGORY_LIST});
-  return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=2`)
+  return axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${params}&category_type=2&is_delete=False`)
   .then((res) => {
     dispatch({ type: FETCH_SUB_CATEGORY_LIST_SUCCESS, data: res.data.result});
   })
