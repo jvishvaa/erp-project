@@ -192,7 +192,7 @@ function CategoryPage() {
 
   const handleFilter = () => {
     if(selectedCategory?.id && selectedSubCategory?.sub_category_id && selectedSubSubCategory?.sub_sub_category_name){
-      dispatch(fetchCategoryData(selectedSubCategory?.sub_category_id));
+      dispatch(fetchCategoryData(tabValue, selectedSubCategory?.sub_category_id));
     } else {
       setAlert('warning',`Please Select Category`);
     }
