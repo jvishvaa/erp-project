@@ -252,7 +252,8 @@ const CreateQuestionPaper = ({
         grade: formik.values.grade.id,
         acad_branch_id: formik.values.branch.id,
         grade_name: formik.values.grade.grade_name,
-        subject: formik.values.subject.map((obj) => obj.subject.id),
+        // subject: formik.values.subject.map((obj) => obj.subject.id),
+        subject: formik.values.subject.map((obj) => obj.subject?.central_subject_id),
         grade_subject_mapping: formik.values.subject.map(
           (obj) => obj.subject.central_mp_id
         ),
