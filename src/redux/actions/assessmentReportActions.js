@@ -71,7 +71,6 @@ export const setReportType = (reportType) => ({
 });
 
 export const fetchAssessmentReportList = (reportType, params) => (dispatch) => {
-  // dispatch(success(SET_REPORT_TYPE, reportType));
   dispatch(request(ASSESSMENT_REPORT_LIST_DATA_REQUEST));
   if (reportType?.id) {
     let url = `${reportTypeURL(reportType?.id)}`;
@@ -82,7 +81,7 @@ export const fetchAssessmentReportList = (reportType, params) => (dispatch) => {
       })
       .then((result) => {
         if (result.data.status_code === 200) {
-          let payload = reportType.id === 3 ? result.data.data.result : result.data.data;
+          let payload = result.data?.data;
           dispatch(success(ASSESSMENT_REPORT_LIST_DATA_SUCCESS, payload));
         } else {
           dispatch(failure(ASSESSMENT_REPORT_LIST_DATA_FAILURE, []));

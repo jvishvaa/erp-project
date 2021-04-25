@@ -144,10 +144,11 @@ const UpperGrade = (props) => {
     }
   };
   const handleGenerateData = () => {
-    setShowAddPeriodButton(true);
+    
     if (academicYear === null || branchID === null || gradeID === null || sectionID === null) {
       setAlert('warning', "please select all filters")
     } else {
+      setShowAddPeriodButton(true);
       props.handlePassData(
         acadamicYearID,
         gradeID,

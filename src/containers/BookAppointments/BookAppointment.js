@@ -16,6 +16,9 @@ import {
 } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
+// import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
+// import moment from 'moment';
 
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
@@ -78,6 +81,8 @@ const useStyles = makeStyles((theme) => ({
 
 const BookAppointment = ({ setLoading, handleGoBack }) => {
   const { setAlert } = useContext(AlertNotificationContext);
+  const [date, setDate] = useState(new Date());
+  const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
   const [selectedDate, setSelectedDate] = useState(new Date());
   const classes = useStyles();
   const [currentPage, setCurrentPage] = useState(1);
@@ -120,195 +125,204 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // setLoading(true);
-
+    console.log('subarao');
     console.log('data', data);
-  //   axiosInstance
-  //     .post(
-  //       endpoints.Appointments.bookAppointment,
+    axiosInstance
+      .post(
+        endpoints.Appointments.bookAppointment,
 
-  //       {
-  //         role: rolename,
-  //         booking_mode: data.booking_mode,
+        {
+          role: rolename,
+          booking_mode: data.booking_mode,
 
-  //         appointment_date: data.appointment_date,
-  //         appointment_time: data.appointment_time,
-  //         message: data.message,
-  //         branch: JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0],
-  //       }
-  //     )
-  //     .then((result) => {
-  //       if (result.data.status_code === 200) {
-  //         // setLoading(false);
-  //         setAlert('success', result.data.message);
-  //       } else {
-  //         // setLoading(false);
-  //         setAlert('error', result.data.message);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       // setLoading(false);
-  //       setAlert('error', error.message);
-  //     });
+          appointment_date: data.appointment_date,
+          appointment_time: data.appointment_time,
+          message: data.message,
+          branch: JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0],
+        }
+      )
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          // setLoading(false);
+          setAlert('success', result.data.message);
+        } else {
+          // setLoading(false);
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        // setLoading(false);
+        setAlert('error', error.message);
+      });
   };
 
   return (
-    <Layout>
-      <Grid>
-        <CommonBreadcrumbs componentName='BookAppointment' />
-      </Grid>
-      <form onSubmit={handleSubmit}>
-        <div className={classes.root}>
-          <Grid container spacing={3} direction='row'>
-            <Grid item xs={12} sm={5} md={3}>
-              <FormControl
-                variant='outlined'
-                className={classes.formControl}
+    <form onSubmit={handleSubmit}>
+      <div className={classes.root}>
+        <Grid container spacing={3} direction='row'>
+          <Grid item xs={12} sm={5} md={3}>
+            <FormControl variant='outlined' className={classes.formControl} size='small'>
+              <Autocomplete
                 size='small'
-              >
-                <Autocomplete
-                  size='small'
-                  onChange={handleRole}
-                  id='role'
-                  // value={selectedGrade}
-                  style={{ width: '100%' }}
-                  options={roles}
-                  getOptionLabel={(option) => option?.role_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      className='create__class-textfield'
-                      {...params}
-                      variant='outlined'
-                      label='Appointment with'
-                      placeholder='role'
-                      required
-                    />
-                  )}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={5} md={3} lg={2}>
-              <TextField
-                name='appointment_date'
-                label='Appointment Date'
-                InputLabelProps={{ shrink: true, required: true }}
-                type='date'
-                variant='outlined'
-                fullWidth
-                size='small'
-                onChange={handleChange}
-                style={{ marginTop: 25 }}
-                // defaultValue={values.someDate}
+                onChange={handleRole}
+                id='role'
+                className='arrow  '
+                // value={selectedGrade}
+                style={{ width: '100%' }}
+                options={roles}
+                getOptionLabel={(option) => option?.role_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    className='create__class-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='Appointment with'
+                    placeholder='role'
+                    // required
+                  />
+                )}
               />
-            </Grid>
-
-            <Grid item xs={12} sm={5} md={3} lg={2}>
-              <TextField
-                name='appointment_time'
-                label='Appointment Time'
-                InputLabelProps={{ shrink: true, required: true }}
-                type='time'
-                variant='outlined'
-                size='small'
-                fullWidth
-                onChange={handleChange}
-                style={{ marginTop: 25 }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Divider />
-            </Grid>
-            <Grid item xs={12} sm={5} md={3}>
-              <FormControl
-                variant='outlined'
-                className={classes.formControl}
-                size='small'
-              >
-                <InputLabel id='demo-simple-select-outlined-label'>
-                  Appointment medium
-                </InputLabel>
-                <Select
-                  labelId='demo-simple-select-outlined-label'
-                  id='demo-simple-select-outlined'
-                  name='booking_mode'
-                  style={{ marginTop: '0px' }}
-                  onChange={handleChange}
-                  labelWidth={170}
-                >
-                  <MenuItem value={1}>Zoom Meeting</MenuItem>
-                  <MenuItem value={2}>Telephonic</MenuItem>
-                  <MenuItem value={3}>Visit</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
+            </FormControl>
           </Grid>
-        </div>
-        <Grid item xs={12} md={6} sm={12} style={{ margin: 20 }}>
-          <Divider />
-        </Grid>
-        <Grid item xs={12} md={10} sm={12}>
-          <FormControl
-            className={classes.inputLabel}
-            variant='outlined'
-            onChange={handleChange}
-          >
-            <InputLabel htmlFor='outlined-adornment-amount'>
-              Reason for Appointment
-            </InputLabel>
-            <OutlinedInput
-              id='outlined-adornment-amount'
-              // value={values.amount}
-              // onChange={handleChange('amount')}
+          <Grid item xs={12} sm={5} md={3} lg={2}>
+            <TextField
+              name='appointment_date'
+              label='Appointment Date'
+              InputLabelProps={{ shrink: true, required: true }}
+              type='date'
+              variant='outlined'
               fullWidth
-              labelWidth={200}
-              name='message'
-              style={{ height: 100 }}
+              className='button'
+              size='small'
+              onChange={handleChange}
+              style={{ marginTop: 25 }}
+
+              // defaultValue={values.someDate}
             />
-          </FormControl>
+            {/* <MuiPickersUtilsProvider utils={MomentUtils}>
+              <KeyboardDatePicker
+                size='small'
+                variant='dialog'
+                format='YYYY-MM-DD'
+                margin='none'
+                className='button'
+                id='date-picker'
+                label='Appointment Date'
+                maxDate={new Date()}
+                inputVariant='outlined'
+                fullWidth
+                value={dateValue}
+                onChange={handleDateChange}
+                // className='dropdown'
+                style={{ width: '100%', marginTop: '9%' }}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </MuiPickersUtilsProvider> */}
+          </Grid>
+
+          <Grid item xs={12} sm={5} md={3} lg={2}>
+            <TextField
+              name='appointment_time'
+              label='Appointment Time'
+              InputLabelProps={{ shrink: true, required: true }}
+              type='time'
+              className='button'
+              variant='outlined'
+              size='small'
+              fullWidth
+              onChange={handleChange}
+              style={{ marginTop: 25 }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Divider />
+          </Grid>
+          <Grid item xs={12} sm={5} md={3}>
+            <FormControl variant='outlined' className={classes.formControl} size='small'>
+              <InputLabel id='demo-simple-select-outlined-label'>
+                Appointment medium
+              </InputLabel>
+              <Select
+                labelId='demo-simple-select-outlined-label'
+                id='demo-simple-select-outlined'
+                name='booking_mode'
+                style={{ marginTop: '0px' }}
+                onChange={handleChange}
+                labelWidth={170}
+                // className='arrow'
+              >
+                <MenuItem value={1}>Zoom Meeting</MenuItem>
+                <MenuItem value={2}>Telephonic</MenuItem>
+                <MenuItem value={3}>Visit</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+      </div>
+      <Grid item xs={12} md={6} sm={12} style={{ margin: 20 }}>
+        <Divider />
+      </Grid>
+      <Grid item xs={12} md={10} sm={12}>
+        <FormControl
+          className={classes.inputLabel}
+          variant='outlined'
+          onChange={handleChange}
+        >
+          <InputLabel htmlFor='outlined-adornment-amount'>
+            Reason for Appointment
+          </InputLabel>
+          <OutlinedInput
+            id='outlined-adornment-amount'
+            // value={values.amount}
+            // onChange={handleChange('amount')}
+            fullWidth
+            labelWidth={200}
+            name='message'
+            style={{ height: 100 }}
+          />
+        </FormControl>
+      </Grid>
+      <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '10px' }}>
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          md={3}
+          className={isMobile ? '' : 'addEditButtonsPadding'}
+        >
+          <Button
+            variant='contained'
+            className='custom_button_master labelColor'
+            size='medium'
+            onClick={handleGoBack}
+          >
+            Back
+          </Button>
         </Grid>
         <Grid
-          container
-          spacing={isMobile ? 1 : 5}
-          style={{ width: '95%', margin: '10px' }}
+          item
+          xs={12}
+          sm={5}
+          md={4}
+          lg={3}
+          className={isMobile ? '' : 'addEditButtonsPadding'}
         >
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            md={3}
-            className={isMobile ? '' : 'addEditButtonsPadding'}
+          <Button
+            variant='contained'
+            style={{ color: 'white' }}
+            color='primary'
+            className='custom_button_master'
+            size='medium'
+            type='submit'
           >
-            <Button
-              variant='contained'
-              className='custom_button_master labelColor'
-              size='medium'
-              onClick={handleGoBack}
-            >
-              Back
-            </Button>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={5}
-            md={4}
-            lg={3}
-            className={isMobile ? '' : 'addEditButtonsPadding'}
-          >
-            <Button
-              variant='contained'
-              style={{ color: 'white' }}
-              color='primary'
-              className='custom_button_master'
-              size='medium'
-              type='submit'
-            >
-              Book Appointment
-            </Button>
-          </Grid>
+            Book Appointment
+          </Button>
         </Grid>
-      </form>
-    </Layout>
+      </Grid>
+    </form>
   );
 };
 export default BookAppointment;

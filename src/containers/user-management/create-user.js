@@ -210,7 +210,7 @@ class CreateUser extends Component {
       delete requestObj.parent;
       delete requestObj.father_photo;
       delete requestObj.mother_photo;
-      delete requestObj.guardian_photo
+      delete requestObj.guardian_photo;
     }
     const { setAlert } = this.context;
     const requestObjFormData = jsonToFormData(requestObj);

@@ -1,0 +1,26 @@
+.classTopicContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  font-weight: 600;
+  width: 100%;
+  color: #014b7e;
+  border: 1px solid #c0c0c0;
+  border-radius: 10px;
+  transition-duration: 100ms;
+}
+
+.classTopicContainer:hover {
+  border: 2px solid #fb6b6b;
+  transition-duration: 100ms;
+}
+
+.classTopicTag {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.classTopicIcon {
+  font-weight: 800;
+  font-size: 16px;
+}

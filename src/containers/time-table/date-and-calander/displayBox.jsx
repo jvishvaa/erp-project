@@ -102,10 +102,8 @@ const DisplayBox = (props) => {
             ) : (
               <></>
             )}
-              <div className='edit-button' onClick={() => handleCloseBox()}>
-                <CloseIcon size='small' />
-                Close
-              </div>
+           <div style={{color:'#ff6b6b'}}></div>
+            <CloseIcon color='primary' fontSize='large' onClick={() => handleCloseBox()} />
           </div>
           <div style={{ display: 'flex' }}>
             <div className='yellow-header'>Period Name:</div>
@@ -304,7 +302,7 @@ const DisplayBox = (props) => {
             }}
           >
             <CloseIcon size='small' />
-            Close
+            Cancel
           </div>
         </>
       )}
