@@ -72,43 +72,15 @@ const Calander = (props) => {
   const [DataTuesday, setDataTuesday] = useState(0);
   const [DataWednesday, setDataWednesday] = useState(0);
   const [DataThursday, setDataThursday] = useState(0);
-  const [loopMax, setLoopMax] = useState([0, 1, 2, 3, 4, 5, 6]);
+  const [loopMax, setLoopMax] = useState(props?.loopMax || [0, 1, 2, 3, 4, 5, 6]);
   const [DataFriday, setDataFriday] = useState(0);
   const [DataSaturday, setDataSaturday] = useState(0);
   const [DataSunday, setDataSunday] = useState(0);
   const [SelectData, setSelectData] = useState();
   const [selectClick, setSelectClick] = useState(false);
-  // const [newPeriod, setAddPeriod] = useState(props.openNewPeriod || false);
-  // console.log(props.openNewPeriod,'calander add period')
-  const [lengthMonday, setLengthMonday] = useState();
-  const [lengthTuesday, setLengthTuesday] = useState();
-  const [lengthWednesday, setLengthWednesday] = useState();
-  const [lengthThursday, setLengthThursday] = useState();
-  const [lengthFriday, setLengthFriday] = useState();
   const [subject, setSubject] = useState();
-  const [sectionIdOption, setSectionIdOption] = useState(null);
-  const [maxLength, setMaxLength] = useState();
+
   const [assignedTeacher, setAssignedTeacher] = useState();
-  const [assignedTeacherID, setAssignedTeacherID] = useState();
-  const [requiredMaterial, setRequiredMaterial] = useState();
-  const [periodName, setPeriodName] = useState();
-  const [periodDescription, setPeriodDescription] = useState();
-  const [days, setDays] = useState(['Monday']);
-  const [startTime, setStartTime] = useState(new Date('2014-08-18T00:00:00'));
-  const [acadamicYearID, setAcadamicYear] = useState();
-  // const [dayName, setDayName] = useState('Monday');
-  const [endTime, setEndTime] = useState(new Date('2014-08-18T00:00:00'));
-  // const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
-
-  const handleDateStartTimeChange = (time) => {
-    // let dataTime = time.toString().slice(16, 21)
-    setStartTime(time);
-  };
-  const handleDateEndTimeChange = (time) => {
-    // let dataTime = time.toString().slice(16, 21)
-    setEndTime(time);
-  };
-
   const borderStyle = {
     border: 'border: 2px solid #ff6b6b;',
   };
@@ -122,23 +94,13 @@ const Calander = (props) => {
     OpenCalanderWeek();
     callingSubjectAPI();
     callingTeachersAPI();
-    handleContextData();
-  }, [props.tableData]);
-  const handleContextData = () => (
-    <UserConsumer>{({ ids }) => setAcadamicYear(ids)}</UserConsumer>
-  );
-
+    console.log(props.loopMax, 'change digits');
+    setLoopMax(props.loopMax);
+  }, [props.tableData, props.loopMax]);
   const handleChangeData = (data) => {
     setSelectData(data);
     setSelectClick(!selectClick);
   };
-  const handleCloseNewPeriod = () => {
-    // setAddPeriod(false);
-    props.handlePassCloseNewPeriod();
-  };
-  // const handleOpenNewPeriod = () => {
-  //   setAddPeriod(true);
-  // };
   const callingSubjectAPI = () => {
     axiosInstance
       .get('/erp_user/subjects-list/', {
@@ -167,43 +129,8 @@ const Calander = (props) => {
         setAlert('error', "can't fetch teachers list");
       });
   };
-  const createPeriodAPI = () => {
-    if (sectionIdOption === null) {
-      setAlert('', 'Please Add Subjects');
-    } else {
-      let obj = {
-        academic_year: props.acadamicYear_ID,
-        section: props.section_ID,
-        branch: props.branch_ID,
-        grade: props.grade_ID,
-        subject: sectionIdOption,
-        assigned_teacher: assignedTeacherID,
-        // days: day,
-        days: days,
-        period_name: periodName,
-        period_description: periodDescription,
-        period_start_time: startTime.toString().slice(16, 21),
-        period_end_time: endTime.toString().slice(16, 21),
-        required_material: requiredMaterial,
-      };
-      axiosInstance
-        .post('/academic/assign_multiple_class_periods/', obj)
-        .then((response) => {
-          if (response.status === 200) {
-            setAlert('success', 'Period Added');
-            handleCloseNewPeriod();
-            props.callGetAPI();
-          }
-        })
-        .catch((error) => {
-          setAlert('error', 'please fill all fields or change time range');
-        });
-    }
-  };
-  const handleChangeMultipleDays = (event) => {
-    setDays(event.target.value);
-    console.log(days,'selected days')
-  };
+  
+
   const OpenCalanderWeek = () => {
     setDataMonday(props.tableData.Monday);
     setDataTuesday(props.tableData.Tuesday);
@@ -212,65 +139,8 @@ const Calander = (props) => {
     setDataFriday(props.tableData.Friday);
     setDataSunday(props.tableData.Sunday);
     setDataSaturday(props.tableData.Saturday);
-    // while (1) {
-    //   if (props.tableData.Monday) [counterLength];
-    // // }
-    // if (DataMonday) {
-    //   let lengthData = DataMonday.length;
-    //   if (lengthData > 6) {
-    //     setLengthMonday(lengthData);
-    //   }
-    //   console.log(lengthData);
-    // }
-    // if (DataTuesday) {
-    //   let lengthData = DataTuesday.length;
-    //   if (lengthData > 6) {
-    //     setLengthTuesday(lengthData);
-    //   }
-    //   console.log(lengthData);
-    // }
-    // if (DataWednesday) {
-    //   let lengthData = DataWednesday.length;
-    //   if (lengthData > 6) {
-    //     setLengthWednesday(lengthData);
-    //   }
-    //   console.log(lengthData);
-    // }
-    // if (DataThursday) {
-    //   let lengthData = DataTuesday.length;
-    //   if (lengthData > 6) {
-    //     setLengthThursday(lengthData);
-    //   }
-    //   console.log(lengthData);
-    // }
-    // if (DataFriday) {
-    //   let lengthData = DataFriday.length;
-    //   if (lengthData > 6) {
-    //     setLengthFriday(lengthData);
-    //   }
-    //   console.log(lengthData);
-    // }
-    // // if(monday)
-    // let arrayLength = [
-    //   lengthMonday,
-    //   lengthTuesday,
-    //   lengthWednesday,
-    //   lengthThursday,
-    //   lengthFriday,
-    // ];
-    // let sortedArray = arrayLength.sort();
-    // setMaxLength(lengthMonday);
-    // console.log(sortedArray, 'sorted array');
-    // console.log(maxLength, 'max length');
-    // let mappingArray = Array.from(Array(maxLength).keys());
-    // if (maxLength > 6) {
-    //   setLoopMax(mappingArray);
-    // }
   };
-  // const handleChangeDay = (e) => {
-  //   // setDayName(e.target.value);
-  //   setDay(e.target.value);
-  // };
+
   const handleChangeDisplayView = () => {
     setSelectClick(false);
   };
@@ -278,162 +148,7 @@ const Calander = (props) => {
   return (
     <>
      
-      {/* <Dialog
-        open={props.openNewPeriod}
-        onClose={handleCloseNewPeriod}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle id='add-new-dialog-title'>{'Add New Period'}</DialogTitle>
-        <div className='dialog-data-container'>
-          <div className={classes.formTextFields}>
-            <Autocomplete
-              id='combo-box-demo'
-              options={subject}
-              getOptionLabel={(option) => option?.subject_name}
-              style={{ width: 250 }}
-              onChange={(event, option) => setSectionIdOption(option?.id)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  size='small'
-                  fullWidth
-                  label='Subject'
-                  variant='outlined'
-                />
-              )}
-            />
-          </div>
-          <div className={classes.formTextFields}>
-            <Autocomplete
-              id='combo-box-demo'
-              options={assignedTeacher}
-              getOptionLabel={(option) => option?.name}
-              style={{ width: 250 }}
-              onChange={(event, option) => setAssignedTeacherID(option?.user_id)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  size='small'
-                  fullWidth
-                  label='Assigned Teacher'
-                  variant='outlined'
-                />
-              )}
-            />
-          </div>
-          <div className={classes.formTextFields}>
-            <TextField
-              label='Required materials'
-              id='outlined-size-small'
-              variant='outlined'
-              size='small'
-              onChange={(e) => setRequiredMaterial(e.target.value)}
-            />
-          </div>
-          <div className={classes.formTextFields}>
-            <TextField
-              label='Period Name'
-              id='outlined-size-small'
-              variant='outlined'
-              size='small'
-              onChange={(e) => setPeriodName(e.target.value)}
-            />
-          </div>
-          <div className={classes.formTextFields}>
-            <TextField
-              label='Period Description'
-              id='outlined-size-small'
-              variant='outlined'
-              size='small'
-              onChange={(e) => setPeriodDescription(e.target.value)}
-            />
-          </div>
-
-          <FormControl
-            variant='outlined'
-            size='small'
-            id='select-day'
-            className={classes.formTextFields}
-          >
-            <InputLabel id='demo-mutiple-chip-label'>Day</InputLabel>
-         
-            <Select
-              labelId='demo-mutiple-chip-label'
-              id='demo-mutiple-chip'
-              variant='outlined'
-              multiple
-              value={days}
-              onChange={handleChangeMultipleDays}
-              input={<Input id='select-multiple-chip' />}
-              renderValue={(selected) => (
-                <div className={classes.chips}>
-                  {selected.map((value) => (
-                    <Chip key={value} label={value} className={classes.chip} />
-                  ))}
-                </div>
-              )}
-              MenuProps={MenuProps}
-            >
-              {dayNames.map((name) => (
-                <MenuItem
-                  key={name}
-                  value={name}
-                  style={getStyles(dayNames, days, theme)}
-                >
-                  {name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <div className={classes.formTextFields} style={{ width: '43%' }}>
-            <MuiPickersUtilsProvider variant='outlined' fullWidth utils={DateFnsUtils}>
-              <KeyboardTimePicker
-                margin='normal'
-                id='time-picker'
-                variant='outlined'
-                label='Start Time'
-                fullWidth
-                ampm={false}
-                helperText='24-hour format'
-                value={startTime}
-                onChange={handleDateStartTimeChange}
-                KeyboardButtonProps={{
-                  'aria-label': 'change time',
-                }}
-              />
-            </MuiPickersUtilsProvider>
-          </div>
-          <div className={classes.formTextFields} style={{ width: '43%' }}>
-        
-            <MuiPickersUtilsProvider variant='outlined' fullWidth utils={DateFnsUtils}>
-              <KeyboardTimePicker
-                margin='normal'
-                id='time-picker'
-                variant='outlined'
-                label='End Time'
-                fullWidth
-                ampm={false}
-                helperText='24-hour format'
-                value={endTime}
-                onChange={handleDateEndTimeChange}
-                KeyboardButtonProps={{
-                  'aria-label': 'change time',
-                }}
-              />
-            </MuiPickersUtilsProvider>
-          </div>
-        </div>
-        <DialogActions>
-          <Button onClick={handleCloseNewPeriod} color='primary'>
-            Close
-          </Button>
-          <Button onClick={createPeriodAPI} color='primary' autoFocus>
-            Create
-          </Button>
-        </DialogActions>
-      </Dialog> */}
+      
       <div className='calander-container-time-table-module'>
         <div className='calander-week-time-table-module'>
           <table>
