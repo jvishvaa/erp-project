@@ -71,8 +71,6 @@ const Attend = () => {
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
   const [secSelectedId, setSecSelectedId] = useState([]);
-  const [data, setData] = useState();
-  const [defaultData, setDefaultData] = useState();
   const history = useHistory();
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
@@ -107,26 +105,6 @@ const Attend = () => {
       console.log(history?.location?.state?.payload?.branch_id);
       console.log(history?.location?.state?.payload?.grade_id?.grade_id, 'grade_id');
       console.log(history?.location?.state?.data, 'student data');
-
-      axiosInstance
-        .get(
-          `${endpoints.academics.multipleStudentsAttendacne}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&page_num=${pageNumber}&page_size=${limit}`
-        )
-        .then((res) => {
-          setLoading(false);
-          setResult(res.data.results);
-          setAlert('success', 'Data Successfully fetched');
-          setTotalGenre(res.data.count);
-          console.log(res.data.results, 'multiple student data between date ranges');
-          console.log(res.data.results.map((item) => console.log(item.user_id)));
-          // let temp = [...res.data.absent_list, ...res.data.present_list]
-          // console.log(temp)
-        })
-        .catch((err) => {
-          setLoading(false);
-          console.log(err);
-          // setAlert('error', err);
-        });
     } else {
       const date = new Date();
       console.log(
@@ -145,14 +123,6 @@ const Attend = () => {
     } else {
     }
   };
-
-  // useEffect(() => {
-  //   if(history){
-  //     console.log(history?.location?.state?.payload?.academic_year_id?.session_year)
-  //     setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id)
-  //   }
-  // }, [history])
-  //pagination
 
   const [state, setState] = React.useState({
     present: false,
@@ -177,9 +147,7 @@ const Attend = () => {
       setAlert('warning', 'Select Academic Year');
       return;
     }
-    console.log(selectedBranch.length, '===============');
     if (selectedBranch.length == 0) {
-      console.log(selectedBranch.length, '===============');
       setAlert('warning', 'Select Branch');
       return;
     }
@@ -209,11 +177,45 @@ const Attend = () => {
       )
       .then((res) => {
         setLoading(false);
-        setTotalGenre(res.data.count);
-        console.log(res.data.count);
-        console.log(res.data.results, 'multiple student data between date ranges');
-        console.log(res.data.results.map((item) => console.log(item.user_id)));
-        setResult(res.data.results);
+        // console.log(res.data.results, 'mutliple student data');
+        let present_length = res?.data?.results?.present_list?.length;
+        let absent_length = res?.data?.results?.absent_list?.length;
+        let present = res?.data?.results?.present_list;
+        let absent = res?.data?.results?.absent_list;
+
+        console.log(present);
+        console.log(absent);
+        let student_list = [];
+        console.log(present, 'present list');
+        console.log(absent, 'absent list');
+        if (present_length > absent_length) {
+          console.log('present length');
+          for (let i = 0; i < present_length; i++) {
+            const student_id = absent.filter(
+              (item) => item.student === present[i].student
+            );
+            console.log(student_id, 'id found');
+            const studentDetails = {
+              name: present[i].student_name,
+              roll_no: present[i].student,
+              no_of_absent_days: present[i].student_count,
+            };
+          }
+        }
+        if (present_length < absent_length) {
+          console.log('absent length');
+          for (let i = 0; i < absent_length; i++) {
+            const student_id = present.filter(
+              (item) => item.student === absent[i].student
+            );
+            console.log(student_id, 'id found');
+            const studentDetails = {
+              name: present[i].student_name,
+              roll_no: present[i].student,
+              no_of_absent_days: present[i].student_count,
+            };
+          }
+        }
         setAlert('success', 'Data Successfully fetched');
       })
       .catch((err) => {
@@ -326,31 +328,28 @@ const Attend = () => {
   };
   const handlePagination = (event, page) => {
     setPageNumber(page);
-    // setGenreActiveListResponse([]);
-    // setGenreInActiveListResponse([]);
-    // getData();
     handleFilter();
   };
-  const handleSinlgeStudent = (id) => {
-    console.log(id);
-    const studentData = result.filter((item) => item.user_id == id);
-    console.log(studentData);
-    const payload = {
-      academic_year_id: selectedAcademicYear,
-      branch_id: selectedBranch,
-      grade_id: selectedGrade,
-      section_id: selectedSection,
-      startDate: startDate,
-      endDate: endDate,
-    };
-    history.push({
-      pathname: '/teacher-view/attendance',
-      state: {
-        studentData,
-        payload,
-      },
-    });
-  };
+  // const handleSinlgeStudent = (id) => {
+  //   console.log(id);
+  //   const studentData = result.filter((item) => item.user_id == id);
+  //   console.log(studentData);
+  //   const payload = {
+  //     academic_year_id: selectedAcademicYear,
+  //     branch_id: selectedBranch,
+  //     grade_id: selectedGrade,
+  //     section_id: selectedSection,
+  //     startDate: startDate,
+  //     endDate: endDate,
+  //   };
+  //   history.push({
+  //     pathname: '/teacher-view/attendance',
+  //     state: {
+  //       studentData,
+  //       payload,
+  //     },
+  //   });
+  // };
 
   return (
     <Layout>
@@ -380,7 +379,7 @@ const Attend = () => {
               onChange={handleStartDateChange}
               // handleStartDateChange={handleStartDateChange}
               // handleEndDateChange={handleEndDateChange}
-
+              maxDate={new Date()}
               value={startDate}
               style={{ background: 'white', width: '50%' }}
               // onChange={handleDateChange}
@@ -405,6 +404,7 @@ const Attend = () => {
               className='arrow'
               onChange={handleEndDateChange}
               value={endDate}
+              maxDate={new Date()}
               style={{ background: 'white', width: '50%' }}
               KeyboardButtonProps={{
                 'aria-label': 'change date',
@@ -594,76 +594,15 @@ const Attend = () => {
           className={classes.root}
           spacing={2}
         >
-          {/* <Grid item md={1}></Grid> */}
-
           <Grid item sm={2} md={3}>
             <Typography color='primary'>
               {startDate && startDate} to {endDate && endDate}{' '}
             </Typography>
           </Grid>
-          {/* <Grid item sm={1} md={1}>
-            <img src={line} className={classes.lines} />
-          </Grid> */}
-          {/* <Grid item xs={12} md={5} >
-            <FormGroup row className='checkboxStyle'>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={state.present}
-                    onChange={handleChange}
-                    name="present"
-                    disabled={state.absent}
-                    color="primary"
-                  />
-                }
-                label="Present"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={state.absent}
-                    onChange={handleChange}
-                    name="absent"
-                    color="primary"
-                    disabled={
-                      state.present || (state.first_half && state.second_half)
-                    }
-                  />
-                }
-                label="Absent"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={state.first_half}
-                    onChange={handleChange}
-                    name="first_half"
-                    color="primary"
-                    disabled={state.present || state.absent}
-                  />
-                }
-                label="1st half"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={state.second_half}
-                    onChange={handleChange}
-                    name="second_half"
-                    color="primary"
-                    disabled={state.present || state.absent}
-                  />
-                }
-                label="2nd half"
-              />
-            </FormGroup>
-          </Grid> */}
-          {/* <Grid item sm={1} md={1}>
-            <img src={line} className={classes.lines} />
-          </Grid> */}
+
           <Grid item xs={8} sm={2} md={2} lg={2}>
             <Typography variant='subtitle1' color='secondary'>
-              Number of students: {totalGenre && totalGenre}
+              Number of students: {(result && result.length) || 0}
             </Typography>
           </Grid>
           {/* <Grid item xs={8} sm={2} md={2} lg={2}>
@@ -672,9 +611,7 @@ const Attend = () => {
         </Grid>
       </MediaQuery>
       <MediaQuery maxWidth={540}>
-        <Grid container direction='row'>
-          {/* <Grid item md={1}></Grid> */}
-        </Grid>
+        <Grid container direction='row'></Grid>
       </MediaQuery>
       <Grid container direction='row'>
         <Grid item xs={12} md={12}>
@@ -682,80 +619,46 @@ const Attend = () => {
         </Grid>
         <br />
       </Grid>
-      <Grid container direction='row' className={classes.root} spacing={2}>
+      {/* <Grid container direction='row' className={classes.root} spacing={2}>
         {result &&
-          result
-            // .filter((item, index) => {
-            //   if (state.present) {
-            //     const pageCondition = index >= offset && index < offset + 8
-            //     return pageCondition && (item.is_first_shift_present && item.is_second_shift_present)
-            //   }
-            //   else if (state.absent) {
-            //     const pageCondition = index >= offset && index < offset + 8
-            //     return pageCondition && (item.is_first_shift_present || item.is_second_shift_present)
-            //   }
-            //   else if (state.first_half) {
-            //     const pageCondition = index >= offset && index < offset + 8
-            //     return pageCondition && item.is_first_shift_present
-            //   }
-            //   else if (state.second_half) {
-            //     const pageCondition = index >= offset && index < offset + 8
-            //     return pageCondition && item.is_second_shift_present
-            //   }
-            //   else if (state.first_half && state.second_half) {
-            //     const pageCondition = index >= offset && index < offset + 8
-            //     return pageCondition && (item.is_first_shift_present && item.is_second_shift_present)
-            //   }
-            //   else {
-            //     const pageCondition = index >= offset && index < offset + 8
-            //     return pageCondition && item
-            //   }
-            // })
-            .map((item) => {
-              return (
-                <Grid item xs={12} sm={6} md={4}>
-                  <Card
-                    className={classes.bord}
-                    onClick={() => handleSinlgeStudent(item.user_id)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <CardMedia className={classes.cover} />
-                    <div>
-                      <CardContent>
-                        <Grid
-                          container
-                          direction='row'
-                          justify='space-between'
-                          alignItems='center'
-                        >
-                          <Grid
-                            item
-                            xs={1}
-                            sm={1}
-                            md={1}
-                            lg={1}
-                            style={{ marginTop: 15 }}
-                          >
-                            <Avatar>{item?.name?.slice(0, 1)}</Avatar>
-                          </Grid>
-                          <Grid item>
-                            <Typography>Name: {item?.name?.slice(0, 6) || ''}</Typography>
-                            <Typography>Roll_ no: {item?.user_id}</Typography>
-                          </Grid>
-                          <Grid>
-                            <p class='box'>
-                              <span class='test1'>{item.no_of_days_present}</span>
-                              <span class='test'>{item.no_of_days_absent}</span>
-                            </p>
-                          </Grid>
+          result.map((item) => {
+            return (
+              <Grid item xs={12} sm={6} md={6}>
+                <Card
+                  className={classes.bord}
+                  // onClick={() => handleSinlgeStudent(item.user_id)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <CardMedia className={classes.cover} />
+                  <div>
+                    <CardContent>
+                      <Grid
+                        container
+                        direction='row'
+                        justify='space-between'
+                        alignItems='center'
+                      >
+                        <Grid item xs={1} sm={1} md={1} lg={1} style={{ marginTop: 15 }}>
+                          <Avatar>{item?.name?.slice(0, 1)}</Avatar>
                         </Grid>
-                      </CardContent>
-                    </div>
-                  </Card>
-                </Grid>
-              );
-            })}
-      </Grid>
+                        <Grid item>
+                          <Typography>{item?.name?.slice(0, 6) || ''}</Typography>
+                          <Typography>{item?.roll_no}</Typography>
+                        </Grid>
+                        <Grid>
+                          <p class='box'>
+                            <span class='test1'>{item.no_of_present_days}</span>
+                            <span class='test'>{item.no_of_absent_days}</span>
+                          </p>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </div>
+                </Card>
+              </Grid>
+            );
+          })}
+      </Grid> */}
       <br />
       {!result && (
         <div style={{ width: '10%', marginLeft: '40%' }}>

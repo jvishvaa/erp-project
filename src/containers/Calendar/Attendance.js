@@ -380,6 +380,7 @@ const Attendance = () => {
               // handleEndDateChange={handleEndDateChange}
 
               value={startDate}
+              maxDate={new Date()}
               style={{ background: 'white', width: '50%' }}
               // onChange={handleDateChange}
               KeyboardButtonProps={{
