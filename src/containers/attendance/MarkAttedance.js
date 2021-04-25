@@ -122,6 +122,9 @@ const MarkAttedance = () => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
 
+  let path = window.location.pathname;
+  console.log(path, 'path');
+
   useEffect(() => {
     console.log(history);
 
@@ -315,8 +318,21 @@ const MarkAttedance = () => {
     console.log('date', value);
   };
   const handleBack = () => {
+    console.log(path, 'checking path');
+    const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: dateValue,
+      endDate: dateValue,
+    };
     history.push({
       pathname: '/attendance-calendar/teacher-view',
+      state: {
+        payload: payload,
+        backButtonStatus: true,
+      },
     });
   };
   const handleClearAll = () => {
@@ -436,7 +452,18 @@ const MarkAttedance = () => {
   };
 
   const handleSave = () => {
-    axiosInstance.post(`${endpoints.academics.markAttendance}`, data);
+    setLoading(true);
+    axiosInstance
+      .post(`${endpoints.academics.markAttendance}`, data)
+      .then((res) => {
+        setLoading(false);
+        console.log(res);
+        setAlert('success', 'Attendance posted successfully');
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
   };
   const StudentData = () => {
     return (
