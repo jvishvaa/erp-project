@@ -97,14 +97,7 @@ const Attend = () => {
       setSelectedSection(history?.location?.state?.payload?.section_id);
       setStartDate(history?.location?.state?.payload?.startDate);
       setEndDate(history?.location?.state?.payload?.endDate);
-      setResult(history?.location?.state?.data);
-      console.log(
-        history?.location?.state?.payload?.section_id?.section_id,
-        'section id in OverallAttendance'
-      );
-      console.log(history?.location?.state?.payload?.branch_id);
-      console.log(history?.location?.state?.payload?.grade_id?.grade_id, 'grade_id');
-      console.log(history?.location?.state?.data, 'student data');
+      // setResult(history?.location?.state?.data);
     } else {
       const date = new Date();
       console.log(
@@ -276,8 +269,20 @@ const Attend = () => {
   };
 
   const handleBack = () => {
+    const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: startDate,
+      endDate: endDate,
+    };
     history.push({
       pathname: '/attendance-calendar/teacher-view',
+      state: {
+        payload: payload,
+        backButtonStatus: true,
+      },
     });
   };
 
@@ -558,11 +563,7 @@ const Attend = () => {
         </Grid>
       </Grid>
       <Grid container direction='row'>
-        <StyledClearButton
-          variant='contained'
-          startIcon={<ClearIcon />}
-          onClick={handleBack}
-        >
+        <StyledClearButton variant='contained' onClick={handleBack}>
           Back
         </StyledClearButton>
         <StyledClearButton

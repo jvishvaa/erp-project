@@ -204,14 +204,30 @@ const Attendance = () => {
     }
   };
   const handleBack = () => {
+    const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: startDate,
+      endDate: endDate,
+    };
     if (history?.location?.pathname === '/teacher-view/attendance') {
       history.push({
-        pathname: '/attendance-calendar/teacher-view',
+        pathname: '/OverallAttendance',
+        state: {
+          payload,
+          backButtonStatus: true,
+        },
       });
     }
     if (history?.location?.pathname === '/student-view/attendance') {
       history.push({
         pathname: '/attendance-calendar/student-view',
+        state: {
+          payload,
+          backButtonStatus: true,
+        },
       });
     }
   };
@@ -592,7 +608,7 @@ const Attendance = () => {
         <Grid item md={11} xs={12}>
           <Divider />
         </Grid>
-        <Grid container direction='row' style={{ margin: '1%' }}>
+        <Grid container direction='row' style={{ marginLeft: '1%' }}>
           {/* <Grid item md={2} xs={6}>
             <StyledClearButton
               variant='contained'
@@ -603,11 +619,7 @@ const Attendance = () => {
             </StyledClearButton>
           </Grid> */}
           <Grid item md={2} xs={6}>
-            <StyledClearButton
-              variant='contained'
-              startIcon={<ClearIcon />}
-              onClick={handleBack}
-            >
+            <StyledClearButton variant='contained' onClick={handleBack}>
               back
             </StyledClearButton>
           </Grid>
@@ -632,32 +644,33 @@ const Attendance = () => {
         <Grid container direction='row' className={classes.root} spacing={3}>
           {/* <Grid item md={1}></Grid> */}
 
-          <Grid item sm={2} md={2}>
-            <Typography variant='subtitle2' color='primary'>
-              {!studentView && (
-                <strong>{studentName && studentName[0].name.slice(0, 6)}</strong>
-              )}
-              {studentView && (
-                <strong>
-                  {history?.location?.state?.data[0]?.student_name.slice(0, 6)}
-                </strong>
-              )}
-            </Typography>
-          </Grid>
-          <Grid item sm={1} md={1}>
-            <img src={line} className={classes.lines} />
-          </Grid>
+          <Grid item xs={12} md={6} container direction='row'>
+            <Grid item sm={2} md={2}>
+              <Typography variant='subtitle2' color='primary'>
+                {!studentView && (
+                  <strong>{studentName && studentName[0].name.slice(0, 6)}</strong>
+                )}
+                {studentView && (
+                  <strong>
+                    {history?.location?.state?.data[0]?.student_name.slice(0, 6)}
+                  </strong>
+                )}
+              </Typography>
+            </Grid>
+            <Grid item sm={1} md={1}>
+              <img src={line} className={classes.lines} />
+            </Grid>
 
-          <Grid item sm={2} md={3}>
-            <Typography variant='subtitle2' color='primary'>
-              {startDate} to {endDate}
-            </Typography>
+            <Grid item sm={2} md={3}>
+              <Typography variant='subtitle2' color='primary'>
+                {startDate} to {endDate}
+              </Typography>
+            </Grid>
+            <Grid item sm={1} md={1}>
+              <img src={line} className={classes.lines} />
+            </Grid>
           </Grid>
-          <Grid item sm={1} md={1}>
-            <img src={line} className={classes.lines} />
-          </Grid>
-
-          <Grid item xs={12} md={5}>
+          <Grid item xs={12} md={6} container direction='row'>
             <FormGroup row className='checkboxStyle'>
               <FormControlLabel
                 control={
