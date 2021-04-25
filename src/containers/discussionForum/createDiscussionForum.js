@@ -176,7 +176,7 @@ const CreateDiscussionForum = () => {
         "category": selectedSubSubCategory.id,
         "branch": editData?.branch_id,
         "grade": [editData?.grade_id],
-        //"section_mapping": [editData?.section_id]
+        "section_mapping": [editData?.id]
       }
     }
     dispatch(editPostData(requestData, postsId?.id));
@@ -503,7 +503,9 @@ const CreateDiscussionForum = () => {
             childComponentName='Create'
           />
         </div>
-        {(location.pathname !== '/student-forum/create' && location.pathname !== `/student-forum/edit/${postsId.id}`) && (
+        {(location.pathname !== '/student-forum/create' &&
+          location.pathname !== `/student-forum/edit/${postsId.id}` &&
+          location.pathname !== `/teacher-forum/edit/${postsId.id}`) && (
           <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
             <Grid xs={12} lg={4} className='create_group_items' item>
               <Autocomplete
