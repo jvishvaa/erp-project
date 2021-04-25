@@ -155,6 +155,8 @@ const AttedanceCalender = () => {
         setSelectedBranch(history?.location?.state?.payload?.branch_id);
         setSelectedGrade(history?.location?.state?.payload?.grade_id);
         setSelectedSection(history?.location?.state?.payload?.section_id);
+        setStartDate(startDate);
+        setEndDate(endDate);
       } else {
         setTeacherView(true);
         setStudentDataAll(null);
@@ -897,7 +899,11 @@ const AttedanceCalender = () => {
                 </Grid>
                 <Grid item md={6} xs={12} className='mark-btn-grid'>
                   {teacherView === true ? (
-                    <Button size='small' onClick={handleMarkAttendance}>
+                    <Button
+                      size='small'
+                      className='mark-attndance-button'
+                      onClick={handleMarkAttendance}
+                    >
                       <span className={classes.contentData} id='mark-para'>
                         Mark Attendance
                       </span>
@@ -1028,7 +1034,11 @@ const AttedanceCalender = () => {
               </Grid>
               <Grid item md={6} xs={12} className='event-btn'>
                 {teacherView === true ? (
-                  <Button size='small' href={`/createEvent`}>
+                  <Button
+                    size='small'
+                    href={`/createEvent`}
+                    className='mark-attndance-button'
+                  >
                     {/* ADD EVENT */}
                     <span className={classes.contentData} id='event-text'>
                       Add Event
