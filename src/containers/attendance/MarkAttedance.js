@@ -513,7 +513,7 @@ const MarkAttedance = () => {
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper' style={{ marginLeft: '-10px' }}>
+      <div className='profile_breadcrumb_wrapper' >
         <CommonBreadcrumbs componentName='Mark Attendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
