@@ -430,7 +430,7 @@ const Cal1 = () => {
     if (e.length > 0) {
       axiosInstance
         .get(
-          `${endpoints.eventBat.filterEventCategory}?event_category_name=${e}&page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
+          `${endpoints.eventBat.filterEventCategory}?event_category_name=${e}&page_num=${1}&page_size=${limit}&module_id=${moduleId}`
         )
         .then((result) => {
           setDummyData(result?.data?.data?.results);
