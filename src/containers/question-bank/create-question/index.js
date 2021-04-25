@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: 'none',
   },
 }));
-const domainName = getSubDomainName();
+const subDomainName = getSubDomainName();
 const CreateQuestion = () => {
   const classes = useStyles();
   const { qId } = useParams();
@@ -163,7 +163,7 @@ const CreateQuestion = () => {
               </div>
               <QuestionTypeFilters
                 editData={editData}
-                domainName={domainName}
+                subDomainName={subDomainName}
                 setEditData={setEditData}
                 setLoading={setLoading}
                 attributes={filterDataDisplay || {}}
