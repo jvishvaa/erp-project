@@ -840,7 +840,7 @@ const Attendance = () => {
                               <Grid>
                                 <p class='box3'>
                                   <span class='test1'>1st</span>
-                                  <span class='test'>2nd</span>
+                                  <span class='test2'>2nd</span>
                                 </p>
                               </Grid>
                             )}
@@ -848,7 +848,7 @@ const Attendance = () => {
                               <Grid>
                                 <p class='box5'>
                                   <span class='test1'>1st</span>
-                                  <span class='test'>2nd</span>
+                                  <span class='test2'>2nd</span>
                                 </p>
                               </Grid>
                             )}
@@ -856,7 +856,7 @@ const Attendance = () => {
                               <Grid>
                                 <p class='box1'>
                                   <span class='test1'>1st</span>
-                                  <span class='test'>2nd</span>
+                                  <span class='test2'>2nd</span>
                                 </p>
                               </Grid>
                             )}
@@ -864,7 +864,7 @@ const Attendance = () => {
                               <Grid>
                                 <p class='box2'>
                                   <span class='test1'>1st</span>
-                                  <span class='test'>2nd</span>
+                                  <span class='test2'>2nd</span>
                                 </p>
                               </Grid>
                             )}

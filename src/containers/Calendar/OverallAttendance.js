@@ -646,7 +646,7 @@ const Attend = () => {
                         <Grid>
                           <p class='box5'>
                             <span class='test1'>{item.student_present_count || 0}</span>
-                            <span class='test'>{item.student_absent_count || 0}</span>
+                            <span class='test2'>{item.student_absent_count || 0}</span>
                           </p>
                         </Grid>
                       </Grid>

@@ -245,7 +245,7 @@ const MarkAttedance = () => {
     console.log(pageNumber, 'page numebr');
     axiosInstance
       .get(
-        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&page_num=${pageNumber}&page_size=${limit}`
+        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&page=${pageNumber}&page_size=${limit}`
       )
       .then((res) => {
         setLoading(false);
@@ -419,11 +419,40 @@ const MarkAttedance = () => {
     // })
   };
   const handlePagination = (event, page) => {
-    setPageNumber(page);
+    // setPageNumber(page);
     console.log(page, 'page number checking');
     // setGenreActiveListResponse([]);
     // setGenreInActiveListResponse([]);
-    handleFilter();
+    axiosInstance
+      .get(
+        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&page=${page}&page_size=${limit}`
+      )
+      .then((res) => {
+        setLoading(false);
+        console.log(res.data);
+        setNewData(res.data.results);
+        setTotalGenre(res.data.count);
+        const is_first_shift_present = true;
+        const is_second_shift_present = true;
+        var result = res.data.results.map((item) => ({
+          name: item.name,
+          student_id: item.user,
+          section_mapping_id: selectedSection.id,
+          remarks: 'none',
+          is_first_shift_present: is_first_shift_present,
+          is_second_shift_present: is_second_shift_present,
+          fullday_present:
+            is_first_shift_present && is_second_shift_present ? true : false,
+          attendance_for_date: dateValue,
+        }));
+        setData(result);
+        console.log(result, 'result checking');
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+        // setAlert('error', 'something went wrong');
+      });
   };
 
   const handleSecondHalf = (e, id) => {
