@@ -109,13 +109,6 @@ const DiscussionCategory = (props) => {
           <CategoryEdit cardData={editData} hadleClose={hadleCloseCategory} />
         </Grid>
       )}
-      {/* <Grid item xs={12}>
-        <DiscussionPagination
-          showPerPage={showPerPage}
-          onPaginationChange={onPaginationChange}
-          totalCategory={props.rowData.length}
-        />
-      </Grid> */}
     </Grid>
   );
 };

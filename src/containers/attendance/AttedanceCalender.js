@@ -140,23 +140,38 @@ const AttedanceCalender = () => {
         }
       });
     }
+    console.log(history);
+    if (history?.location?.state?.payload) {
+      console.log('vinod');
+    }
   }, []);
   console.log(moduleId, 'MODULE_ID');
 
   useEffect(() => {
     if (path === '/attendance-calendar/teacher-view') {
       console.log(path, 'path');
-      setTeacherView(true);
-      setStudentDataAll(null);
-      setSelectedAcadmeicYear('');
-      setSelectedBranch([]);
-      setSelectedGrade([]);
-      setSelectedSection([]);
+      if (history?.location?.state?.backButtonStatus) {
+        setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id);
+        setSelectedBranch(history?.location?.state?.payload?.branch_id);
+        setSelectedGrade(history?.location?.state?.payload?.grade_id);
+        setSelectedSection(history?.location?.state?.payload?.section_id);
+        setStartDate(startDate);
+        setEndDate(endDate);
+      } else {
+        setTeacherView(true);
+        setStudentDataAll(null);
+        setSelectedAcadmeicYear('');
+        setSelectedBranch([]);
+        setSelectedGrade([]);
+        setSelectedSection([]);
+        setCurrentEvent(null);
+      }
     }
     if (path === '/attendance-calendar/student-view') {
       console.log(path, 'path');
       setTeacherView(false);
       setStudentDataAll(null);
+      setCurrentEvent(null);
     }
   }, [path]);
 
@@ -466,6 +481,28 @@ const AttedanceCalender = () => {
     if (counter === 1) {
       getTodayStudent();
     }
+    if (counter === 3) {
+      axiosInstance
+        .get(`academic/student_calender/`, {
+          params: {
+            start_date: startDate,
+            end_date: endDate,
+            erp_id: userName[0],
+          },
+        })
+        .then((res) => {
+          setLoading(false);
+          console.log(res, 'respond student');
+          setStudentDataAll(res.data);
+          let temp = [...res.data.present_list, ...res.data.absent_list];
+          setStudentData(temp);
+          setAlert('success', 'Data Sucessfully Fetched');
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
+    }
   };
 
   const selectModule = () => {
@@ -550,7 +587,7 @@ const AttedanceCalender = () => {
 
   return (
     <Layout>
-      <div style={{ marginTop: '20px', marginLeft: '-10px' }}>
+      <div className='profile_breadcrumb_wrapper' >
         <CommonBreadcrumbs componentName='Attendance & Calendar' />
       </div>
       {teacherView === true ? (
@@ -843,22 +880,28 @@ const AttedanceCalender = () => {
           <div className='startDate'> From {moment(startDate).format('DD-MM-YYYY')}</div>
           <Paper elevation={3} className={classes.paperSize} id='attendanceContainer'>
             <Grid container direction='row' className={classes.root} id='attendanceGrid'>
-              <Grid item md={6} xs={12}>
-                <Typography variant='h6' color='primary' className='attendancePara'>
-                  Attendance
-                </Typography>
-              </Grid>
-              <Grid item md={6} xs={12} className='mark-btn-grid'>
-                {teacherView === true ? (
-                  <Button size='small' onClick={handleMarkAttendance}>
-                    <span className={classes.contentData} id='mark-para'>
-                      Mark Attendance
-                    </span>
-                  </Button>
-                ) : (
-                  <div></div>
-                )}
-              </Grid>
+              <div className='attendanceBtnornot'>
+                <Grid item md={6} xs={12}>
+                  <Typography variant='h6' color='primary' className='attendancePara'>
+                    Attendance
+                  </Typography>
+                </Grid>
+                <Grid item md={6} xs={12} className='mark-btn-grid'>
+                  {teacherView === true ? (
+                    <Button
+                      size='small'
+                      className='mark-attndance-button'
+                      onClick={handleMarkAttendance}
+                    >
+                      <span className={classes.contentData} id='mark-para'>
+                        Mark Attendance
+                      </span>
+                    </Button>
+                  ) : (
+                    <div></div>
+                  )}
+                </Grid>
+              </div>
               <div className='stu-icon'>
                 <Grid item md={3}>
                   <Typography className={classes.content} id='studentPara'>
@@ -883,6 +926,7 @@ const AttedanceCalender = () => {
                           <Avatar
                             alt={data?.student_name}
                             src='/static/images/avatar/1.jpg'
+                            className="absentProfilePic"
                           />
                           <div className='studentName'>
                             <p className='absentName'>
@@ -923,6 +967,7 @@ const AttedanceCalender = () => {
                           <Avatar
                             alt={data?.student_name}
                             src='/static/images/avatar/1.jpg'
+                            className="presentProfilePic"
                           />
                           <div className='presentStudent'>
                             <p className='presentFName'>
@@ -936,7 +981,9 @@ const AttedanceCalender = () => {
                                 </div>
                               </div>
                             ) : (
-                              <div> </div>
+                              <div className='absentCount'>
+                                <div className='absentChip'> 1 Days </div>
+                              </div>
                             )}
                             {/* <p className='presentLName'> {data.student_last_name}</p> */}
                           </div>
@@ -970,7 +1017,11 @@ const AttedanceCalender = () => {
               </Grid>
               <Grid item md={6} xs={12} className='event-btn'>
                 {teacherView === true ? (
-                  <Button size='small' href={`/createEvent`}>
+                  <Button
+                    size='small'
+                    href={`/createEvent`}
+                    className='mark-attndance-button'
+                  >
                     {/* ADD EVENT */}
                     <span className={classes.contentData} id='event-text'>
                       Add Event

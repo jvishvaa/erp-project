@@ -176,7 +176,7 @@ const CreateDiscussionForum = () => {
         "category": selectedSubSubCategory.id,
         "branch": editData?.branch_id,
         "grade": [editData?.grade_id],
-        //"section_mapping": [editData?.section_id]
+        "section_mapping": [editData?.id]
       }
     }
     dispatch(editPostData(requestData, postsId?.id));
@@ -270,7 +270,7 @@ const CreateDiscussionForum = () => {
 
   useEffect(() => {
     const getCategoryList = () => {
-        axiosInstance.get(endpoints.discussionForum.categoryList).then((res) => {
+        axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=1&is_delete=False`).then((res) => {
             setcategoryListRes(res.data.result)
         }).catch(err => {
             console.log(err)
@@ -287,7 +287,7 @@ const CreateDiscussionForum = () => {
       setSelectedCategory(value);
       setSelectedSubCategory(null);
       setSelectedSubSubCategory(null);
-      axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.id}&category_type=2`)
+      axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.id}&category_type=2&is_delete=False`)
           .then(result => {
               if (result.data.status_code === 200) {
                 setSubCategoryListRes(result.data.result);
@@ -309,7 +309,7 @@ const CreateDiscussionForum = () => {
     if (value && value.sub_category_id){
     setSelectedSubCategory(value)
     setSelectedSubSubCategory(null);
-    axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.sub_category_id}&category_type=3`)
+    axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.sub_category_id}&category_type=3&is_delete=False`)
     .then(result => {
         if (result.data.status_code === 200) {
           setSubSubCategoryListRes(result.data.result);
@@ -503,7 +503,9 @@ const CreateDiscussionForum = () => {
             childComponentName='Create'
           />
         </div>
-        {(location.pathname !== '/student-forum/create' && location.pathname !== `/student-forum/edit/${postsId.id}`) && (
+        {(location.pathname !== '/student-forum/create' &&
+          location.pathname !== `/student-forum/edit/${postsId.id}` &&
+          location.pathname !== `/teacher-forum/edit/${postsId.id}`) && (
           <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
             <Grid xs={12} lg={4} className='create_group_items' item>
               <Autocomplete

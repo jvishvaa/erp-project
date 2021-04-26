@@ -44,11 +44,14 @@ const RangeCalender = (props) => {
     // setEndDate((moment(state[0].endDate).format("YYYY-MM-DD")));
   }, [state, stateMonthly]);
 
-  // const autoEndDate = () => {
-  // if (props.counter == 3) {
-  //   setState([{ ...state, [endDate]: "hello"}])
-  // }
-  // }
+  const autoEndDate = () => {
+  if (props.counter == 3) {
+    if (state[0].endDate === state[0].startDate || state[0].endDate === null) {
+        console.log(JSON.stringify(state) , "hittttt");
+         
+    }
+  }
+  }
 
   useEffect(() => {
     getfuture();
