@@ -118,6 +118,33 @@ const MarkAttedance = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const limit = 8;
 
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Calendar & Attendance' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Calendar') {
+              setModuleId(item.child_id);
+              console.log(item.child_id, 'Chekk');
+            }
+            if (item.child_name === 'Student Calendar') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+    console.log(history);
+    if (history?.location?.state?.payload) {
+      console.log('vinod');
+    }
+  }, []);
+  console.log(moduleId, 'MODULE_ID');
+
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
@@ -215,6 +242,7 @@ const MarkAttedance = () => {
     //   attendanceType: attendanceType,
     // }
     // console.log(payload)
+    console.log(pageNumber, 'page numebr');
     axiosInstance
       .get(
         `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&page_num=${pageNumber}&page_size=${limit}`
@@ -393,10 +421,9 @@ const MarkAttedance = () => {
   const handlePagination = (event, page) => {
     setPageNumber(page);
     console.log(page, 'page number checking');
-    handleFilter();
     // setGenreActiveListResponse([]);
     // setGenreInActiveListResponse([]);
-    // getData();
+    handleFilter();
   };
 
   const handleSecondHalf = (e, id) => {
@@ -549,7 +576,7 @@ const MarkAttedance = () => {
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper' >
+      <div className='profile_breadcrumb_wrapper'>
         <CommonBreadcrumbs componentName='Mark Attendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>

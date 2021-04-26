@@ -88,6 +88,33 @@ const Attendance = () => {
   const limit = 8;
   //  let path = window.location.pathname;
   //  console.log(path, 'path');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Calendar & Attendance' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Calendar') {
+              setModuleId(item.child_id);
+              console.log(item.child_id, 'Chekk');
+            }
+            if (item.child_name === 'Student Calendar') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+    console.log(history);
+    if (history?.location?.state?.payload) {
+      console.log('vinod');
+    }
+  }, []);
+  console.log(moduleId, 'MODULE_ID');
   useEffect(() => {
     let path = window.location.pathname;
     console.log(path, 'path');
@@ -385,7 +412,7 @@ const Attendance = () => {
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper' >
+      <div className='profile_breadcrumb_wrapper'>
         <CommonBreadcrumbs componentName='Attendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
@@ -870,7 +897,7 @@ const Attendance = () => {
           />
         </div>
       )}
-      <Grid container justify='center'>
+      {/* <Grid container justify='center'>
         {data && totalGenre > 8 && (
           <Pagination
             onChange={handlePagination}
@@ -881,7 +908,7 @@ const Attendance = () => {
             color='primary'
           />
         )}
-      </Grid>
+      </Grid> */}
       {loading && <Loader />}
     </Layout>
   );
