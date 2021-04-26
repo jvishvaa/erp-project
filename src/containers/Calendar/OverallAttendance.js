@@ -87,6 +87,33 @@ const Attend = () => {
   const limit = 8;
 
   useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Calendar & Attendance' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Calendar') {
+              setModuleId(item.child_id);
+              console.log(item.child_id, 'Chekk');
+            }
+            if (item.child_name === 'Student Calendar') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+    console.log(history);
+    if (history?.location?.state?.payload) {
+      console.log('vinod');
+    }
+  }, []);
+  console.log(moduleId, 'MODULE_ID');
+
+  useEffect(() => {
     console.log(history);
 
     if (history?.location?.state?.payload) {
@@ -179,6 +206,8 @@ const Attend = () => {
       )
       .then((res) => {
         setResult(res.data.results);
+        setTotalGenre(result?.data?.count);
+
         setLoading(false);
         console.log(res.data.results);
         setAlert('success', 'Data Successfully fetched');
@@ -306,7 +335,23 @@ const Attend = () => {
   };
   const handlePagination = (event, page) => {
     setPageNumber(page);
-    handleFilter();
+    axiosInstance
+      .get(
+        `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&page=${page}`
+      )
+      .then((res) => {
+        setResult(res.data.results);
+        setTotalGenre(result?.data?.count);
+        setLoading(false);
+        console.log(res.data.results);
+        setAlert('success', 'Data Successfully fetched');
+      })
+      .catch((err) => {
+        setResult([]);
+        setLoading(false);
+        console.log(err);
+        // setAlert('error', err);
+      });
   };
   const handleSinlgeStudent = (id) => {
     console.log(id);
@@ -331,7 +376,7 @@ const Attend = () => {
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper' >
+      <div className='profile_breadcrumb_wrapper'>
         <CommonBreadcrumbs componentName='Overall Attendance' />
       </div>
       <Grid
@@ -571,7 +616,7 @@ const Attend = () => {
             </Typography>
           </Grid>
 
-          <Grid item xs={8} sm={2} md={2} lg={2}>
+          <Grid item xs={8} sm={2} md={3} lg={2}>
             <Typography variant='subtitle1' color='secondary'>
               Number of students: {(result && result.length) || 0}
             </Typography>
@@ -619,7 +664,7 @@ const Attend = () => {
                         <Grid>
                           <p class='box5'>
                             <span class='test1'>{item.student_present_count || 0}</span>
-                            <span class='test'>{item.student_absent_count || 0}</span>
+                            <span class='test2'>{item.student_absent_count || 0}</span>
                           </p>
                         </Grid>
                       </Grid>
@@ -648,7 +693,7 @@ const Attend = () => {
           />
         </div>
       )}
-      <Grid container justify='center'>
+      {/* <Grid container justify='center'>
         {result && totalGenre > 8 && (
           <Pagination
             onChange={handlePagination}
@@ -659,7 +704,7 @@ const Attend = () => {
             color='primary'
           />
         )}
-      </Grid>
+      </Grid> */}
       {loading && <Loader />}
     </Layout>
   );

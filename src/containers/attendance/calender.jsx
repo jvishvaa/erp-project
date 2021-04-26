@@ -45,13 +45,12 @@ const RangeCalender = (props) => {
   }, [state, stateMonthly]);
 
   const autoEndDate = () => {
-  if (props.counter == 3) {
-    if (state[0].endDate === state[0].startDate || state[0].endDate === null) {
-        console.log(JSON.stringify(state) , "hittttt");
-         
+    if (props.counter == 3) {
+      if (state[0].endDate === state[0].startDate || state[0].endDate === null) {
+        console.log(JSON.stringify(state), 'hittttt');
+      }
     }
-  }
-  }
+  };
 
   useEffect(() => {
     getfuture();
@@ -113,14 +112,16 @@ const RangeCalender = (props) => {
   return (
     <div className='calender-container'>
       {props.counter === 2 ? (
-        <DateRangePicker
-          onChange={(item) => setState([item.selection])}
-          showSelectionPreview={true}
-          moveRangeOnFirstSelection={true}
-          months={1}
-          ranges={state}
-          direction='horizontal'
-        />
+        <div className='weeklyCalendar'>
+          <DateRangePicker
+            onChange={(item) => setState([item.selection])}
+            showSelectionPreview={true}
+            moveRangeOnFirstSelection={true}
+            months={1}
+            ranges={state}
+            direction='horizontal'
+          />
+        </div>
       ) : props.counter === 3 ? (
         <DateRange
           editableDateInputs={true}
