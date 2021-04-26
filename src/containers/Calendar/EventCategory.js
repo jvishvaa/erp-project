@@ -695,10 +695,11 @@ const handleClears=()=>{
                               >
                                 <MenuItem onClick={handleEdit}>Edit</MenuItem>
                                 {/* <MenuItem onClick={handleDelete}>Delete</MenuItem> */}
-                                <MenuItem variant="outlined" color="primary" onClick={DiaClickOpen}>Delete</MenuItem>
+                                <MenuItem  color="primary" onClick={DiaClickOpen}>Delete</MenuItem>
                                  <Dialog
                                     open={Diaopen}
                                     onClose={DiaClose}
+                                    style={{backgroundColor:'transparent',opacity:'0.3'}}
                                     aria-labelledby="alert-dialog-title"
                                     aria-describedby="alert-dialog-description"
                                   >
