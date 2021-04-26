@@ -34,6 +34,9 @@ border-radius: 10px;
         background-color: #FFFF !important;
 
     }
+    .rdrDefinedRangesWrapper{
+        display: none !important;
+    }
     button:hover {
         text-decoration: none !important;
         outline: none !important;
@@ -45,5 +48,10 @@ border-radius: 10px;
     }
     .rdrDayPassive{
         color:#BEBEBE !important;
+    }
+    .weeklyCalendar{
+        .rdrMonthName{
+            display: none;
+        }
     }
 }
