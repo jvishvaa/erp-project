@@ -31,7 +31,7 @@ import OutlinedFlagRoundedIcon from '@material-ui/icons/OutlinedFlagRounded';
 import WatchLaterOutlinedIcon from '@material-ui/icons/WatchLaterOutlined';
 import EventOutlinedIcon from '@material-ui/icons/EventOutlined';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-
+import flag from '../../assets/images/flag.svg';
 import AcademicYear from 'components/icon/AcademicYear';
 import moment from 'moment';
 import './AttendanceCalender.scss';
@@ -516,6 +516,10 @@ const AttedanceCalender = () => {
     }
   };
 
+  const convertTime = () => {
+    console.log(currentEvent, 'current time');
+  };
+
   const handleViewDetails = () => {
     const payload = {
       academic_year_id: selectedAcademicYear,
@@ -587,7 +591,7 @@ const AttedanceCalender = () => {
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper' >
+      <div className='profile_breadcrumb_wrapper'>
         <CommonBreadcrumbs componentName='Attendance & Calendar' />
       </div>
       {teacherView === true ? (
@@ -827,9 +831,12 @@ const AttedanceCalender = () => {
                               background: data.event_category.event_category_color,
                             }}
                           >
-                            <OutlinedFlagRoundedIcon
+                            {/* <OutlinedFlagRoundedIcon
                               style={{ background: '#FF6B6B', borderRadius: '30px' }}
-                            />
+                            />  */}
+                            <div className='eventFlagToday'>
+                              <img src={flag} className='flagImgToday' />
+                            </div>
                             {data?.event_name}
                           </div>
                         </div>
@@ -856,14 +863,17 @@ const AttedanceCalender = () => {
             )}
           </Grid>
           <Grid className='buttonGrid'>
-            <StyledClearButton
-              variant='contained'
-              startIcon={<ClearIcon />}
-              onClick={handleClearAll}
-            >
-              Clear all
-            </StyledClearButton>
-
+            {teacherView === true ? (
+              <StyledClearButton
+                variant='contained'
+                startIcon={<ClearIcon />}
+                onClick={handleClearAll}
+              >
+                Clear all
+              </StyledClearButton>
+            ) : (
+              <></>
+            )}
             <StyledFilterButton
               variant='contained'
               color='secondary'
@@ -908,6 +918,11 @@ const AttedanceCalender = () => {
                     Students
                   </Typography>
                 </Grid>
+                {teacherView === false ? (
+                  <p className='erpId'>erp_id :{userName[0]}</p>
+                ) : (
+                  <></>
+                )}
                 {/* <KeyboardArrowDownIcon className='downIcon' /> */}
               </div>
             </Grid>
@@ -926,7 +941,7 @@ const AttedanceCalender = () => {
                           <Avatar
                             alt={data?.student_name}
                             src='/static/images/avatar/1.jpg'
-                            className="absentProfilePic"
+                            className='absentProfilePic'
                           />
                           <div className='studentName'>
                             <p className='absentName'>
@@ -958,6 +973,7 @@ const AttedanceCalender = () => {
                 <div className='presentContainer'>
                   <div className='presentHeader'>
                     <p className='presentPara'>Present List</p>
+                    <p className='presentDuration'>Present Duration</p>
                   </div>
                   <Divider />
                   <div className='presentStudents'>
@@ -967,7 +983,7 @@ const AttedanceCalender = () => {
                           <Avatar
                             alt={data?.student_name}
                             src='/static/images/avatar/1.jpg'
-                            className="presentProfilePic"
+                            className='presentProfilePic'
                           />
                           <div className='presentStudent'>
                             <p className='presentFName'>
@@ -1046,42 +1062,48 @@ const AttedanceCalender = () => {
             </Grid>
             {studentDataAll != null ? (
               <Paper elevation={1} className='eventGrid'>
-                {studentDataAll.events &&
-                  studentDataAll.events.map((data) => (
-                    <Typography
-                      className={[classes.contentsmall, classes.root]}
-                      id='eventData'
-                    >
-                      {/* {data.start_time.slice(0, 10)} */}
-                      {moment(data.start_time.slice(0, 10)).format('DD-MM-YYYY')}
-                      <br />
-                      <Grid container direction='row'>
-                        <OutlinedFlagRoundedIcon
+                <Divider />
+                <div className='eventList'>
+                  {studentDataAll.events &&
+                    studentDataAll.events.map((data) => (
+                      <Typography
+                        className={[classes.contentsmall, classes.root]}
+                        id='eventData'
+                      >
+                        {/* {data.start_time.slice(0, 10)} */}
+                        {moment(data.start_time.slice(0, 10)).format('DD-MM-YYYY')}
+                        <br />
+                        <Grid container direction='row' className='eventDetailsfirst'>
+                          <div className='flagBg'>
+                            <img src={flag} className='flagImg' />
+                          </div>
+                          {/* <OutlinedFlagRoundedIcon
                           style={{ background: '#78B5F3', borderRadius: '30px' }}
-                        />
-                        <Typography> {data.event_name} </Typography>
-                      </Grid>
-                      <Grid container direction='row' className='dateTimeEvent'>
-                        <div className='timeEvent'>
-                          <WatchLaterOutlinedIcon
-                            color='primary'
-                            className={classes.content}
-                          />
-                          {data.start_time.slice(11, 16)}
-                        </div>
-                        <div className='dateEvent'>
-                          <EventOutlinedIcon
-                            color='primary'
-                            className={classes.content}
-                          />
-                          {data.start_time.slice(0, 10)}
-                        </div>
-                      </Grid>
-                      <Typography className={classes.contentData}>
-                        {data.description}
+                        /> */}
+                          <Typography className='eventNameData'>
+                            {' '}
+                            {data.event_name}{' '}
+                          </Typography>
+                        </Grid>
+                        <Grid container direction='row' className='dateTimeEvent'>
+                          <div className='timeEvent'>
+                            <WatchLaterOutlinedIcon
+                              color='primary'
+                              className='eventClock'
+                            />
+                            {data.start_time.slice(11, 16)}
+                          </div>
+                          <div className='dateEvent'>
+                            <EventOutlinedIcon color='primary' className='calLogo' />
+                            {moment(data.start_time.slice(0, 10)).format('DD-MM-YYYY')}
+                          </div>
+                        </Grid>
+                        <Typography className={classes.contentData}>
+                          {data.description}
+                        </Typography>
                       </Typography>
-                    </Typography>
-                  ))}
+                    ))}
+                </div>
               </Paper>
             ) : (
               <div className='noImgEvent'>

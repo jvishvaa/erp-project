@@ -13,7 +13,7 @@ const RangeCalender = (props) => {
   const [state, setState] = useState([
     {
       startDate: new Date(),
-      endDate: new Date(new Date()).setDate(new Date(new Date()).getDate()+ 7),
+      endDate: new Date(new Date()).setDate(new Date(new Date()).getDate()- 7),
       key: 'selection'
     }
   ]);

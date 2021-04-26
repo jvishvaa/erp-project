@@ -311,8 +311,7 @@
 #eventContainer {
   // height: fit-content !important;
   height: 395px !important ;
-  overflow: auto;
-  overflow-x: hidden;
+ 
   .noImgEvent {
     display: flex;
     justify-content: center;
@@ -320,6 +319,11 @@
       height: 200px;
       width: 200px;
     }
+  }
+  .eventList{
+    height: 315px !important;
+    overflow: auto;
+    overflow-x: hidden;
   }
   .flagBg{
     background: #78B5F3;
