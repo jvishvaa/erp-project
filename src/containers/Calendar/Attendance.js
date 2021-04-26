@@ -85,7 +85,7 @@ const Attendance = () => {
   const [totalGenre, setTotalGenre] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const [studentView, setStudentView] = useState(false);
-  const limit = 8;
+  const limit = 14;
   //  let path = window.location.pathname;
   //  console.log(path, 'path');
 
@@ -152,7 +152,7 @@ const Attendance = () => {
   const getAllData = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${history?.location?.state?.studentData[0]?.erp_id}&page=${pageNumber}`
+        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${history?.location?.state?.studentData[0]?.erp_id}&page=${pageNumber}&page_size=${limit}`
       )
       .then((res) => {
         if (res.status == 200) {
@@ -184,7 +184,7 @@ const Attendance = () => {
     console.log(userName[0], 'userName');
     axiosInstance
       .get(
-        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName[0]}&page=${pageNumber}`
+        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName[0]}&page=${pageNumber}&page_size=${limit}`
       )
       // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
       .then((res) => {
@@ -335,11 +335,63 @@ const Attendance = () => {
     console.log(page, 'page number checking');
     if (history?.location?.pathname === '/student-view/attendance') {
       setPageNumber(page);
-      getAllStudentsData();
+      setStartDate(history?.location?.state?.payload?.startDate);
+      setEndDate(history?.location?.state?.payload?.endDate);
+      setStudentName(history?.location?.state?.data[0]?.student_name);
+      setStudentView(true);
+      let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
+      console.log(userName[0], 'userName');
+      axiosInstance
+        .get(
+          `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName[0]}&page=${page}&page_size=${limit}`
+        )
+        // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
+        .then((res) => {
+          if (res.status == 200) {
+            setTotalGenre(res.data.count);
+            console.log(res.data.count);
+            console.log(res.data.results, 'single student data');
+            setData(res.data.results);
+            setAlert('success', 'Data Successfully fetched');
+            if (res?.data?.message) {
+              // alert(res?.data?.message)
+            } else console.log(res.data.message);
+          }
+          if (res.status == 400) {
+            console.log(res.message);
+            setAlert('error', res.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          // setAlert('error', 'something went wrong');
+        });
     }
     if (history?.location?.pathname === '/teacher-view/attendance') {
       setPageNumber(page);
-      getAllData();
+      axiosInstance
+        .get(
+          `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${history?.location?.state?.studentData[0]?.erp_id}&page=${page}&page_size=${limit}`
+        )
+        .then((res) => {
+          if (res.status == 200) {
+            setTotalGenre(res.data.count);
+            console.log(res.data.count);
+            console.log(res.data.results, 'single student data');
+            setData(res.data.results);
+            setAlert('success', 'Data Successfully fetched');
+            if (res?.data?.message) {
+              // alert(res?.data?.message)
+            } else console.log(res.data.message);
+          }
+          if (res.status == 400) {
+            console.log(res.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          // setAlert('error', 'something went wrong');
+        });
     }
   };
   const handleClearAll = () => {
@@ -897,18 +949,18 @@ const Attendance = () => {
           />
         </div>
       )}
-      {/* <Grid container justify='center'>
-        {data && totalGenre > 8 && (
+      <Grid container justify='center'>
+        {data && totalGenre > 14 && (
           <Pagination
             onChange={handlePagination}
-            style={{ paddingLeft: '150px' }}
+            // style={{ paddingLeft: '150px' }}
             count={Math.ceil(totalGenre / limit)}
             color='primary'
             page={pageNumber}
             color='primary'
           />
         )}
-      </Grid> */}
+      </Grid>
       {loading && <Loader />}
     </Layout>
   );

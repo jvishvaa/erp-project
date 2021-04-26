@@ -84,7 +84,7 @@ const Attend = () => {
 
   const [totalGenre, setTotalGenre] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
-  const limit = 8;
+  const limit = 9;
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -127,10 +127,11 @@ const Attend = () => {
       // setResult(history?.location?.state?.data);
       axiosInstance
         .get(
-          `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&page=${pageNumber}`
+          `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&page=${pageNumber}&page_size=${limit}`
         )
         .then((res) => {
           setResult(res.data.results);
+          setTotalGenre(res.data.count);
           setLoading(false);
           console.log(res.data.results);
           setAlert('success', 'Data Successfully fetched');
@@ -199,16 +200,16 @@ const Attend = () => {
       end_date: endDate,
     };
     // console.log(payload);
-
     axiosInstance
       .get(
-        `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&page=${pageNumber}`
+        `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&page=${pageNumber}&page_size=${limit}`
       )
       .then((res) => {
-        setResult(res.data.results);
-        setTotalGenre(result?.data?.count);
-
         setLoading(false);
+        console.log(res, 'page checking');
+        setResult(res.data.results);
+        setTotalGenre(res.data.count);
+        console.log(res.data.count, 'count');
         console.log(res.data.results);
         setAlert('success', 'Data Successfully fetched');
       })
@@ -337,17 +338,16 @@ const Attend = () => {
     setPageNumber(page);
     axiosInstance
       .get(
-        `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&page=${page}`
+        `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&page=${page}&page_size=${limit}`
       )
       .then((res) => {
-        setResult(res.data.results);
-        setTotalGenre(result?.data?.count);
         setLoading(false);
+        setResult(res.data.results);
+        setTotalGenre(res.data.count);
         console.log(res.data.results);
         setAlert('success', 'Data Successfully fetched');
       })
       .catch((err) => {
-        setResult([]);
         setLoading(false);
         console.log(err);
         // setAlert('error', err);
@@ -616,9 +616,9 @@ const Attend = () => {
             </Typography>
           </Grid>
 
-          <Grid item xs={8} sm={2} md={3} lg={2}>
+          <Grid item xs={8} sm={2} md={3}>
             <Typography variant='subtitle1' color='secondary'>
-              Number of students: {(result && result.length) || 0}
+              Number of students: {totalGenre}
             </Typography>
           </Grid>
           {/* <Grid item xs={8} sm={2} md={2} lg={2}>
@@ -693,8 +693,8 @@ const Attend = () => {
           />
         </div>
       )}
-      {/* <Grid container justify='center'>
-        {result && totalGenre > 8 && (
+      <Grid container justify='center'>
+        {result && totalGenre > 9 && (
           <Pagination
             onChange={handlePagination}
             // style={{ paddingLeft: '150px' }}
@@ -704,7 +704,7 @@ const Attend = () => {
             color='primary'
           />
         )}
-      </Grid> */}
+      </Grid>
       {loading && <Loader />}
     </Layout>
   );
