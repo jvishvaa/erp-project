@@ -119,9 +119,6 @@ import TeacherBatchView from './containers/teacherBatchView';
 import ErpAdminViewClass from './containers/online-class/erp-view-class/admin';
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import AttachmentPreviewer from './components/attachment-previewer';
-import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP'
-import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz'
-
 import FeeType from './containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/feeType.js';
 import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType';
 // import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType.js'
@@ -266,8 +263,8 @@ import AssessmentView from './containers/assessment-central/assesment-view';
 import CreateAssesment from './containers/assessment-central/create-assesment';
 import AssessmentReportTypes from './containers/assessment-central/assessment-report-types';
 import ContactUs from 'containers/contact-us';
-import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz'
-import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP'
+import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz';
+import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
 
 // import Contact from './containers/contact/Contact';
 
