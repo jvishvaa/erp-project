@@ -206,6 +206,8 @@ const Attend = () => {
       )
       .then((res) => {
         setResult(res.data.results);
+        setTotalGenre(result?.data?.count);
+
         setLoading(false);
         console.log(res.data.results);
         setAlert('success', 'Data Successfully fetched');
@@ -339,6 +341,7 @@ const Attend = () => {
       )
       .then((res) => {
         setResult(res.data.results);
+        setTotalGenre(result?.data?.count);
         setLoading(false);
         console.log(res.data.results);
         setAlert('success', 'Data Successfully fetched');
@@ -613,7 +616,7 @@ const Attend = () => {
             </Typography>
           </Grid>
 
-          <Grid item xs={8} sm={2} md={2} lg={2}>
+          <Grid item xs={8} sm={2} md={3} lg={2}>
             <Typography variant='subtitle1' color='secondary'>
               Number of students: {(result && result.length) || 0}
             </Typography>
@@ -690,7 +693,7 @@ const Attend = () => {
           />
         </div>
       )}
-      <Grid container justify='center'>
+      {/* <Grid container justify='center'>
         {result && totalGenre > 8 && (
           <Pagination
             onChange={handlePagination}
@@ -701,7 +704,7 @@ const Attend = () => {
             color='primary'
           />
         )}
-      </Grid>
+      </Grid> */}
       {loading && <Loader />}
     </Layout>
   );
