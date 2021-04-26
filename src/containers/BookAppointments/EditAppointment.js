@@ -9,7 +9,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import Paper from '@material-ui/core/Paper';
 import './Styles.scss';
-import { 
+import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
   KeyboardDatePicker,
@@ -147,15 +147,11 @@ const EditAppointment = ({
   };
 
   return (
-    <Layout>
-      <Grid>
-        <CommonBreadcrumbs componentName='EditAppointment' />
-      </Grid>
-      <form onSubmit={handleSubmit}>
-        <div className={classes.root}>
-          <Grid container spacing={3} direction='row'>
-            <Grid item xs={12} sm={5} md={3}>
-              {/* <FormControl variant='outlined' className={classes.formControl} size='small'>
+    <form onSubmit={handleSubmit}>
+      <div className={classes.root}>
+        <Grid container spacing={3} direction='row'>
+          <Grid item xs={12} sm={5} md={3}>
+            {/* <FormControl variant='outlined' className={classes.formControl} size='small'>
               <Autocomplete
                 size='small'
                 onChange={handleRole}
@@ -180,160 +176,150 @@ const EditAppointment = ({
               />
             </FormControl> */}
 
-              <FormControl
-                variant='outlined'
-                className={classes.formControl}
-                size='small'
-              >
-                <InputLabel id='demo-simple-select-outlined-label'>
-                  Appointment With
-                </InputLabel>
-                <Select
-                  labelId='demo-simple-select-outlined-label'
-                  id='demo-simple-select-outlined'
-                  name='role'
-                  //   onChange={handleChange}
-                  labelWidth={170}
-                  defaultValue={role?.id}
-                >
-                  {/* {roles &&
-                    roles.map((role) => {
-                      return (
-                        <MenuItem value={role.id} key={role.id}>
-                          {role.role_name}
-                        </MenuItem>
-                      );
-                    })} */}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={5} md={3} lg={2}>
-              <TextField
-                name='appointment_date'
-                label='Appointment Date'
-                InputLabelProps={{ shrink: true, required: true }}
-                type='date'
-                variant='outlined'
-                fullWidth
-                size='small'
-                // onChange={handleDateChange}
-                // onChange={handleChange}
-                style={{ marginTop: 25 }}
-                // defaultValue={date}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={5} md={3} lg={2}>
-              <TextField
-                name='appointment_time'
-                label='Appointment Time'
-                InputLabelProps={{ shrink: true, required: true }}
-                type='time'
-                format='12'
-                variant='outlined'
-                size='small'
-                fullWidth
+            <FormControl variant='outlined' className={classes.formControl} size='small'>
+              <InputLabel id='demo-simple-select-outlined-label'>
+                Appointment With
+              </InputLabel>
+              <Select
+                labelId='demo-simple-select-outlined-label'
+                id='demo-simple-select-outlined'
+                name='role'
+                className='arrow'
                 onChange={handleChange}
-                style={{ marginTop: 25 }}
-                // defaultValue={time}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Divider />
-            </Grid>
-            <Grid item xs={12} sm={5} md={3}>
-              <FormControl
-                variant='outlined'
-                className={classes.formControl}
-                size='small'
+                labelWidth={170}
+                defaultValue={role?.id}
               >
-                <InputLabel id='demo-simple-select-outlined-label'>
-                  Appointment medium
-                </InputLabel>
-                <Select
-                  labelId='demo-simple-select-outlined-label'
-                  id='demo-simple-select-outlined'
-                  name='booking_mode'
-                  //   onChange={handleChange}
-                  labelWidth={170}
-                  //   defaultValue={booking_mode}
-                >
-                  <MenuItem value={1}>Zoom Meeting</MenuItem>
-                  <MenuItem value={2}>Telephonic</MenuItem>
-                  <MenuItem value={3}>Visit</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
+                {roles &&
+                  roles.map((role) => {
+                    return (
+                      <MenuItem value={role.id} key={role.id}>
+                        {role.role_name}
+                      </MenuItem>
+                    );
+                  })}
+              </Select>
+            </FormControl>
           </Grid>
-        </div>
-        <Grid item xs={12} md={6} sm={12} style={{ margin: 20 }}>
-          <Divider />
-        </Grid>
-        <Grid item xs={12} md={10} sm={12}>
-          <FormControl
-            className={classes.inputLabel}
-            variant='outlined'
-            // onChange={handleChange}
-          >
-            <InputLabel htmlFor='outlined-adornment-amount'>
-              Reason for Appointment
-            </InputLabel>
-            <OutlinedInput
-              id='outlined-adornment-amount'
-              //   onChange={handleChange}
+          <Grid item xs={12} sm={5} md={3} lg={2}>
+            <TextField
+              name='appointment_date'
+              label='Appointment Date'
+              InputLabelProps={{ shrink: true, required: true }}
+              type='date'
+              className='button'
+              variant='outlined'
               fullWidth
-              labelWidth={200}
-              name='message'
-              style={{ height: 100 }}
-              defaultValue={message}
+              size='small'
+              // onChange={handleDateChange}
+              onChange={handleChange}
+              style={{ marginTop: 25 }}
+              defaultValue={date}
             />
-          </FormControl>
-        </Grid>
-        {/*  */}
+          </Grid>
 
-        <Grid
-          container
-          spacing={isMobile ? 1 : 5}
-          style={{ width: '95%', margin: '10px' }}
-        >
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            md={3}
-            className={isMobile ? '' : 'addEditButtonsPadding'}
-          >
-            <Button
-              variant='contained'
-              className='custom_button_master labelColor'
-              size='medium'
-              onClick={handleGoBack}
-            >
-              Back
-            </Button>
+          <Grid item xs={12} sm={5} md={3} lg={2}>
+            <TextField
+              name='appointment_time'
+              label='Appointment Time'
+              InputLabelProps={{ shrink: true, required: true }}
+              type='time'
+              format='12'
+              className='button'
+              variant='outlined'
+              size='small'
+              fullWidth
+              onChange={handleChange}
+              style={{ marginTop: 25 }}
+              defaultValue={time}
+            />
           </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={5}
-            md={4}
-            lg={3}
-            className={isMobile ? '' : 'addEditButtonsPadding'}
-          >
-            <Button
-              variant='contained'
-              style={{ color: 'white' }}
-              color='primary'
-              className='custom_button_master'
-              size='medium'
-              type='submit'
-            >
-              Edit Appointment
-            </Button>
+          <Grid item xs={12}>
+            <Divider />
+          </Grid>
+          <Grid item xs={12} sm={5} md={3}>
+            <FormControl variant='outlined' className={classes.formControl} size='small'>
+              <InputLabel id='demo-simple-select-outlined-label'>
+                Appointment medium
+              </InputLabel>
+              <Select
+                labelId='demo-simple-select-outlined-label'
+                id='demo-simple-select-outlined'
+                name='booking_mode'
+                onChange={handleChange}
+                labelWidth={170}
+                defaultValue={booking_mode}
+              >
+                <MenuItem value={1}>Zoom Meeting</MenuItem>
+                <MenuItem value={2}>Telephonic</MenuItem>
+                <MenuItem value={3}>Visit</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
         </Grid>
-      </form>
-    </Layout>
+      </div>
+      <Grid item xs={12} md={6} sm={12} style={{ margin: 20 }}>
+        <Divider />
+      </Grid>
+      <Grid item xs={12} md={10} sm={12}>
+        <FormControl
+          className={classes.inputLabel}
+          variant='outlined'
+          onChange={handleChange}
+        >
+          <InputLabel htmlFor='outlined-adornment-amount'>
+            Reason for Appointment
+          </InputLabel>
+          <OutlinedInput
+            id='outlined-adornment-amount'
+            onChange={handleChange}
+            fullWidth
+            labelWidth={200}
+            name='message'
+            style={{ height: 100 }}
+            defaultValue={message}
+          />
+        </FormControl>
+      </Grid>
+      {/*  */}
+
+      <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '10px' }}>
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          md={3}
+          className={isMobile ? '' : 'addEditButtonsPadding'}
+        >
+          <Button
+            variant='contained'
+            className='custom_button_master labelColor'
+            size='medium'
+            onClick={handleGoBack}
+          >
+            Back
+          </Button>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={5}
+          md={4}
+          lg={3}
+          className={isMobile ? '' : 'addEditButtonsPadding'}
+        >
+          <Button
+            variant='contained'
+            style={{ color: 'white' }}
+            color='primary'
+            className='custom_button_master'
+            size='medium'
+            type='submit'
+          >
+            Book Appointment
+          </Button>
+        </Grid>
+      </Grid>
+    </form>
   );
 };
 

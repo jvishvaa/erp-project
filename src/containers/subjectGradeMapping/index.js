@@ -54,27 +54,47 @@ const Subjectgrade = (props) => {
     const [error, setError] = useState(null);
     const [defaultValueGrade, setdefaultValueGrade] = useState(null);
     const { setAlert } = useContext(AlertNotificationContext);
+    const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+    const [moduleId, setModuleId] = React.useState();
 
 
     const [modules] = React.useState(modulesArray)
     // const [selectedModule, selectModule] = React.useState(modulesArray[0])
     const [selectedModule, selectModule] = React.useState()
 
-
-    useEffect(() => {
-        axiosInstance.get(`${endpoints.userManagement.academicYear}?module_id=8`).then(res => {
-            if (res.data.data) {
-                setAcademicYear(res.data.data);
+    React.useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Master Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Lesson Plan Mapping') {
+              setModuleId(item.child_id);
             }
-        }).catch(err => {
-            console.log(err)
-        })
+          });
+        }
+      });
+    }
     }, []);
+    useEffect(() => {
+        if(moduleId){
+            axiosInstance.get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`).then(res => {
+                if (res.data.data) {
+                    setAcademicYear(res.data.data);
+                }
+            }).catch(err => {
+                console.log(err)
+            })
+        }
+    }, [moduleId]);
 
     useEffect(() => {
         //axiosInstance.get(endpoints.mappingStudentGrade.branch).then(res => {
         const getBranch = () => {
-            axiosInstance.get(`${endpoints.communication.branches}?session_year=${selectedYear?.id}`).then(res => {
+            axiosInstance.get(`${endpoints.communication.branches}?session_year=${selectedYear?.id}&module_id=${moduleId}`).then(res => {
                 if (res.data.data) {
                     setBranchRes(res.data.data.results)
                 }
@@ -83,11 +103,12 @@ const Subjectgrade = (props) => {
             })
 
         }
-        if(selectedYear?.id){
+        if(selectedYear?.id && moduleId){
             getBranch();
             // centralGradeSubjects();
         }
-    }, [selectedYear]);
+    }, [selectedYear, moduleId]);
+
     useEffect(()=>{
         centralGradeSubjects();
     },[selectedModule])
@@ -106,7 +127,7 @@ const Subjectgrade = (props) => {
             //setcentralSubValue([]);
             setUpdateSubjectValue(null);
 
-            axiosInstance.get(`${endpoints.mappingStudentGrade.grade}?session_year=${selectedYear?.id}&branch_id=${value?.branch.id}&module_id=8`).then(res => {
+            axiosInstance.get(`${endpoints.mappingStudentGrade.grade}?session_year=${selectedYear?.id}&branch_id=${value?.branch.id}&module_id=${moduleId}`).then(res => {
                 if (res.data.data) {
                     setGradeRes(res.data.data)
                 }
@@ -126,7 +147,7 @@ const Subjectgrade = (props) => {
         setUpdateSubjectValue(null);
 
         if (value) {
-            axiosInstance.get(`${endpoints.mappingStudentGrade.subjects}?session_year=${selectedYear?.id}&branch=${branchValue?.branch.id}&grade=${value.grade_id}`).then(res => {
+            axiosInstance.get(`${endpoints.mappingStudentGrade.subjects}?session_year=${selectedYear?.id}&branch=${branchValue?.branch.id}&grade=${value.grade_id}&module_id=${moduleId}`).then(res => {
                 if (res.data.result) {
                     setSubjectRes(res.data.result)
                 }

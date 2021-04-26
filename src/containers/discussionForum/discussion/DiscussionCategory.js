@@ -56,7 +56,7 @@ const DiscussionCategory = (props) => {
           {props.rowData.map((data, id) => {
             return (
               (props.tabValue === 'active' && !data.is_delete && (
-                <Grid item xs={categoryGrid} key={id}>
+                <Grid item sm={categoryGrid} xs={12} key={id}>
                   <CategoryCard
                     id={data.category_id}
                     data={data}
@@ -71,7 +71,7 @@ const DiscussionCategory = (props) => {
                 </Grid>
               )) ||
               (props.tabValue === 'inactive' && data.is_delete && (
-                <Grid item xs={categoryGrid} keys={id}>
+                <Grid item sm={categoryGrid} xs={12} keys={id}>
                   <CategoryCard
                     id={data.category_id}
                     data={data}
@@ -86,7 +86,7 @@ const DiscussionCategory = (props) => {
                 </Grid>
               )) ||
               (props.tabValue === 'all' && (
-                <Grid item xs={categoryGrid} keys={id}>
+                <Grid item sm={categoryGrid} xs={12} keys={id}>
                   <CategoryCard
                     id={data.category_id}
                     data={data}
@@ -105,17 +105,10 @@ const DiscussionCategory = (props) => {
         </Grid>
       </Grid>
       {editCategory && (
-        <Grid item xs={3}>
+        <Grid item sm={3} xs={12}>
           <CategoryEdit cardData={editData} hadleClose={hadleCloseCategory} />
         </Grid>
       )}
-      {/* <Grid item xs={12}>
-        <DiscussionPagination
-          showPerPage={showPerPage}
-          onPaginationChange={onPaginationChange}
-          totalCategory={props.rowData.length}
-        />
-      </Grid> */}
     </Grid>
   );
 };

@@ -108,18 +108,22 @@ const MarkAttedance = () => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [state, setState] = React.useState({
-    checkedA: false,
-    checkedB: false,
+    checkedA: true,
+    checkedB: true,
   });
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
-  const [totalGenre, setTotalGenre] = useState(null);
+  const [totalGenre, setTotalGenre] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const limit = 8;
+
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
+
+  let path = window.location.pathname;
+  console.log(path, 'path');
 
   useEffect(() => {
     console.log(history);
@@ -142,15 +146,18 @@ const MarkAttedance = () => {
           console.log(res, 'checking mark attendance list in useEffect');
           setNewData(res.data.results);
           setTotalGenre(res.data.count);
+          const is_first_shift_present = true;
+          const is_second_shift_present = true;
           console.log(res.data.count, 'checking count');
           var result = res.data.results.map((item) => ({
             name: item.name,
             student_id: item.user,
             section_mapping_id: selectedSection.section_id,
             remarks: 'none',
-            fullday_present: true,
             is_first_shift_present: true,
             is_second_shift_present: true,
+            fullday_present:
+              is_first_shift_present && is_second_shift_present ? true : false,
             attendance_for_date: dateValue,
           }));
           setData(result);
@@ -217,8 +224,8 @@ const MarkAttedance = () => {
         console.log(res.data);
         setNewData(res.data.results);
         setTotalGenre(res.data.count);
-        const is_first_shift_present = false;
-        const is_second_shift_present = false;
+        const is_first_shift_present = true;
+        const is_second_shift_present = true;
         var result = res.data.results.map((item) => ({
           name: item.name,
           student_id: item.user,
@@ -231,6 +238,7 @@ const MarkAttedance = () => {
           attendance_for_date: dateValue,
         }));
         setData(result);
+        console.log(result, 'result checking');
       })
       .catch((err) => {
         setLoading(false);
@@ -310,8 +318,21 @@ const MarkAttedance = () => {
     console.log('date', value);
   };
   const handleBack = () => {
+    console.log(path, 'checking path');
+    const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: dateValue,
+      endDate: dateValue,
+    };
     history.push({
       pathname: '/attendance-calendar/teacher-view',
+      state: {
+        payload: payload,
+        backButtonStatus: true,
+      },
     });
   };
   const handleClearAll = () => {
@@ -331,30 +352,30 @@ const MarkAttedance = () => {
     let products = [...data];
     let product = { ...products[studentId] };
     product.is_first_shift_present = e.target.checked;
+    product.fullday_present =
+      product.is_first_shift_present && product.is_second_shift_present ? true : false;
     products[studentId] = product;
-    // console.log(products)
+    console.log(products);
     setData(products);
     const remarks = 'test';
     const fullday_present =
-      product.is_first_shift_present && product.is_second_shift_present
-        ? 'true'
-        : 'false';
+      product.is_first_shift_present && product.is_second_shift_present ? true : false;
     console.log(selectedSection.id, 'section_mapping_id');
 
-    const fullData = {
-      section_mapping_id: selectedSection.id,
-      student_id: id,
-      attendance_for_date: dateValue,
-      remarks: remarks,
-      fullday_present: fullday_present,
-      is_first_shift_present: product.is_first_shift_present ? 'true' : 'false',
-      is_second_shift_present: product.is_second_shift_present ? 'true' : 'false',
-    };
-    console.log(fullData);
-    axiosInstance
-      .post(`${endpoints.academics.createAttendance}`, fullData)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    // const fullData = {
+    //   section_mapping_id: selectedSection.id,
+    //   student_id: id,
+    //   attendance_for_date: dateValue,
+    //   remarks: remarks,
+    //   fullday_present: is_first_shift_present && is_second_shift_present ? true : false,
+    //   is_first_shift_present: product.is_first_shift_present ? 'true' : 'false',
+    //   is_second_shift_present: product.is_second_shift_present ? 'true' : 'false',
+    // };
+    // console.log(fullData);
+    // axiosInstance
+    //   .post(`${endpoints.academics.createAttendance}`, fullData)
+    //   .then((res) => console.log(res))
+    //   .catch((err) => console.log(err));
     // .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
     // .post(`${endpoints.academics.createAttendance}`)
     // console.log(`${endpoints.academics.createAttendance}`)
@@ -371,6 +392,8 @@ const MarkAttedance = () => {
   };
   const handlePagination = (event, page) => {
     setPageNumber(page);
+    console.log(page, 'page number checking');
+    handleFilter();
     // setGenreActiveListResponse([]);
     // setGenreInActiveListResponse([]);
     // getData();
@@ -383,31 +406,31 @@ const MarkAttedance = () => {
     let products = [...data];
     let product = { ...products[studentId] };
     product.is_second_shift_present = e.target.checked;
+    product.fullday_present =
+      product.is_first_shift_present && product.is_second_shift_present ? true : false;
     products[studentId] = product;
-    // console.log(products)
+    console.log(products);
     setData(products);
     const remarks = 'test';
     const fullday_present =
-      product.is_first_shift_present && product.is_second_shift_present
-        ? 'true'
-        : 'false';
+      product.is_first_shift_present && product.is_second_shift_present ? true : false;
     console.log(selectedSection.id, 'section_mapping_id');
 
-    const fullData = {
-      section_mapping_id: selectedSection.id,
-      student_id: id,
-      attendance_for_date: dateValue,
-      remarks: remarks,
-      fullday_present: fullday_present,
-      is_first_shift_present: product.is_first_shift_present ? 'true' : 'false',
-      is_second_shift_present: product.is_second_shift_present ? 'true' : 'false',
-    };
-    console.log(fullData);
-    axiosInstance
-      .post(`${endpoints.academics.createAttendance}`, fullData)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    // const fullData = {
+    //   section_mapping_id: selectedSection.id,
+    //   student_id: id,
+    //   attendance_for_date: dateValue,
+    //   remarks: remarks,
+    //   fullday_present: fullday_present,
+    //   is_first_shift_present: product.is_first_shift_present ? 'true' : 'false',
+    //   is_second_shift_present: product.is_second_shift_present ? 'true' : 'false',
+    // };
+    // console.log(fullData);
     // axiosInstance
+    //   .post(`${endpoints.academics.createAttendance}`, fullData)
+    //   .then((res) => console.log(res))
+    //   .catch((err) => console.log(err));
+    // // axiosInstance
     //   .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
     //   .then(res => console.log(res))
     //   .catch(err => console.log(err))
@@ -428,6 +451,20 @@ const MarkAttedance = () => {
     // ))
   };
 
+  const handleSave = () => {
+    setLoading(true);
+    axiosInstance
+      .post(`${endpoints.academics.markAttendance}`, data)
+      .then((res) => {
+        setLoading(false);
+        console.log(res);
+        setAlert('success', 'Attendance posted successfully');
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  };
   const StudentData = () => {
     return (
       <>
@@ -512,7 +549,7 @@ const MarkAttedance = () => {
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper' style={{ marginLeft: '-10px' }}>
+      <div className='profile_breadcrumb_wrapper' >
         <CommonBreadcrumbs componentName='Mark Attendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
@@ -683,16 +720,12 @@ const MarkAttedance = () => {
             )}
           />
         </Grid>
-        <Grid item md={11} xs={12}>
+        {/* <Grid item md={11} xs={12}>
           <Divider />
-        </Grid>
+        </Grid> */}
       </Grid>
       <Grid container direction='row'>
-        <StyledClearButton
-          variant='contained'
-          onClick={handleBack}
-          startIcon={<ClearIcon />}
-        >
+        <StyledClearButton variant='contained' onClick={handleBack}>
           Back
         </StyledClearButton>
         <StyledClearButton
@@ -738,7 +771,15 @@ const MarkAttedance = () => {
           </Grid>
           <Grid>
             <Typography style={{ textAlign: 'center' }}>
-              Number of Students: {data && data.length}
+              Number of Students: {totalGenre && totalGenre}
+              <StyledFilterButton
+                variant='contained'
+                color='secondary'
+                className={classes.filterButton}
+                onClick={handleSave}
+              >
+                Save{' '}
+              </StyledFilterButton>
             </Typography>
           </Grid>
         </Grid>
@@ -752,7 +793,7 @@ const MarkAttedance = () => {
           className={classes.root}
           spacing={2}
           item
-          justify='center'
+          justify='left'
         >
           <StudentData />
         </Grid>
@@ -775,10 +816,9 @@ const MarkAttedance = () => {
         )}
         <Grid item md={2} xs={12}></Grid>
         <Grid container justify='center'>
-          {totalGenre > 8 && (
+          {data && totalGenre > 8 && (
             <Pagination
               onChange={handlePagination}
-              style={{ paddingLeft: '150px' }}
               count={Math.ceil(totalGenre / limit)}
               color='primary'
               page={pageNumber}

@@ -9,6 +9,7 @@ import moment from 'moment';
 let myFutureDate;
 let postSeven;
 const RangeCalender = (props) => {
+
   const [state, setState] = useState([
     {
       startDate: new Date(),
@@ -19,14 +20,25 @@ const RangeCalender = (props) => {
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
   const [student, setStudent] = useState([]);
+
   postSeven = state[0].startDate;
   useEffect(() => {
     getAttendance()
     setStartDate((moment(state[0].startDate).format("YYYY-MM-DD")));
-    console.log(postSeven , "dcdcdcdccdd");
+    console.log(state , "dcdcdcdccdd");
+    autoEndDate();
     // setState(endDate : postSeven.setDate(postSeven).getDate()+7);
     // setEndDate((moment(state[0].endDate).format("YYYY-MM-DD")));
   }, state);
+
+  const autoEndDate = () => {
+  if (props.counter == 3) {
+    if (state[0].endDate === state[0].startDate || state[0].endDate === null) {
+        console.log(JSON.stringify(state) , "hittttt");
+         
+    }
+  }
+  }
 
   useEffect(()=>{
     getfuture();
@@ -66,7 +78,7 @@ const RangeCalender = (props) => {
 
   console.log(state[0].endDate, "date");
   console.log(state[0].startDate, "start");
-
+  
 
   return (
     <div className="calender-container" >
