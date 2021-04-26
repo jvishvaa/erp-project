@@ -38,7 +38,7 @@ const MultipleChoice = ({
   subQuestions,
   parentQuestionType,
   setLoading,
-  domainName,
+  subDomainName,
 }) => {
   const themeContext = useTheme();
   const history = useHistory();
@@ -416,7 +416,7 @@ const MultipleChoice = ({
     }
 
     let requestBody = {
-      domainName: domainName,
+      school: subDomainName,
       question_answer: questionAndAnswer,
       question_level: filterDataBottom.level?.id,
       question_categories: filterDataBottom.category.id,
@@ -435,7 +435,7 @@ const MultipleChoice = ({
 
     if (submitFlag || saveFlag) {
       let req = {
-        domainName: domainName,
+        school: subDomainName,
         question_answer: questionAndAnswer,
         question_type: showQuestionType?.id,
         question_level: filterDataBottom.level.id,

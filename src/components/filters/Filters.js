@@ -556,8 +556,8 @@ const Filters = (props) => {
                       <ListItem
                         key={id}
                         button
-                        selected={sectionId === el?.section_id}
-                        onClick={(event) => handleSectionList(event, el?.section_id, el?.section__section_name)}
+                        selected={sectionId === el?.id}
+                        onClick={(event) => handleSectionList(event, el?.id, el?.section__section_name)}
                         className={classes.listItem}
                       >
                         <ListItemText primary={`${el?.section__section_name}`} />
@@ -776,8 +776,8 @@ const Filters = (props) => {
                                                   <ListItem
                                                       key={id}
                                                       button
-                                                      selected={sectionId === el?.section_id}
-                                                      onClick={(event) => handleSectionList(event, el?.section_id, el?.section__section_name)}
+                                                      selected={sectionId === el?.id}
+                                                      onClick={(event) => handleSectionList(event, el?.id, el?.section__section_name)}
                                                       className={classes.listItem}>
                                                       <ListItemText primary={`${el?.section__section_name}`} />
                                                 </ListItem>

@@ -15,7 +15,6 @@ import axiosInstance from '../../../config/axios';
 import axios from 'axios';
 import './question-bank.css';
 import Loading from '../../../components/loader/loader';
-
 import QuestionBankCard from './question-bank-card';
 import QuestionBankFilters from './question-bank-filter';
 import ViewMoreCard from './view-more-card';
@@ -24,8 +23,10 @@ import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 import hidefilter from '../../../assets/images/hidefilter.svg';
 import showfilter from '../../../assets/images/showfilter.svg';
-
 import { addQuestionToSection } from '../../../redux/actions';
+import { getSubDomainName } from '../../../utility-functions';
+
+const subDomainName = getSubDomainName();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -125,7 +126,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       //   )
       axios
         .get(
-          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,
+          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}&school=${subDomainName}`,
           {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           }
@@ -151,7 +152,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       setTabValue(1);
       axios
         .get(
-          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=1&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,
+          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=1&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}&school=${subDomainName}`,
           {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           }
@@ -176,7 +177,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       setTabValue(2);
       axios
         .get(
-          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=3&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,
+          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=3&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}&school=${subDomainName}`,
           {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           }
@@ -201,7 +202,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       setTabValue(3);
       axios
         .get(
-          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=2&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}`,
+          `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=2&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}&school=${subDomainName}`,
           {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           }

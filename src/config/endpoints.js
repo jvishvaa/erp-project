@@ -13,7 +13,6 @@ const {
 // const baseURLCentral = 'http://dev.mgmt.letseduvate.com/qbox'
 // const baseURLCentral = 'https://mgmt.letseduvate.com/qbox';
 
-
 export default {
   auth: {
     login: '/auth/login/',
@@ -32,6 +31,7 @@ export default {
     // singleStudentAttendance: '/academic/student_attendance_between_days/',
     multipleStudentsAttendacne: '/academic/multiple_student_attendance_between_dates/',
     singleStudentAttendance: '/academic/single_student_attendance_between_days/',
+    markAttendance: '/academic/bulk_create_attendance/',
   },
   profile: {
     userDetails: '/erp_user/user-data/',

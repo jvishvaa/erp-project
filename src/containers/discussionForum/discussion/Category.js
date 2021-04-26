@@ -20,6 +20,7 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import { discussionData } from './discussionData';
+import { Pagination } from '@material-ui/lab';
 
 const bgColor = [
   '#EFFFB2',
@@ -229,6 +230,9 @@ const Category = (props) => {
   const [categoryList, setCategoryList] = React.useState([]);
   const [value, setValue] = React.useState(0);
   const [deleteEdit, setDeleteEdit] = React.useState(true);
+  const [page, setPage] = React.useState(1);
+  const [totalCount, setTotalCount] = React.useState();
+  const limit = 6;
 
   const hideFilter = () => {
     props.handleFilter();
@@ -297,7 +301,7 @@ const Category = (props) => {
         const grade_id = userDetails.role_details?.grades[0]?.grade_id;
         const branch_id = userDetails.role_details?.branch[0]?.id;
         axiosInstance
-        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}`)
+        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&is_delete=False`)
         .then((res) => {
           setCategoryList(res.data.result);
         })
@@ -305,7 +309,7 @@ const Category = (props) => {
       }
       else {
         axiosInstance
-        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}`)
+        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&category_type=1&is_delete=False`)
         .then((res) => {
           setCategoryList(res.data.result);
         })
@@ -318,6 +322,7 @@ const Category = (props) => {
     axiosInstance.get(url)
     .then((res) => {
       setPostList(res.data.data.results);
+      setTotalCount(res.data.data.count? res.data.data.count : res.data.data.results.length);
     })
     .catch((error) => console.log(error));
   }
@@ -329,10 +334,10 @@ const Category = (props) => {
         const grade_id = userDetails.role_details?.grades[0]?.grade_id;
         const branch_id = userDetails.role_details?.branch[0]?.id;
         if(categoryId > 0) {
-          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&category=${categoryId}`);
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&category=${categoryId}&page=${page}&page_size=${limit}`);
         }
         else {
-          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}`);
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&page=${page}&page_size=${limit}`);
         }
       }
       else {
@@ -344,14 +349,14 @@ const Category = (props) => {
             ? props.filters.section.id
             : '';
         if (categoryId === 0 && grades === '' && sections === ''){
-          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}`);
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&page=${page}&page_size=${limit}`);
         }
         if (categoryId !== 0 && grades === '') {
-          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&category=${categoryId}`);
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&category=${categoryId}&page=${page}&page_size=${limit}`);
         }
         if (categoryId === 0 && grades !== '' && sections !== '') {
           getDiscussionPost(
-            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}&section_mapping=${sections}`
+            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}&section_mapping=${sections}&page=${page}&page_size=${limit}`
           );
           // getDiscussionPost(
           //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}`
@@ -359,7 +364,7 @@ const Category = (props) => {
         }
         if (categoryId !== 0 && grades !== '' && sections !== '') {
           getDiscussionPost(
-            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch_id=${branchId}&category=${categoryId}&grade=${grades}&section_mapping=${sections}`
+            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch_id=${branchId}&category=${categoryId}&grade=${grades}&section_mapping=${sections}&page=${page}&page_size=${limit}`
           );
           // getDiscussionPost(
           //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&category=${categoryId}&grade=${grades}`
@@ -368,8 +373,11 @@ const Category = (props) => {
       }
     }
     //let postURL = endpoints.discussionForum.postList;
-  }, [props.url, props.filters, categoryId, moduleId, deleteEdit]);
+  }, [props.url, props.filters, categoryId, moduleId, deleteEdit, page]);
 
+  const handlePagination = (event, page) => {
+        setPage(page);
+    };
   return (
     <Paper className={classes.paperStyle}>
       {props.showFilter && (
@@ -466,6 +474,15 @@ const Category = (props) => {
             {postList.map((data, id) => (
               <Discussion rowData={data} key={id} deleteEdit={handleDeleteEdit}/>
             ))}
+          </Grid>
+          <Grid item xs={12} style={{display: 'flex', justifyContent: 'center'}}>
+            <Pagination
+              onChange={handlePagination}
+              style={{ marginTop: 25}}
+              count={Math.ceil(totalCount / limit)}
+              color='primary'
+              page={page}
+            />
           </Grid>
       </Grid>
     </Paper>

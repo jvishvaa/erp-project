@@ -22,6 +22,7 @@ const initialState = {
   editCategoryData: '',
   updateCategory: '',
   categoryCreadted: '',
+  categoryPageCount: 0,
 };
 
 const discussionReducer = (state = initialState, action) => {
@@ -153,6 +154,11 @@ const discussionReducer = (state = initialState, action) => {
       return {
         ...state,
         categoryCreadted: ''
+      }
+    case types.CATEGORI_PAGE_COUNT:
+      return {
+        ...state,
+        categoryPageCount: action.count
       }
     default:
       return state;
