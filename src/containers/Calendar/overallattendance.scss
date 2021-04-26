@@ -1,4 +1,4 @@
-.box {
+.box5 {
   /* we need this to position the pseudo-element */
   position: relative;
 
@@ -12,7 +12,7 @@
   text-align: right;
 }
 
-.box:before {
+.box5:before {
   /* we need this to create the pseudo-element */
   content: '';
   display: block;

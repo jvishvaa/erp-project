@@ -69,9 +69,9 @@
     }
   }
 }
-.page_title {
-  // margin-left: 3%;
-}
+// .page_title {
+//   // margin-left: 3%;
+// }
 #selectionContainer {
   padding-bottom: 0;
   width: 90%;
@@ -252,6 +252,9 @@
 #attendanceContainer {
   height: fit-content;
   min-height: 395px;
+  .mark-attndance-button:hover{
+    background-color: #FF6B6B;
+  } 
   #mark-para {
     font-size: 9px;
   }
