@@ -489,8 +489,8 @@ const AttedanceCalender = () => {
   };
 
   const convertTime = () => {
-    console.log(currentEvent , "current time");
-  }
+    console.log(currentEvent, 'current time');
+  };
 
   const handleViewDetails = () => {
     const payload = {
@@ -794,8 +794,8 @@ const AttedanceCalender = () => {
                             {/* <OutlinedFlagRoundedIcon
                               style={{ background: '#FF6B6B', borderRadius: '30px' }}
                             /> */}
-                            <div className="eventFlagToday">
-                        <img src={flag} className="flagImgToday" />
+                            <div className='eventFlagToday'>
+                              <img src={flag} className='flagImgToday' />
                             </div>
                             {data?.event_name}
                           </div>
@@ -823,15 +823,17 @@ const AttedanceCalender = () => {
             )}
           </Grid>
           <Grid className='buttonGrid'>
-          {teacherView === true ? (
-            <StyledClearButton
-              variant='contained'
-              startIcon={<ClearIcon />}
-              onClick={handleClearAll}
-            >
-              Clear all
-            </StyledClearButton>
-          ) : <></> }
+            {teacherView === true ? (
+              <StyledClearButton
+                variant='contained'
+                startIcon={<ClearIcon />}
+                onClick={handleClearAll}
+              >
+                Clear all
+              </StyledClearButton>
+            ) : (
+              <></>
+            )}
             <StyledFilterButton
               variant='contained'
               color='secondary'
@@ -872,7 +874,11 @@ const AttedanceCalender = () => {
                     Students
                   </Typography>
                 </Grid>
-                {teacherView === false ? <p className="erpId">erp_id :{userName[0]}</p> : <></> }
+                {teacherView === false ? (
+                  <p className='erpId'>erp_id :{userName[0]}</p>
+                ) : (
+                  <></>
+                )}
                 {/* <KeyboardArrowDownIcon className='downIcon' /> */}
               </div>
             </Grid>
@@ -891,7 +897,7 @@ const AttedanceCalender = () => {
                           <Avatar
                             alt={data?.student_name}
                             src='/static/images/avatar/1.jpg'
-                            className="absentProfilePic"
+                            className='absentProfilePic'
                           />
                           <div className='studentName'>
                             <p className='absentName'>
@@ -933,7 +939,7 @@ const AttedanceCalender = () => {
                           <Avatar
                             alt={data?.student_name}
                             src='/static/images/avatar/1.jpg'
-                            className="presentProfilePic"
+                            className='presentProfilePic'
                           />
                           <div className='presentStudent'>
                             <p className='presentFName'>
@@ -948,10 +954,7 @@ const AttedanceCalender = () => {
                               </div>
                             ) : (
                               <div className='absentCount'>
-                                <div className='absentChip'>
-                                  {' '}
-                                  1 Days{' '}
-                                </div>
+                                <div className='absentChip'> 1 Days </div>
                               </div>
                             )}
                             {/* <p className='presentLName'> {data.student_last_name}</p> */}
@@ -1011,46 +1014,48 @@ const AttedanceCalender = () => {
             </Grid>
             {studentDataAll != null ? (
               <Paper elevation={1} className='eventGrid'>
-            <Divider />
-                {studentDataAll.events &&
-                  studentDataAll.events.map((data) => (
-                    <Typography
-                      className={[classes.contentsmall, classes.root]}
-                      id='eventData'
-                    >
-                      {/* {data.start_time.slice(0, 10)} */}
-                      {moment(data.start_time.slice(0, 10)).format('DD-MM-YYYY')}
-                      <br />
-                      <Grid container direction='row' className="eventDetailsfirst" >
-                        <div className="flagBg">
-                        <img src={flag} className="flagImg" />
-                        </div>
-                        {/* <OutlinedFlagRoundedIcon
+                <Divider />
+                <div className='eventList'>
+                  {studentDataAll.events &&
+                    studentDataAll.events.map((data) => (
+                      <Typography
+                        className={[classes.contentsmall, classes.root]}
+                        id='eventData'
+                      >
+                        {/* {data.start_time.slice(0, 10)} */}
+                        {moment(data.start_time.slice(0, 10)).format('DD-MM-YYYY')}
+                        <br />
+                        <Grid container direction='row' className='eventDetailsfirst'>
+                          <div className='flagBg'>
+                            <img src={flag} className='flagImg' />
+                          </div>
+                          {/* <OutlinedFlagRoundedIcon
                           style={{ background: '#78B5F3', borderRadius: '30px' }}
                         /> */}
-                        <Typography className="eventNameData" > {data.event_name} </Typography>
-                      </Grid>
-                      <Grid container direction='row' className='dateTimeEvent'>
-                        <div className='timeEvent'>
-                          <WatchLaterOutlinedIcon
-                            color='primary'
-                            className="eventClock"
-                          />
-                          {data.start_time.slice(11, 16)}
-                        </div>
-                        <div className='dateEvent'>
-                          <EventOutlinedIcon
-                            color='primary'
-                            className="calLogo"
-                          />
-                          {moment(data.start_time.slice(0, 10)).format('DD-MM-YYYY')}
-                        </div>
-                      </Grid>
-                      <Typography className={classes.contentData}>
-                        {data.description}
+                          <Typography className='eventNameData'>
+                            {' '}
+                            {data.event_name}{' '}
+                          </Typography>
+                        </Grid>
+                        <Grid container direction='row' className='dateTimeEvent'>
+                          <div className='timeEvent'>
+                            <WatchLaterOutlinedIcon
+                              color='primary'
+                              className='eventClock'
+                            />
+                            {data.start_time.slice(11, 16)}
+                          </div>
+                          <div className='dateEvent'>
+                            <EventOutlinedIcon color='primary' className='calLogo' />
+                            {moment(data.start_time.slice(0, 10)).format('DD-MM-YYYY')}
+                          </div>
+                        </Grid>
+                        <Typography className={classes.contentData}>
+                          {data.description}
+                        </Typography>
                       </Typography>
-                    </Typography>
-                  ))}
+                    ))}
+                </div>
               </Paper>
             ) : (
               <div className='noImgEvent'>
