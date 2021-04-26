@@ -336,8 +336,7 @@ this.setState({status:[8,5]}
                       placeholder='Status'
                     />
                   )}
-                /> : tabValue === 1 ?
-                 <Autocomplete
+                /> : tabValue === 1 ? <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
                 onChange={this.handleStatusTwo}
