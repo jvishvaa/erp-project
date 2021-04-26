@@ -54,8 +54,6 @@ import { result } from 'lodash';
 import e from 'cors';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
-import { FlashAutoTwoTone } from '@material-ui/icons';
-import { string } from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -382,6 +380,21 @@ const Cal1 = () => {
   };
 
 
+const handleClears=()=>{
+  if (moduleId) {
+    axiosInstance
+      .get(
+        `${endpoints.eventBat.getPaginatedCategories}?page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
+      )
+      .then((result) => {
+        setDummyData(result?.data?.data?.results);
+
+        setTotalGenre(result?.data?.data?.count);
+      });
+  }
+  setEditFlag(false)
+};
+  
 
   
   const handleDelete = (e, idx) => {
@@ -509,6 +522,7 @@ const Cal1 = () => {
               /> */}
               <SearchBar
                 // value={filterData?.selectedEventType || ''}
+                onCancelSearch={(e)=>{handleClears(e)}}
                 value={searchData}
                 onChange={(e)=>handleSearch(e)}
               />
@@ -542,14 +556,16 @@ const Cal1 = () => {
                 Filter
               </Button>
             </Grid> */}
-            <Grid item xs={12} sm={4} md={2} lg={1}>
+            <Grid item xs={12} sm={4} md={2} lg={2}>
               <Button
                 variant='contained'
                 color='primary'
+                style={{color:'white'}}
                 className='custom_button_master '
+                // className={classes.buttonCol}
                 onClick={handleClickOpen}
               >
-                Create
+                ADD EVENT
               </Button>
             </Grid>
             {/* <Grid item xs={12} sm={4} md={2} lg={4}>
@@ -679,10 +695,11 @@ const Cal1 = () => {
                               >
                                 <MenuItem onClick={handleEdit}>Edit</MenuItem>
                                 {/* <MenuItem onClick={handleDelete}>Delete</MenuItem> */}
-                                <MenuItem variant="outlined" color="primary" onClick={DiaClickOpen}>Delete</MenuItem>
+                                <MenuItem  color="primary" onClick={DiaClickOpen}>Delete</MenuItem>
                                  <Dialog
                                     open={Diaopen}
                                     onClose={DiaClose}
+                                    style={{backgroundColor:'transparent',opacity:'0.3'}}
                                     aria-labelledby="alert-dialog-title"
                                     aria-describedby="alert-dialog-description"
                                   >
