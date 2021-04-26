@@ -333,7 +333,22 @@ const Attend = () => {
   };
   const handlePagination = (event, page) => {
     setPageNumber(page);
-    handleFilter();
+    axiosInstance
+      .get(
+        `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&page=${page}`
+      )
+      .then((res) => {
+        setResult(res.data.results);
+        setLoading(false);
+        console.log(res.data.results);
+        setAlert('success', 'Data Successfully fetched');
+      })
+      .catch((err) => {
+        setResult([]);
+        setLoading(false);
+        console.log(err);
+        // setAlert('error', err);
+      });
   };
   const handleSinlgeStudent = (id) => {
     console.log(id);
@@ -675,7 +690,7 @@ const Attend = () => {
           />
         </div>
       )}
-      {/* <Grid container justify='center'>
+      <Grid container justify='center'>
         {result && totalGenre > 8 && (
           <Pagination
             onChange={handlePagination}
@@ -686,7 +701,7 @@ const Attend = () => {
             color='primary'
           />
         )}
-      </Grid> */}
+      </Grid>
       {loading && <Loader />}
     </Layout>
   );
