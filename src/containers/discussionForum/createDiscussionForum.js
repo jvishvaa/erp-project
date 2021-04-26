@@ -10,9 +10,11 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import Loading from '../../components/loader/loader';
+import { useSelector, useDispatch } from 'react-redux';
 // import MyTinyEditor from './tinymce-editor'
 import MyTinyEditor from '../question-bank/create-question/tinymce-editor'
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { editPostDataAction, editPostData } from '../../redux/actions/discussionForumActions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
 
 const CreateDiscussionForum = () => {
   const classes = useStyles()
+  const location = useLocation();
+  const postsId = useParams();
+  const dispatch = useDispatch();
+  const hasEdited = useSelector((state) => state.discussionReducers.hasEdited);
   const [categoryListRes, setcategoryListRes] = useState([]);
   const [subCategoryListRes,setSubCategoryListRes] =useState([]);
   const [subSubCategoryListRes,setSubSubCategoryListRes] =useState([]);
@@ -75,36 +81,108 @@ const CreateDiscussionForum = () => {
   const [descriptionDisplay, setDescriptionDisplay] = useState('');
   const history = useHistory();
 
+  // edit discussion state
+  const [editData, setEditData] = useState('');
 
+  const handleBackButton = () => {
+    setDescription('');
+    setTitle('')
+    if(location.pathname === '/student-forum/create' || location.pathname === `/student-forum/edit/${postsId.id}`){
+      history.push('/student-forum');
+    }
+    else {
+      history.push('/teacher-forum');
+    }
+  }
+
+  // new duscussion submit
   const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true);
-    let requestData= {}
-      requestData = {
-          "title": title,
-          "description": descriptionDisplay,
-          "category": selectedSubSubCategory,
-          "branch": selectedBranch.branch.id,
-          "grade": selectedGradeIds,
-          "section": selectedSectionIds
-      }
-    axiosInstance.post(`${endpoints.discussionForum.CreateDissusionForum}`, requestData)
+    const sectionsId = [];
+    sectionList
+    .filter((item) => selectedSections.includes(item['section__section_name']))
+    .forEach((items) => {
+      sectionsId.push(items.id);
+    });
+    //setSelectedSectionIds(sectionsId)
 
-    .then(result=>{
-    if (result.data.status_code === 200) {
-      setLoading(false);
-      setAlert('success', result.data.message);
-      history.push('/discussion-forum');
-    } else {        
-      setLoading(false);
-      setAlert('error', result.data.message);
+    let requestData= {}
+    if(location.pathname === '/student-forum/create'){
+      const grade_id = userDetails.role_details?.grades[0]?.grade_id;
+      const branch_id = userDetails.role_details?.branch[0]?.id;
+      requestData = {
+        "title": title,
+        "description": descriptionDisplay,
+        "category": selectedSubSubCategory.sub_sub_category_id,
+        "branch": branch_id,
+        "grade": [grade_id],
+        //"section": selectedSectionIds
+      }
     }
+    else {
+      requestData = {
+        "title": title,
+        "description": descriptionDisplay,
+        "category": selectedSubSubCategory.sub_sub_category_id,
+        "branch": selectedBranch.branch.id,
+        "grade": selectedGradeIds,
+        "section_mapping": sectionsId
+      }
+    }
+    axiosInstance.post(`${endpoints.discussionForum.CreateDissusionForum}`, requestData)
+    .then(result=>{
+      if (result.data.status_code === 200) {
+        setLoading(false);
+        setAlert('success', result.data.message);
+        if(location.pathname === '/student-forum/create'){
+          history.push('/student-forum');
+        }
+        else {
+          history.push('/teacher-forum');
+        }
+      } else {        
+        setLoading(false);
+        setAlert('error', result.data.message);
+      }
     }).catch((error)=>{
       setLoading(false);        
       setAlert('error', error.message);
     })
-    };
+  };
 
+  // updatePost
+
+  const handleUpdatePost = (e) => {
+    e.preventDefault()
+    //setLoading(true);
+    let requestData = {}
+    if(location.pathname === `/student-forum/edit/${postsId.id}`) {
+      const grade_id = userDetails.role_details?.grades[0]?.grade_id;
+      const branch_id = userDetails.role_details?.branch[0]?.id;
+      requestData = {
+        "title": title,
+        "description": descriptionDisplay,
+        "category": selectedSubSubCategory.sub_sub_category_id ?? selectedSubSubCategory.id,
+        "branch": branch_id,
+        "grade": [grade_id],
+        //"section": selectedSectionIds
+      }
+    }
+    else {
+      requestData = {
+        "title": title,
+        "description": descriptionDisplay,
+        "category": selectedSubSubCategory.id,
+        "branch": editData?.branch_id,
+        "grade": [editData?.grade_id],
+        "section_mapping": [editData?.id]
+      }
+    }
+    dispatch(editPostData(requestData, postsId?.id));
+  }
+
+  // session year API Call
     const getAcademicYear = () =>{
       axiosInstance.get(endpoints.userManagement.academicYear)
       .then((res) => {
@@ -143,7 +221,7 @@ const CreateDiscussionForum = () => {
       try {
         setLoading(true);
         const result = await axiosInstance.get(
-          `${endpoints.communication.grades}?branch_id=${selectedBranch?.branch?.id}&module_id=${moduleId}`,
+          `${endpoints.communication.grades}?session_year=${selectedSession?.id}&branch_id=${selectedBranch?.branch?.id}&module_id=${moduleId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -192,7 +270,7 @@ const CreateDiscussionForum = () => {
 
   useEffect(() => {
     const getCategoryList = () => {
-        axiosInstance.get(endpoints.discussionForum.categoryList).then((res) => {
+        axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=1&is_delete=False`).then((res) => {
             setcategoryListRes(res.data.result)
         }).catch(err => {
             console.log(err)
@@ -206,8 +284,10 @@ const CreateDiscussionForum = () => {
 
   const handleCategoryChange = (event,value) => {
     if (value && value.id) {
-      setSelectedCategory(value.id);
-      axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.id}&category_type=2`)
+      setSelectedCategory(value);
+      setSelectedSubCategory(null);
+      setSelectedSubSubCategory(null);
+      axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.id}&category_type=2&is_delete=False`)
           .then(result => {
               if (result.data.status_code === 200) {
                 setSubCategoryListRes(result.data.result);
@@ -227,8 +307,9 @@ const CreateDiscussionForum = () => {
   }
   const handleSubCategoryChange = (event,value) => {
     if (value && value.sub_category_id){
-    setSelectedSubCategory(value.sub_category_id)
-    axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.sub_category_id}&category_type=3`)
+    setSelectedSubCategory(value)
+    setSelectedSubSubCategory(null);
+    axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.sub_category_id}&category_type=3&is_delete=False`)
     .then(result => {
         if (result.data.status_code === 200) {
           setSubSubCategoryListRes(result.data.result);
@@ -246,12 +327,11 @@ const CreateDiscussionForum = () => {
   }
   const handleSubSubCategoryChange = (event,value) => {
     if (value){
-      setSelectedSubSubCategory(value.sub_sub_category_id)
+      //sub_sub_category_id
+      setSelectedSubSubCategory(value)
     }
     else{
-      setSelectedSubSubCategory(null)
-      
-      
+      setSelectedSubSubCategory(null)  
     }
   }
   const getSectionApi = async () => {
@@ -264,7 +344,7 @@ const CreateDiscussionForum = () => {
           gradesId.push(items.grade_id);
         });
       const result = await axiosInstance.get(
-        `${endpoints.communication.sections}?session_year=${1}&branch_id=${
+        `${endpoints.communication.sections}?&session_year=${selectedSession?.id}&branch_id=${
           selectedBranch.branch.id
         }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
         {
@@ -339,13 +419,6 @@ const CreateDiscussionForum = () => {
   };
 
   const handleTitleChange = (e) => {
-    const sectionsId = [];
-    sectionList
-    .filter((item) => selectedSections.includes(item['section__section_name']))
-    .forEach((items) => {
-      sectionsId.push(items.section_id);
-    });
-    setSelectedSectionIds(sectionsId)
     setTitle(e.target.value);
 
   }
@@ -353,8 +426,10 @@ const CreateDiscussionForum = () => {
     setDescription(content);
     setDescriptionDisplay(editor.getContent({ format: 'text' }));
   };
+
   React.useEffect(() => {
     if (NavData && NavData.length) {
+      let isModuleId = false;
       NavData.forEach((item) => {
         if (
           item.parent_modules === 'Discussion Forum' &&
@@ -362,7 +437,12 @@ const CreateDiscussionForum = () => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher Forum') {
+            if (item.child_name === 'Teacher Forum' && !isModuleId) {
+              isModuleId = true;
+              setModuleId(item.child_id);
+            }
+            else if (item.child_name === 'Student Forum' && !isModuleId) {
+              isModuleId = true;
               setModuleId(item.child_id);
             }
           });
@@ -370,6 +450,47 @@ const CreateDiscussionForum = () => {
       });
     }
   }, []);
+
+  React.useEffect(() => {
+    if(hasEdited && hasEdited !== ''){
+      setAlert('success', 'Post Updated Successfully');
+      setTitle('');
+      setDescription('');
+      setSelectedCategory('');
+      setSelectedSubCategory('');
+      setSelectedSubSubCategory('');
+      setEditData('');
+      dispatch(editPostDataAction());
+      if(location.pathname === `/student-forum/edit/${postsId.id}`) {
+        history.push('/student-forum');
+      }
+      if(location.pathname === `/teacher-forum/edit/${postsId.id}`) {
+        history.push('/teacher-forum');
+      }
+    }
+    if(hasEdited === false){
+      setAlert('error', 'Something wrong');
+      dispatch(editPostDataAction());
+    }
+  },[hasEdited])
+
+  React.useEffect(() => {
+    if(postsId?.id){
+      axiosInstance.get(`/academic/${postsId?.id}/retrieve-post/`)
+      .then((res) => {
+        if(res.data.status_code === 200){
+          console.log(res.data.result);
+          setTitle(res.data.result.title);
+          setDescription(res.data.result.description);
+          setSelectedCategory(res.data.result.categories);
+          setSelectedSubCategory(res.data.result.categories);
+          setSelectedSubSubCategory(res.data.result.categories);
+          setEditData(res.data.result.section_mapping[0])
+        }
+      })
+      .catch((error) => {console.log(error)});
+    }
+  },[postsId])
 
 
   return (
@@ -382,101 +503,108 @@ const CreateDiscussionForum = () => {
             childComponentName='Create'
           />
         </div>
-        <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-          <Grid xs={12} lg={4} className='create_group_items' item>
-            <Autocomplete
-              size='small'
-              style={{ width: '100%' }}
-              onChange={handleAcademic}
-              value={selectedSession}
-              id='message_log-branch'
-              className='create_group_branch'
-              options={sessionYear}
-              getOptionLabel={(option) => option?.session_year}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  className='message_log-textfield'
-                  {...params}
-                  variant='outlined'
-                  label='Acadmic Year'
-                  placeholder='Acadmic Year'
+        {(location.pathname !== '/student-forum/create' &&
+          location.pathname !== `/student-forum/edit/${postsId.id}` &&
+          location.pathname !== `/teacher-forum/edit/${postsId.id}`) && (
+          <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
+            <Grid xs={12} lg={4} className='create_group_items' item>
+              <Autocomplete
+                size='small'
+                style={{ width: '100%' }}
+                onChange={handleAcademic}
+                value={selectedSession}
+                id='message_log-branch'
+                className='create_group_branch'
+                options={sessionYear}
+                getOptionLabel={(option) => option?.session_year}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    className='message_log-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='Acadmic Year'
+                    placeholder='Acadmic Year'
+                  />
+                )}
+              />
+            </Grid>
+            {/* {selectedSession && branchList.length && ( */}
+              <Grid xs={12} lg={4} className='create_group_items' item>
+                <Autocomplete
+                  size='small'
+                  style={{ width: '100%' }}
+                  onChange={handleBranch}
+                  value={selectedBranch}
+                  id='message_log-branch'
+                  className='create_group_branch'
+                  options={branchList}
+                  getOptionLabel={(option) => option?.branch.branch_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      className='message_log-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                    />
+                  )}
                 />
-              )}
-            />
+              </Grid>
+            {/* )} */}
+            <Grid xs={12} lg={4} className='create_group_items' item>
+              {/* {selectedSession && selectedBranch.length && gradeList.length ? (  */}
+              <Autocomplete
+                multiple
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleGrade}
+                id='grade'
+                className='dropdownIcon'
+                options={grade}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Grade'
+                    placeholder='Grade'
+                  />
+                )}
+              />
+            {/* ) : null } */}
+            </Grid>
+            <Grid xs={12} lg={4} className='create_group_items' item>
+              {/* {selectedSession && selectedBranch.length && selectedGrades.length && sectionList.length ? ( */}
+              <Autocomplete
+                multiple
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleSection}
+                id='section'
+                className='dropdownIcon'
+                options={section}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Section'
+                    placeholder='Section'
+                  />
+                )}
+              />
+              {/* ) : null} */}
+            </Grid>
           </Grid>
-          <Grid xs={12} lg={4} className='create_group_items' item>
-            <Autocomplete
-              size='small'
-              style={{ width: '100%' }}
-              onChange={handleBranch}
-              value={selectedBranch}
-              id='message_log-branch'
-              className='create_group_branch'
-              options={branchList}
-              getOptionLabel={(option) => option?.branch.branch_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  className='message_log-textfield'
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
-                />
-              )}
-            />
-          </Grid>
-          <Grid xs={12} lg={4} className='create_group_items' item>
-            {selectedBranch && gradeList.length ? ( 
-            <Autocomplete
-              multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleGrade}
-              id='grade'
-              className='dropdownIcon'
-              options={grade}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Grade'
-                  placeholder='Grade'
-                />
-              )}
-            />
-          ) : null }
-          </Grid>
-          <Grid xs={12} lg={4} className='create_group_items' item>
-            {selectedGrades.length && sectionList.length ? (
-            <Autocomplete
-              multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleSection}
-              id='section'
-              className='dropdownIcon'
-              options={section}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Section'
-                  placeholder='Section'
-                />
-              )}
-            />
-            ) : null}
-          </Grid>
-        </Grid>
+        )}
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
           <Grid item xs={12} sm={4}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
             <Autocomplete
               style={{ width: '100%' }}
               id="tags-outlined"
+              value={selectedCategory}
               options={categoryListRes}
               getOptionLabel={(option) => option.category_name}
               filterSelectedOptions
@@ -492,10 +620,11 @@ const CreateDiscussionForum = () => {
             />
           </Grid>
           <Grid item xs={12} sm={4}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-          {selectedCategory && subCategoryListRes.length ? ( 
-          <Autocomplete
+            {/* {selectedCategory && subCategoryListRes.length ? (  */}
+            <Autocomplete
               style={{ width: '100%' }}
               id="tags-outlined"
+              value={selectedSubCategory}
               options={subCategoryListRes}
               getOptionLabel={(option) => option.sub_category_name}
               filterSelectedOptions
@@ -511,14 +640,15 @@ const CreateDiscussionForum = () => {
               onChange={
                   handleSubCategoryChange
               }
-          />
-          ) : null}
+            />
+             {/* ) : null} */}
           </Grid>
           <Grid item xs={12} sm={4}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-          {selectedSubCategory && subSubCategoryListRes.length ? ( 
-          <Autocomplete
+            {/* {selectedCategory && selectedSubCategory && subSubCategoryListRes.length ? (  */}
+            <Autocomplete
               style={{ width: '100%' }}
               id="tags-outlined"
+              value={selectedSubSubCategory}
               options={subSubCategoryListRes}
               getOptionLabel={(option) => option.sub_sub_category_name}
               filterSelectedOptions
@@ -534,41 +664,43 @@ const CreateDiscussionForum = () => {
               onChange={
                   handleSubSubCategoryChange
               }
-          />
-          ) : null}
+            />
+             {/* ) : null} */}
           </Grid>
         </Grid>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-
-        <Grid item xs={12} sm={12}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-              <TextField
-                id='outlined-helperText'
-                label="Title"
-                defaultValue=''
-                placeholder="Title not more than 100 words"
-                variant='outlined'
-                style={{ width: '100%' }}
-                inputProps={{ maxLength: 100 }}
-                onChange={(event,value)=>{handleTitleChange(event);}}
-                color='secondary'
-                // helperText={`${title.length}/100`}
-                size='small'
-              />
+          <Grid item xs={12} sm={12}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+            <TextField
+              id='outlined-helperText'
+              label="Title"
+              defaultValue=''
+              value={title}
+              placeholder="Title not more than 100 words"
+              variant='outlined'
+              style={{ width: '100%' }}
+              inputProps={{ maxLength: 100 }}
+              onChange={(event,value)=>{handleTitleChange(event);}}
+              color='secondary'
+              // helperText={`${title.length}/100`}
+              size='small'
+            />
           </Grid>
         </Grid>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-
-      <Grid item xs={12} sm={12}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-        <MyTinyEditor
-          id="Editor"
-          description={description}
-          handleEditorChange={handleEditorChange}
-          setOpenEditor={setOpenEditor}
-        />
-      </Grid>
-    </Grid>
-
+          <Grid item xs={12} sm={12}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+            <MyTinyEditor
+              id="Editor"
+              //description={description}
+              content={description}
+              handleEditorChange={handleEditorChange}
+              setOpenEditor={setOpenEditor}
+            />
+          </Grid>
+        </Grid>
         <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '-1.25rem 1.5% 0 1.5%' }}>
+          <Grid item xs={6} sm={9}>
+            <Button onClick={handleBackButton}>Back</Button>
+          </Grid>
           <Grid item xs={6} sm={2}>
             <Button
               variant='contained'
@@ -577,12 +709,11 @@ const CreateDiscussionForum = () => {
               className="custom_button_master"
               size='medium'
               type='submit'
-              onClick={handleSubmit}
-              disabled={!selectedSubCategory || !selectedCategory ||!selectedSubSubCategory || !selectedBranch
-              ||!setTitle ||!setDescriptionDisplay }
+              onClick={(location.pathname === `/student-forum/edit/${postsId.id}` || location.pathname === `/teacher-forum/edit/${postsId.id}`) ? handleUpdatePost : handleSubmit}
+              disabled={!selectedSubCategory || !selectedCategory ||!selectedSubSubCategory || !setTitle ||!setDescriptionDisplay }
             >
-              Submit
-        </Button>
+              {(location.pathname === `/student-forum/edit/${postsId.id}` || location.pathname === `/teacher-forum/edit/${postsId.id}`) ? 'Upadate' : 'Submit'}
+            </Button>
           </Grid>
         </Grid>
       </Layout>

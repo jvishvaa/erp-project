@@ -19,7 +19,36 @@ import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 // import { student } from '../../../masters'
 import Layout from '../../../../../../Layout'
 
-const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStudentPromotionList, studentList, studentPromotionList, fetchGradesPerBranch, fetchAllSection, alert, user, dataLoading, gradesPerBranch, sections }) => {
+
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Student Promotion') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
+const StudentPromotion = ({ classes, session, branches, fetchAllFeePlans, feePlans, fetchBranches, sendStudentPromotionList, studentList, studentPromotionList, fetchGradesPerBranch, fetchAllSection, alert, user, dataLoading, gradesPerBranch, sections }) => {
   const [sessionData, setSessionData] = useState([])
   const [branchData, setBranchData] = useState([])
   const [isAdmin, setIsAdmin] = useState(false)
@@ -42,12 +71,13 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
   const [reasonNotPromotedData, setReasonNotPromotedData] = useState(null)
   const [listOfAllPromoStudent, setListOfAllPromoStudent] = useState([])
   const [listOfAllNotPromoStudent, setListOfAllNotPromoStudent] = useState([])
+  const [ChangedFeePlanId, setChangedFeePlanId] = useState(null)
 
   useLayoutEffect(() => {
-    const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
-    if (role === 'FinanceAdmin') {
-      setIsAdmin(true)
-    }
+    // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
+    // if (role === 'FinanceAdmin') {
+    //   setIsAdmin(true)
+    // }
   }, [])
 
   useEffect(() => {
@@ -199,11 +229,11 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
   }
   const handleClickSessionYear = (e) => {
     setSessionData(e)
-    fetchBranches(e.value, alert, user)
+    fetchBranches(e.value, alert, user, moduleId)
   }
   const changehandlerbranch = (e) => {
     setBranchData(e)
-    fetchGradesPerBranch(alert, user, sessionData.value, e.value)
+    fetchGradesPerBranch(alert, user, sessionData.value, e.value, moduleId)
   }
   const gradeHandler = (e) => {
     setGradeData(e)
@@ -269,6 +299,10 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
         section: sectionData && sectionData.value
       }
       studentPromotionList(data, alert, user)
+      let year =  sessionData && sessionData.value
+      let nextYear = year.split('-')
+      let nextFeePlanYear = (+nextYear[0] + 1 )+ '-' + (+nextYear[1] + 1)
+      fetchAllFeePlans(nextFeePlanYear, gradeData && gradeData.value, branchData && branchData.value, alert, user)
     }
     setDisplayStudentList(true)
   }
@@ -318,18 +352,23 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
   //   }
   // }
   const sendStudentPromotionListHandler = () => {
+    if (ChangedFeePlanId) {
     const data = {
       academic_year: sessionData && sessionData.value,
       branch: branchData && branchData.value,
       grade: gradeData && gradeData.value,
       section: sectionId && sectionId,
-      promoted_student_list: studentListCanPromoted
+      promoted_student_list: studentListCanPromoted,
+      fee_plan: ChangedFeePlanId
     }
     sendStudentPromotionList(data, alert, user)
     setStudentListCanPromoted(null)
     setPromotedStudent(false)
     setAllStuPromoted(false)
     setErpSearchValue('')
+  } else {
+    alert.warning('Please Select Fee Plan!')
+  }
   }
 
   const erpSearchHandler = (e) => {
@@ -378,6 +417,10 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
     }
   }
 
+  const feePlansHandler = (e) => {
+    setChangedFeePlanId(e.value)
+  }
+
   return (
     <Layout>
     <div>
@@ -397,8 +440,9 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
             onChange={handleClickSessionYear}
           />
         </Grid>
-        { isAdmin
-          ? <Grid item xs={3}>
+        {/* { isAdmin */}
+          {/* ?  */}
+          <Grid item xs={3}>
             <label>Branch*</label>
             <Select
               placeholder='Select Branch'
@@ -414,7 +458,7 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
               onChange={changehandlerbranch}
             />
           </Grid>
-          : [] }
+          {/* : [] } */}
         <Grid item xs={3}>
           <label>Grades*</label>
           <Select
@@ -534,7 +578,24 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
                   {studentPromotedList()}
                 </TableBody>
               </Table>
-              <Grid item xs='12'>
+              <Grid container spacing={3} style={{ display: 'flex'}}>
+              <Grid item xs='4'>
+            <label>Fee Plans*</label>
+            <Select
+              placeholder='Select Fee Plan'
+              style={{ width: '100px' }}
+              options={
+                feePlans
+                  ? feePlans.map(fp => ({
+                    value: fp.id,
+                    label: fp.fee_plan_name
+                  }))
+                  : []
+              }
+              onChange={feePlansHandler}
+            />
+          </Grid>
+              <Grid item xs='3'>
                 <Button
                   variant='contained'
                   color='primary'
@@ -542,6 +603,7 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
                   style={{ marginTop: '20px', float: 'right', marginBottom: 10 }}
                   onClick={sendStudentPromotionListHandler}>
                 PROMOTE</Button>
+              </Grid>
               </Grid>
             </Grid>
             <Grid item xs={6}>
@@ -672,16 +734,18 @@ const mapStateToProps = state => ({
   // sections: state.finance.common.sectionsPerGradeAdmin,
   sections: state.finance.accountantReducer.studentPromotion.sectionsPerGrade,
   dataLoading: state.finance.common.dataLoader,
-  studentList: state.finance.accountantReducer.studentPromotion.promotionStudentList
+  studentList: state.finance.accountantReducer.studentPromotion.promotionStudentList,
+  feePlans: state.finance.accountantReducer.changeFeePlan.feePlans
 })
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchAllFeePlans: (session, gradeId, branch, alert, user) => dispatch(actionTypes.fetchAllFeePlans({ session, branch, gradeId, alert, user })),
   sendStudentPromotionList: (data, alert, user) => dispatch(actionTypes.sendStudentPromotionList({ data, alert, user })),
   studentPromotionList: (data, alert, user) => dispatch(actionTypes.studentPromotionList({ data, alert, user })),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
-  fetchGradesPerBranch: (alert, user, session, branch) => dispatch(actionTypes.fetchGradesPerBranch({ alert, user, session, branch })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
+  fetchGradesPerBranch: (alert, user, session, branch, moduleId) => dispatch(actionTypes.fetchGradesPerBranch({ alert, user, session, branch, moduleId })),
   // fetchAllSectionsPerGradeAsAdmin: (session, alert, user, gradeId, branchId) => dispatch(actionTypes.fetchAllSectionsPerGradeAsAdmin({ session, alert, user, gradeId, branchId }))
-  fetchAllSection: (session, alert, user, gradeId, branchId) => dispatch(actionTypes.fetchAllSection({ session, alert, user, gradeId, branchId }))
+  fetchAllSection: (session, alert, user, gradeId, branchId, moduleId) => dispatch(actionTypes.fetchAllSection({ session, alert, user, gradeId, branchId, moduleId }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)((StudentPromotion))

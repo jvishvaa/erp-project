@@ -45,15 +45,16 @@ import {
   setFilter,
   resetState,
   deleteSection,
-  deleteQuestionSection
+  deleteQuestionSection,
 } from '../../../redux/actions';
+import { getSubDomainName } from '../../../utility-functions';
 
 const levels = [
   { id: 1, name: 'Easy' },
   { id: 2, name: 'Average' },
   { id: 3, name: 'Difficult' },
 ];
-
+const subDomainName = getSubDomainName();
 const CreateQuestionPaper = ({
   questions,
   initAddQuestion,
@@ -67,7 +68,7 @@ const CreateQuestionPaper = ({
   questionPaperName,
   initResetState,
   initDeleteSection,
-  deleteQuestionSection
+  deleteQuestionSection,
 }) => {
   const location = useLocation();
   const history = useHistory();
@@ -162,7 +163,7 @@ const CreateQuestionPaper = ({
 
   const getBranch = async (acadId) => {
     try {
-      const data = await fetchBranches(acadId,moduleId);
+      const data = await fetchBranches(acadId, moduleId);
       setBranchDropdown(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch branch');
@@ -249,8 +250,10 @@ const CreateQuestionPaper = ({
         branch: 1,
         paper_name: questionPaperName,
         grade: formik.values.grade.id,
+        acad_branch_id: formik.values.branch.id,
         grade_name: formik.values.grade.grade_name,
-        subject: formik.values.subject.map((obj) => obj.subject.id),
+        // subject: formik.values.subject.map((obj) => obj.subject.id),
+        subject: formik.values.subject.map((obj) => obj.subject?.central_subject_id),
         grade_subject_mapping: formik.values.subject.map(
           (obj) => obj.subject.central_mp_id
         ),
@@ -258,6 +261,7 @@ const CreateQuestionPaper = ({
         subject_name: formik.values.subject.map((obj) => obj.subject.subject_name),
         paper_level: formik.values.question_paper_level.id,
         question: questionData.flat(),
+        school: subDomainName,
         // section: [
         //   {
         //     section: sectionData,
@@ -265,8 +269,8 @@ const CreateQuestionPaper = ({
         // ],
         section: sectionData,
         sections: sectionData,
-        is_review:'True',
-        is_draft:'False',
+        is_review: 'True',
+        is_draft: 'False',
       };
 
       if (isDraft) {
@@ -645,7 +649,7 @@ const mapDispatchToProps = (dispatch) => ({
   initResetState: () => dispatch(resetState()),
   initDeleteSection: (questionId, sectionId) =>
     dispatch(deleteSection(questionId, sectionId)),
-    deleteQuestionSection: (questionId, sectionId) =>
+  deleteQuestionSection: (questionId, sectionId) =>
     dispatch(deleteQuestionSection(questionId, sectionId)),
 });
 

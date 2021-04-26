@@ -33,6 +33,7 @@ import { KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { dateFormat } from 'highcharts';
 import { useHistory } from 'react-router';
+import { size } from 'lodash';
 function getDaysAfter(date, amount) {
   return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
 }
@@ -41,7 +42,6 @@ function getDaysBefore(date, amount) {
 }
 
 const CreateEvent = () => {
- 
   const [allDay, setAllDay] = useState(true);
   const [firstHalf, setFirstHalf] = useState(false);
   const [secondHalf, setSecondHalf] = useState(false);
@@ -52,36 +52,32 @@ const CreateEvent = () => {
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
+  const [DateEnd, setDateEnd] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
-  const [evnetcategoryType, setEventcategoryType] = useState([])
+  const [evnetcategoryType, setEventcategoryType] = useState([]);
   const [selectedStartTime, setSelectedStartTime] = useState(new Date());
   const [selectedEndTime, setSelectedEndTime] = useState(new Date());
 
   const [loading, setLoading] = useState(false);
-  const [counter, setCounter] = useState(1)
+  const [counter, setCounter] = useState(1);
   const [discripValue, setdiscripValue] = useState();
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
-
-
-
-
-
   const handleStartTimeChange = (start_time) => {
-    console.log("time", start_time.toString().slice(16, 21))
-    const time = start_time.toString().slice(16, 21)
-    setSelectedStartTime(start_time)
-    setStartTime(time)
+    console.log('time', start_time.toString().slice(16, 21));
+    const time = start_time.toString().slice(16, 21);
+    setSelectedStartTime(start_time);
+    setStartTime(time);
   };
   const handleEndTimeChange = (end_time) => {
     // let x=date._d
     // console.log(x.split(" "))
-    console.log("end_time:;", end_time.toString().slice(16, 21));
-    setSelectedEndTime(end_time)
-    setEndTime(end_time.toString().slice(16, 21))
+    console.log('end_time:;', end_time.toString().slice(16, 21));
+    setSelectedEndTime(end_time);
+    setEndTime(end_time.toString().slice(16, 21));
   };
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -96,34 +92,27 @@ const CreateEvent = () => {
       border: 'solid lightgrey',
       borderRadius: 10,
     },
-
   }));
 
-  const handleStartDateChange = (date) => {
-    console.log("startdate:", date.toISOString().split("T")[0])
-    const endDate = getDaysAfter(date.clone(), 6);
-    setEndDate(endDate);
-    setStartDate(date.toISOString().split("T")[0]);
-    // getTeacherHomeworkDetails(2, date, endDate);
+  const handleStartDateChange = (e,value) => {
+    // console.log('startdate:', date.toISOString().split('T')[0]);
+    // const endDate = getDaysAfter(date.clone(), 6);
+    console.log("startDate:",value)
+ 
+    setStartDate(value);
+   
   };
   const returnFunction = (time) => {
-    console.log("timeeeee:", time)
-
+    console.log('timeeeee:', time);
   };
 
-  const handleEndDateChange = (date) => {
-    console.log("dateeee:", date)
-    console.log("convert", date._d.toISOString())
-    // console.log("split:",new Date(date._d).toISOString().split('T'))
-    const startDate = getDaysBefore(date.clone(), 6);
-    setStartDate(startDate);
-    setEndDate(date.format('YYYY-MM-DD'));
-    // getTeacherHomeworkDetails(2, startDate, date);
+  const handleEndDateChange = (e,value) => {
+    console.log('endDate',value);
+    setEndDate(value);
   };
-
+  
 
   const handleChange = (event) => {
-
     setdiscripValue(event.target.value);
     console.log(event.target.value);
 
@@ -133,43 +122,53 @@ const CreateEvent = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('state', state);
-    console.log("Startdate:", startDate)
-    console.log("EndDate:", endDate)
-    console.log("Starttime:", startTime)
-    console.log("Endtime:", endTime)
-    console.log("evne:", eventType)
-    axiosInstance.post(endpoints.CreateEvent.CreateEvent, {
-      event_name: state.event_name,
-      description: state.description,
-      start_date: startDate,
-      end_date: endDate,
-      start_time: startTime,
-      end_time: endTime,
-      event_category: eventType,
-      branch: selectedBranch.id,
-      grade: selectedGrade.id,
-      section: selectedSection.id,
-      // branch:selectedBranch.id,
-      is_full_day: allDay,
-      is_first_half: firstHalf,
-      is_second_half: secondHalf,
-    }).then((result) => {
-      if (result.data.status_code === 200) {
-        setLoading(false)
-        console.log('success', result.data.message)
-        setAlert('success', result.data.message);
+    console.log('Startdate:', startDate);
+    console.log('EndDate:', endDate);
+    console.log('Starttime:', startTime);
+    console.log('Endtime:', endTime);
+    console.log('evne:', eventType);
+    console.log('branch:', selectedBranch.id,);
+    console.log('grade:', selectedGrade.id,);
+    console.log('sect:', selectedSection.id,);
     
-      } else {
-        setAlert('error', result.data.message);
-      }
-    }).catch((error) => {
-      setLoading(false)
-      console.log(error)
-    })
-
+    console.log('testing1branch',selectedBranch)
+    console.log('testing2grade',selectedGrade)
+    console.log('testing3grade',selectedSection)
+    axiosInstance
+      .post(endpoints.CreateEvent.CreateEvent, {
+        event_name: state.event_name,
+        description: state.description,
+        start_date: startDate,
+        end_date: endDate,
+        start_time: startTime,
+        end_time: endTime,
+        event_category: eventType,
+        
+        branch: selectedBranch.branch.id,
+        grade: selectedGrade.grade_id,
+        section: selectedSection.section_id,
+        
+        is_full_day: allDay,
+        is_first_half: firstHalf,
+        is_second_half: secondHalf,
+      })
+      .then((result) => {
+        setAlert('success', result.data.message);
+        
+        history.push({
+          pathname: '/attendance-calendar/teacher-view',
+        });
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', 'something went wrong');
+        console.log(error);
+      });
+  };
+  const handleBackButtonClick = (e) => {
     history.push({
-      pathname: '/attendance-calendar/teacher-view'
-    })
+      pathname: '/attendance-calendar/teacher-view',
+    });
   };
 
   const styles = {
@@ -183,35 +182,36 @@ const CreateEvent = () => {
   const classes = useStyles();
   const [academicYear, setAcademicYear] = useState([]);
   const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
-  const [branchList, setBranchList] = useState([])
-  const [selectedBranch, setSelectedBranch] = useState([])
+  const [branchList, setBranchList] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
-  const [secSelectedId, setSecSelectedId] = useState([])
-  const [eventType, seteventType] = useState()
-
+  const [secSelectedId, setSecSelectedId] = useState([]);
+  const [eventType, seteventType] = useState();
+  const [dateValue, setDateValue] = useState(moment(new Date()).format('YYYY-MM-DD'));
 
   function callApi(api, key) {
     setLoading(true);
-    axiosInstance.get(api)
+    axiosInstance
+      .get(api)
       .then((result) => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
-            console.log(result?.data?.data || [])
-            setAcademicYear(result?.data?.data || [])
+            console.log(result?.data?.data || []);
+            setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
-            console.log(result?.data?.data || [])
+            console.log(result?.data?.data || []);
             setBranchList(result?.data?.data?.results || []);
           }
           if (key === 'gradeList') {
-            console.log(result?.data?.data || [])
+            console.log(result?.data?.data || []);
             setGradeList(result.data.data || []);
           }
           if (key === 'section') {
-            console.log(result?.data?.data || [])
+            console.log(result?.data?.data || []);
             setSectionList(result.data.data);
           }
           setLoading(false);
@@ -234,7 +234,7 @@ const CreateEvent = () => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher Calendar' ) {
+            if (item.child_name === 'Teacher Calendar') {
               setModuleId(item.child_id);
             }
           });
@@ -242,84 +242,73 @@ const CreateEvent = () => {
       });
     }
   }, [window.location.pathname]);
-  console.log(moduleId,'MODULE_ID')
+  console.log(moduleId, 'MODULE_ID');
 
   useEffect(() => {
+    callApi(
+      `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
+      'academicYearList'
+    );
 
-    callApi(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`, 'academicYearList')
-    
-    console.log("iuhiuhi")
-    axiosInstance.get(endpoints.CreateEvent.getEventCategory)
-      .then((res) => {
-        console.log("iuhiuhi")
-        console.log("eventcateory:-", res?.data)
-        setEventcategoryType(res?.data)
-      })
-    console.log("iuhiuhisfsdfdsfsafsdfsdfdf")
+    console.log('iuhiuhi');
+    axiosInstance.get(endpoints.CreateEvent.getEventCategory).then((res) => {
+      console.log('iuhiuhi');
+      console.log('eventcateory:-', res?.data);
+      setEventcategoryType(res?.data);
+    });
+    console.log('iuhiuhisfsdfdsfsafsdfsdfdf');
   }, [counter]);
 
   const handleEventTypeChange = (e, value) => {
+    e.preventDefault();
 
-    e.preventDefault()
-
-    console.log("eventttttype:", value.id)
-    seteventType(value.id)
-
-  }
+    console.log('eventttttype:', value.id);
+    seteventType(value.id);
+  };
   const is_full_day = (e, value) => {
-
-    e.preventDefault()
+    e.preventDefault();
     if (value % 2) {
-      console.log("is_full_day:", "true")
-      setAllDay("true")
+      console.log('is_full_day:', 'true');
+      setAllDay('true');
+    } else {
+      console.log('is_full_day:', 'false');
+      setAllDay('false');
     }
-    else {
-      console.log("is_full_day:", "false")
-      setAllDay("false")
-    }
-  }
+  };
   const is_first_half = (e, value) => {
-
-    e.preventDefault()
+    e.preventDefault();
     if (value % 2) {
-      console.log("is_first_half:", "true")
-      setFirstHalf("true")
+      console.log('is_first_half:', 'true');
+      setFirstHalf('true');
+    } else {
+      console.log('is_first_half:', 'false');
+      setFirstHalf('false');
     }
-    else {
-      console.log("is_first_half:", "false")
-      setFirstHalf("false")
-    }
-  }
+  };
   const is_second_half = (e, value) => {
-
-    e.preventDefault()
+    e.preventDefault();
     if (value % 2) {
-      console.log("is_second_half:", "true")
-      setSecondHalf("true")
+      console.log('is_second_half:', 'true');
+      setSecondHalf('true');
+    } else {
+      console.log('is_second_half:', 'false');
+      setSecondHalf('false');
     }
-    else {
-      console.log("is_second_half:", "false")
-      setSecondHalf("false")
-    }
-
-  }
+  };
 
   const onunHandleClearAll = (e) => {
     e.preventDefault();
 
-    document.getElementById("outlined-multiline-static").value = "";
-    document.getElementById("eventname").value = "";
+    document.getElementById('outlined-multiline-static').value = '';
+    document.getElementById('eventname').value = '';
     // document.getElementById("coustom-date");
-
-
-  }
+  };
 
   return (
     <>
-
       <Layout>
-        <div className='profile_breadcrumb_wrapper' style={{ marginLeft: '-10px' }}>
-          <CommonBreadcrumbs componentName='CreateEvent' />
+        <div className='profile_breadcrumb_wrapper' >
+          <CommonBreadcrumbs componentName='Create Event' />
         </div>
         <form>
           <MediaQuery minWidth={785}>
@@ -337,13 +326,12 @@ const CreateEvent = () => {
                   name='event_category'
                   labelplaceholder='Event_Type'
                   onChange={handleEventTypeChange}
-                  options={evnetcategoryType || ""}
-                  getOptionLabel={(option) => option.event_category_name || ""}
+                  options={evnetcategoryType || ''}
+                  getOptionLabel={(option) => option.event_category_name || ''}
                   renderInput={(params) => (
                     <TextField {...params} label='Event Type' variant='outlined' />
                   )}
                 />
-
               </Grid>
 
               <Grid item md={4} lg={2} sm={6} xs={12}>
@@ -364,13 +352,13 @@ const CreateEvent = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={3} xs={12}>
+              <Grid item md={2} xs={12}>
                 <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
-                    console.log("moduleIdDDD",moduleId)
-                    setSelectedAcadmeicYear(value)
+                    console.log('moduleIdDDD', moduleId);
+                    setSelectedAcadmeicYear(value);
                     if (value) {
                       callApi(
                         `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
@@ -380,14 +368,13 @@ const CreateEvent = () => {
                     setSelectedGrade([]);
                     setSectionList([]);
                     setSelectedSection([]);
-                    setSelectedBranch([])
-
+                    setSelectedBranch([]);
                   }}
                   id='branch_id'
                   className='dropdownIcon'
-                  value={selectedAcademicYear || ""}
-                  options={academicYear || ""}
-                  getOptionLabel={(option) => option?.session_year || ""}
+                  value={selectedAcademicYear || ''}
+                  options={academicYear || ''}
+                  getOptionLabel={(option) => option?.session_year || ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -400,32 +387,35 @@ const CreateEvent = () => {
                   )}
                 />
               </Grid>
-              <Grid item md={3} xs={12}>
+              <Grid item md={2} xs={12}>
                 <Autocomplete
                   // multiple
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
-                    setSelectedBranch([])
+                    
+                    setSelectedBranch([]);
                     if (value) {
                       // const ids = value.map((el)=>el)
-                      const selectedId = value.branch.id
-                      setSelectedBranch(value)
+                      const selectedId = value.branch.id;
+                     
+                      setSelectedBranch(value);
                       callApi(
-                        `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                        `${endpoints.academics.grades}?session_year=${
+                          selectedAcademicYear.id
+                        }&branch_id=${selectedId}&module_id=${moduleId}`,
                         'gradeList'
                       );
                     }
                     setSelectedGrade([]);
                     setSectionList([]);
                     setSelectedSection([]);
-
                   }}
                   id='branch_id'
                   className='dropdownIcon'
-                  value={selectedBranch || ""}
-                  options={branchList || ""}
-                  getOptionLabel={(option) => option?.branch?.branch_name || ""}
+                  value={selectedBranch || ''}
+                  options={branchList || ''}
+                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -438,19 +428,20 @@ const CreateEvent = () => {
                   )}
                 />
               </Grid>
-              <Grid item md={3} xs={12}>
+              <Grid item md={2} xs={12}>
                 <Autocomplete
                   // multiple
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
-                    setSelectedGrade([])
+                    setSelectedGrade([]);
                     if (value) {
                       // const ids = value.map((el)=>el)
-                      const selectedId = value.grade_id
+                      const selectedId = value.grade_id;
                       // console.log(selectedBranch.branch)
-                      const branchId = selectedBranch.branch.id
-                      setSelectedGrade(value)
+                      const branchId = selectedBranch.branch.id;
+                      setSelectedGrade(value);
+                      console.log("the grade",value.grade_id);
                       callApi(
                         `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
                         'section'
@@ -458,13 +449,12 @@ const CreateEvent = () => {
                     }
                     setSectionList([]);
                     setSelectedSection([]);
-
                   }}
                   id='grade_id'
                   className='dropdownIcon'
-                  value={selectedGrade || ""}
-                  options={gradeList || ""}
-                  getOptionLabel={(option) => option?.grade__grade_name || ""}
+                  value={selectedGrade || ''}
+                  options={gradeList || ''}
+                  getOptionLabel={(option) => option?.grade__grade_name || ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -477,26 +467,27 @@ const CreateEvent = () => {
                   )}
                 />
               </Grid>
-              <Grid item md={3} xs={12}>
+              <Grid item md={2} xs={12}>
                 <Autocomplete
                   // multiple
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
-                    setSelectedSection([])
+                    setSelectedSection([]);
                     if (value) {
-                      const ids = value.id
-                      const secId = value.section_id
-                      setSelectedSection(value)
-                      setSecSelectedId(secId)
+                      const ids = value.id;
+                      const secId = value.section_id;
+                      setSelectedSection(value);
+                      setSecSelectedId(secId);
                     }
-
                   }}
                   id='section_id'
                   className='dropdownIcon'
-                  value={selectedSection || ""}
-                  options={sectionList || ""}
-                  getOptionLabel={(option) => option?.section__section_name || option?.section_name || ""}
+                  value={selectedSection || ''}
+                  options={sectionList || ''}
+                  getOptionLabel={(option) =>
+                    option?.section__section_name || option?.section_name || ''
+                  }
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -516,63 +507,104 @@ const CreateEvent = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={4} lg={3} sm={5} xs={10}>
-                <MobileDatepicker
-                  className="arrow"
-                  onChange={(date) => handleEndDateChange(date)}
-                  handleStartDateChange={handleStartDateChange}
-                  handleEndDateChange={handleEndDateChange}
+              <Grid item md={5} lg={3} sm={6} xs={10}  className='arrow-1'>
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                
+
+<KeyboardDatePicker
+                  size='small'
+                  variant='dialog'
+                  format='YYYY-MM-DD'
+                  margin='none'
+                  // className='button'
+                  id='date-picker'
+                  label='StartDate'
+                  minDate={new Date()}
+              name="start_date"
+                  inputVariant='outlined'
+                  className='arrow conte'
+                  onChange={handleStartDateChange}
+                  // handleStartDateChange={handleStartDateChange}
+                      // handleEndDateChange={handleEndDateChange}
+                
+                  value={startDate}
+                  style={{ background: 'white',width: '50%'}}
+                  // onChange={handleDateChange}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
                 />
-              </Grid>
-              <Grid item md={1} sm={1}>
-                <img src={LineAtt} />
-              </Grid>
-              <Grid item lg={1} md={1} sm={1}>
-                <FormControlLabel
-                  name
-                  control={<Checkbox onChange={is_full_day} />}
-                  label='All Day'
-                  variant='outlined'
-                  labelPlacement='top'
-                // oncheck={}
+              </MuiPickersUtilsProvider>
+             
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <KeyboardDatePicker
+                  size='small'
+                  variant='dialog'
+                  format='YYYY-MM-DD'
+                  margin='none'
+                  // className='button'
+                  id='date-picker'
+                  label='EndDate'
+                  minDate={new Date()}
+                  variant='standard'
+                name="end_date"
+                  inputVariant='outlined'
+                  className='arrow conte'
+                  onChange={handleEndDateChange}
+                  value={endDate}
+                  style={{ background: 'white',width: '50%'}}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
                 />
+              </MuiPickersUtilsProvider>
               </Grid>
+                  <Grid item md={1} sm={1}>
+                    <img src={LineAtt} className='im' />
+                  </Grid>
+                  <Grid item lg={1} md={1} sm={1}>
+                    <FormControlLabel
+                      style={{ marginLeft: '-110%',marginTop:'-20%' }}
+                      name
+                      control={<Checkbox onChange={is_full_day} />}
+                      label='All Day'
+                      variant='outlined'
+                      labelPlacement='top'
+                      
+                    />
+                  </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={2} lg={3} sm={5} xs={10}>
-
+              <Grid item md={5} lg={3} sm={6} xs={10}  className='arrow-1'>
                 <div className='time-ranger-border'>
                   <MuiPickersUtilsProvider utils={MomentUtils}>
                     <KeyboardTimePicker
                       size='small'
-                      // margin="normal"
-
-                      style={{ width: '38%' }}
-                      className='arrow'
-                      id="time-picker"
-                      label="Start Time"
-                      name="start_time"
+                      style={{ width: '50%', marginTop:'-5%' }}
+                      className='arrow conte'
+                      id='time-picker'
+                      label='Start Time'
+                      inputVariant='outlined'
+                      name='start_time'
                       value={selectedStartTime}
                       onChange={handleStartTimeChange}
-                      // helperText={helperTextMsg}
+                      
                       KeyboardButtonProps={{
                         'aria-label': 'change time',
                       }}
                     />
-
                   </MuiPickersUtilsProvider>
                   <MuiPickersUtilsProvider utils={MomentUtils}>
-
                     <KeyboardTimePicker
                       size='small'
                       // margin="normal"
-                      style={{ width: '38%' }}
+                      style={{ width: '50%', marginTop:'-5%' }}
                       className='helperText'
-                      className='arrow'
-
-                      id="time-picker"
-                      label="End Time"
-                      name="end_time"
+                      className='arrow conte'
+                      id='time-picker'
+                      label='End Time'
+                      name='end_time'
+                      inputVariant='outlined'
                       value={selectedEndTime}
                       onChange={handleEndTimeChange}
                       // helperText={helperTextMsg}
@@ -585,26 +617,26 @@ const CreateEvent = () => {
                 </div>
               </Grid>
               <Grid item md={1} sm={1}>
-                <img src={LineAtt} />
+                <img src={LineAtt} className='im' style={{marginTop:'-60px'}} />
               </Grid>
               <Grid item md={1} sm={2}>
                 <FormControlLabel
+                  style={{ marginLeft: '-110%', marginTop:'-35%' }}
                   value='top'
                   control={<Checkbox onChange={is_first_half} />}
                   label='1st Half'
-
                   labelPlacement='top'
-                // oncheck={}g351
+                  // oncheck={}g351
                 />
-
               </Grid>
               <Grid item md={1} sm={2}>
                 <FormControlLabel
+                  style={{ marginLeft: '-125%',marginTop:'-35%' }}
                   value='top'
                   control={<Checkbox onChange={is_second_half} />}
                   label='2nd Half'
                   labelPlacement='top'
-                // oncheck={}
+                  // oncheck={}
                 />
               </Grid>
             </Grid>
@@ -619,7 +651,7 @@ const CreateEvent = () => {
                   id='outlined-multiline-static'
                   label='ADD Event Description'
                   labelwidth='170'
-                  name="description"
+                  name='description'
                   fullWidth
                   onChange={handleChange}
                   multiline
@@ -628,33 +660,42 @@ const CreateEvent = () => {
                 />
               </Grid>
             </Grid>
-            <Grid container direction='row' className={classes.root}>
-              <Grid item md={3} lg={2} xs={12}>
-                <Button variant='contained' onClick={onunHandleClearAll}>Clear All</Button>
+            <Grid container direction='row' className={classes.root }>
+              <Grid item md={1} lg={1} xs={12} >
+                <Button variant='contained' onClick={onunHandleClearAll}>
+                  Clear All
+                </Button>
               </Grid>
-              <Grid item md={3} lg={2} xs={12}>
-                <Button variant='contained' type="submit" value="Submit" color='primary' onClick={handleSubmit}>
+              <Grid item md={2} lg={1} xs={12}>
+                <Button variant='contained' color='primary' onClick={handleBackButtonClick} style={{ marginLeft: '5%'}}>
+                  Go Back
+                </Button>
+              </Grid>
+              <Grid item md={1} lg={1} xs={12}>
+                <Button
+                  variant='contained'
+                  type='submit'
+                  value='Submit'
+                  color='primary'
+                  onClick={handleSubmit}
+                >
                   SAVE EVENT
                 </Button>
               </Grid>
             </Grid>
           </MediaQuery>
           <MediaQuery maxWidth={784}>
-            <Grid container direction='row'>
-              <Grid item md={4} lg={2} sm={6} xs={12}>
-                <Breadcrumbs componentName='CreateEvent' />
-              </Grid>
-            </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
               <Grid item md={4} lg={2} sm={6} xs={12}>
-                <Autocomplete
+              <Autocomplete
                   className='arrow'
                   size='small'
                   id='combo-box-demo'
-                  labelplaceholder='Event Type'
+                  name='event_category'
+                  labelplaceholder='Event_Type'
                   onChange={handleEventTypeChange}
-                  options={evnetcategoryType || ""}
-                  getOptionLabel={(option) => option.event_category_type || ""}
+                  options={evnetcategoryType || ''}
+                  getOptionLabel={(option) => option.event_category_name || ''}
                   renderInput={(params) => (
                     <TextField {...params} label='Event Type' variant='outlined' />
                   )}
@@ -684,7 +725,7 @@ const CreateEvent = () => {
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
-                    setSelectedAcadmeicYear(value)
+                    setSelectedAcadmeicYear(value);
                     if (value) {
                       callApi(
                         `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
@@ -694,14 +735,13 @@ const CreateEvent = () => {
                     setSelectedGrade([]);
                     setSectionList([]);
                     setSelectedSection([]);
-                    setSelectedBranch([])
-
+                    setSelectedBranch([]);
                   }}
                   id='branch_id'
                   className='dropdownIcon'
-                  value={selectedAcademicYear || ""}
-                  options={academicYear || ""}
-                  getOptionLabel={(option) => option?.session_year || ""}
+                  value={selectedAcademicYear || ''}
+                  options={academicYear || ''}
+                  getOptionLabel={(option) => option?.session_year || ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -719,26 +759,27 @@ const CreateEvent = () => {
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
-                    setSelectedBranch([])
+                    setSelectedBranch([]);
                     if (value) {
                       // const ids = value.map((el)=>el)
-                      const selectedId = value.branch.id
-                      setSelectedBranch(value)
+                      const selectedId = value.branch.id;
+                      setSelectedBranch(value);
                       callApi(
-                        `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                        `${endpoints.academics.grades}?session_year=${
+                          selectedAcademicYear.id
+                        }&branch_id=${selectedId}&module_id=${moduleId}`,
                         'gradeList'
                       );
                     }
                     setSelectedGrade([]);
                     setSectionList([]);
                     setSelectedSection([]);
-
                   }}
                   id='branch_id'
                   className='dropdownIcon'
-                  value={selectedBranch || ""}
-                  options={branchList || ""}
-                  getOptionLabel={(option) => option?.branch?.branch_name || ""}
+                  value={selectedBranch || ''}
+                  options={branchList || ''}
+                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -756,13 +797,13 @@ const CreateEvent = () => {
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
-                    setSelectedGrade([])
+                    setSelectedGrade([]);
                     if (value) {
                       // const ids = value.map((el)=>el)
-                      const selectedId = value.grade_id
+                      const selectedId = value.grade_id;
                       // console.log(selectedBranch.branch)
-                      const branchId = selectedBranch.branch.id
-                      setSelectedGrade(value)
+                      const branchId = selectedBranch.branch.id;
+                      setSelectedGrade(value);
                       callApi(
                         `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
                         'section'
@@ -770,13 +811,12 @@ const CreateEvent = () => {
                     }
                     setSectionList([]);
                     setSelectedSection([]);
-
                   }}
                   id='grade_id'
                   className='dropdownIcon'
-                  value={selectedGrade || ""}
-                  options={gradeList || ""}
-                  getOptionLabel={(option) => option?.grade__grade_name || ""}
+                  value={selectedGrade || ''}
+                  options={gradeList || ''}
+                  getOptionLabel={(option) => option?.grade__grade_name || ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -794,20 +834,21 @@ const CreateEvent = () => {
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
-                    setSelectedSection([])
+                    setSelectedSection([]);
                     if (value) {
-                      const ids = value.id
-                      const secId = value.section_id
-                      setSelectedSection(value)
-                      setSecSelectedId(secId)
+                      const ids = value.id;
+                      const secId = value.section_id;
+                      setSelectedSection(value);
+                      setSecSelectedId(secId);
                     }
-
                   }}
                   id='section_id'
                   className='dropdownIcon'
-                  value={selectedSection || ""}
-                  options={sectionList || ""}
-                  getOptionLabel={(option) => option?.section__section_name || option?.section_name || ""}
+                  value={selectedSection || ''}
+                  options={sectionList || ''}
+                  getOptionLabel={(option) =>
+                    option?.section__section_name || option?.section_name || ''
+                  }
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -826,74 +867,110 @@ const CreateEvent = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={4} lg={3} sm={10} xs={11} className="items">
-                <MobileDatepicker
-                  className='arrow'
-                  id="coustom-date"
-                  onChange={(date) => handleEndDateChange(date)}
-                  handleStartDateChange={handleStartDateChange}
-                  handleEndDateChange={handleEndDateChange}
-                />
+            <Grid item md={2} lg={3} sm={12} xs={12}>
+              <div className='time-ranger-border'>
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                
+
+                <KeyboardDatePicker
+                                  size='small'
+                                  // variant='dialog'
+                                  format='YYYY-MM-DD'
+                                  margin='none'
+                                  // className='button'
+                                  id='date-picker'
+                                  label='StartDate'
+                                  minDate={new Date()}
+                                  name="start_date"
+                                  inputVariant='outlined'
+                                  className='arrow conte'
+                                  onChange={handleStartDateChange}
+                                  // handleStartDateChange={handleStartDateChange}
+                                      // handleEndDateChange={handleEndDateChange}
+                                
+                                  value={startDate}
+                                  style={{ background: 'white',width: '50%' }}
+                                  // onChange={handleDateChange}
+                                  KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                  }}
+                                />
+                              </MuiPickersUtilsProvider>
+                             
+                              <MuiPickersUtilsProvider utils={MomentUtils}>
+                                <KeyboardDatePicker
+                                  size='small'
+                                  variant='dialog'
+                                  format='YYYY-MM-DD'
+                                  margin='none'
+                                  // className='button'
+                                  id='date-picker'
+                                  label='EndDate'
+                                  minDate={new Date()}
+                                  variant='standard'
+                              name="end_date"
+                                  inputVariant='outlined'
+                                  className='arrow conte'
+                                  onChange={handleEndDateChange}
+                                  value={endDate}
+                                  style={{ background: 'white',width: '50%'}}
+                                  KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                  }}
+                                />
+                              </MuiPickersUtilsProvider>
+                </div>
               </Grid>
             </Grid>
-            <Grid
-              container
-              direction='row'
-
-
-            >
+            <Grid container direction='row' className={classes.root}>
               <Grid item md={1} sm={3} className='responsesecond'>
                 <FormControlLabel
-
                   value='top'
                   control={<Checkbox onChange={is_first_half} />}
                   label='1st Half'
                   labelPlacement='top'
                 />
               </Grid>
-              <Grid item md={1} sm={3} className='response'>
+              <Grid item md={1} sm={3} className='response '>
                 <FormControlLabel
-
                   value='top'
                   control={<Checkbox onChange={is_second_half} />}
                   label='2nd Half'
                   labelPlacement='top'
                 />
               </Grid>
-              <Grid item md={2} lg={3} sm={12} xs={12} >
-
-                <div className='time-ranger-border'>
+              <Grid item md={2} lg={3} sm={12} xs={12}>
+              <div className='time-ranger-border'>
                   <MuiPickersUtilsProvider utils={MomentUtils}>
                     <KeyboardTimePicker
                       size='small'
-                      // margin="normal"
+                     
 
-                      style={{ width: '30%', marginLeft: '15%' }}
-                      className='arrow'
-                      id="time-picker"
-                      label="Start Time"
-                      name="start_time"
+                      style={{ width: '50%' }}
+                      className='arrow conte'
+                      id='time-picker'
+                      label='Start Time'
+                      inputVariant='outlined'
+                      name='start_time'
                       value={selectedStartTime}
                       onChange={handleStartTimeChange}
-                      // helperText={helperTextMsg}
+                      
                       KeyboardButtonProps={{
                         'aria-label': 'change time',
                       }}
                     />
-
                   </MuiPickersUtilsProvider>
                   <MuiPickersUtilsProvider utils={MomentUtils}>
-
                     <KeyboardTimePicker
                       size='small'
                       // margin="normal"
-                      style={{ width: '30%', marginLeft: '7%' }}
+                      style={{ width: '50%' }}
                       className='helperText'
-                      className='arrow'
-
-                      id="time-picker"
-                      label="End Time"
-                      name="end_time"
+                      className='arrow conte'
+                      id='time-picker'
+                      label='End Time'
+                      name='end_time'
+                      inputVariant='outlined'
                       value={selectedEndTime}
                       onChange={handleEndTimeChange}
                       // helperText={helperTextMsg}
@@ -906,9 +983,7 @@ const CreateEvent = () => {
                 </div>
               </Grid>
             </Grid>
-            <Grid container direction='row' spacing={2} className={classes.root}>
-
-            </Grid>
+            <Grid container direction='row' spacing={2} className={classes.root}></Grid>
             <Grid container direction='row'>
               <Grid item md={12} xs={12}>
                 <Divider />
@@ -920,7 +995,7 @@ const CreateEvent = () => {
                   id='outlined-multiline-static'
                   label='ADD Event Description'
                   labelwidth='170'
-                  name="description"
+                  name='description'
                   fullWidth
                   onChange={handleChange}
                   multiline
@@ -929,8 +1004,29 @@ const CreateEvent = () => {
                 />
               </Grid>
               <Grid item md={3} lg={2} xs={12}>
-                <Button variant='contained' type="submit" value="Submit" size='large' onClick={handleSubmit} style={{ marginLeft: '25%', marginTop: '7%' }}>
+                <Button
+                  variant='contained'
+                  type='submit'
+                  value='Submit'
+                  size='large'
+                  onClick={handleSubmit}
+                  style={{ marginLeft: '25%', marginTop: '7%' }}
+                >
                   SAVE EVENT
+                </Button>
+              </Grid>
+              <Grid item md={3} lg={2} xs={12}>
+                <Button
+                  onClick={handleBackButtonClick}
+                  style={{
+                    marginLeft: '25%',
+                    marginTop: '7%',
+                    paddingLeft: '11%',
+                    paddingRight: '11%',
+                  }}
+                  size='large'
+                >
+                  Go Back
                 </Button>
               </Grid>
             </Grid>

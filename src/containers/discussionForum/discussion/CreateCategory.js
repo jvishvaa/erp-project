@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Paper,
   Grid,
@@ -15,11 +15,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import Layout from '../../Layout/index';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import { fetchCategory, fetchSubCategory, fetchSubSubCategoryList } from '../../../redux/actions/discussionForumActions';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { fetchCategory, fetchSubCategory, fetchSubSubCategoryList, createAllCategory, createNewCategory } from '../../../redux/actions/discussionForumActions';
 
 const useStyles = makeStyles({
   paperStyle: {
-    height: '100%',
+    height: '100vh',
     width: '100%',
     marginTop: '15px',
   },
@@ -65,22 +66,22 @@ const StyledInput = withStyles({
 const CreateCategories = () => {
   const classes = useStyles({});
   const history = useHistory();
+  const dispatch = useDispatch();
+  const { setAlert } = useContext(AlertNotificationContext);
 
   const [category, setCategory] = React.useState('');
   const [subCategory, setSubCategory] = React.useState('');
-  const [subSubCategory, setSubSubCategory] = React.useState();
+  const [subSubCategory, setSubSubCategory] = React.useState('');
 
   const categoryList = useSelector((state) => state.discussionReducers.categoryList);
   const subCategoryList = useSelector((state) => state.discussionReducers.subCategoryList);
   const subSubCategoryList = useSelector((state) => state.discussionReducers.subSubCategoryList);
-  const dispatch = useDispatch();
+  const categoryCreadted = useSelector((state) => state.discussionReducers.categoryCreadted);
+
   const [selectedCategory, setSelectedCategory] = React.useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = React.useState(null);
   const [selectedSubSubCategory, setSelectedSubSubCategory] = React.useState(null);
 
-  const handleBack = () => {
-    history.push('/category');
-  }
   const handleCategory = (e) => {
     setCategory(e.target.value);
   };
@@ -97,6 +98,8 @@ const CreateCategories = () => {
     if(value){
       setSelectedCategory(value);
       setCategory(value?.category_name);
+      setSelectedSubCategory(null);
+      setSelectedSubSubCategory(null);
     } else {
       setSelectedCategory();
     }
@@ -106,6 +109,7 @@ const CreateCategories = () => {
     if(value){
       setSelectedSubCategory(value);
       setSubCategory(value?.sub_category_name);
+      setSelectedSubSubCategory(null);
     } else {
       setSelectedSubCategory();
     }
@@ -122,19 +126,78 @@ const CreateCategories = () => {
 
   React.useEffect(() => {
     dispatch(fetchCategory());
-  },[])
+  },[categoryCreadted])
 
   React.useEffect(() => {
     if(selectedCategory?.id){
       dispatch(fetchSubCategory(selectedCategory?.id));
+      setSubCategory('');
+      setSubSubCategory('');
     }
-  },[selectedCategory]);
+  },[selectedCategory, categoryCreadted]);
 
   React.useEffect(() => {
     if(selectedSubCategory?.sub_category_id){
       dispatch(fetchSubSubCategoryList(selectedSubCategory?.sub_category_id));
+      setSubSubCategory('');
     }
-  },[selectedSubCategory]);
+  },[selectedSubCategory, categoryCreadted]);
+
+  const handleBack = () => {
+    history.push('/master-management/discussion-category');
+  }
+
+  const handleSubmit = () => {
+    if(!selectedCategory && !selectedSubCategory && !selectedSubSubCategory){
+      const params = {category_type: '1', category_name: category}
+      if(category === ''){
+        setAlert('warning', 'Category filed is empty');
+      }
+      else {
+        dispatch(createAllCategory(params));
+      }
+    }
+    else if(selectedCategory && !selectedSubCategory && !selectedSubSubCategory) {
+      const params = {category_type: '2', category_name: subCategory, category_parent_id: selectedCategory?.id}
+      //dispatch(createAllCategory(params));
+      if(subCategory === ''){
+        setAlert('warning', 'Sub Category filed is empty');
+      }
+      else {
+        dispatch(createAllCategory(params));
+      }
+    }
+    else if(selectedCategory && selectedSubCategory) {
+      const params = {category_type: '3', category_name: subSubCategory, category_parent_id: selectedSubCategory?.sub_category_id}
+      //dispatch(createAllCategory(params));
+      if(subSubCategory === ''){
+        setAlert('warning', 'Sub Sub_category filed is empty');
+      }
+      else {
+        dispatch(createAllCategory(params));
+      }
+    }
+  }
+
+  React.useEffect(() => {
+    if(categoryCreadted !== ''){
+      if(category && !subCategory && !subSubCategory){
+        setAlert('success', 'Category Created');
+        setCategory('');
+        dispatch(createNewCategory());
+      }
+      if(category && subCategory && !subSubCategory){
+        setAlert('success', 'Sub Category Created');
+        setSubCategory('');
+        dispatch(createNewCategory());
+      }
+      if(category && subCategory && subSubCategory){
+        setAlert('success', 'Sub Sub_Category Created');
+        setSubSubCategory('');
+        dispatch(createNewCategory());
+      }
+    }
+  },[categoryCreadted])
 
   return (
     <Layout>
@@ -228,7 +291,7 @@ const CreateCategories = () => {
                   value={category}
                   onChange={handleCategory}
                   fullWidth
-                  disabled={true}
+                  disabled={selectedCategory? true : false}
                 />
                 {selectedCategory && (
                 <>
@@ -238,7 +301,7 @@ const CreateCategories = () => {
                     value={subCategory}
                     onChange={handleSubCategory}
                     fullWidth
-                    disabled={true}
+                    disabled={selectedSubCategory? true : false}
                   />
                 </>
                 )}
@@ -250,7 +313,7 @@ const CreateCategories = () => {
                       value={subSubCategory}
                       onChange={handleSubSubCategory}
                       fullWidth
-                      disabled={true}
+                      //disabled={true}
                     />
                   </>
                 )}
@@ -261,7 +324,7 @@ const CreateCategories = () => {
                   <StyledButton variant='contained' color='inherit' onClick={handleBack}>
                     Back
                   </StyledButton>
-                  <StyledButton variant='contained' color='inherit' style={{float:'right'}}>
+                  <StyledButton variant='contained' color='inherit' onClick={handleSubmit} style={{float:'right'}}>
                     Submit
                   </StyledButton>
                 </div>

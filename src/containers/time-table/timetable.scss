@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap');
 $text-color: #014b7e;
-$font-roboto:  'Raleway', sans-serif;
+$font-roboto: 'Raleway', sans-serif;
 
 @mixin header-data {
   margin: 0 2%;
@@ -8,11 +8,12 @@ $font-roboto:  'Raleway', sans-serif;
   cursor: pointer;
 }
 @mixin box-border {
-  border-color: #ff6b6b;
+  border-color: rgba(255, 107, 107, 0.8);
+  // border-color: #ff6b6b ;
   border-style: solid;
   border-width: 2px;
   border-radius: 10px;
-  opacity: 80%;
+  // opacity: 80%;
 }
 @mixin box-right {
   width: 8%;
@@ -38,18 +39,22 @@ $font-roboto:  'Raleway', sans-serif;
     text-align: left;
     width: 10px;
     border: none;
-    padding: 13px;
+    padding: 3px;
     color: $text-color;
     cursor: pointer;
+    transition-duration: 500ms;
   }
-  & td:hover {
-    z-index: 5;
-    padding: 10px;
-    border: 2px solid #ff6b6b;
-    border-radius: 8px;
-  }
+  // td:hover {
+  //   // z-index: 5;
+  //   transition-duration: 500ms;
+  //   transform: scale(1.1);
+  //   padding: 10px;
+  //   // border: 2px solid #ff6b6b;
+  //   border-radius: 8px;
+  // }
 
-    .header {
+  .header {
+    margin: 15px;
     color: $text-color;
   }
   tr:nth-child(even) {
@@ -65,9 +70,9 @@ $font-roboto:  'Raleway', sans-serif;
     justify-content: space-between;
   }
   .edit-button {
-    background: #ff6b6b;
-    width: 30%;
+    width: 24%;
     border-radius: 8px;
+    background: #ff6b6b;
     color: white;
     display: flex;
     justify-content: center;
@@ -77,16 +82,20 @@ $font-roboto:  'Raleway', sans-serif;
   .yellow-header {
     color: #ff6b6b;
     margin: 6px 1px;
-    font-size: 15px;
+    font-size: 18px;
+    font-family: $font-roboto;
   }
   p {
     font-size: 17px;
     color: $text-color;
     margin: 6px 1px;
+    font-family: $font-roboto;
   }
   h3 {
     color: $text-color;
     margin: 6px 1px;
+    font-size: 16px;
+    font-family: $font-roboto;
   }
   h4 {
     color: $text-color;
@@ -97,7 +106,7 @@ $font-roboto:  'Raleway', sans-serif;
 //   width: 39%;
 // }
 .page_title {
-  width: 44%;
+  width: 39%;
 }
 .select-click {
   border: 2px solid #ff6b6b;
@@ -105,23 +114,26 @@ $font-roboto:  'Raleway', sans-serif;
     text-align: left;
     width: 10px;
     border: none;
-    padding: 13px;
+    padding: 4px 6px;
     color: $text-color;
     cursor: pointer;
     p {
       font-size: 10px;
       color: $text-color;
       margin: 6px 1px;
+      font-family: $font-roboto;
     }
     h3 {
       color: $text-color;
       margin: 6px 1px;
       font-weight: 600;
+      font-family: $font-roboto;
     }
     h4 {
       color: $text-color;
       margin: 6px 1px;
       font-weight: 600;
+      font-family: $font-roboto;
     }
   }
 }
@@ -129,11 +141,11 @@ $font-roboto:  'Raleway', sans-serif;
 .time-table-container {
   min-width: calc(100vh - 100px);
   height: 100%;
-  .MuiBox-root-39{
+  .MuiBox-root-39 {
     display: flex;
     align-items: center;
   }
-  
+
   .devider-top {
     margin-top: 28px;
     margin-bottom: 4px;
@@ -143,16 +155,18 @@ $font-roboto:  'Raleway', sans-serif;
     flex-direction: row;
     margin-left: 1%;
     .dot {
-      height: 5px;
-      width: 5px;
-      background-color: $text-color;
+      height: 7px;
+      width: 7px;
+      background-color: #014b7e;
       border-radius: 50%;
       display: inline-block;
-      margin: 6px 6px;
+      margin: 10px 7px;
     }
     .table-header-data {
+      font-size: 19px;
       color: $text-color;
       font-weight: 600;
+      font-family: $font-roboto;
     }
   }
   //************************table***********************//
@@ -208,32 +222,95 @@ $font-roboto:  'Raleway', sans-serif;
       }
     }
   }
-  .add-new-period-button{
+  .add-new-period-button {
     background: #ff6b6b;
-    width: 111px;
+    width: 120px;
     height: 36px;
     border-radius: 8px;
     color: white;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 16px 23px;
+    // margin: 16px 23px;
+    // margin-left: 84%;
     cursor: pointer;
   }
   .calander-close {
     display: none;
   }
-  .calander-container {
+  .calander-container-time-table-module {
     width: 100%;
-    height: 100%;
+    height: fit-content;
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     justify-content: space-between;
     padding: 2%;
   }
- 
-  .calander-daily {
+
+  .calander-daily-time-table-module {
     width: 68%;
+    // .daily-outer-card:nth-child(odd) {
+    //   background-color: #ffebeb;
+    //   color: $text-color;
+    //   border: none;
+    // }
+    .daily-outer-card {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    .daily-inner-card {
+      text-align: left;
+      width: 32%;
+      border: none;
+      padding: 13px;
+      color: #014b7e;
+      background: #ffebeb;
+      cursor: pointer;
+      p {
+        font-size: 17px;
+        color: $text-color;
+        margin: 6px 1px;
+      }
+      h3 {
+        color: $text-color;
+        margin: 6px 1px;
+        font-size: 16px;
+      }
+      h4 {
+        color: $text-color;
+        margin: 6px 1px;
+      }
+    }
+    // .daily-inner-card:hover {
+    //   z-index: -1;
+    //   // position:absolute;
+    //   // transition-duration: 500ms;
+    //   // transform: scale(1.1);
+    //   padding: 10px;
+    //   border: 2px solid #ff6b6b;
+    //   border-radius: 8px;
+    //   text-align: left;
+    //   width: 32%;
+    //   color: #014b7e;
+    //   // background: #ffebeb;
+    //   cursor: pointer;
+    //   p {
+    //     font-size: 17px;
+    //     color: $text-color;
+    //     margin: 6px 1px;
+    //   }
+    //   h3 {
+    //     color: $text-color;
+    //     margin: 6px 1px;
+    //     font-size: 16px;
+    //   }
+    //   h4 {
+    //     color: $text-color;
+    //     margin: 6px 1px;
+    //   }
+    // }
     h4 {
       margin: 1px 0px;
     }
@@ -245,23 +322,68 @@ $font-roboto:  'Raleway', sans-serif;
       border-right: 2px solid;
     }
 
-    @include tableData();
-    .daily-header {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      color: $text-color;
-      font-weight: 500;
-      font-size: 31px;
+    table {
       font-family: $font-roboto;
+      border-collapse: collapse;
+      width: 100%;
+      border: none;
+    }
+    td {
+      text-align: left;
+      width: 0px;
+      border: none;
+      padding: 13px;
+      color: $text-color;
+      cursor: pointer;
+      // transition-duration: 500ms;
+    }
+    // td:hover {
+    //   z-index: -1;
+    //   // position:absolute;
+    //   // transition-duration: 500ms;
+    //   // transform: scale(1.1);
+    //   padding: 10px;
+    //   border: 2px solid #ff6b6b;
+    //   border-radius: 8px;
+    // }
+
+    .header {
+      color: $text-color;
+    }
+    tr:nth-child(even) {
+      background-color: #ffebeb;
+      color: $text-color;
+      border: none;
     }
   }
-  .calander-week {
+
+  .daily-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: $text-color;
+    font-weight: 500;
+    font-size: 36px;
+    margin-left: 29px;
+    margin-top: 20px;
+    font-family: $font-roboto;
+  }
+  .calander-week-time-table-module {
     @include box-border();
     width: 68%;
     height: fit-content;
     h4 {
+      font-size: 14px;
       margin: 1px 0px;
+    }
+    td {
+      font-size: 15px;
+      text-align: left;
+      width: 0px;
+      border: none;
+      padding: 13px;
+      color: #014b7e;
+      cursor: pointer;
     }
     p {
       font-size: 13px;
@@ -283,7 +405,7 @@ $font-roboto:  'Raleway', sans-serif;
   }
 
   //*******************************display-box****************************//
-  .display-container {
+  .display-container-time-table-module {
     @include box-border();
     padding: 2%;
     width: 30%;
@@ -316,16 +438,15 @@ $font-roboto:  'Raleway', sans-serif;
     border-radius: 8px;
     cursor: pointer;
   }
-  
 }
-.dialog-data-container{
+.dialog-data-container {
   width: 100%;
   height: 71%;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   padding: 9px;
-  #select-day{
+  #select-day {
     min-width: 43%;
   }
 }
