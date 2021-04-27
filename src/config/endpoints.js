@@ -80,6 +80,7 @@ export default {
     resourceFile: '/erp_user/resource_files/',
     feedback: '/erp_user/onlineclass_attendancecheck/',
     updateTutor: '/erp_user/update_tutor_email/',
+    PreQuiz: '/mp_quiz/online-class-details/',
   },
   masterManagement: {
     subjects: '/erp_user/subjects-list/',
@@ -307,6 +308,11 @@ export default {
     getBatchesApi: '/erp_user/student_online_class/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
+  questionPaper: {
+    FETCHQP: `${baseURLCentral}/assessment/test-list/`,
+    QuestionsInQP: '/mp_quiz/mp_questions_list/',
+    AssignQP: '/mp_quiz/',
+  },
 
   eventBat: {
     getPaginatedCategories: '/academic/list_event_categories_p/', //get
@@ -329,6 +335,15 @@ export default {
   ContactUsAPI: {
     getContactUsAPI: '/academic/contact/',
     updatedeleteContact: '/academic/update_contact/',
+  },
+
+  assessmentErp: {
+    chapterList: '/assessment/chapters/',
+    topicList: '/assessment/topics/',
+    subjectList: '/assessment/subjects-list/',
+    createQuestion: '/assessment/create-question/',
+    fileUpload: '/assessment/file-upload/',
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
   },
 
   assessment: {
@@ -374,7 +389,8 @@ export default {
     assementViewmore: `${baseURLCentral}/assessment/`,
   },
   createQuestionApis: {
-    topicList: `${baseURLCentral}/assessment/topic/`,
+    // topicList: `${baseURLCentral}/assessment/topic/`,
+    topicList: `${baseURLCentral}/assessment/topics-list/`,
     questionType: `${baseURLCentral}/assessment/question_type/`,
     createQuestion: `${baseURLCentral}/assessment/create-question/`,
   },

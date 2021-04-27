@@ -81,29 +81,6 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
     }
   }, [moduleId]);
 
-  // useEffect(() => {
-  // axiosInstance
-  //   .get(`${endpoints.lessonPlan.gradeListCentral}`, {
-  //     headers: { 'x-api-key': 'vikash@12345#1231' },
-  //   })
-  //   .then((result) => {
-  //     if (result.data.status_code === 200) {
-  //       setDropdownData({
-  //         ...dropdownData,
-  //         grades: result.data?.result?.results,
-  //         subjects: [],
-  //         chapters: [],
-  //         topics: [],
-  //       });
-  //     } else {
-  //       setAlert('error', result.data?.message);
-  //     }
-  //   })
-  //   .catch((error) => {
-  //     setAlert('error', error.message);
-  //   });
-  // }, []);
-
   const handleAcademicYear = (event, value) => {
     setFilterData({
       academic: '',
@@ -125,6 +102,11 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       setFilterData({
         ...filterData,
         academic: value,
+        branch: '',
+        grade: '',
+        subject: '',
+        chapter: '',
+        topic: '',
       });
       axiosInstance
         .get(
@@ -163,14 +145,23 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       topics: [],
     });
     if (value) {
-      setFilterData({ ...filterData, branch: value });
+      setFilterData({
+        ...filterData,
+        branch: value,
+        grade: '',
+        subject: '',
+        chapter: '',
+        topic: '',
+      });
       axiosInstance
-        .get(`${endpoints.assessmentApis.gradesList}?branch=${value.branch.id}`)
+        .get(
+          `${endpoints.academics.grades}?session_year=${filterData.academic?.id}&branch_id=${value?.branch?.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             setDropdownData({
               ...dropdownData,
-              grades: result.data?.result?.results,
+              grades: result.data?.data,
             });
           } else {
             setAlert('error', result.data?.message);
@@ -197,16 +188,14 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       topics: [],
     });
     if (value) {
-      setFilterData({ ...filterData, grade: value });
+      setFilterData({ ...filterData, grade: value, subject: '', chapter: '', topic: '' });
       axiosInstance
-        .get(
-          `${endpoints.assessmentApis.gradesList}?gs_id=${value.id}&branch=${filterData.branch.branch.id}`
-        ) //new_changes
+        .get(`${endpoints.assessmentErp.subjectList}?grade=${value?.grade_id}`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setDropdownData({
               ...dropdownData,
-              subjects: result.data?.result?.results,
+              subjects: result.data?.result,
             });
           } else {
             setAlert('error', result.data?.message);
@@ -231,33 +220,22 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       topics: [],
     });
     if (value) {
-      setFilterData({ ...filterData, subject: value });
-      if (value) {
-        axios
-          .get(
-            `${endpoints.lessonPlan.chapterListCentral}?grade_subject=${value.subject.central_mp_id}`,
-            {
-              //new_changes
-              headers: { 'x-api-key': 'vikash@12345#1231' },
-            }
-          )
-          .then((result) => {
-            if (result.data.status_code === 200) {
-              setDropdownData({
-                ...dropdownData,
-                chapters: result.data?.result,
-                topics: [],
-              });
-            } else {
-              setAlert('error', result.data?.message);
-              setDropdownData({ ...dropdownData, chapters: [], topics: [] });
-            }
-          })
-          .catch((error) => {
-            setAlert('error', error.message);
-            setDropdownData({ ...dropdownData, chapters: [], topics: [] });
-          });
-      }
+      setFilterData({ ...filterData, subject: value, chapter: '', topic: '' });
+      axiosInstance
+        .get(`${endpoints.assessmentErp.chapterList}?subject=${value?.subject_id}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setDropdownData({
+              ...dropdownData,
+              chapters: result.data?.result,
+            });
+          } else {
+            setAlert('error', result.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
     }
   };
 
@@ -266,9 +244,9 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
     setDropdownData({ ...dropdownData, topics: [] });
     if (value) {
       setFilterData({ ...filterData, chapter: value, topic: '' });
-      if (value) {
+      if (value?.is_central) {
         axios
-          .get(`${endpoints.createQuestionApis.topicList}?chapter=${value.id}`, {
+          .get(`${endpoints.createQuestionApis.topicList}?chapter=${value?.id}`, {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           })
           .then((result) => {
@@ -276,12 +254,23 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
               setDropdownData({ ...dropdownData, topics: result.data?.result });
             } else {
               setAlert('error', result.data?.message);
-              setDropdownData({ ...dropdownData, topics: [] });
             }
           })
           .catch((error) => {
             setAlert('error', error.message);
-            setDropdownData({ ...dropdownData, topics: [] });
+          });
+      } else {
+        axiosInstance
+          .get(`${endpoints.assessmentErp.topicList}?chapter=${value?.id}`)
+          .then((result) => {
+            if (result.data.status_code === 200) {
+              setDropdownData({ ...dropdownData, topics: result.data?.result });
+            } else {
+              setAlert('error', result.data?.message);
+            }
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
           });
       }
     }
@@ -321,27 +310,24 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
   };
 
   const handleFilter = () => {
-    // if (!filterData?.academic || !filterData?.branch) {
-    //   setAlert('warning', 'Please select academic and branch');
-    //   return;
-    // }
-    if (
-      filterData?.grade &&
-      filterData?.subject &&
-      filterData?.chapter &&
-      filterData?.topic &&
-      filterData?.academic &&
-      filterData?.branch
-    ) {
+    let filterObject = {
+      Topic: filterData?.topic,
+      Chapter: filterData?.chapter,
+      Subject: filterData?.subject,
+      Grade: filterData?.grade,
+      Branch: filterData?.branch,
+      AAcademic: filterData?.academic,
+    };
+    let filterFlag = Object.values(filterObject).every(Boolean);
+    if (filterFlag) {
       setIsFilter(true);
       setFilterDataDisplay(filterData);
       setIsTopFilterOpen(false);
-    } else if (!filterData?.academic) setAlert('warning', 'Please select Academic Year!');
-    else if (!filterData?.branch) setAlert('warning', 'Please select Branch!');
-    else if (!filterData?.grade) setAlert('warning', 'Please select grade!');
-    else if (!filterData?.subject) setAlert('warning', 'Please select subject!');
-    else if (!filterData?.chapter) setAlert('warning', 'Please select chapter!');
-    else if (!filterData?.topic) setAlert('warning', 'Please select topic!');
+    } else {
+      for (const [key, value] of Object.entries(filterObject)) {
+        if (!value) setAlert('error', `Please select ${key}!`);
+      }
+    }
   };
 
   return (
@@ -401,13 +387,36 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           className='dropdownIcon'
           value={filterData.grade || ''}
           options={dropdownData.grades || []}
-          getOptionLabel={(option) => option?.grade_name || ''}
+          getOptionLabel={(option) => option?.grade__grade_name || ''}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' />
           )}
         />
       </Grid>
+      {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={handleSection}
+          id='section'
+          multiple
+          limitTags={2}
+          className='dropdownIcon'
+          value={filterData.section || ''}
+          options={dropdownData.sections || []}
+          getOptionLabel={(option) => option?.section__section_name || ''}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Section'
+              placeholder='Section'
+            />
+          )}
+        />
+      </Grid> */}
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
@@ -417,7 +426,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           className='dropdownIcon'
           value={filterData.subject || ''}
           options={dropdownData.subjects || []}
-          getOptionLabel={(option) => option?.subject?.subject_name || ''}
+          getOptionLabel={(option) => option?.subject_name || ''}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField
