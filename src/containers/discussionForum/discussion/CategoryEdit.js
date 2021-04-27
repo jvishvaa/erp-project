@@ -145,7 +145,7 @@ const CategoryEdit = ({cardData, hadleClose}) => {
   return (
     <Box className={classes.paperStyles}>
       <div className={classes.closeIcon}>
-        <CloseIcon onClick={hadleCloseEdit} />
+        <CloseIcon onClick={hadleCloseEdit} color="primary"/>
       </div>
       <StyledTextField
         id="outlined-basic"
