@@ -637,7 +637,18 @@ const Attend = () => {
       </Grid>
       <Grid container direction='row' className={classes.root} spacing={2}>
         {result &&
-          result.map((item) => {
+          result.sort((a, b) => {
+            let fa = a.student_name.toLowerCase();
+            let fb = b.student_name.toLowerCase();
+            if (fa < fb) {
+            return -1;
+            }
+            if (fa > fb) {
+            return 1;
+            }
+            return 0;
+            }) 
+          .map((item) => {
             return (
               <Grid item xs={12} sm={6} md={4}>
                 <Card
