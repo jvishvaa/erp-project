@@ -658,7 +658,9 @@ const Attend = () => {
                           <Avatar>{item?.student_name?.slice(0, 1)}</Avatar>
                         </Grid>
                         <Grid item>
-                          <Typography>{item?.student_name?.slice(0, 6) || ''}</Typography>
+                          <Typography>
+                            {item?.student_name?.slice(0, 10) || ''}
+                          </Typography>
                           <Typography>{item?.erp_id}</Typography>
                         </Grid>
                         <Grid>
