@@ -19,28 +19,12 @@ const ViewHomeworkQuestion = ({ question, index }) => {
       scrollableContainer.current.scrollLeft -= 150;
     } else {
       scrollableContainer.current.scrollLeft += 150;
-      console.log(scrollableContainer.current.scrollLeft);
     }
   };
 
   useLayoutEffect(() => {
-    // console.log(
-    //   'scroll widths outer inner ',
-    //   submittedAttachmentsInnerContainer.current.clientWidth,
-    //   submittedAttachmentsInnerContainer.current.scrollWidth
-    // );
-
-    // console.log(
-    //   'scroll widths outer inner ',
-    //   submittedAttachmentsOuterContainer.current.scrollWidth,
-    //   submittedAttachmentsInnerContainer.current.scrollWidth
-    // );
+  
     if (scrollableContainer.current) {
-      console.log(
-        'attachment widths outer inner ',
-        scrollableContainer.current.clientWidth,
-        scrollableContainer.current.scrollWidth
-      );
       if (
         scrollableContainer.current.clientWidth < scrollableContainer.current.scrollWidth
       ) {
@@ -50,7 +34,6 @@ const ViewHomeworkQuestion = ({ question, index }) => {
       }
     }
   }, [question]);
-  console.log('question ', question);
 
   return (
     <div
@@ -78,7 +61,6 @@ const ViewHomeworkQuestion = ({ question, index }) => {
               ref={scrollableContainer}
               onScroll={(e) => {
                 e.preventDefault();
-                console.log('scrolled');
               }}
             >
               {question.question_files.map((url, i) => (

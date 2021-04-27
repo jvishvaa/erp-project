@@ -67,7 +67,6 @@ export const fetchTeacherHomeworkDetailsById = (id) => async (dispatch) => {
   dispatch({ type: FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_REQUEST });
   try {
     const response = await axios.get(`/academic/${id}/hw-questions/?hw_status=1`);
-    console.log('dispatching action with ', response.data.data);
     dispatch({
       type: FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_SUCCESS,
       data: response.data.data.hw_questions,
@@ -137,7 +136,6 @@ export const fetchTeacherHomeworkDetails = (moduleId, startDate, endDate) => asy
       type: FETCH_TEACHER_HOMEWORK_SUCCESS,
       data: { homeworkColumns, homeworkRows },
     });
-    console.log(response);
   } catch (e) {
     console.log('error ', e);
     dispatch({ type: FETCH_TEACHER_HOMEWORK_FAILURE });
@@ -149,19 +147,23 @@ export const setSelectedHomework = (data) => ({
   data,
 });
 
-export const fetchStudentsListForTeacherHomework = (id) => async (dispatch) => {
+export const fetchStudentsListForTeacherHomework = (id, subjectId, selectedTeacherUser_id) => async (dispatch) => {
   dispatch({ type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_REQUEST });
   try {
-    const response = await axios.get(`/academic/homework-submitted-data/?homework=${id}`);
+    const response = await axios.get(selectedTeacherUser_id ?
+      `/academic/homework-submitted-data/?homework=${id}&user=${selectedTeacherUser_id}&subject=${subjectId}`
+      : `/academic/homework-submitted-data/?homework=${id}&subject=${subjectId}`);
     const {
       evaluated_list: evaluatedStudents,
       submitted_list: submittedStudents,
+      un_submitted_list: unSubmittedStudents,
       unevaluated_list: unevaluatedStudents,
     } = response.data;
     dispatch({
       type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_SUCCESS,
       evaluatedStudents,
       submittedStudents,
+      unSubmittedStudents,
       unevaluatedStudents,
     });
   } catch (error) {
@@ -239,7 +241,6 @@ export const fetchCoordinateTeacherHomeworkDetails = (
           ? { hw_id: homeworkStatus.id, ...homeworkStatus.status }
           : {};
       });
-      // console.log(obj,"---------------");
       return obj;
     });
     homeworkColumns.unshift('Date');
@@ -247,9 +248,7 @@ export const fetchCoordinateTeacherHomeworkDetails = (
       type: FETCH_TEACHER_HOMEWORK_SUCCESS,
       data: { homeworkColumns, homeworkRows },
     });
-    console.log('teacher details', response);
   } catch (e) {
-    // console.log('error ', e);
     dispatch({ type: FETCH_TEACHER_HOMEWORK_FAILURE });
   }
 };

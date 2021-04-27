@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -90,7 +90,6 @@ const ViewHomework = withRouter(
         scrollableContainer.current.scrollLeft -= 150;
       } else {
         scrollableContainer.current.scrollLeft += 150;
-        console.log(scrollableContainer.current.scrollLeft);
       }
     };
 
@@ -154,9 +153,11 @@ const ViewHomework = withRouter(
                     </Typography>
                     <div className='attachments-list-outer-container'>
                       <div className='prev-btn'>
-                        <IconButton onClick={() => handleScroll('left')}>
-                          <ArrowBackIosIcon />
-                        </IconButton>
+                        {question.question_files.length > 1 && (
+                          <IconButton onClick={() => handleScroll('left')}>
+                            <ArrowBackIosIcon />
+                          </IconButton>
+                        )}
                       </div>
                       <SimpleReactLightbox>
                         <div
@@ -164,9 +165,12 @@ const ViewHomework = withRouter(
                           ref={scrollableContainer}
                           onScroll={(e) => {
                             e.preventDefault();
-                            console.log('scrolled');
                           }}
                         >
+                          {question.question_files.length === 0 && (
+                            <Typography style={{margin: 'auto'}}>Attachment NOT Found</Typography>
+                          )}
+
                           {question.question_files.map((url, i) => (
                             <>
                               <div className='attachment'>
@@ -205,9 +209,11 @@ const ViewHomework = withRouter(
                         </div>
                       </SimpleReactLightbox>
                       <div className='next-btn'>
-                        <IconButton onClick={() => handleScroll('right')}>
-                          <ArrowForwardIosIcon color='primary' />
-                        </IconButton>
+                        {question.question_files.length > 1 && (
+                          <IconButton onClick={() => handleScroll('right')}>
+                            <ArrowForwardIosIcon color='primary' />
+                          </IconButton>
+                        )}
                       </div>
                     </div>
                   </div>

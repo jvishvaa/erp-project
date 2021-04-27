@@ -14,10 +14,26 @@ import Discussion from './Discussion';
 import FilterIcon from '../../../components/icon/FilterIcon';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Box from '@material-ui/core/Box';
+import PropTypes from 'prop-types';
 import { discussionData } from './discussionData';
+import { Pagination } from '@material-ui/lab';
 
-const useStyles = makeStyles({
+const bgColor = [
+  '#EFFFB2',
+  '#D5FAFF',
+  '#FFC4BB',
+  '#E8CDFF',
+  '#CCF0FF',
+  '#FFCEF9',
+  '#CCD9FF',
+  '#CEFFCF',
+];
+
+const useStyles = makeStyles((theme) => ({
   paperStyle: {
     padding: '20px 70px 10px 42px',
     '@media (max-width: 600px)': {
@@ -53,28 +69,43 @@ const useStyles = makeStyles({
     fontFamily: 'Raleway',
     marginBottom: '15px',
   },
-  root: {
-    height: '42px',
-    width: '166px',
-    backgroundColor: '#FE6B6B',
-    color: '#FFFFFF',
-    borderRadius: '10px',
-    marginLeft: '40px',
-  },
+  // root: {
+  //   height: '42px',
+  //   width: '166px',
+  //   backgroundColor: '#FE6B6B',
+  //   color: '#FFFFFF',
+  //   borderRadius: '10px',
+  //   marginLeft: '40px',
+  // },
   label: {
     textTransform: 'capitalize',
   },
-});
+  root: {
+    flexGrow: 1,
+    width: '100%',
+    backgroundColor: theme.palette.background.paper,
+  },
+  categoryTab: {
+    height: '30px',
+  },
+  tabsRoot: {
+    height: '40px',
+  },
+  tabRoot: {
+    height: '30px',
+    backgroundColor: '',
+  },
+}));
 
 const StyledButton = withStyles({
   root: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#FF6B6B !important',
     color: '#FFFFFF',
     height: '42px',
     borderRadius: '10px',
     marginTop: 'auto',
     '&:hover': {
-      backgroundColor: '#FF6B6B',
+      backgroundColor: '#FF6B6B !important',
     },
   },
   startIcon: {
@@ -90,6 +121,9 @@ const StyledOutlinedButton = withStyles({
     border: '1px solid #FF6B6B',
     borderRadius: '10px',
     backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   },
 })(Button);
 
@@ -103,148 +137,353 @@ const StyledFilterButton = withStyles({
     float: 'right',
     textTransform: 'capitalize',
     backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   },
   iconSize: {},
 })(Button);
+
+const StyledTabs = withStyles({
+  root: {
+    borderBottom: '1px solid #e8e8e8',
+  },
+  indicator: {
+    backgroundColor: '#014B7E',
+    height: '3px',
+  },
+})(Tabs);
+
+const StyledTab = withStyles((theme) => ({
+  root: {
+    textTransform: 'none',
+    minWidth: 50,
+    fontWeight: 300,
+    marginBottom: '15px',
+    padding: '0 25px',
+    marginRight: '11px',
+    backgroundColor: '#ff6a6a',
+    borderRadius: '10px',
+    color: '#014B7E',
+    '&:hover': {
+      color: '##ffffff',
+      opacity: 1,
+    },
+    '&$selected': {
+      color: '##ffffff',
+      fontWeight: 600,
+      border: '1px solid #014B7E',
+    },
+    '&:focus': {
+      color: '##ffffff',
+    },
+  },
+  selected: {
+    backgroundColor: '#EFFFB2',
+  },
+}))((props) => <Tab disableRipple {...props} />);
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role='tabpanel'
+      hidden={value !== index}
+      id={`scrollable-auto-tabpanel-${index}`}
+      aria-labelledby={`scrollable-auto-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `scrollable-auto-tab-${index}`,
+    'aria-controls': `scrollable-auto-tabpanel-${index}`,
+  };
+}
 
 const Category = (props) => {
   const classes = useStyles({});
   const [postList, setPostList] = React.useState([]);
   const [categoryId, setCategoryId] = React.useState(0);
-  const [postURL, setPostURL] = React.useState(endpoints.discussionForum.postList);
+  const [postURL, setPostURL] = React.useState(endpoints.discussionForum.filterCategory);
   const history = useHistory();
+  const location = useLocation();
+  const [moduleId, setModuleId] = React.useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const personalInfo = JSON.parse(localStorage.getItem('personal_info')) || {};
+  const [categoryList, setCategoryList] = React.useState([]);
+  const [value, setValue] = React.useState(0);
+  const [deleteEdit, setDeleteEdit] = React.useState(true);
+  const [page, setPage] = React.useState(1);
+  const [totalCount, setTotalCount] = React.useState();
+  const limit = 6;
 
   const hideFilter = () => {
     props.handleFilter();
   };
 
-  const handleCategoryId = (id) => {
-    setCategoryId(id);
-  };
+  const handleDeleteEdit = () => {
+    setDeleteEdit(!deleteEdit);
+  }
+
+  // const handleCategoryId = (id) => {
+  //   setCategoryId(id);
+  // };
 
   const handleMYActivity = () => {
     axiosInstance
-      .get(`${endpoints.discussionForum.postList}?page=1&my_activity=1`)
+      .get(`${endpoints.discussionForum.filterCategory}?page=1&my_activity=1`)
       .then((res) => {
-        console.log(res.data.data.results);
         setPostList(res.data.data.results);
       })
       .catch((error) => console.log(error));
   };
 
   const handleAsk = () => {
-    history.push('/discussion-forum/create');
+    if(location.pathname === '/student-forum'){
+      history.push('/student-forum/create');
+    }
+    else {
+      history.push('/teacher-forum/create');
+    }
+    //history.push('/discussion-forum/create');
   };
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    setCategoryId(newValue)
+  };
+
+  React.useEffect(() => {
+    if (NavData && NavData.length) {
+      let isModuleId = false;
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Discussion Forum' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Forum' && !isModuleId) {
+              isModuleId = true;
+              setModuleId(item.child_id);
+            }
+            else if (item.child_name === 'Student Forum' && !isModuleId) {
+              isModuleId = true;
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
+  // category list
+  React.useEffect(() => {
+    if(moduleId){
+      if(location.pathname === '/student-forum' && personalInfo?.role !== "SuperUser"){
+        const grade_id = userDetails.role_details?.grades[0]?.grade_id;
+        const branch_id = userDetails.role_details?.branch[0]?.id;
+        axiosInstance
+        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&is_delete=False`)
+        .then((res) => {
+          setCategoryList(res.data.result);
+        })
+        .catch((error) => console.log(error));
+      }
+      else {
+        axiosInstance
+        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&category_type=1&is_delete=False`)
+        .then((res) => {
+          setCategoryList(res.data.result);
+        })
+        .catch((error) => console.log(error));
+      }
+    }
+  }, [moduleId]);
+
+  const getDiscussionPost = (url) => {
+    axiosInstance.get(url)
+    .then((res) => {
+      setPostList(res.data.data.results);
+      setTotalCount(res.data.data.count? res.data.data.count : res.data.data.results.length);
+    })
+    .catch((error) => console.log(error));
+  }
 
   // post list API
   React.useEffect(() => {
+    if(moduleId) {
+      if(location.pathname === '/student-forum'  && personalInfo?.role !== "SuperUser"){
+        const grade_id = userDetails.role_details?.grades[0]?.grade_id;
+        const branch_id = userDetails.role_details?.branch[0]?.id;
+        if(categoryId > 0) {
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&category=${categoryId}&page=${page}&page_size=${limit}`);
+        }
+        else {
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&page=${page}&page_size=${limit}`);
+        }
+      }
+      else {
+        const branchId = props.filters.branch && props.filters.branch.id !== 0 ? props.filters.branch.id : '';
+        const grades =
+          props.filters.grade && props.filters.grade.id !== 0 ? props.filters.grade.id : '';
+        const sections =
+          props.filters.section && props.filters.section.id !== 0
+            ? props.filters.section.id
+            : '';
+        if (categoryId === 0 && grades === '' && sections === ''){
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&page=${page}&page_size=${limit}`);
+        }
+        if (categoryId !== 0 && grades === '') {
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&category=${categoryId}&page=${page}&page_size=${limit}`);
+        }
+        if (categoryId === 0 && grades !== '' && sections !== '') {
+          getDiscussionPost(
+            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}&section_mapping=${sections}&page=${page}&page_size=${limit}`
+          );
+          // getDiscussionPost(
+          //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}`
+          // );
+        }
+        if (categoryId !== 0 && grades !== '' && sections !== '') {
+          getDiscussionPost(
+            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch_id=${branchId}&category=${categoryId}&grade=${grades}&section_mapping=${sections}&page=${page}&page_size=${limit}`
+          );
+          // getDiscussionPost(
+          //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&category=${categoryId}&grade=${grades}`
+          // );
+        }
+      }
+    }
     //let postURL = endpoints.discussionForum.postList;
-    const grades =
-      props.filters.grade && props.filters.grade.id !== 0 ? props.filters.grade.id : '';
-    const sections =
-      props.filters.section && props.filters.section.id !== 0
-        ? props.filters.section.id
-        : '';
-    if (categoryId !== 0 && grades === '') {
-      //postURL = `${endpoints.discussionForum.postList}?category=${categoryId}`;
-      setPostURL(`${endpoints.discussionForum.postList}?category=${categoryId}`);
-      console.log(categoryId + ' === ' + postURL);
-    }
-    if (categoryId === 0 && grades !== '' && sections !== '') {
-      //postURL = `${endpoints.discussionForum.postList}?grade=${grades}&section=${sections}`;
-      setPostURL(
-        `${endpoints.discussionForum.postList}?grade=${grades}&section=${sections}`
-      );
-    }
-    if (categoryId !== 0 && grades !== '' && sections !== '') {
-      //postURL = `${endpoints.discussionForum.postList}?category=${categoryId}&grade=${grades}&section=${sections}`;
-      setPostURL(
-        `${endpoints.discussionForum.postList}?category=${categoryId}&grade=${grades}&section=${sections}`
-      );
-    }
-    axiosInstance
-      .get(postURL)
-      .then((res) => {
-        console.log(res.data.data);
-        setPostList(res.data.data.results);
-      })
-      .catch((error) => console.log(error));
-  }, [props.url, props.filters, categoryId]);
+  }, [props.url, props.filters, categoryId, moduleId, deleteEdit, page]);
 
+  const handlePagination = (event, page) => {
+        setPage(page);
+    };
   return (
-      <Paper className={classes.paperStyle}>
-          {props.showFilter && (
-            <div>
-                  <div>
-                      <StyledFilterButton
-                          variant="text"
-                          size="small"
-                          endIcon={<FilterIcon />}
-                          onClick={props.handleFilter}
+    <Paper className={classes.paperStyle}>
+      {props.showFilter && (
+        <div>
+          <div>
+            <StyledFilterButton
+              variant="text"
+              size="small"
+              endIcon={<FilterIcon />}
+              onClick={props.handleFilter}
             >
               Hide filters
             </StyledFilterButton>
           </div>
 
-                  <div className={classes.hideFilterDiv}>
-                      <Divider className={classes.filterDivider} />
-                      {props.filters && (
-                        <div>
+          <div className={classes.hideFilterDiv}>
+            <Divider className={classes.filterDivider} />
+            {props.filters && (
+              <div>
                 {props.filters.year.year && (
-                                <>
-                                      <span className={classes.filterCategoryText}>{props.filters.year.year}</span>
-                                      <FiberManualRecordIcon className={classes.dotSeparator} />
+                  <>
+                    <span className={classes.filterCategoryText}>{props.filters.year.year}</span>
+                    <FiberManualRecordIcon className={classes.dotSeparator} />
                   </>
                 )}
                 {props.filters.branch.branchs && (
-                                <>
-                                      <span className={classes.filterCategoryText}>{props.filters.branch.branchs}</span>
-                                      <FiberManualRecordIcon className={classes.dotSeparator} />
+                  <>
+                    <span className={classes.filterCategoryText}>{props.filters.branch.branchs}</span>
+                    <FiberManualRecordIcon className={classes.dotSeparator} />
                   </>
                 )}
                 {props.filters.grade.grades && (
-                                <>
-                                      <span className={classes.filterCategoryText}>{props.filters.grade.grades}</span>
-                                      <FiberManualRecordIcon className={classes.dotSeparator} />
+                  <>
+                    <span className={classes.filterCategoryText}>{props.filters.grade.grades}</span>
+                    <FiberManualRecordIcon className={classes.dotSeparator} />
                   </>
                 )}
                 {props.filters.section.section && (
-                                <span className={classes.filterCategoryText}>{props.filters.section.section}</span>
+                  <span className={classes.filterCategoryText}>{props.filters.section.section}</span>
                 )}
               </div>
             )}
           </div>
         </div>
       )}
-          <Typography className={classes.CategoriesTitleText}>Categories</Typography>
-          <Grid container>
-              <Grid item md={8} xs={12}>
-                  <CategoryScrollbar categoryList={props.categoryList} categoryId={handleCategoryId} />
+        <Typography className={classes.CategoriesTitleText}>Categories</Typography>
+        <Grid container>
+          <Grid item md={8} xs={12}>
+            <div className={classes.root}>
+              <StyledTabs
+                value={value}
+                onChange={handleChange}
+                indicatorColor='primary'
+                textColor='secondary'
+                variant='scrollable'
+                scrollButtons='auto'
+                aria-label='scrollable auto tabs example'
+                // TabIndicatorProps={{color: '#D5FAFF'}}
+              >
+                {categoryList.map((tab, id) => (
+                  <StyledTab
+                    key={tab.id}
+                    label={tab.category_name}
+                    value={tab.id}
+                    style={{ backgroundColor: bgColor[id % 8] }}
+                    {...a11yProps(0)}
+                    // onClick={(e) => setCategoryId(tab.id)}
+                  />
+                ))}
+              </StyledTabs>
+            </div>
+            {/* <CategoryScrollbar categoryList={props.categoryList} categoryId={handleCategoryId} /> */}
+          </Grid>
+          <Grid item md={4} xs={12}>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <StyledOutlinedButton fullWidth onClick={handleAsk}>
+                  Ask
+                </StyledOutlinedButton>
               </Grid>
-              <Grid item md={4} xs={12}>
-                  <Grid container spacing={2}>
-                      <Grid item xs={6}>
-                          <StyledOutlinedButton fullWidth onClick={handleAsk}>
-                              Ask
-                            </StyledOutlinedButton>
-            </Grid>
-                      <Grid item xs={6}>
-                          <StyledButton
-                              fullWidth
-                              onClick={handleMYActivity}
-                            >
-                              MY Activity
-                            </StyledButton>
+              <Grid item xs={6}>
+                <StyledButton
+                  fullWidth
+                  onClick={handleMYActivity}
+                >
+                  MY Activity
+                </StyledButton>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
-      </Grid>
-          <Grid container>
-              <Grid item xs={12}>
-                  {postList.map((data, id) => (
-                      <Discussion rowData={data} key={id} />
-          ))}
-        </Grid>
+        <Grid container>
+          <Grid item xs={12}>
+            {postList.map((data, id) => (
+              <Discussion rowData={data} key={id} deleteEdit={handleDeleteEdit}/>
+            ))}
+          </Grid>
+          <Grid item xs={12} style={{display: 'flex', justifyContent: 'center'}}>
+            <Pagination
+              onChange={handlePagination}
+              style={{ marginTop: 25}}
+              count={Math.ceil(totalCount / limit)}
+              color='primary'
+              page={page}
+            />
+          </Grid>
       </Grid>
     </Paper>
   );

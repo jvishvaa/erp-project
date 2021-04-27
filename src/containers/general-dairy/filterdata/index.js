@@ -11,6 +11,10 @@ import axios from 'axios';
 import moment from 'moment';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
+import { isClass } from 'highcharts';
+import { useLocation } from "react-router-dom";
+import { filter } from 'lodash';
+
 // import './lesson-report.css';
 
 const StyledTabs = withStyles({
@@ -46,7 +50,7 @@ const GeneralDairyFilter = ({
   setPeriodData,
   isTeacher,
   showSubjectDropDown,
-  studentModuleId,
+  // studentModuleId,
   // setCurrentTab,
   setViewMore,
   setViewMoreData,
@@ -98,14 +102,69 @@ const GeneralDairyFilter = ({
   const [teacherModuleId, setTeacherModuleId] = useState(null);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
   const [page,setPage] = useState(1)
+  const [clicked,setClicked] = useState(false)
   const history=useHistory()
+  const [studentModuleId, setStudentModuleId] = useState();
+  // const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const location = useLocation();
+  // const [academicYearDropdown,setAcademicYearDropdown] = useState([])
+
 
   const [filterData, setFilterData] = useState({
     grade: '',
     branch: '',
     subject: '',
+    sectionIds: [],
+    sections:[],
+    year:''
+    // setSectionDropdown([])
   });
 
+
+
+  const [moduleId, setModuleId] = useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Diary' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item?.child_name === 'Student Diary' && window.location.pathname=== '/diary/student') {
+              setModuleId(item.child_id);
+            }
+            if (item?.child_name === 'Teacher Diary' && window.location.pathname=== '/diary/teacher') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Diary' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if(location.pathname === "/diary/student" && item.child_name === "Student View") {
+                setStudentModuleId(item?.child_id);
+            } else if(location.pathname === "/diary/teacher" && item.child_name === "Teacher Diary") {
+                setTeacherModuleId(item?.child_id);
+            } 
+          });
+        }
+      });
+    }
+  }, [location.pathname]);
   function getDaysAfter(date, amount) {
     // TODO: replace with implementation for your date library
     return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
@@ -120,14 +179,19 @@ const GeneralDairyFilter = ({
     setFilterData({
       grade: '',
       branch: '',
+      sectionIds: [],
+      sections:[],
+      year:''
+      // setSectionDropdown([])
     });
+    setSectionDropdown([]);
+    setSectionIds([]);
     setPeriodData([]);
     setSectionDropdown([]);
     // setViewMoreData({});
     // setViewMore(false);
   };
   const handleTabChange = (event, tab) => {
-    //debugger
     //handleFilter();
     setCurrentTab(tab);
     setIsEmail(!isEmail);
@@ -136,7 +200,7 @@ const GeneralDairyFilter = ({
   const handleActiveTab = (tab) => {
     setActiveTab(tab);
     if (tab === 2 && !isTeacher){
-      axiosInstance.get(`${endpoints.dailyDairy.chapterList}?module_id=${studentModuleId}`)
+      axiosInstance.get(`${endpoints.dailyDairy.chapterList}?module_id=${moduleId}`)
       .then(res => {
         if (res.data.status_code === 200){
           setSubjectDropdown(res.data.result)
@@ -148,26 +212,26 @@ const GeneralDairyFilter = ({
         setAlert('error',error.message)
       })
     }
-    else if(tab === 0){
-      handleFilter(tab)
-    }
+    // else if(tab === 0){
+    //   handleFilter(tab)
+    // }
   }
   useEffect(() => {
-
-    handleFilter();
+if(clicked){
+  handleFilter(activeTab)
+}
   }, [activeTab])
 
   let sectionId = [];
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: '', subject: '', chapter: '' });
+    setFilterData({ ...filterData, grade: '', subject: '', chapter: '', sections: '' });
     // setOverviewSynopsis([]);
     if (value && filterData.branch) {
       // https://erpnew.letseduvate.com/qbox/academic/general-dairy-messages/?branch=5&grades=25&sections=44&page=1&start_date=2021-02-02&end_date=2021-02-08&dairy_type=2
         setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`)
+        axiosInstance.get(`${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${value.grade_id}&module_id=${moduleId}`)
         .then(result => {
           if (result.data.status_code === 200) {
-            //console.log(result.data)
             setSectionDropdown(result.data.data);
             setSectionIds([])
           }
@@ -186,16 +250,33 @@ const GeneralDairyFilter = ({
     }
 };
 
+   const handleAcademicYear = (event, value) => {
+    setFilterData({ ...filterData, year: '' });
+    if (value) {
+      setFilterData({ ...filterData, year: value });
+      axiosInstance
+        .get(`${endpoints.masterManagement.branchMappingTable}?session_year=${value.id}&module_id=${moduleId}`)
+        .then((result) => {
+          if (result?.data?.status_code) {
+            setBranchDropdown(result?.data?.data?.results);
+          } else {
+            setAlert('error', result?.message);
+          }
+        })
+        .catch((error) => setAlert('error', error?.message));
+    }
+  };
 
   const handleSection = (event, value) => {
     sectionId = [];
     setFilterData({ ...filterData });
     if (value.length) {
-      const ids = value.map((el) => {
+      const ids = value && value.map((el) => {
         sectionId.push(el.id);
         return el.section_id
       });
-      console.log(sectionId);
+      setFilterData({...filterData, sections:value
+      })
       //sectionId = value.map((el) => el.id);
     //   setSubjectIds(ids);
       setSectionIds(ids)
@@ -203,12 +284,13 @@ const GeneralDairyFilter = ({
   };
 
 
+
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
     // setOverviewSynopsis([]);
     if (value) {
         setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+        axiosInstance.get(`${endpoints.communication.grades}?session_year=${filterData?.year?.id}&branch_id=${value.branch.id}&module_id=${moduleId}`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setGradeDropdown(result.data.data);
@@ -230,15 +312,14 @@ const GeneralDairyFilter = ({
 
   const handleFilter = (e) => {
     // setFilterStatus()
-    console.log(e)
-    console.log(filterData)
+    setClicked(true)
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     // alert(filterData.grade.grade_id,sectionIds,startDateTechPer,endDateTechPer)
     if (e === undefined && activeTab === 0){
       return
     }
     handleDairyList(
-      filterData.branch.id,
+      filterData.branch.branch.id,
       filterData.grade.grade_id,
       sectionIds,
       startDateTechPer,
@@ -246,6 +327,7 @@ const GeneralDairyFilter = ({
       activeTab,
       page,
       filterData.subject,
+      moduleId
     );
   };
 
@@ -254,16 +336,26 @@ const GeneralDairyFilter = ({
   }
 
     useEffect(() => {
-        axiosInstance.get(`${endpoints.communication.branches}`)
+      axiosInstance.get(`${endpoints.userManagement.academicYear}`)
             .then(result => {
                 if (result.data.status_code === 200) {
-                    setBranchDropdown(result.data.data);
+                    setAcademicYearDropdown(result?.data?.data);
                 } else {
-                    setAlert('error', result.data.message);
+                    setAlert('error', result?.data?.message);
                 }
             }).catch(error => {
-                setBranchDropdown('error', error.message);
+                setAcademicYearDropdown('error', error.message);
             })
+        // axiosInstance.get(`${endpoints.communication.branches}`)
+        //     .then(result => {
+        //         if (result.data.status_code === 200) {
+        //             setBranchDropdown(result.data.data);
+        //         } else {
+        //             setAlert('error', result.data.message);
+        //         }
+        //     }).catch(error => {
+        //         setBranchDropdown('error', error.message);
+        //     })
   }, []);
 
   return (
@@ -273,6 +365,28 @@ const GeneralDairyFilter = ({
       style={{ width: widerWidth, margin: wider }}
     >
       {isTeacher && (
+        <>
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={handleAcademicYear}
+          id='academic-year'
+          className='dropdownIcon'
+          value={filterData?.year}
+          options={academicYearDropdown}
+          getOptionLabel={(option) => option?.session_year}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Academic Year'
+              placeholder='Academic Year'
+            />
+          )}
+        />
+      </Grid>
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -282,7 +396,7 @@ const GeneralDairyFilter = ({
             className='dropdownIcon'
             value={filterData?.branch}
             options={branchDropdown}
-            getOptionLabel={(option) => option?.branch_name}
+            getOptionLabel={(option) => option?.branch?.branch_name}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -294,6 +408,7 @@ const GeneralDairyFilter = ({
             )}
           />
         </Grid>
+        </>
       )}
       
       {isTeacher && (
@@ -323,7 +438,7 @@ const GeneralDairyFilter = ({
             onChange={handleSection}
             id='subj'
             className='dropdownIcon'
-            // value={filterData?.subject}
+            value={filterData?.sections}
             options={sectionDropdown}
             getOptionLabel={(option) => option?.section__section_name}
             filterSelectedOptions
@@ -412,6 +527,7 @@ const GeneralDairyFilter = ({
           className='custom_button_master'
           size='medium'
           type='submit'
+          // disabled={!filterData?.grade}
           onClick={(event) => handleFilter(event)}
         >
           FILTER

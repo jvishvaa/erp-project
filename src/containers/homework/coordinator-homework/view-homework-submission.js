@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -18,6 +18,7 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
+  TextField,
   Typography,
   IconButton,
 } from '@material-ui/core';
@@ -106,10 +107,7 @@ const ViewHomework = withRouter(
         scrollableContainer.current.scrollLeft -= 150;
       } else {
         scrollableContainer.current.scrollLeft += 150;
-        console.log(
-          scrollableContainer.current.scrollLeft,
-          scrollableContainer.current.scrollRight
-        );
+       
       }
     };
 
@@ -128,17 +126,20 @@ const ViewHomework = withRouter(
       if (!remark) {
         setAlert('error', 'Please provide a remark');
         return;
-      } else if (reqData.remark && reqData.remark.trim() == '') {
-        setAlert('error', 'Please provide a remark');
-        return;
       }
+      //  else if (reqData.remark && reqData.remark.trim() == '') {
+      //   setAlert('error', 'Please provide a remark');
+      //   return;
+      // }
+      
       if (!score) {
         setAlert('error', 'Please provide a score');
         return;
-      } else if (reqData.score && reqData.score.trim() == '') {
-        setAlert('error', 'Please provide a score');
-        return;
       }
+      // else if (reqData.score && reqData.score.trim() == '') {
+      //   setAlert('error', 'Please provide a score');
+      //   return;
+      // }
       try {
         await finalEvaluationForHomework(homeworkId, reqData);
         setAlert('success', 'Homework Evaluated');
@@ -162,7 +163,6 @@ const ViewHomework = withRouter(
         //   return;
         // }
       }
-      console.log('Evaluated answer ', currentQuestion);
       const { id, ...reqData } = currentQuestion;
       try {
         await evaluateHomework(id, reqData);
@@ -197,7 +197,6 @@ const ViewHomework = withRouter(
         const currentQuestion = { ...collatedQuestionState };
         currentQuestion.corrected_submission.splice(index, 1);
         setCollatedQuestionState(currentQuestion);
-        // debugger;
       }
     };
 
@@ -237,9 +236,11 @@ const ViewHomework = withRouter(
     const fetchHomeworkDetails = async () => {
       const data = await getSubmittedHomeworkDetails(studentHomeworkId);
 
-      const { hw_questions: hwQuestions, is_question_wise: isQuestionwise, id } = data;
-      console.log('fetched data ', data);
+      const { hw_questions: hwQuestions, is_question_wise: isQuestionwise, overall_remark: overallRemarks, score: scores,  id } = data;
       setHomeworkId(id);
+      setRemark(overallRemarks);
+      setScore(scores);
+
       if (isQuestionwise) {
         const initialQuestionsState = hwQuestions.map((q) => ({
           id: q.id,
@@ -258,6 +259,10 @@ const ViewHomework = withRouter(
           comments: hwQuestions.comment,
         });
       }
+    };
+
+    const handleCollatedQuestionState = (field, value) => {
+      setCollatedQuestionState((prev) => ({ ...prev, [field]: value }));
     };
 
     useEffect(() => {
@@ -384,9 +389,11 @@ const ViewHomework = withRouter(
                       </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
-                          <IconButton onClick={() => handleScroll('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>
+                          {collatedSubmissionFiles.length > 2 && (
+                            <IconButton onClick={() => handleScroll('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>
+                          )}
                         </div>
                         <SimpleReactLightbox>
                           <div
@@ -394,7 +401,6 @@ const ViewHomework = withRouter(
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {collatedSubmissionFiles.map((url, i) => (
@@ -434,9 +440,11 @@ const ViewHomework = withRouter(
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
-                          <IconButton onClick={() => handleScroll('right')}>
-                            <ArrowForwardIosIcon color='primary' />
-                          </IconButton>
+                          {collatedSubmissionFiles.length > 2 && (
+                            <IconButton onClick={() => handleScroll('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -448,9 +456,11 @@ const ViewHomework = withRouter(
                       </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
-                          <IconButton onClick={() => handleScroll('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>
+                          {collatedQuestionState.corrected_submission?.length > 2 && (
+                            <IconButton onClick={() => handleScroll('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>
+                          )}
                         </div>
                         <SimpleReactLightbox>
                           <div
@@ -458,7 +468,6 @@ const ViewHomework = withRouter(
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {collatedQuestionState.corrected_submission.map((url, i) => (
@@ -502,13 +511,58 @@ const ViewHomework = withRouter(
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
-                          <IconButton onClick={() => handleScroll('right')}>
-                            <ArrowForwardIosIcon color='primary' />
-                          </IconButton>
+                          {collatedQuestionState.corrected_submission?.length > 2 && (
+                            <IconButton onClick={() => handleScroll('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          )}
                         </div>
                       </div>
                     </div>
                   )}
+                  <div
+                    className='comments-remarks-container'
+                    style={{ display: 'flex', width: '95%', margin: '0 auto' }}
+                  >
+                    <div className='item comment'>
+                      <FormControl variant='outlined' fullWidth size='small'>
+                        <InputLabel htmlFor='component-outlined'>Comments</InputLabel>
+                        <OutlinedInput
+                          id='comments'
+                          name='comments'
+                          inputProps={{ maxLength: 150 }}
+                          multiline
+                          rows={3}
+                          rowsMax={4}
+                          label='Comments'
+                          value={collatedQuestionState?.comments || ''}
+                          onChange={(e) => {
+                            handleCollatedQuestionState('comments', e.target.value);
+                          }}
+                          autoFocus
+                        />
+                      </FormControl>
+                    </div>
+                    <div className='item'>
+                      <FormControl variant='outlined' fullWidth size='small'>
+                        <InputLabel htmlFor='component-outlined'>Remarks</InputLabel>
+                        <OutlinedInput
+                          id='remarks'
+                          name='remarks'
+                          inputProps={{ maxLength: 150 }}
+                          multiline
+                          rows={3}
+                          rowsMax={4}
+                          label='Remarks'
+                          value={collatedQuestionState?.remarks || ''}
+                          onChange={(e) => {
+                            handleCollatedQuestionState('remarks', e.target.value);
+                          }}
+                          autoFocus
+                        />
+                      </FormControl>
+                    </div>
+                  </div>
                   <div className='evaluate-answer-btn-container'>
                     <Button variant='contained' color='primary' onClick={evaluateAnswer}>
                       SAVE
@@ -521,6 +575,7 @@ const ViewHomework = withRouter(
               <div className='input-container'>
                 <div className='remark'>
                   <FormControl variant='outlined' fullWidth size='small'>
+                    {/*
                     <InputLabel htmlFor='component-outlined'>Overall remarks</InputLabel>
                     <OutlinedInput
                       id='remarks'
@@ -531,15 +586,46 @@ const ViewHomework = withRouter(
                       }}
                       value={remark}
                     />
+                    */}
+                    <TextField
+                      id='remarks'
+                      name='remarks'
+                      label='Overall remarks'
+                      variant='outlined'
+                      size='small'
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      onChange={(e) => {
+                        setRemark(e.target.value);
+                      }}
+                      value={remark}
+                    />
                   </FormControl>
                 </div>
                 <div className='score' style={{ marginTop: 10 }}>
                   <FormControl variant='outlined' fullWidth size='small'>
+                    {/*
                     <InputLabel htmlFor='component-outlined'>Overall score</InputLabel>
                     <OutlinedInput
                       id='score'
                       name='score'
                       label='Overall score'
+                      onChange={(e) => {
+                        setScore(e.target.value);
+                      }}
+                      value={score}
+                    />
+                    */}
+                    <TextField
+                      id='score'
+                      name='score'
+                      label='Overall score'
+                      variant='outlined'
+                      size='small'
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
                       onChange={(e) => {
                         setScore(e.target.value);
                       }}

@@ -20,7 +20,11 @@ import {
 } from '@material-ui/pickers-4.2';
 import './student-homework.css';
 const MobileDatepicker = (props) => {
-  const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
+  //const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
+  const [dateRange, setDateRange] = useState([
+    moment().startOf('isoWeek'),
+    moment().endOf('week'),
+  ]);
   const [datePopperOpen, setDatePopperOpen] = useState(false);
 
   return (
@@ -36,7 +40,6 @@ const MobileDatepicker = (props) => {
 
           // calendars='1'
           onChange={(newValue) => {
-            // console.log('onChange truggered', newValue);
             const [startDate, endDate] = newValue;
             const sevenDaysAfter = moment(startDate).add(6, 'days');
             setDateRange([startDate, sevenDaysAfter]);
@@ -73,7 +76,6 @@ const MobileDatepicker = (props) => {
                   size='small'
                   style={{ minWidth: '250px' }}
                   onClick={() => {
-                    console.log('triggered');
                     setDatePopperOpen(true);
                   }}
                 />

@@ -39,7 +39,6 @@ const MatchFollowingQuestion = (props) => {
   const [{ answer, options, question, matchingOptions }] = question_answer;
   // const [isChecked, setIsChecked] = useState([]);
   useEffect(() => {
-    console.log('is CHecked: ', currentQuestionObj);
     // if (currentQuestionObj?.user_response?.attemptionStatus) {
     //   console.log('selected answer: ', currentQuestionObj?.user_response);
     //   setOptionSelected(currentQuestionObj?.user_response?.answer);

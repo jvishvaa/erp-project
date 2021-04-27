@@ -7,7 +7,7 @@
 /* eslint-disable dot-notation */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/no-array-index-key */
-/* eslint-disable no-debugger */
+
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useContext, useEffect, useState } from 'react';
@@ -97,7 +97,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedGroup, setSelectedGroup] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [selectedAcademic, setSelectedAcademic] = useState('');
+  const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const [pageno, setPageno] = useState(1);
@@ -112,6 +113,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const [section, setSection] = useState([]);
   const [groupList, setGroupList] = useState([]);
   const [roleList, setRoleList] = useState([]);
+  const [academicYears, setAcademicYears] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [sectionList, setSectionList] = useState([]);
@@ -163,28 +165,60 @@ const SendMessage = withRouter(({ history, ...props }) => {
     }
   };
 
+  const getAcademicApi = async () => {
+    axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
+      .then((res) => {
+
+        if (res.data.status_code === 200) {
+          setAcademicYears(res.data.data);
+          setLoading(false);
+        } else {
+          setAlert('error', res.data.message);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+        setLoading(false);
+      })
+  };
+
   const getBranchApi = async () => {
-    try {
-      setLoading(true);
-      const result = await axiosInstance.get(endpoints.communication.branches, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const resultOptions = [];
-      if (result.status === 200) {
-        result.data.data.map((items) => resultOptions.push(items.branch_name));
-        setBranch([...branch, ...resultOptions]);
-        setBranchList(result.data.data);
+    axiosInstance.get(`${endpoints.academics.branches}?session_year=${selectedAcademic?.id}&module_id=${moduleId}`).then((res) => {
+      if (res.data.status_code === 200) {
+        const transformedResponse = res?.data?.data?.results.map(obj => ((obj && obj.branch) || {}));
+        setBranchList(transformedResponse);
         setLoading(false);
       } else {
-        setAlert('error', result.data.message);
+        setAlert('error', res.data.message);
         setLoading(false);
       }
-    } catch (error) {
-      setAlert('error', error.message);
-      setLoading(false);
-    }
+    })
+      .catch((error) => {
+        setAlert('error', error.message);
+        setLoading(false);
+      })
+    // try {
+    //   setLoading(true);
+    //   const result = await axiosInstance.get(endpoints.communication.branches, {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   });
+    //   const resultOptions = [];
+    //   if (result.status === 200) {
+    //     result.data.data.map((items) => resultOptions.push(items.branch_name));
+    //     setBranch([...branch, ...resultOptions]);
+    //     setBranchList(result.data.data);
+    //     setLoading(false);
+    //   } else {
+    //     setAlert('error', result.data.message);
+    //     setLoading(false);
+    //   }
+    // } catch (error) {
+    //   setAlert('error', error.message);
+    //   setLoading(false);
+    // }
   };
   const getGroupApi = async () => {
     try {
@@ -211,10 +245,12 @@ const SendMessage = withRouter(({ history, ...props }) => {
   };
 
   const getGradeApi = async () => {
+    const branchsId = [];
+    selectedBranch.length > 0 && selectedBranch.map((branchs) => branchsId.push(branchs?.id));
     try {
       setLoading(true);
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${selectedBranch.id}&module_id=${moduleId}`,
+        `${endpoints.communication.grades}?session_year=${selectedAcademic?.id}&branch_id=${branchsId.toString()}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -241,6 +277,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
 
   const getSectionApi = async () => {
     try {
+      const branchsId = [];
+      selectedBranch.length > 0 && selectedBranch.map((branchs) => branchsId.push(branchs?.id));
       const gradesId = [];
       gradeList
         .filter((item) => selectedGrades.includes(item['grade__grade_name']))
@@ -249,9 +287,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
         });
       setLoading(true);
       const result = await axiosInstance.get(
-        `${endpoints.communication.sections}?branch_id=${
-          selectedBranch.id
-        }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
+        `${endpoints.communication.sections}?session_year=${selectedAcademic?.id}&branch_id=${branchsId.toString()}&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -280,6 +316,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const rolesId = [];
       const gradesId = [];
       const sectionsId = [];
+      const branchsId = [];
+      selectedBranch.length > 0 && selectedBranch.map((branchs) => branchsId.push(branchs?.id));
       getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
       if (selectedRoles.length) {
         roleList
@@ -309,7 +347,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
         getUserListUrl += `&grade=${gradesId.toString()}`;
       }
       if (selectedBranch) {
-        getUserListUrl += `&branch=${selectedBranch.id}`;
+        getUserListUrl += `&branch=${branchsId.toString()}`;
       }
       if (sectionsId.length) {
         getUserListUrl += `&section=${sectionsId.toString()}`;
@@ -368,8 +406,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
             selected: selectAll
               ? true
               : selectedUsers.length
-              ? selectedUsers[pageno - 1].selected.includes(items.id)
-              : false,
+                ? selectedUsers[pageno - 1].selected.includes(items.id)
+                : false,
           });
         });
         setUsersRow(rows);
@@ -491,9 +529,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
       }
       if (selectAll) {
         completeData
-        .forEach((items) => {
-          selectionArray.push(items.id);
-        });
+          .forEach((items) => {
+            selectionArray.push(items.id);
+          });
         // selectionArray.push(0);
       }
       if (!selectionArray.length) {
@@ -544,11 +582,20 @@ const SendMessage = withRouter(({ history, ...props }) => {
     }
   };
 
-  const handleBranch = (event, value) => {
+  const handleAcademicYears = (event, value) => {
     if (value) {
-      setSelectedBranch(value);
+      setSelectedAcademic(value);
     } else {
-      setSelectedBranch();
+      setSelectedAcademic('');
+    }
+  };
+
+  const handleBranch = (event, value) => {
+    if (value.length) {
+      const ids = value.map((el) => el);
+      setSelectedBranch(ids);
+    } else {
+      setSelectedBranch([]);
     }
   };
 
@@ -608,9 +655,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
         }
         if (selectAll) {
           completeData
-          .forEach((items) => {
-            selectionArray.push(items.id);
-          });
+            .forEach((items) => {
+              selectionArray.push(items.id);
+            });
           // selectionArray.push(0);
         }
         const formData = new FormData();
@@ -657,7 +704,10 @@ const SendMessage = withRouter(({ history, ...props }) => {
               });
           }
           if (selectedBranch) {
-            branchId.push(selectedBranch.id);
+            const blist = [...selectedBranch];
+            for (let p = 0; p < blist.length; p++) {
+              branchId.push(blist[p].id);
+            }
           }
           if (selectedGrades.length) {
             gradeList
@@ -776,6 +826,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           setLoading(false);
         }
       } catch (error) {
+        
         setAlert('error', error.message);
         setMessageSending(false);
         setLoading(false);
@@ -808,13 +859,32 @@ const SendMessage = withRouter(({ history, ...props }) => {
   }, []);
   useEffect(() => {
     if (customSelect) {
-      getRoleApi();
-      getBranchApi();
+      if (selectedRoles.length === 0) {
+        getRoleApi();
+      }
     }
     if (!customSelect) {
       getGroupApi();
     }
-  }, [customSelect]);
+  }, [customSelect, selectedRoles]);
+
+  useEffect(() => {
+    if (moduleId) {
+      getAcademicApi();
+    }
+  }, [moduleId]);
+
+  useEffect(() => {
+    if (selectedAcademic) {
+      getBranchApi();
+      setSelectedBranch([]);
+      setBranchList([]);
+      setGrade([]);
+      setSection([]);
+      setSelectedGrades([]);
+      setSelectedSections([]);
+    }
+  }, [selectedAcademic]);
 
   useEffect(() => {
     if (thirdStep) {
@@ -830,13 +900,15 @@ const SendMessage = withRouter(({ history, ...props }) => {
   }, [isEmail]);
 
   useEffect(() => {
-    if (selectedBranch) {
+    if (selectedBranch.length > 0) {
       setGrade([]);
       setSelectedGrades([]);
+      setSection([]);
       setSelectedSections([]);
       getGradeApi();
     }
   }, [selectedBranch]);
+
   useEffect(() => {
     if (selectedGrades.length) {
       getSectionApi();
@@ -903,32 +975,60 @@ const SendMessage = withRouter(({ history, ...props }) => {
                       <div className='create_group_filter_container'>
                         <Grid container className='create_group_container' spacing={5}>
                           <Grid xs={12} lg={4} className='create_group_items' item>
-                            <div className='create_group_branch_wrapper'>
-                              <Autocomplete
-                                size='small'
-                                onChange={handleBranch}
-                                value={selectedBranch}
-                                id='message_log-branch'
-                                className='create_group_branch'
-                                options={branchList}
-                                getOptionLabel={(option) => option?.branch_name}
-                                filterSelectedOptions
-                                renderInput={(params) => (
-                                  <TextField
-                                    className='message_log-textfield'
-                                    {...params}
-                                    variant='outlined'
-                                    label='Branch'
-                                    placeholder='Branch'
-                                  />
-                                )}
-                              />
-                              <span className='create_group_error_span'>
-                                {branchError}
-                              </span>
+                            <div>
+                              <div className='create_group_branch_wrapper'>
+                                <Autocomplete
+                                  size='small'
+                                  onChange={handleAcademicYears}
+                                  value={selectedAcademic}
+                                  id='academic_year'
+                                  className='create_group_branch'
+                                  options={academicYears}
+                                  getOptionLabel={(option) => option?.session_year}
+                                  filterSelectedOptions
+                                  renderInput={(params) => (
+                                    <TextField
+                                      className='message_log-textfield'
+                                      {...params}
+                                      variant='outlined'
+                                      label='Academic Years'
+                                      placeholder='Academic Years'
+                                    />
+                                  )}
+                                />
+                              </div>
                             </div>
                           </Grid>
-                          {selectedBranch && gradeList.length ? (
+                          {selectedAcademic?.id && (
+                            <Grid xs={12} lg={4} className='create_group_items' item>
+                              <div className='create_group_branch_wrapper'>
+                                <Autocomplete
+                                  size='small'
+                                  multiple
+                                  onChange={handleBranch}
+                                  value={selectedBranch}
+                                  id='message_log-branch'
+                                  className='create_group_branch'
+                                  options={branchList}
+                                  getOptionLabel={(option) => option?.branch_name}
+                                  filterSelectedOptions
+                                  renderInput={(params) => (
+                                    <TextField
+                                      className='message_log-textfield'
+                                      {...params}
+                                      variant='outlined'
+                                      label='Branch'
+                                      placeholder='Branch'
+                                    />
+                                  )}
+                                />
+                                <span className='create_group_error_span'>
+                                  {branchError}
+                                </span>
+                              </div>
+                            </Grid>
+                          )}
+                          {selectedBranch.length > 0 && gradeList.length ? (
                             <Grid xs={12} lg={4} className='create_group_items' item>
                               <div>
                                 <CustomMultiSelect
@@ -1010,9 +1110,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
             <div className='message_sending_white_wrapper'>
               <div className='message_type_block_wrapper'>
                 <div
-                  className={`message_type_block ${
-                    isEmail ? null : 'message_type_block_selected'
-                  }`}
+                  className={`message_type_block ${isEmail ? null : 'message_type_block_selected'
+                    }`}
                   onClick={() => {
                     if (isEmail) {
                       setIsEmail(false);
@@ -1024,9 +1123,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   SMS
                 </div>
                 <div
-                  className={`message_type_block ${
-                    isEmail ? 'message_type_block_selected' : null
-                  }`}
+                  className={`message_type_block ${isEmail ? 'message_type_block_selected' : null
+                    }`}
                   onClick={() => {
                     if (!isEmail) {
                       setIsEmail(true);

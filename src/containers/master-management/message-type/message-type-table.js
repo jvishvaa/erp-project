@@ -75,7 +75,7 @@ const columns = [
 const MessageTypeTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = useState(1);
   const [messageType, setMessageType] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [messageTypeId, setMessageTypeId] = useState();
@@ -228,7 +228,7 @@ const MessageTypeTable = () => {
           </Grid>
         )}
 
-        {!isMobile && tableFlag && !addFlag && !editFlag && (
+        {tableFlag && !addFlag && !editFlag && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
@@ -291,7 +291,7 @@ const MessageTypeTable = () => {
             </div>
           </Paper>
         )}
-        {isMobile && !addFlag && !editFlag && (
+        {/* {isMobile && !addFlag && !editFlag && (
           <>
              {
               messageType.map(msgtype => (
@@ -312,7 +312,7 @@ const MessageTypeTable = () => {
             />
             </div>
           </>
-        )}
+        )} */}
         <Dialog
           open={openDeleteModal}
           onClose={handleCloseDeleteModal}

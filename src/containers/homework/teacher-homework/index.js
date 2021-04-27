@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -27,6 +27,7 @@ import {
   ListItemIcon,
   ListItemText,
   InputAdornment,
+  ClickAwayListener,
 } from '@material-ui/core';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import {
@@ -104,6 +105,7 @@ const TeacherHomework = withRouter(
     evaluatedStudents,
     unevaluatedStudents,
     submittedStudents,
+    unSubmittedStudents,
     fetchingStudentLists,
     fetchStudentLists,
     history,
@@ -177,9 +179,8 @@ const TeacherHomework = withRouter(
 
     const handleSelectCol = (col, view) => {
       //  setClassNameForcontainer("home-wrapper")
-      const { homeworkId } = col;
-      console.log('homework id', homeworkId);
-      fetchStudentLists(homeworkId);
+      const { homeworkId, subjectId } = col;
+      fetchStudentLists(homeworkId, subjectId);
       setSelectedCol(col);
       if (isMobile) {
         setActiveView('card-view');
@@ -238,7 +239,6 @@ const TeacherHomework = withRouter(
       const homeworkModule = NavData?.filter(
         (parent) => parent.parent_modules === 'Homework'
       );
-      console.log('homeworkModule ', homeworkModule);
       const teacherModuleId =
         homeworkModule.length > 0
           ? homeworkModule[0].child_module.filter(
@@ -256,7 +256,6 @@ const TeacherHomework = withRouter(
             item.child_module.forEach((item) => {
               if (item.child_name === 'Teacher Homework') {
                 setTeacherModuleId(item.child_id);
-                console.log('item.child_id ', item.child_id);
               }
             });
           }
@@ -270,7 +269,6 @@ const TeacherHomework = withRouter(
 
     const tableContainer = useRef(null);
 
-    console.log('homeworkCols', homeworkCols);
 
     return (
       <>
@@ -285,76 +283,75 @@ const TeacherHomework = withRouter(
             </div>
             <div className='message_log_white_wrapper'>
               {activeView !== 'view-homework' && activeView !== 'view-received-homework' && (
-                <div className='date-container' style={{ backgroundColor: '#F9F9F9' }}>
-                  <LocalizationProvider
-                    dateAdapter={MomentUtils}
-                    style={{ backgroundColor: '#F9F9F9' }}
-                  >
-                    <DateRangePicker
-                      id='date-range-picker-date'
-                      disableCloseOnSelect={false}
-                      startText='Select-dates'
-                      PopperProps={{ open: datePopperOpen }}
-                      // endText='End-date'
-                      value={dateRange}
-                      // calendars='1'
-                      onChange={(newValue) => {
-                        console.log('onChange truggered', newValue);
-                        const [startDate, endDate] = newValue;
-                        const sevenDaysAfter = moment(startDate).add(6, 'days');
-                        setDateRange([startDate, sevenDaysAfter]);
-                        setDatePopperOpen(false);
-                      }}
-                      renderInput={(
-                        // {
-                        //   inputProps: { value: startValue, ...restStartInputProps },
-                        //   ...startProps
-                        // },
-                        // {
-                        //   inputProps: { value: endValue, ...restEndInputProps },
-                        //   ...endProps
-                        // }
-                        { inputProps, ...startProps },
-                        // startProps,
-                        endProps
-                      ) => {
-                        console.log('startProps ', startProps, 'endProps', endProps);
-                        return (
-                          <>
-                            <TextField
-                              {...startProps}
-                              InputProps={{
-                                ...inputProps,
-                                value: `${moment(inputProps.value).format(
-                                  'DD-MM-YYYY'
-                                )} - ${moment(endProps.inputProps.value).format(
-                                  'DD-MM-YYYY'
-                                )}`,
-                                readOnly: true,
-                                endAdornment: (
-                                  <InputAdornment position='start'>
-                                    <DateRangeIcon
-                                      style={{ width: '35px' }}
-                                      color='primary'
-                                    />
-                                  </InputAdornment>
-                                ),
-                              }}
-                              size='small'
-                              style={{ minWidth: '250px' }}
-                              onClick={() => {
-                                console.log('triggered');
-                                setDatePopperOpen(true);
-                              }}
-                            />
-                            {/* <TextField {...startProps} size='small' /> */}
-                            {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
-                            {/* <TextField {...endProps} size='small' /> */}
-                          </>
-                        );
-                      }}
-                    />
-                  </LocalizationProvider>
+                <div className='date-container' >
+                  <ClickAwayListener onClickAway={(e) => {setDatePopperOpen(false)}}>
+                    <LocalizationProvider
+                      dateAdapter={MomentUtils}
+                      style={{ backgroundColor: '#F9F9F9' }}
+                    >
+                      <DateRangePicker
+                        id='date-range-picker-date'
+                        disableCloseOnSelect={false}
+                        startText='Select-dates'
+                        PopperProps={{ open: datePopperOpen }}
+                        // endText='End-date'
+                        value={dateRange}
+                        // calendars='1'
+                        onChange={(newValue) => {
+                          const [startDate, endDate] = newValue;
+                          const sevenDaysAfter = moment(startDate).add(6, 'days');
+                          setDateRange([startDate, sevenDaysAfter]);
+                          setDatePopperOpen(false);
+                        }}
+                        renderInput={(
+                          // {
+                          //   inputProps: { value: startValue, ...restStartInputProps },
+                          //   ...startProps
+                          // },
+                          // {
+                          //   inputProps: { value: endValue, ...restEndInputProps },
+                          //   ...endProps
+                          // }
+                          { inputProps, ...startProps },
+                          // startProps,
+                          endProps
+                        ) => {
+                          return (
+                            <>
+                              <TextField
+                                {...startProps}
+                                InputProps={{
+                                  ...inputProps,
+                                  value: `${moment(inputProps.value).format(
+                                    'DD-MM-YYYY'
+                                  )} - ${moment(endProps.inputProps.value).format(
+                                    'DD-MM-YYYY'
+                                  )}`,
+                                  readOnly: true,
+                                  endAdornment: (
+                                    <InputAdornment position='start'>
+                                      <DateRangeIcon
+                                        style={{ width: '35px' }}
+                                        color='primary'
+                                      />
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                size='small'
+                                style={{ minWidth: '250px' }}
+                                onClick={() => {
+                                  setDatePopperOpen(true);
+                                }}
+                              />
+                              {/* <TextField {...startProps} size='small' /> */}
+                              {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
+                              {/* <TextField {...endProps} size='small' /> */}
+                            </>
+                          );
+                        }}
+                      />
+                    </LocalizationProvider>
+                  </ClickAwayListener>
                 </div>
               )}
               {activeView !== 'view-homework' &&
@@ -542,7 +539,7 @@ const TeacherHomework = withRouter(
                             ))} */}
                                     {homeworkCols.map((col) => {
                                       return typeof col === 'object' ? (
-                                        <TableCell>
+                                        <TableCell style={{minWidth: '260px'}}>
                                           {col.subject_name.split('_').join('/')}
                                         </TableCell>
                                       ) : (
@@ -579,6 +576,7 @@ const TeacherHomework = withRouter(
                         evaluatedStudents={evaluatedStudents}
                         unevaluatedStudents={unevaluatedStudents}
                         submittedStudents={submittedStudents}
+                        unSubmittedStudents={unSubmittedStudents}
                         loading={fetchingStudentLists}
                         onClick={handleViewReceivedHomework}
                         onClose={() => {
@@ -619,17 +617,23 @@ const TeacherHomework = withRouter(
                                           }}
                                         >
                                           {!data.hasOwnProperty('student_submitted') ? (
-                                            <IconButton
-                                              onClick={() => {
-                                                navigateToAddScreen({
-                                                  date: row.date,
-                                                  subject: col.subject_name,
-                                                  subjectId: col.id,
-                                                });
-                                              }}
-                                            >
-                                              <AddCircleOutlineIcon color='primary' />
-                                            </IconButton>
+                                            <>
+                                              {row.canUpload ? (
+                                                <IconButton
+                                                  onClick={() => {
+                                                    navigateToAddScreen({
+                                                      date: row.date,
+                                                      subject: col.subject_name,
+                                                      subjectId: col.id,
+                                                    });
+                                                  }}
+                                                >
+                                                  <AddCircleOutlineIcon color='primary' />
+                                                </IconButton>
+                                              ) : (
+                                                <></>
+                                              )}
+                                            </>
                                           ) : (
                                             <>
                                               <IconButton
@@ -772,6 +776,7 @@ const mapStateToProps = (state) => ({
   fetchingTeacherHomework: state.teacherHomework.fetchingTeacherHomework,
   evaluatedStudents: state.teacherHomework.evaluatedStudents,
   submittedStudents: state.teacherHomework.submittedStudents,
+  unSubmittedStudents: state.teacherHomework.unSubmittedStudents,
   unevaluatedStudents: state.teacherHomework.unevaluatedStudents,
   fetchingStudentLists: state.teacherHomework.fetchingStudentLists,
 });
@@ -783,8 +788,8 @@ const mapDispatchToProps = (dispatch) => ({
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
   },
-  fetchStudentLists: (id) => {
-    dispatch(fetchStudentsListForTeacherHomework(id));
+  fetchStudentLists: (id, subjectId) => {
+    dispatch(fetchStudentsListForTeacherHomework(id, subjectId));
   },
 });
 

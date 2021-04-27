@@ -19,6 +19,7 @@ import {
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { HighlightOff} from '@material-ui/icons'
+import MyTinyEditor from '../../question-bank/create-question/tinymce-editor';
 
 
 import Dropzone from 'react-dropzone';
@@ -211,18 +212,23 @@ class EditBlog extends Component {
 
 
  
-  handleTextEditor = (content) => {
+  // handleTextEditor = (content) => {
 
     // remove  begining and end white space
     // eslint-disable-next-line no-param-reassign
-    content = content.replace(/&nbsp;/g, '');
+    // content = content.replace(/&nbsp;/g, '');
     // content=content.replace(/<br ?\/?>/g,'');
-    this.setState({ textEditorContent: content, fadeIn: false });
-    const subceededWordCount = this.isWordCountSubceeded()
+    // this.setState({ textEditorContent: content, fadeIn: false });
+    // const subceededWordCount = this.isWordCountSubceeded()
 
     // localStorage.setItem('blogContent', content);
-  };
+  // };
+  handleEditorChange = (content, editor) => {
 
+    content = content.replace(/&nbsp;/g, '');
+    this.setState({ textEditorContent: content, fadeIn: false });
+    const subceededWordCount = this.isWordCountSubceeded()
+  }
   handleTitle = (event) => {
     this.setState({ title: event.target.value });
   };
@@ -338,7 +344,6 @@ class EditBlog extends Component {
       studentName,
       creationDate,wordCountLimit
     } = this.state;
-    console.log(image,"2222@@@@@@@@")
     return Preview ? (
       <PreviewBlog
         content={textEditorContent}
@@ -410,12 +415,18 @@ class EditBlog extends Component {
                       {/* Write Blog */}
                       Write the blog with atleast {wordCountLimit} words
                     </Typography>
-                    <TinyMce
-                      key={key}
-                      id={key}
-                      get={this.handleTextEditor}
-                      content={textEditorContent}
-                    />
+                    <MyTinyEditor
+            id="blog"
+            content={textEditorContent}
+            handleEditorChange={this.handleEditorChange}
+            placeholder='Description...'
+          />
+                    {/* <TinyMce */}
+                      {/* key={key} */}
+                      {/* id={key} */}
+                      {/* get={this.handleTextEditor} */}
+                      {/* content={textEditorContent} */}
+                    {/* /> */}
                   </Grid>
                   <Grid item xs={12}>
                     <Typography style={{ margin: 10 }} variant='body1'>

@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-return-assign */
-/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 import * as React from 'react';
 import { DataGrid } from '@material-ui/data-grid';
@@ -20,6 +19,10 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
     setSelectAll,
     name,
   } = props || {};
+
+  React.useEffect(() => {
+    //apiRef.current && apiRef.current.setRowModels(completeData);
+  }, [completeData, selectedUsers]);
   const selectRow = (e) => {
     if (name !== 'assign_role') {
       setSelectAll(false);
@@ -42,10 +45,14 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
       tempSelection = selectedUsers;
       tempSelection[pageno - 1].selected.push(e.data.id);
       setSelectedUsers(tempSelection);
+      if(tempSelection.length === totalRows){
+        setSelectAll(true);
+      }
     }
   };
   const pageChange = (e) => {
-    changePage(e.page);
+    // console.log(e,'page',e.page+1) 
+    changePage(e.page+1);
   };
   const data = {
     rows: [...rows],
@@ -54,9 +61,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
 
   let apiRef = React.useRef(null);
 
-  React.useEffect(() => {
-    //apiRef.current && apiRef.current.setRowModels(completeData);
-  }, [data]);
+
 
   return (
     <div
@@ -74,7 +79,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
       <DataGrid
         pageSize={pageSize || 15}
         rowCount={totalRows}
-        checkboxSelection={true}
+        checkboxSelection
         onPageChange={pageChange}
         hideFooterSelectedRowCount
         hideFooterRowCount
@@ -82,9 +87,21 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
         ref={(input) => (apiRef = input)}
         {...data}
         onRowSelected={selectRow}
-        selectRows={() => {
-          console.log('selectRows ????');
+        // selectRows={() => {
+        //   console.log('selectRows ????');
+        // }}
+        onSelectionChange={(newSelection) => {
+          // setSelection(newSelection.rows);
         }}
+        // selectionModel={['8']}
+        // onSelectionModelChange={(e) => {
+        //   console.log('selected with default: ', e)
+        //   const selectedIDs = new Set(e.selectionModel);
+        //   const selectedRowData = rows.filter((r) =>
+        //     selectedIDs.has(r.id.toString())
+        //   );
+        //   console.log(selectedRowData);
+        // }}
         components={{
           noRowsOverlay: (params) => {
             if (!apiRef.current) {

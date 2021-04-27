@@ -24,7 +24,6 @@ const Attachment = (props) => {
   const [imagePreviewAvailable, setImagePreviewAvailable] = useState(true);
   const { openLightbox } = useLightbox();
 
-  console.log('actions', actions);
   let isAudioVideo = false;
   let isAudioFile = false;
   let isVideoFile = false;
@@ -123,6 +122,13 @@ const Attachment = (props) => {
             <source src={`${urlPrefix}/${fileUrl}`} />
             Your browser does not support the audio element.
           </audio>
+          {/* actions?.includes('delete') && (
+            <div>
+              <IconButton size='small' onClick={() => onDelete(index)}>
+                <DeleteIcon style={{ color: '#ffffff' }} />
+              </IconButton>
+            </div>
+          ) */}
         </div>
       );
     }

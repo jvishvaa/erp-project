@@ -83,7 +83,7 @@ export default function ResourceClassComponent(props) {
         .then((res) => {
             if(res.data.result.length > 0) {
                 res.data.result.map((path) => {
-                    if(path.files !== null) {
+                    if(path.files !== null && path.files.length > 0) {
                         setHideButton(true);
                     }
                 })

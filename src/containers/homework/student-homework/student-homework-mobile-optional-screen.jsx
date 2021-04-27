@@ -1,29 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
+//import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { SvgIcon } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+//import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+//import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-import PersonIcon from '@material-ui/icons/Person';
-import AddIcon from '@material-ui/icons/Add';
-import { blue } from '@material-ui/core/colors';
+//import PersonIcon from '@material-ui/icons/Person';
+//import AddIcon from '@material-ui/icons/Add';
+//import { blue } from '@material-ui/core/colors';
 import CancelIcon from '../../../assets/images/Cancel-icon.svg';
 import './student-homework.css';
-const emails = ['username@gmail.com', 'user02@gmail.com'];
-const useStyles = makeStyles({
+//const emails = ['username@gmail.com', 'user02@gmail.com'];
+/* const useStyles = makeStyles({
   avatar: {
     backgroundColor: blue[100],
     color: blue[600],
   },
 });
-
+*/
 function SimpleDialog(props) {
-  const classes = useStyles();
+  //const classes = useStyles();
   const { onClose, selectedValue, open } = props;
 
   const handleClose = () => {
@@ -105,7 +105,6 @@ export default function MobileOptional(props) {
     setOpen(false);
     setSelectedValue(value);
   };
-  //  console.log(props.options, "nameofSubject", selectedValue)
   return (
     <div className={"mobile-modal"} id="popUp">
       <Button variant="outlined" color="primary"  onClick={handleClickOpen} className="modal-optional-button-count">
@@ -113,9 +112,10 @@ export default function MobileOptional(props) {
         <p className="modal-popup-opt-count">{props.options && props.options.length}</p>
       </Button>
       <SimpleDialog selectedValue={false} open={open} subject={props} 
-      subjectWise={props.subject}
-      showSubjectWise={props.showSubjectWise} onClose={handleClose}
-      options={props.options} />
+        subjectWise={props.subject}
+        showSubjectWise={props.showSubjectWise} onClose={handleClose}
+        options={props.options}
+      />
     </div>
   );
 }

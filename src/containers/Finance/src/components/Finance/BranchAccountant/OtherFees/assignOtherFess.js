@@ -1,0 +1,320 @@
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { withStyles, Button, Typography, Grid } from '@material-ui/core/'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import Select from 'react-select'
+import AppBar from '@material-ui/core/AppBar'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
+import * as actionTypes from '../../store/actions'
+import AssignedStudents from './assignedStudents'
+import UnassignedStudents from './unassignedStudents'
+import { apiActions } from '../../../../_actions'
+import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
+
+
+const styles = theme => ({
+  tableWrapper: {
+    overflowX: 'auto',
+    marginBottom: 12,
+    borderRadius: 4
+  }
+})
+
+function TabContainer ({ children, dir }) {
+  return (
+    <Typography component='div' dir={dir} style={{ padding: 8 * 3 }}>
+      {children}
+    </Typography>
+  )
+}
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+  dir: PropTypes.string.isRequired
+}
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Transport Fees' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Assign Transport Fees') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+class AssignOtherFees extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      gradeId: null,
+      sectionData: [],
+      sectionId: [],
+      gradeData: [],
+      session: null,
+      sessionData: [],
+      otherFeeId: null,
+      otherFeeData: [],
+      due_date: '',
+      value: 'one',
+      getList: false,
+      moduleId:null,
+      selectedBranches: '',
+    }
+  }
+
+  componentDidMount () {
+    // this.props.fetchOtherFees(this.props.alert, this.props.user)
+  }
+
+  gradeHandler = (e) => {
+    this.setState({ gradeId: e.value, gradeData: e }, () => {
+      this.props.fetchAllSections(this.state.session, this.state.gradeId, this.props.alert, this.props.user, moduleId, this.state.selectedBranches?.value)
+    })
+  }
+
+  sectionHandler = (e) => {
+    let sectionIds = []
+    e && e.forEach(section => {
+      sectionIds.push(section.value)
+    })
+    this.setState({ sectionId: sectionIds, sectionData: e })
+  }
+
+  otherFeeHandler = (e) => {
+    this.setState({
+      otherFeeId: e.value,
+      otherFeeData: e
+    }, () => {
+      if (this.state.session) {
+        this.props.checkIsMisc(this.state.session, this.state.otherFeeId, this.props.alert, this.props.user)
+      } else {
+        this.props.alert.warning('Select Session year!')
+      }
+    })
+  }
+
+  dueDateHandler = (e) => {
+    this.setState({
+      due_date: e.target.value
+    })
+  }
+
+  getStudentList = () => {
+    if (!this.state.session ||
+      !this.state.otherFeeId ||
+      !this.state.gradeId ||
+      !this.state.sectionId) {
+      this.props.alert.warning('Select All Fields')
+      return false
+    }
+    this.setState({ getList: true })
+  }
+
+  handleChange = (event, value) => {
+    this.setState({ value })
+  }
+
+  handleAcademicyear = (e) => {
+    this.setState({ session: e.value, branchData: [], sessionData: e })
+    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId) 
+    // this.props.fetchAllGrades(e.value, this.props.alert, this.props.user, moduleId, selectedBranches?.value)
+    // this.props.fetchOtherFees(e.value, this.props.alert, this.props.user)
+  }
+
+  changehandlerbranch = (e) => {
+    this.props.fetchAllGrades(this.state.session, this.props.alert, this.props.user, moduleId, e.value)
+    this.setState({ selectedBranches: e})
+    this.props.fetchOtherFees(this.state.session, this.props.alert, this.props.user, e.value)
+  }
+  render () {
+    let tabView = null
+    if (this.state.getList) {
+      tabView = (
+        <React.Fragment>
+          <AppBar position='static'>
+            <Tabs value={this.state.value} onChange={this.handleChange}>
+              <Tab value='one' label='Assigned Students' />
+              <Tab value='two' label='Unassigned Students' />
+            </Tabs>
+          </AppBar>
+          {this.state.value === 'one' && <TabContainer>
+            <AssignedStudents
+              sessionId={this.state.session}
+              otherFeeId={this.state.otherFeeId}
+              gradeId={this.state.gradeId}
+              sectionId={this.state.sectionId}
+              isMisc={this.props.isMisc && this.props.isMisc.key}
+              amounts={this.props.isMisc && this.props.isMisc.amount}
+              alert={this.props.alert}
+              user={this.props.user}
+              getState={this.state.getList}
+              branchId={this.state.selectedBranches?.value}
+              moduleId={moduleId}
+            />
+          </TabContainer>}
+          {this.state.value === 'two' && <TabContainer>
+            <UnassignedStudents
+              sessionId={this.state.session}
+              otherFeeId={this.state.otherFeeId}
+              gradeId={this.state.gradeId}
+              sectionId={this.state.sectionId}
+              isMisc={this.props.isMisc && this.props.isMisc.key}
+              amounts={this.props.isMisc && this.props.isMisc.amount}
+              alert={this.props.alert}
+              getState={this.state.getList}
+              user={this.props.user}
+              branchId={this.state.selectedBranches?.value}
+              moduleId={moduleId}
+            />
+          </TabContainer>}
+        </React.Fragment>
+      )
+    }
+    return (
+      <Layout>
+      <React.Fragment>
+        <Grid container spacing={3} style={{ padding: 15 }}>
+          <Grid item xs='3'>
+            <label>Academic Year*</label>
+            <Select
+              placeholder='Select Year'
+              value={this.state.sessionData ? this.state.sessionData : null}
+              options={
+                this.props.session ? this.props.session.session_year.map((session) =>
+                  ({ value: session, label: session })) : []
+              }
+              onChange={this.handleAcademicyear}
+            />
+          </Grid>
+          <Grid item xs='3'>
+            <label>Branch*</label>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+              options={
+                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                  ? this.props.branches.map(branch => ({
+                    value: branch.branch ? branch.branch.id : '',
+                    label: branch.branch ? branch.branch.branch_name : ''
+                  }))
+                  : [] : []
+              }
+
+              onChange={this.changehandlerbranch}
+            />
+          </Grid>
+          <Grid item xs='3'>
+            <label>Grade*</label>
+            <Select
+              placeholder='Select Grade'
+              value={this.state.gradeData ? this.state.gradeData : ''}
+              options={
+                this.props.gradeData
+                  ? this.props.gradeData.map(grades => ({
+                    value: grades.grade.id,
+                    label: grades.grade.grade
+                  }))
+                  : []
+              }
+              onChange={this.gradeHandler}
+            />
+          </Grid>
+          <Grid item xs='3'>
+            <label>Section*</label>
+            <Select
+              placeholder='Select Section'
+              value={this.state.sectionData ? this.state.sectionData : ''}
+              isMulti
+              options={
+                this.props.sectionData
+                  ? this.props.sectionData.filter(ele => ele.section !== null).map(sec => ({
+                    value: sec.section && sec.section.id ? sec.section.id : '',
+                    label: sec.section && sec.section.section_name ? sec.section.section_name : ''
+                  }))
+                  : []
+              }
+              onChange={this.sectionHandler}
+            />
+          </Grid>
+          <Grid item xs='3'>
+            <label>Other Fee*</label>
+            <Select
+              placeholder='Select Other Fee'
+              value={this.state.otherFeeData ? this.state.otherFeeData : ''}
+              options={
+                this.props.otherFeesList && this.props.otherFeesList.length
+                  ? this.props.otherFeesList.map(fee => ({
+                    value: fee.id,
+                    label: fee.fee_type_name
+                  }))
+                  : []
+              }
+              onChange={this.otherFeeHandler}
+            />
+          </Grid>
+          <Grid item xs='3'>
+            <div>
+              <Button
+                variant='contained'
+                color='primary'
+                style={{ marginTop: '18px'}}
+                onClick={this.getStudentList}>
+              GET Student List
+              </Button>
+            </div>
+          </Grid>
+        </Grid>
+        <br />
+        <div>
+          {tabView}
+        </div>
+        {this.props.dataLoading ? <CircularProgress open /> : null}
+      </React.Fragment>
+      </Layout>
+    )
+  }
+}
+
+const mapStateToProps = state => ({
+  user: state.authentication.user,
+  gradeData: state.finance.accountantReducer.changeFeePlan.gradeData,
+  session: state.academicSession.items,
+  sectionData: state.finance.common.sectionsPerGrade,
+  otherFeesList: state.finance.accountantReducer.listOtherFee.listOtherFees,
+  isMisc: state.finance.accountantReducer.listOtherFee.isMisc,
+  dataLoading: state.finance.common.dataLoader,
+  branches: state.finance.common.branchPerSession,
+})
+
+const mapDispatchToProps = dispatch => ({
+  fetchAllGrades: (session, alert, user, moduleId, branch) => dispatch(actionTypes.fetchAllGrades({ session, alert, user, moduleId, branch })),
+  fetchAllSections: (session, gradeId, alert, user, moduleId, branch) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, gradeId, alert, user, moduleId, branch})),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchOtherFees: (session, alert, user, branch) => dispatch(actionTypes.fetchListtOtherFee({ session, alert, user, branch })),
+  checkIsMisc: (session, otherFeeId, alert, user) => dispatch(actionTypes.checkIsMisc({ session, otherFeeId, alert, user })),
+  clearProps: () => dispatch(actionTypes.clearingAllProps()),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(AssignOtherFees)))

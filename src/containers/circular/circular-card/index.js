@@ -111,17 +111,6 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
               {period?.circular_name}
             </Typography>
           </Box>
-          <Box>
-            <Typography
-              className={classes.content}
-              variant='p'
-              component='p'
-              color='secondary'
-              noWrap
-            >
-             Description - {period?.description}
-            </Typography>
-          </Box>
         </Grid>
         {window.location.pathname === '/teacher-circular' &&<Grid item xs={4} className={classes.textRight}>
           <Box>
@@ -160,7 +149,7 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
               Created By - {period?.uploaded_by?.first_name}
               </Typography>
               <Typography
-                className={classes.title}
+                className={classes.content}
                 variant='p'
                 component='p'
                 color='secondary'>

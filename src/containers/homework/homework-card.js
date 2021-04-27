@@ -17,19 +17,19 @@ const HomeworkCard = ({
   evaluatedStudents,
   unevaluatedStudents,
   submittedStudents,
+  unSubmittedStudents,
   loading,
   onClick,
   onClose,
 }) => {
   const { subject, date, view } = data;
-  console.log('view ', view);
   return (
     // <Layout>
 
     <Grid item xs={12} md={3} className='hwcard-container' style={{ display: 'flex' }}>
       <Paper
         className='hwcard'
-        style={{ height, display: 'flex', flexDirection: 'column', position: 'relative' }}
+        style={{ height, display: 'flex', flexDirection: 'column', position: 'relative', width: '100%' }}
       >
         <div className='close-icon'>
           <IconButton onClick={onClose}>
@@ -79,6 +79,31 @@ const HomeworkCard = ({
                       <div
                         className='cardRow'
                         onClick={() => onClick(student.student_homework_id)}
+                      >
+                        <div className='studentName'>{`${student.first_name} ${student.last_name}`}</div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className='no-students-text'>No students</p>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        {view === 'submissionStats' && (unSubmittedStudents && unSubmittedStudents.length !== 0) && (
+          <div className='list' style={{ flexGrow: 1 }}>
+            <div className='cardHeaderSub'>Not submitted students :</div>
+            <div className='innerBox'>
+              {loading ? (
+                <CircularProgress color='primary' />
+              ) : (
+                <div>
+                  {unSubmittedStudents && unSubmittedStudents.length ? (
+                    unSubmittedStudents.map((student) => (
+                      <div
+                        className='cardRow'
+                        //onClick={() => onClick(student.student_homework_id)}
                       >
                         <div className='studentName'>{`${student.first_name} ${student.last_name}`}</div>
                       </div>

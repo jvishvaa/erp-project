@@ -15,10 +15,12 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import Box from '@material-ui/core/Box';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import {
+  fetchBranchesForCreateUser as getBranches,
   fetchGrades as getGrades,
   fetchSections as getSections,
   fetchSubjects as getSubjects,
 } from '../../redux/actions';
+import './customscope.css';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -113,23 +115,46 @@ const DialogActions = withStyles((theme) => ({
 const CustomScopeModal = ({
   open,
   handleClose,
-  branches,
+  academicYear,
   onChange,
   customScope,
   subModule,
 }) => {
+  // const [academicYear, setAcademicYear] = useState('');
+  const [branches, setBranches] = useState([]);
   const [grades, setGrades] = useState([]);
   const [sections, setSections] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const classes = useStyles();
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState();
+
+  useEffect(() => {
+    if (NavData && NavData?.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Role Management' &&
+          item.child_module &&
+          item.child_module?.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'View Role') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   const onCustomScopeChange = (scope, value) => {
-    console.log('custon scope before passing ', scope, value);
     onChange(scope, value);
   };
 
   const onResetInputs = () => {
     const customScopeObj = {
+      custom_year: [],
       custom_branch: [],
       custom_grade: [],
       custom_section: [],
@@ -138,115 +163,210 @@ const CustomScopeModal = ({
     onCustomScopeChange('', customScopeObj);
   };
 
-  const fetchSubjects = (branches, grades, customScopeObj, setFilteredResults) => {
+  const fetchBranches = (acadId) => {
+    setBranches([]);
+    setGrades([]);
+    setSections([]);
+    setSubjects([]);
+    if (acadId > 0) {
+      getBranches(acadId, moduleId).then((data) => {
+        const transformedData = data?.map((obj) => ({
+          id: obj.id,
+          branch_name: obj.branch_name,
+          // branch_code: obj.branch_code,
+        }));
+        transformedData.unshift({ id: 'all', branch_name: 'Select All' });
+        setBranches(transformedData);
+      });
+    }
+  };
+
+  const fetchGrades = (acadId, branches) => {
+    setGrades([]);
+    setSections([]);
+    setSubjects([]);
+    getGrades(acadId, branches, moduleId).then((data) => {
+      const transformedData = data
+        ? data.map((grade) => ({
+            item_id: grade.id,
+            id: grade.grade_id,
+            grade_name: grade.grade__grade_name,
+          }))
+        : [];
+      transformedData.unshift({ item_id: 'all', id: 'all', grade_name: 'Select All' });
+      setGrades(transformedData);
+    });
+  };
+
+  const fetchSections = (acadId, grades, setFilteredResults) => {
+    setSections([]);
+    setSubjects([]);
+    const customScopeObj = {
+      custom_year: customScope.custom_year,
+      custom_branch: customScope.custom_branch,
+      custom_grade: [...grades],
+      custom_section: customScope.custom_section,
+      custom_subject: customScope.custom_subject,
+    };
+    getSections(acadId, customScope.custom_branch, grades, moduleId).then((data) => {
+      const transformedData = data
+        ? data.map((section) => ({
+            item_id: section.id,
+            id: section.section_id,
+            section_name: `${section.section__section_name}`,
+          }))
+        : [];
+      transformedData.unshift({ item_id: 'all', id: 'all', section_name: 'Select All' });
+      setSections(transformedData);
+
+      // if (setFilteredResults) {
+      //   const filteredSelectedSections = customScopeObj.custom_section.filter(
+      //     (section) => transformedData.findIndex((sec) => sec.id === section.id) > -1
+      //   );
+      //   customScopeObj.custom_section = filteredSelectedSections;
+      //   if (filteredSelectedSections && filteredSelectedSections.length > 0) {
+      //     fetchSubjects(
+      //       customScope.custom_year[0]?.id,
+      //       customScope.custom_branch,
+      //       grades,
+      //       customScopeObj,
+      //       setFilteredResults
+      //     );
+      //   } else {
+      //     customScopeObj.custom_subject = [];
+      //     onCustomScopeChange('custom_section', customScopeObj);
+      //   }
+      // }
+    });
+  };
+
+  const fetchSubjects = (
+    acadId,
+    branches,
+    grades,
+    customScopeObj,
+    setFilteredResults
+  ) => {
+    setSubjects([]);
     const customScopeObject = JSON.parse(JSON.stringify(customScopeObj));
     if (branches && branches.length > 0 && grades && grades.length > 0) {
-      getSubjects(branches, grades, customScopeObj.custom_section).then((data) => {
-        const transformedData = data
-          ? data.map((subject) => ({
-              id: subject.subject__id,
-              subject_name: `${subject.subject__subject_name}`,
-            }))
-          : [];
-        setSubjects(transformedData);
-        if (setFilteredResults) {
-          const filteredSelectedSubjects = customScopeObject.custom_subject.filter(
-            (subject) => transformedData.findIndex((sub) => sub.id == subject.id) > -1
-          );
-          customScopeObject.custom_subject = filteredSelectedSubjects;
-          onCustomScopeChange('custom_subject', customScopeObject);
+      getSubjects(acadId, branches, grades, customScopeObj.custom_section, moduleId).then(
+        (data) => {
+          const transformedData = data
+            ? data.map((subject) => ({
+                id: subject.subject__id,
+                subject_name: `${subject.subject__subject_name}`,
+              }))
+            : [];
+          transformedData.unshift({
+            id: 'all',
+            subject_name: 'Select All',
+          });
+          setSubjects(transformedData);
+          // if (setFilteredResults) {
+          //   const filteredSelectedSubjects = customScopeObject.custom_subject.filter(
+          //     (subject) => transformedData.findIndex((sub) => sub.id == subject.id) > -1
+          //   );
+          //   customScopeObject.custom_subject = filteredSelectedSubjects;
+          //   onCustomScopeChange('custom_subject', customScopeObject);
+          // }
         }
-      });
+      );
     } else {
       customScopeObject.custom_subject = [];
       onCustomScopeChange('custom_subject', customScopeObject);
     }
   };
 
-  const fetchGrades = (branches) => {
-    getGrades(branches).then((data) => {
-      const transformedData = data
-        ? data.map((grade) => ({
-            id: grade.grade_id,
-            grade_name: grade.grade__grade_name,
-          }))
-        : [];
-      setGrades(transformedData);
-    });
-  };
-
-  const fetchSections = (grades, setFilteredResults) => {
+  const handleChangeYear = (value) => {
+    setBranches([]);
+    setGrades([]);
+    setSections([]);
+    setSubjects([]);
     const customScopeObj = {
-      custom_branch: customScope.custom_branch,
-      custom_grade: [...grades],
-      custom_section: customScope.custom_section,
-      custom_subject: customScope.custom_subject,
+      custom_year: [...value],
+      custom_branch: [],
+      custom_grade: [],
+      custom_section: [],
+      custom_subject: [],
     };
-    getSections(customScope.custom_branch, grades).then((data) => {
-      const transformedData = data
-        ? data.map((section) => ({
-            id: section.section_id,
-            section_name: `${section.section__section_name}`,
-          }))
-        : [];
-
-      setSections(transformedData);
-
-      if (setFilteredResults) {
-        const filteredSelectedSections = customScopeObj.custom_section.filter(
-          (section) => transformedData.findIndex((sec) => sec.id === section.id) > -1
-        );
-        customScopeObj.custom_section = filteredSelectedSections;
-        if (filteredSelectedSections && filteredSelectedSections.length > 0) {
-          fetchSubjects(
-            customScope.custom_branch,
-            grades,
-            customScopeObj,
-            setFilteredResults
-          );
-        } else {
-          customScopeObj.custom_subject = [];
-          onCustomScopeChange('custom_section', customScopeObj);
-        }
-      }
-    });
+    onCustomScopeChange('custom_year', customScopeObj);
+    if (value && value.length > 0) {
+      fetchBranches(value[0]?.id);
+    } else {
+      customScopeObj.custom_branch = [];
+      customScopeObj.custom_grade = [];
+      customScopeObj.custom_section = [];
+      customScopeObj.custom_subject = [];
+      onCustomScopeChange('custom_branch', customScopeObj);
+    }
   };
 
   const handleChangeBranch = (values) => {
+    setGrades([]);
+    setSections([]);
+    setSubjects([]);
+    values =
+      values.filter(({ id }) => id === 'all').length === 1
+        ? [...branches].filter(({ id }) => id !== 'all')
+        : values;
     const customScopeObj = {
-      custom_branch: [...values],
+      custom_year: customScope.custom_year,
+      custom_branch: values,
       custom_grade: [],
       custom_section: [],
       custom_subject: [],
     };
     onCustomScopeChange('custom_branch', customScopeObj);
-    fetchGrades(values);
+    if (values && values.length > 0) {
+      fetchGrades(customScope.custom_year[0]?.id, values);
+    } else {
+      customScopeObj.custom_grade = [];
+      customScopeObj.custom_section = [];
+      customScopeObj.custom_subject = [];
+      onCustomScopeChange('custom_grade', customScopeObj);
+    }
   };
 
   const handleChangeGrade = (values) => {
+    setSections([]);
+    setSubjects([]);
+    values =
+      values.filter(({ id }) => id === 'all').length === 1
+        ? [...grades].filter(({ id }) => id !== 'all')
+        : values;
     const customScopeObj = {
+      custom_year: customScope.custom_year,
       custom_branch: customScope.custom_branch,
-      custom_grade: values,
-      custom_section: customScope.custom_section,
-      custom_subject: customScope.custom_subject,
+      custom_grade: [...values],
+      custom_section: [],
+      custom_subject: [],
     };
     onCustomScopeChange('custom_grade', customScopeObj);
     if (customScope.custom_branch.length > 0 && values && values.length > 0) {
-      fetchSections(values, true);
+      fetchSections(customScope.custom_year[0]?.id, values, true);
     } else {
       customScopeObj.custom_section = [];
       customScopeObj.custom_subject = [];
       onCustomScopeChange('custom_section', customScopeObj);
     }
   };
+
   const handleChangeSection = (values) => {
+    setSubjects([]);
+    values =
+      values.filter(({ id }) => id === 'all').length === 1
+        ? [...sections].filter(({ id }) => id !== 'all')
+        : values;
     const customScopeObj = {
+      custom_year: customScope.custom_year,
       custom_branch: customScope.custom_branch,
       custom_grade: customScope.custom_grade,
-      custom_section: values,
-      custom_subject: customScope.custom_subject,
+      custom_section: [...values],
+      custom_subject: [],
     };
     fetchSubjects(
+      customScope.custom_year[0]?.id,
       customScope.custom_branch,
       customScope.custom_grade,
       customScopeObj,
@@ -254,22 +374,35 @@ const CustomScopeModal = ({
     );
     onCustomScopeChange('custom_section', customScopeObj);
   };
+
   const handleChangeSubject = (values) => {
+    values =
+      values.filter(({ id }) => id === 'all').length === 1
+        ? [...subjects].filter(({ id }) => id !== 'all')
+        : values;
     const customScopeObj = {
+      custom_year: customScope.custom_year,
       custom_branch: customScope.custom_branch,
       custom_grade: customScope.custom_grade,
       custom_section: customScope.custom_section,
-      custom_subject: values,
+      custom_subject: [...values],
     };
     onCustomScopeChange('custom_section', customScopeObj);
   };
 
   useEffect(() => {
     if (open) {
-      if (customScope.custom_branch && customScope.custom_branch.length > 0) {
-        fetchGrades(customScope.custom_branch);
-        if (customScope.custom_grade && customScope.custom_grade.length > 0) {
-          fetchSections(customScope.custom_grade, false); // not neccessary to filter out selcted data based on response list
+      if (customScope.custom_year && customScope.custom_year.length > 0) {
+        fetchBranches(customScope.custom_year[0]?.id);
+        if (customScope.custom_branch && customScope.custom_branch.length > 0) {
+          fetchGrades(customScope.custom_year[0]?.id, customScope.custom_branch);
+          if (customScope.custom_grade && customScope.custom_grade.length > 0) {
+            fetchSections(
+              customScope.custom_year[0]?.id,
+              customScope.custom_grade,
+              false
+            ); // not neccessary to filter out selcted data based on response list
+          }
         }
       }
     }
@@ -289,6 +422,7 @@ const CustomScopeModal = ({
       open={open}
       maxWidth='sm'
       fullWidth
+      className='custom_scope_modal'
     >
       <DialogTitle id='customized-dialog-title' onClose={handleClose}>
         Custom Scope
@@ -302,15 +436,62 @@ const CustomScopeModal = ({
             </Button>
           </Box>
         </Grid>
-        {/* <Box style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-           
-          </Box> */}
       </Grid>
       <DialogContent>
         <Grid container alignItems='center' direction='column'>
           <Grid item sm={12}>
             <FormControl className={classes.formControl} disabled>
               <Autocomplete
+                options={academicYear || []}
+                style={{ width: 400 }}
+                value={customScope.custom_year[0] || ''}
+                className='dropdownIcon'
+                getOptionLabel={(option) => option?.session_year || ''}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Academic Year'
+                    placeholder='Academic Year'
+                  />
+                )}
+                onChange={(e, value) => {
+                  handleChangeYear([value]);
+                }}
+                getOptionSelected={(option, value) => value && option.id == value.id}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item sm={12}>
+            <FormControl className={classes.formControl} disabled>
+              <Autocomplete
+                multiple
+                limitTags={2}
+                options={branches || []}
+                style={{ width: 400 }}
+                className='dropdownIcon'
+                value={customScope.custom_branch || ''}
+                getOptionLabel={(option) => option.branch_name || ''}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Branches'
+                    placeholder='Branches'
+                  />
+                )}
+                onChange={(e, value) => {
+                  // const filteredValues = value.filter((value) => value);
+                  handleChangeBranch(value);
+                }}
+                getOptionSelected={(option, value) => value && option.id == value.id}
+              />
+            </FormControl>
+          </Grid>
+          {/* <Grid item sm={12}>
+            <FormControl className={classes.formControl} disabled>
+              <Autocomplete
+                multiple
                 options={branches}
                 style={{ width: 400 }}
                 value={customScope.custom_branch[0]}
@@ -333,17 +514,18 @@ const CustomScopeModal = ({
                 getOptionSelected={(option, value) => value && option.id == value.id}
               />
             </FormControl>
-          </Grid>
+          </Grid> */}
           <Grid item sm={12}>
             <FormControl className={classes.formControl}>
               <Autocomplete
                 multiple
                 limitTags={2}
                 id='multiple-limit-tags'
-                options={grades}
+                className='dropdownIcon'
+                options={grades || []}
                 style={{ width: 400 }}
-                value={customScope.custom_grade}
-                getOptionLabel={(option) => option.grade_name}
+                value={customScope.custom_grade || ''}
+                getOptionLabel={(option) => option.grade_name || ''}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -353,10 +535,10 @@ const CustomScopeModal = ({
                   />
                 )}
                 onChange={(e, value) => {
-                  const filteredValues = value.filter((value) => value);
-                  handleChangeGrade(filteredValues);
+                  // const filteredValues = value.filter((value) => value);
+                  handleChangeGrade(value);
                 }}
-                getOptionSelected={(option, value) => option.id == value.id}
+                getOptionSelected={(option, value) => option.item_id == value.item_id}
               />
             </FormControl>
           </Grid>
@@ -366,10 +548,11 @@ const CustomScopeModal = ({
                 multiple
                 limitTags={2}
                 id='multiple-limit-tags'
-                options={sections}
+                className='dropdownIcon'
+                options={sections || []}
                 style={{ width: 400 }}
-                value={customScope.custom_section}
-                getOptionLabel={(option) => option.section_name}
+                value={customScope.custom_section || ''}
+                getOptionLabel={(option) => option.section_name || ''}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -379,11 +562,10 @@ const CustomScopeModal = ({
                   />
                 )}
                 onChange={(e, value) => {
-                  const filteredValues = value.filter((value) => value);
-
-                  handleChangeSection(filteredValues);
+                  // const filteredValues = value.filter((value) => value);
+                  handleChangeSection(value);
                 }}
-                getOptionSelected={(option, value) => option.id == value.id}
+                getOptionSelected={(option, value) => option.item_id == value.item_id}
               />
             </FormControl>
           </Grid>
@@ -393,10 +575,11 @@ const CustomScopeModal = ({
                 multiple
                 limitTags={2}
                 id='multiple-limit-tags'
-                options={subjects}
+                className='dropdownIcon'
+                options={subjects || []}
                 style={{ width: 400 }}
-                value={customScope.custom_subject}
-                getOptionLabel={(option) => option.subject_name}
+                value={customScope.custom_subject || ''}
+                getOptionLabel={(option) => option.subject_name || ''}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -406,11 +589,12 @@ const CustomScopeModal = ({
                   />
                 )}
                 onChange={(e, value) => {
-                  const filteredValues = value.filter((value) => value);
-
-                  handleChangeSubject(filteredValues);
+                  // const filteredValues = value.filter((value) => value);
+                  handleChangeSubject(value);
                 }}
-                getOptionSelected={(option, value) => option.id == value.id}
+                getOptionSelected={(option, value) =>
+                  option.id == value.id && option.subject_name == value.subject_name
+                }
               />
             </FormControl>
           </Grid>

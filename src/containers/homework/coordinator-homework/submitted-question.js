@@ -38,19 +38,12 @@ const SubmittedQuestion = ({
       scrollableContainer.current.scrollLeft -= 150;
     } else {
       scrollableContainer.current.scrollLeft += 150;
-      console.log(
-        scrollableContainer.current.scrollLeft,
-        scrollableContainer.current.scrollRight
-      );
+     
     }
   };
   useEffect(() => {
     // if(scrollableContainer.current.offsetWidth > = )
-    console.log(
-      'scroll width offset width ',
-      scrollableContainer.current.offsetWidth,
-      scrollableContainer.current.scrollWidth
-    );
+   
   }, [scrollableContainer.current]);
 
   const onEvaluate = () => {
@@ -74,18 +67,23 @@ const SubmittedQuestion = ({
           component='h5'
           style={{ marginRight: '1rem' }}
         >{`${activeQuestion}/${totalQuestions}`}</Typography>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={onPrev}
-          style={{ marginRight: '0.5rem' }}
-          size='small'
-        >
-          Previous
-        </Button>
-        <Button variant='contained' size='small' color='primary' onClick={onNext}>
-          Next
-        </Button>
+        {totalQuestions > 1 && (
+          <>
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={onPrev}
+              style={{ marginRight: '0.5rem' }}
+              size='small'
+            >
+              Previous
+            </Button>
+            <Button variant='contained' size='small' color='primary' onClick={onNext}>
+              Next
+            </Button>
+          </>
+        )}
+
       </div>
       <div className='homework-question'>
         <div className='question'>{question.question}</div>
@@ -106,7 +104,6 @@ const SubmittedQuestion = ({
               ref={scrollableContainer}
               onScroll={(e) => {
                 e.preventDefault();
-                console.log('scrolled');
               }}
             >
               {question.submitted_files.map((url, i) => {
@@ -177,7 +174,6 @@ const SubmittedQuestion = ({
                 // ref={scrollableContainer}
                 onScroll={(e) => {
                   e.preventDefault();
-                  console.log('scrolled');
                 }}
               >
                 {correctedQuestions.map((url, i) => (

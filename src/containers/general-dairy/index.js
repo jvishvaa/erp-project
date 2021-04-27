@@ -85,7 +85,7 @@ const GeneralDairyList = () => {
                 if(location.pathname === "/diary/student" && item.child_name === "Student Diary") {
                     setStudentModuleId(item?.child_id);
                     setShowSubjectDropDown(true)
-                } else if(location.pathname === "/diary/teacher" && item.child_name === "Teacher") {
+                } else if(location.pathname === "/diary/teacher" && item.child_name === "Teacher Diary") {
                     setTeacherModuleId(item?.child_id);
                 } 
               });
@@ -96,7 +96,6 @@ const GeneralDairyList = () => {
       }, [location.pathname,page,deleteFlag]);
 
     const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate, activeTab,page, subjects) => {
-        console.log(page,'inside')
         setLoading(true);
         setPeriodData([]);
         setBranch(branchId)
@@ -106,8 +105,11 @@ const GeneralDairyList = () => {
         setEDate(endDate)
         setPage(page)
         setActiveTab(activeTab)
+        setViewMore(false)
+        setPeriodDataForView('')
+        setSelectedIndex(-1)
+        // setPeriodColor(false)
         const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
-        console.log(roleDetails);
         if (isTeacher){
 
             if(!branchId || !gradeId){
@@ -116,7 +118,7 @@ const GeneralDairyList = () => {
                 return
             }
         }
-        const diaryUrl =  isTeacher ? `${endpoints.generalDairy.dairyList}?branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&page_size=${limit}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`
+        const diaryUrl =  isTeacher ? `${endpoints.generalDairy.dairyList}?module_id=${teacherModuleId}&branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&page_size=${limit}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`
             : (subjects && activeTab === 2) ? `${endpoints.generalDairy.dairyList}?module_id=${studentModuleId}&page=${page}&page_size=${limit}&subject_id=${subjects.id}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}` : `${endpoints.generalDairy.dairyList}?module_id=${studentModuleId}&page=${page}&page_size=${limit}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`;
         axiosInstance.get(diaryUrl)
             .then((result) => {
@@ -197,6 +199,8 @@ const GeneralDairyList = () => {
                                                     periodColor={selectedIndex === i ? true : false}
                                                     setPeriodColor={setPeriodColor}
                                                     handleDairyType={handleDairyType}
+                                                    deleteFlag={deleteFlag}
+                                                    setDeleteFlag={setDeleteFlag} 
                                                 />
                                             )}
                                             {period.dairy_type === "2" ?(

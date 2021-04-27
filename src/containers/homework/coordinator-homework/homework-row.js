@@ -6,7 +6,6 @@ import HomeworkCol from './homework-col';
 import moment from 'moment';
 
 const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomework, coord_selected_teacher_id}) => {
-  // console.log(coord_selected_teacher_id,"dddd")
   const history = useHistory();
   const navigateToAddScreen = ({ date, subject, subjectId }) => {
     history.push(`/homework/cadd/${date}/${subject}/${subjectId}/${coord_selected_teacher_id}`);
@@ -21,6 +20,7 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
             key={col.id}
             data={data[col.subject_name]}
             isSelected={isSelected}
+            canUpload={data.canUpload}
             handleClick={(view) => {
               setSelectedCol({
                 date: data.date,
@@ -50,7 +50,7 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
             }}
           />
         ) : (
-          <TableCell className='no-wrap-col'>
+          <TableCell className='no-wrap-col' style={{ minWidth: '188px'}}>
             <div>
               <div className='day-icon'>
                 {moment(data.date).format('dddd').split('')[0]}

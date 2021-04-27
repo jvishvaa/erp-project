@@ -32,7 +32,6 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
     setLoading(true)
     axiosInstance.get(`${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${lesson.academic_year_id}&completed_by=${lesson.completed_by}`)
       .then(result => {
-        console.log(result.data,'ooo')
         if (result.data.status_code === 200) {
           setLoading(false);
           setViewMore(true);

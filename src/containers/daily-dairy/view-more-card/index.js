@@ -25,8 +25,6 @@ const ViewMoreDailyDairyCard = ({
   const { setAlert } = useContext(AlertNotificationContext);
   //const sectionId = viewMoreData.section[0].id ?? '';
   //const gradeId =  viewMoreData.grade.id ?? 0;
-  console.log(grade +" === "+ section);
-  console.log(viewMoreData.grade);
   const handleBulkDownload = () => {
     const formData = new FormData();
     // formData.append('branch',[5]);
@@ -59,7 +57,6 @@ const ViewMoreDailyDairyCard = ({
       });
   };
   // const pic=viewMoreData?.media?.map(a=>a)
-  console.log(viewMoreData, '=====');
   const pic=viewMoreData?.documents?.map(a=>a)
 
   return (
@@ -133,7 +130,7 @@ const ViewMoreDailyDairyCard = ({
             style={{fontSize:'1.1rem',color:'#ff6b6b',paddingLeft:'5%',marginTop:'3%'}}
             className="bulkDownloadIconViewMore"
           >
-            <a  target='_blank' href={`${endpoints.s3}/dev/dairy/ORCHIDS/54/59/2021-02-08 18:21:57.036513_Group 7767.png`}>
+            <a  target='_blank' href={`${endpoints.s3}/${pic}`}>
               <SvgIcon
                 component={() => (
                   <img

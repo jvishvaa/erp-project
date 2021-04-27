@@ -1,5 +1,5 @@
 
-import React, { useState, useContext ,useEffect} from 'react'
+import React, { useState, useContext } from 'react'
 import { withRouter,useHistory } from 'react-router-dom';
 import Layout from '../../Layout'
 import {  TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
@@ -51,8 +51,8 @@ const useStyles = makeStyles((theme) => ({
 
 
 const EditGenre = (props) => {
-  const data =props.location.state.data
   const classes = useStyles()
+  const data =props.location.state.data
   const history = useHistory()
 
   const [genreNameEdit,setGenreNameEdit] =useState('');
@@ -113,7 +113,6 @@ const handleGenreNameEditChange = (e) => {
    <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
         <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
                       <Autocomplete
@@ -121,7 +120,7 @@ const handleGenreNameEditChange = (e) => {
               size='small'
               id='grade'
               className='dropdownIcon'
-              options={gradeList}
+              options={gradeList || []}
               value={gradeObj}
               filterSelectedOptions
               disableClearable

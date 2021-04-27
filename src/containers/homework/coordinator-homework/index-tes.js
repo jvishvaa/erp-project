@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -37,6 +37,7 @@ import {
 import HomeworkRow from '../teacher-homework/homework-row';
 import ViewHomework from '../teacher-homework/view-homework';
 import ViewHomeworkSubmission from './view-homework-submission';
+import teacherHomework from '../teacher-homework';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,6 +76,7 @@ const CoordinatorTeacherHomework = withRouter(
     evaluatedStudents,
     unevaluatedStudents,
     submittedStudents,
+    unSubmittedStudents,
     fetchingStudentLists,
     fetchStudentLists,
     history,
@@ -137,7 +139,6 @@ const CoordinatorTeacherHomework = withRouter(
 
     const handleSelectCol = (col) => {
       const { homeworkId } = col;
-      console.log('homework id', homeworkId);
       fetchStudentLists(homeworkId);
       setSelectedCol(col);
       onSetSelectedHomework(col);
@@ -327,6 +328,7 @@ const CoordinatorTeacherHomework = withRouter(
                         evaluatedStudents={evaluatedStudents}
                         unevaluatedStudents={unevaluatedStudents}
                         submittedStudents={submittedStudents}
+                        unSubmittedStudents={unSubmittedStudents}
                         loading={fetchingStudentLists}
                         onClick={handleViewReceivedHomework}
                       />
@@ -348,6 +350,7 @@ const mapStateToProps = (state) => ({
   fetchingTeacherHomework: state.teacherHomework.fetchingTeacherHomework,
   evaluatedStudents: state.teacherHomework.evaluatedStudents,
   submittedStudents: state.teacherHomework.submittedStudents,
+  unSubmittedStudents: state.teacherHomework.unSubmittedStudents,
   unevaluatedStudents: state.teacherHomework.unevaluatedStudents,
   fetchingStudentLists: state.teacherHomework.fetchingStudentLists,
 });
@@ -366,12 +369,10 @@ const mapDispatchToProps = (dispatch) => ({
 
 export default connect(mapStateToProps, mapDispatchToProps)(CoordinatorTeacherHomework);
 
-=============================================================================================================
-
 
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -450,6 +451,7 @@ const CoordinatorTeacherHomework = withRouter(
     evaluatedStudents,
     unevaluatedStudents,
     submittedStudents,
+    unSubmittedStudents,
     fetchingStudentLists,
     fetchStudentLists,
     history,
@@ -515,7 +517,6 @@ const CoordinatorTeacherHomework = withRouter(
 
     const handleSelectCol = (col) => {
       const { homeworkId } = col;
-      console.log('homework id', homeworkId);
       fetchStudentLists(homeworkId);
       setSelectedCol(col);
       onSetSelectedHomework(col);
@@ -566,7 +567,6 @@ const CoordinatorTeacherHomework = withRouter(
         );
         // const resultOptions = [];
         if (result.status === 200) {
-          // console.log(result.data.result[0],"jjjjjjjjjjjjjjjj")
           setSelectedCoTeacherOpt(result.data.result);          
           setselectedCoTeacherOptValue(result.data.result[0]);
           getTeacherHomeworkDetails(2, startDate, endDate);
@@ -764,6 +764,7 @@ const CoordinatorTeacherHomework = withRouter(
                         evaluatedStudents={evaluatedStudents}
                         unevaluatedStudents={unevaluatedStudents}
                         submittedStudents={submittedStudents}
+                        unSubmittedStudents={unSubmittedStudents}
                         loading={fetchingStudentLists}
                         onClick={handleViewReceivedHomework}
                       />
@@ -785,6 +786,7 @@ const mapStateToProps = (state) => ({
   fetchingTeacherHomework: state.teacherHomework.fetchingTeacherHomework,
   evaluatedStudents: state.teacherHomework.evaluatedStudents,
   submittedStudents: state.teacherHomework.submittedStudents,
+  unSubmittedStudents: state.teacherHomework.unSubmittedStudents,
   unevaluatedStudents: state.teacherHomework.unevaluatedStudents,
   fetchingStudentLists: state.teacherHomework.fetchingStudentLists,
 });

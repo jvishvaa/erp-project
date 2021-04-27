@@ -29,6 +29,12 @@
     border: 1px solid #DBDBDB !important;
     border-radius: 15px !important;
   }
+  .message_log_white_wrapper {
+    @media screen and (min-width: 768px) {
+      padding-top: 30px;
+    }
+  }
+
   .message_log_white_wrapper .date-container fieldset{
     border-radius: 10px;
   }
@@ -83,21 +89,26 @@
       color: #014b7e;
       font-weight: 600;
       @media screen and (max-width: 768px) {
-        display: none;
+        //display: none;
       }
     }
     .homework_block_wrapper {
       display: flex;
-      width: 100% !important;
+      width: 97% !important;
       padding-bottom: 1%;
-      margin: 20px 0;
+      margin: 20px;
       border: 1px solid #dbdbdb;
       align-items: center;
       padding: 1rem;
       border-radius: 5px;
+      //@media screen and (min-width: 768px) {
+        //margin: 20px !important;
+        //padding: 20px;
+      //}
 
       @media screen and (max-width: 768px) {
-        margin-bottom: 0 !important;
+        //margin-bottom: 0 !important;
+        width: 90% !important;
         justify-content: center;
         border: 0;
       }
@@ -230,6 +241,7 @@
     display: flex;
     justify-content: flex-end;
     margin: 1rem;
+    padding: 10px;
 
     @media screen and (max-width: 768px) {
       justify-content: center;
@@ -262,25 +274,7 @@
     &:nth-child(1) {
       margin-top: 2rem;
     }
-    .comments-remarks-container {
-      display: flex;
-      flex-wrap: wrap;
-      .item {
-        width: calc(50% - 0.5rem);
-
-        @media screen and (max-width: 768px) {
-          width: 100%;
-          margin-bottom: 1rem;
-        }
-
-        &.comment {
-          margin-right: 1rem;
-          @media screen and (max-width: 768px) {
-            margin-right: 0;
-          }
-        }
-      }
-    }
+    
     .evaluate-answer-btn-container {
       display: flex;
       justify-content: flex-end;
@@ -288,6 +282,25 @@
 
       @media screen and (max-width: 768px) {
         justify-content: center;
+      }
+    }
+  }
+  .comments-remarks-container {
+    display: flex;
+    flex-wrap: wrap;
+    .item {
+      width: calc(50% - 0.5rem);
+
+      @media screen and (max-width: 768px) {
+        width: 100%;
+        margin-bottom: 1rem;
+      }
+
+      &.comment {
+        margin-right: 1rem;
+        @media screen and (max-width: 768px) {
+          margin-right: 0;
+        }
       }
     }
   }
@@ -328,6 +341,12 @@
   .homework_submit_wrapper {
     border: 1px solid #ff6b6b;
     border-radius: 10px;
+    padding: 20px;
+    @media screen and (max-width: 768px) {
+      margin: 10px;
+      width: 90% !important;
+      height: auto !important;
+    }
   }
   .homework_submit_button_wrapper {
     display: flex;
@@ -364,6 +383,8 @@
 
       @media screen and (max-width: 768px) {
         width: 100%;
+        margin-left: 1rem;
+        margin-right: 1rem;
       }
     }
     .btn-container {
@@ -375,18 +396,19 @@
       @media screen and (max-width: 768px) {
         width: 100%;
         justify-content: center;
+        margin-bottom: 1rem;
       }
       .cancel-btn {
         margin-right: 1rem;
         @media screen and (max-width: 768px) {
-          width: 100%;
-          margin: 0;
+          //width: 100%;
+          //margin: 0;
         }
       }
       .done-btn {
         @media screen and (max-width: 768px) {
-          width: 100%;
-          margin: 1rem 0;
+          //width: 100%;
+          //margin: 1rem 0;
         }
       }
     }
@@ -423,7 +445,7 @@
         width: calc(100% - 90px);
         .attachment {
           flex-shrink: 0;
-          width: 150px;
+          width: 250px;
         }
       }
     }

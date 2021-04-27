@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -94,13 +94,15 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [penToolOpen, setPenToolOpen] = useState(false)
   const [penToolUrl, setPenToolUrl] = useState('');
   const [penToolIndex, setPenToolIndex] = useState('');
-  const [comment, setComment] = useState('');
+  const [comment, setComment ] = useState('');
   const [desc, setDesc] = useState('');
+  const [questionwiseComment, setQuestionwiseComment] = useState('');
+  const [questionwiseRemark, setQuestionwiseRemark] = useState('');
   const [overallRemark, setOverallRemark] = useState('');
   const [overallScore, setOverallScore] = useState('');
   const [attachmentCount, setAttachmentCount] = useState([]);
   const [maxCount, setMaxCount] = useState(0);
-  const [calssNameWise, setClassName]= useState('')
+  const [calssNameWise, setClassName]= useState('');
   const handleHomeworkSubmit = () => {
 
     let count = 0;
@@ -144,6 +146,27 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     setHomeworkSubmission({ isOpen: false, subjectId: '', date: '', subjectName: '' });
   };
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Homework' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Student Homework') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   useEffect(() => {
     let maxVal=0;
     axiosInstance
@@ -172,6 +195,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               if (homeworkSubmission.status === 3) {
                 setOverallRemark(result.data.data.overall_remark);
                 setOverallScore(result.data.data.score);
+                setQuestionwiseComment(result.data.data.hw_questions?.comment);
+                setQuestionwiseRemark(result.data.data.hw_questions?.remark);
               }
             } else {
               setIsBulk(true);
@@ -182,6 +207,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 setOverallRemark(result.data.data.overall_remark);
                 setOverallScore(result.data.data.score);
                 setSubmittedEvaluatedFilesBulk(result.data.data.hw_questions.evaluated_files);
+                setQuestionwiseComment(result.data.data.hw_questions?.comment);
+                setQuestionwiseRemark(result.data.data.hw_questions?.remark);
               }
             }
           }
@@ -487,7 +514,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     Bulk Upload
                   <input
                       type='file'
-                      accept=".png, .jpg, .jpeg, .mp3, mp4, .pdf"
+                      accept=".png, .jpg, .jpeg, .mp3, .mp4, .pdf"
                       style={{ display: 'none' }}
                       id='raised-button-file'
                       onChange={e => handleBulkUpload(e)}
@@ -542,7 +569,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         <AttachmentIcon fontSize='small' />
                         <input
                           type='file'
-                          accept=".png, .jpg, .jpeg, .mp3, mp4, .pdf"
+                          accept=".png, .jpg, .jpeg, .mp3, .mp4, .pdf"
                           onChange={(e) => uploadFileHandler(e, index, question.max_attachment)}
                           className={classes.fileInput}
                         />
@@ -566,9 +593,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
-                          <IconButton onClick={() => handleScroll('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>
+                          {question.question_files.length > 1 && (
+                            <IconButton onClick={() => handleScroll('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>
+                          )}
                         </div>
                         <SimpleReactLightbox>
                           <div
@@ -576,7 +605,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {question.question_files.map((url, i) => (
@@ -610,9 +638,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
-                          <IconButton onClick={() => handleScroll('right')}>
-                            <ArrowForwardIosIcon color='primary' />
-                          </IconButton>
+                          {question.question_files.length > 1 && (
+                            <IconButton onClick={() => handleScroll('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -623,14 +653,17 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         (homeworkSubmission.status === 3 && question.evaluated_files?.length > 0))
                         &&
                         <div className='attachments-container'>
+                          {document.body.style.overflow = "hidden"}
                           <Typography component='h4' color='primary' className='header'>
                             {homeworkSubmission.status === 2 ? 'Submitted Files' : 'Evaluated Files'}
                           </Typography>
                           <div className='attachments-list-outer-container'>
                             <div className='prev-btn'>
-                              <IconButton onClick={() => handleScroll('left')}>
-                                <ArrowBackIosIcon />
-                              </IconButton>
+                              {question.submitted_files.length > 1 && (
+                                <IconButton onClick={() => handleScroll('left')}>
+                                  <ArrowBackIosIcon />
+                                </IconButton>
+                              )}
                             </div>
                             {homeworkSubmission.status === 2 &&
                               <SimpleReactLightbox>
@@ -639,7 +672,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                   ref={scrollableContainer}
                                   onScroll={(e) => {
                                     e.preventDefault();
-                                    console.log('scrolled');
                                   }}
                                 >
                                   {question.submitted_files.map((url, i) => (
@@ -680,7 +712,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                   ref={scrollableContainer}
                                   onScroll={(e) => {
                                     e.preventDefault();
-                                    console.log('scrolled');
                                   }}
                                 >
                                   {question.evaluated_files.map((url, i) => (
@@ -715,9 +746,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                               </SimpleReactLightbox>
                             }
                             <div className='next-btn'>
-                              <IconButton onClick={() => handleScroll('right')}>
-                                <ArrowForwardIosIcon color='primary' />
-                              </IconButton>
+                              {question.submitted_files.length > 1 && (
+                                <IconButton onClick={() => handleScroll('right')}>
+                                  <ArrowForwardIosIcon color='primary' />
+                                </IconButton>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -750,7 +783,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {submittedEvaluatedFilesBulk?.map((url, i) => (
@@ -791,6 +823,18 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         </div>}
                       </div>
                     </div>
+                    {homeworkSubmission.status === 3 ?
+                      <div className="overallContainer">
+                        {questionwiseComment &&
+                          <div className="scoreBox1">
+                            Overall Score : {questionwiseComment}
+                          </div>}
+                        {questionwiseRemark &&
+                          <div className="remarkBox1">
+                            Overall Remark : {questionwiseRemark}
+                          </div>}
+                      </div>
+                      : null}
                   </div>
                 }
               </>

@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -107,10 +107,6 @@ const ViewHomework = withRouter(
         scrollableContainer.current.scrollLeft -= 150;
       } else {
         scrollableContainer.current.scrollLeft += 150;
-        console.log(
-          scrollableContainer.current.scrollLeft,
-          scrollableContainer.current.scrollRight
-        );
       }
     };
 
@@ -128,17 +124,19 @@ const ViewHomework = withRouter(
       if (!remark) {
         setAlert('error', 'Please provide a remark');
         return;
-      } else if (reqData.remark && reqData.remark.trim() == '') {
+      } else if (reqData.remark && reqData.remark.trim() === '') {
         setAlert('error', 'Please provide a remark');
         return;
       }
       if (!score) {
         setAlert('error', 'Please provide a score');
         return;
-      } else if (reqData.score && reqData.score.trim() == '') {
+      }
+      /*
+      else if (reqData.score && reqData.score.trim() === '') {
         setAlert('error', 'Please provide a score');
         return;
-      }
+      } */
 
       try {
         await finalEvaluationForHomework(homeworkId, reqData);
@@ -159,11 +157,10 @@ const ViewHomework = withRouter(
         if (
           currentQuestion.corrected_submission.length < collatedSubmissionFiles.length
         ) {
-          setAlert('error', 'Please evaluate all the attachments');
+          setAlert('error', `Please evaluate all the attachments ${currentQuestion.corrected_submission.length} < ${collatedSubmissionFiles.length}`);
           return;
         }
       }
-      console.log('Evaluated answer ', currentQuestion);
       const { id, ...reqData } = currentQuestion;
       try {
         await evaluateHomework(id, reqData);
@@ -174,11 +171,9 @@ const ViewHomework = withRouter(
     };
 
     const handleChangeQuestionState = (fieldName, value) => {
-      console.log(fieldName, value, 'fffffff');
       const index = activeQuestion - 1;
       const currentQuestion = questionsState[index];
       currentQuestion[fieldName] = value;
-      console.log({ currentQuestion });
       setQuestionsState([
         ...questionsState.slice(0, index),
         currentQuestion,
@@ -200,7 +195,6 @@ const ViewHomework = withRouter(
         const currentQuestion = { ...collatedQuestionState };
         currentQuestion.corrected_submission.splice(index, 1);
         setCollatedQuestionState(currentQuestion);
-        // debugger;
       }
     };
 
@@ -221,7 +215,6 @@ const ViewHomework = withRouter(
         setQuestionsState(newQuestionsState);
       } else {
         const modifiedQuestion = collatedQuestionState;
-        console.log('collatedQuestionState', collatedQuestionState);
         modifiedQuestion.corrected_submission.push(filePath);
         modifiedQuestion.evaluated_files.push(currentEvaluatedFileName);
 
@@ -247,7 +240,6 @@ const ViewHomework = withRouter(
         overall_remark: overallRemark,
         score,
       } = data;
-      console.log('fetched data ', data, hwQuestions);
       setHomeworkId(id);
       setRemark(overallRemark);
       setScore(score);
@@ -261,7 +253,6 @@ const ViewHomework = withRouter(
         }));
         setQuestionsState(initialQuestionsState);
       } else {
-        // console.log('data homework ', hwQuestions, data);
         setCollatedQuestionState({
           id: hwQuestions.id,
           corrected_submission: hwQuestions.corrected_files,
@@ -298,12 +289,7 @@ const ViewHomework = withRouter(
       splitted_media: null,
     };
     const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }];
-    console.log(
-      fetchingSubmittedHomeworkDetails,
-      'reduxxxx',
-      submittedHomeworkDetails,
-      totalSubmittedQuestions
-    );
+   
     return (
       <div className='view-homework-container create_group_filter_container'>
         <Grid container spacing={2} className='message_log_container'>
@@ -404,9 +390,11 @@ const ViewHomework = withRouter(
                       </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
-                          <IconButton onClick={() => handleScroll('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>
+                          {collatedSubmissionFiles?.length > 2 && (
+                            <IconButton onClick={() => handleScroll('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>
+                          )}
                         </div>
                         <SimpleReactLightbox>
                           <div
@@ -414,7 +402,6 @@ const ViewHomework = withRouter(
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {collatedSubmissionFiles.map((url, i) => {
@@ -461,9 +448,11 @@ const ViewHomework = withRouter(
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
-                          <IconButton onClick={() => handleScroll('right')}>
-                            <ArrowForwardIosIcon color='primary' />
-                          </IconButton>
+                          {collatedSubmissionFiles?.length > 2 && (
+                            <IconButton onClick={() => handleScroll('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -475,9 +464,11 @@ const ViewHomework = withRouter(
                       </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
-                          <IconButton onClick={() => handleScroll('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>
+                          {collatedQuestionState.corrected_submission?.length > 2 && (
+                            <IconButton onClick={() => handleScroll('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>
+                          )}
                         </div>
                         <SimpleReactLightbox>
                           <div
@@ -485,7 +476,6 @@ const ViewHomework = withRouter(
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {collatedQuestionState.corrected_submission.map((url, i) => (
@@ -529,9 +519,11 @@ const ViewHomework = withRouter(
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
-                          <IconButton onClick={() => handleScroll('right')}>
-                            <ArrowForwardIosIcon color='primary' />
-                          </IconButton>
+                          {collatedQuestionState.corrected_submission?.length > 2 && (
+                            <IconButton onClick={() => handleScroll('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -613,14 +605,14 @@ const ViewHomework = withRouter(
                       onChange={(e) => {
                         setScore(e.target.value);
                       }}
-                      value={score || 0}
+                      value={score || ''}
                     />
                   </FormControl>
                 </div>
               </div>
               <div className='btn-container'>
                 <div className='button-container'>
-                  <div className='cancel-btn'>
+                  <span className='cancel-btn'>
                     <Button
                       variant='contained'
                       className='disabled-btn'
@@ -628,8 +620,17 @@ const ViewHomework = withRouter(
                     >
                       Cancel
                     </Button>
-                  </div>
-                  <div className='done-btn'>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={handleFinalEvaluationForHomework}
+                      style={{ marginLeft: '10px'}}
+                    >
+                      EVALUATION DONE
+                    </Button>
+                  </span>
+                  {/*
+                  <span className='done-btn'>
                     <Button
                       variant='contained'
                       color='primary'
@@ -637,7 +638,8 @@ const ViewHomework = withRouter(
                     >
                       EVALUATION DONE
                     </Button>
-                  </div>
+                  </span>
+                  */}
                 </div>
               </div>
             </div>

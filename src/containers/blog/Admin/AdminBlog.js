@@ -85,6 +85,9 @@ class AdminBlog extends Component {
       totalPages:0,
       status:[8],
       moduleId :114,
+      selectedYear :'',
+      AcadYearList:[],
+
       endDate :moment().format('YYYY-MM-DD'),
       startDate: this.getDaysBefore(moment(), 6)
       
@@ -93,8 +96,25 @@ class AdminBlog extends Component {
   componentDidMount() {
     let {status}=this.state
     this.getBlog(status);
-    this.getBranch();
+    this.getAcadYear();
+
+    
   }
+  getAcadYear = () =>{
+    let {moduleId} =this.state
+    axios
+      .get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          this.setState({ AcadYearList: result.data.data });
+        } else {
+          console.log(result.data.message);
+        }
+      })
+      .catch((error) => {
+      });
+  }
+  
   getBlog = (status) => {
     const { pageNo, pageSize,tabValue,moduleId } = this.state;
    
@@ -108,7 +128,7 @@ class AdminBlog extends Component {
         if (result.data.status_code === 200) {
           this.setState({ data: result.data.result.data ,totalBlogs:result.data.result.total_blogs});
         } else {
-          console.log(result.data.message);
+          
         }
       })
       .catch((error) => {
@@ -120,16 +140,16 @@ class AdminBlog extends Component {
     if(selectedSection){
       urlPath = `${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=114&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch.id}&grade_id=${selectedGrade.grade_id}`
+            }&page_size=${pageSize}&status=${status}&module_id=114&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}&grade_id=${selectedGrade.grade_id}`
     }else if(selectedGrade){
       urlPath = `${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=114&grade_id=${selectedGrade.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch.id}`
+            }&page_size=${pageSize}&status=${status}&module_id=114&grade_id=${selectedGrade.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}`
     }
     else if(selectedBranch){
       urlPath =`${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=114&branch_id=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}`
+            }&page_size=${pageSize}&status=${status}&module_id=114&branch_id=${selectedBranch?.branch.id}&start_date=${startDate}&end_date=${endDate}`
     }
     axios
       .get(
@@ -139,7 +159,7 @@ class AdminBlog extends Component {
         if (result.data.status_code === 200) {
           this.setState({ data: result.data.result.data ,totalBlogs:result.data.result.total_blogs});
         } else {
-          console.log(result.data.message);
+          
         }
       })
       .catch((error) => {
@@ -147,30 +167,37 @@ class AdminBlog extends Component {
 
   }
   getBranch = () => {
-   
+    let {moduleId,selectedYear} =this.state
+
     axios
       .get(
-        `${endpoints.communication.branches}`
-      )
+        `${endpoints.communication.branches}?module_id=${moduleId}&session_year=${selectedYear.id}`
+        )
       .then((result) => {
         if (result.data.status_code === 200) {
-          this.setState({ branchList: result.data.data });
+          this.setState({ branchList: result.data.data.results});
         } else {
-          console.log(result.data.message);
+          
         }
       })
       .catch((error) => {
       });
   };
+  handleYear = (event, value) => {
+    console.log(value,"@@@@@@@@@@@@")
+    this.setState({data:[],selectedYear:value,selectedBranch:'',selectedGrade:'',selectedSection:''},()=>{
+      this.getBranch()
+    })
+  };
 
   getGrade = () => {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
-   let {selectedBranch, moduleId,gradeList}=this.state
+   let {selectedBranch, moduleId,gradeList,selectedYear}=this.state
     axios
       .get(
         
-  `${endpoints.communication.grades}?branch_id=${selectedBranch.id}&module_id=${moduleId}`,
+  `${endpoints.communication.grades}?branch_id=${selectedBranch?.branch.id}&module_id=${moduleId}&session_year=${selectedYear.id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -181,7 +208,7 @@ class AdminBlog extends Component {
         if (result.data.status_code === 200) {
           this.setState({ gradeList: result.data.data });
         } else {
-          console.log(result.data.message);
+          
         }
       })
       .catch((error) => {
@@ -190,13 +217,13 @@ class AdminBlog extends Component {
   getSection = () => {
     const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   
-     let {selectedBranch, moduleId,gradeList,selectedGrade}=this.state
+     let {selectedBranch, moduleId,gradeList,selectedGrade,selectedYear}=this.state
       axios
         .get(
           
           `${endpoints.communication.sections}?branch_id=${
-            selectedBranch.id
-          }&grade_id=${selectedGrade.grade_id}&module_id=${moduleId}`,
+            selectedBranch?.branch.id    
+                }&grade_id=${selectedGrade.grade_id}&module_id=${moduleId}&session_year=${selectedYear.id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -207,7 +234,7 @@ class AdminBlog extends Component {
           if (result.data.status_code === 200) {
             this.setState({ sectionList: result.data.data });
           } else {
-            console.log(result.data.message);
+            
           }
         })
         .catch((error) => {
@@ -286,7 +313,8 @@ handleSection = (event,value) =>{
 }
 clearSelection = () => {
   let {status}=this.state
-  this.setState({   selectedBranch :'',
+  this.setState({ selectedYear
+    :'',  selectedBranch :'',
   selectedGrade:'',
   selectedSection:'',
 }
@@ -301,7 +329,7 @@ clearSelection = () => {
 
   render() {
     const { classes } = this.props;
-    const {startDate,endDate,branchList, tabValue ,data,pageNo,pageSize,totalBlogs,selectedBranch,selectedGrade,gradeList,sectionList,selectedSection} = this.state;
+    const {startDate,endDate,branchList, tabValue ,data,pageNo,pageSize,totalBlogs,selectedBranch,selectedGrade,gradeList,sectionList,selectedSection,selectedYear,AcadYearList} = this.state;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -313,7 +341,33 @@ clearSelection = () => {
               <CommonBreadcrumbs componentName='Blog' />
               <div className='create_group_filter_container'>
               <Grid container spacing={3}>
-             
+              <Grid xs={12} sm={3} item>
+<div className='blog_input'>
+      <Autocomplete
+        size='small'
+        style={{ width: '100%' }}
+
+        onChange={this.handleYear}
+        value={selectedYear}
+        disableClearable
+        id='message_log-branch'
+        className='create_group_branch'
+        options={AcadYearList || []}
+        getOptionLabel={(option) => option?.session_year || ''}
+        filterSelectedOptions
+        renderInput={(params) => (
+          <TextField
+            className='message_log-textfield'
+            {...params}
+            variant='outlined'
+            label='Academic Year'
+            placeholder='Academic Year'
+          />
+        )}
+      />
+      </div>
+      </Grid>     
+
               <Grid xs={12} sm={3} item>
               <div className='blog_input'>
                     <Autocomplete
@@ -324,8 +378,8 @@ clearSelection = () => {
                       value={selectedBranch}
                       id='message_log-branch'
                       className='create_group_branch'
-                      options={branchList}
-                      getOptionLabel={(option) => option?.branch_name}
+                      options={branchList || []}
+                      getOptionLabel={(option) => option?.branch?.branch_name || ''}
                       filterSelectedOptions
                       disableClearable
                       renderInput={(params) => (
@@ -351,7 +405,7 @@ clearSelection = () => {
                        value={selectedGrade}
                        id='message_log-branch'
                        className='create_group_branch'
-                       options={gradeList}
+                       options={gradeList || []}
                        disableClearable
                        getOptionLabel={(option) => option?.grade__grade_name}
                        filterSelectedOptions
@@ -380,7 +434,7 @@ clearSelection = () => {
                         disableClearable
                         id='message_log-branch'
                         className='create_group_branch'
-                        options={sectionList}
+                        options={sectionList || []}
                         getOptionLabel={(option) => option?.section__section_name}
                         filterSelectedOptions
                         renderInput={(params) => (

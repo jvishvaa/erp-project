@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 // import { connect } from 'react-redux';
 import ReactHtmlParser from 'react-html-parser'
-
+import MyTinyEditor from '../../question-bank/create-question/tinymce-editor';
 import {
   Grid,
   Card,
@@ -178,7 +178,6 @@ class WriteBlog extends Component {
       if(item.length){
         count=count+1
       }
-      console.log(count,"@@@")
     })
 
     // const textWordCount = parsedTextEditorContent.length
@@ -202,6 +201,12 @@ class WriteBlog extends Component {
     const subceededWordCount = this.isWordCountSubceeded()
 
     // localStorage.setItem('blogContent', content);
+  };
+  handleEditorChange = (content, editor) => {
+    content = content.replace(/&nbsp;/g, '');
+
+    this.setState({ textEditorContent: content, fadeIn: false });
+    const subceededWordCount = this.isWordCountSubceeded()
   };
 
   handleTitle = (event) => {
@@ -379,13 +384,23 @@ class WriteBlog extends Component {
                     <Typography style={{ margin: 10 }} variant='body1'>
                       Write the blog with atleast {wordCountLimit} words
                     </Typography>
-                    <TinyMce
+                    
+                    {/* <TinyMce
                       key={key}
                       id={key}
                       get={this.handleTextEditor}
                       content={textEditorContent}
                       
-                    />
+                    /> */}
+                     <MyTinyEditor
+            id="blog"
+            content={textEditorContent}
+            handleEditorChange={this.handleEditorChange}
+            // setOpenEditor={setOpenEditor}
+            placeholder='Description...'
+            // filterDataTop={filterDataTop}
+            // filterDataBottom={filterDataBottom}
+          />
                     
 
                   </Grid>

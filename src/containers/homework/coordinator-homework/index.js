@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -106,6 +106,7 @@ const CoordinatorTeacherHomework = withRouter(
     evaluatedStudents,
     unevaluatedStudents,
     submittedStudents,
+    unSubmittedStudents,
     fetchingStudentLists,
     fetchStudentLists,
     history,
@@ -113,7 +114,11 @@ const CoordinatorTeacherHomework = withRouter(
     setFirstTeacherUserIdOnloadCordinatorHomewok,
     ...props
   }) => {
-    const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
+    //const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
+    const [dateRange, setDateRange] = useState([
+      moment().startOf('isoWeek'),
+      moment().endOf('week'),
+    ]);
     const [dateRangeTechPer, setDateRangeTechPer] = useState([
       moment().subtract(6, 'days'),
       moment(),
@@ -207,9 +212,8 @@ const CoordinatorTeacherHomework = withRouter(
     // };
 
     const handleSelectCol = (col, view) => {
-      const { homeworkId } = col;
-      console.log('homework id', homeworkId);
-      fetchStudentLists(homeworkId);
+      const { homeworkId, subjectId, coord_selected_teacher_id } = col;
+      fetchStudentLists(homeworkId, subjectId, coord_selected_teacher_id);
       setSelectedCol(col);
       if (isMobile) {
         setActiveView('card-view');
@@ -337,7 +341,6 @@ const CoordinatorTeacherHomework = withRouter(
 
     const downloadGetTeacherPerformanceListApi = async () => {
       const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-      // console.log('file will downloade', startDateTechPer, endDateTechPer);
       try {
         setLoading(true);
         if (startDateTechPer && startDateTechPer) {
@@ -356,7 +359,6 @@ const CoordinatorTeacherHomework = withRouter(
             responseType: 'blob', //important
           });
           if (result.status === 200) {
-            // console.log(result, '===========================');
             setLoading(false);
             const downloadUrl = window.URL.createObjectURL(new Blob([result.data]));
             const link = document.createElement('a');
@@ -387,7 +389,6 @@ const CoordinatorTeacherHomework = withRouter(
 
     const tableContainer = useRef(null);
 
-    // console.log('popper open', datePopperOpen);
 
     return (
       <>
@@ -433,7 +434,6 @@ const CoordinatorTeacherHomework = withRouter(
                           value={dateRange}
                           // calendars='1'
                           onChange={(newValue) => {
-                            console.log('onChange truggered', newValue);
                             const [startDate, endDate] = newValue;
                             const sevenDaysAfter = moment(startDate).add(6, 'days');
                             setDateRange([startDate, sevenDaysAfter]);
@@ -452,7 +452,6 @@ const CoordinatorTeacherHomework = withRouter(
                             // startProps,
                             endProps
                           ) => {
-                            console.log('startProps ', startProps, 'endProps', endProps);
                             return (
                               <>
                                 <TextField
@@ -465,7 +464,6 @@ const CoordinatorTeacherHomework = withRouter(
                                   size='small'
                                   style={{ minWidth: '100%' }}
                                   onClick={() => {
-                                    // console.log('triggered');
                                     setDatePopperOpen(true);
                                   }}
                                 />
@@ -665,7 +663,7 @@ const CoordinatorTeacherHomework = withRouter(
                             ))} */}
                                     {homeworkCols.map((col) => {
                                       return typeof col === 'object' ? (
-                                        <TableCell>{col.subject_name}</TableCell>
+                                        <TableCell style={{minWidth: '260px'}}>{col.subject_name}</TableCell>
                                       ) : (
                                         <TableCell>{col}</TableCell>
                                       );
@@ -860,6 +858,8 @@ const CoordinatorTeacherHomework = withRouter(
                         evaluatedStudents={evaluatedStudents}
                         unevaluatedStudents={unevaluatedStudents}
                         submittedStudents={submittedStudents}
+                        unSubmittedStudents={unSubmittedStudents}
+                        unSubmittedStudents={unSubmittedStudents}
                         loading={fetchingStudentLists}
                         onClick={handleViewReceivedHomework}
                         onClose={() => {
@@ -884,6 +884,7 @@ const mapStateToProps = (state) => ({
   fetchingTeacherHomework: state.teacherHomework.fetchingTeacherHomework,
   evaluatedStudents: state.teacherHomework.evaluatedStudents,
   submittedStudents: state.teacherHomework.submittedStudents,
+  unSubmittedStudents: state.teacherHomework.unSubmittedStudents,
   unevaluatedStudents: state.teacherHomework.unevaluatedStudents,
   fetchingStudentLists: state.teacherHomework.fetchingStudentLists,
   selectedTeacherByCoordinatorToCreateHw:
@@ -909,8 +910,8 @@ const mapDispatchToProps = (dispatch) => ({
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
   },
-  fetchStudentLists: (id) => {
-    dispatch(fetchStudentsListForTeacherHomework(id));
+  fetchStudentLists: (id, subjectId,selectedTeacherUser_id) => {
+    dispatch(fetchStudentsListForTeacherHomework(id, subjectId, selectedTeacherUser_id));
   },
   setFirstTeacherUserIdOnloadCordinatorHomewok: (selectedTeacherUser_id) => {
     return dispatch(setTeacherUserIDCoord(selectedTeacherUser_id));

@@ -21,11 +21,21 @@ const ViewMoreCard = ({
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const { setAlert } = useContext(AlertNotificationContext);
+  const studentBranchName = JSON.parse(localStorage.getItem('userDetails') || {});
 
   const handleBulkDownload = (files) => {
-    for (let i = 0; i < files?.length; i++) {
-      window.open(`${endpoints.s3}/dev/circular_files/${branch.branch_name}/${files[i]}`);
+    if(window.location.pathname==='/teacher-circular'){
+      for (let i = 0; i < files?.length; i++) {
+        window.open(`${endpoints.signature.s3}dev/circular_files/${branch?.branch?.branch_name}/${files[i]}`);
+      }
     }
+    else{
+      // >>>>>>>>>>>>>>>>>>>>STUDENT SIDE VIEW<<<<<<<<<<<<<<<<<<<<<<<<
+      for (let i = 0; i < files?.length; i++) {
+        window.open(`${endpoints.signature.s3}dev/circular_files/${studentBranchName?.role_details && studentBranchName?.role_details?.branch.map((el)=>el.branch_name)}/${files[i]}`);
+      }
+    }
+    
   };
   // console.log(viewMoreData, pic, '++++', branch.branch_name)
   return (

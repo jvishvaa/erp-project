@@ -51,7 +51,6 @@ export const fetchUsers = () => (dispatch) => {
         total_pages: response.data.total_pages,
         count: response.data.count,
       });
-      console.log(response.data);
     })
     .catch((error) => {
       console.log(error);
@@ -100,8 +99,8 @@ export const fetchUser = (id) => (dispatch) => {
           user.mapping_bgs[0].branch.map((branch) => ({
             id: branch.branch_id,
             branch_name: branch.branch__branch_name,
-            branch_code: branch.branch_code,
-          }))[0],
+            branch_code: branch?.branch_code,
+          })),
         grade:
           user.mapping_bgs[0].grade &&
           user.mapping_bgs[0].grade.map((grade) => ({
@@ -114,11 +113,11 @@ export const fetchUser = (id) => (dispatch) => {
             id: section.section_id,
             section_name: section.section__section_name,
           })),
-        subjects: user.subjects.map((subject) => ({
+        subjects: user?.subjects.map((subject) => ({
           id: subject.id,
           subject_name: subject.subject_name,
         })),
-        contact: user.contact || '',
+        contact: user?.contact || '',
         date_of_birth: user.date_of_birth,
         gender,
         profile: user.profile || '',
@@ -147,22 +146,17 @@ export const fetchUser = (id) => (dispatch) => {
         },
       };
       dispatch({ type: FETCH_USER_DETAIL_SUCCESS, data: transformedUser });
-
-      console.log('user detail ', response);
     })
-    .catch(() => {
+
+    .catch((e) => {
+      console.log(e);
       dispatch({ type: FETCH_USER_DETAIL_FAILURE });
     });
 };
 
 export const createUser = (params) => (dispatch) => {
   dispatch({ type: CREATE_USER_REQUEST });
-  // console.log(
-  //   'before stringifying ',
-  //   params,
-  //   'after stringifying ',
-  //   qs.stringify(params)
-  // );
+
   return axios
     .post('/erp_user/add_user/', params)
     .then(() => {
@@ -189,21 +183,32 @@ export const editUser = (params) => (dispatch) => {
     });
 };
 
-export const fetchBranchesForCreateUser = () => {
+export const fetchBranchesForCreateUser = (acadId, moduleId) => {
+  // return axios
+  //   .get(`/erp_user/list-all-branch/?session_year=${acadId}&module_id=${moduleId}`)
+  //   .then((response) => {
+  //     if (response.data.status_code === 200) return response?.data?.data;
+  //   })
+  //   .catch((error) => {
+  //     throw error;
+  //   });
+
   return axios
-    .get('/erp_user/branch/')
+    .get(`/erp_user/branch/?session_year=${acadId}&module_id=${moduleId}`)
     .then((response) => {
-      if (response.data.status_code === 200) return response?.data?.data;
-      else console.log('','xyzxyz');
+      if (response.data.status_code === 200)
+        return response?.data?.data?.results.map((obj) => (obj && obj.branch) || {});
+      else {
+      }
     })
     .catch((error) => {
       throw error;
     });
 };
 
-export const fetchAcademicYears = () => {
+export const fetchAcademicYears = (moduleId) => {
   return axios
-    .get('/erp_user/list-academic_year/')
+    .get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
     .then((response) => {
       return response.data.data;
     })
