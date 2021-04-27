@@ -3,6 +3,7 @@ import '../../assess-attemption.css';
 import { TextareaAutosize } from '@material-ui/core';
 import ReactHtmlParser from 'react-html-parser';
 import TinyMce from '../../../../../components/TinyMCE/tinyMce';
+import MyTinyEditor from '../../../../question-bank/create-question/tinymce-editor';
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
 
 const DescriptiveQuestion = () => {
@@ -36,9 +37,18 @@ const DescriptiveQuestion = () => {
 
   const [{ answer, options, question }] = question_answer;
   const [textEditorContent, setTextEditorContent] = useState('');
-  const handleTextEditor = (event) => {
-    setTextEditorContent(event);
-    attemptQuestion(qId, { attemption_status: true, answer: event });
+  // const handleTextEditor = (event) => {
+  //   setTextEditorContent(event);
+  //   attemptQuestion(qId, { attemption_status: true, answer: event });
+  // };
+
+  const handleEditorChange = (content, editor) => {
+    // setTextEditorContent(content);
+    // const val = ReactHtmlParser(content)||[];
+    attemptQuestion(qId, {
+      attemption_status: true,
+      answer: editor?.getContent({ format: 'text' }),
+    });
   };
 
   const handleNextQuestion = () => {
@@ -57,7 +67,7 @@ const DescriptiveQuestion = () => {
         </div>
       </div> */}
       <div className='mcq-question-wrapper'>
-        <p>{ReactHtmlParser(question)}</p>
+        <p className='descriptive_question_header'>{ReactHtmlParser(question)}</p>
         {/* <h3>Question about the passage</h3> */}
         {/* <img src='https://via.placeholder.com/150' alt='question image' /> */}
         {/* <TextareaAutosize
@@ -68,11 +78,17 @@ const DescriptiveQuestion = () => {
           defaultValue='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
                 ut labore et dolore magna aliqua.'
         /> */}
-        <TinyMce
+        {/* <TinyMce
           key={1}
           id={1}
           get={handleTextEditor}
           content={currentQuestionObj?.user_response?.answer}
+        /> */}
+        <MyTinyEditor
+          id={'studentAnswerEditor'}
+          content={currentQuestionObj?.user_response?.answer}
+          handleEditorChange={handleEditorChange}
+          placeholder='Answer...'
         />
         {/* <div className='question-submit-btn' onClick={handleNextQuestion}>
           Next

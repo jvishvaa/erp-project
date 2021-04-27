@@ -11,11 +11,10 @@ const MyTinyEditor = ({
   handleEditorChange,
   setOpenEditor,
   placeholder,
-  filterDataTop,
-  filterDataBottom,
+  filterDataTop = {},
+  filterDataBottom = {},
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
-
   return (
     <Editor
       id={id}
@@ -26,7 +25,9 @@ const MyTinyEditor = ({
         selector: 'textarea#myTextArea',
         placeholder: placeholder,
         menubar: false,
-        plugins: ['lists link file image paste wordcount'],
+        plugins: id?.startsWith('studentAnswerEditor')
+          ? ['lists link file paste wordcount']
+          : ['lists link file image paste wordcount'],
         content_style: 'body { color: #014b7e; font-size: 14pt; font-family: Arial; }',
         toolbar:
           'fontselect fontsizeselect bold italic alignleft aligncenter alignright underline bullist numlist file image customInsertButton',
@@ -58,10 +59,10 @@ const MyTinyEditor = ({
             ) {
               const formData = new FormData();
               formData.append('file', file[0]);
-              formData.append('grade_name', filterDataTop.grade?.grade_name);
+              formData.append('grade_name', filterDataTop?.grade?.grade_name);
               formData.append(
                 'subject_name',
-                filterDataTop.subject?.subject?.subject_name
+                filterDataTop?.subject?.subject?.subject_name
               );
               formData.append('question_categories', filterDataBottom.category.category);
               formData.append('question_type', filterDataBottom.type?.question_type);
