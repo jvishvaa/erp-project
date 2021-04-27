@@ -175,6 +175,9 @@ const AttedanceCalender = () => {
     setSelectedBranch([]);
     setSelectedGrade([]);
     setSelectedSection([]);
+    setStudentDataAll(null);
+    setCurrentEvent(null);
+    setCounter(2);
   };
 
   function callApi(api, key) {
@@ -1013,8 +1016,8 @@ const AttedanceCalender = () => {
               </div>
             </Grid>
             {studentDataAll != null ? (
-              <Paper elevation={1} className='eventGrid'>
-                <Divider />
+              <div className='eventGrid'>
+                <Divider className="event-divider" />
                 <div className='eventList'>
                   {studentDataAll.events &&
                     studentDataAll.events.map((data) => (
@@ -1056,7 +1059,7 @@ const AttedanceCalender = () => {
                       </Typography>
                     ))}
                 </div>
-              </Paper>
+              </div>
             ) : (
               <div className='noImgEvent'>
                 <img src={Group} width='100%' className='noDataImgEvent' />

@@ -121,6 +121,12 @@
     height: 23px;
     font-size: 10px;
   }
+  .viewDetailsButtonClick:hover {
+    background-color: #ff6b6b;
+    color: white;
+    height: 23px;
+    font-size: 10px;
+  }
   .showDate {
     display: flex;
     justify-content: center;
@@ -309,11 +315,14 @@
 }
 .eventGrid {
   box-shadow: none !important;
+  .event-divider{
+    margin-top: 10px;
+  }
 }
 #eventContainer {
   // height: fit-content !important;
   height: 395px !important ;
- 
+  width: 300px;
   .noImgEvent {
     display: flex;
     justify-content: center;
@@ -350,6 +359,7 @@
   .event-details {
     width: 100%;
     display: flex;
+    margin-top: 10px;
     justify-content: space-between;
   }
   .detailsPara {
