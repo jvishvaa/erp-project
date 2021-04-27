@@ -21,7 +21,6 @@ function QuestionHandler() {
     const {
       params: { lobby_identifier: lobbyIdentifier, question_paper: questionPaper } = {},
     } = constants;
-    debugger;
     const dataProp = {
       queryParamObj: {
         question_paper: questionPaper,

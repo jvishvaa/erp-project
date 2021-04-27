@@ -170,7 +170,7 @@ export function getDurationCounter(props) {
     total_no_of_questions: totalNoOfQuestions = 0,
   } = quizDetails || {};
   if (quizDetails) {
-    debugger;
+    // debugger;
   }
   const durationInSec = durationInMin * 60;
   const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();

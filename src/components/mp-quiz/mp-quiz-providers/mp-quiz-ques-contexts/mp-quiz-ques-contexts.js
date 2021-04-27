@@ -197,7 +197,7 @@ export function QuizQuesContextProvider({ children }) {
 
   function fetchQuizQp(dataProp) {
     const { callbacks, queryParamObj } = dataProp;
-    const { onResolve: onResolveInstacnceOne = () => {} } = callbacks || {};
+    const { onResolve: onResolveInstacnceOne = () => { } } = callbacks || {};
     const { question_paper: questionPaperId } = queryParamObj || {};
     // eslint-disable-next-line no-alert
     if (!questionPaperId) window.alert('param not fed');
@@ -322,7 +322,8 @@ export function QuizQuesContextProvider({ children }) {
     } = questionsObj;
     if (isLastQues) {
       // eslint-disable-next-line no-alert
-      const jumptToFirst = window.confirm('Jump to first question ?');
+      // const jumptToFirst = window.confirm('Jump to first question ?');
+      const jumptToFirst = false
       if (jumptToFirst) {
         const [firstQuestionObj] = getSortedAndMainQuestions(questionsDataObj || {});
         const { id: firstQuestionId } = firstQuestionObj || {};
@@ -548,7 +549,7 @@ export function QuizQuesContextProvider({ children }) {
   useEffect(() => {
     if (timeToRender) {
       decideAndSetNextRender(timeToRender);
-      return () => {};
+      return () => { };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeToRender]);
