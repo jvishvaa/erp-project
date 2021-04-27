@@ -109,15 +109,33 @@ const RangeCalender = (props) => {
     }
   };
 
+  const handleDateRange = (item) => {
+    console.log(item);
+    if(item.selection.startDate === item.selection.endDate){
+      setState([{
+        startDate: item.selection.startDate,
+        endDate: addDays(new Date(item.selection.startDate), -6),
+        key: 'selection',
+      }])
+    }
+    if(item.selection.startDate !== item.selection.endDate) {
+      setState([{
+        startDate: item.selection.endDate,
+        endDate: addDays(new Date(item.selection.endDate), -6),
+        key: 'selection',
+      }])
+    }
+  }
+
   return (
     <div className='calender-container'>
       {props.counter === 2 ? (
         <div className='weeklyCalendar'>
           <DateRangePicker
-            onChange={(item) => setState([item.selection])}
-            showSelectionPreview={true}
-            moveRangeOnFirstSelection={true}
-            months={1}
+            onChange={(item) => handleDateRange(item) }
+            //showSelectionPreview={true}
+            moveRangeOnFirstSelection={false}
+            //months={1}
             ranges={state}
             direction='horizontal'
           />

@@ -471,8 +471,8 @@ const Category = (props) => {
         </Grid>
         <Grid container>
           <Grid item xs={12}>
-            {postList.map((data, id) => (
-              <Discussion rowData={data} key={id} deleteEdit={handleDeleteEdit}/>
+            {postList.map((data) => (
+              <Discussion rowData={data} key={data.id} deleteEdit={handleDeleteEdit}/>
             ))}
           </Grid>
           <Grid item xs={12} style={{display: 'flex', justifyContent: 'center'}}>
