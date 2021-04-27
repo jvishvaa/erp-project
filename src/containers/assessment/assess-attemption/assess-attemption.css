@@ -267,9 +267,9 @@
     visibility: hidden;
   }
 }
-.grow:hover {  
+/* .grow:hover {  
   animation: grow-animation 2s infinite;
-}
+} */
 @keyframes grow-animation {
   0% {
       transform:scale(1);

@@ -268,6 +268,10 @@ import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
 
 // import Contact from './containers/contact/Contact';
 
+
+
+import MultiplayerQuiz from './components/mp-quiz'
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -495,7 +499,9 @@ function App({ alert }) {
                           <Route exact path='/erp-online-class/pre-quiz'>
                           {({ match }) => <PreQuiz match={match} />}
                           </Route>
-
+                          <Route path='/quiz/:onlineclassId'>
+                          {({match})=><MultiplayerQuiz match={match} />}
+                          </Route>
                           {/* <Route exact path='/online-class/view-class'>
                       {({ match }) => <ViewClassManagement match={match} />}
                     </Route> */}
