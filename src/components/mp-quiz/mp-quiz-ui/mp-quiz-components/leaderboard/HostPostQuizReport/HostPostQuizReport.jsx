@@ -45,7 +45,6 @@ class HostPostQuizReport extends Component {
           }
         })
         .catch(err => {
-          debugger
           console.log(err)
           this.setState({ isFetching: false, isFetchFailed: true })
         })

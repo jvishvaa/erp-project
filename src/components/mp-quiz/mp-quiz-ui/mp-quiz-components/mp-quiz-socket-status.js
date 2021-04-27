@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSocket } from '../../mp-quiz-providers';
-import {InternalPageStatus }from '../../mp-quiz-utils';
+import { InternalPageStatus } from '../../mp-quiz-utils';
 
 function MpQuizSocketStatus() {
   const ws = useSocket() || {};
@@ -10,10 +10,12 @@ function MpQuizSocketStatus() {
     [window.WebSocket.OPEN]: 'open',
     [window.WebSocket.CONNECTING]: 'connecting',
   };
+
   return (
-    <InternalPageStatus
-      label={`Connecting to server.   (stat:${readyState}-${statusObj[readyState || 0]})`}
-    />
+    statusObj[readyState] === 'open' ? null :
+      <InternalPageStatus
+        label={`Connecting to server.   (stat:${readyState}-${statusObj[readyState || 0]})`}
+      />
   );
 }
 export default MpQuizSocketStatus;
