@@ -968,7 +968,9 @@ const AttedanceCalender = () => {
                       </span>
                     </Button>
                   ) : (
-                    <div></div>
+                    <>
+                  <p id="teacherUpdate" >Updated 1 day ago</p>
+                  </>
                   )}
                 </Grid>
               </div>
@@ -981,7 +983,9 @@ const AttedanceCalender = () => {
                 {teacherView === false ? (
                   <p className='erpId'>ERP_ID :{userName[0]}</p>
                 ) : (
-                  <></>
+                  <>
+                  <p id="studentPara" >Updated 1 day ago</p>
+                  </>
                 )}
                 {/* <KeyboardArrowDownIcon className='downIcon' /> */}
               </div>
