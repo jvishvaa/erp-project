@@ -316,7 +316,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       Subject: filterData?.subject,
       Grade: filterData?.grade,
       Branch: filterData?.branch,
-      AAcademic: filterData?.academic,
+      Academic: filterData?.academic,
     };
     let filterFlag = Object.values(filterObject).every(Boolean);
     if (filterFlag) {
@@ -394,29 +394,6 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           )}
         />
       </Grid>
-      {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleSection}
-          id='section'
-          multiple
-          limitTags={2}
-          className='dropdownIcon'
-          value={filterData.section || ''}
-          options={dropdownData.sections || []}
-          getOptionLabel={(option) => option?.section__section_name || ''}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='Section'
-              placeholder='Section'
-            />
-          )}
-        />
-      </Grid> */}
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}

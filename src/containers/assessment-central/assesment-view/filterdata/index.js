@@ -66,19 +66,19 @@ const AssessmentFilters = ({
   }, []);
 
   useEffect(() => {
-    if(moduleId) {
-    axiosInstance
-      .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setAcademicDropdown(result.data?.data);
-        } else {
-          setAlert('error', result.data?.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
+    if (moduleId) {
+      axiosInstance
+        .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setAcademicDropdown(result.data?.data);
+          } else {
+            setAlert('error', result.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
     }
   }, [moduleId]);
 
@@ -116,7 +116,9 @@ const AssessmentFilters = ({
         academic: value,
       });
       axiosInstance
-        .get(`${endpoints.academics.branches}?session_year=${value.id}&module_id=${moduleId}`)
+        .get(
+          `${endpoints.academics.branches}?session_year=${value.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             setBranchDropdown(result.data?.data?.results);
@@ -142,10 +144,12 @@ const AssessmentFilters = ({
     if (value) {
       setFilterData({ ...filterData, branch: value });
       axiosInstance
-        .get(`${endpoints.assessmentApis.gradesList}?branch=${value.branch.id}`)
+        .get(
+          `${endpoints.academics.grades}?session_year=${filterData.academic?.id}&branch_id=${value?.branch?.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
-            setGradeDropdown(result.data?.result?.results);
+            setGradeDropdown(result.data?.data);
           } else {
             setAlert('error', result.data?.message);
           }
@@ -168,10 +172,10 @@ const AssessmentFilters = ({
     if (value) {
       setFilterData({ ...filterData, grade: value });
       axiosInstance
-        .get(`${endpoints.assessmentApis.gradesList}?gs_id=${value.id}&branch=${filterData.branch.branch.id}`)
+        .get(`${endpoints.assessmentErp.subjectList}?grade=${value?.grade_id}`)
         .then((result) => {
           if (result.data.status_code === 200) {
-            setSubjectDropdown(result.data?.result?.results);
+            setSubjectDropdown(result.data?.result);
           } else {
             setAlert('error', result.data?.message);
           }
@@ -313,7 +317,7 @@ const AssessmentFilters = ({
           className='dropdownIcon'
           value={filterData.grade || ''}
           options={gradeDropdown || []}
-          getOptionLabel={(option) => option?.grade_name || ''}
+          getOptionLabel={(option) => option?.grade__grade_name || ''}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' />
@@ -329,7 +333,7 @@ const AssessmentFilters = ({
           className='dropdownIcon'
           value={filterData.subject || ''}
           options={subjectDropdown || []}
-          getOptionLabel={(option) => option?.subject?.subject_name || ''}
+          getOptionLabel={(option) => option?.subject_name || ''}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField

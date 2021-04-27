@@ -259,16 +259,10 @@ const MultipleChoice = ({
   const handleDeleteImage = (rowIndex, imageIndex, isMatching) => {
     setLoading(true);
     const list = isMatching ? [...matchingOptionsList] : [...optionsList];
-    axios
-      .post(
-        `${endpoints.questionBank.removeFile}`,
-        {
-          file_name: list[rowIndex]['images'][imageIndex],
-        },
-        {
-          headers: { 'x-api-key': 'vikash@12345#1231' },
-        }
-      )
+    axiosInstance
+      .post(`${endpoints.assessmentErp.fileRemove}`, {
+        file_name: list[rowIndex]['images'][imageIndex],
+      })
       .then((result) => {
         if (result.data.status_code === 204) {
           if (isMatching) {

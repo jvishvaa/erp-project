@@ -375,16 +375,10 @@ const QuestionTypeFilters = ({
 
   const handleRemoveVideo = () => {
     setLoading(true);
-    axios
-      .post(
-        `${endpoints.questionBank.removeFile}`,
-        {
-          file_name: videoURL,
-        },
-        {
-          headers: { 'x-api-key': 'vikash@12345#1231' },
-        }
-      )
+    axiosInstance
+      .post(`${endpoints.assessmentErp.fileRemove}`, {
+        file_name: videoURL,
+      })
       .then((result) => {
         if (result.data.status_code === 204) {
           setVideoURL('');

@@ -343,6 +343,7 @@ export default {
     subjectList: '/assessment/subjects-list/',
     createQuestion: '/assessment/create-question/',
     fileUpload: '/assessment/file-upload/',
+    fileRemove: '/assessment/file-delete/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
   },
 
