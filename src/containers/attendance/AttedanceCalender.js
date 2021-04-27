@@ -109,6 +109,7 @@ const AttedanceCalender = () => {
   const [sevenDay, setSevenDay] = useState();
   const [studentData, setStudentData] = useState([]);
   const [teacherView, setTeacherView] = useState(true);
+  const [ backButton , setBackButton ] = useState(false);
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -155,11 +156,37 @@ const AttedanceCalender = () => {
         setSelectedBranch(history?.location?.state?.payload?.branch_id);
         setSelectedGrade(history?.location?.state?.payload?.grade_id);
         setSelectedSection(history?.location?.state?.payload?.section_id);
-        setStartDate(startDate);
-        setEndDate(endDate);
+        // setStartDate(history?.location?.state?.payload?.startDate);
+        // setEndDate(history?.location?.state?.payload?.endDate);
+        axiosInstance
+        .get(`academic/student_attendance_between_date_range/`, {
+          params: {
+            start_date: history?.location?.state?.payload?.startDate,
+            end_date: history?.location?.state?.payload?.endDate,
+            branch_id: history?.location?.state?.payload?.branch_id?.branch?.id,
+            grade_id: history?.location?.state?.payload?.grade_id?.grade_id,
+            // grade_id: 2,
+
+            section_id: history?.location?.state?.payload?.section_id?.section_id,
+            // section_id: 2,
+            academic_year: history?.location?.state?.payload?.academic_year_id?.id,
+          },
+        })
+        .then((res) => {
+          setLoading(false);
+          console.log(res, 'respond teacher');
+          setStudentDataAll(res.data);
+          let temp = [...res.data.present_list, ...res.data.absent_list];
+          setStudentData(temp);
+          setAlert('success', 'Data Sucessfully Fetched');
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
+    
       } else {
         setTeacherView(true);
-        setStudentDataAll(null);
         setSelectedAcadmeicYear('');
         setSelectedBranch([]);
         setSelectedGrade([]);
@@ -170,12 +197,41 @@ const AttedanceCalender = () => {
     if (path === '/attendance-calendar/student-view') {
       console.log(path, 'path');
       setTeacherView(false);
-      setStudentDataAll(null);
-      setCurrentEvent(null);
+      axiosInstance
+        .get(`academic/student_calender/`, {
+          params: {
+            start_date: history?.location?.state?.payload?.startDate,
+            end_date: history?.location?.state?.payload?.endDate,
+            erp_id: userName[0],
+          },
+        })
+        .then((res) => {
+          setLoading(false);
+          console.log(res, 'respond student');
+          setStudentDataAll(res.data);
+          let temp = [...res.data.present_list, ...res.data.absent_list];
+          setStudentData(temp);
+          setAlert('success', 'Data Sucessfully Fetched');
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
+      
     }
   }, [path]);
 
   useEffect(() => {
+    // if (history?.location?.state?.backButtonStatus ) {
+    //   if (path === '/attendance-calendar/teacher-view') {
+    //     console.log(path, 'path');
+    //     setTeacherView(true);
+    //   }
+    //   if (path === '/attendance-calendar/student-view') {
+    //     console.log(path, 'path');
+    //     setTeacherView(false);
+    //   }
+    // } else {
     if (path === '/attendance-calendar/teacher-view') {
       console.log(path, 'path');
       setTeacherView(true);
@@ -186,6 +242,7 @@ const AttedanceCalender = () => {
       setTeacherView(false);
       setStudentDataAll(null);
     }
+  
   }, [path]);
 
   useEffect(() => {
@@ -204,6 +261,9 @@ const AttedanceCalender = () => {
     setSelectedBranch([]);
     setSelectedGrade([]);
     setSelectedSection([]);
+    setStudentDataAll(null);
+    setCurrentEvent(null);
+    setCounter(2);
   };
 
   function callApi(api, key) {
@@ -908,7 +968,9 @@ const AttedanceCalender = () => {
                       </span>
                     </Button>
                   ) : (
-                    <div></div>
+                    <>
+                  <p id="teacherUpdate" >Updated 1 day ago</p>
+                  </>
                   )}
                 </Grid>
               </div>
@@ -919,9 +981,11 @@ const AttedanceCalender = () => {
                   </Typography>
                 </Grid>
                 {teacherView === false ? (
-                  <p className='erpId'>erp_id :{userName[0]}</p>
+                  <p className='erpId'>ERP_ID :{userName[0]}</p>
                 ) : (
-                  <></>
+                  <>
+                  <p id="studentPara" >Updated 1 day ago</p>
+                  </>
                 )}
                 {/* <KeyboardArrowDownIcon className='downIcon' /> */}
               </div>
@@ -1036,7 +1100,7 @@ const AttedanceCalender = () => {
                   <Button
                     size='small'
                     href={`/createEvent`}
-                    className='mark-attndance-button'
+                    className='add-event-button'
                   >
                     {/* ADD EVENT */}
                     <span className={classes.contentData} id='event-text'>
@@ -1061,8 +1125,8 @@ const AttedanceCalender = () => {
               </div>
             </Grid>
             {studentDataAll != null ? (
-              <Paper elevation={1} className='eventGrid'>
-                <Divider />
+              <div className='eventGrid'>
+                <Divider className="event-divider" />
                 <div className='eventList'>
                   {studentDataAll.events &&
                     studentDataAll.events.map((data) => (
@@ -1104,7 +1168,7 @@ const AttedanceCalender = () => {
                       </Typography>
                     ))}
                 </div>
-              </Paper>
+              </div>
             ) : (
               <div className='noImgEvent'>
                 <img src={Group} width='100%' className='noDataImgEvent' />
