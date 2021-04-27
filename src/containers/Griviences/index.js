@@ -50,6 +50,7 @@ const GravienceHome = () => {
       .then((result) => {
         console.log(result, 'list data');
         if (result.status == 200) {
+          console.log(result,'list-tickets ddata')
           setGravienceList(result.data.data.results);
         } else {
           setAlert('error', result.data.message);
