@@ -37,6 +37,7 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import MediaQuery from 'react-responsive';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
+import { id } from 'date-fns/locale';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
@@ -81,12 +82,39 @@ const Attendance = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
-  const [totalGenre, setTotalGenre] = useState(null);
+  const [totalGenre, setTotalGenre] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const [studentView, setStudentView] = useState(false);
-  const limit = 8;
+  const limit = 14;
   //  let path = window.location.pathname;
   //  console.log(path, 'path');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Calendar & Attendance' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Calendar') {
+              setModuleId(item.child_id);
+              console.log(item.child_id, 'Chekk');
+            }
+            if (item.child_name === 'Student Calendar') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+    console.log(history);
+    if (history?.location?.state?.payload) {
+      console.log('vinod');
+    }
+  }, []);
+  console.log(moduleId, 'MODULE_ID');
   useEffect(() => {
     let path = window.location.pathname;
     console.log(path, 'path');
@@ -103,31 +131,7 @@ const Attendance = () => {
         setStudentName(history?.location?.state?.studentData);
         console.log(history?.location?.state?.payload?.branch_id);
         // console.log(history?.location?.state?.studentData[0]?.student)
-        axiosInstance
-          .get(
-            `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&user_id=${history?.location?.state?.studentData[0]?.user_id}&page_num=${pageNumber}&page_size=${limit}`
-          )
-          // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
-          .then((res) => {
-            if (res.status == 200) {
-              setTotalGenre(res.data.count);
-              console.log(res.data.count);
-              console.log(res.data.results, 'single student data');
-              setData(res.data.results);
-              setAlert('success', 'Data Successfully fetched');
-              if (res?.data?.message) {
-                // alert(res?.data?.message)
-              } else console.log(res.data.message);
-            }
-            if (res.status == 400) {
-              console.log(res.message);
-              setAlert('error', res.message);
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            // setAlert('error', 'something went wrong');
-          });
+        getAllData();
       } else {
         const date = new Date();
         console.log(
@@ -141,39 +145,69 @@ const Attendance = () => {
     }
     if (history?.location?.pathname === '/student-view/attendance') {
       // setAlert('warning', 'testing');
-      setStartDate(history?.location?.state?.payload?.startDate);
-      setEndDate(history?.location?.state?.payload?.endDate);
-      setStudentName(history?.location?.state?.data[0]?.student_name);
-      setStudentView(true);
-      console.log();
-      axiosInstance
-        .get(
-          `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&user_id=${history?.location?.state?.data[0]?.student_id}&page_num=${pageNumber}&page_size=${limit}`
-        )
-        // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
-        .then((res) => {
-          if (res.status == 200) {
-            setTotalGenre(res.data.count);
-            console.log(res.data.count);
-            console.log(res.data.results, 'single student data');
-            setData(res.data.results);
-            setAlert('success', 'Data Successfully fetched');
-            if (res?.data?.message) {
-              // alert(res?.data?.message)
-            } else console.log(res.data.message);
-          }
-          if (res.status == 400) {
-            console.log(res.message);
-            setAlert('error', res.message);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          // setAlert('error', 'something went wrong');
-        });
+      getAllStudentsData();
     }
   }, []);
 
+  const getAllData = () => {
+    axiosInstance
+      .get(
+        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${history?.location?.state?.studentData[0]?.erp_id}&page=${pageNumber}&page_size=${limit}`
+      )
+      .then((res) => {
+        if (res.status == 200) {
+          setTotalGenre(res.data.count);
+          console.log(res.data.count);
+          console.log(res.data.results, 'single student data');
+          setData(res.data.results);
+          setAlert('success', 'Data Successfully fetched');
+          if (res?.data?.message) {
+            // alert(res?.data?.message)
+          } else console.log(res.data.message);
+        }
+        if (res.status == 400) {
+          console.log(res.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        // setAlert('error', 'something went wrong');
+      });
+  };
+
+  const getAllStudentsData = () => {
+    setStartDate(history?.location?.state?.payload?.startDate);
+    setEndDate(history?.location?.state?.payload?.endDate);
+    setStudentName(history?.location?.state?.data[0]?.student_name);
+    setStudentView(true);
+    let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
+    console.log(userName[0], 'userName');
+    axiosInstance
+      .get(
+        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName[0]}&page=${pageNumber}&page_size=${limit}`
+      )
+      // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
+      .then((res) => {
+        if (res.status == 200) {
+          setTotalGenre(res.data.count);
+          console.log(res.data.count);
+          console.log(res.data.results, 'single student data');
+          setData(res.data.results);
+          setAlert('success', 'Data Successfully fetched');
+          if (res?.data?.message) {
+            // alert(res?.data?.message)
+          } else console.log(res.data.message);
+        }
+        if (res.status == 400) {
+          console.log(res.message);
+          setAlert('error', res.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        // setAlert('error', 'something went wrong');
+      });
+  };
   const getAllStudents = () => {
     console.log('checking all students');
     axiosInstance
@@ -204,14 +238,30 @@ const Attendance = () => {
     }
   };
   const handleBack = () => {
+    const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: startDate,
+      endDate: endDate,
+    };
     if (history?.location?.pathname === '/teacher-view/attendance') {
       history.push({
-        pathname: '/attendance-calendar/teacher-view',
+        pathname: '/OverallAttendance',
+        state: {
+          payload,
+          backButtonStatus: true,
+        },
       });
     }
     if (history?.location?.pathname === '/student-view/attendance') {
       history.push({
         pathname: '/attendance-calendar/student-view',
+        state: {
+          payload,
+          backButtonStatus: true,
+        },
       });
     }
   };
@@ -282,10 +332,67 @@ const Attendance = () => {
       });
   }
   const handlePagination = (event, page) => {
-    setPageNumber(page);
-    // setGenreActiveListResponse([]);
-    // setGenreInActiveListResponse([]);
-    // getData();
+    console.log(page, 'page number checking');
+    if (history?.location?.pathname === '/student-view/attendance') {
+      setPageNumber(page);
+      setStartDate(history?.location?.state?.payload?.startDate);
+      setEndDate(history?.location?.state?.payload?.endDate);
+      setStudentName(history?.location?.state?.data[0]?.student_name);
+      setStudentView(true);
+      let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
+      console.log(userName[0], 'userName');
+      axiosInstance
+        .get(
+          `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName[0]}&page=${page}&page_size=${limit}`
+        )
+        // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
+        .then((res) => {
+          if (res.status == 200) {
+            setTotalGenre(res.data.count);
+            console.log(res.data.count);
+            console.log(res.data.results, 'single student data');
+            setData(res.data.results);
+            setAlert('success', 'Data Successfully fetched');
+            if (res?.data?.message) {
+              // alert(res?.data?.message)
+            } else console.log(res.data.message);
+          }
+          if (res.status == 400) {
+            console.log(res.message);
+            setAlert('error', res.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          // setAlert('error', 'something went wrong');
+        });
+    }
+    if (history?.location?.pathname === '/teacher-view/attendance') {
+      setPageNumber(page);
+      axiosInstance
+        .get(
+          `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${history?.location?.state?.studentData[0]?.erp_id}&page=${page}&page_size=${limit}`
+        )
+        .then((res) => {
+          if (res.status == 200) {
+            setTotalGenre(res.data.count);
+            console.log(res.data.count);
+            console.log(res.data.results, 'single student data');
+            setData(res.data.results);
+            setAlert('success', 'Data Successfully fetched');
+            if (res?.data?.message) {
+              // alert(res?.data?.message)
+            } else console.log(res.data.message);
+          }
+          if (res.status == 400) {
+            console.log(res.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          // setAlert('error', 'something went wrong');
+        });
+    }
   };
   const handleClearAll = () => {
     setSelectedAcadmeicYear('');
@@ -357,7 +464,7 @@ const Attendance = () => {
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper' style={{ marginLeft: '-10px' }}>
+      <div className='profile_breadcrumb_wrapper'>
         <CommonBreadcrumbs componentName='Attendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
@@ -379,6 +486,7 @@ const Attendance = () => {
               // handleEndDateChange={handleEndDateChange}
 
               value={startDate}
+              maxDate={new Date()}
               style={{ background: 'white', width: '50%' }}
               // onChange={handleDateChange}
               KeyboardButtonProps={{
@@ -590,7 +698,7 @@ const Attendance = () => {
         <Grid item md={11} xs={12}>
           <Divider />
         </Grid>
-        <Grid container direction='row' style={{ margin: '1%' }}>
+        <Grid container direction='row' style={{ marginLeft: '1%' }}>
           {/* <Grid item md={2} xs={6}>
             <StyledClearButton
               variant='contained'
@@ -601,11 +709,7 @@ const Attendance = () => {
             </StyledClearButton>
           </Grid> */}
           <Grid item md={2} xs={6}>
-            <StyledClearButton
-              variant='contained'
-              startIcon={<ClearIcon />}
-              onClick={handleBack}
-            >
+            <StyledClearButton variant='contained' onClick={handleBack}>
               back
             </StyledClearButton>
           </Grid>
@@ -622,40 +726,54 @@ const Attendance = () => {
           </Grid> */}
         </Grid>
       </Grid>
-
-      <br />
-      <br />
-
       <MediaQuery minWidth={541}>
-        <Grid container direction='row' className={classes.root} spacing={3}>
+        <Grid
+          container
+          direction='row'
+          className={classes.root}
+          spacing={3}
+          alignItems='center'
+          alignContent='center'
+        >
           {/* <Grid item md={1}></Grid> */}
 
-          <Grid item sm={2} md={2}>
-            <Typography variant='subtitle2' color='primary'>
-              {!studentView && (
-                <strong>{studentName && studentName[0].name.slice(0, 6)}</strong>
-              )}
-              {studentView && (
-                <strong>
-                  {history?.location?.state?.data[0]?.student_name.slice(0, 6)}
-                </strong>
-              )}
-            </Typography>
-          </Grid>
-          <Grid item sm={1} md={1}>
-            <img src={line} className={classes.lines} />
-          </Grid>
+          <Grid
+            item
+            xs={12}
+            md={4}
+            container
+            direction='row'
+            alignItems='center'
+            alignContent='center'
+          >
+            <Grid item sm={2} md={2}>
+              <Typography variant='subtitle2' color='primary'>
+                {!studentView && (
+                  <strong>
+                    {studentName && studentName[0].student_name.slice(0, 6)}
+                  </strong>
+                )}
+                {studentView && (
+                  <strong>
+                    {history?.location?.state?.data[0]?.student_name.slice(0, 6)}
+                  </strong>
+                )}
+              </Typography>
+            </Grid>
+            <Grid item sm={1} md={1}>
+              <img src={line} className={classes.lines} />
+            </Grid>
 
-          <Grid item sm={2} md={3}>
-            <Typography variant='subtitle2' color='primary'>
-              {startDate} to {endDate}
-            </Typography>
+            <Grid item sm={2} md={7}>
+              <Typography variant='subtitle2' color='primary'>
+                {startDate} to {endDate}
+              </Typography>
+            </Grid>
+            <Grid item sm={1} md={1}>
+              <img src={line} className={classes.lines} />
+            </Grid>
           </Grid>
-          <Grid item sm={1} md={1}>
-            <img src={line} className={classes.lines} />
-          </Grid>
-
-          <Grid item xs={12} md={5}>
+          <Grid item xs={12} md={6} container direction='row'>
             <FormGroup row className='checkboxStyle'>
               <FormControlLabel
                 control={
@@ -663,7 +781,7 @@ const Attendance = () => {
                     checked={state.present}
                     onChange={handleChange}
                     name='present'
-                    disabled={state.absent}
+                    disabled={state.absent || state.first_half || state.second_half}
                     color='primary'
                   />
                 }
@@ -676,7 +794,7 @@ const Attendance = () => {
                     onChange={handleChange}
                     name='absent'
                     color='primary'
-                    disabled={state.present || (state.first_half && state.second_half)}
+                    disabled={state.present || state.first_half || state.second_half}
                   />
                 }
                 label='Absent'
@@ -688,7 +806,7 @@ const Attendance = () => {
                     onChange={handleChange}
                     name='first_half'
                     color='primary'
-                    disabled={state.present || state.absent}
+                    disabled={state.present || state.absent || state.second_half}
                   />
                 }
                 label='1st half'
@@ -700,7 +818,7 @@ const Attendance = () => {
                     onChange={handleChange}
                     name='second_half'
                     color='primary'
-                    disabled={state.present || state.absent}
+                    disabled={state.present || state.absent || state.first_half}
                   />
                 }
                 label='2nd half'
@@ -725,12 +843,12 @@ const Attendance = () => {
         <Grid item xs={12} md={12}>
           <Divider />
         </Grid>
-        <br />
       </Grid>
 
       <Grid container direction='row' className={classes.root} spacing={3}>
         {data &&
           data
+            .sort((a, b) => b.date - a.date)
             .filter((item, index) => {
               if (state.first_half && state.second_half) {
                 return item.first_shift && item.second_shift;
@@ -773,32 +891,32 @@ const Attendance = () => {
                             {item.first_shift && item.second_shift && (
                               <Grid>
                                 <p class='box3'>
-                                  <span class='content1'>1st</span>
-                                  <span class='content'>2nd</span>
+                                  <span class='test1'>1st</span>
+                                  <span class='test2'>2nd</span>
                                 </p>
                               </Grid>
                             )}
                             {item.first_shift && !item.second_shift && (
                               <Grid>
-                                <p class='box'>
-                                  <span class='content1'>1st</span>
-                                  <span class='content'>2nd</span>
+                                <p class='box5'>
+                                  <span class='test1'>1st</span>
+                                  <span class='test2'>2nd</span>
                                 </p>
                               </Grid>
                             )}
                             {!item.first_shift && item.second_shift && (
                               <Grid>
                                 <p class='box1'>
-                                  <span class='content1'>1st</span>
-                                  <span class='content'>2nd</span>
+                                  <span class='test1'>1st</span>
+                                  <span class='test2'>2nd</span>
                                 </p>
                               </Grid>
                             )}
                             {!item.first_shift && !item.second_shift && (
                               <Grid>
                                 <p class='box2'>
-                                  <span class='content1'>1st</span>
-                                  <span class='content'>2nd</span>
+                                  <span class='test1'>1st</span>
+                                  <span class='test2'>2nd</span>
                                 </p>
                               </Grid>
                             )}
@@ -832,10 +950,10 @@ const Attendance = () => {
         </div>
       )}
       <Grid container justify='center'>
-        {totalGenre > 9 && (
+        {data && totalGenre > 14 && (
           <Pagination
             onChange={handlePagination}
-            style={{ paddingLeft: '150px' }}
+            // style={{ paddingLeft: '150px' }}
             count={Math.ceil(totalGenre / limit)}
             color='primary'
             page={pageNumber}

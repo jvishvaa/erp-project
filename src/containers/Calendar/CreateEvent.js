@@ -307,7 +307,7 @@ const CreateEvent = () => {
   return (
     <>
       <Layout>
-        <div className='profile_breadcrumb_wrapper' style={{ marginLeft: '-10px' }}>
+        <div className='profile_breadcrumb_wrapper' >
           <CommonBreadcrumbs componentName='Create Event' />
         </div>
         <form>
@@ -352,7 +352,7 @@ const CreateEvent = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={3} xs={12}>
+              <Grid item md={2} xs={12}>
                 <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
@@ -387,7 +387,7 @@ const CreateEvent = () => {
                   )}
                 />
               </Grid>
-              <Grid item md={3} xs={12}>
+              <Grid item md={2} xs={12}>
                 <Autocomplete
                   // multiple
                   style={{ width: '100%' }}
@@ -428,7 +428,7 @@ const CreateEvent = () => {
                   )}
                 />
               </Grid>
-              <Grid item md={3} xs={12}>
+              <Grid item md={2} xs={12}>
                 <Autocomplete
                   // multiple
                   style={{ width: '100%' }}
@@ -467,7 +467,7 @@ const CreateEvent = () => {
                   )}
                 />
               </Grid>
-              <Grid item md={3} xs={12}>
+              <Grid item md={2} xs={12}>
                 <Autocomplete
                   // multiple
                   style={{ width: '100%' }}
@@ -564,6 +564,7 @@ const CreateEvent = () => {
                   </Grid>
                   <Grid item lg={1} md={1} sm={1}>
                     <FormControlLabel
+                      style={{ marginLeft: '-110%',marginTop:'-20%' }}
                       name
                       control={<Checkbox onChange={is_full_day} />}
                       label='All Day'
@@ -579,7 +580,7 @@ const CreateEvent = () => {
                   <MuiPickersUtilsProvider utils={MomentUtils}>
                     <KeyboardTimePicker
                       size='small'
-                      style={{ width: '50%' }}
+                      style={{ width: '50%', marginTop:'-5%' }}
                       className='arrow conte'
                       id='time-picker'
                       label='Start Time'
@@ -597,7 +598,7 @@ const CreateEvent = () => {
                     <KeyboardTimePicker
                       size='small'
                       // margin="normal"
-                      style={{ width: '50%' }}
+                      style={{ width: '50%', marginTop:'-5%' }}
                       className='helperText'
                       className='arrow conte'
                       id='time-picker'
@@ -616,10 +617,11 @@ const CreateEvent = () => {
                 </div>
               </Grid>
               <Grid item md={1} sm={1}>
-                <img src={LineAtt} className='im' />
+                <img src={LineAtt} className='im' style={{marginTop:'-60px'}} />
               </Grid>
               <Grid item md={1} sm={2}>
                 <FormControlLabel
+                  style={{ marginLeft: '-110%', marginTop:'-35%' }}
                   value='top'
                   control={<Checkbox onChange={is_first_half} />}
                   label='1st Half'
@@ -629,6 +631,7 @@ const CreateEvent = () => {
               </Grid>
               <Grid item md={1} sm={2}>
                 <FormControlLabel
+                  style={{ marginLeft: '-125%',marginTop:'-35%' }}
                   value='top'
                   control={<Checkbox onChange={is_second_half} />}
                   label='2nd Half'
@@ -657,18 +660,18 @@ const CreateEvent = () => {
                 />
               </Grid>
             </Grid>
-            <Grid container direction='row' className={classes.root}>
-              <Grid item md={3} lg={2} xs={12}>
+            <Grid container direction='row' className={classes.root }>
+              <Grid item md={1} lg={1} xs={12} >
                 <Button variant='contained' onClick={onunHandleClearAll}>
                   Clear All
                 </Button>
               </Grid>
-              <Grid item md={3} lg={2} xs={12}>
-                <Button size='large' onClick={handleBackButtonClick}>
-                  Back
+              <Grid item md={2} lg={1} xs={12}>
+                <Button variant='contained' color='primary' onClick={handleBackButtonClick} style={{ marginLeft: '5%'}}>
+                  Go Back
                 </Button>
               </Grid>
-              <Grid item md={3} lg={2} xs={12}>
+              <Grid item md={1} lg={1} xs={12}>
                 <Button
                   variant='contained'
                   type='submit'
@@ -1016,14 +1019,14 @@ const CreateEvent = () => {
                 <Button
                   onClick={handleBackButtonClick}
                   style={{
-                    marginLeft: '36%',
+                    marginLeft: '25%',
                     marginTop: '7%',
-                    paddingLeft: '4%',
-                    paddingRight: '4%',
+                    paddingLeft: '11%',
+                    paddingRight: '11%',
                   }}
                   size='large'
                 >
-                  Back
+                  Go Back
                 </Button>
               </Grid>
             </Grid>

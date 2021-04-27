@@ -299,7 +299,10 @@ const StudentPromotion = ({ classes, session, branches, fetchAllFeePlans, feePla
         section: sectionData && sectionData.value
       }
       studentPromotionList(data, alert, user)
-      fetchAllFeePlans(sessionData && sessionData.value, gradeData && gradeData.value, branchData && branchData.value, alert, user)
+      let year =  sessionData && sessionData.value
+      let nextYear = year.split('-')
+      let nextFeePlanYear = (+nextYear[0] + 1 )+ '-' + (+nextYear[1] + 1)
+      fetchAllFeePlans(nextFeePlanYear, gradeData && gradeData.value, branchData && branchData.value, alert, user)
     }
     setDisplayStudentList(true)
   }
@@ -356,7 +359,7 @@ const StudentPromotion = ({ classes, session, branches, fetchAllFeePlans, feePla
       grade: gradeData && gradeData.value,
       section: sectionId && sectionId,
       promoted_student_list: studentListCanPromoted,
-      fee_plan:ChangedFeePlanId
+      fee_plan: ChangedFeePlanId
     }
     sendStudentPromotionList(data, alert, user)
     setStudentListCanPromoted(null)
