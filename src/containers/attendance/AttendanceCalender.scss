@@ -1,7 +1,8 @@
 .absentContainer {
   .absentHeader {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    padding: 0 1rem;
     color: #042955;
   }
   .MuiDivider-root {
@@ -213,7 +214,7 @@
     margin-left: 10px;
     padding: 0 10px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     width: 40%;
     background: #f3b8b4;
     border-radius: 7px;
@@ -228,6 +229,7 @@
     display: flex;
     justify-content: center;
     border-radius: 10px;
+    margin-right: 5px;
     }
     .flagImgToday{
       width: 15px;
@@ -329,6 +331,9 @@
   // height: fit-content !important;
   height: 410px !important ;
   width: 300px;
+  .add-event-button:hover{
+    background-color: #FF6B6B;
+  }
   .noImgEvent {
     display: flex;
     justify-content: center;

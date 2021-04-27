@@ -1100,7 +1100,7 @@ const AttedanceCalender = () => {
                   <Button
                     size='small'
                     href={`/createEvent`}
-                    className='mark-attndance-button'
+                    className='add-event-button'
                   >
                     {/* ADD EVENT */}
                     <span className={classes.contentData} id='event-text'>
