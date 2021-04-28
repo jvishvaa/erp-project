@@ -305,6 +305,7 @@ const Attend = () => {
       color: '#8C8C8C',
       borderRadius: '10px',
       height: '42px',
+      marginLeft: '20px',
       marginTop: 'auto',
     },
   })(Button);
@@ -316,6 +317,7 @@ const Attend = () => {
       height: '42px',
       borderRadius: '10px',
       padding: '12px 40px',
+      marginLeft: '20px',
       marginTop: 'auto',
       '&:hover': {
         backgroundColor: '#FF6B6B',
@@ -382,7 +384,7 @@ const Attend = () => {
         direction='row'
         className={classes.root}
         spacing={2}
-        style={{ border: '1x solid red' }}
+        // style={{ border: '1x solid red' }}
       >
         <Grid item md={6} xs={12} className='items'>
           <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -580,12 +582,12 @@ const Attend = () => {
           <Divider />
         </Grid>
       </Grid>
-      <Grid container direction='row' spacing={2}>
+      {/* <Grid container direction='row' spacing={2}>
         <Grid item xs={12} md={1}>
           <StyledClearButton
             variant='contained'
             onClick={handleBack}
-            style={{ marginLeft: '20px' }}
+            // style={{ marginLeft: '20px' }}
           >
             Back
           </StyledClearButton>
@@ -595,11 +597,39 @@ const Attend = () => {
             variant='contained'
             startIcon={<ClearIcon />}
             onClick={handleClearAll}
-            style={{ marginLeft: '30px' }}
+            // style={{ marginLeft: '30px' }}
           >
             Clear all
           </StyledClearButton>
         </Grid>
+        <Grid item xs={12} md={2}>
+          <StyledFilterButton
+            variant='contained'
+            color='secondary'
+            startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+            className={classes.filterButton}
+            onClick={handleFilter}
+          >
+            filter
+          </StyledFilterButton>
+        </Grid>
+      </Grid> */}
+      <Grid container direction='row' spacing={2}>
+        <Grid item xs={12} md={1}>
+          <StyledClearButton variant='contained' onClick={handleBack}>
+            Back
+          </StyledClearButton>
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <StyledClearButton
+            variant='contained'
+            startIcon={<ClearIcon />}
+            onClick={handleClearAll}
+          >
+            Clear all
+          </StyledClearButton>
+        </Grid>
+
         <Grid item xs={12} md={2}>
           <StyledFilterButton
             variant='contained'
