@@ -454,6 +454,7 @@ const AttedanceCalender = () => {
         .catch((error) => {
           setLoading(false);
           setAlert('error', 'no attendance');
+          setStudentDataAll(null);
           console.log(error);
         });
     }
@@ -486,6 +487,7 @@ const AttedanceCalender = () => {
         .catch((error) => {
           setLoading(false);
           setAlert('error', 'no attendance');
+          setStudentDataAll(null);
           console.log(error);
         });
     }
@@ -511,6 +513,7 @@ const AttedanceCalender = () => {
       .catch((error) => {
         setLoading(false);
         setAlert('error', 'no attendance');
+        setStudentDataAll(null);
         console.log(error);
       });
   };
@@ -536,6 +539,7 @@ const AttedanceCalender = () => {
         .catch((error) => {
           setLoading(false);
           setAlert('error', 'no attendance');
+          setStudentDataAll(null);
           console.log(error);
         });
     }
@@ -562,6 +566,7 @@ const AttedanceCalender = () => {
         .catch((error) => {
           setLoading(false);
           setAlert('error', 'no attendance');
+          setStudentDataAll(null);
           console.log(error);
         });
     }
