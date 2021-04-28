@@ -34,6 +34,7 @@
       background: red;
       border-radius: 30px;
       color: white;
+    width: 74px;
     }
   }
   .chipDays {
@@ -162,8 +163,9 @@
   }
   .presentHeader {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     color: #042955;
+    padding: 0 1rem;
   }
  
   .presentFName {
@@ -177,6 +179,7 @@
     background: lightgreen;
     border-radius: 30px;
     color: black;
+    width: 74px;
   }
 }
 .todayEventContainer {
