@@ -493,10 +493,10 @@ function App({ alert }) {
                           <Route exact path='/online-class/create-class'>
                             {({ match }) => <CreateClass match={match} />}
                           </Route>
-                          <Route exact path='/erp-online-class/assign/qp'>
+                          <Route exact path='/erp-online-class/assign/:id/qp'>
                           {({ match }) => <AssignQP match={match} />}
                           </Route>
-                          <Route exact path='/erp-online-class/pre-quiz'>
+                          <Route exact path='/erp-online-class/:id/pre-quiz'>
                           {({ match }) => <PreQuiz match={match} />}
                           </Route>
                           <Route path='/quiz/:onlineclassId'>
