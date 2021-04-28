@@ -147,6 +147,7 @@ const CreateEvent = () => {
         end_time: endTime,
         event_category: eventType,
 
+        academic_year:selectedAcademicYear.id,
         branch: selectedBranch.branch.id,
         grade: selectedGrade.grade_id,
         section: selectedSection.section_id,
