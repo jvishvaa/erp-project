@@ -9,7 +9,7 @@ import { InternalPageStatus } from '../../../../mp-quiz-utils';
 import '../../../styles/question_view.css';
 import '../../../styles/anim.css';
 
-function QuestionHandler() {
+function QuestionHandler(props) {
   const {
     fetchQuizQp,
     quizQp: { fetch, fetching, fetchFailed, message },
@@ -20,7 +20,7 @@ function QuestionHandler() {
   React.useEffect(() => {
     const {
       params: { lobby_identifier: lobbyIdentifier, question_paper: questionPaper } = {},
-    } = constants;
+    } = props || {};
     const dataProp = {
       queryParamObj: {
         question_paper: questionPaper,

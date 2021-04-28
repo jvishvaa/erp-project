@@ -470,7 +470,7 @@ export function HostQuizContainerContent({params}) {
   );
 }
 
-export function JoineeQuizContainerContent() {
+export function JoineeQuizContainerContent(props) {
   // const { isMuted } = this.state
   // const wbData = {}
   // Object.keys(this.props).filter(key => key.includes('wb_')).forEach(keyName => {
@@ -488,7 +488,7 @@ export function JoineeQuizContainerContent() {
         bgms={this.props.bgms}
         isMuted={isMuted}
       /> */}
-      <QuestionHandlerHome />
+      <QuestionHandlerHome params={props.params} />
       {/* <div>
         <p>Question handler comp comes here</p>
       </div> */}
