@@ -181,7 +181,7 @@ const MarkAttedance = () => {
               ((item.first_name && item.first_name.slice(0, 10)) || '') +
               ' ' +
               ((item.last_name && item.last_name.slice(0, 1)) || ''),
-            student_id: item.erp_id,
+            student_id: item.user,
             section_mapping_id: selectedSection.section_id,
             remarks: 'none',
             is_first_shift_present: item.is_first_shift_present,
@@ -195,7 +195,7 @@ const MarkAttedance = () => {
               ((item.first_name && item.first_name.slice(0, 10)) || '') +
               ' ' +
               ((item.last_name && item.last_name.slice(0, 1)) || ''),
-            student_id: item.erp_id,
+            student_id: item.user,
             section_mapping_id: selectedSection.section_id,
             remarks: 'none',
             is_first_shift_present: item.is_first_shift_present,
@@ -280,7 +280,7 @@ const MarkAttedance = () => {
             ((item.first_name && item.first_name.slice(0, 10)) || '') +
             ' ' +
             ((item.last_name && item.last_name.slice(0, 1)) || ''),
-          student_id: item.erp_id,
+          student_id: item.user,
           section_mapping_id: sec,
           remarks: 'none',
           is_first_shift_present: item.is_first_shift_present,
@@ -294,7 +294,7 @@ const MarkAttedance = () => {
             ((item.first_name && item.first_name.slice(0, 10)) || '') +
             ' ' +
             ((item.last_name && item.last_name.slice(0, 1)) || ''),
-          student_id: item.erp_id,
+          student_id: item.user,
           section_mapping_id: sec,
           remarks: 'none',
           is_first_shift_present: item.is_first_shift_present,
@@ -456,7 +456,7 @@ const MarkAttedance = () => {
             ((item.first_name && item.first_name.slice(0, 10)) || '') +
             ' ' +
             ((item.last_name && item.last_name.slice(0, 1)) || ''),
-          student_id: item.erp_id,
+          student_id: item.user,
           section_mapping_id: selectedSection.id,
           remarks: 'none',
           is_first_shift_present: item.is_first_shift_present,
@@ -842,6 +842,7 @@ const MarkAttedance = () => {
                 color='secondary'
                 className={classes.filterButton}
                 onClick={handleSave}
+                style={{ marginLeft: '30px' }}
               >
                 Save{' '}
               </StyledFilterButton>
