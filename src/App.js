@@ -12,6 +12,7 @@ import AssignRole from './containers/communication/assign-role/assign-role';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
 import ChapterTypeTable from './containers/master-management/chapter-type/chapter-type-table';
+import TopicTable from './containers/master-management/topic/TopicTable'
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
 // import './assets/styles/styles.scss';
 import UserManagement from './containers/user-management';
@@ -499,7 +500,7 @@ function App({ alert }) {
                           <Route exact path='/erp-online-class/:id/pre-quiz'>
                           {({ match }) => <PreQuiz match={match} />}
                           </Route>
-                          <Route path='/quiz/:onlineclassId'>
+                          <Route path='/erp-online-class/:onlineclassId/quiz/:questionpaperId/:lobbyuuid'>
                           {({match})=><MultiplayerQuiz match={match} />}
                           </Route>
                           {/* <Route exact path='/online-class/view-class'>
@@ -523,6 +524,9 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/master-management/chapter-type-table'>
                             {({ match }) => <ChapterTypeTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/topic-table'>
+                            {({ match }) => <TopicTable match={match} />}
                           </Route>
                           <Route exact path='/master-management/branch-table'>
                             {({ match }) => <BranchTable match={match} />}
