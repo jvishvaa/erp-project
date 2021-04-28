@@ -15,7 +15,7 @@ let postSeven;
 const RangeCalender = (props) => {
   // let date = new Date();
   const [state, setState] = useState([
-    { startDate: new Date(), endDate: addDays(new Date(), -6), key: 'selection' },
+    { endDate: new Date(), startDate: addDays(new Date(), -6), key: 'selection' },
   ]);
   console.log(state.startDate, state.endDate, 'wadawda');
   const [stateMonthly, setStateMonthly] = useState([
@@ -111,28 +111,32 @@ const RangeCalender = (props) => {
 
   const handleDateRange = (item) => {
     console.log(item);
-    if(item.selection.startDate === item.selection.endDate){
-      setState([{
-        startDate: item.selection.startDate,
-        endDate: addDays(new Date(item.selection.startDate), -6),
-        key: 'selection',
-      }])
+    if (item.selection.startDate === item.selection.endDate) {
+      setState([
+        {
+          endDate: item.selection.startDate,
+          startDate: addDays(new Date(item.selection.startDate), -6),
+          key: 'selection',
+        },
+      ]);
     }
-    if(item.selection.startDate !== item.selection.endDate) {
-      setState([{
-        startDate: item.selection.endDate,
-        endDate: addDays(new Date(item.selection.endDate), -6),
-        key: 'selection',
-      }])
+    if (item.selection.startDate !== item.selection.endDate) {
+      setState([
+        {
+          endDate: item.selection.endDate,
+          startDate: addDays(new Date(item.selection.endDate), -6),
+          key: 'selection',
+        },
+      ]);
     }
-  }
+  };
 
   return (
     <div className='calender-container'>
       {props.counter === 2 ? (
         <div className='weeklyCalendar'>
           <DateRangePicker
-            onChange={(item) => handleDateRange(item) }
+            onChange={(item) => handleDateRange(item)}
             //showSelectionPreview={true}
             moveRangeOnFirstSelection={false}
             //months={1}
