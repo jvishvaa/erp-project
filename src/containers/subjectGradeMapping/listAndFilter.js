@@ -66,7 +66,7 @@ const ListandFilter = (props) => {
               item.child_module.length > 0
             ) {
               item.child_module.forEach((item) => {
-                if (item.child_name === 'Lesson Plan Mapping') {
+                if (item.child_name === 'Content Mapping') {
                   setModuleId(item.child_id);
                 }
               });
