@@ -1,0 +1,69 @@
+@import '../timetable.scss';
+
+//***********************For-mobile-view**********************//
+
+.mobile-table-view {
+  h4{
+    color: #014b7e;
+    margin: 6px 1px;
+    font-size: 20px;
+    font-family: $font-roboto;
+  }
+  .display-box-mobile-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .display-box-mobile {
+    @include box-border();
+    width: 74%;
+  }
+  @include display-container();
+  .field-container {
+    margin-top: 12%;
+  }
+  .field-container-button {
+    margin-top: 10%;
+    background: #ff6b6b;
+    height: 34px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .day-calander-data {
+    cursor: pointer;
+  }
+  & :hover {
+    color: #ff6b6b;
+  }
+  & :active {
+    color: #ff6b6b;
+  }
+  .mobile-calander-header {
+    display: flex;
+    justify-content: space-evenly;
+    color: $text-color;
+  }
+  .period-details-container-mobile {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    h4 {
+      font-size: 20px;
+      margin: 10px 8px;
+      color: $text-color;
+      font-family: $font-roboto;
+    }
+    p {
+      font-size: 20px;
+      font-family: $font-roboto;
+      margin: 10px 8px;
+      color: $text-color;
+    }
+  }
+}

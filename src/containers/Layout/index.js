@@ -17,9 +17,13 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import TodayIcon from '@material-ui/icons/Today';
 import MoreIcon from '@material-ui/icons/More';
 import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
+import ContactPhoneRoundedIcon from '@material-ui/icons/ContactPhoneRounded';
+// import TodayIcon from '@material-ui/icons/Today';
+import AssessmentSharpIcon from '@material-ui/icons/AssessmentSharp';
 import {
   Popper,
   Fade,
@@ -38,11 +42,11 @@ import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import clsx from 'clsx';
-
+import EventAvailableIcon from '@material-ui/icons/EventAvailable';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-
+import EventNoteIcon from '@material-ui/icons/EventNote';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Grow from '@material-ui/core/Grow';
@@ -57,14 +61,16 @@ import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
 import logoMobile from '../../assets/images/logo_mobile.png';
-
+import online_classpng from '../../assets/images/Online classes-01.svg';
 import logo from '../../assets/images/logo.png';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserInfo from '../../components/user-info';
+import PublishIcon from '@material-ui/icons/Publish';
 
 export const ContainerContext = createContext();
 
@@ -408,7 +414,7 @@ const Layout = ({ children, history }) => {
         history.push('/user-management');
         break;
       }
-      case 'Ebook View':{
+      case 'Ebook View': {
         history.push('/ebook/view');
         break;
       }
@@ -472,6 +478,14 @@ const Layout = ({ children, history }) => {
         history.push('/master-management/signature-upload');
         break;
       }
+      case 'Event Category': {
+        history.push('/master-management/event-category');
+        break;
+      }
+      case 'Discussion Category': {
+        history.push('/master-management/discussion-category');
+        break;
+      }
       case 'Course': {
         history.push('/course-list');
         break;
@@ -516,6 +530,14 @@ const Layout = ({ children, history }) => {
         history.push('/feeType/RegistrationFee');
         break;
       }
+      case 'Teacher Calendar': {
+        history.push('/attendance-calendar/teacher-view');
+        break;
+      }
+      case 'Student Calendar': {
+        history.push('/attendance-calendar/student-view');
+        break;
+      }
       case 'Management Report': {
         history.push('/lesson-plan/report');
         break;
@@ -542,9 +564,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Principal Blogs': {
         history.push('/blog/principal');
+        break;
       }
       case 'Application/registration Receipt Book': {
-        history.push('/finance/Application/registration/ReceiptBook')
+        history.push('/finance/Application/registration/ReceiptBook');
         break;
       }
       case 'Genre': {
@@ -564,7 +587,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Student Shuffle': {
-        history.push('/finance/StudentShuffleRequest')
+        history.push('/finance/StudentShuffleRequest');
         break;
       }
       // case 'Assessment': {
@@ -575,26 +598,30 @@ const Layout = ({ children, history }) => {
       //   history.push('/assessment/view-assessment');
       //   break;
       // }
-    case 'Question Bank' : {
-      history.push('/question-bank');
-      break;
-    }
-    case 'Question Paper' : {
-      history.push('/assessment-question');
-      break;
-    }
-    case 'Create Test': {
-      history.push('/assesment');
-      break;
-    }
-    case 'Take Test': {
-      history.push('/assessment');
-      break;
-    }
-    //   { name: 'Question Bank', Path: '/question-bank' },
-    // { name: 'Question Paper', Path: '/assessment-question' },
-    // { name: 'Create Test', Path: '/assesment' },
-    // { name: 'Take Test', Path: '/assessment' }
+      case 'Question Bank': {
+        history.push('/question-bank');
+        break;
+      }
+      case 'Question Paper': {
+        history.push('/assessment-question');
+        break;
+      }
+      case 'Create Test': {
+        history.push('/assesment');
+        break;
+      }
+      case 'Take Test': {
+        history.push('/assessment');
+        break;
+      }
+      case 'Assessment Report': {
+        history.push('/assessment-reports');
+        break;
+      }
+      //   { name: 'Question Bank', Path: '/question-bank' },
+      // { name: 'Question Paper', Path: '/assessment-question' },
+      // { name: 'Create Test', Path: '/assesment' },
+      // { name: 'Take Test', Path: '/assessment' }
       // case 'ID Cards': {
       //   history.push('/student-id-card');
       //   break;
@@ -655,282 +682,294 @@ const Layout = ({ children, history }) => {
         history.push('/finance/Ledger');
         break;
       }
-      case 'Total Paid and Due Report' : {
+      case 'Total Paid and Due Report': {
         history.push('/finance/TotalPaidReport');
         break;
       }
       case 'Other Fee Total Paid and Due Report': {
-        history.push('/finance/OtherFeeTotalPaidReport')
+        history.push('/finance/OtherFeeTotalPaidReport');
         break;
       }
       case 'Tally Report': {
-        history.push('/finance/TallyReport')
+        history.push('/finance/TallyReport');
         break;
       }
       case 'Application/registration Receipt Book': {
-        history.push('/finance/Application/registration/ReceiptBook')
+        history.push('/finance/Application/registration/ReceiptBook');
         break;
       }
       case 'Wallet Report': {
-        history.push('/finance/WalletReport')
+        history.push('/finance/WalletReport');
         break;
       }
       case 'Concession Report': {
-        history.push('/finance/ConcessionReport')
+        history.push('/finance/ConcessionReport');
         break;
       }
       case 'Bounce Report': {
-        history.push('/finance/ChequeBounceReport')
+        history.push('/finance/ChequeBounceReport');
         break;
       }
       case 'Student Shuffle': {
-        history.push('/finance/StudentShuffleRequest')
+        history.push('/finance/StudentShuffleRequest');
         break;
       }
       case 'Misc. Fee Class': {
-        history.push('/finance/MiscFeeClass')
+        history.push('/finance/MiscFeeClass');
         break;
       }
       case 'Assign Coupon': {
-        history.push('/finance/AssignCoupon')
+        history.push('/finance/AssignCoupon');
         break;
       }
       case 'Create Coupon': {
-        history.push('/finance/CreateCoupon')
+        history.push('/finance/CreateCoupon');
         break;
       }
       case 'Deposit': {
-        history.push('/finance/DepositTab')
+        history.push('/finance/DepositTab');
         break;
       }
       case 'Total Forms & Report': {
-        history.push('/finance/TotalFormReport')
+        history.push('/finance/TotalFormReport');
         break;
       }
       case 'Unassign Fee Requests': {
-        history.push('/finance/UnassignFeeRequests')
+        history.push('/finance/UnassignFeeRequests');
         break;
       }
       case 'Create Receipt Ranges': {
-      history.push('/finance/ReceiptRange')
+        history.push('/finance/ReceiptRange');
         break;
       }
       case 'Store Report': {
-        history.push('/finance/StoreReport')
-          break;
-        }
-        case 'Ledger Tab': {
-          history.push('/student/LegerTab')
-            break;
-          }
-        case 'Registration Form': {
-          history.push('/admissions/registrationForm/')
-            break;
-          }
-          case 'Admission Form': {
-            history.push('/finance/accountant/admissionForm')
-              break;
-            }
-            case 'Application Form': {
-              history.push('/finance/accountant/applicationFrom')
-                break;
-              }
-            case 'Online Admissions': {
-              history.push('/finance/admissions/OnlineAdmission')
-                break;
-              }
-            case 'Manage Bank & Fee Accounts': {
-              history.push('/finance/BankAndFeeAccounts')
-                break;
-              }
-            case 'Last Date Settings': {
-              history.push('/finance/Setting/LastDateSetting')
-                break;
-              }
-            case 'Receipt Settings': {
-              history.push('/finance/Setting/ReceiptSettings')
-                  break;
-              }
-            case 'Fee Structure Upload': {
-              history.push('/finance/BulkOperation/Feestructure')
-                break;
-              }
-            case 'Student Wallet': {
-              history.push('/finance/StudentWallet')
-                break;
-              }
-              case 'Fee Collection': {
-                history.push('/finance/student/FeeCollection')
-                  break;
-                }
-              case 'Assign Delivery charge kit books & uniform': {
-                history.push('/finance/student/AssignDeliveryCharge')
-                  break;
-                }    
-              case 'Assign / Change fee plan': {
-                history.push('/finance/student/ChnageFeePlanToStudent'  )
-                  break;
-                } 
-              case 'Bulk Report Upload': {
-                history.push('/finance/BulkOperation/BulkReportUpload')
-                  break;
-                }
-             case 'Bulk Upload Status': {
-                history.push('/finance/BulkOperation/BulkUploadStatus')
-                  break;
-                }  
-              case 'Upload Online Payments': {
-                history.push('/finance/BulkOperation/UploadOnlinePayment')
-                  break;
-                }
-              case 'Permanent Active / Inactive': {
-                history.push('/finance/BulkOperation/BulkActiveInactive')
-                  break;
-                }
-              case 'Temporary Active / Inactive': {
-                history.push('/finance/BulkOperation/BulkActiveInactiveParent')
-                  break;
-                } 
-              case 'Active/Inactive': {
-                history.push('/finance/Student/ActiveInactive')
-                  break;
-                }
-                case 'Student Active/Inactive': {
-                  history.push('/finance/Student/ActiveInactive/Admin')
-                    break;
-                  }
-              case 'Student Promotion': {
-                history.push('/finance/Student/StudentPromotion')
-                  break;
-                }  
-              case 'QR code': {
-                history.push('/finance/Student/OqCodeGenerate')
-                  break;
-                }
-              case 'Communications': {
-                history.push('/finance/Student/Communication')
-                  break;
-                }
-              case 'Income Tax Certificate': {
-                history.push('/finance/Student/IncomeTaxCertificate')
-                  break;
-                }
-              case 'Fee Pay Request': {
-                history.push('/finance/Approval/Requests/FeePaymentRequests')
-                  break;
-                }
-              case 'Store Pay Request': {
-                history.push('/finance/Approval/Requests/StorePaymentRequests')
-                  break;
-                }
-              case 'Accept and Reject payments': {
-                history.push('/finance/Approval/Requests/AcceptRejectPayment')
-                  break;
-                }
-              case 'Post Dated cheque': {
-                history.push('/finance/Approval/Requests/PostDateCheque')
-                  break;
-                }
-              case 'Billing Details': {
-                history.push('/finance/E-Mandate/BillingDetails')
-                  break;
-                }
-                case 'Generate Subsequent Payment': {
-                  history.push('/finance/E-Mandate/GenerateSubsequentPayment')
-                    break;
-                  }
-                case 'Add Branch': {
-                  history.push('/finance/E-Mandate/AddBranch')
-                    break;
-                  }
-              case 'Customer Details': {
-                history.push('/finance/E-Mandate/CustomerDetails')
-                  break;
-                } 
-              case 'Add Customer Details': {
-                history.push('/finance/E-Mandate/AdminCustomerDetails')
-                break;
-              }
-              case 'Add Order Details': {
-                  history.push('/finance/E-Mandate/OrderDetails')
-                    break;
-                  }
-              case 'Order Details': {
-                  history.push('/finance/E-Mandate/OrderDetails')
-                    break;
-                 }
-              case 'Total Billing Details': {
-                  history.push('/finance/E-Mandate/TotalBillingDetails')
-                    break;
-                  }
-              case 'Create Link': {
-                  history.push('/finance/E-Mandate/CreateLink')
-                    break;
-                  }
-              case 'Petty Cash Expense': {
-                  history.push('/finance/Expanse Management/PettyExpense')
-                    break;
-                  }
-              case 'Student Info': {
-                  history.push('/finance/student/studentInfo')
-                    break;
-                  }
-              case 'Party List': {
-                  history.push('/finance/Expanse Management/PartyList')
-                    break;
-                  }
-              case 'Student Shuffle Requests': {
-                  history.push('/finance/Approval/Requests/StudentShuffleRequest')
-                    break;
-                  }
-              case 'Manage Payment': {
-                  history.push('/finance/ManagePayments')
-                    break;
-                  }
-              case 'Fee Structure': {
-                  history.push('/finance/FeeStructure')
-                    break;
-                  }
-              case 'Books & Uniform': {
-                  history.push('/finance/BooksAndUniform')
-                    break;
-                  }
-              case 'Shipping Payment': {
-                  history.push('/finance/ShippingPayment')
-                      break;
-                  }
-              case 'School store': {
-                  history.push('/Store/AddItems')
-                    break;
-                  }
-              case 'Kit': {
-                  history.push('/Store/CreateKit')
-                    break;
-                  }
-              case 'sub Category allow' : {
-                  history.push('/Store/SubCategoryAllow')
-                    break;
-                  }
-              case 'Accountant Login' : {
-                  history.push('/finance/BulkOperation/AccountantLogin')
-                    break;
-                  }
-              case 'Add Gst' : {
-                  history.push('/Store/AddGst')
-                    break;
-                  }
-              case 'Order Status Upload' : {
-                  history.push('/Store/OrderStatusUpload')
-                      break;
-                  }
-              case 'Receipt Book' : {
-                  history.push('/finance/ReceiptBook')
-                      break;
-                  }
-                  case 'Transactions Report' : {
-                    history.push('/finance/TransactionStatus')
-                        break;
-                    }
+        history.push('/finance/StoreReport');
+        break;
+      }
+      case 'Ledger Tab': {
+        history.push('/student/LegerTab');
+        break;
+      }
+      case 'Registration Form': {
+        history.push('/admissions/registrationForm/');
+        break;
+      }
+      case 'Admission Form': {
+        history.push('/finance/accountant/admissionForm');
+        break;
+      }
+      case 'Application Form': {
+        history.push('/finance/accountant/applicationFrom');
+        break;
+      }
+      case 'Online Admissions': {
+        history.push('/finance/admissions/OnlineAdmission');
+        break;
+      }
+      case 'Manage Bank & Fee Accounts': {
+        history.push('/finance/BankAndFeeAccounts');
+        break;
+      }
+      case 'Last Date Settings': {
+        history.push('/finance/Setting/LastDateSetting');
+        break;
+      }
+      case 'Receipt Settings': {
+        history.push('/finance/Setting/ReceiptSettings');
+        break;
+      }
+      case 'Fee Structure Upload': {
+        history.push('/finance/BulkOperation/Feestructure');
+        break;
+      }
+      case 'Student Wallet': {
+        history.push('/finance/StudentWallet');
+        break;
+      }
+      case 'Fee Collection': {
+        history.push('/finance/student/FeeCollection');
+        break;
+      }
+      case 'Assign Delivery charge kit books & uniform': {
+        history.push('/finance/student/AssignDeliveryCharge');
+        break;
+      }
+      case 'Assign / Change fee plan': {
+        history.push('/finance/student/ChnageFeePlanToStudent');
+        break;
+      }
+      case 'Bulk Report Upload': {
+        history.push('/finance/BulkOperation/BulkReportUpload');
+        break;
+      }
+      case 'Bulk Upload Status': {
+        history.push('/finance/BulkOperation/BulkUploadStatus');
+        break;
+      }
+      case 'Upload Online Payments': {
+        history.push('/finance/BulkOperation/UploadOnlinePayment');
+        break;
+      }
+      case 'Permanent Active / Inactive': {
+        history.push('/finance/BulkOperation/BulkActiveInactive');
+        break;
+      }
+      case 'Temporary Active / Inactive': {
+        history.push('/finance/BulkOperation/BulkActiveInactiveParent');
+        break;
+      }
+      case 'Active/Inactive': {
+        history.push('/finance/Student/ActiveInactive');
+        break;
+      }
+      case 'Student Active/Inactive': {
+        history.push('/finance/Student/ActiveInactive/Admin');
+        break;
+      }
+      case 'Student Promotion': {
+        history.push('/finance/Student/StudentPromotion');
+        break;
+      }
+      case 'QR code': {
+        history.push('/finance/Student/OqCodeGenerate');
+        break;
+      }
+      case 'Communications': {
+        history.push('/finance/Student/Communication');
+        break;
+      }
+      case 'Income Tax Certificate': {
+        history.push('/finance/Student/IncomeTaxCertificate');
+        break;
+      }
+      case 'Fee Pay Request': {
+        history.push('/finance/Approval/Requests/FeePaymentRequests');
+        break;
+      }
+      case 'Store Pay Request': {
+        history.push('/finance/Approval/Requests/StorePaymentRequests');
+        break;
+      }
+      case 'Accept and Reject payments': {
+        history.push('/finance/Approval/Requests/AcceptRejectPayment');
+        break;
+      }
+      case 'Post Dated cheque': {
+        history.push('/finance/Approval/Requests/PostDateCheque');
+        break;
+      }
+      case 'Billing Details': {
+        history.push('/finance/E-Mandate/BillingDetails');
+        break;
+      }
+      case 'Generate Subsequent Payment': {
+        history.push('/finance/E-Mandate/GenerateSubsequentPayment');
+        break;
+      }
+      case 'Add Branch': {
+        history.push('/finance/E-Mandate/AddBranch');
+        break;
+      }
+      case 'Customer Details': {
+        history.push('/finance/E-Mandate/CustomerDetails');
+        break;
+      }
+      case 'Add Customer Details': {
+        history.push('/finance/E-Mandate/AdminCustomerDetails');
+        break;
+      }
+      case 'Add Order Details': {
+        history.push('/finance/E-Mandate/OrderDetails');
+        break;
+      }
+      case 'Order Details': {
+        history.push('/finance/E-Mandate/OrderDetails');
+        break;
+      }
+      case 'Total Billing Details': {
+        history.push('/finance/E-Mandate/TotalBillingDetails');
+        break;
+      }
+      case 'Create Link': {
+        history.push('/finance/E-Mandate/CreateLink');
+        break;
+      }
+      case 'Petty Cash Expense': {
+        history.push('/finance/Expanse Management/PettyExpense');
+        break;
+      }
+      case 'Student Info': {
+        history.push('/finance/student/studentInfo');
+        break;
+      }
+      case 'Party List': {
+        history.push('/finance/Expanse Management/PartyList');
+        break;
+      }
+      case 'Student Shuffle Requests': {
+        history.push('/finance/Approval/Requests/StudentShuffleRequest');
+        break;
+      }
+      case 'Manage Payment': {
+        history.push('/finance/ManagePayments');
+        break;
+      }
+      case 'Fee Structure': {
+        history.push('/finance/FeeStructure');
+        break;
+      }
+      case 'Books & Uniform': {
+        history.push('/finance/BooksAndUniform');
+        break;
+      }
+      case 'Shipping Payment': {
+        history.push('/finance/ShippingPayment');
+        break;
+      }
+      case 'School store': {
+        history.push('/Store/AddItems');
+        break;
+      }
+      case 'Kit': {
+        history.push('/Store/CreateKit');
+        break;
+      }
+      case 'sub Category allow': {
+        history.push('/Store/SubCategoryAllow');
+        break;
+      }
+      case 'Accountant Login': {
+        history.push('/finance/BulkOperation/AccountantLogin');
+        break;
+      }
+      case 'Add Gst': {
+        history.push('/Store/AddGst');
+        break;
+      }
+      case 'Order Status Upload': {
+        history.push('/Store/OrderStatusUpload');
+        break;
+      }
+      case 'Receipt Book': {
+        history.push('/finance/ReceiptBook');
+        break;
+      }
+      case 'Transactions Report': {
+        history.push('/finance/TransactionStatus');
+        break;
+      }
+      case 'Teacher Time Table': {
+        history.push('/time-table/teacher-view');
+        break;
+      }
+      case 'Student Time Table': {
+        history.push('/time-table/student-view');
+        break;
+      }
+      case 'Contact Us': {
+        history.push('/contact-us');
+        break;
+      }
       default:
         break;
     }
@@ -1324,24 +1363,6 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-          {/* {drawerOpen ? (
-            <ListItem
-              button
-              className={
-                history.location.pathname === '/profile' ? 'menu_selection' : null
-              }
-              onClick={() => {
-                history.push('/profile');
-              }}
-            >
-              {' '}
-              <ListItemIcon className={classes.menuItemIcon}>
-                <AssignmentIndIcon />
-              </ListItemIcon>
-              <ListItemText className='menu-item-text'>View Profile</ListItemText>
-            </ListItem>
-          ) : null} */}
-
           {navigationData && drawerOpen && navigationData.length > 0 && (
             <DrawerMenu
               superUser={superUser}

@@ -20,6 +20,7 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import { discussionData } from './discussionData';
+import { Pagination } from '@material-ui/lab';
 
 const bgColor = [
   '#EFFFB2',
@@ -98,13 +99,13 @@ const useStyles = makeStyles((theme) => ({
 
 const StyledButton = withStyles({
   root: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#FF6B6B !important',
     color: '#FFFFFF',
     height: '42px',
     borderRadius: '10px',
     marginTop: 'auto',
     '&:hover': {
-      backgroundColor: '#FF6B6B',
+      backgroundColor: '#FF6B6B !important',
     },
   },
   startIcon: {
@@ -120,6 +121,9 @@ const StyledOutlinedButton = withStyles({
     border: '1px solid #FF6B6B',
     borderRadius: '10px',
     backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   },
 })(Button);
 
@@ -133,6 +137,9 @@ const StyledFilterButton = withStyles({
     float: 'right',
     textTransform: 'capitalize',
     backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   },
   iconSize: {},
 })(Button);
@@ -219,22 +226,29 @@ const Category = (props) => {
   const [moduleId, setModuleId] = React.useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const personalInfo = JSON.parse(localStorage.getItem('personal_info')) || {};
   const [categoryList, setCategoryList] = React.useState([]);
   const [value, setValue] = React.useState(0);
+  const [deleteEdit, setDeleteEdit] = React.useState(true);
+  const [page, setPage] = React.useState(1);
+  const [totalCount, setTotalCount] = React.useState();
+  const limit = 6;
 
   const hideFilter = () => {
     props.handleFilter();
   };
 
-  console.log(userDetails, 'userDetails');
+  const handleDeleteEdit = () => {
+    setDeleteEdit(!deleteEdit);
+  }
 
-  const handleCategoryId = (id) => {
-    setCategoryId(id);
-  };
+  // const handleCategoryId = (id) => {
+  //   setCategoryId(id);
+  // };
 
   const handleMYActivity = () => {
     axiosInstance
-      .get(`${endpoints.discussionForum.postList}?page=1&my_activity=1`)
+      .get(`${endpoints.discussionForum.filterCategory}?page=1&my_activity=1`)
       .then((res) => {
         setPostList(res.data.data.results);
       })
@@ -254,24 +268,24 @@ const Category = (props) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
     setCategoryId(newValue)
-    // categoryList.map((tab, id) => {
-    //   if(id === newValue){
-    //     setCategoryId(tab.id)
-    //   }
-    // })
-    console.log('value:', newValue+ " -- " );
   };
 
   React.useEffect(() => {
     if (NavData && NavData.length) {
+      let isModuleId = false;
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Homework' &&
+          item.parent_modules === 'Discussion Forum' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Student Homework') {
+            if (item.child_name === 'Teacher Forum' && !isModuleId) {
+              isModuleId = true;
+              setModuleId(item.child_id);
+            }
+            else if (item.child_name === 'Student Forum' && !isModuleId) {
+              isModuleId = true;
               setModuleId(item.child_id);
             }
           });
@@ -282,63 +296,88 @@ const Category = (props) => {
 
   // category list
   React.useEffect(() => {
-    axiosInstance
-      .get(endpoints.discussionForum.categoryList)
-      .then((res) => {
-        console.log(res.data.result);
-        setCategoryList(res.data.result);
-      })
-      .catch((error) => console.log(error));
-  }, []);
+    if(moduleId){
+      if(location.pathname === '/student-forum' && personalInfo?.role !== "SuperUser"){
+        const grade_id = userDetails.role_details?.grades[0]?.grade_id;
+        const branch_id = userDetails.role_details?.branch[0]?.id;
+        axiosInstance
+        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&is_delete=False`)
+        .then((res) => {
+          setCategoryList(res.data.result);
+        })
+        .catch((error) => console.log(error));
+      }
+      else {
+        axiosInstance
+        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&category_type=1&is_delete=False`)
+        .then((res) => {
+          setCategoryList(res.data.result);
+        })
+        .catch((error) => console.log(error));
+      }
+    }
+  }, [moduleId]);
+
+  const getDiscussionPost = (url) => {
+    axiosInstance.get(url)
+    .then((res) => {
+      setPostList(res.data.data.results);
+      setTotalCount(res.data.data.count? res.data.data.count : res.data.data.results.length);
+    })
+    .catch((error) => console.log(error));
+  }
 
   // post list API
   React.useEffect(() => {
-    console.log(categoryId,' categoryId')
     if(moduleId) {
-      if(location.pathname === '/student-forum'){
+      if(location.pathname === '/student-forum'  && personalInfo?.role !== "SuperUser"){
         const grade_id = userDetails.role_details?.grades[0]?.grade_id;
-        console.log(' categoryId',categoryId + ' === ' + postURL);
+        const branch_id = userDetails.role_details?.branch[0]?.id;
         if(categoryId > 0) {
-          setPostURL(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&grade=${grade_id}`);
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&category=${categoryId}&page=${page}&page_size=${limit}`);
         }
         else {
-          setPostURL(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&grade=${grade_id}&category=${categoryId}`);
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&page=${page}&page_size=${limit}`);
         }
       }
       else {
+        const branchId = props.filters.branch && props.filters.branch.id !== 0 ? props.filters.branch.id : '';
         const grades =
           props.filters.grade && props.filters.grade.id !== 0 ? props.filters.grade.id : '';
         const sections =
           props.filters.section && props.filters.section.id !== 0
             ? props.filters.section.id
             : '';
+        if (categoryId === 0 && grades === '' && sections === ''){
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&page=${page}&page_size=${limit}`);
+        }
         if (categoryId !== 0 && grades === '') {
-          setPostURL(`${endpoints.discussionForum.filterCategory}?category=${categoryId}`);
-          console.log(categoryId + ' === ' + postURL);
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&category=${categoryId}&page=${page}&page_size=${limit}`);
         }
         if (categoryId === 0 && grades !== '' && sections !== '') {
-          setPostURL(
-            `${endpoints.discussionForum.filterCategory}?grade=${grades}&section=${sections}`
+          getDiscussionPost(
+            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}&section_mapping=${sections}&page=${page}&page_size=${limit}`
           );
+          // getDiscussionPost(
+          //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}`
+          // );
         }
         if (categoryId !== 0 && grades !== '' && sections !== '') {
-          //postURL = `${endpoints.discussionForum.postList}?category=${categoryId}&grade=${grades}&section=${sections}`;
-          setPostURL(
-            `${endpoints.discussionForum.filterCategory}?category=${categoryId}&grade=${grades}`
+          getDiscussionPost(
+            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch_id=${branchId}&category=${categoryId}&grade=${grades}&section_mapping=${sections}&page=${page}&page_size=${limit}`
           );
+          // getDiscussionPost(
+          //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&category=${categoryId}&grade=${grades}`
+          // );
         }
       }
-      axiosInstance
-        .get(postURL)
-        .then((res) => {
-          console.log(res.data.data);
-          setPostList(res.data.data.results);
-        })
-        .catch((error) => console.log(error));
     }
     //let postURL = endpoints.discussionForum.postList;
-  }, [props.url, props.filters, categoryId, moduleId]);
+  }, [props.url, props.filters, categoryId, moduleId, deleteEdit, page]);
 
+  const handlePagination = (event, page) => {
+        setPage(page);
+    };
   return (
     <Paper className={classes.paperStyle}>
       {props.showFilter && (
@@ -409,7 +448,6 @@ const Category = (props) => {
                   />
                 ))}
               </StyledTabs>
-              <TabPanel value={value} index={0} />
             </div>
             {/* <CategoryScrollbar categoryList={props.categoryList} categoryId={handleCategoryId} /> */}
           </Grid>
@@ -433,9 +471,18 @@ const Category = (props) => {
         </Grid>
         <Grid container>
           <Grid item xs={12}>
-            {postList.map((data, id) => (
-              <Discussion rowData={data} key={id} />
+            {postList.map((data) => (
+              <Discussion rowData={data} key={data.id} deleteEdit={handleDeleteEdit}/>
             ))}
+          </Grid>
+          <Grid item xs={12} style={{display: 'flex', justifyContent: 'center'}}>
+            <Pagination
+              onChange={handlePagination}
+              style={{ marginTop: 25}}
+              count={Math.ceil(totalCount / limit)}
+              color='primary'
+              page={page}
+            />
           </Grid>
       </Grid>
     </Paper>

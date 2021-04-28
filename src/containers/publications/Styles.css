@@ -1,0 +1,33 @@
+.bg {
+  background: #f9f9f9;
+
+  height: 20%;
+}
+.bg-card {
+  background: white;
+}
+
+.new {
+  background: #fcbfbf;
+  border-radius: 10px;
+  opacity: 1;
+}
+.flat {
+  transform: rotate(270deg);
+
+  /* background-color: #ffd9d9; */
+}
+
+.arrange {
+  margin-left: 10%;
+  background: #ffffff;
+  border-radius: 5px;
+  width: 20rem;
+}
+.ran-style {
+  background: white !important;
+}
+
+.border {
+  height: 300%;
+}

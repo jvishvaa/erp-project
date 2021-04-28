@@ -23,6 +23,15 @@ export default {
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
     courses: '/aol/courses/',
+    attendance: '/academic/student_attendance_between_date_range/',
+    showAttendance: '/academic/show_attendance/',
+    // createAttendance: '/academic/create_attendance/',
+    createAttendance: '/academic/create_or_update_attendance/',
+    studentList: '/academic/get_user_details/',
+    // singleStudentAttendance: '/academic/student_attendance_between_days/',
+    multipleStudentsAttendacne: '/academic/multiple_student_attendance_between_dates/',
+    singleStudentAttendance: '/academic/single_student_attendance_between_days/',
+    markAttendance: '/academic/bulk_create_attendance/',
   },
   profile: {
     userDetails: '/erp_user/user-data/',
@@ -30,6 +39,10 @@ export default {
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
     academicYear: '/erp_user/list-academic_year/',
+  },
+  timeTable: {
+    tableData: '/academic/time_table/',
+    editTableData: '/academic/assign_class_periods/',
   },
   communication: {
     roles: '/erp_user/roles/',
@@ -67,6 +80,8 @@ export default {
     resourceFile: '/erp_user/resource_files/',
     feedback: '/erp_user/onlineclass_attendancecheck/',
     updateTutor: '/erp_user/update_tutor_email/',
+    PreQuiz: '/mp_quiz/online-class-details/',
+    
   },
   masterManagement: {
     subjects: '/erp_user/subjects-list/',
@@ -270,8 +285,8 @@ export default {
   },
   ebook: {
     ebook: `${baseURLCentral}/ebook/ebook_school_wise_filter/`,
-    EbookUser:`${baseURLCentral}/ebook/ebook_user/`,
-    AnnotateEbook:`${baseURLCentral}/ebook/ebook_user_status/`,
+    EbookUser: `${baseURLCentral}/ebook/ebook_user/`,
+    AnnotateEbook: `${baseURLCentral}/ebook/ebook_user_status/`,
     // academicYearList: `${baseURLCentral}/erp_user/list-academic_year/`,
     // // academicYearList: '/erp_user/list-academic_year/',
     // gradeSubjectMappingList: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
@@ -282,12 +297,48 @@ export default {
     batchSizeList: '/aol/aol-course-batch/',
     getBatchList: '/erp_user/teacher_online_class/',
     cancelBatchApi: '/erp_user/cancel-online-class/',
-    hostApi:'/erp_user/redirection_zoom/',
+    hostApi: '/erp_user/redirection_zoom/',
+  },
+  grievances: {
+    section: '/erp_user/section/',
+    downloadTicket: '/academic/download_tickets/',
+    listTickets: '/academic/list_tickets/',
+    grievance_reply: '/academic/grievance_reply/',
   },
   studentViewBatchesApi: {
     getBatchesApi: '/erp_user/student_online_class/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
+  questionPaper:{
+    FETCHQP:`${baseURLCentral}/assessment/test-list/`,
+    QuestionsInQP:'/mp_quiz/mp_questions_list/',
+    AssignQP:'/mp_quiz/'
+  },
+
+
+  eventBat: {
+    getPaginatedCategories: '/academic/list_event_categories_p/', //get
+    getListCategories: '/academic/list_event_categories/', //get
+    postCreateEvent: '/academic/create_event_category/', //post
+    patchUpdateEvent: '/academic/update_event_category/', //patch
+    deleteEventCategory: '/academic/delete_event_category/', //delete
+    filterEventCategory: '/academic/filter_event_categories/', //get
+  },
+
+  CreateEvent: {
+    CreateEvent: 'academic/events/',
+    getEventCategory: 'academic/list_create_event_category/',
+  },
+  Appointments: {
+    bookedAppointmentList: 'academic/booked-appointment-list/',
+    bookAppointment: 'academic/book-appointment/',
+    updateAppointment: 'update-appointment/',
+  },
+  ContactUsAPI: {
+    getContactUsAPI: '/academic/contact/',
+    updatedeleteContact: '/academic/update_contact/',
+  },
+
   assessment: {
     assessmentResultAnalysis: `${baseURLCentral}/assessment/student-reports/`,
     questionPaperList: `/academic/assessment-list/`,
@@ -301,8 +352,19 @@ export default {
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
+  assessmentReportTypes: {
+    reportSectionWise: `${baseURLCentral}/assessment/report-section-wise/`,
+    reportTopicWise: `${baseURLCentral}/assessment/report-topic-wise/`,
+    reportClassAverage: `${baseURLCentral}/assessment/report-class-average/`,
+    reportTopicStudentAverage: `${baseURLCentral}/assessment/report-topic-student-average/`,
+  },
+  publish: {
+    ebook: `erp_user/publication/`,
+    update_delete: `erp_user/update-destroy-publication/`,
+  },
   assessmentApis: {
     gradesList: `/academic/sm-grades-list/`,
+    testList: `${baseURLCentral}/assessment/subject-test-list/`,
   },
   questionBank: {
     grades: `${baseURLCentral}/lesson_plan/list-grade/`,
@@ -314,6 +376,11 @@ export default {
     uploadFile: `${baseURLCentral}/assessment/upload-question-file/`,
     removeFile: `${baseURLCentral}/assessment/delete-s3file/`,
     deleteQuestion: `${baseURLCentral}/assessment/publish-question/`,
+    subjectList:'/assessment/subjects-list/',
+    chapterList:'/assessment/chapters/',
+    topicList:'/assessment/topics/',
+    centralTopicList:`${baseURLCentral}/assessment/topics-list/`,
+    erpQuestionList:'/assessment/questions-list/',
   },
   assementQP: {
     assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,
@@ -328,6 +395,13 @@ export default {
     BulkUploadTrueOrFalse: `${baseURLCentral}/assessment/bulk_upload_tf/`,
     BulkUploadSingleChoiceQuestion: `${baseURLCentral}/assessment/upload-sc-questions/`,
     FillBlankUploadQuestion: `${baseURLCentral}/assessment/fill_bulk_upload/`,
+  },
+  // contact us api
+  contactUs: {
+    createContact: '/academic/contact_us/',
+    getContact: '/academic/contact_us/',
+    updateContact: '/academic/contact_us_update/',
+    filterContact: '/academic/contact_us/',
   },
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,

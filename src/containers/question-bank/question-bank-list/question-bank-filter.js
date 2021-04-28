@@ -12,6 +12,7 @@ import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
 import axios from 'axios';
 import './question-bank.css';
+import { fetchAllSection } from 'containers/Finance/src/components/Finance/store/actions';
 
 const QuestionBankFilters = ({
   questionId,
@@ -33,6 +34,7 @@ const QuestionBankFilters = ({
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [volumeDropdown, setVolumeDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
+  const [sectionDropdown, setSectionDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [topicDropdown, setTopicDropdown] = useState([]);
@@ -40,6 +42,11 @@ const QuestionBankFilters = ({
 
   const [quesCatData, setQuesCatData] = useState([]);
   const [quesLevel, setQuesLevel] = useState([]);
+
+  const [is_ERP_CENTRAL,setIs_ERP_CENTRAL]=useState([
+    {id:1,flag:true,name:'ERP'},
+    {id:2,flag:false,name:'CENTRAL'}
+  ])
 
   const [mapId, setMapId] = useState('');
   const [filterData, setFilterData] = useState({
@@ -53,8 +60,8 @@ const QuestionBankFilters = ({
     topicId: '',
     question_level_option: '',
     question_categories_options: '',
+    is_erp_central:is_ERP_CENTRAL[0],
   });
-
   const question_level_option = [
     { value: 1, Question_level: 'Easy' },
     { value: 2, Question_level: 'Average' },
@@ -315,6 +322,7 @@ const QuestionBankFilters = ({
     setFilterData({
       ...filterData,
       grade: '',
+      section: '',
       subject: '',
       chapter: '',
       question_level_option: '',
@@ -332,15 +340,16 @@ const QuestionBankFilters = ({
       axiosInstance
         // .get(`${endpoints.questionBank.subjects}?grade=${value.id}`) //central_api
         .get(
-          `${endpoints.assessmentApis.gradesList}?gs_id=${value.id}&branch=${filterData.branch.branch.id}`
+          `${endpoints.questionBank.subjectList}?grade=${value.id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
-            setSubjectDropdown(result.data.result.results);
-            setMapId(result.data.result.results);
+            setSubjectDropdown(result?.data?.result);
+            // setSectionDropdown(result?.data?.data);
+            // setMapId(result.data.result.results);
             setLoading(false);
           } else {
-            setAlert('error', result.data.message);
+            setAlert('error', result?.data?.message);
             setSubjectDropdown([]);
             setChapterDropdown([]);
           }
@@ -355,6 +364,41 @@ const QuestionBankFilters = ({
     }
   };
 
+  // const handleSection = (event, value) => {
+  //   setFilterData({
+  //     ...filterData,
+  //     section: '',
+  //     subject: '',
+  //     chapter: '',
+  //     question_level_option: '',
+  //     question_categories_options: '',
+  //     quesType: '',
+  //     quesLevel: '',
+  //   });
+  //   if (value) {
+  //     setFilterData({...filterData,section:value,subject:'',chapter:''})
+  //     axiosInstance.get(
+  //       `${endpoints.academics.subjects}?session_year=${filterData.year.id}&branch=${filterData.branch.id}&grade=${filterData.grade.id}&section=${value.section_id}&module_id=${moduleId}`
+  //     )  .then((result) => {
+  //       if (result.data.status_code === 200) {
+  //         setSubjectDropdown(result?.data?.data);
+  //         // setMapId(result.data.result.results);
+  //         setLoading(false);
+  //       } else {
+  //         setAlert('error', result?.data?.message);
+  //         setSubjectDropdown([]);
+  //         setChapterDropdown([]);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setAlert('error', error?.message);
+  //       setSubjectDropdown([]);
+  //       setChapterDropdown([]);
+  //     });
+  //   }else {
+  //     setLoading(false);
+  //   }
+  // };
   const handleSubject = (event, value) => {
     setFilterData({
       ...filterData,
@@ -370,13 +414,8 @@ const QuestionBankFilters = ({
     if (value) {
       setFilterData({ ...filterData, subject: value, chapter: '', topic: '' });
       if (value) {
-        axios
-          .get(
-            `${endpoints.lessonPlan.chapterListCentral}?grade_subject=${value.subject.central_mp_id}`,
-            {
-              headers: { 'x-api-key': 'vikash@12345#1231' },
-            }
-          )
+        axiosInstance
+          .get(`${endpoints.questionBank.chapterList}?subject=${value.subject_id}`)
           .then((result) => {
             if (result.data.status_code === 200) {
               setChapterDropdown(result?.data?.result);
@@ -426,26 +465,62 @@ const QuestionBankFilters = ({
     setTopicDropdown([]);
     setLoading(true);
     if (value) {
-      setFilterData({ ...filterData, chapter: value, topic: '' });
-      if (value) {
+      setFilterData({ ...filterData, chapter: value });
+      if (value?.is_central) {
         axios
-          .get(`${endpoints.createQuestionApis.topicList}?chapter=${value.id}`, {
+          .get(`${endpoints.questionBank.centralTopicList}?chapter=${value.id}`,{
             headers: { 'x-api-key': 'vikash@12345#1231' },
+      //     
           })
           .then((result) => {
-            if (result.data.status_code === 200) {
+            if (result?.data?.status_code === 200) {
               setTopicDropdown(result?.data?.result);
               setLoading(false);
             } else {
-              setAlert('error', result.data?.message);
+              setAlert('error', result?.data?.message);
             }
           })
           .catch((error) => {
             setAlert('error', error.message);
+            setLoading(false);
           });
-      } else {
-        setLoading(false);
       }
+      if (!value?.is_central)
+        axiosInstance
+          .get(`${endpoints.questionBank.topicList}?chapter=${value.id}`)
+          .then((result) => {
+            if (result?.data?.status_code === 200) {
+              setTopicDropdown(result?.data?.result);
+              setLoading(false);
+            } else {
+              setAlert('error', result?.data?.message);
+            }
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
+            setLoading(false);
+          });
+
+      // setFilterData({ ...filterData, chapter: value, topic: '' });
+      // if (value) {
+      //   axios
+      //     .get(`${endpoints.createQuestionApis.topicList}?chapter=${value.id}`, {
+      //       headers: { 'x-api-key': 'vikash@12345#1231' },
+      //     })
+      //     .then((result) => {
+      //       if (result.data.status_code === 200) {
+      //         setTopicDropdown(result?.data?.result);
+      //         setLoading(false);
+      //       } else {
+      //         setAlert('error', result.data?.message);
+      //       }
+      //     })
+      //     .catch((error) => {
+      //       setAlert('error', error.message);
+      //     });
+      // } else {
+      //   setLoading(false);
+      // }
     } else {
       setLoading(false);
     }
@@ -469,7 +544,14 @@ const QuestionBankFilters = ({
     //   }
     // }
   };
+  function handleIsErpCentral(event,value){
+    if(value){
+      setFilterData({...filterData,is_erp_central:value})
+    }
+  }
+  
   const handleFilter = () => {
+    // console.log('ALLDATA',filterData.year,filterData.grade,filterData.subject,filterData.chapter,filterData.topicId,filterData.question_level_option,filterData.question_categories_options,filterData.quesType)
     if (!filterData?.grade) {
       setAlert('error', 'Select Grade!');
       return;
@@ -493,11 +575,16 @@ const QuestionBankFilters = ({
       return;
     }
     handlePeriodList(
-      filterData.quesType.id,
+      filterData.quesType?.id,
       quesCatData,
-      filterData.subject.subject.central_mp_id,
+      filterData.subject?.subject_id,
       quesLevel,
-      filterData.topicId
+      filterData.topicId,
+      filterData.year?.id,
+      filterData.grade?.id,
+      filterData.chapter?.id,
+      filterData.is_erp_central,
+
     );
     setSelectedIndex(-1);
 
@@ -594,6 +681,27 @@ const QuestionBankFilters = ({
             )}
           />
         </Grid>
+        {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleSection}
+            id='grade'
+            className='dropdownIcon'
+            value={filterData?.section}
+            options={sectionDropdown}
+            getOptionLabel={(option) => option?.section__section_name}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Section'
+                placeholder='Section'
+              />
+            )}
+          />
+        </Grid> */}
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -603,7 +711,7 @@ const QuestionBankFilters = ({
             className='dropdownIcon'
             value={filterData?.subject}
             options={subjectDropdown}
-            getOptionLabel={(option) => option?.subject?.subject_name}
+            getOptionLabel={(option) => option?.subject_name}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -716,6 +824,27 @@ const QuestionBankFilters = ({
                 variant='outlined'
                 label='Question Type'
                 placeholder='Question Type'
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleIsErpCentral}
+            id='Question Type'
+            className='dropdownIcon'
+            value={filterData?.is_erp_central}
+            options={is_ERP_CENTRAL}
+            getOptionLabel={(option) => option?.name}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Question From'
+                placeholder='Question From'
               />
             )}
           />

@@ -24,6 +24,7 @@ import { sectionMap } from '../../../src/containers/Finance/src/_reducers/sectio
 import { subjects } from '../../../src/containers/Finance/src/_reducers/subject.reducer.js'
 import createQuestionPaper from './create-question-paper-reducer';
 import createAssesment from './create-assesment-reducer';
+import assessmentReportReducer from '../reducers/assessmentReportReducer';
 
 export default combineReducers({
   auth,
@@ -47,4 +48,5 @@ export default combineReducers({
   subjects,
   createQuestionPaper,
   createAssesment,
+  assessmentReportReducer,
 });

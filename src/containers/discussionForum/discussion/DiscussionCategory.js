@@ -13,11 +13,12 @@ const useStyles = makeStyles({
 const DiscussionCategory = (props) => {
   const classes = useStyles({});
   const [editCategory, setEditCategory] = React.useState(false);
-  const [categoryGrid, setCategoryGrid] = React.useState(3);
+  const [categoryGrid, setCategoryGrid] = React.useState(4);
   const [itemGrid, setItemGrid] = React.useState(12);
-  const [editData, setEditData] = React.useState({});
+  const [editData, setEditData] = React.useState();
+  const [selected, setSelected] = React.useState(0);
 
-  const [showPerPage, setShowPerPage] = React.useState(8);
+  const [showPerPage, setShowPerPage] = React.useState(12);
   const [pagination, setPagination] = React.useState({
     start: 0,
     end: showPerPage,
@@ -31,16 +32,19 @@ const DiscussionCategory = (props) => {
   };
 
   const hadleEditCategory = (data) => {
-    setItemGrid(9);
-    setCategoryGrid(4);
+    setItemGrid(8);
+    setCategoryGrid(6);
     setEditCategory(true);
     setEditData(data);
+    setSelected(data?.sub_sub_category_id)
   };
 
   const hadleCloseCategory = () => {
     setItemGrid(12);
-    setCategoryGrid(3);
+    setCategoryGrid(4);
     setEditCategory(false);
+    setEditData();
+    setSelected(0)
   };
 
   // const totalCategory = props.rowData.length;
@@ -49,39 +53,45 @@ const DiscussionCategory = (props) => {
     <Grid container className={classes.discussionContainer}>
       <Grid item xs={itemGrid}>
         <Grid container>
-          {props.rowData.slice(pagination.start, pagination.end).map((data, id) => {
+          {props.rowData.map((data, id) => {
             return (
-              (props.tabValue === 'active' && props.tabValue === data.status && (
-                <Grid item xs={categoryGrid} key={id}>
+              (props.tabValue === 'active' && !data.is_delete && (
+                <Grid item sm={categoryGrid} xs={12} key={data.sub_sub_category_id}>
                   <CategoryCard
-                    id={data.id}
-                    status={data.status}
+                    id={data.category_id}
+                    data={data}
+                    selectedId={selected}
+                    status={data.is_delete}
                     category={data.category}
-                    subCategory={data.subCategory}
-                    subSubCategory={data.subSubCategory}
+                    subCategory={data.sub_category_name}
+                    subSubCategory={data.sub_sub_category_name}
                     editCategory={hadleEditCategory}
                     isEdit={editCategory}
                   />
                 </Grid>
               )) ||
-              (props.tabValue === 'inactive' && props.tabValue === data.status && (
-                <Grid item xs={categoryGrid} keys={id}>
+              (props.tabValue === 'inactive' && data.is_delete && (
+                <Grid item sm={categoryGrid} xs={12} keys={data.sub_sub_category_id}>
                   <CategoryCard
-                    id={data.id}
-                    status={data.status}
+                    id={data.category_id}
+                    data={data}
+                    selectedId={selected}
+                    status={data.is_delete}
                     category={data.category}
-                    subCategory={data.subCategory}
-                    subSubCategory={data.subSubCategory}
+                    subCategory={data.sub_category_name}
+                    subSubCategory={data.sub_sub_category_name}
                     editCategory={hadleEditCategory}
                     isEdit={editCategory}
                   />
                 </Grid>
               )) ||
               (props.tabValue === 'all' && (
-                <Grid item xs={categoryGrid} keys={id}>
+                <Grid item sm={categoryGrid} xs={12} keys={data.sub_sub_category_id}>
                   <CategoryCard
-                    id={data.id}
-                    status={data.status}
+                    id={data.category_id}
+                    data={data}
+                    selectedId={selected}
+                    status={data.is_delete}
                     category={data.category}
                     subCategory={data.sub_category_name}
                     subSubCategory={data.sub_sub_category_name}
@@ -95,17 +105,10 @@ const DiscussionCategory = (props) => {
         </Grid>
       </Grid>
       {editCategory && (
-        <Grid item xs={3}>
+        <Grid item sm={4} xs={12}>
           <CategoryEdit cardData={editData} hadleClose={hadleCloseCategory} />
         </Grid>
       )}
-      <Grid item xs={12}>
-        <DiscussionPagination
-          showPerPage={showPerPage}
-          onPaginationChange={onPaginationChange}
-          totalCategory={props.rowData.length}
-        />
-      </Grid>
     </Grid>
   );
 };
