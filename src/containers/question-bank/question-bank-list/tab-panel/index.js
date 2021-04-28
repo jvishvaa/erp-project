@@ -19,14 +19,14 @@ const useStyles = makeStyles({
     //   }
 });
 
-export default function CenteredTabs({setSelectedIndex, period,handlePeriodList,tabQueTypeId,tabQueCatId,tabMapId,tabQueLevel,setTabValue,tabValue,setPage,tabTopicId}) {
+export default function CenteredTabs({setSelectedIndex, period,handlePeriodList,tabQueTypeId,tabQueCatId,tabMapId,tabQueLevel,setTabValue,tabValue,setPage,tabTopicId,tabYearId,tabGradeId,tabChapterId}) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
 
   const handleChange =  (event, newValue) => {
     setSelectedIndex(-1);
     setTabValue(newValue);
-    handlePeriodList(tabQueTypeId,tabQueCatId,tabMapId,tabQueLevel,tabTopicId,newValue);
+    handlePeriodList(tabQueTypeId,tabQueCatId,tabMapId,tabQueLevel,tabTopicId,tabYearId,tabGradeId,tabChapterId,newValue);
     setValue(newValue);
     setPage(1);
   };
