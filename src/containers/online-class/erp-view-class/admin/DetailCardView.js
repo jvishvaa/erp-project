@@ -777,7 +777,19 @@ const JoinClass = (props) => {
         });
     }
   }
+ const handleTakeQuiz = (fullData)=>{
+   if (fullData && fullData.online_class && fullData.online_class.question_paper_id){
+   
+  history.push({
+    pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
+    state: { data: fullData.online_class.id },
+  })
+}else{
+  setAlert('error', 'This onlineclass does not have quiz associated with it.'  );
+  return
+}
 
+ }
 
   function handleHost(data) {
     setLoading(true);
@@ -808,6 +820,20 @@ const JoinClass = (props) => {
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
       </Grid>
+      {window.location.pathname === '/erp-online-class-student-view' ? (
+         <Grid item xs={3}>
+        <Button
+          size='small'
+          color='secondary'
+          fullWidth
+          variant='contained'
+          onClick={() => handleTakeQuiz(fullData)}
+          
+          className='teacherFullViewSmallButtons'
+        >
+        TakeQuiz
+        </Button>
+      </Grid>):''}
           { window.location.pathname === '/erp-online-class-teacher-view' &&fullData && fullData.online_class &&fullData.online_class.question_paper_id ?
               <Grid item xs={3}>
               <Button
@@ -817,7 +843,7 @@ const JoinClass = (props) => {
                 variant='contained'
                 onClick={() =>
                   history.push({
-                    pathname: '/erp-online-class/pre-quiz',
+                    pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
                     state: { data: fullData.online_class.id },
                   })}
                 
@@ -833,7 +859,7 @@ const JoinClass = (props) => {
             
              onClick={() =>
               history.push({
-                pathname: '/erp-online-class/assign/qp',
+                pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
                 state: { data: fullData.online_class.id },
               })}
           
