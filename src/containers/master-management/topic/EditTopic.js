@@ -9,7 +9,7 @@ import { useHistory } from 'react-router-dom';
 const EditTopic = ({topicData,setLoading,handleGoBack}) => {
     //console.log(topicData)
     const history = useHistory();
-    const topicUpdateApi ='/update-topic/';
+    const topicUpdateApi ='/topic/';
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const { setAlert } = useContext(AlertNotificationContext);

@@ -293,7 +293,7 @@ const TopicTable = () => {
                 setLoading(false);
             });
         } else {
-            axiosInstance.get(`${endpoints.masterManagement.createTopic}?all=1&page_size=${limit}&page=${page}`)
+            axiosInstance.get(`${endpoints.masterManagement.createTopic}?page_size=${limit}&page=${page}`)
             .then((res) => {
                 //console.log(res.data,'topic');
                 if (res.data.status_code === 200) {
