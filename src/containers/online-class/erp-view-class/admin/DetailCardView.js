@@ -808,24 +808,7 @@ const JoinClass = (props) => {
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
       </Grid>
-      { window.location.pathname === '/erp-online-class-teacher-view' ? (
-            <Tooltip title='Attach Question Paper'>
-            <IconButton
-            onClick={() =>
-              history.push({
-                pathname: '/erp-online-class/assign/qp',
-                state: { data: fullData.online_class.id },
-              })}
-          
-            >
-              <AttachFileIcon />
-            </IconButton>
-          </Tooltip>
-          ) : (
-            ''
-          )
-          }
-          {
+          { window.location.pathname === '/erp-online-class-teacher-view' &&fullData && fullData.online_class &&fullData.online_class.question_paper_id ?
               <Grid item xs={3}>
               <Button
                 size='small'
@@ -840,9 +823,28 @@ const JoinClass = (props) => {
                 
                 className='teacherFullViewSmallButtons'
               >
-                Quiz
+               Launch Quiz
               </Button>
-            </Grid>
+            </Grid> :
+                  window.location.pathname === '/erp-online-class-teacher-view' ? (
+                    <Tooltip title='Attach Question Paper'>
+            <IconButton
+
+            
+             onClick={() =>
+              history.push({
+                pathname: '/erp-online-class/assign/qp',
+                state: { data: fullData.online_class.id },
+              })}
+          
+            >
+              <AttachFileIcon />
+            </IconButton>
+          </Tooltip>
+          ) : (
+            ''
+          )
+          
           }
 
       {isAccept ? (
@@ -1072,7 +1074,6 @@ const DetailCardView = ({
     }
   }, [fullData]);
   */
-  // console.log(selectedClassType, '[[[[[[[[[[[[[[[[');
   useEffect(() => {
     let detailsURL =
       window.location.pathname === '/erp-online-class-student-view'

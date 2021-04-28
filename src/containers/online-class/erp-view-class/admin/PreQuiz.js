@@ -83,7 +83,7 @@ const PreQuiz = (props) => {
       const getPreQuizStatus =  () => {
 
         axiosInstance
-      .get(`${endpoints.onlineClass.PreQuiz}`, {
+      .get(`${endpoints.onlineClass.PreQuiz}?online_class=${data}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },

@@ -150,11 +150,11 @@ const AssignQP = (props) => {
 
 const handleQPSelect = (event,value) =>{
   if (value){
-    setSelectedQp(value.id)
+    setSelectedQp(value.question_paper)
   }
   axiosInstance
   .get(`${endpoints.questionPaper.QuestionsInQP}?question_paper=${
-    80
+    value.question_paper
   }`, {
     headers: {
         Authorization: `Bearer ${token}`,
