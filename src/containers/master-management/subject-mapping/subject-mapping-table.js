@@ -340,7 +340,7 @@ const SubjectMappingTable = () => {
       getUserListUrl += `&branch_name=${selectedBranch.branch.branch_name}`;
     }
     if (selectedGrades.length) {
-      const selectedGradeId = selectedGrades.map((el) => el.id);
+      const selectedGradeId = selectedGrades.map((el) => el.grade_name);
       getUserListUrl += `&grade_name=${selectedGradeId.toString()}`;
     }
     // if (selectedSections.length) {
