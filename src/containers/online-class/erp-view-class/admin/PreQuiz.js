@@ -191,6 +191,8 @@ setAlert('error', "Failed to create lobby, Please try again.");
 
 // baseURL:'http://127.0.0.1:8000/qbox'
 
+const {lobby_info:lobbyInfo} = preQuizInfo||{}
+const { is_ended=false,ended_at,lobby_identifier, question_paper } = lobbyInfo||{}
 
   return (
    <>
@@ -200,11 +202,13 @@ setAlert('error', "Failed to create lobby, Please try again.");
       <div className='message_log_breadcrumb_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
       <CommonBreadcrumbs componentName='Start Quiz' />
     {/* chks quiz ended or not */}
-    { preQuizInfo.lobby_info && preQuizInfo.lobby_info.is_ended ?       
+    {/* { preQuizInfo.lobby_info && preQuizInfo.lobby_info.is_ended ?        */}
+    {is_ended?
         <Typography style={{fontSize:'16px',fontWeight:'bold',marginTop:'150px',marginLeft:'320px'}}>Quiz has been ended at  {preQuizInfo.lobby_info && preQuizInfo.lobby_info.ended_at}</Typography>
     : 
     // chks lobby created r not 
-        preQuizInfo.lobby_info && preQuizInfo.lobby_info.lobby_identifier ? 
+        // preQuizInfo.lobby_info && preQuizInfo.lobby_info.lobby_identifier ? 
+        lobby_identifier ? 
         <div>
         <Typography style={{marginTop:'100px',marginLeft:'320px'}}>OnlineClass Name : {preQuizInfo.online_class && preQuizInfo.online_class.title}</Typography>
         <Typography style={{marginTop:'10px',marginLeft:'320px'}}>Question Paper : {preQuizInfo.online_class && preQuizInfo.online_class.test_details && preQuizInfo.online_class.test_details.test_name }</Typography>
@@ -232,7 +236,8 @@ setAlert('error', "Failed to create lobby, Please try again.");
           </div>
         : 
         // create lobby if identifier is not there
-        isOneOfTheHosts &&   preQuizInfo.lobby_info && preQuizInfo.lobby_info.lobby_identifier === ""  ?
+        // isOneOfTheHosts &&   preQuizInfo.lobby_info && preQuizInfo.lobby_info.lobby_identifier === ""  ?
+        isOneOfTheHosts ?
         <Button
         variant='contained'
         style={{ color: 'white',marginTop:'45px',marginLeft:'100px' }}
@@ -253,12 +258,15 @@ setAlert('error', "Failed to create lobby, Please try again.");
         ,
         width:'520px',height:'80px'}}>
           
-        { preQuizInfo.lobby_info && preQuizInfo.lobby_info.question_paper === "" ? 
+        {/* { preQuizInfo.lobby_info && preQuizInfo.lobby_info.question_paper === "" ?  */}
+        Quiz lobby is not created yet. Please wait untill the host creates it
+        {/* { !question_paper? 
           'This onlineclass does not have quiz associated with it.'
           : preQuizInfo.lobby_info && preQuizInfo.lobby_info.lobby_identifier === ""? 
           'Quiz lobby is not created yet. Please wait untill the host creates it'
         :
-          ''}</div>
+          'mk'} */}
+          </div>
         
         </Grid>
          
