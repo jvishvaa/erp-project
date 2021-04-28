@@ -74,6 +74,7 @@ const PreQuiz = (props) => {
   const {email}=JSON.parse(localStorage.getItem('userDetails')) || {};
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [isOneOfTheHosts,setIsOneOfTheHosts]=useState(false)
+  console.log(data,"@@@@@@@@@@@@@@@@")
   if(email === preQuizInfo && preQuizInfo.tutor_details && preQuizInfo.tutor_details.email ){
     setIsOneOfTheHosts(true)
   }
@@ -83,7 +84,7 @@ const PreQuiz = (props) => {
       const getPreQuizStatus =  () => {
 
         axiosInstance
-      .get(`${endpoints.onlineClass.PreQuiz}`, {
+      .get(`${endpoints.onlineClass.PreQuiz}?online_class=${data}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
