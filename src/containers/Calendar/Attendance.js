@@ -480,7 +480,8 @@ const Attendance = () => {
               label='StartDate'
               name='start_date'
               inputVariant='outlined'
-              className='arrow'
+              // className='arrow'
+              className='dropdownIcon'
               onChange={handleStartDateChange}
               // handleStartDateChange={handleStartDateChange}
               // handleEndDateChange={handleEndDateChange}
@@ -507,7 +508,8 @@ const Attendance = () => {
               variant='standard'
               name='end_date'
               inputVariant='outlined'
-              className='arrow'
+              // className='arrow'
+              className='dropdownIcon'
               onChange={handleEndDateChange}
               value={endDate}
               style={{ background: 'white', width: '50%' }}
@@ -750,12 +752,12 @@ const Attendance = () => {
               <Typography variant='subtitle2' color='primary'>
                 {!studentView && (
                   <strong>
-                    {studentName && studentName[0].student_name.slice(0, 10)}
+                    {studentName && studentName[0].student_first_name.slice(0, 10)}
                   </strong>
                 )}
                 {studentView && (
                   <strong>
-                    {history?.location?.state?.data[0]?.student_name.slice(0, 10)}
+                    {history?.location?.state?.data[0]?.student_first_name.slice(0, 10)}
                   </strong>
                 )}
               </Typography>
