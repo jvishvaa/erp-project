@@ -842,6 +842,7 @@ const MarkAttedance = () => {
                 color='secondary'
                 className={classes.filterButton}
                 onClick={handleSave}
+                style={{ marginLeft: '30px' }}
               >
                 Save{' '}
               </StyledFilterButton>
