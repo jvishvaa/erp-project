@@ -49,21 +49,21 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
             setAlert('error', error.message);
         })
 
-    axiosInstance.get(`${endpoints.masterManagement.volumes}`)
-        .then(result => {
-            if (result.data.status_code === 200) {
-                setVolumeDropdown(result.data.result.results);
-            } else {
-                setAlert('error', result.data.message);
-            }
-        }).catch(error => {
-            setAlert('error', error.message);
-        })
+    // axiosInstance.get(`${endpoints.masterManagement.volumes}`)
+    //     .then(result => {
+    //         if (result.data.status_code === 200) {
+    //             setVolumeDropdown(result.data.result.results);
+    //         } else {
+    //             setAlert('error', result.data.message);
+    //         }
+    //     }).catch(error => {
+    //         setAlert('error', error.message);
+    //     })
 
-    axiosInstance.get(`${endpoints.masterManagement.grades}`)
+    axiosInstance.get(`${endpoints.academics.grades}?branch_id=1&module_id=212`)
         .then(result => {
             if (result.data.status_code === 200) {
-                setGradeDropdown(result.data.result.results);
+                setGradeDropdown(result.data.data);
             } else {
                 setAlert('error', result.data.message);
             }
@@ -73,9 +73,9 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
 }, [])
 
     useEffect(() => {
-        if(filterData.year.id && filterData.volume.id && filterData.subject.id)
+        if(filterData.year.id && filterData.subject.id)
         {
-            axiosInstance.get(`${endpoints.masterManagement.chapters}?academic_year=${filterData.year.id}&grade_subject=${filterData.subject.id}`)
+            axiosInstance.get(`${endpoints.masterManagement.chapter}?subject=${filterData.subject.id}`)
             .then((res) => {
                 console.log(res.data, 'chapter')
                 setChapterDropdown(res.data.result);
@@ -136,10 +136,10 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
     setFilterData({ ...filterData, grade: '' });
     if (value) {
         setFilterData({ ...filterData, grade: value });
-        axiosInstance.get(`${endpoints.masterManagement.gradeSubjectMappingList}?grade=${value.id}`)
+        axiosInstance.get(`${endpoints.masterManagement.subjects}?grade=${value.grade_id}&branch=1`)
             .then(result => {
                 if (result.data.status_code === 200) {
-                    setSubjectDropdown(result.data.result.results);
+                    setSubjectDropdown(result.data.data.results);
                 }
                 else {
                     setAlert('error', result.data.message);
@@ -194,7 +194,7 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
                             )}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
+                    {/* <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
                         <Autocomplete
                             size='small'
                             onChange={handleVolume}
@@ -214,7 +214,7 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
                                 />
                             )}
                         />
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
                         <Autocomplete
                             size='small'
@@ -223,7 +223,7 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
                             id='grade'
                             options={gradeDropdown}
                             value={filterData.grade}
-                            getOptionLabel={(option) => option?.grade_name}
+                            getOptionLabel={(option) => option?.grade__grade_name}
                             filterSelectedOptions
                             renderInput={(params) => (
                                 <TextField
@@ -244,7 +244,7 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
                             id='grade'
                             options={subjectDropdown}
                             value={filterData.subject}
-                            getOptionLabel={(option) => option?.subject?.subject_name}
+                            getOptionLabel={(option) => option?.subject_name}
                             filterSelectedOptions
                             renderInput={(params) => (
                                 <TextField

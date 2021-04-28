@@ -144,7 +144,7 @@ const TopicTable = () => {
     };
 
     useEffect(() => {
-        axiosInstance.get(`${endpoints.academics.grades}?branch_id=1`)
+        axiosInstance.get(`${endpoints.academics.grades}?branch_id=1&module_id=212`)
         .then(result => {
             if (result.data.status_code === 200) {
                 setGradeDropdown(result.data.data);
@@ -278,14 +278,14 @@ const TopicTable = () => {
     useEffect(() => {
         setLoading(true);
         if(filterData.chapter.id){
-            axiosInstance.get(`${endpoints.masterManagement.createTopic}?chapter=${filterData.chapter.id}&page=${page}`)
+            axiosInstance.get(`${endpoints.masterManagement.createTopic}?chapter=${filterData.chapter.id}&page=${page}&page_size=${limit}`)
             .then((res) => {
                 console.log(res.data,'topic');
                 if (res.data.status_code === 200) {
                     setLoading(false);
-                    let count = res.data.result ? res.data.result.length : 0;
-                    setTotalCount(res.data.count? res.data.count : count);
-                    setTopicList(res.data.result);
+                    let count = res.data.result.results ? res.data.result.results.length : 0;
+                    setTotalCount(res.data.result.count? res.data.result.count : count);
+                    setTopicList(res.data.result.results);
                 }
             })
             .catch((error) => {
@@ -298,8 +298,8 @@ const TopicTable = () => {
                 //console.log(res.data,'topic');
                 if (res.data.status_code === 200) {
                     setLoading(false);
-                    setTotalCount(res.data.count);
-                    setTopicList(res.data.result);
+                    setTotalCount(res.data.result.count);
+                    setTopicList(res.data.result.results);
                 } else {
                     setLoading(false);
                     setAlert('error', res.data.message);
