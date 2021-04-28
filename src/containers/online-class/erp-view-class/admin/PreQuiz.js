@@ -104,7 +104,16 @@ const PreQuiz = (props) => {
  
  
 const handleSubmit = () =>{
-  const url = `/quiz/start/${preQuizInfo.online_class && preQuizInfo.online_class.id}`
+  const {online_class:onlineClassObj, lobby_info:lobbyInfoObj} = preQuizInfo||{}
+  // const { id: onlineClassId, quiz_test_paper: questionPaperId } = onlineClassObj || {} 
+  const { 
+    lobby_uuid : lobbyUuid= 'uuid-mk-default',
+    lobby_identifier: onlineClassId,
+    question_paper: questionPaperId
+  }= lobbyInfoObj||{}
+  // const url = `/quiz/:onlineclassId/:questionpaperId/:lobbyUuid`
+  const url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}`
+  // const url = `/quiz/start/${preQuizInfo.online_class && preQuizInfo.online_class.id}`
   let link = document.createElement('a')
   link.href = url
   link.target = '_blank'
@@ -134,14 +143,20 @@ const handleCreateLobby = ()=>{
     if (event === joinLobby) {
       const {
         status: { success, message: statusMessage } = {},
-        quiz_details: { lobby_uuid: lobbyUuid }
+        quiz_details: { lobby_uuid: lobbyUuid = 'uuid-mk-default', 
+        lobby_identifier: onlineClassId,
+        question_paper: questionPaperId
+      }={}
       } = messageFromServer
       if (success) {
         let lobbyId = data
         // this.props.history.push(`/quiz/game/${on}/${lobbyUuid}/${lobbyId}/`)
         // this.setState({ creatingLobby: false, creationFailed: false })
         getPreQuizStatus()
-        history.push(`/quiz/game/${data}/${lobbyUuid}/${lobbyId}/`)
+        // const url = `/quiz/:onlineClassId/:questionpaperId/:lobbyUuid`
+        const url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}`
+        // history.push(`/quiz/game/${data}/${lobbyUuid}/${lobbyId}/`)
+        history.push(url)
         setCreateLobby(false)
       } 
       else {
