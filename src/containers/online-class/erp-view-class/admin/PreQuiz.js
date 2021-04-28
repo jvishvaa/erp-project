@@ -12,12 +12,22 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
-import axios from 'axios';
+// import axios from 'axios';
 
 import Loading from '../../../../components/loader/loader';
 
-const socketUrls="ws://localhost:8000/ws/multiplayer-quiz/"
-const eventLabels="Create Lobby"
+const ajaxBaseURL = axiosInstance.defaults.baseURL; // 'http://127.0.0.1:8000/qbox';
+
+const genSocketBase = () => {
+  const { port: isLocal, host } = new URL(ajaxBaseURL);
+  const protocol = isLocal ? 'ws' : 'wss';
+  return `${protocol}://${host}`;
+};
+const socketBase = genSocketBase();
+const socketBaseURL = `${socketBase}/ws`;
+// const socketUrls="ws://localhost:8000/ws/multiplayer-quiz/"
+const quizSocketURLEndpoint = `${socketBaseURL}/multiplayer-quiz/<online_class_id>/<user_auth_token>/`
+// const eventLabels={"Create Lobby"}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,17 +82,17 @@ const PreQuiz = (props) => {
   const [creatingLobby,setCreateLobby]=useState(false)
   const[ws,setWs]=useState()
   const [preQuizInfo, setPreQuizInfo] = useState([]);
-  const {email}=JSON.parse(localStorage.getItem('userDetails')) || {};
+  const {email: currentUserEmail, token: userAuthToken}=JSON.parse(localStorage.getItem('userDetails')) || {};
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [isOneOfTheHosts,setIsOneOfTheHosts]=useState(false)
-  if(email === preQuizInfo && preQuizInfo.tutor_details && preQuizInfo.tutor_details.email ){
-    setIsOneOfTheHosts(true)
-  }
+  // if(email === preQuizInfo && preQuizInfo.tutor_details && preQuizInfo.tutor_details.email ){
+  //   setIsOneOfTheHosts(true)
+  // }
   useEffect(() => {
       getPreQuizStatus();
      }, []);
       const getPreQuizStatus =  () => {
-
+        setLoading(true)
         axiosInstance
       .get(`${endpoints.onlineClass.PreQuiz}?online_class=${params.id}`, {
         headers: {
@@ -90,14 +100,23 @@ const PreQuiz = (props) => {
         },
       })
       .then((result) => {
+        setLoading(false)
         if (result.data.status_code === 200) {
-          setPreQuizInfo(result.data.result);
+          const data = result.data.result
+          const { tutor_details:tutorDetails }= data
+          const {email: tutorEmailId } =tutorDetails ||{}
+          if(currentUserEmail === tutorEmailId){
+            setIsOneOfTheHosts(true)
+          }
+          // setPreQuizInfo(result.data.result);
+          setPreQuizInfo(data);
 
         } else {
           setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
+        setLoading(false)
         setAlert('error', error.message);
       });
       };
@@ -122,11 +141,17 @@ const handleSubmit = () =>{
 
 }
 const handleCreateLobby = ()=>{
-  let lobbyUuid =  preQuizInfo && preQuizInfo.lobby_identifier && preQuizInfo.lobby_info.lobby_identifier
-  let { MPQUIZ } = socketUrls
+  const {online_class: onlineClassObj} = preQuizInfo||{}
+  const {id: onlineClassId} = onlineClassObj||{}
+
+  // let lobbyUuid =  preQuizInfo && preQuizInfo.lobby_identifier && preQuizInfo.lobby_info.lobby_identifier
+  // let { MPQUIZ } = socketUrls
+  const url = quizSocketURLEndpoint
+    .replace('<online_class_id>', onlineClassId)
+    .replace('<user_auth_token>', userAuthToken);
 //   const jwtToken = localStorage.getItem('id_token')
 //   const { onlineClassId } = this.state.quizInfo
-  var ws = new window.WebSocket(`${MPQUIZ}${data}/${token}/`)
+  var ws = new window.WebSocket(url)
   setCreateLobby(true);
 //   this.setState({ creatingLobby: true, creationFailed: false })
 //   // websocket onopen event listener
@@ -137,10 +162,11 @@ const handleCreateLobby = ()=>{
   }
   ws.onmessage = evt => {
 //     // listen to data sent from the websocket server
+debugger
     const messageFromServer = JSON.parse(evt.data)
     const { event } = messageFromServer || {}
-    let { joinLobby } = eventLabels
-    if (event === joinLobby) {
+    // let { joinLobby } = eventLabels
+    if (event === "join_lobby") {
       const {
         status: { success, message: statusMessage } = {},
         quiz_details: { lobby_uuid: lobbyUuid = 'uuid-mk-default', 
@@ -201,28 +227,28 @@ const { is_ended=false,ended_at,lobby_identifier, question_paper } = lobbyInfo||
       <div className='message_log_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
       <div className='message_log_breadcrumb_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
       <CommonBreadcrumbs componentName='Start Quiz' />
+      <div style={{display:'flex', minHeight:'80vh'}}>
+        <div style={{margin:'auto'}}>
+        
     {/* chks quiz ended or not */}
     {/* { preQuizInfo.lobby_info && preQuizInfo.lobby_info.is_ended ?        */}
     {is_ended?
-        <Typography style={{fontSize:'16px',fontWeight:'bold',marginTop:'150px',marginLeft:'320px'}}>Quiz has been ended at  {preQuizInfo.lobby_info && preQuizInfo.lobby_info.ended_at}</Typography>
+        <Typography style={{fontSize:'16px',fontWeight:'bold'}}>Quiz has been ended at  {preQuizInfo.lobby_info && preQuizInfo.lobby_info.ended_at}</Typography>
     : 
     // chks lobby created r not 
         // preQuizInfo.lobby_info && preQuizInfo.lobby_info.lobby_identifier ? 
         lobby_identifier ? 
         <div>
-        <Typography style={{marginTop:'100px',marginLeft:'320px'}}>OnlineClass Name : {preQuizInfo.online_class && preQuizInfo.online_class.title}</Typography>
-        <Typography style={{marginTop:'10px',marginLeft:'320px'}}>Question Paper : {preQuizInfo.online_class && preQuizInfo.online_class.test_details && preQuizInfo.online_class.test_details.test_name }</Typography>
-        <Typography style={{marginTop:'10px',marginLeft:'320px'}}>Duration : {preQuizInfo.online_class && preQuizInfo.online_class.test_details && preQuizInfo.online_class.test_details.test_duration }</Typography>
-        <Typography style={{marginTop:'10px',marginLeft:'320px'}}>No Of Questions : {preQuizInfo.online_class && preQuizInfo.online_class.test_details && preQuizInfo.online_class.test_details.total_question }</Typography>
+        <Typography>OnlineClass Name : {preQuizInfo.online_class && preQuizInfo.online_class.title}</Typography>
+        <Typography>Question Paper : {preQuizInfo.online_class && preQuizInfo.online_class.test_details && preQuizInfo.online_class.test_details.test_name }</Typography>
+        <Typography>Duration : {preQuizInfo.online_class && preQuizInfo.online_class.test_details && preQuizInfo.online_class.test_details.test_duration }</Typography>
+        <Typography>No Of Questions : {preQuizInfo.online_class && preQuizInfo.online_class.test_details && preQuizInfo.online_class.test_details.total_question }</Typography>
 
-         <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '-1.25rem 1.5% 0 1.5%' }}>
-          <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-          </Grid>
+          
 
-          <Grid item xs={6} sm={2}>
             <Button
               variant='contained'
-              style={{ color: 'white',marginTop:'45px',marginLeft:'100px' }}
+              style={{ color: 'white'}}
               color="primary"
               className="custom_button_master"
               size='medium'
@@ -231,16 +257,16 @@ const { is_ended=false,ended_at,lobby_identifier, question_paper } = lobbyInfo||
               >
               Join Quiz
           </Button>
-          </Grid>
-          </Grid> 
           </div>
         : 
         // create lobby if identifier is not there
         // isOneOfTheHosts &&   preQuizInfo.lobby_info && preQuizInfo.lobby_info.lobby_identifier === ""  ?
         isOneOfTheHosts ?
+        <div>
+
         <Button
         variant='contained'
-        style={{ color: 'white',marginTop:'45px',marginLeft:'100px' }}
+        style={{ color: 'white'}}
         color="primary"
         className="custom_button_master"
         size='medium'
@@ -249,14 +275,14 @@ const { is_ended=false,ended_at,lobby_identifier, question_paper } = lobbyInfo||
         >
         Create Lobby
     </Button>
+    </div>
         :
-        <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-        <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-        </Grid>
-        <Grid item xs={12} sm={6}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-        <div style={{fontSize:'16px',fontWeight:'bold',marginLeft:'130px',marginTop:'200px',paddingTop:'30px',padding:'10px'
-        ,
-        width:'520px',height:'80px'}}>
+        // <Grid container>
+        // <Grid item  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+
+        // </Grid>
+        // <Grid item className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+        <div style={{fontSize:'16px',fontWeight:'bold',paddingTop:'30px',padding:'10px'}}>
           
         {/* { preQuizInfo.lobby_info && preQuizInfo.lobby_info.question_paper === "" ?  */}
         Quiz lobby is not created yet. Please wait untill the host creates it
@@ -268,11 +294,13 @@ const { is_ended=false,ended_at,lobby_identifier, question_paper } = lobbyInfo||
           'mk'} */}
           </div>
         
-        </Grid>
+        // </Grid>
          
-        </Grid>
+        // </Grid>
        
 }
+       </div>
+       </div>
        </div>
        </div>
 
