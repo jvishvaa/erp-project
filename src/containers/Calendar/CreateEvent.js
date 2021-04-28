@@ -92,6 +92,11 @@ const CreateEvent = () => {
       border: 'solid lightgrey',
       borderRadius: 10,
     },
+    button: {
+      display: 'flex',
+      justifyContent: 'space-evenly',
+      width: '40%',
+    },
   }));
 
   const handleStartDateChange = (e, value) => {
@@ -142,6 +147,7 @@ const CreateEvent = () => {
         end_time: endTime,
         event_category: eventType,
 
+        academic_year: selectedAcademicYear.id,
         branch: selectedBranch.branch.id,
         grade: selectedGrade.grade_id,
         section: selectedSection.section_id,
@@ -671,12 +677,13 @@ const CreateEvent = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' className={classes.root}>
-              <Grid item md={1} lg={1} xs={12}>
+              {/* <Grid item md={1} lg={1} xs={12}> */}
+              <div className={classes.button}>
                 <Button variant='contained' onClick={onunHandleClearAll}>
                   Clear All
                 </Button>
-              </Grid>
-              <Grid item md={2} lg={1} xs={12}>
+                {/* </Grid> */}
+                {/* <Grid item md={2} lg={1} xs={12}> */}
                 <Button
                   variant='contained'
                   color='primary'
@@ -685,8 +692,8 @@ const CreateEvent = () => {
                 >
                   Go Back
                 </Button>
-              </Grid>
-              <Grid item md={1} lg={1} xs={12}>
+                {/* </Grid> */}
+                {/* <Grid item md={1} lg={1} xs={12}> */}
                 <Button
                   variant='contained'
                   type='submit'
@@ -696,7 +703,8 @@ const CreateEvent = () => {
                 >
                   SAVE EVENT
                 </Button>
-              </Grid>
+                {/* </Grid> */}
+              </div>
             </Grid>
           </MediaQuery>
           <MediaQuery maxWidth={784}>
@@ -998,6 +1006,7 @@ const CreateEvent = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' className={classes.root}>
+              {/* <div className={classes.button}> */}
               <Grid item md={6} xs={12}>
                 <TextField
                   id='outlined-multiline-static'
@@ -1037,6 +1046,7 @@ const CreateEvent = () => {
                   Go Back
                 </Button>
               </Grid>
+              {/* </div> */}
             </Grid>
           </MediaQuery>
         </form>

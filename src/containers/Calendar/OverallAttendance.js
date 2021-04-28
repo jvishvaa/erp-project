@@ -647,51 +647,70 @@ const Attend = () => {
       </Grid>
       <Grid container direction='row' className={classes.root} spacing={2}>
         {result &&
-          result.map((item) => {
-            return (
-              <Grid item xs={12} sm={6} md={4}>
-                <Card
-                  className={classes.bord}
-                  onClick={() => handleSinlgeStudent(item.erp_id)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <CardMedia className={classes.cover} />
-                  <div>
-                    <CardContent>
-                      <Grid
-                        container
-                        direction='row'
-                        justify='space-between'
-                        alignItems='center'
-                      >
-                        <Grid item xs={1} sm={1} md={1} lg={1} style={{ marginTop: 15 }}>
-                          <Avatar>{item?.student_first_name?.slice(0, 1)}</Avatar>
+          result
+            .sort((a, b) => {
+              let fa = a.student_first_name.toLowerCase();
+              let fb = b.student_first_name.toLowerCase();
+              if (fa < fb) {
+                return -1;
+              }
+              if (fa > fb) {
+                return 1;
+              }
+              return 0;
+            })
+            .map((item) => {
+              return (
+                <Grid item xs={12} sm={6} md={4}>
+                  <Card
+                    className={classes.bord}
+                    onClick={() => handleSinlgeStudent(item.erp_id)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <CardMedia className={classes.cover} />
+                    <div>
+                      <CardContent>
+                        <Grid
+                          container
+                          direction='row'
+                          justify='space-between'
+                          alignItems='center'
+                        >
+                          <Grid
+                            item
+                            xs={1}
+                            sm={1}
+                            md={1}
+                            lg={1}
+                            style={{ marginTop: 15 }}
+                          >
+                            <Avatar>{item?.student_first_name?.slice(0, 1)}</Avatar>
+                          </Grid>
+                          <Grid item>
+                            <Typography>
+                              {((item.student_first_name &&
+                                item.student_first_name.slice(0, 10)) ||
+                                '') +
+                                ' ' +
+                                ((item.student_last_name &&
+                                  item.student_last_name.slice(0, 1)) ||
+                                  '')}
+                            </Typography>
+                            <Typography>{item?.erp_id}</Typography>
+                          </Grid>
+                          <Grid>
+                            <p class='box5'>
+                              <span class='test1'>{item.student_present_count || 0}</span>
+                              <span class='test2'>{item.student_absent_count || 0}</span>
+                            </p>
+                          </Grid>
                         </Grid>
-                        <Grid item>
-                          <Typography>
-                            {((item.student_first_name &&
-                              item.student_first_name.slice(0, 10)) ||
-                              '') +
-                              ' ' +
-                              ((item.student_last_name &&
-                                item.student_last_name.slice(0, 1)) ||
-                                '')}
-                          </Typography>
-                          <Typography>{item?.erp_id}</Typography>
-                        </Grid>
-                        <Grid>
-                          <p class='box5'>
-                            <span class='test1'>{item.student_present_count || 0}</span>
-                            <span class='test2'>{item.student_absent_count || 0}</span>
-                          </p>
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-                  </div>
-                </Card>
-              </Grid>
-            );
-          })}
+                      </CardContent>
+                    </div>
+                  </Card>
+                </Grid>
+              );
+            })}
       </Grid>
       <br />
       {!result && (
