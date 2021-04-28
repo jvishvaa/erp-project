@@ -18,8 +18,8 @@ const {
 } = constants || {};
 
 export class ReviewAnswers extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       loading: true,
       questions: [],
@@ -29,7 +29,7 @@ export class ReviewAnswers extends Component {
   getQuestions = () => {
     const {
       params: { lobby_identifier: lobbyIdentifier, question_paper: questionPaper } = {},
-    } = constants;
+    } = this.props;
     const apiUrl = `${fetchQuizQpPaperAPIEndpoint}?question_paper=${questionPaper}&lobby_identifier=${lobbyIdentifier}&online_class_id=${lobbyIdentifier}`;
     
     axios
