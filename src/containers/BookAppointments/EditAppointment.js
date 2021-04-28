@@ -137,6 +137,7 @@ const EditAppointment = ({
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
+          handleGoBack();
         } else {
           setAlert('error', result.data.message);
         }
