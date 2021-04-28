@@ -99,8 +99,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     topicId,
     yearId,
     gradeId,
-    chapterId,
-    isErpCentral,
+    chapterObj,
     newValue
   ) => {
     console.log(quesTypeId,
@@ -110,7 +109,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       topicId,
       yearId,
       gradeId,
-      chapterId,isErpCentral,'ALLDATA')
+      chapterObj,'ALLDATA')
     // setTabValue(newValue);
     if (!subjMapId || !quesLevel) {
       setAlert('error', 'Select all the fields!');
@@ -163,8 +162,8 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
                       //     setAlert('error', error?.message);
                       //   });
 
-                      if(!isErpCentral?.flag){
-                        axiosInstance.get(`${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterId}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=2&page=${page}`)
+                      if(!chapterObj?.is_central){
+                        axiosInstance.get(`${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=1&page=${page}`)
                         .then((result) => {
                         if (result.data.status_code === 200) {
                           setTotalCount(result?.data?.result?.count);
@@ -183,8 +182,8 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
                         setAlert('error', error?.message);
                       });
                       }
-                      if(isErpCentral?.flag){
-                        axiosInstance.get(`${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterId}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=1&page=${page}`)
+                      if(chapterObj?.is_central){
+                        axiosInstance.get(`${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=2&page=${page}`)
                         .then((result) => {
                         if (result.data.status_code === 200) {
                           setTotalCount(result?.data?.result?.count);

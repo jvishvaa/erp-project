@@ -238,10 +238,10 @@ const QuestionBankFilters = ({
     if (value) {
       setFilterData({ ...filterData, branch: value });
       axiosInstance
-        .get(`${endpoints.assessmentApis.gradesList}?branch=${value.branch.id}`)
+        .get(`${endpoints.academics.grades}?session_year=${filterData.year?.id}&branch_id=${value.branch.id}&module_id=${moduleId}`)
         .then((result) => {
           if (result.data.status_code === 200) {
-            setGradeDropdown(result?.data?.result?.results);
+            setGradeDropdown(result?.data?.data);
             setLoading(false);
           } else {
             setAlert('error', result.data?.message);
@@ -340,7 +340,7 @@ const QuestionBankFilters = ({
       axiosInstance
         // .get(`${endpoints.questionBank.subjects}?grade=${value.id}`) //central_api
         .get(
-          `${endpoints.questionBank.subjectList}?grade=${value.id}&module_id=${moduleId}`
+          `${endpoints.questionBank.subjectList}?grade=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -544,11 +544,11 @@ const QuestionBankFilters = ({
     //   }
     // }
   };
-  function handleIsErpCentral(event,value){
-    if(value){
-      setFilterData({...filterData,is_erp_central:value})
-    }
-  }
+  // function handleIsErpCentral(event,value){
+  //   if(value){
+  //     setFilterData({...filterData,is_erp_central:value})
+  //   }
+  // }
   
   const handleFilter = () => {
     // console.log('ALLDATA',filterData.year,filterData.grade,filterData.subject,filterData.chapter,filterData.topicId,filterData.question_level_option,filterData.question_categories_options,filterData.quesType)
@@ -581,10 +581,9 @@ const QuestionBankFilters = ({
       quesLevel,
       filterData.topicId,
       filterData.year?.id,
-      filterData.grade?.id,
-      filterData.chapter?.id,
-      filterData.is_erp_central,
-
+      filterData.grade?.grade_id,
+      filterData.chapter,
+      // filterData.is_erp_central,
     );
     setSelectedIndex(-1);
 
@@ -669,7 +668,7 @@ const QuestionBankFilters = ({
             className='dropdownIcon'
             value={filterData?.grade}
             options={gradeDropdown}
-            getOptionLabel={(option) => option?.grade_name}
+            getOptionLabel={(option) => option?.grade__grade_name}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -828,7 +827,7 @@ const QuestionBankFilters = ({
             )}
           />
         </Grid>
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
@@ -848,7 +847,7 @@ const QuestionBankFilters = ({
               />
             )}
           />
-        </Grid>
+        </Grid> */}
 
         {!isMobile && (
           <Grid item xs={12} sm={12}>
