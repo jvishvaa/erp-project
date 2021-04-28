@@ -304,7 +304,6 @@ const Attend = () => {
       backgroundColor: '#E2E2E2',
       color: '#8C8C8C',
       borderRadius: '10px',
-      marginLeft: '20px',
       height: '42px',
       marginTop: 'auto',
     },
@@ -317,7 +316,6 @@ const Attend = () => {
       height: '42px',
       borderRadius: '10px',
       padding: '12px 40px',
-      marginLeft: '20px',
       marginTop: 'auto',
       '&:hover': {
         backgroundColor: '#FF6B6B',
@@ -398,7 +396,8 @@ const Attend = () => {
               label='StartDate'
               name='start_date'
               inputVariant='outlined'
-              className='arrow'
+              // className='arrow'
+              className='dropdownIcon'
               onChange={handleStartDateChange}
               // handleStartDateChange={handleStartDateChange}
               // handleEndDateChange={handleEndDateChange}
@@ -424,7 +423,8 @@ const Attend = () => {
               variant='standard'
               name='end_date'
               inputVariant='outlined'
-              className='arrow'
+              // className='arrow'
+              className='dropdownIcon'
               onChange={handleEndDateChange}
               value={endDate}
               maxDate={new Date()}
@@ -580,27 +580,37 @@ const Attend = () => {
           <Divider />
         </Grid>
       </Grid>
-      <Grid container direction='row'>
-        <StyledClearButton variant='contained' onClick={handleBack}>
-          Back
-        </StyledClearButton>
-        <StyledClearButton
-          variant='contained'
-          startIcon={<ClearIcon />}
-          onClick={handleClearAll}
-        >
-          Clear all
-        </StyledClearButton>
-
-        <StyledFilterButton
-          variant='contained'
-          color='secondary'
-          startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-          className={classes.filterButton}
-          onClick={handleFilter}
-        >
-          filter
-        </StyledFilterButton>
+      <Grid container direction='row' spacing={2}>
+        <Grid item xs={12} md={1}>
+          <StyledClearButton
+            variant='contained'
+            onClick={handleBack}
+            style={{ marginLeft: '20px' }}
+          >
+            Back
+          </StyledClearButton>
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <StyledClearButton
+            variant='contained'
+            startIcon={<ClearIcon />}
+            onClick={handleClearAll}
+            style={{ marginLeft: '30px' }}
+          >
+            Clear all
+          </StyledClearButton>
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <StyledFilterButton
+            variant='contained'
+            color='secondary'
+            startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+            className={classes.filterButton}
+            onClick={handleFilter}
+          >
+            filter
+          </StyledFilterButton>
+        </Grid>
       </Grid>
       <MediaQuery minWidth={541}>
         <Grid
@@ -655,11 +665,17 @@ const Attend = () => {
                         alignItems='center'
                       >
                         <Grid item xs={1} sm={1} md={1} lg={1} style={{ marginTop: 15 }}>
-                          <Avatar>{item?.student_name?.slice(0, 1)}</Avatar>
+                          <Avatar>{item?.student_first_name?.slice(0, 1)}</Avatar>
                         </Grid>
                         <Grid item>
                           <Typography>
-                            {item?.student_name?.slice(0, 10) || ''}
+                            {((item.student_first_name &&
+                              item.student_first_name.slice(0, 10)) ||
+                              '') +
+                              ' ' +
+                              ((item.student_last_name &&
+                                item.student_last_name.slice(0, 1)) ||
+                                '')}
                           </Typography>
                           <Typography>{item?.erp_id}</Typography>
                         </Grid>

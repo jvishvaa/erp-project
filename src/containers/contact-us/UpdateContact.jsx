@@ -11,9 +11,6 @@ const useStyles = makeStyles((theme) => ({
     padding: '1rem',
     borderRadius: '10px',
     width: '100%',
-    margin: '1.5rem -0.1rem',
-    // marginLeft:'10px',
-    // border:'1px solid black'
   },
   bord: {
     margin: theme.spacing(1),
