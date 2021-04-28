@@ -430,7 +430,7 @@ export function LobbyParticipantsContainer() {
   );
 }
 
-export function HostQuizContainerContent() {
+export function HostQuizContainerContent({params}) {
   const {
     // isQuizStarted,
     isQuizEnded,
@@ -463,6 +463,7 @@ export function HostQuizContainerContent() {
           currentPlayerObj={currentPlayerObj}
           isQuizEnded={isQuizEnded}
           isHost={isHost}
+          params={params}
         />
       </div>
     </>
@@ -512,6 +513,7 @@ export function HostAndQuizEnded(props) {
         <h2 className='leaderboard__title--host'>Quiz Ended..</h2>
         <div className='quiz__results--container'>
           <HostPostQuizReport
+            params={props.params}
             leaders={leaderboardData}
             quizSummary={quizSummary}
           />
@@ -520,7 +522,7 @@ export function HostAndQuizEnded(props) {
     </>
   );
 }
-export function JoineeAndQuizHasFinishedOrEnded(props) {
+export function JoineeAndQuizHasFinishedOrEnded({params}) {
   const {
     // isQuizStarted,
     isQuizEnded,
@@ -539,6 +541,7 @@ export function JoineeAndQuizHasFinishedOrEnded(props) {
         quizDetails={quizDetails}
         currentPlayerObj={currentPlayerObj}
         isQuizEnded={isQuizEnded}
+        params={params}
       />
     </>
   );
