@@ -60,6 +60,7 @@ const PreQuiz = (props) => {
   const classes = useStyles()
   const {location:{state:{data}={}}={}}=props||{}
   const history = useHistory()
+  const { match: { params } } = props;
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
@@ -83,7 +84,7 @@ const PreQuiz = (props) => {
       const getPreQuizStatus =  () => {
 
         axiosInstance
-      .get(`${endpoints.onlineClass.PreQuiz}?online_class=${data}`, {
+      .get(`${endpoints.onlineClass.PreQuiz}?online_class=${params.id}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
