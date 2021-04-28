@@ -673,7 +673,7 @@ const Appointments = () => {
               />
             </div>
             <Grid container direction='row' spacing={2}>
-              <Grid item md={3}>
+              <Grid item md={2}>
                 <Card className={classes.card}>
                   <CardActionArea>
                     <CardMedia
@@ -699,7 +699,7 @@ const Appointments = () => {
                 </Card>
               </Grid>
 
-              <Grid item md={3}>
+              <Grid item md={2}>
                 <Card className={classes.card}>
                   <CardActionArea className='cardsStyles'>
                     <div
@@ -776,7 +776,7 @@ const Appointments = () => {
                   </CardActionArea>
                 </Card>
               </Grid>
-              <Grid item md={3}>
+              <Grid item md={2}>
                 <Card className={classes.card}>
                   <CardActionArea className='cardsStyles'>
                     <div
@@ -853,7 +853,7 @@ const Appointments = () => {
                   </CardActionArea>
                 </Card>
               </Grid>
-              <Grid item md={3}>
+              <Grid item md={2}>
                 <Card className={classes.card}>
                   <CardActionArea className='cardsStyles'>
                     <div

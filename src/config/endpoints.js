@@ -80,6 +80,8 @@ export default {
     resourceFile: '/erp_user/resource_files/',
     feedback: '/erp_user/onlineclass_attendancecheck/',
     updateTutor: '/erp_user/update_tutor_email/',
+    PreQuiz: '/mp_quiz/online-class-details/',
+    
   },
   masterManagement: {
     subjects: '/erp_user/subjects-list/',
@@ -116,6 +118,8 @@ export default {
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
     editChapter: '/academic/',
+    createTopic: '/assessment/topics/',
+    updateTopic: '/assessment/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -307,6 +311,12 @@ export default {
     getBatchesApi: '/erp_user/student_online_class/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
+  questionPaper:{
+    FETCHQP:`${baseURLCentral}/assessment/test-list/`,
+    QuestionsInQP:'/mp_quiz/mp_questions_list/',
+    AssignQP:'/mp_quiz/'
+  },
+
 
   eventBat: {
     getPaginatedCategories: '/academic/list_event_categories_p/', //get

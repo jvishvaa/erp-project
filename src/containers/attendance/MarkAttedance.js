@@ -162,41 +162,46 @@ const MarkAttedance = () => {
       setSelectedBranch(history?.location?.state?.payload?.branch_id);
       setSelectedGrade(history?.location?.state?.payload?.grade_id);
       setSelectedSection(history?.location?.state?.payload?.section_id);
-      // setStartDate(history?.location?.state?.payload?.startDate)
+      setDateValue(history?.location?.state?.payload?.startDate);
+      setDateValueShow(history?.location?.state?.payload?.startDate);
       // setEndDate(history?.location?.state?.payload?.endDate)
       setNewData(history?.location?.state?.data);
 
       axiosInstance
         .get(
-          `${endpoints.academics.studentList}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&page_num=${pageNumber}&page_size=${limit}`
+          `${endpoints.academics.studentList}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&page_num=${pageNumber}&page_size=${limit}&attendance_for_date=${history?.location?.state?.payload?.startDate}`
         )
         .then((res) => {
           console.log(res, 'checking mark attendance list in useEffect');
           setNewData(res.data.results);
           setTotalGenre(res.data.count);
-          const is_first_shift_present = true;
-          const is_second_shift_present = true;
           console.log(res.data.count, 'checking count');
           var result = res.data.results.map((item) => ({
-            name: item.name,
-            student_id: item.user,
+            name:
+              ((item.first_name && item.first_name.slice(0, 10)) || '') +
+              ' ' +
+              ((item.last_name && item.last_name.slice(0, 1)) || ''),
+            student_id: item.erp_id,
             section_mapping_id: selectedSection.section_id,
             remarks: 'none',
-            is_first_shift_present: true,
-            is_second_shift_present: true,
+            is_first_shift_present: item.is_first_shift_present,
+            is_second_shift_present: item.is_second_shift_present,
             fullday_present:
-              is_first_shift_present && is_second_shift_present ? true : false,
+              item.is_first_shift_present && item.is_second_shift_present ? true : false,
             attendance_for_date: dateValue,
           }));
           var all_result = res.data.all_data.map((item) => ({
-            name: item.name,
-            student_id: item.user,
+            name:
+              ((item.first_name && item.first_name.slice(0, 10)) || '') +
+              ' ' +
+              ((item.last_name && item.last_name.slice(0, 1)) || ''),
+            student_id: item.erp_id,
             section_mapping_id: selectedSection.section_id,
             remarks: 'none',
-            is_first_shift_present: true,
-            is_second_shift_present: true,
+            is_first_shift_present: item.is_first_shift_present,
+            is_second_shift_present: item.is_second_shift_present,
             fullday_present:
-              is_first_shift_present && is_second_shift_present ? true : false,
+              item.is_first_shift_present && item.is_second_shift_present ? true : false,
             attendance_for_date: dateValue,
           }));
           console.log(all_result);
@@ -258,39 +263,44 @@ const MarkAttedance = () => {
     // console.log(payload)
     console.log(selectedSection, 'section checking');
     console.log(pageNumber, 'page numebr');
+    console.log(dateValue, 'date checking');
     axiosInstance
       .get(
-        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&page=${pageNumber}&page_size=${limit}`
+        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&page=${pageNumber}&page_size=${limit}&attendance_for_date=${dateValue}`
       )
       .then((res) => {
         setLoading(false);
         console.log(res.data);
         setNewData(res.data.results);
         setTotalGenre(res.data.count);
-        const is_first_shift_present = true;
-        const is_second_shift_present = true;
         console.log(selectedSection.id, 'vinod');
         let sec = selectedSection.id;
         var result = res.data.results.map((item) => ({
-          name: item.name,
-          student_id: item.user,
+          name:
+            ((item.first_name && item.first_name.slice(0, 10)) || '') +
+            ' ' +
+            ((item.last_name && item.last_name.slice(0, 1)) || ''),
+          student_id: item.erp_id,
           section_mapping_id: sec,
           remarks: 'none',
-          is_first_shift_present: is_first_shift_present,
-          is_second_shift_present: is_second_shift_present,
+          is_first_shift_present: item.is_first_shift_present,
+          is_second_shift_present: item.is_second_shift_present,
           fullday_present:
-            is_first_shift_present && is_second_shift_present ? true : false,
+            item.is_first_shift_present && item.is_second_shift_present ? true : false,
           attendance_for_date: dateValue,
         }));
         var all_result = res.data.all_data.map((item) => ({
-          name: item.name,
-          student_id: item.user,
+          name:
+            ((item.first_name && item.first_name.slice(0, 10)) || '') +
+            ' ' +
+            ((item.last_name && item.last_name.slice(0, 1)) || ''),
+          student_id: item.erp_id,
           section_mapping_id: sec,
           remarks: 'none',
-          is_first_shift_present: true,
-          is_second_shift_present: true,
+          is_first_shift_present: item.is_first_shift_present,
+          is_second_shift_present: item.is_second_shift_present,
           fullday_present:
-            is_first_shift_present && is_second_shift_present ? true : false,
+            item.is_first_shift_present && item.is_second_shift_present ? true : false,
           attendance_for_date: dateValue,
         }));
         console.log(all_result);
@@ -343,9 +353,8 @@ const MarkAttedance = () => {
       backgroundColor: '#E2E2E2',
       color: '#8C8C8C',
       borderRadius: '10px',
-      marginLeft: '20px',
       height: '42px',
-      width: '15%',
+      // width: '15%',
       marginTop: 'auto',
     },
   })(Button);
@@ -356,7 +365,6 @@ const MarkAttedance = () => {
       height: '42px',
       borderRadius: '10px',
       padding: '12px 40px',
-      marginLeft: '20px',
       marginTop: 'auto',
       '&:hover': {
         backgroundColor: '#FF6B6B',
@@ -429,62 +437,32 @@ const MarkAttedance = () => {
     const fullday_present =
       product.is_first_shift_present && product.is_second_shift_present ? true : false;
     console.log(selectedSection.id, 'section_mapping_id');
-
-    // const fullData = {
-    //   section_mapping_id: selectedSection.id,
-    //   student_id: id,
-    //   attendance_for_date: dateValue,
-    //   remarks: remarks,
-    //   fullday_present: is_first_shift_present && is_second_shift_present ? true : false,
-    //   is_first_shift_present: product.is_first_shift_present ? 'true' : 'false',
-    //   is_second_shift_present: product.is_second_shift_present ? 'true' : 'false',
-    // };
-    // console.log(fullData);
-    // axiosInstance
-    //   .post(`${endpoints.academics.createAttendance}`, fullData)
-    //   .then((res) => console.log(res))
-    //   .catch((err) => console.log(err));
-    // .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
-    // .post(`${endpoints.academics.createAttendance}`)
-    // console.log(`${endpoints.academics.createAttendance}`)
-    // .then(res=>console.log(res))
-    // .catch(err=>console.log(err))
-    // axios.post({
-    //   method: 'post',
-    //   url:'http://127.0.0.1:8000/qbox/academic/create_attendance/',
-    //   data: JSON.stringify(bodyFormData),
-    //   headers: {
-    //     authorization: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjYxODA2MTA2OCwiZW1haWwiOiIifQ.aEV_0N-ZvMG7DWfC0hraHc7YSQNf8wxpg_j9jV2p39o'
-    //   }
-    // })
   };
   const handlePagination = (event, page) => {
     setPageNumber(page);
     console.log(page, 'page number checking');
     console.log(selectedSection.id, 'vbnmkjhgf');
-
-    // setGenreActiveListResponse([]);
-    // setGenreInActiveListResponse([]);
     axiosInstance
       .get(
-        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&page=${page}&page_size=${limit}`
+        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&page=${page}&page_size=${limit}&attendance_for_date=${dateValue}`
       )
       .then((res) => {
         setLoading(false);
         console.log(res.data);
         setNewData(res.data.results);
         setTotalGenre(res.data.count);
-        const is_first_shift_present = true;
-        const is_second_shift_present = true;
         var result = res.data.results.map((item) => ({
-          name: item.name,
-          student_id: item.user,
+          name:
+            ((item.first_name && item.first_name.slice(0, 10)) || '') +
+            ' ' +
+            ((item.last_name && item.last_name.slice(0, 1)) || ''),
+          student_id: item.erp_id,
           section_mapping_id: selectedSection.id,
           remarks: 'none',
-          is_first_shift_present: is_first_shift_present,
-          is_second_shift_present: is_second_shift_present,
+          is_first_shift_present: item.is_first_shift_present,
+          is_second_shift_present: item.is_second_shift_present,
           fullday_present:
-            is_first_shift_present && is_second_shift_present ? true : false,
+            item.is_first_shift_present && item.is_second_shift_present ? true : false,
           attendance_for_date: dateValue,
         }));
         setData(result);
@@ -493,12 +471,12 @@ const MarkAttedance = () => {
       .catch((err) => {
         setLoading(false);
         console.log(err);
-        // setAlert('error', 'something went wrong');
       });
   };
 
   const handleSecondHalf = (e, id) => {
     console.log(e.target.checked, id);
+    console.log(allData, 'all data');
     const studentId = data.findIndex((item) => item.student_id == id);
     const temp = allData.findIndex((item) => item.student_id == id);
     console.log(studentId);
@@ -512,7 +490,7 @@ const MarkAttedance = () => {
 
     let allProducts = [...allData];
     let allProduct = { ...allProducts[temp] };
-    allProduct.is_first_shift_present = e.target.checked;
+    allProduct.is_second_shift_present = e.target.checked;
     allProduct.fullday_present =
       allProduct.is_first_shift_present && product.is_second_shift_present ? true : false;
     allProducts[temp] = allProduct;
@@ -524,40 +502,6 @@ const MarkAttedance = () => {
     const fullday_present =
       product.is_first_shift_present && product.is_second_shift_present ? true : false;
     console.log(selectedSection.id, 'section_mapping_id');
-
-    // const fullData = {
-    //   section_mapping_id: selectedSection.id,
-    //   student_id: id,
-    //   attendance_for_date: dateValue,
-    //   remarks: remarks,
-    //   fullday_present: fullday_present,
-    //   is_first_shift_present: product.is_first_shift_present ? 'true' : 'false',
-    //   is_second_shift_present: product.is_second_shift_present ? 'true' : 'false',
-    // };
-    // console.log(fullData);
-    // axiosInstance
-    //   .post(`${endpoints.academics.createAttendance}`, fullData)
-    //   .then((res) => console.log(res))
-    //   .catch((err) => console.log(err));
-    // // axiosInstance
-    //   .post(`${endpoints.academics.createAttendance}?section_mapping_id=${selectedSection.section_id}&student_id=${id}&attendance_for_date=${dateValue}&remarks=${remarks}&fullday_present=${fullday_present}&is_first_shift_present=${product.is_first_shift_present}&is_second_shift_present=${product.is_second_shift_present}`)
-    //   .then(res => console.log(res))
-    //   .catch(err => console.log(err))
-  };
-
-  const handlePostAttendance = () => {
-    // if(data){
-    //   let temp = data
-    //   for(let i=0; i<data.length; i++){
-    //     temp = {
-    //       ...data,
-    //       [`&[i]`]
-    //     }
-    //   }
-    // }
-    // data && data.map((item)=(
-    //   {...data, section_mapping_id: selectedSection.section_id, student_id: item.erp_id, attendance_for_date: dateValue, remarks: null, is_fullday: }
-    // ))
   };
 
   const handleSave = () => {
@@ -594,7 +538,7 @@ const MarkAttedance = () => {
               return (
                 <div value={options.student_id} key={options.student_id}>
                   {' '}
-                  <Grid item md={2} xs={12} className={classes.root}>
+                  <Grid item md={3} xs={12} className={classes.root}>
                     <Paper elevation={3} className={classes.paperSize}>
                       <Grid
                         container
@@ -606,7 +550,8 @@ const MarkAttedance = () => {
                           {options.name.slice(0, 1)}
                         </Avatar>
                         <Typography className={[classes.content, classes.paperStyle]}>
-                          {options.name.slice(0, 6)}
+                          <div>{options.name}</div>
+                          <div>{options.student_id}</div>
                         </Typography>
                       </Grid>
                       <Grid>
@@ -672,7 +617,8 @@ const MarkAttedance = () => {
               variant='dialog'
               format='YYYY-MM-DD'
               margin='none'
-              className='button'
+              // className='button'
+              className='dropdownIcon'
               id='date-picker'
               label='Date'
               maxDate={new Date()}
@@ -834,26 +780,36 @@ const MarkAttedance = () => {
         </Grid> */}
       </Grid>
       <Grid container direction='row'>
-        <StyledClearButton variant='contained' onClick={handleBack}>
-          Back
-        </StyledClearButton>
-        <StyledClearButton
-          variant='contained'
-          startIcon={<ClearIcon />}
-          onClick={handleClearAll}
-        >
-          Clear all
-        </StyledClearButton>
-
-        <StyledFilterButton
-          variant='contained'
-          color='secondary'
-          startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-          className={classes.filterButton}
-          onClick={handleFilter}
-        >
-          filter
-        </StyledFilterButton>
+        <Grid item xs={12} md={1}>
+          <StyledClearButton
+            variant='contained'
+            onClick={handleBack}
+            style={{ marginLeft: '20px' }}
+          >
+            Back
+          </StyledClearButton>
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <StyledClearButton
+            variant='contained'
+            startIcon={<ClearIcon />}
+            onClick={handleClearAll}
+            style={{ marginLeft: '30px' }}
+          >
+            Clear all
+          </StyledClearButton>
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <StyledFilterButton
+            variant='contained'
+            color='secondary'
+            startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+            className={classes.filterButton}
+            onClick={handleFilter}
+          >
+            filter
+          </StyledFilterButton>
+        </Grid>
       </Grid>
 
       <Grid

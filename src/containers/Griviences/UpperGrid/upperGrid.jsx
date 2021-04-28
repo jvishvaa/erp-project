@@ -12,11 +12,13 @@ import { set } from 'lodash';
 const UpperGrade = (props) => {
   const [dataMap, setDataMap] = useState([]);
   const [acadamicYearID, setAcadamicYear] = useState(1);
-  const [gradeID, setGradeID] = useState(1);
+  const [acadamicYearData, setAcadamicYearData] = useState([]);
+  const [gevienceTypeID, setGevienceTypeID] = useState(1);
   const [branchID, setBranchID] = useState(1);
   const [counter, setCounter] = useState(1);
   const [academicYear, setAcadamicYearName] = useState();
-  const [gradeName, setGradeName] = useState();
+  const [grevancesData, setGrevancesData] = useState();
+  const [grevancesDataName, setGrevancesDataName] = useState();
   const [branchName, setBranchName] = useState();
   const [openDialog] = useState(true);
 
@@ -39,7 +41,7 @@ const UpperGrade = (props) => {
       setBranchID(value);
     }
     if (counter === 3) {
-      setGradeID(value);
+      setGevienceTypeID(value);
     }
   };
   useEffect(() => {
@@ -53,14 +55,25 @@ const UpperGrade = (props) => {
       callingBranchAPI();
     }
     if (counter === 3) {
-      callingGradeAPI();
+      callingGriviencesAPI();
     }
   };
-  const callingGradeAPI = () => {
+  const handleClearAll = () =>{
+    setGrevancesDataName(null);
+    setAcadamicYearData(null);
+    setDataMap(null);
+    setCounter(1);
+  }
+  const callingGriviencesAPI = () => {
     axiosInstance
-      .get('/erp_user/grade/', {})
+      .get('/academic/grievance_types/')
       .then((res) => {
-        setDataMap(res.data.data);
+        console.log(res,'res data');
+        if (res.status === 200) {
+          console.log(res);
+          setGrevancesData(res.data.data);
+        }
+        console.log(res, 'grievand');
       })
       .catch((error) => {
         console.log(error);
@@ -81,7 +94,7 @@ const UpperGrade = (props) => {
     axiosInstance
       .get('/erp_user/list-academic_year/', {})
       .then((res) => {
-        setDataMap(res.data.data);
+        setAcadamicYearData(res.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -98,10 +111,10 @@ const UpperGrade = (props) => {
   const handleGenerateData = () => {
     props.handlePassData(
       acadamicYearID,
-      gradeID,
+      gevienceTypeID,
       branchID,
       academicYear,
-      gradeName,
+      grevancesDataName,
       branchName,
       openDialog
     );
@@ -133,14 +146,14 @@ const UpperGrade = (props) => {
                       value={acadamicYearID}
                       onChange={handleChangeMultiple}
                     >
-                      {dataMap &&
-                        dataMap.map((name) => (
+                      {acadamicYearData &&
+                        acadamicYearData.map((name) => (
                           <option
-                            key={name.id}
-                            value={name.id}
-                            onClick={() => setAcadamicYearName(name.session_year)}
+                            key={name?.id}
+                            value={name?.id}
+                            onClick={() => setAcadamicYearName(name?.session_year)}
                           >
-                            {name.session_year}
+                            {name?.session_year}
                           </option>
                         ))}
                     </Select>
@@ -193,8 +206,8 @@ const UpperGrade = (props) => {
                       {dataMap &&
                         dataMap?.map((name) => (
                           <option
-                            key={name.id}
-                            value={name.id}
+                          key={name?.branch?.id}
+                          value={name?.branch?.id}
                             onClick={() => setBranchName(name?.branch?.branch_name)}
                           >
                             {name?.branch?.branch_name}
@@ -234,24 +247,24 @@ const UpperGrade = (props) => {
           >
             {counter === 3 ? (
               <>
-                <div className='text-fixed'>Grade</div>
+                <div className='text-fixed'>Type</div>
                 <div className='inner-grade-container'>
                   <div className='change-grade-options'>
                     <Select
                       multiple
                       fullWidth
                       native
-                      value={gradeID}
+                      value={gevienceTypeID}
                       onChange={handleChangeMultiple}
                     >
-                      {dataMap &&
-                        dataMap.map((name) => (
+                      {grevancesData &&
+                        grevancesData.map((name) => (
                           <option
                             key={name.id}
                             value={name.id}
-                            onClick={() => setGradeName(name.grade_name)}
+                            onClick={() => setGrevancesDataName(name?.grievance_name)}
                           >
-                            {name.grade_name}
+                            {name?.grievance_name}
                           </option>
                         ))}
                     </Select>
@@ -269,7 +282,7 @@ const UpperGrade = (props) => {
                 </div>
               </>
             ) : (
-              <div className='text-rotate'>Grade</div>
+              <div className='text-rotate'>Type</div>
             )}
           </div>
         </div>
@@ -279,6 +292,7 @@ const UpperGrade = (props) => {
             size='small'
             variant='contained'
             className='clear-all'
+            onClick={handleClearAll}
             startIcon={<LayersClearIcon />}
           >
             Clear All

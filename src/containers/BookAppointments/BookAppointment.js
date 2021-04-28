@@ -145,6 +145,7 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
         if (result.data.status_code === 200) {
           // setLoading(false);
           setAlert('success', result.data.message);
+          
         } else {
           // setLoading(false);
           setAlert('error', result.data.message);
@@ -192,6 +193,7 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
               InputLabelProps={{ shrink: true, required: true }}
               type='date'
               variant='outlined'
+              required
               fullWidth
               className='button'
               size='small'
@@ -227,6 +229,7 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
             <TextField
               name='appointment_time'
               label='Appointment Time'
+              required
               InputLabelProps={{ shrink: true, required: true }}
               type='time'
               className='button'
