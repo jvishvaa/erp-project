@@ -19,7 +19,7 @@
     max-height: 38.5vh;
     align-items: stretch;
 }
-.question-container{
+.question-container.mp-quiz{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -210,7 +210,7 @@
 
 @media only screen and (max-width: 900px) {
 
-    .question-container{
+    .question-container.mp-quiz{
         transform: translate(-50%, -100%)
     }
 
