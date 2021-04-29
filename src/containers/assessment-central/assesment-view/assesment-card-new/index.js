@@ -101,7 +101,7 @@ const AssessmentCard = ({
             const sectionName = Object.keys(sec)[0];
             sectionObject.name = sectionName;
             sec[sectionName].forEach((qId) => {
-              const questionFound = questions.find((q) => q.id === qId);
+              const questionFound = questions.find((q) => q?.identifier === qId);
               if (questionFound) {
                 sectionObject.questions.push(questionFound);
               }

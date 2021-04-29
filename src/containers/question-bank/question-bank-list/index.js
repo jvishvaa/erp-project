@@ -68,7 +68,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
   const [tabYearId, setTabYearId] = useState('');
   const [tabGradeId, setTabGradeId] = useState('');
   const [tabChapterId, setTabChapterId] = useState('');
-  const [tabIsErpCentral,setTabIsErpCentral]= useState(null)
+  const [tabIsErpCentral, setTabIsErpCentral] = useState(null);
   const [tabValue, setTabValue] = useState(0);
   const location = useLocation();
   const history = useHistory();
@@ -124,7 +124,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     setTabYearId(yearId);
     setTabGradeId(gradeId);
     setTabChapterId(chapterObj);
-    setTabIsErpCentral(isErpCentral)
+    setTabIsErpCentral(isErpCentral);
 
     const erpQuestionList = endpoints.questionBank.erpQuestionList;
     // const centralQuestionList=endpoints.questionBank.centralQuestionList
@@ -163,7 +163,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       //     setLoading(false);
       //     setAlert('error', error?.message);
       //   });
-      console.log(isErpCentral,'==========')
+      console.log(isErpCentral, '==========');
       if (!isErpCentral?.flag) {
         axiosInstance
           .get(
@@ -585,6 +585,9 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
                         tabMapId={tabMapId}
                         tabTopicId={tabTopicId}
                         tabIsErpCentral={tabIsErpCentral}
+                        tabYearId={tabYearId}
+                        tabGradeId={tabGradeId}
+                        tabChapterId={tabChapterId}
                         tabQueLevel={tabQueLevel}
                         onClick={
                           questionId && section ? handleAddQuestionToQuestionPaper : null

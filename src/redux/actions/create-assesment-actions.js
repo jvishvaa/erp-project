@@ -69,7 +69,7 @@ export const fetchQuestionPaperDetails = (id) => async (dispatch) => {
         sectionObject.name = sectionName;
         sec[sectionName].forEach((qId) => {
           //iterating question ids and finding corresponding questions
-          const questionFound = questions.find((q) => q.id === qId);
+          const questionFound = questions.find((q) => q.identifier === qId);
           if (questionFound) {
             sectionObject.questions.push(questionFound);
           }
