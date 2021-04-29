@@ -394,7 +394,8 @@ const MarkAttedance = () => {
       grade_id: selectedGrade,
       section_id: selectedSection,
       startDate: dateValue,
-      endDate: dateValue,
+      endDate: history?.location?.state?.payload?.endDate,
+      counter: history?.location?.state?.payload?.counter,
     };
     history.push({
       pathname: '/attendance-calendar/teacher-view',

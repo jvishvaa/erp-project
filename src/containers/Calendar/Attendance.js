@@ -256,6 +256,7 @@ const Attendance = () => {
       section_id: selectedSection,
       startDate: startDate,
       endDate: endDate,
+      counter: history?.location?.state?.payload?.counter,
     };
     if (history?.location?.pathname === '/teacher-view/attendance') {
       history.push({
