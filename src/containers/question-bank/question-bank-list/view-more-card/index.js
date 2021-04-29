@@ -30,6 +30,9 @@ const ViewMoreCard = ({
   tabMapId,
   tabQueLevel,
   tabTopicId,
+  tabYearId,
+  tabGradeId,
+  tabChapterId,
 }) => {
   // const { year: { session_year }, grade: { grade_name }, subject: { subject: { subject_name } }, chapter: { chapter_name }, volume: { volume_name } } = filterDataDown;
   // const { setAlert } = useContext(AlertNotificationContext);
@@ -87,51 +90,124 @@ const ViewMoreCard = ({
 
   const handlePublish = (obj) => {
     // axiosInstance
-    axios
-      .put(
-        `${endpoints.questionBank.deleteQuestion}`,
-        {
+    if (obj?.parent?.is_central) {
+      axios
+        .put(
+          `${endpoints.questionBank.deleteQuestion}`,
+          {
+            question_status: 2,
+            question: obj.parent.id,
+          },
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        )
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            setSelectedIndex(-1);
+            handlePeriodList(
+              tabQueTypeId,
+              tabQueCatId,
+              tabMapId,
+              tabQueLevel,
+              tabTopicId,
+              tabYearId,
+              tabGradeId,
+              tabChapterId
+            );
+            setAlert('success', result?.data?.message);
+          } else {
+            setAlert('error', 'ERROR!');
+          }
+        })
+        .catch((error) => setAlert('error', error?.message));
+    }
+    if (!obj.parent?.is_central) {
+      axiosInstance
+        .put(`${endpoints.questionBank.erpQuestionPublishing}`, {
           question_status: 2,
           question: obj.parent.id,
-        },
-        {
-          headers: { 'x-api-key': 'vikash@12345#1231' },
-        }
-      )
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          setSelectedIndex(-1);
-          handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel, tabTopicId);
-          setAlert('success', result?.data?.message);
-        } else {
-          setAlert('error', 'ERROR!');
-        }
-      })
-      .catch((error) => setAlert('error', error?.message));
+        })
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            setSelectedIndex(-1);
+            handlePeriodList(
+              tabQueTypeId,
+              tabQueCatId,
+              tabMapId,
+              tabQueLevel,
+              tabTopicId,
+              tabYearId,
+              tabGradeId,
+              tabChapterId
+            );
+            setAlert('success', result?.data?.message);
+          } else {
+            setAlert('error', 'ERROR!');
+          }
+        })
+        .catch((error) => setAlert('error', error?.message));
+    }
   };
   const handleDelete = (obj) => {
-    // axiosInstance
-    axios
-      .put(
-        `${endpoints.questionBank.deleteQuestion}`,
-        {
+    if (obj?.parent?.is_central) {
+      axios
+        .put(
+          `${endpoints.questionBank.deleteQuestion}`,
+          {
+            question_status: 1,
+            question: obj.parent.id,
+          },
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        )
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            setSelectedIndex(-1);
+            handlePeriodList(
+              tabQueTypeId,
+              tabQueCatId,
+              tabMapId,
+              tabQueLevel,
+              tabTopicId,
+              tabYearId,
+              tabGradeId,
+              tabChapterId
+            );
+            setAlert('success', 'Question Moved To Draft');
+          } else {
+            setAlert('error', 'ERROR!');
+          }
+        })
+        .catch((error) => setAlert('error', error?.message));
+    }
+    if (!obj?.parent?.is_central) {
+      axiosInstance
+        .put(`${endpoints.questionBank.erpQuestionPublishing}`, {
           question_status: 1,
           question: obj.parent.id,
-        },
-        {
-          headers: { 'x-api-key': 'vikash@12345#1231' },
-        }
-      )
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          setSelectedIndex(-1);
-          handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel, tabTopicId);
-          setAlert('success', 'Question Moved To Draft');
-        } else {
-          setAlert('error', 'ERROR!');
-        }
-      })
-      .catch((error) => setAlert('error', error?.message));
+        })
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            setSelectedIndex(-1);
+            handlePeriodList(
+              tabQueTypeId,
+              tabQueCatId,
+              tabMapId,
+              tabQueLevel,
+              tabTopicId,
+              tabYearId,
+              tabGradeId,
+              tabChapterId
+            );
+            setAlert('success', 'Question Moved To Draft');
+          } else {
+            setAlert('error', 'ERROR!');
+          }
+        })
+        .catch((error) => setAlert('error', error?.message));
+    }
   };
 
   return (
@@ -165,9 +241,11 @@ const ViewMoreCard = ({
               <CloseIcon color='primary' />
             </IconButton>
           </div>
-          <div className='headerContent' onClick={handleEdit}>
-            <a>Edit Details</a>
-          </div>
+          {periodDataForView.is_central ? null : (
+            <div className='headerContent' onClick={handleEdit}>
+              <a>Edit Details</a>
+            </div>
+          )}
         </div>
       </div>
       <div className='resourceBulkDownload'>Questions</div>

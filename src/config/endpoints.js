@@ -381,6 +381,8 @@ export default {
     topicList:'/assessment/topics/',
     centralTopicList:`${baseURLCentral}/assessment/topics-list/`,
     erpQuestionList:'/assessment/questions-list/',
+    erpViewMoreData:'/assessment/question-details/',
+    erpQuestionPublishing:'/assessment/publish-question/',
   },
   assementQP: {
     assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,

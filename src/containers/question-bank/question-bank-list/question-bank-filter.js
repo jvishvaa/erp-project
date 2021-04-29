@@ -551,7 +551,6 @@ const QuestionBankFilters = ({
   // }
   
   const handleFilter = () => {
-    // console.log('ALLDATA',filterData.year,filterData.grade,filterData.subject,filterData.chapter,filterData.topicId,filterData.question_level_option,filterData.question_categories_options,filterData.quesType)
     if (!filterData?.grade) {
       setAlert('error', 'Select Grade!');
       return;
