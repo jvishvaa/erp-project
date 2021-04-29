@@ -240,9 +240,9 @@ const { is_ended=false,ended_at,lobby_identifier, question_paper } = lobbyInfo||
         lobby_identifier ? 
         <div>
         <Typography>OnlineClass Name : {preQuizInfo.online_class && preQuizInfo.online_class.title}</Typography>
-        <Typography>Question Paper : {preQuizInfo.online_class && preQuizInfo.online_class.test_details && preQuizInfo.online_class.test_details.test_name }</Typography>
-        <Typography>Duration : {preQuizInfo.online_class && preQuizInfo.online_class.test_details && preQuizInfo.online_class.test_details.test_duration }</Typography>
-        <Typography>No Of Questions : {preQuizInfo.online_class && preQuizInfo.online_class.test_details && preQuizInfo.online_class.test_details.total_question }</Typography>
+        <Typography>Question Paper : {preQuizInfo.test_details_qp && preQuizInfo.test_details_qp && preQuizInfo.test_details_qp.test_name }</Typography>
+        <Typography>Duration : {preQuizInfo.test_details_qp && preQuizInfo.test_details_qp && preQuizInfo.test_details_qp.test_duration }</Typography>
+        <Typography>No Of Questions : {preQuizInfo.test_details_qp && preQuizInfo.test_details_qp&& preQuizInfo.test_details_qp.total_question }</Typography>
 
           
 
