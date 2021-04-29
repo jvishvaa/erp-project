@@ -116,6 +116,7 @@ const Attendance = () => {
   }, []);
   console.log(moduleId, 'MODULE_ID');
   useEffect(() => {
+    setLoading(true);
     let path = window.location.pathname;
     console.log(path, 'path');
     console.log(history);
@@ -155,6 +156,7 @@ const Attendance = () => {
         `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${history?.location?.state?.studentData[0]?.erp_id}&page=${pageNumber}&page_size=${limit}`
       )
       .then((res) => {
+        setLoading(false);
         if (res.status == 200) {
           setTotalGenre(res.data.count);
           console.log(res.data.count);
@@ -170,6 +172,7 @@ const Attendance = () => {
         }
       })
       .catch((err) => {
+        setLoading(false);
         console.log(err);
         // setAlert('error', 'something went wrong');
       });
@@ -188,6 +191,7 @@ const Attendance = () => {
       )
       // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
       .then((res) => {
+        setLoading(false);
         if (res.status == 200) {
           setTotalGenre(res.data.count);
           console.log(res.data.count);
@@ -204,6 +208,7 @@ const Attendance = () => {
         }
       })
       .catch((err) => {
+        setLoading(false);
         console.log(err);
         // setAlert('error', 'something went wrong');
       });
@@ -214,8 +219,14 @@ const Attendance = () => {
       .get(
         `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}`
       )
-      .then((res) => console.log(res.data.result))
-      .catch((err) => console.log(err));
+      .then((res) => {
+        setLoading(false);
+        console.log(res.data.result);
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
   };
 
   const [state, setState] = React.useState({
@@ -245,6 +256,7 @@ const Attendance = () => {
       section_id: selectedSection,
       startDate: startDate,
       endDate: endDate,
+      counter: history?.location?.state?.payload?.counter,
     };
     if (history?.location?.pathname === '/teacher-view/attendance') {
       history.push({
@@ -757,7 +769,7 @@ const Attendance = () => {
                 )}
                 {studentView && (
                   <strong>
-                    {history?.location?.state?.data[0]?.student_first_name.slice(0, 10)}
+                    {history?.location?.state?.data[0]?.student_name.slice(0, 10)}
                   </strong>
                 )}
               </Typography>

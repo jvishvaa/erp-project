@@ -238,7 +238,7 @@ export default {
     GiveAwardAPI: '/academic/create-award/',
     commentList: '/academic/comments-list/',
     replyToAnswer: '/academic/create-answer-replay/',
-    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
     deletePost: '/academic/',
   },
   circular: {
