@@ -367,6 +367,7 @@ const Attend = () => {
       section_id: selectedSection,
       startDate: startDate,
       endDate: endDate,
+      counter: history?.location?.state?.payload?.counter,
     };
     history.push({
       pathname: '/teacher-view/attendance',
