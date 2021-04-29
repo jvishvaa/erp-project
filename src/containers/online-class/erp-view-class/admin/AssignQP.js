@@ -100,6 +100,7 @@ const AssignQP = (props) => {
   useEffect(() => {
       getQP();
      }, []);
+
       const getQP =  () => {
 
         axios
@@ -127,7 +128,7 @@ const AssignQP = (props) => {
     let requestData= {}
     
       requestData = {
-      "quiz_test_paper": 80
+      "quiz_test_paper": selectedQp
       }
 
     axiosInstance.put(`${endpoints.questionPaper.AssignQP}${data}/assign-quiz/`, requestData)

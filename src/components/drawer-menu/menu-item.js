@@ -40,7 +40,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name:'Student Calendar',Path:'/attendance-calendar/student-view'}, //
     { name: 'Course', Path: '/course-list' },
     { name: 'Course Price', Path: '/course-price' },
-    { name: 'Lesson Plan Mapping', Path: '/subject/grade' },
+    { name: 'Content Mapping', Path: '/subject/grade' },
     { name: 'Create User', Path: '/user-management/create-user' },
     { name: 'View User', Path: '/user-management/view-users' },
     { name: 'Bulk Upload Status', Path: '/user-management/bulk-upload' },

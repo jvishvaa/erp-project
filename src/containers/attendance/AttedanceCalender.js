@@ -109,7 +109,7 @@ const AttedanceCalender = () => {
   const [sevenDay, setSevenDay] = useState();
   const [studentData, setStudentData] = useState([]);
   const [teacherView, setTeacherView] = useState(true);
-  const [ backButton , setBackButton ] = useState(false);
+  const [backButton, setBackButton] = useState(false);
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -159,32 +159,31 @@ const AttedanceCalender = () => {
         // setStartDate(history?.location?.state?.payload?.startDate);
         // setEndDate(history?.location?.state?.payload?.endDate);
         axiosInstance
-        .get(`academic/student_attendance_between_date_range/`, {
-          params: {
-            start_date: history?.location?.state?.payload?.startDate,
-            end_date: history?.location?.state?.payload?.endDate,
-            branch_id: history?.location?.state?.payload?.branch_id?.branch?.id,
-            grade_id: history?.location?.state?.payload?.grade_id?.grade_id,
-            // grade_id: 2,
+          .get(`academic/student_attendance_between_date_range/`, {
+            params: {
+              start_date: history?.location?.state?.payload?.startDate,
+              end_date: history?.location?.state?.payload?.endDate,
+              branch_id: history?.location?.state?.payload?.branch_id?.branch?.id,
+              grade_id: history?.location?.state?.payload?.grade_id?.grade_id,
+              // grade_id: 2,
 
-            section_id: history?.location?.state?.payload?.section_id?.section_id,
-            // section_id: 2,
-            academic_year: history?.location?.state?.payload?.academic_year_id?.id,
-          },
-        })
-        .then((res) => {
-          setLoading(false);
-          console.log(res, 'respond teacher');
-          setStudentDataAll(res.data);
-          let temp = [...res.data.present_list, ...res.data.absent_list];
-          setStudentData(temp);
-          setAlert('success', 'Data Sucessfully Fetched');
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.log(error);
-        });
-    
+              section_id: history?.location?.state?.payload?.section_id?.section_id,
+              // section_id: 2,
+              academic_year: history?.location?.state?.payload?.academic_year_id?.id,
+            },
+          })
+          .then((res) => {
+            setLoading(false);
+            console.log(res, 'respond teacher');
+            setStudentDataAll(res.data);
+            let temp = [...res.data.present_list, ...res.data.absent_list];
+            setStudentData(temp);
+            setAlert('success', 'Data Sucessfully Fetched');
+          })
+          .catch((error) => {
+            setLoading(false);
+            console.log(error);
+          });
       } else {
         setTeacherView(true);
         setSelectedAcadmeicYear('');
@@ -217,7 +216,6 @@ const AttedanceCalender = () => {
           setLoading(false);
           console.log(error);
         });
-      
     }
   }, [path]);
 
@@ -242,7 +240,6 @@ const AttedanceCalender = () => {
       setTeacherView(false);
       setStudentDataAll(null);
     }
-  
   }, [path]);
 
   useEffect(() => {
@@ -456,6 +453,8 @@ const AttedanceCalender = () => {
         })
         .catch((error) => {
           setLoading(false);
+          setAlert('error', 'no attendance');
+          setStudentDataAll(null);
           console.log(error);
         });
     }
@@ -487,6 +486,8 @@ const AttedanceCalender = () => {
         })
         .catch((error) => {
           setLoading(false);
+          setAlert('error', 'no attendance');
+          setStudentDataAll(null);
           console.log(error);
         });
     }
@@ -511,6 +512,8 @@ const AttedanceCalender = () => {
       })
       .catch((error) => {
         setLoading(false);
+        setAlert('error', 'no attendance');
+        setStudentDataAll(null);
         console.log(error);
       });
   };
@@ -535,6 +538,8 @@ const AttedanceCalender = () => {
         })
         .catch((error) => {
           setLoading(false);
+          setAlert('error', 'no attendance');
+          setStudentDataAll(null);
           console.log(error);
         });
     }
@@ -560,6 +565,8 @@ const AttedanceCalender = () => {
         })
         .catch((error) => {
           setLoading(false);
+          setAlert('error', 'no attendance');
+          setStudentDataAll(null);
           console.log(error);
         });
     }
@@ -969,8 +976,8 @@ const AttedanceCalender = () => {
                     </Button>
                   ) : (
                     <>
-                  <p id="teacherUpdate" >Updated 1 day ago</p>
-                  </>
+                      <p id='teacherUpdate'>Updated 1 day ago</p>
+                    </>
                   )}
                 </Grid>
               </div>
@@ -984,7 +991,7 @@ const AttedanceCalender = () => {
                   <p className='erpId'>ERP_ID :{userName[0]}</p>
                 ) : (
                   <>
-                  <p id="studentPara" >Updated 1 day ago</p>
+                    <p id='studentPara'>Updated 1 day ago</p>
                   </>
                 )}
                 {/* <KeyboardArrowDownIcon className='downIcon' /> */}
@@ -1097,11 +1104,7 @@ const AttedanceCalender = () => {
               </Grid>
               <Grid item md={6} xs={12} className='event-btn'>
                 {teacherView === true ? (
-                  <Button
-                    size='small'
-                    href={`/createEvent`}
-                    className='add-event-button'
-                  >
+                  <Button size='small' href={`/createEvent`} className='add-event-button'>
                     {/* ADD EVENT */}
                     <span className={classes.contentData} id='event-text'>
                       Add Event
@@ -1126,7 +1129,7 @@ const AttedanceCalender = () => {
             </Grid>
             {studentDataAll != null ? (
               <div className='eventGrid'>
-                <Divider className="event-divider" />
+                <Divider className='event-divider' />
                 <div className='eventList'>
                   {studentDataAll.events &&
                     studentDataAll.events.map((data) => (

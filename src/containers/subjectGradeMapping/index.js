@@ -71,7 +71,7 @@ const Subjectgrade = (props) => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Lesson Plan Mapping') {
+            if (item.child_name === 'Content Mapping') {
               setModuleId(item.child_id);
             }
           });
@@ -462,7 +462,7 @@ const Subjectgrade = (props) => {
             <Layout>
                 <div className="mapping-grade-subject-breadcrum">
                     <div className='mapping-message_log_breadcrumb_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
-                        <CommonBreadcrumbs componentName='Master Management' childComponentName='Lesson Plan Mapping' childComponentNameNext='Assign Mapping'/>
+                        <CommonBreadcrumbs componentName='Master Management' childComponentName='Content Mapping' childComponentNameNext='Assign Mapping'/>
                     </div>
                 </div>
                 <div className="mapping-grade-subject-dropdown-container">

@@ -39,7 +39,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   // return <Fade direction='in' ref={ref} {...props} />
 });
 
-function MpQuizPlay() {
+function MpQuizPlay({ params }) {
   const { isMuted, toggleMute, defaultBgmUrl, pickRandomBgm } =
     useQuizUitilityContext() || {};
   const {
@@ -70,10 +70,10 @@ function MpQuizPlay() {
       return <GetErrorMsgC showOnlyLabel label={`${joinLobbyStatusMessage}`} />;
     }
     if (isQuizEnded && isHost) {
-      return <HostAndQuizEnded />;
+      return <HostAndQuizEnded params={params} />;
     }
     if ((hasFinished || isQuizEnded) && !isHost) {
-      return <JoineeAndQuizHasFinishedOrEnded />;
+      return <JoineeAndQuizHasFinishedOrEnded params={params} />;
     }
     // const userType = isHost ? 'HOST' : 'JOINEE'
     // const quizStatus = isQuizStarted ? 'QUIZ' : 'LOBBY'
@@ -83,7 +83,9 @@ function MpQuizPlay() {
       HOST_QUIZ: HostQuizContainerContent,
       JOINEE_QUIZ: JoineeQuizContainerContent,
     };
-    return DECIDE[userQuizStatus]();
+    // return DECIDE[userQuizStatus]();
+    const JsxElement = DECIDE[userQuizStatus]
+    return <JsxElement params={params} />;
   };
   return (
     <>

@@ -147,7 +147,7 @@ const CreateEvent = () => {
         end_time: endTime,
         event_category: eventType,
 
-        academic_year:selectedAcademicYear.id,
+        academic_year: selectedAcademicYear.id,
         branch: selectedBranch.branch.id,
         grade: selectedGrade.grade_id,
         section: selectedSection.section_id,
@@ -507,8 +507,14 @@ const CreateEvent = () => {
                 <Divider />
               </Grid>
             </Grid>
-            <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={5} lg={3} sm={6} xs={10} className='arrow-1'>
+            <Grid
+              container
+              direction='row'
+              spacing={2}
+              className={classes.root}
+              alignItems='center'
+            >
+              <Grid item xs={12} md={2} className='arrow-1'>
                 <MuiPickersUtilsProvider utils={MomentUtils}>
                   <KeyboardDatePicker
                     size='small'
@@ -521,20 +527,22 @@ const CreateEvent = () => {
                     minDate={new Date()}
                     name='start_date'
                     inputVariant='outlined'
-                    className='arrow conte'
+                    // className='arrow conte'
                     onChange={handleStartDateChange}
                     // handleStartDateChange={handleStartDateChange}
                     // handleEndDateChange={handleEndDateChange}
 
                     value={startDate}
-                    style={{ background: 'white', width: '50%' }}
+                    className='dropdownIcon'
+                    // style={{ background: 'white', width: '50%' }}
                     // onChange={handleDateChange}
                     KeyboardButtonProps={{
                       'aria-label': 'change date',
                     }}
                   />
                 </MuiPickersUtilsProvider>
-
+              </Grid>
+              <Grid item xs={12} md={2}>
                 <MuiPickersUtilsProvider utils={MomentUtils}>
                   <KeyboardDatePicker
                     size='small'
@@ -548,10 +556,11 @@ const CreateEvent = () => {
                     variant='standard'
                     name='end_date'
                     inputVariant='outlined'
-                    className='arrow conte'
+                    // className='arrow conte'
+                    className='dropdownIcon'
                     onChange={handleEndDateChange}
                     value={endDate}
-                    style={{ background: 'white', width: '50%' }}
+                    // style={{ background: 'white', width: '50%' }}
                     KeyboardButtonProps={{
                       'aria-label': 'change date',
                     }}
@@ -572,46 +581,56 @@ const CreateEvent = () => {
                 />
               </Grid>
             </Grid>
-            <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={5} lg={3} sm={6} xs={10} className='arrow-1'>
-                <div className='time-ranger-border'>
-                  <MuiPickersUtilsProvider utils={MomentUtils}>
-                    <KeyboardTimePicker
-                      size='small'
-                      style={{ width: '50%', marginTop: '-5%' }}
-                      className='arrow conte'
-                      id='time-picker'
-                      label='Start Time'
-                      inputVariant='outlined'
-                      name='start_time'
-                      value={selectedStartTime}
-                      onChange={handleStartTimeChange}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change time',
-                      }}
-                    />
-                  </MuiPickersUtilsProvider>
-                  <MuiPickersUtilsProvider utils={MomentUtils}>
-                    <KeyboardTimePicker
-                      size='small'
-                      // margin="normal"
-                      style={{ width: '50%', marginTop: '-5%' }}
-                      className='helperText'
-                      className='arrow conte'
-                      id='time-picker'
-                      label='End Time'
-                      name='end_time'
-                      inputVariant='outlined'
-                      value={selectedEndTime}
-                      onChange={handleEndTimeChange}
-                      // helperText={helperTextMsg}
+            <Grid
+              container
+              direction='row'
+              spacing={2}
+              className={classes.root}
+              alignItems='center'
+            >
+              <Grid item xs={12} md={2}>
+                {/* <div className='time-ranger-border'> */}
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <KeyboardTimePicker
+                    size='small'
+                    // style={{ width: '50%', marginTop: '-5%' }}
+                    // className='arrow conte'
+                    className='dropdownIcon'
+                    id='time-picker'
+                    label='Start Time'
+                    inputVariant='outlined'
+                    name='start_time'
+                    value={selectedStartTime}
+                    onChange={handleStartTimeChange}
+                    KeyboardButtonProps={{
+                      'aria-label': 'change time',
+                    }}
+                  />
+                </MuiPickersUtilsProvider>
+                {/* </div> */}
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <KeyboardTimePicker
+                    size='small'
+                    // margin="normal"
+                    // style={{ width: '50%', marginTop: '-5%' }}
+                    className='helperText'
+                    className='arrow conte'
+                    className='dropdownIcon'
+                    id='time-picker'
+                    label='End Time'
+                    name='end_time'
+                    inputVariant='outlined'
+                    value={selectedEndTime}
+                    onChange={handleEndTimeChange}
+                    // helperText={helperTextMsg}
 
-                      KeyboardButtonProps={{
-                        'aria-label': 'change time',
-                      }}
-                    />
-                  </MuiPickersUtilsProvider>
-                </div>
+                    KeyboardButtonProps={{
+                      'aria-label': 'change time',
+                    }}
+                  />
+                </MuiPickersUtilsProvider>
               </Grid>
               <Grid item md={1} sm={1}>
                 <img src={LineAtt} className='im' style={{ marginTop: '-60px' }} />
@@ -658,14 +677,13 @@ const CreateEvent = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' className={classes.root}>
-             
               {/* <Grid item md={1} lg={1} xs={12}> */}
               <div className={classes.button}>
                 <Button variant='contained' onClick={onunHandleClearAll}>
                   Clear All
                 </Button>
-              {/* </Grid> */}
-              {/* <Grid item md={2} lg={1} xs={12}> */}
+                {/* </Grid> */}
+                {/* <Grid item md={2} lg={1} xs={12}> */}
                 <Button
                   variant='contained'
                   color='primary'
@@ -674,8 +692,8 @@ const CreateEvent = () => {
                 >
                   Go Back
                 </Button>
-              {/* </Grid> */}
-              {/* <Grid item md={1} lg={1} xs={12}> */}
+                {/* </Grid> */}
+                {/* <Grid item md={1} lg={1} xs={12}> */}
                 <Button
                   variant='contained'
                   type='submit'
@@ -685,7 +703,7 @@ const CreateEvent = () => {
                 >
                   SAVE EVENT
                 </Button>
-              {/* </Grid> */}
+                {/* </Grid> */}
               </div>
             </Grid>
           </MediaQuery>
@@ -989,7 +1007,7 @@ const CreateEvent = () => {
             </Grid>
             <Grid container direction='row' className={classes.root}>
               {/* <div className={classes.button}> */}
-                <Grid item md={6} xs={12}>
+              <Grid item md={6} xs={12}>
                 <TextField
                   id='outlined-multiline-static'
                   label='ADD Event Description'
@@ -1001,8 +1019,8 @@ const CreateEvent = () => {
                   rows={5}
                   variant='outlined'
                 />
-                </Grid>
-                <Grid item md={3} lg={2} xs={12}>
+              </Grid>
+              <Grid item md={3} lg={2} xs={12}>
                 <Button
                   variant='contained'
                   type='submit'
@@ -1013,8 +1031,8 @@ const CreateEvent = () => {
                 >
                   SAVE EVENT
                 </Button>
-                </Grid>
-                <Grid item md={3} lg={2} xs={12}>
+              </Grid>
+              <Grid item md={3} lg={2} xs={12}>
                 <Button
                   onClick={handleBackButtonClick}
                   style={{
@@ -1027,7 +1045,7 @@ const CreateEvent = () => {
                 >
                   Go Back
                 </Button>
-                </Grid>
+              </Grid>
               {/* </div> */}
             </Grid>
           </MediaQuery>

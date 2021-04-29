@@ -10,8 +10,8 @@ const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction='up' ref={ref} {...props} />
 })
 class PostQuizLeaderboard extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
     this.state = {
       participants: [],
       showTopFive: false,
@@ -75,7 +75,7 @@ class PostQuizLeaderboard extends Component {
                   </Toolbar>
                 </AppBar>
                 
-                 <ReviewAnswers />
+                 <ReviewAnswers  params={this.props.params}/>
                   {/* : <p>ReviewAnswers - pass online class id and review ques</p> */}
                                 
               </Dialog>
