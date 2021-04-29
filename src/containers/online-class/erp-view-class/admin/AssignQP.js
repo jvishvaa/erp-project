@@ -78,11 +78,10 @@ const useStyles = makeStyles((theme) => ({
 
 const AssignQP = (props) => {
   const classes = useStyles()
-  // const data = props.location.state.data
   const {location:{state:{data}={}}={}}=props||{}
   const history = useHistory()
+  const { match: { params } } = props;
 
-//   const gradeObj=data.grade
   const [wordCount,setWordCount] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
@@ -101,6 +100,7 @@ const AssignQP = (props) => {
   useEffect(() => {
       getQP();
      }, []);
+
       const getQP =  () => {
 
         axios
@@ -128,7 +128,7 @@ const AssignQP = (props) => {
     let requestData= {}
     
       requestData = {
-      "quiz_test_paper": 80
+      "quiz_test_paper": selectedQp
       }
 
     axiosInstance.put(`${endpoints.questionPaper.AssignQP}${data}/assign-quiz/`, requestData)
@@ -150,11 +150,11 @@ const AssignQP = (props) => {
 
 const handleQPSelect = (event,value) =>{
   if (value){
-    setSelectedQp(value.id)
+    setSelectedQp(value.question_paper)
   }
   axiosInstance
   .get(`${endpoints.questionPaper.QuestionsInQP}?question_paper=${
-    80
+    value.question_paper
   }`, {
     headers: {
         Authorization: `Bearer ${token}`,
@@ -282,6 +282,10 @@ const questionCard = (data, index) => {
       </div>
 
         <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '-1.25rem 1.5% 0 1.5%' }}>
+          <Grid item xs={12} sm={12}>
+          <div style={{fontSize :'14px' ,color:'orange'}}> Warning:  *Please select a question paper with single choice questions only</div>
+
+          </Grid>
           <Grid item xs={6} sm={2}>
             <Button
               variant='contained'

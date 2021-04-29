@@ -15,8 +15,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     width: '100%',
     margin: '1.5rem -0.1rem',
-    // marginLeft:'10px',
-    // border:'1px solid black'
   },
   bord: {
     margin: theme.spacing(1),
@@ -99,11 +97,16 @@ const ContactUs = () => {
 
   return (
     <Layout>
-      <div style={{ marginTop: '20px', marginLeft: '-10px' }}>
+      <div className='profile_breadcrumb_wrapper'>
         <CommonBreadcrumbs componentName='Contact Us' />
       </div>
-      <Grid container direction='row' className={classes.root} spacing={3}>
-        <AppBar position='static' style={{ color: 'white' }}>
+      <Grid container direction='row' className={classes.root} item spacing={3}>
+        <AppBar
+          position='static'
+          style={{
+            color: 'white',
+          }}
+        >
           <Tabs value={value} onChange={handleChange} aria-label='simple tabs example'>
             <Tab label='POST CONTACT NUMBER' {...a11yProps(0)} />
             <Tab label='UPDATE CONTACT NUMBER' {...a11yProps(1)} />

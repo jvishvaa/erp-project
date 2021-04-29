@@ -188,7 +188,7 @@ const CreateNewForm = (props) => {
                 </MenuItem>
                 {grevancesData &&
                   grevancesData.map((data, index) => (
-                    <MenuItem key={index} value={data.grievance_name}>
+                    <MenuItem key={index} value={data?.grievance_name}>
                       {data.grievance_name}
                     </MenuItem>
                   ))}

@@ -229,6 +229,14 @@ const AssessmentFilters = ({
   };
 
   const handleFilter = () => {
+    if (!filterData.academic) {
+      setAlert('error', 'Select Academic Year!');
+      return;
+    }
+    if (!filterData.branch) {
+      setAlert('error', 'Select Branch!');
+      return;
+    }
     if (!filterData.grade) {
       setAlert('error', 'Select Grade!');
       return;
@@ -242,7 +250,13 @@ const AssessmentFilters = ({
       return;
     }
     setSelectedIndex(-1);
-    handlePeriodList(filterData.grade, filterData.subject, qpValue);
+    handlePeriodList(
+      filterData.academic,
+      filterData.branch,
+      filterData.grade,
+      filterData.subject,
+      qpValue
+    );
   };
 
   // useEffect(() => {

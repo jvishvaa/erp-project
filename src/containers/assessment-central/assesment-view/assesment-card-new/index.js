@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import useStyles from './useStyles';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
-import axios from 'axios'
+import axios from 'axios';
 import { addQuestionPaperToTest } from '../../../../redux/actions';
 
 // import '../../lesson-plan-view/lesson.css';
@@ -59,18 +59,16 @@ const AssessmentCard = ({
 
   const handlePublish = () => {
     setPublishFlag(false);
-    axios
-      .put(
-        `${endpoints.baseURLCentral}/assessment/${period?.id}/update-status-question-paper/`,
-        {
-          is_verified: true,
-          is_draft: false,
-          is_review: false
-        },
-        {
-          headers: { 'x-api-key': 'vikash@12345#1231' },
-        }
-      )
+    const url = endpoints.assessmentErp?.publishQuestionPaper.replace(
+      '<question-paper-id>',
+      period?.id
+    );
+    axiosInstance
+      .put(url, {
+        is_verified: true,
+        is_draft: false,
+        is_review: false,
+      })
       .then((result) => {
         if (result.data.status_code > 199 && result.data.status_code < 300) {
           setAlert('success', result.data.message);
@@ -86,10 +84,14 @@ const AssessmentCard = ({
 
   const handleViewMore = () => {
     setLoading(true);
-    axios
-      .get(`${endpoints.assementQP.assementViewmore}${period.id}/qp-questions-list/`, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
+
+    const url = endpoints.assessmentErp?.questionPaperViewMore.replace(
+      '<question-paper-id>',
+      period?.id
+    );
+
+    axiosInstance
+      .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
           const { sections, questions } = result.data.result;
