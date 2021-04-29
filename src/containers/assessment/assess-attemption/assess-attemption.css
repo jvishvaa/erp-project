@@ -9,6 +9,11 @@
   margin-bottom: 15px;
 }
 
+.descriptive_question_header {
+  font-size: 18px;
+  font-weight: 600;
+}
+
 .question-numbers {
   display: flex;
   justify-content: space-between;

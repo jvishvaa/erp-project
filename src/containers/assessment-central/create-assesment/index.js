@@ -96,9 +96,10 @@ const CreateAssesment = ({
     validateOnChange: false,
     validateOnBlur: false,
   });
-  const getGrades = async () => {
+
+  const getGrades = async (acadId, branchId) => {
     try {
-      const data = await fetchGrades();
+      const data = await fetchGrades(acadId, branchId);
       setGrades(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch grades');
@@ -107,9 +108,12 @@ const CreateAssesment = ({
 
   const getSubjects = async (gradeId) => {
     try {
+      setSubjects([]);
       const data = await fetchSubjects(gradeId);
       setSubjects(data);
-    } catch (e) {}
+    } catch (e) {
+      setAlert('error', 'Failed to fetch subjects');
+    }
   };
 
   const resetForm = () => {
@@ -142,12 +146,12 @@ const CreateAssesment = ({
       return;
     }
 
-    if(!selectedQuestionPaper?.id) {
+    if (!selectedQuestionPaper?.id) {
       setAlert('error', 'Please add a question paper.');
       return;
     }
 
-    console.log(selectedQuestionPaper,'totalMarks');
+    console.log(selectedQuestionPaper, 'totalMarks');
 
     testMarks.forEach((obj) => {
       const { parentQuestionId } = obj;
@@ -272,8 +276,8 @@ const CreateAssesment = ({
           changedQuestion.question_mark[1] = 0;
         } else {
           if (+value > +changedQuestion.question_mark[0]) {
-            setAlert('error', 'Enter less than Assign marks')
-            return
+            setAlert('error', 'Enter less than Assign marks');
+            return;
           }
           changedQuestion.question_mark[1] = value;
         }

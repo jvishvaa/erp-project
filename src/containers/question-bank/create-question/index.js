@@ -19,7 +19,6 @@ import TopFilters from './top-filters';
 import QuestionTypeFilters from './question-type-filters';
 import './create-question.css';
 import axios from 'axios';
-import { getSubDomainName } from '../../../utility-functions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: 'none',
   },
 }));
-const subDomainName = getSubDomainName();
+
 const CreateQuestion = () => {
   const classes = useStyles();
   const { qId } = useParams();
@@ -152,9 +151,11 @@ const CreateQuestion = () => {
           <div>
             <Paper className={classes.root}>
               <div className='filterDataHeader'>
-                <div className='divfilterData'>{filterDataDisplay.grade?.grade_name}</div>
                 <div className='divfilterData'>
-                  {filterDataDisplay.subject.subject?.subject_name}
+                  {filterDataDisplay.grade?.grade__grade_name}
+                </div>
+                <div className='divfilterData'>
+                  {filterDataDisplay.subject?.subject_name}
                 </div>
                 <div className='divfilterData'>
                   {filterDataDisplay.chapter?.chapter_name}
@@ -163,7 +164,6 @@ const CreateQuestion = () => {
               </div>
               <QuestionTypeFilters
                 editData={editData}
-                subDomainName={subDomainName}
                 setEditData={setEditData}
                 setLoading={setLoading}
                 attributes={filterDataDisplay || {}}

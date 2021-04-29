@@ -118,10 +118,10 @@ export function getSubDomainName() {
   // if (hostSplitArray.length > 2) {
   //   domain = hostSplitArray.slice(hostSplitArray.length - 2).join('');
   // }
-  if (subDomainLevels === 2) {
+  if (subDomainLevels === 2) {  //dev.olvorchidnaigaon.letseduvate.com
     subSubDomain = hostSplitArray[0];
     subDomain = hostSplitArray[1];
-  } else if (subDomainLevels === 1) {
+  } else if (subDomainLevels === 1) { //olvorchidnaigaon.letseduvate.com
     subDomain = hostSplitArray[0];
   }
   return subDomain || '';

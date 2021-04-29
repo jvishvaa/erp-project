@@ -162,30 +162,28 @@ const MarkAttedance = () => {
       setSelectedBranch(history?.location?.state?.payload?.branch_id);
       setSelectedGrade(history?.location?.state?.payload?.grade_id);
       setSelectedSection(history?.location?.state?.payload?.section_id);
-      // setStartDate(history?.location?.state?.payload?.startDate)
+      setDateValue(history?.location?.state?.payload?.startDate);
       // setEndDate(history?.location?.state?.payload?.endDate)
       setNewData(history?.location?.state?.data);
 
       axiosInstance
         .get(
-          `${endpoints.academics.studentList}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&page_num=${pageNumber}&page_size=${limit}`
+          `${endpoints.academics.studentList}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&page_num=${pageNumber}&page_size=${limit}&attendance_for_date=${history?.location?.state?.payload?.startDate}`
         )
         .then((res) => {
           console.log(res, 'checking mark attendance list in useEffect');
           setNewData(res.data.results);
           setTotalGenre(res.data.count);
-          const is_first_shift_present = true;
-          const is_second_shift_present = true;
           console.log(res.data.count, 'checking count');
           var result = res.data.results.map((item) => ({
             name: item.name,
             student_id: item.user,
             section_mapping_id: selectedSection.section_id,
             remarks: 'none',
-            is_first_shift_present: true,
-            is_second_shift_present: true,
+            is_first_shift_present: item.is_first_shift_present,
+            is_second_shift_present: item.is_second_shift_present,
             fullday_present:
-              is_first_shift_present && is_second_shift_present ? true : false,
+              item.is_first_shift_present && item.is_second_shift_present ? true : false,
             attendance_for_date: dateValue,
           }));
           var all_result = res.data.all_data.map((item) => ({
@@ -193,10 +191,10 @@ const MarkAttedance = () => {
             student_id: item.user,
             section_mapping_id: selectedSection.section_id,
             remarks: 'none',
-            is_first_shift_present: true,
-            is_second_shift_present: true,
+            is_first_shift_present: item.is_first_shift_present,
+            is_second_shift_present: item.is_second_shift_present,
             fullday_present:
-              is_first_shift_present && is_second_shift_present ? true : false,
+              item.is_first_shift_present && item.is_second_shift_present ? true : false,
             attendance_for_date: dateValue,
           }));
           console.log(all_result);
@@ -260,15 +258,13 @@ const MarkAttedance = () => {
     console.log(pageNumber, 'page numebr');
     axiosInstance
       .get(
-        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&page=${pageNumber}&page_size=${limit}`
+        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&page=${pageNumber}&page_size=${limit}&attendance_for_date=${dateValue}`
       )
       .then((res) => {
         setLoading(false);
         console.log(res.data);
         setNewData(res.data.results);
         setTotalGenre(res.data.count);
-        const is_first_shift_present = true;
-        const is_second_shift_present = true;
         console.log(selectedSection.id, 'vinod');
         let sec = selectedSection.id;
         var result = res.data.results.map((item) => ({
@@ -276,10 +272,10 @@ const MarkAttedance = () => {
           student_id: item.user,
           section_mapping_id: sec,
           remarks: 'none',
-          is_first_shift_present: is_first_shift_present,
-          is_second_shift_present: is_second_shift_present,
+          is_first_shift_present: item.is_first_shift_present,
+          is_second_shift_present: item.is_second_shift_present,
           fullday_present:
-            is_first_shift_present && is_second_shift_present ? true : false,
+            item.is_first_shift_present && item.is_second_shift_present ? true : false,
           attendance_for_date: dateValue,
         }));
         var all_result = res.data.all_data.map((item) => ({
@@ -287,10 +283,10 @@ const MarkAttedance = () => {
           student_id: item.user,
           section_mapping_id: sec,
           remarks: 'none',
-          is_first_shift_present: true,
-          is_second_shift_present: true,
+          is_first_shift_present: item.is_first_shift_present,
+          is_second_shift_present: item.is_second_shift_present,
           fullday_present:
-            is_first_shift_present && is_second_shift_present ? true : false,
+            item.is_first_shift_present && item.is_second_shift_present ? true : false,
           attendance_for_date: dateValue,
         }));
         console.log(all_result);
@@ -467,24 +463,22 @@ const MarkAttedance = () => {
     // setGenreInActiveListResponse([]);
     axiosInstance
       .get(
-        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&page=${page}&page_size=${limit}`
+        `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&page=${page}&page_size=${limit}&attendance_for_date=${dateValue}`
       )
       .then((res) => {
         setLoading(false);
         console.log(res.data);
         setNewData(res.data.results);
         setTotalGenre(res.data.count);
-        const is_first_shift_present = true;
-        const is_second_shift_present = true;
         var result = res.data.results.map((item) => ({
           name: item.name,
           student_id: item.user,
           section_mapping_id: selectedSection.id,
           remarks: 'none',
-          is_first_shift_present: is_first_shift_present,
-          is_second_shift_present: is_second_shift_present,
+          is_first_shift_present: item.is_first_shift_present,
+          is_second_shift_present: item.is_second_shift_present,
           fullday_present:
-            is_first_shift_present && is_second_shift_present ? true : false,
+            item.is_first_shift_present && item.is_second_shift_present ? true : false,
           attendance_for_date: dateValue,
         }));
         setData(result);
@@ -499,6 +493,7 @@ const MarkAttedance = () => {
 
   const handleSecondHalf = (e, id) => {
     console.log(e.target.checked, id);
+    console.log(allData, 'all data');
     const studentId = data.findIndex((item) => item.student_id == id);
     const temp = allData.findIndex((item) => item.student_id == id);
     console.log(studentId);
@@ -512,7 +507,7 @@ const MarkAttedance = () => {
 
     let allProducts = [...allData];
     let allProduct = { ...allProducts[temp] };
-    allProduct.is_first_shift_present = e.target.checked;
+    allProduct.is_second_shift_present = e.target.checked;
     allProduct.fullday_present =
       allProduct.is_first_shift_present && product.is_second_shift_present ? true : false;
     allProducts[temp] = allProduct;
@@ -606,7 +601,10 @@ const MarkAttedance = () => {
                           {options.name.slice(0, 1)}
                         </Avatar>
                         <Typography className={[classes.content, classes.paperStyle]}>
-                          {options.name.slice(0, 6)}
+                          {options.name.slice(0, 10)}
+                        </Typography>
+                        <Typography className={[classes.content, classes.paperStyle]}>
+                          {options.student_id}
                         </Typography>
                       </Grid>
                       <Grid>

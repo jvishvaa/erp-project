@@ -66,7 +66,7 @@ const AssessmentView = () => {
     setPage(page);
   };
 
-  const handlePeriodList = (grade, subject, qpValue, newValue) => {
+  const handlePeriodList = (grade = {}, subject = {}, qpValue, newValue) => {
     if (!grade || !qpValue) {
       setAlert('error', 'Select all the fields!');
       return;
@@ -81,13 +81,6 @@ const AssessmentView = () => {
     if (newValue == 0 || newValue == undefined) {
       const tabVal = '';
       setTabValue(0);
-      // if (tabValue == 1) {
-      //   tabVal = '&is_draft=True';
-      // } else if (tabValue == 2) {
-      //   tabVal = '&is_review=True';
-      // } else if (tabValue == 3) {
-      //   tabVal = '&is_verified=True';
-      // }
       axios
         .get(
           `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}${tabVal}&page=${page}&page_size=${limit}&school=${subDomainName}`,
@@ -95,7 +88,6 @@ const AssessmentView = () => {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           }
         )
-        // axiosInstance.get(`${endpoints.assementQP.assementFilter}?grade=${2}&paper_level=${1}`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setTotalCount(result?.data?.result?.count);

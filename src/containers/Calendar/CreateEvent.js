@@ -143,7 +143,8 @@ const CreateEvent = () => {
         start_time: startTime,
         end_time: endTime,
         event_category: eventType,
-        
+
+        academic_year:selectedAcademicYear.id,
         branch: selectedBranch.branch.id,
         grade: selectedGrade.grade_id,
         section: selectedSection.section_id,
@@ -661,7 +662,7 @@ const CreateEvent = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' className={classes.root }>
-              <Grid item md={1} lg={1} xs={12} >
+              <Grid item md={2} lg={1} xs={12} >
                 <Button variant='contained' onClick={onunHandleClearAll}>
                   Clear All
                 </Button>
@@ -671,7 +672,7 @@ const CreateEvent = () => {
                   Go Back
                 </Button>
               </Grid>
-              <Grid item md={1} lg={1} xs={12}>
+              <Grid item md={2} lg={2} xs={12}>
                 <Button
                   variant='contained'
                   type='submit'
