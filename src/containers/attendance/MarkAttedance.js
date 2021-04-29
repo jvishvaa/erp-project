@@ -181,7 +181,8 @@ const MarkAttedance = () => {
               ((item.first_name && item.first_name.slice(0, 10)) || '') +
               ' ' +
               ((item.last_name && item.last_name.slice(0, 1)) || ''),
-            student_id: item.erp_id,
+            student_id: item.user,
+            erp_id: item.erp_id,
             section_mapping_id: selectedSection.section_id,
             remarks: 'none',
             is_first_shift_present: item.is_first_shift_present,
@@ -195,7 +196,8 @@ const MarkAttedance = () => {
               ((item.first_name && item.first_name.slice(0, 10)) || '') +
               ' ' +
               ((item.last_name && item.last_name.slice(0, 1)) || ''),
-            student_id: item.erp_id,
+            student_id: item.user,
+            erp_id: item.erp_id,
             section_mapping_id: selectedSection.section_id,
             remarks: 'none',
             is_first_shift_present: item.is_first_shift_present,
@@ -280,7 +282,8 @@ const MarkAttedance = () => {
             ((item.first_name && item.first_name.slice(0, 10)) || '') +
             ' ' +
             ((item.last_name && item.last_name.slice(0, 1)) || ''),
-          student_id: item.erp_id,
+          student_id: item.user,
+          erp_id: item.erp_id,
           section_mapping_id: sec,
           remarks: 'none',
           is_first_shift_present: item.is_first_shift_present,
@@ -294,7 +297,8 @@ const MarkAttedance = () => {
             ((item.first_name && item.first_name.slice(0, 10)) || '') +
             ' ' +
             ((item.last_name && item.last_name.slice(0, 1)) || ''),
-          student_id: item.erp_id,
+          student_id: item.user,
+          erp_id: item.erp_id,
           section_mapping_id: sec,
           remarks: 'none',
           is_first_shift_present: item.is_first_shift_present,
@@ -390,7 +394,8 @@ const MarkAttedance = () => {
       grade_id: selectedGrade,
       section_id: selectedSection,
       startDate: dateValue,
-      endDate: dateValue,
+      endDate: history?.location?.state?.payload?.endDate,
+      counter: history?.location?.state?.payload?.counter,
     };
     history.push({
       pathname: '/attendance-calendar/teacher-view',
@@ -456,7 +461,7 @@ const MarkAttedance = () => {
             ((item.first_name && item.first_name.slice(0, 10)) || '') +
             ' ' +
             ((item.last_name && item.last_name.slice(0, 1)) || ''),
-          student_id: item.erp_id,
+          student_id: item.user,
           section_mapping_id: selectedSection.id,
           remarks: 'none',
           is_first_shift_present: item.is_first_shift_present,
@@ -551,7 +556,7 @@ const MarkAttedance = () => {
                         </Avatar>
                         <Typography className={[classes.content, classes.paperStyle]}>
                           <div>{options.name}</div>
-                          <div>{options.student_id}</div>
+                          <div>{options.erp_id}</div>
                         </Typography>
                       </Grid>
                       <Grid>
@@ -842,6 +847,7 @@ const MarkAttedance = () => {
                 color='secondary'
                 className={classes.filterButton}
                 onClick={handleSave}
+                style={{ marginLeft: '30px' }}
               >
                 Save{' '}
               </StyledFilterButton>
