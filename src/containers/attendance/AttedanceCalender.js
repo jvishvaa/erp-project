@@ -623,9 +623,10 @@ const AttedanceCalender = () => {
       branch_id: selectedBranch,
       grade_id: selectedGrade,
       section_id: selectedSection,
-      startDate: startDate,
-      endDate: endDate,
+      startDate: moment(startDate).format('YYYY-MM-DD'),
+      endDate: moment(endDate).format('YYYY-MM-DD'),
     };
+    console.log(payload);
     history.push({
       pathname: '/markattendance',
       state: {

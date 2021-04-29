@@ -40,6 +40,7 @@ import { fi } from 'date-fns/locale';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
+import { setLocale } from 'yup';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
@@ -114,6 +115,7 @@ const Attend = () => {
   console.log(moduleId, 'MODULE_ID');
 
   useEffect(() => {
+    setLoading(true);
     console.log(history);
 
     if (history?.location?.state?.payload) {
