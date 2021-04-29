@@ -1,19 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-// import axios from 'axios'
 import { connect } from 'react-redux';
 import { Grid, makeStyles, AppBar, IconButton, Tooltip } from '@material-ui/core';
 import { ArrowBack, ArrowForward, ZoomOutMap, Undo, Close } from '@material-ui/icons';
 import CreateIcon from '@material-ui/icons/Create';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
+import axios from 'axios';
 import ClearIcon from '../../components/icon/ClearIcon';
-// import PenImage from '../../assets/images/icons8-pen-26.png';
-// import EraserImage from '../../assets/images/icons8-eraser-24.png';
 import './canvas.css';
-// import axios from 'axios';
-// import AnnotateCanvas from './annotate'
-
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -44,7 +39,27 @@ const EbookPdf = (props) => {
   const [width, setWidth] = useState(0);
   const [mode, _setMode] = useState('pen');
   const modeRef = useRef('pen');
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const [domineName, setDomineName] = useState('');
+
+  useEffect(()=> {
+    const {host}= new URL(axiosInstance.defaults.baseURL) // "dev.olvorchidnaigaon.letseduvate.com"
+    const hostSplitArray = host.split('.')
+    const subDomainLevels = hostSplitArray.length - 2
+    let domain = ''
+    let subDomain = ''
+    let subSubDomain = ''
+    if(hostSplitArray.length > 2){
+        domain = hostSplitArray.slice(hostSplitArray.length-2).join('')
+    }
+    if(subDomainLevels===2){
+        subSubDomain = hostSplitArray[0]
+        subDomain = hostSplitArray[1]
+    }else if(subDomainLevels===1){
+        subDomain = hostSplitArray[0]
+    }
+    const domainTobeSent =subDomain 
+    setDomineName(domainTobeSent);
+  })
 
   const restrictCopyAndSave = (event) => {
     document.oncontextmenu = document.body.oncontextmenu = function () {
@@ -116,8 +131,12 @@ const EbookPdf = (props) => {
         type_of_activity: 0,
       };
       const AnnotateURL = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}`;
-      axiosInstance
-        .post(AnnotateURL, data1)
+      axios
+        .post(AnnotateURL, data1, {
+          headers: {
+            'x-api-key': 'vikash@12345#1231',
+          },
+        })
         .then((res) => {})
         .catch((error) => {
           console.log(error);
@@ -144,8 +163,12 @@ const EbookPdf = (props) => {
     if (props.id && page) {
       const imgUrl = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}&page_number=${page}`;
       setLoading(true);
-      axiosInstance
-        .get(imgUrl)
+      axios
+        .get(`${imgUrl}?domain_name=${domineName}`,{
+          headers: {
+            'x-api-key': 'vikash@12345#1231',
+          },
+        })
         .then((res) => {
           setLoading(false);
           setBookPage(res.data.ebook_image);
@@ -192,13 +215,17 @@ const EbookPdf = (props) => {
   }, [props.id, page, height, width]);
 
   const goBack = () => {
-    axiosInstance
+    axios
       .post(`${endpoints.ebook.EbookUser}`, {
         page_number: page,
         ebook_id: props.id,
         user_id:
           localStorage.getItem('userDetails') &&
           JSON.parse(localStorage.getItem('userDetails'))?.user_id,
+      }, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
       })
       .then((res) => {
         props.goBackFunction();
@@ -218,8 +245,12 @@ const EbookPdf = (props) => {
       context.clearRect(0, 0, canv.width, canv.height);
     });
     const deleteAnnotateURL = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}&page_number=${page}`;
-    axiosInstance
-      .delete(deleteAnnotateURL)
+    axios
+      .delete(deleteAnnotateURL, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
       .then((res) => {})
       .catch((error) => {
         console.log(error);
