@@ -49,4 +49,12 @@ border-radius: 10px;
     .rdrDayPassive{
         color:#BEBEBE !important;
     }
+    .weeklyCalendar{
+        .rdrMonthName{
+            display: none;
+        }
+        .rdrDateRangePickerWrapper{
+            width: 100%;
+        }
+    }
 }

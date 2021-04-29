@@ -84,7 +84,34 @@ const Attend = () => {
 
   const [totalGenre, setTotalGenre] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
-  const limit = 8;
+  const limit = 9;
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Calendar & Attendance' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Calendar') {
+              setModuleId(item.child_id);
+              console.log(item.child_id, 'Chekk');
+            }
+            if (item.child_name === 'Student Calendar') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+    console.log(history);
+    if (history?.location?.state?.payload) {
+      console.log('vinod');
+    }
+  }, []);
+  console.log(moduleId, 'MODULE_ID');
 
   useEffect(() => {
     console.log(history);
@@ -100,10 +127,11 @@ const Attend = () => {
       // setResult(history?.location?.state?.data);
       axiosInstance
         .get(
-          `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&page=${pageNumber}`
+          `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&page=${pageNumber}&page_size=${limit}`
         )
         .then((res) => {
           setResult(res.data.results);
+          setTotalGenre(res.data.count);
           setLoading(false);
           console.log(res.data.results);
           setAlert('success', 'Data Successfully fetched');
@@ -172,14 +200,16 @@ const Attend = () => {
       end_date: endDate,
     };
     // console.log(payload);
-
     axiosInstance
       .get(
-        `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&page=${pageNumber}`
+        `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&page=${pageNumber}&page_size=${limit}`
       )
       .then((res) => {
-        setResult(res.data.results);
         setLoading(false);
+        console.log(res, 'page checking');
+        setResult(res.data.results);
+        setTotalGenre(res.data.count);
+        console.log(res.data.count, 'count');
         console.log(res.data.results);
         setAlert('success', 'Data Successfully fetched');
       })
@@ -274,8 +304,8 @@ const Attend = () => {
       backgroundColor: '#E2E2E2',
       color: '#8C8C8C',
       borderRadius: '10px',
-      marginLeft: '20px',
       height: '42px',
+      marginLeft: '20px',
       marginTop: 'auto',
     },
   })(Button);
@@ -306,7 +336,22 @@ const Attend = () => {
   };
   const handlePagination = (event, page) => {
     setPageNumber(page);
-    handleFilter();
+    axiosInstance
+      .get(
+        `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${selectedGrade.grade_id}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&page=${page}&page_size=${limit}`
+      )
+      .then((res) => {
+        setLoading(false);
+        setResult(res.data.results);
+        setTotalGenre(res.data.count);
+        console.log(res.data.results);
+        setAlert('success', 'Data Successfully fetched');
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+        // setAlert('error', err);
+      });
   };
   const handleSinlgeStudent = (id) => {
     console.log(id);
@@ -331,7 +376,7 @@ const Attend = () => {
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper' >
+      <div className='profile_breadcrumb_wrapper'>
         <CommonBreadcrumbs componentName='Overall Attendance' />
       </div>
       <Grid
@@ -339,7 +384,7 @@ const Attend = () => {
         direction='row'
         className={classes.root}
         spacing={2}
-        style={{ border: '1x solid red' }}
+        // style={{ border: '1x solid red' }}
       >
         <Grid item md={6} xs={12} className='items'>
           <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -353,7 +398,8 @@ const Attend = () => {
               label='StartDate'
               name='start_date'
               inputVariant='outlined'
-              className='arrow'
+              // className='arrow'
+              className='dropdownIcon'
               onChange={handleStartDateChange}
               // handleStartDateChange={handleStartDateChange}
               // handleEndDateChange={handleEndDateChange}
@@ -379,7 +425,8 @@ const Attend = () => {
               variant='standard'
               name='end_date'
               inputVariant='outlined'
-              className='arrow'
+              // className='arrow'
+              className='dropdownIcon'
               onChange={handleEndDateChange}
               value={endDate}
               maxDate={new Date()}
@@ -535,27 +582,65 @@ const Attend = () => {
           <Divider />
         </Grid>
       </Grid>
-      <Grid container direction='row'>
-        <StyledClearButton variant='contained' onClick={handleBack}>
-          Back
-        </StyledClearButton>
-        <StyledClearButton
-          variant='contained'
-          startIcon={<ClearIcon />}
-          onClick={handleClearAll}
-        >
-          Clear all
-        </StyledClearButton>
+      {/* <Grid container direction='row' spacing={2}>
+        <Grid item xs={12} md={1}>
+          <StyledClearButton
+            variant='contained'
+            onClick={handleBack}
+            // style={{ marginLeft: '20px' }}
+          >
+            Back
+          </StyledClearButton>
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <StyledClearButton
+            variant='contained'
+            startIcon={<ClearIcon />}
+            onClick={handleClearAll}
+            // style={{ marginLeft: '30px' }}
+          >
+            Clear all
+          </StyledClearButton>
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <StyledFilterButton
+            variant='contained'
+            color='secondary'
+            startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+            className={classes.filterButton}
+            onClick={handleFilter}
+          >
+            filter
+          </StyledFilterButton>
+        </Grid>
+      </Grid> */}
+      <Grid container direction='row' spacing={2}>
+        <Grid item xs={12} md={1}>
+          <StyledClearButton variant='contained' onClick={handleBack}>
+            Back
+          </StyledClearButton>
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <StyledClearButton
+            variant='contained'
+            startIcon={<ClearIcon />}
+            onClick={handleClearAll}
+          >
+            Clear all
+          </StyledClearButton>
+        </Grid>
 
-        <StyledFilterButton
-          variant='contained'
-          color='secondary'
-          startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-          className={classes.filterButton}
-          onClick={handleFilter}
-        >
-          filter
-        </StyledFilterButton>
+        <Grid item xs={12} md={2}>
+          <StyledFilterButton
+            variant='contained'
+            color='secondary'
+            startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+            className={classes.filterButton}
+            onClick={handleFilter}
+          >
+            filter
+          </StyledFilterButton>
+        </Grid>
       </Grid>
       <MediaQuery minWidth={541}>
         <Grid
@@ -571,9 +656,9 @@ const Attend = () => {
             </Typography>
           </Grid>
 
-          <Grid item xs={8} sm={2} md={2} lg={2}>
+          <Grid item xs={8} sm={2} md={3}>
             <Typography variant='subtitle1' color='secondary'>
-              Number of students: {(result && result.length) || 0}
+              Number of students: {totalGenre}
             </Typography>
           </Grid>
           {/* <Grid item xs={8} sm={2} md={2} lg={2}>
@@ -592,43 +677,70 @@ const Attend = () => {
       </Grid>
       <Grid container direction='row' className={classes.root} spacing={2}>
         {result &&
-          result.map((item) => {
-            return (
-              <Grid item xs={12} sm={6} md={4}>
-                <Card
-                  className={classes.bord}
-                  onClick={() => handleSinlgeStudent(item.erp_id)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <CardMedia className={classes.cover} />
-                  <div>
-                    <CardContent>
-                      <Grid
-                        container
-                        direction='row'
-                        justify='space-between'
-                        alignItems='center'
-                      >
-                        <Grid item xs={1} sm={1} md={1} lg={1} style={{ marginTop: 15 }}>
-                          <Avatar>{item?.student_name?.slice(0, 1)}</Avatar>
+          result
+            .sort((a, b) => {
+              let fa = a.student_first_name.toLowerCase();
+              let fb = b.student_first_name.toLowerCase();
+              if (fa < fb) {
+                return -1;
+              }
+              if (fa > fb) {
+                return 1;
+              }
+              return 0;
+            })
+            .map((item) => {
+              return (
+                <Grid item xs={12} sm={6} md={4}>
+                  <Card
+                    className={classes.bord}
+                    onClick={() => handleSinlgeStudent(item.erp_id)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <CardMedia className={classes.cover} />
+                    <div>
+                      <CardContent>
+                        <Grid
+                          container
+                          direction='row'
+                          justify='space-between'
+                          alignItems='center'
+                        >
+                          <Grid
+                            item
+                            xs={1}
+                            sm={1}
+                            md={1}
+                            lg={1}
+                            style={{ marginTop: 15 }}
+                          >
+                            <Avatar>{item?.student_first_name?.slice(0, 1)}</Avatar>
+                          </Grid>
+                          <Grid item>
+                            <Typography>
+                              {((item.student_first_name &&
+                                item.student_first_name.slice(0, 10)) ||
+                                '') +
+                                ' ' +
+                                ((item.student_last_name &&
+                                  item.student_last_name.slice(0, 1)) ||
+                                  '')}
+                            </Typography>
+                            <Typography>{item?.erp_id}</Typography>
+                          </Grid>
+                          <Grid>
+                            <p class='box5'>
+                              <span class='test1'>{item.student_present_count || 0}</span>
+                              <span class='test2'>{item.student_absent_count || 0}</span>
+                            </p>
+                          </Grid>
                         </Grid>
-                        <Grid item>
-                          <Typography>{item?.student_name?.slice(0, 6) || ''}</Typography>
-                          <Typography>{item?.erp_id}</Typography>
-                        </Grid>
-                        <Grid>
-                          <p class='box5'>
-                            <span class='test1'>{item.student_present_count || 0}</span>
-                            <span class='test'>{item.student_absent_count || 0}</span>
-                          </p>
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-                  </div>
-                </Card>
-              </Grid>
-            );
-          })}
+                      </CardContent>
+                    </div>
+                  </Card>
+                </Grid>
+              );
+            })}
       </Grid>
       <br />
       {!result && (
@@ -649,7 +761,7 @@ const Attend = () => {
         </div>
       )}
       <Grid container justify='center'>
-        {result && totalGenre > 8 && (
+        {result && totalGenre > 9 && (
           <Pagination
             onChange={handlePagination}
             // style={{ paddingLeft: '150px' }}

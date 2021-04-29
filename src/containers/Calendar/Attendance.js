@@ -85,9 +85,36 @@ const Attendance = () => {
   const [totalGenre, setTotalGenre] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const [studentView, setStudentView] = useState(false);
-  const limit = 8;
+  const limit = 14;
   //  let path = window.location.pathname;
   //  console.log(path, 'path');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Calendar & Attendance' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Calendar') {
+              setModuleId(item.child_id);
+              console.log(item.child_id, 'Chekk');
+            }
+            if (item.child_name === 'Student Calendar') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+    console.log(history);
+    if (history?.location?.state?.payload) {
+      console.log('vinod');
+    }
+  }, []);
+  console.log(moduleId, 'MODULE_ID');
   useEffect(() => {
     let path = window.location.pathname;
     console.log(path, 'path');
@@ -125,7 +152,7 @@ const Attendance = () => {
   const getAllData = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${history?.location?.state?.studentData[0]?.erp_id}&page=${pageNumber}`
+        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${history?.location?.state?.studentData[0]?.erp_id}&page=${pageNumber}&page_size=${limit}`
       )
       .then((res) => {
         if (res.status == 200) {
@@ -157,7 +184,7 @@ const Attendance = () => {
     console.log(userName[0], 'userName');
     axiosInstance
       .get(
-        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName[0]}&page=${pageNumber}`
+        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName[0]}&page=${pageNumber}&page_size=${limit}`
       )
       // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
       .then((res) => {
@@ -308,11 +335,63 @@ const Attendance = () => {
     console.log(page, 'page number checking');
     if (history?.location?.pathname === '/student-view/attendance') {
       setPageNumber(page);
-      getAllStudentsData();
+      setStartDate(history?.location?.state?.payload?.startDate);
+      setEndDate(history?.location?.state?.payload?.endDate);
+      setStudentName(history?.location?.state?.data[0]?.student_name);
+      setStudentView(true);
+      let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
+      console.log(userName[0], 'userName');
+      axiosInstance
+        .get(
+          `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName[0]}&page=${page}&page_size=${limit}`
+        )
+        // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
+        .then((res) => {
+          if (res.status == 200) {
+            setTotalGenre(res.data.count);
+            console.log(res.data.count);
+            console.log(res.data.results, 'single student data');
+            setData(res.data.results);
+            setAlert('success', 'Data Successfully fetched');
+            if (res?.data?.message) {
+              // alert(res?.data?.message)
+            } else console.log(res.data.message);
+          }
+          if (res.status == 400) {
+            console.log(res.message);
+            setAlert('error', res.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          // setAlert('error', 'something went wrong');
+        });
     }
     if (history?.location?.pathname === '/teacher-view/attendance') {
       setPageNumber(page);
-      getAllData();
+      axiosInstance
+        .get(
+          `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${history?.location?.state?.studentData[0]?.erp_id}&page=${page}&page_size=${limit}`
+        )
+        .then((res) => {
+          if (res.status == 200) {
+            setTotalGenre(res.data.count);
+            console.log(res.data.count);
+            console.log(res.data.results, 'single student data');
+            setData(res.data.results);
+            setAlert('success', 'Data Successfully fetched');
+            if (res?.data?.message) {
+              // alert(res?.data?.message)
+            } else console.log(res.data.message);
+          }
+          if (res.status == 400) {
+            console.log(res.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          // setAlert('error', 'something went wrong');
+        });
     }
   };
   const handleClearAll = () => {
@@ -385,7 +464,7 @@ const Attendance = () => {
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper' >
+      <div className='profile_breadcrumb_wrapper'>
         <CommonBreadcrumbs componentName='Attendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
@@ -401,7 +480,8 @@ const Attendance = () => {
               label='StartDate'
               name='start_date'
               inputVariant='outlined'
-              className='arrow'
+              // className='arrow'
+              className='dropdownIcon'
               onChange={handleStartDateChange}
               // handleStartDateChange={handleStartDateChange}
               // handleEndDateChange={handleEndDateChange}
@@ -428,7 +508,8 @@ const Attendance = () => {
               variant='standard'
               name='end_date'
               inputVariant='outlined'
-              className='arrow'
+              // className='arrow'
+              className='dropdownIcon'
               onChange={handleEndDateChange}
               value={endDate}
               style={{ background: 'white', width: '50%' }}
@@ -667,16 +748,16 @@ const Attendance = () => {
             alignItems='center'
             alignContent='center'
           >
-            <Grid item sm={2} md={2}>
+            <Grid item sm={2} md={3}>
               <Typography variant='subtitle2' color='primary'>
                 {!studentView && (
                   <strong>
-                    {studentName && studentName[0].student_name.slice(0, 6)}
+                    {studentName && studentName[0].student_first_name.slice(0, 10)}
                   </strong>
                 )}
                 {studentView && (
                   <strong>
-                    {history?.location?.state?.data[0]?.student_name.slice(0, 6)}
+                    {history?.location?.state?.data[0]?.student_name.slice(0, 10)}
                   </strong>
                 )}
               </Typography>
@@ -694,7 +775,7 @@ const Attendance = () => {
               <img src={line} className={classes.lines} />
             </Grid>
           </Grid>
-          <Grid item xs={12} md={6} container direction='row'>
+          <Grid item xs={12} md={5} container direction='row'>
             <FormGroup row className='checkboxStyle'>
               <FormControlLabel
                 control={
@@ -813,7 +894,7 @@ const Attendance = () => {
                               <Grid>
                                 <p class='box3'>
                                   <span class='test1'>1st</span>
-                                  <span class='test'>2nd</span>
+                                  <span class='test2'>2nd</span>
                                 </p>
                               </Grid>
                             )}
@@ -821,7 +902,7 @@ const Attendance = () => {
                               <Grid>
                                 <p class='box5'>
                                   <span class='test1'>1st</span>
-                                  <span class='test'>2nd</span>
+                                  <span class='test2'>2nd</span>
                                 </p>
                               </Grid>
                             )}
@@ -829,7 +910,7 @@ const Attendance = () => {
                               <Grid>
                                 <p class='box1'>
                                   <span class='test1'>1st</span>
-                                  <span class='test'>2nd</span>
+                                  <span class='test2'>2nd</span>
                                 </p>
                               </Grid>
                             )}
@@ -837,7 +918,7 @@ const Attendance = () => {
                               <Grid>
                                 <p class='box2'>
                                   <span class='test1'>1st</span>
-                                  <span class='test'>2nd</span>
+                                  <span class='test2'>2nd</span>
                                 </p>
                               </Grid>
                             )}
@@ -871,10 +952,10 @@ const Attendance = () => {
         </div>
       )}
       <Grid container justify='center'>
-        {data && totalGenre > 8 && (
+        {data && totalGenre > 14 && (
           <Pagination
             onChange={handlePagination}
-            style={{ paddingLeft: '150px' }}
+            // style={{ paddingLeft: '150px' }}
             count={Math.ceil(totalGenre / limit)}
             color='primary'
             page={pageNumber}

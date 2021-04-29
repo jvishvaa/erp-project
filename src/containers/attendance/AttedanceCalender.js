@@ -31,7 +31,7 @@ import OutlinedFlagRoundedIcon from '@material-ui/icons/OutlinedFlagRounded';
 import WatchLaterOutlinedIcon from '@material-ui/icons/WatchLaterOutlined';
 import EventOutlinedIcon from '@material-ui/icons/EventOutlined';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-
+import flag from '../../assets/images/flag.svg';
 import AcademicYear from 'components/icon/AcademicYear';
 import moment from 'moment';
 import './AttendanceCalender.scss';
@@ -109,6 +109,7 @@ const AttedanceCalender = () => {
   const [sevenDay, setSevenDay] = useState();
   const [studentData, setStudentData] = useState([]);
   const [teacherView, setTeacherView] = useState(true);
+  const [backButton, setBackButton] = useState(false);
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -155,11 +156,36 @@ const AttedanceCalender = () => {
         setSelectedBranch(history?.location?.state?.payload?.branch_id);
         setSelectedGrade(history?.location?.state?.payload?.grade_id);
         setSelectedSection(history?.location?.state?.payload?.section_id);
-        setStartDate(startDate);
-        setEndDate(endDate);
+        // setStartDate(history?.location?.state?.payload?.startDate);
+        // setEndDate(history?.location?.state?.payload?.endDate);
+        axiosInstance
+          .get(`academic/student_attendance_between_date_range/`, {
+            params: {
+              start_date: history?.location?.state?.payload?.startDate,
+              end_date: history?.location?.state?.payload?.endDate,
+              branch_id: history?.location?.state?.payload?.branch_id?.branch?.id,
+              grade_id: history?.location?.state?.payload?.grade_id?.grade_id,
+              // grade_id: 2,
+
+              section_id: history?.location?.state?.payload?.section_id?.section_id,
+              // section_id: 2,
+              academic_year: history?.location?.state?.payload?.academic_year_id?.id,
+            },
+          })
+          .then((res) => {
+            setLoading(false);
+            console.log(res, 'respond teacher');
+            setStudentDataAll(res.data);
+            let temp = [...res.data.present_list, ...res.data.absent_list];
+            setStudentData(temp);
+            setAlert('success', 'Data Sucessfully Fetched');
+          })
+          .catch((error) => {
+            setLoading(false);
+            console.log(error);
+          });
       } else {
         setTeacherView(true);
-        setStudentDataAll(null);
         setSelectedAcadmeicYear('');
         setSelectedBranch([]);
         setSelectedGrade([]);
@@ -170,12 +196,40 @@ const AttedanceCalender = () => {
     if (path === '/attendance-calendar/student-view') {
       console.log(path, 'path');
       setTeacherView(false);
-      setStudentDataAll(null);
-      setCurrentEvent(null);
+      axiosInstance
+        .get(`academic/student_calender/`, {
+          params: {
+            start_date: history?.location?.state?.payload?.startDate,
+            end_date: history?.location?.state?.payload?.endDate,
+            erp_id: userName[0],
+          },
+        })
+        .then((res) => {
+          setLoading(false);
+          console.log(res, 'respond student');
+          setStudentDataAll(res.data);
+          let temp = [...res.data.present_list, ...res.data.absent_list];
+          setStudentData(temp);
+          setAlert('success', 'Data Sucessfully Fetched');
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
     }
   }, [path]);
 
   useEffect(() => {
+    // if (history?.location?.state?.backButtonStatus ) {
+    //   if (path === '/attendance-calendar/teacher-view') {
+    //     console.log(path, 'path');
+    //     setTeacherView(true);
+    //   }
+    //   if (path === '/attendance-calendar/student-view') {
+    //     console.log(path, 'path');
+    //     setTeacherView(false);
+    //   }
+    // } else {
     if (path === '/attendance-calendar/teacher-view') {
       console.log(path, 'path');
       setTeacherView(true);
@@ -204,6 +258,9 @@ const AttedanceCalender = () => {
     setSelectedBranch([]);
     setSelectedGrade([]);
     setSelectedSection([]);
+    setStudentDataAll(null);
+    setCurrentEvent(null);
+    setCounter(2);
   };
 
   function callApi(api, key) {
@@ -396,6 +453,8 @@ const AttedanceCalender = () => {
         })
         .catch((error) => {
           setLoading(false);
+          setAlert('error', 'no attendance');
+          setStudentDataAll(null);
           console.log(error);
         });
     }
@@ -427,6 +486,8 @@ const AttedanceCalender = () => {
         })
         .catch((error) => {
           setLoading(false);
+          setAlert('error', 'no attendance');
+          setStudentDataAll(null);
           console.log(error);
         });
     }
@@ -451,6 +512,8 @@ const AttedanceCalender = () => {
       })
       .catch((error) => {
         setLoading(false);
+        setAlert('error', 'no attendance');
+        setStudentDataAll(null);
         console.log(error);
       });
   };
@@ -475,6 +538,8 @@ const AttedanceCalender = () => {
         })
         .catch((error) => {
           setLoading(false);
+          setAlert('error', 'no attendance');
+          setStudentDataAll(null);
           console.log(error);
         });
     }
@@ -500,6 +565,8 @@ const AttedanceCalender = () => {
         })
         .catch((error) => {
           setLoading(false);
+          setAlert('error', 'no attendance');
+          setStudentDataAll(null);
           console.log(error);
         });
     }
@@ -514,6 +581,10 @@ const AttedanceCalender = () => {
       console.log(userName, 'path');
       getStudentRange();
     }
+  };
+
+  const convertTime = () => {
+    console.log(currentEvent, 'current time');
   };
 
   const handleViewDetails = () => {
@@ -587,7 +658,7 @@ const AttedanceCalender = () => {
 
   return (
     <Layout>
-      <div className='profile_breadcrumb_wrapper' >
+      <div className='profile_breadcrumb_wrapper'>
         <CommonBreadcrumbs componentName='Attendance & Calendar' />
       </div>
       {teacherView === true ? (
@@ -827,9 +898,12 @@ const AttedanceCalender = () => {
                               background: data.event_category.event_category_color,
                             }}
                           >
-                            <OutlinedFlagRoundedIcon
+                            {/* <OutlinedFlagRoundedIcon
                               style={{ background: '#FF6B6B', borderRadius: '30px' }}
-                            />
+                            />  */}
+                            <div className='eventFlagToday'>
+                              <img src={flag} className='flagImgToday' />
+                            </div>
                             {data?.event_name}
                           </div>
                         </div>
@@ -856,14 +930,17 @@ const AttedanceCalender = () => {
             )}
           </Grid>
           <Grid className='buttonGrid'>
-            <StyledClearButton
-              variant='contained'
-              startIcon={<ClearIcon />}
-              onClick={handleClearAll}
-            >
-              Clear all
-            </StyledClearButton>
-
+            {teacherView === true ? (
+              <StyledClearButton
+                variant='contained'
+                startIcon={<ClearIcon />}
+                onClick={handleClearAll}
+              >
+                Clear all
+              </StyledClearButton>
+            ) : (
+              <></>
+            )}
             <StyledFilterButton
               variant='contained'
               color='secondary'
@@ -898,7 +975,9 @@ const AttedanceCalender = () => {
                       </span>
                     </Button>
                   ) : (
-                    <div></div>
+                    <>
+                      <p id='teacherUpdate'>Updated 1 day ago</p>
+                    </>
                   )}
                 </Grid>
               </div>
@@ -908,6 +987,13 @@ const AttedanceCalender = () => {
                     Students
                   </Typography>
                 </Grid>
+                {teacherView === false ? (
+                  <p className='erpId'>ERP_ID :{userName[0]}</p>
+                ) : (
+                  <>
+                    <p id='studentPara'>Updated 1 day ago</p>
+                  </>
+                )}
                 {/* <KeyboardArrowDownIcon className='downIcon' /> */}
               </div>
             </Grid>
@@ -926,7 +1012,7 @@ const AttedanceCalender = () => {
                           <Avatar
                             alt={data?.student_name}
                             src='/static/images/avatar/1.jpg'
-                            className="absentProfilePic"
+                            className='absentProfilePic'
                           />
                           <div className='studentName'>
                             <p className='absentName'>
@@ -958,6 +1044,7 @@ const AttedanceCalender = () => {
                 <div className='presentContainer'>
                   <div className='presentHeader'>
                     <p className='presentPara'>Present List</p>
+                    <p className='presentDuration'>Present Duration</p>
                   </div>
                   <Divider />
                   <div className='presentStudents'>
@@ -967,7 +1054,7 @@ const AttedanceCalender = () => {
                           <Avatar
                             alt={data?.student_name}
                             src='/static/images/avatar/1.jpg'
-                            className="presentProfilePic"
+                            className='presentProfilePic'
                           />
                           <div className='presentStudent'>
                             <p className='presentFName'>
@@ -1017,11 +1104,7 @@ const AttedanceCalender = () => {
               </Grid>
               <Grid item md={6} xs={12} className='event-btn'>
                 {teacherView === true ? (
-                  <Button
-                    size='small'
-                    href={`/createEvent`}
-                    className='mark-attndance-button'
-                  >
+                  <Button size='small' href={`/createEvent`} className='add-event-button'>
                     {/* ADD EVENT */}
                     <span className={classes.contentData} id='event-text'>
                       Add Event
@@ -1045,44 +1128,50 @@ const AttedanceCalender = () => {
               </div>
             </Grid>
             {studentDataAll != null ? (
-              <Paper elevation={1} className='eventGrid'>
-                {studentDataAll.events &&
-                  studentDataAll.events.map((data) => (
-                    <Typography
-                      className={[classes.contentsmall, classes.root]}
-                      id='eventData'
-                    >
-                      {/* {data.start_time.slice(0, 10)} */}
-                      {moment(data.start_time.slice(0, 10)).format('DD-MM-YYYY')}
-                      <br />
-                      <Grid container direction='row'>
-                        <OutlinedFlagRoundedIcon
+              <div className='eventGrid'>
+                <Divider className='event-divider' />
+                <div className='eventList'>
+                  {studentDataAll.events &&
+                    studentDataAll.events.map((data) => (
+                      <Typography
+                        className={[classes.contentsmall, classes.root]}
+                        id='eventData'
+                      >
+                        {/* {data.start_time.slice(0, 10)} */}
+                        {moment(data.start_time.slice(0, 10)).format('DD-MM-YYYY')}
+                        <br />
+                        <Grid container direction='row' className='eventDetailsfirst'>
+                          <div className='flagBg'>
+                            <img src={flag} className='flagImg' />
+                          </div>
+                          {/* <OutlinedFlagRoundedIcon
                           style={{ background: '#78B5F3', borderRadius: '30px' }}
-                        />
-                        <Typography> {data.event_name} </Typography>
-                      </Grid>
-                      <Grid container direction='row' className='dateTimeEvent'>
-                        <div className='timeEvent'>
-                          <WatchLaterOutlinedIcon
-                            color='primary'
-                            className={classes.content}
-                          />
-                          {data.start_time.slice(11, 16)}
-                        </div>
-                        <div className='dateEvent'>
-                          <EventOutlinedIcon
-                            color='primary'
-                            className={classes.content}
-                          />
-                          {data.start_time.slice(0, 10)}
-                        </div>
-                      </Grid>
-                      <Typography className={classes.contentData}>
-                        {data.description}
+                        /> */}
+                          <Typography className='eventNameData'>
+                            {' '}
+                            {data.event_name}{' '}
+                          </Typography>
+                        </Grid>
+                        <Grid container direction='row' className='dateTimeEvent'>
+                          <div className='timeEvent'>
+                            <WatchLaterOutlinedIcon
+                              color='primary'
+                              className='eventClock'
+                            />
+                            {data.start_time.slice(11, 16)}
+                          </div>
+                          <div className='dateEvent'>
+                            <EventOutlinedIcon color='primary' className='calLogo' />
+                            {moment(data.start_time.slice(0, 10)).format('DD-MM-YYYY')}
+                          </div>
+                        </Grid>
+                        <Typography className={classes.contentData}>
+                          {data.description}
+                        </Typography>
                       </Typography>
-                    </Typography>
-                  ))}
-              </Paper>
+                    ))}
+                </div>
+              </div>
             ) : (
               <div className='noImgEvent'>
                 <img src={Group} width='100%' className='noDataImgEvent' />

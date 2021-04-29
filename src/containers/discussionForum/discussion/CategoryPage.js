@@ -193,11 +193,13 @@ function CategoryPage() {
     setSelectedSubCategory();
     setSelectedSubSubCategory();
     setTabValue('all');
-    dispatch(fetchCategoryData());
+    setPage(1);
+    dispatch(fetchCategoryData(tabValue, page));
   }
 
   const handleFilter = () => {
     if(selectedCategory?.id && selectedSubCategory?.sub_category_id && selectedSubSubCategory?.sub_sub_category_name){
+      setPage(1);
       dispatch(fetchCategoryData(tabValue, page, selectedSubCategory?.sub_category_id));
     } else {
       setAlert('warning',`Please Select Category`);

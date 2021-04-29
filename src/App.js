@@ -12,6 +12,7 @@ import AssignRole from './containers/communication/assign-role/assign-role';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
 import ChapterTypeTable from './containers/master-management/chapter-type/chapter-type-table';
+import TopicTable from './containers/master-management/topic/TopicTable'
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
 // import './assets/styles/styles.scss';
 import UserManagement from './containers/user-management';
@@ -119,7 +120,6 @@ import TeacherBatchView from './containers/teacherBatchView';
 import ErpAdminViewClass from './containers/online-class/erp-view-class/admin';
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import AttachmentPreviewer from './components/attachment-previewer';
-
 import FeeType from './containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/feeType.js';
 import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType';
 // import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType.js'
@@ -264,7 +264,14 @@ import AssessmentView from './containers/assessment-central/assesment-view';
 import CreateAssesment from './containers/assessment-central/create-assesment';
 import AssessmentReportTypes from './containers/assessment-central/assessment-report-types';
 import ContactUs from 'containers/contact-us';
+import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz';
+import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
+
 // import Contact from './containers/contact/Contact';
+
+
+
+import MultiplayerQuiz from './components/mp-quiz'
 
 const theme = createMuiTheme({
   palette: {
@@ -487,6 +494,15 @@ function App({ alert }) {
                           <Route exact path='/online-class/create-class'>
                             {({ match }) => <CreateClass match={match} />}
                           </Route>
+                          <Route exact path='/erp-online-class/assign/:id/qp'>
+                          {({ match }) => <AssignQP match={match} />}
+                          </Route>
+                          <Route exact path='/erp-online-class/:id/pre-quiz'>
+                          {({ match }) => <PreQuiz match={match} />}
+                          </Route>
+                          <Route path='/erp-online-class/:onlineclassId/quiz/:questionpaperId/:lobbyuuid'>
+                          {({match})=><MultiplayerQuiz match={match} />}
+                          </Route>
                           {/* <Route exact path='/online-class/view-class'>
                       {({ match }) => <ViewClassManagement match={match} />}
                     </Route> */}
@@ -508,6 +524,9 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/master-management/chapter-type-table'>
                             {({ match }) => <ChapterTypeTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/topic-table'>
+                            {({ match }) => <TopicTable match={match} />}
                           </Route>
                           <Route exact path='/master-management/branch-table'>
                             {({ match }) => <BranchTable match={match} />}

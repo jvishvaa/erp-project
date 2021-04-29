@@ -1,7 +1,8 @@
 .absentContainer {
   .absentHeader {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    padding: 0 1rem;
     color: #042955;
   }
   .MuiDivider-root {
@@ -33,6 +34,7 @@
       background: red;
       border-radius: 30px;
       color: white;
+    width: 74px;
     }
   }
   .chipDays {
@@ -116,6 +118,12 @@
     height: 23px;
     font-size: 10px;
   }
+  .viewDetailsButtonClick:hover {
+    background-color: #ff6b6b;
+    color: white;
+    height: 23px;
+    font-size: 10px;
+  }
   .showDate {
     display: flex;
     justify-content: center;
@@ -155,8 +163,9 @@
   }
   .presentHeader {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     color: #042955;
+    padding: 0 1rem;
   }
  
   .presentFName {
@@ -170,6 +179,7 @@
     background: lightgreen;
     border-radius: 30px;
     color: black;
+    width: 74px;
   }
 }
 .todayEventContainer {
@@ -207,7 +217,7 @@
     margin-left: 10px;
     padding: 0 10px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     width: 40%;
     background: #f3b8b4;
     border-radius: 7px;
@@ -222,6 +232,7 @@
     display: flex;
     justify-content: center;
     border-radius: 10px;
+    margin-right: 5px;
     }
     .flagImgToday{
       width: 15px;
@@ -238,6 +249,12 @@
     justify-content: space-between;
     width: 100%;
   }
+  #teacherUpdate{
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    color: #014b7e;
+  }
 }
 .topGrid {
   margin-left: 30px !important;
@@ -251,7 +268,7 @@
 }
 #attendanceContainer {
   height: fit-content;
-  min-height: 395px;
+  min-height: 410px;
   .mark-attndance-button:hover{
     background-color: #FF6B6B;
   } 
@@ -261,6 +278,7 @@
   .stu-icon {
     display: flex;
     justify-content: space-between;
+    margin-top: 10px;
     width: 100%;
     color: #014b7e;
     .erpId{
@@ -277,6 +295,7 @@
   #attendanceGrid {
     margin-bottom: 0;
     padding-bottom: 0;
+    
   }
   .noDataImg {
     height: 200px;
@@ -307,12 +326,17 @@
 }
 .eventGrid {
   box-shadow: none !important;
+  .event-divider{
+    margin-top: 10px;
+  }
 }
 #eventContainer {
   // height: fit-content !important;
-  height: 395px !important ;
-  overflow: auto;
-  overflow-x: hidden;
+  height: 410px !important ;
+  width: 300px;
+  .add-event-button:hover{
+    background-color: #FF6B6B;
+  }
   .noImgEvent {
     display: flex;
     justify-content: center;
@@ -320,6 +344,11 @@
       height: 200px;
       width: 200px;
     }
+  }
+  .eventList{
+    height: 315px !important;
+    overflow: auto;
+    overflow-x: hidden;
   }
   .flagBg{
     background: #78B5F3;
@@ -344,6 +373,7 @@
   .event-details {
     width: 100%;
     display: flex;
+    margin-top: 10px;
     justify-content: space-between;
   }
   .detailsPara {
