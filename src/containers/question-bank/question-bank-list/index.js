@@ -68,6 +68,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
   const [tabYearId, setTabYearId] = useState('');
   const [tabGradeId, setTabGradeId] = useState('');
   const [tabChapterId, setTabChapterId] = useState('');
+  const [tabIsErpCentral, setTabIsErpCentral] = useState(null);
   const [tabValue, setTabValue] = useState(0);
   const location = useLocation();
   const history = useHistory();
@@ -77,15 +78,33 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
 
   const handleAddQuestionToQuestionPaper = (question) => {
     const questionIds = [];
+    const centralQuestionIds = [];
     questions.forEach((q) => {
-      q.sections[0].questions.forEach(({ id = '' }) => questionIds.push(id) || {});
+      q.sections[0].questions.forEach(({ id = '', is_central = false }) => {
+        if (is_central) {
+          centralQuestionIds.push(id);
+        } else {
+          questionIds.push(id);
+        }
+      });
     });
-    if (!questionIds.includes(question.id)) {
-      initAddQuestionToSection(question, questionId, section);
-      history.push(`/create-question-paper?show-question-paper=true`);
+    if (!question?.is_central) {
+      if (!questionIds.includes(question?.id)) {
+        initAddQuestionToSection(question, questionId, section);
+        history.push(`/create-question-paper?show-question-paper=true`);
+      } else setAlert('error', 'Question already added!');
     } else {
-      setAlert('error', 'Question already added!');
+      if (!centralQuestionIds.includes(question?.id)) {
+        initAddQuestionToSection(question, questionId, section);
+        history.push(`/create-question-paper?show-question-paper=true`);
+      } else setAlert('error', 'Question already added!');
     }
+    // if (!questionIds.includes(question.id)) {
+    //   initAddQuestionToSection(question, questionId, section);
+    //   history.push(`/create-question-paper?show-question-paper=true`);
+    // } else {
+    //   setAlert('error', 'Question already added!');
+    // }
   };
 
   const handlePagination = (event, page) => {
@@ -103,6 +122,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     yearId,
     gradeId,
     chapterObj,
+    isErpCentral,
     newValue
   ) => {
     // setTabValue(newValue);
@@ -122,6 +142,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     setTabYearId(yearId);
     setTabGradeId(gradeId);
     setTabChapterId(chapterObj);
+    setTabIsErpCentral(isErpCentral);
 
     const erpQuestionList = endpoints.questionBank.erpQuestionList;
     // const centralQuestionList=endpoints.questionBank.centralQuestionList
@@ -160,8 +181,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       //     setLoading(false);
       //     setAlert('error', error?.message);
       //   });
-
-      if (!chapterObj?.is_central) {
+      if (!isErpCentral?.flag) {
         axiosInstance
           .get(
             `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=1&page=${page}`
@@ -184,7 +204,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
             setAlert('error', error?.message);
           });
       }
-      if (chapterObj?.is_central) {
+      if (isErpCentral?.flag) {
         axiosInstance
           .get(
             `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=2&page=${page}`
@@ -232,7 +252,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       //     setLoading(false);
       //     setAlert('error', error?.message);
       //   });
-      if (!chapterObj?.is_central) {
+      if (!isErpCentral?.flag) {
         axiosInstance
           .get(
             `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=1&page=${page}&question_status=1`
@@ -255,7 +275,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
             setAlert('error', error?.message);
           });
       }
-      if (chapterObj?.is_central) {
+      if (isErpCentral?.flag) {
         axiosInstance
           .get(
             `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=2&page=${page}&question_status=1`
@@ -303,7 +323,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       //     setLoading(false);
       //     setAlert('error', error?.message);
       //   });
-      if (!chapterObj?.is_central) {
+      if (!isErpCentral?.flag) {
         axiosInstance
           .get(
             `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=1&page=${page}&question_status=3`
@@ -326,7 +346,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
             setAlert('error', error?.message);
           });
       }
-      if (chapterObj?.is_central) {
+      if (isErpCentral?.flag) {
         axiosInstance
           .get(
             `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=2&page=${page}&question_status=3`
@@ -374,7 +394,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       //     setLoading(false);
       //     setAlert('error', error?.message);
       //   });
-      if (!chapterObj?.is_central) {
+      if (!isErpCentral?.flag) {
         axiosInstance
           .get(
             `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=1&page=${page}&question_status=2`
@@ -397,7 +417,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
             setAlert('error', error?.message);
           });
       }
-      if (chapterObj?.is_central) {
+      if (isErpCentral?.flag) {
         axiosInstance
           .get(
             `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=2&page=${page}&question_status=2`
@@ -432,7 +452,8 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       tabTopicId &&
       tabYearId &&
       tabGradeId &&
-      tabChapterId
+      tabChapterId &&
+      tabIsErpCentral
     ) {
       handlePeriodList(
         tabQueTypeId,
@@ -443,6 +464,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
         tabYearId,
         tabGradeId,
         tabChapterId,
+        tabIsErpCentral,
         tabValue
       );
     }
@@ -526,6 +548,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
               tabYearId={tabYearId}
               tabGradeId={tabGradeId}
               tabChapterId={tabChapterId}
+              tabIsErpCentral={tabIsErpCentral}
               setTabValue={setTabValue}
               tabValue={tabValue}
               setPage={setPage}
@@ -578,6 +601,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
                         tabQueCatId={tabQueCatId}
                         tabMapId={tabMapId}
                         tabTopicId={tabTopicId}
+                        tabIsErpCentral={tabIsErpCentral}
                         tabQueLevel={tabQueLevel}
                         onClick={
                           questionId && section ? handleAddQuestionToQuestionPaper : null
@@ -602,6 +626,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
                     tabMapId={tabMapId}
                     tabQueLevel={tabQueLevel}
                     tabTopicId={tabTopicId}
+                    tabIsErpCentral={tabIsErpCentral}
                     tabYearId={tabYearId}
                     tabGradeId={tabGradeId}
                     tabChapterId={tabChapterId}

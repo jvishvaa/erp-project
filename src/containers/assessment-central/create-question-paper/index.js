@@ -223,16 +223,23 @@ const CreateQuestionPaper = ({
 
   const handleCreateQuestionPaper = async (isDraft) => {
     try {
-      const questionData = [];
+      const questionData = [],
+        centralQuestionData = [];
 
       const sectionData = [];
       questions.forEach((q) => {
         q.sections.forEach((sec) => {
           const sectionObj = { [sec.name]: [], discription: sec.name };
           sec.questions.forEach((question) => {
-            sectionObj[sec.name].push(question.id);
-            if (!questionData.includes(question.id)) {
-              questionData.push(question.id, question.child_id);
+            sectionObj[sec.name].push(question?.identifier);
+            if (question?.is_central) {
+              if (!centralQuestionData.includes(question.id)) {
+                centralQuestionData.push(question.id, question.child_id);
+              }
+            } else {
+              if (!questionData.includes(question.id)) {
+                questionData.push(question.id, question.child_id);
+              }
             }
           });
           sectionData.push(sectionObj);
@@ -247,6 +254,7 @@ const CreateQuestionPaper = ({
         subjects: formik.values.subject.map((obj) => obj?.subject_id),
         paper_level: formik.values.question_paper_level.id,
         question: questionData.flat(),
+        central_question: [...centralQuestionData],
         section: sectionData,
         sections: sectionData,
         is_review: 'True',

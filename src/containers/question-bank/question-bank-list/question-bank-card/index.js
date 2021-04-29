@@ -28,6 +28,7 @@ const QuestionBankCard = ({
   tabMapId,
   tabQueLevel,
   tabTopicId,
+  tabIsErpCentral,
   setLoading,
   index,
   periodColor,
@@ -156,7 +157,6 @@ const QuestionBankCard = ({
         return '--';
     }
   };
-
   function extractContent(s) {
     const span = document.createElement('span');
     span.innerHTML = s;
@@ -242,7 +242,8 @@ const QuestionBankCard = ({
             </Box>
           )}
         </Grid>
-        <Grid item xs={4} className={classes.textRight}>
+        {!period.is_central && 
+          <Grid item xs={4} className={classes.textRight}>
           <Box>
             <span
               className='period_card_menu'
@@ -254,33 +255,14 @@ const QuestionBankCard = ({
               </IconButton>
               {showPeriodIndex === index && showMenu ? (
                 <div className='tooltipContainer'>
-                  <span className='tooltiptext'>
-                    {/* Edit */}
-                    {/* <IconButton onClick={handleBulkDownload} className="bulkDownloadIconPeriodCard">
-                        <SvgIcon
-                          component={() => (
-                            <img
-                              style={{ height: '21px', width: '21px' }}
-                              src={downloadAll}
-                              alt='downloadAll'
-                            />
-                          )}
-                        />
-                      </IconButton> */}
-                  </span>
-                  {period.is_central ? null : (
                     <span className='tooltiptext'>
                       <div onClick={(e) => handleDelete(period)}>Delete</div>
-
-                      {/* <Button>Delete</Button>
-                    <Button>Edit</Button> */}
                     </span>
-                  )}
                 </div>
               ) : null}
             </span>
           </Box>
-        </Grid>
+        </Grid> }
         <Grid item xs={12} sm={12} />
         <Grid item xs={6}>
           <Box>

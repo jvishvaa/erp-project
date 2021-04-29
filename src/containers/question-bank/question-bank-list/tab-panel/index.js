@@ -33,6 +33,7 @@ export default function CenteredTabs({
   tabYearId,
   tabGradeId,
   tabChapterId,
+  tabIsErpCentral,
 }) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
@@ -49,6 +50,7 @@ export default function CenteredTabs({
       tabYearId,
       tabGradeId,
       tabChapterId,
+      tabIsErpCentral,
       newValue
     );
     setValue(newValue);

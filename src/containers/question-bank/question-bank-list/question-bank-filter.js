@@ -12,7 +12,6 @@ import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
 import axios from 'axios';
 import './question-bank.css';
-import { fetchAllSection } from 'containers/Finance/src/components/Finance/store/actions';
 
 const QuestionBankFilters = ({
   questionId,
@@ -44,8 +43,8 @@ const QuestionBankFilters = ({
   const [quesLevel, setQuesLevel] = useState([]);
 
   const [is_ERP_CENTRAL,setIs_ERP_CENTRAL]=useState([
-    {id:1,flag:true,name:'ERP'},
-    {id:2,flag:false,name:'CENTRAL'}
+    {id:1,flag:false,name:'ERP'},
+    {id:2,flag:true,name:'CENTRAL'}
   ])
 
   const [mapId, setMapId] = useState('');
@@ -544,11 +543,11 @@ const QuestionBankFilters = ({
     //   }
     // }
   };
-  // function handleIsErpCentral(event,value){
-  //   if(value){
-  //     setFilterData({...filterData,is_erp_central:value})
-  //   }
-  // }
+  function handleIsErpCentral(event,value){
+    if(value){
+      setFilterData({...filterData,is_erp_central:value})
+    }
+  }
   
   const handleFilter = () => {
     if (!filterData?.grade) {
@@ -582,7 +581,7 @@ const QuestionBankFilters = ({
       filterData.year?.id,
       filterData.grade?.grade_id,
       filterData.chapter,
-      // filterData.is_erp_central,
+      filterData.is_erp_central,
     );
     setSelectedIndex(-1);
 
@@ -826,7 +825,7 @@ const QuestionBankFilters = ({
             )}
           />
         </Grid>
-        {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
@@ -846,7 +845,7 @@ const QuestionBankFilters = ({
               />
             )}
           />
-        </Grid> */}
+        </Grid>
 
         {!isMobile && (
           <Grid item xs={12} sm={12}>

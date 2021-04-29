@@ -33,6 +33,7 @@ const ViewMoreCard = ({
   tabYearId,
   tabGradeId,
   tabChapterId,
+  tabIsErpCentral,
 }) => {
   // const { year: { session_year }, grade: { grade_name }, subject: { subject: { subject_name } }, chapter: { chapter_name }, volume: { volume_name } } = filterDataDown;
   // const { setAlert } = useContext(AlertNotificationContext);
@@ -113,7 +114,8 @@ const ViewMoreCard = ({
               tabTopicId,
               tabYearId,
               tabGradeId,
-              tabChapterId
+              tabChapterId,
+              tabIsErpCentral
             );
             setAlert('success', result?.data?.message);
           } else {
@@ -139,7 +141,8 @@ const ViewMoreCard = ({
               tabTopicId,
               tabYearId,
               tabGradeId,
-              tabChapterId
+              tabChapterId,
+              tabIsErpCentral
             );
             setAlert('success', result?.data?.message);
           } else {
@@ -173,7 +176,8 @@ const ViewMoreCard = ({
               tabTopicId,
               tabYearId,
               tabGradeId,
-              tabChapterId
+              tabChapterId,
+              tabIsErpCentral
             );
             setAlert('success', 'Question Moved To Draft');
           } else {
@@ -199,7 +203,8 @@ const ViewMoreCard = ({
               tabTopicId,
               tabYearId,
               tabGradeId,
-              tabChapterId
+              tabChapterId,
+              tabIsErpCentral
             );
             setAlert('success', 'Question Moved To Draft');
           } else {
@@ -1608,31 +1613,33 @@ const ViewMoreCard = ({
       </div>
       {/* {viewMoreData?.parent?.question_status === 1 ||
       viewMoreData?.parent?.question_status === 3 ? ( */}
-      <div style={{ margin: '5px 15px 15px 15px' }}>
-        {viewMoreData?.parent?.question_status == 3 ? (
-          <Button
-            style={{ marginRight: '1rem', borderRadius: '10px' }}
-            onClick={(e) => handlePublish(viewMoreData)}
-            color='primary'
-            variant='contained'
-            size='small'
-          >
-            PUBLISH
-          </Button>
-        ) : null}
-        {viewMoreData?.parent?.question_status == 2 ||
-        viewMoreData?.parent?.question_status == 3 ? (
-          <Button
-            style={{ marginRight: '1rem', borderRadius: '10px' }}
-            onClick={(e) => handleDelete(viewMoreData)}
-            color='secondary'
-            variant='contained'
-            size='small'
-          >
-            REJECT
-          </Button>
-        ) : null}
-      </div>
+      {viewMoreData?.parent?.is_central ? null : (
+        <div style={{ margin: '5px 15px 15px 15px' }}>
+          {viewMoreData?.parent?.question_status == 3 ? (
+            <Button
+              style={{ marginRight: '1rem', borderRadius: '10px' }}
+              onClick={(e) => handlePublish(viewMoreData)}
+              color='primary'
+              variant='contained'
+              size='small'
+            >
+              PUBLISH
+            </Button>
+          ) : null}
+          {viewMoreData?.parent?.question_status == 2 ||
+          viewMoreData?.parent?.question_status == 3 ? (
+            <Button
+              style={{ marginRight: '1rem', borderRadius: '10px' }}
+              onClick={(e) => handleDelete(viewMoreData)}
+              color='secondary'
+              variant='contained'
+              size='small'
+            >
+              REJECT
+            </Button>
+          ) : null}
+        </div>
+      )}
       {/* ) : null} */}
     </Paper>
   );
