@@ -344,6 +344,7 @@ export default {
     createQuestion: '/assessment/create-question/',
     fileUpload: '/assessment/file-upload/',
     fileRemove: '/assessment/file-delete/',
+    listQuestionPaper: '/assessment/list-question-paper/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
   },
 

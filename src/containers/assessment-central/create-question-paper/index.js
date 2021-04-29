@@ -47,14 +47,12 @@ import {
   deleteSection,
   deleteQuestionSection,
 } from '../../../redux/actions';
-import { getSubDomainName } from '../../../utility-functions';
 
 const levels = [
   { id: 1, name: 'Easy' },
   { id: 2, name: 'Average' },
   { id: 3, name: 'Difficult' },
 ];
-const subDomainName = getSubDomainName();
 const CreateQuestionPaper = ({
   questions,
   initAddQuestion,
@@ -245,28 +243,13 @@ const CreateQuestionPaper = ({
       });
 
       const reqObj = {
-        // academic_year: formik.values.academic.id,
-        // branch: formik.values.branch.branch.id,
-        branch: 1,
+        academic_year: formik.values.academic.id,
         paper_name: questionPaperName,
         grade: formik.values.grade.grade_id,
-        acad_branch_id: formik.values.branch.id,
-        grade_name: formik.values.grade.grade__grade_name,
-        // subject: formik.values.subject.map((obj) => obj.subject.id),
-        subject: formik.values.subject.map((obj) => obj.subject?.central_subject_id),
-        grade_subject_mapping: formik.values.subject.map(
-          (obj) => obj.subject.central_mp_id
-        ),
-        // filterDataTop.subject?.subject.central_mp_id,
-        subject_name: formik.values.subject.map(({ subject_name }) => subject_name),
+        academic_session: formik.values.branch.id,
+        subjects: formik.values.subject.map((obj) => obj?.subject_id),
         paper_level: formik.values.question_paper_level.id,
         question: questionData.flat(),
-        school: subDomainName,
-        // section: [
-        //   {
-        //     section: sectionData,
-        //   },
-        // ],
         section: sectionData,
         sections: sectionData,
         is_review: 'True',
@@ -294,19 +277,8 @@ const CreateQuestionPaper = ({
         'Question Paper Name': questionPaperName,
         'Question Level': formik.values.question_paper_level.id,
         Subject: formik.values.subject.length,
-        Grade: formik.values.grade.id,
+        Grade: formik.values.grade.grade_id,
       };
-
-      // if (!isDraft) {
-      //   submitArray['Section'] = sectionFlag;
-      // }
-
-      // Object.values(submitArray).every(Boolean);
-
-      // let finalSubmitFlag = isDraft
-      //   ? Object.entries(submitArray).every(([key, value]) => value)
-      //   : Object.entries(submitArray).every(([key, value]) => value) &&
-      //     sectionData.length;
 
       let finalSubmitFlag =
         Object.entries(submitArray).every(([key, value]) => value) && sectionData.length;

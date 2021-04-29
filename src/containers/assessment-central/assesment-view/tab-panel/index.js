@@ -15,6 +15,8 @@ const useStyles = makeStyles({
 
 export default function CenteredTabs({
   handlePeriodList,
+  tabAcademic,
+  tabBranch,
   tabGradeId,
   tabSubjectId,
   tabQpValue,
@@ -28,7 +30,14 @@ export default function CenteredTabs({
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
-    handlePeriodList(tabGradeId, tabSubjectId, tabQpValue, newValue);
+    handlePeriodList(
+      tabAcademic,
+      tabBranch,
+      tabGradeId,
+      tabSubjectId,
+      tabQpValue,
+      newValue
+    );
     setValue(newValue);
     setPage(1);
     setSelectedIndex(-1);
