@@ -347,13 +347,15 @@ export default {
     fileUpload: '/assessment/file-upload/',
     fileRemove: '/assessment/file-delete/',
     listQuestionPaper: '/assessment/list-question-paper/',
+    listAssessment: '/assessment/test/',
+    questionPaperViewMore: `/assessment/<question-paper-id>/qp-questions-list/`,
+    publishQuestionPaper: `/assessment/<question-paper-id>/update-status-question-paper/`,
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
   },
 
   assessment: {
     assessmentResultAnalysis: `${baseURLCentral}/assessment/student-reports/`,
     questionPaperList: `/academic/assessment-list/`,
-    viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
     userTests: `${baseURLCentral}/assessment/user-tests/`, // ?user=20&subject=1,
     userTestComparisions: `${baseURLCentral}/assessment/student-test-comparison/`, // ?test_1=7&user=20&test_2=10
     userSpecificSubjects: `/academic/users-subjects/`, // ?module_id=112
@@ -387,6 +389,13 @@ export default {
     uploadFile: `${baseURLCentral}/assessment/upload-question-file/`,
     removeFile: `${baseURLCentral}/assessment/delete-s3file/`,
     deleteQuestion: `${baseURLCentral}/assessment/publish-question/`,
+    subjectList: '/assessment/subjects-list/',
+    chapterList: '/assessment/chapters/',
+    topicList: '/assessment/topics/',
+    centralTopicList: `${baseURLCentral}/assessment/topics-list/`,
+    erpQuestionList: '/assessment/questions-list/',
+    erpViewMoreData: '/assessment/question-details/',
+    erpQuestionPublishing: '/assessment/publish-question/',
   },
   assementQP: {
     assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,

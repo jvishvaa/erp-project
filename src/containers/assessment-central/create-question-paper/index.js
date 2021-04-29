@@ -105,26 +105,23 @@ const CreateQuestionPaper = ({
   }, []);
 
   useEffect(() => {
-    if (formik.values.academic) {
-      getBranch(formik.values.academic?.id);
-      if (formik.values.branch) {
-        getGrades(formik.values.branch?.branch?.id);
-        if (formik.values.grade) {
-          getSubjects(formik.values.grade?.grade_id);
-        } else {
-          setSubjects([]);
-        }
-      } else {
-        setGrades([]);
-      }
-    } else {
-      setBranchDropdown([]);
-    }
-  }, []);
-
-  useEffect(() => {
     if (moduleId) {
       getAcademic();
+      if (formik.values.academic && moduleId) {
+        getBranch(formik.values.academic?.id);
+        if (formik.values.branch) {
+          getGrades(formik.values.academic?.id, formik.values.branch?.branch?.id);
+          if (formik.values.grade) {
+            getSubjects(formik.values.grade?.grade_id);
+          } else {
+            setSubjects([]);
+          }
+        } else {
+          setGrades([]);
+        }
+      } else {
+        setBranchDropdown([]);
+      }
     }
   }, [moduleId]);
 
@@ -258,6 +255,7 @@ const CreateQuestionPaper = ({
 
       if (isDraft) {
         reqObj.is_draft = 'True';
+        reqObj.is_review = 'False';
       }
 
       let sectionFlag = true,

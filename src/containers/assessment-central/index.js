@@ -208,16 +208,22 @@ const Assesment = () => {
   };
 
   const filterResults = async (page) => {
-    const { grade, subject, assesment_type: assesmentType, date, status } = formik.values;
-    // const subjectIds = subject.map((obj) => obj.id);
-    // const subjectIds = subject.map((obj) => obj.subject.central_mp_id);
-    const subjectIds = subject.map(({subject_id}) => subject_id);
+    const {
+      branch,
+      grade,
+      subject,
+      assesment_type: assesmentType,
+      date,
+      status,
+    } = formik.values;
+    const acadSessionId = branch?.id;
+    const subjectIds = subject.map(({ subject_id }) => subject_id);
     try {
       setFetchingTests(true);
-
       const { results, totalPages } = await fetchAssesmentTests(
         false,
         activeTab,
+        acadSessionId,
         grade?.grade_id,
         subjectIds,
         assesmentType.id,
@@ -297,7 +303,6 @@ const Assesment = () => {
       getAcademic();
     }
     getAssesmentTypes();
-    // getTopics();
   }, [moduleId]);
 
   // useEffect(() => {
@@ -352,20 +357,28 @@ const Assesment = () => {
   }
 
   const handleFilterAssessment = () => {
-    if (!formik?.values?.assesment_type) {
-      setAlert('error', 'Select Assessment Type');
+    if (!formik?.values?.status) {
+      setAlert('error', 'Select Status');
+      return;
+    }
+    if (!formik?.values?.academic) {
+      setAlert('error', 'Select Academic Year');
+      return;
+    }
+    if (!formik?.values?.branch) {
+      setAlert('error', 'Select Branch');
       return;
     }
     if (!formik?.values?.grade) {
-      setAlert('error', 'Select grade');
-      return;
-    }
-    if (!formik?.values?.status) {
-      setAlert('error', 'Select status');
+      setAlert('error', 'Select Grade');
       return;
     }
     if (!formik?.values?.subject.length) {
-      setAlert('error', 'Select subject');
+      setAlert('error', 'Select Subject');
+      return;
+    }
+    if (!formik?.values?.assesment_type) {
+      setAlert('error', 'Select Assessment Type');
       return;
     }
     formik.handleSubmit();

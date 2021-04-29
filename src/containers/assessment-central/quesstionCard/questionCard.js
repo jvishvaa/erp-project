@@ -47,10 +47,12 @@ const QuestionCard = (props) => {
   };
 
   const handleViewMore = (result) => {
-    axios
-      .get(`${endpoints.assementQP.assementViewmore}${result.id}/qp-questions-list/`, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
+    const url = endpoints.assessmentErp?.questionPaperViewMore.replace(
+      '<question-paper-id>',
+      result?.id
+    );
+    axiosInstance
+      .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
           setData(result.data.result);

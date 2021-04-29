@@ -56,43 +56,78 @@ const QuestionBankCard = ({
     setShowMenu(false);
     setShowPeriodIndex();
   };
-
   const handleViewMore = () => {
     setLoading(true);
     // axiosInstance
     //   .get(`${endpoints.questionBank.viewMoreData}?question=${period.id}`)
+   if(period?.is_central){
     axios
-      .get(`${endpoints.questionBank.viewMoreData}?question=${period?.id}`, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          setLoading(false);
-          setViewMore(true);
-          setViewMoreData(result?.data?.result);
-          // setState({editData:result.data.result})
-          setPeriodDataForView(period);
-          setSelectedIndex(index);
-          setPeriodColor(true);
-        } else {
-          setLoading(false);
-          setViewMore(false);
-          setViewMoreData({});
-          setPeriodDataForView([]);
-          setAlert('error', result?.data?.message);
-          setSelectedIndex(-1);
-          setPeriodColor(true);
-        }
-      })
-      .catch((error) => {
+    .get(`${endpoints.questionBank.viewMoreData}?question=${period?.id}`, {
+      headers: { 'x-api-key': 'vikash@12345#1231' },
+    })
+    .then((result) => {
+      if (result?.data?.status_code === 200) {
+        setLoading(false);
+        setViewMore(true);
+        setViewMoreData(result?.data?.result);
+        // setState({editData:result.data.result})
+        setPeriodDataForView(period);
+        setSelectedIndex(index);
+        setPeriodColor(true);
+      } else {
         setLoading(false);
         setViewMore(false);
         setViewMoreData({});
         setPeriodDataForView([]);
-        setAlert('error', error?.message);
+        setAlert('error', result?.data?.message);
         setSelectedIndex(-1);
         setPeriodColor(true);
-      });
+      }
+    })
+    .catch((error) => {
+      setLoading(false);
+      setViewMore(false);
+      setViewMoreData({});
+      setPeriodDataForView([]);
+      setAlert('error', error?.message);
+      setSelectedIndex(-1);
+      setPeriodColor(true);
+    });
+   }
+   if(!period.is_central){
+    axiosInstance
+    .get(`${endpoints.questionBank.erpViewMoreData}?question=${period?.id}`)
+    .then((result) => {
+      if (result?.data?.status_code === 200) {
+        setLoading(false);
+        setViewMore(true);
+        setViewMoreData(result?.data?.result);
+        // setState({editData:result.data.result})
+        setPeriodDataForView(period);
+        setSelectedIndex(index);
+        setPeriodColor(true);
+      } else {
+        setLoading(false);
+        setViewMore(false);
+        setViewMoreData({});
+        setPeriodDataForView([]);
+        setAlert('error', result?.data?.message);
+        setSelectedIndex(-1);
+        setPeriodColor(true);
+      }
+    })
+    .catch((error) => {
+      setLoading(false);
+      setViewMore(false);
+      setViewMoreData({});
+      setPeriodDataForView([]);
+      setAlert('error', error?.message);
+      setSelectedIndex(-1);
+      setPeriodColor(true);
+    });
+
+   }
+    
   };
 
   const questionType = (type) => {
@@ -233,12 +268,14 @@ const QuestionBankCard = ({
                         />
                       </IconButton> */}
                   </span>
-                  <span className='tooltiptext'>
-                    <div onClick={(e) => handleDelete(period)}>Delete</div>
+                  {period.is_central ? null : (
+                    <span className='tooltiptext'>
+                      <div onClick={(e) => handleDelete(period)}>Delete</div>
 
-                    {/* <Button>Delete</Button>
+                      {/* <Button>Delete</Button>
                     <Button>Edit</Button> */}
-                  </span>
+                    </span>
+                  )}
                 </div>
               ) : null}
             </span>
