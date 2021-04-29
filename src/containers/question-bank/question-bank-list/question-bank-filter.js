@@ -11,9 +11,11 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import './question-bank.css';
 
 const QuestionBankFilters = ({
+  questionList,
   questionId,
   handlePeriodList,
   setPeriodData,
@@ -42,10 +44,10 @@ const QuestionBankFilters = ({
   const [quesCatData, setQuesCatData] = useState([]);
   const [quesLevel, setQuesLevel] = useState([]);
 
-  const [is_ERP_CENTRAL,setIs_ERP_CENTRAL]=useState([
-    {id:1,flag:false,name:'ERP'},
-    {id:2,flag:true,name:'CENTRAL'}
-  ])
+  const [is_ERP_CENTRAL, setIs_ERP_CENTRAL] = useState([
+    { id: 1, flag: false, name: 'ERP' },
+    { id: 2, flag: true, name: 'CENTRAL' },
+  ]);
 
   const [mapId, setMapId] = useState('');
   const [filterData, setFilterData] = useState({
@@ -59,7 +61,7 @@ const QuestionBankFilters = ({
     topicId: '',
     question_level_option: '',
     question_categories_options: '',
-    is_erp_central:is_ERP_CENTRAL[0],
+    is_erp_central: is_ERP_CENTRAL[0],
   });
   const question_level_option = [
     { value: 1, Question_level: 'Easy' },
@@ -94,6 +96,12 @@ const QuestionBankFilters = ({
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (questionList?.length === 0 && window.location.search !== '') {
+      history.goBack();
+    }
+  }, [questionList?.length]);
 
   useEffect(() => {
     if (moduleId) {
@@ -237,7 +245,9 @@ const QuestionBankFilters = ({
     if (value) {
       setFilterData({ ...filterData, branch: value });
       axiosInstance
-        .get(`${endpoints.academics.grades}?session_year=${filterData.year?.id}&branch_id=${value.branch.id}&module_id=${moduleId}`)
+        .get(
+          `${endpoints.academics.grades}?session_year=${filterData.year?.id}&branch_id=${value.branch.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             setGradeDropdown(result?.data?.data);
@@ -467,9 +477,9 @@ const QuestionBankFilters = ({
       setFilterData({ ...filterData, chapter: value });
       if (value?.is_central) {
         axios
-          .get(`${endpoints.questionBank.centralTopicList}?chapter=${value.id}`,{
+          .get(`${endpoints.questionBank.centralTopicList}?chapter=${value.id}`, {
             headers: { 'x-api-key': 'vikash@12345#1231' },
-      //     
+            //
           })
           .then((result) => {
             if (result?.data?.status_code === 200) {
@@ -543,12 +553,12 @@ const QuestionBankFilters = ({
     //   }
     // }
   };
-  function handleIsErpCentral(event,value){
-    if(value){
-      setFilterData({...filterData,is_erp_central:value})
+  function handleIsErpCentral(event, value) {
+    if (value) {
+      setFilterData({ ...filterData, is_erp_central: value });
     }
   }
-  
+
   const handleFilter = () => {
     if (!filterData?.grade) {
       setAlert('error', 'Select Grade!');
@@ -581,7 +591,7 @@ const QuestionBankFilters = ({
       filterData.year?.id,
       filterData.grade?.grade_id,
       filterData.chapter,
-      filterData.is_erp_central,
+      filterData.is_erp_central
     );
     setSelectedIndex(-1);
 
@@ -906,4 +916,8 @@ const QuestionBankFilters = ({
   );
 };
 
-export default QuestionBankFilters;
+const mapStateToProps = (state) => ({
+  questionList: state.createQuestionPaper.questions,
+});
+
+export default connect(mapStateToProps, null)(QuestionBankFilters);
