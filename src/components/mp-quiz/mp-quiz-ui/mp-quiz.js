@@ -3,14 +3,14 @@ import { useSocket } from '../mp-quiz-providers';
 import MpQuizPlay from './mp-quiz-play';
 import MpQuizSocketStatus from './mp-quiz-components/mp-quiz-socket-status';
 
-function MpQuiz() {
+function MpQuiz({ params }) {
   const socket = useSocket();
 
   const { readyState } = socket || {};
   return (
     <>
-      <MpQuizSocketStatus key={readyState} />
-      {readyState === window.WebSocket.OPEN ? <MpQuizPlay key={readyState} /> : null}
+      <MpQuizSocketStatus key={readyState} params={params} />
+      {readyState === window.WebSocket.OPEN ? <MpQuizPlay key={readyState} params={params} /> : null}
     </>
   );
 }

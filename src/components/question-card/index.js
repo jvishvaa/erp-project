@@ -181,7 +181,7 @@ const QuestionCard = ({
   }, [attachments]);
 
   return (
-    <Grid container className='question-container'>
+    <Grid container className='home-question-container'>
       <Dialog maxWidth='sm' open={openAttachmentModal} onClose={closeAttachmentsModal}>
         <DialogTitle color='primary'>Attachments</DialogTitle>
         <DialogContent style={{ maxHeight: '60vh', overflow: 'auto' }}>

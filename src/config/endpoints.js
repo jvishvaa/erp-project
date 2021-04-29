@@ -117,6 +117,8 @@ export default {
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
     editChapter: '/academic/',
+    createTopic: '/assessment/topics/',
+    updateTopic: '/assessment/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
