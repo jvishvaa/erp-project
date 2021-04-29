@@ -315,7 +315,7 @@ export const AssessmentHandlerContextProvider = ({
     defaultQueryParamObj: {},
     fetchOnLoad: false,
     includeAuthtoken: true,
-    isCentral: true,
+    isCentral: false,
     APIDataKeyName: 'result',
   };
   const [assessmentQp, fetchAssessmentQpHook] = useFetcher(assessmentQpHookProps);
@@ -418,6 +418,7 @@ export const AssessmentHandlerContextProvider = ({
         question_level: questionLevel,
         user_response: { answer, attemption_status: attemptionStatus } = {},
         question_type: questionType,
+        is_central: isCentral,
       } = item || {};
       const hasParentId = parentId > 0;
       const obj = {
@@ -428,6 +429,7 @@ export const AssessmentHandlerContextProvider = ({
         is_parent: !hasParentId,
         parent_id: parentId,
         user_answer: answer,
+        is_central: isCentral
       };
       if (attemptionStatus) {
         userReponses.push(obj);
