@@ -78,15 +78,33 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
 
   const handleAddQuestionToQuestionPaper = (question) => {
     const questionIds = [];
+    const centralQuestionIds = [];
     questions.forEach((q) => {
-      q.sections[0].questions.forEach(({ id = '' }) => questionIds.push(id) || {});
+      q.sections[0].questions.forEach(({ id = '', is_central = false }) => {
+        if (is_central) {
+          centralQuestionIds.push(id);
+        } else {
+          questionIds.push(id);
+        }
+      });
     });
-    if (!questionIds.includes(question.id)) {
-      initAddQuestionToSection(question, questionId, section);
-      history.push(`/create-question-paper?show-question-paper=true`);
+    if (!question?.is_central) {
+      if (!questionIds.includes(question?.id)) {
+        initAddQuestionToSection(question, questionId, section);
+        history.push(`/create-question-paper?show-question-paper=true`);
+      } else setAlert('error', 'Question already added!');
     } else {
-      setAlert('error', 'Question already added!');
+      if (!centralQuestionIds.includes(question?.id)) {
+        initAddQuestionToSection(question, questionId, section);
+        history.push(`/create-question-paper?show-question-paper=true`);
+      } else setAlert('error', 'Question already added!');
     }
+    // if (!questionIds.includes(question.id)) {
+    //   initAddQuestionToSection(question, questionId, section);
+    //   history.push(`/create-question-paper?show-question-paper=true`);
+    // } else {
+    //   setAlert('error', 'Question already added!');
+    // }
   };
 
   const handlePagination = (event, page) => {
