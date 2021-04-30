@@ -246,7 +246,7 @@ const CreateQuestionPaper = ({
         });
       });
 
-      const reqObj = {
+      let reqObj = {
         academic_year: formik.values.academic.id,
         paper_name: questionPaperName,
         grade: formik.values.grade.grade_id,
