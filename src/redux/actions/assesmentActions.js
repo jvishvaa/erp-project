@@ -3,6 +3,7 @@ import moment from 'moment';
 // import axiosInstance from '../../config/axios';
 import axios from 'axios';
 import endpoints from '../../config/endpoints';
+import axiosInstance from 'config/axios';
 
 export const fetchAssesmentTypes = async () => {
   try {
@@ -20,9 +21,7 @@ export const fetchAssesmentTypes = async () => {
 
 export const fetchTopics = async () => {
   try {
-    const response = await axios.get(`${endpoints.baseURLCentral}/assessment/topic/`, {
-      headers: { 'x-api-key': 'vikash@12345#1231' },
-    });
+    const response = await axios.get(`${endpoints.baseURLCentral}/assessment/topic/`);
     return response.data.result;
   } catch (e) {
     throw new Error();
@@ -32,6 +31,7 @@ export const fetchTopics = async () => {
 export const fetchAssesmentTests = async (
   fetchAll,
   type,
+  acadSessionId,
   gradeId,
   subjectIds,
   testTypeId,
@@ -44,32 +44,36 @@ export const fetchAssesmentTests = async (
     let url = '';
     if (fetchAll) {
       if (type === 'all') {
-        url = `${endpoints.baseURLCentral}/assessment/tests/?all=1`;
+        url = `${endpoints.assessmentErp.listAssessment}?all=1`;
       } else if (type === 'physical-test') {
-        url = `${endpoints.baseURLCentral}/assessment/tests/?test_mode=2`;
+        url = `${endpoints.assessmentErp.listAssessment}?test_mode=2`;
       } else if (type === 'online-pattern') {
-        url = `${endpoints.baseURLCentral}/assessment/tests/?test_mode=1`;
+        url = `${endpoints.assessmentErp.listAssessment}?test_mode=1`;
       }
     } else {
       const startDate = moment(date[0]).format('YYYY-MM-DD');
       const endDate = moment(date[1]).format('YYYY-MM-DD');
       if (type === 'all') {
-        url = `${endpoints.baseURLCentral}/assessment/tests/?grade=${gradeId}&subject=${subjectIds}&test_type=${testTypeId}&is_completed=${
+        url = `${
+          endpoints.assessmentErp.listAssessment
+        }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&test_type=${testTypeId}&is_completed=${
           statusId === 1 ? 'False' : statusId === 2 ? 'True' : null
         }&start_date=${startDate}&end_date=${endDate}&page=${page}&page_size=${pageSize}`;
       } else if (type === 'physical-test') {
-        url = `${endpoints.baseURLCentral}/assessment/tests/?grade=${gradeId}&subject=${subjectIds}&test_type=${testTypeId}&is_completed=${
+        url = `${
+          endpoints.assessmentErp.listAssessment
+        }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&test_type=${testTypeId}&is_completed=${
           statusId === 1 ? 'False' : statusId === 2 ? 'True' : null
         }&start_date=${startDate}&end_date=${endDate}&test_mode=2&page=${page}&page_size=${pageSize}`;
       } else if (type === 'online-pattern') {
-        url = `${endpoints.baseURLCentral}/assessment/tests/?grade=${gradeId}&subject=${subjectIds}&test_type=${testTypeId}&is_completed=${
+        url = `${
+          endpoints.assessmentErp.listAssessment
+        }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&test_type=${testTypeId}&is_completed=${
           statusId === 1 ? 'False' : statusId === 2 ? 'True' : null
-        }&start_date=${startDate}&end_date=${endDate}&test_mode=1&page=${page}&page_size=${pageSize}`;
+        }&academic_session=${acadSessionId}&start_date=${startDate}&end_date=${endDate}&test_mode=1&page=${page}&page_size=${pageSize}`;
       }
     }
-    const response = await axios.get(url, {
-      headers: { 'x-api-key': 'vikash@12345#1231' },
-    });
+    const response = await axiosInstance.get(url);
     if (response.data.status_code === 200) {
       return { totalPages: response.data.total_pages, results: response.data.result };
     }
@@ -81,11 +85,8 @@ export const fetchAssesmentTests = async (
 
 export const fetchAssesmentTestDetail = async (id) => {
   try {
-    const response = await axios.get(
-      `${endpoints.baseURLCentral}/assessment/tests/?test_id_in=${id}`,
-      {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      }
+    const response = await axiosInstance.get(
+      `${endpoints.baseURLCentral}${endpoints.assessmentErp.listAssessment}?test_id_in=${id}`
     );
     if (response.data.status_code === 200) {
       return { results: response.data.result[0] };

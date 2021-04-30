@@ -22,7 +22,7 @@ export default function McqQuestion(props) {
   }, []);
   return (
     <div className='whole-container grow'>
-      <div className='question-container'>
+      <div className='question-container mp-quiz'>
         <div className='resizeable-text'>
           <div className='resizeable'>{ReactHtmlParser(question)}</div>
         </div>

@@ -38,7 +38,6 @@ const MultipleChoice = ({
   subQuestions,
   parentQuestionType,
   setLoading,
-  subDomainName,
 }) => {
   const themeContext = useTheme();
   const history = useHistory();
@@ -177,14 +176,12 @@ const MultipleChoice = ({
           setLoading(true);
           const formData = new FormData();
           formData.append('file', file[0]);
-          formData.append('grade_name', filterDataTop.grade?.grade_name);
-          formData.append('subject_name', filterDataTop.subject?.subject?.subject_name);
-          formData.append('question_categories', filterDataBottom.category.category);
-          formData.append('question_type', filterDataBottom.type?.question_type);
-          axios
-            .post(`${endpoints.questionBank.uploadFile}`, formData, {
-              headers: { 'x-api-key': 'vikash@12345#1231' },
-            })
+          formData.append('grade_id', filterDataTop?.grade?.grade_id);
+          formData.append('subject_name', filterDataTop?.subject?.subject_id);
+          formData.append('question_categories_id', filterDataBottom.category?.id);
+          formData.append('question_type', filterDataBottom.type?.id);
+          axiosInstance
+            .post(`${endpoints.assessmentErp.fileUpload}`, formData)
             .then((result) => {
               if (result.data.status_code === 200) {
                 list[index][name].push(result.data.result);
@@ -262,16 +259,10 @@ const MultipleChoice = ({
   const handleDeleteImage = (rowIndex, imageIndex, isMatching) => {
     setLoading(true);
     const list = isMatching ? [...matchingOptionsList] : [...optionsList];
-    axios
-      .post(
-        `${endpoints.questionBank.removeFile}`,
-        {
-          file_name: list[rowIndex]['images'][imageIndex],
-        },
-        {
-          headers: { 'x-api-key': 'vikash@12345#1231' },
-        }
-      )
+    axiosInstance
+      .post(`${endpoints.assessmentErp.fileRemove}`, {
+        file_name: list[rowIndex]['images'][imageIndex],
+      })
       .then((result) => {
         if (result.data.status_code === 204) {
           if (isMatching) {
@@ -416,7 +407,6 @@ const MultipleChoice = ({
     }
 
     let requestBody = {
-      school: subDomainName,
       question_answer: questionAndAnswer,
       question_level: filterDataBottom.level?.id,
       question_categories: filterDataBottom.category.id,
@@ -429,18 +419,22 @@ const MultipleChoice = ({
     if (!editData?.id)
       requestBody = {
         ...requestBody,
-        grade_subject_mapping: filterDataTop.subject?.subject.central_mp_id,
-        // grade_subject_mapping: filterDataTop.subject?.id,
+        academic_session: filterDataTop.academic?.id,
+        is_central_chapter: filterDataTop.chapter?.is_central,
+        grade: filterDataTop.grade?.grade_id,
+        subject: filterDataTop.subject?.subject_id,
       };
 
     if (submitFlag || saveFlag) {
       let req = {
-        school: subDomainName,
         question_answer: questionAndAnswer,
         question_type: showQuestionType?.id,
         question_level: filterDataBottom.level.id,
         question_categories: filterDataBottom.category.id,
-        grade_subject_mapping: filterDataTop.subject.subject?.central_mp_id,
+        academic_session: filterDataTop.academic?.id,
+        is_central_chapter: filterDataTop.chapter?.is_central,
+        grade: filterDataTop.grade?.grade_id,
+        subject: filterDataTop.subject?.subject_id,
         chapter: filterDataTop.chapter?.id,
         topic: filterDataTop.topic?.id,
         question_status: isSubmit ? 3 : 1,
@@ -455,12 +449,6 @@ const MultipleChoice = ({
         subQuestions.push(req);
       }
     } else {
-      // if (
-      //   answers.length > 0 &&
-      //   !showQuestionType?.Descriptive &&
-      //   !showQuestionType?.MatrixQuestion &&
-      //   !showQuestionType?.MatchTheFollowing
-      // ) {
       if (editData?.id) {
         // const apiEndPoint = editData?'dasd':'post ur'
         // axiosInstance[editData?'put':'post'](apiEndPoint, requestBody).then((e)=>{
@@ -486,10 +474,8 @@ const MultipleChoice = ({
             setAlert('error', error.message);
           });
       } else {
-        axios
-          .post(`${endpoints.createQuestionApis.createQuestion}`, requestBody, {
-            headers: { 'x-api-key': 'vikash@12345#1231' },
-          })
+        axiosInstance
+          .post(`${endpoints.assessmentErp.createQuestion}`, requestBody)
           .then((result) => {
             if (result.data.status_code === 200) {
               setAlert('success', result.data?.message);
