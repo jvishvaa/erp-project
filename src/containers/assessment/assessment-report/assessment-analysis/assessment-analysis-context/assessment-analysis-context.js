@@ -124,7 +124,7 @@ export const AssessmentAnalysisContextProvider = ({ children, ...restProps }) =>
     defaultQueryParamObj: {},
     fetchOnLoad: false,
     includeAuthtoken: true,
-    isCentral: false,
+    isCentral: true,
   };
   const [assessmentQuestionAnalysis, fetchAssessmentQuestionAnalysisHook] = useFetcher(
     assessmentQuestionAnalysisHookProps

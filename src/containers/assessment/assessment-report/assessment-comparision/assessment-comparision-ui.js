@@ -84,7 +84,6 @@ const TestComparisionUI = () => {
   const fetchComparionData = () => {
     const { test_id: testOneId } = testOneObj || {};
     const { test_id: testTwoId } = testTwoObj || {};
-    console.log(testOneId, testTwoId, 'ddddddd');
     if (testOneId && testTwoId) {
       fetchTestComparisions({
         test_1: testOneId,
