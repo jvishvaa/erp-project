@@ -70,7 +70,7 @@ export const AssessmentComparisionContextProvider = ({ children, ...restProps })
     defaultQueryParamObj: {},
     fetchOnLoad: false,
     includeAuthtoken: true,
-    isCentral: true,
+    isCentral: false,
   };
   const [testComparisions, fetchTestComparisionsHook] = useFetcher(
     testComparsionHookProps

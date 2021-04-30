@@ -82,11 +82,9 @@ function useFetcher(props) {
             data: apiDataWithValueAndLabels,
             message,
           };
-
           onResolve(responce);
         } else {
           dataObj = { ...skeletonDataObj, fetching: false, fetchFailed: true, message };
-
           const fromCatch = false;
           onReject(responce, fromCatch);
         }
