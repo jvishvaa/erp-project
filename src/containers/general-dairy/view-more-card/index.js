@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import Paper from '@material-ui/core/Paper';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme, IconButton, SvgIcon, Divider } from '@material-ui/core';
+import { useTheme, IconButton, SvgIcon, Divider, Button, withStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import downloadAll from '../../../assets/images/downloadAll.svg';
 import './view-more-general.css';
@@ -9,6 +9,15 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { ExpandLessOutlined } from '@material-ui/icons';
+
+const DownloadButton = withStyles({
+  root: {
+    backgroundColor: 'transparent',
+    '&: hover': {
+      backgroundColor: 'transparent',
+    }
+  }
+})(Button);
 
 const ViewMoreCard = ({
   viewMoreData,
@@ -57,7 +66,7 @@ const ViewMoreCard = ({
   };
   const handleBulkDownload = (files) => {
     for (let i = 0; i < files?.length; i++) {
-      window.open(`${endpoints.s3}/${files[i]}`);
+      window.open(`${endpoints.discussionForum.s3}/${files[i]}`);
     }
   };
   const pic=viewMoreData?.documents?.map(a=>a)
@@ -145,7 +154,7 @@ const ViewMoreCard = ({
                         </IconButton> */}
                            {viewMoreData && viewMoreData?.documents?.length > 0 && (
               <div className='headerContent'>
-                <IconButton
+                {/* <IconButton
                   onClick={() => handleBulkDownload(viewMoreData?.documents)}
                   style={{ fontSize: '1.1rem', color: '#ff6b6b', display: 'flex' }}
                   className='bulkDownloadIconViewMore'
@@ -160,8 +169,26 @@ const ViewMoreCard = ({
                       />
                     )}
                   />
+                  {' '}
                   Download Attachments
-                </IconButton>
+                </IconButton> */}
+                <DownloadButton
+                  onClick={() => handleBulkDownload(viewMoreData?.documents)}
+                  style={{ fontSize: '1.1rem', color: '#ff6b6b', display: 'flex' }}
+                  className='bulkDownloadIconViewMore'
+                  startIcon={<SvgIcon
+                    component={() => (
+                      <img
+                      style={{ display: 'flex'}}
+                        // style={{ height: '21px', width: '21px', marginLeft: '-343px' }}
+                        src={downloadAll}
+                        alt='downloadAll'
+                      />
+                    )}
+                  />}
+                >
+                  Download Attachments
+                </DownloadButton>
               </div>
             )}
           {/* </div> */}

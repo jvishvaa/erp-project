@@ -281,17 +281,22 @@ const GeneralDairyFilter = ({
       return
     }
     if(isTeacher){
-      handleDairyList(
-        filterData.branch.branch.id,
-        filterData.grade.grade_id,
-        sectionIds,
-        startDateTechPer,
-        endDateTechPer,
-        activeTab,
-        page,
-        filterData.subject,
-        moduleId
-      );
+      if(filterData.year === '' || filterData.branch === '' || filterData.grade ==='' || sectionIds.length === 0){
+        setAlert('warning', 'Please select filters');
+      }
+      else {
+        handleDairyList(
+          filterData.branch.branch.id,
+          filterData.grade.grade_id,
+          sectionIds,
+          startDateTechPer,
+          endDateTechPer,
+          activeTab,
+          page,
+          filterData.subject,
+          moduleId
+        );
+      }
     }
     else if (userDetails?.personal_info?.role !== 'SuperUser' && !isTeacher){
       const grade_id = userDetails.role_details?.grades[0]?.grade_id;
