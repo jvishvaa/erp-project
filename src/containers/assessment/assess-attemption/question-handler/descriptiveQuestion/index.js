@@ -122,6 +122,7 @@ const DescriptiveQuestion = () => {
   const [textEditorContent, setTextEditorContent] = useState('');
 
   const handleEditorChange = (content, editor) => {
+    // content = content.replace(/&nbsp;/g, '');
     setTextEditorContent(editor?.getContent({ format: 'text' }));
     attemptQuestion(qId, {
       attemption_status: true,
@@ -129,13 +130,18 @@ const DescriptiveQuestion = () => {
     });
   };
 
+  // useEffect(() => {
+  //  setTextEditorContent(currentQuestionObj?.user_response?.answer);
+  // },[currentQuestionObj?.id])
+
   return (
     <div>
       <div className='mcq-question-wrapper'>
         <p className='descriptive_question_header'>{ReactHtmlParser(question)}</p>
         <MyTinyEditor
           id={`userId${currentQuestionObj?.id}`}
-          content={currentQuestionObj?.user_response?.answer}
+          // content={textEditorContent}
+          value={currentQuestionObj?.user_response?.answer}
           handleEditorChange={handleEditorChange}
           placeholder='Answer...'
         />
