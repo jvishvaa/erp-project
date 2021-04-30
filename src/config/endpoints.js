@@ -350,6 +350,7 @@ export default {
     listAssessment: '/assessment/test/',
     questionPaperViewMore: `/assessment/<question-paper-id>/qp-questions-list/`,
     publishQuestionPaper: `/assessment/<question-paper-id>/update-status-question-paper/`,
+    createQuestionPaper: `/assessment/question-paper/`,
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
   },
 
