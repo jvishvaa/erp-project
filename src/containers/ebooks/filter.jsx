@@ -159,7 +159,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
             onChange={(event, value) => {
               if(value) {
                 withAxiosInstance(
-                  `${endpoints.lessonPlan.gradeSubjectMappingList}?session_year=${selectedAcad?.id}&branch=${selectedBranch.id}&grade=${value.grade_id}&module_id=${getModuleInfo('Ebook View').id}`,
+                  `${endpoints.lessonPlan.gradeSubjectMappingList}?session_year=${selectedAcad?.id}&branch=${selectedBranch.branch.id}&grade=${value.grade_id}&module_id=${getModuleInfo('Ebook View').id}`,
                   'subject'
                 );
               }
