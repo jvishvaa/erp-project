@@ -1,12 +1,13 @@
 import React, { createContext, useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
+import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import useFetcher from '../../../../utility-functions/custom-hooks/use-fetcher';
 // import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
 const {
   assessment: {
-    userAssessmentSubmission: userAssessmentSubmissionAPIEndpoint,
+    userAssessmentTestSubmission: userAssessmentSubmissionAPIEndpoint,
     fetchAssessmentQuestionPapersQuestions: fetchAssessmentQuestionPapersQuestionsAPIEndpoint,
   } = {},
 } = endpoints || {};
@@ -448,10 +449,8 @@ export const AssessmentHandlerContextProvider = ({
       callbacks || {};
     onStart();
 
-    axios
-      .post(userAssessmentSubmissionAPIEndpoint, payLoad, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
+    axiosInstance
+      .post(userAssessmentSubmissionAPIEndpoint, payLoad)
       .then((res) => {
         onResolve(res);
         localStorage.removeItem(storageKey);
