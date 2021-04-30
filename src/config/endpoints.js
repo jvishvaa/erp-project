@@ -359,8 +359,8 @@ export default {
     assessmentResultAnalysis: `/assessment/student-reports/`,
     questionPaperList: `/assessment/assessment-list/`,
     viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
-    userTests: `${baseURLCentral}/assessment/user-tests/`, // ?user=20&subject=1,
-    userTestComparisions: `${baseURLCentral}/assessment/student-test-comparison/`, // ?test_1=7&user=20&test_2=10
+    userTests: `/assessment/user-tests/`, // ?user=20&subject=1,
+    userTestComparisions: `/assessment/student-test-comparison/`, // ?test_1=7&user=20&test_2=10
     userSpecificSubjects: `/academic/users-subjects/`, // ?module_id=112
     userAssessmentQuestionAnalysis: `/assessment/category_analysis_report/`, // ?user=3446&assessment_id=3
     assessmentAnalysisTeacherExcel: `${baseURLCentral}/assessment/teacher-report/`, // ?type=1

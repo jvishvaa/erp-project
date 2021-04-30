@@ -140,8 +140,8 @@ const DescriptiveQuestion = () => {
         <p className='descriptive_question_header'>{ReactHtmlParser(question)}</p>
         <MyTinyEditor
           id={`userId${currentQuestionObj?.id}`}
-          // content={textEditorContent}
-          value={currentQuestionObj?.user_response?.answer}
+          content={currentQuestionObj?.user_response?.answer}
+          // value={currentQuestionObj?.user_response?.answer}
           handleEditorChange={handleEditorChange}
           placeholder='Answer...'
         />
