@@ -122,11 +122,12 @@ const DescriptiveQuestion = () => {
   const [textEditorContent, setTextEditorContent] = useState('');
 
   const handleEditorChange = (content, editor) => {
-    // content = content.replace(/&nbsp;/g, '');
-    setTextEditorContent(editor?.getContent({ format: 'text' }));
+    content = content.replace(/&nbsp;/g, '');
+    // editor?.getContent({ format: 'text' })
+    setTextEditorContent(content);
     attemptQuestion(qId, {
       attemption_status: true,
-      answer: editor?.getContent({ format: 'text' }),
+      answer: content,
     });
   };
 
@@ -141,7 +142,6 @@ const DescriptiveQuestion = () => {
         <MyTinyEditor
           id={`userId${currentQuestionObj?.id}`}
           content={currentQuestionObj?.user_response?.answer}
-          // value={currentQuestionObj?.user_response?.answer}
           handleEditorChange={handleEditorChange}
           placeholder='Answer...'
         />
