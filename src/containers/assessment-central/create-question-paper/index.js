@@ -246,7 +246,7 @@ const CreateQuestionPaper = ({
         });
       });
 
-      const reqObj = {
+      let reqObj = {
         academic_year: formik.values.academic.id,
         paper_name: questionPaperName,
         grade: formik.values.grade.grade_id,
@@ -254,12 +254,15 @@ const CreateQuestionPaper = ({
         subjects: formik.values.subject.map((obj) => obj?.subject_id),
         paper_level: formik.values.question_paper_level.id,
         question: questionData.flat(),
-        central_question: [...centralQuestionData],
         section: sectionData,
         sections: sectionData,
         is_review: 'True',
         is_draft: 'False',
       };
+
+      if (centralQuestionData?.length) {
+        reqObj = { ...reqObj, central_question: centralQuestionData.flat() };
+      }
 
       if (isDraft) {
         reqObj.is_draft = 'True';

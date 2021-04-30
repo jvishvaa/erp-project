@@ -128,7 +128,8 @@ const QuestionView = ({
                     null,
                     true,
                     question.id,
-                    subQuestion && parentQuestionId
+                    subQuestion && parentQuestionId,
+                    question.is_central
                   );
                 }}
               />
@@ -177,7 +178,8 @@ const QuestionView = ({
                               `option${index + 1}`,
                               false,
                               question.id,
-                              subQuestion && parentQuestionId
+                              subQuestion && parentQuestionId,
+                              question.is_central
                             );
                           }}
                         />
@@ -210,7 +212,8 @@ const QuestionView = ({
                             `question${index + 1}`,
                             false,
                             question.id,
-                            subQuestion && parentQuestionId
+                            subQuestion && parentQuestionId,
+                            question.is_central
                           );
                         }}
                       />
@@ -306,7 +309,8 @@ const QuestionView = ({
                             `option${index + 1}`,
                             false,
                             question.id,
-                            subQuestion && parentQuestionId
+                            subQuestion && parentQuestionId,
+                            question.is_central
                           );
                         }}
                       />

@@ -132,7 +132,7 @@ const CreateAssesment = ({
       resetForm();
     }
   }, [clearForm]);
-
+console.log('testMarks:',testMarks)
   const handleCreateAssesmentTest = async () => {
     const qMap = new Map();
 
@@ -151,7 +151,6 @@ const CreateAssesment = ({
       return;
     }
 
-    console.log(selectedQuestionPaper, 'totalMarks');
 
     testMarks.forEach((obj) => {
       const { parentQuestionId } = obj;
@@ -164,6 +163,7 @@ const CreateAssesment = ({
       }
     });
     let testMarksArr = testMarks;
+    console.log(selectedQuestionPaper,testMarks, 'totalMarks');
 
     qMap.forEach((value, key) => {
       const totalQuestionMarks = value.reduce(
@@ -178,6 +178,7 @@ const CreateAssesment = ({
       const totalAnswerMarks = [0, 0];
 
       value.forEach((obj) => {
+
         const childMarks = obj.child_mark.reduce(
           (acc, currValue) => {
             acc[0] += currValue[Object.keys(currValue)[0]][0];
@@ -199,6 +200,7 @@ const CreateAssesment = ({
         question_mark: finalMarksForParentQuestion,
         mark_type: '1',
         child_mark: [],
+        is_central:null,
       };
 
       const parentIndex = testMarksArr.findIndex((q) => q.question_id === key);
@@ -246,8 +248,9 @@ const CreateAssesment = ({
     isQuestion,
     field,
     value,
-    option,
-    parentQuestionId
+    // option,
+    // parentQuestionId,
+    isCentral,
   ) => {
     const changedQuestionIndex = testMarks.findIndex((q) => {
       return q.question_id === questionId;
@@ -260,10 +263,12 @@ const CreateAssesment = ({
           question_mark: [0, 0],
           mark_type: '1',
           child_mark: [],
+          //new_
+          is_central:isCentral,
         };
-        if (parentQuestionId) {
-          obj.parentQuestionId = parentQuestionId;
-        }
+        // if (parentQuestionId) {
+        //   obj.parentQuestionId = parentQuestionId;
+        // }
         if (field === 'Assign marks') {
           obj.question_mark[0] = value;
         } else {
@@ -281,60 +286,62 @@ const CreateAssesment = ({
           }
           changedQuestion.question_mark[1] = value;
         }
-        if (parentQuestionId) {
-          changedQuestion.parentQuestionId = parentQuestionId;
-        }
+        // if (parentQuestionId) {
+        //   changedQuestion.parentQuestionId = parentQuestionId;
+        // }
         setTestMarks((prev) => [
           ...prev.slice(0, changedQuestionIndex),
           changedQuestion,
           ...prev.slice(changedQuestionIndex + 1),
         ]);
       }
-    } else {
-      if (changedQuestionIndex == -1) {
-        const obj = {
-          question_id: questionId,
-          question_mark: [0, 0],
-          mark_type: '1',
-          child_mark: [],
-        };
-        if (parentQuestionId) {
-          obj.parentQuestionId = parentQuestionId;
-        }
-        if (field === 'Assign marks') {
-          obj.child_mark[0] = { [option]: [value, 0] };
-        } else {
-          obj.child_mark[0] = { [option]: [0, value] };
-        }
-        setTestMarks((prev) => [...prev, obj]);
-      } else {
-        const optionIndex = changedQuestion.child_mark.findIndex((child) =>
-          Object.keys(child).includes(option)
-        );
+    } 
+    // else {
+    //   if (changedQuestionIndex == -1) {
+    //     const obj = {
+    //       question_id: questionId,
+    //       question_mark: [0, 0],
+    //       mark_type: '1',
+    //       child_mark: [],
+    //       is_central:isCentral,
+    //     };
+    //     if (parentQuestionId) {
+    //       obj.parentQuestionId = parentQuestionId;
+    //     }
+    //     if (field === 'Assign marks') {
+    //       obj.child_mark[0] = { [option]: [value, 0] };
+    //     } else {
+    //       obj.child_mark[0] = { [option]: [0, value] };
+    //     }
+    //     setTestMarks((prev) => [...prev, obj]);
+    //   } else {
+    //     const optionIndex = changedQuestion.child_mark.findIndex((child) =>
+    //       Object.keys(child).includes(option)
+    //     );
 
-        if (optionIndex === -1) {
-          if (field === 'Assign marks') {
-            changedQuestion.child_mark.push({ [option]: [value, 0] });
-          } else {
-            changedQuestion.child_mark.push({ [option]: [0, value] });
-          }
-        } else {
-          if (field === 'Assign marks') {
-            changedQuestion.child_mark[optionIndex][option][0] = value;
-          } else {
-            changedQuestion.child_mark[optionIndex][option][1] = value;
-          }
-        }
-        if (parentQuestionId) {
-          changedQuestion.parentQuestionId = parentQuestionId;
-        }
-        setTestMarks((prev) => [
-          ...prev.slice(0, changedQuestionIndex),
-          changedQuestion,
-          ...prev.slice(changedQuestionIndex + 1),
-        ]);
-      }
-    }
+    //     if (optionIndex === -1) {
+    //       if (field === 'Assign marks') {
+    //         changedQuestion.child_mark.push({ [option]: [value, 0] });
+    //       } else {
+    //         changedQuestion.child_mark.push({ [option]: [0, value] });
+    //       }
+    //     } else {
+    //       if (field === 'Assign marks') {
+    //         changedQuestion.child_mark[optionIndex][option][0] = value;
+    //       } else {
+    //         changedQuestion.child_mark[optionIndex][option][1] = value;
+    //       }
+    //     }
+    //     if (parentQuestionId) {
+    //       changedQuestion.parentQuestionId = parentQuestionId;
+    //     }
+    //     setTestMarks((prev) => [
+    //       ...prev.slice(0, changedQuestionIndex),
+    //       changedQuestion,
+    //       ...prev.slice(changedQuestionIndex + 1),
+    //     ]);
+    //   }
+    // }
   };
 
   const handleMarksAssignModeChange = (e) => {

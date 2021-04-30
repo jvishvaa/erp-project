@@ -252,7 +252,6 @@ const Assesment = () => {
       setFetchingTests(false);
     } catch (e) {
       setFetchingTests(false);
-
       setAlert('error', 'Fetching tests failed');
     }
   };

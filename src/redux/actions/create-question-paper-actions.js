@@ -35,12 +35,9 @@ export const addQuestionToSection = (data, questionId, section) => ({
 export const createQuestionPaper = (data) => async (dispatch) => {
   dispatch({ type: createQuestionPaperActions.CREATE_QUESTION_PAPER_STARTED });
   try {
-    const response = await axios.post(
-      `${endpoints.baseURLCentral}/assessment/question-paper/`,
-      data,
-      {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      }
+    const response = await axiosInstance.post(
+      `${endpoints.assessmentErp.createQuestionPaper}`,
+      data
     );
     dispatch({ type: createQuestionPaperActions.CREATE_QUESTION_PAPER_SUCCESS });
     if (response.data.status_code !== 200) {
