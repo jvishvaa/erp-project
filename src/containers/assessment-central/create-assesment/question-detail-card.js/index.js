@@ -52,7 +52,7 @@ const menuOptions = [
   // 'Relative marking',
 ];
 
-const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks, createdAt }) => {
+const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks, createdAt,paperchecked }) => {
   const themeContext = useTheme();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -100,10 +100,10 @@ const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks, crea
               {resolveQuestionTypeName(question.question_type)}
             </div>
             <div className='icon'>
-              <IconButton onClick={handleMenuOpen}>
+            {!paperchecked &&  <IconButton onClick={handleMenuOpen}>
                 <MoreHorizIcon color='primary' />
-              </IconButton>
-              <Popover
+              </IconButton>}
+             <Popover
                 id=''
                 open={menuOpen}
                 anchorEl={anchorEl}

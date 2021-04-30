@@ -14,6 +14,7 @@ import {
   Popover,
   MenuItem,
   useTheme,
+  Typography,
 } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useHistory } from 'react-router-dom';
@@ -74,6 +75,12 @@ const AssesmentTest = ({
   const themeContext = useTheme();
   const history = useHistory();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const [paperchecked, setChecked] = React.useState(false);
+
+  const toggleChecked = () => {
+    setChecked((prev) => !prev);
+  };
+
 
   const handleChange = (event) => {
     let value = 0;
@@ -239,7 +246,16 @@ const AssesmentTest = ({
                       </div>
                     </div>
                   </Grid>
-                  <Grid xs={12} sm={6}>
+                  <Grid xs={12} sm={6} style={{padding: '15px 25px'}}>
+                    <Typography>
+                      <Grid component="label" container alignItems="center" spacing={1}>
+                        <Grid item>Que wise marks</Grid>
+                          <Switch checked={paperchecked} onChange={toggleChecked} />
+                        <Grid item>Que paper wise marks</Grid>
+                      </Grid>
+                    </Typography>
+                  </Grid>
+                 {paperchecked && <Grid xs={12} sm={6}>
                     <div className='detail'>
                       <div className='label'>Test Marks</div>
                       <div className='input-container duration'>
@@ -267,6 +283,8 @@ const AssesmentTest = ({
                       </div>
                     </div>
                   </Grid>
+                 } 
+                 
                 </Grid>
               </div>
             </div>
@@ -427,6 +445,7 @@ const AssesmentTest = ({
                                 expanded={marksAssignMode}
                                 onChangeMarks={onChangeTestMarks}
                                 testMarks={testMarks}
+                                paperchecked={paperchecked}
                               />
                             </div>
                           ))}
