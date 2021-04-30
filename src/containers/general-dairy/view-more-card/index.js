@@ -13,9 +13,10 @@ import { ExpandLessOutlined } from '@material-ui/icons';
 const DownloadButton = withStyles({
   root: {
     backgroundColor: 'transparent',
-    '&: hover': {
-      backgroundColor: 'transparent',
-    }
+    textTransform: 'capitalize',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   }
 })(Button);
 
