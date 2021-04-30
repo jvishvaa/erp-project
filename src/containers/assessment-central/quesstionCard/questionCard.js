@@ -41,6 +41,7 @@ const QuestionCard = (props) => {
     setAnchorEl(null);
   };
 
+  console.log(props.result,'==========')
   const handleAddToTest = () => {
     props.initAddQuestionPaperToTest(props.result);
     history.push(`/create-assesment`);

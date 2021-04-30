@@ -30,7 +30,7 @@ export const createAssesment = (data) => async (dispatch) => {
   dispatch({ type: createAssesmentActions.CREATE_ASSESMENT_REQUEST });
   try {
     const response = await axiosInstance.post(
-      `${endpoints.baseURLCentral}${endpoints.assessmentErp.listAssessment}`,
+      `${endpoints.assessmentErp.createAssessment}`,
       data
     );
     if (response.data.status_code !== 200) {
