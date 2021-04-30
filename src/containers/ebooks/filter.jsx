@@ -133,7 +133,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
             onChange={(event, value) => {
               setSelectedBranch(value);
               if(value) {
-                withAxiosInstance(`${endpoints.communication.grades}?session_year=${selectedAcad?.id}&branch_id=${value.id}&module_id=${getModuleInfo('Ebook View').id}`, 'grade');
+                withAxiosInstance(`${endpoints.communication.grades}?session_year=${selectedAcad?.id}&branch_id=${value.branch.id}&module_id=${getModuleInfo('Ebook View').id}`, 'grade');
               }
               setSelectedGrade('');
               setSelectedSubject('');
