@@ -171,8 +171,6 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
               Created By - <p>{lesson.created_by.first_name} {lesson.created_at.substring(0, 10)}</p>
               </Typography>
           </Box>
-          <Box>
-          </Box>
           <div>
           <IconButton style={{fontSize:'1rem',color:'#042955'}}>
               <SvgIcon
