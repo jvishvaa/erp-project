@@ -68,6 +68,8 @@ const AssesmentTest = ({
   testInstructions,
   totalMarks,
   testMarks,
+  paperchecked,
+  setChecked,
 }) => {
   const [minimize, setMinimize] = useState(false);
   const [openEditor, setOpenEditor] = useState(false);
@@ -75,7 +77,7 @@ const AssesmentTest = ({
   const themeContext = useTheme();
   const history = useHistory();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const [paperchecked, setChecked] = React.useState(false);
+  // const [paperchecked, setChecked] = React.useState(false);
 
   const toggleChecked = () => {
     setChecked((prev) => !prev);
@@ -211,7 +213,6 @@ const AssesmentTest = ({
                           color='primary'
                           style={{ width: isMobile ? '50%' : '100%' }}
                           onChange={(e) => {
-                            console.log('value ', e.target.value);
                             onTestDateChange(e.target.value);
                           }}
                         />
@@ -249,9 +250,9 @@ const AssesmentTest = ({
                   <Grid xs={12} sm={6} style={{padding: '15px 25px'}}>
                     <Typography>
                       <Grid component="label" container alignItems="center" spacing={1}>
-                        <Grid item>Que wise marks</Grid>
+                        <Grid item>Ques. Wise Marks</Grid>
                           <Switch checked={paperchecked} onChange={toggleChecked} />
-                        <Grid item>Que paper wise marks</Grid>
+                        <Grid item>Ques. Paper Wise Marks</Grid>
                       </Grid>
                     </Typography>
                   </Grid>

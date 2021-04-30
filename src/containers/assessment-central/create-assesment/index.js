@@ -82,6 +82,7 @@ const CreateAssesment = ({
   const [instructions, setInstructions] = useState(initialTestInstructions);
   const [testDuration, setTestDuration] = useState(initialTestDuration);
   const [totalMarks, setTotalmarks] = useState(initialTotalMarks);
+  const [paperchecked, setChecked] = React.useState(false);
 
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -132,7 +133,6 @@ const CreateAssesment = ({
       resetForm();
     }
   }, [clearForm]);
-console.log('testMarks:',testMarks)
   const handleCreateAssesmentTest = async () => {
     const qMap = new Map();
 
@@ -163,7 +163,7 @@ console.log('testMarks:',testMarks)
       }
     });
     let testMarksArr = testMarks;
-    console.log(selectedQuestionPaper,testMarks, 'totalMarks');
+    console.log(selectedQuestionPaper, 'totalMarks');
 
     qMap.forEach((value, key) => {
       const totalQuestionMarks = value.reduce(
@@ -233,6 +233,7 @@ console.log('testMarks:',testMarks)
       instructions,
       descriptions: 'Hello',
       test_mark: testMarksArr,
+      is_question_wise:!paperchecked,
     };
     try {
       const response = await initCreateAssesment(reqObj);
@@ -610,6 +611,8 @@ console.log('testMarks:',testMarks)
               setTotalmarks(value);
               initChangeTestFormFields('totalMarks', value);
             }}
+            paperchecked={paperchecked}
+            setChecked={setChecked}
           />
         </div>
       </div>

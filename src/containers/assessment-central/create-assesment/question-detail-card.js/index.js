@@ -59,7 +59,7 @@ const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks, crea
   const menuOpen = Boolean(anchorEl);
 
   useEffect(() => {
-    console.log('testMarks: ', testMarks, question.is_central);
+    console.log('testMarks: ', testMarks, question);
   });
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
