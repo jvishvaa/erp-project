@@ -104,6 +104,7 @@ if (process.env.REACT_APP_UI_ENV === 'dev_aol') {
   HOSTNAME = 'localhost'
   PORT = '8000'
      BASE =`${window.location.origin}/qbox`
+    //  BASE='https://marketing.letseduvate.com' +'/qbox'
   // BASE = 'http://erp.finance.letseduvate.com' + '/qbox'
   // BASE = 'http://localhost:8000' + '/qbox'
   FRONTENT_BASE = PROTO + '://' + HOSTNAME + ':' + '3000'
@@ -117,7 +118,8 @@ if (process.env.REACT_APP_UI_ENV === 'dev_aol') {
   SOCKET_PORT = '8000'
   SOCKET_BASE = SOCKET_PROTO + '://' + SOCKET_HOSTNAME + ':' + SOCKET_PORT + '/ws'
 
-  marketingUrl = 'https://dev.marketing.letseduvate.com/qbox'
+  // marketingUrl = 'https://dev.marketing.letseduvate.com/qbox'
+     marketingUrl='https://marketing.letseduvate.com/qbox'
 }
 
 if (process.env.REACT_APP_UI_ENV === 'prod') {
