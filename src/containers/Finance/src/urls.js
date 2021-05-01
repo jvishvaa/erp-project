@@ -811,7 +811,7 @@ const urls = {
   ListAllForm: BASE + '/finance/admissions/listappregad/',
   ListAllFormReport: BASE + '/finance/admissions/listappregadreport/',
   FetchInstallmentsDetails: BASE + '/finance/fetchinstallmentsdetails/',
-  appMobileChecker: marketingUrl + '/MobileNumberChecker_V2',
+  appMobileChecker: marketingUrl + '/MobileNumberChecker_V2/',
   updateTotalFormDetails: BASE + '/finance/UpdateFormDetails/',
   PaymentModeEdit: BASE + '/finance/PaymentModeEdit/',
   BranchList: BASE + '/finance/multiple-branch/',
