@@ -89,7 +89,7 @@ const Assesment = () => {
     0
   );
   const [showFilteredList, setShowFilteredList] = useState(false);
-  const [selectedAssesmentTest, setSelectedAssesmentTest] = useState([]);
+  const [selectedAssesmentTest, setSelectedAssesmentTest] = useState();
   const [fetchingTests, setFetchingTests] = useState(false);
   const [minDate, setMinDate] = useState(null);
 
@@ -230,7 +230,7 @@ const Assesment = () => {
         status.id,
         date,
         page,
-        4
+        9
       );
       setShowFilteredList(true);
       setFilteredAssesmentTestsTotalPage(totalPages);
