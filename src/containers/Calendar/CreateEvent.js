@@ -137,6 +137,37 @@ const CreateEvent = () => {
     console.log('testing1branch', selectedBranch);
     console.log('testing2grade', selectedGrade);
     console.log('testing3grade', selectedSection);
+    if (!eventType) {
+      setAlert('warning', 'select event type');
+      return;
+    }
+    if (!evnetcategoryType) {
+      setAlert('warning', 'select event category');
+      return;
+    }
+    console.log(state);
+    if (state === undefined) {
+      setAlert('warning', 'please give event name');
+      return;
+    }
+    if (!selectedAcademicYear) {
+      setAlert('warning', 'Select Academic Year');
+      return;
+    }
+    console.log(selectedBranch.length, '===============');
+    if (selectedBranch.length == 0) {
+      console.log(selectedBranch.length, '===============');
+      setAlert('warning', 'Select Branch');
+      return;
+    }
+    if (selectedGrade.length == 0) {
+      setAlert('warning', 'Select Grade');
+      return;
+    }
+    if (selectedSection.length == 0) {
+      setAlert('warning', 'Select Section');
+      return;
+    }
     axiosInstance
       .post(endpoints.CreateEvent.CreateEvent, {
         event_name: state.event_name,

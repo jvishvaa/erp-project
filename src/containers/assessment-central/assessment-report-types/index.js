@@ -295,13 +295,13 @@ const AssessmentReportTypes = ({
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
                           <TableCell className={classes.tableCell}>
-                            {rowData?.marks_obtained}
+                            {rowData?.total_mark}
                           </TableCell>
                         )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
                           <TableCell className={classes.tableCell}>
-                            {rowData?.comparison}
+                            {rowData?.comparsion}
                           </TableCell>
                         )}
                       </TableRow>

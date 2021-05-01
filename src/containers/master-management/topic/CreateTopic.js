@@ -7,26 +7,25 @@ import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const CreateTopic = ({grades,setLoading,handleGoBack}) => {
-
-  const { setAlert } = useContext(AlertNotificationContext);
-  const [subjectName,setSubjectName]=useState('')
-  const [description,setDescription]=useState('')
-  const [selectedGrade,setSelectedGrade]=useState([])
-  const [selectedSection,setSelectedSection]=useState([])
-  const themeContext = useTheme();
-  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const [sections,setSections]=useState([])
-  const [optional,setOptional] = useState(false)
-  const [academicYearDropdown,setAcademicYearDropdown]=useState([]);
-  const [volumeDropdown,setVolumeDropdown]=useState([]);
-  const [gradeDropdown,setGradeDropdown]=useState([]);
-  const [subjectDropdown,setSubjectDropdown]=useState([]);
-  const [chapterDropdown, setChapterDropdown] = useState([]);
-  const [selectedChapter, setSelectedChapter] = useState('');
-  const [topicName,setTopicName]=useState([]);
-  //const [noOfChapter,setNoOfChapter]=useState([]);
-
-  const {role_details}=JSON.parse(localStorage.getItem('userDetails'))
+    const { setAlert } = useContext(AlertNotificationContext);
+    const [subjectName,setSubjectName]=useState('')
+    const [description,setDescription]=useState('')
+    const [selectedGrade,setSelectedGrade]=useState([])
+    const [selectedSection,setSelectedSection]=useState([])
+    const themeContext = useTheme();
+    const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+    const [sections,setSections]=useState([])
+    const [optional,setOptional] = useState(false)
+    const [academicYearDropdown,setAcademicYearDropdown]=useState([]);
+    const [volumeDropdown,setVolumeDropdown]=useState([]);
+    const [branchDropdown, setBranchDropdown]=useState([]);
+    const [gradeDropdown,setGradeDropdown]=useState([]);
+    const [subjectDropdown,setSubjectDropdown]=useState([]);
+    const [chapterDropdown, setChapterDropdown] = useState([]);
+    const [selectedChapter, setSelectedChapter] = useState('');
+    const [topicName,setTopicName]=useState([]);
+    //const [noOfChapter,setNoOfChapter]=useState([]);
+    const {role_details}=JSON.parse(localStorage.getItem('userDetails'))
 
     const [filterData, setFilterData] = useState({
         year: '',
@@ -35,10 +34,29 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
         subject: '',
         chapter: '',
     });
+    const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+    const [moduleId, setModuleId] = useState('');
 
+    useEffect(() => {
+        if (NavData && NavData.length) {
+          NavData.forEach((item) => {
+            if (
+              item.parent_modules === 'Master Management' &&
+              item.child_module &&
+              item.child_module.length > 0
+            ) {
+              item.child_module.forEach((item) => {
+                if (item.child_name === 'Chapter Creation') {
+                  setModuleId(item.child_id);
+                }
+              });
+            }
+          });
+        }
+    }, []);
 
-  useEffect(() => {
-    axiosInstance.get(`${endpoints.masterManagement.academicYear}`)
+    useEffect(() => {
+        axiosInstance.get(`${endpoints.masterManagement.academicYear}`)
         .then(result => {
             if (result.data.status_code === 200) {
                 setAcademicYearDropdown(result.data.result.results);
@@ -59,18 +77,22 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
     //     }).catch(error => {
     //         setAlert('error', error.message);
     //     })
+    }, [])
 
-    axiosInstance.get(`${endpoints.academics.grades}?branch_id=1&module_id=212`)
-        .then(result => {
-            if (result.data.status_code === 200) {
-                setGradeDropdown(result.data.data);
-            } else {
-                setAlert('error', result.data.message);
-            }
-        }).catch(error => {
-            setAlert('error', error.message);
-        })
-}, [])
+    useEffect(() => {
+        if(filterData.branch) {
+            axiosInstance.get(`${endpoints.academics.grades}?branch_id=${filterData.branch?.branch?.id}&module_id=${moduleId}`)
+            .then(result => {
+                if (result.data.status_code === 200) {
+                    setGradeDropdown(result.data.data);
+                } else {
+                    setAlert('error', result.data.message);
+                }
+            }).catch(error => {
+                setAlert('error', error.message);
+            })
+        }
+    },[filterData])
 
     useEffect(() => {
         if(filterData.year.id && filterData.subject.id)
@@ -84,9 +106,9 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
         }
     },[filterData]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log('hi',filterData.chapter.id,topicName,filterData.year.id)
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        console.log('hi',filterData.chapter.id,topicName,filterData.year.id)
 
     setLoading(true);
         const params ={
@@ -99,6 +121,7 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
         setFilterData({
           year: '',
           volume: '',
+          branch: '',
           grade: '',
           subject: '',
           chapter: '',
@@ -118,17 +141,37 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
     };
 
     const handleAcademicYear = (event, value) => {
-      setFilterData({ ...filterData, year: '' });
-      if (value) {
-          setFilterData({ ...filterData, year: value });
-          
-      }
-  };
-      const handleVolume = (event, value) => {
-      setFilterData({ ...filterData, volume: '' });
-      if (value) {
-          setFilterData({ ...filterData, volume: value });
-      }
+        setFilterData({ ...filterData, year: '' });
+        if (value) {
+            setFilterData({ ...filterData, year: value });
+            axiosInstance.get(
+                `${endpoints.academics.branches}?session_year=${value.id}&module_id=${moduleId}`
+            )
+            .then((result) => {
+                if (result.status === 200) {
+                    setBranchDropdown(result.data.data.results);
+                } else {
+                    setAlert('error', result.data.message);
+                }
+            })
+            .catch((error) => {
+                setAlert('error', error.message);
+            });
+        }
+    };
+
+    const handleBranch = (event, value) => {
+        setFilterData({ ...filterData, branch: '' });
+        if (value) {
+            setFilterData({ ...filterData, branch: value });
+        }
+    };
+
+    const handleVolume = (event, value) => {
+        setFilterData({ ...filterData, volume: '' });
+        if (value) {
+            setFilterData({ ...filterData, volume: value });
+        }
     };
 
 
@@ -136,7 +179,7 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
     setFilterData({ ...filterData, grade: '' });
     if (value) {
         setFilterData({ ...filterData, grade: value });
-        axiosInstance.get(`${endpoints.masterManagement.subjects}?grade=${value.grade_id}&branch=1`)
+        axiosInstance.get(`${endpoints.masterManagement.subjects}?grade=${value.grade_id}&branch_id=${filterData.branch?.branch?.id}`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setSubjectDropdown(result.data.data.results);
@@ -194,6 +237,29 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
                             )}
                         />
                     </Grid>
+
+                    <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
+                        <Autocomplete
+                            size='small'
+                            onChange={handleBranch}
+                            style={{ width: '100%' }}
+                            id='grade'
+                            options={branchDropdown}
+                            value={filterData.branch}
+                            getOptionLabel={(option) => option?.branch?.branch_name}
+                            filterSelectedOptions
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant='outlined'
+                                    label='Branch'
+                                    placeholder='Branch'
+                                    required
+                                />
+                            )}
+                        />
+                    </Grid>
+
                     {/* <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
                         <Autocomplete
                             size='small'

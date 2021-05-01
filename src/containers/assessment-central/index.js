@@ -89,7 +89,7 @@ const Assesment = () => {
     0
   );
   const [showFilteredList, setShowFilteredList] = useState(false);
-  const [selectedAssesmentTest, setSelectedAssesmentTest] = useState();
+  const [selectedAssesmentTest, setSelectedAssesmentTest] = useState([]);
   const [fetchingTests, setFetchingTests] = useState(false);
   const [minDate, setMinDate] = useState(null);
 
@@ -272,7 +272,7 @@ const Assesment = () => {
         ...results,
         testType: test.test_type__exam_name,
         subjects: test.question_paper__subject_name,
-        grade: test.question_paper__grade_name,
+        grade: test.grade_name,
       });
     } catch (e) {
       setAlert('error', 'Failed to fetch test details');
@@ -893,6 +893,7 @@ const Assesment = () => {
                                   onEdit={() => {}}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
+                                  filterResults={filterResults}
                                 />
                               </Grid>
                             ))}
@@ -956,6 +957,7 @@ const Assesment = () => {
                                   onEdit={() => {}}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
+                                  filterResults={filterResults}
                                 />
                               </Grid>
                             ))}
@@ -1019,6 +1021,7 @@ const Assesment = () => {
                                   onEdit={() => {}}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
+                                  filterResults={filterResults}
                                 />
                               </Grid>
                             ))}

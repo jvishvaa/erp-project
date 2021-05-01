@@ -106,12 +106,12 @@ const AssessmentReportFilters = ({
       test: filterData.test?.id,
     };
     if (selectedReportType?.id === 3) {
-      paramObj = { ...paramObj, section_mapping: filterData.section?.section_id };
+      paramObj = { ...paramObj, section_mapping: filterData.section?.id };
     }
     if (selectedReportType?.id === 4) {
       paramObj = {
         ...paramObj,
-        section_mapping: filterData.section?.section_id,
+        section_mapping: filterData.section?.id,
         topic: filterData.topic?.id,
       };
     }

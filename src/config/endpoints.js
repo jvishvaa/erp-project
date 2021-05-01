@@ -237,7 +237,7 @@ export default {
     GiveAwardAPI: '/academic/create-award/',
     commentList: '/academic/comments-list/',
     replyToAnswer: '/academic/create-answer-replay/',
-    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
     deletePost: '/academic/',
   },
   circular: {
@@ -352,7 +352,8 @@ export default {
     questionPaperViewMore: `/assessment/<question-paper-id>/qp-questions-list/`,
     publishQuestionPaper: `/assessment/<question-paper-id>/update-status-question-paper/`,
     createQuestionPaper: `/assessment/question-paper/`,
-    updateQuestion: `/assessment/question-update-destroy/`,
+    createAssessment:'/assessment/test/',
+    deleteAssessmentTest:'/assessment/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
   },
 

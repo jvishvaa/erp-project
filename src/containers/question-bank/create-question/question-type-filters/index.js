@@ -157,9 +157,11 @@ const QuestionTypeFilters = ({
 
   useEffect(() => {
     if (submitFlag) {
+      setSubQuestions([]);
       handleSendData(true);
     }
     if (saveFlag) {
+      setSubQuestions([]);
       handleSendData(false);
     }
   }, [submitFlag, saveFlag]);
@@ -260,14 +262,8 @@ const QuestionTypeFilters = ({
           .map((obj) => obj?.data?.id)
           .filter(Boolean),
       };
-      axios
-        .put(
-          `${endpoints.baseURLCentral}/assessment/${editData?.id}/retrieve_update_question/`,
-          requestBody,
-          {
-            headers: { 'x-api-key': 'vikash@12345#1231' },
-          }
-        )
+      axiosInstance
+        .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody)
         .then((result) => {
           if (result.data.status_code === 200) {
             const objlist = { ...showQuestionType };
@@ -301,10 +297,8 @@ const QuestionTypeFilters = ({
           setAlert('error', error.message);
         });
     } else {
-      axios
-        .post(`${endpoints.createQuestionApis.createQuestion}`, requestBody, {
-          headers: { 'x-api-key': 'vikash@12345#1231' },
-        })
+      axiosInstance
+        .post(`${endpoints.assessmentErp.createQuestion}`, requestBody)
         .then((result) => {
           if (result.data.status_code === 200) {
             const objlist = { ...showQuestionType };

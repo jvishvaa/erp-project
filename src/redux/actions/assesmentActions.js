@@ -75,7 +75,7 @@ export const fetchAssesmentTests = async (
     }
     const response = await axiosInstance.get(url);
     if (response.data.status_code === 200) {
-      return { totalPages: response.data.total_pages, results: response.data.result };
+      return { totalPages: response.data.result.total_pages, results: response.data.result.results };
     }
     throw new Error();
   } catch (e) {
@@ -86,13 +86,28 @@ export const fetchAssesmentTests = async (
 export const fetchAssesmentTestDetail = async (id) => {
   try {
     const response = await axiosInstance.get(
-      `${endpoints.baseURLCentral}${endpoints.assessmentErp.listAssessment}?test_id_in=${id}`
+      `${endpoints.assessmentErp.listAssessment}?test_id=${id}`
     );
     if (response.data.status_code === 200) {
-      return { results: response.data.result[0] };
+      return { results: response.data.result };
     }
     throw new Error();
   } catch (e) {
     throw new Error();
   }
 };
+
+
+export const deleteAssessmentTest = async(id)=>{
+  try{
+    const response = await axiosInstance.delete(
+      `${endpoints.assessmentErp.deleteAssessmentTest}${id}/test/`
+    );
+    if (response.data.status_code === 200) {
+      return { results: response.data };
+    }
+    throw new Error();
+  }catch (e) {
+    throw new Error();
+  }
+}
