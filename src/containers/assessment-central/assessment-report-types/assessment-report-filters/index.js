@@ -8,10 +8,8 @@ import axiosInstance from 'config/axios';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
-import { getSubDomainName } from '../../../../utility-functions';
 import './assessment-report-filters.css';
 
-const subDomainName = getSubDomainName();
 let url = '';
 const AssessmentReportFilters = ({
   widerWidth,
@@ -105,26 +103,15 @@ const AssessmentReportFilters = ({
 
   const handleFilter = () => {
     let paramObj = {
-      school: subDomainName,
-      // academic_year_id: filterData.academic?.id,
-      // branch: filterData.branch?.branch?.id,
-      // grade: filterData.grade?.central_grade_id,
-      // subject: filterData.subject?.subject?.central_subject_id,
       test: filterData.test?.id,
     };
-    if (selectedReportType?.id === 1) {
-      paramObj = {
-        ...paramObj,
-        central_gs_id: filterData.subject?.subject?.central_mp_id,
-      };
-    }
     if (selectedReportType?.id === 3) {
-      paramObj = { ...paramObj, section_mapping: filterData.section?.id };
+      paramObj = { ...paramObj, section_mapping: filterData.section?.section_id };
     }
     if (selectedReportType?.id === 4) {
       paramObj = {
         ...paramObj,
-        section_mapping: filterData.section?.id,
+        section_mapping: filterData.section?.section_id,
         topic: filterData.topic?.id,
       };
     }

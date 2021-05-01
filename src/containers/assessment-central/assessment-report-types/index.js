@@ -24,6 +24,7 @@ import { connect } from 'react-redux';
 import { setClearFilters } from 'redux/actions';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
+import './assessment-report-types.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,7 +81,7 @@ const AssessmentReportTypes = ({
 
   useEffect(() => {
     if (isFilter) {
-      setReportData(assessmentReportListData?.result);
+      setReportData(assessmentReportListData?.results);
       setTotalCount(assessmentReportListData?.count);
     }
   }, [isFilter, assessmentReportListData]);
@@ -179,7 +180,6 @@ const AssessmentReportTypes = ({
           {
             id: 'teacher_name',
             label: 'Teacher Name',
-            minWidth: 170,
             align: 'center',
             labelAlign: 'center',
           },
@@ -238,7 +238,7 @@ const AssessmentReportTypes = ({
                       <TableCell
                         key={column.id}
                         align={column.align}
-                        style={{ minWidth: column.minWidth }}
+                        style={{ minWidth: column?.minWidth }}
                         className={classes.columnHeader}
                       >
                         {column.label}
@@ -264,8 +264,10 @@ const AssessmentReportTypes = ({
                           </TableCell>
                         )}
                         {selectedReportType?.id === 1 && (
-                          <TableCell className={classes.tableCell}>
-                            {rowData?.test__teacher}
+                          <TableCell className={`${classes.tableCell} teacherNameParent`}>
+                            {rowData?.teacher_name?.map((obj) => {
+                              return <div className='teacherNameChild'>{obj}</div>;
+                            })}
                           </TableCell>
                         )}
                         {selectedReportType?.id === 2 && (

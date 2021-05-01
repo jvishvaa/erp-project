@@ -369,10 +369,10 @@ export default {
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
   assessmentReportTypes: {
-    reportSectionWise: `${baseURLCentral}/assessment/report-section-wise/`,
-    reportTopicWise: `${baseURLCentral}/assessment/report-topic-wise/`,
+    reportSectionWise: `/assessment/report-section-wise/`,
+    reportTopicWise: `/assessment/report-topic-wise/`,
     reportClassAverage: `/assessment/report-class-average/`,
-    reportTopicStudentAverage: `${baseURLCentral}/assessment/report-topic-student-average/`,
+    reportTopicStudentAverage: `/assessment/report-topic-student-average/`,
   },
   publish: {
     ebook: `erp_user/publication/`,

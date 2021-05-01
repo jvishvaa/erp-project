@@ -79,7 +79,7 @@ export const fetchAssessmentReportList = (reportType, params) => (dispatch) => {
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          let payload = result.data?.data;
+          let payload = result.data?.result;
           dispatch(success(ASSESSMENT_REPORT_LIST_DATA_SUCCESS, payload));
         } else {
           dispatch(failure(ASSESSMENT_REPORT_LIST_DATA_FAILURE, []));
