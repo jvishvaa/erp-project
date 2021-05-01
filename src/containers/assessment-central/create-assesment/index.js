@@ -151,8 +151,6 @@ const CreateAssesment = ({
       return;
     }
 
-    console.log(selectedQuestionPaper, 'totalMarks');
-
     testMarks.forEach((obj) => {
       const { parentQuestionId } = obj;
       if (parentQuestionId) {
@@ -233,9 +231,13 @@ const CreateAssesment = ({
       test_mark: testMarksArr,
     };
     try {
-      const response = await initCreateAssesment(reqObj);
-      resetForm();
-      setAlert('success', 'Test created successfully');
+      if (instructions?.length) {
+        const response = await initCreateAssesment(reqObj);
+        resetForm();
+        setAlert('success', 'Test created successfully');
+      } else {
+        setAlert('Instructions are required.');
+      }
     } catch (e) {
       setAlert('error', 'Test creation failed');
     }

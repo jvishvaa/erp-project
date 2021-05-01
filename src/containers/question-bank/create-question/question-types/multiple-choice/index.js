@@ -453,14 +453,8 @@ const MultipleChoice = ({
         // const apiEndPoint = editData?'dasd':'post ur'
         // axiosInstance[editData?'put':'post'](apiEndPoint, requestBody).then((e)=>{
         // })
-        axios
-          .put(
-            `${endpoints.baseURLCentral}/assessment/${editData?.id}/retrieve_update_question/`,
-            requestBody,
-            {
-              headers: { 'x-api-key': 'vikash@12345#1231' },
-            }
-          )
+        axiosInstance
+          .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody)
           .then((result) => {
             if (result.data?.status_code === 200) {
               setAlert('success', result.data?.message);

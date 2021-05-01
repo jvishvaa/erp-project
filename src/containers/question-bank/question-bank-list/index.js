@@ -181,6 +181,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       //     setLoading(false);
       //     setAlert('error', error?.message);
       //   });
+      console.log(isErpCentral, '==========');
       if (!isErpCentral?.flag) {
         axiosInstance
           .get(
@@ -602,6 +603,9 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
                         tabMapId={tabMapId}
                         tabTopicId={tabTopicId}
                         tabIsErpCentral={tabIsErpCentral}
+                        tabYearId={tabYearId}
+                        tabGradeId={tabGradeId}
+                        tabChapterId={tabChapterId}
                         tabQueLevel={tabQueLevel}
                         onClick={
                           questionId && section ? handleAddQuestionToQuestionPaper : null

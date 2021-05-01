@@ -22,12 +22,12 @@ export default function McqQuestion(props) {
   }, []);
   return (
     <div className='whole-container grow'>
-      <div className='question-container_new'>
+      <div className='question-container mp-quiz'>
         <div className='resizeable-text'>
           <div className='resizeable'>{ReactHtmlParser(question)}</div>
         </div>
       </div>
-      <div className='options-container'>
+      <div className='options-container_new'>
         <OptionsHandler
           questionObj={currentQuestionObj}
           responseObj={responseObj}

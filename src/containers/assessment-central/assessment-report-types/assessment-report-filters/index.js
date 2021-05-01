@@ -179,15 +179,17 @@ const AssessmentReportFilters = ({
       .catch((error) => {});
   }
 
-  function getGrade(branchId) {
+  function getGrade(acadId, branchId) {
     axiosInstance
-      .get(`${endpoints.assessmentApis.gradesList}?branch=${branchId}`)
+      .get(
+        `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchId}&module_id=${moduleId}`
+      )
       .then((result) => {
         if (result.data.status_code === 200) {
           setDropdownData((prev) => {
             return {
               ...prev,
-              grade: result.data?.result?.results,
+              grade: result.data?.data,
             };
           });
         }
@@ -195,10 +197,10 @@ const AssessmentReportFilters = ({
       .catch((error) => {});
   }
 
-  function getSection(acadId, branchId, mappingId) {
+  function getSection(acadId, branchId, gradeId) {
     axiosInstance
       .get(
-        `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchId}&grade_id=${mappingId}&module_id=${moduleId}`
+        `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchId}&grade_id=${gradeId}&module_id=${moduleId}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -213,15 +215,15 @@ const AssessmentReportFilters = ({
       .catch((error) => {});
   }
 
-  function getSubject(mappingId, branchId) {
+  function getSubject(gradeId) {
     axiosInstance
-      .get(`${endpoints.assessmentApis.gradesList}?gs_id=${mappingId}&branch=${branchId}`)
+      .get(`${endpoints.assessmentErp.subjectList}?grade=${gradeId}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setDropdownData((prev) => {
             return {
               ...prev,
-              subject: result.data?.result?.results,
+              subject: result.data?.result,
             };
           });
         }
@@ -230,16 +232,14 @@ const AssessmentReportFilters = ({
   }
 
   function getTest(subjectId) {
-    axios
-      .get(`${endpoints.assessmentApis.testList}?subject=${subjectId}`, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
+    axiosInstance
+      .get(`${endpoints.assessmentErp.testList}?subjects=${subjectId}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setDropdownData((prev) => {
             return {
               ...prev,
-              test: result.data.data,
+              test: result.data?.result,
             };
           });
         }
@@ -247,11 +247,9 @@ const AssessmentReportFilters = ({
       .catch((error) => {});
   }
 
-  function getChapter(centralMpId) {
-    axios
-      .get(`${endpoints.lessonPlan.chapterListCentral}?grade_subject=${centralMpId}`, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
+  function getChapter(subjectId) {
+    axiosInstance
+      .get(`${endpoints.assessmentErp.chapterList}?subject=${subjectId}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setDropdownData((prev) => {
@@ -265,23 +263,39 @@ const AssessmentReportFilters = ({
       .catch((error) => {});
   }
 
-  function getTopic(chapterId) {
+  function getTopic(chapterId, isCentral) {
     setDropdownData({ ...dropdownData, topic: [] });
-    axios
-      .get(`${endpoints.createQuestionApis.topicList}?chapter=${chapterId}`, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setDropdownData((prev) => {
-            return {
-              ...prev,
-              topic: result.data?.result,
-            };
-          });
-        }
-      })
-      .catch((error) => {});
+    if (isCentral) {
+      axios
+        .get(`${endpoints.createQuestionApis.topicList}?chapter=${chapterId}`, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        })
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setDropdownData((prev) => {
+              return {
+                ...prev,
+                topic: result.data?.result,
+              };
+            });
+          }
+        })
+        .catch((error) => {});
+    } else {
+      axiosInstance
+        .get(`${endpoints.assessmentErp.topicList}?chapter=${chapterId}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setDropdownData((prev) => {
+              return {
+                ...prev,
+                topic: result.data?.result,
+              };
+            });
+          }
+        })
+        .catch((error) => {});
+    }
   }
 
   const handleAcademicYear = (event, value) => {
@@ -333,7 +347,7 @@ const AssessmentReportFilters = ({
       topic: '',
     });
     if (value) {
-      getGrade(value?.branch?.id);
+      getGrade(filterData.academic?.id, value?.branch?.id);
       setFilterData({ ...filterData, branch: value });
     }
   };
@@ -357,9 +371,13 @@ const AssessmentReportFilters = ({
       topic: '',
     });
     if (value) {
-      getSubject(value?.id, filterData.branch?.branch?.id);
+      getSubject(value?.grade_id);
       if (selectedReportType.id === 3 || selectedReportType.id === 4) {
-        getSection(filterData.academic?.id, filterData.branch?.branch?.id, value?.id);
+        getSection(
+          filterData.academic?.id,
+          filterData.branch?.branch?.id,
+          value?.grade_id
+        );
       }
       setFilterData({ ...filterData, grade: value });
     }
@@ -380,8 +398,8 @@ const AssessmentReportFilters = ({
       topic: '',
     });
     if (value) {
-      getTest(value?.subject?.central_subject_id);
-      if (selectedReportType.id === 4) getChapter(value?.subject?.central_mp_id);
+      getTest(value?.subject_id);
+      if (selectedReportType.id === 4) getChapter(value?.subject_id);
       setFilterData({ ...filterData, subject: value });
     }
   };
@@ -404,7 +422,7 @@ const AssessmentReportFilters = ({
     setDropdownData({ ...dropdownData, topic: [] });
     setFilterData({ ...filterData, chapter: '', topic: '' });
     if (value) {
-      getTopic(value?.id);
+      getTopic(value?.id, value?.is_central);
       setFilterData({ ...filterData, chapter: value });
     }
   };
@@ -504,7 +522,7 @@ const AssessmentReportFilters = ({
             className='dropdownIcon'
             value={filterData.grade || {}}
             options={dropdownData.grade || []}
-            getOptionLabel={(option) => option?.grade_name || ''}
+            getOptionLabel={(option) => option?.grade__grade_name || ''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -548,7 +566,7 @@ const AssessmentReportFilters = ({
             className='dropdownIcon'
             value={filterData.subject || {}}
             options={dropdownData.subject || []}
-            getOptionLabel={(option) => option?.subject?.subject_name || ''}
+            getOptionLabel={(option) => option?.subject_name || ''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField

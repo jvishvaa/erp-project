@@ -348,9 +348,11 @@ export default {
     fileRemove: '/assessment/file-delete/',
     listQuestionPaper: '/assessment/list-question-paper/',
     listAssessment: '/assessment/test/',
+    testList: '/assessment/test-list/',
     questionPaperViewMore: `/assessment/<question-paper-id>/qp-questions-list/`,
     publishQuestionPaper: `/assessment/<question-paper-id>/update-status-question-paper/`,
     createQuestionPaper: `/assessment/question-paper/`,
+    updateQuestion: `/assessment/question-update-destroy/`,
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
   },
 
@@ -369,7 +371,7 @@ export default {
   assessmentReportTypes: {
     reportSectionWise: `${baseURLCentral}/assessment/report-section-wise/`,
     reportTopicWise: `${baseURLCentral}/assessment/report-topic-wise/`,
-    reportClassAverage: `${baseURLCentral}/assessment/report-class-average/`,
+    reportClassAverage: `/assessment/report-class-average/`,
     reportTopicStudentAverage: `${baseURLCentral}/assessment/report-topic-student-average/`,
   },
   publish: {
