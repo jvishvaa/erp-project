@@ -83,7 +83,6 @@ const AssesmentTest = ({
     setChecked((prev) => !prev);
   };
 
-
   const handleChange = (event) => {
     let value = 0;
     let fieldName = event.target.name;
@@ -100,10 +99,7 @@ const AssesmentTest = ({
       if (/^[0-9]{0,9}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
         onTestIdChange(value);
       } else {
-        setAlert(
-          'error',
-          'Test ID can contain numbers & must not exceed length of 9!'
-        );
+        setAlert('error', 'Test ID can contain numbers & must not exceed length of 9!');
       }
     }
     if (fieldName === 'testmarks') {
@@ -247,45 +243,45 @@ const AssesmentTest = ({
                       </div>
                     </div>
                   </Grid>
-                  <Grid xs={12} sm={6} style={{padding: '15px 25px'}}>
+                  <Grid xs={12} sm={6} style={{ padding: '15px 25px' }}>
                     <Typography>
-                      <Grid component="label" container alignItems="center" spacing={1}>
+                      <Grid component='label' container alignItems='center' spacing={1}>
                         <Grid item>Ques. Wise Marks</Grid>
-                          <Switch checked={paperchecked} onChange={toggleChecked} />
+                        <Switch checked={paperchecked} onChange={toggleChecked} />
                         <Grid item>Ques. Paper Wise Marks</Grid>
                       </Grid>
                     </Typography>
                   </Grid>
-                 {paperchecked && <Grid xs={12} sm={6}>
-                    <div className='detail'>
-                      <div className='label'>Test Marks</div>
-                      <div className='input-container duration'>
-                        <TextField
-                          variant='outlined'
-                          type='number'
-                          inputProps={{
-                            min: 0,
-                            max: 1000,
-                            maxLength: 4,
-                          }}
-                          size='small'
-                          className='bg-white'
-                          name='testmarks'
-                          value={totalMarks}
-                          style={{ width: '100%' }}
-                          // onChange={(e) => {
-                          //   const { target: { value } = {} } = e || {};
-                          //   if (Number.isFinite(+value)) {
-                          //     onTotalMarksChange(+value);
-                          //   }
-                          // }}
-                          onChange={(e) => handleChange(e)}
-                        />
+                  {paperchecked && (
+                    <Grid xs={12} sm={6}>
+                      <div className='detail'>
+                        <div className='label'>Test Marks</div>
+                        <div className='input-container duration'>
+                          <TextField
+                            variant='outlined'
+                            type='number'
+                            inputProps={{
+                              min: 0,
+                              max: 1000,
+                              maxLength: 4,
+                            }}
+                            size='small'
+                            className='bg-white'
+                            name='testmarks'
+                            value={totalMarks}
+                            style={{ width: '100%' }}
+                            // onChange={(e) => {
+                            //   const { target: { value } = {} } = e || {};
+                            //   if (Number.isFinite(+value)) {
+                            //     onTotalMarksChange(+value);
+                            //   }
+                            // }}
+                            onChange={(e) => handleChange(e)}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  </Grid>
-                 } 
-                 
+                    </Grid>
+                  )}
                 </Grid>
               </div>
             </div>
@@ -462,9 +458,7 @@ const AssesmentTest = ({
                     style={{ borderRadius: '10px' }}
                     color='primary'
                     onClick={onCreate}
-                    disabled={
-                      !totalMarks || !testDate || !testDuration || !testName || !testId
-                    }
+                    disabled={!testDate || !testDuration || !testName || !testId}
                   >
                     Submit
                   </Button>
