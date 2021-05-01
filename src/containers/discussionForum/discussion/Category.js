@@ -267,7 +267,8 @@ const Category = (props) => {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    setCategoryId(newValue)
+    setCategoryId(newValue);
+    setPage(1);
   };
 
   React.useEffect(() => {

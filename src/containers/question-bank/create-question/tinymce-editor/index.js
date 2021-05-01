@@ -61,8 +61,8 @@ const MyTinyEditor = ({
               formData.append('file', file[0]);
               formData.append('grade_id', filterDataTop?.grade?.grade_id);
               formData.append('subject_name', filterDataTop?.subject?.subject_id);
-              formData.append('question_categories_id', filterDataBottom.category?.id);
-              formData.append('question_type', filterDataBottom.type?.id);
+              formData.append('question_categories_id', filterDataBottom?.category?.id);
+              formData.append('question_type', filterDataBottom?.type?.id);
               axiosInstance
                 .post(`${endpoints.assessmentErp.fileUpload}`, formData)
                 .then((result) => {
