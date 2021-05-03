@@ -75,13 +75,11 @@ export const fetchAssessmentReportList = (reportType, params) => (dispatch) => {
   if (reportType?.id) {
     let url = `${reportTypeURL(reportType?.id)}`;
     if (params) url += `${params}`;
-    return axios
-      .get(url, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
+    return axiosInstance
+      .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          let payload = result.data?.data;
+          let payload = result.data?.result;
           dispatch(success(ASSESSMENT_REPORT_LIST_DATA_SUCCESS, payload));
         } else {
           dispatch(failure(ASSESSMENT_REPORT_LIST_DATA_FAILURE, []));

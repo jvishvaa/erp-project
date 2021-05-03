@@ -1,24 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { Button, IconButton, Menu, MenuItem, useTheme, Popover } from '@material-ui/core';
 import moment from 'moment';
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import './styles.scss';
+import {deleteAssessmentTest, fetchAssesmentTests} from '../../../redux/actions'
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-const menuOptions = ['Edit test', 'Reschedule'];
+const menuOptions = ['Delete'];
 
 const ITEM_HEIGHT = 48;
 
-const AssesmentCard = ({ value, onClick, isSelected }) => {
+const AssesmentCard = ({ value, onClick, isSelected,selectedFilterData,activeTab,filterResults }) => {
   const themeContext = useTheme();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
+  const { setAlert } = useContext(AlertNotificationContext);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
-  const handleClose = () => {
+  const handleClose = async(testId) => {
+    const {results}= await deleteAssessmentTest(testId)
+    if(results.status_code===200){
+      setAlert('success',results?.message)
+      filterResults(1) // 1 is the current page no.
+    }else{
+      setAlert('error',results.error || results.message)
+    }
     setAnchorEl(null);
   };
   return (
@@ -26,20 +36,20 @@ const AssesmentCard = ({ value, onClick, isSelected }) => {
       <div className='card-header'>
         <p className='header'>{value.test_type__exam_name}</p>
         <div className='menu'>
-          {/* <IconButton
+          <IconButton
             aria-label='more'
             aria-controls='long-menu'
             aria-haspopup='true'
             onClick={handleClick}
           >
             <MoreHorizIcon color='primary' />
-          </IconButton> */}
+          </IconButton>
           {/* <Menu
             id='long-menu'
             anchorEl={anchorEl}
             keepMounted
             open={menuOpen}
-            onClose={handleClose}
+            onClose={e=>handleClose(e,value)}
             PaperProps={{
               style: {
                 maxHeight: ITEM_HEIGHT * 4.5,
@@ -55,7 +65,7 @@ const AssesmentCard = ({ value, onClick, isSelected }) => {
                 className='assesment-card-popup-menu-item'
                 key={option}
                 selected={option === 'Pyxis'}
-                onClick={handleClose}
+                onClick={e=>handleClose(e,value)}
                 style={{
                   color: themeContext.palette.primary.main,
                 }}
@@ -106,7 +116,7 @@ const AssesmentCard = ({ value, onClick, isSelected }) => {
                 className='assesment-card-popup-menu-item'
                 key={option}
                 selected={option === 'Pyxis'}
-                onClick={handleClose}
+                onClick={(e)=>handleClose(value?.id)}
                 style={{
                   color: themeContext.palette.primary.main,
                 }}
@@ -124,8 +134,10 @@ const AssesmentCard = ({ value, onClick, isSelected }) => {
         <div>
           <p>
             {`${
-              value.question_paper__grade_name
-            } ${value.question_paper__subject_name?.join(', ')}`}
+              value.question_paper__grade_name || value.grade_name
+            } `
+            // ${value.question_paper__subject_name && value.question_paper__subject_name?.join(', ')}`
+            }
           </p>
           {/* <p className='completed'>Completed -30.12.2020</p> */}
           <p className='scheduled'>{`Scheduled on - ${moment(value.test_date).format(

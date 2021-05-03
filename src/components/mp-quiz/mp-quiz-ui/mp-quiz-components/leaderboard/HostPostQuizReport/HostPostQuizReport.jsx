@@ -20,8 +20,8 @@ const {
 } = constants || {};
 
 class HostPostQuizReport extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
 
     this.state = {
       questions: [],
@@ -34,7 +34,7 @@ class HostPostQuizReport extends Component {
   fetchQuestions = () => {
     const {
       params: { lobby_identifier: lobbyIdentifier, question_paper: questionPaper } = {},
-    } = constants;
+    } = this.props;
     const apiUrl = fetchQuizQpPaperAPIEndpoint+`?question_paper=${questionPaper}&lobby_identifier=${lobbyIdentifier}&online_class_id=${lobbyIdentifier}`
     this.setState({ isFetching: true, isFetchFailed: null }, () => {
       axios.get(apiUrl, fetchQuizQpPaperHeaders)

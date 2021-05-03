@@ -45,6 +45,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
     } = {},
     questionsArray,
   } = useContext(AssessmentReviewContext) || {};
+
   const testEndTime = new Date(testDate).getTime() + (testDuration * 60 * 1000)
 
   const isTestAttempted = !!userResponseObj;
