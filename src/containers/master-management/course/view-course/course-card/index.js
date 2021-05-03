@@ -107,7 +107,6 @@ const CourseCard = ({
   const handleDelete = (e, index) => {
     //https://erpnew.letseduvate.com/qbox/aol/160/update-course/
     //https://erpnew.letseduvate.com/qbox/aol/132/update-course/
-    alert(e.id);
     axiosInstance
       .delete(`${endpoints.onlineCourses.deleteCourse}${e.id}/update-course/`)
       .then((result) => {

@@ -458,6 +458,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-management/chapter-type-table');
         break;
       }
+      case 'Topic': {
+        history.push('/master-management/topic-table');
+        break;
+      }
       case 'Section': {
         history.push('/master-management/section-table');
         break;
