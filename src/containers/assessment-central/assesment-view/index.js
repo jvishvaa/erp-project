@@ -21,6 +21,9 @@ import selectfilter from '../../../assets/images/selectfilter.svg';
 import hidefilter from '../../../assets/images/hidefilter.svg';
 import showfilter from '../../../assets/images/showfilter.svg';
 import axios from 'axios';
+import { getSubDomainName } from '../../../utility-functions';
+
+const subDomainName = getSubDomainName();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,6 +57,8 @@ const AssessmentView = () => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
   const [tabValue, setTabValue] = useState(0);
+  const [tabAcademic, setTabAcademic] = useState('');
+  const [tabBranch, setTabBranch] = useState('');
   const [tabGradeId, setTabGradeId] = useState('');
   const [tabSubjectId, setTabSubjectId] = useState('');
   const [tabQpValue, setTabQpValue] = useState('');
@@ -63,14 +68,23 @@ const AssessmentView = () => {
     setPage(page);
   };
 
-  const handlePeriodList = (grade, subject, qpValue, newValue) => {
-    if (!grade || !qpValue) {
+  const handlePeriodList = (
+    academic = '',
+    branch = '',
+    grade = '',
+    subject = '',
+    qpValue,
+    newValue
+  ) => {
+    if (!academic || !branch || !grade || !subject || !qpValue) {
       setAlert('error', 'Select all the fields!');
       return;
     }
     setTabValue(0);
     setLoading(true);
     setPeriodData([]);
+    setTabAcademic(academic);
+    setTabBranch(branch);
     setTabGradeId(grade);
     setTabSubjectId(subject);
     setTabQpValue(qpValue);
@@ -78,21 +92,10 @@ const AssessmentView = () => {
     if (newValue == 0 || newValue == undefined) {
       const tabVal = '';
       setTabValue(0);
-      // if (tabValue == 1) {
-      //   tabVal = '&is_draft=True';
-      // } else if (tabValue == 2) {
-      //   tabVal = '&is_review=True';
-      // } else if (tabValue == 3) {
-      //   tabVal = '&is_verified=True';
-      // }
-      axios
+      axiosInstance
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}${tabVal}&page=${page}&page_size=${limit}`,
-          {
-            headers: { 'x-api-key': 'vikash@12345#1231' },
-          }
+          `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branch?.branch?.id}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue?.id}${tabVal}&page=${page}&page_size=${limit}`
         )
-        // axiosInstance.get(`${endpoints.assementQP.assementFilter}?grade=${2}&paper_level=${1}`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setTotalCount(result?.data?.result?.count);
@@ -111,14 +114,10 @@ const AssessmentView = () => {
         });
     } else if (newValue == 1) {
       setTabValue(1);
-      axios
+      axiosInstance
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_draft=True&page=${page}&page_size=${limit}`,
-          {
-            headers: { 'x-api-key': 'vikash@12345#1231' },
-          }
+          `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branch?.branch?.id}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue.id}&is_draft=True&page=${page}&page_size=${limit}`
         )
-        // axiosInstance.get(`${endpoints.assementQP.assementFilter}?grade=${2}&paper_level=${1}&is_draft=True`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setTotalCount(result.data.result.count);
@@ -137,14 +136,10 @@ const AssessmentView = () => {
         });
     } else if (newValue == 2) {
       setTabValue(2);
-      axios
+      axiosInstance
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_review=True&page=${page}&page_size=${limit}`,
-          {
-            headers: { 'x-api-key': 'vikash@12345#1231' },
-          }
+          `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branch?.branch?.id}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue.id}&is_review=True&page=${page}&page_size=${limit}`
         )
-        // axiosInstance.get(`${endpoints.assementQP.assementFilter}?grade=${2}&paper_level=${1}&is_review=True`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setTotalCount(result.data.result.count);
@@ -163,14 +158,10 @@ const AssessmentView = () => {
         });
     } else if (newValue == 3) {
       setTabValue(3);
-      axios
+      axiosInstance
         .get(
-          `${endpoints.assementQP.assementFilter}?grade=${grade.id}&paper_level=${qpValue.id}&is_verified=True&page=${page}&page_size=${limit}`,
-          {
-            headers: { 'x-api-key': 'vikash@12345#1231' },
-          }
+          `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branch?.branch?.id}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue.id}&is_verified=True&page=${page}&page_size=${limit}`
         )
-        // axiosInstance.get(`${endpoints.assementQP.assementFilter}?grade=${2}&paper_level=${1}&is_verified=True`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setTotalCount(result.data.result.count);
@@ -191,10 +182,17 @@ const AssessmentView = () => {
   };
 
   useEffect(() => {
-    // if (page && chapterSearch || publishFlag)
-    if (publishFlag) handlePeriodList(tabGradeId, tabSubjectId, tabQpValue);
-    if (tabGradeId && tabSubjectId && tabQpValue)
-      handlePeriodList(tabGradeId, tabSubjectId, tabQpValue, tabValue);
+    if (publishFlag)
+      handlePeriodList(tabAcademic, tabBranch, tabGradeId, tabSubjectId, tabQpValue);
+    if (tabAcademic && tabBranch && tabGradeId && tabSubjectId && tabQpValue)
+      handlePeriodList(
+        tabAcademic,
+        tabBranch,
+        tabGradeId,
+        tabSubjectId,
+        tabQpValue,
+        tabValue
+      );
   }, [publishFlag, page]);
 
   return (
@@ -238,6 +236,8 @@ const AssessmentView = () => {
         <div>
           <TabPanel
             handlePeriodList={handlePeriodList}
+            tabAcademic={tabAcademic}
+            tabBranch={tabBranch}
             tabGradeId={tabGradeId}
             tabSubjectId={tabSubjectId}
             tabQpValue={tabQpValue}

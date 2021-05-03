@@ -278,6 +278,7 @@ class MakeEntry extends Component {
     form.append('approved_by', this.state.approvedBy)
     form.append('date', this.state.date)
     form.append('academic_year', this.state.selectedSession)
+    form.append('branch_id', this.props.recData && this.props.recData.branch)
     if (this.state.paymentOption === 'cheque') {
       if (!this.state.chequeNo || !this.state.selectedBank || !this.state.chequeDate) {
         this.props.alert.warning('Please Fill all Details')

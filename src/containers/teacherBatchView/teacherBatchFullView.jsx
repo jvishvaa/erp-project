@@ -343,6 +343,7 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
       axiosInstance
         .get(detailsURL)
         .then((res) => {
+          console.log(res.data);
           setNoOfPeriods(res.data.data);
         })
         .catch((error) => setAlert('error', error.message));
@@ -398,6 +399,7 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
   const handleAttendance = () => {
     history.push(`/aol-attendance-list/${fullData?.online_class && fullData?.id}`)
   }
+  // console.log(selectedGrade,'FFFFFFFFFFFFFFFFFFFFFFF')
   // history.push(`/create/course/${props.filterData && props?.filterData?.course?.id}/${props.filterData && props?.filterData?.grade?.id}`)
   // sessionStorage.setItem('isAol','isAol');
   const handleCoursePlan = () => {

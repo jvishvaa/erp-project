@@ -625,8 +625,6 @@
 // export default DetailCardView;
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from 'react';
-import { Grid, Card, Divider, Button, Popover, Typography } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 import CloseIcon from '@material-ui/icons/Close';
 import moment from 'moment';
 import Timer from 'react-compound-timer';
@@ -639,6 +637,12 @@ import CountdownTimer from './CountdownTimer';
 import './index.css';
 import { useDispatch } from 'react-redux';
 import { attendanceAction } from '../../../../redux/actions/onlineClassActions'
+import { Grid, Card, Divider, Button, Popover, Typography,Tooltip,IconButton } from '@material-ui/core';
+import { useHistory ,Route,withRouter} from 'react-router-dom';
+import {
+  AttachFile as AttachFileIcon,
+} from '@material-ui/icons';
+
 
 const JoinClass = (props) => {
   const fullData = props.fullData;
@@ -773,6 +777,37 @@ const JoinClass = (props) => {
         });
     }
   }
+ const handleTakeQuiz = (fullData)=>{
+   if (fullData && fullData.online_class && fullData.online_class.question_paper_id){
+   
+  history.push({
+    pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
+    state: { data: fullData.online_class.id },
+  })
+}else{
+  setAlert('error', 'This onlineclass does not have quiz associated with it.'  );
+  return
+}
+
+ }
+
+  function handleHost(data) {
+    setLoading(true);
+    axiosInstance
+    .get(`${endpoints.teacherViewBatches.hostApi}?id=${data.id}`)
+    .then((res) => {
+      setLoading(false);
+      if(res?.data?.url){
+        window.open(res?.data?.url, '_blank');
+      } else {
+        setAlert('error', res?.data?.message); 
+      }
+    })
+    .catch((error) => {
+      setLoading(false);
+      setAlert('error', error.message);
+    });
+  }
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -785,6 +820,58 @@ const JoinClass = (props) => {
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
       </Grid>
+      {window.location.pathname === '/erp-online-class-student-view' ? (
+         <Grid item xs={3}>
+        <Button
+          size='small'
+          color='secondary'
+          fullWidth
+          variant='contained'
+          onClick={() => handleTakeQuiz(fullData)}
+          
+          className='teacherFullViewSmallButtons'
+        >
+        TakeQuiz
+        </Button>
+      </Grid>):''}
+          { window.location.pathname === '/erp-online-class-teacher-view' &&fullData && fullData.online_class &&fullData.online_class.question_paper_id ?
+              <Grid item xs={3}>
+              <Button
+                size='small'
+                color='secondary'
+                fullWidth
+                variant='contained'
+                onClick={() =>
+                  history.push({
+                    pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
+                    state: { data: fullData.online_class.id },
+                  })}
+                
+                className='teacherFullViewSmallButtons'
+              >
+               Launch Quiz
+              </Button>
+            </Grid> :
+                  window.location.pathname === '/erp-online-class-teacher-view' ? (
+                    <Tooltip title='Attach Question Paper'>
+            <IconButton
+
+            
+             onClick={() =>
+              history.push({
+                pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
+                state: { data: fullData.online_class.id },
+              })}
+          
+            >
+              <AttachFileIcon />
+            </IconButton>
+          </Tooltip>
+          ) : (
+            ''
+          )
+          
+          }
 
       {isAccept ? (
         <Grid item xs={6}>
@@ -849,9 +936,10 @@ const JoinClass = (props) => {
                     color='secondary'
                     fullWidth
                     variant='contained'
-                    onClick={() =>
-                      window.open(fullData && fullData.presenter_url, '_blank')
-                    }
+                    onClick={()=> handleHost(fullData)}
+                    // onClick={() =>
+                    //   window.open(fullData && fullData.presenter_url, '_blank')
+                    // }
                     className='teacherFullViewSmallButtons'
                   >
                     Host
@@ -1012,7 +1100,6 @@ const DetailCardView = ({
     }
   }, [fullData]);
   */
-  // console.log(selectedClassType, '[[[[[[[[[[[[[[[[');
   useEffect(() => {
     let detailsURL =
       window.location.pathname === '/erp-online-class-student-view'
@@ -1244,4 +1331,4 @@ const DetailCardView = ({
   );
 };
 
-export default DetailCardView;
+export default withRouter(DetailCardView);

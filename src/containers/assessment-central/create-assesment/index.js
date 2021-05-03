@@ -82,6 +82,7 @@ const CreateAssesment = ({
   const [instructions, setInstructions] = useState(initialTestInstructions);
   const [testDuration, setTestDuration] = useState(initialTestDuration);
   const [totalMarks, setTotalmarks] = useState(initialTotalMarks);
+  const [paperchecked, setChecked] = React.useState(false);
 
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -96,9 +97,10 @@ const CreateAssesment = ({
     validateOnChange: false,
     validateOnBlur: false,
   });
-  const getGrades = async () => {
+
+  const getGrades = async (acadId, branchId) => {
     try {
-      const data = await fetchGrades();
+      const data = await fetchGrades(acadId, branchId);
       setGrades(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch grades');
@@ -107,9 +109,12 @@ const CreateAssesment = ({
 
   const getSubjects = async (gradeId) => {
     try {
+      setSubjects([]);
       const data = await fetchSubjects(gradeId);
       setSubjects(data);
-    } catch (e) {}
+    } catch (e) {
+      setAlert('error', 'Failed to fetch subjects');
+    }
   };
 
   const resetForm = () => {
@@ -128,7 +133,6 @@ const CreateAssesment = ({
       resetForm();
     }
   }, [clearForm]);
-
   const handleCreateAssesmentTest = async () => {
     const qMap = new Map();
 
@@ -142,12 +146,10 @@ const CreateAssesment = ({
       return;
     }
 
-    if(!selectedQuestionPaper?.id) {
+    if (!selectedQuestionPaper?.id) {
       setAlert('error', 'Please add a question paper.');
       return;
     }
-
-    console.log(selectedQuestionPaper,'totalMarks');
 
     testMarks.forEach((obj) => {
       const { parentQuestionId } = obj;
@@ -160,6 +162,7 @@ const CreateAssesment = ({
       }
     });
     let testMarksArr = testMarks;
+    console.log(selectedQuestionPaper, 'totalMarks');
 
     qMap.forEach((value, key) => {
       const totalQuestionMarks = value.reduce(
@@ -195,6 +198,7 @@ const CreateAssesment = ({
         question_mark: finalMarksForParentQuestion,
         mark_type: '1',
         child_mark: [],
+        is_central: null,
       };
 
       const parentIndex = testMarksArr.findIndex((q) => q.question_id === key);
@@ -215,7 +219,7 @@ const CreateAssesment = ({
         testMarksArr = [...testMarksArr, parentQuestionObj];
       }
     });
-
+ 
     const reqObj = {
       question_paper: selectedQuestionPaper?.id,
       test_id: testId,
@@ -227,11 +231,16 @@ const CreateAssesment = ({
       instructions,
       descriptions: 'Hello',
       test_mark: testMarksArr,
+      is_question_wise: !paperchecked,
     };
     try {
-      const response = await initCreateAssesment(reqObj);
-      resetForm();
-      setAlert('success', 'Test created successfully');
+      if (instructions?.length) {
+        const response = await initCreateAssesment(reqObj);
+        resetForm();
+        setAlert('success', 'Test created successfully');
+      } else {
+        setAlert('Instructions are required.');
+      }
     } catch (e) {
       setAlert('error', 'Test creation failed');
     }
@@ -242,8 +251,9 @@ const CreateAssesment = ({
     isQuestion,
     field,
     value,
-    option,
-    parentQuestionId
+    // option,
+    // parentQuestionId,
+    isCentral
   ) => {
     const changedQuestionIndex = testMarks.findIndex((q) => {
       return q.question_id === questionId;
@@ -256,10 +266,12 @@ const CreateAssesment = ({
           question_mark: [0, 0],
           mark_type: '1',
           child_mark: [],
+          //new_
+          is_central: isCentral,
         };
-        if (parentQuestionId) {
-          obj.parentQuestionId = parentQuestionId;
-        }
+        // if (parentQuestionId) {
+        //   obj.parentQuestionId = parentQuestionId;
+        // }
         if (field === 'Assign marks') {
           obj.question_mark[0] = value;
         } else {
@@ -272,58 +284,14 @@ const CreateAssesment = ({
           changedQuestion.question_mark[1] = 0;
         } else {
           if (+value > +changedQuestion.question_mark[0]) {
-            setAlert('error', 'Enter less than Assign marks')
-            return
+            setAlert('error', 'Enter less than Assign marks');
+            return;
           }
           changedQuestion.question_mark[1] = value;
         }
-        if (parentQuestionId) {
-          changedQuestion.parentQuestionId = parentQuestionId;
-        }
-        setTestMarks((prev) => [
-          ...prev.slice(0, changedQuestionIndex),
-          changedQuestion,
-          ...prev.slice(changedQuestionIndex + 1),
-        ]);
-      }
-    } else {
-      if (changedQuestionIndex == -1) {
-        const obj = {
-          question_id: questionId,
-          question_mark: [0, 0],
-          mark_type: '1',
-          child_mark: [],
-        };
-        if (parentQuestionId) {
-          obj.parentQuestionId = parentQuestionId;
-        }
-        if (field === 'Assign marks') {
-          obj.child_mark[0] = { [option]: [value, 0] };
-        } else {
-          obj.child_mark[0] = { [option]: [0, value] };
-        }
-        setTestMarks((prev) => [...prev, obj]);
-      } else {
-        const optionIndex = changedQuestion.child_mark.findIndex((child) =>
-          Object.keys(child).includes(option)
-        );
-
-        if (optionIndex === -1) {
-          if (field === 'Assign marks') {
-            changedQuestion.child_mark.push({ [option]: [value, 0] });
-          } else {
-            changedQuestion.child_mark.push({ [option]: [0, value] });
-          }
-        } else {
-          if (field === 'Assign marks') {
-            changedQuestion.child_mark[optionIndex][option][0] = value;
-          } else {
-            changedQuestion.child_mark[optionIndex][option][1] = value;
-          }
-        }
-        if (parentQuestionId) {
-          changedQuestion.parentQuestionId = parentQuestionId;
-        }
+        // if (parentQuestionId) {
+        //   changedQuestion.parentQuestionId = parentQuestionId;
+        // }
         setTestMarks((prev) => [
           ...prev.slice(0, changedQuestionIndex),
           changedQuestion,
@@ -331,6 +299,52 @@ const CreateAssesment = ({
         ]);
       }
     }
+    // else {
+    //   if (changedQuestionIndex == -1) {
+    //     const obj = {
+    //       question_id: questionId,
+    //       question_mark: [0, 0],
+    //       mark_type: '1',
+    //       child_mark: [],
+    //       is_central:isCentral,
+    //     };
+    //     if (parentQuestionId) {
+    //       obj.parentQuestionId = parentQuestionId;
+    //     }
+    //     if (field === 'Assign marks') {
+    //       obj.child_mark[0] = { [option]: [value, 0] };
+    //     } else {
+    //       obj.child_mark[0] = { [option]: [0, value] };
+    //     }
+    //     setTestMarks((prev) => [...prev, obj]);
+    //   } else {
+    //     const optionIndex = changedQuestion.child_mark.findIndex((child) =>
+    //       Object.keys(child).includes(option)
+    //     );
+
+    //     if (optionIndex === -1) {
+    //       if (field === 'Assign marks') {
+    //         changedQuestion.child_mark.push({ [option]: [value, 0] });
+    //       } else {
+    //         changedQuestion.child_mark.push({ [option]: [0, value] });
+    //       }
+    //     } else {
+    //       if (field === 'Assign marks') {
+    //         changedQuestion.child_mark[optionIndex][option][0] = value;
+    //       } else {
+    //         changedQuestion.child_mark[optionIndex][option][1] = value;
+    //       }
+    //     }
+    //     if (parentQuestionId) {
+    //       changedQuestion.parentQuestionId = parentQuestionId;
+    //     }
+    //     setTestMarks((prev) => [
+    //       ...prev.slice(0, changedQuestionIndex),
+    //       changedQuestion,
+    //       ...prev.slice(changedQuestionIndex + 1),
+    //     ]);
+    //   }
+    // }
   };
 
   const handleMarksAssignModeChange = (e) => {
@@ -599,6 +613,8 @@ const CreateAssesment = ({
               setTotalmarks(value);
               initChangeTestFormFields('totalMarks', value);
             }}
+            paperchecked={paperchecked}
+            setChecked={setChecked}
           />
         </div>
       </div>

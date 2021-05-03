@@ -45,7 +45,7 @@ import {
   setFilter,
   resetState,
   deleteSection,
-  deleteQuestionSection
+  deleteQuestionSection,
 } from '../../../redux/actions';
 
 const levels = [
@@ -53,7 +53,6 @@ const levels = [
   { id: 2, name: 'Average' },
   { id: 3, name: 'Difficult' },
 ];
-
 const CreateQuestionPaper = ({
   questions,
   initAddQuestion,
@@ -67,7 +66,7 @@ const CreateQuestionPaper = ({
   questionPaperName,
   initResetState,
   initDeleteSection,
-  deleteQuestionSection
+  deleteQuestionSection,
 }) => {
   const location = useLocation();
   const history = useHistory();
@@ -106,26 +105,23 @@ const CreateQuestionPaper = ({
   }, []);
 
   useEffect(() => {
-    if (formik.values.academic) {
-      getBranch(formik.values.academic.id);
-      if (formik.values.branch) {
-        getGrades(formik.values.branch.branch.id);
-        if (formik.values.grade) {
-          getSubjects(formik.values.grade.id, formik.values.branch.branch.id);
-        } else {
-          setSubjects([]);
-        }
-      } else {
-        setGrades([]);
-      }
-    } else {
-      setBranchDropdown([]);
-    }
-  }, []);
-
-  useEffect(() => {
     if (moduleId) {
       getAcademic();
+      if (formik.values.academic && moduleId) {
+        getBranch(formik.values.academic?.id);
+        if (formik.values.branch) {
+          getGrades(formik.values.academic?.id, formik.values.branch?.branch?.id);
+          if (formik.values.grade) {
+            getSubjects(formik.values.grade?.grade_id);
+          } else {
+            setSubjects([]);
+          }
+        } else {
+          setGrades([]);
+        }
+      } else {
+        setBranchDropdown([]);
+      }
     }
   }, [moduleId]);
 
@@ -162,26 +158,26 @@ const CreateQuestionPaper = ({
 
   const getBranch = async (acadId) => {
     try {
-      const data = await fetchBranches(acadId,moduleId);
+      const data = await fetchBranches(acadId, moduleId);
       setBranchDropdown(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch branch');
     }
   };
 
-  const getGrades = async (branchId) => {
+  const getGrades = async (acadId, branchId) => {
     try {
-      const data = await fetchGrades(branchId);
+      const data = await fetchGrades(acadId, branchId, moduleId);
       setGrades(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch grades');
     }
   };
 
-  const getSubjects = async (mappingId, branchId) => {
+  const getSubjects = async (gradeId) => {
     try {
       setSubjects([]);
-      const data = await fetchSubjects(mappingId, branchId);
+      const data = await fetchSubjects(gradeId);
       setSubjects(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch subjects');
@@ -227,51 +223,50 @@ const CreateQuestionPaper = ({
 
   const handleCreateQuestionPaper = async (isDraft) => {
     try {
-      const questionData = [];
+      const questionData = [],
+        centralQuestionData = [];
 
       const sectionData = [];
       questions.forEach((q) => {
         q.sections.forEach((sec) => {
           const sectionObj = { [sec.name]: [], discription: sec.name };
           sec.questions.forEach((question) => {
-            sectionObj[sec.name].push(question.id);
-            if (!questionData.includes(question.id)) {
-              questionData.push(question.id, question.child_id);
+            sectionObj[sec.name].push(question?.identifier);
+            if (question?.is_central) {
+              if (!centralQuestionData.includes(question.id)) {
+                centralQuestionData.push(question.id, question.child_id);
+              }
+            } else {
+              if (!questionData.includes(question.id)) {
+                questionData.push(question.id, question.child_id);
+              }
             }
           });
           sectionData.push(sectionObj);
         });
       });
 
-      const reqObj = {
-        // academic_year: formik.values.academic.id,
-        // branch: formik.values.branch.branch.id,
-        branch: 1,
+      let reqObj = {
+        academic_year: formik.values.academic.id,
         paper_name: questionPaperName,
-        grade: formik.values.grade.id,
-        grade_name: formik.values.grade.grade_name,
-        subject: formik.values.subject.map((obj) => obj.subject.id),
-        grade_subject_mapping: formik.values.subject.map(
-          (obj) => obj.subject.central_mp_id
-        ),
-        // filterDataTop.subject?.subject.central_mp_id,
-        subject_name: formik.values.subject.map((obj) => obj.subject.subject_name),
+        grade: formik.values.grade.grade_id,
+        academic_session: formik.values.branch.id,
+        subjects: formik.values.subject.map((obj) => obj?.subject_id),
         paper_level: formik.values.question_paper_level.id,
         question: questionData.flat(),
-        // section: [
-        //   {
-        //     section: sectionData,
-        //   },
-        // ],
         section: sectionData,
         sections: sectionData,
-        is_review:'True',
-        is_draft:'False',
+        is_review: 'True',
+        is_draft: 'False',
       };
+
+      if (centralQuestionData?.length) {
+        reqObj = { ...reqObj, central_question: centralQuestionData.flat() };
+      }
 
       if (isDraft) {
         reqObj.is_draft = 'True';
-        reqObj.is_review='False';
+        reqObj.is_review = 'False';
       }
 
       let sectionFlag = true,
@@ -291,19 +286,8 @@ const CreateQuestionPaper = ({
         'Question Paper Name': questionPaperName,
         'Question Level': formik.values.question_paper_level.id,
         Subject: formik.values.subject.length,
-        Grade: formik.values.grade.id,
+        Grade: formik.values.grade.grade_id,
       };
-
-      // if (!isDraft) {
-      //   submitArray['Section'] = sectionFlag;
-      // }
-
-      // Object.values(submitArray).every(Boolean);
-
-      // let finalSubmitFlag = isDraft
-      //   ? Object.entries(submitArray).every(([key, value]) => value)
-      //   : Object.entries(submitArray).every(([key, value]) => value) &&
-      //     sectionData.length;
 
       let finalSubmitFlag =
         Object.entries(submitArray).every(([key, value]) => value) && sectionData.length;
@@ -341,7 +325,7 @@ const CreateQuestionPaper = ({
 
   const handleBranch = (event, value) => {
     if (value) {
-      getGrades(value.branch.id);
+      getGrades(formik.values.academic?.id, value.branch.id);
       formik.setFieldValue('branch', value);
       initSetFilter('selectedBranch', value);
     }
@@ -349,14 +333,14 @@ const CreateQuestionPaper = ({
 
   const handleGrade = (event, value) => {
     if (value) {
-      getSubjects(value.id, formik.values.branch.branch.id);
+      getSubjects(value?.grade_id);
       formik.setFieldValue('grade', value);
       initSetFilter('selectedGrade', value);
     }
   };
 
   const handleSubject = (event, value) => {
-    if (value) {
+    if (value.length > 0) {
       formik.setFieldValue('subject', value);
       initSetFilter('selectedSubject', value);
     }
@@ -457,10 +441,6 @@ const CreateQuestionPaper = ({
                       name='branch'
                       className='dropdownIcon'
                       onChange={handleBranch}
-                      // onChange={(e, value) => {
-                      //   formik.setFieldValue('branch', value);
-                      //   initSetFilter('selectedBranch', value);
-                      // }}
                       value={formik.values.branch || ''}
                       options={branchDropdown || []}
                       getOptionLabel={(option) => option?.branch?.branch_name || ''}
@@ -486,13 +466,9 @@ const CreateQuestionPaper = ({
                       name='grade'
                       className='dropdownIcon'
                       onChange={handleGrade}
-                      // onChange={(e, value) => {
-                      //   formik.setFieldValue('grade', value);
-                      //   initSetFilter('selectedGrade', value);
-                      // }}
                       value={formik.values.grade}
                       options={grades}
-                      getOptionLabel={(option) => option.grade_name || ''}
+                      getOptionLabel={(option) => option?.grade__grade_name || ''}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -514,15 +490,11 @@ const CreateQuestionPaper = ({
                       id='subject'
                       name='subject'
                       onChange={handleSubject}
-                      // onChange={(e, value) => {
-                      // formik.setFieldValue('subject', value);
-                      // initSetFilter('selectedSubject', value);
-                      // }}
                       multiple
                       className='dropdownIcon'
                       value={formik.values.subject}
                       options={subjects}
-                      getOptionLabel={(option) => option.subject?.subject_name || ''}
+                      getOptionLabel={(option) => option?.subject_name || ''}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -605,9 +577,9 @@ const CreateQuestionPaper = ({
           </div>
           {showQuestionPaper && (
             <QuestionPaper
-              grade={formik.values.grade?.grade_name}
+              grade={formik.values.grade?.grade__grade_name}
               subject={formik.values.subject
-                .map((sub) => sub.subject.subject_name)
+                .map(({ subject_name }) => subject_name)
                 .join(', ')}
               level={formik.values.question_paper_level?.name}
               questions={questions}
@@ -646,7 +618,7 @@ const mapDispatchToProps = (dispatch) => ({
   initResetState: () => dispatch(resetState()),
   initDeleteSection: (questionId, sectionId) =>
     dispatch(deleteSection(questionId, sectionId)),
-    deleteQuestionSection: (questionId, sectionId) =>
+  deleteQuestionSection: (questionId, sectionId) =>
     dispatch(deleteQuestionSection(questionId, sectionId)),
 });
 

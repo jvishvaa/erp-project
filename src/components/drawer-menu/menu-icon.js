@@ -6,6 +6,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import MessageIcon from '@material-ui/icons/Message';
 import SmsIcon from '@material-ui/icons/Sms';
 import EmailIcon from '@material-ui/icons/Email';
+import TableChartIcon from '@material-ui/icons/TableChart';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import WebAsset from '@material-ui/icons/WebAsset';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
@@ -15,6 +16,8 @@ import BookIcon from '@material-ui/icons/Book';
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import WifiTetheringIcon from '@material-ui/icons/WifiTethering';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
 import {
   AccountBalance,
   AccountBalanceWallet,
@@ -67,6 +70,10 @@ const menuIcon = (name) => {
     }
     case 'Communication': {
       icon = <WifiTetheringIcon />;
+      break;
+    }
+    case 'Time Table': {
+      icon = <TableChartIcon />;
       break;
     }
     case 'Add Group': {
@@ -239,6 +246,11 @@ const menuIcon = (name) => {
       icon = <MenuBookIcon />;
       break;
     }
+    case 'Calendar & Attendance': {
+      icon = <CalendarTodayIcon />;
+      break;
+    }
+    
     default:
       break;
   }

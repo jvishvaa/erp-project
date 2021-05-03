@@ -178,7 +178,7 @@ const ViewHomework = withRouter(
                                   key={`homework_student_question_attachment_${i}`}
                                   fileUrl={url}
                                   fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.s3}/homework`}
+                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                   index={i}
                                   actions={['preview', 'download']}
                                 />
@@ -196,7 +196,7 @@ const ViewHomework = withRouter(
                             <SRLWrapper>
                               {question.question_files.map((url, i) => (
                                 <img
-                                  src={`${endpoints.s3}/homework/${url}`}
+                                  src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                   onError={(e) => {
                                     e.target.src = placeholder;
                                   }}

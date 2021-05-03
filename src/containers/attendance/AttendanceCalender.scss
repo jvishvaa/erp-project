@@ -1,0 +1,466 @@
+.absentContainer {
+  .absentHeader {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+    color: #042955;
+  }
+  .MuiDivider-root {
+    margin-bottom: 8px;
+  }
+
+  .absentList {
+    display: flex;
+    flex-direction: column;
+    height: 105px;
+    overflow: auto;
+    overflow-x: hidden;
+    .absentName {
+      margin: auto 0;
+      font-size: 12px;
+      color: #042955;
+    }
+    .studentName {
+      height: 39px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 80%;
+    }
+    .absentCount {
+      padding: 3px 14px;
+      height: 21px;
+      font-size: 12px;
+      background: red;
+      border-radius: 30px;
+      color: white;
+    width: 74px;
+    }
+  }
+  .chipDays {
+    width: 32%;
+    height: 20px;
+    margin: auto 0;
+    background: red;
+    color: white;
+    font-size: 11px;
+    margin-left: 39px;
+  }
+  .viewDetails {
+    background-color: white;
+    width: 37%;
+    height: 23px;
+    .btnLabel {
+      font-size: 10px;
+    }
+  }
+  .viewDetails:hover {
+    background-color: white !important ;
+    width: 37%;
+    height: 23px;
+    .btnLabel {
+      font-size: 10px;
+    }
+  }
+
+  .btnArea {
+    display: flex;
+    justify-content: center;
+    .MuiButton-outlinedSecondary {
+      border: 1px solid #ff6b6b;
+    }
+  }
+}
+// .page_title {
+//   // margin-left: 3%;
+// }
+#selectionContainer {
+  padding-bottom: 0;
+  width: 90%;
+  margin: 10px 0;
+  margin-left: 2%;
+}
+.whole-calender-filter {
+  .buttonGrid {
+    margin-top: 20%;
+  }
+}
+#completeContainer{
+  display: flex;
+  justify-content: space-around;
+}
+.calenderGrid {
+  box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.75);
+  border-radius: 10px;
+  width: 100%;
+  height: fit-content;
+  height: 452px;
+  min-width: 310px;
+  padding-bottom: 30px;
+  overflow: auto;
+    overflow-x: hidden;
+  .buttonContainer {
+    display: flex;
+    margin: 10px;
+    width: 65%;
+    padding-top: 34px;
+  }
+  .viewDetails {
+    background-color: #f9f9f9 !important;
+    height: 23px;
+    font-size: 10px;
+  }
+  .viewDetailsButtonClick {
+    background-color: #ff6b6b;
+    color: white;
+    height: 23px;
+    font-size: 10px;
+  }
+  .viewDetailsButtonClick:hover {
+    background-color: #ff6b6b;
+    color: white;
+    height: 23px;
+    font-size: 10px;
+  }
+  .showDate {
+    display: flex;
+    justify-content: center;
+    height: 30px;
+  }
+  .dividerEvent {
+    box-shadow: 0px 2px 6px #00000029;
+  }
+}
+.presentContainer {
+  .presentPara {
+    color: #042955;
+  }
+  .presentStudents {
+    height: 145px;
+    overflow: auto;
+    overflow-x: hidden;
+    .presentProfilePic{
+      height: 25px;
+    width: 25px;
+    font-size: 15px;
+    }
+  }
+  .presentList {
+    margin-left: 7%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  .presentStudent {
+    height: 39px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    padding-left: 10px;
+  }
+  .presentHeader {
+    display: flex;
+    justify-content: space-between;
+    color: #042955;
+    padding: 0 1rem;
+  }
+ 
+  .presentFName {
+    font-size: 12px;
+    color: #042955;
+  }
+  .absentCount {
+    padding: 3px 14px;
+    height: 21px;
+    font-size: 12px;
+    background: lightgreen;
+    border-radius: 30px;
+    color: black;
+    width: 74px;
+  }
+}
+.todayEventContainer {
+  .eventName {
+    display: flex;
+    margin-left: 25%;
+    width: 100px;
+  }
+  .dateToday{
+    font-size: 15px;
+    color: #042955;
+    font-weight: 600;
+  }
+  .noEvent{
+    display: flex;
+    justify-content: center;
+  }
+  .noDataImg {
+    height: 200px;
+    width: 200px;
+  }
+  .eventRow {
+    display: flex;
+    border-bottom: 1px solid grey;
+  }
+  .event-data {
+    padding: 7px 10px;
+    text-align: center;
+    width: 25%;
+    border-right: 1px solid;
+    font-size: 13px;
+    color: #042955;
+  }
+  .event-name {
+    margin-left: 10px;
+    padding: 0 10px;
+    display: flex;
+    justify-content: flex-start;
+    width: 40%;
+    background: #f3b8b4;
+    border-radius: 7px;
+    align-items: center;
+    font-size: 13px;
+    color: #042955;
+    .eventFlagToday{
+      background: #FF6B6B;
+    height: 20px;
+    align-items: center;
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    margin-right: 5px;
+    }
+    .flagImgToday{
+      width: 15px;
+    height: 15px;
+    }
+  }
+  .MuiSvgIcon-root {
+    color: white;
+  }
+}
+.attendenceWhole{
+  .attendanceBtnornot{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  #teacherUpdate{
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    color: #014b7e;
+  }
+}
+.topGrid {
+  margin-left: 30px !important;
+  .startDate {
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    color: #042955;
+    font-size: 17px;
+  }
+}
+#attendanceContainer {
+  height: fit-content;
+  min-height: 410px;
+  .mark-attndance-button:hover{
+    background-color: #FF6B6B;
+  } 
+  #mark-para {
+    font-size: 9px;
+  }
+  .stu-icon {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    width: 100%;
+    color: #014b7e;
+    .erpId{
+      font-size: 13px;
+    }
+  }
+  .downIcon {
+    height: 22px;
+  }
+  .mark-btn-grid {
+    display: flex;
+    justify-content: flex-end;
+  }
+  #attendanceGrid {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    
+  }
+  .noDataImg {
+    height: 200px;
+    width: 200px;
+    margin-bottom: 100px;
+  }
+  .attendancePara {
+    font-size: 15px;
+  }
+  #studentPara {
+    font-size: 12px;
+  }
+  .noImg {
+    display: flex;
+    justify-content: center;
+  }
+}
+.eachAbsent {
+  margin-left: 7%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  .absentProfilePic{
+    height: 25px;
+    width: 25px;
+    font-size: 15px;
+  }
+}
+.eventGrid {
+  box-shadow: none !important;
+  .event-divider{
+    margin-top: 10px;
+  }
+}
+#eventContainer {
+  // height: fit-content !important;
+  height: 410px !important ;
+  width: 300px;
+  .add-event-button:hover{
+    background-color: #FF6B6B;
+  }
+  .noImgEvent {
+    display: flex;
+    justify-content: center;
+    .noDataImgEvent {
+      height: 200px;
+      width: 200px;
+    }
+  }
+  .eventList{
+    height: 315px !important;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+  .flagBg{
+    background: #78B5F3;
+    height: 20px;
+    align-items: center;
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    .flagImg{
+      width: 15px;
+    height: 15px;
+    }
+  }
+  .event-btn {
+    display: flex;
+    justify-content: flex-end;
+  }
+  #event-text {
+    font-size: 9px;
+  }
+  .event-details {
+    width: 100%;
+    display: flex;
+    margin-top: 10px;
+    justify-content: space-between;
+  }
+  .detailsPara {
+    display: flex;
+    justify-content: flex-end;
+  }
+  #eventpara,
+  #updated {
+    font-size: 12px;
+  }
+  #eventData {
+    margin: 0;
+    padding-bottom: 0;
+    .eventNameData{
+      font-size: 13px;
+      margin-left: 3%;
+    }
+    .eventDetailsfirst{
+      padding-top: 5px;
+    }
+  }
+  .noEventImg {
+    height: 300px;
+    margin-bottom: 100px;
+  }
+  .dateTimeEvent {
+    display: flex;
+    justify-content: space-between;
+    .eventClock{
+      color: #FF6B6B;
+      height: 15px;
+    width: 15px;
+    }
+    .timeEvent {
+      display: flex;
+      justify-content: space-between;
+      width: 55px;
+      align-items: center;
+      font-size: 13px;
+    }
+    .dateEvent {
+      display: flex;
+      justify-content: space-evenly;
+      width: 115px;
+      font-size: 13px;
+    align-items: center;
+    .calLogo{
+      height: 15px;
+      width: 15px;
+      color: #FF6B6B;
+    }
+    }
+  }
+  .eventPara {
+    font-size: 15px;
+  }
+  #updated {
+    margin-left: 23px;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .calenderGrid {
+    width: 88%;
+    margin: auto;
+    .MuiButton-label{
+      font-size: 13px;
+    }
+  }
+  .buttonGrid{
+    display: flex;
+  }
+  #eventContainer {
+    margin-left: 0;
+  }
+  .calenderGrid {
+    .MuiGrid-root {
+      margin: auto;
+      padding: 0;
+    }
+  }
+  .topGrid{
+    margin-left: 3% !important;
+  }
+#selectionContainer{
+  display: flex;
+  justify-content: center;
+  margin-left: 0;
+  width: 100%;
+}
+}

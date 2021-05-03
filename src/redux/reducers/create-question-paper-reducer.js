@@ -31,6 +31,8 @@ const mockQuestions = [
 
 const INITIAL_STATE = {
   questions: [],
+  selectedAcademic: '',
+  selectedBranch: '',
   selectedGrade: '',
   selectedSubject: [],
   selectedLevel: '',
@@ -41,15 +43,14 @@ export default function reducer(state = INITIAL_STATE, action) {
     case createQuestionPaperActions.ADD_NEW_QUESTION:
       return { ...state, questions: [...state.questions, action.data] };
 
-    case createQuestionPaperActions.ADD_QUESTION_TO_SECTION: {
+    case createQuestionPaperActions.ADD_QUESTION_TO_SECTION:
       const questionsList = JSON.parse(JSON.stringify(state.questions));
       const index = questionsList.findIndex((q) => q.id === action.questionId);
       const { sections } = questionsList[index];
-      const sectionIndex = sections.findIndex((sec) => sec.name === action.section);
+      const sectionIndex = sections?.findIndex((sec) => sec.name === action.section);
       sections[sectionIndex].questions.push(action.data);
       questionsList[index].sections = sections;
       return { ...state, questions: questionsList };
-    }
 
     case createQuestionPaperActions.SET_FILTER: {
       return { ...state, [action.filter]: action.data };
@@ -61,9 +62,9 @@ export default function reducer(state = INITIAL_STATE, action) {
       const { sections } = questionsList[index];
       if (sections.length === 1) {
         //delet entire question
-        for(let i = index;i<questionsList.length;i++) {
-          const {sections:modifySecName} = questionsList[i];
-          modifySecName[0].name = `${String.fromCharCode(65 + i-1)}`;
+        for (let i = index; i < questionsList.length; i++) {
+          const { sections: modifySecName } = questionsList[i];
+          modifySecName[0].name = `${String.fromCharCode(65 + i - 1)}`;
         }
         questionsList.splice(index, 1);
       } else {
@@ -78,11 +79,13 @@ export default function reducer(state = INITIAL_STATE, action) {
       const newQuestionsList = JSON.parse(JSON.stringify(state.questions));
       // const filterArray = array.filter((item) => item.id !== idToRemove);
       newQuestionsList.forEach((obj) => {
-        const newSec = [...obj.sections]
-        const filterArray = newSec[0].questions.filter((item) => item.id !== action.questionId);
-        newSec[0].questions = [...filterArray]
-        obj.sections = newSec 
-      })
+        const newSec = [...obj.sections];
+        const filterArray = newSec[0].questions.filter(
+          (item) => item.id !== action.questionId
+        );
+        newSec[0].questions = [...filterArray];
+        obj.sections = newSec;
+      });
 
       // const newQuestionList = [...state.questions]
       // const newSecArr = [...newQuestionList.sections]
@@ -90,11 +93,11 @@ export default function reducer(state = INITIAL_STATE, action) {
       // const filteredFinal = newFinal[0].questions.filter((item) => item.id !== action.questionId)
       // newFinal[0].questions = filteredFinal
 
-      return { ...state, questions: newQuestionsList};
+      return { ...state, questions: newQuestionsList };
     }
 
     case createQuestionPaperActions.RESET_STATE: {
-      return {...INITIAL_STATE, questionPaperName:''};
+      return { ...INITIAL_STATE, questionPaperName: '' };
     }
     default:
       return state;

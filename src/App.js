@@ -12,6 +12,7 @@ import AssignRole from './containers/communication/assign-role/assign-role';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
 import ChapterTypeTable from './containers/master-management/chapter-type/chapter-type-table';
+import TopicTable from './containers/master-management/topic/TopicTable'
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
 // import './assets/styles/styles.scss';
 import UserManagement from './containers/user-management';
@@ -47,6 +48,9 @@ import AddHomeworkCoord from './containers/homework/coordinator-homework/add-hom
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
 import endpoints from '../src/config/endpoints';
+import BookAppointment from './containers/BookAppointments/BookAppointment';
+import Appointments from './containers/BookAppointments/Appointments';
+import ResponderView from './containers/BookAppointments/ResponderView';
 import {
   ViewAssessments,
   AssessmentAttemption,
@@ -67,8 +71,7 @@ import {
   StudentDashboard,
   TeacherPublishBlogView,
   BlogView,
-  CreateGenre,
-  ViewGenre,
+  CreateGenre,EditGenre,
   ContentViewPublish,
   ContentViewPublishStudent,
   AdminBlog,
@@ -80,11 +83,12 @@ import {
   ContentViewPublishPrincipal,
   EditWordCountConfig,
 } from './containers/blog';
-import {CreateEbook , ViewEbook} from './containers/ebooks'
+import { CreateEbook, ViewEbook } from './containers/ebooks';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
 import Discussionforum from './containers/discussionForum/index';
 import DiscussionPost from './containers/discussionForum/discussion/DiscussionPost';
 import CreateCategory from './containers/discussionForum/createCategory';
+import CreateCategories from './containers/discussionForum/discussion/CreateCategory';
 import CategoryPage from './containers/discussionForum/discussion/CategoryPage';
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
 import CircularList from './containers/circular';
@@ -116,7 +120,6 @@ import TeacherBatchView from './containers/teacherBatchView';
 import ErpAdminViewClass from './containers/online-class/erp-view-class/admin';
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import AttachmentPreviewer from './components/attachment-previewer';
-
 import FeeType from './containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/feeType.js';
 import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType';
 // import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType.js'
@@ -240,6 +243,17 @@ import TransactionStatus from './containers/Finance/src/components/Finance/Trans
 import AdmFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/admFormList.js';
 import Airpay from './containers/Finance/src/components/Finance/PaymentGateways/Airpay/airpayIntegration.js';
 import UploadPaymentFile from './containers/Finance/src/components/Finance/student/managePayment/UploadPaymentFile.js';
+import TimeTable from './containers/time-table/index';
+import Griviences from './containers/Griviences/index';
+import GriviencesCreate from './containers/Griviences/CreateNew/create-new';
+import MarkAttedance from './containers/attendance/MarkAttedance';
+import AttedanceCalender from './containers/attendance/AttedanceCalender';
+import EventCategory from './containers/Calendar/EventCategory';
+import Attendance from './containers/Calendar/Attendance';
+import CreateEvent from './containers/Calendar/CreateEvent';
+import OverallAttendance from './containers/Calendar/OverallAttendance';
+import Publications from './containers/publications/Publications';
+// import TimeTable from './containers/time-table/index';
 import ActivateInactivateStudentAdm from './containers/Finance/src/components/Finance/Dashboard/FinanceAdmin/activateInactivateStudent.js';
 import QuestionBankList from './containers/question-bank/question-bank-list';
 import CreateQuestion from './containers/question-bank/create-question';
@@ -248,6 +262,16 @@ import CreateQuestionPaper from './containers/assessment-central/create-question
 import Assesment from './containers/assessment-central';
 import AssessmentView from './containers/assessment-central/assesment-view';
 import CreateAssesment from './containers/assessment-central/create-assesment';
+import AssessmentReportTypes from './containers/assessment-central/assessment-report-types';
+import ContactUs from 'containers/contact-us';
+import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz';
+import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
+
+// import Contact from './containers/contact/Contact';
+
+
+
+import MultiplayerQuiz from './components/mp-quiz'
 
 const theme = createMuiTheme({
   palette: {
@@ -311,11 +335,29 @@ function App({ alert }) {
                           <Route path='/profile'>
                             {({ match }) => <Profile match={match} />}
                           </Route>
+                          <Route path='/time-table/student-view'>
+                            {({ match }) => <TimeTable match={match} />}
+                          </Route>
+                          <Route path='/time-table/teacher-view'>
+                            {({ match }) => <TimeTable match={match} />}
+                          </Route>
                           <Route path='/role-management'>
                             {({ match }) => <RoleManagement match={match} />}
                           </Route>
                           <Route path='/user-management'>
                             {({ match }) => <UserManagement match={match} />}
+                          </Route>
+                          <Route path='/time-table/student-view'>
+                            {({ match }) => <TimeTable match={match} />}
+                          </Route>
+                          <Route path='/time-table/teacher-view'>
+                            {({ match }) => <TimeTable match={match} />}
+                          </Route>
+                          <Route path='/griviences'>
+                            {({ match }) => <Griviences match={match} />}
+                          </Route>
+                          <Route path='/greviences/createnew'>
+                            {({ match }) => <GriviencesCreate match={match} />}
                           </Route>
                           {/*
                         <Route exact path='/view-users'>
@@ -361,12 +403,15 @@ function App({ alert }) {
                           <Route path='/create-assesment'>
                             {({ match }) => <CreateAssesment match={match} />}
                           </Route>
+                          <Route exact path='/assessment-reports'>
+                            {({ match }) => <AssessmentReportTypes match={match} />}
+                          </Route>
                           <Route exact path='/blog/genre'>
                             {({ match }) => <CreateGenre match={match} />}
                           </Route>
-                          {/* <Route exact path='/blog/genre/edit'>
+                          <Route exact path='/blog/genre/edit'>
                           {({ match }) => <EditGenre match={match} />}
-                        </Route> */}
+                        </Route>
                           <Route exact path='/blog/wordcount-config'>
                             {({ match }) => <CreateWordCountConfig match={match} />}
                           </Route>
@@ -449,6 +494,15 @@ function App({ alert }) {
                           <Route exact path='/online-class/create-class'>
                             {({ match }) => <CreateClass match={match} />}
                           </Route>
+                          <Route exact path='/erp-online-class/assign/:id/qp'>
+                          {({ match }) => <AssignQP match={match} />}
+                          </Route>
+                          <Route exact path='/erp-online-class/:id/pre-quiz'>
+                          {({ match }) => <PreQuiz match={match} />}
+                          </Route>
+                          <Route path='/erp-online-class/:onlineclassId/quiz/:questionpaperId/:lobbyuuid'>
+                          {({match})=><MultiplayerQuiz match={match} />}
+                          </Route>
                           {/* <Route exact path='/online-class/view-class'>
                       {({ match }) => <ViewClassManagement match={match} />}
                     </Route> */}
@@ -470,6 +524,9 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/master-management/chapter-type-table'>
                             {({ match }) => <ChapterTypeTable match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/topic-table'>
+                            {({ match }) => <TopicTable match={match} />}
                           </Route>
                           <Route exact path='/master-management/branch-table'>
                             {({ match }) => <BranchTable match={match} />}
@@ -500,6 +557,9 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/master-management/subject/grade/mapping'>
                             {({ match }) => <Subjectgrade match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/event-category'>
+                            {({ match }) => <EventCategory match={match} />}
                           </Route>
                           <Route exact path='/subject/grade'>
                             {({ match }) => <ListandFilter match={match} />}
@@ -544,14 +604,41 @@ function App({ alert }) {
                           <Route exact path='/discussion-forum'>
                             {({ match }) => <Discussionforum match={match} />}
                           </Route>
+                          <Route exact path='/teacher-forum'>
+                            {({ match }) => <Discussionforum match={match} />}
+                          </Route>
+                          <Route exact path='/student-forum'>
+                            {({ match }) => <Discussionforum match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/discussion-category'>
+                            {({ match }) => <CategoryPage match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/discussion-category/create'>
+                            {({ match }) => <CreateCategories match={match} />}
+                          </Route>
                           <Route exact path='/category/create'>
                             {({ match }) => <CreateCategory match={match} />}
                           </Route>
                           <Route exact path='/discussion-forum/create'>
                             {({ match }) => <CreateDiscussionForum match={match} />}
                           </Route>
-                          <Route exact path='/discussion-forum/post/:id'>
+                          <Route exact path='/teacher-forum/create'>
+                            {({ match }) => <CreateDiscussionForum match={match} />}
+                          </Route>
+                          <Route exact path='/student-forum/create'>
+                            {({ match }) => <CreateDiscussionForum match={match} />}
+                          </Route>
+                          <Route exact path='/teacher-forum/post/:id'>
                             {({ match }) => <DiscussionPost match={match} />}
+                          </Route>
+                          <Route exact path='/student-forum/post/:id'>
+                            {({ match }) => <DiscussionPost match={match} />}
+                          </Route>
+                          <Route exact path='/teacher-forum/edit/:id'>
+                            {({ match }) => <CreateDiscussionForum match={match} />}
+                          </Route>
+                          <Route exact path='/student-forum/edit/:id'>
+                            {({ match }) => <CreateDiscussionForum match={match} />}
                           </Route>
                           <Route exact path='/teacher-circular'>
                             {({ match }) => <CircularList match={match} />}
@@ -1193,11 +1280,52 @@ function App({ alert }) {
                               <UploadPaymentFile match={match} alert={alert} />
                             )}
                           </Route>
+                          <Route exact path='/markattendance'>
+                            {({ match }) => <MarkAttedance match={match} />}
+                          </Route>
+                          <Route exact path='/attendance-calendar/teacher-view'>
+                            {({ match }) => <AttedanceCalender match={match} />}
+                          </Route>
+                          <Route exact path='/attendance-calendar/student-view'>
+                            {({ match }) => <AttedanceCalender match={match} />}
+                          </Route>
+                          <Route exact path='/teacher-view/attendance'>
+                            {({ match }) => <Attendance match={match} />}
+                          </Route>
+                          <Route exact path='/student-view/attendance'>
+                            {({ match }) => <Attendance match={match} />}
+                          </Route>
+                          <Route exact path='/OverallAttendance'>
+                            {({ match }) => <OverallAttendance match={match} />}
+                          </Route>
+                          <Route exact path='/createEvent'>
+                            {({ match, history }) => (
+                              <CreateEvent match={match} history={history} />
+                            )}
+                          </Route>
+                          <Route exact path='/event-category'>
+                            {({ match }) => <EventCategory match={match} />}
+                          </Route>
+                          <Route exact path='/publications'>
+                            {({ match }) => <Publications match={match} />}
+                          </Route>
                           <Route exact path='/ebook/create'>
                             {({ match }) => <CreateEbook match={match} />}
                           </Route>
                           <Route exact path='/ebook/view'>
                             {({ match }) => <ViewEbook match={match} />}
+                          </Route>
+                          <Route exact path='/contact-us'>
+                            {({ match }) => <ContactUs match={match} />}
+                          </Route>
+                          <Route exact path='/book-appointment'>
+                            {({ match }) => <BookAppointment match={match} />}
+                          </Route>
+                          <Route exact path='/appointments'>
+                            {({ match }) => <Appointments match={match} />}
+                          </Route>
+                          <Route exact path='/responder-view'>
+                            {({ match }) => <ResponderView match={match} />}
                           </Route>
                         </Switch>
                       </DailyDairyStore>
