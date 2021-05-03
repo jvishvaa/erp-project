@@ -197,8 +197,8 @@ const BranchTable = () => {
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          // setTotalCount(result.data?.data?.count);
-          setBranches(result.data?.data);
+          setTotalCount(result.data?.data?.count);
+          setBranches(result.data?.data.results);
         } else {
           setAlert('error', result.data?.msg || result.data?.message);
         }

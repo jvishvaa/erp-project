@@ -91,8 +91,29 @@ const AcademicYearTable = () => {
   
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const wider= isMobile?'-10px 0px':'-10px 0px 20px 8px'
-  const widerWidth=isMobile?'98%':'95%'
+  const wider= isMobile?'-10px 0px':'-10px 0px 20px 8px';
+  const widerWidth=isMobile?'98%':'95%';
+
+  const [moduleId, setModuleId] = useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Master Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item?.child_name === 'Academic Year') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage+1)

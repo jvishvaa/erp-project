@@ -32,6 +32,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Grade', Path: '/master-management/grade-table' },
     { name: 'Academic Year', Path: '/master-management/academic-year-table' },
     { name: 'Chapter Creation', Path: '/master-management/chapter-type-table' },
+    { name: 'Topic', Path: '/master-management/topic-table' },
     { name: 'Message Type', Path: '/master-management/message-type-table' },
     { name: 'Signature Upload', Path: '/master-management/signature-upload' },
     { name: 'Event Category', Path: '/master-management/event-category' },
