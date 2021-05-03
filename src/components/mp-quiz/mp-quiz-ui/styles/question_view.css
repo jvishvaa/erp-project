@@ -21,7 +21,7 @@
     align-items: stretch;
 
 }
-.question-container{
+.question-container.mp-quiz{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -104,7 +104,7 @@
     transform: translateY(-15%);
 }
 
-.options-container{
+.options-container_new{
     position: absolute !important;
     left: 50%;
     top: 50%;
@@ -213,7 +213,7 @@
 
 @media only screen and (max-width: 900px) {
 
-    .question-container{
+    .question-container.mp-quiz{
         transform: translate(-50%, -100%)
     }
 
@@ -233,7 +233,7 @@
     }
 
 
-    .options-container{
+    .options-container_new{
         transform: translate(-50%,-10%);
     }
 

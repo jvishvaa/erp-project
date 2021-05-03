@@ -150,9 +150,6 @@ const Layout = ({ children, history }) => {
     }
     let userDetails = localStorage.getItem('userDetails');
     if (!userDetails) {
-      // if(key==="2000000002")
-      // history.push('/dashboard/2000');
-      // else
       history.push('/');
     }
     if (userDetails) {

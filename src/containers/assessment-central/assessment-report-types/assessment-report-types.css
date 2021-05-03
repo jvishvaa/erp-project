@@ -1,0 +1,31 @@
+.teacherNameParent {
+  height: 6rem;
+  overflow-y: auto;
+}
+
+.teacherNameChild {
+  width: 100%;
+}
+
+.teacherNameChild::before {
+  content: '';
+  height: 6px;
+  width: 6px;
+  background-color: #014b7e;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.teacherNameChild:hover {
+  transform: scale(1.1);
+  transition-duration: 200ms;
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+.teacherNameChild:hover::before {
+  transform: scale(1.3);
+  background-color: #ff6b6b;
+}

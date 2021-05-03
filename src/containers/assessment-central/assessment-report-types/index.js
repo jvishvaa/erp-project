@@ -24,6 +24,7 @@ import { connect } from 'react-redux';
 import { setClearFilters } from 'redux/actions';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
+import './assessment-report-types.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,7 +81,7 @@ const AssessmentReportTypes = ({
 
   useEffect(() => {
     if (isFilter) {
-      setReportData(assessmentReportListData?.result);
+      setReportData(assessmentReportListData?.results);
       setTotalCount(assessmentReportListData?.count);
     }
   }, [isFilter, assessmentReportListData]);
@@ -179,7 +180,6 @@ const AssessmentReportTypes = ({
           {
             id: 'teacher_name',
             label: 'Teacher Name',
-            minWidth: 170,
             align: 'center',
             labelAlign: 'center',
           },
@@ -219,7 +219,11 @@ const AssessmentReportTypes = ({
             page={page}
             setPage={setPage}
             pageSize={limit}
-            classTopicAverage={reportData?.[0]?.class_average || ''}
+            classTopicAverage={
+              selectedReportType?.id === 3
+                ? reportData?.[0]?.class_average
+                : +assessmentReportListData?.comparison || ''
+            }
             isFilter={isFilter}
             setIsFilter={setIsFilter}
             selectedReportType={selectedReportType}
@@ -238,7 +242,7 @@ const AssessmentReportTypes = ({
                       <TableCell
                         key={column.id}
                         align={column.align}
-                        style={{ minWidth: column.minWidth }}
+                        style={{ minWidth: column?.minWidth }}
                         className={classes.columnHeader}
                       >
                         {column.label}
@@ -265,7 +269,11 @@ const AssessmentReportTypes = ({
                         )}
                         {selectedReportType?.id === 1 && (
                           <TableCell className={classes.tableCell}>
-                            {rowData?.test__teacher}
+                            <div className='teacherNameParent'>
+                              {rowData?.teacher_name?.map((obj) => {
+                                return <div className='teacherNameChild'>{obj}</div>;
+                              })}
+                            </div>
                           </TableCell>
                         )}
                         {selectedReportType?.id === 2 && (
@@ -293,13 +301,18 @@ const AssessmentReportTypes = ({
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
                           <TableCell className={classes.tableCell}>
-                            {rowData?.marks_obtained}
+                            {selectedReportType?.id === 3
+                              ? rowData?.total_mark
+                              : rowData?.marks_obtained}
                           </TableCell>
                         )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
                           <TableCell className={classes.tableCell}>
-                            {rowData?.comparison}
+                            {selectedReportType?.id === 3
+                              ? rowData?.comparsion
+                              : +rowData?.marks_obtained -
+                                +assessmentReportListData?.comparison}
                           </TableCell>
                         )}
                       </TableRow>
