@@ -765,11 +765,7 @@ const Attend = () => {
         </div>
       )}
       <Grid container justify='center'>
-<<<<<<< HEAD
-        {result && totalGenre > 8 && (
-=======
         {result && totalGenre > 9 && (
->>>>>>> 205f4768ad49d20a7d3c617a6e0b7984a9118fb7
           <Pagination
             onChange={handlePagination}
             // style={{ paddingLeft: '150px' }}
