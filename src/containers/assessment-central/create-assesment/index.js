@@ -154,6 +154,7 @@ const CreateAssesment = ({
       return;
     }
 
+
     testMarks.forEach((obj) => {
       const { parentQuestionId } = obj;
       if (parentQuestionId) {
@@ -223,6 +224,13 @@ const CreateAssesment = ({
       }
     });
 
+    if(!paperchecked){
+      if(!testMarksArr.length>0){
+        return setAlert('warning','Please Add Question Wise Mark')
+      }
+    }
+
+
     const reqObj = {
       question_paper: selectedQuestionPaper?.id,
       test_id: testId,
@@ -242,7 +250,7 @@ const CreateAssesment = ({
         resetForm();
         if (results?.status_code === 200) {
           setAlert('success', results?.message);
-        } else {
+        } if(!results?.status_code === 200) {
           setAlert('warning', results?.message);
         }
       }
