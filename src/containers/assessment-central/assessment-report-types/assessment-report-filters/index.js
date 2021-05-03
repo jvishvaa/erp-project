@@ -8,6 +8,7 @@ import axiosInstance from 'config/axios';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
+import './assessment-report-filters.css';
 
 let url = '';
 const AssessmentReportFilters = ({
@@ -15,11 +16,17 @@ const AssessmentReportFilters = ({
   isMobile,
   fetchAssessmentReportList,
   selectedReportType,
+  isFilter,
   setIsFilter,
+  classTopicAverage,
+  page,
+  setPage,
+  pageSize,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [classTopicAvg, setClassTopicAvg] = useState(classTopicAverage);
   const [dropdownData, setDropdownData] = useState({
     academic: [],
     branch: [],
@@ -61,8 +68,13 @@ const AssessmentReportFilters = ({
   });
 
   useEffect(() => {
+    if (page && isFilter) handleFilter();
+  }, [page]);
+
+  useEffect(() => {
     url = '';
     setIsFilter(false);
+    setPage(1);
     if (selectedReportType?.id) {
       if (dropdownData.academic.length === 0 && moduleId) getAcademicYear();
       setDropdownData({
@@ -91,31 +103,32 @@ const AssessmentReportFilters = ({
 
   const handleFilter = () => {
     let paramObj = {
-      academic_year_id: filterData.academic?.id,
-      branch: filterData.branch?.branch?.id,
-      grade: filterData.grade?.central_grade_id,
-      subject: filterData.subject?.subject?.central_subject_id,
-      test: filterData.test?.test_id,
+      test: filterData.test?.id,
     };
     if (selectedReportType?.id === 3) {
-      paramObj = { ...paramObj, section: filterData.section?.section_id };
+      paramObj = { ...paramObj, section_mapping: filterData.section?.id };
     }
     if (selectedReportType?.id === 4) {
       paramObj = {
         ...paramObj,
-        section: filterData.section?.section_id,
+        section_mapping: filterData.section?.id,
         topic: filterData.topic?.id,
       };
     }
     const filterFlag = Object.values(paramObj).every(Boolean);
     if (filterFlag) {
+      paramObj = { ...paramObj, page: page, page_size: pageSize };
       url = `?${generateQueryParamSting(paramObj)}`;
       fetchAssessmentReportList(selectedReportType, url);
       setIsFilter(true);
     } else {
       for (const [key, value] of Object.entries(paramObj).reverse()) {
-        if (key === 'academic_year_id' && !Boolean(value))
-          setAlert('error', `Please select Academic Year.`);
+        // if (key === 'academic_year_id' && !Boolean(value))
+        // setAlert('error', `Please select Academic Year.`);
+        if (key === 'central_gs_id' && !Boolean(value))
+          setAlert('error', `Please select Subject.`);
+        if (key === 'section_mapping' && !Boolean(value))
+          setAlert('error', `Please select Section.`);
         else if (!Boolean(value)) setAlert('error', `Please select ${key}.`);
       }
     }
@@ -153,15 +166,17 @@ const AssessmentReportFilters = ({
       .catch((error) => {});
   }
 
-  function getGrade(branchId) {
+  function getGrade(acadId, branchId) {
     axiosInstance
-      .get(`${endpoints.assessmentApis.gradesList}?branch=${branchId}`)
+      .get(
+        `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchId}&module_id=${moduleId}`
+      )
       .then((result) => {
         if (result.data.status_code === 200) {
           setDropdownData((prev) => {
             return {
               ...prev,
-              grade: result.data?.result?.results,
+              grade: result.data?.data,
             };
           });
         }
@@ -169,10 +184,10 @@ const AssessmentReportFilters = ({
       .catch((error) => {});
   }
 
-  function getSection(acadId, branchId, mappingId) {
+  function getSection(acadId, branchId, gradeId) {
     axiosInstance
       .get(
-        `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchId}&grade_id=${mappingId}&module_id=${moduleId}`
+        `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchId}&grade_id=${gradeId}&module_id=${moduleId}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -187,15 +202,15 @@ const AssessmentReportFilters = ({
       .catch((error) => {});
   }
 
-  function getSubject(mappingId, branchId) {
+  function getSubject(gradeId) {
     axiosInstance
-      .get(`${endpoints.assessmentApis.gradesList}?gs_id=${mappingId}&branch=${branchId}`)
+      .get(`${endpoints.assessmentErp.subjectList}?grade=${gradeId}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setDropdownData((prev) => {
             return {
               ...prev,
-              subject: result.data?.result?.results,
+              subject: result.data?.result,
             };
           });
         }
@@ -204,16 +219,14 @@ const AssessmentReportFilters = ({
   }
 
   function getTest(subjectId) {
-    axios
-      .get(`${endpoints.assessmentApis.testList}?subject=${subjectId}`, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
+    axiosInstance
+      .get(`${endpoints.assessmentErp.testList}?subjects=${subjectId}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setDropdownData((prev) => {
             return {
               ...prev,
-              test: result.data.data,
+              test: result.data?.result,
             };
           });
         }
@@ -221,11 +234,9 @@ const AssessmentReportFilters = ({
       .catch((error) => {});
   }
 
-  function getChapter(centralMpId) {
-    axios
-      .get(`${endpoints.lessonPlan.chapterListCentral}?grade_subject=${centralMpId}`, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
+  function getChapter(subjectId) {
+    axiosInstance
+      .get(`${endpoints.assessmentErp.chapterList}?subject=${subjectId}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setDropdownData((prev) => {
@@ -239,23 +250,39 @@ const AssessmentReportFilters = ({
       .catch((error) => {});
   }
 
-  function getTopic(chapterId) {
+  function getTopic(chapterId, isCentral) {
     setDropdownData({ ...dropdownData, topic: [] });
-    axios
-      .get(`${endpoints.createQuestionApis.topicList}?chapter=${chapterId}`, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setDropdownData((prev) => {
-            return {
-              ...prev,
-              topic: result.data?.result,
-            };
-          });
-        }
-      })
-      .catch((error) => {});
+    if (isCentral) {
+      axios
+        .get(`${endpoints.createQuestionApis.topicList}?chapter=${chapterId}`, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        })
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setDropdownData((prev) => {
+              return {
+                ...prev,
+                topic: result.data?.result,
+              };
+            });
+          }
+        })
+        .catch((error) => {});
+    } else {
+      axiosInstance
+        .get(`${endpoints.assessmentErp.topicList}?chapter=${chapterId}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setDropdownData((prev) => {
+              return {
+                ...prev,
+                topic: result.data?.result,
+              };
+            });
+          }
+        })
+        .catch((error) => {});
+    }
   }
 
   const handleAcademicYear = (event, value) => {
@@ -307,7 +334,7 @@ const AssessmentReportFilters = ({
       topic: '',
     });
     if (value) {
-      getGrade(value?.branch?.id);
+      getGrade(filterData.academic?.id, value?.branch?.id);
       setFilterData({ ...filterData, branch: value });
     }
   };
@@ -331,9 +358,13 @@ const AssessmentReportFilters = ({
       topic: '',
     });
     if (value) {
-      getSubject(value?.id, filterData.branch?.branch?.id);
+      getSubject(value?.grade_id);
       if (selectedReportType.id === 3 || selectedReportType.id === 4) {
-        getSection(filterData.academic?.id, filterData.branch?.branch?.id, value?.id);
+        getSection(
+          filterData.academic?.id,
+          filterData.branch?.branch?.id,
+          value?.grade_id
+        );
       }
       setFilterData({ ...filterData, grade: value });
     }
@@ -354,8 +385,8 @@ const AssessmentReportFilters = ({
       topic: '',
     });
     if (value) {
-      getTest(value?.subject?.central_subject_id);
-      if (selectedReportType.id === 4) getChapter(value?.subject?.central_mp_id);
+      getTest(value?.subject_id);
+      if (selectedReportType.id === 4) getChapter(value?.subject_id);
       setFilterData({ ...filterData, subject: value });
     }
   };
@@ -378,7 +409,7 @@ const AssessmentReportFilters = ({
     setDropdownData({ ...dropdownData, topic: [] });
     setFilterData({ ...filterData, chapter: '', topic: '' });
     if (value) {
-      getTopic(value?.id);
+      getTopic(value?.id, value?.is_central);
       setFilterData({ ...filterData, chapter: value });
     }
   };
@@ -392,6 +423,7 @@ const AssessmentReportFilters = ({
 
   const handleClear = () => {
     url = '';
+    setPage(1);
     setIsFilter(false);
     setDropdownData({
       ...dropdownData,
@@ -477,7 +509,7 @@ const AssessmentReportFilters = ({
             className='dropdownIcon'
             value={filterData.grade || {}}
             options={dropdownData.grade || []}
-            getOptionLabel={(option) => option?.grade_name || ''}
+            getOptionLabel={(option) => option?.grade__grade_name || ''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -521,7 +553,7 @@ const AssessmentReportFilters = ({
             className='dropdownIcon'
             value={filterData.subject || {}}
             options={dropdownData.subject || []}
-            getOptionLabel={(option) => option?.subject?.subject_name || ''}
+            getOptionLabel={(option) => option?.subject_name || ''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -595,7 +627,18 @@ const AssessmentReportFilters = ({
             />
           </Grid>
         )}
-        {/* <Grid item xs={3} sm={9} /> */}
+        {isFilter &&
+          classTopicAverage &&
+          (selectedReportType?.id === 3 || selectedReportType?.id === 4) && (
+            <Grid item xs={12} sm={3}>
+              <div className='classTopicContainer'>
+                <div className='classTopicTag'>
+                  {selectedReportType?.id === 3 ? 'Class Average' : 'Topic Average'}:
+                </div>
+                <div className='classTopicIcon'>{classTopicAverage}</div>
+              </div>
+            </Grid>
+          )}
       </Grid>
       <Grid
         container

@@ -22,9 +22,19 @@
   flex-direction: column;
 }
 .im {
- padding-left: 100px;
-  padding-top: 15px;
+ padding-left: 50px;
+  padding-top: 2px;
 }   
 .dat {
   padding-top: 45px;
 }
+
+  @media only screen and (max-width:  1562px){
+    .arrow-1  {
+    display:block;
+    }
+  }
+.conte .MuiOutlinedInput-inputAdornedEnd {
+  font-size:revert;
+}
+

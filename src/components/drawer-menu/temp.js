@@ -302,7 +302,7 @@
                 {/* <MenuIcon name={child.child_name} /> */}
                 {/* {menuIcon(child.child_name)} */}
               </ListItemIcon>
-              <ListItemText primary='Lesson Plan Mapping' className='menu-item-text' />
+              <ListItemText primary='Content Mapping' className='menu-item-text' />
             </ListItem>
           )}
         </List>

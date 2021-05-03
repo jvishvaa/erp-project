@@ -21,6 +21,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import Layout from '../../Layout/index';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import ClearIcon from '../../../components/icon/ClearIcon';
+import { Pagination } from '@material-ui/lab';
 //import categoryData from './categoryData';
 //import CreateCategory from './CreateCategory';
 import DiscussionCategory from './DiscussionCategory';
@@ -70,7 +71,7 @@ const useStyles = makeStyles({
     marginLeft: '40px',
   },
   disscustionContainer: {
-    padding: '15px 57px 0px 44px',
+    padding: '15px 57px 10px 44px',
     height: '100%',
     minHeight: '500px',
   },
@@ -175,22 +176,31 @@ function CategoryPage() {
   const categoryList = useSelector((state) => state.discussionReducers.categoryList);
   const subCategoryList = useSelector((state) => state.discussionReducers.subCategoryList);
   const subSubCategoryList = useSelector((state) => state.discussionReducers.subSubCategoryList);
+  const updateCategory = useSelector((state) => state.discussionReducers.updateCategory);
+  const totalCount = useSelector((state) => state.discussionReducers.categoryPageCount);
   const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = React.useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = React.useState(null);
   const [selectedSubSubCategory, setSelectedSubSubCategory] = React.useState(null);
+  const [tabValue, setTabValue] = React.useState('all');
   const { setAlert } = useContext(AlertNotificationContext);
+  const [page, setPage] = React.useState(1);
+  //const [totalCount, setTotalCount] = React.useState();
+  const limit = 12;
 
   const handleClearFilter = () => {
     setSelectedCategory();
     setSelectedSubCategory();
     setSelectedSubSubCategory();
-    dispatch(fetchCategoryData());
+    setTabValue('all');
+    setPage(1);
+    dispatch(fetchCategoryData(tabValue, page));
   }
 
   const handleFilter = () => {
-    if(selectedCategory?.id && selectedSubCategory?.sub_category_id && selectedSubSubCategory.sub_sub_category_name){
-      dispatch(fetchCategoryData(selectedSubCategory?.sub_category_id));
+    if(selectedCategory?.id && selectedSubCategory?.sub_category_id && selectedSubSubCategory?.sub_sub_category_name){
+      setPage(1);
+      dispatch(fetchCategoryData(tabValue, page, selectedSubCategory?.sub_category_id));
     } else {
       setAlert('warning',`Please Select Category`);
     }
@@ -221,8 +231,19 @@ function CategoryPage() {
   };
 
   React.useEffect(() => {
+    if(selectedCategory?.id && selectedSubCategory?.sub_category_id){
+      dispatch(fetchCategoryData(tabValue, page, selectedSubCategory?.sub_category_id));
+    } else {
+      dispatch(fetchCategoryData(tabValue, page));
+    }
+  },[tabValue, updateCategory,page])
+
+  // React.useEffect(() => {
+  //   getCategoryData();
+  // },[updateCategory,page])
+
+  React.useEffect(() => {
     dispatch(fetchCategory());
-    dispatch(fetchCategoryData());
   },[])
 
   React.useEffect(() => {
@@ -235,9 +256,7 @@ function CategoryPage() {
     if(selectedSubCategory?.sub_category_id){
       dispatch(fetchSubSubCategoryList(selectedSubCategory?.sub_category_id));
     }
-  },[selectedSubCategory]);
-
-  const [tabValue, setTabValue] = React.useState('all');
+  },[selectedSubCategory ]);
 
   const handleCreateCategory = () => {
     history.push('/master-management/discussion-category/create');
@@ -245,6 +264,10 @@ function CategoryPage() {
 
   const handleTabChange = (e, newValue) => {
     setTabValue(newValue);
+  };
+
+  const handlePagination = (event, page) => {
+    setPage(page);
   };
 
   const discussion = categoryData.length;
@@ -376,7 +399,7 @@ function CategoryPage() {
                     <StyledTab label='Active' value='active' />
                     <StyledTab label='In-active' value='inactive' />
                     <Typography className={classes.numberofDiscussionText}>
-                      Number of discussion : {discussion}
+                      Number of Categories : {totalCount}
                     </Typography>
                   </StyledTabs>
                   <Divider />
@@ -389,6 +412,15 @@ function CategoryPage() {
                       )}
                     </Grid>
                   </Grid>
+                </Grid>
+                <Grid item xs={12} style={{display: 'flex', justifyContent: 'center'}}>
+                  <Pagination
+                    onChange={handlePagination}
+                    style={{ marginTop: 25}}
+                    count={Math.ceil(totalCount / limit)}
+                    color='primary'
+                    page={page}
+                  />
                 </Grid>
               </Grid>
             </Paper>

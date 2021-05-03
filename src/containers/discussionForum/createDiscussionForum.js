@@ -44,7 +44,7 @@ const CreateDiscussionForum = () => {
   const location = useLocation();
   const postsId = useParams();
   const dispatch = useDispatch();
-  const postEditData = useSelector((state) => state.discussionReducers.postEditData);
+  const hasEdited = useSelector((state) => state.discussionReducers.hasEdited);
   const [categoryListRes, setcategoryListRes] = useState([]);
   const [subCategoryListRes,setSubCategoryListRes] =useState([]);
   const [subSubCategoryListRes,setSubSubCategoryListRes] =useState([]);
@@ -83,9 +83,6 @@ const CreateDiscussionForum = () => {
 
   // edit discussion state
   const [editData, setEditData] = useState('');
-  const [editBranch, setEditBranch] = useState('');
-  const [editGrade, setEditGrade] = useState('');
-  const [editSection, setEditSection] = useState('');
 
   const handleBackButton = () => {
     setDescription('');
@@ -106,7 +103,7 @@ const CreateDiscussionForum = () => {
     sectionList
     .filter((item) => selectedSections.includes(item['section__section_name']))
     .forEach((items) => {
-      sectionsId.push(items.section_id);
+      sectionsId.push(items.id);
     });
     //setSelectedSectionIds(sectionsId)
 
@@ -160,13 +157,13 @@ const CreateDiscussionForum = () => {
     e.preventDefault()
     //setLoading(true);
     let requestData = {}
-    if(location.pathname === '/student-forum/create'){
+    if(location.pathname === `/student-forum/edit/${postsId.id}`) {
       const grade_id = userDetails.role_details?.grades[0]?.grade_id;
       const branch_id = userDetails.role_details?.branch[0]?.id;
       requestData = {
         "title": title,
         "description": descriptionDisplay,
-        "category": selectedSubSubCategory.sub_sub_category_id,
+        "category": selectedSubSubCategory.sub_sub_category_id ?? selectedSubSubCategory.id,
         "branch": branch_id,
         "grade": [grade_id],
         //"section": selectedSectionIds
@@ -179,7 +176,7 @@ const CreateDiscussionForum = () => {
         "category": selectedSubSubCategory.id,
         "branch": editData?.branch_id,
         "grade": [editData?.grade_id],
-        //"section_mapping": [editData?.section_id]
+        "section_mapping": [editData?.id]
       }
     }
     dispatch(editPostData(requestData, postsId?.id));
@@ -224,7 +221,7 @@ const CreateDiscussionForum = () => {
       try {
         setLoading(true);
         const result = await axiosInstance.get(
-          `${endpoints.communication.grades}?branch_id=${selectedBranch?.branch?.id}&module_id=${moduleId}`,
+          `${endpoints.communication.grades}?session_year=${selectedSession?.id}&branch_id=${selectedBranch?.branch?.id}&module_id=${moduleId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -273,7 +270,7 @@ const CreateDiscussionForum = () => {
 
   useEffect(() => {
     const getCategoryList = () => {
-        axiosInstance.get(endpoints.discussionForum.categoryList).then((res) => {
+        axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=1&is_delete=False`).then((res) => {
             setcategoryListRes(res.data.result)
         }).catch(err => {
             console.log(err)
@@ -288,7 +285,9 @@ const CreateDiscussionForum = () => {
   const handleCategoryChange = (event,value) => {
     if (value && value.id) {
       setSelectedCategory(value);
-      axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.id}&category_type=2`)
+      setSelectedSubCategory(null);
+      setSelectedSubSubCategory(null);
+      axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.id}&category_type=2&is_delete=False`)
           .then(result => {
               if (result.data.status_code === 200) {
                 setSubCategoryListRes(result.data.result);
@@ -309,7 +308,8 @@ const CreateDiscussionForum = () => {
   const handleSubCategoryChange = (event,value) => {
     if (value && value.sub_category_id){
     setSelectedSubCategory(value)
-    axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.sub_category_id}&category_type=3`)
+    setSelectedSubSubCategory(null);
+    axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.sub_category_id}&category_type=3&is_delete=False`)
     .then(result => {
         if (result.data.status_code === 200) {
           setSubSubCategoryListRes(result.data.result);
@@ -344,7 +344,7 @@ const CreateDiscussionForum = () => {
           gradesId.push(items.grade_id);
         });
       const result = await axiosInstance.get(
-        `${endpoints.communication.sections}?session_year=${1}&branch_id=${
+        `${endpoints.communication.sections}?&session_year=${selectedSession?.id}&branch_id=${
           selectedBranch.branch.id
         }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
         {
@@ -452,10 +452,27 @@ const CreateDiscussionForum = () => {
   }, []);
 
   React.useEffect(() => {
-    if(postsId?.id){
-      dispatch(editPostDataAction(postsId?.id));
+    if(hasEdited && hasEdited !== ''){
+      setAlert('success', 'Post Updated Successfully');
+      setTitle('');
+      setDescription('');
+      setSelectedCategory('');
+      setSelectedSubCategory('');
+      setSelectedSubSubCategory('');
+      setEditData('');
+      dispatch(editPostDataAction());
+      if(location.pathname === `/student-forum/edit/${postsId.id}`) {
+        history.push('/student-forum');
+      }
+      if(location.pathname === `/teacher-forum/edit/${postsId.id}`) {
+        history.push('/teacher-forum');
+      }
     }
-  },[postsId])
+    if(hasEdited === false){
+      setAlert('error', 'Something wrong');
+      dispatch(editPostDataAction());
+    }
+  },[hasEdited])
 
   React.useEffect(() => {
     if(postsId?.id){
@@ -486,7 +503,9 @@ const CreateDiscussionForum = () => {
             childComponentName='Create'
           />
         </div>
-        {(location.pathname !== '/student-forum/create' || location.pathname !== `/student-forum/edit/${postsId.id}`) && (
+        {(location.pathname !== '/student-forum/create' &&
+          location.pathname !== `/student-forum/edit/${postsId.id}` &&
+          location.pathname !== `/teacher-forum/edit/${postsId.id}`) && (
           <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
             <Grid xs={12} lg={4} className='create_group_items' item>
               <Autocomplete
@@ -510,30 +529,32 @@ const CreateDiscussionForum = () => {
                 )}
               />
             </Grid>
+            {/* {selectedSession && branchList.length && ( */}
+              <Grid xs={12} lg={4} className='create_group_items' item>
+                <Autocomplete
+                  size='small'
+                  style={{ width: '100%' }}
+                  onChange={handleBranch}
+                  value={selectedBranch}
+                  id='message_log-branch'
+                  className='create_group_branch'
+                  options={branchList}
+                  getOptionLabel={(option) => option?.branch.branch_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      className='message_log-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                    />
+                  )}
+                />
+              </Grid>
+            {/* )} */}
             <Grid xs={12} lg={4} className='create_group_items' item>
-              <Autocomplete
-                size='small'
-                style={{ width: '100%' }}
-                onChange={handleBranch}
-                value={selectedBranch}
-                id='message_log-branch'
-                className='create_group_branch'
-                options={branchList}
-                getOptionLabel={(option) => option?.branch.branch_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    className='message_log-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid xs={12} lg={4} className='create_group_items' item>
-              {selectedBranch && gradeList.length ? ( 
+              {/* {selectedSession && selectedBranch.length && gradeList.length ? (  */}
               <Autocomplete
                 multiple
                 style={{ width: '100%' }}
@@ -552,10 +573,10 @@ const CreateDiscussionForum = () => {
                   />
                 )}
               />
-            ) : null }
+            {/* ) : null } */}
             </Grid>
             <Grid xs={12} lg={4} className='create_group_items' item>
-              {selectedGrades.length && sectionList.length ? (
+              {/* {selectedSession && selectedBranch.length && selectedGrades.length && sectionList.length ? ( */}
               <Autocomplete
                 multiple
                 style={{ width: '100%' }}
@@ -574,7 +595,7 @@ const CreateDiscussionForum = () => {
                   />
                 )}
               />
-              ) : null}
+              {/* ) : null} */}
             </Grid>
           </Grid>
         )}
@@ -620,10 +641,10 @@ const CreateDiscussionForum = () => {
                   handleSubCategoryChange
               }
             />
-            {/* ) : null} */}
+             {/* ) : null} */}
           </Grid>
           <Grid item xs={12} sm={4}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-            {/* {selectedSubCategory && subSubCategoryListRes.length ? (  */}
+            {/* {selectedCategory && selectedSubCategory && subSubCategoryListRes.length ? (  */}
             <Autocomplete
               style={{ width: '100%' }}
               id="tags-outlined"
@@ -644,7 +665,7 @@ const CreateDiscussionForum = () => {
                   handleSubSubCategoryChange
               }
             />
-            {/* ) : null} */}
+             {/* ) : null} */}
           </Grid>
         </Grid>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>

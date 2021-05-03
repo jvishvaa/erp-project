@@ -84,7 +84,7 @@ const MultipleChoice = ({
   );
 
   useEffect(() => {
-    setToggle(prev=>!prev);
+    setToggle((prev) => !prev);
     if (editData?.id) {
       const {
         question_answer: [
@@ -93,7 +93,6 @@ const MultipleChoice = ({
       } = editData;
       setQuestion(editQuestion);
       setAnswers(answer);
-      // setToggle(prev=>!prev);
       if (showQuestionType?.Descriptive) {
         setDescriptiveAnswer(answer || '');
       }
@@ -177,14 +176,12 @@ const MultipleChoice = ({
           setLoading(true);
           const formData = new FormData();
           formData.append('file', file[0]);
-          formData.append('grade_name', filterDataTop.grade?.grade_name);
-          formData.append('subject_name', filterDataTop.subject?.subject?.subject_name);
-          formData.append('question_categories', filterDataBottom.category.category);
-          formData.append('question_type', filterDataBottom.type?.question_type);
-          axios
-            .post(`${endpoints.questionBank.uploadFile}`, formData, {
-              headers: { 'x-api-key': 'vikash@12345#1231' },
-            })
+          formData.append('grade_id', filterDataTop?.grade?.grade_id);
+          formData.append('subject_name', filterDataTop?.subject?.subject_id);
+          formData.append('question_categories_id', filterDataBottom.category?.id);
+          formData.append('question_type', filterDataBottom.type?.id);
+          axiosInstance
+            .post(`${endpoints.assessmentErp.fileUpload}`, formData)
             .then((result) => {
               if (result.data.status_code === 200) {
                 list[index][name].push(result.data.result);
@@ -262,16 +259,10 @@ const MultipleChoice = ({
   const handleDeleteImage = (rowIndex, imageIndex, isMatching) => {
     setLoading(true);
     const list = isMatching ? [...matchingOptionsList] : [...optionsList];
-    axios
-      .post(
-        `${endpoints.questionBank.removeFile}`,
-        {
-          file_name: list[rowIndex]['images'][imageIndex],
-        },
-        {
-          headers: { 'x-api-key': 'vikash@12345#1231' },
-        }
-      )
+    axiosInstance
+      .post(`${endpoints.assessmentErp.fileRemove}`, {
+        file_name: list[rowIndex]['images'][imageIndex],
+      })
       .then((result) => {
         if (result.data.status_code === 204) {
           if (isMatching) {
@@ -428,8 +419,10 @@ const MultipleChoice = ({
     if (!editData?.id)
       requestBody = {
         ...requestBody,
-        grade_subject_mapping: filterDataTop.subject?.subject.central_mp_id,
-        // grade_subject_mapping: filterDataTop.subject?.id,
+        academic_session: filterDataTop.academic?.id,
+        is_central_chapter: filterDataTop.chapter?.is_central,
+        grade: filterDataTop.grade?.grade_id,
+        subject: filterDataTop.subject?.subject_id,
       };
 
     if (submitFlag || saveFlag) {
@@ -438,7 +431,10 @@ const MultipleChoice = ({
         question_type: showQuestionType?.id,
         question_level: filterDataBottom.level.id,
         question_categories: filterDataBottom.category.id,
-        grade_subject_mapping: filterDataTop.subject.subject?.central_mp_id,
+        academic_session: filterDataTop.academic?.id,
+        is_central_chapter: filterDataTop.chapter?.is_central,
+        grade: filterDataTop.grade?.grade_id,
+        subject: filterDataTop.subject?.subject_id,
         chapter: filterDataTop.chapter?.id,
         topic: filterDataTop.topic?.id,
         question_status: isSubmit ? 3 : 1,
@@ -453,24 +449,12 @@ const MultipleChoice = ({
         subQuestions.push(req);
       }
     } else {
-      // if (
-      //   answers.length > 0 &&
-      //   !showQuestionType?.Descriptive &&
-      //   !showQuestionType?.MatrixQuestion &&
-      //   !showQuestionType?.MatchTheFollowing
-      // ) {
       if (editData?.id) {
         // const apiEndPoint = editData?'dasd':'post ur'
         // axiosInstance[editData?'put':'post'](apiEndPoint, requestBody).then((e)=>{
         // })
-        axios
-          .put(
-            `${endpoints.baseURLCentral}/assessment/${editData?.id}/retrieve_update_question/`,
-            requestBody,
-            {
-              headers: { 'x-api-key': 'vikash@12345#1231' },
-            }
-          )
+        axiosInstance
+          .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody)
           .then((result) => {
             if (result.data?.status_code === 200) {
               setAlert('success', result.data?.message);
@@ -484,10 +468,8 @@ const MultipleChoice = ({
             setAlert('error', error.message);
           });
       } else {
-        axios
-          .post(`${endpoints.createQuestionApis.createQuestion}`, requestBody, {
-            headers: { 'x-api-key': 'vikash@12345#1231' },
-          })
+        axiosInstance
+          .post(`${endpoints.assessmentErp.createQuestion}`, requestBody)
           .then((result) => {
             if (result.data.status_code === 200) {
               setAlert('success', result.data?.message);
@@ -754,83 +736,88 @@ const MultipleChoice = ({
           </div>
         )}
       </div>
-      {toggle ?              
-      <div className='questionContainer'>
-        {openEditor && (
-          <MyTinyEditor
-            id={
-              parentQuestionType?.ComprehensionQuestions ||
-              parentQuestionType?.VideoQuestion
-                ? `questionEditor${index}`
-                : 'questionEditor'
-            }
-            content={question}
-            handleEditorChange={handleEditorChange}
-            setOpenEditor={setOpenEditor}
-            placeholder='Question goes here...'
-            filterDataTop={filterDataTop}
-            filterDataBottom={filterDataBottom}
-          />
-        )}
-        {!openEditor && (
-          <TextField
-            style={{ width: '100%' }}
-            id={
-              parentQuestionType?.ComprehensionQuestions ||
-              parentQuestionType?.VideoQuestion
-                ? `questionDisplay${index}`
-                : 'questionDisplay'
-            }
-            variant='outlined'
-            size='small'
-            className='dropdownIcon questionDisplay'
-            placeholder='Click on format text to create a question'
-            value={questionDisplay}
-            name={
-              parentQuestionType?.ComprehensionQuestions ||
-              parentQuestionType?.VideoQuestion
-                ? `questionDisplay${index}`
-                : 'questionDisplay'
-            }
-            inputProps={{
-              readOnly: true,
-              autoComplete: 'off',
-            }}
-            InputProps={{
-              endAdornment: (
-                <>
-                  <div className='dividerVertical'></div>
-                  <Button
-                    variant='contained'
-                    style={{
-                      color: 'white',
-                      textTransform: 'none',
-                      width: '12%',
-                      margin: '0px 0px 0px 15px',
-                    }}
-                    color='primary'
-                    className='modifyDesign'
-                    size='small'
-                    onClick={() => setOpenEditor(true)}
-                  >
-                    {isMobile ? 'Format' : 'Format Text'}
-                  </Button>
-                  <IconButton>
-                    <div>
-                      <SvgIcon
-                        component={() => (
-                          <img style={{ height: '24px', width: '25px' }} src={infoicon} />
-                        )}
-                      />
-                    </div>
-                  </IconButton>
-                </>
-              ),
-            }}
-          />
-        )}
-      </div>
-      :'hidden editor'}
+      {toggle ? (
+        <div className='questionContainer'>
+          {openEditor && (
+            <MyTinyEditor
+              id={
+                parentQuestionType?.ComprehensionQuestions ||
+                parentQuestionType?.VideoQuestion
+                  ? `questionEditor${index}`
+                  : 'questionEditor'
+              }
+              content={question}
+              handleEditorChange={handleEditorChange}
+              setOpenEditor={setOpenEditor}
+              placeholder='Question goes here...'
+              filterDataTop={filterDataTop}
+              filterDataBottom={filterDataBottom}
+            />
+          )}
+          {!openEditor && (
+            <TextField
+              style={{ width: '100%' }}
+              id={
+                parentQuestionType?.ComprehensionQuestions ||
+                parentQuestionType?.VideoQuestion
+                  ? `questionDisplay${index}`
+                  : 'questionDisplay'
+              }
+              variant='outlined'
+              size='small'
+              className='dropdownIcon questionDisplay'
+              placeholder='Click on format text to create a question'
+              value={questionDisplay}
+              name={
+                parentQuestionType?.ComprehensionQuestions ||
+                parentQuestionType?.VideoQuestion
+                  ? `questionDisplay${index}`
+                  : 'questionDisplay'
+              }
+              inputProps={{
+                readOnly: true,
+                autoComplete: 'off',
+              }}
+              InputProps={{
+                endAdornment: (
+                  <>
+                    <div className='dividerVertical'></div>
+                    <Button
+                      variant='contained'
+                      style={{
+                        color: 'white',
+                        textTransform: 'none',
+                        width: '12%',
+                        margin: '0px 0px 0px 15px',
+                      }}
+                      color='primary'
+                      className='modifyDesign'
+                      size='small'
+                      onClick={() => setOpenEditor(true)}
+                    >
+                      {isMobile ? 'Format' : 'Format Text'}
+                    </Button>
+                    <IconButton>
+                      <div>
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              style={{ height: '24px', width: '25px' }}
+                              src={infoicon}
+                            />
+                          )}
+                        />
+                      </div>
+                    </IconButton>
+                  </>
+                ),
+              }}
+            />
+          )}
+        </div>
+      ) : (
+        'hidden editor'
+      )}
       {!isMinimized && (
         <>
           <div className='answerTag'>
@@ -839,25 +826,25 @@ const MultipleChoice = ({
               : 'Answers'}
           </div>
           {showQuestionType?.Descriptive ? (
-            toggle ?
-            <div className='descriptiveAnswerEditor'>
-              <MyTinyEditor
-                id={
-                  parentQuestionType?.ComprehensionQuestions ||
-                  parentQuestionType?.VideoQuestion
-                    ? `answerEditor${index}`
-                    : 'answerEditor'
-                }
-                className='answerEditor'
-                content={descriptiveAnswer}
-                handleEditorChange={handleEditorChange}
-                setOpenEditor={setOpenEditor}
-                placeholder='Answer goes here...'
-                filterDataTop={filterDataTop}
-                filterDataBottom={filterDataBottom}
-              />
-            </div>
-            :null
+            toggle ? (
+              <div className='descriptiveAnswerEditor'>
+                <MyTinyEditor
+                  id={
+                    parentQuestionType?.ComprehensionQuestions ||
+                    parentQuestionType?.VideoQuestion
+                      ? `answerEditor${index}`
+                      : 'answerEditor'
+                  }
+                  className='answerEditor'
+                  content={descriptiveAnswer}
+                  handleEditorChange={handleEditorChange}
+                  setOpenEditor={setOpenEditor}
+                  placeholder='Answer goes here...'
+                  filterDataTop={filterDataTop}
+                  filterDataBottom={filterDataBottom}
+                />
+              </div>
+            ) : null
           ) : (
             <div>
               <div

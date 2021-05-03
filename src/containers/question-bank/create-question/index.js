@@ -38,56 +38,117 @@ const CreateQuestion = () => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [isTopFilterOpen, setIsTopFilterOpen] = useState(true);
   const [isFilter, setIsFilter] = useState(false);
-
+  const [chapterDisplay, setChapterDisplay] = useState('');
+  const [topicDisplay, setTopicDisplay] = useState('');
   const [filterDataDisplay, setFilterDataDisplay] = useState({
+    academic: '',
+    branch: '',
     grade: '',
     subject: '',
     chapter: '',
     topic: '',
   });
 
-  useEffect(() => {
-    if (qId) {
+  const getChapterName = (subjectId, chapterId) => {
+    axiosInstance
+      .get(`${endpoints.assessmentErp.chapterList}?subject=${subjectId}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          const chapterList = result.data?.result;
+          const chapterSelected = chapterList.filter(({ id }) => id === chapterId);
+          setChapterDisplay(chapterSelected?.[0]?.chapter_name);
+        } else {
+          setAlert('error', result.data?.message);
+        }
+      })
+      .catch((error) => setAlert('error', error?.message));
+  };
+
+  const getTopicName = (chapterId, topicId, isCentral) => {
+    if (isCentral) {
       axios
-        .get(`${endpoints.baseURLCentral}/assessment/${qId}/retrieve_update_question/`, {
+        .get(`${endpoints.createQuestionApis.topicList}?chapter=${chapterId}`, {
           headers: { 'x-api-key': 'vikash@12345#1231' },
         })
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            const topicList = result.data?.result;
+            const topicSelected = topicList.filter(({ id }) => id === topicId);
+            setTopicDisplay(topicSelected?.[0]?.topic_name);
+          } else {
+            setAlert('error', result.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    } else {
+      axiosInstance
+        .get(`${endpoints.assessmentErp.topicList}?chapter=${chapterId}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            const topicList = result.data?.result;
+            const topicSelected = topicList.filter(({ id }) => id === topicId);
+            setTopicDisplay(topicSelected?.[0]?.topic_name);
+          } else {
+            setAlert('error', result.data?.message);
+          }
+        })
+        .catch((error) => setAlert('error', error?.message));
+    }
+  };
+
+  useEffect(() => {
+    if (qId) {
+      axiosInstance
+        .get(`/assessment/${qId}/retrieve_update_question/`)
         .then((res) => {
           const { status_code, result, message, error_msg } = res?.data;
           if (status_code === 200) {
             setEditData(result);
             const {
-              chapter,
-              grade_subject_mapping: {
-                id: gsMappingId,
-                grade: { id: gradeId, grade_name },
-                subject: { id: subjectId, subject_name },
-              },
-              topic,
-            } = result;
+              academic_session: academicSession = {},
+              grade: { id: gradeId, grade_name: gradeName },
+              subject: { id: subjectId, subject_name: subjectName },
+              chapter: chapterId,
+              topic: topicId,
+              is_central_chapter: isCentralChapter,
+            } = result || {};
+
+            const {
+              branch: { id: branchId, branch_name: branchName },
+              id: acadSessionId,
+              session_year: { id: acadId, session_year: sessionYear },
+            } = academicSession || {};
+
             setFilterDataDisplay({
-              grade: {
-                id: gsMappingId,
-                grade_name: grade_name,
-                is_delete: false,
+              academic: {
+                branch: null,
                 created_by: null,
-              },
-              subject: {
-                id: gsMappingId,
-                grade: {
-                  id: gradeId,
-                  grade_name: grade_name,
-                },
-                subject: {
-                  id: subjectId,
-                  subject_name: subject_name,
-                },
+                id: acadId,
                 is_delete: false,
-                created_by: null,
+                session_year: sessionYear,
               },
-              chapter: chapter,
-              topic: topic,
+              branch: {
+                branch: { id: branchId, branch_name: branchName },
+                id: acadSessionId,
+                sessionYear: { id: acadId, session_year: sessionYear },
+              },
+              grade: { grade_id: gradeId, grade__grade_name: gradeName },
+              subject: { subject_id: subjectId, subject_name: subjectName },
+              chapter: {
+                chapter_name: '...',
+                is_central: isCentralChapter,
+                id: chapterId,
+                subject: subjectId,
+              },
+              topic: {
+                id: topicId,
+                topic_name: '...',
+              },
             });
+            getChapterName(subjectId, chapterId);
+            getTopicName(chapterId, topicId, isCentralChapter);
             setIsFilter(true);
             setIsTopFilterOpen(false);
           } else {
@@ -98,6 +159,17 @@ const CreateQuestion = () => {
         .catch((error) => setAlert('error', error?.message));
     }
   }, []);
+
+  useEffect(() => {
+    if (chapterDisplay && topicDisplay && editData) {
+      const { chapter, topic } = { ...filterDataDisplay };
+      setFilterDataDisplay((prev) => ({
+        ...prev,
+        chapter: { ...chapter, chapter_name: chapterDisplay },
+        topic: { ...topic, topic_name: topicDisplay },
+      }));
+    }
+  }, [chapterDisplay, topicDisplay]);
 
   return (
     <>
@@ -152,9 +224,11 @@ const CreateQuestion = () => {
           <div>
             <Paper className={classes.root}>
               <div className='filterDataHeader'>
-                <div className='divfilterData'>{filterDataDisplay.grade?.grade_name}</div>
                 <div className='divfilterData'>
-                  {filterDataDisplay.subject.subject?.subject_name}
+                  {filterDataDisplay.grade?.grade__grade_name}
+                </div>
+                <div className='divfilterData'>
+                  {filterDataDisplay.subject?.subject_name}
                 </div>
                 <div className='divfilterData'>
                   {filterDataDisplay.chapter?.chapter_name}

@@ -21,9 +21,10 @@ import Loading from '../../../components/loader/loader';
 import ReportTypeFilter from '../assessment-report-types/report-type-filter';
 import AssessmentReportFilters from '../assessment-report-types/assessment-report-filters';
 import { connect } from 'react-redux';
-import { filterDataAction, setClearFilters } from 'redux/actions';
+import { setClearFilters } from 'redux/actions';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
+import './assessment-report-types.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -71,11 +72,19 @@ const AssessmentReportTypes = ({
   const [isFilter, setIsFilter] = useState(false);
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
+  const [reportData, setReportData] = useState([]);
   const [columns, setColumns] = useState([]);
 
   useEffect(() => {
     setClearFilters();
   }, []);
+
+  useEffect(() => {
+    if (isFilter) {
+      setReportData(assessmentReportListData?.results);
+      setTotalCount(assessmentReportListData?.count);
+    }
+  }, [isFilter, assessmentReportListData]);
 
   useEffect(() => {
     switch (selectedReportType?.id) {
@@ -171,7 +180,6 @@ const AssessmentReportTypes = ({
           {
             id: 'teacher_name',
             label: 'Teacher Name',
-            minWidth: 170,
             align: 'center',
             labelAlign: 'center',
           },
@@ -208,6 +216,11 @@ const AssessmentReportTypes = ({
         />
         {selectedReportType?.id && (
           <AssessmentReportFilters
+            page={page}
+            setPage={setPage}
+            pageSize={limit}
+            classTopicAverage={reportData?.[0]?.class_average || ''}
+            isFilter={isFilter}
             setIsFilter={setIsFilter}
             selectedReportType={selectedReportType}
             widerWidth={widerWidth}
@@ -225,7 +238,7 @@ const AssessmentReportTypes = ({
                       <TableCell
                         key={column.id}
                         align={column.align}
-                        style={{ minWidth: column.minWidth }}
+                        style={{ minWidth: column?.minWidth }}
                         className={classes.columnHeader}
                       >
                         {column.label}
@@ -234,10 +247,12 @@ const AssessmentReportTypes = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {assessmentReportListData?.map((rowData, index) => {
+                  {reportData?.map((rowData, index) => {
                     return (
                       <TableRow hover academicyear='checkbox' tabIndex={-1} key={index}>
-                        <TableCell className={classes.tableCell}>{index + 1}</TableCell>
+                        <TableCell className={classes.tableCell}>
+                          {limit * (page - 1) + index + 1}
+                        </TableCell>
                         {selectedReportType?.id === 1 && (
                           <TableCell className={classes.tableCell}>
                             {rowData?.section_name}
@@ -249,8 +264,10 @@ const AssessmentReportTypes = ({
                           </TableCell>
                         )}
                         {selectedReportType?.id === 1 && (
-                          <TableCell className={classes.tableCell}>
-                            {rowData?.test__teacher}
+                          <TableCell className={`${classes.tableCell} teacherNameParent`}>
+                            {rowData?.teacher_name?.map((obj) => {
+                              return <div className='teacherNameChild'>{obj}</div>;
+                            })}
                           </TableCell>
                         )}
                         {selectedReportType?.id === 2 && (
@@ -278,13 +295,13 @@ const AssessmentReportTypes = ({
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
                           <TableCell className={classes.tableCell}>
-                            {rowData?.marks_obtained}
+                            {rowData?.total_mark}
                           </TableCell>
                         )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
                           <TableCell className={classes.tableCell}>
-                            {rowData?.comparison}
+                            {rowData?.comparsion}
                           </TableCell>
                         )}
                       </TableRow>
@@ -293,16 +310,16 @@ const AssessmentReportTypes = ({
                 </TableBody>
               </Table>
             </TableContainer>
-            {/* <div className='paginateData'>
-            <TablePagination
-              component='div'
-              count={totalCount}
-              rowsPerPage={limit}
-              page={page - 1}
-              onChangePage={handleChangePage}
-              rowsPerPageOptions={false}
-            />
-          </div> */}
+            <div className='paginateData'>
+              <TablePagination
+                component='div'
+                count={totalCount}
+                rowsPerPage={limit}
+                page={page - 1}
+                onChangePage={handleChangePage}
+                rowsPerPageOptions={false}
+              />
+            </div>
           </Paper>
         ) : (
           <div className='periodDataUnavailable'>

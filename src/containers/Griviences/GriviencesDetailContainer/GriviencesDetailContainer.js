@@ -70,14 +70,16 @@ const GriviencesDetailContainer = (props) => {
   };
 
   const handleSubmit = () => {
-    axiosInstance.post(endpoints.grievances.grievance_reply,
-      { body: replyDescription, grievance_ticket: props.list_tickets.id },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+    axiosInstance
+      .post(
+        endpoints.grievances.grievance_reply,
+        { body: replyDescription, grievance_ticket: props.list_tickets.id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         if (response.status == 200) {
           setAlert('success', 'Reply sent');
@@ -92,106 +94,109 @@ const GriviencesDetailContainer = (props) => {
 
   const style = useStyles();
   return (
-    <Paper className={style.container}>
-      <div className={style.flex_row} style={{ alignItems: 'center' }}>
-        <Avatar className={style.purple} src={props.list_tickets.user.profile} />
-        <Grid sm={3}>
-          <div className={style.flex_column} style={{ marginLeft: '10px' }}>
-            <label className={style.text_color}>{props.list_tickets.user.name}</label>
-            {props.list_tickets.user.role != undefined ? (
-              <label className={style.text_color}>
-                {props.list_tickets.user.role.role_name}
+    <div className='grevience-container'>
+      <Paper className={style.container}>
+        <div className={style.flex_row} style={{ alignItems: 'center' }}>
+          <div className='top-header-container'>
+            <Avatar className={style.purple} src={props.list_tickets.user.profile} />
+            <Grid sm={3}>
+              <div className={style.flex_column} style={{ marginLeft: '10px' }}>
+                <label className={style.text_color}>{props.list_tickets.user.name}</label>
+                {props.list_tickets.user.role != undefined ? (
+                  <label className={style.text_color}>
+                    {props.list_tickets.user.role.role_name}
+                  </label>
+                ) : null}
+              </div>
+            </Grid>
+          </div>
+          <Grid item sm />
+          <Grid sm={4}>
+            <div className={style.flex_column}>
+              <label className={style.text_color} style={{ alignSelf: 'flex-end' }}>
+                {date}
               </label>
-            ) : null}
-          </div>
-        </Grid>
-        <Grid item sm />
-        <Grid sm={4}>
-          <div className={style.flex_column}>
-            <label className={style.text_color} style={{ alignSelf: 'flex-end' }}>
-              {date}
-            </label>
-            <label className={style.text_color} style={{ alignSelf: 'flex-end' }}>
-              {time}
-            </label>
-          </div>
-        </Grid>
-      </div>
+              <label className={style.text_color} style={{ alignSelf: 'flex-end' }}>
+                {time}
+              </label>
+            </div>
+          </Grid>
+        </div>
 
-      <Grid container style={{ padding: '30px' }}>
-        <Grid item sm={12}>
-          <h5 className={style.text_color}>{props.list_tickets.title}</h5>
+        <Grid container style={{ padding: '30px' }}>
+          <Grid item sm={12}>
+            <h5 className={style.text_color}>{props.list_tickets.title}</h5>
+          </Grid>
+          <Grid item sm={12}>
+            <label className={style.text_color}> {props.list_tickets.description}</label>
+          </Grid>
         </Grid>
-        <Grid item sm={12}>
-          <label className={style.text_color}> {props.list_tickets.description}</label>
-        </Grid>
-      </Grid>
-      
-        {reply_list != '' && reply_list != null ?
-        reply_list && reply_list.map((Replys) => (
-          <div style = {{margin : '10px'}}>
-          <Reply Replys = {Replys}/>
-          </div>)
-        )
-        :null
-        }
-      
-      <Grid container style={{ marginBottom: '10px' }}>
-        <Grid item sm />
-        <Grid item sm='1'>
-          <h4 className={style.reply_button} onClick={openReplyTextEditor}>
-            Reply
-          </h4>
-        </Grid>
-      </Grid>
 
-      {reply == true ? (
-        <div
-          style={{
-            width: '80%',
-            alignItems: 'center',
-            marginLeft: '10%',
-            padding: '2px',
-            height: '40px',
-          }}
-        >
-          <Grid
-            container
+        {reply_list != '' && reply_list != null
+          ? reply_list &&
+            reply_list.map((Replys) => (
+              <div style={{ margin: '10px' }}>
+                <Reply Replys={Replys} />
+              </div>
+            ))
+          : null}
+
+        <Grid container style={{ marginBottom: '10px' }}>
+          <Grid item sm />
+          <Grid item sm='1'>
+            <h4 className={style.reply_button} onClick={openReplyTextEditor}>
+              Reply
+            </h4>
+          </Grid>
+        </Grid>
+
+        {reply == true ? (
+          <div
             style={{
-              display: 'flex',
+              width: '80%',
               alignItems: 'center',
-              border: '1px solid #78B5F3',
-              borderRadius: '10px',
+              marginLeft: '10%',
+              padding: '2px',
+              height: '40px',
             }}
           >
-            <div style={{ marginLeft: '5px', marginRight: '5px' }}>
-              <Avatar
-                size='small'
-                className={style.blue}
-                style={{ height: '30px', width: '30px', fontSize: '10px' }}
-              >
-                PK
-              </Avatar>
-            </div>
-            <div>
-              <label className={style.text_color}>swaggy</label>
-            </div>
-            <Divider
-              orientation='vertical'
-              flexItem
-              style={{ backgroundColor: 'blue', margin: '10px' }}
-            />
-            <Grid item sm={6}>
-              <ThemeProvider>
-                <InputBase
-                  onChange={handleReply}
-                  placeholder='Type your reply here...'
-                  id='mui-theme-provider-standard-input'
-                  style={{ fontSize: '12px', width: '100%' }}
-                />
-              </ThemeProvider>
-            </Grid>
-            <Grid item sm />
+            <Grid
+              container
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                border: '1px solid #78B5F3',
+                borderRadius: '10px',
+              }}
+            >
+              <div style={{ marginLeft: '5px', marginRight: '5px' }}>
+                <Avatar
+                  size='small'
+                  className={style.blue}
+                  style={{ height: '30px', width: '30px', fontSize: '10px' }}
+                >
+                  PK
+                </Avatar>
+              </div>
+              <div>
+                <label className={style.text_color}>swaggy</label>
+              </div>
+              <Divider
+                orientation='vertical'
+                flexItem
+                style={{ backgroundColor: 'blue', margin: '10px' }}
+              />
+              <Grid item sm={6}>
+                <ThemeProvider>
+                  <InputBase
+                    onChange={handleReply}
+                    placeholder='Type your reply here...'
+                    id='mui-theme-provider-standard-input'
+                    style={{ fontSize: '12px', width: '100%' }}
+                  />
+                </ThemeProvider>
+              </Grid>
+              <Grid item sm />
               <Button
                 variant='contained'
                 size='small'
@@ -201,10 +206,11 @@ const GriviencesDetailContainer = (props) => {
               >
                 Post
               </Button>
-          </Grid>
-        </div>
-      ) : null}
-    </Paper>
+            </Grid>
+          </div>
+        ) : null}
+      </Paper>
+    </div>
   );
 };
 

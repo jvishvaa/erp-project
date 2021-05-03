@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Box,
   Button,
@@ -10,7 +10,8 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateAllCategory } from '../../../redux/actions/discussionForumActions';
+import { updateAllCategory, editCategoryDataAction, editCategoryDataUpdated } from '../../../redux/actions/discussionForumActions';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const useStyles = makeStyles({
   paperStyles: {
@@ -61,6 +62,8 @@ const StyledTextField = withStyles({
 const CategoryEdit = ({cardData, hadleClose}) => {
   const classes = useStyles({});
   const categoryData = useSelector((state) => state.discussionReducers.editCategoryData);
+  const updateCategory = useSelector((state) => state.discussionReducers.updateCategory);
+  const { setAlert } = useContext(AlertNotificationContext);
   const dispatch = useDispatch();
   const [category, setCategory] = React.useState('');
   const [subCategory, setSubCategory] = React.useState('');
@@ -89,6 +92,20 @@ const CategoryEdit = ({cardData, hadleClose}) => {
   };
 
   React.useEffect(() => {
+    if(updateCategory !== ''){
+      const data = '';
+      setAlert('success', 'Category Updated');
+      hadleCloseEdit();
+      setActiveCategory(false);
+      setCategory('');
+      setSubCategory('');
+      setSubSubCategory('');
+      dispatch(editCategoryDataAction(data));
+      dispatch(editCategoryDataUpdated());
+    }
+  },[updateCategory]);
+
+  React.useEffect(() => {
     if(categoryData){
       setCategory(categoryData.category);
       setSubCategory(categoryData.sub_category_name);
@@ -108,9 +125,19 @@ const CategoryEdit = ({cardData, hadleClose}) => {
       const id = categoryData.sub_category_id;
       dispatch(updateAllCategory(params, id));
     }
-    if(subSubCategory !== categoryData.sub_sub_category_name) {
+    if(subSubCategory !== categoryData.sub_sub_category_name && activeCategory === categoryData.is_delete) {
       const id = categoryData.sub_sub_category_id;
       const params = {category_name: subSubCategory, category_type: "3", category_parent_id: categoryData.sub_category_id}
+      dispatch(updateAllCategory(params, id));
+    }
+    if(activeCategory !== categoryData.is_delete && subSubCategory === categoryData.sub_sub_category_name) {
+      const id = categoryData.sub_sub_category_id;
+      const params = {category_name: subSubCategory, category_type: "3", category_parent_id: categoryData.sub_category_id, is_delete: activeCategory}
+      dispatch(updateAllCategory(params, id));
+    }
+    if(activeCategory !== categoryData.is_delete && subSubCategory !== categoryData.sub_sub_category_name) {
+      const id = categoryData.sub_sub_category_id;
+      const params = {category_name: subSubCategory, category_type: "3", category_parent_id: categoryData.sub_category_id, is_delete: activeCategory}
       dispatch(updateAllCategory(params, id));
     }
   }
@@ -118,7 +145,7 @@ const CategoryEdit = ({cardData, hadleClose}) => {
   return (
     <Box className={classes.paperStyles}>
       <div className={classes.closeIcon}>
-        <CloseIcon onClick={hadleCloseEdit} />
+        <CloseIcon onClick={hadleCloseEdit} color="primary"/>
       </div>
       <StyledTextField
         id="outlined-basic"
