@@ -32,6 +32,7 @@ import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import TextField from '@material-ui/core/TextField';
 import moment from 'moment';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -94,7 +95,9 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
   const [roles, setRole] = useState([]);
   const [rolename, setRolename] = useState('');
   const [appointmentStatus, setAppointmentstatus] = useState(1);
-
+  const history = useHistory();
+  
+  
   console.log('userbranch:', localStorage.getItem('userDetails'));
   useEffect(() => {
     axiosInstance.get(endpoints.communication.roles).then((response) => {
@@ -141,11 +144,16 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
           branch: JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0],
         }
       )
+      
       .then((result) => {
         if (result.data.status_code === 200) {
           // setLoading(false);
           setAlert('success', result.data.message);
-          
+          // history.push({
+          //   pathname: '/appointments',
+          // });
+          handleGoBack();
+
         } else {
           // setLoading(false);
           setAlert('error', result.data.message);
@@ -320,6 +328,7 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
             className='custom_button_master'
             size='medium'
             type='submit'
+          
           >
             Book Appointment
           </Button>
