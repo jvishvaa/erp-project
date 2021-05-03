@@ -137,17 +137,20 @@ const CreateAssesment = ({
     const qMap = new Map();
 
     if (totalMarks < 0 || totalMarks > 1000) {
-      setAlert('error', 'Please enter valid marks.');
+      setAlert('warning', 'Please enter valid marks.');
       return;
     }
 
     if (testDuration < 0 || testDuration > 1440) {
-      setAlert('error', 'Please enter valid duration.');
+      setAlert('warning', 'Please enter valid duration.');
       return;
+    }
+    if (!instructions.length) {
+      return setAlert('warning', 'Please Enter Test Instruction ');
     }
 
     if (!selectedQuestionPaper?.id) {
-      setAlert('error', 'Please add a question paper.');
+      setAlert('warning', 'Please add a question paper.');
       return;
     }
 
@@ -235,11 +238,13 @@ const CreateAssesment = ({
     };
     try {
       if (instructions?.length) {
-        const response = await initCreateAssesment(reqObj);
+        const { results } = await initCreateAssesment(reqObj);
         resetForm();
-        setAlert('success', 'Test created successfully');
-      } else {
-        setAlert('Instructions are required.');
+        if (results?.status_code === 200) {
+          setAlert('success', results?.message);
+        } else {
+          setAlert('warning', results?.message);
+        }
       }
     } catch (e) {
       setAlert('error', 'Test creation failed');

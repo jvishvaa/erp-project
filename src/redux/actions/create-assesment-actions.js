@@ -33,6 +33,9 @@ export const createAssesment = (data) => async (dispatch) => {
       `${endpoints.assessmentErp.createAssessment}`,
       data
     );
+    if (response.data.status_code === 200) {
+      return { results: response.data };
+    }
     if (response.data.status_code !== 200) {
       throw new Error();
     }
