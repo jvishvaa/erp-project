@@ -81,7 +81,9 @@ const UpperGrade = (props) => {
   };
   const callingBranchAPI = () => {
     axiosInstance
-      .get('/erp_user/branch/', {})
+    .get(
+      `${endpoints.communication.branches}?session_year=${acadamicYearID}&module_id=${201}`
+    )
       .then((res) => {
         console.log(res.data.data , " branches ");
         setDataMap(res.data.data.results);

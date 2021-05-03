@@ -24,7 +24,7 @@ const GravienceHome = () => {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [gravienceList, setGravienceList] = useState([]);
   const [acadamicYearID, setAcadamicYear] = useState(1);
-  const [gradeID, setGradeID] = useState(1);
+  const [grivienceTypeID, setGrevienceTypeID] = useState(1);
   const [branchID, setBranchID] = useState(1);
   const [academicYear, setAcadamicYearName] = useState();
   const [gradeName, setGradeName] = useState();
@@ -41,7 +41,7 @@ const GravienceHome = () => {
 
   const getGrivienceData = async () => {
     await axiosInstance
-      .get(endpoints.grievances.listTickets + `?academic_year_id=${1}&branch_id=${1}&grievance_type_id${1}`, {
+      .get(endpoints.grievances.listTickets + `?academic_year_id=${acadamicYearID}&branch_id=${branchID}&grievance_type_id${grivienceTypeID}`, {
       // .get(endpoints.grievances.listTickets, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -82,7 +82,7 @@ const GravienceHome = () => {
   };
   const handlePassData = (
     acadamicYear_ID,
-    grade_ID,
+    gevienceType_ID,
     branch_ID,
     academic_Year,
     grade_Name,
@@ -90,12 +90,12 @@ const GravienceHome = () => {
     open_Dialog
   ) => {
     setAcadamicYear(acadamicYear_ID);
-    setGradeID(grade_ID);
+    setGrevienceTypeID(gevienceType_ID);
     setBranchID(branch_ID);
     setAcadamicYearName(academic_Year);
     setGradeName(grade_Name);
     setBranchName(branch_Name);
-    if (open_Dialog && acadamicYear_ID && grade_ID && branch_ID) {
+    if (open_Dialog && acadamicYear_ID && gevienceType_ID && branch_ID) {
       handleOpenForm();
     }
   };

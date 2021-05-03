@@ -38,6 +38,7 @@ import MessageTypeTable from './containers/master-management/message-type/messag
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
 import { fetchLoggedInUserDetails } from './redux/actions';
+import TeacherHomeWorkReport from './containers/homework/teacher-homework-report/teacherReport-index'
 import TeacherHomework from './containers/homework/teacher-homework';
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
@@ -568,6 +569,9 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/homework/teacher'>
                             {({ match }) => <TeacherHomework match={match} />}
+                          </Route>
+                          <Route exact path='/homework/teacher-report'>
+                            {({ match }) => <TeacherHomeWorkReport match={match} />}
                           </Route>
                           <Route exact path='/homework/add/:date/:subject/:id'>
                             {({ match }) => <AddHomework match={match} />}
