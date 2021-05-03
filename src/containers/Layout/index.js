@@ -966,6 +966,14 @@ const Layout = ({ children, history }) => {
         history.push('/time-table/student-view');
         break;
       }
+      case 'Book Appointment': {
+        history.push('/appointments');
+        break;
+      }
+      case 'Appointment Responder': {
+        history.push('/responder-view');
+        break;
+      }
       case 'Contact Us': {
         history.push('/contact-us');
         break;

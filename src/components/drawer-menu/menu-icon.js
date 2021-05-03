@@ -251,7 +251,7 @@ const menuIcon = (name) => {
       icon = <CalendarTodayIcon />;
       break;
     }
-    case 'BookAppointment': {
+    case 'Appointment': {
       icon = <ReceiptRoundedIcon />;
       break;
     }

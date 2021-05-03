@@ -69,7 +69,6 @@ const useStyles = makeStyles((theme) => ({
     height: '240px',
     borderRadius: '15px',
     marginLeft: '32px',
-    
   },
   cardstyles: {
     display: 'flex',
@@ -196,7 +195,6 @@ const Appointments = () => {
     console.log('evt', evt.target);
     console.log('index:', index);
   };
-  // const postRowClick = (id, basePath, record) => (record.editable ? 'edit' : 'edit');
 
   return (
     <>
@@ -226,117 +224,111 @@ const Appointments = () => {
             booking_mode={bookingModeID}
             message={message}
             handleGoBack={handleGoBack}
-
-            // setLoading={setLoading}
           />
         )}
         {tableFlag && !addFlag && !editFlag && (
           <Grid>
-           <MediaQuery minWidth={960}>
-           <paper className={classes.papermain}>
-              <img src={bookimage} style={{ width: 'inherit' }} />
-            </paper>
+            <MediaQuery minWidth={960}>
+              <paper className={classes.papermain}>
+                <img src={bookimage} style={{ width: 'inherit' }} />
+              </paper>
 
-            {data.map((item, index) => {
-              return (
-                <>
-                               
-                <Paper elevation={3} className={classes.paper}>
-                    <Grid container direction='row' style={{ marginLeft: 10 }}>
-                     
-                      <Grid item md={2}>
-                        <Typography variant='subtitle2'>Appointment With</Typography>
+              {data.map((item, index) => {
+                return (
+                  <>
+                    <Paper elevation={3} className={classes.paper}>
+                      <Grid container direction='row' style={{ marginLeft: 10 }}>
+                        <Grid item md={2}>
+                          <Typography variant='subtitle2'>Appointment With</Typography>
 
-                        <Typography>{item.role?.role_name} </Typography>
-                      </Grid>
-                      <Grid item md={1}>
-                        <img src={line} className={classes.lines} />
-                      </Grid>
+                          <Typography>{item.role?.role_name} </Typography>
+                        </Grid>
+                        <Grid item md={1}>
+                          <img src={line} className={classes.lines} />
+                        </Grid>
 
-                      <Grid item md={1}>
-                        <Typography variant='subtitle2'> Date </Typography>
-                        <Typography>{item.appointment_date}</Typography>
-                      </Grid>
-                      <Grid item md={1}>
-                        <img src={line} className={classes.lines} />
-                      </Grid>
+                        <Grid item md={1}>
+                          <Typography variant='subtitle2'> Date </Typography>
+                          <Typography>{item.appointment_date}</Typography>
+                        </Grid>
+                        <Grid item md={1}>
+                          <img src={line} className={classes.lines} />
+                        </Grid>
 
-                      <Grid item md={1}>
-                        <Typography variant='subtitle2'>Time</Typography>
-                        <Typography>
-                          {item.appointment_time ? item.appointment_time.slice(0, 5) : ''}
-                        </Typography>
-                      </Grid>
-                      <Grid item md={1}>
-                        {' '}
-                        <img src={line} className={classes.lines} />
-                      </Grid>
+                        <Grid item md={1}>
+                          <Typography variant='subtitle2'>Time</Typography>
+                          <Typography>
+                            {item.appointment_time
+                              ? item.appointment_time.slice(0, 5)
+                              : ''}
+                          </Typography>
+                        </Grid>
+                        <Grid item md={1}>
+                          {' '}
+                          <img src={line} className={classes.lines} />
+                        </Grid>
 
-                      <Grid item md={1}>
-                        <Typography variant='subtitle2'>Mode</Typography>
-                        <Typography> {item.booking_mode} </Typography>
+                        <Grid item md={1}>
+                          <Typography variant='subtitle2'>Mode</Typography>
+                          <Typography> {item.booking_mode} </Typography>
+                        </Grid>
+                        <Grid item md={1}>
+                          {' '}
+                          <img src={line} className={classes.lines} />
+                        </Grid>
+                        <Grid item md={1}>
+                          <Typography variant='subtitle2'>Status</Typography>
+                          <Typography> {item.appointment_status}</Typography>
+                        </Grid>
+                        <Grid item xs={12} md={1} sm={12}>
+                          {' '}
+                          <img src={line} className={classes.lines} />
+                        </Grid>
+                        <Grid item xs={12} md={1} sm={12}>
+                          <IconButton
+                            onClick={(e) =>
+                              handleEditAppointment(
+                                item.id,
+                                item.role,
+                                item.appointment_date,
+                                item.appointment_time,
+                                item.booking_mode,
+                                item.message
+                              )
+                            }
+                            title='Edit Appointmant'
+                          >
+                            <EditOutlinedIcon
+                              color='primary'
+                              className={classes.icon}
+                              fontSize='small'
+                            />
+                          </IconButton>
+                        </Grid>
                       </Grid>
-                      <Grid item md={1}>
-                        {' '}
-                        <img src={line} className={classes.lines} />
-                      </Grid>
-                      <Grid item md={1}>
-                        <Typography variant='subtitle2'>Status</Typography>
-                        <Typography> {item.appointment_status}</Typography>
-                      </Grid>
-                      <Grid item xs={12} md={1} sm={12}>
-                        {' '}
-                        <img src={line} className={classes.lines} />
-                      </Grid>
-                      <Grid item xs={12} md={1} sm={12}>
-                        <IconButton
-                          onClick={(e) =>
-                            handleEditAppointment(
-                              item.id,
-                              item.role,
-                              item.appointment_date,
-                              item.appointment_time,
-                              item.booking_mode,
-                              item.message
-                            )
-                          }
-                          title='Edit Appointmant'
-                        >
-                          <EditOutlinedIcon
-                            color='primary'
-                            className={classes.icon}
-                            fontSize='small'
-                          />
-                        </IconButton>
-                      </Grid>
-                    </Grid>          
-                    </Paper>        
-                
+                    </Paper>
+                  </>
+                );
+              })}
+              <div className='paginateData'>
+                <TablePagination
+                  component='div'
+                  className='customPagination'
+                  count={totalCount}
+                  rowsPerPage={limit}
+                  page={page - 1}
+                  nextIconButtonText='Next Page'
+                  onChangePage={handleChangePage}
+                  rowsPerPageOptions={false}
+                />
+              </div>
 
-                    </>
-              );
-            })}
-            <div className='paginateData'>
-              <TablePagination
-                component='div'
-                className='customPagination'
-                count={totalCount}
-                rowsPerPage={limit}
-                page={page - 1}
-                nextIconButtonText='Next Page'
-                onChangePage={handleChangePage}
-                rowsPerPageOptions={false}
-              />
-            </div>
-           
-               <div className={classes.cardstyles}>
-               <Card  style={{ marginLeft: '2%' ,width:'25%'}}>
+              <div className={classes.cardstyles}>
+                <Card style={{ marginLeft: '2%', width: '25%' }}>
                   <CardActionArea>
                     <CardMedia
                       component='img'
                       alt='Contemplative Reptile'
-                      
-                      // className={classes.imageStyles}
                       image={image}
                       title='Contemplative Reptile'
                     />
@@ -344,7 +336,6 @@ const Appointments = () => {
                   <CardActions>
                     <Button
                       variant='contained'
-                      
                       color='primary'
                       style={{ marginLeft: '20%', marginTop: '-3%' }}
                       onClick={handleAddAppointment}
@@ -354,27 +345,13 @@ const Appointments = () => {
                   </CardActions>
                 </Card>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <Card className='hove' style={{ marginLeft: '5%',width:'25%'}} >
+                <Card className='hove' style={{ marginLeft: '5%', width: '25%' }}>
                   <CardActionArea className='cardsStyles'>
-                    <div 
+                    <div
                       style={{
                         display: 'flex',
                         justifyContent: 'center',
                         marginTop: '12%',
-                       
                       }}
                     >
                       <Typography variant='h6' gutterBottom color='secondary'>
@@ -382,60 +359,51 @@ const Appointments = () => {
                         <strong>FRONT OFFICE EXECUTIVE</strong>{' '}
                       </Typography>
                     </div>{' '}
-                    <div >
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        
-                      >
-                        <strong>Available at these timings</strong> 
+                    <div style={{ marginTop: '5%' }}>
+                      <Typography variant='h5' gutterBottom color='secondary'>
+                        <strong>Available at these timings</strong>
                       </Typography>
                     </div>
-                    <div >
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        
-                      >
+                    <div>
+                      <Typography variant='h5' gutterBottom color='secondary'>
                         <strong>9:00am to 8:00pm</strong>
                       </Typography>
                     </div>
-                    <div >
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        
-                      >
-                         <strong>EST Monday - Friday</strong>
+                    <div>
+                      <Typography variant='h5' gutterBottom color='secondary'>
+                        <strong>EST Monday - Friday</strong>
                       </Typography>
                     </div>
-                    <div >
-                     
-                      <Typography
-                        variant='h6'
-                        gutterBottom
-                        color='secondary'
-                        
+                    <div>
+                      <Grid
+                        container
+                        direction='row'
+                        spacing={1}
+                        style={{ marginTop: '5%' }}
                       >
-                        <CallIcon color='secondary' fontSize='large' clss /> +91-1234567890
-                      </Typography>
+                        <Grid item md={2}></Grid>
+                        <Grid item md={2}>
+                          <Typography variant='h5' gutterBottom color='secondary'>
+                            <CallIcon color='secondary' fontSize='large' clss />
+                          </Typography>
+                        </Grid>
+                        <Grid item md={6}>
+                          <Typography variant='h6' gutterBottom color='secondary'>
+                            <strong>+91-1234567890</strong>
+                          </Typography>
+                        </Grid>
+                      </Grid>
                     </div>
-                    
                   </CardActionArea>
                 </Card>
-              
-             
-                <Card style={{ marginLeft: '5%',width:'25%'}}>
+
+                <Card className='hove' style={{ marginLeft: '5%', width: '25%' }}>
                   <CardActionArea className='cardsStyles'>
                     <div
                       style={{
                         display: 'flex',
                         justifyContent: 'center',
                         marginTop: '12%',
-                       
                       }}
                     >
                       <Typography variant='h6' gutterBottom color='secondary'>
@@ -443,59 +411,51 @@ const Appointments = () => {
                         <strong>OPS MANAGEMENT</strong>{' '}
                       </Typography>
                     </div>{' '}
-                    <div >
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
-                         <strong>Available at these timings</strong>
+                    <div style={{ marginTop: '5%' }}>
+                      <Typography variant='h5' gutterBottom color='secondary'>
+                        <strong>Available at these timings</strong>
                       </Typography>
                     </div>
-                    <div >
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
+                    <div>
+                      <Typography variant='h5' gutterBottom color='secondary'>
                         <strong>9:00am to 8:00pm</strong>
                       </Typography>
                     </div>
-                    <div >
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
-                         <strong>EST Monday - Friday</strong>
+                    <div>
+                      <Typography variant='h5' gutterBottom color='secondary'>
+                        <strong>EST Monday - Friday</strong>
                       </Typography>
                     </div>
-                    <div >
-                      
-                      <Typography
-                        variant='h6'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
+                    <div>
+                      <Grid
+                        container
+                        direction='row'
+                        spacing={1}
+                        style={{ marginTop: '5%' }}
                       >
-                        <CallIcon color='secondary' fontSize='large' clss /> +91-1234567890
-                      </Typography>
+                        <Grid item md={2}></Grid>
+                        <Grid item md={2}>
+                          <Typography variant='h5' gutterBottom color='secondary'>
+                            <CallIcon color='secondary' fontSize='large' clss />
+                          </Typography>
+                        </Grid>
+                        <Grid item md={6}>
+                          <Typography variant='h6' gutterBottom color='secondary'>
+                            <strong>+91-1234567890</strong>
+                          </Typography>
+                        </Grid>
+                      </Grid>
                     </div>
-                    
                   </CardActionArea>
                 </Card>
-             
-                <Card style={{ marginLeft: '5%',width:'25%'}}>
+
+                <Card className='hove' style={{ marginLeft: '5%', width: '25%' }}>
                   <CardActionArea className='cardsStyles'>
                     <div
                       style={{
                         display: 'flex',
                         justifyContent: 'center',
                         marginTop: '12%',
-                        
                       }}
                     >
                       <Typography variant='h6' gutterBottom color='secondary'>
@@ -503,194 +463,145 @@ const Appointments = () => {
                         <strong>CAMPUS IN-CHARGE</strong>{' '}
                       </Typography>
                     </div>{' '}
-                    <div >
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
-                        <strong>Available at these timings</strong> 
+                    <div style={{ marginTop: '5%' }}>
+                      <Typography variant='h5' gutterBottom color='secondary'>
+                        <strong>Available at these timings</strong>
                       </Typography>
                     </div>
-                    <div >
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
+                    <div>
+                      <Typography variant='h5' gutterBottom color='secondary'>
                         <strong>9:00am to 8:00pm</strong>
                       </Typography>
                     </div>
-                    <div >
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
-                        <strong>EST Monday - Friday</strong> 
+                    <div>
+                      <Typography variant='h5' gutterBottom color='secondary'>
+                        <strong>EST Monday - Friday</strong>
                       </Typography>
                     </div>
-                    <div >
-                     
-                      <Typography
-                        variant='h6'
-                        gutterBottom
-                        color='secondary'
-                        
+                    <div>
+                      <Grid
+                        container
+                        direction='row'
+                        spacing={1}
+                        style={{ marginTop: '5%' }}
                       >
-                        <CallIcon color='secondary' fontSize='large' clss /> +91-1234567890
-                      </Typography>
+                        <Grid item md={2}></Grid>
+                        <Grid item md={2}>
+                          <Typography variant='h5' gutterBottom color='secondary'>
+                            <CallIcon color='secondary' fontSize='large' clss />
+                          </Typography>
+                        </Grid>
+                        <Grid item md={6}>
+                          <Typography variant='h6' gutterBottom color='secondary'>
+                            <strong>+91-1234567890</strong>
+                          </Typography>
+                        </Grid>
+                      </Grid>
                     </div>
-                   
                   </CardActionArea>
                 </Card>
-              
-
-
-
-
-
-                
-               </div>
-              
-
-
-
-
-
-
-
-
-              
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+              </div>
             </MediaQuery>
 
             <MediaQuery maxWidth={959}>
-           <paper className={classes.papermain}>
-              <img src={bookimage} style={{ width: 'inherit' }} />
-            </paper>
+              <paper className={classes.papermain}>
+                <img src={bookimage} style={{ width: 'inherit' }} />
+              </paper>
 
-            {data.map((item, index) => {
-              return (
-                <>
-                
-              
-              
-                
-                <Paper elevation={3} className={classes.paper}>
-                <Grid container direction='row' style={{ marginRight: 20 }}>
-                      {/* <Grid item md={1}></Grid> */}
-                      {/* <Grid sm={1} md={1}></Grid> */}
-                      <Grid item xs={9} sm={9} md={2} style={{ marginLeft: 40 }}>
-                        <Typography variant='subtitle2' style={{ display: 'inline' }}>
-                          Appointment With :
-                          <Typography style={{ display: 'inline' }}>
-                            {item.role?.role_name}{' '}
+              {data.map((item, index) => {
+                return (
+                  <>
+                    <Paper elevation={3} className={classes.paper}>
+                      <Grid container direction='row' style={{ marginRight: 20 }}>
+                        <Grid item xs={9} sm={9} md={2} style={{ marginLeft: 40 }}>
+                          <Typography variant='subtitle2' style={{ display: 'inline' }}>
+                            Appointment With :
+                            <Typography style={{ display: 'inline' }}>
+                              {item.role?.role_name}{' '}
+                            </Typography>
                           </Typography>
-                        </Typography>
-                        <Typography variant='subtitle2'>
-                          Date {'      '}:
-                          <Typography style={{ display: 'inline', marginLeft: 60 }}>
-                            {item.appointment_date}
+                          <Typography variant='subtitle2'>
+                            Date {'      '}:
+                            <Typography style={{ display: 'inline', marginLeft: 60 }}>
+                              {item.appointment_date}
+                            </Typography>
                           </Typography>
-                        </Typography>
-                        <Typography variant='subtitle2'>
-                          Time:
-                          <Typography style={{ display: 'inline', marginLeft: 60 }}>
-                            {item.appointment_time
-                              ? item.appointment_time.slice(0, 5)
-                              : ''}
+                          <Typography variant='subtitle2'>
+                            Time:
+                            <Typography style={{ display: 'inline', marginLeft: 60 }}>
+                              {item.appointment_time
+                                ? item.appointment_time.slice(0, 5)
+                                : ''}
+                            </Typography>
                           </Typography>
-                        </Typography>
-                        <Typography variant='subtitle2' style={{ display: 'inline' }}>
-                          Mode:
-                          <Typography style={{ display: 'inline', marginLeft: 55 }}>
-                            {item.booking_mode}{' '}
+                          <Typography variant='subtitle2' style={{ display: 'inline' }}>
+                            Mode:
+                            <Typography style={{ display: 'inline', marginLeft: 55 }}>
+                              {item.booking_mode}{' '}
+                            </Typography>
                           </Typography>
-                        </Typography>
-                        <Typography variant='subtitle2'>
-                          Status :
-                          <Typography style={{ display: 'inline', marginLeft: 55 }}>
-                            {item.appointment_status}{' '}
+                          <Typography variant='subtitle2'>
+                            Status :
+                            <Typography style={{ display: 'inline', marginLeft: 55 }}>
+                              {item.appointment_status}{' '}
+                            </Typography>
                           </Typography>
-                        </Typography>
-                      </Grid>
+                        </Grid>
 
-                      <Grid
-                        item
-                        xs={1}
-                        md={1}
-                        sm={1}
-                        container
-                        justify='center'
-                        alignItems='center'
-                      >
-                        <IconButton
-                          onClick={(e) =>
-                            handleEditAppointment(
-                              item.id,
-                              item.role,
-                              item.appointment_date,
-                              item.appointment_time,
-                              item.booking_mode,
-                              item.message
-                            )
-                          }
-                          title='Edit Appointmant'
+                        <Grid
+                          item
+                          xs={1}
+                          md={1}
+                          sm={1}
+                          container
+                          justify='center'
+                          alignItems='center'
                         >
-                          <EditOutlinedIcon
-                            color='primary'
-                            className={classes.icon}
-                            fontSize='small'
-                          />
-                        </IconButton>
+                          <IconButton
+                            onClick={(e) =>
+                              handleEditAppointment(
+                                item.id,
+                                item.role,
+                                item.appointment_date,
+                                item.appointment_time,
+                                item.booking_mode,
+                                item.message
+                              )
+                            }
+                            title='Edit Appointmant'
+                          >
+                            <EditOutlinedIcon
+                              color='primary'
+                              className={classes.icon}
+                              fontSize='small'
+                            />
+                          </IconButton>
+                        </Grid>
                       </Grid>
-                    </Grid>
-       
-                    </Paper>        
-                
+                    </Paper>
+                  </>
+                );
+              })}
+              <div className='paginateData'>
+                <TablePagination
+                  component='div'
+                  className='customPagination'
+                  count={totalCount}
+                  rowsPerPage={limit}
+                  page={page - 1}
+                  nextIconButtonText='Next Page'
+                  onChangePage={handleChangePage}
+                  rowsPerPageOptions={false}
+                />
+              </div>
 
-                    </>
-              );
-            })}
-             <div className='paginateData'>
-              <TablePagination
-                component='div'
-                className='customPagination'
-                count={totalCount}
-                rowsPerPage={limit}
-                page={page - 1}
-                nextIconButtonText='Next Page'
-                onChangePage={handleChangePage}
-                rowsPerPageOptions={false}
-              />
-            </div>
-
-            <div >
-               <Card >
+              <div>
+                <Card>
                   <CardActionArea>
                     <CardMedia
                       component='img'
                       alt='Contemplative Reptile'
-                      style={{ borderRadius:'25px'}}
+                      style={{ borderRadius: '25px' }}
                       // className={classes.imageStyles}
                       image={image}
                       title='Contemplative Reptile'
@@ -699,7 +610,6 @@ const Appointments = () => {
                   <CardActions>
                     <Button
                       variant='contained'
-                      
                       color='primary'
                       style={{ marginLeft: '20%', marginTop: '-3%' }}
                       onClick={handleAddAppointment}
@@ -709,94 +619,57 @@ const Appointments = () => {
                   </CardActions>
                 </Card>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <Card  style={{
-                        
-                        marginTop: '12%'
-                      }}>
+                <Card
+                  className='hove'
+                  style={{
+                    marginTop: '12%',
+                  }}
+                >
                   <CardActionArea className='cardsStyles'>
                     <div
                       style={{
                         display: 'flex',
                         justifyContent: 'center',
                         marginTop: '1%',
-                        
                       }}
                     >
                       <Typography variant='h6' gutterBottom color='secondary'>
                         {' '}
-                       <strong>FRONT OFFICE EXECUTIVE</strong> {' '}
+                        <strong>FRONT OFFICE EXECUTIVE</strong>{' '}
                       </Typography>
                     </div>{' '}
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        
-                      >
+                      <Typography variant='h5' gutterBottom color='secondary'>
                         <strong>Available at these timings</strong>
                       </Typography>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        
-                      >
+                      <Typography variant='h5' gutterBottom color='secondary'>
                         <strong>9:00am to 8:00pm</strong>
                       </Typography>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        
-                      >
+                      <Typography variant='h5' gutterBottom color='secondary'>
                         <strong>EST Monday - Friday</strong>
                       </Typography>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
+                      <Typography variant='h5' gutterBottom color='secondary'>
                         <CallIcon color='secondary' fontSize='large' clss />
                       </Typography>
-                      <Typography
-                        variant='h6'
-                        gutterBottom
-                        color='secondary'
-                        
-                      >
-                       <strong>+91-1234567890</strong> 
+                      <Typography variant='h6' gutterBottom color='secondary'>
+                        <strong>+91-1234567890</strong>
                       </Typography>
                     </div>
-                    
                   </CardActionArea>
                 </Card>
-              
-             
-                <Card  style={{
-                        
-                        marginTop: '12%'
-                      }}>
+
+                <Card
+                  className='hove'
+                  style={{
+                    marginTop: '12%',
+                  }}
+                >
                   <CardActionArea className='cardsStyles'>
                     <div
                       style={{
@@ -811,61 +684,37 @@ const Appointments = () => {
                       </Typography>
                     </div>{' '}
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
+                      <Typography variant='h5' gutterBottom color='secondary'>
                         <strong>Available at these timings</strong>
                       </Typography>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
+                      <Typography variant='h5' gutterBottom color='secondary'>
                         <strong>9:00am to 8:00pm</strong>
                       </Typography>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
-                       <strong>EST Monday - Friday</strong> 
+                      <Typography variant='h5' gutterBottom color='secondary'>
+                        <strong>EST Monday - Friday</strong>
                       </Typography>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
+                      <Typography variant='h5' gutterBottom color='secondary'>
                         <CallIcon color='secondary' fontSize='large' clss />
                       </Typography>
-                      <Typography
-                        variant='h6'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
+                      <Typography variant='h6' gutterBottom color='secondary'>
                         <strong>+91-1234567890</strong>
                       </Typography>
                     </div>
-                   
                   </CardActionArea>
                 </Card>
-             
-                <Card style={{
-                        
-                        marginTop: '12%'
-                      }}>
+
+                <Card
+                  className='hove'
+                  style={{
+                    marginTop: '12%',
+                  }}
+                >
                   <CardActionArea className='cardsStyles'>
                     <div
                       style={{
@@ -880,72 +729,33 @@ const Appointments = () => {
                       </Typography>
                     </div>{' '}
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
+                      <Typography variant='h5' gutterBottom color='secondary'>
                         <strong>Available at these timings</strong>
                       </Typography>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
+                      <Typography variant='h5' gutterBottom color='secondary'>
                         <strong>9:00am to 8:00pm</strong>
                       </Typography>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
+                      <Typography variant='h5' gutterBottom color='secondary'>
                         <strong>EST Monday - Friday</strong>
                       </Typography>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Typography
-                        variant='h5'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
+                      <Typography variant='h5' gutterBottom color='secondary'>
                         <CallIcon color='secondary' fontSize='large' clss />
                       </Typography>
-                      <Typography
-                        variant='h6'
-                        gutterBottom
-                        color='secondary'
-                        // className='cardStyles'
-                      >
+                      <Typography variant='h6' gutterBottom color='secondary'>
                         <strong>+91-1234567890</strong>
                       </Typography>
                     </div>
-                   
                   </CardActionArea>
                 </Card>
-              
-
-
-
-
-
-                
-               </div>
+              </div>
             </MediaQuery>
-            
-
-
-              
-
           </Grid>
-       
         )}
       </Layout>
     </>

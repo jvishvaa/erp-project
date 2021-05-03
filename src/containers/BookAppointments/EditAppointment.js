@@ -316,7 +316,7 @@ const EditAppointment = ({
             size='medium'
             type='submit'
           >
-            Book Appointment
+            update Book Appointment
           </Button>
         </Grid>
       </Grid>

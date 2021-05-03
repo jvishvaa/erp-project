@@ -44,6 +44,11 @@ export default {
     tableData: '/academic/time_table/',
     editTableData: '/academic/assign_class_periods/',
   },
+  communicationRoles: {
+    roles: '/academic/booked-appointment-role-list/',
+    
+  },
+
   communication: {
     roles: '/erp_user/roles/',
     branches: '/erp_user/branch/',
