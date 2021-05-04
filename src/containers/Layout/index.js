@@ -423,6 +423,10 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/bulk-upload');
         break;
       }
+      case 'Bulk Status Upload': {
+        history.push('/finance/BulkOperation/BulkUploadStatus');
+        break;
+      }
       case 'View User': {
         history.push('/user-management/view-users');
         break;
