@@ -41,8 +41,8 @@ const GravienceHome = () => {
 
   const getGrivienceData = async () => {
     await axiosInstance
-      // .get(endpoints.grievances.listTickets + `?academic_year_id=${1}&branch_id=${1}&grade_id=${1}&section_id=${1}""start_date""end_date" grade_id=${1}`, {
-      .get(endpoints.grievances.listTickets, {
+      .get(endpoints.grievances.listTickets + `?academic_year_id=${1}&branch_id=${1}&grievance_type_id${1}`, {
+      // .get(endpoints.grievances.listTickets, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -101,7 +101,7 @@ const GravienceHome = () => {
   };
 
   useEffect(() => {
-    getGrivienceData();
+    // getGrivienceData();
   }, []);
 
   return (
@@ -109,16 +109,16 @@ const GravienceHome = () => {
       <div className='griviences-breadcrums-container'>
         <CommonBreadcrumbs componentName='Griviences' />
       </div>
-      {setMobileView ? <UpperGrade handlePassData={handlePassData} /> : <></>}
+      {setMobileView ? <UpperGrade handlePassData={handlePassData} getGrivienceData={getGrivienceData} /> : <></>}
       <div className='Greviences-container'>
         {/* {setMobileView ? } */}
-        <Dialog
+        {/* <Dialog
           open={openGrievanceReportForm}
           onClose={handleCloseForm}
           aria-labelledby='form-dialog-title'
         >
           <GenerateReport close={handleCloseForm} />
-        </Dialog>
+        </Dialog> */}
 
         <div
           style={{
