@@ -109,6 +109,7 @@ const UpperGrade = (props) => {
     }
   };
   const handleGenerateData = () => {
+    props.getGrivienceData();
     props.handlePassData(
       acadamicYearID,
       gevienceTypeID,
