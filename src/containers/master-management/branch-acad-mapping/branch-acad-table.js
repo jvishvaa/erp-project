@@ -405,7 +405,7 @@ const BranchAcadTable = () => {
                             <TableCell className={classes.tableCell}>
                               {branch?.branch?.branch_code}
                             </TableCell>
-                            <TableCell className={classes.tableCell}>
+                            <TableCell className={classes.tableCell} style={{maxWidth: '250px'}}>
                               {branch?.branch?.address}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
