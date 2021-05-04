@@ -15,6 +15,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import Box from '@material-ui/core/Box';
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import Tooltip from '@material-ui/core/Tooltip';
+import './Styles.scss';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
   display: {
     display: 'inline-block',
   },
+
 }));
 
 const ResponderView = () => {
@@ -263,8 +265,8 @@ const ResponderView = () => {
           <CommonBreadcrumbs componentName='ResponderView' />
         </Grid>
         <form>
-          <Grid container direction='row' spacing={2}>
-            <Grid item xs={10} sm={5} md={3} lg={2}>
+          <Grid container direction='row' spacing={2} style={{width: '100%'}}>
+            <Grid item xs={10} sm={5} md={3}className='responderV' lg={2}>
               <Autocomplete
                 id='size-small-standard'
                 size='small'

@@ -494,7 +494,7 @@ const Layout = ({ children, history }) => {
         history.push('/course-price');
         break;
       }
-      case 'Lesson Plan Mapping': {
+      case 'Content Mapping': {
         history.push('/subject/grade');
         break;
       }

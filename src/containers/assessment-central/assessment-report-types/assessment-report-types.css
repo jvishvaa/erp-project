@@ -1,0 +1,16 @@
+.MuiTableRow-root .teacherNameParent {
+  width: 25%;
+  overflow: scroll;
+}
+
+.teacherNameChild {
+  width: 100%;
+  padding: 1px auto;
+}
+
+.teacherNameChild:hover {
+  transform: scale(1.1);
+  transition-duration: 200ms;
+  color: #ff6b6b;
+  font-weight: bold;
+}

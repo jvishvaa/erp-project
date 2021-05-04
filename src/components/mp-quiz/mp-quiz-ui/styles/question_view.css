@@ -8,6 +8,7 @@
 }
 .whole-container>div{
     /* border: 2px solid springgreen; */
+    border: none !important;
     height: 50%;
     min-height: 50%;
     max-height: 50%;
@@ -18,8 +19,9 @@
     min-height: 38.5vh;
     max-height: 38.5vh;
     align-items: stretch;
+
 }
-.question-container{
+.question-container.mp-quiz{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -34,6 +36,7 @@
     /* height: 50%;
     min-height: 50%;
     max-height: 50%; */
+    border: none !important;
 }
 
 .fetched__status--container {
@@ -101,7 +104,7 @@
     transform: translateY(-15%);
 }
 
-.options-container{
+.options-container_new{
     position: absolute !important;
     left: 50%;
     top: 50%;
@@ -210,7 +213,7 @@
 
 @media only screen and (max-width: 900px) {
 
-    .question-container{
+    .question-container.mp-quiz{
         transform: translate(-50%, -100%)
     }
 
@@ -230,7 +233,7 @@
     }
 
 
-    .options-container{
+    .options-container_new{
         transform: translate(-50%,-10%);
     }
 

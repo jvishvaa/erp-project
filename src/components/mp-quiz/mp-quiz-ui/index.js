@@ -12,7 +12,8 @@ const { token: userAuthToken } =
 
 function MpQuizHome(props) {
   // const { lobbyIdentifier: lobbyIdentifierFProps = 907 } = props || {};
-  const { params: { lobby_identifier: lobbyIdentifierFProps } = {} } = constants;
+  // const { params: { lobby_identifier: lobbyIdentifierFProps } = {} } = constants;
+  const { params: { lobby_identifier: lobbyIdentifierFProps } = {} } = props || {}
   const [lobbyIdentifier] = React.useState(lobbyIdentifierFProps);
 
   const socketUrl = quizSocketURLEndpoint
@@ -27,7 +28,7 @@ function MpQuizHome(props) {
   // });
   return (
     <QuizContextHome socketUrl={socketUrl}>
-      <MpQuiz />
+      <MpQuiz params={props.params} />
     </QuizContextHome>
   );
 }

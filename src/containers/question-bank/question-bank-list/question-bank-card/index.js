@@ -28,6 +28,10 @@ const QuestionBankCard = ({
   tabMapId,
   tabQueLevel,
   tabTopicId,
+  tabYearId,
+  tabGradeId,
+  tabChapterId,
+  tabIsErpCentral,
   setLoading,
   index,
   periodColor,
@@ -56,43 +60,76 @@ const QuestionBankCard = ({
     setShowMenu(false);
     setShowPeriodIndex();
   };
-
   const handleViewMore = () => {
     setLoading(true);
     // axiosInstance
     //   .get(`${endpoints.questionBank.viewMoreData}?question=${period.id}`)
-    axios
-      .get(`${endpoints.questionBank.viewMoreData}?question=${period?.id}`, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          setLoading(false);
-          setViewMore(true);
-          setViewMoreData(result?.data?.result);
-          // setState({editData:result.data.result})
-          setPeriodDataForView(period);
-          setSelectedIndex(index);
-          setPeriodColor(true);
-        } else {
+    if (period?.is_central) {
+      axios
+        .get(`${endpoints.questionBank.viewMoreData}?question=${period?.id}`, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        })
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            setLoading(false);
+            setViewMore(true);
+            setViewMoreData(result?.data?.result);
+            // setState({editData:result.data.result})
+            setPeriodDataForView(period);
+            setSelectedIndex(index);
+            setPeriodColor(true);
+          } else {
+            setLoading(false);
+            setViewMore(false);
+            setViewMoreData({});
+            setPeriodDataForView([]);
+            setAlert('error', result?.data?.message);
+            setSelectedIndex(-1);
+            setPeriodColor(true);
+          }
+        })
+        .catch((error) => {
           setLoading(false);
           setViewMore(false);
           setViewMoreData({});
           setPeriodDataForView([]);
-          setAlert('error', result?.data?.message);
+          setAlert('error', error?.message);
           setSelectedIndex(-1);
           setPeriodColor(true);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setViewMore(false);
-        setViewMoreData({});
-        setPeriodDataForView([]);
-        setAlert('error', error?.message);
-        setSelectedIndex(-1);
-        setPeriodColor(true);
-      });
+        });
+    }
+    if (!period.is_central) {
+      axiosInstance
+        .get(`${endpoints.questionBank.erpViewMoreData}?question=${period?.id}`)
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            setLoading(false);
+            setViewMore(true);
+            setViewMoreData(result?.data?.result);
+            // setState({editData:result.data.result})
+            setPeriodDataForView(period);
+            setSelectedIndex(index);
+            setPeriodColor(true);
+          } else {
+            setLoading(false);
+            setViewMore(false);
+            setViewMoreData({});
+            setPeriodDataForView([]);
+            setAlert('error', result?.data?.message);
+            setSelectedIndex(-1);
+            setPeriodColor(true);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          setViewMore(false);
+          setViewMoreData({});
+          setPeriodDataForView([]);
+          setAlert('error', error?.message);
+          setSelectedIndex(-1);
+          setPeriodColor(true);
+        });
+    }
   };
 
   const questionType = (type) => {
@@ -121,27 +158,28 @@ const QuestionBankCard = ({
         return '--';
     }
   };
-
   function extractContent(s) {
     const span = document.createElement('span');
     span.innerHTML = s;
     return span.textContent || span.innerText;
   }
   const handleDelete = (obj) => {
-    axios
-      .put(
-        `${endpoints.questionBank.deleteQuestion}`,
-        {
-          question: obj.id,
-          is_delete: true,
-        },
-        {
-          headers: { 'x-api-key': 'vikash@12345#1231' },
-        }
-      )
+    axiosInstance
+      .put(`${endpoints.questionBank.erpQuestionPublishing}`, {
+        question: obj.id,
+        is_delete: true,
+      })
       .then((result) => {
         if (result.data.status_code === 200) {
-          handlePeriodList(tabQueTypeId, tabQueCatId, tabMapId, tabQueLevel, tabTopicId);
+          handlePeriodList(tabQueTypeId,
+            tabQueCatId,
+            tabMapId,
+            tabQueLevel,
+            tabTopicId,
+            tabYearId,
+            tabGradeId,
+            tabChapterId,
+            tabIsErpCentral);
           setAlert('success', 'Question Deleted Successfully');
         } else {
           setAlert('error', 'ERROR!');
@@ -207,43 +245,28 @@ const QuestionBankCard = ({
             </Box>
           )}
         </Grid>
-        <Grid item xs={4} className={classes.textRight}>
-          <Box>
-            <span
-              className='period_card_menu'
-              onClick={() => handlePeriodMenuOpen(index)}
-              onMouseLeave={handlePeriodMenuClose}
-            >
-              <IconButton className='moreHorizIcon' color='primary'>
-                <MoreHorizIcon />
-              </IconButton>
-              {showPeriodIndex === index && showMenu ? (
-                <div className='tooltipContainer'>
-                  <span className='tooltiptext'>
-                    {/* Edit */}
-                    {/* <IconButton onClick={handleBulkDownload} className="bulkDownloadIconPeriodCard">
-                        <SvgIcon
-                          component={() => (
-                            <img
-                              style={{ height: '21px', width: '21px' }}
-                              src={downloadAll}
-                              alt='downloadAll'
-                            />
-                          )}
-                        />
-                      </IconButton> */}
-                  </span>
-                  <span className='tooltiptext'>
-                    <div onClick={(e) => handleDelete(period)}>Delete</div>
-
-                    {/* <Button>Delete</Button>
-                    <Button>Edit</Button> */}
-                  </span>
-                </div>
-              ) : null}
-            </span>
-          </Box>
-        </Grid>
+        {!period.is_central && (
+          <Grid item xs={4} className={classes.textRight}>
+            <Box>
+              <span
+                className='period_card_menu'
+                onClick={() => handlePeriodMenuOpen(index)}
+                onMouseLeave={handlePeriodMenuClose}
+              >
+                <IconButton className='moreHorizIcon' color='primary'>
+                  <MoreHorizIcon />
+                </IconButton>
+                {showPeriodIndex === index && showMenu ? (
+                  <div className='tooltipContainer'>
+                    <span className='tooltiptext'>
+                      <div onClick={(e) => handleDelete(period)}>Delete</div>
+                    </span>
+                  </div>
+                ) : null}
+              </span>
+            </Box>
+          </Grid>
+        )}
         <Grid item xs={12} sm={12} />
         <Grid item xs={6}>
           <Box>

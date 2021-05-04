@@ -86,7 +86,6 @@ export default {
     feedback: '/erp_user/onlineclass_attendancecheck/',
     updateTutor: '/erp_user/update_tutor_email/',
     PreQuiz: '/mp_quiz/online-class-details/',
-    
   },
   masterManagement: {
     subjects: '/erp_user/subjects-list/',
@@ -123,6 +122,8 @@ export default {
     chapter: '/academic/chapters/',
     ViewChapter: '/academic/chapters/',
     editChapter: '/academic/',
+    createTopic: '/assessment/topics/',
+    updateTopic: '/assessment/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -241,7 +242,7 @@ export default {
     GiveAwardAPI: '/academic/create-award/',
     commentList: '/academic/comments-list/',
     replyToAnswer: '/academic/create-answer-replay/',
-    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
     deletePost: '/academic/',
   },
   circular: {
@@ -314,12 +315,11 @@ export default {
     getBatchesApi: '/erp_user/student_online_class/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
-  questionPaper:{
-    FETCHQP:`${baseURLCentral}/assessment/test-list/`,
-    QuestionsInQP:'/mp_quiz/mp_questions_list/',
-    AssignQP:'/mp_quiz/'
+  questionPaper: {
+    FETCHQP: `${baseURLCentral}/assessment/test-list/`,
+    QuestionsInQP: '/mp_quiz/mp_questions_list/',
+    AssignQP: '/mp_quiz/',
   },
-
 
   eventBat: {
     getPaginatedCategories: '/academic/list_event_categories_p/', //get
@@ -344,24 +344,43 @@ export default {
     updatedeleteContact: '/academic/update_contact/',
   },
 
+  assessmentErp: {
+    chapterList: '/assessment/chapters/',
+    topicList: '/assessment/topics/',
+    subjectList: '/assessment/subjects-list/',
+    createQuestion: '/assessment/create-question/',
+    fileUpload: '/assessment/file-upload/',
+    fileRemove: '/assessment/file-delete/',
+    listQuestionPaper: '/assessment/list-question-paper/',
+    listAssessment: '/assessment/test/',
+    testList: '/assessment/test-list/',
+    questionPaperViewMore: `/assessment/<question-paper-id>/qp-questions-list/`,
+    publishQuestionPaper: `/assessment/<question-paper-id>/update-status-question-paper/`,
+    createQuestionPaper: `/assessment/question-paper/`,
+    createAssessment:'/assessment/test/',
+    deleteAssessmentTest:'/assessment/',
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+  },
+
   assessment: {
-    assessmentResultAnalysis: `${baseURLCentral}/assessment/student-reports/`,
-    questionPaperList: `/academic/assessment-list/`,
+    assessmentResultAnalysis: `/assessment/student-reports/`,
+    questionPaperList: `/assessment/assessment-list/`,
     viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
-    userTests: `${baseURLCentral}/assessment/user-tests/`, // ?user=20&subject=1,
-    userTestComparisions: `${baseURLCentral}/assessment/student-test-comparison/`, // ?test_1=7&user=20&test_2=10
+    userTests: `/assessment/user-tests/`, // ?user=20&subject=1,
+    userTestComparisions: `/assessment/student-test-comparison/`, // ?test_1=7&user=20&test_2=10
     userSpecificSubjects: `/academic/users-subjects/`, // ?module_id=112
-    userAssessmentQuestionAnalysis: `${baseURLCentral}/assessment/category_analysis_report/`, // ?user=3446&assessment_id=3
+    userAssessmentQuestionAnalysis: `/assessment/category_analysis_report/`, // ?user=3446&assessment_id=3
     assessmentAnalysisTeacherExcel: `${baseURLCentral}/assessment/teacher-report/`, // ?type=1
     userAssessmentSubmission: `${baseURLCentral}/assessment/user_response/`,
-    fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
+    userAssessmentTestSubmission:`assessment/submit-test/`,
+    fetchAssessmentQuestionPapersQuestions: `/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
   assessmentReportTypes: {
-    reportSectionWise: `${baseURLCentral}/assessment/report-section-wise/`,
-    reportTopicWise: `${baseURLCentral}/assessment/report-topic-wise/`,
-    reportClassAverage: `${baseURLCentral}/assessment/report-class-average/`,
-    reportTopicStudentAverage: `${baseURLCentral}/assessment/report-topic-student-average/`,
+    reportSectionWise: `/assessment/report-section-wise/`,
+    reportTopicWise: `/assessment/report-topic-wise/`,
+    reportClassAverage: `/assessment/report-class-average/`,
+    reportTopicStudentAverage: `/assessment/report-topic-student-average/`,
   },
   publish: {
     ebook: `erp_user/publication/`,
@@ -381,13 +400,21 @@ export default {
     uploadFile: `${baseURLCentral}/assessment/upload-question-file/`,
     removeFile: `${baseURLCentral}/assessment/delete-s3file/`,
     deleteQuestion: `${baseURLCentral}/assessment/publish-question/`,
+    subjectList: '/assessment/subjects-list/',
+    chapterList: '/assessment/chapters/',
+    topicList: '/assessment/topics/',
+    centralTopicList: `${baseURLCentral}/assessment/topics-list/`,
+    erpQuestionList: '/assessment/questions-list/',
+    erpViewMoreData: '/assessment/question-details/',
+    erpQuestionPublishing: '/assessment/publish-question/',
   },
   assementQP: {
     assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,
     assementViewmore: `${baseURLCentral}/assessment/`,
   },
   createQuestionApis: {
-    topicList: `${baseURLCentral}/assessment/topic/`,
+    // topicList: `${baseURLCentral}/assessment/topic/`,
+    topicList: `${baseURLCentral}/assessment/topics-list/`,
     questionType: `${baseURLCentral}/assessment/question_type/`,
     createQuestion: `${baseURLCentral}/assessment/create-question/`,
   },

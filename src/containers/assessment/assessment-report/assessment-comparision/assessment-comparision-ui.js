@@ -155,7 +155,7 @@ const TestComparisionUI = () => {
             </Grid>
           </Grid>
           <br />
-          <Button onClick={fetchComparionData} className={classes.comparenowBtn}>
+          <Button variant="contained" color="primary" onClick={fetchComparionData} className={classes.comparenowBtn}>
             {fetching ? 'fetching...' : 'Compare Now'}
           </Button>
           <hr className={classes.hr} />

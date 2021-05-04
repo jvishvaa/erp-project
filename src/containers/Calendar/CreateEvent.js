@@ -92,25 +92,28 @@ const CreateEvent = () => {
       border: 'solid lightgrey',
       borderRadius: 10,
     },
+    button: {
+      display: 'flex',
+      justifyContent: 'space-evenly',
+      width: '40%',
+    },
   }));
 
-  const handleStartDateChange = (e,value) => {
+  const handleStartDateChange = (e, value) => {
     // console.log('startdate:', date.toISOString().split('T')[0]);
     // const endDate = getDaysAfter(date.clone(), 6);
-    console.log("startDate:",value)
- 
+    console.log('startDate:', value);
+
     setStartDate(value);
-   
   };
   const returnFunction = (time) => {
     console.log('timeeeee:', time);
   };
 
-  const handleEndDateChange = (e,value) => {
-    console.log('endDate',value);
+  const handleEndDateChange = (e, value) => {
+    console.log('endDate', value);
     setEndDate(value);
   };
-  
 
   const handleChange = (event) => {
     setdiscripValue(event.target.value);
@@ -127,13 +130,44 @@ const CreateEvent = () => {
     console.log('Starttime:', startTime);
     console.log('Endtime:', endTime);
     console.log('evne:', eventType);
-    console.log('branch:', selectedBranch.id,);
-    console.log('grade:', selectedGrade.id,);
-    console.log('sect:', selectedSection.id,);
-    
-    console.log('testing1branch',selectedBranch)
-    console.log('testing2grade',selectedGrade)
-    console.log('testing3grade',selectedSection)
+    console.log('branch:', selectedBranch.id);
+    console.log('grade:', selectedGrade.id);
+    console.log('sect:', selectedSection.id);
+
+    console.log('testing1branch', selectedBranch);
+    console.log('testing2grade', selectedGrade);
+    console.log('testing3grade', selectedSection);
+    if (!eventType) {
+      setAlert('warning', 'select event type');
+      return;
+    }
+    if (!evnetcategoryType) {
+      setAlert('warning', 'select event category');
+      return;
+    }
+    console.log(state);
+    if (state === undefined) {
+      setAlert('warning', 'please give event name');
+      return;
+    }
+    if (!selectedAcademicYear) {
+      setAlert('warning', 'Select Academic Year');
+      return;
+    }
+    console.log(selectedBranch.length, '===============');
+    if (selectedBranch.length == 0) {
+      console.log(selectedBranch.length, '===============');
+      setAlert('warning', 'Select Branch');
+      return;
+    }
+    if (selectedGrade.length == 0) {
+      setAlert('warning', 'Select Grade');
+      return;
+    }
+    if (selectedSection.length == 0) {
+      setAlert('warning', 'Select Section');
+      return;
+    }
     axiosInstance
       .post(endpoints.CreateEvent.CreateEvent, {
         event_name: state.event_name,
@@ -144,32 +178,21 @@ const CreateEvent = () => {
         end_time: endTime,
         event_category: eventType,
 
-        academic_year:selectedAcademicYear.id,
+        academic_year: selectedAcademicYear.id,
         branch: selectedBranch.branch.id,
         grade: selectedGrade.grade_id,
         section: selectedSection.section_id,
-        
+
         is_full_day: allDay,
         is_first_half: firstHalf,
         is_second_half: secondHalf,
       })
-      
       .then((result) => {
-        
-        
-      if (result.data.status_code === 200) {
-        
         setAlert('success', result.data.message);
-        
+
         history.push({
           pathname: '/attendance-calendar/teacher-view',
-        })
-       
-
-      } else {
-       
-        setAlert('error', result.data.message);
-        }
+        });
       })
       .catch((error) => {
         setLoading(false);
@@ -319,7 +342,7 @@ const CreateEvent = () => {
   return (
     <>
       <Layout>
-        <div className='profile_breadcrumb_wrapper' >
+        <div className='profile_breadcrumb_wrapper'>
           <CommonBreadcrumbs componentName='Create Event' />
         </div>
         <form>
@@ -335,14 +358,13 @@ const CreateEvent = () => {
                   className='arrow'
                   size='small'
                   id='combo-box-demo'
-                
                   name='event_category'
                   labelplaceholder='Event_Type'
                   onChange={handleEventTypeChange}
                   options={evnetcategoryType || ''}
                   getOptionLabel={(option) => option.event_category_name || ''}
                   renderInput={(params) => (
-                    <TextField {...params} label='Event Type'   required variant='outlined' />
+                    <TextField {...params} label='Event Type' variant='outlined' />
                   )}
                 />
               </Grid>
@@ -352,7 +374,6 @@ const CreateEvent = () => {
                   name='event_name'
                   variant='outlined'
                   size='small'
-                  required
                   id='eventname'
                   label='Event Name'
                   fullWidth
@@ -395,7 +416,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Academic Year'
-                      required
                       name='Academic'
                       placeholder='Academic Year'
                     />
@@ -408,17 +428,14 @@ const CreateEvent = () => {
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
-                    
                     setSelectedBranch([]);
                     if (value) {
                       // const ids = value.map((el)=>el)
                       const selectedId = value.branch.id;
-                     
+
                       setSelectedBranch(value);
                       callApi(
-                        `${endpoints.academics.grades}?session_year=${
-                          selectedAcademicYear.id
-                        }&branch_id=${selectedId}&module_id=${moduleId}`,
+                        `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId}&module_id=${moduleId}`,
                         'gradeList'
                       );
                     }
@@ -437,7 +454,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Branch'
-                      required
                       name='branch'
                       placeholder='Branch'
                     />
@@ -457,7 +473,7 @@ const CreateEvent = () => {
                       // console.log(selectedBranch.branch)
                       const branchId = selectedBranch.branch.id;
                       setSelectedGrade(value);
-                      console.log("the grade",value.grade_id);
+                      console.log('the grade', value.grade_id);
                       callApi(
                         `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
                         'section'
@@ -477,7 +493,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Grade'
-                      required
                       name='grade'
                       placeholder='Grade'
                     />
@@ -511,7 +526,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Section'
-                      required
                       name='section'
                       placeholder='Section'
                     />
@@ -524,126 +538,137 @@ const CreateEvent = () => {
                 <Divider />
               </Grid>
             </Grid>
-            <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={5} lg={3} sm={6} xs={10}  className='arrow-1'>
+            <Grid
+              container
+              direction='row'
+              spacing={2}
+              className={classes.root}
+              alignItems='center'
+            >
+              <Grid item xs={12} md={2} className='arrow-1'>
                 <MuiPickersUtilsProvider utils={MomentUtils}>
-                
+                  <KeyboardDatePicker
+                    size='small'
+                    variant='dialog'
+                    format='YYYY-MM-DD'
+                    margin='none'
+                    // className='button'
+                    id='date-picker'
+                    label='StartDate'
+                    minDate={new Date()}
+                    name='start_date'
+                    inputVariant='outlined'
+                    // className='arrow conte'
+                    onChange={handleStartDateChange}
+                    // handleStartDateChange={handleStartDateChange}
+                    // handleEndDateChange={handleEndDateChange}
 
-<KeyboardDatePicker
-                  size='small'
-                  variant='dialog'
-                  format='YYYY-MM-DD'
-                  margin='none'
-                  // className='button'
-                  id='date-picker'
-                  required
-                  label='StartDate'
-                  minDate={new Date()}
-              name="start_date"
-                  inputVariant='outlined'
-                  className='arrow conte'
-                  onChange={handleStartDateChange}
-                  // handleStartDateChange={handleStartDateChange}
-                      // handleEndDateChange={handleEndDateChange}
-                
-                  value={startDate}
-                  style={{ background: 'white',width: '50%'}}
-                  // onChange={handleDateChange}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                  }}
-                />
-              </MuiPickersUtilsProvider>
-             
-              <MuiPickersUtilsProvider utils={MomentUtils}>
-                <KeyboardDatePicker
-                  size='small'
-                  variant='dialog'
-                  format='YYYY-MM-DD'
-                  required
-                  margin='none'
-                  // className='button'
-                  id='date-picker'
-                  label='EndDate'
-                  minDate={new Date()}
-                  variant='standard'
-                name="end_date"
-                  inputVariant='outlined'
-                  className='arrow conte'
-                  onChange={handleEndDateChange}
-                  value={endDate}
-                  style={{ background: 'white',width: '50%'}}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                  }}
-                />
-              </MuiPickersUtilsProvider>
+                    value={startDate}
+                    className='dropdownIcon'
+                    // style={{ background: 'white', width: '50%' }}
+                    // onChange={handleDateChange}
+                    KeyboardButtonProps={{
+                      'aria-label': 'change date',
+                    }}
+                  />
+                </MuiPickersUtilsProvider>
               </Grid>
-                  <Grid item md={1} sm={1}>
-                    <img src={LineAtt} className='im' />
-                  </Grid>
-                  <Grid item lg={1} md={1} sm={1}>
-                    <FormControlLabel
-                      style={{ marginLeft: '-110%',marginTop:'-20%' }}
-                      name
-                      control={<Checkbox onChange={is_full_day} />}
-                      label='All Day'
-                      variant='outlined'
-                      labelPlacement='top'
-                      
-                    />
-                  </Grid>
-            </Grid>
-            <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={5} lg={3} sm={6} xs={10}  className='arrow-1'>
-                <div className='time-ranger-border'>
-                  <MuiPickersUtilsProvider utils={MomentUtils}>
-                    <KeyboardTimePicker
-                      size='small'
-                      style={{ width: '50%', marginTop:'-5%' }}
-                      className='arrow conte'
-                      id='time-picker'
-                      label='Start Time'
-                      required
-                      inputVariant='outlined'
-                      name='start_time'
-                      value={selectedStartTime}
-                      onChange={handleStartTimeChange}
-                      
-                      KeyboardButtonProps={{
-                        'aria-label': 'change time',
-                      }}
-                    />
-                  </MuiPickersUtilsProvider>
-                  <MuiPickersUtilsProvider utils={MomentUtils}>
-                    <KeyboardTimePicker
-                      size='small'
-                      // margin="normal"
-                      style={{ width: '50%', marginTop:'-5%' }}
-                      className='helperText'
-                      className='arrow conte'
-                      id='time-picker'
-                      
-                      label='End Time'
-                      name='end_time'
-                      inputVariant='outlined'
-                      value={selectedEndTime}
-                      onChange={handleEndTimeChange}
-                      // helperText={helperTextMsg}
-
-                      KeyboardButtonProps={{
-                        'aria-label': 'change time',
-                      }}
-                    />
-                  </MuiPickersUtilsProvider>
-                </div>
+              <Grid item xs={12} md={2}>
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <KeyboardDatePicker
+                    size='small'
+                    variant='dialog'
+                    format='YYYY-MM-DD'
+                    margin='none'
+                    // className='button'
+                    id='date-picker'
+                    label='EndDate'
+                    minDate={new Date()}
+                    variant='standard'
+                    name='end_date'
+                    inputVariant='outlined'
+                    // className='arrow conte'
+                    className='dropdownIcon'
+                    onChange={handleEndDateChange}
+                    value={endDate}
+                    // style={{ background: 'white', width: '50%' }}
+                    KeyboardButtonProps={{
+                      'aria-label': 'change date',
+                    }}
+                  />
+                </MuiPickersUtilsProvider>
               </Grid>
               <Grid item md={1} sm={1}>
-                <img src={LineAtt} className='im' style={{marginTop:'-60px'}} />
+                <img src={LineAtt} className='im' />
+              </Grid>
+              <Grid item lg={1} md={1} sm={1}>
+                <FormControlLabel
+                  style={{ marginLeft: '-110%', marginTop: '-20%' }}
+                  name
+                  control={<Checkbox onChange={is_full_day} />}
+                  label='All Day'
+                  variant='outlined'
+                  labelPlacement='top'
+                />
+              </Grid>
+            </Grid>
+            <Grid
+              container
+              direction='row'
+              spacing={2}
+              className={classes.root}
+              alignItems='center'
+            >
+              <Grid item xs={12} md={2}>
+                {/* <div className='time-ranger-border'> */}
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <KeyboardTimePicker
+                    size='small'
+                    // style={{ width: '50%', marginTop: '-5%' }}
+                    // className='arrow conte'
+                    className='dropdownIcon'
+                    id='time-picker'
+                    label='Start Time'
+                    inputVariant='outlined'
+                    name='start_time'
+                    value={selectedStartTime}
+                    onChange={handleStartTimeChange}
+                    KeyboardButtonProps={{
+                      'aria-label': 'change time',
+                    }}
+                  />
+                </MuiPickersUtilsProvider>
+                {/* </div> */}
+              </Grid>
+              <Grid item xs={12} md={2}>
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <KeyboardTimePicker
+                    size='small'
+                    // margin="normal"
+                    // style={{ width: '50%', marginTop: '-5%' }}
+                    className='helperText'
+                    className='arrow conte'
+                    className='dropdownIcon'
+                    id='time-picker'
+                    label='End Time'
+                    name='end_time'
+                    inputVariant='outlined'
+                    value={selectedEndTime}
+                    onChange={handleEndTimeChange}
+                    // helperText={helperTextMsg}
+
+                    KeyboardButtonProps={{
+                      'aria-label': 'change time',
+                    }}
+                  />
+                </MuiPickersUtilsProvider>
+              </Grid>
+              <Grid item md={1} sm={1}>
+                <img src={LineAtt} className='im' style={{ marginTop: '-60px' }} />
               </Grid>
               <Grid item md={1} sm={2}>
                 <FormControlLabel
-                  style={{ marginLeft: '-110%', marginTop:'-35%' }}
+                  style={{ marginLeft: '-110%', marginTop: '-35%' }}
                   value='top'
                   control={<Checkbox onChange={is_first_half} />}
                   label='1st Half'
@@ -653,7 +678,7 @@ const CreateEvent = () => {
               </Grid>
               <Grid item md={1} sm={2}>
                 <FormControlLabel
-                  style={{ marginLeft: '-125%',marginTop:'-35%' }}
+                  style={{ marginLeft: '-125%', marginTop: '-35%' }}
                   value='top'
                   control={<Checkbox onChange={is_second_half} />}
                   label='2nd Half'
@@ -674,7 +699,6 @@ const CreateEvent = () => {
                   label='ADD Event Description'
                   labelwidth='170'
                   name='description'
-                  required
                   fullWidth
                   onChange={handleChange}
                   multiline
@@ -683,18 +707,24 @@ const CreateEvent = () => {
                 />
               </Grid>
             </Grid>
-            <Grid container direction='row' className={classes.root }>
-              <Grid item md={2} lg={1} xs={12} >
+            <Grid container direction='row' className={classes.root}>
+              {/* <Grid item md={1} lg={1} xs={12}> */}
+              <div className={classes.button}>
                 <Button variant='contained' onClick={onunHandleClearAll}>
                   Clear All
                 </Button>
-              </Grid>
-              <Grid item md={2} lg={1} xs={12}>
-                <Button variant='contained' color='primary' onClick={handleBackButtonClick} style={{ marginLeft: '5%'}}>
+                {/* </Grid> */}
+                {/* <Grid item md={2} lg={1} xs={12}> */}
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={handleBackButtonClick}
+                  style={{ marginLeft: '5%' }}
+                >
                   Go Back
                 </Button>
-              </Grid>
-              <Grid item md={2} lg={2} xs={12}>
+                {/* </Grid> */}
+                {/* <Grid item md={1} lg={1} xs={12}> */}
                 <Button
                   variant='contained'
                   type='submit'
@@ -704,24 +734,24 @@ const CreateEvent = () => {
                 >
                   SAVE EVENT
                 </Button>
-              </Grid>
+                {/* </Grid> */}
+              </div>
             </Grid>
           </MediaQuery>
           <MediaQuery maxWidth={784}>
             <Grid container direction='row' spacing={2} className={classes.root}>
               <Grid item md={4} lg={2} sm={6} xs={12}>
-              <Autocomplete
+                <Autocomplete
                   className='arrow'
                   size='small'
                   id='combo-box-demo'
                   name='event_category'
                   labelplaceholder='Event_Type'
-                 
                   onChange={handleEventTypeChange}
                   options={evnetcategoryType || ''}
                   getOptionLabel={(option) => option.event_category_name || ''}
                   renderInput={(params) => (
-                    <TextField {...params} label='Event Type'  required variant='outlined' />
+                    <TextField {...params} label='Event Type' variant='outlined' />
                   )}
                 />
               </Grid>
@@ -731,7 +761,6 @@ const CreateEvent = () => {
                   name='event_name'
                   variant='outlined'
                   size='small'
-                  required
                   id='eventname'
                   label='Event Name'
                   fullWidth
@@ -773,7 +802,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Academic Year'
-                      required
                       placeholder='Academic Year'
                     />
                   )}
@@ -791,9 +819,7 @@ const CreateEvent = () => {
                       const selectedId = value.branch.id;
                       setSelectedBranch(value);
                       callApi(
-                        `${endpoints.academics.grades}?session_year=${
-                          selectedAcademicYear.id
-                        }&branch_id=${selectedId}&module_id=${moduleId}`,
+                        `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId}&module_id=${moduleId}`,
                         'gradeList'
                       );
                     }
@@ -812,7 +838,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Branch'
-                      required
                       placeholder='Branch'
                     />
                   )}
@@ -850,7 +875,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Grade'
-                      required
                       placeholder='Grade'
                     />
                   )}
@@ -883,7 +907,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Section'
-                      required
                       placeholder='Section'
                     />
                   )}
@@ -896,60 +919,56 @@ const CreateEvent = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-            <Grid item md={2} lg={3} sm={12} xs={12}>
-              <div className='time-ranger-border'>
-              <MuiPickersUtilsProvider utils={MomentUtils}>
-                
+              <Grid item md={2} lg={3} sm={12} xs={12}>
+                <div className='time-ranger-border'>
+                  <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <KeyboardDatePicker
+                      size='small'
+                      // variant='dialog'
+                      format='YYYY-MM-DD'
+                      margin='none'
+                      // className='button'
+                      id='date-picker'
+                      label='StartDate'
+                      minDate={new Date()}
+                      name='start_date'
+                      inputVariant='outlined'
+                      className='arrow conte'
+                      onChange={handleStartDateChange}
+                      // handleStartDateChange={handleStartDateChange}
+                      // handleEndDateChange={handleEndDateChange}
 
-                <KeyboardDatePicker
-                                  size='small'
-                                  // variant='dialog'
-                                  format='YYYY-MM-DD'
-                                  margin='none'
-                                  // className='button'
-                                  id='date-picker'
-                                  label='StartDate'
-                                  required
-                                  minDate={new Date()}
-                                  name="start_date"
-                                  inputVariant='outlined'
-                                  className='arrow conte'
-                                  onChange={handleStartDateChange}
-                                  // handleStartDateChange={handleStartDateChange}
-                                      // handleEndDateChange={handleEndDateChange}
-                                
-                                  value={startDate}
-                                  style={{ background: 'white',width: '50%' }}
-                                  // onChange={handleDateChange}
-                                  KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                  }}
-                                />
-                              </MuiPickersUtilsProvider>
-                             
-                              <MuiPickersUtilsProvider utils={MomentUtils}>
-                                <KeyboardDatePicker
-                                  size='small'
-                                  variant='dialog'
-                                  format='YYYY-MM-DD'
-                                  margin='none'
-                                  required
-                                  // className='button'
-                                  id='date-picker'
-                                  label='EndDate'
-                                  minDate={new Date()}
-                                  variant='standard'
-                              name="end_date"
-                                  inputVariant='outlined'
-                                  className='arrow conte'
-                                  onChange={handleEndDateChange}
-                                  value={endDate}
-                                  style={{ background: 'white',width: '50%'}}
-                                  KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                  }}
-                                />
-                              </MuiPickersUtilsProvider>
+                      value={startDate}
+                      style={{ background: 'white', width: '50%' }}
+                      // onChange={handleDateChange}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
+                    />
+                  </MuiPickersUtilsProvider>
+
+                  <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <KeyboardDatePicker
+                      size='small'
+                      variant='dialog'
+                      format='YYYY-MM-DD'
+                      margin='none'
+                      // className='button'
+                      id='date-picker'
+                      label='EndDate'
+                      minDate={new Date()}
+                      variant='standard'
+                      name='end_date'
+                      inputVariant='outlined'
+                      className='arrow conte'
+                      onChange={handleEndDateChange}
+                      value={endDate}
+                      style={{ background: 'white', width: '50%' }}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
+                    />
+                  </MuiPickersUtilsProvider>
                 </div>
               </Grid>
             </Grid>
@@ -971,22 +990,18 @@ const CreateEvent = () => {
                 />
               </Grid>
               <Grid item md={2} lg={3} sm={12} xs={12}>
-              <div className='time-ranger-border'>
+                <div className='time-ranger-border'>
                   <MuiPickersUtilsProvider utils={MomentUtils}>
                     <KeyboardTimePicker
                       size='small'
-                     
-
                       style={{ width: '50%' }}
                       className='arrow conte'
                       id='time-picker'
                       label='Start Time'
-                      required
                       inputVariant='outlined'
                       name='start_time'
                       value={selectedStartTime}
                       onChange={handleStartTimeChange}
-                      
                       KeyboardButtonProps={{
                         'aria-label': 'change time',
                       }}
@@ -1000,7 +1015,6 @@ const CreateEvent = () => {
                       className='helperText'
                       className='arrow conte'
                       id='time-picker'
-                      
                       label='End Time'
                       name='end_time'
                       inputVariant='outlined'
@@ -1023,13 +1037,13 @@ const CreateEvent = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' className={classes.root}>
+              {/* <div className={classes.button}> */}
               <Grid item md={6} xs={12}>
                 <TextField
                   id='outlined-multiline-static'
                   label='ADD Event Description'
                   labelwidth='170'
                   name='description'
-                  required
                   fullWidth
                   onChange={handleChange}
                   multiline
@@ -1063,6 +1077,7 @@ const CreateEvent = () => {
                   Go Back
                 </Button>
               </Grid>
+              {/* </div> */}
             </Grid>
           </MediaQuery>
         </form>

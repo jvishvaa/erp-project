@@ -35,7 +35,7 @@ const assessmentResultHookProps = {
   // defaultQueryParamObj: {},
   fetchOnLoad: false,
   includeAuthtoken: true,
-  isCentral: true,
+  isCentral: false,
   APIDataKeyName: 'result',
 };
 

@@ -399,7 +399,7 @@ function CategoryPage() {
                     <StyledTab label='Active' value='active' />
                     <StyledTab label='In-active' value='inactive' />
                     <Typography className={classes.numberofDiscussionText}>
-                      Number of discussion : {discussion}
+                      Number of Categories : {totalCount}
                     </Typography>
                   </StyledTabs>
                   <Divider />

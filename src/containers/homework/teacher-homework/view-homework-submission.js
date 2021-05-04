@@ -416,7 +416,7 @@ const ViewHomework = withRouter(
                                     key={`homework_student_question_attachment_${i}`}
                                     fileUrl={url}
                                     fileName={`Attachment-${i + 1}`}
-                                    urlPrefix={`${endpoints.s3}/homework`}
+                                    urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                     index={i}
                                     actions={actions}
                                     onOpenInPenTool={openInPenTool}
@@ -435,7 +435,7 @@ const ViewHomework = withRouter(
                               <SRLWrapper>
                                 {collatedSubmissionFiles.map((url, i) => (
                                   <img
-                                    src={`${endpoints.s3}/homework/${url}`}
+                                    src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                     onError={(e) => {
                                       e.target.src = placeholder;
                                     }}
@@ -484,7 +484,7 @@ const ViewHomework = withRouter(
                                   key={`homework_student_question_attachment_${i}`}
                                   fileUrl={url}
                                   fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.s3}/homework`}
+                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                   index={i}
                                   actions={['preview', 'download', 'delete']}
                                   onOpenInPenTool={openInPenTool}
@@ -505,7 +505,7 @@ const ViewHomework = withRouter(
                                   collatedQuestionState.corrected_submission.map(
                                     (url, i) => (
                                       <img
-                                        src={`${endpoints.s3}/homework/${url}`}
+                                        src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                         onError={(e) => {
                                           e.target.src = placeholder;
                                         }}
