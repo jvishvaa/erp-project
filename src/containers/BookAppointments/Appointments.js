@@ -34,6 +34,7 @@ import Loading from '../../components/loader/loader';
 import line from '../../assets/images/line.svg';
 import MediaQuery from 'react-responsive';
 import CallIcon from '@material-ui/icons/Call';
+import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import MessageIcon from '@material-ui/icons/Message';
 import { DriveEtaRounded } from '@material-ui/icons';
 
@@ -65,13 +66,16 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
   },
   card: {
-    width: '270px',
-    height: '240px',
-    borderRadius: '15px',
-    marginLeft: '32px',
+    width: '20%',
+    height: 'auto',
+    borderRadius: '10px',
+    marginLeft: '2%',
+    boxShadow:
+      'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px',
   },
   cardstyles: {
     display: 'flex',
+    // justifyContent: 'space-between',
   },
 
   paper: {
@@ -104,6 +108,7 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     backgroundColor: 'white',
     borderRadius: 20,
+    padding: '5px',
   },
 }));
 const Appointments = () => {
@@ -172,6 +177,7 @@ const Appointments = () => {
         console.log('count', response.data.data.count);
         setTotalCount(response.data.data.count);
       });
+    axiosInstance.get();
   }, [page, goBackFlag]);
 
   useEffect(() => {
@@ -324,11 +330,12 @@ const Appointments = () => {
               </div>
 
               <div className={classes.cardstyles}>
-                <Card style={{ marginLeft: '2%', width: '25%' }}>
+                <Card className={classes.card}>
                   <CardActionArea>
                     <CardMedia
                       component='img'
                       alt='Contemplative Reptile'
+                      style={{ padding: '15px' }}
                       image={image}
                       title='Contemplative Reptile'
                     />
@@ -337,15 +344,21 @@ const Appointments = () => {
                     <Button
                       variant='contained'
                       color='primary'
-                      style={{ marginLeft: '20%', marginTop: '-3%' }}
+                      style={{
+                        marginLeft: '20%',
+                        color: 'white',
+                        fontWeight: '600',
+                        borderRadius: '5px',
+                      }}
                       onClick={handleAddAppointment}
                     >
-                      BookAppointment
+                      Book Appointment
                     </Button>
                   </CardActions>
                 </Card>
 
-                <Card className='hove' style={{ marginLeft: '5%', width: '25%' }}>
+                {/* <Card className='hove' style={{ marginLeft: '5%', width: '25%' }}> */}
+                <Card className={classes.card}>
                   <CardActionArea className='cardsStyles'>
                     <div
                       style={{
@@ -384,7 +397,7 @@ const Appointments = () => {
                         <Grid item md={2}></Grid>
                         <Grid item md={2}>
                           <Typography variant='h5' gutterBottom color='secondary'>
-                            <CallIcon color='secondary' fontSize='large' clss />
+                            <CallIcon color='secondary' fontSize='medium' clss />
                           </Typography>
                         </Grid>
                         <Grid item md={6}>
@@ -394,10 +407,30 @@ const Appointments = () => {
                         </Grid>
                       </Grid>
                     </div>
+                    <div>
+                      <Grid
+                        container
+                        direction='row'
+                        spacing={1}
+                        style={{ marginTop: '5%' }}
+                      >
+                        <Grid item md={2}></Grid>
+                        <Grid item md={2}>
+                          <Typography variant='h5' gutterBottom color='secondary'>
+                            <WhatsAppIcon color='secondary' fontSize='medium' clss />
+                          </Typography>
+                        </Grid>
+                        <Grid item md={6}>
+                          <Typography variant='h6' gutterBottom color='secondary'>
+                            <strong>Send Whatsapp</strong>
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </div>
                   </CardActionArea>
                 </Card>
 
-                <Card className='hove' style={{ marginLeft: '5%', width: '25%' }}>
+                <Card className={classes.card}>
                   <CardActionArea className='cardsStyles'>
                     <div
                       style={{
@@ -436,7 +469,7 @@ const Appointments = () => {
                         <Grid item md={2}></Grid>
                         <Grid item md={2}>
                           <Typography variant='h5' gutterBottom color='secondary'>
-                            <CallIcon color='secondary' fontSize='large' clss />
+                            <CallIcon color='secondary' fontSize='medium' clss />
                           </Typography>
                         </Grid>
                         <Grid item md={6}>
@@ -446,10 +479,30 @@ const Appointments = () => {
                         </Grid>
                       </Grid>
                     </div>
+                    <div>
+                      <Grid
+                        container
+                        direction='row'
+                        spacing={1}
+                        style={{ marginTop: '5%' }}
+                      >
+                        <Grid item md={2}></Grid>
+                        <Grid item md={2}>
+                          <Typography variant='h5' gutterBottom color='secondary'>
+                            <WhatsAppIcon color='secondary' fontSize='medium' clss />
+                          </Typography>
+                        </Grid>
+                        <Grid item md={6}>
+                          <Typography variant='h6' gutterBottom color='secondary'>
+                            <strong>Send Whatsapp</strong>
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </div>
                   </CardActionArea>
                 </Card>
 
-                <Card className='hove' style={{ marginLeft: '5%', width: '25%' }}>
+                <Card className={classes.card}>
                   <CardActionArea className='cardsStyles'>
                     <div
                       style={{
@@ -488,12 +541,32 @@ const Appointments = () => {
                         <Grid item md={2}></Grid>
                         <Grid item md={2}>
                           <Typography variant='h5' gutterBottom color='secondary'>
-                            <CallIcon color='secondary' fontSize='large' clss />
+                            <CallIcon color='secondary' fontSize='medium' clss />
                           </Typography>
                         </Grid>
                         <Grid item md={6}>
                           <Typography variant='h6' gutterBottom color='secondary'>
                             <strong>+91-1234567890</strong>
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </div>
+                    <div>
+                      <Grid
+                        container
+                        direction='row'
+                        spacing={1}
+                        style={{ marginTop: '5%' }}
+                      >
+                        <Grid item md={2}></Grid>
+                        <Grid item md={2}>
+                          <Typography variant='h5' gutterBottom color='secondary'>
+                            <WhatsAppIcon color='secondary' fontSize='medium' clss />
+                          </Typography>
+                        </Grid>
+                        <Grid item md={6}>
+                          <Typography variant='h6' gutterBottom color='secondary'>
+                            <strong>Send Whatsapp</strong>
                           </Typography>
                         </Grid>
                       </Grid>
@@ -655,11 +728,31 @@ const Appointments = () => {
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <Typography variant='h5' gutterBottom color='secondary'>
-                        <CallIcon color='secondary' fontSize='large' clss />
+                        <CallIcon color='secondary' fontSize='medium' clss />
                       </Typography>
                       <Typography variant='h6' gutterBottom color='secondary'>
                         <strong>+91-1234567890</strong>
                       </Typography>
+                    </div>
+                    <div>
+                      <Grid
+                        container
+                        direction='row'
+                        spacing={1}
+                        style={{ marginTop: '5%' }}
+                      >
+                        <Grid item md={2}></Grid>
+                        <Grid item md={2}>
+                          <Typography variant='h5' gutterBottom color='secondary'>
+                            <WhatsAppIcon color='secondary' fontSize='medium' clss />
+                          </Typography>
+                        </Grid>
+                        <Grid item md={6}>
+                          <Typography variant='h6' gutterBottom color='secondary'>
+                            <strong>Send Whatsapp</strong>
+                          </Typography>
+                        </Grid>
+                      </Grid>
                     </div>
                   </CardActionArea>
                 </Card>
@@ -700,11 +793,31 @@ const Appointments = () => {
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <Typography variant='h5' gutterBottom color='secondary'>
-                        <CallIcon color='secondary' fontSize='large' clss />
+                        <CallIcon color='secondary' fontSize='small' clss />
                       </Typography>
                       <Typography variant='h6' gutterBottom color='secondary'>
                         <strong>+91-1234567890</strong>
                       </Typography>
+                    </div>
+                    <div>
+                      <Grid
+                        container
+                        direction='row'
+                        spacing={1}
+                        style={{ marginTop: '5%' }}
+                      >
+                        <Grid item md={2}></Grid>
+                        <Grid item md={2}>
+                          <Typography variant='h5' gutterBottom color='secondary'>
+                            <WhatsAppIcon color='secondary' fontSize='medium' clss />
+                          </Typography>
+                        </Grid>
+                        <Grid item md={6}>
+                          <Typography variant='h6' gutterBottom color='secondary'>
+                            <strong>Send Whatsapp</strong>
+                          </Typography>
+                        </Grid>
+                      </Grid>
                     </div>
                   </CardActionArea>
                 </Card>
@@ -745,11 +858,31 @@ const Appointments = () => {
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <Typography variant='h5' gutterBottom color='secondary'>
-                        <CallIcon color='secondary' fontSize='large' clss />
+                        <CallIcon color='secondary' fontSize='small' clss />
                       </Typography>
                       <Typography variant='h6' gutterBottom color='secondary'>
                         <strong>+91-1234567890</strong>
                       </Typography>
+                    </div>
+                    <div>
+                      <Grid
+                        container
+                        direction='row'
+                        spacing={1}
+                        style={{ marginTop: '5%' }}
+                      >
+                        <Grid item md={2}></Grid>
+                        <Grid item md={2}>
+                          <Typography variant='h5' gutterBottom color='secondary'>
+                            <WhatsAppIcon color='secondary' fontSize='medium' clss />
+                          </Typography>
+                        </Grid>
+                        <Grid item md={6}>
+                          <Typography variant='h6' gutterBottom color='secondary'>
+                            <strong>Send Whatsapp</strong>
+                          </Typography>
+                        </Grid>
+                      </Grid>
                     </div>
                   </CardActionArea>
                 </Card>

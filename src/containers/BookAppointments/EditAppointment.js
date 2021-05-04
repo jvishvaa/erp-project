@@ -98,16 +98,20 @@ const EditAppointment = ({
   const [editdata, setEditData] = useState();
 
   useEffect(() => {
-    axiosInstance.get(endpoints.communication.roles).then((response) => {
-      console.log(response.data.result);
+    // axiosInstance.get(endpoints.communication.roles).then((response) => {
+    //   console.log(response.data.result);
 
-      setRole(response.data.result);
+    //   setRole(response.data.result);
+    // });
+    axiosInstance.get(`${endpoints.communicationRoles.roles}`).then((res) => {
+      console.log(res, 'checking data');
+      setRole(res.data.data);
     });
   }, []);
 
   const handleRole = (evt, value) => {
-    console.log('handelrole', value.id);
-    setRolename(value.id);
+    console.log('handelrole', value?.id);
+    setRolename(value?.id);
   };
 
   const handlePagination = (event, page) => {
@@ -177,7 +181,12 @@ const EditAppointment = ({
               />
             </FormControl> */}
 
-            <FormControl variant='outlined' className={classes.formControl} size='small'>
+            <FormControl
+              variant='outlined'
+              style={{ marginTop: 24, width: '100%' }}
+              size='small'
+              className='dropdownIcon'
+            >
               <InputLabel id='demo-simple-select-outlined-label'>
                 Appointment With
               </InputLabel>
@@ -185,7 +194,8 @@ const EditAppointment = ({
                 labelId='demo-simple-select-outlined-label'
                 id='demo-simple-select-outlined'
                 name='role'
-                className='arrow'
+                // className='arrow'
+
                 onChange={handleChange}
                 labelWidth={170}
                 defaultValue={role?.id}
@@ -207,7 +217,8 @@ const EditAppointment = ({
               label='Appointment Date'
               InputLabelProps={{ shrink: true, required: true }}
               type='date'
-              className='button'
+              // className='button'
+              className='dropdownIcon'
               variant='outlined'
               fullWidth
               size='small'
@@ -225,7 +236,8 @@ const EditAppointment = ({
               InputLabelProps={{ shrink: true, required: true }}
               type='time'
               format='12'
-              className='button'
+              // className='button'
+              className='dropdownIcon'
               variant='outlined'
               size='small'
               fullWidth
@@ -238,7 +250,12 @@ const EditAppointment = ({
             <Divider />
           </Grid>
           <Grid item xs={12} sm={5} md={3}>
-            <FormControl variant='outlined' className={classes.formControl} size='small'>
+            <FormControl
+              variant='outlined'
+              style={{ marginTop: 24, width: '100%' }}
+              size='small'
+              className='dropdownIcon'
+            >
               <InputLabel id='demo-simple-select-outlined-label'>
                 Appointment medium
               </InputLabel>
@@ -263,8 +280,9 @@ const EditAppointment = ({
       </Grid>
       <Grid item xs={12} md={10} sm={12}>
         <FormControl
-          className={classes.inputLabel}
+          style={{ marginLeft: 20, width: '70%' }}
           variant='outlined'
+          className='dropdownIcon'
           onChange={handleChange}
         >
           <InputLabel htmlFor='outlined-adornment-amount'>
