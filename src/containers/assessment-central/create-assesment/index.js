@@ -233,14 +233,11 @@ const CreateAssesment = ({
       test_mark: testMarksArr,
       is_question_wise: !paperchecked,
     };
+
     try {
-      if (instructions?.length) {
-        const response = await initCreateAssesment(reqObj);
-        resetForm();
-        setAlert('success', 'Test created successfully');
-      } else {
-        setAlert('Instructions are required.');
-      }
+      const response = await initCreateAssesment(reqObj);
+      resetForm();
+      setAlert('success', 'Test created successfully');
     } catch (e) {
       setAlert('error', 'Test creation failed');
     }

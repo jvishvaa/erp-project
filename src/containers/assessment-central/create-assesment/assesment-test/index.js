@@ -458,7 +458,7 @@ const AssesmentTest = ({
                     style={{ borderRadius: '10px' }}
                     color='primary'
                     onClick={onCreate}
-                    disabled={!testDate || !testDuration || !testName || !testId}
+                    disabled={!testDate || !testDuration || !testName || !testId || !testInstructions}
                   >
                     Submit
                   </Button>
