@@ -89,7 +89,7 @@ const ListandFilter = (props) => {
     useEffect(() => {
         const getBranch = () => {
             //axiosInstance.get(endpoints.masterManagement.branchList).then(res => {
-            axiosInstance.get(endpoints.mappingStudentGrade.branch).then(res => {
+            axiosInstance.get(`${endpoints.mappingStudentGrade.branch}?session_year=${selectedYear?.id}&module_id=${moduleId}`).then(res => {
                 if (res.data.data) {
                     setBranchRes(res.data.data.results)
                 }

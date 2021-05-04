@@ -895,7 +895,7 @@ const AttedanceCalender = () => {
             <div className='buttonContainer'>
               <div className='today'>
                 <Button
-                  variant='outlined'
+                  variant='contained'
                   size='small'
                   color='secondary'
                   className={counter === 1 ? 'viewDetailsButtonClick' : 'viewDetails'}
@@ -908,7 +908,7 @@ const AttedanceCalender = () => {
               </div>
               <div className='today'>
                 <Button
-                  variant='outlined'
+                  variant='contained'
                   size='small'
                   color='secondary'
                   className={counter === 2 ? 'viewDetailsButtonClick' : 'viewDetails'}
@@ -920,7 +920,7 @@ const AttedanceCalender = () => {
               </div>
               <div className='today'>
                 <Button
-                  variant='outlined'
+                  variant='contained'
                   size='small'
                   color='secondary'
                   className={counter === 3 ? 'viewDetailsButtonClick' : 'viewDetails'}
