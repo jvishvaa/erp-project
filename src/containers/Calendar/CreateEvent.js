@@ -187,23 +187,12 @@ const CreateEvent = () => {
         is_first_half: firstHalf,
         is_second_half: secondHalf,
       })
-      
       .then((result) => {
-        
-        
-      if (result.data.status_code === 200) {
-        
         setAlert('success', result.data.message);
 
         history.push({
           pathname: '/attendance-calendar/teacher-view',
-        })
-       
-
-      } else {
-       
-        setAlert('error', result.data.message);
-        }
+        });
       })
       .catch((error) => {
         setLoading(false);
@@ -369,14 +358,13 @@ const CreateEvent = () => {
                   className='arrow'
                   size='small'
                   id='combo-box-demo'
-                
                   name='event_category'
                   labelplaceholder='Event_Type'
                   onChange={handleEventTypeChange}
                   options={evnetcategoryType || ''}
                   getOptionLabel={(option) => option.event_category_name || ''}
                   renderInput={(params) => (
-                    <TextField {...params} label='Event Type'   required variant='outlined' />
+                    <TextField {...params} label='Event Type' variant='outlined' />
                   )}
                 />
               </Grid>
@@ -386,7 +374,6 @@ const CreateEvent = () => {
                   name='event_name'
                   variant='outlined'
                   size='small'
-                  required
                   id='eventname'
                   label='Event Name'
                   fullWidth
@@ -429,7 +416,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Academic Year'
-                      required
                       name='Academic'
                       placeholder='Academic Year'
                     />
@@ -468,7 +454,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Branch'
-                      required
                       name='branch'
                       placeholder='Branch'
                     />
@@ -508,7 +493,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Grade'
-                      required
                       name='grade'
                       placeholder='Grade'
                     />
@@ -542,7 +526,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Section'
-                      required
                       name='section'
                       placeholder='Section'
                     />
@@ -716,7 +699,6 @@ const CreateEvent = () => {
                   label='ADD Event Description'
                   labelwidth='170'
                   name='description'
-                  required
                   fullWidth
                   onChange={handleChange}
                   multiline
@@ -765,12 +747,11 @@ const CreateEvent = () => {
                   id='combo-box-demo'
                   name='event_category'
                   labelplaceholder='Event_Type'
-                 
                   onChange={handleEventTypeChange}
                   options={evnetcategoryType || ''}
                   getOptionLabel={(option) => option.event_category_name || ''}
                   renderInput={(params) => (
-                    <TextField {...params} label='Event Type'  required variant='outlined' />
+                    <TextField {...params} label='Event Type' variant='outlined' />
                   )}
                 />
               </Grid>
@@ -780,7 +761,6 @@ const CreateEvent = () => {
                   name='event_name'
                   variant='outlined'
                   size='small'
-                  required
                   id='eventname'
                   label='Event Name'
                   fullWidth
@@ -822,7 +802,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Academic Year'
-                      required
                       placeholder='Academic Year'
                     />
                   )}
@@ -859,7 +838,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Branch'
-                      required
                       placeholder='Branch'
                     />
                   )}
@@ -897,7 +875,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Grade'
-                      required
                       placeholder='Grade'
                     />
                   )}
@@ -930,7 +907,6 @@ const CreateEvent = () => {
                       {...params}
                       variant='outlined'
                       label='Section'
-                      required
                       placeholder='Section'
                     />
                   )}
@@ -1022,7 +998,6 @@ const CreateEvent = () => {
                       className='arrow conte'
                       id='time-picker'
                       label='Start Time'
-                      required
                       inputVariant='outlined'
                       name='start_time'
                       value={selectedStartTime}
@@ -1040,7 +1015,6 @@ const CreateEvent = () => {
                       className='helperText'
                       className='arrow conte'
                       id='time-picker'
-                      
                       label='End Time'
                       name='end_time'
                       inputVariant='outlined'
@@ -1070,7 +1044,6 @@ const CreateEvent = () => {
                   label='ADD Event Description'
                   labelwidth='170'
                   name='description'
-                  required
                   fullWidth
                   onChange={handleChange}
                   multiline
