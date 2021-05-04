@@ -1,12 +1,13 @@
 import React, { createContext, useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
+import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import useFetcher from '../../../../utility-functions/custom-hooks/use-fetcher';
 // import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
 const {
   assessment: {
-    userAssessmentSubmission: userAssessmentSubmissionAPIEndpoint,
+    userAssessmentTestSubmission: userAssessmentSubmissionAPIEndpoint,
     fetchAssessmentQuestionPapersQuestions: fetchAssessmentQuestionPapersQuestionsAPIEndpoint,
   } = {},
 } = endpoints || {};
@@ -315,7 +316,7 @@ export const AssessmentHandlerContextProvider = ({
     defaultQueryParamObj: {},
     fetchOnLoad: false,
     includeAuthtoken: true,
-    isCentral: true,
+    isCentral: false,
     APIDataKeyName: 'result',
   };
   const [assessmentQp, fetchAssessmentQpHook] = useFetcher(assessmentQpHookProps);
@@ -418,6 +419,7 @@ export const AssessmentHandlerContextProvider = ({
         question_level: questionLevel,
         user_response: { answer, attemption_status: attemptionStatus } = {},
         question_type: questionType,
+        is_central: isCentral,
       } = item || {};
       const hasParentId = parentId > 0;
       const obj = {
@@ -428,6 +430,7 @@ export const AssessmentHandlerContextProvider = ({
         is_parent: !hasParentId,
         parent_id: parentId,
         user_answer: answer,
+        is_central: isCentral
       };
       if (attemptionStatus) {
         userReponses.push(obj);
@@ -439,6 +442,7 @@ export const AssessmentHandlerContextProvider = ({
       start_time: new Date(startedAt),
       end_time: new Date(),
       user_response: userReponses,
+      questions: getSortedAndMainQuestions(questionsDataObj || {})
     };
 
     // const API = 'http://13.232.30.169/qbox/assessment/user_response/';
@@ -446,10 +450,8 @@ export const AssessmentHandlerContextProvider = ({
       callbacks || {};
     onStart();
 
-    axios
-      .post(userAssessmentSubmissionAPIEndpoint, payLoad, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
+    axiosInstance
+      .post(userAssessmentSubmissionAPIEndpoint, payLoad)
       .then((res) => {
         onResolve(res);
         localStorage.removeItem(storageKey);

@@ -215,11 +215,11 @@ const SectionTable = () => {
           if (result.data.status_code === 200) {
             setAcademicYearList(result.data?.result?.results);
           } else {
-            setAlert('error', result.data.message || result.data.msg);
+            setAlert('error', result?.data?.message || result?.data?.msg);
           }
         })
         .catch((error) => {
-          setAlert('error', error.response.data.message || error.response.data.msg);
+          setAlert('error', error?.response?.data?.message || error?.response?.data?.msg);
         });
     }
   }, [moduleId]);

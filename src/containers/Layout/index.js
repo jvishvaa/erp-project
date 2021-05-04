@@ -150,9 +150,6 @@ const Layout = ({ children, history }) => {
     }
     let userDetails = localStorage.getItem('userDetails');
     if (!userDetails) {
-      // if(key==="2000000002")
-      // history.push('/dashboard/2000');
-      // else
       history.push('/');
     }
     if (userDetails) {
@@ -456,6 +453,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Chapter Creation': {
         history.push('/master-management/chapter-type-table');
+        break;
+      }
+      case 'Topic': {
+        history.push('/master-management/topic-table');
         break;
       }
       case 'Section': {

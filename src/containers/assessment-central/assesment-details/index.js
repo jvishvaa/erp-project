@@ -23,7 +23,9 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
         <div className='primary-header-container'>
           <div className='primary-header-text-container'>
             <span className='primary-text font-lg'>{testType}</span>
-            <span className='secondary-text'>{`${grade}, ${subjects.join(', ')}`}</span>
+            <span className='secondary-text'>{`${grade}`
+            //  ${subjects.join(', ')}`
+            }</span>
           </div>
           <div className='close-icon'>
             <IconButton onClick={onClose}>

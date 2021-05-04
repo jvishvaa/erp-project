@@ -48,7 +48,6 @@ const questionType = [
 
 const bulkCreationSupportTypes = [1, 8, 9];
 const QuestionTypeFilters = ({
-  subDomainName,
   editData,
   setEditData,
   setLoading,
@@ -158,9 +157,11 @@ const QuestionTypeFilters = ({
 
   useEffect(() => {
     if (submitFlag) {
+      setSubQuestions([]);
       handleSendData(true);
     }
     if (saveFlag) {
+      setSubQuestions([]);
       handleSendData(false);
     }
   }, [submitFlag, saveFlag]);
@@ -235,7 +236,6 @@ const QuestionTypeFilters = ({
     }
     let requestBody = {
       sub_questions: subQuestions,
-      school: subDomainName,
       question_answer: questionAndAnswer,
       question_level: filterData.level.id,
       question_categories: filterData.category.id,
@@ -247,8 +247,10 @@ const QuestionTypeFilters = ({
     if (!editData?.id) {
       requestBody = {
         ...requestBody,
-        grade_subject_mapping: filterDataDisplay.subject.subject.central_mp_id,
-        // grade_subject_mapping: filterDataDisplay.subject.id,
+        academic_session: filterDataDisplay.academic?.id,
+        is_central_chapter: filterDataDisplay.chapter?.is_central,
+        grade: filterDataDisplay.grade?.grade_id,
+        subject: filterDataDisplay.subject?.subject_id,
       };
     }
     if (editData?.id) {
@@ -260,14 +262,8 @@ const QuestionTypeFilters = ({
           .map((obj) => obj?.data?.id)
           .filter(Boolean),
       };
-      axios
-        .put(
-          `${endpoints.baseURLCentral}/assessment/${editData?.id}/retrieve_update_question/`,
-          requestBody,
-          {
-            headers: { 'x-api-key': 'vikash@12345#1231' },
-          }
-        )
+      axiosInstance
+        .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody)
         .then((result) => {
           if (result.data.status_code === 200) {
             const objlist = { ...showQuestionType };
@@ -301,10 +297,8 @@ const QuestionTypeFilters = ({
           setAlert('error', error.message);
         });
     } else {
-      axios
-        .post(`${endpoints.createQuestionApis.createQuestion}`, requestBody, {
-          headers: { 'x-api-key': 'vikash@12345#1231' },
-        })
+      axiosInstance
+        .post(`${endpoints.assessmentErp.createQuestion}`, requestBody)
         .then((result) => {
           if (result.data.status_code === 200) {
             const objlist = { ...showQuestionType };
@@ -349,14 +343,12 @@ const QuestionTypeFilters = ({
       setLoading(true);
       const formData = new FormData();
       formData.append('file', file[0]);
-      formData.append('grade_name', filterDataDisplay.grade?.grade_name);
-      formData.append('subject_name', filterDataDisplay.subject?.subject?.subject_name);
-      formData.append('question_categories', filterData.category.category);
-      formData.append('question_type', filterData.type?.question_type);
-      axios
-        .post(`${endpoints.questionBank.uploadFile}`, formData, {
-          headers: { 'x-api-key': 'vikash@12345#1231' },
-        })
+      formData.append('grade_name', filterDataDisplay.grade?.grade_id);
+      formData.append('subject_name', filterDataDisplay.subject?.subject_id);
+      formData.append('question_categories_id', filterData.category?.id);
+      formData.append('question_type', filterData.type?.id);
+      axiosInstance
+        .post(`${endpoints.assessmentErp.fileUpload}`, formData)
         .then((result) => {
           if (result.data.status_code === 200) {
             setVideoURL(result.data.result);
@@ -377,16 +369,10 @@ const QuestionTypeFilters = ({
 
   const handleRemoveVideo = () => {
     setLoading(true);
-    axios
-      .post(
-        `${endpoints.questionBank.removeFile}`,
-        {
-          file_name: videoURL,
-        },
-        {
-          headers: { 'x-api-key': 'vikash@12345#1231' },
-        }
-      )
+    axiosInstance
+      .post(`${endpoints.assessmentErp.fileRemove}`, {
+        file_name: videoURL,
+      })
       .then((result) => {
         if (result.data.status_code === 204) {
           setVideoURL('');
@@ -544,7 +530,6 @@ const QuestionTypeFilters = ({
               setIsQuestionFilterOpen={setIsQuestionFilterOpen}
               setIsCreateManuallyOpen={setIsCreateManuallyOpen}
               parentQuestionType={setShowQuestionType}
-              subDomainName={subDomainName}
             />
           </div>
         )}
@@ -574,7 +559,7 @@ const QuestionTypeFilters = ({
           <div className='player-wrapper'>
             <ReactPlayer
               className='react-player'
-              url={`${endpoints.s3}${videoURL}`}
+              url={`${endpoints.assessmentErp.s3}${videoURL}`}
               playing={false}
               controls
               width='85%'
@@ -679,7 +664,6 @@ const QuestionTypeFilters = ({
                     setIsQuestionFilterOpen={setIsQuestionFilterOpen}
                     setIsCreateManuallyOpen={setIsCreateManuallyOpen}
                     parentQuestionType={showQuestionType} // Flag used for comprehension, video, ppt
-                    subDomainName={subDomainName}
                   />
                 </div>
               )
