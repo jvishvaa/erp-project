@@ -94,16 +94,24 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
   const [appointmentStatus, setAppointmentstatus] = useState(1);
   const history = useHistory();
 
-  console.log('userbranch:', localStorage.getItem('userDetails'));
+  // console.log('userbranch:', localStorage.getItem('userDetails'));
   useEffect(() => {
-    axiosInstance.get(`${endpoints.communicationRoles.roles}`).then((res) => {
-      console.log(res, 'checking data');
-      setRole(res.data.data);
-    });
+    setLoading(true);
+    axiosInstance
+      .get(`${endpoints.communicationRoles.roles}`)
+      .then((res) => {
+        // console.log(res, 'checking data');
+        setLoading(false);
+        setRole(res.data.data);
+      })
+      .catch((err) => {
+        setLoading(false);
+        setAlert('error', err?.message);
+      });
   }, []);
 
   const handleRole = (evt, value) => {
-    console.log(value?.id);
+    // console.log(value?.id);
     setRolename(value?.id);
   };
 
@@ -112,19 +120,19 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
   };
 
   const handleDateChange = (date) => {
-    console.log('date', date.target.value);
+    // console.log('date', date.target.value);
     // setSelectedDate(date);
   };
 
   const handleChange = (e) => {
-    console.log('event:', e.target.value);
+    // console.log('event:', e.target.value);
     setData({ ...data, [e.target.name]: e.target.value });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    // setLoading(true);
-    console.log('subarao');
-    console.log('data', data);
+    setLoading(true);
+    // console.log('subarao');
+    // console.log('data', data);
     axiosInstance
       .post(
         endpoints.Appointments.bookAppointment,
@@ -139,22 +147,21 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
           branch: JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0],
         }
       )
-
       .then((result) => {
         if (result.data.status_code === 200) {
-          // setLoading(false);
+          setLoading(false);
           setAlert('success', result.data.message);
           // history.push({
           //   pathname: '/appointments',
           // });
           handleGoBack();
         } else {
-          // setLoading(false);
+          setLoading(false);
           setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
-        // setLoading(false);
+        setLoading(false);
         setAlert('error', error.message);
       });
   };

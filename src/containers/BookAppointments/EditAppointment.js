@@ -6,7 +6,7 @@ import { Grid, useTheme } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import DateFnsUtils from '@date-io/date-fns';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-
+import Loader from '../../components/loader/loader';
 import Paper from '@material-ui/core/Paper';
 import './Styles.scss';
 import {
@@ -85,7 +85,7 @@ const EditAppointment = ({
   handleGoBack,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
-
+  const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -103,14 +103,24 @@ const EditAppointment = ({
 
     //   setRole(response.data.result);
     // });
-    axiosInstance.get(`${endpoints.communicationRoles.roles}`).then((res) => {
-      console.log(res, 'checking data');
-      setRole(res.data.data);
-    });
+    setLoading(true);
+    axiosInstance
+      .get(`${endpoints.communicationRoles.roles}`)
+      .then((res) => {
+        setLoading(false);
+        // console.log(res, 'checking data');
+        setRole(res.data.data);
+        setAlert('success', 'roles fecthed successfully');
+      })
+      .catch((err) => {
+        // console.log(err);
+        setLoading(false);
+        setAlert('error', err.message);
+      });
   }, []);
 
   const handleRole = (evt, value) => {
-    console.log('handelrole', value?.id);
+    // console.log('handelrole', value?.id);
     setRolename(value?.id);
   };
 
@@ -119,7 +129,7 @@ const EditAppointment = ({
   };
 
   const handleChange = (e) => {
-    console.log('event::', e.target.value);
+    // console.log('event::', e.target.value);
     setEditData({ ...editdata, [e.target.name]: e.target.value });
   };
 
@@ -127,8 +137,9 @@ const EditAppointment = ({
     e.preventDefault();
     // setLoading(true);
 
-    console.log('editeddata', editdata);
-    console.log('id', id);
+    // console.log('editeddata', editdata);
+    // console.log('id', id);
+    setLoading(true);
     axiosInstance
       .put(`academic/${id}/${endpoints.Appointments.updateAppointment}`, {
         message: editdata.message,
@@ -139,6 +150,7 @@ const EditAppointment = ({
       })
 
       .then((result) => {
+        setLoading(false);
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
           handleGoBack();
@@ -147,6 +159,7 @@ const EditAppointment = ({
         }
       })
       .catch((error) => {
+        setLoading(false);
         setAlert('error', error.message);
       });
   };
