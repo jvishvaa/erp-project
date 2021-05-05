@@ -46,9 +46,6 @@ const testTypes = [
 ];
 
 const CreateAssesment = ({
-  selectedBranch,
-  selectedGrade,
-  selectedSubject,
   initSetFilter,
   selectedQuestionPaper,
   selectedTestType,
@@ -70,9 +67,6 @@ const CreateAssesment = ({
   const clearForm = query.get('clear');
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const [branches, setBranches] = useState([]);
-  const [grades, setGrades] = useState([]);
-  const [subjects, setSubjects] = useState([]);
   const [expandFilter, setExpandFilter] = useState(true);
   const [marksAssignMode, setMarksAssignMode] = useState(false);
   const [testMarks, setTestMarks] = useState([]);
@@ -88,34 +82,12 @@ const CreateAssesment = ({
 
   const formik = useFormik({
     initialValues: {
-      branch: selectedBranch,
-      grade: selectedGrade,
-      subject: selectedSubject,
       test_type: selectedTestType || testTypes[0],
     },
     onSubmit: (values) => {},
     validateOnChange: false,
     validateOnBlur: false,
   });
-
-  const getGrades = async (acadId, branchId) => {
-    try {
-      const data = await fetchGrades(acadId, branchId);
-      setGrades(data);
-    } catch (e) {
-      setAlert('error', 'Failed to fetch grades');
-    }
-  };
-
-  const getSubjects = async (gradeId) => {
-    try {
-      setSubjects([]);
-      const data = await fetchSubjects(gradeId);
-      setSubjects(data);
-    } catch (e) {
-      setAlert('error', 'Failed to fetch subjects');
-    }
-  };
 
   const resetForm = () => {
     setTestName('');
@@ -137,17 +109,20 @@ const CreateAssesment = ({
     const qMap = new Map();
 
     if (totalMarks < 0 || totalMarks > 1000) {
-      setAlert('error', 'Please enter valid marks.');
+      setAlert('warning', 'Please enter valid marks.');
       return;
     }
 
     if (testDuration < 0 || testDuration > 1440) {
-      setAlert('error', 'Please enter valid duration.');
+      setAlert('warning', 'Please enter valid duration.');
       return;
+    }
+    if (!instructions.length) {
+      return setAlert('warning', 'Please Enter Test Instruction ');
     }
 
     if (!selectedQuestionPaper?.id) {
-      setAlert('error', 'Please add a question paper.');
+      setAlert('warning', 'Please add a question paper.');
       return;
     }
 
@@ -162,8 +137,10 @@ const CreateAssesment = ({
       }
     });
     let testMarksArr = testMarks;
-    console.log(selectedQuestionPaper, 'totalMarks');
-
+    console.log(testMarks, 'testMarks');
+    console.log(qMap, 'testMarks');
+    console.log(selectedQuestionPaper, 'testMarks');
+    console.log(testMarksArr, 'testMarksArr');
     qMap.forEach((value, key) => {
       const totalQuestionMarks = value.reduce(
         (acc, currValue) => {
@@ -220,6 +197,33 @@ const CreateAssesment = ({
       }
     });
 
+    if (!paperchecked) {
+      let centralLen = selectedQuestionPaper?.central_question?.length || 0;
+      let erpLen = selectedQuestionPaper?.question?.length || 0;
+      if (testMarksArr.length < centralLen + erpLen) {
+        setAlert('error', 'Please enter marks for every question!');
+        return;
+      }
+      if (testMarksArr?.length === centralLen + erpLen) {
+        for (let i = 0; i < testMarksArr.length; i++) {
+          if (+testMarksArr[i]?.question_mark[0] < 1) {
+            setAlert(
+              'error',
+              `Marks for a question should be more than 1 or equal to 1.`
+            );
+            return;
+          }
+          if (+testMarksArr[i]?.question_mark[1] < 0) {
+            setAlert(
+              'error',
+              `Negative Marks for a question should be more than 0 or equal to 0.`
+            );
+            return;
+          }
+        }
+      }
+    }
+
     const reqObj = {
       question_paper: selectedQuestionPaper?.id,
       test_id: testId,
@@ -235,9 +239,13 @@ const CreateAssesment = ({
     };
 
     try {
-      const response = await initCreateAssesment(reqObj);
-      resetForm();
-      setAlert('success', 'Test created successfully');
+      const { results = {} } = (await initCreateAssesment(reqObj)) || {};
+      if (results?.status_code === 200) {
+        setAlert('success', results?.message);
+        resetForm();
+      } else {
+        setAlert('error', results?.message);
+      }
     } catch (e) {
       setAlert('error', 'Test creation failed');
     }
@@ -263,7 +271,6 @@ const CreateAssesment = ({
           question_mark: [0, 0],
           mark_type: '1',
           child_mark: [],
-          //new_
           is_central: isCentral,
         };
         // if (parentQuestionId) {
@@ -347,17 +354,7 @@ const CreateAssesment = ({
   const handleMarksAssignModeChange = (e) => {
     setMarksAssignMode(e.target.checked);
   };
-  useEffect(() => {
-    if (formik.values.grade) {
-      getSubjects(formik.values.grade.id);
-    } else {
-      setSubjects([]);
-    }
-  }, [formik.values.grade]);
 
-  useEffect(() => {
-    getGrades();
-  }, []);
   useEffect(() => {
     if (selectedQuestionPaper) {
       // initFetchQuestionPaperDetails(3);
@@ -452,88 +449,6 @@ const CreateAssesment = ({
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  {/* <Grid item xs={12} md={4}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='branch'
-                        name='branch'
-                        onChange={(e, value) => {
-                          formik.setFieldValue('branch', value);
-                          initSetFilter('selectedBranch', value);
-                        }}
-                        value={formik.values.branch}
-                        options={branches}
-                        getOptionLabel={(option) => option.name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Branch'
-                            placeholder='Branch'
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.branch ? formik.errors.branch : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='grade'
-                        name='grade'
-                        onChange={(e, value) => {
-                          formik.setFieldValue('grade', value);
-                          initSetFilter('selectedGrade', value);
-                        }}
-                        value={formik.values.grade}
-                        options={grades}
-                        getOptionLabel={(option) => option.grade_name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Grade'
-                            placeholder='Grade'
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.grade ? formik.errors.grade : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='subject'
-                        name='subject'
-                        onChange={(e, value) => {
-                          formik.setFieldValue('subject', value);
-                          initSetFilter('selectedSubject', value);
-                        }}
-                        multiple
-                        value={formik.values.subject}
-                        options={subjects}
-                        getOptionLabel={(option) => option.subject?.subject_name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Subject'
-                            placeholder='Subject'
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.subject ? formik.errors.subject : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid> */}
                 </Grid>
               </div>
             </AccordionDetails>
@@ -542,38 +457,7 @@ const CreateAssesment = ({
           <div className='divider-container'>
             <Divider />
           </div>
-          <div className='form-actions-container mv-20'>
-            {/* <div className='btn-container'>
-              <Button
-                variant='contained'
-                className='disabled-btn'
-                onClick={() => {
-                  formik.handleReset();
-                }}
-              >
-                CLEAR ALL
-              </Button>
-            </div> */}
-
-            {/* <div className='btn-container '>
-            <Button
-              variant='contained'
-              className=''
-              color='primary'
-              onClick={() => {
-                formik.handleSubmit();
-              }}
-            >
-              FILTER
-            </Button>
-          </div> */}
-          </div>
           <AssesmentTest
-            branch={formik.values.branch}
-            grade={formik.values.grade?.grade_name}
-            subject={formik.values.subject
-              ?.map((sub) => sub.subject.subject_name)
-              .join(', ')}
             questionPaper={questionPaperDetails}
             onMarksAssignModeChange={handleMarksAssignModeChange}
             marksAssignMode={marksAssignMode}
