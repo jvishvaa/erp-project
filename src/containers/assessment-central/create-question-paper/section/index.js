@@ -77,9 +77,6 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
     handleMenuClose();
     onDeleteQuestion(q?.id, section)
   };
-  useEffect(() => {
-
-  }, []);
 
   return (
     <div className='section-container'>
