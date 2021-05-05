@@ -53,19 +53,19 @@ const ViewSignatureCards = ({ handleEdit, fullData, close }) => {
               <Grid item md={12} xs={12} className='signatureCardViewHeader'>
                 <Grid container spacing={2}>
                   <Grid item md={4} xs={12}>
-                    <Typography style={{fontSize: '13px'}}>
+                    <Typography style={{fontSize: '12px'}}>
                       Name:&nbsp;
                       {(fullData && fullData.author_id__name) || ''}
                     </Typography>
                   </Grid>
                   <Grid item md={4} xs={12} className='signatureCardVideHeaderDivider'>
-                    <Typography style={{fontSize: '13px'}}>
+                    <Typography style={{fontSize: '12px'}}>
                       ERP:&nbsp;
                       {(fullData && fullData.author_id__erp_id) || ''}
                     </Typography>
                   </Grid>
                   <Grid item md={4} xs={12}>
-                    <Typography style={{fontSize: '13px', marginTop: '2px'}}>
+                    <Typography style={{fontSize: '12px', marginTop: '2px'}}>
                       Branch:&nbsp;
                       {(fullData && fullData.author_id__branch_id__branch_name) || ''}
                     </Typography>

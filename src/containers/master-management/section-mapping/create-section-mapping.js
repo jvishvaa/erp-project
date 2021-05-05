@@ -33,7 +33,7 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
       .post(endpoints.masterManagement.createSectionMapping, {
         session_year: filterData.session?.map(({ id }) => id),
         branch_id: filterData.branch?.map(({ id }) => id),
-        grade_id: filterData.grade?.map(({ id }) => id),
+        grade_id: filterData.grade?.map(({ grade_id }) => grade_id),
         section_id: filterData.section?.map(({ id }) => id),
       })
       .then((result) => {
@@ -139,13 +139,13 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
       let sessionIds = filterData.session?.map(({ id }) => id);
       axiosInstance
         .get(
-          `${endpoints.masterManagement.grades}?session_year=${sessionIds}&branch_id=${ids}&module_id=${moduleId}`
+          `${endpoints.masterManagement.gradesDrop}?session_year=${sessionIds}&branch_id=${ids}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code > 199 && result.data.status_code < 300) {
             setDropDown({
               ...dropDown,
-              gradeDrop: result.data?.result?.results,
+              gradeDrop: result.data?.data,
               sectionDrop: [],
             });
           } else {
@@ -174,7 +174,7 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
         grade: value,
         section: [],
       });
-      let ids = value.map(({ id }) => id);
+      let ids = value.map(({ grade_id }) => grade_id);
       let sessionIds = filterData.session?.map(({ id }) => id);
       let branchIds = filterData.branch?.map(({ id }) => id);
       axiosInstance
