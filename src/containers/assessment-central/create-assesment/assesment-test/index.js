@@ -181,11 +181,13 @@ const AssesmentTest = ({
                           variant='outlined'
                           type='datetime-local'
                           size='small'
+                          inputProps={{ min: new Date().toISOString().slice(0,16) }}
                           className='date-time-picker bg-white'
                           value={testDate}
                           color='primary'
                           style={{ width: isMobile ? '50%' : '100%' }}
                           onChange={(e) => {
+                            console.log(e.target.value)
                             onTestDateChange(e.target.value);
                           }}
                         />

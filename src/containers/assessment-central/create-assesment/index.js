@@ -137,10 +137,7 @@ const CreateAssesment = ({
       }
     });
     let testMarksArr = testMarks;
-    console.log(testMarks, 'testMarks');
-    console.log(qMap, 'testMarks');
-    console.log(selectedQuestionPaper, 'testMarks');
-    console.log(testMarksArr, 'testMarksArr');
+    
     qMap.forEach((value, key) => {
       const totalQuestionMarks = value.reduce(
         (acc, currValue) => {
