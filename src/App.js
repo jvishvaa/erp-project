@@ -41,6 +41,7 @@ import Profile from './containers/profile/profile';
 import { fetchLoggedInUserDetails } from './redux/actions';
 import TeacherHomeWorkReport from './containers/homework/teacher-homework-report/teacherReport-index'
 import TeacherHomework from './containers/homework/teacher-homework';
+import StudentHomeworkReport from './containers/homework/student-homework-report/index'
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
 import BulkUpload from './containers/user-management/bulk-upload/bulk-upload';
@@ -336,12 +337,6 @@ function App({ alert }) {
                           <Route path='/profile'>
                             {({ match }) => <Profile match={match} />}
                           </Route>
-                          <Route path='/time-table/student-view'>
-                            {({ match }) => <TimeTable match={match} />}
-                          </Route>
-                          <Route path='/time-table/teacher-view'>
-                            {({ match }) => <TimeTable match={match} />}
-                          </Route>
                           <Route path='/role-management'>
                             {({ match }) => <RoleManagement match={match} />}
                           </Route>
@@ -359,6 +354,9 @@ function App({ alert }) {
                           </Route>
                           <Route path='/greviences/createnew'>
                             {({ match }) => <GriviencesCreate match={match} />}
+                          </Route>
+                          <Route path='/homework/student-report'>
+                            {({ match }) => <StudentHomeworkReport match={match} />}
                           </Route>
                           {/*
                         <Route exact path='/view-users'>
@@ -389,6 +387,7 @@ function App({ alert }) {
                           {({ match }) => <AssignRole match={match} />}
                         </Route>
                         */}
+                     
                           <Route exact path='/question-bank'>
                             {({ match }) => <QuestionBankList match={match} />}
                           </Route>
@@ -573,7 +572,7 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/homework/teacher'>
                             {({ match }) => <TeacherHomework match={match} />}
-                          </Route>
+                          </Route>z
                           <Route exact path='/homework/teacher-report'>
                             {({ match }) => <TeacherHomeWorkReport match={match} />}
                           </Route>
