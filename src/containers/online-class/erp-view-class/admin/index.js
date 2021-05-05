@@ -135,6 +135,7 @@ const ErpAdminViewClass = ({ history }) => {
     }
   }, [window.location.pathname]);
 
+  console.log(selectedSection,'++++++++++++++++++++')
   function callApi(api, key) {
     setLoading(true);
     axiosInstance
@@ -243,7 +244,9 @@ const ErpAdminViewClass = ({ history }) => {
   useEffect(() => {
     // <<<<<<<<<<<<<<<<BRANCH API START>>>>>>>>>>>
     // callApi(`${endpoints.userManagement.branchList}`,'branchList');
-    callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
+    if(moduleId){
+      callApi(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`, 'academicYearList');
+    }
     // <<<<<<<<<<<<<<<<BRANCH API END>>>>>>>>>>>
     if (window.location.pathname === '/erp-online-class-student-view') {
       callApi(
@@ -275,7 +278,7 @@ const ErpAdminViewClass = ({ history }) => {
     //     'gradeList'
     //   );
     // }
-  }, [selectedClassType]);
+  }, [selectedClassType,moduleId]);
 
   useEffect(() => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
@@ -412,8 +415,8 @@ const ErpAdminViewClass = ({ history }) => {
       callApi(
         `${endpoints.aol.classes}?is_aol=0&session_year=${
           selectedAcademicYear.id
-        }&section_mapping_ids=${selectedSection.map((el) => el.id)}&class_type=${
-          selectedClassType.id
+        }&section_mapping_ids=${selectedSection.map((el) => el?.id)}&class_type=${
+          selectedClassType?.id
         }&start_date=${startDateTechPer.format(
           'YYYY-MM-DD'
         )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${
@@ -425,9 +428,7 @@ const ErpAdminViewClass = ({ history }) => {
       callApi(
         `${endpoints.aol.classes}?is_aol=0&session_year=${
           selectedAcademicYear.id
-        }&section_mapping_ids=${selectedSection.map(
-          (el) => el.id
-        )}&subject_id=${selectedSubject.map((el) => el.subject__id)}&class_type=${
+        }&section_mapping_ids=${selectedSection.map((el)=>el?.id)}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${
           selectedClassType.id
         }&start_date=${startDateTechPer.format(
           'YYYY-MM-DD'
@@ -446,7 +447,7 @@ const ErpAdminViewClass = ({ history }) => {
     }
     setDateRangeTechPer(v1);
   }
-
+console.log(sectionList,'===================')
   return (
     <>
       <Layout>
@@ -617,7 +618,9 @@ const ErpAdminViewClass = ({ history }) => {
                       size='small'
                       onChange={(event, value) => {
                         setSelectedGrade([]);
+                     
                         if (value.length) {
+                          console.log(value,'||||||||||||||||||')
                           const ids = value.map((el) => el);
                           const selectedId = value.map((el) => el.grade_id);
                           const branchId = selectedBranch.map((el) => el.branch.id);
@@ -669,8 +672,11 @@ const ErpAdminViewClass = ({ history }) => {
                       size='small'
                       onChange={(event, value) => {
                         setSelectedSection([]);
-                        if (value.length) {
+                        console.log('value',value)
+                        if (value?.length) {
+                          // console.log(value,'=========================')
                           const ids = value.map((el) => el);
+                          console.log(ids,"ids")
                           const secId = value.map((el) => el.section_id);
                           setSelectedSection(ids);
                           callApi(
@@ -697,7 +703,7 @@ const ErpAdminViewClass = ({ history }) => {
                       value={selectedSection}
                       options={sectionList}
                       getOptionLabel={(option) =>
-                        option?.section__section_name || option?.section_name
+                        option?.section__section_name || ''
                       }
                       filterSelectedOptions
                       renderInput={(params) => (
