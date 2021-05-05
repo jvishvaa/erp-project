@@ -60,6 +60,7 @@ const CreateAssesment = ({
   initialTestId,
   initialTestInstructions,
   initialTotalMarks,
+  initQuestionsLength,
   initResetFormState,
 }) => {
   const location = useLocation();
@@ -137,7 +138,6 @@ const CreateAssesment = ({
       }
     });
     let testMarksArr = testMarks;
-    
     qMap.forEach((value, key) => {
       const totalQuestionMarks = value.reduce(
         (acc, currValue) => {
@@ -195,13 +195,12 @@ const CreateAssesment = ({
     });
 
     if (!paperchecked) {
-      let centralLen = selectedQuestionPaper?.central_question?.length || 0;
-      let erpLen = selectedQuestionPaper?.question?.length || 0;
-      if (testMarksArr.length < centralLen + erpLen) {
+
+      if (testMarksArr.length < initQuestionsLength) {
         setAlert('error', 'Please enter marks for every question!');
         return;
       }
-      if (testMarksArr?.length === centralLen + erpLen) {
+      if (testMarksArr?.length === initQuestionsLength) {
         for (let i = 0; i < testMarksArr.length; i++) {
           if (+testMarksArr[i]?.question_mark[0] < 1) {
             setAlert(
@@ -513,6 +512,7 @@ const mapStateToProps = (state) => ({
   initialTestDate: state.createAssesment.testDate,
   initialTestInstructions: state.createAssesment.testInstructions,
   initialTotalMarks: state.createAssesment.totalMarks,
+  initQuestionsLength: state.createAssesment.questionsLength,
 });
 const mapDispatchToProps = (dispatch) => ({
   initSetFilter: (filter, data) => dispatch(setFilterForCreateAssesment(filter, data)),
