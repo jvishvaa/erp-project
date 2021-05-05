@@ -423,6 +423,10 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/bulk-upload');
         break;
       }
+      case 'Bulk Status Upload': {
+        history.push('/finance/BulkOperation/BulkUploadStatus');
+        break;
+      }
       case 'View User': {
         history.push('/user-management/view-users');
         break;
@@ -453,6 +457,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Chapter Creation': {
         history.push('/master-management/chapter-type-table');
+        break;
+      }
+      case 'Topic': {
+        history.push('/master-management/topic-table');
         break;
       }
       case 'Section': {
@@ -961,6 +969,14 @@ const Layout = ({ children, history }) => {
       }
       case 'Student Time Table': {
         history.push('/time-table/student-view');
+        break;
+      }
+      case 'Book Appointment': {
+        history.push('/appointments');
+        break;
+      }
+      case 'Appointment Responder': {
+        history.push('/responder-view');
         break;
       }
       case 'Contact Us': {

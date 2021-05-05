@@ -204,21 +204,21 @@ const CreateUpdateSignatureModel = ({
                       label='Enter ERP number'
                       value={erpNo}
                       helperText={
-                        erpNo && erpNo.length < 11 ? (
+                        erpNo && erpNo.length < 15 ? (
                           <b style={{ color: '#014B7E' }}>Enter Valid ERP Number</b>
                         ) : (
                           ''
                         )
                       }
                       onChange={(e) =>
-                        e.target.value > -1 &&
-                        e.target.value.length < 12 &&
+                        //e.target.value > -1 &&
+                        //e.target.value.length < 12 &&
                         setErpNo(e.target.value)
                       }
                       margin='dense'
                       fullWidth
                       variant='outlined'
-                      type='number'
+                      //type='number'
                       className='signatureUploadTextField'
                     />
                   </Grid>

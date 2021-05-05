@@ -100,11 +100,11 @@ function UpdateContact() {
       .then((result) => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
-            console.log(result?.data?.data || []);
+            // console.log(result?.data?.data || []);
             setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
-            console.log(result?.data?.data || []);
+            // console.log(result?.data?.data || []);
             setBranchList(result?.data?.data?.results || []);
           }
           setLoading(false);
@@ -120,15 +120,15 @@ function UpdateContact() {
   }
 
   const handleFilter = () => {
-    console.log('You Clicked on Filter button');
+    // console.log('You Clicked on Filter button');
 
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
       return;
     }
-    console.log(selectedBranch.length, '===============');
+    // console.log(selectedBranch.length, '===============');
     if (selectedBranch.length == 0) {
-      console.log(selectedBranch.length, '===============');
+      // console.log(selectedBranch.length, '===============');
       setAlert('warning', 'Select Branch');
       return;
     }
@@ -136,55 +136,55 @@ function UpdateContact() {
       academicYear: selectedAcademicYear,
       branch: selectedBranch,
     };
-    console.log(payload);
+    // console.log(payload);
     setLoading(true);
     axiosInstance
       .get(
         `${endpoints.contactUs.filterContact}?academic_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}`
       )
       .then((res) => {
-        console.log(res.data.data, 'filter data');
+        // console.log(res.data.data, 'filter data');
         setLoading(false);
         setContactId(res.data.data[0].id);
         setFoeContact(res.data.data[0].foe_contact_number);
-        console.log(res.data.data[0].foe_contact_numbe);
-        console.log(res.data.data[0].operation_manager_contact_number);
-        console.log(res.data.data[0].campus_in_charge_contact_number);
+        // console.log(res.data.data[0].foe_contact_numbe);
+        // console.log(res.data.data[0].operation_manager_contact_number);
+        // console.log(res.data.data[0].campus_in_charge_contact_number);
         setOpManagerContact(res.data.data[0].operation_manager_contact_number);
         setCampusInchargeContact(res.data.data[0].campus_in_charge_contact_number);
         setAlert('success', 'Data fetched successfully');
       })
       .catch((err) => {
         setLoading(false);
-        console.log(err);
+        // console.log(err);
         setAlert('error', 'something went wrong');
       });
   };
   const handleUpdate = () => {
-    console.log('You Clicked on Update button');
+    // console.log('You Clicked on Update button');
 
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
       return;
     }
-    console.log(selectedBranch.length, '===============');
+    // console.log(selectedBranch.length, '===============');
     if (selectedBranch.length == 0) {
-      console.log(selectedBranch.length, '===============');
+      // console.log(selectedBranch.length, '===============');
       setAlert('warning', 'Select Branch');
       return;
     }
     if (!foe_contact) {
-      console.log(foe_contact, 'foe_contact');
+      // console.log(foe_contact, 'foe_contact');
       setAlert('warning', 'foe contact should not be empty');
       return;
     }
     if (!op_manager_contact) {
-      console.log(op_manager_contact, 'op_manager_contact');
+      // console.log(op_manager_contact, 'op_manager_contact');
       setAlert('warning', 'op_manager contact should not be empty');
       return;
     }
     if (!campus_incharge_contact) {
-      console.log(campus_incharge_contact, 'campus_incharge_contact');
+      // console.log(campus_incharge_contact, 'campus_incharge_contact');
       setAlert('warning', 'campus_incharge contact should not be empty');
       return;
     }
@@ -195,18 +195,18 @@ function UpdateContact() {
       operation_manager_contact_number: op_manager_contact,
       campus_in_charge_contact_number: campus_incharge_contact,
     };
-    console.log(payload);
+    // console.log(payload);
     setLoading(true);
     axiosInstance
       .put(`${endpoints.contactUs.updateContact}?contactus_id=${contact_id}`, payload)
       .then((res) => {
         setLoading(false);
-        console.log(res, 'update contact');
+        // console.log(res, 'update contact');
         setAlert('success', 'Contacts updated successfully');
       })
       .catch((err) => {
         setLoading(false);
-        console.log(err);
+        // console.log(err);
         setAlert('error', 'something went wrong');
       });
     setSelectedAcadmeicYear('');
@@ -233,7 +233,7 @@ function UpdateContact() {
             style={{ width: '100%' }}
             onChange={(event, value) => {
               setSelectedAcadmeicYear(value);
-              console.log(value, 'test');
+              // console.log(value, 'test');
               if (value) {
                 callApi(
                   `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
@@ -270,7 +270,7 @@ function UpdateContact() {
                 // const ids = value.map((el)=>el)
                 const selectedId = value.branch.id;
                 setSelectedBranch(value);
-                console.log(value);
+                // console.log(value);
                 callApi(
                   `${endpoints.academics.grades}?session_year=${
                     selectedAcademicYear.id
@@ -305,6 +305,7 @@ function UpdateContact() {
             id='foe-contact-number'
             label='FOE Contact Number'
             type='text'
+            className='dropdownIcon'
             fullWidth
             value={foe_contact || ''}
             onChange={(e) => handleFoeContact(e)}
@@ -316,6 +317,7 @@ function UpdateContact() {
             id='operational-manager-number'
             label='Operational Manager Contact Number'
             type='text'
+            className='dropdownIcon'
             value={op_manager_contact || ''}
             onChange={(e) => handleOpManagerContact(e)}
             fullWidth
@@ -327,6 +329,7 @@ function UpdateContact() {
             id='campus-incharge-number'
             label='Campus Incharge Contact Number'
             type='text'
+            className='dropdownIcon'
             value={campus_incharge_contact || ''}
             fullWidth
             onChange={(e) => handleCampusInchargeContact(e)}

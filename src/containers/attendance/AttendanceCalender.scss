@@ -34,7 +34,7 @@
       background: red;
       border-radius: 30px;
       color: white;
-    width: 74px;
+      width: 74px;
     }
   }
   .chipDays {
@@ -85,7 +85,7 @@
     margin-top: 20%;
   }
 }
-#completeContainer{
+#completeContainer {
   display: flex;
   justify-content: space-around;
 }
@@ -100,7 +100,7 @@
   min-width: 310px;
   padding-bottom: 30px;
   overflow: auto;
-    overflow-x: hidden;
+  overflow-x: hidden;
   .buttonContainer {
     display: flex;
     margin: 10px;
@@ -108,7 +108,7 @@
     padding-top: 34px;
   }
   .viewDetails {
-    background-color: #f9f9f9 !important;
+    background-color: #ff6b6b !important;
     height: 23px;
     font-size: 10px;
   }
@@ -141,10 +141,10 @@
     height: 145px;
     overflow: auto;
     overflow-x: hidden;
-    .presentProfilePic{
+    .presentProfilePic {
       height: 25px;
-    width: 25px;
-    font-size: 15px;
+      width: 25px;
+      font-size: 15px;
     }
   }
   .presentList {
@@ -167,7 +167,7 @@
     color: #042955;
     padding: 0 1rem;
   }
- 
+
   .presentFName {
     font-size: 12px;
     color: #042955;
@@ -188,12 +188,12 @@
     margin-left: 25%;
     width: 100px;
   }
-  .dateToday{
+  .dateToday {
     font-size: 15px;
     color: #042955;
     font-weight: 600;
   }
-  .noEvent{
+  .noEvent {
     display: flex;
     justify-content: center;
   }
@@ -224,32 +224,32 @@
     align-items: center;
     font-size: 13px;
     color: #042955;
-    .eventFlagToday{
-      background: #FF6B6B;
-    height: 20px;
-    align-items: center;
-    width: 20px;
-    display: flex;
-    justify-content: center;
-    border-radius: 10px;
-    margin-right: 5px;
+    .eventFlagToday {
+      background: #ff6b6b;
+      height: 20px;
+      align-items: center;
+      width: 20px;
+      display: flex;
+      justify-content: center;
+      border-radius: 10px;
+      margin-right: 5px;
     }
-    .flagImgToday{
+    .flagImgToday {
       width: 15px;
-    height: 15px;
+      height: 15px;
     }
   }
   .MuiSvgIcon-root {
     color: white;
   }
 }
-.attendenceWhole{
-  .attendanceBtnornot{
+.attendenceWhole {
+  .attendanceBtnornot {
     display: flex;
     justify-content: space-between;
     width: 100%;
   }
-  #teacherUpdate{
+  #teacherUpdate {
     font-size: 12px;
     display: flex;
     align-items: center;
@@ -269,9 +269,9 @@
 #attendanceContainer {
   height: fit-content;
   min-height: 410px;
-  .mark-attndance-button:hover{
-    background-color: #FF6B6B;
-  } 
+  .mark-attndance-button:hover {
+    background-color: #ff6b6b;
+  }
   #mark-para {
     font-size: 9px;
   }
@@ -281,7 +281,7 @@
     margin-top: 10px;
     width: 100%;
     color: #014b7e;
-    .erpId{
+    .erpId {
       font-size: 13px;
     }
   }
@@ -295,7 +295,6 @@
   #attendanceGrid {
     margin-bottom: 0;
     padding-bottom: 0;
-    
   }
   .noDataImg {
     height: 200px;
@@ -318,7 +317,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  .absentProfilePic{
+  .absentProfilePic {
     height: 25px;
     width: 25px;
     font-size: 15px;
@@ -326,7 +325,7 @@
 }
 .eventGrid {
   box-shadow: none !important;
-  .event-divider{
+  .event-divider {
     margin-top: 10px;
   }
 }
@@ -334,8 +333,8 @@
   // height: fit-content !important;
   height: 410px !important ;
   width: 300px;
-  .add-event-button:hover{
-    background-color: #FF6B6B;
+  .add-event-button:hover {
+    background-color: #ff6b6b;
   }
   .noImgEvent {
     display: flex;
@@ -345,22 +344,22 @@
       width: 200px;
     }
   }
-  .eventList{
+  .eventList {
     height: 315px !important;
     overflow: auto;
     overflow-x: hidden;
   }
-  .flagBg{
-    background: #78B5F3;
+  .flagBg {
+    background: #78b5f3;
     height: 20px;
     align-items: center;
     width: 20px;
     display: flex;
     justify-content: center;
     border-radius: 10px;
-    .flagImg{
+    .flagImg {
       width: 15px;
-    height: 15px;
+      height: 15px;
     }
   }
   .event-btn {
@@ -387,11 +386,11 @@
   #eventData {
     margin: 0;
     padding-bottom: 0;
-    .eventNameData{
+    .eventNameData {
       font-size: 13px;
       margin-left: 3%;
     }
-    .eventDetailsfirst{
+    .eventDetailsfirst {
       padding-top: 5px;
     }
   }
@@ -402,10 +401,10 @@
   .dateTimeEvent {
     display: flex;
     justify-content: space-between;
-    .eventClock{
-      color: #FF6B6B;
+    .eventClock {
+      color: #ff6b6b;
       height: 15px;
-    width: 15px;
+      width: 15px;
     }
     .timeEvent {
       display: flex;
@@ -419,12 +418,12 @@
       justify-content: space-evenly;
       width: 115px;
       font-size: 13px;
-    align-items: center;
-    .calLogo{
-      height: 15px;
-      width: 15px;
-      color: #FF6B6B;
-    }
+      align-items: center;
+      .calLogo {
+        height: 15px;
+        width: 15px;
+        color: #ff6b6b;
+      }
     }
   }
   .eventPara {
@@ -438,11 +437,11 @@
   .calenderGrid {
     width: 88%;
     margin: auto;
-    .MuiButton-label{
+    .MuiButton-label {
       font-size: 13px;
     }
   }
-  .buttonGrid{
+  .buttonGrid {
     display: flex;
   }
   #eventContainer {
@@ -454,13 +453,13 @@
       padding: 0;
     }
   }
-  .topGrid{
+  .topGrid {
     margin-left: 3% !important;
   }
-#selectionContainer{
-  display: flex;
-  justify-content: center;
-  margin-left: 0;
-  width: 100%;
-}
+  #selectionContainer {
+    display: flex;
+    justify-content: center;
+    margin-left: 0;
+    width: 100%;
+  }
 }
