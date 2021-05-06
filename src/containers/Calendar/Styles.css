@@ -4,3 +4,6 @@
 .bodyMargin {
   margin: 25px;
 }
+.arrow .MuiSvgIcon-root {
+  color: #ff6b6b;
+}
