@@ -109,6 +109,9 @@ const CreateEvent = () => {
   const returnFunction = (time) => {
     console.log('timeeeee:', time);
   };
+  const returnFunction = (time) => {
+    console.log('timeeeee:', time);
+  };
 
   const handleEndDateChange = (e, value) => {
     console.log('endDate', value);
@@ -337,6 +340,14 @@ const CreateEvent = () => {
     document.getElementById('outlined-multiline-static').value = '';
     document.getElementById('eventname').value = '';
     // document.getElementById("coustom-date");
+  };
+
+  const handleEventTypeChange = (e, value) => {
+    if (value) {
+      e.preventDefault();
+      console.log('eventttttype:', value.id);
+    } else {
+    }
   };
 
   return (
@@ -609,6 +620,7 @@ const CreateEvent = () => {
                   label='All Day'
                   variant='outlined'
                   labelPlacement='top'
+                  // oncheck={}
                 />
               </Grid>
             </Grid>
@@ -1045,6 +1057,7 @@ const CreateEvent = () => {
                   labelwidth='170'
                   name='description'
                   fullWidth
+                  name='description'
                   onChange={handleChange}
                   multiline
                   rows={5}
