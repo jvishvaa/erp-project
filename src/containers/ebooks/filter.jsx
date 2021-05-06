@@ -62,16 +62,12 @@ const Filter = ({ handleFilter, clearFilter }) => {
       setLoading(false);
       if (response.data.status_code === 200) {
         if (key === 'acad') {
-          // console.log("11111@@@@@")
           setAcadList(response.data.data);
         } else if(key === 'branch') {
-          // console.log("222222222222@@@@@")
           setBranchList(response.data.data.results);
         } else if (key === 'grade') {
-          // console.log("333333333333333@@@@@@@@@@@@@@",response.data)
           setGradeList(response.data.result);
         } else if (key === 'subject') {
-          // console.log("44444444444@@@@",response.data.result)
           setSubjectList(response.data.result[0].subject_id_name);
         }
       }
