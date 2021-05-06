@@ -293,6 +293,7 @@ export default {
     ebook: `${baseURLCentral}/ebook/ebook_school_wise_filter/`,
     EbookUser: `${baseURLCentral}/ebook/ebook_user/`,
     AnnotateEbook: `${baseURLCentral}/ebook/ebook_user_status/`,
+    EbookMappedGrade:'/academic/ebook_mapped_grades/'
   },
   teacherViewBatches: {
     courseListApi: '/aol/courses/',
