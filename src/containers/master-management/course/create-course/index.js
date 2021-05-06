@@ -244,7 +244,6 @@ const CreateCourse = () => {
                   } else if (isAolValue === 3) {
                     history.push('/online-class/teacher-view-class');
                   }
-                 
                 } else {
                   const isErpValue = Number(sessionStorage.getItem('isErpClass')) || '';
                   if (isErpValue === 1) {
@@ -449,10 +448,10 @@ const CreateCourse = () => {
             const list = [];
             result.data.result.results.forEach((obj) => {
               list.push({
-                id: obj.id||'',
-                gradeName: obj?.grade_name||'',
+                id: obj.id || '',
+                gradeName: obj?.grade_name || '',
                 // gradeId: obj?.grade_id||'',
-                gradeId: obj?.id||'',
+                gradeId: obj?.id || '',
               });
             });
             setGradeDropdown(list);
