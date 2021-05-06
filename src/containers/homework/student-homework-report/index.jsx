@@ -351,39 +351,6 @@ const StudentHomeWorkReport = () => {
                             <TableCell align='middle'>{data?.not_submitted}</TableCell>
                           </TableRow>
                         ))}
-
-                      {/* <TableRow>
-                              {reportData &&
-                                reportData.map((data) => (
-                                  <TableCell align='middle'>
-                                    {data?.hw_submitted}
-                                  </TableCell>
-                                ))} */}
-
-                      {/* <TableCell /> */}
-                      {/* </TableRow>
-                            <TableRow>
-                              {reportData &&
-                                reportData.map((data) => (
-                                  <TableCell align='middle'>
-                                    {data?.hw_evaluated}
-                                  </TableCell>
-                                ))}
-
-                              
-                            </TableRow>
-                            <TableRow>
-                              {reportData &&
-                                reportData.map((data) => (
-                                  <TableCell align='middle'>
-                                    {data?.not_submitted}
-                                  </TableCell>
-                                ))}
-
-                             
-                            </TableRow> */}
-                      {/* </>
-                        ))} */}
                     </TableBody>
                   </Table>
                 </TableContainer>

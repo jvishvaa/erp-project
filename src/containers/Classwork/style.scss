@@ -1,0 +1,41 @@
+.class-work-module {
+  padding: 10px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .outer-box {
+    background: sandybrown;
+    width: 158px;
+    height: 39px;
+    border-radius: 5px;
+    position: relative;
+  }
+  .inner-box {
+    background: darkgray;
+    width: 131px;
+    height: 60px;
+    position: absolute;
+    top: -53%;
+    z-index: 5;
+    left: 9%;
+  }
+  .inner-box::before{
+    content: "";
+    position: absolute;
+    top:0;
+    right:0;
+    border-bottom: 20px solid gray;
+    border-right: 20px solid #fafafa;
+    width: 0;
+  }
+  .lower-box{
+    background: #faca66;
+    width: 158px;
+    height: 83px;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 10;
+    top: 22px;
+  }
+}

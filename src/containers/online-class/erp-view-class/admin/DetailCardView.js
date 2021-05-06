@@ -142,7 +142,7 @@
 //           // handleClick();
 //           setAlert('success', 'Class Canceled');
 //           handleClose('success');
-         
+
 //         })
 //         .catch((error) => {
 //           setLoading(false);
@@ -539,7 +539,7 @@
 //                   </Grid>
 //                 </Grid>
 //               </Grid>
-//               {/* 
+//               {/*
 //                     <IconButton
 //                       size='small'
 //                       className='teacherBatchFullViewClose'
@@ -634,15 +634,23 @@ import Loader from '../../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import ResourceDialog from '../../../online-class/online-class-resources/resourceDialog';
 import CountdownTimer from './CountdownTimer';
+import UploadDialogBox from './UploadDialogBox';
 import './index.css';
 import { useDispatch } from 'react-redux';
-import { attendanceAction } from '../../../../redux/actions/onlineClassActions'
-import { Grid, Card, Divider, Button, Popover, Typography,Tooltip,IconButton } from '@material-ui/core';
-import { useHistory ,Route,withRouter} from 'react-router-dom';
+import { attendanceAction } from '../../../../redux/actions/onlineClassActions';
 import {
-  AttachFile as AttachFileIcon,
-} from '@material-ui/icons';
-
+  Grid,
+  Card,
+  Divider,
+  Button,
+  Popover,
+  Typography,
+  Tooltip,
+  IconButton,
+} from '@material-ui/core';
+import { useHistory, Route, withRouter } from 'react-router-dom';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import { AttachFile as AttachFileIcon } from '@material-ui/icons';
 
 const JoinClass = (props) => {
   const fullData = props.fullData;
@@ -651,6 +659,7 @@ const JoinClass = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const [joinAnchor, setJoinAnchor] = useState(null);
+  const [classWorkDialog, setDialogClassWorkBox] = useState(false);
   const [isAccept, setIsAccept] = useState(props.data ? props.data.is_accepted : false);
   const [isRejected, setIsRejected] = useState(
     props.data ? props.data.is_restricted : false
@@ -686,6 +695,9 @@ const JoinClass = (props) => {
   };
   const handleCloseAccept = () => {
     setJoinAnchor(null);
+  };
+  const handleOpenClassWorkDialogBox = (value) => {
+    setDialogClassWorkBox(value);
   };
 
   const handleClickAccept = (event) => {
@@ -777,36 +789,34 @@ const JoinClass = (props) => {
         });
     }
   }
- const handleTakeQuiz = (fullData)=>{
-   if (fullData && fullData.online_class && fullData.online_class.question_paper_id){
-   
-  history.push({
-    pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
-    state: { data: fullData.online_class.id },
-  })
-}else{
-  setAlert('error', 'This onlineclass does not have quiz associated with it.'  );
-  return
-}
-
- }
+  const handleTakeQuiz = (fullData) => {
+    if (fullData && fullData.online_class && fullData.online_class.question_paper_id) {
+      history.push({
+        pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
+        state: { data: fullData.online_class.id },
+      });
+    } else {
+      setAlert('error', 'This onlineclass does not have quiz associated with it.');
+      return;
+    }
+  };
 
   function handleHost(data) {
     setLoading(true);
     axiosInstance
-    .get(`${endpoints.teacherViewBatches.hostApi}?id=${data.id}`)
-    .then((res) => {
-      setLoading(false);
-      if(res?.data?.url){
-        window.open(res?.data?.url, '_blank');
-      } else {
-        setAlert('error', res?.data?.message); 
-      }
-    })
-    .catch((error) => {
-      setLoading(false);
-      setAlert('error', error.message);
-    });
+      .get(`${endpoints.teacherViewBatches.hostApi}?id=${data.id}`)
+      .then((res) => {
+        setLoading(false);
+        if (res?.data?.url) {
+          window.open(res?.data?.url, '_blank');
+        } else {
+          setAlert('error', res?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
   }
 
   const open = Boolean(anchorEl);
@@ -821,57 +831,69 @@ const JoinClass = (props) => {
         </span>
       </Grid>
       {window.location.pathname === '/erp-online-class-student-view' ? (
-         <Grid item xs={3}>
-        <Button
-          size='small'
-          color='secondary'
-          fullWidth
-          variant='contained'
-          onClick={() => handleTakeQuiz(fullData)}
+        <Grid item xs={3}>
+          <Button
+            size='small'
+            color='secondary'
+            fullWidth
+            variant='contained'
+            onClick={() => handleTakeQuiz(fullData)}
+            className='teacherFullViewSmallButtons'
+          >
+            TakeQuiz
+          </Button>
           
-          className='teacherFullViewSmallButtons'
-        >
-        TakeQuiz
-        </Button>
-      </Grid>):''}
-          { window.location.pathname === '/erp-online-class-teacher-view' &&fullData && fullData.online_class &&fullData.online_class.question_paper_id ?
-              <Grid item xs={3}>
-              <Button
-                size='small'
-                color='secondary'
-                fullWidth
-                variant='contained'
-                onClick={() =>
-                  history.push({
-                    pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
-                    state: { data: fullData.online_class.id },
-                  })}
-                
-                className='teacherFullViewSmallButtons'
-              >
-               Launch Quiz
-              </Button>
-            </Grid> :
-                  window.location.pathname === '/erp-online-class-teacher-view' ? (
-                    <Tooltip title='Attach Question Paper'>
-            <IconButton
-
-            
-             onClick={() =>
+        </Grid>
+      ) : (
+        ''
+      )}
+      <Grid item xs={3}>
+        <IconButton color='primary' onClick={()=>setDialogClassWorkBox(true)}>
+          <PhotoCamera />
+        </IconButton>
+        <UploadDialogBox
+            fullData={fullData}
+            classWorkDialog={classWorkDialog}
+            OpenDialogBox={handleOpenClassWorkDialogBox}
+          />
+      </Grid>
+      {window.location.pathname === '/erp-online-class-teacher-view' &&
+      fullData &&
+      fullData.online_class &&
+      fullData.online_class.question_paper_id ? (
+        <Grid item xs={3}>
+          <Button
+            size='small'
+            color='secondary'
+            fullWidth
+            variant='contained'
+            onClick={() =>
+              history.push({
+                pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
+                state: { data: fullData.online_class.id },
+              })
+            }
+            className='teacherFullViewSmallButtons'
+          >
+            Launch Quiz
+          </Button>
+        </Grid>
+      ) : window.location.pathname === '/erp-online-class-teacher-view' ? (
+        <Tooltip title='Attach Question Paper'>
+          <IconButton
+            onClick={() =>
               history.push({
                 pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
                 state: { data: fullData.online_class.id },
-              })}
-          
-            >
-              <AttachFileIcon />
-            </IconButton>
-          </Tooltip>
-          ) : (
-            ''
-          )
-          
-          }
+              })
+            }
+          >
+            <AttachFileIcon />
+          </IconButton>
+        </Tooltip>
+      ) : (
+        ''
+      )}
 
       {isAccept ? (
         <Grid item xs={6}>
@@ -936,7 +958,7 @@ const JoinClass = (props) => {
                     color='secondary'
                     fullWidth
                     variant='contained'
-                    onClick={()=> handleHost(fullData)}
+                    onClick={() => handleHost(fullData)}
                     // onClick={() =>
                     //   window.open(fullData && fullData.presenter_url, '_blank')
                     // }

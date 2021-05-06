@@ -268,6 +268,7 @@ import AssessmentReportTypes from './containers/assessment-central/assessment-re
 import ContactUs from 'containers/contact-us';
 import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz';
 import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
+import ClassWork from './containers/Classwork/index'
 
 // import Contact from './containers/contact/Contact';
 
@@ -357,6 +358,9 @@ function App({ alert }) {
                           </Route>
                           <Route path='/homework/student-report'>
                             {({ match }) => <StudentHomeworkReport match={match} />}
+                          </Route>
+                          <Route path='/classwork'>
+                            {({ match }) => <ClassWork match={match} />}
                           </Route>
                           {/*
                         <Route exact path='/view-users'>
