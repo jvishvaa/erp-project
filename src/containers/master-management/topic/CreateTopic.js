@@ -174,6 +174,16 @@ const CreateTopic = ({grades,setLoading,handleGoBack}) => {
         }
     };
 
+    useEffect(() => {
+        if(academicYearDropdown.length > 0) {
+            academicYearDropdown.map((option) => {
+                if(option.session_year === "2021-22") {
+                    handleAcademicYear('',option);
+                }
+            })
+        }
+    },[academicYearDropdown])
+
 
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: '' });

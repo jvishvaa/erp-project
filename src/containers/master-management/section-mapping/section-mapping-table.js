@@ -251,7 +251,7 @@ const SectionTable = () => {
     setYearDisplay(value);
     if (value) {
       setPage(1);
-      setSearchYear(value.id);
+      setSearchYear(value.session_year);
     }
   };
 

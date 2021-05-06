@@ -80,6 +80,7 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
   }, [moduleId]);
 
   const handleAcademicYear = (event, value) => {
+    console.log(value,'test4');
     setFilterData({
       session: [],
       branch: [],
@@ -123,6 +124,19 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
         });
     }
   };
+
+  // useEffect(() => {
+  //   if(dropDown.sessionDrop.length > 0 && filterData.session.length === 0) {
+  //     console.log(dropDown.sessionDrop,'test3');
+  //       dropDown.sessionDrop.map((option) => {
+  //         console.log(option, 'test1');
+  //           if(option.session_year === "2021-22") {
+  //             console.log(option, 'test2');
+  //               handleAcademicYear('',option);
+  //           }
+  //       })
+  //   }
+  // },[dropDown])
 
   const handleBranch = (event, value) => {
     setFilterData({
