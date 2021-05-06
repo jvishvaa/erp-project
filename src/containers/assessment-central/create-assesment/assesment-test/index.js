@@ -5,29 +5,21 @@ import {
   TextField,
   Button,
   SvgIcon,
-  FormLabel,
   FormGroup,
-  FormControlLabel,
   Switch,
   Checkbox,
   Grid,
-  Popover,
-  MenuItem,
   useTheme,
   Typography,
 } from '@material-ui/core';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useHistory } from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
-import { AutoSizer } from '@material-ui/data-grid';
 import minimizeIcon from '../../../../assets/images/minimize.svg';
 import maximizeIcon from '../../../../assets/images/maximize.svg';
-import productIcon from '../../../../assets/images/product-icons.svg';
 import infoicon from '../../../../assets/images/infoicon.svg';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import './styles.scss';
-import { fetchQuestionPaperDetails } from '../../../../redux/actions';
 import QuestionDetailCard from '../question-detail-card.js';
 
 const menuOptions = [
@@ -47,9 +39,6 @@ function extractContent(s) {
 }
 
 const AssesmentTest = ({
-  branch,
-  grade,
-  subject,
   questionPaper,
   onMarksAssignModeChange,
   marksAssignMode,
@@ -114,18 +103,6 @@ const AssesmentTest = ({
 
   return (
     <div className='create-container'>
-      <div className='header'>
-        <div className='applied-filters'>
-          <div className='filter'>{branch}</div>
-          {grade && <span className='dot'>.</span>}
-          <div className='filter'>{grade}</div>
-          {grade && <span className='dot'>.</span>}
-          <div className='filter'>{subject}</div>
-        </div>
-        {/* <div className='icon'>
-          <img src={productIcon} alt='product' />
-        </div> */}
-      </div>
       <div className='questions-paper-container'>
         <div className='minimize-container'>
           <span className='info'>{!minimize ? 'Minimize' : 'Maximize'}</span>
@@ -204,11 +181,13 @@ const AssesmentTest = ({
                           variant='outlined'
                           type='datetime-local'
                           size='small'
+                          inputProps={{ min: new Date().toISOString().slice(0,16) }}
                           className='date-time-picker bg-white'
                           value={testDate}
                           color='primary'
                           style={{ width: isMobile ? '50%' : '100%' }}
                           onChange={(e) => {
+                            console.log(e.target.value)
                             onTestDateChange(e.target.value);
                           }}
                         />
@@ -458,7 +437,13 @@ const AssesmentTest = ({
                     style={{ borderRadius: '10px' }}
                     color='primary'
                     onClick={onCreate}
-                    disabled={!testDate || !testDuration || !testName || !testId}
+                    disabled={
+                      !testDate ||
+                      !testDuration ||
+                      !testName ||
+                      !testId ||
+                      !testInstructions
+                    }
                   >
                     Submit
                   </Button>
