@@ -127,6 +127,8 @@
 .sidebar-panel .ongoing {
   outline: 1px solid #014b7e;
   outline-offset: 3px;
+  background: #d277ff;
+  color: white;
 }
 
 .sidebar-button-wrapper {

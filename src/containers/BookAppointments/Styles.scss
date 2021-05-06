@@ -55,14 +55,13 @@
 }
 .cardsStyles h5 {
   text-align: center;
-  font-size: medium;
- 
+  font-size: small;
 }
 .cardsStyles h6 {
-
-text-align: center;
+  // text-align: center;
+  font-size: medium;
 }
-.hove:hover{
+.hove:hover {
   color: #ff6b6b !important;
 }
 .responderV div.MuiGrid-root {

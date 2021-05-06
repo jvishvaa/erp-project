@@ -219,7 +219,11 @@ const AssessmentReportTypes = ({
             page={page}
             setPage={setPage}
             pageSize={limit}
-            classTopicAverage={reportData?.[0]?.class_average || ''}
+            classTopicAverage={
+              selectedReportType?.id === 3
+                ? reportData?.[0]?.class_average
+                : +assessmentReportListData?.comparison || ''
+            }
             isFilter={isFilter}
             setIsFilter={setIsFilter}
             selectedReportType={selectedReportType}
@@ -264,10 +268,12 @@ const AssessmentReportTypes = ({
                           </TableCell>
                         )}
                         {selectedReportType?.id === 1 && (
-                          <TableCell className={`${classes.tableCell} teacherNameParent`}>
-                            {rowData?.teacher_name?.map((obj) => {
-                              return <div className='teacherNameChild'>{obj}</div>;
-                            })}
+                          <TableCell className={classes.tableCell}>
+                            <div className='teacherNameParent'>
+                              {rowData?.teacher_name?.map((obj) => {
+                                return <div className='teacherNameChild'>{obj}</div>;
+                              })}
+                            </div>
                           </TableCell>
                         )}
                         {selectedReportType?.id === 2 && (
@@ -295,13 +301,18 @@ const AssessmentReportTypes = ({
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
                           <TableCell className={classes.tableCell}>
-                            {rowData?.total_mark}
+                            {selectedReportType?.id === 3
+                              ? rowData?.total_mark
+                              : rowData?.marks_obtained}
                           </TableCell>
                         )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
                           <TableCell className={classes.tableCell}>
-                            {rowData?.comparsion}
+                            {selectedReportType?.id === 3
+                              ? rowData?.comparsion
+                              : +rowData?.marks_obtained -
+                                +assessmentReportListData?.comparison}
                           </TableCell>
                         )}
                       </TableRow>

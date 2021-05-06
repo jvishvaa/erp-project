@@ -382,6 +382,7 @@ const CreateClassForm = (props) => {
     const { gradeIds } = onlineClass;
     setSelectedSections([]);
     setSelectedSubject([]);
+    dispatch(clearFilteredStudents());
     if (onlineClass.coHosts?.length > 0) {
       const index = onlineClass.coHosts.findIndex((host) => host === value);
       if (index) {
@@ -604,38 +605,6 @@ const CreateClassForm = (props) => {
           setAlert('warning', 'No. of students should be atleast 1.');
       }
     }
-
-    //formdata below
-    // const formdata = new FormData();
-    // formdata.append('user_id', userId);
-    // formdata.append('title', title);
-    // formdata.append('duration', duration);
-    // formdata.append('subject_id', subject.join(','));
-    // formdata.append('tutor_emails', tutorEmails.join(','));
-    // formdata.append('role', 'Student');
-    // formdata.append('start_time', startTime);
-    // if (weeks > 0) formdata.append('no_of_week', weeks);
-    // formdata.append('is_recurring', toggle?1:0);
-    // formdata.append('class_type', selectedClassType.id);
-
-    // conditional appends
-    // if (days.length) formdata.append('week_days', days);
-
-    // if (sectionIds.length) formdata.append('section_mapping_ids', sectionIds);
-    // else if (gradeIds.length) {
-    //   formdata.append('grade_ids', gradeIds);
-    //   formdata.append('branch_ids', branch.join(','));
-    // } else formdata.append('branch_ids', branch.join(','));
-
-    // if (filteredStudents.length)
-    //   formdata.append('student_ids', filteredStudents.join(','));
-
-    // if (joinLimit > 0) {
-    //   formdata.append('join_limit', joinLimit);
-    //   dispatch(createNewOnlineClass(formdata));
-    // } else {
-    //   setAlert('warning', 'Join limit should be atleast 1.')
-    // }
   };
 
   const handleCoHostBlur = async (index) => {
@@ -839,6 +808,7 @@ const CreateClassForm = (props) => {
                 options={classTypes}
                 getOptionLabel={(option) => option?.type}
                 filterSelectedOptions
+                className='dropdownIcon'
                 value={selectedClassType}
                 required
                 renderInput={(params) => (
@@ -860,6 +830,7 @@ const CreateClassForm = (props) => {
                 label='Title'
                 variant='outlined'
                 size='small'
+                className='dropdownIcon'
                 name='title'
                 onChange={handleChange}
                 required
@@ -869,6 +840,7 @@ const CreateClassForm = (props) => {
               <Autocomplete
                 size='small'
                 onChange={handleYear}
+                className='dropdownIcon'
                 id='create__class-grade'
                 options={yearList || []}
                 getOptionLabel={(option) => option?.session_year || ''}
@@ -891,6 +863,7 @@ const CreateClassForm = (props) => {
                 multiple
                 onChange={handleBranches}
                 id='create__class-grade'
+                className='dropdownIcon'
                 options={branches || []}
                 getOptionLabel={(option) => option?.branch_name || ''}
                 filterSelectedOptions
@@ -914,6 +887,7 @@ const CreateClassForm = (props) => {
                   handleGrade(e, value);
                 }}
                 id='create__class-grade'
+                className='dropdownIcon'
                 options={grades}
                 getOptionLabel={(option) => option?.grade__grade_name || ''}
                 filterSelectedOptions
@@ -934,6 +908,7 @@ const CreateClassForm = (props) => {
                 <Autocomplete
                   size='small'
                   id='create__class-subject'
+                  className='dropdownIcon'
                   options={courses || []}
                   getOptionLabel={(option) => option?.course_name || ''}
                   filterSelectedOptions
@@ -962,6 +937,7 @@ const CreateClassForm = (props) => {
                     handleSection(e, value);
                   }}
                   id='create__class-section'
+                  className='dropdownIcon'
                   options={sections || []}
                   getOptionLabel={(option) => {
                     return `${option.section__section_name}`;
@@ -997,6 +973,7 @@ const CreateClassForm = (props) => {
                       //       (sec) => sec.section_id === sub.section__id
                       //     ) > -1
                       // )
+                      className='dropdownIcon'
                       getOptionLabel={(option) => option?.subject__subject_name || ''}
                       filterSelectedOptions
                       value={selectedSubject || []}
@@ -1023,7 +1000,7 @@ const CreateClassForm = (props) => {
                 <Grid item xs={12} sm={2}>
                   <TextField
                     size='small'
-                    className='create__class-textfield'
+                    className='create__class-textfield dropdownIcon'
                     id='class-duration'
                     label='Duration (mins)'
                     variant='outlined'
@@ -1037,7 +1014,7 @@ const CreateClassForm = (props) => {
                 <Grid item xs={12} sm={2}>
                   <TextField
                     size='small'
-                    className='create__class-textfield'
+                    className='create__class-textfield dropdownIcon'
                     id='class-join-limit'
                     label={selectedClassType?.id > 0 ? 'Batch Size' : 'Join limit'}
                     variant='outlined'
@@ -1101,6 +1078,7 @@ const CreateClassForm = (props) => {
                     filterSelectedOptions
                     value={selectedDays}
                     onChange={handleDays}
+                    className='dropdownIcon'
                     renderInput={(params) => (
                       <TextField
                         size='small'
@@ -1116,7 +1094,7 @@ const CreateClassForm = (props) => {
                 <Grid item xs={12} sm={2}>
                   <TextField
                     size='small'
-                    className='create__class-textfield'
+                    className='create__class-textfield dropdownIcon'
                     id='class-no_of_weeks'
                     label='No. of weeks'
                     variant='outlined'
@@ -1161,6 +1139,7 @@ const CreateClassForm = (props) => {
                 filterSelectedOptions
                 value={onlineClass.tutorEmail}
                 onChange={handleTutorEmail}
+                className='dropdownIcon'
                 disabled={tutorEmailsLoading}
                 ref={tutorEmailRef}
                 renderInput={(params) => (
@@ -1245,7 +1224,6 @@ const CreateClassForm = (props) => {
             <>
               {' '}
               <hr className='horizontal-line' />
-              {/* {onlineClass.tutorEmail && ( */}
               <Grid container className='create-class-container' spacing={2}>
                 <Grid item xs={12}>
                   <h2 className='co_host-title'>Co-Host</h2>
@@ -1263,6 +1241,7 @@ const CreateClassForm = (props) => {
                     filterSelectedOptions
                     value={onlineClass.coHosts}
                     onChange={handleCoHost}
+                    className='dropdownIcon'
                     disabled={tutorEmailsLoading}
                     renderInput={(params) => (
                       <TextField

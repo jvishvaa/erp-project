@@ -67,10 +67,7 @@ const useStyles = makeStyles((theme) => ({
   tablePaginationCaption: {
     fontWeight: '600 !important',
   },
-  inputLabel: {
-    marginLeft: 20,
-    width: '70%',
-  },
+
   margin: {
     margin: 40,
   },
@@ -96,20 +93,26 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
   const [rolename, setRolename] = useState('');
   const [appointmentStatus, setAppointmentstatus] = useState(1);
   const history = useHistory();
-  
-  
-  console.log('userbranch:', localStorage.getItem('userDetails'));
-  useEffect(() => {
-    axiosInstance.get(endpoints.communication.roles).then((response) => {
-      console.log(response.data.result);
 
-      setRole(response.data.result);
-    });
+  // console.log('userbranch:', localStorage.getItem('userDetails'));
+  useEffect(() => {
+    setLoading(true);
+    axiosInstance
+      .get(`${endpoints.communicationRoles.roles}`)
+      .then((res) => {
+        // console.log(res, 'checking data');
+        setLoading(false);
+        setRole(res.data.data);
+      })
+      .catch((err) => {
+        setLoading(false);
+        setAlert('error', err?.message);
+      });
   }, []);
 
   const handleRole = (evt, value) => {
-    console.log(value.id);
-    setRolename(value.id);
+    // console.log(value?.id);
+    setRolename(value?.id);
   };
 
   const handlePagination = (event, page) => {
@@ -117,19 +120,19 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
   };
 
   const handleDateChange = (date) => {
-    console.log('date', date.target.value);
+    // console.log('date', date.target.value);
     // setSelectedDate(date);
   };
 
   const handleChange = (e) => {
-    console.log('event:', e.target.value);
+    // console.log('event:', e.target.value);
     setData({ ...data, [e.target.name]: e.target.value });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    // setLoading(true);
-    console.log('subarao');
-    console.log('data', data);
+    setLoading(true);
+    // console.log('subarao');
+    // console.log('data', data);
     axiosInstance
       .post(
         endpoints.Appointments.bookAppointment,
@@ -144,23 +147,21 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
           branch: JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0],
         }
       )
-      
       .then((result) => {
         if (result.data.status_code === 200) {
-          // setLoading(false);
+          setLoading(false);
           setAlert('success', result.data.message);
           // history.push({
           //   pathname: '/appointments',
           // });
           handleGoBack();
-
         } else {
-          // setLoading(false);
+          setLoading(false);
           setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
-        // setLoading(false);
+        setLoading(false);
         setAlert('error', error.message);
       });
   };
@@ -175,7 +176,8 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
                 size='small'
                 onChange={handleRole}
                 id='role'
-                className='arrow  '
+                // className='arrow  '
+                className='dropdownIcon'
                 // value={selectedGrade}
                 style={{ width: '100%' }}
                 options={roles}
@@ -203,7 +205,8 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
               variant='outlined'
               required
               fullWidth
-              className='button'
+              // className='button'
+              className='dropdownIcon'
               size='small'
               onChange={handleChange}
               style={{ marginTop: 25 }}
@@ -240,7 +243,8 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
               required
               InputLabelProps={{ shrink: true, required: true }}
               type='time'
-              className='button'
+              // className='button'
+              className='dropdownIcon'
               variant='outlined'
               size='small'
               fullWidth
@@ -252,7 +256,12 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
             <Divider />
           </Grid>
           <Grid item xs={12} sm={5} md={3}>
-            <FormControl variant='outlined' className={classes.formControl} size='small'>
+            <FormControl
+              variant='outlined'
+              style={{ marginTop: 24, width: '100%' }}
+              size='small'
+              className='dropdownIcon'
+            >
               <InputLabel id='demo-simple-select-outlined-label'>
                 Appointment medium
               </InputLabel>
@@ -278,8 +287,9 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
       </Grid>
       <Grid item xs={12} md={10} sm={12}>
         <FormControl
-          className={classes.inputLabel}
+          style={{ marginLeft: 20, width: '70%' }}
           variant='outlined'
+          className='dropdownIcon'
           onChange={handleChange}
         >
           <InputLabel htmlFor='outlined-adornment-amount'>
@@ -328,7 +338,6 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
             className='custom_button_master'
             size='medium'
             type='submit'
-          
           >
             Book Appointment
           </Button>
