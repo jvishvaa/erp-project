@@ -109,9 +109,9 @@ const CreateEvent = () => {
   const returnFunction = (time) => {
     console.log('timeeeee:', time);
   };
-  const returnFunction = (time) => {
-    console.log('timeeeee:', time);
-  };
+  // const returnFunction = (time) => {
+  //   console.log('timeeeee:', time);
+  // };
 
   const handleEndDateChange = (e, value) => {
     console.log('endDate', value);
@@ -342,13 +342,13 @@ const CreateEvent = () => {
     // document.getElementById("coustom-date");
   };
 
-  const handleEventTypeChange = (e, value) => {
-    if (value) {
-      e.preventDefault();
-      console.log('eventttttype:', value.id);
-    } else {
-    }
-  };
+  // const handleEventTypeChange = (e, value) => {
+  //   if (value) {
+  //     e.preventDefault();
+  //     console.log('eventttttype:', value.id);
+  //   } else {
+  //   }
+  // };
 
   return (
     <>
