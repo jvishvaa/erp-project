@@ -135,7 +135,7 @@ const ErpAdminViewClass = ({ history }) => {
     }
   }, [window.location.pathname]);
 
-  console.log(selectedSection,'++++++++++++++++++++')
+  console.log(selectedSection, '++++++++++++++++++++');
   function callApi(api, key) {
     setLoading(true);
     axiosInstance
@@ -244,8 +244,11 @@ const ErpAdminViewClass = ({ history }) => {
   useEffect(() => {
     // <<<<<<<<<<<<<<<<BRANCH API START>>>>>>>>>>>
     // callApi(`${endpoints.userManagement.branchList}`,'branchList');
-    if(moduleId){
-      callApi(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`, 'academicYearList');
+    if (moduleId) {
+      callApi(
+        `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
+        'academicYearList'
+      );
     }
     // <<<<<<<<<<<<<<<<BRANCH API END>>>>>>>>>>>
     if (window.location.pathname === '/erp-online-class-student-view') {
@@ -278,7 +281,7 @@ const ErpAdminViewClass = ({ history }) => {
     //     'gradeList'
     //   );
     // }
-  }, [selectedClassType,moduleId]);
+  }, [selectedClassType, moduleId]);
 
   useEffect(() => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
@@ -315,7 +318,10 @@ const ErpAdminViewClass = ({ history }) => {
           'filter'
         );
       }
-    }else if(window.location.pathname === '/erp-online-class-student-view' && selectedClassType){
+    } else if (
+      window.location.pathname === '/erp-online-class-student-view' &&
+      selectedClassType
+    ) {
       callApi(
         `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
           studentDetails &&
@@ -366,7 +372,7 @@ const ErpAdminViewClass = ({ history }) => {
     setSelectedBranch([]);
     setSelectedClassType('');
     setSelectedAcadmeicYear('');
-    setPage(1)
+    setPage(1);
   }
 
   function handleFilter() {
@@ -428,9 +434,9 @@ const ErpAdminViewClass = ({ history }) => {
       callApi(
         `${endpoints.aol.classes}?is_aol=0&session_year=${
           selectedAcademicYear.id
-        }&section_mapping_ids=${selectedSection.map((el)=>el?.id)}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${
-          selectedClassType.id
-        }&start_date=${startDateTechPer.format(
+        }&section_mapping_ids=${697}&subject_id=${selectedSubject.map(
+          (el) => el?.subject__id
+        )}&class_type=${selectedClassType.id}&start_date=${startDateTechPer.format(
           'YYYY-MM-DD'
         )}&end_date=${endDateTechPer.format(
           'YYYY-MM-DD'
@@ -447,7 +453,7 @@ const ErpAdminViewClass = ({ history }) => {
     }
     setDateRangeTechPer(v1);
   }
-console.log(sectionList,'===================')
+  console.log(sectionList, '===================');
   return (
     <>
       <Layout>
@@ -501,7 +507,7 @@ console.log(sectionList,'===================')
                     setSelectedBranch([]);
                     setSelectedAcadmeicYear('');
                     setFilterList([]);
-                    setPage(1)
+                    setPage(1);
                   }}
                   id='branch_id'
                   className='dropdownIcon'
@@ -546,7 +552,7 @@ console.log(sectionList,'===================')
                         setSelectedSubject([]);
                         setSelectedBranch([]);
                         setFilterList([]);
-                        setPage(1)
+                        setPage(1);
                       }}
                       id='branch_id'
                       className='dropdownIcon'
@@ -593,7 +599,7 @@ console.log(sectionList,'===================')
                         setSubjectList([]);
                         setSelectedSubject([]);
                         setFilterList([]);
-                        setPage(1)
+                        setPage(1);
                       }}
                       id='branch_id'
                       className='dropdownIcon'
@@ -618,9 +624,9 @@ console.log(sectionList,'===================')
                       size='small'
                       onChange={(event, value) => {
                         setSelectedGrade([]);
-                     
+
                         if (value.length) {
-                          console.log(value,'||||||||||||||||||')
+                          console.log(value, '||||||||||||||||||');
                           const ids = value.map((el) => el);
                           const selectedId = value.map((el) => el.grade_id);
                           const branchId = selectedBranch.map((el) => el.branch.id);
@@ -647,7 +653,7 @@ console.log(sectionList,'===================')
                         setSubjectList([]);
                         setSelectedSubject([]);
                         setFilterList([]);
-                        setPage(1)
+                        setPage(1);
                       }}
                       id='grade_id'
                       className='dropdownIcon'
@@ -672,11 +678,11 @@ console.log(sectionList,'===================')
                       size='small'
                       onChange={(event, value) => {
                         setSelectedSection([]);
-                        console.log('value',value)
+                        console.log('value', value);
                         if (value?.length) {
                           // console.log(value,'=========================')
                           const ids = value.map((el) => el);
-                          console.log(ids,"ids")
+                          console.log(ids, 'ids');
                           const secId = value.map((el) => el.section_id);
                           setSelectedSection(ids);
                           callApi(
@@ -696,15 +702,13 @@ console.log(sectionList,'===================')
                         setSubjectList([]);
                         setSelectedSubject([]);
                         setFilterList([]);
-                        setPage(1)
+                        setPage(1);
                       }}
                       id='section_id'
                       className='dropdownIcon'
                       value={selectedSection}
                       options={sectionList}
-                      getOptionLabel={(option) =>
-                        option?.section__section_name || ''
-                      }
+                      getOptionLabel={(option) => option?.section__section_name || ''}
                       filterSelectedOptions
                       renderInput={(params) => (
                         <TextField
@@ -732,7 +736,7 @@ console.log(sectionList,'===================')
                           setBatchList([]);
                           setSelectedBatch('');
                           setFilterList([]);
-                          setPage(1)
+                          setPage(1);
                         }}
                         id='course_id'
                         className='dropdownIcon'
@@ -768,7 +772,7 @@ console.log(sectionList,'===================')
                           setBatchList([]);
                           setSelectedBatch('');
                           setFilterList([]);
-                          setPage(1)
+                          setPage(1);
                         }}
                         id='course_id'
                         className='dropdownIcon'
@@ -802,13 +806,19 @@ console.log(sectionList,'===================')
                                 {...startProps}
                                 inputProps={{
                                   ...inputProps,
-                                  value: `${moment(inputProps.value).format('DD-MM-YYYY')} - ${moment(endProps.inputProps.value).format('DD-MM-YYYY')}`,
+                                  value: `${moment(inputProps.value).format(
+                                    'DD-MM-YYYY'
+                                  )} - ${moment(endProps.inputProps.value).format(
+                                    'DD-MM-YYYY'
+                                  )}`,
                                   readOnly: true,
                                   endAdornment: (
                                     // <InputAdornment position="end">
                                     <IconButton>
-                                    <DateRangeIcon style={{ width: '35px' }} color='primary' />
-
+                                      <DateRangeIcon
+                                        style={{ width: '35px' }}
+                                        color='primary'
+                                      />
                                     </IconButton>
                                     // </InputAdornment>
                                   ),
