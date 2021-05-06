@@ -7,27 +7,16 @@ import {
   Card,
   Button,
   Typography,
-  // Divider,
   SvgIcon,
   Dialog,
   Slide,
 } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import CardActionArea from '@material-ui/core/CardActionArea';
-// import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
 import Tooltip from '@material-ui/core/Tooltip';
 import { withRouter } from 'react-router-dom';
-// import IconButton from '@material-ui/core/IconButton';
-// import Face from '@material-ui/icons/Face';
-// import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-// import moment from 'moment';
-
 import endpoints from '../../config/endpoints';
-import axios from 'axios';
 import axiosInstance from '../../config/axios';
-// import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import axios from 'axios';
 import EbookPdf from './EbookPDF';
 
 import unfiltered from '../../assets/images/unfiltered.svg';
@@ -72,21 +61,12 @@ function Transition(props) {
 function GridList(props) {
   const classes = useStyles();
   const { data, totalEbooks } = props;
-  // const { tabValue } = props.tabValue;
-  // const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
-  // const themeContext = useTheme();
-  // const canvasRef = useRef(null);
-  // const [data, setData] = useState([])
-  // const [loading, setLoading] = useState(false)
   const [timeSpent, setTimeSpent] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const [open, setOpen] = useState(false);
-  // const [ebookNum, setEbookNum] = useState('');
   const [pdfUrl, setPdfUrl] = useState('');
-  // const [click, setClick] = useState(false);
   const [selectedItem, setSelectedItem] = useState('');
-  // const classes = useStyles()
 
   const handleClickOpen = (data) => {
     setSelectedItem(data);
@@ -115,8 +95,12 @@ function GridList(props) {
       setPdfUrl(url && url);
       setLoading(true);
       setOpen(true);
-      axiosInstance
-        .get(`${endpoints.ebook.EbookUser}?ebook_id=${data.id}`)
+      axios
+        .get(`${endpoints.ebook.EbookUser}?ebook_id=${data.id}`, {
+          headers: {
+            'x-api-key': 'vikash@12345#1231',
+          },
+        })
         .then(({ data }) => {
           console.log(data);
           setLoading(false);
@@ -197,16 +181,6 @@ function GridList(props) {
                                 {item && item.ebook_name}
                               </Typography>
                             </Grid>
-                            {/* <Grid item md={12} xs={12}>
-                              <Typography
-                                title={item && item.ebook_author}
-                                className={classes.textEffect}
-                                style={{ fontSize: '10px', color: '#042955' }}
-                              >
-                                Author :&nbsp;
-                                {item && item.ebook_author}
-                              </Typography>
-                            </Grid> */}
                             <Grid item md={12} xs={12}>
                               <Typography
                                 title={
@@ -214,7 +188,6 @@ function GridList(props) {
                                   item.updated_at &&
                                   new Date(item.updated_at).toLocaleDateString()
                                 }
-                                // className={classes.textEffect}
                                 style={{ fontSize: '10px', color: '#042955' }}
                               >
                                 Publication on&nbsp;
@@ -244,71 +217,6 @@ function GridList(props) {
                         </Grid>
                       </Grid>
                     </Card>
-                    {/* <Card
-                      className={classes.card}
-                      style={{
-                        width: '100%',
-                        height: '160px',
-                        backgroundSize: '100px 120px',
-                        backgroundImage: `url(${item && item.ebook_thumbnail})`,
-                        display: data.length >= 1 ? 'flex' : 'none',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
-                        backgroundRepeat: 'no-repeat',
-                        borderRadius: 10,
-                        backgroundPositionX: '15px',
-                      }}
-                    >
-                      <CardHeader
-                        subheader={
-                          <Typography
-                            variant='body2'
-                            align='right'
-                            component='p'
-                            style={{
-                              fontSize: '14px',
-                              fontWeight: 'bold',
-                              marginRight: '48px',
-                              color: '#014b7e',
-                            }}
-                          >
-                            {item && item.ebook_name}
-                          </Typography>
-                        }
-                      />
-                      <CardActionArea>
-                        <CardContent style={{ padding: '5px' }}>
-                          <Typography
-                            style={{
-                              marginTop: '-35px',
-                              marginLeft: '130px',
-                              fontSize: '12px',
-                            }}
-                            color='textSecondary'
-                            component='p'
-                          >
-                            {item && item.ebook_author}
-                          </Typography>
-                          <Button
-                            size='small'
-                            color='primary'
-                            variant='contained'
-                            style={{
-                              width: '100px',
-                              float: 'right',
-                              marginTop: '15px',
-                              height: '30px',
-                              marginBottom: '10px',
-                              marginRight: '20px',
-                              color: 'white',
-                            }}
-                            onClick={() => handleClickOpen(item)}
-                          >
-                            Read
-                          </Button>
-                        </CardContent>
-                      </CardActionArea>
-                    </Card> */}
                   </Grid>
                 </Grid>
               </Grid>
