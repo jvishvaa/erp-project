@@ -164,7 +164,7 @@ const EbookPdf = (props) => {
       const imgUrl = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}&page_number=${page}`;
       setLoading(true);
       axios
-        .get(`${imgUrl}?domain_name=${domineName}`,{
+        .get(`${imgUrl}`,{
           headers: {
             'x-api-key': 'vikash@12345#1231',
           },
