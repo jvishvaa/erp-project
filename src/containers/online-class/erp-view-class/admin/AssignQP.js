@@ -154,8 +154,8 @@ const handleQPSelect = (event,value) =>{
   }
   axiosInstance
   .get(`${endpoints.questionPaper.QuestionsInQP}?question_paper=${
-    value.question_paper
-  }`, {
+    value.test_id
+  }&lobby_identifier=${data}`, {
     headers: {
         Authorization: `Bearer ${token}`,
     },
