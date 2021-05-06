@@ -13,6 +13,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import endpoints from '../../config/endpoints';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import moment from 'moment';
 import './subjectgrademapping.scss';
 
 
@@ -179,6 +180,19 @@ const Subjectgrade = (props) => {
             setUpdateSubjectValue(null);
         }
     }
+
+    useEffect(() => {
+        if(academicYear.length > 0) {
+            const currentAcademicYear = moment().month() < 3
+                ? `${Number(moment().year())-1}-${moment().format('YY')}`
+                : `${moment().year()}-${Number(moment().format('YY'))+1}`
+            academicYear.map((option) => {
+                if(option.session_year === currentAcademicYear) {
+                    handleChangeYear(option);
+                }
+            })
+        }
+    },[academicYear])
     
     const handleSubjectChange = (e, value) => {
         let values = Array.from(value, (option) => option.id);
