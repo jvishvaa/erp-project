@@ -165,7 +165,7 @@ const MarkAttedance = () => {
                   <Divider />
                   <Grid container direction='row'>
                     <Typography className={[classes.contentList, classes.paperStyle]}>
-                      1stHalf
+                      1<sup>st</sup>Half
                     </Typography>
 
                     <Grid style={{ marginLeft: '40%' }}>
@@ -176,7 +176,7 @@ const MarkAttedance = () => {
 
                   <Grid container direction='row'>
                     <Typography className={[classes.contentList, classes.paperStyle]}>
-                      2stHalf
+                      2<sup>nd</sup>Half
                     </Typography>
 
                     <Grid style={{ marginLeft: '40%' }}>

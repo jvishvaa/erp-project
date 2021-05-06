@@ -274,6 +274,10 @@ export default {
     ebook: `erp_user/publication/`,
     update_delete: `erp_user/update-destroy-publication/`,
   },
+  CreateEvent: {
+    CreateEvent: 'academic/events/',
+    getEventCategory: 'academic/list_create_event_category/',
+  },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
