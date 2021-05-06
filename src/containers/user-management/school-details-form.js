@@ -281,6 +281,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
                 variant='outlined'
                 label='Academic Year'
                 placeholder='Academic Year'
+                required
               />
             )}
             size='small'

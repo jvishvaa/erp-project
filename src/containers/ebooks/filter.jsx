@@ -133,7 +133,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
             onChange={(event, value) => {
               setSelectedBranch(value);
               if(value) {
-                withAxiosInstance(`${endpoints.communication.grades}?session_year=${selectedAcad?.id}&branch_id=${value.id}&module_id=${getModuleInfo('Ebook View').id}`, 'grade');
+                withAxiosInstance(`${endpoints.communication.grades}?session_year=${selectedAcad?.id}&branch_id=${value.branch.id}&module_id=${getModuleInfo('Ebook View').id}`, 'grade');
               }
               setSelectedGrade('');
               setSelectedSubject('');
@@ -159,7 +159,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
             onChange={(event, value) => {
               if(value) {
                 withAxiosInstance(
-                  `${endpoints.lessonPlan.gradeSubjectMappingList}?session_year=${selectedAcad?.id}&branch=${selectedBranch.id}&grade=${value.grade_id}&module_id=${getModuleInfo('Ebook View').id}`,
+                  `${endpoints.lessonPlan.gradeSubjectMappingList}?session_year=${selectedAcad?.id}&branch=${selectedBranch.branch.id}&grade=${value.grade_id}&module_id=${getModuleInfo('Ebook View').id}`,
                   'subject'
                 );
               }
@@ -252,7 +252,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                 variant='contained'
                 color='primary'
                 fullWidth
-                onClick={()=> handleFilter(selectedAcad, selectedBranch, selectedGrade, selectedSubject, selectedVolume)}
+                onClick={()=> handleFilter(selectedAcad, selectedBranch.branch.id, selectedGrade, selectedSubject, selectedVolume)}
               >
                 Filter
               </Button>

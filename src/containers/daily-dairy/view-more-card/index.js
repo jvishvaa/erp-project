@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import Paper from '@material-ui/core/Paper';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme, IconButton, SvgIcon, Divider } from '@material-ui/core';
+import { useTheme, IconButton, SvgIcon, Divider, withStyles, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import downloadAll from '../../../assets/images/downloadAll.svg';
 import './view-more.css';
@@ -10,6 +10,16 @@ import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { ExpandLessOutlined } from '@material-ui/icons';
 import {Context} from '../context/context'
+
+const DownloadButton = withStyles({
+  root: {
+    backgroundColor: 'transparent',
+    textTransform: 'capitalize',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
+  }
+})(Button);
 
 const ViewMoreDailyDairyCard = ({
   viewMoreData,
@@ -25,6 +35,12 @@ const ViewMoreDailyDairyCard = ({
   const { setAlert } = useContext(AlertNotificationContext);
   //const sectionId = viewMoreData.section[0].id ?? '';
   //const gradeId =  viewMoreData.grade.id ?? 0;
+  const handleBulkDownloads = (files) => {
+    for (let i = 0; i < files?.length; i++) {
+      window.open(`${endpoints.discussionForum.s3}/${files[i]}`);
+    }
+  };
+
   const handleBulkDownload = () => {
     const formData = new FormData();
     // formData.append('branch',[5]);
@@ -125,7 +141,7 @@ const ViewMoreDailyDairyCard = ({
           <div className='bodyTitle'>Media</div>
           {/* <div className='mediaBody'>xxxxxxxx</div> */}
 
-          <IconButton
+          {/* <IconButton
           //  onClick={handleBulkDownload} dev/dairy/ORCHIDS/54/59/2021-02-08 18:21:57.036513_Group 7767.png  || dev/dairy/ORCHIDS/${gradeId}/${sectionId}/${pic}
             style={{fontSize:'1.1rem',color:'#ff6b6b',paddingLeft:'5%',marginTop:'3%'}}
             className="bulkDownloadIconViewMore"
@@ -142,7 +158,27 @@ const ViewMoreDailyDairyCard = ({
               />
             </a>
             Download Attachments
-          </IconButton>
+          </IconButton> */}
+          <div className='headerContent'>
+            <DownloadButton
+              onClick={() => handleBulkDownloads(viewMoreData?.documents)}
+              style={{ fontSize: '1.1rem', color: '#ff6b6b', display: 'flex' }}
+              className='bulkDownloadIconViewMore'
+              startIcon={
+                <SvgIcon
+                  component={() => (
+                      <img
+                      style={{ display: 'flex'}}
+                        // style={{ height: '21px', width: '21px', marginLeft: '-343px' }}
+                        src={downloadAll}
+                        alt='downloadAll'
+                      />
+                    )}
+                />}
+            >
+              Download Attachments
+            </DownloadButton>
+          </div>
         </div>
       </Paper>
     </>

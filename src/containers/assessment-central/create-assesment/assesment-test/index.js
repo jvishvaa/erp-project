@@ -5,28 +5,21 @@ import {
   TextField,
   Button,
   SvgIcon,
-  FormLabel,
   FormGroup,
-  FormControlLabel,
   Switch,
   Checkbox,
   Grid,
-  Popover,
-  MenuItem,
   useTheme,
+  Typography,
 } from '@material-ui/core';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useHistory } from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
-import { AutoSizer } from '@material-ui/data-grid';
 import minimizeIcon from '../../../../assets/images/minimize.svg';
 import maximizeIcon from '../../../../assets/images/maximize.svg';
-import productIcon from '../../../../assets/images/product-icons.svg';
 import infoicon from '../../../../assets/images/infoicon.svg';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import './styles.scss';
-import { fetchQuestionPaperDetails } from '../../../../redux/actions';
 import QuestionDetailCard from '../question-detail-card.js';
 
 const menuOptions = [
@@ -46,9 +39,6 @@ function extractContent(s) {
 }
 
 const AssesmentTest = ({
-  branch,
-  grade,
-  subject,
   questionPaper,
   onMarksAssignModeChange,
   marksAssignMode,
@@ -67,6 +57,8 @@ const AssesmentTest = ({
   testInstructions,
   totalMarks,
   testMarks,
+  paperchecked,
+  setChecked,
 }) => {
   const [minimize, setMinimize] = useState(false);
   const [openEditor, setOpenEditor] = useState(false);
@@ -74,6 +66,11 @@ const AssesmentTest = ({
   const themeContext = useTheme();
   const history = useHistory();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  // const [paperchecked, setChecked] = React.useState(false);
+
+  const toggleChecked = () => {
+    setChecked((prev) => !prev);
+  };
 
   const handleChange = (event) => {
     let value = 0;
@@ -91,10 +88,7 @@ const AssesmentTest = ({
       if (/^[0-9]{0,9}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
         onTestIdChange(value);
       } else {
-        setAlert(
-          'error',
-          'Test ID can contain numbers & must not exceed length of 9!'
-        );
+        setAlert('error', 'Test ID can contain numbers & must not exceed length of 9!');
       }
     }
     if (fieldName === 'testmarks') {
@@ -109,18 +103,6 @@ const AssesmentTest = ({
 
   return (
     <div className='create-container'>
-      <div className='header'>
-        <div className='applied-filters'>
-          <div className='filter'>{branch}</div>
-          {grade && <span className='dot'>.</span>}
-          <div className='filter'>{grade}</div>
-          {grade && <span className='dot'>.</span>}
-          <div className='filter'>{subject}</div>
-        </div>
-        {/* <div className='icon'>
-          <img src={productIcon} alt='product' />
-        </div> */}
-      </div>
       <div className='questions-paper-container'>
         <div className='minimize-container'>
           <span className='info'>{!minimize ? 'Minimize' : 'Maximize'}</span>
@@ -199,12 +181,13 @@ const AssesmentTest = ({
                           variant='outlined'
                           type='datetime-local'
                           size='small'
+                          inputProps={{ min: new Date().toISOString().slice(0,16) }}
                           className='date-time-picker bg-white'
                           value={testDate}
                           color='primary'
                           style={{ width: isMobile ? '50%' : '100%' }}
                           onChange={(e) => {
-                            console.log('value ', e.target.value);
+                            console.log(e.target.value)
                             onTestDateChange(e.target.value);
                           }}
                         />
@@ -239,34 +222,45 @@ const AssesmentTest = ({
                       </div>
                     </div>
                   </Grid>
-                  <Grid xs={12} sm={6}>
-                    <div className='detail'>
-                      <div className='label'>Test Marks</div>
-                      <div className='input-container duration'>
-                        <TextField
-                          variant='outlined'
-                          type='number'
-                          inputProps={{
-                            min: 0,
-                            max: 1000,
-                            maxLength: 4,
-                          }}
-                          size='small'
-                          className='bg-white'
-                          name='testmarks'
-                          value={totalMarks}
-                          style={{ width: '100%' }}
-                          // onChange={(e) => {
-                          //   const { target: { value } = {} } = e || {};
-                          //   if (Number.isFinite(+value)) {
-                          //     onTotalMarksChange(+value);
-                          //   }
-                          // }}
-                          onChange={(e) => handleChange(e)}
-                        />
-                      </div>
-                    </div>
+                  <Grid xs={12} sm={6} style={{ padding: '15px 25px' }}>
+                    <Typography>
+                      <Grid component='label' container alignItems='center' spacing={1}>
+                        <Grid item>Ques. Wise Marks</Grid>
+                        <Switch checked={paperchecked} onChange={toggleChecked} />
+                        <Grid item>Ques. Paper Wise Marks</Grid>
+                      </Grid>
+                    </Typography>
                   </Grid>
+                  {paperchecked && (
+                    <Grid xs={12} sm={6}>
+                      <div className='detail'>
+                        <div className='label'>Test Marks</div>
+                        <div className='input-container duration'>
+                          <TextField
+                            variant='outlined'
+                            type='number'
+                            inputProps={{
+                              min: 0,
+                              max: 1000,
+                              maxLength: 4,
+                            }}
+                            size='small'
+                            className='bg-white'
+                            name='testmarks'
+                            value={totalMarks}
+                            style={{ width: '100%' }}
+                            // onChange={(e) => {
+                            //   const { target: { value } = {} } = e || {};
+                            //   if (Number.isFinite(+value)) {
+                            //     onTotalMarksChange(+value);
+                            //   }
+                            // }}
+                            onChange={(e) => handleChange(e)}
+                          />
+                        </div>
+                      </div>
+                    </Grid>
+                  )}
                 </Grid>
               </div>
             </div>
@@ -427,6 +421,7 @@ const AssesmentTest = ({
                                 expanded={marksAssignMode}
                                 onChangeMarks={onChangeTestMarks}
                                 testMarks={testMarks}
+                                paperchecked={paperchecked}
                               />
                             </div>
                           ))}
@@ -443,7 +438,11 @@ const AssesmentTest = ({
                     color='primary'
                     onClick={onCreate}
                     disabled={
-                      !totalMarks || !testDate || !testDuration || !testName || !testId
+                      !testDate ||
+                      !testDuration ||
+                      !testName ||
+                      !testId ||
+                      !testInstructions
                     }
                   >
                     Submit

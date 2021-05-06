@@ -117,10 +117,12 @@ class NonRTEStudentDetailsFormAcc extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    this.props.getStudentDetail(this.state.studentDetails)
-    if (prevProps.studentDetailsForAdmission && prevProps.studentDetailsForAdmission.opting_class && !this.props.sectionList.length) {
-      this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, this.state.studentDetails.class.value, moduleId, this.props.branch)
-    }
+      this.props.getStudentDetail(this.state.studentDetails)
+  
+    // if (prevProps.studentDetailsForAdmission && prevProps.studentDetailsForAdmission.opting_class && !this.props.sectionList.length) {
+    //    this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, this.state.studentDetails.class.value, moduleId, this.props.branch)
+    //  }
+
   }
 
   componentDidMount () {
@@ -184,9 +186,9 @@ class NonRTEStudentDetailsFormAcc extends Component {
     this.setState({
       studentDetails: newstudentDetails
     }, () => {
-      if (name === 'class') {
+      if (name === 'academicyear') {
         // console.log('This is api call', this.state.studentDetails.academicyear, this.props.alert, this.props.user, event.value)
-        this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, event.value, moduleId)
+        // this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, this.state.studentDetails.class.value, moduleId, this.props.branch)
       }
     })
   }
@@ -204,6 +206,9 @@ class NonRTEStudentDetailsFormAcc extends Component {
       }
       case 'lastName': {
         newstudentDetails['lastName'] = event.target.value
+        if (event.target.value && event.target.value.length < 2) {
+        this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, this.state.studentDetails.class.value, moduleId, this.props.branch)
+        }
         break
       }
       case 'dateOfBir': {
@@ -230,6 +235,7 @@ class NonRTEStudentDetailsFormAcc extends Component {
 
       }
     }
+  
     this.setState({
       studentDetails: newstudentDetails
     })
@@ -343,8 +349,8 @@ class NonRTEStudentDetailsFormAcc extends Component {
                 name='middleName' />
             </Grid>
             <Grid item xs={3} className={classes.spacing}>
-              <label>Last Name</label>
-              <TextField label='Last Name'
+              <label>Last Name*</label>
+              <TextField label='Last Name*'
                 type='text'
                 margin='dense'
                 InputLabelProps={{ classes: { outlined: classes.outlined } }}

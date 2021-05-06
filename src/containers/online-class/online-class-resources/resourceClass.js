@@ -62,7 +62,7 @@ export default function ResourceClassComponent(props) {
             window.open(path, '_blank');
         }
         const downloadFilePath = (files) => {
-            files.map((file) => download(`${endpoints.s3}/${file}`));
+            files.map((file) => download(`${endpoints.discussionForum.s3}/${file}`));
         }
         isDownload && isDownload.map((path) => downloadFilePath(path.files));
         /** 

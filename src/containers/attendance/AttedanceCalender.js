@@ -151,13 +151,43 @@ const AttedanceCalender = () => {
   useEffect(() => {
     if (path === '/attendance-calendar/teacher-view') {
       console.log(path, 'path');
+      console.log(history, 'checking counter');
       if (history?.location?.state?.backButtonStatus) {
         setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id);
         setSelectedBranch(history?.location?.state?.payload?.branch_id);
         setSelectedGrade(history?.location?.state?.payload?.grade_id);
         setSelectedSection(history?.location?.state?.payload?.section_id);
+        setCounter(history?.location?.state?.payload?.counter);
         // setStartDate(history?.location?.state?.payload?.startDate);
         // setEndDate(history?.location?.state?.payload?.endDate);
+        if (history?.location?.state?.payload?.counter == 1) {
+          var dateToday = new Date();
+          var formatDateToday = moment(dateToday).format('YYYY-MM-DD');
+          axiosInstance
+          .get(`academic/events_list/`, {
+            params: {
+              start_date: formatDateToday,
+              data: formatDateToday,
+              branch_id: history?.location?.state?.payload?.branch_id?.branch?.id,
+              grade_id: history?.location?.state?.payload?.grade_id?.grade_id,
+              // grade_id: 2,
+
+              section_id: history?.location?.state?.payload?.section_id?.section_id,
+              // section_id: 2,
+              academic_year: history?.location?.state?.payload?.academic_year_id?.id,
+            },
+          })
+          .then((res) => {
+            setLoading(false);
+            console.log(res.data.events, 'current eventssss');
+            setCurrentEvent(res.data.events);
+            setStudentDataAll(res.data);
+          })
+          .catch((error) => {
+            setLoading(false);
+            console.log(error);
+          });
+        } else {
         axiosInstance
           .get(`academic/student_attendance_between_date_range/`, {
             params: {
@@ -184,6 +214,7 @@ const AttedanceCalender = () => {
             setLoading(false);
             console.log(error);
           });
+        }
       } else {
         setTeacherView(true);
         setSelectedAcadmeicYear('');
@@ -194,8 +225,34 @@ const AttedanceCalender = () => {
       }
     }
     if (path === '/attendance-calendar/student-view') {
+      if (history?.location?.state?.backButtonStatus) {
       console.log(path, 'path');
       setTeacherView(false);
+      setCounter(history?.location?.state?.payload?.counter);
+      if (history?.location?.state?.payload?.counter == 1){
+        var date = new Date();
+    var formatDate = moment(date).format('YYYY-MM-DD');
+    console.log(formatDate, 'format date');
+    axiosInstance
+      .get(`academic/single_student_calender/`, {
+        params: {
+          start_date: formatDate,
+          erp_id: userName[0],
+        },
+      })
+      .then((res) => {
+        setLoading(false);
+        console.log(res.data.events, 'current eventssss');
+        setCurrentEvent(res.data.events);
+        setStudentDataAll(res.data);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', 'no attendance');
+        setStudentDataAll(null);
+        console.log(error);
+      });
+      } else {
       axiosInstance
         .get(`academic/student_calender/`, {
           params: {
@@ -216,7 +273,9 @@ const AttedanceCalender = () => {
           setLoading(false);
           console.log(error);
         });
+      }
     }
+  }
   }, [path]);
 
   useEffect(() => {
@@ -355,11 +414,13 @@ const AttedanceCalender = () => {
   const weeklyData = () => {
     setCounter(2);
     setStudentDataAll(null);
+    setCurrentEvent(null);
   };
 
   const monthlyData = () => {
     setCounter(3);
     setStudentDataAll(null);
+    setCurrentEvent(null);
   };
 
   const getToday = () => {
@@ -595,6 +656,7 @@ const AttedanceCalender = () => {
       section_id: selectedSection,
       startDate: moment(startDate).format('YYYY-MM-DD'),
       endDate: moment(endDate).format('YYYY-MM-DD'),
+      counter: counter,
     };
 
     if (path === '/attendance-calendar/teacher-view') {
@@ -623,9 +685,11 @@ const AttedanceCalender = () => {
       branch_id: selectedBranch,
       grade_id: selectedGrade,
       section_id: selectedSection,
-      startDate: startDate,
-      endDate: endDate,
+      startDate: moment(startDate).format('YYYY-MM-DD'),
+      endDate: moment(endDate).format('YYYY-MM-DD'),
+      counter: counter,
     };
+    console.log(payload);
     history.push({
       pathname: '/markattendance',
       state: {
@@ -831,7 +895,7 @@ const AttedanceCalender = () => {
             <div className='buttonContainer'>
               <div className='today'>
                 <Button
-                  variant='outlined'
+                  variant='contained'
                   size='small'
                   color='secondary'
                   className={counter === 1 ? 'viewDetailsButtonClick' : 'viewDetails'}
@@ -844,7 +908,7 @@ const AttedanceCalender = () => {
               </div>
               <div className='today'>
                 <Button
-                  variant='outlined'
+                  variant='contained'
                   size='small'
                   color='secondary'
                   className={counter === 2 ? 'viewDetailsButtonClick' : 'viewDetails'}
@@ -856,7 +920,7 @@ const AttedanceCalender = () => {
               </div>
               <div className='today'>
                 <Button
-                  variant='outlined'
+                  variant='contained'
                   size='small'
                   color='secondary'
                   className={counter === 3 ? 'viewDetailsButtonClick' : 'viewDetails'}

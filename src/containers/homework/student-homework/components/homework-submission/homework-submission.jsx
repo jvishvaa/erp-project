@@ -614,7 +614,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                     key={`homework_student_question_attachment_${i}`}
                                     fileUrl={url}
                                     fileName={`Attachment-${i + 1}`}
-                                    urlPrefix={`${endpoints.s3}/homework`}
+                                    urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                     index={i}
                                     onOpenInPenTool={(url) => openInPenTool(url, index)}
                                     actions={['preview', 'download', homeworkSubmission.status === 1 && question.is_pen_editor_enable && 'pentool']}
@@ -626,7 +626,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                               <SRLWrapper>
                                 {question.question_files.map((url, i) => (
                                   <img
-                                    src={`${endpoints.s3}/homework/${url}`}
+                                    src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                     onError={(e) => {
                                       e.target.src = placeholder;
                                     }}
@@ -681,7 +681,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                           key={`homework_student_question_attachment_${i}`}
                                           fileUrl={url}
                                           fileName={`Attachment-${i + 1}`}
-                                          urlPrefix={`${endpoints.s3}/homework`}
+                                          urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                           index={i}
                                           actions={['preview', 'download']}
                                         />
@@ -693,7 +693,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                     <SRLWrapper>
                                       {question.submitted_files.map((url, i) => (
                                         <img
-                                          src={`${endpoints.s3}/homework/${url}`}
+                                          src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                           onError={(e) => {
                                             e.target.src = placeholder;
                                           }}
@@ -721,7 +721,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                           key={`homework_student_question_attachment_${i}`}
                                           fileUrl={url}
                                           fileName={`Attachment-${i + 1}`}
-                                          urlPrefix={`${endpoints.s3}/homework`}
+                                          urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                           index={i}
                                           actions={['preview', 'download']}
                                         />
@@ -733,7 +733,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                     <SRLWrapper>
                                       {question.evaluated_files.map((url, i) => (
                                         <img
-                                          src={`${endpoints.s3}/homework/${url}`}
+                                          src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                           onError={(e) => {
                                             e.target.src = placeholder;
                                           }}
@@ -792,7 +792,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                     key={`homework_student_question_attachment_${i}`}
                                     fileUrl={url}
                                     fileName={`Attachment-${i + 1}`}
-                                    urlPrefix={`${endpoints.s3}/homework`}
+                                    urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                     index={i}
                                     actions={['preview', 'download']}
                                   />
@@ -804,7 +804,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                               <SRLWrapper>
                                 {submittedEvaluatedFilesBulk?.map((url, i) => (
                                   <img
-                                    src={`${endpoints.s3}/homework/${url}`}
+                                    src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                     onError={(e) => {
                                       e.target.src = placeholder;
                                     }}

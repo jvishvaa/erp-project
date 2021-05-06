@@ -46,9 +46,6 @@ const testTypes = [
 ];
 
 const CreateAssesment = ({
-  selectedBranch,
-  selectedGrade,
-  selectedSubject,
   initSetFilter,
   selectedQuestionPaper,
   selectedTestType,
@@ -63,6 +60,7 @@ const CreateAssesment = ({
   initialTestId,
   initialTestInstructions,
   initialTotalMarks,
+  initQuestionsLength,
   initResetFormState,
 }) => {
   const location = useLocation();
@@ -70,9 +68,6 @@ const CreateAssesment = ({
   const clearForm = query.get('clear');
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const [branches, setBranches] = useState([]);
-  const [grades, setGrades] = useState([]);
-  const [subjects, setSubjects] = useState([]);
   const [expandFilter, setExpandFilter] = useState(true);
   const [marksAssignMode, setMarksAssignMode] = useState(false);
   const [testMarks, setTestMarks] = useState([]);
@@ -82,35 +77,18 @@ const CreateAssesment = ({
   const [instructions, setInstructions] = useState(initialTestInstructions);
   const [testDuration, setTestDuration] = useState(initialTestDuration);
   const [totalMarks, setTotalmarks] = useState(initialTotalMarks);
+  const [paperchecked, setChecked] = React.useState(false);
 
   const { setAlert } = useContext(AlertNotificationContext);
 
   const formik = useFormik({
     initialValues: {
-      branch: selectedBranch,
-      grade: selectedGrade,
-      subject: selectedSubject,
       test_type: selectedTestType || testTypes[0],
     },
     onSubmit: (values) => {},
     validateOnChange: false,
     validateOnBlur: false,
   });
-  const getGrades = async () => {
-    try {
-      const data = await fetchGrades();
-      setGrades(data);
-    } catch (e) {
-      setAlert('error', 'Failed to fetch grades');
-    }
-  };
-
-  const getSubjects = async (gradeId) => {
-    try {
-      const data = await fetchSubjects(gradeId);
-      setSubjects(data);
-    } catch (e) {}
-  };
 
   const resetForm = () => {
     setTestName('');
@@ -128,26 +106,26 @@ const CreateAssesment = ({
       resetForm();
     }
   }, [clearForm]);
-
   const handleCreateAssesmentTest = async () => {
     const qMap = new Map();
 
     if (totalMarks < 0 || totalMarks > 1000) {
-      setAlert('error', 'Please enter valid marks.');
+      setAlert('warning', 'Please enter valid marks.');
       return;
     }
 
     if (testDuration < 0 || testDuration > 1440) {
-      setAlert('error', 'Please enter valid duration.');
+      setAlert('warning', 'Please enter valid duration.');
       return;
     }
-
-    if(!selectedQuestionPaper?.id) {
-      setAlert('error', 'Please add a question paper.');
-      return;
+    if (!instructions.length) {
+      return setAlert('warning', 'Please Enter Test Instruction ');
     }
 
-    console.log(selectedQuestionPaper,'totalMarks');
+    if (!selectedQuestionPaper?.id) {
+      setAlert('warning', 'Please add a question paper.');
+      return;
+    }
 
     testMarks.forEach((obj) => {
       const { parentQuestionId } = obj;
@@ -160,7 +138,6 @@ const CreateAssesment = ({
       }
     });
     let testMarksArr = testMarks;
-
     qMap.forEach((value, key) => {
       const totalQuestionMarks = value.reduce(
         (acc, currValue) => {
@@ -195,6 +172,7 @@ const CreateAssesment = ({
         question_mark: finalMarksForParentQuestion,
         mark_type: '1',
         child_mark: [],
+        is_central: null,
       };
 
       const parentIndex = testMarksArr.findIndex((q) => q.question_id === key);
@@ -216,6 +194,32 @@ const CreateAssesment = ({
       }
     });
 
+    if (!paperchecked) {
+
+      if (testMarksArr.length < initQuestionsLength) {
+        setAlert('error', 'Please enter marks for every question!');
+        return;
+      }
+      if (testMarksArr?.length === initQuestionsLength) {
+        for (let i = 0; i < testMarksArr.length; i++) {
+          if (+testMarksArr[i]?.question_mark[0] < 1) {
+            setAlert(
+              'error',
+              `Marks for a question should be more than 1 or equal to 1.`
+            );
+            return;
+          }
+          if (+testMarksArr[i]?.question_mark[1] < 0) {
+            setAlert(
+              'error',
+              `Negative Marks for a question should be more than 0 or equal to 0.`
+            );
+            return;
+          }
+        }
+      }
+    }
+
     const reqObj = {
       question_paper: selectedQuestionPaper?.id,
       test_id: testId,
@@ -227,11 +231,17 @@ const CreateAssesment = ({
       instructions,
       descriptions: 'Hello',
       test_mark: testMarksArr,
+      is_question_wise: !paperchecked,
     };
+
     try {
-      const response = await initCreateAssesment(reqObj);
-      resetForm();
-      setAlert('success', 'Test created successfully');
+      const { results = {} } = (await initCreateAssesment(reqObj)) || {};
+      if (results?.status_code === 200) {
+        setAlert('success', results?.message);
+        resetForm();
+      } else {
+        setAlert('error', results?.message);
+      }
     } catch (e) {
       setAlert('error', 'Test creation failed');
     }
@@ -242,8 +252,9 @@ const CreateAssesment = ({
     isQuestion,
     field,
     value,
-    option,
-    parentQuestionId
+    // option,
+    // parentQuestionId,
+    isCentral
   ) => {
     const changedQuestionIndex = testMarks.findIndex((q) => {
       return q.question_id === questionId;
@@ -256,10 +267,11 @@ const CreateAssesment = ({
           question_mark: [0, 0],
           mark_type: '1',
           child_mark: [],
+          is_central: isCentral,
         };
-        if (parentQuestionId) {
-          obj.parentQuestionId = parentQuestionId;
-        }
+        // if (parentQuestionId) {
+        //   obj.parentQuestionId = parentQuestionId;
+        // }
         if (field === 'Assign marks') {
           obj.question_mark[0] = value;
         } else {
@@ -272,58 +284,14 @@ const CreateAssesment = ({
           changedQuestion.question_mark[1] = 0;
         } else {
           if (+value > +changedQuestion.question_mark[0]) {
-            setAlert('error', 'Enter less than Assign marks')
-            return
+            setAlert('error', 'Enter less than Assign marks');
+            return;
           }
           changedQuestion.question_mark[1] = value;
         }
-        if (parentQuestionId) {
-          changedQuestion.parentQuestionId = parentQuestionId;
-        }
-        setTestMarks((prev) => [
-          ...prev.slice(0, changedQuestionIndex),
-          changedQuestion,
-          ...prev.slice(changedQuestionIndex + 1),
-        ]);
-      }
-    } else {
-      if (changedQuestionIndex == -1) {
-        const obj = {
-          question_id: questionId,
-          question_mark: [0, 0],
-          mark_type: '1',
-          child_mark: [],
-        };
-        if (parentQuestionId) {
-          obj.parentQuestionId = parentQuestionId;
-        }
-        if (field === 'Assign marks') {
-          obj.child_mark[0] = { [option]: [value, 0] };
-        } else {
-          obj.child_mark[0] = { [option]: [0, value] };
-        }
-        setTestMarks((prev) => [...prev, obj]);
-      } else {
-        const optionIndex = changedQuestion.child_mark.findIndex((child) =>
-          Object.keys(child).includes(option)
-        );
-
-        if (optionIndex === -1) {
-          if (field === 'Assign marks') {
-            changedQuestion.child_mark.push({ [option]: [value, 0] });
-          } else {
-            changedQuestion.child_mark.push({ [option]: [0, value] });
-          }
-        } else {
-          if (field === 'Assign marks') {
-            changedQuestion.child_mark[optionIndex][option][0] = value;
-          } else {
-            changedQuestion.child_mark[optionIndex][option][1] = value;
-          }
-        }
-        if (parentQuestionId) {
-          changedQuestion.parentQuestionId = parentQuestionId;
-        }
+        // if (parentQuestionId) {
+        //   changedQuestion.parentQuestionId = parentQuestionId;
+        // }
         setTestMarks((prev) => [
           ...prev.slice(0, changedQuestionIndex),
           changedQuestion,
@@ -331,22 +299,58 @@ const CreateAssesment = ({
         ]);
       }
     }
+    // else {
+    //   if (changedQuestionIndex == -1) {
+    //     const obj = {
+    //       question_id: questionId,
+    //       question_mark: [0, 0],
+    //       mark_type: '1',
+    //       child_mark: [],
+    //       is_central:isCentral,
+    //     };
+    //     if (parentQuestionId) {
+    //       obj.parentQuestionId = parentQuestionId;
+    //     }
+    //     if (field === 'Assign marks') {
+    //       obj.child_mark[0] = { [option]: [value, 0] };
+    //     } else {
+    //       obj.child_mark[0] = { [option]: [0, value] };
+    //     }
+    //     setTestMarks((prev) => [...prev, obj]);
+    //   } else {
+    //     const optionIndex = changedQuestion.child_mark.findIndex((child) =>
+    //       Object.keys(child).includes(option)
+    //     );
+
+    //     if (optionIndex === -1) {
+    //       if (field === 'Assign marks') {
+    //         changedQuestion.child_mark.push({ [option]: [value, 0] });
+    //       } else {
+    //         changedQuestion.child_mark.push({ [option]: [0, value] });
+    //       }
+    //     } else {
+    //       if (field === 'Assign marks') {
+    //         changedQuestion.child_mark[optionIndex][option][0] = value;
+    //       } else {
+    //         changedQuestion.child_mark[optionIndex][option][1] = value;
+    //       }
+    //     }
+    //     if (parentQuestionId) {
+    //       changedQuestion.parentQuestionId = parentQuestionId;
+    //     }
+    //     setTestMarks((prev) => [
+    //       ...prev.slice(0, changedQuestionIndex),
+    //       changedQuestion,
+    //       ...prev.slice(changedQuestionIndex + 1),
+    //     ]);
+    //   }
+    // }
   };
 
   const handleMarksAssignModeChange = (e) => {
     setMarksAssignMode(e.target.checked);
   };
-  useEffect(() => {
-    if (formik.values.grade) {
-      getSubjects(formik.values.grade.id);
-    } else {
-      setSubjects([]);
-    }
-  }, [formik.values.grade]);
 
-  useEffect(() => {
-    getGrades();
-  }, []);
   useEffect(() => {
     if (selectedQuestionPaper) {
       // initFetchQuestionPaperDetails(3);
@@ -441,88 +445,6 @@ const CreateAssesment = ({
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  {/* <Grid item xs={12} md={4}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='branch'
-                        name='branch'
-                        onChange={(e, value) => {
-                          formik.setFieldValue('branch', value);
-                          initSetFilter('selectedBranch', value);
-                        }}
-                        value={formik.values.branch}
-                        options={branches}
-                        getOptionLabel={(option) => option.name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Branch'
-                            placeholder='Branch'
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.branch ? formik.errors.branch : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='grade'
-                        name='grade'
-                        onChange={(e, value) => {
-                          formik.setFieldValue('grade', value);
-                          initSetFilter('selectedGrade', value);
-                        }}
-                        value={formik.values.grade}
-                        options={grades}
-                        getOptionLabel={(option) => option.grade_name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Grade'
-                            placeholder='Grade'
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.grade ? formik.errors.grade : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='subject'
-                        name='subject'
-                        onChange={(e, value) => {
-                          formik.setFieldValue('subject', value);
-                          initSetFilter('selectedSubject', value);
-                        }}
-                        multiple
-                        value={formik.values.subject}
-                        options={subjects}
-                        getOptionLabel={(option) => option.subject?.subject_name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Subject'
-                            placeholder='Subject'
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.subject ? formik.errors.subject : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid> */}
                 </Grid>
               </div>
             </AccordionDetails>
@@ -531,38 +453,7 @@ const CreateAssesment = ({
           <div className='divider-container'>
             <Divider />
           </div>
-          <div className='form-actions-container mv-20'>
-            {/* <div className='btn-container'>
-              <Button
-                variant='contained'
-                className='disabled-btn'
-                onClick={() => {
-                  formik.handleReset();
-                }}
-              >
-                CLEAR ALL
-              </Button>
-            </div> */}
-
-            {/* <div className='btn-container '>
-            <Button
-              variant='contained'
-              className=''
-              color='primary'
-              onClick={() => {
-                formik.handleSubmit();
-              }}
-            >
-              FILTER
-            </Button>
-          </div> */}
-          </div>
           <AssesmentTest
-            branch={formik.values.branch}
-            grade={formik.values.grade?.grade_name}
-            subject={formik.values.subject
-              ?.map((sub) => sub.subject.subject_name)
-              .join(', ')}
             questionPaper={questionPaperDetails}
             onMarksAssignModeChange={handleMarksAssignModeChange}
             marksAssignMode={marksAssignMode}
@@ -599,6 +490,8 @@ const CreateAssesment = ({
               setTotalmarks(value);
               initChangeTestFormFields('totalMarks', value);
             }}
+            paperchecked={paperchecked}
+            setChecked={setChecked}
           />
         </div>
       </div>
@@ -619,6 +512,7 @@ const mapStateToProps = (state) => ({
   initialTestDate: state.createAssesment.testDate,
   initialTestInstructions: state.createAssesment.testInstructions,
   initialTotalMarks: state.createAssesment.totalMarks,
+  initQuestionsLength: state.createAssesment.questionsLength,
 });
 const mapDispatchToProps = (dispatch) => ({
   initSetFilter: (filter, data) => dispatch(setFilterForCreateAssesment(filter, data)),

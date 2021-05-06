@@ -1,4 +1,4 @@
-// import axiosInstance from '../../config/axios';
+import axiosInstance from '../../config/axios';
 import axios from 'axios';
 import endpoints from '../../config/endpoints';
 
@@ -14,6 +14,7 @@ export const createAssesmentActions = {
   CREATE_ASSESMENT_SUCCESS: 'CREATE_ASSESMENT_SUCCESS',
   CREATE_ASSESMENT_FAILURE: 'CREATE_ASSESMENT_FAILURE',
   CHANGE_TEST_FORM_FIELD: 'CHANGE_TEST_FORM_FIELD',
+  QUESTIONS_LENGTH: 'QUESTIONS_LENGTH',
 };
 
 export const resetFormState = () => ({
@@ -29,16 +30,11 @@ export const changeTestFormField = (field, data) => ({
 export const createAssesment = (data) => async (dispatch) => {
   dispatch({ type: createAssesmentActions.CREATE_ASSESMENT_REQUEST });
   try {
-    const response = await axios.post(
-      `${endpoints.baseURLCentral}/assessment/tests/`,
-      data,
-      {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      }
+    const response = await axiosInstance.post(
+      `${endpoints.assessmentErp.createAssessment}`,
+      data
     );
-    if (response.data.status_code !== 200) {
-      throw new Error();
-    }
+    return { results: response.data };
   } catch (e) {
     throw new Error();
   }
@@ -58,22 +54,25 @@ export const addQuestionPaperToTest = (data) => ({
 export const fetchQuestionPaperDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: createAssesmentActions.FETCH_QUESTION_PAPER_DETAILS_REQUEST });
-    const response = await axios.get(
-      `${endpoints.baseURLCentral}/assessment/${id}/qp-questions-list/`,
-      {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      }
+    const url = endpoints.assessmentErp?.questionPaperViewMore.replace(
+      '<question-paper-id>',
+      id
     );
+    const response = await axiosInstance.get(url);
     if (response.data.status_code === 200) {
       const { sections, questions } = response.data.result;
       const parsedResponse = [];
+      dispatch({
+        type: createAssesmentActions.QUESTIONS_LENGTH,
+        data: questions?.length,
+      });
       sections.forEach((sec) => {
         const sectionObject = { name: '', questions: [] };
         const sectionName = Object.keys(sec)[0];
         sectionObject.name = sectionName;
         sec[sectionName].forEach((qId) => {
           //iterating question ids and finding corresponding questions
-          const questionFound = questions.find((q) => q.id === qId);
+          const questionFound = questions.find((q) => q.identifier === qId);
           if (questionFound) {
             sectionObject.questions.push(questionFound);
           }
@@ -87,7 +86,6 @@ export const fetchQuestionPaperDetails = (id) => async (dispatch) => {
     }
   } catch (e) {
     dispatch({ type: createAssesmentActions.FETCH_QUESTION_PAPER_DETAILS_FAILURE });
-
   }
   // {
   // id: 1;

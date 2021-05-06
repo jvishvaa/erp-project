@@ -46,7 +46,6 @@ import {
   fetchGrades,
   fetchSubjects,
 } from '../lesson-plan/create-lesson-plan/apis';
-// import { fetchGrades, fetchSubjects } from '../lesson-plan/create-lesson-plan/apis';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import DateRangeSelector from '../../components/date-range-selector';
 import infoIcon from '../../assets/images/info-icon.svg';
@@ -157,21 +156,21 @@ const Assesment = () => {
     }
   };
 
-  const getGrades = async (branchId) => {
+  const getGrades = async (acadId, branchId) => {
     try {
       setGrades([]);
       setSubjects([]);
-      const data = await fetchGrades(branchId);
+      const data = await fetchGrades(acadId, branchId, moduleId);
       setGrades(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch grades');
     }
   };
 
-  const getSubjects = async (mappingId, branchId) => {
+  const getSubjects = async (mappingId) => {
     try {
       setSubjects([]);
-      const data = await fetchSubjects(mappingId, branchId);
+      const data = await fetchSubjects(mappingId);
       setSubjects(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch subjects');
@@ -209,23 +208,29 @@ const Assesment = () => {
   };
 
   const filterResults = async (page) => {
-    const { grade, subject, assesment_type: assesmentType, date, status } = formik.values;
-    // const subjectIds = subject.map((obj) => obj.id);
-    // const subjectIds = subject.map((obj) => obj.subject.central_mp_id);
-    const subjectIds = subject.map((obj) => obj.subject.id);
+    const {
+      branch,
+      grade,
+      subject,
+      assesment_type: assesmentType,
+      date,
+      status,
+    } = formik.values;
+    const acadSessionId = branch?.id;
+    const subjectIds = subject.map(({ subject_id }) => subject_id);
     try {
       setFetchingTests(true);
-
       const { results, totalPages } = await fetchAssesmentTests(
         false,
         activeTab,
-        grade.id,
+        acadSessionId,
+        grade?.grade_id,
         subjectIds,
         assesmentType.id,
         status.id,
         date,
         page,
-        4
+        9
       );
       setShowFilteredList(true);
       setFilteredAssesmentTestsTotalPage(totalPages);
@@ -247,7 +252,6 @@ const Assesment = () => {
       setFetchingTests(false);
     } catch (e) {
       setFetchingTests(false);
-
       setAlert('error', 'Fetching tests failed');
     }
   };
@@ -268,7 +272,7 @@ const Assesment = () => {
         ...results,
         testType: test.test_type__exam_name,
         subjects: test.question_paper__subject_name,
-        grade: test.question_paper__grade_name,
+        grade: test.grade_name,
       });
     } catch (e) {
       setAlert('error', 'Failed to fetch test details');
@@ -277,11 +281,11 @@ const Assesment = () => {
 
   useEffect(() => {
     if (formik.values.academic) {
-      getBranch(formik.values.academic.id);
+      getBranch(formik.values.academic?.id);
       if (formik.values.branch) {
-        getGrades(formik.values.branch.branch.id);
+        getGrades(formik.values.academic?.id, formik.values.branch?.branch?.id);
         if (formik.values.grade) {
-          getSubjects(formik.values.grade.id, formik.values.branch.branch.id);
+          getSubjects(formik.values.grade?.grade_id);
         } else {
           setSubjects([]);
         }
@@ -298,7 +302,6 @@ const Assesment = () => {
       getAcademic();
     }
     getAssesmentTypes();
-    // getTopics();
   }, [moduleId]);
 
   // useEffect(() => {
@@ -353,20 +356,28 @@ const Assesment = () => {
   }
 
   const handleFilterAssessment = () => {
-    if (!formik?.values?.assesment_type) {
-      setAlert('error', 'Select Assessment Type');
+    if (!formik?.values?.status) {
+      setAlert('error', 'Select Status');
+      return;
+    }
+    if (!formik?.values?.academic) {
+      setAlert('error', 'Select Academic Year');
+      return;
+    }
+    if (!formik?.values?.branch) {
+      setAlert('error', 'Select Branch');
       return;
     }
     if (!formik?.values?.grade) {
-      setAlert('error', 'Select grade');
-      return;
-    }
-    if (!formik?.values?.status) {
-      setAlert('error', 'Select status');
+      setAlert('error', 'Select Grade');
       return;
     }
     if (!formik?.values?.subject.length) {
-      setAlert('error', 'Select subject');
+      setAlert('error', 'Select Subject');
+      return;
+    }
+    if (!formik?.values?.assesment_type) {
+      setAlert('error', 'Select Assessment Type');
       return;
     }
     formik.handleSubmit();
@@ -374,7 +385,7 @@ const Assesment = () => {
 
   const handleAcademicYear = (event, value) => {
     if (value) {
-      getBranch(value.id);
+      getBranch(value?.id);
       formik.setFieldValue('academic', value);
       // initSetFilter('selectedAcademic', value);
     }
@@ -382,7 +393,7 @@ const Assesment = () => {
 
   const handleBranch = (event, value) => {
     if (value) {
-      getGrades(value.branch.id);
+      getGrades(formik.values.academic?.id, value?.branch?.id);
       formik.setFieldValue('branch', value);
       // initSetFilter('selectedBranch', value);
     }
@@ -390,7 +401,7 @@ const Assesment = () => {
 
   const handleGrade = (event, value) => {
     if (value) {
-      getSubjects(value.id, formik.values.branch.branch.id);
+      getSubjects(value?.grade_id);
       formik.setFieldValue('grade', value);
       // initSetFilter('selectedGrade', value);
     }
@@ -511,7 +522,7 @@ const Assesment = () => {
                         // }}
                         value={formik.values.academic}
                         options={academicDropdown}
-                        getOptionLabel={(option) => option.session_year || ''}
+                        getOptionLabel={(option) => option?.session_year || ''}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -569,7 +580,7 @@ const Assesment = () => {
                         // }}
                         value={formik.values.grade}
                         options={grades}
-                        getOptionLabel={(option) => option.grade_name || ''}
+                        getOptionLabel={(option) => option?.grade__grade_name || ''}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -599,7 +610,7 @@ const Assesment = () => {
                         className='dropdownIcon'
                         value={formik.values.subject}
                         options={subjects}
-                        getOptionLabel={(option) => option.subject?.subject_name || ''}
+                        getOptionLabel={(option) => option?.subject_name || ''}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -771,7 +782,7 @@ const Assesment = () => {
                     variant='contained'
                     style={{ borderRadius: '10px' }}
                     className='disabled-btn'
-                    onClick={()=>history.push('/assessment-reports')}
+                    onClick={() => history.push('/assessment-reports')}
                   >
                     REPORTS
                   </Button>
@@ -882,6 +893,7 @@ const Assesment = () => {
                                   onEdit={() => {}}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
+                                  filterResults={filterResults}
                                 />
                               </Grid>
                             ))}
@@ -945,6 +957,7 @@ const Assesment = () => {
                                   onEdit={() => {}}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
+                                  filterResults={filterResults}
                                 />
                               </Grid>
                             ))}
@@ -1008,6 +1021,7 @@ const Assesment = () => {
                                   onEdit={() => {}}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
+                                  filterResults={filterResults}
                                 />
                               </Grid>
                             ))}

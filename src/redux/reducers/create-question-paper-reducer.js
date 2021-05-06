@@ -36,6 +36,7 @@ const INITIAL_STATE = {
   selectedGrade: '',
   selectedSubject: [],
   selectedLevel: '',
+  questionPaperName: '',
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
@@ -43,15 +44,14 @@ export default function reducer(state = INITIAL_STATE, action) {
     case createQuestionPaperActions.ADD_NEW_QUESTION:
       return { ...state, questions: [...state.questions, action.data] };
 
-    case createQuestionPaperActions.ADD_QUESTION_TO_SECTION: {
+    case createQuestionPaperActions.ADD_QUESTION_TO_SECTION:
       const questionsList = JSON.parse(JSON.stringify(state.questions));
       const index = questionsList.findIndex((q) => q.id === action.questionId);
       const { sections } = questionsList[index];
-      const sectionIndex = sections.findIndex((sec) => sec.name === action.section);
+      const sectionIndex = sections?.findIndex((sec) => sec.name === action.section);
       sections[sectionIndex].questions.push(action.data);
       questionsList[index].sections = sections;
       return { ...state, questions: questionsList };
-    }
 
     case createQuestionPaperActions.SET_FILTER: {
       return { ...state, [action.filter]: action.data };

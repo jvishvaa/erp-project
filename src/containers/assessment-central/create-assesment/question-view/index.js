@@ -76,23 +76,7 @@ const QuestionView = ({
 }) => {
   const { question_type: questionType } = question;
   const [expand, setExpand] = useState(true);
-  //   if (questionType === 7) {
-  //     return (
-  //       <div>
-  //         <div className='question-header'>Questions</div>
-  //         <Divider />
-  //         <div className='question'>This is the question ?</div>
-  //         <div className='sub-questions'>
-  //           <div className='sub-question'></div>
-  //           <div className='sub-question'></div>
-  //           <div className='sub-question'></div>
-  //         </div>
-  //       </div>
-  //     );
-  //   }
-  //   if(questionType === 2)
-  const sampleFunc = () => {
-  };
+  
   const debounceOnChangeMarks = debounce(300, onChangeMarks);
   const toggleExpand = () => {
     setExpand((prev) => !prev);
@@ -128,7 +112,8 @@ const QuestionView = ({
                     null,
                     true,
                     question.id,
-                    subQuestion && parentQuestionId
+                    subQuestion && parentQuestionId,
+                    question.is_central
                   );
                 }}
               />
@@ -177,7 +162,8 @@ const QuestionView = ({
                               `option${index + 1}`,
                               false,
                               question.id,
-                              subQuestion && parentQuestionId
+                              subQuestion && parentQuestionId,
+                              question.is_central
                             );
                           }}
                         />
@@ -210,7 +196,8 @@ const QuestionView = ({
                             `question${index + 1}`,
                             false,
                             question.id,
-                            subQuestion && parentQuestionId
+                            subQuestion && parentQuestionId,
+                            question.is_central
                           );
                         }}
                       />
@@ -306,7 +293,8 @@ const QuestionView = ({
                             `option${index + 1}`,
                             false,
                             question.id,
-                            subQuestion && parentQuestionId
+                            subQuestion && parentQuestionId,
+                            question.is_central
                           );
                         }}
                       />
