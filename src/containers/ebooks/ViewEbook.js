@@ -163,6 +163,7 @@ class ViewEbook extends Component {
 
 
   getEbook = (acad, branch, grade, subject, vol) => {
+    console.log("@@@@@@@@@@@@@@@@@@@@222",branch,"bbbbbb")
     const {host}= new URL(axiosInstance.defaults.baseURL) // "dev.olvorchidnaigaon.letseduvate.com"
     const hostSplitArray = host.split('.')
     const subDomainLevels = hostSplitArray.length - 2
@@ -179,10 +180,11 @@ class ViewEbook extends Component {
         subDomain = hostSplitArray[0]
     }
     const domainTobeSent =subDomain 
+    console.log(domainTobeSent,"@@@@@@@@@@@@@@@@@@@domainTobeSent")
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
-    const filterBranch = `${branch ? `&branch=${branch?.id}`:''}`;
-    const filterGrade = `${grade ? `&grade=${grade?.grade_id}`: ''}`;
-    const filterSubject = `${subject ? `&subject=${subject?.subject_id}`: ''}`;
+    const filterBranch = `${branch ? `&branch=${branch}`:''}`;
+    const filterGrade = `${grade ? `&grade=${grade?.central_grade}`: ''}`;
+    const filterSubject = `${subject ? `&subject=${grade?.central_subject}`: ''}`;
     const filterVolumes = `${vol ? `&volume=${vol?.id}`: ''}`;
     const { pageNo, pageSize,tabValue,moduleId } = this.state;
     let urlPath = ''
@@ -213,6 +215,7 @@ class ViewEbook extends Component {
   };
   
   handleFilter = (acad, branch, grade, sub, vol) => {
+    console.log(sub,"SSSSSSSSSSSSSSSSS@@@@@@@@@@@@")
     this.state.pageNo = 1;
     this.state.acadmicYear = acad;
     this.state.selectedBranch = branch;
