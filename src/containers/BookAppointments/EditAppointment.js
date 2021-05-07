@@ -16,7 +16,8 @@ import {
 } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
-
+import MomentUtils from '@date-io/moment';
+import moment from 'moment';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
@@ -89,8 +90,9 @@ const EditAppointment = ({
   const classes = useStyles();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-
+  const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
   const [data, setData] = useState([]);
+
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [roles, setRole] = useState([]);
@@ -110,7 +112,7 @@ const EditAppointment = ({
         setLoading(false);
         // console.log(res, 'checking data');
         setRole(res.data.data);
-        setAlert('success', 'roles fecthed successfully');
+        // setAlert('success', 'roles fecthed successfully');
       })
       .catch((err) => {
         // console.log(err);
@@ -126,6 +128,10 @@ const EditAppointment = ({
 
   const handlePagination = (event, page) => {
     setCurrentPage(page);
+  };
+  const handleDateChange = (event, value) => {
+    // console.log('date', date.target.value);
+    setDateValue(value);
   };
 
   const handleChange = (e) => {
@@ -225,7 +231,7 @@ const EditAppointment = ({
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={5} md={3} lg={2}>
-            <TextField
+            {/* <TextField
               name='appointment_date'
               label='Appointment Date'
               InputLabelProps={{ shrink: true, required: true }}
@@ -239,7 +245,30 @@ const EditAppointment = ({
               onChange={handleChange}
               style={{ marginTop: 25 }}
               defaultValue={date}
-            />
+            /> */}
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <KeyboardDatePicker
+                size='small'
+                variant='dialog'
+                format='YYYY-MM-DD'
+                margin='none'
+                className='button'
+                id='date-picker'
+                label='Appointment Date'
+                minDate={new Date()}
+                inputVariant='outlined'
+                fullWidth
+                value={dateValue}
+                onChange={handleDateChange}
+                defaultValue={date}
+                // onChange={handleChange}
+                // className='dropdown'
+                style={{ width: '100%', marginTop: '9%' }}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </MuiPickersUtilsProvider>
           </Grid>
 
           <Grid item xs={12} sm={5} md={3} lg={2}>
@@ -347,7 +376,7 @@ const EditAppointment = ({
             size='medium'
             type='submit'
           >
-            update Book Appointment
+            Update
           </Button>
         </Grid>
       </Grid>

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
   Avatar,
   Button,
@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import './GriviencesDetailContainer.scss';
 import Reply from '../Reply/reply';
+import AttachFileIcon from '@material-ui/icons/AttachFile';
 import moment from 'moment';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import axiosInstance from '../../../config/axios';
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#014B7E',
   },
   container: {
-    width: '90%',
+    // width: '90%',
     marginTop: '20px',
     padding: '20px',
   },
@@ -33,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
   purple: {
     backgroundColor: '#F3D1AB',
+    marginLeft: '20px',
   },
   flex_column: {
     display: 'flex',
@@ -47,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
   reply_button: {
     color: '#FF6B6B',
+    cursor: 'pointer',
   },
 }));
 
@@ -54,26 +57,37 @@ const GriviencesDetailContainer = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [reply, setReply] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [replyDescription, setReplyDescription] = useState('');
   const reply_list = props.list_tickets.reply;
   const date = moment(props.list_tickets.createdAt).format('dddd, MMMM D, YYYY');
   const time = moment(props.list_tickets.createdAt).format('LT');
+  const [flag, setFlag] = useState(false);
 
   // console.log("Token data", token);
 
   const openReplyTextEditor = () => {
-    setReply(true);
+    setReply(!reply);
   };
 
   const handleReply = async (event) => {
     await setReplyDescription(event.target.value);
   };
+  const [image, setImage] = useState([]);
+  const fileChangedHandler = (event) => {
+    const file = event.target.files[0];
+    console.log(file);
+    setImage(URL.createObjectURL(event.target.files[0]));
+  };
 
   const handleSubmit = () => {
+    setReply(!reply);
     axiosInstance
       .post(
         endpoints.grievances.grievance_reply,
+        // { body: replyDescription, grievance_ticket: props.list_tickets.id ,replyImage:image},
         { body: replyDescription, grievance_ticket: props.list_tickets.id },
+
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -91,16 +105,40 @@ const GriviencesDetailContainer = (props) => {
         setAlert('error', error.message);
       });
   };
+  useEffect(() => {
+    console.log('testing');
+  }, [flag]);
 
   const style = useStyles();
   return (
-    <div className='grevience-container'>
+    <div
+      className='grevience-container'
+      style={{ boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }}
+    >
       <Paper className={style.container}>
         <div className={style.flex_row} style={{ alignItems: 'center' }}>
-          <div className='top-header-container'>
-            <Avatar className={style.purple} src={props.list_tickets.user.profile} />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div>
+              <Avatar className={style.purple} src={props.list_tickets.user.profile} />
+            </div>
+            <div>
+              <Grid container style={{ padding: '30px' }}>
+                <Grid item sm={12}>
+                  <h5 className={style.text_color} style={{ fontSize: '20px' }}>
+                    {props.list_tickets.title}
+                  </h5>
+                </Grid>
+                <Grid item sm={12}>
+                  <label className={style.text_color}>
+                    {' '}
+                    {props.list_tickets.description}
+                  </label>
+                </Grid>
+              </Grid>
+            </div>
+
             <Grid sm={3}>
-              <div className={style.flex_column} style={{ marginLeft: '10px' }}>
+              <div className={style.flex_column}>
                 <label className={style.text_color}>{props.list_tickets.user.name}</label>
                 {props.list_tickets.user.role != undefined ? (
                   <label className={style.text_color}>
@@ -123,23 +161,36 @@ const GriviencesDetailContainer = (props) => {
           </Grid>
         </div>
 
-        <Grid container style={{ padding: '30px' }}>
-          <Grid item sm={12}>
-            <h5 className={style.text_color}>{props.list_tickets.title}</h5>
-          </Grid>
-          <Grid item sm={12}>
-            <label className={style.text_color}> {props.list_tickets.description}</label>
-          </Grid>
-        </Grid>
-
-        {reply_list != '' && reply_list != null
-          ? reply_list &&
-            reply_list.map((Replys) => (
-              <div style={{ margin: '10px' }}>
-                <Reply Replys={Replys} />
-              </div>
-            ))
-          : null}
+        {!reply &&
+          (reply_list != '' && reply_list != null
+            ? reply_list &&
+              reply_list.slice(0, 1).map((Replys) => (
+                <div
+                  style={{
+                    margin: '10px',
+                    border: '1px solid #e0e0e0',
+                    borderRadius: '10px',
+                  }}
+                >
+                  <Reply Replys={Replys} />
+                </div>
+              ))
+            : null)}
+        {reply &&
+          (reply_list != '' && reply_list != null
+            ? reply_list &&
+              reply_list.map((Replys) => (
+                <div
+                  style={{
+                    margin: '10px',
+                    border: '1px solid #e0e0e0',
+                    borderRadius: '10px',
+                  }}
+                >
+                  <Reply Replys={Replys} />
+                </div>
+              ))
+            : null)}
 
         <Grid container style={{ marginBottom: '10px' }}>
           <Grid item sm />
@@ -173,10 +224,12 @@ const GriviencesDetailContainer = (props) => {
                 <Avatar
                   size='small'
                   className={style.blue}
-                  style={{ height: '30px', width: '30px', fontSize: '10px' }}
-                >
-                  PK
-                </Avatar>
+                  style={{
+                    height: '30px',
+                    width: '30px',
+                    fontSize: '10px',
+                  }}
+                ></Avatar>
               </div>
               <div>
                 <label className={style.text_color}>swaggy</label>
@@ -197,6 +250,10 @@ const GriviencesDetailContainer = (props) => {
                 </ThemeProvider>
               </Grid>
               <Grid item sm />
+              <Grid>
+                {/* <AttachFileIcon color='secondary' fontSize='small' clss /> */}
+                <input type='file' onChange={(event) => fileChangedHandler(event)} />
+              </Grid>
               <Button
                 variant='contained'
                 size='small'

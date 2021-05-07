@@ -25,11 +25,14 @@ const GravienceHome = () => {
   const [gravienceList, setGravienceList] = useState([]);
   const [acadamicYearID, setAcadamicYear] = useState(1);
   const [gradeID, setGradeID] = useState(1);
+  const [sectionID, setSectionID] = useState(1);
   const [branchID, setBranchID] = useState(1);
   const [academicYear, setAcadamicYearName] = useState();
   const [gradeName, setGradeName] = useState();
   const [branchName, setBranchName] = useState();
+  const [sectionName, setSectionName] = useState();
   const [openGrievanceReportForm, setOpenGrievanceReportForm] = useState(false);
+  const [flag, setFlag] = useState(false);
 
   const handleOpenForm = () => {
     setOpenGrievanceReportForm(true);
@@ -41,16 +44,20 @@ const GravienceHome = () => {
 
   const getGrivienceData = async () => {
     await axiosInstance
-      .get(endpoints.grievances.listTickets + `?academic_year_id=${1}&branch_id=${1}&grievance_type_id${1}`, {
-      // .get(endpoints.grievances.listTickets, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .get(
+        endpoints.grievances.listTickets +
+          `?academic_year_id=${1}&branch_id=${1}&grievance_type_id${1}`,
+        {
+          // .get(endpoints.grievances.listTickets, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((result) => {
         console.log(result, 'list data');
         if (result.status == 200) {
-          console.log(result,'list-tickets ddata')
+          console.log(result, 'list-tickets ddata');
           setGravienceList(result.data.data.results);
         } else {
           setAlert('error', result.data.message);
@@ -69,7 +76,6 @@ const GravienceHome = () => {
         },
       })
       .then((result) => {
-        
         if (result.status == 200) {
           setAlert('success', 'Download Started');
         } else {
@@ -84,18 +90,22 @@ const GravienceHome = () => {
     acadamicYear_ID,
     grade_ID,
     branch_ID,
+    section_ID,
     academic_Year,
     grade_Name,
     branch_Name,
+    section_Name,
     open_Dialog
   ) => {
     setAcadamicYear(acadamicYear_ID);
     setGradeID(grade_ID);
     setBranchID(branch_ID);
+    setSectionID(section_ID);
     setAcadamicYearName(academic_Year);
     setGradeName(grade_Name);
     setBranchName(branch_Name);
-    if (open_Dialog && acadamicYear_ID && grade_ID && branch_ID) {
+    setSectionName(section_Name);
+    if (open_Dialog && acadamicYear_ID && branch_ID && grade_ID && section_ID) {
       handleOpenForm();
     }
   };
@@ -109,7 +119,11 @@ const GravienceHome = () => {
       <div className='griviences-breadcrums-container'>
         <CommonBreadcrumbs componentName='Griviences' />
       </div>
-      {setMobileView ? <UpperGrade handlePassData={handlePassData} getGrivienceData={getGrivienceData} /> : <></>}
+      {setMobileView ? (
+        <UpperGrade handlePassData={handlePassData} getGrivienceData={getGrivienceData} />
+      ) : (
+        <></>
+      )}
       <div className='Greviences-container'>
         {/* {setMobileView ? } */}
         {/* <Dialog
@@ -124,26 +138,35 @@ const GravienceHome = () => {
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            marginLeft: '30px',
-            marginRight: '30px',
+            marginTop: '20px',
+            marginLeft: '50px',
+            marginRight: '50px',
+            paddingLeft: '50px',
+            paddingRight: '50px',
             alignItems: 'center',
           }}
         >
-          <span style={{ marginLeft: '5%', color: '#014B7E' }}>All</span>
-          <Button
-            color='primary'
-            size='small'
-            style={{
-              position: 'relative',
-              top: '-16px',
-              marginRight: '5%',
-              marginTop: '5%',
-            }}
-            onClick={handleDownload}
-          >
-            Download
-          </Button>
-          {setMobileView ? (
+          <div>
+            <span style={{ color: '#014B7E' }}>
+              <strong>All</strong>
+            </span>
+          </div>
+          <div>
+            <Button
+              color='primary'
+              size='small'
+              style={{
+                position: 'relative',
+                top: '-16px',
+                // marginRight: '5%',
+                // marginTop: '5%',
+              }}
+              onClick={handleDownload}
+            >
+              Download
+            </Button>
+          </div>
+          {/* {setMobileView ? (
             <Button
               color='primary'
               size='small'
@@ -153,15 +176,13 @@ const GravienceHome = () => {
             </Button>
           ) : (
             <></>
-          )}
+          )} */}
         </div>
         <Divider style={{ backgroundColor: '#78B5F3', width: '90%', marginLeft: '5%' }} />
         <div
           style={{
-            display: 'flex',
-            flex: '1',
-            justifyContent: 'center',
-            flexWrap: 'wrap',
+            maxWidth: '80%',
+            margin: 'auto',
           }}
         >
           {gravienceList != undefined && gravienceList.length != 0

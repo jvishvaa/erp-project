@@ -12,7 +12,7 @@ import AssignRole from './containers/communication/assign-role/assign-role';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
 import ChapterTypeTable from './containers/master-management/chapter-type/chapter-type-table';
-import TopicTable from './containers/master-management/topic/TopicTable'
+import TopicTable from './containers/master-management/topic/TopicTable';
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
 // import './assets/styles/styles.scss';
 import UserManagement from './containers/user-management';
@@ -71,7 +71,8 @@ import {
   StudentDashboard,
   TeacherPublishBlogView,
   BlogView,
-  CreateGenre,EditGenre,
+  CreateGenre,
+  EditGenre,
   ContentViewPublish,
   ContentViewPublishStudent,
   AdminBlog,
@@ -269,9 +270,7 @@ import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
 
 // import Contact from './containers/contact/Contact';
 
-
-
-import MultiplayerQuiz from './components/mp-quiz'
+import MultiplayerQuiz from './components/mp-quiz';
 
 const theme = createMuiTheme({
   palette: {
@@ -353,7 +352,10 @@ function App({ alert }) {
                           <Route path='/time-table/teacher-view'>
                             {({ match }) => <TimeTable match={match} />}
                           </Route>
-                          <Route path='/griviences'>
+                          <Route path='/griviences/admin-view'>
+                            {({ match }) => <Griviences match={match} />}
+                          </Route>
+                          <Route path='/griviences/student-view'>
                             {({ match }) => <Griviences match={match} />}
                           </Route>
                           <Route path='/greviences/createnew'>
@@ -410,8 +412,8 @@ function App({ alert }) {
                             {({ match }) => <CreateGenre match={match} />}
                           </Route>
                           <Route exact path='/blog/genre/edit'>
-                          {({ match }) => <EditGenre match={match} />}
-                        </Route>
+                            {({ match }) => <EditGenre match={match} />}
+                          </Route>
                           <Route exact path='/blog/wordcount-config'>
                             {({ match }) => <CreateWordCountConfig match={match} />}
                           </Route>
@@ -495,13 +497,13 @@ function App({ alert }) {
                             {({ match }) => <CreateClass match={match} />}
                           </Route>
                           <Route exact path='/erp-online-class/assign/:id/qp'>
-                          {({ match }) => <AssignQP match={match} />}
+                            {({ match }) => <AssignQP match={match} />}
                           </Route>
                           <Route exact path='/erp-online-class/:id/pre-quiz'>
-                          {({ match }) => <PreQuiz match={match} />}
+                            {({ match }) => <PreQuiz match={match} />}
                           </Route>
                           <Route path='/erp-online-class/:onlineclassId/quiz/:questionpaperId/:lobbyuuid'>
-                          {({match})=><MultiplayerQuiz match={match} />}
+                            {({ match }) => <MultiplayerQuiz match={match} />}
                           </Route>
                           {/* <Route exact path='/online-class/view-class'>
                       {({ match }) => <ViewClassManagement match={match} />}
@@ -613,7 +615,10 @@ function App({ alert }) {
                           <Route exact path='/master-management/discussion-category'>
                             {({ match }) => <CategoryPage match={match} />}
                           </Route>
-                          <Route exact path='/master-management/discussion-category/create'>
+                          <Route
+                            exact
+                            path='/master-management/discussion-category/create'
+                          >
                             {({ match }) => <CreateCategories match={match} />}
                           </Route>
                           <Route exact path='/category/create'>

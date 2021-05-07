@@ -302,7 +302,8 @@ const Appointments = () => {
                                 item.message
                               )
                             }
-                            title='Edit Appointmant'
+                            title='Edit Appointment'
+                            disabled={item.appointment_status === 'accept' ? true : false}
                           >
                             <EditOutlinedIcon
                               color='primary'
@@ -316,18 +317,6 @@ const Appointments = () => {
                   </>
                 );
               })}
-              <div className='paginateData'>
-                <TablePagination
-                  component='div'
-                  className='customPagination'
-                  count={totalCount}
-                  rowsPerPage={limit}
-                  page={page - 1}
-                  nextIconButtonText='Next Page'
-                  onChangePage={handleChangePage}
-                  rowsPerPageOptions={false}
-                />
-              </div>
 
               <div className={classes.cardstyles}>
                 <Card className={classes.card}>
@@ -345,7 +334,8 @@ const Appointments = () => {
                       variant='contained'
                       color='primary'
                       style={{
-                        marginLeft: '20%',
+                        width: '100%',
+                        margin: 'auto',
                         color: 'white',
                         fontWeight: '600',
                         borderRadius: '5px',
@@ -574,6 +564,18 @@ const Appointments = () => {
                   </CardActionArea>
                 </Card>
               </div>
+              <div className='paginateData'>
+                <TablePagination
+                  component='div'
+                  className='customPagination'
+                  count={totalCount}
+                  rowsPerPage={limit}
+                  page={page - 1}
+                  nextIconButtonText='Next Page'
+                  onChangePage={handleChangePage}
+                  rowsPerPageOptions={false}
+                />
+              </div>
             </MediaQuery>
 
             <MediaQuery maxWidth={959}>
@@ -641,7 +643,8 @@ const Appointments = () => {
                                 item.message
                               )
                             }
-                            title='Edit Appointmant'
+                            title='Edit Appointment'
+                            disabled={item.appointment_status === 'accept' ? true : false}
                           >
                             <EditOutlinedIcon
                               color='primary'
@@ -655,18 +658,6 @@ const Appointments = () => {
                   </>
                 );
               })}
-              <div className='paginateData'>
-                <TablePagination
-                  component='div'
-                  className='customPagination'
-                  count={totalCount}
-                  rowsPerPage={limit}
-                  page={page - 1}
-                  nextIconButtonText='Next Page'
-                  onChangePage={handleChangePage}
-                  rowsPerPageOptions={false}
-                />
-              </div>
 
               <div>
                 <Card>
@@ -886,6 +877,18 @@ const Appointments = () => {
                     </div>
                   </CardActionArea>
                 </Card>
+              </div>
+              <div className='paginateData'>
+                <TablePagination
+                  component='div'
+                  className='customPagination'
+                  count={totalCount}
+                  rowsPerPage={limit}
+                  page={page - 1}
+                  nextIconButtonText='Next Page'
+                  onChangePage={handleChangePage}
+                  rowsPerPageOptions={false}
+                />
               </div>
             </MediaQuery>
           </Grid>
