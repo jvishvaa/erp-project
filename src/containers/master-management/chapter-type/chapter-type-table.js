@@ -127,6 +127,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
   const themeContext = useTheme();
 
   const [filterData, setFilterData] = useState({
+    year: '',
     branch: [],
     grade: [],
     section: [],
@@ -197,6 +198,17 @@ const ChapterTypeTable = (setCentralSubjectName) => {
         });
     }
   };
+
+  useEffect(() => {
+    if(academicYear.length > 0) {
+      academicYear.map((option) => {
+            if(option.session_year === "2021-22") {
+                handleAcademicYear('',option);
+            }
+        })
+    }
+},[academicYear])
+
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
     setOverviewSynopsis([]);
@@ -453,8 +465,9 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                   onChange={handleAcademicYear}
                   id='year'
                   className='dropdownIcon'
-                  options={academicYear || []}
-                  getOptionLabel={(option) => option?.session_year || ''}
+                  value={filterData.year}
+                  options={academicYear}
+                  getOptionLabel={(option) => option?.session_year}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField

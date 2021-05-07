@@ -14,6 +14,7 @@ export const createAssesmentActions = {
   CREATE_ASSESMENT_SUCCESS: 'CREATE_ASSESMENT_SUCCESS',
   CREATE_ASSESMENT_FAILURE: 'CREATE_ASSESMENT_FAILURE',
   CHANGE_TEST_FORM_FIELD: 'CHANGE_TEST_FORM_FIELD',
+  QUESTIONS_LENGTH: 'QUESTIONS_LENGTH',
 };
 
 export const resetFormState = () => ({
@@ -33,9 +34,7 @@ export const createAssesment = (data) => async (dispatch) => {
       `${endpoints.assessmentErp.createAssessment}`,
       data
     );
-    if (response.data.status_code !== 200) {
-      throw new Error();
-    }
+    return { results: response.data };
   } catch (e) {
     throw new Error();
   }
@@ -63,6 +62,10 @@ export const fetchQuestionPaperDetails = (id) => async (dispatch) => {
     if (response.data.status_code === 200) {
       const { sections, questions } = response.data.result;
       const parsedResponse = [];
+      dispatch({
+        type: createAssesmentActions.QUESTIONS_LENGTH,
+        data: questions?.length,
+      });
       sections.forEach((sec) => {
         const sectionObject = { name: '', questions: [] };
         const sectionName = Object.keys(sec)[0];

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, useHistory } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
 import CreateGroup from './containers/communication/create-group/create-group';
@@ -12,7 +12,7 @@ import AssignRole from './containers/communication/assign-role/assign-role';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
 import ChapterTypeTable from './containers/master-management/chapter-type/chapter-type-table';
-import TopicTable from './containers/master-management/topic/TopicTable'
+import TopicTable from './containers/master-management/topic/TopicTable';
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
 // import './assets/styles/styles.scss';
 import UserManagement from './containers/user-management';
@@ -71,7 +71,8 @@ import {
   StudentDashboard,
   TeacherPublishBlogView,
   BlogView,
-  CreateGenre,EditGenre,
+  CreateGenre,
+  EditGenre,
   ContentViewPublish,
   ContentViewPublishStudent,
   AdminBlog,
@@ -266,12 +267,10 @@ import AssessmentReportTypes from './containers/assessment-central/assessment-re
 import ContactUs from 'containers/contact-us';
 import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz';
 import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
-
+// import { menuSelectionArray } from '../src/components/drawer-menu/menu-item.js';
 // import Contact from './containers/contact/Contact';
 
-
-
-import MultiplayerQuiz from './components/mp-quiz'
+import MultiplayerQuiz from './components/mp-quiz';
 
 const theme = createMuiTheme({
   palette: {
@@ -307,6 +306,37 @@ const theme = createMuiTheme({
 });
 
 function App({ alert }) {
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
+  const history = useHistory();
+
+  // useEffect(() => {
+  //   let pathName = window.location.pathname;
+  //   let ignorePaths = ['/', '/dashboard', '/profile'];
+
+  //   if (!ignorePaths.includes(pathName)) {
+  //     let compName = '';
+  //     for (let i = 0; i < menuSelectionArray?.length; i++) {
+  //       if (pathName === '/assessment/' && menuSelectionArray[i].Path === '/assessment') {
+  //         compName = menuSelectionArray[i].name;
+  //       } else if (pathName === menuSelectionArray[i].Path) {
+  //         compName = menuSelectionArray[i].name;
+  //       }
+  //     }
+  //     let compArray = [];
+  //     for (let i = 0; i < NavData?.length; i++) {
+  //       const { child_module: childModule = [] } = NavData[i] || [];
+  //       for (let k = 0; k < childModule?.length; k++) {
+  //         const { child_name: childName = '' } = childModule[k] || '';
+  //         compArray.push(childName);
+  //       }
+  //     }
+  //     if (!compArray.includes(compName)) {
+  //       window.alert('Sorry!!! No such page exists.');
+  //       window.location.replace('/profile');
+  //     }
+  //   }
+  // }, [window.location.pathname]);
+
   React.useEffect(() => {
     const {
       repoName = 'Revamp',
@@ -410,8 +440,8 @@ function App({ alert }) {
                             {({ match }) => <CreateGenre match={match} />}
                           </Route>
                           <Route exact path='/blog/genre/edit'>
-                          {({ match }) => <EditGenre match={match} />}
-                        </Route>
+                            {({ match }) => <EditGenre match={match} />}
+                          </Route>
                           <Route exact path='/blog/wordcount-config'>
                             {({ match }) => <CreateWordCountConfig match={match} />}
                           </Route>
@@ -495,13 +525,13 @@ function App({ alert }) {
                             {({ match }) => <CreateClass match={match} />}
                           </Route>
                           <Route exact path='/erp-online-class/assign/:id/qp'>
-                          {({ match }) => <AssignQP match={match} />}
+                            {({ match }) => <AssignQP match={match} />}
                           </Route>
                           <Route exact path='/erp-online-class/:id/pre-quiz'>
-                          {({ match }) => <PreQuiz match={match} />}
+                            {({ match }) => <PreQuiz match={match} />}
                           </Route>
                           <Route path='/erp-online-class/:onlineclassId/quiz/:questionpaperId/:lobbyuuid'>
-                          {({match})=><MultiplayerQuiz match={match} />}
+                            {({ match }) => <MultiplayerQuiz match={match} />}
                           </Route>
                           {/* <Route exact path='/online-class/view-class'>
                       {({ match }) => <ViewClassManagement match={match} />}
@@ -613,7 +643,10 @@ function App({ alert }) {
                           <Route exact path='/master-management/discussion-category'>
                             {({ match }) => <CategoryPage match={match} />}
                           </Route>
-                          <Route exact path='/master-management/discussion-category/create'>
+                          <Route
+                            exact
+                            path='/master-management/discussion-category/create'
+                          >
                             {({ match }) => <CreateCategories match={match} />}
                           </Route>
                           <Route exact path='/category/create'>
