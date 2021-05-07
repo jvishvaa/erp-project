@@ -635,7 +635,7 @@ const Layout = ({ children, history }) => {
         history.push('/student-id-card');
         break;
       }
-      case 'Student Strength': {
+      case 'View Student Strength': {
         history.push('/student-strength');
         break;
       }
