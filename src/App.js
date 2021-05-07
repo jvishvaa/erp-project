@@ -267,7 +267,7 @@ import AssessmentReportTypes from './containers/assessment-central/assessment-re
 import ContactUs from 'containers/contact-us';
 import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz';
 import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
-import { menuSelectionArray } from '../src/components/drawer-menu/menu-item.js';
+// import { menuSelectionArray } from '../src/components/drawer-menu/menu-item.js';
 // import Contact from './containers/contact/Contact';
 
 import MultiplayerQuiz from './components/mp-quiz';

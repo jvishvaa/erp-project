@@ -214,6 +214,7 @@ const TopicTable = () => {
     },[filterData]);
 
     const handleAcademicYear = (event, value) => {
+        console.log(event+'option123'+value)
         setFilterData({ ...filterData, year: '' });
         if (value) {
             setFilterData({ ...filterData, year: value });
@@ -233,6 +234,16 @@ const TopicTable = () => {
                 });
         }
     };
+
+    useEffect(() => {
+        if(academicYearDropdown.length > 0) {
+            academicYearDropdown.map((option) => {
+                if(option.session_year === "2021-22") {
+                    handleAcademicYear('',option);
+                }
+            })
+        }
+    },[academicYearDropdown])
 
     const handleBranch = (event, value) => {
         setFilterData({ ...filterData, branch: '' });

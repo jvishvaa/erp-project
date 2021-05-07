@@ -25,7 +25,10 @@ const StudentStrength = ({ history }) => {
   const [filteredData, setFilteredData] = useState('');
   const [selectedCard, setSelectedCard] = useState('');
   const [hRef, setHRef] = useState([]);
-
+  const [academicYear, setAcademicYear] = useState([]);
+  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+ 
+const moduleId=178;
   useEffect(() => {
     setHRef([
       {
@@ -51,56 +54,85 @@ const StudentStrength = ({ history }) => {
       //     &export_type=csv`,
       // },
     ]);
-  }, [selectedAcadmic, selectedBranch]);
+  }, [selectedAcademicYear, selectedBranch]);
 
-  function getBranchList() {
+  // function getBranchList() {
+  //   setLoading(true);
+  //   axiosInstance
+  //     .get(`${endpoints.communication.branches}`)
+  //     .then((result) => {
+  //       setLoading(false);
+  //       if (result.data.status_code === 200) {
+  //         setBranchList(result.data.data.results);
+  //         console.log("thrinadh",result.data)
+
+
+  //         console.log("thrinadhwadaf",result.data.data.results)
+
+  //       } else {
+  //         setAlert('error', result.data.message);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setLoading(false);
+  //       setAlert('error', error.message);
+  //     });
+  // }
+  // function getAcadminYearList() {
+  //   setLoading(true);
+  //   axiosInstance
+  //     .get(`${endpoints.userManagement.academicYear}`)
+  //     .then((result) => {
+  //       setLoading(false);
+  //       if (result.data.status_code === 200) {
+  //         setAcadminYearList(result.data.data);
+  //       } else {
+  //         setAlert('error', result.data.message);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setLoading(false);
+  //       setAlert('error', error.message);
+  //     });
+  // }
+  function callApi(api, key) {
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.communication.branches}`)
+      .get(api)
       .then((result) => {
-        setLoading(false);
-        if (result.data.status_code === 200) {
-          setBranchList(result.data.data);
+        if (result.status === 200) {
+          if (key === 'academicYearList') {
+            console.log(result?.data?.data || [], 'checking');
+            setAcademicYear(result?.data?.data || []);
+          }
+          if (key === 'branchList') {
+            console.log(result?.data?.data || [], 'checking');
+            setBranchList(result?.data?.data?.results || []);
+          }
+        
+          setLoading(false);
         } else {
           setAlert('error', result.data.message);
+          setLoading(false);
         }
       })
       .catch((error) => {
-        setLoading(false);
         setAlert('error', error.message);
+        setLoading(false);
       });
   }
-  function getAcadminYearList() {
-    setLoading(true);
-    axiosInstance
-      .get(`${endpoints.userManagement.academicYear}`)
-      .then((result) => {
-        setLoading(false);
-        if (result.data.status_code === 200) {
-          setAcadminYearList(result.data.data);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
-  }
-
   useEffect(() => {
-    getAcadminYearList();
-    getBranchList();
+    callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
   }, []);
 
   function handleClearFilter() {
-    setSelectedAcadmic('');
+    setSelectedAcadmeicYear('');
     setSelectedBranch('');
     setFilteredData('');
   }
 
   function handleFilter() {
-    if (!selectedAcadmic) {
+    if (!selectedAcademicYear) {
       setAlert('error', 'Select Acadminc year');
       return;
     }
@@ -112,13 +144,14 @@ const StudentStrength = ({ history }) => {
     axiosInstance
       .get(
         `${endpoints.studentListApis.branchWiseStudentCount}?academic_year_id=${
-          selectedAcadmic && selectedAcadmic.id
+          selectedAcademicYear && selectedAcademicYear.id
         }&branch_id=${selectedBranch && selectedBranch.id}`
       )
       .then((result) => {
         setLoading(false);
         if (result.data.status_code === 200) {
           setFilteredData(result.data.data);
+         
         } else {
           setAlert('error', result.data.message);
         }
@@ -151,7 +184,7 @@ const StudentStrength = ({ history }) => {
           <Grid item md={12} xs={12} className='studentStrengthFilterDiv'>
             <Grid container spacing={2}>
               <Grid item md={4} xs={12}>
-                <Autocomplete
+                {/* <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => setSelectedAcadmic(value)}
@@ -169,10 +202,38 @@ const StudentStrength = ({ history }) => {
                       placeholder='Academic Year'
                     />
                   )}
-                />
+                /> */}
+            <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              setSelectedAcadmeicYear(value);
+              if (value) {
+                callApi(
+                  `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                  'branchList'
+                );
+              }
+              setSelectedBranch([]);
+            }}
+            id='branch_id'
+            className='dropdownIcon'
+            value={selectedAcademicYear || ''}
+            options={academicYear || ''}
+            getOptionLabel={(option) => option?.session_year || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Academic Year'
+                placeholder='Academic Year'
+              />
+            )}
+          />
               </Grid>
               <Grid item md={4} xs={12}>
-                <Autocomplete
+                {/* <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => setSelectedBranch(value)}
@@ -190,7 +251,41 @@ const StudentStrength = ({ history }) => {
                       placeholder='Branch'
                     />
                   )}
-                />
+                /> */}
+               <Autocomplete
+            // multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              setSelectedBranch([]);
+              if (value) {
+                // const ids = value.map((el)=>el)
+                const selectedId = value.branch.id;
+                setSelectedBranch(value);
+                callApi(
+                  `${endpoints.academics.grades}?session_year=${
+                    selectedAcademicYear.id
+                  }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                  'gradeList'
+                );
+              }
+            
+            }}
+            id='branch_id'
+            className='dropdownIcon'
+            value={selectedBranch || ''}
+            options={branchList || ''}
+            getOptionLabel={(option) => option?.branch?.branch_name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Branch'
+                placeholder='Branch'
+              />
+            )}
+          />
               </Grid>
             </Grid>
             <Divider className='studentStrenghtDivider' />
