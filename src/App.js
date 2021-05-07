@@ -332,7 +332,7 @@ function App({ alert }) {
   //     }
   //     if (!compArray.includes(compName)) {
   //       window.alert('Sorry!!! No such page exists.');
-  //       window.location = '/profile';
+  //       window.location.replace('/profile');
   //     }
   //   }
   // }, [window.location.pathname]);

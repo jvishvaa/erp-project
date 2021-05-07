@@ -735,7 +735,9 @@ const CreateCourse = () => {
         <div>
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
-              componentName='Master Management'
+              componentName={
+                history.location?.state?.isOnline ? 'Online Class' : 'Master Management'
+              }
               childComponentName={
                 Boolean(gradeKey)
                   ? 'Period Details'
