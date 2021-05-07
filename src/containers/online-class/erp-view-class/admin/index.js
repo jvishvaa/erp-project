@@ -434,9 +434,11 @@ const ErpAdminViewClass = ({ history }) => {
       callApi(
         `${endpoints.aol.classes}?is_aol=0&session_year=${
           selectedAcademicYear.id
-        }&section_mapping_ids=${697}&subject_id=${selectedSubject.map(
-          (el) => el?.subject__id
-        )}&class_type=${selectedClassType.id}&start_date=${startDateTechPer.format(
+        }&section_mapping_ids=${selectedSection.map(
+          (el) => el?.id
+        )}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${
+          selectedClassType.id
+        }&start_date=${startDateTechPer.format(
           'YYYY-MM-DD'
         )}&end_date=${endDateTechPer.format(
           'YYYY-MM-DD'
@@ -915,10 +917,11 @@ const ErpAdminViewClass = ({ history }) => {
                         <Grid container spacing={2}>
                           {filterList &&
                             filterList.length !== 0 &&
-                            filterList.map((item) => (
+                            filterList.map((item, i) => (
                               <Grid item md={selectedViewMore ? 6 : 4} xs={12}>
                                 <CardView
                                   fullData={item}
+                                  // index={i}
                                   handleViewMore={setSelectedViewMore}
                                   selectedViewMore={selectedViewMore || {}}
                                   viewMoreRef={viewMoreRef}
@@ -931,6 +934,7 @@ const ErpAdminViewClass = ({ history }) => {
                         <Grid item md={selectedViewMore ? 4 : 0} xs={12}>
                           <DetailCardView
                             fullData={selectedViewMore}
+                            // index={i}
                             handleClose={handleClose}
                             viewMoreRef={viewMoreRef}
                             selectedClassType={selectedClassType}
