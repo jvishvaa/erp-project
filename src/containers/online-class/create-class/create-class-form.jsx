@@ -459,11 +459,27 @@ const CreateClassForm = (props) => {
     }));
   };
 
+  const validateClassTime = (time) => {
+    let isValidTime = false;
+    const CLASS_HOURS = time.getHours();
+    const CLASS_MINUTES = time.getMinutes();
+    if (CLASS_HOURS >= 6 && CLASS_HOURS <= 22) {
+      isValidTime = true;
+      if (CLASS_HOURS === 22 && CLASS_MINUTES > 0)
+        isValidTime = false;
+    }
+    return isValidTime
+  };
+
   const handleTimeChange = (event) => {
     const { selectedDate } = onlineClass;
     const time = new Date(event);
-    dispatch(clearTutorEmailValidation());
-    setOnlineClass((prevState) => ({ ...prevState, selectedTime: time }));
+    if (validateClassTime(time)) {
+      dispatch(clearTutorEmailValidation());
+      setOnlineClass((prevState) => ({ ...prevState, selectedTime: time }));
+    } else {
+      setAlert('error', 'Class must be between 06:00AM - 10:00PM')
+    }
   };
 
   const [selectedDays, setSelectedDays] = useState([]);
@@ -1037,7 +1053,7 @@ const CreateClassForm = (props) => {
                   size='small'
                   // disableToolbar
                   variant='dialog'
-                  format='YYYY-MM-DD'
+                  format='MM/DD/YYYY'
                   margin='none'
                   id='date-picker'
                   label='Start date'

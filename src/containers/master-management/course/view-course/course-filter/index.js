@@ -275,7 +275,7 @@ const CourseFilter = ({
               sessionStorage.setItem('createCourse', 1);
               sessionStorage.removeItem('periodDetails');
               sessionStorage.removeItem('isErpClass');
-              history.push('/create/course');
+              history.push({ pathname: '/create/course' });
             }}
             size='medium'
           >
