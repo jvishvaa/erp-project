@@ -113,6 +113,7 @@ const useStyles = makeStyles((theme) => ({
     opacity: 1,
     margin: '20px',
     width: '330px',
+    height: '110px',
     [theme.breakpoints.down('xs')]: {
       width: '290px',
     },
@@ -599,6 +600,9 @@ const handleClears=()=>{
                 id='role'
                 variant='outlined'
                 label='Event Type Name'
+                inputProps={{ 
+                  maxlength:'20'
+                }}             
                 value={eventName || ''}
                 onChange={handleEventName}
                 placeholder='Event Type Name'
@@ -671,7 +675,7 @@ const handleClears=()=>{
                                   marginTop: 8,
                                   color: '#01014a',
                                   textAlign: 'center',
-                                  fontSize: '22px',
+                                  fontSize: '20px',
                                   fontweight: 'Bold',
                                 }}
                               >
@@ -699,12 +703,12 @@ const handleClears=()=>{
                                  <Dialog
                                     open={Diaopen}
                                     onClose={DiaClose}
-                                    style={{backgroundColor:'transparent',opacity:'0.3'}}
+                                    style={{backgroundColor:'transparent',opacity:'0.4'}}
                                     aria-labelledby="alert-dialog-title"
                                     aria-describedby="alert-dialog-description"
                                   >
                                     <DialogTitle id="alert-dialog-title">{"Conformation For Delete"}</DialogTitle>
-                                    <DialogContent>
+                                    <DialogContent >
                                       <DialogContentText id="alert-dialog-description">
                                         Are You Sure to Delete the EventCategory.
                                       </DialogContentText>
