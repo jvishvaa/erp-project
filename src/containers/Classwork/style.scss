@@ -1,9 +1,13 @@
 .class-work-module {
-  padding: 10px;
+  padding: 3% 4%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  .date-picker-container {
+    margin: 3% 1% 9% 0%;
+  }
+
   .outer-box {
     background: sandybrown;
     width: 158px;
@@ -20,16 +24,17 @@
     z-index: 5;
     left: 9%;
   }
-  .inner-box::before{
-    content: "";
+  .inner-box::before {
+    content: '';
     position: absolute;
-    top:0;
-    right:0;
+    top: 0;
+    right: 0;
     border-bottom: 20px solid gray;
     border-right: 20px solid #fafafa;
     width: 0;
   }
-  .lower-box{
+  .lower-box {
+    cursor: pointer;
     background: #faca66;
     width: 158px;
     height: 83px;
@@ -37,5 +42,16 @@
     position: absolute;
     z-index: 10;
     top: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4%;
+    color: #014b7e;
+  }
+  .folder-container{
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 }

@@ -635,6 +635,7 @@ import { AlertNotificationContext } from '../../../../context-api/alert-context/
 import ResourceDialog from '../../../online-class/online-class-resources/resourceDialog';
 import CountdownTimer from './CountdownTimer';
 import UploadDialogBox from './UploadDialogBox';
+import ClassIcon from '@material-ui/icons/Class';
 import './index.css';
 import { useDispatch } from 'react-redux';
 import { attendanceAction } from '../../../../redux/actions/onlineClassActions';
@@ -831,32 +832,34 @@ const JoinClass = (props) => {
         </span>
       </Grid>
       {window.location.pathname === '/erp-online-class-student-view' ? (
-        <Grid item xs={3}>
-          <Button
-            size='small'
-            color='secondary'
-            fullWidth
-            variant='contained'
-            onClick={() => handleTakeQuiz(fullData)}
-            className='teacherFullViewSmallButtons'
-          >
-            TakeQuiz
-          </Button>
-          
-        </Grid>
+        <>
+          <Grid item xs={3}>
+            <Button
+              size='small'
+              color='secondary'
+              fullWidth
+              variant='contained'
+              onClick={() => handleTakeQuiz(fullData)}
+              className='teacherFullViewSmallButtons'
+            >
+              TakeQuiz
+            </Button>
+          </Grid>
+
+          <Grid item xs={3}>
+            <IconButton color='primary' onClick={() => setDialogClassWorkBox(true)}>
+              <PhotoCamera />
+            </IconButton>
+            <UploadDialogBox
+              fullData={fullData}
+              classWorkDialog={classWorkDialog}
+              OpenDialogBox={handleOpenClassWorkDialogBox}
+            />
+          </Grid>
+        </>
       ) : (
         ''
       )}
-      <Grid item xs={3}>
-        <IconButton color='primary' onClick={()=>setDialogClassWorkBox(true)}>
-          <PhotoCamera />
-        </IconButton>
-        <UploadDialogBox
-            fullData={fullData}
-            classWorkDialog={classWorkDialog}
-            OpenDialogBox={handleOpenClassWorkDialogBox}
-          />
-      </Grid>
       {window.location.pathname === '/erp-online-class-teacher-view' &&
       fullData &&
       fullData.online_class &&
@@ -879,18 +882,28 @@ const JoinClass = (props) => {
           </Button>
         </Grid>
       ) : window.location.pathname === '/erp-online-class-teacher-view' ? (
-        <Tooltip title='Attach Question Paper'>
-          <IconButton
-            onClick={() =>
-              history.push({
-                pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
-                state: { data: fullData.online_class.id },
-              })
-            }
-          >
-            <AttachFileIcon />
-          </IconButton>
-        </Tooltip>
+        <>
+          <Tooltip title='Attach Question Paper'>
+            <IconButton
+              onClick={() =>
+                history.push({
+                  pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
+                  state: { data: fullData.online_class.id },
+                })
+              }
+            >
+              <AttachFileIcon />
+            </IconButton>
+          </Tooltip>
+          <Grid item xs={3}>
+            <IconButton color='primary' onClick={() => history.push({
+                  pathname: `/erp-online-class/class-work/${fullData.online_class.id}/${fullData.id}`
+                })
+              }>
+              <ClassIcon />
+            </IconButton>
+          </Grid>
+        </>
       ) : (
         ''
       )}
