@@ -199,10 +199,10 @@ class RoleManagement extends Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button autoFocus onClick={this.handleCloseDeleteModal} color='secondary'>
+            <Button autoFocus variant='contained' color='primary'  onClick={this.handleCloseDeleteModal}>
               Cancel
             </Button>
-            <Button onClick={this.handleDeleteRole}>Confirm</Button>
+            <Button variant='contained' color='primary' onClick={this.handleDeleteRole}>Confirm</Button>
           </DialogActions>
         </Dialog>
       </div>
