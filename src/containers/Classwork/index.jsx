@@ -17,6 +17,8 @@ import { Folder } from '@material-ui/icons';
 const ClassWork = (props) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [responseData, setResponseData] = useState();
+  const [uploadData, setUploadData] = useState();
+  const [openDialog, setOpenDiaolg] = useState(false);
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
@@ -42,6 +44,13 @@ const ClassWork = (props) => {
         console.log(error, 'error responce');
       });
   };
+  const handleOpenDialog = (data) =>{
+    setOpenDiaolg(true);
+    setUploadData(data)
+  }
+  const handleCloaseDialog = () =>{
+    setOpenDiaolg(false);
+  }
   return (
     <div>
       <Layout>
@@ -68,7 +77,7 @@ const ClassWork = (props) => {
 
           {responseData &&
             responseData.map((data, index) => (
-              <div key={index} className='folder-container'>
+              <div key={index} className='folder-container' onClick={()=>handleOpenDialog(data)}>
                 <div className='top-filter-container'></div>
                 <div className='outer-box'>
                   <div className='inner-box'></div>
@@ -79,7 +88,7 @@ const ClassWork = (props) => {
                 </div>
               </div>
             ))}
-            <FileDialogOpen />
+            <FileDialogOpen openDialog={openDialog} handleCloseDialog={handleCloaseDialog} uploadData={uploadData}/>
         </div>
       </Layout>
     </div>
