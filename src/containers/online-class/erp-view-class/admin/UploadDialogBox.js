@@ -6,6 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import axiosInstance from '../../../../config/axios';
+import Loading from '../../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import './uploadBox.scss';
@@ -21,8 +22,9 @@ const useStyles = makeStyles((theme) => ({
 
 const UploadClassWorkDiaogBox = (props) => {
   const classes = useStyles();
-  const [uploadFiles, setUploadFiles] = useState();
+  const [uploadFiles, setUploadFiles] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
+  const [loading, setLoading] = useState(false);
 
   //     const [open, setOpen] = React.useState(false);
 
@@ -31,40 +33,46 @@ const UploadClassWorkDiaogBox = (props) => {
   //     };
   // console.log(props.fullData, 'fulldata');
   const handleUploadFile = (e) => {
-    // if (e.target.files[0]) {
-    //   const data  = e.target.files[0];
-    //   const tempArr = e.target.files[0].name.split('.');
-     
-    //   const ext = tempArr.length ? tempArr[tempArr.length - 1] : 'unsupported';
-    //   const newFiles = [...files, e.target.files[0]];
-    // }
-    // const fd = new FormData();
-    // fd.append('file', data);
+    let value = e.target.files[0];
+    const fd = new FormData();
+        fd.append('file', value); 
+        axiosInstance.post(`academic/dairy-upload/`, fd)
+        .then((result)=>{
+              if (result.data.status_code === 200) {
+                setLoading(false);
+                setAlert('success',result.data.message);
+                console.log(result, 'response data')
+                setUploadFiles([...uploadFiles, result.data.result]);
+                // setFilePath([ ...filePath,result.data.result]);
+              }
+              else {
+                  setAlert('error',result.data.message)
+              }
+        })
     
     e.persist()
-    let value = e.target.files[0];
+    
     // let arrayFiles = uploadFiles;
     // arrayFiles.push(value);
-    setUploadFiles(value);
+    // setUploadFiles(value);
 
     console.log(uploadFiles, 'files selected');
   };
   const handleClose = () => {
     props.OpenDialogBox(false);
   };
-  //   let date = new Date().getDate();
-  //   console.log(date);
+
   const submitClassWorkAPI = () => {
-    const formData = new FormData();
-    formData.append('submitted_files', uploadFiles);  
-    formData.append('online_class_id', props.fullData.online_class.id);
+    // const formData = new FormData();
+    // formData.append('submitted_files', uploadFiles);  
+    // formData.append('online_class_id', props.fullData.online_class.id);
     let obj = {
       online_class_id: props.fullData.online_class.id,
-      submitted_files: formData,
+      submitted_files: uploadFiles,
     };
     console.log(obj,'test and check')
     axiosInstance
-      .post('/erp_user/student-classwork-upload/', formData)
+      .post('/erp_user/student-classwork-upload/', obj)
       .then((res) => {
           handleClose();
           setAlert('success', 'Uploaded classwork')
@@ -97,7 +105,7 @@ const UploadClassWorkDiaogBox = (props) => {
               type='file'
               onChange={(e) => handleUploadFile(e)}
             />
-            <label htmlFor='contained-button-file'>
+            <label htmlFor='contained-button-file' style={{color:'white'}}>
               <Button variant='contained' color='primary' component='span'>
                 Upload
               </Button>
@@ -112,6 +120,7 @@ const UploadClassWorkDiaogBox = (props) => {
             Submit
           </Button>
         </DialogActions>
+        {loading && <Loading />}
       </Dialog>
     </div>
   );
