@@ -5,6 +5,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 
 import Card from '@material-ui/core/Card';
 import FilterImage from '../../assets/images/Filter_Icon.svg';
+import LineImage from '../../assets/images/line.svg';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
@@ -211,6 +212,16 @@ const Publications = (props) => {
   const [pub_file, setPub_file] = useState();
   const [pub_author_name, setPub_author_name] = useState();
   const [pub_zone, setPub_zone] = useState();
+  const [open1, setOpen1] = React.useState(false);
+
+  const handleClickOpen1 = () => {
+    setOpen1(true);
+  };
+
+  const handleClose1 = () => {
+    setOpen1(false);
+  };
+
   const handleEdit = (
     id,
     title,
@@ -534,15 +545,39 @@ const Publications = (props) => {
                             <Typography style={{ float: 'right' }}>
                               <IconButton
                                 aria-label='settings'
-                                onClick={(e) => {
-                                  handleDelete(item.id);
-                                }}
+                                onClick={handleClickOpen1}
                               >
                                 <Tooltip title='Delete' arrow>
                                   <MoreHorizIcon />
                                 </Tooltip>
                               </IconButton>
                             </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(item.id);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
                           </Grid>
                           <Grid item xs>
                             <Typography
@@ -1311,10 +1346,10 @@ const Publications = (props) => {
           <>
             <MediaQuery minWidth={600}>
               {Filter ? (
-                <Grid container className={classes.root}>
-                  <Grid className='upper-table-container'>
+                <div className={classes.root}>
+                  <div className='upper-table-container'>
                     <Grid className='all-box-container'>
-                      <Grid
+                      <div
                         className={
                           counter === 1
                             ? 'grade-container'
@@ -1325,9 +1360,9 @@ const Publications = (props) => {
                       >
                         {counter === 1 ? (
                           <>
-                            <Grid className='text-fixed'>Acadamic Year</Grid>
-                            <Grid className='inner-grade-container'>
-                              <Grid className='change-grade-options'>
+                            <div className='text-fixed'>Acadamic Year</div>
+                            <div className='inner-grade-container'>
+                              <div className='change-grade-options'>
                                 <Select
                                   multiple
                                   fullWidth
@@ -1348,8 +1383,8 @@ const Publications = (props) => {
                                       </option>
                                     ))}
                                 </Select>
-                              </Grid>
-                              <Grid className='text-fixed-last'>
+                              </div>
+                              <div className='text-fixed-last'>
                                 Expand
                                 <IconButton
                                   aria-label='delete'
@@ -1358,15 +1393,15 @@ const Publications = (props) => {
                                 >
                                   <ArrowForwardIcon className='arrow-button' />
                                 </IconButton>
-                              </Grid>
-                            </Grid>
+                              </div>
+                            </div>
                           </>
                         ) : (
                           <Grid className='text-rotate'>AcadamicYear</Grid>
                         )}
-                      </Grid>
+                      </div>
 
-                      <Grid
+                      <div
                         className={
                           counter === 2
                             ? 'grade-container'
@@ -1377,9 +1412,9 @@ const Publications = (props) => {
                       >
                         {counter === 2 ? (
                           <>
-                            <Grid className='text-fixed'>Subject</Grid>
-                            <Grid className='inner-grade-container'>
-                              <Grid className='change-grade-options'>
+                            <div className='text-fixed'>Subject</div>
+                            <div className='inner-grade-container'>
+                              <div className='change-grade-options'>
                                 <Select
                                   multiple
                                   fullWidth
@@ -1397,8 +1432,8 @@ const Publications = (props) => {
                                       </option>
                                     ))}
                                 </Select>
-                              </Grid>
-                              <Grid className='text-fixed-last'>
+                              </div>
+                              <div className='text-fixed-last'>
                                 Expand
                                 <IconButton
                                   aria-label='delete'
@@ -1408,86 +1443,79 @@ const Publications = (props) => {
                                   <ArrowBackIcon className='arrow-button' />
                                   <ArrowForwardIcon className='arrow-button' />
                                 </IconButton>
-                              </Grid>
-                            </Grid>
+                              </div>
+                            </div>
                           </>
                         ) : (
                           <label className='text-rotate'>Subject</label>
                         )}
-                      </Grid>
+                      </div>
                     </Grid>
-                  </Grid>
+                  </div>
 
-                  <Grid container direction='row' justify='flex-end' md={10}>
-                    <Grid>
-                      <StyledClearButton
-                        variant='contained'
-                        startIcon={<ClearIcon />}
-                        href={`/publications`}
+                  <span className='marg'>
+                    {' '}
+                    <StyledClearButton
+                      variant='contained'
+                      startIcon={<ClearIcon />}
+                      href={`/publications`}
+                    >
+                      Clear all
+                    </StyledClearButton>
+                    <StyledFilterButton
+                      variant='contained'
+                      color='secondary'
+                      startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+                      className={classes.filterButton}
+                      onClick={handleClickOpen}
+                    >
+                      filter
+                    </StyledFilterButton>
+                    <Dialog
+                      open={open}
+                      onClose={handleClose}
+                      aria-labelledby='form-dialog-title'
+                    >
+                      <DialogTitle id='form-dialog-title'>Zone</DialogTitle>
+                      <Select
+                        labelId='demo-simple-select-outlined-label'
+                        id='demo-simple-select-outlined'
+                        name='zone'
+                        onChange={handleZone}
+                        outlined
+                        labelWidth={70}
+                        required
                       >
-                        Clear all
-                      </StyledClearButton>
-                    </Grid>
-                    <Grid>
-                      <StyledFilterButton
-                        variant='contained'
-                        color='secondary'
-                        startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-                        className={classes.filterButton}
-                        onClick={handleClickOpen}
-                      >
-                        filter
-                      </StyledFilterButton>
-                      <Dialog
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby='form-dialog-title'
-                      >
-                        <DialogTitle id='form-dialog-title'>Zone</DialogTitle>
-                        <Select
-                          labelId='demo-simple-select-outlined-label'
-                          id='demo-simple-select-outlined'
-                          name='zone'
-                          onChange={handleZone}
-                          outlined
-                          labelWidth={70}
-                          required
-                        >
-                          {branchGet &&
-                            branchGet.map((options) => {
-                              return (
-                                <MenuItem value={options.id} key={options.id}>
-                                  {options.branch_name}
-                                </MenuItem>
-                              );
-                            })}
-                        </Select>
-                        <DialogActions>
-                          <Button onClick={handleClose} color='primary'>
-                            Cancel
-                          </Button>
-                          <Button onClick={handleZoneDataGet} color='primary'>
-                            Generate
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
-                    </Grid>
-
-                    <Grid>
-                      <StyledFilterButton
-                        variant='contained'
-                        color='secondary'
-                        className={classes.filterButton}
-                        onClick={(e) => {
-                          handleAdd();
-                          RemoveLocalData();
-                        }}
-                      >
-                        ADD NEW
-                      </StyledFilterButton>
-                    </Grid>
-                  </Grid>
-                  <Grid container justify='flex-end' item md={11}>
+                        {branchGet &&
+                          branchGet.map((options) => {
+                            return (
+                              <MenuItem value={options.id} key={options.id}>
+                                {options.branch_name}
+                              </MenuItem>
+                            );
+                          })}
+                      </Select>
+                      <DialogActions>
+                        <Button onClick={handleClose} color='primary'>
+                          Cancel
+                        </Button>
+                        <Button onClick={handleZoneDataGet} color='primary'>
+                          Generate
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+                    {/* <img src={LineImage} /> */}
+                    <StyledFilterButton
+                      variant='contained'
+                      color='secondary'
+                      className={classes.filterButton}
+                      onClick={(e) => {
+                        handleAdd();
+                        RemoveLocalData();
+                      }}
+                    >
+                      ADD NEW
+                    </StyledFilterButton>
                     <div
                       className='filter-container'
                       onClick={() => {
@@ -1497,12 +1525,12 @@ const Publications = (props) => {
                       <div className='filter'>HIDE FILTER</div>
                       <img src={FilterImage} />
                     </div>
-                  </Grid>
-                </Grid>
+                  </span>
+                </div>
               ) : (
                 <>
-                  <div className='bread-crumb-container' style={{ float: 'right' }}>
-                    <div
+                  <Grid className='bread-crumb-container' style={{ float: 'right' }}>
+                    <Grid
                       className={
                         Filter ? 'filter-container-hidden' : 'filter-container-show'
                       }
@@ -1510,34 +1538,34 @@ const Publications = (props) => {
                         handleFilter(true);
                       }}
                     >
-                      <div className='filter-show'>
+                      <Grid className='filter-show'>
                         <div className='filter'>SHOW FILTER</div>
                         <img className='filterImage' src={FilterImage} />
-                      </div>
-                    </div>
-                  </div>
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </>
               )}
             </MediaQuery>
             <MediaQuery maxWidth={599}>
               {Filter ? (
-                <Grid container className={classes.root}>
-                  <Grid className='upper-table-container'>
-                    <Grid className='all-box-container'>
-                      <Grid
+                <div className={classes.root} style={{ marginLeft: '-2%' }}>
+                  <div className='upper-table-container1'>
+                    <Grid className='all-box-container1'>
+                      <div
                         className={
                           counter === 1
-                            ? 'grade-container'
+                            ? 'grade-container1'
                             : counter === 2
                             ? 'box-right-2'
-                            : 'acadamic-year-box'
+                            : 'acadamic-year-box1'
                         }
                       >
                         {counter === 1 ? (
                           <>
-                            <Grid className='text-fixed'>Acadamic Year</Grid>
-                            <Grid className='inner-grade-container'>
-                              <Grid className='change-grade-options'>
+                            <div className='text-fixed1'>Acadamic Year</div>
+                            <div className='inner-grade-container1'>
+                              <div className='change-grade-options1'>
                                 <Select
                                   multiple
                                   fullWidth
@@ -1558,28 +1586,28 @@ const Publications = (props) => {
                                       </option>
                                     ))}
                                 </Select>
-                              </Grid>
-                              <Grid className='text-fixed-last'>
+                              </div>
+                              <div className='text-fixed-last1'>
                                 Expand
                                 <IconButton
                                   aria-label='delete'
                                   onClick={() => setCounter(counter + 1)}
                                   size='small'
                                 >
-                                  <ArrowForwardIcon className='arrow-button' />
+                                  <ArrowForwardIcon className='arrow-button1' />
                                 </IconButton>
-                              </Grid>
-                            </Grid>
+                              </div>
+                            </div>
                           </>
                         ) : (
-                          <Grid className='text-rotate'>AcadamicYear</Grid>
+                          <Grid className='text-rotate1'>AcadamicYear</Grid>
                         )}
-                      </Grid>
+                      </div>
 
-                      <Grid
+                      <div
                         className={
                           counter === 2
-                            ? 'grade-container'
+                            ? 'grade-container1'
                             : counter === 1
                             ? 'box-right-1'
                             : 'box-last-1'
@@ -1587,9 +1615,9 @@ const Publications = (props) => {
                       >
                         {counter === 2 ? (
                           <>
-                            <Grid className='text-fixed'>Subject</Grid>
-                            <Grid className='inner-grade-container'>
-                              <Grid className='change-grade-options'>
+                            <div className='text-fixed1'>Subject</div>
+                            <div className='inner-grade-container1'>
+                              <div className='change-grade-options1'>
                                 <Select
                                   multiple
                                   fullWidth
@@ -1607,86 +1635,76 @@ const Publications = (props) => {
                                       </option>
                                     ))}
                                 </Select>
-                              </Grid>
-                              <Grid className='text-fixed-last'>
+                              </div>
+                              <div className='text-fixed-last1'>
                                 Expand
                                 <IconButton
                                   aria-label='delete'
                                   onClick={() => setCounter(counter - 1)}
                                   size='small'
                                 >
-                                  <ArrowBackIcon className='arrow-button' />
-                                  <ArrowForwardIcon className='arrow-button' />
+                                  <ArrowBackIcon className='arrow-button1' />
+                                  <ArrowForwardIcon className='arrow-button1' />
                                 </IconButton>
-                              </Grid>
-                            </Grid>
+                              </div>
+                            </div>
                           </>
                         ) : (
-                          <label className='text-rotate'>Subject</label>
+                          <label className='text-rotate1'>Subject</label>
                         )}
-                      </Grid>
+                      </div>
                     </Grid>
-                  </Grid>
-
-                  <Grid container direction='row' justify='flex-end' md={10}>
-                    <Grid>
-                      <StyledClearButton
-                        variant='contained'
-                        startIcon={<ClearIcon />}
-                        href={`/publications`}
-                      >
-                        Clear all
-                      </StyledClearButton>
-                    </Grid>
-                    <Grid>
-                      <StyledFilterButton
-                        variant='contained'
-                        color='secondary'
-                        startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-                        className={classes.filterButton}
-                        onClick={handleClickOpen}
-                      >
-                        filter
-                      </StyledFilterButton>
-                      <Dialog
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby='form-dialog-title'
-                      >
-                        <DialogTitle id='form-dialog-title'>Zone</DialogTitle>
-                        <Select
-                          labelId='demo-simple-select-outlined-label'
-                          id='demo-simple-select-outlined'
-                          name='zone'
-                          onChange={handleZone}
-                          outlined
-                          labelWidth={70}
-                          required
+                    <div className='stylerow'>
+                      <div>
+                        <StyledFilterButton
+                          variant='contained'
+                          color='secondary'
+                          style={{ marginLeft: '-5%' }}
+                          startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+                          className={classes.filterButton}
+                          onClick={handleClickOpen}
                         >
-                          {branchGet &&
-                            branchGet.map((options) => {
-                              return (
-                                <MenuItem value={options.id} key={options.id}>
-                                  {options.branch_name}
-                                </MenuItem>
-                              );
-                            })}
-                        </Select>
-                        <DialogActions>
-                          <Button onClick={handleClose} color='primary'>
-                            Cancel
-                          </Button>
-                          <Button onClick={handleZoneDataGet} color='primary'>
-                            Generate
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
-                    </Grid>
+                          filter
+                        </StyledFilterButton>
+                        <Dialog
+                          open={open}
+                          onClose={handleClose}
+                          aria-labelledby='form-dialog-title'
+                        >
+                          <DialogTitle id='form-dialog-title'>Zone</DialogTitle>
+                          <Select
+                            labelId='demo-simple-select-outlined-label'
+                            id='demo-simple-select-outlined'
+                            name='zone'
+                            onChange={handleZone}
+                            outlined
+                            labelWidth={70}
+                            required
+                          >
+                            {branchGet &&
+                              branchGet.map((options) => {
+                                return (
+                                  <MenuItem value={options.id} key={options.id}>
+                                    {options.branch_name}
+                                  </MenuItem>
+                                );
+                              })}
+                          </Select>
+                          <DialogActions>
+                            <Button onClick={handleClose} color='primary'>
+                              Cancel
+                            </Button>
+                            <Button onClick={handleZoneDataGet} color='primary'>
+                              Generate
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
+                      </div>
 
-                    <Grid>
                       <StyledFilterButton
                         variant='contained'
                         color='secondary'
+                        style={{ marginLeft: '-1%' }}
                         className={classes.filterButton}
                         onClick={(e) => {
                           handleAdd();
@@ -1695,24 +1713,22 @@ const Publications = (props) => {
                       >
                         ADD NEW
                       </StyledFilterButton>
-                    </Grid>
-                  </Grid>
-                  <Grid container justify='flex-end' item md={11}>
-                    <div
-                      className='filter-container'
-                      onClick={() => {
-                        handleFilter(false);
-                      }}
-                    >
-                      <div className='filter'>HIDE FILTER</div>
-                      <img src={FilterImage} />
+                      <div
+                        className='filter-container'
+                        onClick={() => {
+                          handleFilter(false);
+                        }}
+                      >
+                        <div className='filter'>HIDE FILTER</div>
+                        <img src={FilterImage} />
+                      </div>
                     </div>
-                  </Grid>
-                </Grid>
+                  </div>
+                </div>
               ) : (
                 <>
-                  <div className='bread-crumb-container' style={{ float: 'right' }}>
-                    <div
+                  <Grid className='bread-crumb-container' style={{ float: 'right' }}>
+                    <Grid
                       className={
                         Filter ? 'filter-container-hidden' : 'filter-container-show'
                       }
@@ -1720,16 +1736,17 @@ const Publications = (props) => {
                         handleFilter(true);
                       }}
                     >
-                      <div className='filter-show'>
+                      <Grid className='filter-show'>
                         <div className='filter'>SHOW FILTER</div>
                         <img className='filterImage' src={FilterImage} />
-                      </div>
-                    </div>
-                  </div>
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </>
               )}
             </MediaQuery>
           </>
+          <br />
           <Divider />
 
           <br />
@@ -1738,57 +1755,48 @@ const Publications = (props) => {
             <li>{subjectID}</li>
           </Grid>
           <br />
-          <Grid container spacing={3} className='bg-card'>
-            <Grid item md={12} xs={12}>
-              <Tabs
-                value={value}
-                onChange={handleChanger}
-                indicatorColor='primary'
-                textColor='primary'
-                right
-              >
-                <Tab label='All' />
-                <Tab label='Draft' />
-                <Tab label='For Review' />
-                <Tab label='Published' />
-              </Tabs>
-              <Divider loading={loading} />
+          <Grid item md={12} xs={12}>
+            <Tabs
+              value={value}
+              onChange={handleChanger}
+              indicatorColor='primary'
+              textColor='primary'
+              right
+            >
+              <Tab label='All' />
+              <Tab label='Draft' />
+              <Tab label='For Review' />
+              <Tab label='Published' />
+            </Tabs>
+            <Divider loading={loading} />
 
-              <Tabpanel1 value={value} index={0}>
-                <Grid container direction='row' spacing={1}>
-                  <Post data={currentPost} loading={loading} />
-                </Grid>
-                <Grid container direction='row' justify='center' alignItems='center'>
-                  <Paginations
-                    postsPerPage={postsPerPage}
-                    totalPosts={data.length}
-                    paginate={paginate}
-                  />
-                </Grid>
-              </Tabpanel1>
-              <Tabpanel1 value={value} index={1}>
-                <Grid container direction='row' spacing={2}>
-                  <NewDraft loading={loading} />
-                </Grid>
-              </Tabpanel1>
-              <Tabpanel1 value={value} index={2}>
-                <Grid container direction='row'>
-                  <ReviewPost loading={loading} />
-                </Grid>
-              </Tabpanel1>
-              <Tabpanel1 value={value} index={3}>
-                <Grid container direction='row' spacing={2}>
-                  <IndividualPost data={currentPost} loading={loading} />
-                </Grid>
-                {/* <Grid container direction='row' justify='center' alignItems='center'>
-                  <Paginations
-                    postsPerPage={postsPerPage}
-                    totalPosts={data.length}
-                    paginate={paginate}
-                  />
-                </Grid> */}
-              </Tabpanel1>
-            </Grid>
+            <Tabpanel1 value={value} index={0}>
+              <Grid container direction='row' spacing={1} className='gridscroll'>
+                <Post data={currentPost} loading={loading} />
+              </Grid>
+              <Grid container direction='row' justify='center' alignItems='center'>
+                <Paginations
+                  postsPerPage={postsPerPage}
+                  totalPosts={data.length}
+                  paginate={paginate}
+                />
+              </Grid>
+            </Tabpanel1>
+            <Tabpanel1 value={value} index={1}>
+              <Grid container direction='row' spacing={2}>
+                <NewDraft loading={loading} />
+              </Grid>
+            </Tabpanel1>
+            <Tabpanel1 value={value} index={2}>
+              <Grid container direction='row'>
+                <ReviewPost loading={loading} />
+              </Grid>
+            </Tabpanel1>
+            <Tabpanel1 value={value} index={3}>
+              <Grid container direction='row' spacing={2}>
+                <IndividualPost data={currentPost} loading={loading} />
+              </Grid>
+            </Tabpanel1>
           </Grid>
         </div>
       )}
