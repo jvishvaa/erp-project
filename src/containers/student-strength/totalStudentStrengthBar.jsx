@@ -43,7 +43,7 @@ const TotalStudentBar = ({ fullData }) => {
             </Grid>
             <Grid item md={4} xs={8} className='totalStudentStrenghtLabel1'>
               <span>Temporary Inactive - </span>
-              <span>{(fullData && fullData.total_temporary_inactive) || '0'}</span>
+              <span className="totalbold2">{(fullData && fullData.total_temporary_inactive) || '0'}</span>
             </Grid>
             <Grid
               item
@@ -56,7 +56,7 @@ const TotalStudentBar = ({ fullData }) => {
             </Grid>
             <Grid item md={4} xs={10} className='totalStudentStrenghtLabel2'>
               <span>Permanent Inactive - </span>
-              <span>{(fullData && fullData.total_permanent_inactive) || '0'}</span>
+              <span className="totalbold2">{(fullData && fullData.total_permanent_inactive) || '0'}</span>
             </Grid>
           </Grid>
         </Grid>

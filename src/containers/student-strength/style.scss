@@ -45,11 +45,20 @@
     font-size: 20px !important;
     font-weight: bold !important;
 }
+
 .totalbold1{
     font-size: 20px !important;
 }
+.totalbold2{
+    font-size: 25px !important;
+    font-weight: bold !important;
+}
 .totalboldspace{
-    margin-left: 30px!important;
+    margin-left: 30px!important; 
+    // font-size: 20px !important;
+    font-weight: bold !important;
+
+
 }
 
 .totalStudentStrenghtMainDiv {
@@ -124,6 +133,7 @@
     color: #042955 !important;
     font-size: 25px !important;
     margin: 0 !important;
+    
 }
 .totalStudentStrenghtCardSubLabel1 {
     color: #009F10;
@@ -147,10 +157,16 @@
     opacity: 1;
     background-color: #FCEEEE;
     margin-bottom: 10px !important;
+   
 }
 .totalStudentSubcard1Child {
     padding: 10px 20px 20px 20px !important;
 }
 .studentStrenghtBody2 {
    padding: 20px 10px !important;
+  
 }
+.studentStrenghtBody3 {
+    padding: 20px 10px !important;
+    margin-left: 17px!important;
+ }
