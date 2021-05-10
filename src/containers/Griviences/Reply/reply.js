@@ -27,7 +27,7 @@ const Reply = (props) => {
             {/* {props.Replys.user.name.charAt(0)}{' '} */}
           </Avatar>
           <Typography
-            style={{ fontSize: '12px', fontWeight: 'bold', marginLeft: '10px' }}
+            style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '10px' }}
           >
             {props.Replys.user.name}
           </Typography>
@@ -36,14 +36,18 @@ const Reply = (props) => {
         <Grid
           item
           sm={1}
-          style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '5px' }}
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginRight: '5px',
+          }}
         >
-          <Typography style={{ fontSize: '12px' }}>{send_time} ago</Typography>
+          <Typography style={{ fontSize: '14px' }}>{send_time} ago</Typography>
         </Grid>
       </Grid>
       <Grid container>
         <Grid item sm={10}>
-          <Typography style={{ fontSize: '12px', padding: '10px' }}>
+          <Typography style={{ fontSize: '13px', padding: '10px', marginLeft: '30px' }}>
             {props.Replys.body}
           </Typography>
         </Grid>
