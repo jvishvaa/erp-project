@@ -31,3 +31,7 @@
 .border {
   height: 300%;
 }
+
+.arrange .MuiGrid-spacing-xs-2 > .MuiGrid-item {
+  margin-top: -20px;
+}

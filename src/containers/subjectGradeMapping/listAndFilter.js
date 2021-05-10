@@ -12,6 +12,7 @@ import Subjectcard from './subjectCard';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import './subjectgrademapping.scss';
 import { generateQueryParamSting } from '../../utility-functions';
+import moment from 'moment';
 
 const StyledButton = withStyles({
     root: {
@@ -89,7 +90,7 @@ const ListandFilter = (props) => {
     useEffect(() => {
         const getBranch = () => {
             //axiosInstance.get(endpoints.masterManagement.branchList).then(res => {
-            axiosInstance.get(endpoints.mappingStudentGrade.branch).then(res => {
+            axiosInstance.get(`${endpoints.mappingStudentGrade.branch}?session_year=${selectedYear?.id}&module_id=${moduleId}`).then(res => {
                 if (res.data.data) {
                     setBranchRes(res.data.data.results)
                 }
@@ -108,6 +109,19 @@ const ListandFilter = (props) => {
             setSelectedYear(vaule);
         }
     }
+
+    useEffect(() => {
+        if(academicYear.length > 0) {
+            const currentAcademicYear = moment().month() < 3
+                ? `${Number(moment().year())-1}-${moment().format('YY')}`
+                : `${moment().year()}-${Number(moment().format('YY'))+1}`
+            academicYear.map((option) => {
+                if(option.session_year === currentAcademicYear) {
+                    handleChangeYear(option);
+                }
+            })
+        }
+    },[academicYear])
 
     const handleChangeBranch = (value) => {
         if (value) {

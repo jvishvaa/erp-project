@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, useHistory } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
 import CreateGroup from './containers/communication/create-group/create-group';
@@ -267,7 +267,7 @@ import AssessmentReportTypes from './containers/assessment-central/assessment-re
 import ContactUs from 'containers/contact-us';
 import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz';
 import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
-
+// import { menuSelectionArray } from '../src/components/drawer-menu/menu-item.js';
 // import Contact from './containers/contact/Contact';
 
 import MultiplayerQuiz from './components/mp-quiz';
@@ -306,6 +306,37 @@ const theme = createMuiTheme({
 });
 
 function App({ alert }) {
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
+  const history = useHistory();
+
+  // useEffect(() => {
+  //   let pathName = window.location.pathname;
+  //   let ignorePaths = ['/', '/dashboard', '/profile'];
+
+  //   if (!ignorePaths.includes(pathName)) {
+  //     let compName = '';
+  //     for (let i = 0; i < menuSelectionArray?.length; i++) {
+  //       if (pathName === '/assessment/' && menuSelectionArray[i].Path === '/assessment') {
+  //         compName = menuSelectionArray[i].name;
+  //       } else if (pathName === menuSelectionArray[i].Path) {
+  //         compName = menuSelectionArray[i].name;
+  //       }
+  //     }
+  //     let compArray = [];
+  //     for (let i = 0; i < NavData?.length; i++) {
+  //       const { child_module: childModule = [] } = NavData[i] || [];
+  //       for (let k = 0; k < childModule?.length; k++) {
+  //         const { child_name: childName = '' } = childModule[k] || '';
+  //         compArray.push(childName);
+  //       }
+  //     }
+  //     if (!compArray.includes(compName)) {
+  //       window.alert('Sorry!!! No such page exists.');
+  //       window.location.replace('/profile');
+  //     }
+  //   }
+  // }, [window.location.pathname]);
+
   React.useEffect(() => {
     const {
       repoName = 'Revamp',

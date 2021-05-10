@@ -18,6 +18,7 @@ import WifiTetheringIcon from '@material-ui/icons/WifiTethering';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import ReceiptRoundedIcon from '@material-ui/icons/ReceiptRounded';
+import ViewListIcon from '@material-ui/icons/ViewList';
 
 import {
   AccountBalance,
@@ -253,6 +254,10 @@ const menuIcon = (name) => {
     }
     case 'Appointment': {
       icon = <ReceiptRoundedIcon />;
+      break;
+    }
+    case 'Student Strength': {
+      icon = <ViewListIcon />;
       break;
     }
     
