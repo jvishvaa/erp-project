@@ -135,25 +135,25 @@ const Appointments = () => {
 
   const limit = 6;
 
-  const handleEditAppointment = (id, role, date, time, booking_mode, message) => {
-    console.log('========>', id, role, date, time, booking_mode, message);
+  const handleEditAppointment = (item) => {
+    console.log('========>', item);
     setTableFlag(false);
     setAddFlag(false);
     setEditFlag(true);
-    console.log('id', id);
-    setAppointmentId(id);
-    setAppointmentWith(role);
-    setDate(date);
-    setTime(time);
-    setAppointmentMedium(booking_mode);
-    console.log('bookingmode-->', booking_mode);
-    setMessage(message);
+    // console.log('id', id);
+    setAppointmentId(item.id);
+    setAppointmentWith(item.role.id);
+    setDate(item.appointment_date);
+    setTime(item.appointment_time);
+    setAppointmentMedium(item.booking_mode);
+    // console.log('bookingmode-->', booking_mode);
+    setMessage(item.message);
 
-    if (booking_mode === 'Zoom Meeting') {
+    if (item.booking_mode === 'Zoom Meeting') {
       setBookingModeID(1);
-    } else if (booking_mode === 'Telephonic') {
+    } else if (item.booking_mode === 'Telephonic') {
       setBookingModeID(2);
-    } else if (booking_mode === 'Visit') {
+    } else if (item.booking_mode === 'Visit') {
       setBookingModeID(3);
     } else {
       setBookingModeID('');
@@ -294,12 +294,13 @@ const Appointments = () => {
                           <IconButton
                             onClick={(e) =>
                               handleEditAppointment(
-                                item.id,
-                                item.role,
-                                item.appointment_date,
-                                item.appointment_time,
-                                item.booking_mode,
-                                item.message
+                                // item.id,
+                                // item.role,
+                                // item.appointment_date,
+                                // item.appointment_time,
+                                // item.booking_mode,
+                                // item.message,
+                                item
                               )
                             }
                             title='Edit Appointment'
@@ -635,12 +636,13 @@ const Appointments = () => {
                           <IconButton
                             onClick={(e) =>
                               handleEditAppointment(
-                                item.id,
-                                item.role,
-                                item.appointment_date,
-                                item.appointment_time,
-                                item.booking_mode,
-                                item.message
+                                // item.id,
+                                // item.role,
+                                // item.appointment_date,
+                                // item.appointment_time,
+                                // item.booking_mode,
+                                // item.message,
+                                item
                               )
                             }
                             title='Edit Appointment'

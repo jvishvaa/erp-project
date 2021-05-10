@@ -29,6 +29,7 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import TextField from '@material-ui/core/TextField';
+import * as dayjs from 'dayjs';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -85,6 +86,7 @@ const EditAppointment = ({
   message,
   handleGoBack,
 }) => {
+  console.log(id, role, date, time, booking_mode, message, '======================');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
@@ -92,7 +94,8 @@ const EditAppointment = ({
   const [totalCount, setTotalCount] = useState(0);
   const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
   const [data, setData] = useState([]);
-
+  const [startTime, setStartTime] = useState();
+  const [selectedStartTime, setSelectedStartTime] = useState(new Date(time));
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [roles, setRole] = useState([]);
@@ -133,6 +136,13 @@ const EditAppointment = ({
     // console.log('date', date.target.value);
     setDateValue(value);
   };
+  const handleStartTimeChange = (start_time) => {
+    console.log('time', start_time.toString().slice(16, 21));
+    const edittime = start_time.toString().slice(16, 21);
+    setSelectedStartTime(start_time);
+    setStartTime(edittime);
+    console.log(startTime, '===========>>>>');
+  };
 
   const handleChange = (e) => {
     // console.log('event::', e.target.value);
@@ -149,8 +159,8 @@ const EditAppointment = ({
     axiosInstance
       .put(`academic/${id}/${endpoints.Appointments.updateAppointment}`, {
         message: editdata.message,
-        appointment_time: editdata.appointment_time,
-        appointment_date: editdata.appointment_date,
+        appointment_time: moment(selectedStartTime).format('hh:mm'),
+        appointment_date: dateValue,
         booking_mode: editdata.booking_mode,
         role: editdata.role,
       })
@@ -252,7 +262,7 @@ const EditAppointment = ({
                 variant='dialog'
                 format='YYYY-MM-DD'
                 margin='none'
-                className='button'
+                className='dropdownIcon'
                 id='date-picker'
                 label='Appointment Date'
                 minDate={new Date()}
@@ -272,7 +282,7 @@ const EditAppointment = ({
           </Grid>
 
           <Grid item xs={12} sm={5} md={3} lg={2}>
-            <TextField
+            {/* <TextField
               name='appointment_time'
               label='Appointment Time'
               InputLabelProps={{ shrink: true, required: true }}
@@ -286,7 +296,27 @@ const EditAppointment = ({
               onChange={handleChange}
               style={{ marginTop: 25 }}
               defaultValue={time}
-            />
+            /> */}
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <KeyboardTimePicker
+                size='small'
+                // style={{ width: '50%', marginTop: '-5%' }}
+                // className='arrow conte'
+                className='dropdownIcon'
+                variant='dialog'
+                id='time-picker'
+                label='Appointment Time'
+                inputVariant='outlined'
+                name='start_time'
+                value={selectedStartTime}
+                onChange={handleStartTimeChange}
+                style={{ width: '100%', marginTop: '9%' }}
+                KeyboardButtonProps={{
+                  'aria-label': 'change time',
+                }}
+                defaultValue={time}
+              />
+            </MuiPickersUtilsProvider>
           </Grid>
           <Grid item xs={12}>
             <Divider />

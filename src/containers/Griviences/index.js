@@ -23,16 +23,17 @@ const GravienceHome = () => {
   const setMobileView = useMediaQuery('(min-width:800px)');
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [gravienceList, setGravienceList] = useState([]);
-  const [acadamicYearID, setAcadamicYear] = useState(1);
-  const [gradeID, setGradeID] = useState(1);
-  const [sectionID, setSectionID] = useState(1);
-  const [branchID, setBranchID] = useState(1);
+  const [acadamicYearID, setAcadamicYear] = useState();
+  const [gradeID, setGradeID] = useState();
+  const [sectionID, setSectionID] = useState();
+  const [branchID, setBranchID] = useState();
   const [academicYear, setAcadamicYearName] = useState();
   const [gradeName, setGradeName] = useState();
   const [branchName, setBranchName] = useState();
   const [sectionName, setSectionName] = useState();
   const [openGrievanceReportForm, setOpenGrievanceReportForm] = useState(false);
   const [flag, setFlag] = useState(false);
+  const [grievanceTypeID, setGrievanceTypeID] = useState();
 
   const handleOpenForm = () => {
     setOpenGrievanceReportForm(true);
@@ -40,32 +41,6 @@ const GravienceHome = () => {
 
   const handleCloseForm = () => {
     setOpenGrievanceReportForm(false);
-  };
-
-  const getGrivienceData = async () => {
-    await axiosInstance
-      .get(
-        endpoints.grievances.listTickets +
-          `?academic_year_id=${1}&branch_id=${1}&grievance_type_id${1}`,
-        {
-          // .get(endpoints.grievances.listTickets, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((result) => {
-        console.log(result, 'list data');
-        if (result.status == 200) {
-          console.log(result, 'list-tickets ddata');
-          setGravienceList(result.data.data.results);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
   };
 
   const handleDownload = async () => {
@@ -87,32 +62,83 @@ const GravienceHome = () => {
       });
   };
   const handlePassData = (
-    acadamicYear_ID,
-    grade_ID,
-    branch_ID,
-    section_ID,
-    academic_Year,
-    grade_Name,
-    branch_Name,
-    section_Name,
+    acadamicYearID,
+    gevienceTypeID,
+    branchID,
+    gradeID,
+    sectionID,
+    temp,
+    // acadamicYear_ID,
+    // grade_ID,
+    // branch_ID,
+    // section_ID,
+    // academic_Year,
+    // grade_Name,
+    // branch_Name,
+    // section_Name,
     open_Dialog
   ) => {
-    setAcadamicYear(acadamicYear_ID);
-    setGradeID(grade_ID);
-    setBranchID(branch_ID);
-    setSectionID(section_ID);
-    setAcadamicYearName(academic_Year);
-    setGradeName(grade_Name);
-    setBranchName(branch_Name);
-    setSectionName(section_Name);
-    if (open_Dialog && acadamicYear_ID && branch_ID && grade_ID && section_ID) {
+    console.log(
+      acadamicYearID[0],
+      gevienceTypeID[0],
+      branchID[0],
+      gradeID[0],
+      sectionID[0],
+      temp,
+      '#############################'
+    );
+    setAcadamicYear(acadamicYearID[0]);
+    setGradeID(gradeID[0]);
+    setBranchID(branchID[0]);
+    setSectionID(sectionID[0]);
+    setGrievanceTypeID(temp);
+    // setAcadamicYearName(academic_Year);
+    // setGradeName(grade_Name);
+    // setBranchName(branch_Name);
+    // setSectionName(section_Name);
+    if (open_Dialog && acadamicYearID && branchID && gradeID && sectionID && temp) {
       handleOpenForm();
     }
   };
 
-  useEffect(() => {
-    // getGrivienceData();
-  }, []);
+  useEffect(() => {}, []);
+  const getGrivienceData = async (
+    acadamicYearID,
+    gevienceTypeID,
+    branchID,
+    gradeID,
+    sectionID,
+    temp
+  ) => {
+    await axiosInstance
+      // .get(
+      //   endpoints.grievances.listTickets +
+      //     // `?academic_year_id=${36}&branch_id=${75}&grievance_type_id${1}`,
+      //     `?academic_year_id=${1}&branch_id=${1}&grievance_type_id${1}`,
+      //   {
+      //     // .get(endpoints.grievances.listTickets, {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // )
+
+      .get(
+        `${endpoints.grievances.getGrivienceList}?academic_year=${acadamicYearID[0]}&branch=${branchID[0]}&grade=${gradeID[0]}&section=${sectionID[0]}&grievance_type=${temp}`
+      )
+      .then((result) => {
+        console.log(result, 'list data');
+        if (result.status == 200) {
+          console.log(result, 'list-tickets ddata');
+          setGravienceList(result.data.data.results);
+        } else {
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+  };
 
   return (
     <Layout>

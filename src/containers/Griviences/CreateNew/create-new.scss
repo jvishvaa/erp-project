@@ -6,13 +6,14 @@
 }
 
 .griviences-create-form {
-  padding: 4%;
+  padding: 1%;
   .field-label-container {
-    margin-bottom: 4%;
+    margin-bottom: 1%;
     width: 20%;
   }
   .editor-container {
-    margin-top: 5%;
+    margin-left: 1%;
+    padding: 2%;
   }
   .text-color {
     color: #014b7e;
@@ -25,11 +26,12 @@
   }
   .drag-and-drop-images {
     display: flex;
-    justify-content: space-between;
+
+    // justify-content: space-between;
     width: 59%;
   }
   .drag-drop-griviences {
-    margin-top: 23px;
+    // margin-top: 23px;
   }
   .drag-and-drop {
     width: 38%;

@@ -157,7 +157,7 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
     e.preventDefault();
     setLoading(true);
     // console.log('subarao');
-    // console.log('data', data);
+    console.log('data', data);
     axiosInstance
       .post(
         endpoints.Appointments.bookAppointment,
@@ -166,8 +166,9 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
           role: rolename,
           booking_mode: data.booking_mode,
 
-          appointment_date: data.appointment_date,
-          appointment_time: data.appointment_time,
+          appointment_date: dateValue,
+
+          appointment_time: startTime,
           message: data.message,
           branch: JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0],
         }
@@ -254,7 +255,6 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
                 className='dropdownIcon'
                 value={dateValue}
                 onChange={handleDateChange}
-                // className='dropdown'
                 style={{ width: '100%', marginTop: '9%' }}
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
@@ -366,6 +366,7 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
             // value={values.amount}
             // onChange={handleChange('amount')}
             fullWidth
+            helperText='Allowed 20 Charecters only'
             labelWidth={200}
             name='message'
             required

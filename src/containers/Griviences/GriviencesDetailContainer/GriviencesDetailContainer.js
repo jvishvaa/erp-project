@@ -60,6 +60,8 @@ const GriviencesDetailContainer = (props) => {
   const [loading, setLoading] = useState(false);
   const [replyDescription, setReplyDescription] = useState('');
   const reply_list = props.list_tickets.reply;
+
+  const [replyList, setReplyList] = useState(reply_list === {} ? false : true);
   const date = moment(props.list_tickets.createdAt).format('dddd, MMMM D, YYYY');
   const time = moment(props.list_tickets.createdAt).format('LT');
   const [flag, setFlag] = useState(false);
@@ -119,19 +121,19 @@ const GriviencesDetailContainer = (props) => {
         <div className={style.flex_row} style={{ alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div>
-              <Avatar className={style.purple} src={props.list_tickets.user.profile} />
+              <Avatar className={style.purple} src={props?.list_tickets?.user?.profile} />
             </div>
             <div>
               <Grid container style={{ padding: '30px' }}>
                 <Grid item sm={12}>
                   <h5 className={style.text_color} style={{ fontSize: '20px' }}>
-                    {props.list_tickets.title}
+                    {props?.list_tickets?.title}
                   </h5>
                 </Grid>
                 <Grid item sm={12}>
                   <label className={style.text_color}>
                     {' '}
-                    {props.list_tickets.description}
+                    {props?.list_tickets?.description}
                   </label>
                 </Grid>
               </Grid>
@@ -139,10 +141,12 @@ const GriviencesDetailContainer = (props) => {
 
             <Grid sm={3}>
               <div className={style.flex_column}>
-                <label className={style.text_color}>{props.list_tickets.user.name}</label>
-                {props.list_tickets.user.role != undefined ? (
+                <label className={style.text_color}>
+                  {props?.list_tickets?.user?.name}
+                </label>
+                {props?.list_tickets?.user?.role != undefined ? (
                   <label className={style.text_color}>
-                    {props.list_tickets.user.role.role_name}
+                    {props?.list_tickets?.user?.role?.role_name}
                   </label>
                 ) : null}
               </div>
@@ -161,36 +165,40 @@ const GriviencesDetailContainer = (props) => {
           </Grid>
         </div>
 
-        {!reply &&
-          (reply_list != '' && reply_list != null
-            ? reply_list &&
-              reply_list.slice(0, 1).map((Replys) => (
-                <div
-                  style={{
-                    margin: '10px',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '10px',
-                  }}
-                >
-                  <Reply Replys={Replys} />
-                </div>
-              ))
-            : null)}
-        {reply &&
-          (reply_list != '' && reply_list != null
-            ? reply_list &&
-              reply_list.map((Replys) => (
-                <div
-                  style={{
-                    margin: '10px',
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '10px',
-                  }}
-                >
-                  <Reply Replys={Replys} />
-                </div>
-              ))
-            : null)}
+        {!replyList ? (
+          <div>
+            {!reply &&
+              (reply_list != '' && reply_list != null
+                ? reply_list &&
+                  reply_list?.slice(0, 1)?.map((Replys) => (
+                    <div
+                      style={{
+                        margin: '10px',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '10px',
+                      }}
+                    >
+                      <Reply Replys={Replys} />
+                    </div>
+                  ))
+                : null)}
+            {reply &&
+              (reply_list != '' && reply_list != null
+                ? reply_list &&
+                  reply_list?.map((Replys) => (
+                    <div
+                      style={{
+                        margin: '10px',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '10px',
+                      }}
+                    >
+                      <Reply Replys={Replys} />
+                    </div>
+                  ))
+                : null)}
+          </div>
+        ) : null}
 
         <Grid container style={{ marginBottom: '10px' }}>
           <Grid item sm />
