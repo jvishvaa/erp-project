@@ -896,10 +896,14 @@ const JoinClass = (props) => {
             </IconButton>
           </Tooltip>
           <Grid item xs={3}>
-            <IconButton color='primary' onClick={() => history.push({
-                  pathname: `/erp-online-class/class-work/${fullData.online_class.id}/${fullData.id}`
+            <IconButton
+              color='primary'
+              onClick={() =>
+                history.push({
+                  pathname: `/erp-online-class/class-work/${fullData.online_class.id}/${fullData.id}`,
                 })
-              }>
+              }
+            >
               <ClassIcon />
             </IconButton>
           </Grid>
@@ -1136,6 +1140,10 @@ const DetailCardView = ({
   }, [fullData]);
   */
   useEffect(() => {
+    handleCallaData();
+  }, [fullData, handleClose]);
+
+  const handleCallaData = () => {
     let detailsURL =
       window.location.pathname === '/erp-online-class-student-view'
         ? `erp_user/${fullData && fullData.id}/student-oc-details/`
@@ -1149,7 +1157,7 @@ const DetailCardView = ({
         })
         .catch((error) => setAlert('error', error.message));
     }
-  }, [fullData, handleClose]);
+  };
 
   const handleCloseData = () => {
     setAnchorEl(null);
