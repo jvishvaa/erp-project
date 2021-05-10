@@ -15,19 +15,19 @@ const TotalStudentBar = ({ fullData }) => {
             </Grid>
             <Grid item md={11} xs={12} className='totalStudentStrenghtLabel'>
               <span>Total Strength -&nbsp;</span>
-              <span>
+              <span className="totalbold">
                 &nbsp;
                 {(fullData && fullData.total_strength) || '0'}
                 &nbsp;
               </span>
               <span>&nbsp;/&nbsp;</span>
-              <span>
+              <span className="totalbold1">
                 &nbsp;
                 {(fullData && fullData.total_active) || '0'}
                 &nbsp;
               </span>
               <span>&nbsp;Active&nbsp;</span>
-              <span>
+              <span className="totalboldspace">
                 &nbsp;
                 {(fullData && fullData.new_admissions) || ''}
                 &nbsp;

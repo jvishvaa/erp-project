@@ -17,7 +17,7 @@ import Layout from '../Layout';
 
 const StudentStrength = ({ history }) => {
   const [acadminYearList, setAcadminYearList] = useState([]);
-  const [selectedAcadmic, setSelectedAcadmic] = useState('');
+  // const [selectedAcademicYear, setselectedAcademicYear] = useState('');
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState('');
   const { setAlert } = useContext(AlertNotificationContext);
@@ -33,23 +33,23 @@ const moduleId=178;
     setHRef([
       {
         csv: `${endpoints.studentListApis.downloadExcelAllstudents}?academic_year_id=${
-          selectedAcadmic && selectedAcadmic.id
+          selectedAcademicYear && selectedAcademicYear.id
         }&export_type=csv`,
       },
       {
         csv: `${endpoints.studentListApis.downloadBranchWiseStudent}?academic_year_id=${
-          selectedAcadmic && selectedAcadmic.id
+          selectedAcademicYear && selectedAcademicYear.id
         }&branch_id=${selectedBranch && selectedBranch.id}
           &export_type=csv`,
       },
       // {
       //   csv: `https://erpnew.letseduvate.com/qbox/academic/all_branch_strength_excel_data/?academic_year_id=${
-      //     selectedAcadmic && selectedAcadmic.id
+      //     selectedAcademicYear && selectedAcademicYear.id
       //   }&export_type=csv`,
       // },
       // {
       //   csv: `https://erpnew.letseduvate.com/qbox/academic/branch_strength_excel_data/?academic_year_id=${
-      //     selectedAcadmic && selectedAcadmic.id
+      //     selectedAcademicYear && selectedAcademicYear.id
       //   }&branch_id=${selectedBranch && selectedBranch.id}
       //     &export_type=csv`,
       // },
@@ -177,7 +177,7 @@ const moduleId=178;
                   Dashboard
                 </button>
                 <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                <span className='SignatureNavigationLinks'>Student Strength</span>
+                <span className='SignatureNavigationLinks'>School Strength</span>
               </Grid>
             </Grid>
           </Grid>
@@ -187,10 +187,10 @@ const moduleId=178;
                 {/* <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
-                  onChange={(event, value) => setSelectedAcadmic(value)}
+                  onChange={(event, value) => setselectedAcademicYear(value)}
                   id='academic-year'
                   className='dropdownIcon'
-                  value={selectedAcadmic}
+                  value={selectedAcademicYear}
                   options={acadminYearList}
                   getOptionLabel={(option) => option?.session_year}
                   filterSelectedOptions
@@ -293,7 +293,7 @@ const moduleId=178;
               <Grid item md={1} xs={12}>
                 <Button
                   variant='contained'
-                  size='small'
+                  size='medium'
                   fullWidth
                   className='studentStrenghtFilterButton'
                   onClick={() => handleClearFilter()}
@@ -304,8 +304,9 @@ const moduleId=178;
               <Grid item md={1} xs={12}>
                 <Button
                   variant='contained'
-                  size='small'
+                  size='medium'
                   color='primary'
+                
                   fullWidth
                   onClick={() => handleFilter()}
                   className='studentStrenghtFilterButton'
@@ -313,11 +314,11 @@ const moduleId=178;
                   FILTER
                 </Button>
               </Grid>
-              <Grid item md={6} />
-              {selectedAcadmic && (
+              <Grid item md={4} />
+              {selectedAcademicYear && (
                 <Grid item md={2} xs={12}>
                   <Button
-                    size='small'
+                    size='medium'
                     href={hRef && hRef[0] && hRef[0].csv}
                     fullWidth
                     className='studentStrenghtDownloadButton'
@@ -326,11 +327,11 @@ const moduleId=178;
                   </Button>
                 </Grid>
               )}
-              {selectedAcadmic && selectedBranch && (
+              {selectedAcademicYear && selectedBranch && (
                 <Grid item md={2} xs={12}>
                   <Button
                     variant='contained'
-                    size='small'
+                    size='medium'
                     color='primary'
                     fullWidth
                     href={hRef && hRef[1] && hRef[1].csv}
@@ -384,7 +385,7 @@ const moduleId=178;
             {selectedCard && (
               <Grid item md={6} xs={12} className='studentStrenghtBody2'>
                 <TotalStudentWiseDetails
-                  year={(selectedAcadmic && selectedAcadmic.id) || 0}
+                  year={(selectedAcademicYear && selectedAcademicYear.id) || 0}
                   branch={(selectedBranch && selectedBranch.id) || 0}
                   grade={selectedCard || 0}
                   hadleClearGrade={setSelectedCard}
