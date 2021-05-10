@@ -572,9 +572,8 @@ const CreateClassForm = (props) => {
       ? selectedDate.toISOString().split('T')[0]
       : selectedDate
       } ${getFormatedTime(selectedTime)}`;
-    const coHostEmails = coHosts.map((coHost) => coHost.email);
-    const tutorEmails = [tutorEmail.email, ...coHostEmails];
-
+    const coHostEmails = coHosts.map((coHost) => coHost?.tutor_id);
+    // const tutorEmails = [tutorEmail.id, ...coHostEmails];
     let request = {};
     request['user_id'] = userId;
     request['title'] = title;
@@ -585,7 +584,8 @@ const CreateClassForm = (props) => {
       request['course'] = courseId;
     }
     request['tutor_id'] = tutorEmail.tutor_id;
-    request['tutor_emails'] = tutorEmails.join(',');
+    // request['tutor_emails'] = tutorEmails.join(',');
+    request['tutor_emails'] = [...coHostEmails];
     request['role'] = 'Student';
     request['start_time'] = startTime;
     if (weeks > 0) request['no_of_week'] = Number(weeks);

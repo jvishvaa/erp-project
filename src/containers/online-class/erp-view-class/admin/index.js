@@ -123,6 +123,7 @@ const ErpAdminViewClass = ({ history }) => {
   //useEffect to get data on back button click
   useEffect(() => {
     if (moduleId) {
+      // localStorage.removeItem('viewMoreData')
       const {
         classtype = {},
         academic = {},
@@ -136,6 +137,16 @@ const ErpAdminViewClass = ({ history }) => {
 
       if (classtype?.id >= 0) {
         setSelectedClassType(classtype);
+        if (window.location.pathname === '/erp-online-class-student-view') {
+          callApi(
+            `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+              studentDetails &&
+              studentDetails.role_details &&
+              studentDetails.role_details.erp_user_id
+            }&page_number=${page}&page_size=${limit}&class_type=${classtype?.id}`,
+            'filter'
+          );
+        }
       }
       if (date?.length) {
         setDateRangeTechPer(date);
@@ -212,7 +223,7 @@ const ErpAdminViewClass = ({ history }) => {
         }
       }
     }
-  }, [moduleId]);
+  }, [moduleId, window.location.pathname]);
 
   function callApi(api, key) {
     setLoading(true);
@@ -246,7 +257,7 @@ const ErpAdminViewClass = ({ history }) => {
             setFilterFullData(result?.data || {});
             setFilterList(result?.data?.data || {});
             setSelectedViewMore('');
-            const viewData = JSON.parse(localStorage.getItem('viewMoreData')) || {};
+            const viewData = JSON.parse(localStorage.getItem('viewMoreData')) || '';
             setSelectedViewMore(viewData);
           }
           setLoading(false);
@@ -267,6 +278,7 @@ const ErpAdminViewClass = ({ history }) => {
 
   function handleClose(data) {
     setSelectedViewMore('');
+    localStorage.removeItem('viewMoreData');
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     if (data === 'success') {
       setPage(1);
@@ -543,6 +555,14 @@ const ErpAdminViewClass = ({ history }) => {
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
+                    if (window.location.pathname === '/erp-online-class-student-view') {
+                      localStorage.setItem(
+                        'filterData',
+                        JSON.stringify({
+                          classtype: value,
+                        })
+                      );
+                    }
                     localStorage.removeItem('viewMoreData');
                     setSelectedClassType(value);
                     setSelectedGrade([]);

@@ -28,7 +28,7 @@ const olv = {
     BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
   },
   apiGateway: {
-    baseURL: `https://orchids.letseduvate.com/qbox`,
+    baseURL: `https://dev.olvorchidnaigaon.letseduvate.com/qbox`,
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
   },
@@ -48,7 +48,7 @@ const prod = {
 const PROD = 'PROD';
 const DEV = 'DEV';
 const env = { [PROD]: prod, [DEV]: dev };
-const config = env[process.env.REACT_APP_UI_ENV] || local;
+const config = env[process.env.REACT_APP_UI_ENV] || olv;
 
 export default {
   // Add common config values here
