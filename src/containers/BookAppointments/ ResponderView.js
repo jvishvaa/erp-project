@@ -270,7 +270,7 @@ const ResponderView = () => {
             // style={{ backgroundColor: 'gray' }}
           >
             <Grid container spacing={2}>
-              <Grid 
+              <Grid
                 item
                 xs={12}
                 md={4}
@@ -316,7 +316,7 @@ const ResponderView = () => {
                     RequestedDate:
                   </Box>{' '}
                   <Typography className={classes.display}>
-                    {/* {item.appointment_date} */}
+                    {item.appointment_date}
                   </Typography>
                 </Typography>
                 <Typography variant='subtitle1'>
@@ -329,7 +329,7 @@ const ResponderView = () => {
                     RequestedTime:
                   </Box>
                   <Typography className={classes.display}>
-                    {/* {item.appointment_time ? item.appointment_time.slice(0, 5) : ''} */}
+                    {item.appointment_time ? item.appointment_time.slice(0, 5) : ''}
                   </Typography>
                 </Typography>
               </Grid>
