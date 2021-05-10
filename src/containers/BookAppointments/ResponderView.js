@@ -35,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
   display: {
     display: 'inline-block',
   },
-
 }));
 
 const ResponderView = () => {
@@ -265,8 +264,8 @@ const ResponderView = () => {
           <CommonBreadcrumbs componentName='ResponderView' />
         </Grid>
         <form>
-          <Grid container direction='row' spacing={2} style={{width: '100%'}}>
-            <Grid item xs={10} sm={5} md={3}className='responderV' lg={2}>
+          <Grid container direction='row' spacing={2} style={{ width: '100%' }}>
+            <Grid item xs={10} sm={5} md={3} className='responderV' lg={2}>
               <Autocomplete
                 id='size-small-standard'
                 size='small'
@@ -350,7 +349,7 @@ const ResponderView = () => {
                 variant='contained'
                 type='submit'
                 color='primary'
-                style={{ marginTop: '15%', marginLeft: '20%' }}
+                style={{ marginTop: '16%', marginLeft: '20%' }}
                 onClick={handleFilter}
               >
                 Filter
@@ -358,7 +357,7 @@ const ResponderView = () => {
             </Grid>
           </Grid>
         </form>
-        <div className='paginateData'>
+        {/* <div className='paginateData'>
           <TablePagination
             component='div'
             className='customPagination'
@@ -368,7 +367,7 @@ const ResponderView = () => {
             onChangePage={handleChangePage}
             rowsPerPageOptions={false}
           />
-        </div>
+        </div> */}
         {appointmentsList.map((item, index) => {
           return (
             <form>
@@ -394,11 +393,9 @@ const ResponderView = () => {
                         className={classes.display}
                         style={{ marginLeft: 15 }}
                       >
-                        StudentERP:
+                        Student ERP:
                       </Box>{' '}
-                      <Typography className={classes.display}>
-                        {item.student?.id}
-                      </Typography>
+                      <Typography className={classes.display}>{item.role?.id}</Typography>
                     </Typography>
                     <Typography gutterBottom variant='subtitle1'>
                       <Box
@@ -407,10 +404,10 @@ const ResponderView = () => {
                         className={classes.display}
                         style={{ marginLeft: 15 }}
                       >
-                        StudentName:
+                        Student Name:
                       </Box>
                       <Typography className={classes.display}>
-                        {item.student?.username}
+                        {item.role?.role_name}
                       </Typography>
                     </Typography>
 
@@ -421,7 +418,7 @@ const ResponderView = () => {
                         className={classes.display}
                         style={{ marginLeft: 15 }}
                       >
-                        RequestedDate:
+                        Requested Date:
                       </Box>{' '}
                       <Typography className={classes.display}>
                         {item.appointment_date}
@@ -434,7 +431,7 @@ const ResponderView = () => {
                         className={classes.display}
                         style={{ marginLeft: 15 }}
                       >
-                        RequestedTime:
+                        Requested Time:
                       </Box>
                       <Typography className={classes.display}>
                         {item.appointment_time ? item.appointment_time.slice(0, 5) : ''}
@@ -451,7 +448,7 @@ const ResponderView = () => {
                           className={classes.display}
                           style={{ marginTop: 40 }}
                         >
-                          ScheduleDate:
+                          Schedule Date:
                         </Box>
 
                         {item.schedule_date ||
@@ -481,7 +478,7 @@ const ResponderView = () => {
                           m={1}
                           className={classes.display}
                         >
-                          ScheduleTime:
+                          Schedule Time:
                         </Box>
                         {item.schedule_time ||
                         item.appointment_status === 'accept' ||
@@ -568,7 +565,7 @@ const ResponderView = () => {
                   <Grid item xs={12} md={4} style={{ marginTop: 40 }}>
                     <Typography variant='subtitle1' gutterBottom>
                       <Box fontWeight='fontWeightBold' m={1} className={classes.display}>
-                        AppointmentMode:{' '}
+                        Appointment Mode:{' '}
                       </Box>
                       <Typography className={classes.display}>
                         {item.booking_mode}
@@ -576,7 +573,7 @@ const ResponderView = () => {
                     </Typography>
                     <Typography variant='subtitle1'>
                       <Box fontWeight='fontWeightBold' m={1} className={classes.display}>
-                        AppointmentHost:
+                        Appointment Host:
                       </Box>{' '}
                       <Typography className={classes.display}>
                         {item.role?.role_name}
@@ -659,9 +656,9 @@ const ResponderView = () => {
                               id='standard-basic'
                               label='response '
                               name='response'
-                              helperText='Allowed 100 Charecters only'
+                              helperText='Allowed 20 Charecters only'
                               onChange={handleChange}
-                              inputProps={{ maxLength: 100 }}
+                              inputProps={{ maxLength: 20 }}
                               style={{ marginLeft: 15 }}
                             />
                           </Grid>
