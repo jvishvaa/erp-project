@@ -55,7 +55,9 @@ const ResponderView = () => {
   const [totalCount, setTotalCount] = useState(0);
   const { setAlert } = useContext(AlertNotificationContext);
   const [opened, setOpened] = useState(false);
-  const [moduleId, setModuleId] = useState('');
+  const moduleId = 175;
+  const [usrName, setUsrName] = useState('');
+  const [userId, setUSerId] = useState('');
 
   const getAppointments = () => {
     if (searchBranch) {
@@ -256,6 +258,9 @@ const ResponderView = () => {
     //     setTotalCount(res.data.data.count);
     //   });
   };
+  // let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
+  // console.log(userName.first_name, 'userName');
+  // console.log(userName.erp, 'Erp ID');
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -395,7 +400,9 @@ const ResponderView = () => {
                       >
                         Student ERP:
                       </Box>{' '}
-                      <Typography className={classes.display}>{item.role?.id}</Typography>
+                      <Typography className={classes.display}>
+                        {item.student?.username}
+                      </Typography>
                     </Typography>
                     <Typography gutterBottom variant='subtitle1'>
                       <Box
@@ -407,7 +414,7 @@ const ResponderView = () => {
                         Student Name:
                       </Box>
                       <Typography className={classes.display}>
-                        {item.role?.role_name}
+                        {item.student?.first_name}
                       </Typography>
                     </Typography>
 
@@ -452,8 +459,8 @@ const ResponderView = () => {
                         </Box>
 
                         {item.schedule_date ||
-                        item.appointment_status === 'accept' ||
-                        item.appointment_status === 'decline' ? (
+                        item.appointment_status === 'Accepted' ||
+                        item.appointment_status === 'Declined' ? (
                           <Typography className={classes.display}>
                             {item.schedule_date
                               ? item.schedule_date
@@ -481,8 +488,8 @@ const ResponderView = () => {
                           Schedule Time:
                         </Box>
                         {item.schedule_time ||
-                        item.appointment_status === 'accept' ||
-                        item.appointment_status === 'decline' ? (
+                        item.appointment_status === 'Accepted' ||
+                        item.appointment_status === 'Declined' ? (
                           <Typography className={classes.display}>
                             {item.schedule_time
                               ? item.schedule_time
@@ -513,8 +520,8 @@ const ResponderView = () => {
                       </Typography>
                       <Grid container spacing={1} direction='column'>
                         <Grid md={4} xs={12}>
-                          {(item.response && item.appointment_status === 'accept') ||
-                          item.appointment_status === 'decline' ||
+                          {(item.response && item.appointment_status === 'Accepted') ||
+                          item.appointment_status === 'Declined' ||
                           item.schedule_date ? (
                             <Tooltip
                               title='Change Schedule Date and Time'
@@ -586,8 +593,8 @@ const ResponderView = () => {
                       <Typography className={classes.display}>{item.message}</Typography>
                     </Typography>
 
-                    {(item.response && item.appointment_status === 'accept') ||
-                    item.appointment_status === 'decline' ? (
+                    {(item.response && item.appointment_status === 'Accepted') ||
+                    item.appointment_status === 'Declined' ? (
                       <Grid container spacing={1} direction='column'>
                         <form>
                           {/* <Grid md={9} xs={12}>

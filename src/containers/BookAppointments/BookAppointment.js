@@ -96,6 +96,7 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
   const [rolename, setRolename] = useState('');
   const [appointmentStatus, setAppointmentstatus] = useState(1);
   const history = useHistory();
+  const CHARACTER_LIMIT = 50;
 
   // console.log('userbranch:', localStorage.getItem('userDetails'));
   useEffect(() => {
@@ -358,20 +359,42 @@ const BookAppointment = ({ setLoading, handleGoBack }) => {
           onChange={handleChange}
           required
         >
-          <InputLabel htmlFor='outlined-adornment-amount' required>
+          <InputLabel htmlFor='outlined-textarea' required>
             Reason for Appointment
           </InputLabel>
           <OutlinedInput
-            id='outlined-adornment-amount'
+            id='outlined-textarea'
             // value={values.amount}
             // onChange={handleChange('amount')}
             fullWidth
-            helperText='Allowed 20 Charecters only'
+            placeholder='Allowed upto 50 Charecters '
+            helperText='Allowed 50 Charecters only'
             labelWidth={200}
             name='message'
+            multiline
             required
             style={{ height: 100 }}
+            inputProps={{
+              maxlength: CHARACTER_LIMIT,
+            }}
           />
+          {/* <TextField
+            id='outlined-textarea'
+            label=' Reason for Appointment'
+            placeholder='Allowed 20 Charecters only'
+            multiline
+            margin='normal'
+            onChange={handleChange}
+            fullWidth
+            labelWidth={100}
+            name='message'
+            style={{ height: 100 }}
+            // defaultValue={message}
+            variant='outlined'
+            inputProps={{
+              maxlength: CHARACTER_LIMIT,
+            }}
+          /> */}
         </FormControl>
       </Grid>
       <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '10px' }}>
