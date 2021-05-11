@@ -101,6 +101,7 @@ const EditAppointment = ({
   const [roles, setRole] = useState([]);
   const [rolename, setRolename] = useState('');
   const [editdata, setEditData] = useState();
+  const CHARACTER_LIMIT = 50;
 
   useEffect(() => {
     // axiosInstance.get(endpoints.communication.roles).then((response) => {
@@ -113,7 +114,7 @@ const EditAppointment = ({
       .get(`${endpoints.communicationRoles.roles}`)
       .then((res) => {
         setLoading(false);
-        // console.log(res, 'checking data');
+        console.log(res.data.data[1].role_name, 'checking data');
         setRole(res.data.data);
         // setAlert('success', 'roles fecthed successfully');
       })
@@ -145,7 +146,7 @@ const EditAppointment = ({
   };
 
   const handleChange = (e) => {
-    // console.log('event::', e.target.value);
+    console.log('event:::::::::', e.target.value);
     setEditData({ ...editdata, [e.target.name]: e.target.value });
   };
 
@@ -227,12 +228,13 @@ const EditAppointment = ({
 
                 onChange={handleChange}
                 labelWidth={170}
-                defaultValue={role?.id}
+                defaultValue={role}
+                value={role}
               >
                 {roles &&
                   roles.map((role) => {
                     return (
-                      <MenuItem value={role.id} key={role.id}>
+                      <MenuItem value={role.role_name} key={role.id}>
                         {role.role_name}
                       </MenuItem>
                     );
@@ -363,12 +365,36 @@ const EditAppointment = ({
           <OutlinedInput
             id='outlined-adornment-amount'
             onChange={handleChange}
+            placeholder='Allowed upto 50 Charecters'
+            helperText='Allowed 50 Charecters only'
             fullWidth
             labelWidth={200}
+            multiline
             name='message'
             style={{ height: 100 }}
             defaultValue={message}
+            inputProps={{
+              maxlength: CHARACTER_LIMIT,
+            }}
           />
+          {/* <TextField
+            id='outlined-textarea'
+            label=' Reason for Appointment'
+            // placeholder="Placeholder"
+            multiline
+            // className={classes.textField}
+            margin='normal'
+            onChange={handleChange}
+            fullWidth
+            labelWidth={100}
+            name='message'
+            style={{ height: 100 }}
+            defaultValue={message}
+            variant='outlined'
+            inputProps={{
+              maxlength: CHARACTER_LIMIT,
+            }}
+          /> */}
         </FormControl>
       </Grid>
       {/*  */}
