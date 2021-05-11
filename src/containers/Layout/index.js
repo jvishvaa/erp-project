@@ -983,6 +983,14 @@ const Layout = ({ children, history }) => {
         history.push('/contact-us');
         break;
       }
+      case 'Manage Orchadio': {
+        history.push('/orchadio/manage-orchadio');
+        break;
+      }
+      case 'Student Orchadio': {
+        history.push('/orchadio/view-orchadio');
+        break;
+      }
       default:
         break;
     }

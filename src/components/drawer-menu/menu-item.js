@@ -88,6 +88,14 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Create Test', Path: '/assesment' },
     { name: 'Take Test', Path: '/assessment' },
     { name: 'Student Strength', Path: '/student-strength' },
+    {
+      name: 'Manage Orchadio',
+      Path: '/orchadio/manage-orchadio',
+    },
+    {
+      name: 'Student Orchadio',
+      Path: '/orchadio/view-orchadio',
+    },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
