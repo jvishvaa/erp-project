@@ -1329,11 +1329,11 @@ const DetailCardView = ({
         selectedValue={selectedValue}
         open={openPopup}
         onClose={handleClosePopup}
-        title={fullData.online_class.title}
-        resourceId={fullData.id}
-        onlineClassId={fullData.online_class.id}
-        startDate={fullData.online_class.start_time}
-        endDate={fullData.online_class.end_time}
+        title={fullData?.online_class?.title}
+        resourceId={fullData?.id}
+        onlineClassId={fullData?.online_class?.id}
+        startDate={fullData?.online_class?.start_time}
+        endDate={fullData?.online_class?.end_time}
       />
       {loading && <Loader />}
     </>
