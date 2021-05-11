@@ -46,12 +46,13 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Paginations from './Paginations';
+
 import './publications.scss';
 import { Pagination } from '@material-ui/lab';
 import { DataGrid } from '@material-ui/data-grid';
 import AddPublication from './AddPublication';
 import PublicationPreview from './PublicationPreview';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -176,8 +177,6 @@ const Publications = (props) => {
   const [branchGet, setBranchGet] = useState();
   const [data, setData] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [postsPerPage] = React.useState(8);
   const [Filter, setFilter] = useState(true);
   //  const [counter, setCounter] = useState(3);
 
@@ -213,7 +212,19 @@ const Publications = (props) => {
   const [pub_author_name, setPub_author_name] = useState();
   const [pub_zone, setPub_zone] = useState();
   const [open1, setOpen1] = React.useState(false);
+  const [subjectChanger, setSubjectChanger] = useState('');
 
+  //pagination
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const handlePagination = (event, page) => {
+    setPage(page);
+    console.log('pagessssssss', page);
+
+    handleSubjectID(subjectChanger, page);
+    handleAlldata(page);
+    console.log('The subject value:', subjectChanger, 'pages:', page);
+  };
   const handleClickOpen1 = () => {
     setOpen1(true);
   };
@@ -285,23 +296,38 @@ const Publications = (props) => {
     }, 450);
   }, [goBackFlag]);
 
-  const handleSubjectID = (value) => {
+  const handleSubjectID = (value, page) => {
+    setSubjectChanger(value);
     console.log('subjef6tID:', value);
-    handleDraftSubjectId(value);
-    handleReviewSubjectId(value);
+    handleDraftSubjectId(value, page);
+    handleReviewSubjectId(value, page);
+
     axiosInstance
-      .get(`${endpoints.publish.ebook}?subject_id=${value}&status_post=Published`)
+      .get(
+        `${
+          endpoints.publish.ebook
+        }?subject_id=${value}&status_post=Published&page_number=${page}&page_size=${8}`
+      )
       .then((res) => {
-        console.log('getting', res.data.data);
+        console.log('getting', res.data.data.length);
+
         setIndividualData(res.data.data);
       });
   };
-  const handleDraftSubjectId = (value) => {
+
+  const handleDraftSubjectId = (value, pageNumber) => {
     axiosInstance
-      .get(`${endpoints.publish.ebook}?subject_id=${value}&status_post=Draft`)
+      .get(
+        `${
+          endpoints.publish.ebook
+        }?subject_id=${value}&status_post=Draft&page_number=${pageNumber}&page_size=${8}`
+      )
       .then((res) => {
         console.log('in axios');
-        console.log('response1:', res.data.data);
+        console.log('pages', pageNumber);
+        console.log('response1 Draft:', res.data.total_pages);
+
+        setTotalPages(res.data.total_pages);
         setDataDraft(res.data.data);
       });
   };
@@ -321,11 +347,12 @@ const Publications = (props) => {
     handleClose();
   };
   const handleReviewStatus = (value) => {
-    console.log(value);
+    console.log('review value', value);
     axiosInstance
       .put(`${endpoints.publish.update_delete}?publication_id=${value}`, {
         status_post: reviewDataPut,
       })
+
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
@@ -337,12 +364,17 @@ const Publications = (props) => {
         setAlert('error', error.message);
       });
   };
-  const handleReviewSubjectId = (value) => {
+  const handleReviewSubjectId = (value, pageNumber) => {
     axiosInstance
-      .get(`${endpoints.publish.ebook}?subject_id=${value}&status_post=Review`)
+      .get(
+        `${endpoints.publish.ebook}?subject_id=${value}&status_post=Review&page_number=${
+          pageNumber || 1
+        }&page_size=${2}`
+      )
       .then((res) => {
         console.log('in axios');
         console.log('response1:', res.data.data);
+        setTotalPages(res.data.total_pages);
         setReviewData(res.data.data);
       });
   };
@@ -467,15 +499,22 @@ const Publications = (props) => {
       setCounter(counter + 1);
     }
   };
-
+  const handleAlldata = (page) => {
+    axiosInstance
+      .get(
+        `${
+          endpoints.publish.ebook
+        }?status_post=Published&page_number=${page}&page_size=${8}`
+      )
+      .then((res) => {
+        console.log('in axios');
+        console.log('response1:', res.data.total_pages);
+        setTotalPages(res.data.total_pages);
+        setData(res.data.data);
+      });
+  };
   useEffect(() => {
-    axiosInstance.get(`${endpoints.publish.ebook}?status_post=Published`).then((res) => {
-      console.log('in axios');
-      console.log('response1:', res.data.data);
-      setData(res.data.data);
-
-      // setLoading(false);
-    });
+    handleAlldata(page);
     axiosInstance.get(endpoints.masterManagement.subjects).then((res) => {
       console.log('in axios');
       setMainsubject(res.data.result.results);
@@ -496,7 +535,7 @@ const Publications = (props) => {
       .delete(`${endpoints.publish.update_delete}?publication_id=${value}`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          handleSubjectID(subjectId);
+          handleSubjectID(subjectId, page);
           setAlert('success', result.data.message);
         } else {
           setAlert('error', result.data.message);
@@ -511,6 +550,7 @@ const Publications = (props) => {
 
   const handleChanger = (event, newValue) => {
     setValue(newValue);
+    setPage(1);
   };
   console.log('subje', subject);
 
@@ -519,11 +559,7 @@ const Publications = (props) => {
     return <div>{value === index && <>{children}</>}</div>;
   };
 
-  const Post = ({ data, loading }) => {
-    if (loading) {
-      return <h2>Loading...</h2>;
-    }
-
+  const Post = () => {
     return (
       <>
         <MediaQuery minWidth={600}>
@@ -572,7 +608,7 @@ const Publications = (props) => {
                                 </Button>
                                 <Button
                                   onClick={(e) => {
-                                    handleDelete(item.id);
+                                    handleDelete(item.id, item.subject.id);
                                     handleClose1();
                                   }}
                                   color='primary'
@@ -745,99 +781,96 @@ const Publications = (props) => {
               return (
                 <div className={classes.paperMar}>
                   {/* {ReactHtmlParser(item.description)} */}
-                  <Grid item xs={12}>
-                    <Paper elevation={3}>
-                      <Grid container spacing={2}>
-                        <Grid item>
-                          <ButtonBase className={classes.image}>
-                            <img
-                              className={classes.image}
-                              alt='complex'
-                              src={item.thumbnail}
-                            />
-                          </ButtonBase>
-                        </Grid>
-                        <Grid item xs={12} sm container>
-                          <Grid item xs container direction='column' spacing={2}>
-                            <Grid item xs>
-                              <Typography style={{ float: 'right' }}>
-                                <IconButton
-                                  aria-label='settings'
-                                  onClick={handleClickOpen1}
-                                >
-                                  <Tooltip title='Delete' arrow>
-                                    <MoreHorizIcon />
-                                  </Tooltip>
-                                </IconButton>
-                              </Typography>
-                              <Dialog
-                                open={open1}
-                                onClose={handleClose1}
-                                aria-labelledby='alert-dialog-title'
-                                aria-describedby='alert-dialog-description'
-                              >
-                                <DialogTitle id='alert-dialog-title'>
-                                  {'Are you sure to delete?'}
-                                </DialogTitle>
 
-                                <DialogActions>
-                                  <Button onClick={handleClose1} color='primary'>
-                                    cancel
-                                  </Button>
-                                  <Button
-                                    onClick={(e) => {
-                                      handleDelete(item.id, item.subject.id);
-                                      handleClose1();
-                                    }}
-                                    color='primary'
-                                    autoFocus
-                                  >
-                                    Delete
-                                  </Button>
-                                </DialogActions>
-                              </Dialog>
-                            </Grid>
-                            <Grid item xs>
-                              <Typography
-                                gutterBottom
-                                variant='subtitle1'
-                                color='secondary'
+                  <Paper elevation={3}>
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <ButtonBase className={classes.image}>
+                          <img
+                            className={classes.image}
+                            alt='complex'
+                            src={item.thumbnail}
+                          />
+                        </ButtonBase>
+                      </Grid>
+                      <Grid item xs={12} sm container>
+                        <Grid item xs container direction='column' spacing={2}>
+                          <Grid item xs>
+                            <Typography style={{ float: 'right' }}>
+                              <IconButton
+                                aria-label='settings'
+                                onClick={handleClickOpen1}
                               >
-                                <b>{item.title}</b>
-                              </Typography>
-                              <Typography variant='body2' gutterBottom>
-                                Author:{item.author_name}
-                              </Typography>
-                            </Grid>
-                            <Grid item>
-                              <Typography variant='body2'>
-                                Publication:
-                                {item.publication_type === '1'
-                                  ? 'magazine'
-                                  : 'newsletter'}
-                              </Typography>
-                              <Typography variant='body2'>
-                                {item.created_at.slice(0, 10)}
-                              </Typography>
-                              <Typography>
-                                <Button
-                                  size='small'
-                                  type='submit'
-                                  color='primary'
-                                  style={{ paddingLeft: '50px', paddingRight: '50px' }}
-                                  onClick={(e) => {
-                                    handleReviewStatus(item.id);
-                                  }}
-                                >
-                                  Review
+                                <Tooltip title='Delete' arrow>
+                                  <MoreHorizIcon />
+                                </Tooltip>
+                              </IconButton>
+                            </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
                                 </Button>
-                              </Typography>
-                            </Grid>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(item.id, item.subject.id);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+                          </Grid>
+                          <Grid item xs>
+                            <Typography
+                              gutterBottom
+                              variant='subtitle1'
+                              color='secondary'
+                            >
+                              <b>{item.title}</b>
+                            </Typography>
+                            <Typography variant='body2' gutterBottom>
+                              Author:{item.author_name}
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <Typography variant='body2'>
+                              Publication:
+                              {item.publication_type === '1' ? 'magazine' : 'newsletter'}
+                            </Typography>
+                            <Typography variant='body2'>
+                              {item.created_at.slice(0, 10)}
+                            </Typography>
+                            <Typography>
+                              <Button
+                                size='small'
+                                type='submit'
+                                color='primary'
+                                style={{ paddingLeft: '50px', paddingRight: '50px' }}
+                                onClick={(e) => {
+                                  handleReviewStatus(item.id);
+                                }}
+                              >
+                                Review
+                              </Button>
+                            </Typography>
                           </Grid>
                         </Grid>
                       </Grid>
-                    </Paper>
-                  </Grid>
+                    </Grid>
+                  </Paper>
 
                   {/* <Button
                           size='small'
@@ -1455,14 +1488,6 @@ const Publications = (props) => {
       </>
     );
   };
-  //get current posts
-
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPost = data?.slice(indexOfFirstPost, indexOfLastPost) || [];
-
-  //change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const handleFilter = (value) => {
     setFilter(value);
   };
@@ -1587,7 +1612,10 @@ const Publications = (props) => {
                                       <option
                                         key={name.id}
                                         value={name.subject.subject_name}
-                                        onClick={() => handleSubjectID(name.subject.id)}
+                                        onClick={() => {
+                                          setPage(1);
+                                          handleSubjectID(name.subject.id, page);
+                                        }}
                                       >
                                         {name.subject.subject_name}
                                       </option>
@@ -1790,7 +1818,10 @@ const Publications = (props) => {
                                       <option
                                         key={name.id}
                                         value={name.subject.subject_name}
-                                        onClick={() => handleSubjectID(name.subject.id)}
+                                        onClick={() => {
+                                          setPage(1);
+                                          handleSubjectID(name.subject.id, page);
+                                        }}
                                       >
                                         {name.subject.subject_name}
                                       </option>
@@ -1933,13 +1964,15 @@ const Publications = (props) => {
 
             <Tabpanel1 value={value} index={0}>
               <Grid container direction='row' spacing={1} className='gridscroll'>
-                <Post data={currentPost} loading={loading} />
+                <Post />
               </Grid>
               <Grid container direction='row' justify='center' alignItems='center'>
-                <Paginations
-                  postsPerPage={postsPerPage}
-                  totalPosts={data.length}
-                  paginate={paginate}
+                <Pagination
+                  onChange={handlePagination}
+                  style={{ marginTop: 25 }}
+                  count={totalPages}
+                  color='primary'
+                  page={page}
                 />
               </Grid>
             </Tabpanel1>
@@ -1947,15 +1980,44 @@ const Publications = (props) => {
               <Grid container direction='row' spacing={2}>
                 <NewDraft loading={loading} />
               </Grid>
+              {/* {page} */}
+              <Grid container direction='row' justify='center' alignItems='center'>
+                <Pagination
+                  onChange={handlePagination}
+                  style={{ marginTop: 25 }}
+                  count={totalPages}
+                  color='primary'
+                  page={page}
+                />
+              </Grid>
             </Tabpanel1>
+
             <Tabpanel1 value={value} index={2}>
               <Grid container direction='row'>
                 <ReviewPost loading={loading} />
               </Grid>
+              <Grid container direction='row' justify='center' alignItems='center'>
+                <Pagination
+                  onChange={handlePagination}
+                  style={{ marginTop: 25 }}
+                  count={totalPages}
+                  color='primary'
+                  page={page}
+                />
+              </Grid>
             </Tabpanel1>
             <Tabpanel1 value={value} index={3}>
               <Grid container direction='row' spacing={2}>
-                <IndividualPost data={currentPost} loading={loading} />
+                <IndividualPost loading={loading} />
+              </Grid>
+              <Grid container direction='row' justify='center' alignItems='center'>
+                <Pagination
+                  onChange={handlePagination}
+                  style={{ marginTop: 25 }}
+                  count={totalPages}
+                  color='primary'
+                  page={page}
+                />
               </Grid>
             </Tabpanel1>
           </Grid>

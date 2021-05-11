@@ -16,11 +16,9 @@ import axiosInstance from '../../config/axios';
 // import { Document, Page } from 'react-pdf';
 import ReactHtmlParser from 'react-html-parser';
 
-import SinglePagePDFViewer from './pdf/single-page';
-import AllPagesPDFViewer from './pdf/all-pages';
-import { sampleBase64pdf } from './sampleBase64pdf';
+
 import MediaQuery from 'react-responsive';
-// import './pdf/styles.css';
+
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 
 const useStyles = makeStyles((theme) => ({
@@ -66,7 +64,6 @@ const OpenPublication = ({ ID }) => {
     });
   }, []);
 
-  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
   const [numPages, setNumPages] = React.useState(null);
   const [pageNumber, setPageNumber] = React.useState(1);
