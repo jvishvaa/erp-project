@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   Grid,
@@ -118,6 +118,33 @@ function StudentAttendance({ history }) {
   const handleClearAll = () => {
     setSelectedClassType([]);
   };
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  let path = window.location.pathname;
+  console.log(path, 'path');
+
+  let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
+  console.log(userName[0], 'userName');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Online Class' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Student Attendance Report') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+  console.log(moduleId, 'MODULE_ID');
   return (
     <>
       <Layout>
@@ -198,30 +225,25 @@ function StudentAttendance({ history }) {
                   />
                 </LocalizationProvider>
               </Grid>
-              <Grid item md={2} xs={12} direction='row' justify='center'>
+              <Grid item md={3} xs={12} direction='row' justify='center'>
                 <Button
                   variant='contained'
                   size='large'
                   className='BatchViewfilterButtons'
                   onClick={handleGetAttendance}
+                  style={{ marginLeft: '40px' }}
                 >
                   Get Attendance
                 </Button>
               </Grid>
               {/* <Grid container spacing={2} style={{ marginTop: '5px' }}> */}
-              <Grid
-                item
-                md={2}
-                xs={12}
-                style={{ marginLeft: '-20px' }}
-                direction='row'
-                justify='center'
-              >
+              <Grid item md={3} xs={12} direction='row' justify='center'>
                 <Button
                   variant='contained'
                   size='large'
                   className='BatchViewfilterButtons'
                   onClick={handleClearAll}
+                  // style={{ border: '1px solid red' }}
                 >
                   Clear All
                 </Button>
