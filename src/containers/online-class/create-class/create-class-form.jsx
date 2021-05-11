@@ -1051,7 +1051,7 @@ const CreateClassForm = (props) => {
                   size='small'
                   // disableToolbar
                   variant='dialog'
-                  format='MM-DD-YYYY'
+                  format='MM/DD/YYYY'
                   margin='none'
                   id='date-picker'
                   label='Start date'
