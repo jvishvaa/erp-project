@@ -37,7 +37,7 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
       .post(endpoints.masterManagement.createSubjectMapping, {
         session_year: filterData.session?.map(({ id }) => id),
         branch_id: filterData.branch?.map(({ id }) => id),
-        grade_id: filterData.grade?.map(({ grade_id }) => grade_id),
+        grade_id: filterData.grade?.map(({ id }) => id),
         section_id: filterData.section?.map(({ id }) => id),
         subject_id: filterData.subject?.map(({ id }) => id),
       })
@@ -168,13 +168,13 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
       let sessionIds = filterData.session?.map(({ id }) => id);
       axiosInstance
         .get(
-          `${endpoints.masterManagement.gradesDrop}?session_year=${sessionIds}&branch_id=${ids}&module_id=${moduleId}`
+          `${endpoints.masterManagement.grades}?session_year=${sessionIds}&branch_id=${ids}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code > 199 && result.data.status_code < 300) {
             setDropDown({
               ...dropDown,
-              gradeDrop: result.data?.data,
+              gradeDrop: result.data?.result?.results,
               sectionDrop: [],
               subjectDrop: [],
             });
@@ -207,7 +207,7 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
         section: [],
         subject: [],
       });
-      let ids = value.map(({ grade_id }) => grade_id);
+      let ids = value.map(({ id }) => id);
       let sessionIds = filterData.session?.map(({ id }) => id);
       let branchIds = filterData.branch?.map(({ id }) => id);
       axiosInstance
@@ -250,7 +250,7 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
       let ids = value.map(({ id }) => id);
       let sessionIds = filterData.session?.map(({ id }) => id);
       let branchIds = filterData.branch?.map(({ id }) => id);
-      let gradeIds = filterData.section?.map(({ grade_id }) => grade_id);
+      let gradeIds = filterData.section?.map(({ id }) => id);
       axiosInstance
         .get(
           `${endpoints.masterManagement.subjects}?session_year=${sessionIds}&branch_id=${branchIds}&grade_id=${gradeIds}&section_id=${ids}&module_id=${moduleId}`
