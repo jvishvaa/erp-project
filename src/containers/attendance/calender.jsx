@@ -15,13 +15,13 @@ let postSeven;
 const RangeCalender = (props) => {
   // let date = new Date();
   const [state, setState] = useState([
-    { endDate: new Date(), startDate: addDays(new Date(), -6), key: 'selection' },
+    { endDate: props.endDate || new Date(), startDate: addDays(new Date(), -6), key: 'selection' },
   ]);
   console.log(state.startDate, state.endDate, 'wadawda');
   const [stateMonthly, setStateMonthly] = useState([
     {
-      startDate: new Date(),
-      endDate: new Date().setDate(new Date().getDate() + 1),
+      startDate: props.startDate || new Date(),
+      endDate: props.endDate || new Date().setDate(new Date().getDate() + 1),
       key: 'selection',
     },
   ]);
