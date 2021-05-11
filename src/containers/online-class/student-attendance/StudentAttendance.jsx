@@ -251,7 +251,9 @@ function StudentAttendance({ history }) {
               {/* </Grid> */}
             </Grid>
           </Grid>
-          <Divider style={{ margin: '10px 0px' }} />
+          <Grid item xs={12}>
+            <Divider />
+          </Grid>
           <Grid
             itemxs={12}
             className='attendee__management-table'
