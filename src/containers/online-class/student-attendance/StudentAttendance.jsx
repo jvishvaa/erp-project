@@ -48,6 +48,56 @@ function StudentAttendance({ history }) {
     setIsHidden(!isHidden);
   };
   const [attendeeList, setAttendeeList] = useState([]);
+  const arr = [
+    {
+      id: 1,
+      subject: 'English',
+      absent: 7,
+      present: 10,
+    },
+    {
+      id: 2,
+      subject: 'English',
+      absent: 7,
+      present: 10,
+    },
+    {
+      id: 3,
+      subject: 'English',
+      absent: 7,
+      present: 10,
+    },
+    {
+      id: 4,
+      subject: 'English',
+      absent: 7,
+      present: 10,
+    },
+    {
+      id: 5,
+      subject: 'English',
+      absent: 7,
+      present: 10,
+    },
+    {
+      id: 6,
+      subject: 'English',
+      absent: 7,
+      present: 10,
+    },
+    {
+      id: 7,
+      subject: 'English',
+      absent: 7,
+      present: 10,
+    },
+    {
+      id: 8,
+      subject: 'English',
+      absent: 7,
+      present: 10,
+    },
+  ];
   function handleDate(v1) {
     if (v1 && v1.length !== 0) {
       setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
@@ -197,30 +247,27 @@ function StudentAttendance({ history }) {
                     <TableCell align='center' className={`${isHidden ? 'hide' : 'show'}`}>
                       SL_NO.
                     </TableCell>
-                    <TableCell align='center'>Student name</TableCell>
-                    <TableCell align='center'>Erp</TableCell>
-                    <TableCell align='center'>Attended status</TableCell>
+                    <TableCell align='center'>Subject</TableCell>
+                    <TableCell align='center'>No.of Present Days</TableCell>
+                    <TableCell align='center'>No.of Absent Days</TableCell>
                   </TableRow>
                 </TableHead>
-                {attendeeList && attendeeList.length > 0 ? (
+                {arr && arr.length > 0 ? (
                   <TableBody className='styled__table-body'>
-                    {attendeeList.map((el, index) => {
+                    {arr.map((item, index) => {
                       return (
-                        <TableRow key={el.id}>
+                        <TableRow key={item.id}>
                           <TableCell
                             align='center'
                             className={`${isHidden ? 'hide' : 'show'}`}
                           >
                             {index + currentPage * 10 - 9}
                           </TableCell>
-                          <TableCell align='center'>vinod</TableCell>
+                          <TableCell align='center'>{item.subject}</TableCell>
                           {/* <TableCell align='center'>{el.user.user.first_name}</TableCell> */}
-                          <TableCell align='center'>vinod</TableCell>
+                          <TableCell align='center'>{item.present}</TableCell>
                           {/* <TableCell align='center'>{el.user.user.username}</TableCell> */}
-                          <TableCell align='center'>
-                            'Attended
-                            {''}
-                          </TableCell>
+                          <TableCell align='center'>{item.absent}</TableCell>
                         </TableRow>
                       );
                     })}
