@@ -33,7 +33,8 @@ import EditSectionMapping from './edit-section-mapping';
 import Loading from '../../../components/loader/loader';
 import '../master-management.css';
 import SectionMappingCard from './section-mapping-card';
-
+import {  Divider } from '@material-ui/core';
+const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -120,6 +121,16 @@ const SectionTable = () => {
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [clearAll, setClearAll] = useState(false);
+  const [clearAllActive, setClearAllActive] = useState(false);
+  const [filterCheck, setFilterCheck] = useState(false);
+  const [branchList, setBranchList] = useState([]);
+  const [gradeList, setGradeList] = useState([]);
+  const [searchBranch, setSearchBranch] = useState();
+  const [searchGrades, setSearchGrades] = useState([]);
+  const [searchSections, setSearchSections] = useState([]);
+    const [sectionList, setSectionList] = useState([]);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -139,9 +150,160 @@ const SectionTable = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (searchBranch) {
+      getGradeApi();
+    }
+  }, [searchBranch]);
+
+  
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
   };
+  const displayUsersList = async () => {
+    let getUserListUrl = `${endpoints.masterManagement.sectionMappingTable}?page=${page}&page_size=${limit}`;
+    if (selectedYear) {
+      getUserListUrl += `&session_year=${selectedYear}`;
+    }
+    if (searchBranch) {
+      getUserListUrl += `&branch_name=${searchBranch.branch.branch_name}`;
+    }
+    if (searchGrades.length) {
+      const selectedGradeId = searchGrades.map((el) => el.grade_name);
+      getUserListUrl += `&grade_name=${selectedGradeId.toString()}`;
+    }
+    if (searchSection) {
+      getUserListUrl += `&section_name=${searchSection}`;
+
+     }
+    // if (searchSections) {
+    //   const selectedSectionId = searchSections.map((el) => el.section_name);
+    //   getUserListUrl += `&section_name=${selectedSectionId.toString()}`;
+    // }
+    // if (searchText) {
+    //   getUserListUrl += `&search=${searchText}`;
+    // }
+    try {
+      const result = await axiosInstance.get(getUserListUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (result.status === 200) {
+        setTotalCount(result.data?.data?.count);
+        setSections(result.data?.data?.results);
+      } else {
+        setAlert('error', result.data?.msg || result.data?.message);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+    }
+  };
+
+  const getSectionApi = async () => {
+    try {
+      const selectedGradeId = searchGrades.map((el) => el.id);
+      const result = await axiosInstance.get(
+        `${endpoints.communication.sections
+        }?session_year=${selectedYear.id}&branch_id=${searchBranch?.branch.id}&grade_id=${selectedGradeId.toString()}&module_id=${moduleId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (result.status === 200) {
+        setSectionList(result.data.data);
+      } else {
+        setAlert('error', result.data.message);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+    }
+  };
+
+  const handleAcademicYear = (event, value) => {
+    setSelectedYear('');
+    setSearchBranch('');
+    setSearchGrades([]);
+    setYearDisplay(value);
+    if (value) {
+      setPage(1);
+      console.log("year", value.id)
+      setSelectedYear(value.id);
+    }
+  };
+
+
+  const handleClearAll = () => {
+    setYearDisplay([])
+    setAcademicYearList([])
+    setSearchSection('');
+    // setSelectedSection([]);
+    setSelectedYear('')
+    setBranchList([])
+    setGradeList([])
+    setGradeList([])
+    setSearchBranch('');
+    setSelectedYear('');
+    setSearchGrades([]);
+    if (clearAllActive) {
+      setSearchSection('');
+      // setSelectedSection([]);
+      setSelectedYear('')
+      setBranchList([])
+      setGradeList([])
+      setGradeList([])
+      setSearchBranch('');
+      setSelectedYear('');
+      setSearchGrades([]);
+      setClearAll(true);
+      setClearAllActive(false);
+    }
+    AcademicYearApi()
+  };
+
+  const handleFilterCheck = () => {
+    if (
+      selectedYear ||
+      searchBranch ||
+      searchGrades.length ||
+      searchSections
+    ) {
+      // setSelectedUsers([]);
+      // setSelectAllObj([]);
+      // setPageno(1);
+      // setTotalPage(0);
+      setFilterCheck(true);
+      displayUsersList();
+    }
+  };
+
+
+
+  const handleBranch = (event, value) => {
+    setSearchBranch('');
+    setSearchGrades([]);
+    console.log("branch",value)
+
+    // setSearchSections([]);
+    if (value) {
+      setSearchBranch(value);
+    }
+  };
+
+  const handleGrades = (event, value) => {
+    setSearchGrades([]);
+    console.log(value)
+    // setSearchSections([]);
+    if (value.length) {
+      const ids = value.map((el) => el);
+      setSearchGrades(ids);
+    }
+  };
+
+
 
   const handleAddSection = () => {
     setTableFlag(false);
@@ -164,7 +326,7 @@ const SectionTable = () => {
     setEditFlag(false);
     setGoBackFlag(!goBackFlag);
     setSearchSection('');
-    setSearchYear('');
+    setSelectedYear('');
     setSectionData({});
   };
 
@@ -208,8 +370,34 @@ const SectionTable = () => {
   }, [page, delFlag, goBackFlag]);
 
   useEffect(() => {
-    if (moduleId) {
-      axiosInstance
+  
+    if (clearAll) {
+      setClearAll(false);
+    }
+    if (filterCheck) {
+      setFilterCheck(false);
+    }
+  }, [clearAll, filterCheck]);
+
+  useEffect(() => {
+    if (
+      // selectedGrades.length ||
+      // selectedSections.length ||
+      searchSection
+    ) {
+      setClearAllActive(true);
+    }
+  }, [  searchSection]);
+
+  useEffect(() => {
+    if (selectedYear) {
+      getBranchApi();
+    }
+  }, [selectedYear]);
+
+
+const AcademicYearApi = ()=>{
+  axiosInstance
         .get(`${endpoints.masterManagement.academicYear}?module_id=${moduleId}`)
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -221,15 +409,22 @@ const SectionTable = () => {
         .catch((error) => {
           setAlert('error', error?.response?.data?.message || error?.response?.data?.msg);
         });
+}
+
+  useEffect(() => {
+    if (moduleId) {
+      AcademicYearApi()
     }
   }, [moduleId]);
+
+  
 
   useEffect(() => {
     let url = `${endpoints.masterManagement.sectionMappingTable}?page=${page}&page_size=${limit}`;
     if (searchSection) url += `&section_name=${searchSection.toLowerCase()}`;
-    if (searchYear) url += `&session_year=${searchYear}`;
-    // if(searchGrade)url += `&grade_name=${searchGrade}`;
-    // if(searchBranch)url += `&branch_name=${searchBranch}`;
+    if (selectedYear) url += `&session_year=${selectedYear}`;
+    if(searchGrades)url += `&grade_name=${searchGrades}`;
+    if(searchBranch)url += `&branch_name=${searchBranch}`;
 
     axiosInstance
       .get(url)
@@ -244,17 +439,38 @@ const SectionTable = () => {
       .catch((error) => {
         setAlert('error', error.message);
       });
-  }, [delFlag, goBackFlag, page, searchSection, searchYear]);
+  }, [delFlag, goBackFlag, page, searchSection, selectedYear]);
 
-  const handleAcademicYear = (event, value) => {
-    setSearchYear('');
-    setYearDisplay(value);
-    if (value) {
-      setPage(1);
-      setSearchYear(value.session_year);
+  const getBranchApi = async () => {
+    console.log(selectedYear,'test')
+    try {
+      const result = await axiosInstance.get(
+        `${endpoints.communication.branches}?session_year=${selectedYear}&module_id=${moduleId}`
+      );
+      if (result.data.status_code === 200) {
+        setBranchList(result.data.data.results);
+      } else {
+        setAlert('error', result.data.message);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+    }
+  };
+  const getGradeApi = async () => {
+    try {
+      const result = await axiosInstance.get(
+        `${endpoints.communication.grades}?session_year=${selectedYear}&branch_id=${searchBranch?.branch.id}&module_id=${moduleId}`);
+      if (result.data.status_code === 200) {
+        setGradeList(result.data.data);
+      } else {
+        setAlert('error', result.data.message);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
     }
   };
 
+  
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -265,7 +481,7 @@ const SectionTable = () => {
               componentName='Master Management'
               childComponentName='Section Mapping List'
               childComponentNameNext={
-                addFlag && !tableFlag
+                addFlag && !tableFlag && !editFlag
                   ? 'Add Section Mapping'
                   : editFlag && !tableFlag
                   ? 'Edit Section Mapping'
@@ -315,7 +531,7 @@ const SectionTable = () => {
               <Autocomplete
                 size='small'
                 onChange={handleAcademicYear}
-                style={{ width: '100%' }}
+                // style={{ width: '100%' }}
                 id='session-year'
                 options={academicYearList || []}
                 value={yearDisplay || ''}
@@ -331,8 +547,54 @@ const SectionTable = () => {
                 )}
               />
             </Grid>
-            <Grid item xs sm={6} className={isMobile ? 'hideGridItem' : ''} />
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
+            {selectedYear && (
+              <Grid item xs={12} md={3}>
+                <Autocomplete
+                  size='small'
+                  onChange={handleBranch}
+                  value={searchBranch || ''}
+                  id='message_log-branch'
+                  className='message_log_branch'
+                  options={branchList || []}
+                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      className='message_log-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                    />
+                  )}
+                />
+              </Grid>
+            )}
+          {searchBranch && (
+              <Grid item xs={12} md={3}>
+                <Autocomplete
+                  multiple
+                  size='small'
+                  onChange={handleGrades}
+                  value={searchGrades || ''}
+                  id='message_log-smsType'
+                  options={gradeList || []}
+                  getOptionLabel={(option) => option?.grade__grade_name || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      className='message_log-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Grade'
+                      placeholder='Grade'
+                    />
+                  )}
+                />
+              </Grid>
+            )}
+            {/* <Grid item xs sm={6} className={isMobile ? 'hideGridItem' : ''} /> */}
+            {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
               <Button
                 startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
                 variant='contained'
@@ -344,9 +606,69 @@ const SectionTable = () => {
               >
                 Add Section Mapping
               </Button>
-            </Grid>
-          </Grid>
-        )}
+              
+            </Grid> */}
+          {/* </Grid>
+        )} */}
+          <Grid item xs sm={6} className={isMobile ? 'hideGridItem' : ''} />
+          <Grid
+                container
+                spacing={isMobile ? 3 : 5}
+                style={{ width: widerWidth, margin: wider }}
+              >
+                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                  <Button
+                    variant='contained'
+                    className='labelColor buttonModifiedDesign'
+                    size='medium'
+                    onClick={handleClearAll}
+                  >
+                    CLEAR ALL
+                  </Button>
+                </Grid>
+                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                  <Button
+                    variant='contained'
+                    style={{ color: 'white' }}
+                    color='primary'
+                    className='buttonModifiedDesign'
+                    size='medium'
+                  onClick={handleFilterCheck}
+                  >
+                    FILTER
+                  </Button>
+                </Grid>
+                <div>
+                  <Divider
+                    orientation='vertical'
+                    style={{
+                      backgroundColor: '#014e7b',
+                      height: '40px',
+                      marginTop: '1rem',
+                      marginLeft: '2rem',
+                      marginRight: '1.25rem',
+                    }}
+                  />
+                </div>
+                <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
+                  <Button
+                    startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                    variant='contained'
+                    color='primary'
+                    size='small'
+                    style={{ color: 'white' }}
+                    title='Add Section Mapping'
+                    onClick={handleAddSection}
+                  >
+                    Add Section Mapping
+                  </Button>
+                </Grid>
+              </Grid>
+
+              </Grid>
+             )} 
+              
+           
         {tableFlag && !addFlag && !editFlag && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>

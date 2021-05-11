@@ -383,7 +383,10 @@ function App({ alert }) {
                           <Route path='/time-table/teacher-view'>
                             {({ match }) => <TimeTable match={match} />}
                           </Route>
-                          <Route path='/griviences'>
+                          <Route path='/griviences/admin-view'>
+                            {({ match }) => <Griviences match={match} />}
+                          </Route>
+                          <Route path='/griviences/student-view'>
                             {({ match }) => <Griviences match={match} />}
                           </Route>
                           <Route path='/greviences/createnew'>

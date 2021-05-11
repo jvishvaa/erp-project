@@ -241,7 +241,7 @@ class CreateRole extends Component {
             </div>
           </Grid>
           <Grid item>
-            <Button onClick={this.handleCreateRole}>Add Role</Button>
+            <Button variant='contained' color='primary'  onClick={this.handleCreateRole}>Add Role</Button>
           </Grid>
         </Grid>
         <Grid container spacing={2} className={classes.spacer}>

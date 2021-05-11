@@ -275,7 +275,7 @@ const MarkAttedance = () => {
         console.log(res.data);
         setNewData(res.data.results);
         setTotalGenre(res.data.count);
-        console.log(selectedSection.id, 'vinod');
+        // console.log(selectedSection.id, 'vinod');
         let sec = selectedSection.id;
         var result = res.data.results.map((item) => ({
           name:
