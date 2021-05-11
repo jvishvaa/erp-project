@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Button,
   Grid,
@@ -13,7 +13,6 @@ import {
   SvgIcon,
   Switch,
 } from '@material-ui/core';
-import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
 import Layout from 'containers/Layout';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { Autocomplete } from '@material-ui/lab';
@@ -24,6 +23,10 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
+import axiosInstance from '../../../config/axios';
+import endpoints from 'config/endpoints';
+import Loader from '../../../components/loader/loader';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 function StudentAttendance({ history }) {
   const [classTypes, setClassTypes] = useState([
@@ -37,6 +40,9 @@ function StudentAttendance({ history }) {
     moment().subtract(6, 'days'),
     moment(),
   ]);
+  const { setAlert } = useContext(AlertNotificationContext);
+  const [loading, setLoading] = useState(false);
+  const [type, setType] = useState('');
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -102,8 +108,8 @@ function StudentAttendance({ history }) {
     if (v1 && v1.length !== 0) {
       setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
       setEndDate(moment(new Date(v1[1])).format('YYYY-MM-DD'));
-      console.log('start date', moment(new Date(v1[0])).format('YYYY-MM-DD'));
-      console.log('end date', moment(new Date(v1[1])).format('YYYY-MM-DD'));
+      // console.log('start date', moment(new Date(v1[0])).format('YYYY-MM-DD'));
+      // console.log('end date', moment(new Date(v1[1])).format('YYYY-MM-DD'));
     }
     setDateRangeTechPer(v1);
   }
@@ -113,7 +119,37 @@ function StudentAttendance({ history }) {
       start_date: startDate,
       end_date: endDate,
     };
-    console.log(payload, 'checking data');
+    // console.log(payload, 'checking data');
+    if (!selectedClassType) {
+      setAlert('warning', 'Select Class Type');
+      return;
+    }
+    // let temp;
+    // if (selectedClassType === 'Compulsory Class') {
+    //   console.log('compulsory class');
+    // } else if (selectedClassType === 'optional class') {
+    //   console.log('optional class');
+    // } else if (selectedClassType === 'special class') {
+    //   console.log('special class');
+    // } else if (selectedClassType === 'parent class') {
+    //   console.log('parent class');
+    // }
+    setLoading(true);
+    axiosInstance
+      .get(
+        `${endpoints.OnlineStudent.StudentAttendanceReport}?start_date=${startDate}&end_date=${endDate}&class_type=${type}`
+      )
+      .then((res) => {
+        setLoading(false);
+        setAlert('success', 'Data Fetched Successfully');
+        console.log(res.data.data);
+        setAttendeeList(res.data.data);
+      })
+      .catch((err) => {
+        setLoading(false);
+        setAlert('error', err?.message);
+        // console.log(err);
+      });
   };
   const handleClearAll = () => {
     setSelectedClassType([]);
@@ -122,10 +158,10 @@ function StudentAttendance({ history }) {
   const [moduleId, setModuleId] = useState('');
 
   let path = window.location.pathname;
-  console.log(path, 'path');
+  // console.log(path, 'path');
 
   let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
-  console.log(userName[0], 'userName');
+  // console.log(userName[0], 'userName');
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -144,7 +180,7 @@ function StudentAttendance({ history }) {
       });
     }
   }, []);
-  console.log(moduleId, 'MODULE_ID');
+  // console.log(moduleId, 'MODULE_ID');
   return (
     <>
       <Layout>
@@ -177,6 +213,8 @@ function StudentAttendance({ history }) {
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
+                    console.log(value, 'type checking');
+                    setType(value.id);
                     setSelectedClassType(value);
                   }}
                   id='branch_id'
@@ -202,7 +240,7 @@ function StudentAttendance({ history }) {
                     value={dateRangeTechPer || ''}
                     onChange={(newValue) => {
                       handleDate(newValue);
-                      console.log(newValue, 'date checking');
+                      // console.log(newValue, 'date checking');
                       //   setDateRangeTechPer(newValue);
                     }}
                     renderInput={({ inputProps, ...startProps }, endProps) => {
@@ -254,85 +292,94 @@ function StudentAttendance({ history }) {
           <Grid item xs={12}>
             <Divider />
           </Grid>
-          <Grid
-            itemxs={12}
-            className='attendee__management-table'
-            style={{ width: '100%' }}
-          >
-            {isHidden ? (
-              <AddCircleOutlineIcon className='expand-management' onClick={toggleHide} />
-            ) : (
-              <RemoveCircleIcon className='expand-management' onClick={toggleHide} />
-            )}
-            <TableContainer>
-              <Table className='viewclass__table' aria-label='simple table'>
-                <TableHead className='styled__table-head'>
-                  <TableRow>
-                    <TableCell align='center' className={`${isHidden ? 'hide' : 'show'}`}>
-                      SL_NO.
-                    </TableCell>
-                    <TableCell align='center'>Subject</TableCell>
-                    <TableCell align='center'>No.of Present Days</TableCell>
-                    <TableCell align='center'>No.of Absent Days</TableCell>
-                    <TableCell align='center'>Total Days</TableCell>
-                  </TableRow>
-                </TableHead>
-                {arr && arr.length > 0 ? (
-                  <TableBody className='styled__table-body'>
-                    {arr.map((item, index) => {
-                      let total = item.absent + item.present;
-                      return (
-                        <TableRow key={item.id}>
-                          <TableCell
-                            align='center'
-                            className={`${isHidden ? 'hide' : 'show'}`}
-                          >
-                            {index + currentPage * 10 - 9}
-                          </TableCell>
-                          <TableCell align='center'>{item.subject}</TableCell>
-                          {/* <TableCell align='center'>{el.user.user.first_name}</TableCell> */}
-                          <TableCell align='center'>{item.present}</TableCell>
-                          {/* <TableCell align='center'>{el.user.user.username}</TableCell> */}
-                          <TableCell align='center'>{item.absent}</TableCell>
-                          <TableCell align='center'>{total}</TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                ) : (
-                  <div className='attendanceDataUnavailable'>
-                    <SvgIcon
-                      component={() => (
-                        <img
-                          style={
-                            // isMobile
-                            //   ? { height: '100px', width: '200px' }
-                            // :
-                            { height: '160px', width: '290px' }
-                          }
-                          src={unfiltered}
-                        />
-                      )}
-                    />
-                    <SvgIcon
-                      component={() => (
-                        <img
-                          style={
-                            // isMobile
-                            //   ? { height: '20px', width: '250px' }
-                            //   :
-                            { height: '50px', width: '400px', marginLeft: '5%' }
-                          }
-                          src={selectfilter}
-                        />
-                      )}
-                    />
-                  </div>
-                )}
-              </Table>
-            </TableContainer>
-          </Grid>
+          {attendeeList && attendeeList.length > 0 && (
+            <Grid
+              itemxs={12}
+              className='attendee__management-table'
+              style={{ width: '100%' }}
+            >
+              {isHidden ? (
+                <AddCircleOutlineIcon
+                  className='expand-management'
+                  onClick={toggleHide}
+                />
+              ) : (
+                <RemoveCircleIcon className='expand-management' onClick={toggleHide} />
+              )}
+              <TableContainer>
+                <Table className='viewclass__table' aria-label='simple table'>
+                  <TableHead className='styled__table-head'>
+                    <TableRow>
+                      <TableCell
+                        align='center'
+                        className={`${isHidden ? 'hide' : 'show'}`}
+                      >
+                        SL_NO.
+                      </TableCell>
+                      <TableCell align='center'>Subject</TableCell>
+                      <TableCell align='center'>No.of Present Days</TableCell>
+                      <TableCell align='center'>No.of Absent Days</TableCell>
+                      <TableCell align='center'>Total Days</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  {attendeeList && attendeeList.length > 0 ? (
+                    <TableBody className='styled__table-body'>
+                      {attendeeList.map((item, index) => {
+                        let total = item.absent_count + item.present_count;
+                        return (
+                          <TableRow key={item.subject}>
+                            <TableCell
+                              align='center'
+                              className={`${isHidden ? 'hide' : 'show'}`}
+                            >
+                              {index + currentPage * 10 - 9}
+                            </TableCell>
+                            <TableCell align='center'>{item.subject}</TableCell>
+                            {/* <TableCell align='center'>{el.user.user.first_name}</TableCell> */}
+                            <TableCell align='center'>{item.absent_count}</TableCell>
+                            {/* <TableCell align='center'>{el.user.user.username}</TableCell> */}
+                            <TableCell align='center'>{item.present_count}</TableCell>
+                            <TableCell align='center'>{total}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  ) : (
+                    <div className='attendanceDataUnavailable'>
+                      <SvgIcon
+                        component={() => (
+                          <img
+                            style={
+                              // isMobile
+                              //   ? { height: '100px', width: '200px' }
+                              // :
+                              { height: '160px', width: '290px' }
+                            }
+                            src={unfiltered}
+                          />
+                        )}
+                      />
+                      <SvgIcon
+                        component={() => (
+                          <img
+                            style={
+                              // isMobile
+                              //   ? { height: '20px', width: '250px' }
+                              //   :
+                              { height: '50px', width: '400px', marginLeft: '5%' }
+                            }
+                            src={selectfilter}
+                          />
+                        )}
+                      />
+                    </div>
+                  )}
+                </Table>
+              </TableContainer>
+            </Grid>
+          )}
         </Grid>
+        {loading && <Loader />}
       </Layout>
     </>
   );

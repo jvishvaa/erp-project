@@ -46,7 +46,6 @@ export default {
   },
   communicationRoles: {
     roles: '/academic/booked-appointment-role-list/',
-    
   },
 
   communication: {
@@ -357,8 +356,8 @@ export default {
     questionPaperViewMore: `/assessment/<question-paper-id>/qp-questions-list/`,
     publishQuestionPaper: `/assessment/<question-paper-id>/update-status-question-paper/`,
     createQuestionPaper: `/assessment/question-paper/`,
-    createAssessment:'/assessment/test/',
-    deleteAssessmentTest:'/assessment/',
+    createAssessment: '/assessment/test/',
+    deleteAssessmentTest: '/assessment/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
   },
 
@@ -372,7 +371,7 @@ export default {
     userAssessmentQuestionAnalysis: `/assessment/category_analysis_report/`, // ?user=3446&assessment_id=3
     assessmentAnalysisTeacherExcel: `${baseURLCentral}/assessment/teacher-report/`, // ?type=1
     userAssessmentSubmission: `${baseURLCentral}/assessment/user_response/`,
-    userAssessmentTestSubmission:`assessment/submit-test/`,
+    userAssessmentTestSubmission: `assessment/submit-test/`,
     fetchAssessmentQuestionPapersQuestions: `/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
@@ -429,6 +428,9 @@ export default {
     getContact: '/academic/contact_us/',
     updateContact: '/academic/contact_us_update/',
     filterContact: '/academic/contact_us/',
+  },
+  OnlineStudent: {
+    StudentAttendanceReport: '/academic/student-attendance-by-subject/',
   },
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,
