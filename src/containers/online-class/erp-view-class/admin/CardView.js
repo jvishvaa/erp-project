@@ -3,7 +3,7 @@ import moment from 'moment';
 // import './style.scss';
 import { Grid, Card, Button, Typography } from '@material-ui/core';
 
-const CardView = ({ fullData, handleViewMore, selectedViewMore ,viewMoreRef }) => {
+const CardView = ({ fullData, handleViewMore, selectedViewMore, viewMoreRef }) => {
   return (
     <>
       <Grid container spacing={2} className='teacherbatchsCardMain'>
@@ -17,15 +17,26 @@ const CardView = ({ fullData, handleViewMore, selectedViewMore ,viewMoreRef }) =
           >
             <Grid container spacing={2}>
               <Grid item md={9} xs={9} style={{ padding: '5px' }}>
-                {fullData && fullData.online_class && fullData.online_class.course_name && (
-                  <span className='teacherBatchCardLable'>{fullData.online_class.course_name}</span>
-                )} <br/>
+                {fullData &&
+                  fullData.online_class &&
+                  fullData.online_class.course_name && (
+                    <span className='teacherBatchCardLable'>
+                      {fullData.online_class.course_name}
+                    </span>
+                  )}{' '}
+                <br />
                 {fullData && fullData.online_class && fullData.online_class.title && (
-                  <span className='teacherBatchCardLable'>{fullData.online_class.title}</span>
+                  <span className='teacherBatchCardLable'>
+                    {fullData.online_class.title}
+                  </span>
                 )}
               </Grid>
               <Grid item xs={3}>
-                <Typography>{moment(fullData.online_class ? fullData.online_class.start_time : '').format('hh:mm A')}</Typography>
+                <Typography>
+                  {moment(
+                    fullData.online_class ? fullData.online_class.start_time : ''
+                  ).format('hh:mm A')}
+                </Typography>
               </Grid>
               <Grid item md={12} xs={12} style={{ padding: '5px' }}>
                 <span className='teacherBatchCardLable'>
@@ -53,7 +64,9 @@ const CardView = ({ fullData, handleViewMore, selectedViewMore ,viewMoreRef }) =
                       .split('G')[0]
                       .substring(0, 16)) ||
                   ''*/}
-                  {fullData.online_class ? moment(fullData.online_class.start_time).format('DD-MM-YYYY') : ''}
+                  {fullData.online_class
+                    ? moment(fullData.online_class.start_time).format('DD-MM-YYYY')
+                    : ''}
                 </span>
               </Grid>
               <Grid item md={12} xs={12} style={{ padding: '5px' }}>
@@ -67,7 +80,9 @@ const CardView = ({ fullData, handleViewMore, selectedViewMore ,viewMoreRef }) =
                       .split('G')[0]
                       .substring(0, 16)) ||
                   '' */}
-                  {fullData.online_class ? moment(fullData.online_class.end_time).format('DD-MM-YYYY') : ''}
+                  {fullData.online_class
+                    ? moment(fullData.online_class.end_time).format('DD-MM-YYYY')
+                    : ''}
                 </span>
               </Grid>
               <Grid item md={12} xs={12} style={{ textAlign: 'right' }}>
@@ -82,7 +97,10 @@ const CardView = ({ fullData, handleViewMore, selectedViewMore ,viewMoreRef }) =
                         ? 'none'
                         : '',
                   }}
-                  onClick={() => handleViewMore(fullData)}
+                  onClick={() => {
+                    handleViewMore(fullData);
+                    localStorage.setItem('viewMoreData', JSON.stringify(fullData));
+                  }}
                 >
                   View More
                 </Button>

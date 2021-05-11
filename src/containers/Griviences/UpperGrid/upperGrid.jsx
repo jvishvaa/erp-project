@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import axiosInstance from '../../../config/axios';
@@ -7,14 +7,17 @@ import EmojiObjectsSharpIcon from '@material-ui/icons/EmojiObjectsSharp';
 import Select from '@material-ui/core/Select';
 import LayersClearIcon from '@material-ui/icons/LayersClear';
 import FilterFilledIcon from '../../../components/icon/FilterFilledIcon';
-
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import Loader from '../../../components/loader/loader';
 import { Button, IconButton } from '@material-ui/core';
 import './upper-grid.scss';
 import { set } from 'lodash';
 import { Link } from 'react-router-dom';
 const UpperGrade = (props) => {
   const [dataMap, setDataMap] = useState([]);
+  const { setAlert } = useContext(AlertNotificationContext);
   const [acadamicYearID, setAcadamicYear] = useState('');
+  const [loading, setLoading] = useState();
   const [acadamicYearData, setAcadamicYearData] = useState([]);
   const [gevienceTypeID, setGevienceTypeID] = useState();
   const [branchID, setBranchID] = useState();
@@ -28,6 +31,7 @@ const UpperGrade = (props) => {
   const [gradeName, setGradeName] = useState();
   const [sectionName, setSectionName] = useState();
   const [studentView, setStudentView] = useState(false);
+  const [userID, setUserID] = useState();
   const [openDialog] = useState(true);
   const moduleId = 175;
   const handleChangeMultiple = (event) => {
@@ -88,21 +92,27 @@ const UpperGrade = (props) => {
     setCounter(1);
   };
   const callingGriviencesAPI = () => {
+    setLoading(true);
     axiosInstance
       .get('/academic/grievance_types/')
       .then((res) => {
         console.log(res, 'res data');
+        setLoading(false);
+
         if (res.status === 200) {
           console.log(res);
           setGrevancesData(res.data.data);
+          setLoading(false);
         }
         console.log(res, 'grievand');
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
   const callingBranchAPI = () => {
+    setLoading(true);
     axiosInstance
       .get(
         `${endpoints.communication.branches}?session_year=${acadamicYearID}&module_id=${moduleId}`
@@ -110,12 +120,15 @@ const UpperGrade = (props) => {
       .then((res) => {
         console.log(res.data.data.results);
         setDataMap(res.data.data.results);
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
   const callingGradeAPI = () => {
+    setLoading(true);
     axiosInstance
       .get(
         `${
@@ -124,29 +137,38 @@ const UpperGrade = (props) => {
       )
       .then((res) => {
         console.log(res.data.data);
+        setLoading(false);
+
         setDataMap(res.data.data);
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
   const callingSectionAPI = () => {
+    setLoading(true);
     axiosInstance
       .get(
         `${endpoints.academics.sections}?session_year=${acadamicYearID}&branch_id=${branchID}&grade_id=${gradeID}&module_id=${moduleId}`
       )
       .then((res) => {
         console.log(res.data.data);
+        setLoading(false);
         setDataMap(res.data.data);
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
   const callingAcadamicAPI = () => {
+    setLoading(true);
     axiosInstance
       .get('/erp_user/list-academic_year/', {})
       .then((res) => {
+        setLoading(false);
+
         setAcadamicYearData(res.data.data);
       })
       .catch((error) => {
@@ -179,39 +201,69 @@ const UpperGrade = (props) => {
       gradeID,
       sectionID,
       temp,
+      userID,
       '===============================>>>>>>>>>>>>>>>>>>>>'
     );
-    props.getGrivienceData(
-      acadamicYearID,
-      gevienceTypeID,
-      branchID,
-      gradeID,
-      sectionID,
-      temp,
-
-      openDialog
-    );
-    props.handlePassData(
-      acadamicYearID,
-      gevienceTypeID,
-      branchID,
-      gradeID,
-      sectionID,
-      temp,
-
-      openDialog
-    );
+    if (path === '/griviences/admin-view') {
+      props.getGrivienceData(
+        acadamicYearID,
+        gevienceTypeID,
+        branchID,
+        gradeID,
+        sectionID,
+        temp,
+        openDialog
+      );
+      props.handlePassData(
+        acadamicYearID,
+        gevienceTypeID,
+        branchID,
+        gradeID,
+        sectionID,
+        temp,
+        openDialog
+      );
+    } else if (path === '/griviences/student-view') {
+      props.getGrivienceData(
+        // acadamicYearID,
+        // gevienceTypeID,
+        // branchID,
+        // gradeID,
+        // sectionID,
+        // temp,
+        userID,
+        studentView,
+        openDialog
+      );
+      props.handlePassData(
+        // acadamicYearID,
+        // gevienceTypeID,
+        // branchID,
+        // gradeID,
+        // sectionID,
+        // temp,
+        userID,
+        studentView,
+        openDialog
+      );
+    }
   };
+
   let path = window.location.pathname;
   console.log(path, 'path');
+
   useEffect(() => {
     if (path === '/griviences/admin-view') {
       console.log(path, 'path');
       setStudentView(false);
     }
     if (path === '/griviences/student-view') {
-      console.log(path, 'path');
-      setStudentView(true);
+      // console.log(path, 'path');
+      let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
+      console.log(userName.user_id, 'userName');
+      setUserID(userName.user_id);
+      setStudentView(!studentView);
+      handleGenerateData();
     }
   }, []);
   return (
@@ -550,6 +602,7 @@ const UpperGrade = (props) => {
       ) : (
         ''
       )}
+      {loading && <Loader />}
     </>
   );
 };

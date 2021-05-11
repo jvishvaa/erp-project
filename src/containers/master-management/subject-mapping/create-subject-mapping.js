@@ -28,9 +28,11 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
     subject: [],
   });
 
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+
     axiosInstance
       .post(endpoints.masterManagement.createSubjectMapping, {
         session_year: filterData.session?.map(({ id }) => id),
@@ -40,6 +42,7 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
         subject_id: filterData.subject?.map(({ id }) => id),
       })
       .then((result) => {
+        
         if (result.data?.status_code > 199 && result.data?.status_code < 300) {
           setLoading(false);
           handleGoBack();
@@ -54,6 +57,7 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
         setAlert('error', error.response?.data?.message || error.response?.data?.msg);
       });
   };
+
 
   useEffect(() => {
     if (moduleId) {
@@ -80,7 +84,7 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
   }, [moduleId]);
 
   const handleAcademicYear = (event, value) => {
-    console.log(value,'test4');
+     console.log(value,'test4');
     setFilterData({
       session: [],
       branch: [],
@@ -280,6 +284,7 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
     }
   };
 
+
   return (
     <form autoComplete='off' onSubmit={handleSubmit}>
       <div style={{ width: '95%', margin: '20px auto' }}>
@@ -302,6 +307,14 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   variant='outlined'
                   label='Session Year'
                   placeholder='Session Year'
+                  inputProps={{
+                    ...params.inputProps,
+                  
+                    required: filterData?.session.length === 0
+                    }} 
+                    required={true}
+                 
+                                
                 />
               )}
             />
@@ -326,6 +339,14 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   variant='outlined'
                   label='Branch'
                   placeholder='Branch'
+                  inputProps={{
+                    ...params.inputProps,
+                  
+                    required: filterData?.branch.length === 0
+                    }} 
+                    required={true}
+                 
+                  
                 />
               )}
             />
@@ -350,6 +371,13 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   variant='outlined'
                   label='Grade'
                   placeholder='Grade'
+                  inputProps={{
+                    ...params.inputProps,
+                  
+                    required: filterData?.grade.length === 0
+                    }} 
+                    required={true}
+                 
                 />
               )}
             />
@@ -374,6 +402,13 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   variant='outlined'
                   label='Section'
                   placeholder='Section'
+                  inputProps={{
+                    ...params.inputProps,
+                  
+                    required: filterData?.section.length === 0
+                    }} 
+                    required={true}
+                 
                 />
               )}
             />
@@ -398,6 +433,13 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   variant='outlined'
                   label='Subject'
                   placeholder='Subject'
+                  inputProps={{
+                    ...params.inputProps,
+                  
+                    required: filterData?.subject.length === 0
+                    }} 
+                    required={true}
+                 
                 />
               )}
             />
