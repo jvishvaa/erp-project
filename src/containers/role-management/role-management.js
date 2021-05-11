@@ -124,6 +124,7 @@ class RoleManagement extends Component {
               startIcon={<AddOutlinedIcon />}
               href={`${match.url}/create-role`}
               color='primary'
+              style={{background:'#FF6B6B'}}
             >
               Add Role
             </Button>
@@ -199,10 +200,10 @@ class RoleManagement extends Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button autoFocus variant='contained' color='primary'  onClick={this.handleCloseDeleteModal}>
+            <Button autoFocus onClick={this.handleCloseDeleteModal} color='primary' style={{background:'#ff6b6b'}}>
               Cancel
             </Button>
-            <Button variant='contained' color='primary' onClick={this.handleDeleteRole}>Confirm</Button>
+            <Button onClick={this.handleDeleteRole} style={{background:'#ff6b6b'}}>Confirm</Button>
           </DialogActions>
         </Dialog>
       </div>

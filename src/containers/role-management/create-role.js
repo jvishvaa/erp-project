@@ -81,6 +81,7 @@ class CreateRole extends Component {
     alterCreateRolePermissionsState(modulesArray);
   };
 
+
   handleCreateRole = () => {
     // eslint-disable-next-line camelcase
     const { history } = this.props;

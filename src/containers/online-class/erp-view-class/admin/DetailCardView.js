@@ -142,7 +142,7 @@
 //           // handleClick();
 //           setAlert('success', 'Class Canceled');
 //           handleClose('success');
-
+         
 //         })
 //         .catch((error) => {
 //           setLoading(false);
@@ -539,7 +539,7 @@
 //                   </Grid>
 //                 </Grid>
 //               </Grid>
-//               {/*
+//               {/* 
 //                     <IconButton
 //                       size='small'
 //                       className='teacherBatchFullViewClose'
@@ -636,19 +636,13 @@ import ResourceDialog from '../../../online-class/online-class-resources/resourc
 import CountdownTimer from './CountdownTimer';
 import './index.css';
 import { useDispatch } from 'react-redux';
-import { attendanceAction } from '../../../../redux/actions/onlineClassActions';
+import { attendanceAction } from '../../../../redux/actions/onlineClassActions'
+import { Grid, Card, Divider, Button, Popover, Typography,Tooltip,IconButton } from '@material-ui/core';
+import { useHistory ,Route,withRouter} from 'react-router-dom';
 import {
-  Grid,
-  Card,
-  Divider,
-  Button,
-  Popover,
-  Typography,
-  Tooltip,
-  IconButton,
-} from '@material-ui/core';
-import { useHistory, Route, withRouter } from 'react-router-dom';
-import { AttachFile as AttachFileIcon } from '@material-ui/icons';
+  AttachFile as AttachFileIcon,
+} from '@material-ui/icons';
+
 
 const JoinClass = (props) => {
   const fullData = props.fullData;
@@ -661,6 +655,7 @@ const JoinClass = (props) => {
   const [isRejected, setIsRejected] = useState(
     props.data ? props.data.is_restricted : false
   );
+  const [attach, setAttach] = useState(false);
   const history = useHistory();
 
   const classStartTime = moment(props && props?.data && props?.data?.date).format(
@@ -673,14 +668,13 @@ const JoinClass = (props) => {
   const endTime = new Date(`${props.data.date}T${props?.data?.end_time}`).getTime();
   const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
   const diffTime = classTimeMilli - 5 * 60 * 1000;
-
-  // console.log(
-  //   classTimeMilli,
-  //   parseInt(currTime),
-  //   diffTime,
-  //   'TTTTTTTTTTT',
-  //   new Date(`${props.data.date}T${startTime}`).getTime()
-  // );
+  const diffAttachTime = classTimeMilli - 15 * 60 * 1000;
+  console.log(
+   
+    diffAttachTime,
+    currTime,
+  
+  );
 
   const handleCloseData = () => {
     setAnchorEl(null);
@@ -701,6 +695,11 @@ const JoinClass = (props) => {
       handleIsAccept();
     }
   };
+  const handleClickAtachment = (event) => {
+    if (parseInt(currTime) > diffAttachTime || parseInt(currTime) === diffAttachTime) {
+      setAttach(!attach);
+    }
+  }
 
   const handleIsAccept = () => {
     const params = {
@@ -783,34 +782,36 @@ const JoinClass = (props) => {
         });
     }
   }
-  const handleTakeQuiz = (fullData) => {
-    if (fullData && fullData.online_class && fullData.online_class.question_paper_id) {
-      history.push({
-        pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
-        state: { data: fullData.online_class.id },
-      });
-    } else {
-      setAlert('error', 'This onlineclass does not have quiz associated with it.');
-      return;
-    }
-  };
+ const handleTakeQuiz = (fullData)=>{
+   if (fullData && fullData.online_class && fullData.online_class.question_paper_id){
+   
+  history.push({
+    pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
+    state: { data: fullData.online_class.id },
+  })
+}else{
+  setAlert('error', 'This onlineclass does not have quiz associated with it.'  );
+  return
+}
+
+ }
 
   function handleHost(data) {
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.teacherViewBatches.hostApi}?id=${data.id}`)
-      .then((res) => {
-        setLoading(false);
-        if (res?.data?.url) {
-          window.open(res?.data?.url, '_blank');
-        } else {
-          setAlert('error', res?.data?.message);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
+    .get(`${endpoints.teacherViewBatches.hostApi}?id=${data.id}`)
+    .then((res) => {
+      setLoading(false);
+      if(res?.data?.url){
+        window.open(res?.data?.url, '_blank');
+      } else {
+        setAlert('error', res?.data?.message); 
+      }
+    })
+    .catch((error) => {
+      setLoading(false);
+      setAlert('error', error.message);
+    });
   }
 
   const open = Boolean(anchorEl);
@@ -825,58 +826,60 @@ const JoinClass = (props) => {
         </span>
       </Grid>
       {window.location.pathname === '/erp-online-class-student-view' ? (
-        <Grid item xs={3}>
-          <Button
-            size='small'
-            color='secondary'
-            fullWidth
-            variant='contained'
-            onClick={() => handleTakeQuiz(fullData)}
-            className='teacherFullViewSmallButtons'
-          >
-            TakeQuiz
-          </Button>
-        </Grid>
-      ) : (
-        ''
-      )}
-      {window.location.pathname === '/erp-online-class-teacher-view' &&
-      fullData &&
-      fullData.online_class &&
-      fullData.online_class.question_paper_id ? (
-        <Grid item xs={3}>
-          <Button
-            size='small'
-            color='secondary'
-            fullWidth
-            variant='contained'
-            onClick={() =>
-              history.push({
-                pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
-                state: { data: fullData.online_class.id },
-              })
-            }
-            className='teacherFullViewSmallButtons'
-          >
-            Launch Quiz
-          </Button>
-        </Grid>
-      ) : window.location.pathname === '/erp-online-class-teacher-view' ? (
-        <Tooltip title='Attach Question Paper'>
-          <IconButton
-            onClick={() =>
-              history.push({
-                pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
-                state: { data: fullData.online_class.id },
-              })
-            }
-          >
-            <AttachFileIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        ''
-      )}
+         <Grid item xs={3}>
+        <Button
+          size='small'
+          color='secondary'
+          fullWidth
+          variant='contained'
+          onClick={() => handleTakeQuiz(fullData)}
+          
+          className='teacherFullViewSmallButtons'
+        >
+        TakeQuiz
+        </Button>
+      </Grid>):''}
+          { window.location.pathname === '/erp-online-class-teacher-view' &&fullData && fullData.online_class &&fullData.online_class.question_paper_id ?
+              <Grid item xs={3}>
+              <Button
+                size='small'
+                color='secondary'
+                fullWidth
+                variant='contained'
+                onClick={() =>
+                  history.push({
+                    pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
+                    state: { data: fullData.online_class.id },
+                  })}
+                
+                className='teacherFullViewSmallButtons'
+              >
+               Launch Quiz
+              </Button>
+            </Grid> :
+                  window.location.pathname === '/erp-online-class-teacher-view' ? (
+                    <Tooltip title='Attach Question Paper'>
+         
+               <IconButton
+                   disabled={(parseInt(currTime)>diffAttachTime) ? (currTime > endTime) ?true:false :true }
+             
+               onClick={() =>
+                history.push({
+                  pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
+                  state: { data: fullData.online_class.id },
+                })}
+            
+              >
+                <AttachFileIcon />
+              </IconButton>
+             
+           
+          </Tooltip>
+          ) : (
+            ''
+          )
+          
+          }
 
       {isAccept ? (
         <Grid item xs={6}>
@@ -941,7 +944,7 @@ const JoinClass = (props) => {
                     color='secondary'
                     fullWidth
                     variant='contained'
-                    onClick={() => handleHost(fullData)}
+                    onClick={()=> handleHost(fullData)}
                     // onClick={() =>
                     //   window.open(fullData && fullData.presenter_url, '_blank')
                     // }
@@ -1084,6 +1087,7 @@ const DetailCardView = ({
 }) => {
   const [noOfPeriods, setNoOfPeriods] = useState([]);
   const [loading, setLoading] = useState(false);
+  
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
@@ -1174,40 +1178,25 @@ const DetailCardView = ({
   const handleCoursePlan = () => {
     if (window.location.pathname === '/erp-online-class-student-view') {
       sessionStorage.setItem('isErpClass', 2);
-      history.push({
-        pathname: `/create/course/${
-          fullData.online_class && fullData.online_class.course_id
-        }/5`,
-        state: {
-          isOnline: true,
-        },
-      });
+      history.push(
+        `/create/course/${fullData.online_class && fullData.online_class.course_id}/5`
+      );
     } else if (window.location.pathname === '/erp-online-class-teacher-view') {
       sessionStorage.setItem('isErpClass', 3);
-      history.push({
-        pathname: `/create/course/${
-          fullData.online_class && fullData.online_class.cource_id
-        }/${
+      history.push(
+        `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
           // selectedGrade.map((el)=>el.id)
           1
-        }`,
-        state: {
-          isOnline: true,
-        },
-      });
+        }`
+      );
     } else if (window.location.pathname === '/erp-online-class') {
       sessionStorage.setItem('isErpClass', 1);
-      history.push({
-        pathname: `/create/course/${
-          fullData.online_class && fullData.online_class.cource_id
-        }/${
+      history.push(
+        `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
           // selectedGrade.map((el)=>el.id)
           1
-        }`,
-        state: {
-          isOnline: true,
-        },
-      });
+        }`
+      );
     }
   };
   const [openPopup, setOpenPopup] = React.useState(false);
@@ -1340,11 +1329,11 @@ const DetailCardView = ({
         selectedValue={selectedValue}
         open={openPopup}
         onClose={handleClosePopup}
-        title={fullData.online_class.title}
-        resourceId={fullData.id}
-        onlineClassId={fullData.online_class.id}
-        startDate={fullData.online_class.start_time}
-        endDate={fullData.online_class.end_time}
+        title={fullData?.online_class?.title}
+        resourceId={fullData?.id}
+        onlineClassId={fullData?.online_class?.id}
+        startDate={fullData?.online_class?.start_time}
+        endDate={fullData?.online_class?.end_time}
       />
       {loading && <Loader />}
     </>
