@@ -231,7 +231,7 @@ const UpperGrade = (props) => {
                 </div>
               </>
             ) : (
-              <div className='text-rotate'>Academic_Year</div>
+              <div className='text-rotate'>Academic&nbsp;Year</div>
             )}
           </div>
           <div

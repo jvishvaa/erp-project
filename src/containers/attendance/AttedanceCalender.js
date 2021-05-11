@@ -143,7 +143,10 @@ const AttedanceCalender = () => {
     }
     console.log(history);
     if (history?.location?.state?.payload) {
-      console.log('vinod');
+      console.log(history?.location?.state?.payload, 'vinod');
+      setCounter(history?.location?.state?.payload?.counter);
+      setStartDate(history?.location?.state?.payload?.startDate);
+      setEndDate(history?.location?.state?.payload?.endDate);
     }
   }, []);
   console.log(moduleId, 'MODULE_ID');
@@ -164,56 +167,56 @@ const AttedanceCalender = () => {
           var dateToday = new Date();
           var formatDateToday = moment(dateToday).format('YYYY-MM-DD');
           axiosInstance
-          .get(`academic/events_list/`, {
-            params: {
-              start_date: formatDateToday,
-              data: formatDateToday,
-              branch_id: history?.location?.state?.payload?.branch_id?.branch?.id,
-              grade_id: history?.location?.state?.payload?.grade_id?.grade_id,
-              // grade_id: 2,
+            .get(`/academic/events_list/`, {
+              params: {
+                start_date: formatDateToday,
+                data: formatDateToday,
+                branch_id: history?.location?.state?.payload?.branch_id?.branch?.id,
+                grade_id: history?.location?.state?.payload?.grade_id?.grade_id,
+                // grade_id: 2,
 
-              section_id: history?.location?.state?.payload?.section_id?.section_id,
-              // section_id: 2,
-              academic_year: history?.location?.state?.payload?.academic_year_id?.id,
-            },
-          })
-          .then((res) => {
-            setLoading(false);
-            console.log(res.data.events, 'current eventssss');
-            setCurrentEvent(res.data.events);
-            setStudentDataAll(res.data);
-          })
-          .catch((error) => {
-            setLoading(false);
-            console.log(error);
-          });
+                section_id: history?.location?.state?.payload?.section_id?.section_id,
+                // section_id: 2,
+                academic_year: history?.location?.state?.payload?.academic_year_id?.id,
+              },
+            })
+            .then((res) => {
+              setLoading(false);
+              console.log(res.data.events, 'current eventssss');
+              setCurrentEvent(res.data.events);
+              setStudentDataAll(res.data);
+            })
+            .catch((error) => {
+              setLoading(false);
+              console.log(error);
+            });
         } else {
-        axiosInstance
-          .get(`academic/student_attendance_between_date_range/`, {
-            params: {
-              start_date: history?.location?.state?.payload?.startDate,
-              end_date: history?.location?.state?.payload?.endDate,
-              branch_id: history?.location?.state?.payload?.branch_id?.branch?.id,
-              grade_id: history?.location?.state?.payload?.grade_id?.grade_id,
-              // grade_id: 2,
+          axiosInstance
+            .get(`/academic/student_attendance_between_date_range/`, {
+              params: {
+                start_date: history?.location?.state?.payload?.startDate,
+                end_date: history?.location?.state?.payload?.endDate,
+                branch_id: history?.location?.state?.payload?.branch_id?.branch?.id,
+                grade_id: history?.location?.state?.payload?.grade_id?.grade_id,
+                // grade_id: 2,
 
-              section_id: history?.location?.state?.payload?.section_id?.section_id,
-              // section_id: 2,
-              academic_year: history?.location?.state?.payload?.academic_year_id?.id,
-            },
-          })
-          .then((res) => {
-            setLoading(false);
-            console.log(res, 'respond teacher');
-            setStudentDataAll(res.data);
-            let temp = [...res.data.present_list, ...res.data.absent_list];
-            setStudentData(temp);
-            setAlert('success', 'Data Sucessfully Fetched');
-          })
-          .catch((error) => {
-            setLoading(false);
-            console.log(error);
-          });
+                section_id: history?.location?.state?.payload?.section_id?.section_id,
+                // section_id: 2,
+                academic_year: history?.location?.state?.payload?.academic_year_id?.id,
+              },
+            })
+            .then((res) => {
+              setLoading(false);
+              console.log(res, 'respond teacher');
+              setStudentDataAll(res.data);
+              let temp = [...res.data.present_list, ...res.data.absent_list];
+              setStudentData(temp);
+              setAlert('success', 'Data Sucessfully Fetched');
+            })
+            .catch((error) => {
+              setLoading(false);
+              console.log(error);
+            });
         }
       } else {
         setTeacherView(true);
@@ -226,56 +229,56 @@ const AttedanceCalender = () => {
     }
     if (path === '/attendance-calendar/student-view') {
       if (history?.location?.state?.backButtonStatus) {
-      console.log(path, 'path');
-      setTeacherView(false);
-      setCounter(history?.location?.state?.payload?.counter);
-      if (history?.location?.state?.payload?.counter == 1){
-        var date = new Date();
-    var formatDate = moment(date).format('YYYY-MM-DD');
-    console.log(formatDate, 'format date');
-    axiosInstance
-      .get(`academic/single_student_calender/`, {
-        params: {
-          start_date: formatDate,
-          erp_id: userName[0],
-        },
-      })
-      .then((res) => {
-        setLoading(false);
-        console.log(res.data.events, 'current eventssss');
-        setCurrentEvent(res.data.events);
-        setStudentDataAll(res.data);
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', 'no attendance');
-        setStudentDataAll(null);
-        console.log(error);
-      });
-      } else {
-      axiosInstance
-        .get(`academic/student_calender/`, {
-          params: {
-            start_date: history?.location?.state?.payload?.startDate,
-            end_date: history?.location?.state?.payload?.endDate,
-            erp_id: userName[0],
-          },
-        })
-        .then((res) => {
-          setLoading(false);
-          console.log(res, 'respond student');
-          setStudentDataAll(res.data);
-          let temp = [...res.data.present_list, ...res.data.absent_list];
-          setStudentData(temp);
-          setAlert('success', 'Data Sucessfully Fetched');
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.log(error);
-        });
+        console.log(path, 'path');
+        setTeacherView(false);
+        setCounter(history?.location?.state?.payload?.counter);
+        if (history?.location?.state?.payload?.counter == 1) {
+          var date = new Date();
+          var formatDate = moment(date).format('YYYY-MM-DD');
+          console.log(userName[0], 'format date');
+          axiosInstance
+            .get(`academic/single_student_calender/`, {
+              params: {
+                start_date: formatDate,
+                erp_id: userName[0],
+              },
+            })
+            .then((res) => {
+              setLoading(false);
+              console.log(res.data.events, 'current eventssss');
+              setCurrentEvent(res.data.events);
+              setStudentDataAll(res.data);
+            })
+            .catch((error) => {
+              setLoading(false);
+              setAlert('error', 'no attendance');
+              setStudentDataAll(null);
+              console.log(error);
+            });
+        } else {
+          axiosInstance
+            .get(`/academic/student_calender/`, {
+              params: {
+                start_date: history?.location?.state?.payload?.startDate,
+                end_date: history?.location?.state?.payload?.endDate,
+                erp_id: userName[0],
+              },
+            })
+            .then((res) => {
+              setLoading(false);
+              console.log(res, 'respond student');
+              setStudentDataAll(res.data);
+              let temp = [...res.data.present_list, ...res.data.absent_list];
+              setStudentData(temp);
+              setAlert('success', 'Data Sucessfully Fetched');
+            })
+            .catch((error) => {
+              setLoading(false);
+              console.log(error);
+            });
+        }
       }
     }
-  }
   }, [path]);
 
   useEffect(() => {
@@ -320,6 +323,8 @@ const AttedanceCalender = () => {
     setStudentDataAll(null);
     setCurrentEvent(null);
     setCounter(2);
+    // setStartDate(null)
+    // setEndDate(null);
   };
 
   function callApi(api, key) {
@@ -582,13 +587,15 @@ const AttedanceCalender = () => {
   const getStudentRange = () => {
     if (counter === 2) {
       axiosInstance
-        .get(`academic/student_calender/`, {
-          params: {
-            start_date: startDate,
-            end_date: endDate,
-            erp_id: userName[0],
-          },
-        })
+        .get(`academic/student_calender/?start_date=${startDate}&end_date=${endDate}&erp_id=${userName[0]}`
+        // , {
+        //   params: {
+        //     start_date: startDate,
+        //     end_date: endDate,
+        //     erp_id: userName[0],
+        //   },
+        // }
+        )
         .then((res) => {
           setLoading(false);
           console.log(res, 'respond student');
@@ -897,7 +904,7 @@ const AttedanceCalender = () => {
                 <Button
                   variant='contained'
                   size='small'
-                  color='secondary'
+                  color={counter === 1 ? 'primary' : 'secondary'}
                   className={counter === 1 ? 'viewDetailsButtonClick' : 'viewDetails'}
                   // className='viewDetails'
                   onClick={() => setDate()}
@@ -910,7 +917,7 @@ const AttedanceCalender = () => {
                 <Button
                   variant='contained'
                   size='small'
-                  color='secondary'
+                  color={counter === 2 ? 'primary' : 'secondary'}
                   className={counter === 2 ? 'viewDetailsButtonClick' : 'viewDetails'}
                   onClick={() => weeklyData()}
                 >
@@ -922,7 +929,7 @@ const AttedanceCalender = () => {
                 <Button
                   variant='contained'
                   size='small'
-                  color='secondary'
+                  color={counter === 3 ? 'primary' : 'secondary'}
                   className={counter === 3 ? 'viewDetailsButtonClick' : 'viewDetails'}
                   onClick={() => monthlyData()}
                 >
@@ -933,6 +940,8 @@ const AttedanceCalender = () => {
             </div>
             {counter === 2 ? (
               <RangeCalender
+                endDate={endDate}
+                startDate={startDate}
                 gradeID={selectedGrade}
                 branchID={selectedBranch}
                 sectionID={selectedSection}
