@@ -15,19 +15,19 @@ const TotalStudentBar = ({ fullData }) => {
             </Grid>
             <Grid item md={11} xs={12} className='totalStudentStrenghtLabel'>
               <span>Total Strength -&nbsp;</span>
-              <span>
+              <span className="totalbold">
                 &nbsp;
                 {(fullData && fullData.total_strength) || '0'}
                 &nbsp;
               </span>
               <span>&nbsp;/&nbsp;</span>
-              <span>
+              <span className="totalbold1">
                 &nbsp;
                 {(fullData && fullData.total_active) || '0'}
                 &nbsp;
               </span>
               <span>&nbsp;Active&nbsp;</span>
-              <span>
+              <span className="totalboldspace">
                 &nbsp;
                 {(fullData && fullData.new_admissions) || ''}
                 &nbsp;
@@ -43,7 +43,7 @@ const TotalStudentBar = ({ fullData }) => {
             </Grid>
             <Grid item md={4} xs={8} className='totalStudentStrenghtLabel1'>
               <span>Temporary Inactive - </span>
-              <span>{(fullData && fullData.total_temporary_inactive) || '0'}</span>
+              <span className="totalbold2">{(fullData && fullData.total_temporary_inactive) || '0'}</span>
             </Grid>
             <Grid
               item
@@ -56,7 +56,7 @@ const TotalStudentBar = ({ fullData }) => {
             </Grid>
             <Grid item md={4} xs={10} className='totalStudentStrenghtLabel2'>
               <span>Permanent Inactive - </span>
-              <span>{(fullData && fullData.total_permanent_inactive) || '0'}</span>
+              <span className="totalbold2">{(fullData && fullData.total_permanent_inactive) || '0'}</span>
             </Grid>
           </Grid>
         </Grid>

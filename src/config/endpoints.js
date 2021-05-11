@@ -44,6 +44,10 @@ export default {
     tableData: '/academic/time_table/',
     editTableData: '/academic/assign_class_periods/',
   },
+  communicationRoles: {
+    roles: '/academic/booked-appointment-role-list/',
+  },
+
   communication: {
     roles: '/erp_user/roles/',
     branches: '/erp_user/branch/',
@@ -288,10 +292,7 @@ export default {
     ebook: `${baseURLCentral}/ebook/ebook_school_wise_filter/`,
     EbookUser: `${baseURLCentral}/ebook/ebook_user/`,
     AnnotateEbook: `${baseURLCentral}/ebook/ebook_user_status/`,
-    // academicYearList: `${baseURLCentral}/erp_user/list-academic_year/`,
-    // // academicYearList: '/erp_user/list-academic_year/',
-    // gradeSubjectMappingList: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
-    // gradeList: `${baseURLCentral}/lesson_plan/list-grade/`,
+    EbookMappedGrade:'/academic/ebook_mapped_grades/'
   },
   teacherViewBatches: {
     courseListApi: '/aol/courses/',
@@ -304,6 +305,7 @@ export default {
     section: '/erp_user/section/',
     downloadTicket: '/academic/download_tickets/',
     listTickets: '/academic/list_tickets/',
+    getGrivienceList: '/academic/grevience-filter/',
     grievance_reply: '/academic/grievance_reply/',
   },
   studentViewBatchesApi: {
@@ -352,8 +354,8 @@ export default {
     questionPaperViewMore: `/assessment/<question-paper-id>/qp-questions-list/`,
     publishQuestionPaper: `/assessment/<question-paper-id>/update-status-question-paper/`,
     createQuestionPaper: `/assessment/question-paper/`,
-    createAssessment:'/assessment/test/',
-    deleteAssessmentTest:'/assessment/',
+    createAssessment: '/assessment/test/',
+    deleteAssessmentTest: '/assessment/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
   },
 
@@ -367,7 +369,7 @@ export default {
     userAssessmentQuestionAnalysis: `/assessment/category_analysis_report/`, // ?user=3446&assessment_id=3
     assessmentAnalysisTeacherExcel: `${baseURLCentral}/assessment/teacher-report/`, // ?type=1
     userAssessmentSubmission: `${baseURLCentral}/assessment/user_response/`,
-    userAssessmentTestSubmission:`assessment/submit-test/`,
+    userAssessmentTestSubmission: `assessment/submit-test/`,
     fetchAssessmentQuestionPapersQuestions: `/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },

@@ -102,11 +102,11 @@ function AddContact() {
       .then((result) => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
-            console.log(result?.data?.data || []);
+            // console.log(result?.data?.data || []);
             setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
-            console.log(result?.data?.data || []);
+            // console.log(result?.data?.data || []);
             setBranchList(result?.data?.data?.results || []);
           }
           setLoading(false);
@@ -121,29 +121,29 @@ function AddContact() {
       });
   }
   const handleSend = () => {
-    console.log('You Clicked on Send button');
+    // console.log('You Clicked on Send button');
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
       return;
     }
-    console.log(selectedBranch.length, '===============');
+    // console.log(selectedBranch.length, '===============');
     if (selectedBranch.length == 0) {
-      console.log(selectedBranch.length, '===============');
+      // console.log(selectedBranch.length, '===============');
       setAlert('warning', 'Select Branch');
       return;
     }
     if (!foe_contact) {
-      console.log(foe_contact, 'foe_contact');
+      // console.log(foe_contact, 'foe_contact');
       setAlert('warning', 'foe contact should not be empty');
       return;
     }
     if (!op_manager_contact) {
-      console.log(op_manager_contact, 'op_manager_contact');
+      // console.log(op_manager_contact, 'op_manager_contact');
       setAlert('warning', 'op_manager contact should not be empty');
       return;
     }
     if (!campus_incharge_contact) {
-      console.log(campus_incharge_contact, 'campus_incharge_contact');
+      // console.log(campus_incharge_contact, 'campus_incharge_contact');
       setAlert('warning', 'campus_incharge contact should not be empty');
       return;
     }
@@ -154,19 +154,19 @@ function AddContact() {
       operation_manager_contact_number: op_manager_contact,
       campus_in_charge_contact_number: campus_incharge_contact,
     };
-    console.log(payload);
+    // console.log(payload);
     setLoading(true);
     axiosInstance
       .post(`${endpoints.contactUs.createContact}`, payload)
       .then((res) => {
         setLoading(false);
         setAlert('success', 'Contacts posted successfully');
-        console.log(res);
+        // console.log(res);
       })
       .catch((err) => {
         setLoading(false);
         setAlert('error', 'something went wrong');
-        console.log(err);
+        // console.log(err);
       });
     setSelectedAcadmeicYear('');
     setSelectedBranch([]);
@@ -192,7 +192,7 @@ function AddContact() {
             style={{ width: '100%' }}
             onChange={(event, value) => {
               setSelectedAcadmeicYear(value);
-              console.log(value, 'test');
+              // console.log(value, 'test');
               if (value) {
                 callApi(
                   `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
@@ -229,7 +229,7 @@ function AddContact() {
                 // const ids = value.map((el)=>el)
                 const selectedId = value.branch.id;
                 setSelectedBranch(value);
-                console.log(value);
+                // console.log(value);
                 callApi(
                   `${endpoints.academics.grades}?session_year=${
                     selectedAcademicYear.id
@@ -258,6 +258,7 @@ function AddContact() {
           <TextField
             id='foe-contact-number'
             label='FOE Contact Number'
+            className='dropdownIcon'
             type='text'
             fullWidth
             value={foe_contact || ''}
@@ -270,6 +271,7 @@ function AddContact() {
             id='operational-manager-number'
             label='Operational Manager Contact Number'
             type='text'
+            className='dropdownIcon'
             value={op_manager_contact || ''}
             onChange={(e) => handleOpManagerContact(e)}
             fullWidth
@@ -281,6 +283,7 @@ function AddContact() {
             id='campus-incharge-number'
             label='Campus Incharge Contact Number'
             type='text'
+            className='dropdownIcon'
             value={campus_incharge_contact || ''}
             fullWidth
             onChange={(e) => handleCampusInchargeContact(e)}

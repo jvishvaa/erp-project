@@ -6,7 +6,7 @@ import { Grid, useTheme } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import DateFnsUtils from '@date-io/date-fns';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-
+import Loader from '../../components/loader/loader';
 import Paper from '@material-ui/core/Paper';
 import './Styles.scss';
 import {
@@ -16,7 +16,8 @@ import {
 } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
-
+import MomentUtils from '@date-io/moment';
+import moment from 'moment';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
@@ -28,6 +29,7 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import TextField from '@material-ui/core/TextField';
+import * as dayjs from 'dayjs';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -84,13 +86,16 @@ const EditAppointment = ({
   message,
   handleGoBack,
 }) => {
+  console.log(id, role, date, time, booking_mode, message, '======================');
   const { setAlert } = useContext(AlertNotificationContext);
-
+  const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-
+  const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
   const [data, setData] = useState([]);
+  const [startTime, setStartTime] = useState();
+  const [selectedStartTime, setSelectedStartTime] = useState(new Date(time));
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [roles, setRole] = useState([]);
@@ -98,24 +103,49 @@ const EditAppointment = ({
   const [editdata, setEditData] = useState();
 
   useEffect(() => {
-    axiosInstance.get(endpoints.communication.roles).then((response) => {
-      console.log(response.data.result);
+    // axiosInstance.get(endpoints.communication.roles).then((response) => {
+    //   console.log(response.data.result);
 
-      setRole(response.data.result);
-    });
+    //   setRole(response.data.result);
+    // });
+    setLoading(true);
+    axiosInstance
+      .get(`${endpoints.communicationRoles.roles}`)
+      .then((res) => {
+        setLoading(false);
+        // console.log(res, 'checking data');
+        setRole(res.data.data);
+        // setAlert('success', 'roles fecthed successfully');
+      })
+      .catch((err) => {
+        // console.log(err);
+        setLoading(false);
+        setAlert('error', err.message);
+      });
   }, []);
 
   const handleRole = (evt, value) => {
-    console.log('handelrole', value.id);
-    setRolename(value.id);
+    // console.log('handelrole', value?.id);
+    setRolename(value?.id);
   };
 
   const handlePagination = (event, page) => {
     setCurrentPage(page);
   };
+  const handleDateChange = (event, value) => {
+    // console.log('date', date.target.value);
+    setDateValue(value);
+  };
+  const handleStartTimeChange = (start_time) => {
+    console.log('time', start_time.toString().slice(16, 21));
+    const edittime = start_time.toString().slice(16, 21);
+    setSelectedStartTime(start_time);
+    setStartTime(edittime);
+    console.log(startTime, '===========>>>>');
+  };
 
   const handleChange = (e) => {
-    console.log('event::', e.target.value);
+    // console.log('event::', e.target.value);
     setEditData({ ...editdata, [e.target.name]: e.target.value });
   };
 
@@ -123,25 +153,29 @@ const EditAppointment = ({
     e.preventDefault();
     // setLoading(true);
 
-    console.log('editeddata', editdata);
-    console.log('id', id);
+    // console.log('editeddata', editdata);
+    // console.log('id', id);
+    setLoading(true);
     axiosInstance
       .put(`academic/${id}/${endpoints.Appointments.updateAppointment}`, {
         message: editdata.message,
-        appointment_time: editdata.appointment_time,
-        appointment_date: editdata.appointment_date,
+        appointment_time: moment(selectedStartTime).format('hh:mm'),
+        appointment_date: dateValue,
         booking_mode: editdata.booking_mode,
         role: editdata.role,
       })
 
       .then((result) => {
+        setLoading(false);
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
+          handleGoBack();
         } else {
           setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
+        setLoading(false);
         setAlert('error', error.message);
       });
   };
@@ -176,7 +210,12 @@ const EditAppointment = ({
               />
             </FormControl> */}
 
-            <FormControl variant='outlined' className={classes.formControl} size='small'>
+            <FormControl
+              variant='outlined'
+              style={{ marginTop: 24, width: '100%' }}
+              size='small'
+              className='dropdownIcon'
+            >
               <InputLabel id='demo-simple-select-outlined-label'>
                 Appointment With
               </InputLabel>
@@ -184,7 +223,8 @@ const EditAppointment = ({
                 labelId='demo-simple-select-outlined-label'
                 id='demo-simple-select-outlined'
                 name='role'
-                className='arrow'
+                // className='arrow'
+
                 onChange={handleChange}
                 labelWidth={170}
                 defaultValue={role?.id}
@@ -201,12 +241,13 @@ const EditAppointment = ({
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={5} md={3} lg={2}>
-            <TextField
+            {/* <TextField
               name='appointment_date'
               label='Appointment Date'
               InputLabelProps={{ shrink: true, required: true }}
               type='date'
-              className='button'
+              // className='button'
+              className='dropdownIcon'
               variant='outlined'
               fullWidth
               size='small'
@@ -214,30 +255,79 @@ const EditAppointment = ({
               onChange={handleChange}
               style={{ marginTop: 25 }}
               defaultValue={date}
-            />
+            /> */}
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <KeyboardDatePicker
+                size='small'
+                variant='dialog'
+                format='YYYY-MM-DD'
+                margin='none'
+                className='dropdownIcon'
+                id='date-picker'
+                label='Appointment Date'
+                minDate={new Date()}
+                inputVariant='outlined'
+                fullWidth
+                value={dateValue}
+                onChange={handleDateChange}
+                defaultValue={date}
+                // onChange={handleChange}
+                // className='dropdown'
+                style={{ width: '100%', marginTop: '9%' }}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </MuiPickersUtilsProvider>
           </Grid>
 
           <Grid item xs={12} sm={5} md={3} lg={2}>
-            <TextField
+            {/* <TextField
               name='appointment_time'
               label='Appointment Time'
               InputLabelProps={{ shrink: true, required: true }}
               type='time'
               format='12'
-              className='button'
+              // className='button'
+              className='dropdownIcon'
               variant='outlined'
               size='small'
               fullWidth
               onChange={handleChange}
               style={{ marginTop: 25 }}
               defaultValue={time}
-            />
+            /> */}
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <KeyboardTimePicker
+                size='small'
+                // style={{ width: '50%', marginTop: '-5%' }}
+                // className='arrow conte'
+                className='dropdownIcon'
+                variant='dialog'
+                id='time-picker'
+                label='Appointment Time'
+                inputVariant='outlined'
+                name='start_time'
+                value={selectedStartTime}
+                onChange={handleStartTimeChange}
+                style={{ width: '100%', marginTop: '9%' }}
+                KeyboardButtonProps={{
+                  'aria-label': 'change time',
+                }}
+                defaultValue={time}
+              />
+            </MuiPickersUtilsProvider>
           </Grid>
           <Grid item xs={12}>
             <Divider />
           </Grid>
           <Grid item xs={12} sm={5} md={3}>
-            <FormControl variant='outlined' className={classes.formControl} size='small'>
+            <FormControl
+              variant='outlined'
+              style={{ marginTop: 24, width: '100%' }}
+              size='small'
+              className='dropdownIcon'
+            >
               <InputLabel id='demo-simple-select-outlined-label'>
                 Appointment medium
               </InputLabel>
@@ -262,8 +352,9 @@ const EditAppointment = ({
       </Grid>
       <Grid item xs={12} md={10} sm={12}>
         <FormControl
-          className={classes.inputLabel}
+          style={{ marginLeft: 20, width: '70%' }}
           variant='outlined'
+          className='dropdownIcon'
           onChange={handleChange}
         >
           <InputLabel htmlFor='outlined-adornment-amount'>
@@ -315,7 +406,7 @@ const EditAppointment = ({
             size='medium'
             type='submit'
           >
-            Book Appointment
+            Update
           </Button>
         </Grid>
       </Grid>

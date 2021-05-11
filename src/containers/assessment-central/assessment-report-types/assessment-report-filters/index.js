@@ -26,7 +26,6 @@ const AssessmentReportFilters = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  const [classTopicAvg, setClassTopicAvg] = useState(classTopicAverage);
   const [dropdownData, setDropdownData] = useState({
     academic: [],
     branch: [],
@@ -123,8 +122,6 @@ const AssessmentReportFilters = ({
       setIsFilter(true);
     } else {
       for (const [key, value] of Object.entries(paramObj).reverse()) {
-        // if (key === 'academic_year_id' && !Boolean(value))
-        // setAlert('error', `Please select Academic Year.`);
         if (key === 'central_gs_id' && !Boolean(value))
           setAlert('error', `Please select Subject.`);
         if (key === 'section_mapping' && !Boolean(value))

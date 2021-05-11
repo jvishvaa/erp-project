@@ -17,6 +17,8 @@ import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountO
 import WifiTetheringIcon from '@material-ui/icons/WifiTethering';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import ReceiptRoundedIcon from '@material-ui/icons/ReceiptRounded';
+import ViewListIcon from '@material-ui/icons/ViewList';
 
 import {
   AccountBalance,
@@ -248,6 +250,14 @@ const menuIcon = (name) => {
     }
     case 'Calendar & Attendance': {
       icon = <CalendarTodayIcon />;
+      break;
+    }
+    case 'Appointment': {
+      icon = <ReceiptRoundedIcon />;
+      break;
+    }
+    case 'School Strength': {
+      icon = <ViewListIcon />;
       break;
     }
     

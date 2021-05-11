@@ -119,8 +119,8 @@ const Filter = ({ handleFilter, clearFilter }) => {
               <TextField
                 {...params}
                 variant='outlined'
-                label='Acadmic Year'
-                placeholder='Acadmic Year'
+                label='Academic Year'
+                placeholder='Academic Year'
               />
             )}  
           />

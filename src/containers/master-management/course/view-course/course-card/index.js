@@ -107,7 +107,6 @@ const CourseCard = ({
   const handleDelete = (e, index) => {
     //https://erpnew.letseduvate.com/qbox/aol/160/update-course/
     //https://erpnew.letseduvate.com/qbox/aol/132/update-course/
-    alert(e.id);
     axiosInstance
       .delete(`${endpoints.onlineCourses.deleteCourse}${e.id}/update-course/`)
       .then((result) => {
@@ -137,7 +136,7 @@ const CourseCard = ({
         "is_active":0
       }).then(result=>{
         if(result.data.status_code === 200){
-          setAlert('success',result.data.message)
+          setAlert('success','Course successfully Inactivated')
           handleCourseList(sendGrade,tabVal);
         }
         else{
@@ -150,7 +149,7 @@ const CourseCard = ({
         "is_active":1
       }).then(result=>{
         if(result.data.status_code === 200){
-          setAlert('success',result.data.message)
+          setAlert('success','Course successfully Activated')
           handleCourseList(sendGrade,tabVal);
         }
         else{
@@ -244,7 +243,7 @@ const CourseCard = ({
                     }}
                   >
                     <div style={{ padding: '20px 30px'}}>
-                      <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure you want to delete??</Typography>
+                      <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure you want to delete?</Typography>
                       <div>
                         <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
                         <StyledButton onClick={() => handleDelete(period)} style={{float: 'right'}}>Confirm</StyledButton>

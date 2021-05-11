@@ -180,9 +180,9 @@ class ViewEbook extends Component {
     }
     const domainTobeSent =subDomain 
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
-    const filterBranch = `${branch ? `&branch=${branch?.id}`:''}`;
-    const filterGrade = `${grade ? `&grade=${grade?.grade_id}`: ''}`;
-    const filterSubject = `${subject ? `&subject=${subject?.subject_id}`: ''}`;
+    const filterBranch = `${branch ? `&branch=${branch}`:''}`;
+    const filterGrade = `${grade ? `&grade=${grade?.central_grade}`: ''}`;
+    const filterSubject = `${subject ? `&subject=${grade?.central_subject}`: ''}`;
     const filterVolumes = `${vol ? `&volume=${vol?.id}`: ''}`;
     const { pageNo, pageSize,tabValue,moduleId } = this.state;
     let urlPath = ''

@@ -8,11 +8,11 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
     <>
       <Grid
         container
-        spacing={2}
+       
         className={
           (fullData && fullData.grade) === (selectedId && selectedId.grade)
             ? 'studentStrengthCardMainDivActive'
-            : 'studentStrengthCardMainDivInActive'
+            : 'studentStrengthCardMainDivInActive' 
         }
       >
         <Grid item md={6} xs={6} style={{ textAlign: 'left', padding: '0px' }}>
@@ -37,7 +37,7 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
                 &nbsp;Active
               </span>
             </Grid>
-            <Grid item md={8} xs={12} style={{ padding: '0px' }}>
+            <Grid item md={6} xs={12} style={{ padding: '0px' }}>
               <span style={{ color: '#009CE1', fontSize: '13px' }}>
                 Temporary Inactive -&nbsp;
                 {(fullData && fullData.temporary_inactive) || '0'}
@@ -48,11 +48,13 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
                 {(fullData && fullData.permanent_inactive) || '0'}
               </span>
             </Grid>
+            <Grid item md={2}></Grid>
             {(fullData && fullData.grade) !== (selectedId && selectedId.grade) && (
+              
               <Grid item md={4} xs={12} style={{ padding: '0px' }}>
                 <Button
-                  size='small'
-                  style={{ fontSize: '10px' }}
+                  size='medium'
+                 
                   variant='contained'
                   color='primary'
                   onClick={() => {
@@ -65,6 +67,7 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
             )}
           </Grid>
         </Grid>
+          
       </Grid>
     </>
   );

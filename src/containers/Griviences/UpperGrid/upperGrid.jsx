@@ -6,24 +6,33 @@ import endpoints from '../../../config/endpoints';
 import EmojiObjectsSharpIcon from '@material-ui/icons/EmojiObjectsSharp';
 import Select from '@material-ui/core/Select';
 import LayersClearIcon from '@material-ui/icons/LayersClear';
+import FilterFilledIcon from '../../../components/icon/FilterFilledIcon';
+
 import { Button, IconButton } from '@material-ui/core';
 import './upper-grid.scss';
 import { set } from 'lodash';
+import { Link } from 'react-router-dom';
 const UpperGrade = (props) => {
   const [dataMap, setDataMap] = useState([]);
-  const [acadamicYearID, setAcadamicYear] = useState(1);
+  const [acadamicYearID, setAcadamicYear] = useState('');
   const [acadamicYearData, setAcadamicYearData] = useState([]);
-  const [gevienceTypeID, setGevienceTypeID] = useState(1);
-  const [branchID, setBranchID] = useState(1);
+  const [gevienceTypeID, setGevienceTypeID] = useState();
+  const [branchID, setBranchID] = useState();
+  const [sectionID, setSectionID] = useState();
+  const [gradeID, setGradeID] = useState();
   const [counter, setCounter] = useState(1);
   const [academicYear, setAcadamicYearName] = useState();
   const [grevancesData, setGrevancesData] = useState();
   const [grevancesDataName, setGrevancesDataName] = useState();
   const [branchName, setBranchName] = useState();
+  const [gradeName, setGradeName] = useState();
+  const [sectionName, setSectionName] = useState();
+  const [studentView, setStudentView] = useState(false);
   const [openDialog] = useState(true);
-
+  const moduleId = 175;
   const handleChangeMultiple = (event) => {
     const { options } = event.target;
+    console.log(event, 'eventtttttttt');
     const value = [];
     for (
       let noOfOption = 0, length = options.length;
@@ -41,6 +50,14 @@ const UpperGrade = (props) => {
       setBranchID(value);
     }
     if (counter === 3) {
+      setGradeID(value);
+    }
+    if (counter === 4) {
+      setSectionID(value);
+      console.log(value, 'sameeraaaa');
+    }
+
+    if (counter === 5) {
       setGevienceTypeID(value);
     }
   };
@@ -55,20 +72,26 @@ const UpperGrade = (props) => {
       callingBranchAPI();
     }
     if (counter === 3) {
+      callingGradeAPI();
+    }
+    if (counter === 4) {
+      callingSectionAPI();
+    }
+    if (counter === 5) {
       callingGriviencesAPI();
     }
   };
-  const handleClearAll = () =>{
+  const handleClearAll = () => {
     setGrevancesDataName(null);
     setAcadamicYearData(null);
     setDataMap(null);
     setCounter(1);
-  }
+  };
   const callingGriviencesAPI = () => {
     axiosInstance
       .get('/academic/grievance_types/')
       .then((res) => {
-        console.log(res,'res data');
+        console.log(res, 'res data');
         if (res.status === 200) {
           console.log(res);
           setGrevancesData(res.data.data);
@@ -81,12 +104,40 @@ const UpperGrade = (props) => {
   };
   const callingBranchAPI = () => {
     axiosInstance
-    .get(
-      `${endpoints.communication.branches}?session_year=${acadamicYearID}&module_id=${201}`
-    )
+      .get(
+        `${endpoints.communication.branches}?session_year=${acadamicYearID}&module_id=${moduleId}`
+      )
       .then((res) => {
-        console.log(res.data.data , " branches ");
+        console.log(res.data.data.results);
         setDataMap(res.data.data.results);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const callingGradeAPI = () => {
+    axiosInstance
+      .get(
+        `${
+          endpoints.academics.grades
+        }?session_year=${acadamicYearID}&branch_id=${branchID.toString()}&module_id=${moduleId}`
+      )
+      .then((res) => {
+        console.log(res.data.data);
+        setDataMap(res.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const callingSectionAPI = () => {
+    axiosInstance
+      .get(
+        `${endpoints.academics.sections}?session_year=${acadamicYearID}&branch_id=${branchID}&grade_id=${gradeID}&module_id=${moduleId}`
+      )
+      .then((res) => {
+        console.log(res.data.data);
+        setDataMap(res.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -111,209 +162,394 @@ const UpperGrade = (props) => {
     }
   };
   const handleGenerateData = () => {
-    props.getGrivienceData();
+    let temp;
+    if (grevancesDataName === 'type 1') {
+      temp = 1;
+    } else if (grevancesDataName === 'type 2') {
+      temp = 2;
+    } else if (grevancesDataName === 'type 3') {
+      temp = 3;
+    } else if (grevancesDataName === 'type 4') {
+      temp = 4;
+    }
+    console.log(
+      acadamicYearID,
+      gevienceTypeID,
+      branchID,
+      gradeID,
+      sectionID,
+      temp,
+      '===============================>>>>>>>>>>>>>>>>>>>>'
+    );
+    props.getGrivienceData(
+      acadamicYearID,
+      gevienceTypeID,
+      branchID,
+      gradeID,
+      sectionID,
+      temp,
+
+      openDialog
+    );
     props.handlePassData(
       acadamicYearID,
       gevienceTypeID,
       branchID,
-      academicYear,
-      grevancesDataName,
-      branchName,
+      gradeID,
+      sectionID,
+      temp,
+
       openDialog
     );
   };
+  let path = window.location.pathname;
+  console.log(path, 'path');
+  useEffect(() => {
+    if (path === '/griviences/admin-view') {
+      console.log(path, 'path');
+      setStudentView(false);
+    }
+    if (path === '/griviences/student-view') {
+      console.log(path, 'path');
+      setStudentView(true);
+    }
+  }, []);
   return (
     <>
-      <div className='upper-table-container'>
-        <div className='all-box-container'>
-          <div
-            className={
-              counter === 1
-                ? 'grade-container'
-                : counter === 2
-                ? 'box-right-1'
-                : counter === 3
-                ? 'box-right-2'
-                : 'acadamic-year-box'
-            }
-          >
-            {counter === 1 ? (
-              <>
-                <div className='text-fixed'>Acadamic Year</div>
-                <div className='inner-grade-container'>
-                  <div className='change-grade-options'>
-                    <Select
-                      multiple
-                      fullWidth
-                      native
-                      value={acadamicYearID}
-                      onChange={handleChangeMultiple}
-                    >
-                      {acadamicYearData &&
-                        acadamicYearData.map((name) => (
-                          <option
-                            key={name?.id}
-                            value={name?.id}
-                            onClick={() => setAcadamicYearName(name?.session_year)}
-                          >
-                            {name?.session_year}
-                          </option>
-                        ))}
-                    </Select>
-                  </div>
-                  <div className='text-fixed-last'>
-                    Expand
-                    {/* <IconButton
+      {!studentView ? (
+        <div className='upper-table-container'>
+          <div className='all-box-container'>
+            <div
+              className={
+                counter === 1
+                  ? 'grade-container'
+                  : counter === 2
+                  ? 'box-right-1'
+                  : counter === 3
+                  ? 'box-right-2'
+                  : counter === 4
+                  ? 'box-right-3'
+                  : counter === 5
+                  ? 'box-right-4'
+                  : 'acadamic-year-box'
+              }
+            >
+              {counter === 1 ? (
+                <>
+                  <div className='text-fixed'>Acadamic Year</div>
+                  <div className='inner-grade-container'>
+                    <div className='change-grade-options'>
+                      <Select
+                        multiple
+                        fullWidth
+                        native
+                        value={acadamicYearID}
+                        onChange={handleChangeMultiple}
+                      >
+                        {acadamicYearData &&
+                          acadamicYearData.map((name) => (
+                            <option
+                              key={name?.id}
+                              value={name?.id}
+                              onClick={() => setAcadamicYearName(name?.session_year)}
+                            >
+                              {name?.session_year}
+                            </option>
+                          ))}
+                      </Select>
+                    </div>
+                    <div className='text-fixed-last'>
+                      Expand
+                      {/* <IconButton
                       disabled color="primary"
                       size='small'
                     >
                       <ArrowBackIcon className='arrow-button' />
                     </IconButton> */}
-                    <IconButton
-                      aria-label='delete'
-                      onClick={() => setCounter(counter + 1)}
-                      size='small'
-                    >
-                      <ArrowForwardIcon className='arrow-button' />
-                    </IconButton>
+                      <IconButton
+                        aria-label='delete'
+                        onClick={() => setCounter(counter + 1)}
+                        size='small'
+                      >
+                        <ArrowForwardIcon className='arrow-button' />
+                      </IconButton>
+                    </div>
                   </div>
-                </div>
-              </>
-            ) : (
-              <div className='text-rotate'>AcadamicYear</div>
-            )}
-          </div>
-          <div
-            className={
-              counter === 2
-                ? 'grade-container'
-                : counter === 1
-                ? 'box-last-1'
-                : counter === 3
-                ? 'box-right-1'
-                : 'box-last-2'
-            }
-          >
-            {counter === 2 ? (
-              <>
-                <div className='text-fixed'>Branch</div>
-                <div className='inner-grade-container'>
-                  <div className='change-grade-options'>
-                    <Select
-                      multiple
-                      fullWidth
-                      native
-                      value={branchID}
-                      onChange={handleChangeMultiple}
-                    >
-                      {dataMap &&
-                        dataMap?.map((name) => (
-                          <option
-                          key={name?.branch?.id}
-                          value={name?.branch?.id}
-                            onClick={() => setBranchName(name?.branch?.branch_name)}
-                          >
-                            {name?.branch?.branch_name}
-                          </option>
-                        ))}
-                    </Select>
+                </>
+              ) : (
+                <div className='text-rotate'>AcadamicYear</div>
+              )}
+            </div>
+            <div
+              className={
+                counter === 2
+                  ? 'grade-container'
+                  : counter === 1
+                  ? 'box-last-1'
+                  : counter === 3
+                  ? 'box-right-1'
+                  : counter === 4
+                  ? 'box-right-3'
+                  : counter === 5
+                  ? 'box-right-4'
+                  : 'box-last-2'
+              }
+            >
+              {counter === 2 ? (
+                <>
+                  <div className='text-fixed'>Branch</div>
+                  <div className='inner-grade-container'>
+                    <div className='change-grade-options'>
+                      <Select
+                        multiple
+                        fullWidth
+                        native
+                        value={branchID}
+                        onChange={handleChangeMultiple}
+                      >
+                        {dataMap &&
+                          dataMap?.map((name) => (
+                            <option
+                              key={name?.branch?.id}
+                              value={name?.branch?.id}
+                              onClick={() => setBranchName(name?.branch?.branch_name)}
+                            >
+                              {name?.branch?.branch_name}
+                            </option>
+                          ))}
+                      </Select>
+                    </div>
+                    <div className='text-fixed-last'>
+                      Expand
+                      <IconButton
+                        aria-label='delete'
+                        onClick={() => setCounter(counter - 1)}
+                        size='small'
+                      >
+                        <ArrowBackIcon className='arrow-button' />
+                      </IconButton>
+                      <IconButton onClick={() => setCounter(counter + 1)} size='small'>
+                        <ArrowForwardIcon className='arrow-button' />
+                      </IconButton>
+                    </div>
                   </div>
-                  <div className='text-fixed-last'>
-                    Expand
-                    <IconButton
-                      aria-label='delete'
-                      onClick={() => setCounter(counter - 1)}
-                      size='small'
-                    >
-                      <ArrowBackIcon className='arrow-button' />
-                    </IconButton>
-                    <IconButton onClick={() => setCounter(counter + 1)} size='small'>
-                      <ArrowForwardIcon className='arrow-button' />
-                    </IconButton>
+                </>
+              ) : (
+                <label className='text-rotate'>Branch</label>
+              )}
+            </div>
+            <div
+              className={
+                counter === 3
+                  ? 'grade-container'
+                  : counter === 1
+                  ? 'box-last-1'
+                  : counter === 2
+                  ? 'box-right-1'
+                  : counter === 4
+                  ? 'box-right-3'
+                  : counter === 5
+                  ? 'box-right-4'
+                  : 'box-last-2'
+              }
+            >
+              {counter === 3 ? (
+                <>
+                  <div className='text-fixed'>Grade</div>
+                  <div className='inner-grade-container'>
+                    <div className='change-grade-options'>
+                      <Select
+                        multiple
+                        fullWidth
+                        native
+                        value={gradeID}
+                        onChange={handleChangeMultiple}
+                      >
+                        {dataMap &&
+                          dataMap?.map((name) => (
+                            <option
+                              key={name?.grade_id}
+                              value={name?.grade_id}
+                              onClick={() => setGradeName(name?.grade_name)}
+                            >
+                              {name?.grade_name}
+                            </option>
+                          ))}
+                      </Select>
+                    </div>
+                    <div className='text-fixed-last'>
+                      Expand
+                      <IconButton
+                        aria-label='delete'
+                        onClick={() => setCounter(counter - 1)}
+                        size='small'
+                      >
+                        <ArrowBackIcon className='arrow-button' />
+                      </IconButton>
+                      <IconButton onClick={() => setCounter(counter + 1)} size='small'>
+                        <ArrowForwardIcon className='arrow-button' />
+                      </IconButton>
+                    </div>
                   </div>
-                </div>
-              </>
-            ) : (
-              <label className='text-rotate'>Branch</label>
-            )}
-          </div>
-          <div
-            className={
-              counter === 3
-                ? 'grade-container'
-                : counter === 1
-                ? 'box-last-2'
-                : counter === 2
-                ? 'box-last-1'
-                : 'box-last-2'
-            }
-          >
-            {counter === 3 ? (
-              <>
-                <div className='text-fixed'>Type</div>
-                <div className='inner-grade-container'>
-                  <div className='change-grade-options'>
-                    <Select
-                      multiple
-                      fullWidth
-                      native
-                      value={gevienceTypeID}
-                      onChange={handleChangeMultiple}
-                    >
-                      {grevancesData &&
-                        grevancesData.map((name) => (
-                          <option
-                            key={name.id}
-                            value={name.id}
-                            onClick={() => setGrevancesDataName(name?.grievance_name)}
-                          >
-                            {name?.grievance_name}
-                          </option>
-                        ))}
-                    </Select>
+                </>
+              ) : (
+                <label className='text-rotate'>Grade</label>
+              )}
+            </div>
+            <div
+              className={
+                counter === 4
+                  ? 'grade-container'
+                  : counter === 1
+                  ? 'box-last-1'
+                  : counter === 2
+                  ? 'box-right-1'
+                  : counter === 3
+                  ? 'box-right-3'
+                  : counter === 5
+                  ? 'box-right-4'
+                  : 'box-last-2'
+              }
+            >
+              {counter === 4 ? (
+                <>
+                  <div className='text-fixed'>Section</div>
+                  <div className='inner-grade-container'>
+                    <div className='change-grade-options'>
+                      <Select
+                        multiple
+                        fullWidth
+                        native
+                        value={sectionID}
+                        onChange={handleChangeMultiple}
+                      >
+                        {dataMap &&
+                          dataMap?.map((name) => (
+                            <option
+                              key={name?.id}
+                              value={name?.section_id}
+                              onClick={() => setSectionName(name?.section_name)}
+                            >
+                              {name?.section_name}
+                            </option>
+                          ))}
+                      </Select>
+                    </div>
+                    <div className='text-fixed-last'>
+                      Expand
+                      <IconButton
+                        aria-label='delete'
+                        onClick={() => setCounter(counter - 1)}
+                        size='small'
+                      >
+                        <ArrowBackIcon className='arrow-button' />
+                      </IconButton>
+                      <IconButton onClick={() => setCounter(counter + 1)} size='small'>
+                        <ArrowForwardIcon className='arrow-button' />
+                      </IconButton>
+                    </div>
                   </div>
-                  <div className='text-fixed-last'>
-                    Expand
-                    <IconButton
-                      aria-label='delete'
-                      onClick={() => handleCounter('back')}
-                      size='small'
-                    >
-                      <ArrowBackIcon className='arrow-button' />
-                    </IconButton>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className='text-rotate'>Type</div>
-            )}
-          </div>
-        </div>
+                </>
+              ) : (
+                <label className='text-rotate'>Section</label>
+              )}
+            </div>
 
-        <div className='table-button-container'>
-          <Button
-            size='small'
-            variant='contained'
-            className='clear-all'
-            onClick={handleClearAll}
-            startIcon={<LayersClearIcon />}
-          >
-            Clear All
-          </Button>
-          <div className='generate-button'>
-          <Button
-            size='small'
-            variant='contained'
-            color='primary'
-            className='signatureUploadFilterButton'
-            onClick={handleGenerateData}
-            startIcon={<EmojiObjectsSharpIcon />}
-          >
-            Filter
-          </Button>
+            <div
+              className={
+                counter === 5
+                  ? 'grade-container'
+                  : counter === 1
+                  ? 'box-last-2'
+                  : counter === 2
+                  ? 'box-last-1'
+                  : counter === 3
+                  ? 'box-right-3'
+                  : counter === 4
+                  ? 'box-right-4'
+                  : 'box-last-2'
+              }
+            >
+              {counter === 5 ? (
+                <>
+                  <div className='text-fixed'>Type</div>
+                  <div className='inner-grade-container'>
+                    <div className='change-grade-options'>
+                      <Select
+                        multiple
+                        fullWidth
+                        native
+                        value={gevienceTypeID}
+                        onChange={handleChangeMultiple}
+                      >
+                        {grevancesData &&
+                          grevancesData.map((name) => (
+                            <option
+                              key={name.id}
+                              value={name.id}
+                              onClick={() => setGrevancesDataName(name?.grievance_name)}
+                            >
+                              {name?.grievance_name}
+                            </option>
+                          ))}
+                      </Select>
+                    </div>
+                    <div className='text-fixed-last'>
+                      Expand
+                      <IconButton
+                        aria-label='delete'
+                        onClick={() => handleCounter('back')}
+                        size='small'
+                      >
+                        <ArrowBackIcon className='arrow-button' />
+                      </IconButton>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className='text-rotate'>Type</div>
+              )}
+            </div>
           </div>
+
+          <div className='table-button-container'>
+            <Button
+              size='small'
+              variant='contained'
+              className='clear-all'
+              onClick={handleClearAll}
+              startIcon={<LayersClearIcon />}
+            >
+              Clear All
+            </Button>
+            {/* <div className='generate-button'> */}
+
+            <Button
+              size='small'
+              variant='contained'
+              color='primary'
+              startIcon={<FilterFilledIcon />}
+              onClick={handleGenerateData}
+            >
+              <span style={{ color: 'white' }}> Filter</span>
+            </Button>
+
+            {/* </div> */}
+            {/* <div className='generate-button'> */}
+            <Button size='small' variant='contained' color='primary'>
+              <Link
+                to='/greviences/createnew'
+                style={{ textDecoration: 'none', color: 'white' }}
+              >
+                Add New
+              </Link>
+            </Button>
+          </div>
+          {/* </div> */}
         </div>
-      </div>
+      ) : (
+        ''
+      )}
     </>
   );
 };

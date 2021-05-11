@@ -665,6 +665,7 @@ const JoinClass = (props) => {
   const [isRejected, setIsRejected] = useState(
     props.data ? props.data.is_restricted : false
   );
+  const [attach, setAttach] = useState(false);
   const history = useHistory();
 
   const classStartTime = moment(props && props?.data && props?.data?.date).format(
@@ -677,14 +678,13 @@ const JoinClass = (props) => {
   const endTime = new Date(`${props.data.date}T${props?.data?.end_time}`).getTime();
   const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
   const diffTime = classTimeMilli - 5 * 60 * 1000;
-
-  // console.log(
-  //   classTimeMilli,
-  //   parseInt(currTime),
-  //   diffTime,
-  //   'TTTTTTTTTTT',
-  //   new Date(`${props.data.date}T${startTime}`).getTime()
-  // );
+  const diffAttachTime = classTimeMilli - 15 * 60 * 1000;
+  console.log(
+   
+    diffAttachTime,
+    currTime,
+  
+  );
 
   const handleCloseData = () => {
     setAnchorEl(null);
@@ -708,6 +708,11 @@ const JoinClass = (props) => {
       handleIsAccept();
     }
   };
+  const handleClickAtachment = (event) => {
+    if (parseInt(currTime) > diffAttachTime || parseInt(currTime) === diffAttachTime) {
+      setAttach(!attach);
+    }
+  }
 
   const handleIsAccept = () => {
     const params = {
@@ -1118,6 +1123,7 @@ const DetailCardView = ({
 }) => {
   const [noOfPeriods, setNoOfPeriods] = useState([]);
   const [loading, setLoading] = useState(false);
+  
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
