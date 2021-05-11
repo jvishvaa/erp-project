@@ -446,7 +446,6 @@ const CreateClassForm = (props) => {
     if (!isFutureTime) {
       setOnlineClass((prevState) => ({ ...prevState, selectedTime: new Date() }));
     }
-
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({
       ...prevState,
@@ -572,8 +571,8 @@ const CreateClassForm = (props) => {
       ? selectedDate.toISOString().split('T')[0]
       : selectedDate
       } ${getFormatedTime(selectedTime)}`;
-    const coHostEmails = coHosts.map((coHost) => coHost?.tutor_id);
-    // const tutorEmails = [tutorEmail.id, ...coHostEmails];
+    const coHostEmails = coHosts.map((coHost) => coHost?.email);
+    const tutorEmails = [tutorEmail.email , ...coHostEmails];
     let request = {};
     request['user_id'] = userId;
     request['title'] = title;
@@ -584,8 +583,8 @@ const CreateClassForm = (props) => {
       request['course'] = courseId;
     }
     request['tutor_id'] = tutorEmail.tutor_id;
-    // request['tutor_emails'] = tutorEmails.join(',');
-    request['tutor_emails'] = [...coHostEmails];
+    request['tutor_emails'] = tutorEmails.join(',');
+    // request['tutor_emails'] = [...coHostEmails];
     request['role'] = 'Student';
     request['start_time'] = startTime;
     if (weeks > 0) request['no_of_week'] = Number(weeks);
@@ -692,12 +691,11 @@ const CreateClassForm = (props) => {
 
   const checkTutorAvailability = async () => {
     const { selectedDate, selectedTime, duration } = onlineClass;
-
+ 
     const startTime = `${selectedDate.toString().includes(' ')
       ? selectedDate.toISOString().split('T')[0]
-      : selectedDate
+      : moment(selectedDate).format('YYYY-MM-DD')
       } ${getFormatedTime(selectedTime)}`;
-
     try {
       let url = toggle ?
         `/erp_user/check-tutor-time/?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}&no_of_week=${onlineClass.weeks}&is_recurring=1&week_days=${[...selectedDays].map((obj) => obj.send).join(',')}`
@@ -1053,7 +1051,7 @@ const CreateClassForm = (props) => {
                   size='small'
                   // disableToolbar
                   variant='dialog'
-                  format='MM/DD/YYYY'
+                  format='MM-DD-YYYY'
                   margin='none'
                   id='date-picker'
                   label='Start date'
