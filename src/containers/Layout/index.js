@@ -983,6 +983,10 @@ const Layout = ({ children, history }) => {
         history.push('/contact-us');
         break;
       }
+      case 'Student Attendance Report' : {
+        history.push('/student-attendance-report');
+        break;
+      }
       default:
         break;
     }

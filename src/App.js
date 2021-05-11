@@ -272,6 +272,7 @@ import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
 
 
 import MultiplayerQuiz from './components/mp-quiz'
+import StudentAttendance from 'containers/online-class/student-attendance/StudentAttendance';
 
 const theme = createMuiTheme({
   palette: {
@@ -1326,6 +1327,9 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/responder-view'>
                             {({ match }) => <ResponderView match={match} />}
+                          </Route>
+                          <Route exact path='/student-attendance-report'>
+                              {({match})=> <StudentAttendance match={match} />}
                           </Route>
                         </Switch>
                       </DailyDairyStore>
