@@ -232,6 +232,12 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   variant='outlined'
                   label='Session Year'
                   placeholder='Session Year'
+                  inputProps={{
+                    ...params.inputProps,
+                  
+                    required: filterData?.session.length === 0
+                    }} 
+                    required={true}
                 />
               )}
             />
@@ -256,6 +262,12 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   variant='outlined'
                   label='Branch'
                   placeholder='Branch'
+                  inputProps={{
+                    ...params.inputProps,
+                  
+                    required: filterData?.branch.length === 0
+                    }} 
+                    required={true}
                 />
               )}
             />
@@ -280,6 +292,12 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   variant='outlined'
                   label='Grade'
                   placeholder='Grade'
+                  inputProps={{
+                    ...params.inputProps,
+                  
+                    required: filterData?.grade.length === 0
+                    }} 
+                    required={true}
                 />
               )}
             />
@@ -304,6 +322,12 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   variant='outlined'
                   label='Section'
                   placeholder='Section'
+                  inputProps={{
+                    ...params.inputProps,
+                  
+                    required: filterData?.section.length === 0
+                    }} 
+                    required={true}
                 />
               )}
             />
