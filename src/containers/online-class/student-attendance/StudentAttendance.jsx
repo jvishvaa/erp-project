@@ -141,8 +141,12 @@ function StudentAttendance({ history }) {
       )
       .then((res) => {
         setLoading(false);
-        setAlert('success', 'Data Fetched Successfully');
         console.log(res.data.data);
+        if (res?.data?.data) {
+          setAlert('success', 'No Attednace');
+        } else {
+          setAlert('success', 'Data Fetched Successfully');
+        }
         setAttendeeList(res.data.data);
       })
       .catch((err) => {
@@ -213,7 +217,7 @@ function StudentAttendance({ history }) {
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
-                    console.log(value, 'type checking');
+                    // console.log(value, 'type checking');
                     setType(value.id);
                     setSelectedClassType(value);
                   }}
