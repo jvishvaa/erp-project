@@ -105,7 +105,7 @@ function StudentAttendance({ history }) {
       console.log('start date', moment(new Date(v1[0])).format('YYYY-MM-DD'));
       console.log('end date', moment(new Date(v1[1])).format('YYYY-MM-DD'));
     }
-    // setDateRangeTechPer(v1);
+    setDateRangeTechPer(v1);
   }
   const handleGetAttendance = () => {
     const payload = {
@@ -272,11 +272,13 @@ function StudentAttendance({ history }) {
                     <TableCell align='center'>Subject</TableCell>
                     <TableCell align='center'>No.of Present Days</TableCell>
                     <TableCell align='center'>No.of Absent Days</TableCell>
+                    <TableCell align='center'>Total Days</TableCell>
                   </TableRow>
                 </TableHead>
                 {arr && arr.length > 0 ? (
                   <TableBody className='styled__table-body'>
                     {arr.map((item, index) => {
+                      let total = item.absent + item.present;
                       return (
                         <TableRow key={item.id}>
                           <TableCell
@@ -290,6 +292,7 @@ function StudentAttendance({ history }) {
                           <TableCell align='center'>{item.present}</TableCell>
                           {/* <TableCell align='center'>{el.user.user.username}</TableCell> */}
                           <TableCell align='center'>{item.absent}</TableCell>
+                          <TableCell align='center'>{total}</TableCell>
                         </TableRow>
                       );
                     })}
