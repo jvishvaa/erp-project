@@ -81,9 +81,6 @@ const AssignQP = (props) => {
   const {location:{state:{data}={}}={}}=props||{}
   const history = useHistory()
   const { match: { params } } = props;
-  console.log(params,data,"@@@@@@@@@@@@@@@@@@@@@@@")
-
-  const [wordCount,setWordCount] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
   const themeContext = useTheme();
