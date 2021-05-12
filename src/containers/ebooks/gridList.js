@@ -91,16 +91,17 @@ function GridList(props) {
       } else if(subDomainLevels === 1){
           subDomain = hostSplitArray[0]
       }
-      const domainTobeSent = subDomain 
       setPdfUrl(url && url);
       setLoading(true);
       setOpen(true);
-      axios
-        .get(`${endpoints.ebook.EbookUser}?ebook_id=${data.id}`, {
-          headers: {
-            'x-api-key': 'vikash@12345#1231',
-          },
-        })
+      axiosInstance
+        .get(`${endpoints.ebook.EbookUser}?ebook_id=${data.id}`
+        // , {
+        //   headers: {
+        //     'x-api-key': 'vikash@12345#1231',
+        //   },
+        // }
+        )
         .then(({ data }) => {
           console.log(data);
           setLoading(false);
