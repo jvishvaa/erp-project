@@ -427,6 +427,10 @@ export default {
     updateContact: '/academic/contact_us_update/',
     filterContact: '/academic/contact_us/',
   },
+
+  attendanceTeacherView: {
+    getTeacherAttendanceView: "/academic/teacher-attendance-by-subject/",
+  },
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',
