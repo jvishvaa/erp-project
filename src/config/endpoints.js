@@ -384,6 +384,7 @@ export default {
   publish: {
     ebook: `erp_user/publication/`,
     update_delete: `erp_user/update-destroy-publication/`,
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   },
   assessmentApis: {
     gradesList: `/academic/sm-grades-list/`,

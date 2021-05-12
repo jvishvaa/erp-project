@@ -50,11 +50,18 @@ const OpenPublication = ({ ID }) => {
 
   useEffect(() => {
     axiosInstance.get(`${endpoints.publish.ebook}?publication_id=${ID}`).then((res) => {
-      setData(res.data.data);
-      const resp = res.data.data[0].file_list;
+      if (res) {
+        setData(res.data.data);
+        const resp = res.data.data[0].file_list;
 
-      setPdf(resp);
-      setLen(resp.length);
+        setPdf(resp);
+        setLen(resp.length);
+      } else {
+        setData('');
+
+        setPdf('');
+        setLen('');
+      }
     });
   }, []);
 
@@ -71,7 +78,7 @@ const OpenPublication = ({ ID }) => {
           <Grid container justifty='center' className={classes.root}>
             <Grid>
               <img
-                src={`${endpoints.s3}/publication/${pdf[increment]}`}
+                src={`${endpoints.publish.s3}/publication/${pdf[increment]}`}
                 width='100%'
                 height='100%'
                 style={{
@@ -115,7 +122,7 @@ const OpenPublication = ({ ID }) => {
         <Grid container direction='row' className={classes.root} justify='center'>
           <Grid item md={5}>
             <img
-              src={`${endpoints.s3}/publication/${pdf[increment]}`}
+              src={`${endpoints.publish.s3}/publication/${pdf[increment]}`}
               width='100%'
               height='100%'
               style={{
@@ -127,7 +134,7 @@ const OpenPublication = ({ ID }) => {
           </Grid>
           <Grid item md={5}>
             <img
-              src={`${endpoints.s3}/publication/${pdf[incrementNext]}`}
+              src={`${endpoints.publish.s3}/publication/${pdf[incrementNext]}`}
               width='100%'
               height='100%'
               style={{
