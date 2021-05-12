@@ -634,6 +634,8 @@ import Loader from '../../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import ResourceDialog from '../../../online-class/online-class-resources/resourceDialog';
 import CountdownTimer from './CountdownTimer';
+import UploadDialogBox from './UploadDialogBox';
+import ClassIcon from '@material-ui/icons/Class';
 import './index.css';
 import { useDispatch } from 'react-redux';
 import { attendanceAction } from '../../../../redux/actions/onlineClassActions';
@@ -648,6 +650,7 @@ import {
   IconButton,
 } from '@material-ui/core';
 import { useHistory, Route, withRouter } from 'react-router-dom';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { AttachFile as AttachFileIcon } from '@material-ui/icons';
 
 const JoinClass = (props) => {
@@ -657,10 +660,12 @@ const JoinClass = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const [joinAnchor, setJoinAnchor] = useState(null);
+  const [classWorkDialog, setDialogClassWorkBox] = useState(false);
   const [isAccept, setIsAccept] = useState(props.data ? props.data.is_accepted : false);
   const [isRejected, setIsRejected] = useState(
     props.data ? props.data.is_restricted : false
   );
+  const [attach, setAttach] = useState(false);
   const history = useHistory();
 
   const classStartTime = moment(props && props?.data && props?.data?.date).format(
@@ -673,14 +678,13 @@ const JoinClass = (props) => {
   const endTime = new Date(`${props.data.date}T${props?.data?.end_time}`).getTime();
   const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
   const diffTime = classTimeMilli - 5 * 60 * 1000;
-
-  // console.log(
-  //   classTimeMilli,
-  //   parseInt(currTime),
-  //   diffTime,
-  //   'TTTTTTTTTTT',
-  //   new Date(`${props.data.date}T${startTime}`).getTime()
-  // );
+  const diffAttachTime = classTimeMilli - 15 * 60 * 1000;
+  console.log(
+   
+    diffAttachTime,
+    currTime,
+  
+  );
 
   const handleCloseData = () => {
     setAnchorEl(null);
@@ -693,6 +697,9 @@ const JoinClass = (props) => {
   const handleCloseAccept = () => {
     setJoinAnchor(null);
   };
+  const handleOpenClassWorkDialogBox = (value) => {
+    setDialogClassWorkBox(value);
+  };
 
   const handleClickAccept = (event) => {
     if (diffTime > parseInt(currTime)) {
@@ -701,6 +708,11 @@ const JoinClass = (props) => {
       handleIsAccept();
     }
   };
+  const handleClickAtachment = (event) => {
+    if (parseInt(currTime) > diffAttachTime || parseInt(currTime) === diffAttachTime) {
+      setAttach(!attach);
+    }
+  }
 
   const handleIsAccept = () => {
     const params = {
@@ -825,18 +837,31 @@ const JoinClass = (props) => {
         </span>
       </Grid>
       {window.location.pathname === '/erp-online-class-student-view' ? (
-        <Grid item xs={3}>
-          <Button
-            size='small'
-            color='secondary'
-            fullWidth
-            variant='contained'
-            onClick={() => handleTakeQuiz(fullData)}
-            className='teacherFullViewSmallButtons'
-          >
-            TakeQuiz
-          </Button>
-        </Grid>
+        <>
+          <Grid item xs={3}>
+            <Button
+              size='small'
+              color='secondary'
+              fullWidth
+              variant='contained'
+              onClick={() => handleTakeQuiz(fullData)}
+              className='teacherFullViewSmallButtons'
+            >
+              TakeQuiz
+            </Button>
+          </Grid>
+
+          <Grid item xs={3}>
+            <IconButton color='primary' onClick={() => setDialogClassWorkBox(true)}>
+              <PhotoCamera />
+            </IconButton>
+            <UploadDialogBox
+              fullData={fullData}
+              classWorkDialog={classWorkDialog}
+              OpenDialogBox={handleOpenClassWorkDialogBox}
+            />
+          </Grid>
+        </>
       ) : (
         ''
       )}
@@ -862,18 +887,32 @@ const JoinClass = (props) => {
           </Button>
         </Grid>
       ) : window.location.pathname === '/erp-online-class-teacher-view' ? (
-        <Tooltip title='Attach Question Paper'>
-          <IconButton
-            onClick={() =>
-              history.push({
-                pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
-                state: { data: fullData.online_class.id },
-              })
-            }
-          >
-            <AttachFileIcon />
-          </IconButton>
-        </Tooltip>
+        <>
+          <Tooltip title='Attach Question Paper'>
+            <IconButton
+              onClick={() =>
+                history.push({
+                  pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
+                  state: { data: fullData.online_class.id },
+                })
+              }
+            >
+              <AttachFileIcon />
+            </IconButton>
+          </Tooltip>
+          <Grid item xs={3}>
+            <IconButton
+              color='primary'
+              onClick={() =>
+                history.push({
+                  pathname: `/erp-online-class/class-work/${fullData.online_class.id}/${fullData.id}`,
+                })
+              }
+            >
+              <ClassIcon />
+            </IconButton>
+          </Grid>
+        </>
       ) : (
         ''
       )}
@@ -1084,6 +1123,7 @@ const DetailCardView = ({
 }) => {
   const [noOfPeriods, setNoOfPeriods] = useState([]);
   const [loading, setLoading] = useState(false);
+  
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
@@ -1106,6 +1146,10 @@ const DetailCardView = ({
   }, [fullData]);
   */
   useEffect(() => {
+    handleCallaData();
+  }, [fullData, handleClose]);
+
+  const handleCallaData = () => {
     let detailsURL =
       window.location.pathname === '/erp-online-class-student-view'
         ? `erp_user/${fullData && fullData.id}/student-oc-details/`
@@ -1119,7 +1163,7 @@ const DetailCardView = ({
         })
         .catch((error) => setAlert('error', error.message));
     }
-  }, [fullData, handleClose]);
+  };
 
   const handleCloseData = () => {
     setAnchorEl(null);
@@ -1174,40 +1218,25 @@ const DetailCardView = ({
   const handleCoursePlan = () => {
     if (window.location.pathname === '/erp-online-class-student-view') {
       sessionStorage.setItem('isErpClass', 2);
-      history.push({
-        pathname: `/create/course/${
-          fullData.online_class && fullData.online_class.course_id
-        }/5`,
-        state: {
-          isOnline: true,
-        },
-      });
+      history.push(
+        `/create/course/${fullData.online_class && fullData.online_class.course_id}/5`
+      );
     } else if (window.location.pathname === '/erp-online-class-teacher-view') {
       sessionStorage.setItem('isErpClass', 3);
-      history.push({
-        pathname: `/create/course/${
-          fullData.online_class && fullData.online_class.cource_id
-        }/${
+      history.push(
+        `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
           // selectedGrade.map((el)=>el.id)
           1
-        }`,
-        state: {
-          isOnline: true,
-        },
-      });
+        }`
+      );
     } else if (window.location.pathname === '/erp-online-class') {
       sessionStorage.setItem('isErpClass', 1);
-      history.push({
-        pathname: `/create/course/${
-          fullData.online_class && fullData.online_class.cource_id
-        }/${
+      history.push(
+        `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
           // selectedGrade.map((el)=>el.id)
           1
-        }`,
-        state: {
-          isOnline: true,
-        },
-      });
+        }`
+      );
     }
   };
   const [openPopup, setOpenPopup] = React.useState(false);
@@ -1340,11 +1369,11 @@ const DetailCardView = ({
         selectedValue={selectedValue}
         open={openPopup}
         onClose={handleClosePopup}
-        title={fullData.online_class.title}
-        resourceId={fullData.id}
-        onlineClassId={fullData.online_class.id}
-        startDate={fullData.online_class.start_time}
-        endDate={fullData.online_class.end_time}
+        title={fullData?.online_class?.title}
+        resourceId={fullData?.id}
+        onlineClassId={fullData?.online_class?.id}
+        startDate={fullData?.online_class?.start_time}
+        endDate={fullData?.online_class?.end_time}
       />
       {loading && <Loader />}
     </>

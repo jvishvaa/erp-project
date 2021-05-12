@@ -256,7 +256,7 @@ const menuIcon = (name) => {
       icon = <ReceiptRoundedIcon />;
       break;
     }
-    case 'Student Strength': {
+    case 'School Strength': {
       icon = <ViewListIcon />;
       break;
     }

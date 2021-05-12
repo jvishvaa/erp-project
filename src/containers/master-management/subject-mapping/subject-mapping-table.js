@@ -280,7 +280,8 @@ const SubjectMappingTable = () => {
       selectedYear ||
       selectedBranch ||
       selectedGrades.length ||
-      selectedSections.length 
+      selectedSections.length ||
+      searchSubject
     ) {
       // setSelectedUsers([]);
       // setSelectAllObj([]);
@@ -342,6 +343,10 @@ const SubjectMappingTable = () => {
     if (selectedGrades.length) {
       const selectedGradeId = selectedGrades.map((el) => el.grade_name);
       getUserListUrl += `&grade_name=${selectedGradeId.toString()}`;
+    }
+    if (searchSubject) {
+      getUserListUrl += `&subject=${searchSubject}`;
+
     }
     // if (selectedSections.length) {
     //   const selectedSectionId = selectedSections.map((el) => el.section_name);
