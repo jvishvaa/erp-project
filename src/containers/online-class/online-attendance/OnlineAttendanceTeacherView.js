@@ -54,6 +54,7 @@ const OnlineAttendanceTeacherView=({history})=>{
 
   const [totalCount, setTotalCount] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [showData,setShowData]=useState([])
   const [isEdit, setIsEdit] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [attendeeList, setAttendeeList] = useState([]);
@@ -74,7 +75,7 @@ const OnlineAttendanceTeacherView=({history})=>{
     { id: 3, type: 'Parent Class' },
   ]);
   const [selectedClassType, setSelectedClassType] = useState('');
-  const moduleId=175;
+  const moduleId=178;
   // const [moduleId, setModuleId] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
@@ -214,74 +215,21 @@ const OnlineAttendanceTeacherView=({history})=>{
       setAlert('warning', 'Select Section');
       return;
     }
-    // if (!selectedAcademicYear) {
-    //   setAlert('warning', 'Select Academic Year');
-    //   return;
-    // }
-    // if (!selectedBranch.length > 0) {
-    //   setAlert('warning', 'Select Branch');
-    //   return;
-    // }
-    // if (!selectedGrade.length > 0) {
-    //   setAlert('warning', 'Select Grade');
-    //   return;
-    // }
-    // if (!selectedSection.length > 0) {
-    //   setAlert('warning', 'Select Section');
-    //   return;
-    // }
-   
-    // if (!startDate) {
-    //   setAlert('warning', 'Select Start Date');
-    //   return;
-    // }
     setLoading(true);
     setPage(1);
     axiosInstance
-    .get(`${endpoints.attendanceTeacherView.getTeacherAttendanceView}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${sectionMappingId}&class_type=${type}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&start_date=${startDateTechPer.format('YYYY-MM-DD')}`)
-    .then((res)=>console.log(res))
-    .catch((err)=>console.log(err))
-    // axiosInstance.get(`${endpoints.attendanceTeacherView.getTeacherAttendanceView}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el) => el.id)}&class_type=${selectedClassType.id}&start_date=${startDateTechPer.format(
-    //   'YYYY-MM-DD'
-    // )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&module_id=61`)
-    // .then((res)=>console.log("asss",res))
-    // `https://erpnew.letseduvate.com/qbox/erp_user/teacher_online_class/?page_number=1&page_size=15&class_type=1&is_aol=1&course=97&start_date=2021-02-21&end_date=2021-02-27`
-    // if (selectedCourse.id) {
-    //   callApi(
-    //     `${endpoints.attendanceTeacherView.getTeacherAttendanceView}?is_aol=0&session_year=${
-    //       selectedAcademicYear.id
-    //     }&section_mapping_ids=${selectedSection.map((el) => el.id)}&class_type=${
-    //       selectedClassType.id
-    //     }&start_date=${startDateTechPer.format(
-    //       'YYYY-MM-DD'
-    //     )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${
-    //       selectedCourse.id
-    //     }&module_id=${moduleId}`,      //&page_number=${page}&page_size=${limit}&module_id=${moduleId}
-    //     'filter'
-    //   );
-    // } else {
-    //   callApi(
-    //     `${endpoints.attendanceTeacherView.getTeacherAttendanceView}?is_aol=0&session_year=${
-    //       selectedAcademicYear.id
-    //     }&section_mapping_ids=${selectedSection.map(
-    //       (el) => el.id
-    //     )}&start_date=${startDateTechPer.format(
-    //       'YYYY-MM-DD'
-    //     )}&end_date=${endDateTechPer.format(
-    //       'YYYY-MM-DD'
-    //     )}&module_id=${moduleId}`,   //&page_number=1&page_size=15&module_id=${moduleId}&page=${page}&page_size=${limit}
-    //     'filter'
-    //   );
-    // }
-  }
+    .get(`${endpoints.attendanceTeacherView.getTeacherAttendanceView}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${sectionMappingId}&class_type=${type}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&module_id=${moduleId}`)
+    .then((res)=>{
+      console.log(res.data,"Tarun ka aPi")
+      let temp=[...res.data[0],...res.data[1]]
+      // console.log(res.data[0])
+      console.log(temp,"abc")
+      setShowData(temp)
+    })
 
-  // function handleDate(v1) {
-  //   if (v1 && v1.length !== 0) {
-  //     setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
-  //     setEndDate(moment(new Date(v1[1])).format('YYYY-MM-DD'));
-  //   }
-  //   setDateRangeTechPer(v1);
-  // }
+    .catch((err)=>console.log(err))
+    
+  }
     return (
         <>
           <Layout>
@@ -474,77 +422,6 @@ const OnlineAttendanceTeacherView=({history})=>{
             )}
           />
                       </Grid>
-                    
-                      {/* {selectedClassType?.id === 0 && gradeList.length > 0 ? (
-                        <Grid item md={3} xs={12}>
-                          <Autocomplete
-                            multiple
-                            style={{ width: '100%' }}
-                            size='small'
-                            onChange={(event, value) => {
-                              setSelectedSubject([]);
-                              if (value.length) {
-                                const ids = value.map((el) => el);
-                                setSelectedSubject(ids);
-                              }
-                              setBatchList([]);
-                              setSelectedBatch('');
-                              setFilterList([]);
-                              setPage(1)
-                            }}
-                            id='course_id'
-                            className='dropdownIcon'
-                            value={selectedSubject}
-                            options={subjectList}
-                            getOptionLabel={(option) => option?.subject__subject_name}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                variant='outlined'
-                                label='Subject'
-                                placeholder='Subject'
-                              />
-                            )}
-                          />
-                        </Grid>
-                      ) : (
-                        <Grid item md={3} xs={12}>
-                          <Autocomplete
-                            style={{ width: '100%' }}
-                            size='small'
-                            onChange={(event, value) => {
-                              setSelectedCourse(value);
-                              if (value) {
-                                callApi(
-                                  `${endpoints.teacherViewBatches.batchSizeList}?course_id=${
-                                    value && value.id
-                                  }`,
-                                  'batchsize'
-                                );
-                              }
-                              setBatchList([]);
-                              setSelectedBatch('');
-                              setFilterList([]);
-                              setPage(1)
-                            }}
-                            id='course_id'
-                            className='dropdownIcon'
-                            value={selectedCourse}
-                            options={courseList}
-                            getOptionLabel={(option) => option?.course_name}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                variant='outlined'
-                                label='Course'
-                                placeholder='Course'
-                              />
-                            )}
-                          />
-                        </Grid>
-                      )} */}
                       <Grid item xs={12} sm={3}>
                         <LocalizationProvider dateAdapter={MomentUtils}>
                           <DateRangePicker
@@ -576,7 +453,7 @@ const OnlineAttendanceTeacherView=({history})=>{
                   
                 </Grid>
     
-                {window.location.pathname !== '/erp-online-class-student-view' && (
+                {/* {window.location.pathname !== '/erp-online-class-student-view' && ( */}
                   <Grid container spacing={2} style={{ marginTop: '5px' }}>
                     <Grid item md={2} xs={12}>
                       <Button
@@ -599,10 +476,10 @@ const OnlineAttendanceTeacherView=({history})=>{
                       </Button>
                     </Grid>
                   </Grid>
-                )}
-                {window.location.pathname !== '/erp-online-class-student-view' && (
+                {/* )} */}
+                {/* {window.location.pathname !== '/erp-online-class-student-view' && ( */}
                   <Divider style={{ margin: '10px 0px' }} />
-                )}
+                {/* )} */}
                 {/* <Grid container spacing={2}> */}
                  
                 <div className='attendee__management-table'>
@@ -624,20 +501,22 @@ const OnlineAttendanceTeacherView=({history})=>{
                 <TableCell align='center'>Absent</TableCell>
               </TableRow>
             </TableHead>
-            {attendeeList && attendeeList.length >0 ? (
+            {showData && showData.length >0 ? (
               <TableBody className='styled__table-body'>
-                {attendeeList.map((el, index) => {
+                {showData.map((item, index) => {
                   return (
-                    <TableRow key={el.id}>
+                    <TableRow key={item.id}>
                       <TableCell
                         align='center'
                         className={`${isHidden ? 'hide' : 'show'}`}
                       >
                         {index + (currentPage * 10) - 9}
                       </TableCell>
-                      <TableCell align='center'>{el.user.user.first_name}</TableCell>
-                      <TableCell align='center'>{el.user.user.username}</TableCell>
-                      <TableCell align='center'>
+                      <TableCell align='center'>{item.subject}</TableCell>
+                      <TableCell align='center'>{item.online_class}</TableCell>
+                      <TableCell align='center'>{item.present_count}</TableCell>
+                      <TableCell align='center'>{item.absent_count}</TableCell>
+                      {/* <TableCell align='center'>
                         {isEdit ? (
                           <Switch
                             disabled={isUpdating}
@@ -654,7 +533,7 @@ const OnlineAttendanceTeacherView=({history})=>{
                               'Not attended'
                             )}
                         { }
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   );
                 })}
