@@ -37,6 +37,7 @@ const Attachment = (props) => {
     isAudioVideo = true;
     isVideoFile = true;
   }
+  console.log(props, 'teachers data');
 
   let markup = null;
 

@@ -404,10 +404,10 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
   // sessionStorage.setItem('isAol','isAol');
   const handleCoursePlan = () => {
     if (window.location.pathname === '/online-class/attend-class') {
-      history.push(`/create/course/${fullData.online_class && fullData?.online_class?.course_id}/${1}`)
+      history.push({ pathname: `/create/course/${fullData.online_class && fullData?.online_class?.course_id}/${1}`, state: { isOnline: true } })
       sessionStorage.setItem('isAol', 2);
     } else {
-      history.push(`/create/course/${fullData.online_class && fullData?.online_class?.cource_id}/${1}`)
+      history.push({ pathname: `/create/course/${fullData.online_class && fullData?.online_class?.cource_id}/${1}`, state: { isOnline: true } })
       sessionStorage.setItem('isAol', 3);
     }
   }

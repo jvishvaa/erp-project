@@ -15,6 +15,7 @@ const INITIAL_STATE = {
   testDate: moment().format('YYYY-MM-DD'),
   testInstructions: '',
   totalMarks: 0,
+  questionsLength: 0,
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
@@ -29,10 +30,10 @@ export default function reducer(state = INITIAL_STATE, action) {
       return { ...state, fetchingQuestionPaperDetails: false };
     case createAssesmentActions.CHANGE_TEST_FORM_FIELD:
       return { ...state, [action.field]: action.data };
-
+    case createAssesmentActions.QUESTIONS_LENGTH:
+      return { ...state, questionsLength: action.data };
     case createAssesmentActions.RESET_STATE:
       return { ...state, ...INITIAL_STATE };
-
     default:
       return state;
   }

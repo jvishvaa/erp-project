@@ -426,7 +426,13 @@ const AssessmentFilters = ({
           style={{ color: 'white' }}
           color='primary'
           className='custom_button_master modifyDesign'
-          onClick={() => history.push('/create-question-paper?show-question-paper=true')}
+          onClick={() =>
+            history.push({
+              pathname: '/create-question-paper',
+              search: 'show-question-paper=true',
+              state: { refresh: true },
+            })
+          }
           size='medium'
         >
           CREATE

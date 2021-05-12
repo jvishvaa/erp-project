@@ -36,6 +36,7 @@ const INITIAL_STATE = {
   selectedGrade: '',
   selectedSubject: [],
   selectedLevel: '',
+  questionPaperName: '',
 };
 
 export default function reducer(state = INITIAL_STATE, action) {

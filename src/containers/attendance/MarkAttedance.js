@@ -275,7 +275,7 @@ const MarkAttedance = () => {
         console.log(res.data);
         setNewData(res.data.results);
         setTotalGenre(res.data.count);
-        console.log(selectedSection.id, 'vinod');
+        // console.log(selectedSection.id, 'vinod');
         let sec = selectedSection.id;
         var result = res.data.results.map((item) => ({
           name:
@@ -393,7 +393,7 @@ const MarkAttedance = () => {
       branch_id: selectedBranch,
       grade_id: selectedGrade,
       section_id: selectedSection,
-      startDate: dateValue,
+      startDate: history?.location?.state?.payload?.startDate,
       endDate: history?.location?.state?.payload?.endDate,
       counter: history?.location?.state?.payload?.counter,
     };

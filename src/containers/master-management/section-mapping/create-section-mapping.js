@@ -33,7 +33,7 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
       .post(endpoints.masterManagement.createSectionMapping, {
         session_year: filterData.session?.map(({ id }) => id),
         branch_id: filterData.branch?.map(({ id }) => id),
-        grade_id: filterData.grade?.map(({ grade_id }) => grade_id),
+        grade_id: filterData.grade?.map(({ id }) => id),
         section_id: filterData.section?.map(({ id }) => id),
       })
       .then((result) => {
@@ -139,13 +139,13 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
       let sessionIds = filterData.session?.map(({ id }) => id);
       axiosInstance
         .get(
-          `${endpoints.masterManagement.gradesDrop}?session_year=${sessionIds}&branch_id=${ids}&module_id=${moduleId}`
+          `${endpoints.masterManagement.grades}?session_year=${sessionIds}&branch_id=${ids}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code > 199 && result.data.status_code < 300) {
             setDropDown({
               ...dropDown,
-              gradeDrop: result.data?.data,
+              gradeDrop: result.data?.result?.results,
               sectionDrop: [],
             });
           } else {
@@ -174,7 +174,7 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
         grade: value,
         section: [],
       });
-      let ids = value.map(({ grade_id }) => grade_id);
+      let ids = value.map(({ id }) => id);
       let sessionIds = filterData.session?.map(({ id }) => id);
       let branchIds = filterData.branch?.map(({ id }) => id);
       axiosInstance
@@ -232,6 +232,12 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   variant='outlined'
                   label='Session Year'
                   placeholder='Session Year'
+                  inputProps={{
+                    ...params.inputProps,
+                  
+                    required: filterData?.session.length === 0
+                    }} 
+                    required={true}
                 />
               )}
             />
@@ -256,6 +262,12 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   variant='outlined'
                   label='Branch'
                   placeholder='Branch'
+                  inputProps={{
+                    ...params.inputProps,
+                  
+                    required: filterData?.branch.length === 0
+                    }} 
+                    required={true}
                 />
               )}
             />
@@ -280,6 +292,12 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   variant='outlined'
                   label='Grade'
                   placeholder='Grade'
+                  inputProps={{
+                    ...params.inputProps,
+                  
+                    required: filterData?.grade.length === 0
+                    }} 
+                    required={true}
                 />
               )}
             />
@@ -304,6 +322,12 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   variant='outlined'
                   label='Section'
                   placeholder='Section'
+                  inputProps={{
+                    ...params.inputProps,
+                  
+                    required: filterData?.section.length === 0
+                    }} 
+                    required={true}
                 />
               )}
             />
