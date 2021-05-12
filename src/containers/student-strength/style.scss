@@ -1,6 +1,8 @@
 .studentStrenghtBody {
     background-color: #F9F9F9;
     margin-bottom: 10px !important;
+
+    
     .signatureNavDiv {
         .SignatureNavigationLinks {
             color: #014B7E;
@@ -11,6 +13,8 @@
             background-color: #F9F9F9 !important;
             border: none !important;
             cursor: pointer;
+            
+            // clip-path: polygon(0 0, 100% 0%, 97% 100%, 0% 100%); 
         }
         .SignatureUploadNavArrow {
             color: #ff6b6b;
@@ -20,7 +24,8 @@
     }
 }
 .studentStrenghtBody1 {
-    padding: 20px 40px !important;
+    padding: 20px 35px !important;
+    // margin: 10px 10px !important;
 }
 .studentStrengthFilterDiv {
     padding: 20px 40px !important;
@@ -29,12 +34,12 @@
     margin: 30px 0px !important;
 }
 .studentStrenghtFilterButton {
-    // font-size: 11px !important;  
+    font-size: 11px !important;  
     border-radius: 8x !important;
 }
 .studentStrenghtDownloadButton {
 
-    // font-size: 10px !important;
+    font-size: 10px !important;
     border-radius: 8x !important;
     color: #014B7E !important;
     border-color: #FF6B6B !important;
@@ -50,29 +55,32 @@
     font-size: 20px !important;
 }
 .totalbold2{
-    font-size: 25px !important;
+    font-size: 20px !important;
     font-weight: bold !important;
 }
+
 .totalboldspace{
-    margin-left: 30px!important; 
-    // font-size: 20px !important;
+     
+    font-size: 20px !important;
     font-weight: bold !important;
-
-
+}
+.totalboldspace123{
+    margin-left: 30px!important;
 }
 
 .totalStudentStrenghtMainDiv {
-    width: 84% !important;
+    width: 100% !important;
     border-radius: 10px !important;
     border: 1px solid #014B7E;
     border-color: #014B7E;
     opacity: 1;
 }
 .totalStudentStrenghtSubDiv1 {
-    padding: 2px 5px !important;
+    padding: 4px 10px !important;
     color: white !important;
     border-radius: 8px 0px 0px 8px !important;
     background-color: #014B7E !important;
+    clip-path: polygon(0 0, 100% 0%, 97% 100%, 0% 100%); 
 }
 .totalStudentStrenghtSubDiv2 {
     padding: 2px 5px !important;
@@ -142,10 +150,7 @@
 .totalStudentMainCard {
     padding: 1px 20px !important;
 }
-// .MuiGrid-spacing-xs-2 > .MuiGrid-item {
-//     padding: 8px;
-//     margin-right: inherit;
-// }
+
 .totalStudentSubCard {
     border: 1px solid #FF6B6B;
     border-radius: 10px;

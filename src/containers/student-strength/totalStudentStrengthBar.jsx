@@ -27,9 +27,12 @@ const TotalStudentBar = ({ fullData }) => {
                 &nbsp;
               </span>
               <span>&nbsp;Active&nbsp;</span>
-              <span className="totalboldspace">
+              <span className="totalboldspace123">
                 &nbsp;
-                {(fullData && fullData.new_admissions) || ''}
+                {fullData?.new_admissions.split('-')[0]+'-'+fullData?.new_admissions.split('-')[1]+'-'}
+                <span className="totalboldspace">
+                {fullData?.new_admissions.split('-')[2]}
+                </span>
                 &nbsp;
               </span>
             </Grid>
@@ -43,7 +46,7 @@ const TotalStudentBar = ({ fullData }) => {
             </Grid>
             <Grid item md={4} xs={8} className='totalStudentStrenghtLabel1'>
               <span>Temporary Inactive - </span>
-              <span className="totalbold2">{(fullData && fullData.total_temporary_inactive) || '0'}</span>
+              <span className="totalbold2 ">{(fullData && fullData.total_temporary_inactive) || '0'}</span>
             </Grid>
             <Grid
               item
@@ -57,7 +60,7 @@ const TotalStudentBar = ({ fullData }) => {
             <Grid item md={4} xs={10} className='totalStudentStrenghtLabel2'>
               <span>Permanent Inactive - </span>
               <span className="totalbold2">{(fullData && fullData.total_permanent_inactive) || '0'}</span>
-            </Grid>
+            </Grid> 
           </Grid>
         </Grid>
       </Grid>

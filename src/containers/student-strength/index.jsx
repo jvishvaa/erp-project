@@ -148,7 +148,7 @@ const moduleId=178;
           </Grid>
           <Grid item md={12} xs={12} className='studentStrengthFilterDiv'>
             <Grid container spacing={2}>
-              <Grid item md={4} xs={12}>
+              <Grid item md={3} xs={12}>
             <Autocomplete
             style={{ width: '100%' }}
             size='small'
@@ -178,7 +178,7 @@ const moduleId=178;
             )}
           />
               </Grid>
-              <Grid item md={4} xs={12}>
+              <Grid item md={3} xs={12}>
                <Autocomplete
             style={{ width: '100%' }}
             size='small'
@@ -239,8 +239,7 @@ const moduleId=178;
                   FILTER
                 </Button>
               </Grid>
-              <Grid item md={4} />
-              {selectedAcademicYear && (
+              <Grid item md={6} />
                 <Grid item md={2} xs={12}>
                   <Button
                     size='medium'
@@ -251,9 +250,7 @@ const moduleId=178;
                     Download all Branch excel
                   </Button>
                 </Grid>
-              )}
-              {selectedAcademicYear && selectedBranch && (
-                <Grid item md={2} xs={12}>
+               <Grid item md={2} xs={12}>
                   <Button
                     variant='contained'
                     size='medium'
@@ -265,7 +262,6 @@ const moduleId=178;
                     Download Branch excel
                   </Button>
                 </Grid>
-              )}
             </Grid>
           </Grid>
         </Grid>
@@ -288,7 +284,7 @@ const moduleId=178;
             </Grid>
             <Grid
               item
-              md={selectedCard ? 6 : 9}
+              md={selectedCard ? 6 : 12}
               xs={12}
               className='studentStrenghtBody2'
             >
@@ -308,7 +304,7 @@ const moduleId=178;
               </Grid>
             </Grid>
             {selectedCard && (
-              <Grid item md={4} xs={12} className='studentStrenghtBody3'>
+              <Grid item md={6} xs={12} className='studentStrenghtBody2'>
                 <TotalStudentWiseDetails
                   year={(selectedAcademicYear && selectedAcademicYear.id) || 0}
                   branch={(selectedBranch && selectedBranch.id) || 0}
@@ -320,7 +316,8 @@ const moduleId=178;
           </Grid>
         )}
 
-        <Grid container justify='center'>
+       { filteredData && filteredData.grade_wise_data ?
+       <Grid container justify='center'>
         <Pagination
             onChange={handlePagination}
             style={{ marginTop: 25 }}
@@ -328,7 +325,7 @@ const moduleId=178;
             color='primary'
             page={page}
           />
-          </Grid>
+          </Grid>:''}
         {loading && <Loader />}
       </div>
     </Layout>

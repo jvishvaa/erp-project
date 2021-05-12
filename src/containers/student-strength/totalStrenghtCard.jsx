@@ -54,7 +54,7 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
               <Grid item md={4} xs={12} style={{ padding: '0px' }}>
                 <Button
                   size='medium'
-                 
+                 className='studentStrenghtFilterButton'
                   variant='contained'
                   color='primary'
                   onClick={() => {
