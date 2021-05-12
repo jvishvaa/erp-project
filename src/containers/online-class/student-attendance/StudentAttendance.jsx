@@ -142,8 +142,8 @@ function StudentAttendance({ history }) {
       .then((res) => {
         setLoading(false);
         console.log(res.data.data);
-        if (res?.data?.data) {
-          setAlert('success', 'No Attednace');
+        if (res?.data?.data?.length == 0) {
+          setAlert('success', 'No Attendnace');
         } else {
           setAlert('success', 'Data Fetched Successfully');
         }
