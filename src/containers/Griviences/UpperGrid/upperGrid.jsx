@@ -33,7 +33,33 @@ const UpperGrade = (props) => {
   const [studentView, setStudentView] = useState(false);
   const [userID, setUserID] = useState();
   const [openDialog] = useState(true);
-  const moduleId = 175;
+  let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
+  //const moduleId = 175;
+
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Griviences' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Griviences Student' && userName.role !== 'SuperUser') {
+              setModuleId(item.child_id);
+            }
+            if (item.child_name === 'Griviences Teacher') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   const handleChangeMultiple = (event) => {
     const { options } = event.target;
     console.log(event, 'eventtttttttt');
