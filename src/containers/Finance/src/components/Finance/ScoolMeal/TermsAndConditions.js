@@ -73,7 +73,6 @@ const TermsAndConditions = ({ classes, session, history, dataLoading, fetchBranc
   }, [alert, fetchBranches, sessionYear, user])
 
   useEffect(() => {
-    console.log(termsList)
   })
 
   const handleSession = (e) => {
@@ -91,7 +90,6 @@ const TermsAndConditions = ({ classes, session, history, dataLoading, fetchBranc
   }
 
   const getTermsHandler = () => {
-    console.log('fetch all terms')
     fetchTermList(sessionYear.value, branchData.value, alert, user)
   }
 

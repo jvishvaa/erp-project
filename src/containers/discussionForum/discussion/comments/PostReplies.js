@@ -68,7 +68,6 @@ const useStyles = makeStyles({
 
 export default function PostRepliesComponent(props) {
   const classes = useStyles({});
-  console.log('commentRow');
   const { commentRow } = props;
   return (
     <Grid container className={classes.replyCommentBox}>

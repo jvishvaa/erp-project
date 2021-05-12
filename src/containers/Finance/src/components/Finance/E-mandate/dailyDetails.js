@@ -34,7 +34,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -66,24 +65,18 @@ const DailyBillingDetailsPage = ({ dataLoadingStatus, totalBillingDetails, domai
   }, [])
 
   useEffect(() => {
-    console.log('qwerty', totalBillingDetai)
-    console.log('qaz', totalBillingDetai)
     if (totalBillingDetai) {
       let data = totalBillingDetai
       let arr1 = data[0]
       let arr2 = data.shift()
-      console.log('aar1 aar2', arr1, arr2)
       setData(arr1)
       setDataDateWsie(data)
-      console.log('old', data)
-      console.log(data)
     }
   }, [qwerty, totalBillingDetai])
 
   useEffect(() => {
     if (totalBillingDetail) {
       setDataDateWsie(totalBillingDetail)
-      console.log('new', totalBillingDetail)
     }
   }, [totalBillingDetail])
 
@@ -206,7 +199,6 @@ const DailyBillingDetailsPage = ({ dataLoadingStatus, totalBillingDetails, domai
     //     }
     //   ])
     // })
-    // console.log('body: ', body)
     // // const body = [
     // //   {
     // //     value: promoted,
@@ -225,7 +217,6 @@ const DailyBillingDetailsPage = ({ dataLoadingStatus, totalBillingDetails, domai
     // }
   }
 
-  console.log(data)
   return (
     <Layout>
     <div>

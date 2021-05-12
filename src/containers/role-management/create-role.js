@@ -1,4 +1,4 @@
-/* eslint-disable no-debugger */
+
 /* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -81,6 +81,7 @@ class CreateRole extends Component {
     alterCreateRolePermissionsState(modulesArray);
   };
 
+
   handleCreateRole = () => {
     // eslint-disable-next-line camelcase
     const { history } = this.props;
@@ -111,21 +112,11 @@ class CreateRole extends Component {
         const includeInRequest = Object.keys(currentSubModule).some((key) => {
           if (key.includes('my_')) {
             if (currentSubModule[key]) {
-              console.log(
-                'included in request because non custom scope is true',
-                currentSubModule
-              );
-
               return true;
             }
           }
           if (key.includes('custom_')) {
             if (currentSubModule[key].length > 0) {
-              console.log(
-                'included in request because custom scope is true',
-                currentSubModule
-              );
-
               return true;
             }
           }
@@ -250,7 +241,7 @@ class CreateRole extends Component {
             </div>
           </Grid>
           <Grid item>
-            <Button onClick={this.handleCreateRole}>Add Role</Button>
+            <Button variant='contained' color='primary'  onClick={this.handleCreateRole}>Add Role</Button>
           </Grid>
         </Grid>
         <Grid container spacing={2} className={classes.spacer}>

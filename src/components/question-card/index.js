@@ -84,7 +84,6 @@ const QuestionCard = ({
       attachmentsRef.current.scrollLeft -= 150;
     } else {
       attachmentsRef.current.scrollLeft += 150;
-      console.log(attachmentsRef.current.scrollLeft, attachmentsRef.current.scrollRight);
     }
   };
 
@@ -117,7 +116,6 @@ const QuestionCard = ({
     
     if(isValid?.isValid) {
       try {
-        // console.log(file,"=====File=====");
         if (
           file.name.lastIndexOf('.pdf') > 0 ||
           file.name.lastIndexOf('.jpeg') > 0 ||
@@ -180,11 +178,10 @@ const QuestionCard = ({
       return;
     }
     onChange('attachments', attachments);
-    console.log('triggered attachment change');
   }, [attachments]);
 
   return (
-    <Grid container className='question-container'>
+    <Grid container className='home-question-container'>
       <Dialog maxWidth='sm' open={openAttachmentModal} onClose={closeAttachmentsModal}>
         <DialogTitle color='primary'>Attachments</DialogTitle>
         <DialogContent style={{ maxHeight: '60vh', overflow: 'auto' }}>
@@ -305,7 +302,6 @@ const QuestionCard = ({
                         ref={attachmentsRef}
                         onScroll={(e) => {
                           e.preventDefault();
-                          console.log('scrolled');
                         }}
                       >
                         {attachmentPreviews.map((url, i) => (
@@ -316,7 +312,7 @@ const QuestionCard = ({
                                   key={`homework_student_question_attachment_${i}`}
                                   fileUrl={url}
                                   fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.s3}/homework`}
+                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                   index={i}
                                   actions={['preview', 'download','delete']}
                                   onDelete={removeAttachment}
@@ -330,7 +326,7 @@ const QuestionCard = ({
                           <SRLWrapper>
                             {attachmentPreviews.map((url, i) => (
                               <img
-                                src={`${endpoints.s3}/homework/${url}`}
+                                src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                 onError={(e) => {
                                   e.target.src = placeholder;
                                 }}

@@ -41,7 +41,7 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
           setLoading(false);
           setOptional(false);
           handleGoBack();
-          setAlert('success', `Subject ${result.data?.message||result.data?.msg}`);
+          setAlert('success', ` ${result.data?.message||result.data?.msg}`);
         } else {
           setLoading(false);
           setAlert('error', result.data?.message||result.data?.msg);

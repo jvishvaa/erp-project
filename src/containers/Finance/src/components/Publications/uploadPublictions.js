@@ -47,11 +47,9 @@ class UploadEbook extends Component {
 
   onDrop = (file) => {
     this.setState({ file })
-    // console.log('file', file)
   };
   onPublicationThumbnail = (publicationIcon) => {
     this.setState({ publicationIcon: publicationIcon, iconCheck: true })
-    // console.log('thumbnail', publicationIcon)
     // const file = publicationIcon[0]
     // this.setState({
     //   publicationIconPreview: URL.createObjectURL(file)
@@ -64,7 +62,6 @@ class UploadEbook extends Component {
     this.setState({ publicationZone: e.target.value })
   };
   onChange = (data) => {
-    console.log('Zone', data)
     for (let key in data) {
       this.setState({ [key]: data[key] })
     }
@@ -82,7 +79,6 @@ class UploadEbook extends Component {
       publicationIcon,
       publicationTitle
     } = this.state
-    console.log('upload', publicationEdition)
     let formData = new FormData()
     formData.append('to_publish', true)
     formData.append('title', publicationTitle)
@@ -98,7 +94,6 @@ class UploadEbook extends Component {
     // formData.append('zone_id', '3')
     // formData.append('file', 'Elemental.pdf')
     // formData.append('thumbnail', 'tea_field-wallpaper-1366x768.jpg')
-    // console.log('formData', formData)
     axios
       .post(urls.PublicationUpload, formData, {
         headers: {
@@ -108,7 +103,6 @@ class UploadEbook extends Component {
       })
       .then((res) => {
         this.props.alert.success(res.data.status)
-        console.log('response', res)
         this.setState({ loading: false })
         this.setState(
           {
@@ -128,7 +122,6 @@ class UploadEbook extends Component {
         this.setState({
           loading: false
         })
-        console.log('erroe', error)
         this.props.alert.error('Something went wrong')
         // this.props.alert.error(error.response.data.error)
       })
@@ -142,13 +135,11 @@ class UploadEbook extends Component {
         }
       })
       .then(({ data }) => {
-        console.log('Data', data.result)
         this.setState({ PublicationZone: data.result })
       })
       .catch((error) => {
         if (error.response && error.response.status === 404) {
         }
-        console.log(error.response)
       })
   }
   _onFocus = (e) => {
@@ -160,10 +151,8 @@ class UploadEbook extends Component {
     e.currentTarget.placeholder = 'Edition'
   };
   onCustomIcon = (e) => {
-    // console.log('custo', e.target.value)
     // this.setState({ customIcon: true })
     const { checked } = e.target
-    // console.log('custo', checked)
     this.setState({
       customIcon: checked
     })
@@ -232,7 +221,6 @@ class UploadEbook extends Component {
                     <MenuItem value={'Nozone'}>No Zone</MenuItem>
                   ) : (
                     PublicationZone.map((item) => {
-                      // console.log('item', item)
                       return (
                         <MenuItem value={item.id}>{item.zone_name}</MenuItem>
                       )
@@ -286,7 +274,6 @@ class UploadEbook extends Component {
                   onChange={e => this.onCustomIcon(e)}
                   defaultChecked={customIcon}
                   // onChange={(e) => {
-                  //   console.log('edata', e.target.value)
                   // }}
                   // value={customIcon}
                   className='check_Box'

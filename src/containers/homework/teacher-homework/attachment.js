@@ -24,7 +24,6 @@ const Attachment = (props) => {
   const [imagePreviewAvailable, setImagePreviewAvailable] = useState(true);
   const { openLightbox } = useLightbox();
 
-  console.log('actions', actions);
   let isAudioVideo = false;
   let isAudioFile = false;
   let isVideoFile = false;
@@ -38,6 +37,7 @@ const Attachment = (props) => {
     isAudioVideo = true;
     isVideoFile = true;
   }
+  console.log(props, 'teachers data');
 
   let markup = null;
 

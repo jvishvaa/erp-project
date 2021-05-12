@@ -13,7 +13,8 @@ const resolveMenu = (url) => {
   if (url.includes('homework')) return 'Homework';
   if (url.includes('blog')) return 'Blogs';
   if (url.includes('diary')) return 'Diary';
-
+  if (url.includes('time-table')) return 'Time Table';
+  if (url.includes('Appointment')) return 'Appointments';
   return null;
 };
 

@@ -49,11 +49,9 @@ class EditMiscFee extends Component {
   }
 
   handleChangeInput = (e, id) => {
-    console.log('handle', id)
     let data = this.state.feeData
     data.forEach((val, i) => {
       let currentGrade = val.grades.filter(list => list.mapping_id === id)
-      console.log('currentGrade', currentGrade)
       currentGrade.forEach((v, i) => {
         v.amount = e.target.value
       })
@@ -83,7 +81,6 @@ class EditMiscFee extends Component {
   }
 
   render () {
-    console.log(this.state.feeData)
     return (
       <React.Fragment>
         <Form onSubmit={this.handlevalue}>
@@ -101,7 +98,6 @@ class EditMiscFee extends Component {
               return grade.map((grade) => {
                 let currentGrade = data.grades.filter(gradelist => gradelist.grade_id === grade.id)
                 if (currentGrade.length > 0) {
-                  console.log(grade)
                   return (
                     <Grid item xs='3'>
                       <label>{grade.grade}</label>

@@ -40,7 +40,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -95,7 +94,6 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
       let data1 = []
       data1.push(data2[0])
       setData(data1)
-      console.log('qas', data1)
     }
   }, [totalBillingDetail])
 
@@ -150,7 +148,6 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
   // let date = newDate.getDate()
   // let month = newDate.getMonth() + 1
   // let year = newDate.getFullYear()
-  // console.log('today')
   // setEnddate(date + '/' + month + '/' + year)
   // setStartdate(10 + '/' + month + '/' + year)
   // setDomainName(name)
@@ -311,7 +308,6 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
   //       setDate('')
   //       setEndDate('')
   //       setTodayDetails(false)
-  //       console.log('data', data)
   //     } else {
   //       alert.warning('Fill all the required Fields!')
   //     }

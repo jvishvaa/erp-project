@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -90,7 +90,6 @@ const ViewHomework = withRouter(
         scrollableContainer.current.scrollLeft -= 150;
       } else {
         scrollableContainer.current.scrollLeft += 150;
-        console.log(scrollableContainer.current.scrollLeft);
       }
     };
 
@@ -166,7 +165,6 @@ const ViewHomework = withRouter(
                           ref={scrollableContainer}
                           onScroll={(e) => {
                             e.preventDefault();
-                            console.log('scrolled');
                           }}
                         >
                           {question.question_files.length === 0 && (
@@ -180,7 +178,7 @@ const ViewHomework = withRouter(
                                   key={`homework_student_question_attachment_${i}`}
                                   fileUrl={url}
                                   fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.s3}/homework`}
+                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                   index={i}
                                   actions={['preview', 'download']}
                                 />
@@ -198,7 +196,7 @@ const ViewHomework = withRouter(
                             <SRLWrapper>
                               {question.question_files.map((url, i) => (
                                 <img
-                                  src={`${endpoints.s3}/homework/${url}`}
+                                  src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                   onError={(e) => {
                                     e.target.src = placeholder;
                                   }}

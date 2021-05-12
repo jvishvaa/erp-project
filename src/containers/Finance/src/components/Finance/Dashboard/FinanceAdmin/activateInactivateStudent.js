@@ -19,6 +19,7 @@ import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
 import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from 'containers/Layout'
 
 const styles = theme => ({
   container: {
@@ -78,18 +79,14 @@ class ActivateInactivateStudentAdm extends Component {
     }
   }
   componentWillReceiveProps (nextProps) {
-    console.log(nextProps)
   }
   componentDidMount () {
     this.props.getActiveRequest('2019-20', this.props.user, this.props.alert)
-    console.log(this.props.session)
-    console.log(this.props.activeRequstList)
   }
   handleChange = (event, value) => {
     this.setState({ value })
   }
   approveRequestHandler= () => {
-    console.log(this.state.updaterow)
     this.setState({ showAcceptModal: false })
     this.setState({ showRejectModal: false })
     const body = {
@@ -112,21 +109,15 @@ class ActivateInactivateStudentAdm extends Component {
     this.setState({ updaterow: '' })
   }
   handleSwitch = (event, data) => {
-    // console.log('switch state', e.target.checked)
-    console.log('switch is pressed', event)
-    console.log('MAKE API CALL', data)
+   
   }
   showInfoModalAcceptHandler = (event, data) => {
     this.setState({ showAcceptModal: true })
-    console.log(data)
     this.setState({ updaterow: data })
-    console.log(this.state.updaterow)
   }
   showInfoModalRejectHandler = (event, data) => {
     this.setState({ showRejectModal: true })
-    console.log(data)
     this.setState({ updaterow: data })
-    console.log(this.state.updaterow)
   }
   hideInfoModalHandler= () => {
     this.setState({ showAcceptModal: false })
@@ -138,9 +129,7 @@ class ActivateInactivateStudentAdm extends Component {
     })
   }
   activeInactiveDropdonHandler= (event, name) => {
-    console.log('activeInactive detail handler', event, name)
     const newActiveInactive = { ...this.state.activeInactive }
-    console.log(event.value)
     switch (name) {
       case 'academicyear': {
         newActiveInactive['academicyear'] = event.value
@@ -258,7 +247,7 @@ class ActivateInactivateStudentAdm extends Component {
                     {/* <TableCell>{row.request_date ? row.request_date : '-'}</TableCell> */}
                     <TableCell>{row.student.gender ? row.student.gender : '-'}</TableCell>
                     {/* <TableCell>{row.student.roll_no ? row.student.roll_no : '-'}</TableCell> */}
-                    <TableCell><Button color='primary' onClick={(e) => { this.showInfoModalAcceptHandler(e, row) }}>Approve</Button><Button color='primary' onClick={(e) => { this.showInfoModalRejectHandler(e, row) }}>Reject</Button></TableCell>
+                    <TableCell><Button style={{ marginBottom: '20px'}} color='primary' onClick={(e) => { this.showInfoModalAcceptHandler(e, row) }}>Approve</Button><Button color='primary' onClick={(e) => { this.showInfoModalRejectHandler(e, row) }}>Reject</Button></TableCell>
                   </TableRow>
                 )
               })}
@@ -305,7 +294,10 @@ class ActivateInactivateStudentAdm extends Component {
                     <TableCell>{row.amout_paid ? row.amout_paid : '-'}</TableCell>
                     <TableCell>{row.request_remarks ? row.request_remarks : '-'}</TableCell>
                     <TableCell>{row.student.gender ? row.student.gender : '-'}</TableCell>
-                    <TableCell><Button color='primary' onClick={(e) => { this.showInfoModalAcceptHandler(e, row) }}>Approve</Button><Button color='primary' onClick={(e) => { this.showInfoModalRejectHandler(e, row) }}>Reject</Button></TableCell>
+                    <TableCell>
+                        <Button style={{ marginBottom: '20px'}} color='primary' onClick={(e) => { this.showInfoModalAcceptHandler(e, row) }}>Approve</Button>
+                        <Button color='primary' onClick={(e) => { this.showInfoModalRejectHandler(e, row) }}>Reject</Button>
+                    </TableCell>
                   </TableRow>
                 )
               })}
@@ -317,6 +309,7 @@ class ActivateInactivateStudentAdm extends Component {
       studentTableActive = (<h1>No Records Found</h1>)
     }
     return (
+      <Layout>
       <React.Fragment>
         <div>
           <Grid container spacing={3}>
@@ -355,6 +348,7 @@ class ActivateInactivateStudentAdm extends Component {
         {acceptModal}
         {rejectModal}
       </React.Fragment>
+      </Layout>
     )
   }
 }

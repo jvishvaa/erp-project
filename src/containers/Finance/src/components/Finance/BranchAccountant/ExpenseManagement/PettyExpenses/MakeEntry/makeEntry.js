@@ -14,6 +14,7 @@ import * as actionTypes from '../../../../store/actions'
 import Layout from '../../../../../../../../Layout'
 // import { CircularProgress } from '../../../../../../ui'
 
+
 const styles = theme => ({
   root: {
     color: theme.palette.text.primary
@@ -55,6 +56,32 @@ const customStyles = () => {
   }
 }
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Expanse Management' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Petty Cash Expense') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class MakeEntry extends Component {
   state = {
     ledgerCount: 0,
@@ -71,7 +98,7 @@ class MakeEntry extends Component {
     selectedParty: null,
     selectedSession: null
   }
-
+  
   componentDidMount () {
     const ledgerData = [...this.state.ledgerData]
     const data = {
@@ -85,8 +112,8 @@ class MakeEntry extends Component {
     this.setState({
       ledgerData
     })
-    this.props.fetchPettyCash(this.props.user, this.props.alert)
-    this.props.fetchPartyList(this.props.user, this.props.alert)
+    this.props.fetchPettyCash(this.props.user, this.props.alert, this.props.recData && this.props.recData.branch)
+    this.props.fetchPartyList(this.props.user, this.props.alert, this.props.recData && this.props.recData.branch )
   }
 
   addLedgerRow = () => {
@@ -107,7 +134,6 @@ class MakeEntry extends Component {
   deleteLedgerRow = (index) => {
     const ledgerData = [...this.state.ledgerData]
     ledgerData.splice(index, 1)
-    console.log('Ledger Data', ledgerData)
     this.setState({
       ledgerData
     })
@@ -180,10 +206,7 @@ class MakeEntry extends Component {
   }
 
   changeFileHandler = (e) => {
-    console.log('Array', Array.from(e.target.files))
     const newFile = [...this.state.file, ...Array.from(e.target.files)]
-    console.log('New File', newFile)
-    console.log('files', e.target.files)
     this.setState({
       file: newFile
     })
@@ -255,6 +278,7 @@ class MakeEntry extends Component {
     form.append('approved_by', this.state.approvedBy)
     form.append('date', this.state.date)
     form.append('academic_year', this.state.selectedSession)
+    form.append('branch_id', this.props.recData && this.props.recData.branch)
     if (this.state.paymentOption === 'cheque') {
       if (!this.state.chequeNo || !this.state.selectedBank || !this.state.chequeDate) {
         this.props.alert.warning('Please Fill all Details')
@@ -701,17 +725,18 @@ const mapStateToProps = (state) => ({
   dataLoading: state.finance.common.dataLoader,
   leadgerHeadList: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.ledgerHeadList,
   ledgerNameList: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.ledgerNameList,
-  partyList: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.partyList
+  partyList: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.partyList,
+  recData: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.sendData
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loadFinancialYear: dispatch(actionTypes.fetchFinancialYear()),
+  loadFinancialYear: dispatch(actionTypes.fetchFinancialYear(moduleId)),
   loadLedgerType: dispatch(actionTypes.fetchLedgerType()),
   fetchLedgerRecord: (ledgerType, user, alert) => dispatch(actionTypes.fetchLedgerRecord({ ledgerType, user, alert })),
   fetchLedgerName: (headId, user, alert) => dispatch(actionTypes.fetchLedgerName({ headId, user, alert })),
-  fetchPettyCash: (user, alert) => dispatch(actionTypes.listPettyCash({ user, alert })),
+  fetchPettyCash: (user, alert, branch) => dispatch(actionTypes.listPettyCash({ user, alert, branch })),
   savePettyCashExpense: (body, user, alert) => dispatch(actionTypes.savePettyCashExpense({ body, alert, user })),
-  fetchPartyList: (user, alert) => dispatch(actionTypes.fetchPartyList({ user, alert }))
+  fetchPartyList: (user, alert, branch) => dispatch(actionTypes.fetchPartyList({ user, alert, branch }))
 })
 export default connect(
   mapStateToProps,

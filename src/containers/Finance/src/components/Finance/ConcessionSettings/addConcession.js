@@ -26,7 +26,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId= item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -92,13 +91,10 @@ class AddConcessionSettings extends Component {
   handleAmount = e => {
     this.setState({ automatic_manual_fixed: e.value })
     if (e.value === '1') {
-      console.log('entered', e.value)
       this.setState({ percentageValue: true, manualAmount: false, fixedAmount: false })
     } else if (e.value === '2') {
-      console.log('entered', e.value)
       this.setState({ manualAmount: true, percentageValue: false, fixedAmount: false })
     } else if (e.value === '3') {
-      console.log('entered', e.value)
       this.setState({ fixedAmount: true, manualAmount: false, percentageValue: false })
     }
   }
@@ -134,7 +130,6 @@ class AddConcessionSettings extends Component {
   }
 
   handleAcademicyear = (e) => {
-    console.log(e)
     this.setState({ session: e.value, branchData: [], sessionData: e }, () => {
       this.props.fetchBranches(this.state.session, this.props.alert, this.props.user, moduleId)
     })
@@ -168,7 +163,6 @@ class AddConcessionSettings extends Component {
       other_fee_types: this.state.otherFeeId,
       minimum_amount: this.state.amount
     }
-    console.log(data)
     if (this.state.percentageValue) {
       data.concession_percentage = this.state.concession_percentage
     } else if (this.state.manualAmount) {

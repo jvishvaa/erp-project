@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 /* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
@@ -33,14 +32,20 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Grade', Path: '/master-management/grade-table' },
     { name: 'Academic Year', Path: '/master-management/academic-year-table' },
     { name: 'Chapter Creation', Path: '/master-management/chapter-type-table' },
+    { name: 'Topic', Path: '/master-management/topic-table' },
     { name: 'Message Type', Path: '/master-management/message-type-table' },
     { name: 'Signature Upload', Path: '/master-management/signature-upload' },
+    { name: 'Event Category', Path: '/master-management/event-category' },
+    { name: 'Discussion Category', Path: '/master-management/discussion-category' },
+    { name: 'Teacher Calendar', Path: '/attendance-calendar/teacher-view' }, //attendance
+    { name: 'Student Calendar', Path: '/attendance-calendar/student-view' }, //
     { name: 'Course', Path: '/course-list' },
     { name: 'Course Price', Path: '/course-price' },
-    { name: 'Lesson Plan Mapping', Path: '/subject/grade' },
+    { name: 'Content Mapping', Path: '/subject/grade' },
     { name: 'Create User', Path: '/user-management/create-user' },
     { name: 'View User', Path: '/user-management/view-users' },
     { name: 'Bulk Upload Status', Path: '/user-management/bulk-upload' },
+    { name: 'Bulk Status Upload', Path: '/finance/BulkOperation/BulkUploadStatus' },
     { name: 'Assign Role', Path: '/user-management/assign-role' },
     { name: 'View Class', Path: '/erp-online-class' },
     { name: 'Attend Online Class', Path: '/erp-online-class-student-view' },
@@ -73,6 +78,16 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Student Strength', Path: '/student-strength' },
     { name: 'Teacher Circular', Path: '/teacher-circular' },
     { name: 'Student Circular', Path: '/student-circular' },
+
+    //{ name: 'Discussion Forum', Path: '/discussion-forum' },
+    { name: 'Teacher Forum', Path: '/teacher-forum' },
+    { name: 'Student Forum', Path: '/student-forum' },
+    { name: 'Assessment Report', Path: '/assessment-reports' },
+    { name: 'Question Bank', Path: '/question-bank' },
+    { name: 'Question Paper', Path: '/assessment-question' },
+    { name: 'Create Test', Path: '/assesment' },
+    { name: 'Take Test', Path: '/assessment' },
+    { name: 'Student Strength', Path: '/student-strength' },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

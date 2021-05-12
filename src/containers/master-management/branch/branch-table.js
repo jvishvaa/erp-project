@@ -136,7 +136,6 @@ const BranchTable = () => {
     setAddFlag(false);
     setEditFlag(true);
     setBranchData(branch);
-    console.log({ branch });
   };
 
   const handleGoBack = () => {
@@ -198,8 +197,8 @@ const BranchTable = () => {
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          // setTotalCount(result.data?.data?.count);
-          setBranches(result.data?.data);
+          setTotalCount(result.data?.data?.count);
+          setBranches(result.data?.data.results);
         } else {
           setAlert('error', result.data?.msg || result.data?.message);
         }
@@ -314,7 +313,7 @@ const BranchTable = () => {
                             <TableCell className={classes.tableCell}>
                               {branch?.branch_code}
                             </TableCell>
-                            <TableCell className={classes.tableCell}>
+                            <TableCell className={classes.tableCell} style={{maxWidth: '250px'}}>
                               {branch?.address}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
@@ -397,7 +396,7 @@ const BranchTable = () => {
           <DialogContent>
             <DialogContentText>{`Confirm Delete Branch ${branchName}`}</DialogContentText>
           </DialogContent>
-          <DialogActions>
+          <DialogActions style={{display:'flex',justifyContent:'space-around'}}>
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>

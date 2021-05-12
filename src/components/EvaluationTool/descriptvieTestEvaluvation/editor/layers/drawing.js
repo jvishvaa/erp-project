@@ -31,14 +31,11 @@ const DrawingLayer = ({
   const drawingRef = useRef(null);
   // const [cImg, setImg] = useState()
 
-  console.log(refH, refW, 'ref height', drawing, width, height);
 
   useEffect(() => {
     const handleListener = (ev) => {
       if (ev.target === canvasDrawingElement.current) {
-        console.log('Touch started');
         if (enablePainting || enableEraser) {
-          console.log('Painting enabled');
           ev.preventDefault();
           ev.stopImmediatePropagation();
         }
@@ -59,7 +56,6 @@ const DrawingLayer = ({
   }, [drawedChanges, handleSave]);
 
   useEffect(() => {
-    // console.log('commm', drawing)
     let drawingCanvas = canvasDrawingElement.current;
     drawingCanvas.height = height;
     drawingCanvas.width = width;
@@ -69,16 +65,13 @@ const DrawingLayer = ({
     context.lineJoin = 'round';
     context.lineCap = 'round';
     context.lineWidth = 5;
-    // // eslint-disable-next-line no-debugger
-    // debugger
+
     if (drawingCanvas) {
       const context = drawingCanvas.getContext('2d');
       // eslint-disable-next-line no-undef
       let img = new Image();
       img.src = drawing;
-      console.log(img, 'loaded image...');
       img.addEventListener('load', () => {
-        console.log('Image loaded...', img);
         drawingCanvas.width = width;
         drawingCanvas.height = height;
         context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
@@ -128,7 +121,6 @@ const DrawingLayer = ({
     var rect = drawingCanvas.getBoundingClientRect();
     var offsetX = touchEvent.touches[0].clientX - rect.left;
     var offsetY = touchEvent.touches[0].clientY - rect.top;
-    console.log(offsetX);
     if (isPainting) {
       const offSetData = { offsetX, offsetY };
       // Set the start and stop position of the paint event.
@@ -145,9 +137,7 @@ const DrawingLayer = ({
   const endPaintEvent = () => {
     if (isPainting) {
       setIsPainting(false);
-      console.log('end finished');
       let drawingCanvas = canvasDrawingElement.current;
-      console.log(drawingCanvas, drawingCanvas.toDataURL());
       setDrawedChanges({
         image: drawingCanvas.toDataURL(),
         // containerImg: containerImg.toDataURL(),
@@ -166,7 +156,6 @@ const DrawingLayer = ({
   // const drawRotated = useCallback(() => {
   //   let canvas = canvasDrawingElement.current
   //   // let drawingCanvas = canvasDrawingElement.current
-  //   console.log(angleInDegrees, 'angle in drawing')
   //   if (canvas) {
   //     // let img = cImg
   //     const ctx = canvas.getContext('2d')
@@ -175,11 +164,9 @@ const DrawingLayer = ({
   //     // img.src = imgRef.current.src
   //     img.crossOrigin = 'anonymous'
   //     // img.id = 'actual_image'
-  //     console.log(width, height, 'wwwwwwwwwwwwwwwwwwwwwwwwhhhhhhhhhhhh in drawing')
   //     const decidedAngle = initialAngle ? angleInDegrees - 90 : angleInDegrees
   //     img.src = cImg
   //     if (img && angleInDegrees !== 0) {
-  //       console.log('hhh')
   //       img.addEventListener('load', function () {
   //         ctx.clearRect(0, 0, canvas.width, canvas.height)
   //         ctx.save()

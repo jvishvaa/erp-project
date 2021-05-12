@@ -108,7 +108,7 @@ const CreateClassForm = (props) => {
   } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const fetchBranches = (acadId) => {
-    fetchBranchesForCreateUser(acadId,moduleId).then((data) => {
+    fetchBranchesForCreateUser(acadId, moduleId).then((data) => {
       const transformedData = data?.map((obj) => ({
         id: obj.id,
         branch_name: obj.branch_name,
@@ -360,7 +360,6 @@ const CreateClassForm = (props) => {
 
   const toggleDrawer = () => {
     const { gradeIds, sectionIds, courseId, subject } = onlineClass;
-    console.log({ onlineClass });
     if (
       selectedClassType?.id === 0 &&
       (!gradeIds?.length || !sectionIds?.length || !subject?.length)
@@ -383,6 +382,7 @@ const CreateClassForm = (props) => {
     const { gradeIds } = onlineClass;
     setSelectedSections([]);
     setSelectedSubject([]);
+    dispatch(clearFilteredStudents());
     if (onlineClass.coHosts?.length > 0) {
       const index = onlineClass.coHosts.findIndex((host) => host === value);
       if (index) {
@@ -424,6 +424,22 @@ const CreateClassForm = (props) => {
   //   verifyTutorEmail(tutorEmail, selectedDate, selectedTime, duration, data);
   // }
   // };
+  const resolveSelectedDays = (val) => {
+    if (toggle && [...selectedDays].length) {
+      // if ([...selectedDays].length)
+      return [...selectedDays].map((obj) => obj.send);
+      // else
+      // return [daysList[new Date(val).getDay() - 1]?.send] || [];
+    }
+    else if (!toggle && new Date(val).getDay() === 0) {
+      // if (new Date(val).getDay() === 0)
+      return ['S'];
+      // else
+      // return [daysList[new Date(val).getDay() - 1]?.send] || [];
+    }
+    else
+      return [daysList[new Date(val).getDay() - 1]?.send] || [];
+  }
 
   const handleDateChange = (event, value) => {
     const isFutureTime = onlineClass.selectedTime > new Date();
@@ -434,18 +450,35 @@ const CreateClassForm = (props) => {
     setOnlineClass((prevState) => ({
       ...prevState,
       selectedDate: value,
-      days:
-        !toggle && new Date(value).getDay() === 0
-          ? ['S']
-          : [daysList[new Date(value).getDay() - 1]?.send] || [],
+      days: resolveSelectedDays(value),
+      // days:
+      //   !toggle && new Date(value).getDay() === 0
+      //     ? ['S']
+      //     : [daysList[new Date(value).getDay() - 1]?.send] || [],
     }));
+  };
+
+  const validateClassTime = (time) => {
+    let isValidTime = false;
+    const CLASS_HOURS = time.getHours();
+    const CLASS_MINUTES = time.getMinutes();
+    if (CLASS_HOURS >= 6 && CLASS_HOURS <= 22) {
+      isValidTime = true;
+      if (CLASS_HOURS === 22 && CLASS_MINUTES > 0)
+        isValidTime = false;
+    }
+    return isValidTime
   };
 
   const handleTimeChange = (event) => {
     const { selectedDate } = onlineClass;
     const time = new Date(event);
-    dispatch(clearTutorEmailValidation());
-    setOnlineClass((prevState) => ({ ...prevState, selectedTime: time }));
+    if (validateClassTime(time)) {
+      dispatch(clearTutorEmailValidation());
+      setOnlineClass((prevState) => ({ ...prevState, selectedTime: time }));
+    } else {
+      setAlert('error', 'Class must be between 06:00AM - 10:00PM')
+    }
   };
 
   const [selectedDays, setSelectedDays] = useState([]);
@@ -538,9 +571,8 @@ const CreateClassForm = (props) => {
       ? selectedDate.toISOString().split('T')[0]
       : selectedDate
       } ${getFormatedTime(selectedTime)}`;
-    const coHostEmails = coHosts.map((coHost) => coHost.email);
-    const tutorEmails = [tutorEmail.email, ...coHostEmails];
-
+    const coHostEmails = coHosts.map((coHost) => coHost?.email);
+    const tutorEmails = [tutorEmail.email , ...coHostEmails];
     let request = {};
     request['user_id'] = userId;
     request['title'] = title;
@@ -552,6 +584,7 @@ const CreateClassForm = (props) => {
     }
     request['tutor_id'] = tutorEmail.tutor_id;
     request['tutor_emails'] = tutorEmails.join(',');
+    // request['tutor_emails'] = [...coHostEmails];
     request['role'] = 'Student';
     request['start_time'] = startTime;
     if (weeks > 0) request['no_of_week'] = Number(weeks);
@@ -587,38 +620,6 @@ const CreateClassForm = (props) => {
           setAlert('warning', 'No. of students should be atleast 1.');
       }
     }
-
-    //formdata below
-    // const formdata = new FormData();
-    // formdata.append('user_id', userId);
-    // formdata.append('title', title);
-    // formdata.append('duration', duration);
-    // formdata.append('subject_id', subject.join(','));
-    // formdata.append('tutor_emails', tutorEmails.join(','));
-    // formdata.append('role', 'Student');
-    // formdata.append('start_time', startTime);
-    // if (weeks > 0) formdata.append('no_of_week', weeks);
-    // formdata.append('is_recurring', toggle?1:0);
-    // formdata.append('class_type', selectedClassType.id);
-
-    // conditional appends
-    // if (days.length) formdata.append('week_days', days);
-
-    // if (sectionIds.length) formdata.append('section_mapping_ids', sectionIds);
-    // else if (gradeIds.length) {
-    //   formdata.append('grade_ids', gradeIds);
-    //   formdata.append('branch_ids', branch.join(','));
-    // } else formdata.append('branch_ids', branch.join(','));
-
-    // if (filteredStudents.length)
-    //   formdata.append('student_ids', filteredStudents.join(','));
-
-    // if (joinLimit > 0) {
-    //   formdata.append('join_limit', joinLimit);
-    //   dispatch(createNewOnlineClass(formdata));
-    // } else {
-    //   setAlert('warning', 'Join limit should be atleast 1.')
-    // }
   };
 
   const handleCoHostBlur = async (index) => {
@@ -687,20 +688,20 @@ const CreateClassForm = (props) => {
     };
     listTutorEmails(data);
   };
-  // console.log(onlineClass.acadId,'=========================')
 
   const checkTutorAvailability = async () => {
     const { selectedDate, selectedTime, duration } = onlineClass;
-
+ 
     const startTime = `${selectedDate.toString().includes(' ')
       ? selectedDate.toISOString().split('T')[0]
-      : selectedDate
+      : moment(selectedDate).format('YYYY-MM-DD')
       } ${getFormatedTime(selectedTime)}`;
-
     try {
-      const { data } = await axiosInstance.get(
-        `/erp_user/check-tutor-time/?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}`
-      );
+      let url = toggle ?
+        `/erp_user/check-tutor-time/?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}&no_of_week=${onlineClass.weeks}&is_recurring=1&week_days=${[...selectedDays].map((obj) => obj.send).join(',')}`
+        : `/erp_user/check-tutor-time/?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}`
+
+      const { data } = await axiosInstance.get(url);
       if (data.status_code === 200) {
         if (data.status === 'success') {
           setTutorNotAvailableMessage('');
@@ -728,14 +729,24 @@ const CreateClassForm = (props) => {
     }
   }, [toggle]);
 
+  const checkTutorFlag = toggle ? onlineClass.duration &&
+    onlineClass.subject &&
+    onlineClass.gradeIds?.length &&
+    onlineClass.selectedDate &&
+    onlineClass.selectedTime &&
+    onlineClass.tutorEmail &&
+    onlineClass.weeks &&
+    [...selectedDays].length :
+    onlineClass.duration &&
+    onlineClass.subject &&
+    onlineClass.gradeIds?.length &&
+    onlineClass.selectedDate &&
+    onlineClass.selectedTime &&
+    onlineClass.tutorEmail;
+
   useEffect(() => {
     if (
-      onlineClass.duration &&
-      onlineClass.subject &&
-      onlineClass.gradeIds?.length &&
-      onlineClass.selectedDate &&
-      onlineClass.selectedTime &&
-      onlineClass.tutorEmail
+      checkTutorFlag
     ) {
       // fetchTutorEmails();
       checkTutorAvailability();
@@ -747,7 +758,9 @@ const CreateClassForm = (props) => {
     onlineClass.selectedDate,
     onlineClass.selectedTime,
     onlineClass.tutorEmail,
-  ]);
+    onlineClass.weeks,
+    [...selectedDays].length]
+  );
 
   useEffect(() => {
     if (onlineClass.branchIds?.length && selectedGrades?.length && onlineClass.acadId) {
@@ -809,6 +822,7 @@ const CreateClassForm = (props) => {
                 options={classTypes}
                 getOptionLabel={(option) => option?.type}
                 filterSelectedOptions
+                className='dropdownIcon'
                 value={selectedClassType}
                 required
                 renderInput={(params) => (
@@ -830,6 +844,7 @@ const CreateClassForm = (props) => {
                 label='Title'
                 variant='outlined'
                 size='small'
+                className='dropdownIcon'
                 name='title'
                 onChange={handleChange}
                 required
@@ -839,6 +854,7 @@ const CreateClassForm = (props) => {
               <Autocomplete
                 size='small'
                 onChange={handleYear}
+                className='dropdownIcon'
                 id='create__class-grade'
                 options={yearList || []}
                 getOptionLabel={(option) => option?.session_year || ''}
@@ -861,6 +877,7 @@ const CreateClassForm = (props) => {
                 multiple
                 onChange={handleBranches}
                 id='create__class-grade'
+                className='dropdownIcon'
                 options={branches || []}
                 getOptionLabel={(option) => option?.branch_name || ''}
                 filterSelectedOptions
@@ -884,6 +901,7 @@ const CreateClassForm = (props) => {
                   handleGrade(e, value);
                 }}
                 id='create__class-grade'
+                className='dropdownIcon'
                 options={grades}
                 getOptionLabel={(option) => option?.grade__grade_name || ''}
                 filterSelectedOptions
@@ -904,6 +922,7 @@ const CreateClassForm = (props) => {
                 <Autocomplete
                   size='small'
                   id='create__class-subject'
+                  className='dropdownIcon'
                   options={courses || []}
                   getOptionLabel={(option) => option?.course_name || ''}
                   filterSelectedOptions
@@ -932,6 +951,7 @@ const CreateClassForm = (props) => {
                     handleSection(e, value);
                   }}
                   id='create__class-section'
+                  className='dropdownIcon'
                   options={sections || []}
                   getOptionLabel={(option) => {
                     return `${option.section__section_name}`;
@@ -967,6 +987,7 @@ const CreateClassForm = (props) => {
                       //       (sec) => sec.section_id === sub.section__id
                       //     ) > -1
                       // )
+                      className='dropdownIcon'
                       getOptionLabel={(option) => option?.subject__subject_name || ''}
                       filterSelectedOptions
                       value={selectedSubject || []}
@@ -993,7 +1014,7 @@ const CreateClassForm = (props) => {
                 <Grid item xs={12} sm={2}>
                   <TextField
                     size='small'
-                    className='create__class-textfield'
+                    className='create__class-textfield dropdownIcon'
                     id='class-duration'
                     label='Duration (mins)'
                     variant='outlined'
@@ -1007,7 +1028,7 @@ const CreateClassForm = (props) => {
                 <Grid item xs={12} sm={2}>
                   <TextField
                     size='small'
-                    className='create__class-textfield'
+                    className='create__class-textfield dropdownIcon'
                     id='class-join-limit'
                     label={selectedClassType?.id > 0 ? 'Batch Size' : 'Join limit'}
                     variant='outlined'
@@ -1030,7 +1051,7 @@ const CreateClassForm = (props) => {
                   size='small'
                   // disableToolbar
                   variant='dialog'
-                  format='YYYY-MM-DD'
+                  format='MM/DD/YYYY'
                   margin='none'
                   id='date-picker'
                   label='Start date'
@@ -1071,6 +1092,7 @@ const CreateClassForm = (props) => {
                     filterSelectedOptions
                     value={selectedDays}
                     onChange={handleDays}
+                    className='dropdownIcon'
                     renderInput={(params) => (
                       <TextField
                         size='small'
@@ -1086,7 +1108,7 @@ const CreateClassForm = (props) => {
                 <Grid item xs={12} sm={2}>
                   <TextField
                     size='small'
-                    className='create__class-textfield'
+                    className='create__class-textfield dropdownIcon'
                     id='class-no_of_weeks'
                     label='No. of weeks'
                     variant='outlined'
@@ -1131,6 +1153,7 @@ const CreateClassForm = (props) => {
                 filterSelectedOptions
                 value={onlineClass.tutorEmail}
                 onChange={handleTutorEmail}
+                className='dropdownIcon'
                 disabled={tutorEmailsLoading}
                 ref={tutorEmailRef}
                 renderInput={(params) => (
@@ -1215,7 +1238,6 @@ const CreateClassForm = (props) => {
             <>
               {' '}
               <hr className='horizontal-line' />
-              {/* {onlineClass.tutorEmail && ( */}
               <Grid container className='create-class-container' spacing={2}>
                 <Grid item xs={12}>
                   <h2 className='co_host-title'>Co-Host</h2>
@@ -1233,6 +1255,7 @@ const CreateClassForm = (props) => {
                     filterSelectedOptions
                     value={onlineClass.coHosts}
                     onChange={handleCoHost}
+                    className='dropdownIcon'
                     disabled={tutorEmailsLoading}
                     renderInput={(params) => (
                       <TextField

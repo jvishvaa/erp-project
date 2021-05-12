@@ -65,7 +65,7 @@ const LessonPlan = () => {
     setChapterSearch(searchChapter);
     axios
       .get(
-        `${endpoints.lessonPlan.periodData}?chapter=${searchChapter}&page_number=${page}&page_size=${limit}`,
+        `${endpoints.lessonPlan.periodData}?chapter=${searchChapter}&page=${page}&page_size=${limit}`,
         {
           headers: {
             'x-api-key': 'vikash@12345#1231',
@@ -165,9 +165,7 @@ const LessonPlan = () => {
                       style={isMobile ? { marginLeft: '-8px' } : null}
                       sm={viewMore && viewMoreData?.length > 0 ? 6 : 4}
                     >
-                      {
-                        console.log(completedStatus,'completedStatus')
-                      }
+                      
                       <PeriodCard
                         index={i}
                         filterDataDown={filterDataDown}

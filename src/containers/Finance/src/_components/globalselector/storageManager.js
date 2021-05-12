@@ -69,7 +69,6 @@ class StorageManager {
   }
 
   async hideAllDependencies (selectorIndex) {
-    console.log('Hiding all dependencies')
     let dependencies = this._config.getAllDependencies(selectorIndex)
     await dependencies.forEach(async (dependency, index) => {
       this.abortFetch(dependency)
@@ -81,13 +80,11 @@ class StorageManager {
       }
       await delete this._selectedValues[dependency]
     })
-    console.log(this._selectedValues)
     await this.selectedValues.next(this._selectedValues)
     await this.selectorStorage.next(this._selectorStorage)
   }
 
   async deleteValueForDependencies (selectorIndex) {
-    console.log('Deleting all dependencies')
     let dependencies = this._config.getAllDependencies(selectorIndex)
     await dependencies.forEach(async (dependency, index) => {
       await delete this._selectedValues[dependency]
@@ -101,12 +98,10 @@ class StorageManager {
    */
 
   setValue (data, selectorIndex, { action }) {
-    console.log(data, selectorIndex, { action })
     this._selectedValues = { ...this._selectedValues, [selectorIndex]: data }
     if (action === 'select-option') {
       let valueParam = this._config.getValue(selectorIndex)
       this._selectionStorage[selectorIndex] = this._fetchStorage[selectorIndex].filter(item => {
-        console.log(item[valueParam], data[0].value)
         return item[valueParam] === data[0].value
       })[0]
       this._selectorStorage[selectorIndex] = {

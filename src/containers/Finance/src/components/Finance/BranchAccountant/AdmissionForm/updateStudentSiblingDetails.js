@@ -66,7 +66,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -103,13 +102,10 @@ class UpdateStudentSiblingDetailsFormAcc extends Component {
   }
 
   componentDidUpdate () {
-    console.log('DID UPDATED', this.state)
     this.props.getSiblingDetail(this.state.studentSiblingDetails)
   }
   componentWillReceiveProps (nextProps) {
-    console.log('===received props', nextProps.studentDetailsForAdmission)
     if (nextProps.studentDetailsForAdmission) {
-      console.log('this is printed chandan')
       const newstudentParentDetails = { ...this.state.studentParentDetails }
       newstudentParentDetails['fatherName'] = nextProps.studentDetailsForAdmission.parent.father_name ? nextProps.studentDetailsForAdmission.parent.father_name : null
       newstudentParentDetails['fatherphone'] = nextProps.studentDetailsForAdmission.parent.father_mobile_no ? nextProps.studentDetailsForAdmission.parent.father_mobile_no : null
@@ -121,7 +117,6 @@ class UpdateStudentSiblingDetailsFormAcc extends Component {
   }
 
   studentSiblingInputHandler= (event) => {
-    console.log(event.target.name)
     const newstudentSiblingDetails = { ...this.state.studentSiblingDetails }
     switch (event.target.name) {
       case 'sibling1name': {
@@ -188,7 +183,6 @@ class UpdateStudentSiblingDetailsFormAcc extends Component {
     this.setState({ showModal: false })
   }
   saveCertificateHandler= () => {
-    console.log(this.state.certificateName)
     this.setState({ showModal: false })
     const body = {
       certificate_name: this.state.certificateName

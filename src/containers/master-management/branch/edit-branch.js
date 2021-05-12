@@ -35,7 +35,7 @@ const EditBranch = ({ branchData, handleGoBack, setLoading }) => {
         if (result.data.status_code === 200) {
           handleGoBack();
           setLoading(false);
-          setAlert('success', result.data.message||result.data.msg);
+          setAlert('success', 'Branch successfully updated');
         } else {
           setLoading(false);
           setAlert('error', result.data.message||result.data.msg);

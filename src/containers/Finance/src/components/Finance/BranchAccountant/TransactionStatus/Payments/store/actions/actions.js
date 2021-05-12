@@ -13,16 +13,15 @@ export const fetchAccountantTransaction = (payload) => {
     dispatch(actionTypes.dataLoading())
     let url = null
     if (payload.erpNo) {
-      url = `${urls.AccountantTransaction}?erp_code=${payload.erpNo}&session_year=${payload.session}`
+      url = `${urls.AccountantTransaction}?erp_code=${payload.erpNo}&session_year=${payload.session}&branch_id=${payload.branchId}&module_id=${payload.moduleId}`
     } else {
-      url = `${urls.AccountantTransaction}?session_year=${payload.session}`
+      url = `${urls.AccountantTransaction}?session_year=${payload.session}&branch_id=${payload.branchId}&module_id=${payload.moduleId}`
     }
     axios.get(url, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log(response)
       dispatch({
         type: FETCH_ACCOUNTANT_TRANSACTIONS,
         payload: {
@@ -46,7 +45,7 @@ export const editAccountantTransaction = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.EditAccTransaction + '?transaction_id=' + payload.transactionId, {
+      .get(urls.EditAccTransaction + '?transaction_id=' + payload.transactionId + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -72,7 +71,6 @@ export const editAccountantTransaction = (payload) => {
 
 export const updateAccountantTransaction = (payload) => {
   let url = null
-  console.log('payload ::', payload)
   if (payload.data && payload.data.kit_payment) {
     url = urls.StorePaymentCancelRequest
   } else {

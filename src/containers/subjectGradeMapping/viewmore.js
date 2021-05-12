@@ -15,7 +15,6 @@ export default function Viewmore(props) {
     // const classes = useStyles();
     // const bull = <span className={classes.bullet}>•</span>;
     // const { viewMoreList, cancelCard } = props;
-    // // console.log(viewMoreList, "pop")
 
     return (
       

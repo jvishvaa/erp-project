@@ -86,7 +86,6 @@ const EditStoreTransactionDetails = ({ classes, history, dataLoading, fetchEditD
   }, [history.location, alert, user])
 
   useEffect(() => {
-    // console.log('the details', editDetails)
     if (redirect) {
       history.push({
         pathname: '/finance/storePayRequests'
@@ -97,7 +96,6 @@ const EditStoreTransactionDetails = ({ classes, history, dataLoading, fetchEditD
   // useEffect(() => {
   //   return () => {
   //     clearAll()
-  //     console.log('----------cleaning up-----')
   //     setNewPayDate(null)
   //     setNewReceipt(null)
   //     setRemarks(null)

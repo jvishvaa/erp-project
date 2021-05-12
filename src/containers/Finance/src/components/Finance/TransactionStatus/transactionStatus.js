@@ -62,7 +62,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -110,9 +109,7 @@ class TransactionStatus extends Component {
   }
 
   componentWillUnmount () {
-    // console.log('unmount reports')
     this.props.clearProps()
-    // console.log('unmount state', this.state)
     this.setState({
       currentSession: null,
       fromDate: new Date().toISOString().substr(0, 10),
@@ -186,7 +183,6 @@ class TransactionStatus extends Component {
   //   this.setState({
   //     selectedModes: e
   //   })
-  //   console.log(e)
   // }
 
   changePaymentMode = (e) => {
@@ -202,8 +198,6 @@ class TransactionStatus extends Component {
       this.setState({
         paymentModeId: 'all', paymentModeData: allPayment
       }, () => {
-        console.log('-all payment-----------', this.state.paymentModeId)
-        console.log('-all payment-----------', this.state.paymentModeData)
       })
     } else {
       e && e.forEach(payment => {
@@ -219,7 +213,6 @@ class TransactionStatus extends Component {
     })
     let ids = []
     if (allLabel && allLabel.length === 1) {
-      console.log('All Fee Account')
       const allFeeAccs = {
         value: 'all',
         label: 'All Fee Accounts'
@@ -228,16 +221,12 @@ class TransactionStatus extends Component {
         feeAccData: allFeeAccs,
         feeAccId: 'all'
       }, () => {
-        console.log('-all fee accs-----------', this.state.feeAccData)
-        console.log('-all fee accs ids-----------', this.state.feeAccId)
       })
     } else {
       e && e.forEach(fee => {
         ids.push(fee.value)
       })
       this.setState({ feeAccData: e, feeAccId: ids }, () => {
-        console.log('-all fee accs-----------', this.state.feeAccData)
-        console.log('-all fee accs ids-----------', this.state.feeAccId)
       })
     }
   }

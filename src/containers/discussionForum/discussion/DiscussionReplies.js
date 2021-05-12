@@ -77,7 +77,6 @@ const useStyles = makeStyles({
 
 export default function DiscussionRepliesComponent(props) {
   const classes = useStyles({});
-  // console.log(props.commentRow);
   const { commentRow } = props;
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));

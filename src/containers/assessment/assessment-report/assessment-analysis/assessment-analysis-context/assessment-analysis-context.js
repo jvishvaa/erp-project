@@ -118,14 +118,13 @@ export const AssessmentAnalysisContext = createContext();
 export const AssessmentAnalysisContextProvider = ({ children, ...restProps }) => {
   // const { setAlert } = useContext(AlertNotificationContext);
   // eslint-disable-next-line no-console
-  console.log(restProps);
   const assessmentQuestionAnalysisHookProps = {
     url: userAssessmentQuestionAnalysisAPIEndpoint,
     dataType: 'array',
     defaultQueryParamObj: {},
     fetchOnLoad: false,
     includeAuthtoken: true,
-    isCentral: true,
+    isCentral: false,
   };
   const [assessmentQuestionAnalysis, fetchAssessmentQuestionAnalysisHook] = useFetcher(
     assessmentQuestionAnalysisHookProps

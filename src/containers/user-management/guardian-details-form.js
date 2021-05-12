@@ -63,7 +63,6 @@ const GuardianDetailsForm = ({
   useEffect(() => {
     // pageTop.current.scrollIntoView();
     containerRef.current.scrollTop = 0;
-    console.log('scrollTop ', containerRef.current.scrollTop);
   }, []);
   return (
     <>
@@ -84,7 +83,7 @@ const GuardianDetailsForm = ({
                 />
               </Grid>
               <Grid item md={4} xs={12}>
-                <FormControl variant='outlined' fullWidth color='secondary' size='small'>
+                <FormControl required variant='outlined' fullWidth color='secondary' size='small'>
                   <InputLabel htmlFor='component-outlined'>First name</InputLabel>
                   <OutlinedInput
                     id='father_first_name'
@@ -120,7 +119,7 @@ const GuardianDetailsForm = ({
                 </FormControl>
               </Grid>
               <Grid item md={4} xs={12}>
-                <FormControl variant='outlined' fullWidth size='small'>
+                <FormControl required variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Last name</InputLabel>
                   <OutlinedInput
                     id='father_last_name'
@@ -136,7 +135,7 @@ const GuardianDetailsForm = ({
                 </FormControl>
               </Grid>
               <Grid item md={4} xs={12}>
-                <FormControl variant='outlined' fullWidth size='small'>
+                <FormControl required variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Email ID</InputLabel>
                   <OutlinedInput
                     id='father_email'
@@ -152,7 +151,7 @@ const GuardianDetailsForm = ({
                 </FormControl>
               </Grid>
               <Grid item md={4} xs={12}>
-                <FormControl variant='outlined' fullWidth size='small'>
+                <FormControl required variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
                   <OutlinedInput
                     id='father_mobile'
@@ -182,7 +181,7 @@ const GuardianDetailsForm = ({
                 </FormControl>
               </Grid> */}
               <Grid item md={4} xs={12}>
-                <FormControl variant='outlined' fullWidth size='small'>
+                <FormControl required variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Address</InputLabel>
                   <OutlinedInput
                     id='address'
@@ -234,7 +233,7 @@ const GuardianDetailsForm = ({
                 />
               </Grid>
               <Grid item md={4} xs={12}>
-                <FormControl variant='outlined' fullWidth size='small'>
+                <FormControl required variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>First name</InputLabel>
                   <OutlinedInput
                     id='mother_first_name'
@@ -268,7 +267,7 @@ const GuardianDetailsForm = ({
                 </FormControl>
               </Grid>
               <Grid item md={4} xs={12}>
-                <FormControl variant='outlined' fullWidth size='small'>
+                <FormControl required variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Last name</InputLabel>
                   <OutlinedInput
                     id='mother_last_name'
@@ -283,7 +282,7 @@ const GuardianDetailsForm = ({
                 </FormControl>
               </Grid>
               <Grid item md={4} xs={12}>
-                <FormControl variant='outlined' fullWidth size='small'>
+                <FormControl required variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Email ID</InputLabel>
                   <OutlinedInput
                     id='mother_email'
@@ -298,7 +297,7 @@ const GuardianDetailsForm = ({
                 </FormControl>
               </Grid>
               <Grid item md={4} xs={12}>
-                <FormControl variant='outlined' fullWidth size='small'>
+                <FormControl required variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
                   <OutlinedInput
                     id='mother_mobile'
@@ -372,7 +371,7 @@ const GuardianDetailsForm = ({
                 />
               </Grid>
               <Grid item md={4} xs={12}>
-                <FormControl variant='outlined' fullWidth size='small'>
+                <FormControl required variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>First name</InputLabel>
                   <OutlinedInput
                     id='guardian_first_name'
@@ -406,7 +405,7 @@ const GuardianDetailsForm = ({
                 </FormControl>
               </Grid>
               <Grid item md={4} xs={12}>
-                <FormControl variant='outlined' fullWidth size='small'>
+                <FormControl required variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Last name</InputLabel>
                   <OutlinedInput
                     id='guardian_last_name'
@@ -423,7 +422,7 @@ const GuardianDetailsForm = ({
                 </FormControl>
               </Grid>
               <Grid item md={4} xs={12}>
-                <FormControl variant='outlined' fullWidth size='small'>
+                <FormControl required variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Email ID</InputLabel>
                   <OutlinedInput
                     id='guardian_email'
@@ -438,7 +437,7 @@ const GuardianDetailsForm = ({
                 </FormControl>
               </Grid>
               <Grid item md={4} xs={12}>
-                <FormControl variant='outlined' fullWidth size='small'>
+                <FormControl required variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
                   <OutlinedInput
                     id='guardian_mobile'

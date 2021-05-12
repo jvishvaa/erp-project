@@ -10,11 +10,12 @@ export const STUDENT_DETAILS = 'STUDENT_DETAILS'
 export const ORCHIDS_STUDNET_PAY = 'ORCHIDS_STUDNET_PAY'
 export const MISC_REPORT = 'MISC_REPORT'
 export const CANCEL_TRANS = 'CANCEL_TRANS'
+export const SCHOOL_DETAILS = 'SCHOOL_DETAILS'
 
 export const fetchFeeCollectionList = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.feeCollection + '?session_year=' + payload.session, {
+    axios.get(urls.feeCollection + '?session_year=' + payload.session + '&branch_id=' + payload.branch, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
@@ -43,7 +44,6 @@ export const paymentAction = (payload) => {
     }).then(response => {
       if (response.status === 200) {
         payload.alert.success('Payment Successful')
-        console.log(response)
         dispatch({
           type: PAY_NON_ORCHIDS,
           payload: {
@@ -70,7 +70,6 @@ export const saveOutsiders = (payload) => {
       }
     }).then(response => {
       if (response.status === 201) {
-        console.log(response)
         dispatch({
           type: SAVE_OUTSIDERS,
           payload: {
@@ -97,7 +96,6 @@ export const saveOutsiders = (payload) => {
 
 //     }).then(response => {
 //       if (response.status === 201) {
-//         console.log(response)
 //         dispatch({
 //           type: SEND_ALL_PAYMENTS,
 //           payload: {
@@ -111,7 +109,6 @@ export const saveOutsiders = (payload) => {
 //     }).catch(err => {
 //       payload.alert.error('Payment Failed')
 //       dispatch(actionTypes.dataLoaded())
-//       console.log(err)
 //     })
 //   }
 // }
@@ -124,7 +121,6 @@ export const fetchStudentErpDet = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response)
         dispatch({
           type: STUDENT_DETAILS,
           payload: {
@@ -152,7 +148,6 @@ export const orchidsStudentPay = (payload) => {
     }).then(response => {
       if (response.status === 201 || response.status === 200) {
         payload.alert.success('Payment Successful')
-        console.log(response)
         dispatch({
           type: ORCHIDS_STUDNET_PAY,
           payload: {
@@ -193,7 +188,6 @@ export const miscReport = (payload) => {
       }
     }).then(response => {
       if (+response.status === 200 && response.data && response.data.length > 0) {
-        console.log(response)
         dispatch({
           type: MISC_REPORT,
           payload: {
@@ -228,7 +222,6 @@ export const cancelTransaction = (payload) => {
       }
     }).then(response => {
       // if (response.status === 200) {
-      console.log(response)
       if (response.data === 'success') {
         dispatch({
           type: CANCEL_TRANS,
@@ -243,6 +236,32 @@ export const cancelTransaction = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       payload.alert.error('Something Went Wrong!')
+      dispatch(actionTypes.dataLoaded())
+      console.log(error)
+    })
+  }
+}
+
+export const schoolDeatails = (payload) => {
+  return (dispatch) => {
+    dispatch(actionTypes.dataLoading())
+    axios.get(`${urls.SchoolDeatails}`, {
+      headers: {
+        Authorization: 'Bearer ' + payload.user
+      }
+    }).then(response => {
+      if (response.status === 200) {
+        dispatch({
+          type: SCHOOL_DETAILS,
+          payload: {
+            data: response.data
+          }
+        })
+        payload.alert.success('Success!')
+      }
+      dispatch(actionTypes.dataLoaded())
+    }).catch(error => {
+      payload.alert.error('Student Info Failed')
       dispatch(actionTypes.dataLoaded())
       console.log(error)
     })

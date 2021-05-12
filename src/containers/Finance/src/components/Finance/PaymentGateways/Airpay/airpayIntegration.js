@@ -13,7 +13,6 @@ class AirpayIntegration extends Component {
     errRes: null
   }
   componentDidMount () {
-    console.log('mounted integration: ', this.props.location)
     if (!this.props.location.state || !this.props.location.user) {
       this.props.alert.warning('Transaction cannot Be Proceed')
       this.props.history.goBack()

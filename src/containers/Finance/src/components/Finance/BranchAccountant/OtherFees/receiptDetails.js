@@ -73,13 +73,11 @@ class ReceiptDetails extends Component {
   }
 
   componentDidMount () {
-    console.log('-----data----------------', this.props.erp, this.props.session)
     this.props.getMesaage(this.props.session, this.props.erp, this.props.alert, this.props.user)
     let currentData = this.props.otherFeesList.filter(val => val.id === this.props.otherFeeId)
     this.setState({
       currentData: currentData
     })
-    console.log(currentData)
     let today = new Date()
     let dd = today.getDate()
     let mm = today.getMonth() + 1 // January is 0!
@@ -103,8 +101,7 @@ class ReceiptDetails extends Component {
   // }
 
   componentDidUpdate () {
-    console.log('--------New State------------')
-    console.log(this.state.payment)
+
   }
 
     handlePayment = event => {
@@ -382,12 +379,10 @@ class ReceiptDetails extends Component {
     render () {
       // let { classes } = this.props
       // const { classes } = this.props;
-      console.log('-------message-----------', this.props.rangeMessage)
       let longText
       if (this.props.rangeMessage && this.props.rangeMessage.manual.length > 0 && this.state.isOnlineReceipt) {
         longText = (
           this.props.rangeMessage.manual.map(val => {
-            console.log('------value-----', val)
             return (
               <p style={{ fontWeight: 'bold', fontSize: '15px' }}>Range is between {val.range_from ? val.range_from : ''} & {val.range_to ? val.range_to : ''}</p>
             )
@@ -396,7 +391,6 @@ class ReceiptDetails extends Component {
       } else if (this.props.rangeMessage && this.props.rangeMessage.online.length > 0 && !this.state.isOnlineReceipt) {
         longText = (
           this.props.rangeMessage.online.map(val => {
-            console.log('------value-----', val)
             return (
               <p style={{ fontWeight: 'bold', fontSize: '15px' }}>Range is between {val.range_from ? val.range_from : ''} & {val.range_to ? val.range_to : ''}</p>
             )

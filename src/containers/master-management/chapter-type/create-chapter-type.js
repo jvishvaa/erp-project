@@ -68,6 +68,7 @@ const CreateChapterType = ({
   }, []);
 
   const [filterData, setFilterData] = useState({
+    year: '',
     branch: [],
     grade: [],
     section: [],
@@ -167,32 +168,6 @@ const CreateChapterType = ({
     }
   }, [moduleId]);
 
-  useEffect(() => {
-    // axiosInstance
-    //   .get(`${endpoints.communication.branches}`)
-    //   .then((result) => {
-    //     if (result.data.status_code === 200) {
-    //       setBranchDropdown(result.data.data);
-    //     } else {
-    //       setAlert('error', result.data.message);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     setBranchDropdown('error', error.message);
-    //   });
-    axiosInstance
-      .get(endpoints.userManagement.academicYear)
-      .then((result) => {
-        if (result.status === 200) {
-          setAcademicYear(result.data.data);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
-  }, []);
 
   // const handleAcademicYear = (event, value) => {
   //   setFilterData({ year: '', branch: '', grade: '', subject: '', chapter: '' });
@@ -228,6 +203,16 @@ const CreateChapterType = ({
     }
   };
 
+  useEffect(() => {
+    if(academicYear.length > 0) {
+      academicYear.map((option) => {
+            if(option.session_year === "2021-22") {
+                handleAcademicYear('',option);
+            }
+        })
+    }
+},[academicYear])
+
   const fetchBranches = () => {
     fetchBranchesForCreateUser().then((data) => {
       const transformedData = data?.map((obj) => ({
@@ -253,7 +238,6 @@ const CreateChapterType = ({
   };
 
   const fetchChapters = () => {
-    debugger;
     axios
       .get(
         `/qbox/academic/chapters/?academic_year=${searchAcademicYear}&subject=${subjectIds}`
@@ -492,7 +476,6 @@ const CreateChapterType = ({
       });
   };
   const handleSection = (event, value) => {
-    // console.log(value);
     setFilterData({ ...filterData, section: '' });
     if (value) {
       setFilterData({ ...filterData, section: value });
@@ -554,8 +537,9 @@ const CreateChapterType = ({
                   onChange={handleAcademicYear}
                   id='year'
                   className='dropdownIcon'
-                  options={academicYear || []}
-                  getOptionLabel={(option) => option?.session_year || ''}
+                  value={filterData.year}
+                  options={academicYear}
+                  getOptionLabel={(option) => option?.session_year}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField

@@ -163,7 +163,6 @@ export const editLedgerEntry = (payload) => {
     remarks: payload.remarks,
     ledger_status: payload.status
   }
-  console.log(body)
   return (dispatch) => {
     const { alert, headId } = payload
     dispatch(actionTypes.dataLoading())

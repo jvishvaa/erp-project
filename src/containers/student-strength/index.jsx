@@ -14,10 +14,11 @@ import TotalStudentWiseDetails from './totalStudentWiseDetails';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import filterImage from '../../assets/images/unfiltered.svg';
 import Layout from '../Layout';
+import { Pagination } from '@material-ui/lab';
+
 
 const StudentStrength = ({ history }) => {
   const [acadminYearList, setAcadminYearList] = useState([]);
-  const [selectedAcadmic, setSelectedAcadmic] = useState('');
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState('');
   const { setAlert } = useContext(AlertNotificationContext);
@@ -25,82 +26,76 @@ const StudentStrength = ({ history }) => {
   const [filteredData, setFilteredData] = useState('');
   const [selectedCard, setSelectedCard] = useState('');
   const [hRef, setHRef] = useState([]);
+  const [academicYear, setAcademicYear] = useState([]);
+  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
+
+
+
+  const handlePagination = (event, page) => {
+    setPage(page);
+    handleFilter(page);
+  };
+ 
+const moduleId=178;
   useEffect(() => {
     setHRef([
       {
         csv: `${endpoints.studentListApis.downloadExcelAllstudents}?academic_year_id=${
-          selectedAcadmic && selectedAcadmic.id
+          selectedAcademicYear && selectedAcademicYear.id
         }&export_type=csv`,
       },
       {
         csv: `${endpoints.studentListApis.downloadBranchWiseStudent}?academic_year_id=${
-          selectedAcadmic && selectedAcadmic.id
+          selectedAcademicYear && selectedAcademicYear.id
         }&branch_id=${selectedBranch && selectedBranch.id}
           &export_type=csv`,
       },
-      // {
-      //   csv: `https://erpnew.letseduvate.com/qbox/academic/all_branch_strength_excel_data/?academic_year_id=${
-      //     selectedAcadmic && selectedAcadmic.id
-      //   }&export_type=csv`,
-      // },
-      // {
-      //   csv: `https://erpnew.letseduvate.com/qbox/academic/branch_strength_excel_data/?academic_year_id=${
-      //     selectedAcadmic && selectedAcadmic.id
-      //   }&branch_id=${selectedBranch && selectedBranch.id}
-      //     &export_type=csv`,
-      // },
+     
     ]);
-  }, [selectedAcadmic, selectedBranch]);
+  }, [selectedAcademicYear, selectedBranch]);
 
-  function getBranchList() {
+  function callApi(api, key) {
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.communication.branches}`)
+      .get(api)
       .then((result) => {
-        setLoading(false);
-        if (result.data.status_code === 200) {
-          setBranchList(result.data.data);
+        if (result.status === 200) {
+          if (key === 'academicYearList') {
+            console.log(result?.data?.data || [], 'checking');
+            setAcademicYear(result?.data?.data || []);
+          }
+          if (key === 'branchList') {
+            console.log(result?.data?.data || [], 'checking');
+            setBranchList(result?.data?.data?.results || []);
+          }
+        
+          setLoading(false);
         } else {
           setAlert('error', result.data.message);
+          setLoading(false);
         }
       })
       .catch((error) => {
-        setLoading(false);
         setAlert('error', error.message);
+        setLoading(false);
       });
   }
-  function getAcadminYearList() {
-    setLoading(true);
-    axiosInstance
-      .get(`${endpoints.userManagement.academicYear}`)
-      .then((result) => {
-        setLoading(false);
-        if (result.data.status_code === 200) {
-          setAcadminYearList(result.data.data);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
-  }
-
   useEffect(() => {
-    getAcadminYearList();
-    getBranchList();
+    callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
   }, []);
 
   function handleClearFilter() {
-    setSelectedAcadmic('');
+    setSelectedAcadmeicYear('');
     setSelectedBranch('');
     setFilteredData('');
+    setPage(1);
   }
 
-  function handleFilter() {
-    if (!selectedAcadmic) {
+  function handleFilter(pageNumber) {
+    if (!selectedAcademicYear) {
       setAlert('error', 'Select Acadminc year');
       return;
     }
@@ -112,13 +107,16 @@ const StudentStrength = ({ history }) => {
     axiosInstance
       .get(
         `${endpoints.studentListApis.branchWiseStudentCount}?academic_year_id=${
-          selectedAcadmic && selectedAcadmic.id
-        }&branch_id=${selectedBranch && selectedBranch.id}`
+          selectedAcademicYear && selectedAcademicYear.id
+        }&branch_id=${selectedBranch && selectedBranch.id}&page_number=${pageNumber||1}&page_size=${15}`
       )
       .then((result) => {
         setLoading(false);
         if (result.data.status_code === 200) {
+          setTotalPages(result.data.total_pages);
+          console.log(result.data.total_pages);
           setFilteredData(result.data.data);
+         
         } else {
           setAlert('error', result.data.message);
         }
@@ -144,53 +142,75 @@ const StudentStrength = ({ history }) => {
                   Dashboard
                 </button>
                 <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                <span className='SignatureNavigationLinks'>Student Strength</span>
+                <span className='SignatureNavigationLinks'>School Strength</span>
               </Grid>
             </Grid>
           </Grid>
           <Grid item md={12} xs={12} className='studentStrengthFilterDiv'>
             <Grid container spacing={2}>
               <Grid item md={4} xs={12}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={(event, value) => setSelectedAcadmic(value)}
-                  id='academic-year'
-                  className='dropdownIcon'
-                  value={selectedAcadmic}
-                  options={acadminYearList}
-                  getOptionLabel={(option) => option?.session_year}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Academic Year'
-                      placeholder='Academic Year'
-                    />
-                  )}
-                />
+            <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              setSelectedAcadmeicYear(value);
+              if (value) {
+                callApi(
+                  `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                  'branchList'
+                );
+              }
+              setSelectedBranch([]);
+            }}
+            id='branch_id'
+            className='dropdownIcon'
+            value={selectedAcademicYear || ''}
+            options={academicYear || ''}
+            getOptionLabel={(option) => option?.session_year || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Academic Year'
+                placeholder='Academic Year'
+              />
+            )}
+          />
               </Grid>
               <Grid item md={4} xs={12}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={(event, value) => setSelectedBranch(value)}
-                  id='branch_id'
-                  className='dropdownIcon'
-                  value={selectedBranch}
-                  options={branchList}
-                  getOptionLabel={(option) => option?.branch_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Branch'
-                      placeholder='Branch'
-                    />
-                  )}
-                />
+               <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={(event, value) => {
+              setSelectedBranch([]);
+              if (value) {
+                const selectedId = value.branch.id;
+                setSelectedBranch(value);
+                callApi(
+                  `${endpoints.academics.grades}?session_year=${
+                    selectedAcademicYear.id
+                  }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                  'gradeList'
+                );
+              }
+            
+            }}
+            id='branch_id'
+            className='dropdownIcon'
+            value={selectedBranch || ''}
+            options={branchList || ''}
+            getOptionLabel={(option) => option?.branch?.branch_name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Branch'
+                placeholder='Branch'
+              />
+            )}
+          />
               </Grid>
             </Grid>
             <Divider className='studentStrenghtDivider' />
@@ -198,7 +218,7 @@ const StudentStrength = ({ history }) => {
               <Grid item md={1} xs={12}>
                 <Button
                   variant='contained'
-                  size='small'
+                  size='medium'
                   fullWidth
                   className='studentStrenghtFilterButton'
                   onClick={() => handleClearFilter()}
@@ -209,20 +229,21 @@ const StudentStrength = ({ history }) => {
               <Grid item md={1} xs={12}>
                 <Button
                   variant='contained'
-                  size='small'
+                  size='medium'
                   color='primary'
+                
                   fullWidth
-                  onClick={() => handleFilter()}
+                  onClick={() => {setPage(1);handleFilter(1);}}
                   className='studentStrenghtFilterButton'
                 >
                   FILTER
                 </Button>
               </Grid>
-              <Grid item md={6} />
-              {selectedAcadmic && (
+              <Grid item md={4} />
+              {selectedAcademicYear && (
                 <Grid item md={2} xs={12}>
                   <Button
-                    size='small'
+                    size='medium'
                     href={hRef && hRef[0] && hRef[0].csv}
                     fullWidth
                     className='studentStrenghtDownloadButton'
@@ -231,11 +252,11 @@ const StudentStrength = ({ history }) => {
                   </Button>
                 </Grid>
               )}
-              {selectedAcadmic && selectedBranch && (
+              {selectedAcademicYear && selectedBranch && (
                 <Grid item md={2} xs={12}>
                   <Button
                     variant='contained'
-                    size='small'
+                    size='medium'
                     color='primary'
                     fullWidth
                     href={hRef && hRef[1] && hRef[1].csv}
@@ -267,7 +288,7 @@ const StudentStrength = ({ history }) => {
             </Grid>
             <Grid
               item
-              md={selectedCard ? 6 : 12}
+              md={selectedCard ? 6 : 9}
               xs={12}
               className='studentStrenghtBody2'
             >
@@ -287,9 +308,9 @@ const StudentStrength = ({ history }) => {
               </Grid>
             </Grid>
             {selectedCard && (
-              <Grid item md={6} xs={12} className='studentStrenghtBody2'>
+              <Grid item md={4} xs={12} className='studentStrenghtBody3'>
                 <TotalStudentWiseDetails
-                  year={(selectedAcadmic && selectedAcadmic.id) || 0}
+                  year={(selectedAcademicYear && selectedAcademicYear.id) || 0}
                   branch={(selectedBranch && selectedBranch.id) || 0}
                   grade={selectedCard || 0}
                   hadleClearGrade={setSelectedCard}
@@ -298,6 +319,16 @@ const StudentStrength = ({ history }) => {
             )}
           </Grid>
         )}
+
+        <Grid container justify='center'>
+        <Pagination
+            onChange={handlePagination}
+            style={{ marginTop: 25 }}
+            count={totalPages}
+            color='primary'
+            page={page}
+          />
+          </Grid>
         {loading && <Loader />}
       </div>
     </Layout>

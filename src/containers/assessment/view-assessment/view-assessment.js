@@ -16,6 +16,26 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import axiosInstance from '../../../config/axios';
 import './view-assessment.css';
 
+function getSubDomainName() {
+  const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
+  const hostSplitArray = host.split('.');
+  const subDomainLevels = hostSplitArray.length - 2;
+  let domain = '';
+  let subDomain = '';
+  let subSubDomain = '';
+  if (hostSplitArray.length > 2) {
+    // domain = hostSplitArray.slice(0, hostSplitArray.length-2)
+    domain = hostSplitArray.slice(hostSplitArray.length - 2).join('');
+  }
+  if (subDomainLevels === 2) {
+    subSubDomain = hostSplitArray[0];
+    subDomain = hostSplitArray[1];
+  } else if (subDomainLevels === 1) {
+    subDomain = hostSplitArray[0];
+  }
+  const domainTobeSent = subDomain;
+  return domainTobeSent;
+}
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -47,7 +67,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
   };
   const [showInfo, setShowInfo] = useState(getInfoDefaultVal());
   const { setAlert } = useContext(AlertNotificationContext);
-
+  // ?domain=${getSubDomainName()}
   const fetchQuestionPapers = () => {
     setLoading(true);
     axiosInstance
@@ -55,9 +75,8 @@ const ViewAssessments = ({ history, ...restProps }) => {
         `${endpoints.assessment.questionPaperList}?user=${user}&page=${page}&status=${status}`
       )
       .then((response) => {
-        console.log('qp result:', response);
         if (response.data.status_code === 200) {
-          setQuestionPaperList(response.data.result.result);
+          setQuestionPaperList(response.data.result.results);
           setTotalCount(response.data.result.count);
           setLoading(false);
         } else {
@@ -110,6 +129,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
           textColor='secondary'
           value={status}
           onChange={(e, a) => {
+            setPageNumber(1);
             setStatus(a);
           }}
           aria-label='simple tabs example'

@@ -61,7 +61,6 @@ if (NavData && NavData.length) {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -121,35 +120,30 @@ class NewAdmissionFormAcc extends Component {
   }
 
   getStudentDetail = (dataOb) => {
-    console.log(dataOb)
     this.setState({
       studentdetails: dataOb
     })
   }
 
   getStudentParentDetail = (dataOb) => {
-    console.log(dataOb)
     this.setState({
       studentparentdetails: dataOb
     })
   }
 
   getAddressDetail = (dataOb) => {
-    console.log(dataOb)
     this.setState({
       adressdetails: dataOb
     })
   }
 
   getOtherDetail = (dataOb) => {
-    console.log(dataOb)
     this.setState({
       otherdetails: dataOb
     })
   }
 
   handleNext = () => {
-    console.log('handle next pressed')
     if (this.state.activeStep === 0) {
       if (this.state.studentdetails.academicyear && this.state.studentdetails.firstName && this.state.studentdetails.class && this.state.studentdetails.section && this.state.studentdetails.dateOfBir && this.state.studentdetails.dateofAdm && this.state.studentdetails.refadmNum) {
         this.setState(prevState => {
@@ -181,7 +175,6 @@ class NewAdmissionFormAcc extends Component {
         // this.props.alert.warning('Fill all mandatory fields!')
       }
     } else if (this.state.activeStep === 3) {
-      console.log('make API Call')
       const { studentdetails, otherdetails, studentparentdetails, adressdetails } = this.state
       const body = {
         session_year: studentdetails.academicyear,
@@ -226,7 +219,6 @@ class NewAdmissionFormAcc extends Component {
         previous_admission_no: otherdetails.prevAdmissionno,
         aadhar_number: otherdetails.adharno
       }
-      console.log('this is body', body)
       this.props.postAdmission(body, this.props.user, this.props.alert)
       this.props.history.push({
         pathname: '/finance/customizedAdmissionForm'
@@ -234,7 +226,6 @@ class NewAdmissionFormAcc extends Component {
     }
   }
   handleBack = () => {
-    console.log('handle back pressed')
     this.setState(state => ({
       activeStep: state.activeStep - 1
     }), () => {
@@ -250,7 +241,6 @@ class NewAdmissionFormAcc extends Component {
     const steps = getSteps()
     const { classes } = this.props
     const { activeStep } = this.state
-    console.log('Active step: !', activeStep)
     return (
       <Layout>
       <React.Fragment>

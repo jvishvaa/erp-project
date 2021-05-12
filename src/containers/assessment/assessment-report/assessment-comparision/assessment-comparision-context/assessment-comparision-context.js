@@ -14,7 +14,6 @@ export const AssessmentComparisionContext = createContext();
 
 export const AssessmentComparisionContextProvider = ({ children, ...restProps }) => {
   // eslint-disable-next-line no-console
-  console.log(restProps);
 
   const userTestHookProps = {
     url: userTestsAPIEndpoint,
@@ -22,7 +21,7 @@ export const AssessmentComparisionContextProvider = ({ children, ...restProps })
     defaultQueryParamObj: {},
     fetchOnLoad: false,
     includeAuthtoken: true,
-    isCentral: true,
+    isCentral: false,
   };
   const [userTests, fetchUserTestsHook] = useFetcher(userTestHookProps);
   const fetchUserTests = (params = {}, callbacks = {}) => {
@@ -71,7 +70,7 @@ export const AssessmentComparisionContextProvider = ({ children, ...restProps })
     defaultQueryParamObj: {},
     fetchOnLoad: false,
     includeAuthtoken: true,
-    isCentral: true,
+    isCentral: false,
   };
   const [testComparisions, fetchTestComparisionsHook] = useFetcher(
     testComparsionHookProps
@@ -85,7 +84,7 @@ export const AssessmentComparisionContextProvider = ({ children, ...restProps })
       return null;
     }
     const dataProp = {
-      queryParamObj: { test_1: test1, test_2: test2, user },
+      queryParamObj: { test_1: test1, test_2: test2 },
       callbacks,
     };
     fetchTestComparisionsHook(dataProp);

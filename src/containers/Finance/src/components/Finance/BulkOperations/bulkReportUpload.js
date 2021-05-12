@@ -117,7 +117,6 @@ const BulkReportUpload = ({ classes, session, branches, bulkReportList, reports,
       form.append('file', statusFile)
     }
     for (var key of form.entries()) {
-      console.log(key[0] + ', ' + key[1])
     }
     if (isAdmin && !branchId) {
       alert.warning('Select Branch!')

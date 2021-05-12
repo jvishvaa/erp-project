@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -45,8 +45,7 @@ import {
 } from '../../../../../redux/actions';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { set } from 'lodash';
-
-
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -373,10 +372,13 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const FileRow = (props) => {
     const { file, onClose, index } = props;
     return (
-      <div className='file_row_hw'>
+      <div className='file_row_hw' style={{width: '130px'}}>
         <div className='file_name_container_hw'>
           File {index + 1}
         </div>
+        <IconButton size='small'>
+          <VisibilityIcon />
+        </IconButton>
         <div className='file_close_hw'>
           <span
             onClick={onClose}
@@ -533,6 +535,62 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     />
                   ))}
                 </div>
+                <div className='homework-question-container student-view'>
+                  <div className='attachments-container'>
+                    <div className='attachments-list-outer-container'>
+                      <div className='prev-btn'>
+                        {bulkData.length > 1 && (
+                          <IconButton onClick={() => handleScroll('left')}>
+                            <ArrowBackIosIcon />
+                          </IconButton>
+                        )}
+                      </div>
+                      <SimpleReactLightbox>
+                        <div
+                          className='attachments-list'
+                          ref={scrollableContainer}
+                          onScroll={(e) => {
+                            e.preventDefault();
+                          }}
+                        >
+                          {bulkData.length > 0 && bulkData.map((file, i) => (
+                            <div className='attachment'>
+                              <Attachment
+                                key={`homework_student_question_attachment_${i}`}
+                                fileUrl={file}
+                                fileName={`Attachment-${i + 1}`}
+                                urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                index={i}
+                                //onOpenInPenTool={(url) => openInPenTool(url, index)}
+                                actions={['preview']}
+                              />
+                            </div>
+                          ))}
+                          <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                            <SRLWrapper>
+                              {bulkData.map((url, i) => (
+                                <img
+                                  src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                                  onError={(e) => {
+                                    e.target.src = placeholder;
+                                  }}
+                                  alt={`Attachment-${i + 1}`}
+                                />
+                              ))}
+                            </SRLWrapper>
+                          </div>
+                        </div>
+                      </SimpleReactLightbox>
+                      <div className='next-btn'>
+                        {bulkData.length > 1 && (
+                          <IconButton onClick={() => handleScroll('right')}>
+                            <ArrowForwardIosIcon color='primary' />
+                          </IconButton>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>)}
 
 
@@ -583,6 +641,62 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           onClose={() => removeFileHandler(index, i)}
                         />
                       ))}
+                      <div className='homework-question-container student-view'>
+                        <div className='attachments-container'>
+                          <div className='attachments-list-outer-container'>
+                            <div className='prev-btn'>
+                              {attachmentData[index]?.attachments.length > 1 && (
+                                <IconButton onClick={() => handleScroll('left')}>
+                                  <ArrowBackIosIcon />
+                                </IconButton>
+                              )}
+                            </div>
+                            <SimpleReactLightbox>
+                              <div
+                                className='attachments-list'
+                                ref={scrollableContainer}
+                                onScroll={(e) => {
+                                  e.preventDefault();
+                                }}
+                              >
+                                {attachmentData[index]?.attachments.map((file, i) => (
+                                  <div className='attachment' style={{ height: '200px', width: '300px'}}>
+                                    <Attachment
+                                      key={`homework_student_question_attachment_${i}`}
+                                      fileUrl={file}
+                                      fileName={`Attachment-${i + 1}`}
+                                      urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                      index={i}
+                                      //onOpenInPenTool={(url) => openInPenTool(url, index)}
+                                      actions={['preview']}
+                                    />
+                                  </div>
+                                ))}
+                                <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                                  <SRLWrapper>
+                                    {bulkData.map((url, i) => (
+                                      <img
+                                        src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                                        onError={(e) => {
+                                          e.target.src = placeholder;
+                                        }}
+                                        alt={`Attachment-${i + 1}`}
+                                      />
+                                    ))}
+                                  </SRLWrapper>
+                                </div>
+                              </div>
+                            </SimpleReactLightbox>
+                            <div className='next-btn'>
+                              {attachmentData[index]?.attachments.length > 1 && (
+                                <IconButton onClick={() => handleScroll('right')}>
+                                  <ArrowForwardIosIcon color='primary' />
+                                </IconButton>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   }
 
@@ -614,7 +728,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                     key={`homework_student_question_attachment_${i}`}
                                     fileUrl={url}
                                     fileName={`Attachment-${i + 1}`}
-                                    urlPrefix={`${endpoints.s3}/homework`}
+                                    urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                     index={i}
                                     onOpenInPenTool={(url) => openInPenTool(url, index)}
                                     actions={['preview', 'download', homeworkSubmission.status === 1 && question.is_pen_editor_enable && 'pentool']}
@@ -626,7 +740,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                               <SRLWrapper>
                                 {question.question_files.map((url, i) => (
                                   <img
-                                    src={`${endpoints.s3}/homework/${url}`}
+                                    src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                     onError={(e) => {
                                       e.target.src = placeholder;
                                     }}
@@ -681,7 +795,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                           key={`homework_student_question_attachment_${i}`}
                                           fileUrl={url}
                                           fileName={`Attachment-${i + 1}`}
-                                          urlPrefix={`${endpoints.s3}/homework`}
+                                          urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                           index={i}
                                           actions={['preview', 'download']}
                                         />
@@ -693,7 +807,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                     <SRLWrapper>
                                       {question.submitted_files.map((url, i) => (
                                         <img
-                                          src={`${endpoints.s3}/homework/${url}`}
+                                          src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                           onError={(e) => {
                                             e.target.src = placeholder;
                                           }}
@@ -721,7 +835,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                           key={`homework_student_question_attachment_${i}`}
                                           fileUrl={url}
                                           fileName={`Attachment-${i + 1}`}
-                                          urlPrefix={`${endpoints.s3}/homework`}
+                                          urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                           index={i}
                                           actions={['preview', 'download']}
                                         />
@@ -733,7 +847,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                     <SRLWrapper>
                                       {question.evaluated_files.map((url, i) => (
                                         <img
-                                          src={`${endpoints.s3}/homework/${url}`}
+                                          src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                           onError={(e) => {
                                             e.target.src = placeholder;
                                           }}
@@ -783,7 +897,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {submittedEvaluatedFilesBulk?.map((url, i) => (
@@ -793,7 +906,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                     key={`homework_student_question_attachment_${i}`}
                                     fileUrl={url}
                                     fileName={`Attachment-${i + 1}`}
-                                    urlPrefix={`${endpoints.s3}/homework`}
+                                    urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                     index={i}
                                     actions={['preview', 'download']}
                                   />
@@ -805,7 +918,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                               <SRLWrapper>
                                 {submittedEvaluatedFilesBulk?.map((url, i) => (
                                   <img
-                                    src={`${endpoints.s3}/homework/${url}`}
+                                    src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                     onError={(e) => {
                                       e.target.src = placeholder;
                                     }}

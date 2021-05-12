@@ -69,11 +69,12 @@ class RoleManagement extends Component {
   handlePageChange = (page) => {
     const { limit, fetchRoles, searchRoles } = this.props;
     const { searchInput } = this.state;
-    console.log('page change ', page);
     if (searchInput) {
-      fetchRoles({ page, limit });
-    } else {
       searchRoles({ roleName: searchInput, page, limit });
+      //fetchRoles({ page, limit });
+    } else {
+      fetchRoles({ page, limit });
+      //searchRoles({ roleName: searchInput, page, limit });
     }
   };
 
@@ -123,6 +124,7 @@ class RoleManagement extends Component {
               startIcon={<AddOutlinedIcon />}
               href={`${match.url}/create-role`}
               color='primary'
+              style={{background:'#FF6B6B'}}
             >
               Add Role
             </Button>
@@ -198,10 +200,10 @@ class RoleManagement extends Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button autoFocus onClick={this.handleCloseDeleteModal} color='secondary'>
+            <Button autoFocus onClick={this.handleCloseDeleteModal} color='primary' style={{background:'#ff6b6b'}}>
               Cancel
             </Button>
-            <Button onClick={this.handleDeleteRole}>Confirm</Button>
+            <Button onClick={this.handleDeleteRole} style={{background:'#ff6b6b'}}>Confirm</Button>
           </DialogActions>
         </Dialog>
       </div>

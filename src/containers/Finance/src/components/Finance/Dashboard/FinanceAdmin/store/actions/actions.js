@@ -21,7 +21,6 @@ export const getActiveRequest = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: GET_ACTIVE_REQUEST,
           payload: {
@@ -47,7 +46,6 @@ export const getInActiveRequest = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: GET_INACTIVE_REQUEST,
           payload: {
@@ -97,7 +95,6 @@ export const getStudentCountActive = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: GET_STUDENT_COUNT_ACTIVE,
           payload: {
@@ -122,7 +119,6 @@ export const getStudentCountInActive = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: GET_STUDENT_COUNT_INACTIVE,
           payload: {
@@ -152,7 +148,6 @@ export const switchBranchAdmin = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: SWITCH_BRANCH_ADMIN,
           payload: {
@@ -172,13 +167,12 @@ export const switchBranchAdmin = (payload) => {
 export const getPendingOnlineAdmission = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.pendingOnlineAdmission, {
+    axios.get(urls.pendingOnlineAdmission + '?session_year=' + payload.session + '&branch_id=' + payload.branch, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: PENDING_ADMISSION,
           payload: {

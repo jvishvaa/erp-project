@@ -1,0 +1,190 @@
+@import '../../../../assets/styles/variables';
+.create-assesment-container {
+  .create-container {
+    .header {
+      margin: 20px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .applied-filters {
+        display: flex;
+        align-items: center;
+        .filter {
+          color: $secondary-color;
+          font-size: 1.2rem;
+          font-weight: 550;
+        }
+        .dot {
+          background-color: $secondary-color;
+          margin: 0 10px;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+        }
+      }
+      .icon {
+        width: 30px;
+      }
+    }
+    .questions-paper-container {
+      padding: 10px 20px;
+      border: 1px solid #dbdbdb;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      .minimize-container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        .info {
+          color: $secondary-color;
+          margin-right: 5px;
+        }
+      }
+      .form-field-header {
+        color: $primary-color;
+        font-size: 1.2rem;
+        margin: 1rem 0;
+      }
+      .form-field {
+        margin: 20px 0;
+      }
+      .test-detail-container {
+        .test-details {
+          width: 100%;
+          background-color: #efefef;
+          border: 1px solid #dbdbdb;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          padding: 2rem 1rem;
+          .detail {
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            .label {
+              color: $secondary-color;
+              margin-left: 1rem;
+              font-size: 1.1rem;
+              width: 50%;
+            }
+            .input-container {
+              margin: 0 1rem;
+              width: 100%;
+              .bg-white {
+                background-color: #ffffff;
+              }
+            }
+          }
+        }
+      }
+      .questions-container {
+        .questions-header {
+          color: $primary-color;
+          font-size: 1.2rem;
+        }
+        .questions-content {
+          .question-header-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            align-items: center;
+            .info-section {
+              display: flex;
+              p {
+                color: #014b7e;
+                font-size: 1.1rem;
+                margin: 0 1rem;
+              }
+            }
+            .action-section {
+              .MuiFormGroup-root {
+                display: flex;
+                flex-direction: row;
+                .MuiFormLabel-root {
+                  color: $secondary-color;
+                  margin: 0 1rem;
+                }
+                .MuiFormControlLabel-root {
+                  margin: 0;
+                }
+              }
+            }
+          }
+          .question-container {
+            .sections-container {
+              .section-container {
+                margin: 20px 0;
+                .section-header {
+                  display: flex;
+                  justify-content: space-between;
+                  padding: 20px 0;
+                  background-color: #f3f3f3;
+                  border-radius: 11px;
+                  .left {
+                    display: flex;
+                    align-items: center;
+                    .section-name {
+                      color: $secondary-color;
+                      font-size: 1.2rem;
+                      font-weight: 400;
+                    }
+                  }
+                }
+                .section-content {
+                  display: flex;
+                  flex-wrap: wrap;
+                }
+              }
+            }
+          }
+          .add-new {
+            border-radius: 10px;
+            margin: 20px 0;
+            padding: 10px 20px;
+            border: 1px solid #dbdbdb;
+            display: flex;
+            justify-content: space-between;
+
+            .info {
+              color: $secondary-color;
+              font-size: 1.1rem;
+            }
+
+            .action {
+              display: flex;
+              color: $primary-color;
+              font-size: 1.1rem;
+              align-items: center;
+            }
+          }
+        }
+      }
+      .submit-btn-conntainer {
+        display: flex;
+        button {
+          margin-right: 1rem;
+          min-width: 145px;
+        }
+      }
+    }
+  }
+}
+
+li.assesment-card-popup-menu-item {
+  display: flex;
+  justify-content: space-between !important;
+  .value-input {
+    width: 45px;
+    margin: 0 1rem;
+    color: $secondary-color;
+    fieldset {
+      border: 1px solid $primary-color;
+    }
+    .MuiInputBase-root {
+      height: 30px;
+      input {
+        padding: 2px;
+      }
+    }
+  }
+}

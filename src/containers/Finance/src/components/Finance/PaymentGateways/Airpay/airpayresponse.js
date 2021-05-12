@@ -12,7 +12,6 @@ const AirpayResponse = ({ history }) => {
   const [transStatus, setTransStatus] = useState('')
   const [message, setMessage] = useState('')
   useEffect(() => {
-    console.log('history', history)
     const urlParams = new URLSearchParams(window.location.search)
     const transId = urlParams.get('TRANSACTIONID')
     const apTransId = urlParams.get('APTRANSACTIONID')
@@ -24,8 +23,6 @@ const AirpayResponse = ({ history }) => {
     setAmount(amount)
     setTransStatus(transStatus)
     setMessage(message)
-    console.log('param', urlParams)
-    console.log('Param++', transId, apTransId, amount, transStatus, message)
   }, [history])
   const goBackHandler = () => {
     // this.props.history.replace('/dashboard')

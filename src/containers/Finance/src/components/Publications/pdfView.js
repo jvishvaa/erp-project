@@ -61,10 +61,8 @@ class PdfView extends Component {
      let{ pageNumber, totalpage } = this.state
 
      if (pageNumber < totalpage) {
-       console.log('true', totalpage)
        this.setState({ pageNumber: pageNumber + 1 })
        //   this.renderPage(pageNumber + 1)
-       console.log(pageNumber)
      }
    }
    onPreviousPageClick = () => {

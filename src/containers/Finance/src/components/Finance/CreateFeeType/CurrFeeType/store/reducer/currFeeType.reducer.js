@@ -15,7 +15,6 @@ const currFeeTypeReducer = (state = initialState, action) => {
     case actionTypes.ADD_CURR_FEE: {
       const newCurrList = [...state.currList]
       newCurrList.unshift(action.payload.data)
-      console.log('new curr list', newCurrList)
       return {
         ...state,
         currList: newCurrList

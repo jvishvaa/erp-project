@@ -13,8 +13,6 @@ let mapDispatchToProps = dispatch => ({
   changePath: (title, path, withoutBase) => dispatch(viewActions.changePath(title, path, withoutBase))
 })
 const ProtectedRoutesWithGuard = connect(null, mapDispatchToProps)(withRouter((props) => {
-  // // eslint-disable-next-line no-debugger
-  // debugger
   // eslint-disable-next-line no-undef
   // const detaildedObj = JSON.parse(sessionStorage.getItem('detailedObj'))
   // console.log(detaildedObj, 'private')

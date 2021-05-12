@@ -107,7 +107,6 @@ class CreateUser extends Component {
   };
 
   onSubmitGuardianDetails = (details) => {
-    console.log('guardian details!!', details);
 
     this.setState(
       (prevState) => ({
@@ -122,7 +121,6 @@ class CreateUser extends Component {
   onCreateUser = (requestWithParentorGuradianDetails) => {
     const { user } = this.state;
     const { createUser, history } = this.props;
-    console.log('user ', user);
     let requestObj = user;
     const {
       academic_year,
@@ -144,7 +142,6 @@ class CreateUser extends Component {
       profile,
       parent,
     } = requestObj;
-    console.log('profile ', profile);
     const {
       father_first_name,
       father_middle_name,
@@ -213,7 +210,7 @@ class CreateUser extends Component {
       delete requestObj.parent;
       delete requestObj.father_photo;
       delete requestObj.mother_photo;
-      delete requestObj.guardian_photo
+      delete requestObj.guardian_photo;
     }
     const { setAlert } = this.context;
     const requestObjFormData = jsonToFormData(requestObj);

@@ -11,7 +11,7 @@ export const SAVE_CHEQUE_BOUNCE = 'SAVE_CHEQUE_BOUNCE'
 export const fetchAccountantChequeTransaction = (payload) => {
   return dispatch => {
     dispatch(actionTypes.dataLoading())
-    axios.get(`${urls.AccountantChequeTransaction}?erp_code=${payload.erpNo}&session_year=${payload.session}`, {
+    axios.get(`${urls.AccountantChequeTransaction}?erp_code=${payload.erpNo}&session_year=${payload.session}&module_id=${payload.moduleId}&branch_id=${payload.branchId}`, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
@@ -39,7 +39,6 @@ export const fetchChequeBounce = (payload) => {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
-      console.log('response from cheque bounce ', response)
       if (response.status === 200) {
         dispatch({
           type: FETCH_CHEQUE_BOUNCE,

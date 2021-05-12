@@ -104,6 +104,7 @@ if (process.env.REACT_APP_UI_ENV === 'dev_aol') {
   HOSTNAME = 'localhost'
   PORT = '8000'
      BASE =`${window.location.origin}/qbox`
+    //  BASE='https://marketing.letseduvate.com' +'/qbox'
   // BASE = 'http://erp.finance.letseduvate.com' + '/qbox'
   // BASE = 'http://localhost:8000' + '/qbox'
   FRONTENT_BASE = PROTO + '://' + HOSTNAME + ':' + '3000'
@@ -117,7 +118,8 @@ if (process.env.REACT_APP_UI_ENV === 'dev_aol') {
   SOCKET_PORT = '8000'
   SOCKET_BASE = SOCKET_PROTO + '://' + SOCKET_HOSTNAME + ':' + SOCKET_PORT + '/ws'
 
-  marketingUrl = 'https://dev.marketing.letseduvate.com/qbox'
+  // marketingUrl = 'https://dev.marketing.letseduvate.com/qbox'
+     marketingUrl='https://marketing.letseduvate.com/qbox'
 }
 
 if (process.env.REACT_APP_UI_ENV === 'prod') {
@@ -549,6 +551,7 @@ const urls = {
   AssessmentUserStatus: BASE + '/assessment/student/status',
   CreateOtherFeesForUnassigned: BASE + '/finance/listapiforotherfeeaccountant/',
   StudentsInfo: BASE + '/finance/ledger-tab/student-data/',
+  SchoolDeatails: BASE + '/finance/school-name/',
   StudentInfo: BASE + '/finance/studentdata/',
   DeleteOtherFeesForassigned: BASE + '/finance/delete_otherfee_for_assigned/',
   ITC: BASE + '/finance/studentitcertificate/',
@@ -772,7 +775,7 @@ const urls = {
   AirPayFeeAccPost: BASE + '/airpay/airpayfeeaccpost/',
   AccountantLogin: BASE + '/finance/Loginscript/',
   BranchListing: BASE + '/finance/BranchListing/',
-  GetAppFormDet: marketingUrl + '/suggestion',
+  GetAppFormDet: marketingUrl + '/suggestion_api_view_v2',
   SearchAppNumber: BASE + '/finance/Search_Registration_Form/',
   NotificationsHistory: BASE + '/accounts/notification_history',
   SMSEmailLog: BASE + '/accounts/communicatelogfilter/',
@@ -808,7 +811,7 @@ const urls = {
   ListAllForm: BASE + '/finance/admissions/listappregad/',
   ListAllFormReport: BASE + '/finance/admissions/listappregadreport/',
   FetchInstallmentsDetails: BASE + '/finance/fetchinstallmentsdetails/',
-  appMobileChecker: marketingUrl + '/MobileNumberChecker/',
+  appMobileChecker: marketingUrl + '/MobileNumberChecker_V2/',
   updateTotalFormDetails: BASE + '/finance/UpdateFormDetails/',
   PaymentModeEdit: BASE + '/finance/PaymentModeEdit/',
   BranchList: BASE + '/finance/multiple-branch/',

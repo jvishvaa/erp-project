@@ -51,12 +51,11 @@ class FeeDetailsAccountant extends Component {
 
   componentDidMount () {
     if (this.props.getData && this.state.selectFeeWise.value === 1) {
-      this.props.fetchFeeStructureList(this.props.erp, this.props.session, this.props.alert, this.props.user)
+      this.props.fetchFeeStructureList(this.props.erp, this.props.session, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
     }
     if (this.props.session) {
-      this.props.fetchBackDatConcession(this.props.session, this.props.alert, this.props.user)
+      this.props.fetchBackDatConcession(this.props.session, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
     }
-    console.log('fee deetees', this.props.refund)
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -78,9 +77,9 @@ class FeeDetailsAccountant extends Component {
       return
     }
     if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData) && this.state.selectFeeWise.value === 1) {
-      this.props.fetchFeeStructureList(erp, this.props.session, alert, user)
+      this.props.fetchFeeStructureList(erp, this.props.session, alert, user, this.props.moduleId, this.props.branchId)
     } else if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData) && this.state.selectFeeWise.value === 2) {
-      this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, this.props.user)
+      this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
     }
   }
 
@@ -103,7 +102,6 @@ class FeeDetailsAccountant extends Component {
       fee_amt: amount
     }, () => {
       const currentData = this.props.feeTypwWise.filter(val => val.id === this.state.unassignId)[0]
-      console.log(currentData)
       this.setState({
         currentFeeData: currentData
       })
@@ -121,9 +119,9 @@ class FeeDetailsAccountant extends Component {
       showUnassignModal: false
     }, () => {
       if (this.props.getData && this.state.selectFeeWise.value === 1 && this.props.unassignRes) {
-        this.props.fetchFeeStructureList(erp, this.props.session, alert, user)
+        this.props.fetchFeeStructureList(erp, this.props.session, alert, user, this.props.moduleId, this.props.branchId)
       } else if (this.props.getData && this.state.selectFeeWise.value === 2 && this.props.unassignRes) {
-        this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, this.props.user)
+        this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
       }
     })
   }
@@ -185,9 +183,9 @@ class FeeDetailsAccountant extends Component {
       selectFeeWise: e
     }, () => {
       if (this.state.selectFeeWise.value === 1) {
-        this.props.fetchFeeStructureList(this.props.erp, this.props.session, this.props.alert, this.props.user)
+        this.props.fetchFeeStructureList(this.props.erp, this.props.session, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
       } else {
-        this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, this.props.user)
+        this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
       }
     })
   }
@@ -205,8 +203,6 @@ class FeeDetailsAccountant extends Component {
   }
 
   changeremarksHandler = (e) => {
-    console.log(e)
-    console.log(e.target.value)
     this.setState({
       remarksData: e.target.value
     })
@@ -219,7 +215,6 @@ class FeeDetailsAccountant extends Component {
   }
 
   handleAlignment = (e, newAlignment) => {
-    console.log(newAlignment)
     this.setState({
       alignment: newAlignment
     })
@@ -249,7 +244,8 @@ class FeeDetailsAccountant extends Component {
         remarks: this.state.remarks,
         concession_id: this.state.concessionType,
         concession_type: this.state.currentConcessionStatus.value,
-        concession_given_by: this.state.conGivenBy
+        concession_given_by: this.state.conGivenBy,
+        branch_id: this.props.branchId
       }
       this.props.saveConcessionRequest(data, this.props.alert, this.props.user)
       this.hideConcesionModalHandler()
@@ -257,7 +253,6 @@ class FeeDetailsAccountant extends Component {
   }
 
   unassignSubmitHandler = () => {
-    console.log(this.state.remarksData)
     if (this.state.remarksData) {
       const data = {
         academic_year: this.props.session,
@@ -286,9 +281,9 @@ class FeeDetailsAccountant extends Component {
         id: instWiseId,
         reason: fineRemarks,
         academic_year: this.props.session,
-        student: this.props.erp
+        student: this.props.erp,
+        branch_id: this.props.branchId
       }
-      // console.log(data)
       this.props.updateFineAmt(data, this.props.alert, this.props.user)
       this.hideFineAmtModalHandler()
     } else {
@@ -586,7 +581,6 @@ class FeeDetailsAccountant extends Component {
         </Modal>
       )
     }
-    // console.log('props fee type', this.props.feeTypwWise)
 
     if (this.props.feeStructure.length > 0 && this.state.selectFeeWise.value === 1) {
       feeDetailsTable = (
@@ -774,14 +768,14 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchFeeStructureList: (erp, session, alert, user) => dispatch(actionTypes.fetchFeeStructureList({ erp, session, alert, user })),
+  fetchFeeStructureList: (erp, session, alert, user, moduleId, branch) => dispatch(actionTypes.fetchFeeStructureList({ erp, session, alert, user, moduleId, branch })),
   fetchConcessionTypes: (alert, user) => dispatch(actionTypes.ListConcessionTypes({ alert, user })),
   saveConcessionRequest: (data, alert, user) => dispatch(actionTypes.saveConcessionRequest({ data, alert, user })),
-  fetchFeetypeList: (session, erp, alert, user) => dispatch(actionTypes.fetchFeeTypeListFeeStru({ session, erp, alert, user })),
+  fetchFeetypeList: (session, erp, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchFeeTypeListFeeStru({ session, erp, alert, user, moduleId, branchId })),
   unassignFee: (id, data, alert, user) => dispatch(actionTypes.unassignFeeStructure({ id, data, alert, user })),
-  fetchOtherFeetypeList: (session, erp, alert, user) => dispatch(actionTypes.fetchOtherFeeTypeList({ session, erp, alert, user })),
+  fetchOtherFeetypeList: (session, erp, alert, user, moduleId, branchId) => dispatch(actionTypes.fetchOtherFeeTypeList({ session, erp, alert, user, moduleId, branchId })),
   updateFineAmt: (data, alert, user) => dispatch(actionTypes.updateInstFineAmount({ data, alert, user })),
-  fetchBackDatConcession: (session, alert, user) => dispatch(actionTypes.fetchBackDatConcession({ session, alert, user }))
+  fetchBackDatConcession: (session, alert, user, moduleId, branch) => dispatch(actionTypes.fetchBackDatConcession({ session, alert, user, moduleId, branch }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(FeeDetailsAccountant))

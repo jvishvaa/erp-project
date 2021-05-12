@@ -1,4 +1,6 @@
 /* eslint-disable import/prefer-default-export */
+import axiosInstance from '../config/axios';
+
 export const isVideo = (filename) => {
   const inputExt = filename.split('.').pop();
 
@@ -69,27 +71,58 @@ export function timeDeltaDiff(startTimeField, endTimeField, getAsString) {
   return '';
 }
 
-export function getModuleInfo(moduleName){
+export function getModuleInfo(moduleName) {
   const navData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  function getModuleId(moduleName){
-    let returnObj= {}
-    navData.every(parentModule=>{
-      const {id:parentId,parent_modules:parentName, child_module:childModules}=parentModule||{}
-      if(parentName===moduleName){
-        returnObj= {id: parentId, name:parentName,isParentModule:true, parent:parentModule}
-        return false
+  function getModuleId(moduleName) {
+    let returnObj = {};
+    navData.every((parentModule) => {
+      const { id: parentId, parent_modules: parentName, child_module: childModules } =
+        parentModule || {};
+      if (parentName === moduleName) {
+        returnObj = {
+          id: parentId,
+          name: parentName,
+          isParentModule: true,
+          parent: parentModule,
+        };
+        return false;
       }
-      return childModules.every(childModule=>{
-        const {child_id:childId,child_name:chuldName}=childModule||{}
-        if(chuldName===moduleName){
-          returnObj= {id: childId, name:chuldName,isParentModule:false, parent:parentModule,child:childModule}
-          return false
-        } else{
-          return true
+      return childModules.every((childModule) => {
+        const { child_id: childId, child_name: chuldName } = childModule || {};
+        if (chuldName === moduleName) {
+          returnObj = {
+            id: childId,
+            name: chuldName,
+            isParentModule: false,
+            parent: parentModule,
+            child: childModule,
+          };
+          return false;
+        } else {
+          return true;
         }
-      })
-    })
-    return returnObj
+      });
+    });
+    return returnObj;
   }
-  return moduleName ?getModuleId(moduleName):navData
+  return moduleName ? getModuleId(moduleName) : navData;
+}
+
+export function getSubDomainName() {
+  const { hostname } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
+  const hostSplitArray = hostname.split('.');
+  const subDomainLevels = hostSplitArray.length - 2;
+  let domain = '';
+  let subDomain = '';
+  let subSubDomain = '';
+  // if (hostSplitArray.length > 2) {
+  //   domain = hostSplitArray.slice(hostSplitArray.length - 2).join('');
+  // }
+  if (subDomainLevels === 2) {  //dev.olvorchidnaigaon.letseduvate.com
+    subSubDomain = hostSplitArray[0];
+    subDomain = hostSplitArray[1];
+  } else if (subDomainLevels === 1) { //olvorchidnaigaon.letseduvate.com
+    subDomain = hostSplitArray[0];
+  }
+  return subDomain || '';
 }

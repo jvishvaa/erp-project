@@ -351,7 +351,6 @@ class Receipt extends Component {
         payment: newPayment
       })
     }
-    // console.log('nextprops', )
     // You don't have to do this check first, but it can help prevent an unneeded render
     // if (nextProps.startTime !== this.state.startTime) {
     //   this.setState({ startTime: nextProps.startTime })
@@ -372,7 +371,7 @@ class Receipt extends Component {
 
   onSaveClick = () => {
     const { isChequePaper, payment, selectedReceipt, isInternetPaper, isCreditPaper, todayDate } = this.state
-    const { registrationDetails, acadYear, regNum } = this.props
+    const { registrationDetails, acadYear, regNum, branchId, moduleId } = this.props
 
     if (Date.parse(registrationDetails.application_date) > Date.parse(payment.dateOfPayment)) {
       this.props.alert.warning('Date Cant be greater than application date!')
@@ -390,7 +389,6 @@ class Receipt extends Component {
 
     let dataToSend = null
     if (isChequePaper) {
-      console.log('qwerty', this.dataIsSuitableToSend(payment.cheque))
       // if (!this.dataIsSuitableToSend(payment.cheque)) {
       //   this.props.alert.warning('Please Fill all the')
       //   // this.setState({ confirm: false })
@@ -450,9 +448,10 @@ class Receipt extends Component {
         current_date: todayDate
       }
     }
-    console.log(dataToSend)
     if (isChequePaper === true) {
       let chequeData = {
+        branch_id: branchId,
+        module_id: moduleId,
         student: registrationDetails.id,
         academic_year: acadYear,
         is_qualified: payment.isQualified,
@@ -473,6 +472,8 @@ class Receipt extends Component {
     } else if (isInternetPaper === true) {
       let internetData = {
         student: registrationDetails.id,
+        branch_id: branchId,
+        module_id: moduleId,
         academic_year: acadYear,
         is_qualified: payment.isQualified,
         payment_in: 3,
@@ -488,6 +489,8 @@ class Receipt extends Component {
     } else if (isCreditPaper === true) {
       let creditData = {
         student: registrationDetails.id,
+        branch_id: branchId,
+        module_id: moduleId,
         academic_year: acadYear,
         payment_in: 4,
         is_qualified: payment.isQualified,
@@ -507,6 +510,8 @@ class Receipt extends Component {
     } else if (this.state.isOnlinePayment === true) {
       let onlineData = {
         student: registrationDetails.id,
+        branch_id: branchId,
+        module_id: moduleId,
         academic_year: acadYear,
         is_qualified: payment.isQualified,
         payment_in: 5,
@@ -520,6 +525,8 @@ class Receipt extends Component {
     } else if (this.state.selectedPayment === 'a') {
       let cashData = {
         student: registrationDetails.id,
+        branch_id: branchId,
+        module_id: moduleId,
         academic_year: acadYear,
         is_qualified: payment.isQualified,
         payment_in: 1,
@@ -541,7 +548,6 @@ class Receipt extends Component {
 
   sendingToServer = (data) => {
     const { registrationDetails } = this.props
-    console.log('regde', registrationDetails)
     // const regNum = {
     //   acad_session_id: registrationDetails.academic_year,
     //   student: registrationDetails.id
@@ -551,7 +557,6 @@ class Receipt extends Component {
   }
 
   componentDidUpdate () {
-    // console.log('update: ', this.state.payment)
   }
 
   // Generation of PDF Start
@@ -566,10 +571,8 @@ class Receipt extends Component {
   generatePdf = async (transid) => {
     try {
       const response = await this.getPdfData(transid)
-      console.log('App reg Response: ', response)
       appRegReceiptsPdf(response.data)
     } catch (e) {
-      console.log(e)
       this.props.alert.warning('Unable to generate PDF!')
     }
   }

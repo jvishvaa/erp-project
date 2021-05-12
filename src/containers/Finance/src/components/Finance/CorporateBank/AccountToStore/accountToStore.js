@@ -93,12 +93,10 @@ class AccToBranch extends Component {
   }
 
   modalShowHandler = (mapId, branchId, acc) => {
-    console.log(acc)
     const fee = {
       value: acc.id,
       label: acc.fee_account_name
     }
-    console.log('currentFeeAccount', mapId)
     this.setState({
       showAddModal: true,
       addMapId: mapId,
@@ -127,7 +125,6 @@ class AccToBranch extends Component {
   }
 
   selectAccountHandler = (e) => {
-    console.log(e)
     this.setState({
       assignFeeAccounts: e
     })
@@ -164,7 +161,6 @@ class AccToBranch extends Component {
       branch: currentBranch && currentBranch.value,
       fee_account_store: currentFeeAcc && currentFeeAcc.value
     }
-    console.log(data)
     this.props.adddFeeAccounts(data, this.props.alert, this.props.user)
     this.hideAddModalhandler()
   }
@@ -184,8 +180,6 @@ class AccToBranch extends Component {
       fee_account_store: assignFeeAccounts.value,
       old_fee_account_store: this.state.currentFeeAccount && this.state.currentFeeAccount
     }
-    console.log(data)
-    console.log('currentAcc', this.props.currentFeeAccount)
     this.props.updateFeeAccounts(data, this.props.alert, this.props.user)
   }
   activeToggleHandler = (e, r) => {

@@ -67,7 +67,6 @@ const OrderStatusUpload = ({ classes, session, alert, user, UploadOrderStatus, d
   const [sessionData, setSessionData] = useState({ label: '2020-21', value: '2020-21' })
   const [bulkFile, setBulkFile] = useState(null)
   useEffect(() => {
-    console.log(bulkFile)
   }, [bulkFile])
   const handleClickSessionYear = (e) => {
     setSessionData(e)
@@ -90,7 +89,6 @@ const OrderStatusUpload = ({ classes, session, alert, user, UploadOrderStatus, d
   }
 
   const fileChangeHandler = (event) => {
-    console.log('my file: ', event.target.files[0])
     const file = event.target.files[0]
     setBulkFile(file)
   }

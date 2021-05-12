@@ -44,7 +44,6 @@ if (NavData && NavData.length) {
           // this.setState({
             moduleId = item.child_id
           // })
-          console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);
         }
@@ -209,7 +208,6 @@ class CurrFeeType extends Component {
   }
 
   feeAccountHandler = (e) => {
-    console.log('fee acc', e)
     this.setState({
       feeAccount: {
         label: e.label,
@@ -239,7 +237,6 @@ class CurrFeeType extends Component {
 
   addHandler = () => {
     const { id, isEditModal, startDate, endDate, dueDate, branch, session, feeTypeName, feeTypeAmount, feeAccount, isEditable } = this.state
-    console.log(this.state)
     if (dueDate && startDate && endDate && feeAccount && feeTypeName && feeTypeAmount) {
       let data = {
         session_year: session.value,

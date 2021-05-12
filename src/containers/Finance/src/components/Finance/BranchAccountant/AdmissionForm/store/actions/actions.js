@@ -37,7 +37,6 @@ export const postAdmission = (payload) => {
       }
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && error.response.status === 400) {
         payload.alert.warning(error.response.data.err_msg)
       } else {
@@ -55,7 +54,6 @@ export const getStudentdetailsbyregNumber = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: GET_STUDENT_DETAILS_BY_REG_NO,
           payload: {
@@ -66,7 +64,6 @@ export const getStudentdetailsbyregNumber = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && error.response.status === 400) {
         payload.alert.warning(error.response.data.err_msg)
       } else {
@@ -78,13 +75,12 @@ export const getStudentdetailsbyregNumber = (payload) => {
 export const getAdmissionRecords = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.AdmissionRecords + '?academic_year=' + payload.session + '&from_date=' + payload.fromDate + '&to_date=' + payload.toDate, {
+    axios.get(urls.AdmissionRecords + '?academic_year=' + payload.session + '&from_date=' + payload.fromDate + '&to_date=' + payload.toDate + '&branch_id=' + payload?.branch?.value, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: GET_ADMISSSION_RECORDS,
           payload: {
@@ -95,7 +91,6 @@ export const getAdmissionRecords = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && error.response.status === 400) {
         payload.alert.warning(error.response.data.err_msg)
       } else {
@@ -113,7 +108,6 @@ export const getStudentdetailsbyappNumber = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: GET_STUDENT_DETAILS_BY_APP_NO,
           payload: {
@@ -124,7 +118,6 @@ export const getStudentdetailsbyappNumber = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && error.response.status === 400) {
         payload.alert.warning(error.response.data.err_msg)
       } else {
@@ -136,13 +129,12 @@ export const getStudentdetailsbyappNumber = (payload) => {
 export const fetchFeePlan = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ListFeePlanGrade + '?grade_id=' + payload.gradeValue + '&academic_year=' + payload.session, {
+    axios.get(urls.ListFeePlanGrade + '?grade_id=' + payload.gradeValue + '&academic_year=' + payload.session + '&branch_id=' + payload.branch, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: GET_FEE_DETAILS,
           payload: {
@@ -153,7 +145,6 @@ export const fetchFeePlan = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && error.response.status === 400) {
         payload.alert.warning(error.response.data.err_msg)
       } else {
@@ -171,7 +162,6 @@ export const fetchInstallment = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: GET_FEE_INSTALLMENT,
           payload: {
@@ -182,7 +172,6 @@ export const fetchInstallment = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && error.response.status === 400) {
         payload.alert.warning(error.response.data.err_msg)
       } else {
@@ -194,13 +183,12 @@ export const fetchInstallment = (payload) => {
 export const searchStudentdetailsbyregNumber = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.SearchStudentDetailbyregNumber + '?registration_number=' + payload.regno + '&academic_year=' + payload.session, {
+    axios.get(urls.SearchStudentDetailbyregNumber + '?registration_number=' + payload.regno + '&academic_year=' + payload.session + '&module_id=' + payload.moduleId + '&branch_id=' + payload.branchId, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: SEARCH_STUDENT_DETAILS_BY_REG_NO,
           payload: {
@@ -211,7 +199,6 @@ export const searchStudentdetailsbyregNumber = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && error.response.status === 400) {
         payload.alert.warning(error.response.data.err_msg)
       } else {
@@ -229,7 +216,6 @@ export const searchStudentdetailsbyappNumber = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: SEARCH_STUDENT_DETAILS_BY_APP_NO,
           payload: {
@@ -240,7 +226,6 @@ export const searchStudentdetailsbyappNumber = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && error.response.status === 400) {
         payload.alert.warning(error.response.data.err_msg)
       } else {
@@ -258,7 +243,6 @@ export const fetchAdmissionRecordByErp = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: FETCH_ADMISSION_RECORD_BY_ERP,
           payload: {
@@ -269,7 +253,6 @@ export const fetchAdmissionRecordByErp = (payload) => {
       // dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       // dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && error.response.status === 400) {
         payload.alert.warning(error.response.data.err_msg)
       } else {
@@ -287,7 +270,6 @@ export const fetchStudentAdmissionCertificates = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: FETCH_STUDENT_ADMISSION_CERTIFICATES,
           payload: {
@@ -298,7 +280,6 @@ export const fetchStudentAdmissionCertificates = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && error.response.status === 400) {
         payload.alert.warning(error.response.data.err_msg)
       } else {
@@ -328,7 +309,6 @@ export const postStudentAdmissionCertificate = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && error.response.status === 400) {
         payload.alert.warning(error.response.data.err_msg)
       } else {
@@ -358,7 +338,6 @@ export const putStudentAdmission = (payload) => {
       }
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && error.response.status === 400) {
         payload.alert.warning(error.response.data.err_msg)
       } else {
@@ -386,7 +365,6 @@ export const searchAdmissionByOthers = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({
           type: SEARCH_ADMISSION_OTHERS,
           payload: {
@@ -397,7 +375,6 @@ export const searchAdmissionByOthers = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      console.log(error)
       if (error.response && error.response.status === 400) {
         payload.alert.warning(error.response.data.err_msg)
       } else {

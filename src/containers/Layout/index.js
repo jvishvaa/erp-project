@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-use-before-define */
-/* eslint-disable no-debugger */
+
 /* eslint-disable react/prop-types */
 import React, { useContext, useState, useEffect, useRef, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -21,6 +21,9 @@ import TodayIcon from '@material-ui/icons/Today';
 import MoreIcon from '@material-ui/icons/More';
 import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
+import ContactPhoneRoundedIcon from '@material-ui/icons/ContactPhoneRounded';
+// import TodayIcon from '@material-ui/icons/Today';
+import AssessmentSharpIcon from '@material-ui/icons/AssessmentSharp';
 import {
   Popper,
   Fade,
@@ -39,11 +42,11 @@ import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import clsx from 'clsx';
-
+import EventAvailableIcon from '@material-ui/icons/EventAvailable';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-
+import EventNoteIcon from '@material-ui/icons/EventNote';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Grow from '@material-ui/core/Grow';
@@ -58,12 +61,13 @@ import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
 import logoMobile from '../../assets/images/logo_mobile.png';
-
+import online_classpng from '../../assets/images/Online classes-01.svg';
 import logo from '../../assets/images/logo.png';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserInfo from '../../components/user-info';
 import PublishIcon from '@material-ui/icons/Publish';
@@ -146,9 +150,6 @@ const Layout = ({ children, history }) => {
     }
     let userDetails = localStorage.getItem('userDetails');
     if (!userDetails) {
-      // if(key==="2000000002")
-      // history.push('/dashboard/2000');
-      // else
       history.push('/');
     }
     if (userDetails) {
@@ -410,12 +411,20 @@ const Layout = ({ children, history }) => {
         history.push('/user-management');
         break;
       }
+      case 'Ebook View': {
+        history.push('/ebook/view');
+        break;
+      }
       case 'Create User': {
         history.push('/user-management/create-user');
         break;
       }
       case 'Bulk Upload Status': {
         history.push('/user-management/bulk-upload');
+        break;
+      }
+      case 'Bulk Status Upload': {
+        history.push('/finance/BulkOperation/BulkUploadStatus');
         break;
       }
       case 'View User': {
@@ -450,6 +459,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-management/chapter-type-table');
         break;
       }
+      case 'Topic': {
+        history.push('/master-management/topic-table');
+        break;
+      }
       case 'Section': {
         history.push('/master-management/section-table');
         break;
@@ -470,6 +483,14 @@ const Layout = ({ children, history }) => {
         history.push('/master-management/signature-upload');
         break;
       }
+      case 'Event Category': {
+        history.push('/master-management/event-category');
+        break;
+      }
+      case 'Discussion Category': {
+        history.push('/master-management/discussion-category');
+        break;
+      }
       case 'Course': {
         history.push('/course-list');
         break;
@@ -478,11 +499,18 @@ const Layout = ({ children, history }) => {
         history.push('/course-price');
         break;
       }
-      case 'Lesson Plan Mapping': {
+      case 'Content Mapping': {
         history.push('/subject/grade');
         break;
       }
-
+      case 'Teacher Forum': {
+        history.push('/teacher-forum');
+        break;
+      }
+      case 'Student Forum': {
+        history.push('/student-forum');
+        break;
+      }
       // case 'role-management': {
       //   history.push('/role-management');
       //   break;
@@ -505,6 +533,14 @@ const Layout = ({ children, history }) => {
       }
       case 'App/Reg Fee Type': {
         history.push('/feeType/RegistrationFee');
+        break;
+      }
+      case 'Teacher Calendar': {
+        history.push('/attendance-calendar/teacher-view');
+        break;
+      }
+      case 'Student Calendar': {
+        history.push('/attendance-calendar/student-view');
         break;
       }
       case 'Management Report': {
@@ -533,6 +569,7 @@ const Layout = ({ children, history }) => {
       }
       case 'Principal Blogs': {
         history.push('/blog/principal');
+        break;
       }
       case 'Application/registration Receipt Book': {
         history.push('/finance/Application/registration/ReceiptBook');
@@ -558,14 +595,38 @@ const Layout = ({ children, history }) => {
         history.push('/finance/StudentShuffleRequest');
         break;
       }
-      case 'Assessment': {
+      // case 'Assessment': {
+      //   history.push('/assessment');
+      //   break;
+      // }
+      // case 'ViewAssessment': {
+      //   history.push('/assessment/view-assessment');
+      //   break;
+      // }
+      case 'Question Bank': {
+        history.push('/question-bank');
+        break;
+      }
+      case 'Question Paper': {
+        history.push('/assessment-question');
+        break;
+      }
+      case 'Create Test': {
+        history.push('/assesment');
+        break;
+      }
+      case 'Take Test': {
         history.push('/assessment');
         break;
       }
-      case 'ViewAssessment': {
-        history.push('/assessment/view-assessment');
+      case 'Assessment Report': {
+        history.push('/assessment-reports');
         break;
       }
+      //   { name: 'Question Bank', Path: '/question-bank' },
+      // { name: 'Question Paper', Path: '/assessment-question' },
+      // { name: 'Create Test', Path: '/assesment' },
+      // { name: 'Take Test', Path: '/assessment' }
       // case 'ID Cards': {
       //   history.push('/student-id-card');
       //   break;
@@ -574,7 +635,7 @@ const Layout = ({ children, history }) => {
         history.push('/student-id-card');
         break;
       }
-      case 'Student Strength': {
+      case 'View School Strength': {
         history.push('/student-strength');
         break;
       }
@@ -766,6 +827,10 @@ const Layout = ({ children, history }) => {
         history.push('/finance/Student/ActiveInactive');
         break;
       }
+      case 'Student Active/Inactive': {
+        history.push('/finance/Student/ActiveInactive/Admin');
+        break;
+      }
       case 'Student Promotion': {
         history.push('/finance/Student/StudentPromotion');
         break;
@@ -896,6 +961,26 @@ const Layout = ({ children, history }) => {
       }
       case 'Transactions Report': {
         history.push('/finance/TransactionStatus');
+        break;
+      }
+      case 'Teacher Time Table': {
+        history.push('/time-table/teacher-view');
+        break;
+      }
+      case 'Student Time Table': {
+        history.push('/time-table/student-view');
+        break;
+      }
+      case 'Book Appointment': {
+        history.push('/appointments');
+        break;
+      }
+      case 'Appointment Responder': {
+        history.push('/responder-view');
+        break;
+      }
+      case 'Contact Us': {
+        history.push('/contact-us');
         break;
       }
       default:
@@ -1078,7 +1163,6 @@ const Layout = ({ children, history }) => {
                                               className='user_rows_details'
                                               button
                                               onClick={() => {
-                                                console.log('I amcalled...');
                                                 setSearching(false);
                                                 setUserId(result.id);
                                                 setDisplayUserDetails(true);
@@ -1292,95 +1376,6 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/CreateEventCategory')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>CreateEventCategory</ListItemText>
-          </ListItem>
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/OverallAttendance')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>OverallAttendance</ListItemText>
-          </ListItem>
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/attendance')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Attendance</ListItemText>
-          </ListItem>
-
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/attedancecalendar')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>AttedanceCalender</ListItemText>
-          </ListItem>
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/createevent')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>CreateEvent</ListItemText>
-          </ListItem>
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/markattedance')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              <TodayIcon />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>MarkAttedance</ListItemText>
-          </ListItem>
-          <ListItem
-            button
-            className={classes.menuControlContainer}
-            onClick={() => history.push('/publications')}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              <PublishIcon />
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Publication</ListItemText>
-          </ListItem>
-          {/* {drawerOpen ? (
-            <ListItem
-              button
-              className={
-                history.location.pathname === '/profile' ? 'menu_selection' : null
-              }
-              onClick={() => {
-                history.push('/profile');
-              }}
-            >
-              {' '}
-              <ListItemIcon className={classes.menuItemIcon}>
-                <AssignmentIndIcon />
-              </ListItemIcon>
-              <ListItemText className='menu-item-text'>View Profile</ListItemText>
-            </ListItem>
-          ) : null} */}
-
           {navigationData && drawerOpen && navigationData.length > 0 && (
             <DrawerMenu
               superUser={superUser}

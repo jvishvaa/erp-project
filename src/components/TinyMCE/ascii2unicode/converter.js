@@ -537,12 +537,10 @@ function process_word (word) {
     var data = find_mapping(op, word, i)
      // Add to final list
     op = data[1]
-console.log(op,word[i])
     // Jump if data[0]>0 which means found a match for more than
     // one letter combination
     i += (1 + data[0])
   }
-  console.log(op.join(''))
   // Return processed
   return op.join('')
 }

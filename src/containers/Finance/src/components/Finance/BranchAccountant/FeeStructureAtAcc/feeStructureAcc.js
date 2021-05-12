@@ -48,16 +48,16 @@ class FeeStructureAcc extends Component {
   }
 
   componentDidMount () {
-    this.props.fetchRefundValue(this.props.erp, this.props.session, this.props.alert, this.props.user)
-    this.props.fetchConcessionTypes(this.props.alert, this.props.user)
+    this.props.fetchRefundValue(this.props.erp, this.props.session, this.props.alert, this.props.user, this.props.branchId, this.props.moduleId)
+    this.props.fetchConcessionTypes(this.props.alert, this.props.user, this.props.branchId, this.props.moduleId)
     // if (this.props.getData && this.state.selectFeeWise.value === 1 && this.state.alignment === 'one') {
     //   this.props.fetchFeeStructureList(this.props.erp, this.props.alert, this.props.user)
     // }
     // else if (this.props.getData && this.state.selectFeeWise.value === 2) {
     //   this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, this.props.user)
     // }
-    this.props.fetchFeeStructureList(this.props.erp, this.props.session, this.props.alert, this.props.user)
-    this.props.fetchStudentDues(this.props.erp, this.props.session, this.props.alert, this.props.user)
+    this.props.fetchFeeStructureList(this.props.erp, this.props.session, this.props.alert, this.props.user, this.props.branchId, this.props.moduleId)
+    this.props.fetchStudentDues(this.props.erp, this.props.session, this.props.alert, this.props.user, this.props.branchId, this.props.moduleId)
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -113,7 +113,6 @@ class FeeStructureAcc extends Component {
       unassignId: id
     }, () => {
       const currentData = this.props.feeTypwWise.filter(val => val.id === this.state.unassignId)[0]
-      console.log(currentData)
       this.setState({
         currentFeeData: currentData
       })
@@ -170,15 +169,12 @@ class FeeStructureAcc extends Component {
   }
 
   changeremarksHandler = (e) => {
-    console.log(e)
-    console.log(e.target.value)
     this.setState({
       remarksData: e.target.value
     })
   }
 
   handleAlignment = (e, newAlignment) => {
-    console.log(newAlignment)
     this.setState({
       alignment: newAlignment
     })
@@ -209,7 +205,6 @@ class FeeStructureAcc extends Component {
   }
 
   unassignSubmitHandler = () => {
-    console.log(this.state.remarksData)
     if (this.state.remarksData) {
       const data = {
         academic_year: this.props.session,
@@ -244,6 +239,8 @@ class FeeStructureAcc extends Component {
           erp={this.props.erp}
           alert={this.props.alert}
           user={this.props.user}
+          branchId={this.props.branchId}
+          moduleId={this.props.moduleId}
           // refund={this.props.refund}
         />
       )
@@ -255,6 +252,8 @@ class FeeStructureAcc extends Component {
           erp={this.props.erp}
           alert={this.props.alert}
           user={this.props.user}
+          branchId={this.props.branchId}
+          moduleId={this.props.moduleId}
         />
       )
     }
@@ -315,14 +314,14 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchFeeStructureList: (erp, session, alert, user) => dispatch(actionTypes.fetchFeeStructureList({ erp, session, alert, user })),
-  fetchConcessionTypes: (alert, user) => dispatch(actionTypes.fetchListConcessionsTypes({ alert, user })),
-  saveConcessionRequest: (data, alert, user) => dispatch(actionTypes.saveConcessionRequest({ data, alert, user })),
-  fetchFeetypeList: (session, erp, alert, user) => dispatch(actionTypes.fetchFeeTypeListFeeStru({ session, erp, alert, user })),
-  unassignFee: (id, data, alert, user) => dispatch(actionTypes.unassignFeeStructure({ id, data, alert, user })),
-  fetchOtherFeetypeList: (session, erp, alert, user) => dispatch(actionTypes.fetchOtherFeeTypeList({ session, erp, alert, user })),
-  fetchStudentDues: (erp, session, alert, user) => dispatch(actionTypes.fetchStudentDues({ erp, session, alert, user })),
-  fetchRefundValue: (erp, session, alert, user) => dispatch(actionTypes.fetchRefundValue({ erp, session, alert, user }))
+  fetchFeeStructureList: (erp, session, alert, user, branchId, moduleId) => dispatch(actionTypes.fetchFeeStructureList({ erp, session, alert, user, branchId, moduleId })),
+  fetchConcessionTypes: (alert, user,  branchId, moduleId) => dispatch(actionTypes.fetchListConcessionsTypes({ alert, user, branchId, moduleId })),
+  saveConcessionRequest: (data, alert, user, branchId, moduleId) => dispatch(actionTypes.saveConcessionRequest({ data, alert, user, branchId, moduleId })),
+  fetchFeetypeList: (session, erp, alert, user, branchId, moduleId) => dispatch(actionTypes.fetchFeeTypeListFeeStru({ session, erp, alert, user, branchId, moduleId })),
+  unassignFee: (id, data, alert, user, branchId, moduleId) => dispatch(actionTypes.unassignFeeStructure({ id, data, alert, user, branchId, moduleId })),
+  fetchOtherFeetypeList: (session, erp, alert, user, branchId, moduleId) => dispatch(actionTypes.fetchOtherFeeTypeList({ session, erp, alert, user, branchId, moduleId })),
+  fetchStudentDues: (erp, session, alert, user,  branchId, moduleId) => dispatch(actionTypes.fetchStudentDues({ erp, session, alert, user, branchId, moduleId })),
+  fetchRefundValue: (erp, session, alert, user, branchId, moduleId) => dispatch(actionTypes.fetchRefundValue({ erp, session, alert, user, branchId, moduleId }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(FeeStructureAcc)))

@@ -46,7 +46,6 @@ const SubCategoryAllow = ({ classes, session, branches, fetchBranches, mcreateSu
     setShowTable(false)
   }
   const gradeHandler = (e) => {
-    console.log(e.value)
     setGradeData(e)
     setShowTable(false)
   }

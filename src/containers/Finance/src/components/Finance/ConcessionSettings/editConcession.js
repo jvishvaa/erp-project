@@ -107,13 +107,10 @@ class EditConcessionSettings extends Component {
       concAdjustmentType: amount
     }, () => {
       if (this.state.concAdjustmentType.value === '1') {
-        console.log('entered', this.state.concAdjustmentType.value)
         this.setState({ percentageValue: true, manualAmount: false, fixedAmount: false })
       } else if (this.state.concAdjustmentType.value === '2') {
-        console.log('entered', this.state.concAdjustmentType.value)
         this.setState({ manualAmount: true, percentageValue: false, fixedAmount: false })
       } else if (this.state.concAdjustmentType.value === '3') {
-        console.log('entered', this.state.concAdjustmentType.value)
         this.setState({ fixedAmount: true, manualAmount: false, percentageValue: false })
       }
     })
@@ -154,7 +151,6 @@ class EditConcessionSettings extends Component {
   }
 
   render () {
-    console.log('---props-----------------', this.props.listConcessionTypes && this.props.listConcessionTypes.concession_type)
     return (
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>

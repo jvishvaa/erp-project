@@ -1,0 +1,93 @@
+@mixin button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.griviences-create-form {
+  padding: 1%;
+  .field-label-container {
+    margin-bottom: 1%;
+    width: 20%;
+  }
+  .editor-container {
+    margin-left: 1%;
+    padding: 2%;
+  }
+  .text-color {
+    color: #014b7e;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .field-label-container-type {
+    margin-bottom: 4%;
+    width: 89%;
+  }
+  .drag-and-drop-images {
+    display: flex;
+
+    // justify-content: space-between;
+    width: 59%;
+  }
+  .drag-drop-griviences {
+    // margin-top: 23px;
+  }
+  .drag-and-drop {
+    width: 38%;
+    height: 104px;
+    border: 1px solid #ff6b6b;
+    border-radius: 10px;
+    height: fit-content;
+    padding: 1%;
+    .MuiDropzoneArea-root {
+      min-height: 0;
+    }
+    .MuiGrid-spacing-xs-8 {
+      width: 0;
+      display: inline;
+    }
+    .MuiGrid-spacing-xs-8 > .MuiGrid-item {
+      padding: 0%;
+    }
+    .MuiGrid-grid-xs-4 {
+      max-width: 100%;
+    }
+  }
+  .attach-image-button {
+    display: flex;
+    align-items: flex-end;
+    width: 24%;
+  }
+  .attach-button {
+    border: 1px solid #ff6b6b;
+    color: #ff6b6b;
+    border-radius: 10px;
+    @include button();
+    padding: 4% 1%;
+    font-size: 11px;
+  }
+  .clear-button {
+    @include button();
+    text-decoration: none;
+    border-radius: 10px;
+    background: lightgray;
+    color: black;
+    padding: 10px 40px;
+  }
+  .cancel-button {
+    @include button();
+    text-decoration: none;
+    border-radius: 10px;
+    background: lightgray;
+    color: black;
+    padding: 10px 40px;
+  }
+  .post-button {
+    @include button();
+    border-radius: 10px;
+    background: #ff6b6b;
+    color: white;
+    padding: 10px 40px;
+  }
+}

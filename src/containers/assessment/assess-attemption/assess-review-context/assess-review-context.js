@@ -35,7 +35,7 @@ const assessmentResultHookProps = {
   // defaultQueryParamObj: {},
   fetchOnLoad: false,
   includeAuthtoken: true,
-  isCentral: true,
+  isCentral: false,
   APIDataKeyName: 'result',
 };
 
@@ -172,7 +172,6 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
         processFunc(subeElement, index, subIndex, isSubQuestion);
       });
     });
-    // console.log({ apiData, questionsObj }, 'apiData');
     updateQuestionsDataObj(questionsObj);
   }
 

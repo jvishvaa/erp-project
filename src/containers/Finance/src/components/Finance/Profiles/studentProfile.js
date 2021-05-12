@@ -89,7 +89,6 @@ class StudentProfile extends Component {
           this.fetchStudentPic(response && response.data[0] && response.data[0].student_photo)
         })
       }).catch(err => {
-        // console.log('Something is wrong')
         console.log(err)
         this.setState({
           dataLoading: false
@@ -105,20 +104,19 @@ class StudentProfile extends Component {
 
   componentDidMount () {
     const erpString = this.props.erp + ''
-    if (erpString.length === 14) {
+    if (erpString.length > 0) {
       this.fetchStudentProfile()
     }
   }
 
   componentDidUpdate (prevProps, prevState) {
     const erpString = this.props.erp + ''
-    if (this.props.erp !== prevProps.erp && erpString.length === 14) {
+    if (this.props.erp !== prevProps.erp  && this.props.erp && this.props.erp.length > 0) {
       this.fetchStudentProfile()
     }
   }
 
   componentWillReceiveProps (nextProps) {
-    // console.log('nextProps: ', nextProps.studentData)
   }
 
   showEditStudentHandler = () => {
@@ -157,10 +155,8 @@ class StudentProfile extends Component {
               Authorization: 'Bearer ' + this.props.user
             }
           }).then(response => {
-            console.log(response.data)
             const newSubArr = [...response.data]
             newSubArr.unshift({ id: 'none', subject_name: 'none' })
-            console.log(newSubArr)
             this.setState({
               subjects: newSubArr
             })
@@ -182,7 +178,6 @@ class StudentProfile extends Component {
   }
 
   handleSwitch = (e) => {
-    // console.log('switch state', e.target.checked)
     this.setState({
       mode: e.target.checked
     })
@@ -296,7 +291,6 @@ class StudentProfile extends Component {
             })
           }
         }).catch(err => {
-          // this.props.alert.warning('Unable to load data')
           this.setState({
             dataLoading: false
           })
@@ -311,9 +305,9 @@ class StudentProfile extends Component {
   }
 
   render () {
-    // console.log('theStudentData: ', this.state.studentData)
     const { classes } = this.props
-    const isErpPresent = (this.props.erp + '').length === 14
+    // const isErpPresent = (this.props.erp + '').length === 14
+    const isErpPresent = this.props.erp + ''
     const containerClass = isErpPresent ? customClasses.mainContainer : customClasses.noContainer
     const { showEditModal, studentName, studentAddress, fatherName, fatherNumber, mode, emailId,
       secondLang, thirdLang, subjects
@@ -491,7 +485,6 @@ class StudentProfile extends Component {
         </Modal>
       )
     }
-    console.log('student', this.state.studentData)
     if (this.state.studentData && isErpPresent) {
       studentDetails = (
         <Paper className={classes.paper}>

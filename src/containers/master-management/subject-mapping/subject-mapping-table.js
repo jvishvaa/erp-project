@@ -12,7 +12,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import { Grid, TextField, Button, useTheme } from '@material-ui/core';
+import { Grid, TextField, Button, useTheme, FormControl, InputLabel, OutlinedInput, Divider } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
@@ -31,6 +31,8 @@ import EditSubjectMapping from './edit-subject-mapping';
 import Loading from '../../../components/loader/loader';
 import '../master-management.css';
 import SubjectMappingCard from './subject-mapping-card';
+import { SearchOutlined } from '@material-ui/icons';
+const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -122,12 +124,195 @@ const SubjectMappingTable = () => {
   const [goBackFlag, setGoBackFlag] = useState(false);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const [selectedYear, setSelectedYear] = useState('');
+  const [selectedBranch, setSelectedBranch] = useState();
+  const [selectedGrades, setSelectedGrades] = useState([]);
+  const [selectedSections, setSelectedSections] = useState([]);
+  const [academicYearList, setAcademicYearList] = useState([]);
+  const [branchList, setBranchList] = useState([]);
+  const [gradeList, setGradeList] = useState([]);
+  const [sectionList, setSectionList] = useState([]);
+  const [clearAll, setClearAll] = useState(false);
+  const [clearAllActive, setClearAllActive] = useState(false);
+  const [filterCheck, setFilterCheck] = useState(false);
+  const [pageno, setPageno] = useState(1);
 
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+
+  const getYearApi = async () => {
+    try {
+      const result = await axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`);
+      if (result.status === 200) {
+        setAcademicYearList(result.data.data);
+      } else {
+        setAlert('error', result.data.message);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+    }
+  };
+
+  const getBranchApi = async () => {
+    try {
+      const result = await axiosInstance.get(
+        `${endpoints.communication.branches}?session_year=${selectedYear.id}&module_id=${moduleId}`
+      );
+      if (result.data.status_code === 200) {
+        setBranchList(result.data.data.results);
+      } else {
+        setAlert('error', result.data.message);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+    }
+  };
+  const getGradeApi = async () => {
+    try {
+      const result = await axiosInstance.get(
+        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch.id}&module_id=${moduleId}`);
+      if (result.data.status_code === 200) {
+        setGradeList(result.data.data);
+      } else {
+        setAlert('error', result.data.message);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+    }
+  };
+  const getSectionApi = async () => {
+    try {
+      const selectedGradeId = selectedGrades.map((el) => el.id);
+      const result = await axiosInstance.get(
+        `${endpoints.communication.sections
+        }?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch.id}&grade_id=${selectedGradeId.toString()}&module_id=${moduleId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (result.status === 200) {
+        setSectionList(result.data.data);
+      } else {
+        setAlert('error', result.data.message);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedYear) {
+      getBranchApi();
+    }
+  }, [selectedYear]);
+
+
+  useEffect(() => {
+    if (moduleId) getYearApi();
+  }, [moduleId]);
+
+  useEffect(() => {
+    if (selectedBranch) {
+      getGradeApi();
+    }
+  }, [selectedBranch]);
+  useEffect(() => {
+    if (selectedGrades.length) {
+      getSectionApi();
+    }
+  }, [selectedGrades]);
+
+  const handleYear = (event, value) => {
+    setSelectedYear('');
+    setSelectedBranch('');
+    setSelectedGrades([]);
+    setSelectedSections([]);
+    if (value) {
+      setSelectedYear(value);
+    }
+  };
+  const handleBranch = (event, value) => {
+    setSelectedBranch('');
+    setSelectedGrades([]);
+    setSelectedSections([]);
+    if (value) {
+      setSelectedBranch(value);
+    }
+  };
+
+  const handleGrades = (event, value) => {
+    setSelectedGrades([]);
+    setSelectedSections([]);
+    if (value.length) {
+      const ids = value.map((el) => el);
+      setSelectedGrades(ids);
+    }
+  };
+
+  const handleSections = (event, value) => {
+    setSelectedSections([]);
+    if (value.length) {
+      const ids = value.map((el) => el);
+      setSelectedSections(ids);
+    }
+  };
+
+  const handleClearAll = () => {
+    if (clearAllActive) {
+      setSearchSubject('');
+      setSelectedSections([]);
+      setSelectedBranch('');
+      setSelectedYear('');
+      setSelectedGrades([]);
+      setClearAll(true);
+      setClearAllActive(false);
+    }
+  };
+
+
+  const handleFilterCheck = () => {
+    if (
+      selectedYear ||
+      selectedBranch ||
+      selectedGrades.length ||
+      selectedSections.length ||
+      searchSubject
+    ) {
+      // setSelectedUsers([]);
+      // setSelectAllObj([]);
+      // setPageno(1);
+      // setTotalPage(0);
+      setFilterCheck(true);
+      displayUsersList();
+    }
+  };
+
+
+  useEffect(() => {
+  
+    if (clearAll) {
+      setClearAll(false);
+    }
+    if (filterCheck) {
+      setFilterCheck(false);
+    }
+  }, [clearAll, filterCheck]);
+
+  useEffect(() => {
+    if (
+      selectedGrades.length ||
+      selectedSections.length ||
+      searchSubject
+    ) {
+      setClearAllActive(true);
+    }
+  }, [ selectedGrades, selectedSections, searchSubject]);
+
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -146,6 +331,46 @@ const SubjectMappingTable = () => {
       });
     }
   }, []);
+
+  const displayUsersList = async () => {
+    let getUserListUrl = `${endpoints.masterManagement.subjectMappingTable}?page=${page}&page_size=${limit}`;
+    if (selectedYear) {
+      getUserListUrl += `&session_year=${selectedYear.session_year}`;
+    }
+    if (selectedBranch) {
+      getUserListUrl += `&branch_name=${selectedBranch.branch.branch_name}`;
+    }
+    if (selectedGrades.length) {
+      const selectedGradeId = selectedGrades.map((el) => el.grade_name);
+      getUserListUrl += `&grade_name=${selectedGradeId.toString()}`;
+    }
+    if (searchSubject) {
+      getUserListUrl += `&subject=${searchSubject}`;
+
+    }
+    // if (selectedSections.length) {
+    //   const selectedSectionId = selectedSections.map((el) => el.section_name);
+    //   getUserListUrl += `&section_name=${selectedSectionId.toString()}`;
+    // }
+    // if (searchText) {
+    //   getUserListUrl += `&search=${searchText}`;
+    // }
+    try {
+      const result = await axiosInstance.get(getUserListUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (result.status === 200) {
+        setTotalCount(result.data?.data?.count);
+        setSubjects(result.data?.data?.results);
+      } else {
+        setAlert('error', result.data?.msg || result.data?.message);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+    }
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
@@ -218,6 +443,7 @@ const SubjectMappingTable = () => {
   useEffect(() => {
     let url = `${endpoints.masterManagement.subjectMappingTable}?page=${page}&page_size=${limit}`;
     if (searchSubject) url += `&subject=${searchSubject}`;
+
     axiosInstance
       .get(url)
       .then((result) => {
@@ -231,7 +457,7 @@ const SubjectMappingTable = () => {
       .catch((error) => {
         setAlert('error', error.response?.data?.message || error.response?.data?.msg);
       });
-  }, [goBackFlag, delFlag, page, searchSubject]);
+  }, [goBackFlag, delFlag, page, searchSubject, clearAll]);
 
   return (
     <>
@@ -278,34 +504,149 @@ const SubjectMappingTable = () => {
               spacing={isMobile ? 3 : 5}
               style={{ width: widerWidth, margin: wider }}
             >
-              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-                <TextField
-                  style={{ width: '100%' }}
-                  id='subname'
-                  label='Subject Name'
+              
+                <Grid item xs={12} sm={3}>
+                <FormControl
                   variant='outlined'
+                  className={classes.formControl}
+                  fullWidth
                   size='small'
-                  name='subname'
-                  autoComplete='off'
-                  onChange={(e) => {
-                    setPage(1);
-                    setSearchSubject(e.target.value);
-                  }}
+                >
+                  <InputLabel>Search Subject</InputLabel>
+                  <OutlinedInput
+                    endAdornment={<SearchOutlined color='primary' />}
+                    placeholder='Search Subject ..'
+                    label='Search Subject'
+                    value={searchSubject}
+                    onChange={(e) => {
+                      setPage(1);
+                      setSearchSubject(e.target.value);
+                    }}
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} md={3}>
+              <Autocomplete
+                size='small'
+                onChange={handleYear}
+                value={selectedYear || ''}
+                id='message_log-branch'
+                className='message_log_branch'
+                options={academicYearList || []}
+                getOptionLabel={(option) => option?.session_year || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    className='message_log-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='Academic Year'
+                    placeholder='Academic Year'
+                  />
+                )}
+              />
+            </Grid>
+              
+               {selectedYear && (
+              <Grid item xs={12} md={3}>
+                <Autocomplete
+                  size='small'
+                  onChange={handleBranch}
+                  value={selectedBranch || ''}
+                  id='message_log-branch'
+                  className='message_log_branch'
+                  options={branchList || []}
+                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      className='message_log-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                    />
+                  )}
                 />
               </Grid>
-              <Grid item xs sm={9} className={isMobile ? 'hideGridItem' : ''} />
-              <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
-                <Button
-                  startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-                  variant='contained'
-                  color='primary'
+            )}
+          {selectedBranch && (
+              <Grid item xs={12} md={3}>
+                <Autocomplete
+                  multiple
                   size='small'
-                  style={{ color: 'white' }}
-                  title='Add Subject Mapping'
-                  onClick={handleAddSubjectMapping}
-                >
-                  Add Subject Mapping
-                </Button>
+                  onChange={handleGrades}
+                  value={selectedGrades || ''}
+                  id='message_log-smsType'
+                  options={gradeList || []}
+                  getOptionLabel={(option) => option?.grade__grade_name || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      className='message_log-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Grade'
+                      placeholder='Grade'
+                    />
+                  )}
+                />
+              </Grid>
+            )}
+          
+              <Grid
+                container
+                spacing={isMobile ? 3 : 5}
+                style={{ width: widerWidth, margin: wider }}
+              >
+                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                  <Button
+                    variant='contained'
+                    className='labelColor buttonModifiedDesign'
+                    size='medium'
+                  onClick={handleClearAll}
+                  >
+                    CLEAR ALL
+                  </Button>
+                </Grid>
+                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                  <Button
+                    variant='contained'
+                    style={{ color: 'white' }}
+                    color='primary'
+                    className='buttonModifiedDesign'
+                    size='medium'
+                  onClick={handleFilterCheck}
+                  >
+                    FILTER
+                  </Button>
+                </Grid>
+                <div>
+                  <Divider
+                    orientation='vertical'
+                    style={{
+                      backgroundColor: '#014e7b',
+                      height: '40px',
+                      marginTop: '1rem',
+                      marginLeft: '2rem',
+                      marginRight: '1.25rem',
+                    }}
+                  />
+                </div>
+                <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
+                  <Button
+                    startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                    variant='contained'
+                    color='primary'
+                    size='small'
+                    style={{ color: 'white' }}
+                    title='Add Subject Mapping'
+                    onClick={handleAddSubjectMapping}
+                  >
+                    Add Subject Mapping
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
           </>

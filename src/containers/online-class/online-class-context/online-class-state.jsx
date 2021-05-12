@@ -203,7 +203,6 @@ const OnlineclassViewProvider = (props) => {
         `${endpoints.onlineClass.cancelClass}`,
         formData
       );
-      console.log(data)
       if (data.status_code === 200) {
         setAlert('success', data.message);
       } else {

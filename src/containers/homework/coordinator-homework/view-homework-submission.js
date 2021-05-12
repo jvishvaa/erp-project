@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
+
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
@@ -107,10 +107,7 @@ const ViewHomework = withRouter(
         scrollableContainer.current.scrollLeft -= 150;
       } else {
         scrollableContainer.current.scrollLeft += 150;
-        console.log(
-          scrollableContainer.current.scrollLeft,
-          scrollableContainer.current.scrollRight
-        );
+       
       }
     };
 
@@ -166,7 +163,6 @@ const ViewHomework = withRouter(
         //   return;
         // }
       }
-      console.log('Evaluated answer ', currentQuestion);
       const { id, ...reqData } = currentQuestion;
       try {
         await evaluateHomework(id, reqData);
@@ -201,7 +197,6 @@ const ViewHomework = withRouter(
         const currentQuestion = { ...collatedQuestionState };
         currentQuestion.corrected_submission.splice(index, 1);
         setCollatedQuestionState(currentQuestion);
-        // debugger;
       }
     };
 
@@ -242,7 +237,6 @@ const ViewHomework = withRouter(
       const data = await getSubmittedHomeworkDetails(studentHomeworkId);
 
       const { hw_questions: hwQuestions, is_question_wise: isQuestionwise, overall_remark: overallRemarks, score: scores,  id } = data;
-      console.log('fetched data ', data);
       setHomeworkId(id);
       setRemark(overallRemarks);
       setScore(scores);
@@ -407,7 +401,6 @@ const ViewHomework = withRouter(
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {collatedSubmissionFiles.map((url, i) => (
@@ -416,7 +409,7 @@ const ViewHomework = withRouter(
                                   key={`homework_student_question_attachment_${i}`}
                                   fileUrl={url}
                                   fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.s3}/homework`}
+                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                   index={i}
                                   actions={['preview', 'download', 'pentool']}
                                   onOpenInPenTool={openInPenTool}
@@ -434,7 +427,7 @@ const ViewHomework = withRouter(
                               <SRLWrapper>
                                 {collatedSubmissionFiles.map((url, i) => (
                                   <img
-                                    src={`${endpoints.s3}/homework/${url}`}
+                                    src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                     onError={(e) => {
                                       e.target.src = placeholder;
                                     }}
@@ -475,7 +468,6 @@ const ViewHomework = withRouter(
                             ref={scrollableContainer}
                             onScroll={(e) => {
                               e.preventDefault();
-                              console.log('scrolled');
                             }}
                           >
                             {collatedQuestionState.corrected_submission.map((url, i) => (
@@ -484,7 +476,7 @@ const ViewHomework = withRouter(
                                   key={`homework_student_question_attachment_${i}`}
                                   fileUrl={url}
                                   fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.s3}/homework`}
+                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                   index={i}
                                   actions={['preview', 'download', 'delete']}
                                   onOpenInPenTool={openInPenTool}
@@ -505,7 +497,7 @@ const ViewHomework = withRouter(
                                   collatedQuestionState.corrected_submission.map(
                                     (url, i) => (
                                       <img
-                                        src={`${endpoints.s3}/homework/${url}`}
+                                        src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                         onError={(e) => {
                                           e.target.src = placeholder;
                                         }}

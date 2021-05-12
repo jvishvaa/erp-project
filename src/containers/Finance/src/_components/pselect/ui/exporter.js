@@ -28,11 +28,9 @@ class Exporter {
     return { branches: [...branches], grades: [...grades], sections: [...sections], subjects: [...subjects] }
   }
   getBranches () {
-    console.log(this.branches)
     return Array.from(this.branches)
   }
   getGrades () {
-    console.log(this.grades)
     return Array.from(this.grades)
   }
   getSections () {

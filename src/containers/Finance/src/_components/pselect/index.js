@@ -42,7 +42,6 @@ class Loader extends React.Component {
       if (DB) DB = new Dexie('PSDB')
       createdNow = false
     } catch (e) {
-      console.log('Cannot open DB', e)
       DB = new Dexie('PSDB')
       createdNow = true
     }
@@ -107,7 +106,6 @@ class Loader extends React.Component {
       // Open the db of powerselector
       let { DB: db, createdNow } = await this.openOrCreateDB('PSDB')
       const psRevisionData = await filesystem.getItem('mapping.json')
-      console.log('Revision data', psRevisionData)
       if (psRevisionData) {
         this.props.storeForWorker(JSON.parse(psRevisionData), this.props.selectedItems)
       }
@@ -120,7 +118,6 @@ class Loader extends React.Component {
         await db.version(2).stores({ branches: '[rowIndex], data', grades: 'rowIndex,columnIndex,data', subjects: '[rowIndex+columnIndex+index],[rowIndex+columnIndex], data', sections: '[rowIndex+columnIndex+index],[rowIndex+columnIndex], data' })
         await this.addDataToDB(db, latestMapping, revision)
       } else {
-        console.log('Seems to have latest data.')
         this.setState({ loaded: true })
       }
     } catch (e) {

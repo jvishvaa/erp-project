@@ -58,7 +58,6 @@ class AirPayFeeAccount extends Component {
     }
     AirPayState = this.state
     this.props.fetchBranches(this.props.currentSession, this.props.alert, this.props.user)
-    console.log('fetched from air pay!')
   }
 
   changehandlerbranch = (e) => {
@@ -74,7 +73,6 @@ class AirPayFeeAccount extends Component {
   }
 
   feeAccountHandler = (e) => {
-    console.log('feeAccountHandlers: ', e)
     this.setState({
       feeAccount: {
         label: e.label,
@@ -113,7 +111,6 @@ class AirPayFeeAccount extends Component {
   }
 
   modalFieldHandler = (e) => {
-    console.log('the ids: ', e.target.id)
     switch (e.target.id) {
       case 'username': {
         this.setState({
@@ -165,7 +162,6 @@ class AirPayFeeAccount extends Component {
   }
 
   showEditModalHandler = (editRow) => {
-    console.log('edit now: ', editRow)
     this.setState({
       showModal: true,
       feeAccount: {
@@ -181,7 +177,6 @@ class AirPayFeeAccount extends Component {
   }
 
   render () {
-    console.log('the list: ', this.props.viewAirPay)
     const { viewAirPay } = this.props
     let modal = null
     let airPayTable = null

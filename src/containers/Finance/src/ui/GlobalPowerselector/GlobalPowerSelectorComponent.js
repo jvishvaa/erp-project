@@ -35,7 +35,6 @@ class GlobalPowerSelector extends Component {
         'Content-Type': 'application/json'
       }
     }).then(res => {
-      console.log(res)
       let{ acad_session: academicyear } = res.data
       this.setState({ userAcadsession: academicyear })
     }).catch(err => {

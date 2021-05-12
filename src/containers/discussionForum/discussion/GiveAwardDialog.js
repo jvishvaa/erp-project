@@ -35,9 +35,9 @@ function GiveAwardDialog(props) {
     axiosInstance
       .post(endpoints.discussionForum.GiveAwardAPI, params)
       .then((res) => {
-        console.log(res.data);
-        setAlert('success', res.data.message);
         if (res.data && res.data.status_code === 200) {
+          setAlert('success', 'Successfully Award Given');
+          props.handleAwardsCount(awardId);
           onClose(selectedValue);
         }
       })
@@ -59,14 +59,14 @@ function GiveAwardDialog(props) {
         }}
       >
         <span onClick={() => giveAwardHandler(1)} tabIndex={0}>
-            <img src={GoldAwards} alt="Gold Awards" />
-          </span>
+          <img src={GoldAwards} alt="Gold Awards" />
+        </span>
         <span onClick={() => giveAwardHandler(2)} tabIndex={0}>
-            <img src={SilverAwards} alt="Silver Awards" />
-          </span>
+          <img src={SilverAwards} alt="Silver Awards" />
+        </span>
         <span onClick={() => giveAwardHandler(3)} tabIndex={0}>
-            <img src={BronzeAwards} alt="Bronze Awards" />
-          </span>
+          <img src={BronzeAwards} alt="Bronze Awards" />
+        </span>
       </div>
     </Dialog>
   );

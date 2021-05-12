@@ -33,7 +33,6 @@ const ShuffleReports = ({ classes, session, dataLoading, branches, fetchGradeLis
   const [showTable, setShowTable] = useState(false)
   const [disableBut, setDisableBut] = useState(true)
   useEffect(() => {
-    console.log('external', externalshuffleDetail)
   })
   const downloadReport = () => {
     const headers = [
@@ -170,7 +169,6 @@ const ShuffleReports = ({ classes, session, dataLoading, branches, fetchGradeLis
         }
       ])
     })
-    console.log('body: ', body)
     // const body = [
     //   {
     //     value: promoted,

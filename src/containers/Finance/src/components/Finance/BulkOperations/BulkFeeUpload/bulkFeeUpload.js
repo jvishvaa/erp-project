@@ -14,6 +14,33 @@ import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import Layout from '../../../../../../Layout'
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Bulk Operations' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Fee Structure Upload') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 const BulkFeeUpload = ({ classes, session, branches, alert, user, fetchBranches, bulkFeeUpload, dataLoading }) => {
   const [sessionData, setSessionData] = useState(null)
   const [branchData, setBranchData] = useState(null)
@@ -23,15 +50,15 @@ const BulkFeeUpload = ({ classes, session, branches, alert, user, fetchBranches,
   const [yearsArr, setYearsArr] = useState([])
   const [isAdmin, setIsAdmin] = useState(false)
   useLayoutEffect(() => {
-    const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
-    if (role === 'FinanceAdmin') {
-      setIsAdmin(true)
-    }
+    // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
+    // if (role === 'FinanceAdmin') {
+    //   setIsAdmin(true)
+    // }
   }, [])
   const handleClickSessionYear = (e) => {
     setSessionData(e)
     setBranchData(null)
-    fetchBranches(e.value, alert, user)
+    fetchBranches(e.value, alert, user, moduleId)
   }
   const changehandlerbranch = (e) => {
     setBranchData(e)
@@ -86,16 +113,17 @@ const BulkFeeUpload = ({ classes, session, branches, alert, user, fetchBranches,
 
   const readExcelFile = () => {
     const form = new FormData()
-    if (isAdmin) {
+    // if (isAdmin) {
       form.set('session_year', sessionData && sessionData.value)
       form.set('branch_id', branchId)
       form.append('file', statusFile)
       form.append('years_applicable_to', yearsArr)
-    } else {
-      form.set('session_year', sessionData && sessionData.value)
-      form.append('years_applicable_to', yearsArr)
-      form.append('file', statusFile)
-    }
+    // } 
+    // else {
+    //   form.set('session_year', sessionData && sessionData.value)
+    //   form.append('years_applicable_to', yearsArr)
+    //   form.append('file', statusFile)
+    // }
     for (var key of form.entries()) {
       console.log(key[0] + ', ' + key[1])
     }
@@ -132,8 +160,9 @@ const BulkFeeUpload = ({ classes, session, branches, alert, user, fetchBranches,
             onChange={handleClickSessionYear}
           />
         </Grid>
-        { isAdmin
-          ? <Grid item xs={3}>
+        {/* { isAdmin
+          ?  */}
+          <Grid item xs={3}>
             <label>Branch*</label>
             <Select
               placeholder='Select Branch'
@@ -149,7 +178,7 @@ const BulkFeeUpload = ({ classes, session, branches, alert, user, fetchBranches,
               onChange={changehandlerbranch}
             />
           </Grid>
-          : [] }
+          {/* : [] } */}
         <Grid item xs={3}>
           <label>Years Applicable to*</label>
           <Select
@@ -212,8 +241,8 @@ const mapStateToProps = state => ({
   dataLoading: state.finance.common.dataLoader
 })
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   bulkFeeUpload: (body, user, alert) => dispatch(actionTypes.bulkFeeUpload({ body, user, alert }))
 })
 
