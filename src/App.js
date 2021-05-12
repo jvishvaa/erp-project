@@ -39,7 +39,9 @@ import MessageTypeTable from './containers/master-management/message-type/messag
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
 import { fetchLoggedInUserDetails } from './redux/actions';
+import TeacherHomeWorkReport from './containers/homework/teacher-homework-report/teacherReport-index'
 import TeacherHomework from './containers/homework/teacher-homework';
+import StudentHomeworkReport from './containers/homework/student-homework-report/index'
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
 import BulkUpload from './containers/user-management/bulk-upload/bulk-upload';
@@ -267,7 +269,8 @@ import AssessmentReportTypes from './containers/assessment-central/assessment-re
 import ContactUs from 'containers/contact-us';
 import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz';
 import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
-// import { menuSelectionArray } from '../src/components/drawer-menu/menu-item.js';
+import ClassWork from './containers/Classwork/index'
+
 // import Contact from './containers/contact/Contact';
 
 import MultiplayerQuiz from './components/mp-quiz';
@@ -365,12 +368,6 @@ function App({ alert }) {
                           <Route path='/profile'>
                             {({ match }) => <Profile match={match} />}
                           </Route>
-                          <Route path='/time-table/student-view'>
-                            {({ match }) => <TimeTable match={match} />}
-                          </Route>
-                          <Route path='/time-table/teacher-view'>
-                            {({ match }) => <TimeTable match={match} />}
-                          </Route>
                           <Route path='/role-management'>
                             {({ match }) => <RoleManagement match={match} />}
                           </Route>
@@ -391,6 +388,12 @@ function App({ alert }) {
                           </Route>
                           <Route path='/greviences/createnew'>
                             {({ match }) => <GriviencesCreate match={match} />}
+                          </Route>
+                          <Route path='/homework/student-report'>
+                            {({ match }) => <StudentHomeworkReport match={match} />}
+                          </Route>
+                          <Route path='/erp-online-class/class-work/:param1/:param2'>
+                            {({ match }) => <ClassWork match={match} />}
                           </Route>
                           {/*
                         <Route exact path='/view-users'>
@@ -421,6 +424,7 @@ function App({ alert }) {
                           {({ match }) => <AssignRole match={match} />}
                         </Route>
                         */}
+                     
                           <Route exact path='/question-bank'>
                             {({ match }) => <QuestionBankList match={match} />}
                           </Route>
@@ -605,6 +609,9 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/homework/teacher'>
                             {({ match }) => <TeacherHomework match={match} />}
+                          </Route>z
+                          <Route exact path='/homework/teacher-report'>
+                            {({ match }) => <TeacherHomeWorkReport match={match} />}
                           </Route>
                           <Route exact path='/homework/add/:date/:subject/:id'>
                             {({ match }) => <AddHomework match={match} />}

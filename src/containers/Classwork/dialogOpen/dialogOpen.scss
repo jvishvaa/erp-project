@@ -1,0 +1,31 @@
+
+.all-files {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  width: 100%;
+
+  .lower-box-download {
+    background: darkgray;
+    width: 106px;
+    height: 115px;
+    margin: 7px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 23px;
+    // top: -53%;
+    // z-index: 5;
+    // left: 9%;
+  }
+  .lower-box-download::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-bottom: 20px solid gray;
+    border-right: 20px solid #fafafa;
+    width: 0;
+  }
+}

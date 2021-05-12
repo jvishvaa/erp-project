@@ -3,6 +3,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import Layout from '../Layout';
 import GriviencesDetailContainer from './GriviencesDetailContainer/GriviencesDetailContainer';
 import Axios from 'axios';
+// import FilterIcon from '../../assets/images/FilterIcon.png';
+import CallIcon from '@material-ui/icons/Call';
+// import FilterAltIcon from '@material-ui/icons/FilterAlt';
+
+// import FilterAltIcon from '@material-ui/icons/FilterAlt';
+import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
+
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -23,6 +30,8 @@ const GravienceHome = () => {
   const setMobileView = useMediaQuery('(min-width:800px)');
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [gravienceList, setGravienceList] = useState([]);
+  const [studentView, setStudentView] = useState(false);
+  const [userID, setUserID] = useState();
   const [acadamicYearID, setAcadamicYear] = useState();
   const [gradeID, setGradeID] = useState();
   const [sectionID, setSectionID] = useState();
@@ -34,7 +43,8 @@ const GravienceHome = () => {
   const [openGrievanceReportForm, setOpenGrievanceReportForm] = useState(false);
   const [flag, setFlag] = useState(false);
   const [grievanceTypeID, setGrievanceTypeID] = useState();
-
+  let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
+  console.log(userName.user_id, 'userName');
   const handleOpenForm = () => {
     setOpenGrievanceReportForm(true);
   };
@@ -61,6 +71,9 @@ const GravienceHome = () => {
         setAlert('error', error.message);
       });
   };
+  let path = window.location.pathname;
+  console.log(path, 'path');
+
   const handlePassData = (
     acadamicYearID,
     gevienceTypeID,
@@ -68,6 +81,8 @@ const GravienceHome = () => {
     gradeID,
     sectionID,
     temp,
+    userID,
+    studentView,
     // acadamicYear_ID,
     // grade_ID,
     // branch_ID,
@@ -78,66 +93,118 @@ const GravienceHome = () => {
     // section_Name,
     open_Dialog
   ) => {
-    console.log(
-      acadamicYearID[0],
-      gevienceTypeID[0],
-      branchID[0],
-      gradeID[0],
-      sectionID[0],
-      temp,
-      '#############################'
-    );
-    setAcadamicYear(acadamicYearID[0]);
-    setGradeID(gradeID[0]);
-    setBranchID(branchID[0]);
-    setSectionID(sectionID[0]);
-    setGrievanceTypeID(temp);
+    if (path === '/griviences/admin-view') {
+      setAcadamicYear(acadamicYearID[0]);
+      setGradeID(gradeID[0]);
+      setBranchID(branchID[0]);
+      setSectionID(sectionID[0]);
+      setGrievanceTypeID(temp);
+      setUserID(userID);
+      if (open_Dialog && acadamicYearID && branchID && gradeID && sectionID && temp) {
+        handleOpenForm();
+      }
+    } else if (path === '/griviences/student-view') {
+      // setAcadamicYear(acadamicYearID[0]);
+      // setGradeID(gradeID[0]);
+      // setBranchID(branchID[0]);
+      // setSectionID(sectionID[0]);
+      // setGrievanceTypeID(temp);
+      setUserID(userID);
+      setStudentView(studentView);
+    }
     // setAcadamicYearName(academic_Year);
     // setGradeName(grade_Name);
     // setBranchName(branch_Name);
     // setSectionName(section_Name);
-    if (open_Dialog && acadamicYearID && branchID && gradeID && sectionID && temp) {
-      handleOpenForm();
-    }
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (path === '/griviences/admin-view') {
+      console.log(path, 'path');
+      setStudentView(false);
+    }
+    if (path === '/griviences/student-view') {
+      // console.log(path, 'path');
+      let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
+      console.log(userName.user_id, 'userName');
+      setUserID(userName.user_id);
+      setStudentView(true);
+    }
+  }, []);
+
   const getGrivienceData = async (
     acadamicYearID,
     gevienceTypeID,
     branchID,
     gradeID,
     sectionID,
-    temp
-  ) => {
-    await axiosInstance
-      // .get(
-      //   endpoints.grievances.listTickets +
-      //     // `?academic_year_id=${36}&branch_id=${75}&grievance_type_id${1}`,
-      //     `?academic_year_id=${1}&branch_id=${1}&grievance_type_id${1}`,
-      //   {
-      //     // .get(endpoints.grievances.listTickets, {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   }
-      // )
+    temp,
 
-      .get(
-        `${endpoints.grievances.getGrivienceList}?academic_year=${acadamicYearID[0]}&branch=${branchID[0]}&grade=${gradeID[0]}&section=${sectionID[0]}&grievance_type=${temp}`
-      )
-      .then((result) => {
-        console.log(result, 'list data');
-        if (result.status == 200) {
-          console.log(result, 'list-tickets ddata');
-          setGravienceList(result.data.data.results);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
+    userID
+  ) => {
+    if (path === '/griviences/admin-view') {
+      await axiosInstance
+        // .get(
+        //   endpoints.grievances.listTickets +
+        //     // `?academic_year_id=${36}&branch_id=${75}&grievance_type_id${1}`,
+        //     `?academic_year_id=${1}&branch_id=${1}&grievance_type_id${1}`,
+        //   {
+        //     // .get(endpoints.grievances.listTickets, {
+        //     headers: {
+        //       Authorization: `Bearer ${token}`,
+        //     },
+        //   }
+        // )
+
+        .get(
+          `${endpoints.grievances.getGrivienceList}?academic_year=${acadamicYearID[0]}&branch=${branchID[0]}&grade=${gradeID[0]}&section=${sectionID[0]}&grievance_type=${temp}`
+        )
+        .then((result) => {
+          console.log(result, 'list data');
+          if (result.status == 200) {
+            console.log(result, 'list-tickets ddata');
+            setGravienceList(result.data.data.results);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    } else if (path === '/griviences/student-view') {
+      console.log(path, '********Student-view***********');
+      await axiosInstance
+        // .get(
+        //   endpoints.grievances.listTickets +
+        //     // `?academic_year_id=${36}&branch_id=${75}&grievance_type_id${1}`,
+        //     `?academic_year_id=${1}&branch_id=${1}&grievance_type_id${1}`,
+        //   {
+        //     // .get(endpoints.grievances.listTickets, {
+        //     headers: {
+        //       Authorization: `Bearer ${token}`,
+        //     },
+        //   }
+        // )
+
+        .get(`${endpoints.grievances.getGrievenceErpList}?erp_id=${userName.user_id}`)
+        .then((result) => {
+          console.log(result, 'list data');
+          if (result.status == 200) {
+            console.log(result, 'list-tickets ddata');
+            setGravienceList(result.data.data.results);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  };
+  const showFilters = () => {
+    console.log('sameera');
+    setStudentView(!studentView);
+    console.log(studentView, 'studentVieww');
   };
 
   return (
@@ -177,14 +244,28 @@ const GravienceHome = () => {
               <strong>All</strong>
             </span>
           </div>
+
           <div>
+            <Grid
+              style={{
+                marginBottom: '50px',
+                color: 'pink',
+                cursor: 'pointer',
+              }}
+              onClick={showFilters}
+            >
+              <FilterFilledIcon />
+              {/* <img src={FilterIcon} color='primary' fontSize='medium' clss /> */}
+
+              <strong>Show filters</strong>
+            </Grid>
             <Button
               color='primary'
               size='small'
               style={{
                 position: 'relative',
                 top: '-16px',
-                // marginRight: '5%',
+                // marginRight: '15%',
                 // marginTop: '5%',
               }}
               onClick={handleDownload}

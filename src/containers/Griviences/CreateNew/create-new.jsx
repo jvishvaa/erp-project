@@ -22,6 +22,7 @@ import axiosInstance from '../../../config/axios';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { Link } from 'react-router-dom';
+import Loader from '../../../components/loader/loader';
 import './create-new.scss';
 import StudentClasses from 'containers/online-class/aol-view/StudentClasses';
 import { columnSelectionComplete } from '@syncfusion/ej2-grids';
@@ -131,18 +132,22 @@ const CreateNewForm = (props) => {
   //     });
   // };
   const callingGriviencesAPI = () => {
+    setLoading(true);
     axiosInstance
       .get('/academic/grievance_types/')
       .then((res) => {
         console.log(res, 'res data');
+        setLoading(false);
         if (res.status === 200) {
           console.log(res);
           setGrevancesData(res.data.data);
+          setLoading(false);
         }
         console.log(res, 'grievand');
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
   function callApi(api, key) {
@@ -202,6 +207,28 @@ const CreateNewForm = (props) => {
     //   Valid = false;
     // }
     // if (Valid) {
+    if (!selectedAcademicYear) {
+      setAlert('warning', 'Select Academic Year');
+      return;
+    }
+    console.log(selectedBranch.length, '===============');
+    if (selectedBranch.length == 0) {
+      console.log(selectedBranch.length, '===============');
+      setAlert('warning', 'Select Branch');
+      return;
+    }
+    if (selectedGrade.length == 0) {
+      setAlert('warning', 'Select Grade');
+      return;
+    }
+    if (selectedSection.length == 0) {
+      setAlert('warning', 'Select Section');
+      return;
+    }
+    if (optionData == 0) {
+      setAlert('warning', 'Select Type');
+      return;
+    }
     let temp;
     if (optionData === 'type 1') {
       temp = 1;
@@ -226,15 +253,19 @@ const CreateNewForm = (props) => {
       ticket_type: 'Grievance',
     };
     console.log(obj, 'objjdata');
+    setLoading(true);
     axiosInstance
       .post('/academic/grevience-filter/', obj)
       .then((res) => {
+        setLoading(false);
         if (res.status === 200) {
           setAlert('success', 'Created Succcessfully');
+          setLoading(false);
         }
       })
       .catch((error) => {
         setAlert('error', error.message);
+        setLoading(false);
       });
     // }
     // console.log('data', error);
@@ -560,6 +591,7 @@ const CreateNewForm = (props) => {
             </IconButton>
           </div>
         </div>
+        {loading && <Loader />}
       </Layout>
     </>
   );
