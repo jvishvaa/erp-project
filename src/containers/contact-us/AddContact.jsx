@@ -5,6 +5,7 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import Loader from '../../components/loader/loader';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import { error } from 'highcharts';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -147,6 +148,18 @@ function AddContact() {
       setAlert('warning', 'campus_incharge contact should not be empty');
       return;
     }
+    if (foe_contact.length < 10) {
+      setAlert('warning', 'Please check foe contact not lessthan 10 digits');
+      return;
+    }
+    if (op_manager_contact.length < 10) {
+      setAlert('warning', 'Please check op_manager_contact not lessthan 10 digits');
+      return;
+    }
+    if (campus_incharge_contact.length < 10) {
+      setAlert('warning', 'Please check campus_incharge_contact not lessthan 10 digits');
+      return;
+    }
     const payload = {
       academic_year: selectedAcademicYear.id,
       branch: selectedBranch.branch.id,
@@ -164,8 +177,13 @@ function AddContact() {
         // console.log(res);
       })
       .catch((err) => {
+        console.log(err);
         setLoading(false);
-        setAlert('error', 'something went wrong');
+        if (err.message === 'Request failed with status code 400') {
+          setAlert('warning', 'Data already exists');
+        } else {
+          setAlert('error', 'something went wrong');
+        }
         // console.log(err);
       });
     setSelectedAcadmeicYear('');
