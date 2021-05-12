@@ -142,7 +142,7 @@ const Appointments = () => {
     setEditFlag(true);
     // console.log('id', id);
     setAppointmentId(item.id);
-    setAppointmentWith(item.role.id);
+    setAppointmentWith(item.role.role_name);
     setDate(item.appointment_date);
     setTime(item.appointment_time);
     setAppointmentMedium(item.booking_mode);
@@ -304,7 +304,9 @@ const Appointments = () => {
                               )
                             }
                             title='Edit Appointment'
-                            disabled={item.appointment_status === 'accept' ? true : false}
+                            disabled={
+                              item.appointment_status === 'Accepted' ? true : false
+                            }
                           >
                             <EditOutlinedIcon
                               color='primary'
@@ -646,7 +648,9 @@ const Appointments = () => {
                               )
                             }
                             title='Edit Appointment'
-                            disabled={item.appointment_status === 'accept' ? true : false}
+                            disabled={
+                              item.appointment_status === 'Accepted' ? true : false
+                            }
                           >
                             <EditOutlinedIcon
                               color='primary'

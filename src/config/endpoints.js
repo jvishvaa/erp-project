@@ -308,6 +308,7 @@ export default {
     listTickets: '/academic/list_tickets/',
     getGrivienceList: '/academic/grevience-filter/',
     grievance_reply: '/academic/grievance_reply/',
+    getGrievenceErpList: '/academic/grevience-erp-filter/',
   },
   studentViewBatchesApi: {
     getBatchesApi: '/erp_user/student_online_class/',

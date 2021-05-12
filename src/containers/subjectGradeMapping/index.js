@@ -45,6 +45,7 @@ const Subjectgrade = (props) => {
     const [centralSubject, setCentralSubject] = useState([]);
     const [centralGrade, setCentralGrade] = useState([]);
     const [subjectValue, setSubjectValue] = useState(null);
+    const [subjectId, setSubjectId] = useState(null);
     const [selectedYear, setSelectedYear] = useState(null);
     const [branchValue, setBranchValue] = useState(null);
     const [gradeValue, setGradeValue] = useState(null);
@@ -122,6 +123,7 @@ const Subjectgrade = (props) => {
             //setCentralGrade([]);
             //setCentralSubject([]);
             setSubjectValue(null);
+            setSubjectId(null);
 
             setGradeValue([]);
             //setcentralGradeValue([]);
@@ -145,6 +147,7 @@ const Subjectgrade = (props) => {
 
         setSubjectRes([]);
         setSubjectValue(null);
+        setSubjectId(null);
         setUpdateSubjectValue(null);
 
         if (value) {
@@ -172,6 +175,7 @@ const Subjectgrade = (props) => {
             setCentralGrade([]);
             setCentralSubject([]);
             setSubjectValue(null);
+            setSubjectId(null);
 
             setBranchValue([]);
             setGradeValue([]);
@@ -196,8 +200,10 @@ const Subjectgrade = (props) => {
     
     const handleSubjectChange = (e, value) => {
         let values = Array.from(value, (option) => option.id);
+        let subject_id = Array.from(value, (option) => option.subject_id);
         setUpdateSubjectValue(value)
         setSubjectValue(values);
+        setSubjectId(subject_id);
     }
     
     const centralGradeSubjects = () => {
@@ -349,6 +355,7 @@ const Subjectgrade = (props) => {
             branch: branchValue && branchValue.branch.id,
             erp_grade: gradeValue && gradeValue.grade_id,
             erp_gs_mapping: subjectValue && subjectValue,
+            erp_subject_id: subjectId && subjectId,
             central_grade: centralGradeValue && centralGradeValue.grade,
             central_grade_name: centralGradeValue && centralGradeValue.grade_name,
             central_subject: centralSubValue && centralSubValue.subject_id,
@@ -412,7 +419,8 @@ const Subjectgrade = (props) => {
         setcentralGradeValue(null);
         setGradeValue(null);
         setBranchValue(null);
-        setSubjectValue([])
+        setSubjectValue([]);
+        setSubjectId([]);
         props.history.push('/subject/grade');
     }
 
@@ -446,6 +454,7 @@ const Subjectgrade = (props) => {
                 setdefaultValueGrade(gradeVale);
                 setGradeValue(gradeVale);
                 setSubjectValue(updateValue.erp_gs_mapping)
+                //setSubjectId();
                 const centralSubject = {
                     id: updateValue.central_subject,
                     subject_name: updateValue.central_subject_name
