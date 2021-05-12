@@ -342,7 +342,7 @@ const ViewOrchadioMobile = () => {
           // imageTxt='Orchids'
           // albumComposers={item.composers}
           albumComposers={composers.split(', ')}
-          src={`${endpoints.s3}/${item.files[0]}`}
+          src={`${endpoints.orchadio.s3}/${item.files[0]}`}
           timeToStart={getFormattedHrsMnts(date[3], date[4])}
           timedStart={false}
           dateToStart={new Date()}

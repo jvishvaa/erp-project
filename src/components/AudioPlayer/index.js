@@ -173,8 +173,9 @@ const AudioPlayer = ({
             </div>
           )}
           {/* </Grid> */}
+          <div className="totalPlayer" >
           <Grid item md={1} style={{ align: 'center' }}>
-            <IconButton onClick={togglePlay} style={{ marginTop: 85 }}>
+            <IconButton onClick={togglePlay}  >
               {isPlaying ? (
                 <PauseIcon
                   style={{ fontSize: 70, fontWeight: 'lighter', color: '#ffd83a' }}
@@ -294,6 +295,7 @@ const AudioPlayer = ({
               </Grid>
             </Grid>
           </Grid>
+          </div>
         </Grid>
         {/* <Typography style={{ bottom: '8px', right: '16px' }}>
           More info - radio@orchids.edu.in

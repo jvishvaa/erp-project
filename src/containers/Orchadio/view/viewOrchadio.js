@@ -559,7 +559,7 @@ function ViewOrchadio() {
             // imageTxt='Orchids'
             // albumComposers={item.composers}
             albumComposers={composers.split(', ')}
-            src={`${endpoints.s3}/${item.audioSrc}`}
+            src={`${endpoints.orchadio.s3}/${item.audioSrc}`}
             timeToStart={getFormattedHrsMnts(date[3], date[4])}
             timedStart={false}
             dateToStart={new Date()}

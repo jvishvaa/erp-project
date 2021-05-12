@@ -411,7 +411,7 @@ bytes
             {loading ? <Loading message='Loading...' /> : null}
             <CommonBreadcrumbs componentName='Orchadio' />
             <div className='create_group_filter_container'>
-              <Grid container className="filterContainer" >
+              <Grid container className="addOrchidofilterContainer" >
                   {/* <div className='mobile-date-picker'> */}
                     {/* <MobileDatepicker
                       onChange={(date) => handleEndDateChange(date)}
