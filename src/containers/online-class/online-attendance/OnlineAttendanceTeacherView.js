@@ -44,6 +44,7 @@ const OnlineAttendanceTeacherView=({history})=>{
   const [selectedSection, setSelectedSection] = useState([]);
   const [secSelectedId, setSecSelectedId] = useState([]);
   const [type, setType] = useState('');
+  const [sectionMappingId, setSectionMappingId] = useState('')
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
@@ -197,6 +198,22 @@ const OnlineAttendanceTeacherView=({history})=>{
       setAlert('warning', 'Select Classtype');
       return;
     }
+    if (!selectedAcademicYear) {
+      setAlert('warning', 'Select Academic Year');
+      return;
+    }
+    if (selectedBranch.length == 0) {
+      setAlert('warning', 'Select Branch');
+      return;
+    }
+    if (selectedGrade.length == 0) {
+      setAlert('warning', 'Select Grade');
+      return;
+    }
+    if (selectedSection.length == 0) {
+      setAlert('warning', 'Select Section');
+      return;
+    }
     // if (!selectedAcademicYear) {
     //   setAlert('warning', 'Select Academic Year');
     //   return;
@@ -220,6 +237,10 @@ const OnlineAttendanceTeacherView=({history})=>{
     // }
     setLoading(true);
     setPage(1);
+    axiosInstance
+    .get(`${endpoints.attendanceTeacherView.getTeacherAttendanceView}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${sectionMappingId}&class_type=${type}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&start_date=${startDateTechPer.format('YYYY-MM-DD')}`)
+    .then((res)=>console.log(res))
+    .catch((err)=>console.log(err))
     // axiosInstance.get(`${endpoints.attendanceTeacherView.getTeacherAttendanceView}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el) => el.id)}&class_type=${selectedClassType.id}&start_date=${startDateTechPer.format(
     //   'YYYY-MM-DD'
     // )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&module_id=61`)
@@ -427,10 +448,12 @@ const OnlineAttendanceTeacherView=({history})=>{
             onChange={(event, value) => {
               setSelectedSection([]);
               if (value) {
+                console.log(value, "section id")
                 const ids = value.id;
                 const secId = value.section_id;
                 setSelectedSection(value);
                 setSecSelectedId(secId);
+                setSectionMappingId(value.id)
               }
             }}
             id='section_id'
