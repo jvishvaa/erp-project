@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
   contentData: {
     fontSize: '12px',
+    wordBreak: 'break-all',
   },
   contentsmall: {
     fontSize: '15px',
