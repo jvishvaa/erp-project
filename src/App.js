@@ -275,7 +275,6 @@ import ClassWork from './containers/Classwork/index';
 
 import MultiplayerQuiz from './components/mp-quiz';
 import StudentAttendance from 'containers/online-class/student-attendance/StudentAttendance';
-import MultiplayerQuiz from './components/mp-quiz';
 
 const theme = createMuiTheme({
   palette: {
