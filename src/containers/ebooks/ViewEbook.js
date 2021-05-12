@@ -178,7 +178,8 @@ class ViewEbook extends Component {
     }else if(subDomainLevels===1){
         subDomain = hostSplitArray[0]
     }
-    const domainTobeSent =subDomain 
+    // const domainTobeSent =subDomain 
+    const domainTobeSent ="olvorchidnaigaon"
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}`:''}`;
     const filterGrade = `${grade ? `&grade=${grade?.central_grade}`: ''}`;
