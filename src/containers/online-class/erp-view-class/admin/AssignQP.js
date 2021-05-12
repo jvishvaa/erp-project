@@ -81,6 +81,7 @@ const AssignQP = (props) => {
   const {location:{state:{data}={}}={}}=props||{}
   const history = useHistory()
   const { match: { params } } = props;
+  console.log(params,data,"@@@@@@@@@@@@@@@@@@@@@@@")
 
   const [wordCount,setWordCount] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
@@ -131,7 +132,7 @@ const AssignQP = (props) => {
       "quiz_test_paper": selectedQp
       }
 
-    axiosInstance.put(`${endpoints.questionPaper.AssignQP}${data}/assign-quiz/`, requestData)
+    axiosInstance.put(`${endpoints.questionPaper.AssignQP}${params.id}/assign-quiz/`, requestData)
     .then(result => {
     if (result.data.status_code === 200) {
       setLoading(false);
@@ -155,7 +156,7 @@ const handleQPSelect = (event,value) =>{
   axiosInstance
   .get(`${endpoints.questionPaper.QuestionsInQP}?question_paper=${
     value.question_paper
-  }&lobby_identifier=${data}`, {
+  }&lobby_identifier=${params.id}`, {
     headers: {
         Authorization: `Bearer ${token}`,
     },

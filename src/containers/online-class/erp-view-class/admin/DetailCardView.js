@@ -900,7 +900,7 @@ const JoinClass = (props) => {
               <AttachFileIcon />
             </IconButton>
           </Tooltip>
-          <Grid item xs={3}>
+          {/* <Grid item xs={3}>
             <IconButton
               color='primary'
               onClick={() =>
@@ -911,7 +911,7 @@ const JoinClass = (props) => {
             >
               <ClassIcon />
             </IconButton>
-          </Grid>
+          </Grid> */}
         </>
       ) : (
         ''
