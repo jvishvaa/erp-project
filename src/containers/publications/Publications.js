@@ -49,9 +49,11 @@ import Tab from '@material-ui/core/Tab';
 
 import './publications.scss';
 import { Pagination } from '@material-ui/lab';
-import { DataGrid } from '@material-ui/data-grid';
+
 import AddPublication from './AddPublication';
 import PublicationPreview from './PublicationPreview';
+import Nodata from '../../assets/images/not-found.png';
+import { set } from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -187,6 +189,7 @@ const Publications = (props) => {
   const [subjectID, setSubjectID] = useState('Select Subject');
   const [counter, setCounter] = useState(2);
   const [academicYear, setAcadamicYearName] = useState('Select Acdemic Year');
+  const [id, setId] = useState();
 
   const [individualData, setIndividualData] = useState();
   const [readFlag, setReadFlag] = useState(false);
@@ -213,17 +216,25 @@ const Publications = (props) => {
   const [pub_zone, setPub_zone] = useState();
   const [open1, setOpen1] = React.useState(false);
   const [subjectChanger, setSubjectChanger] = useState('');
-
+  const [changer, setChanger] = useState(true);
+  const [changer2, setChanger2] = useState(true);
+  const [changer3, setChanger3] = useState(true);
+  const [changer4, setChanger4] = useState(true);
+  const [theSubjectId, setTheSubjectId] = useState();
   //pagination
   const [page, setPage] = useState(1);
+
   const [totalPages, setTotalPages] = useState(0);
+  const [totalPages2, setTotalPages2] = useState(0);
+  const [totalPages3, setTotalPages3] = useState(0);
+  const [totalPages4, setTotalPages4] = useState(0);
+  const formData = new FormData();
+
   const handlePagination = (event, page) => {
     setPage(page);
-    console.log('pagessssssss', page);
 
     handleSubjectID(subjectChanger, page);
     handleAlldata(page);
-    console.log('The subject value:', subjectChanger, 'pages:', page);
   };
   const handleClickOpen1 = () => {
     setOpen1(true);
@@ -245,7 +256,6 @@ const Publications = (props) => {
     zone,
     author_name
   ) => {
-    console.log("Types:'''", publication_type);
     setPub_id(id);
     setPub_title(title);
     setPub_subject(subject);
@@ -262,7 +272,6 @@ const Publications = (props) => {
   };
 
   const handleRead = (value) => {
-    console.log('valuessss:', value);
     setReadID(value);
     setTableFlag(false);
     setReadFlag(true);
@@ -296,9 +305,14 @@ const Publications = (props) => {
     }, 450);
   }, [goBackFlag]);
 
+  const filterForAllData = (theSubjectId, page) => {
+    console.log('the subject id', theSubjectId);
+    setPage(1);
+    handleSubjectID(theSubjectId, page);
+  };
   const handleSubjectID = (value, page) => {
     setSubjectChanger(value);
-    console.log('subjef6tID:', value);
+
     handleDraftSubjectId(value, page);
     handleReviewSubjectId(value, page);
 
@@ -309,9 +323,16 @@ const Publications = (props) => {
         }?subject_id=${value}&status_post=Published&page_number=${page}&page_size=${8}`
       )
       .then((res) => {
-        console.log('getting', res.data.data.length);
-
-        setIndividualData(res.data.data);
+        if (res.data.total_pages == 0) {
+          setChanger4(false);
+        } else if (res.data.status_code === 200) {
+          setAlert('success', res.data.message);
+          setTotalPages4(res.data.total_pages);
+          setIndividualData(res.data.data);
+          setChanger4(true);
+        } else {
+          setAlert('error', res.data.message);
+        }
       });
   };
 
@@ -323,17 +344,21 @@ const Publications = (props) => {
         }?subject_id=${value}&status_post=Draft&page_number=${pageNumber}&page_size=${8}`
       )
       .then((res) => {
-        console.log('in axios');
-        console.log('pages', pageNumber);
-        console.log('response1 Draft:', res.data.total_pages);
-
-        setTotalPages(res.data.total_pages);
-        setDataDraft(res.data.data);
+        if (res.data.total_pages == 0) {
+          setChanger2(false);
+        } else if (res.data.status_code === 200) {
+          setAlert('success', res.data.message);
+          setTotalPages2(res.data.total_pages);
+          setDataDraft(res.data.data);
+          setChanger2(true);
+        } else {
+          setAlert('error', res.data.message);
+          setDataDraft('');
+        }
       });
   };
 
   const handleZone = (e) => {
-    console.log('dataaa', e.target.value);
     setGetZoneData(e.target.value);
   };
 
@@ -341,21 +366,21 @@ const Publications = (props) => {
     axiosInstance
       .get(`${endpoints.publish.ebook}?zone=${getZoneData}&status_post=Published`)
       .then((res) => {
-        console.log('Zones Data:::', res.data.data);
         setData(res.data.data);
       });
     handleClose();
   };
   const handleReviewStatus = (value) => {
-    console.log('review value', value);
+    formData.append('status_post', reviewDataPut);
+
     axiosInstance
-      .put(`${endpoints.publish.update_delete}?publication_id=${value}`, {
-        status_post: reviewDataPut,
-      })
+      .put(`${endpoints.publish.update_delete}?publication_id=${value}`, formData)
 
       .then((result) => {
+        console.log('the new subject', theSubjectId);
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
+          filterForAllData(theSubjectId, page);
         } else {
           setAlert('error', result.data.message);
         }
@@ -369,13 +394,19 @@ const Publications = (props) => {
       .get(
         `${endpoints.publish.ebook}?subject_id=${value}&status_post=Review&page_number=${
           pageNumber || 1
-        }&page_size=${2}`
+        }&page_size=${8}`
       )
       .then((res) => {
-        console.log('in axios');
-        console.log('response1:', res.data.data);
-        setTotalPages(res.data.total_pages);
-        setReviewData(res.data.data);
+        if (res.data.total_pages == 0) {
+          setChanger3(false);
+        } else if (res.data.status_code === 200) {
+          setAlert('success', res.data.message);
+          setTotalPages3(res.data.total_pages);
+          setReviewData(res.data.data);
+          setChanger3(true);
+        } else {
+          setAlert('error', res.data.message);
+        }
       });
   };
   const [open, setOpen] = React.useState(false);
@@ -388,43 +419,14 @@ const Publications = (props) => {
     setOpen(false);
   };
 
-  const handleFilterData = () => {
-    return (
-      <>
-        <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
-          <DialogTitle id='form-dialog-title'>Subscribe</DialogTitle>
-          <Select
-            labelId='demo-simple-select-outlined-label'
-            id='demo-simple-select-outlined'
-            name='zone'
-            // onChange={handleBranch}
-
-            outlined
-            labelWidth={70}
-            required
-          >
-            {branchGet &&
-              branchGet.map((options) => {
-                return (
-                  <MenuItem value={options.id} key={options.id}>
-                    {options.branch_name}
-                  </MenuItem>
-                );
-              })}
-          </Select>
-        </Dialog>
-      </>
-    );
-  };
-
   const handlePublish = (value) => {
+    formData.append('status_post', publishDataPut);
     axiosInstance
-      .put(`${endpoints.publish.update_delete}?publication_id=${value}`, {
-        status_post: publishDataPut,
-      })
+      .put(`${endpoints.publish.update_delete}?publication_id=${value}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
+          filterForAllData(theSubjectId, page);
         } else {
           setAlert('error', result.data.message);
         }
@@ -464,31 +466,31 @@ const Publications = (props) => {
     }
 
     if (counter === 2) {
-      callingSubjectAPI();
+      callingSubjectAPI(id);
     }
   };
 
-  const callingSubjectAPI = () => {
+  const callingSubjectAPI = (id) => {
+    console.log('The subject id:', id);
     axiosInstance
-      .get(endpoints.masterManagement.subjects)
+      .get(`${endpoints.userManagement.subjectName}?academic_year_id=${id}`)
       .then((res) => {
-        console.log('in axios');
-        setDataMap(res.data.result.results);
-        console.log('responseer:', res.data.result.results);
+        console.log('data Api:', res.data.data);
+        if (id) {
+          setMainsubject(res.data.data);
+        } else {
+          setMainsubject('');
+        }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
   const callingAcadamicAPI = () => {
     axiosInstance
-      .get('/erp_user/list-academic_year/', {})
+      .get(endpoints.userManagement.academicYear)
       .then((res) => {
         setDataMap(res.data.data);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   const handleCounter = (value) => {
@@ -507,35 +509,32 @@ const Publications = (props) => {
         }?status_post=Published&page_number=${page}&page_size=${8}`
       )
       .then((res) => {
-        console.log('in axios');
-        console.log('response1:', res.data.total_pages);
-        setTotalPages(res.data.total_pages);
-        setData(res.data.data);
+        if (res.data.total_pages == 0) {
+          setChanger(false);
+        } else if (res.data.status_code === 200) {
+          setAlert('success', res.data.message);
+          setTotalPages(res.data.total_pages);
+          setData(res.data.data);
+          setChanger(true);
+        } else {
+          setAlert('error', res.data.message);
+        }
       });
   };
+
   useEffect(() => {
     handleAlldata(page);
-    axiosInstance.get(endpoints.masterManagement.subjects).then((res) => {
-      console.log('in axios');
-      setMainsubject(res.data.result.results);
-      console.log('responser of subject:', res.data.result.results);
-    });
-    axiosInstance.get(endpoints.academics.branches).then((res) => {
-      console.log('Branches', res.data.data);
-      setBranchGet(res.data.data);
-    });
   }, []);
   const classes = useStyles();
   const theme = useTheme();
   const handleDelete = (value, subjectId) => {
-    console.log('valuedelete:', value);
-
     // setLoading(true);
     axiosInstance
       .delete(`${endpoints.publish.update_delete}?publication_id=${value}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           handleSubjectID(subjectId, page);
+          handleAlldata(page);
           setAlert('success', result.data.message);
         } else {
           setAlert('error', result.data.message);
@@ -550,9 +549,7 @@ const Publications = (props) => {
 
   const handleChanger = (event, newValue) => {
     setValue(newValue);
-    setPage(1);
   };
-  console.log('subje', subject);
 
   const Tabpanel1 = (props) => {
     const { children, value, index } = props;
@@ -608,7 +605,7 @@ const Publications = (props) => {
                                 </Button>
                                 <Button
                                   onClick={(e) => {
-                                    handleDelete(item.id, item.subject.id);
+                                    handleDelete(item.id, item.subject_id);
                                     handleClose1();
                                   }}
                                   color='primary'
@@ -695,7 +692,7 @@ const Publications = (props) => {
                             </Button>
                             <Button
                               onClick={(e) => {
-                                handleDelete(item.id, item.subject.id);
+                                handleDelete(item.id, item.subject_id);
                                 handleClose1();
                               }}
                               color='primary'
@@ -768,11 +765,7 @@ const Publications = (props) => {
       </>
     );
   };
-  const NewDraft = ({ data, loading }) => {
-    if (loading) {
-      return <h2>Loading...</h2>;
-    }
-
+  const NewDraft = () => {
     return (
       <>
         <MediaQuery minWidth={600}>
@@ -822,7 +815,7 @@ const Publications = (props) => {
                                 </Button>
                                 <Button
                                   onClick={(e) => {
-                                    handleDelete(item.id, item.subject.id);
+                                    handleDelete(item.id, item.subject_id);
                                     handleClose1();
                                   }}
                                   color='primary'
@@ -935,7 +928,7 @@ const Publications = (props) => {
                               </Button>
                               <Button
                                 onClick={(e) => {
-                                  handleDelete(item.id, item.subject.id);
+                                  handleDelete(item.id, item.subject_id);
                                   handleClose1();
                                 }}
                                 color='primary'
@@ -1016,10 +1009,7 @@ const Publications = (props) => {
     );
   };
 
-  const IndividualPost = ({ data, loading }) => {
-    if (loading) {
-      return <h2>Loading...</h2>;
-    }
+  const IndividualPost = () => {
     return (
       <>
         <MediaQuery minWidth={600}>
@@ -1069,7 +1059,7 @@ const Publications = (props) => {
                                   </Button>
                                   <Button
                                     onClick={(e) => {
-                                      handleDelete(item.id, item.subject.id);
+                                      handleDelete(item.id, item.subject_id);
                                       handleClose1();
                                     }}
                                     color='primary'
@@ -1244,10 +1234,7 @@ const Publications = (props) => {
     );
   };
 
-  const ReviewPost = ({ data, loading }) => {
-    if (loading) {
-      return <h2>Loading...</h2>;
-    }
+  const ReviewPost = () => {
     return (
       <>
         <MediaQuery minWidth={600}>
@@ -1363,7 +1350,9 @@ const Publications = (props) => {
               );
             })
           ) : (
-            <h1>Select Above Subject</h1>
+            <Grid item md={3}>
+              <h1>Select Above Subject</h1>
+            </Grid>
           )}
         </MediaQuery>
 
@@ -1482,7 +1471,9 @@ const Publications = (props) => {
               );
             })
           ) : (
-            <h1>Select Above Subject</h1>
+            <Grid item md={3}>
+              <h1>Select Above Subject</h1>
+            </Grid>
           )}
         </MediaQuery>
       </>
@@ -1561,9 +1552,11 @@ const Publications = (props) => {
                                       <option
                                         key={name.id}
                                         value={name.id}
-                                        onClick={() =>
-                                          setAcadamicYearName(name.session_year)
-                                        }
+                                        onClick={() => {
+                                          setAcadamicYearName(name.session_year);
+
+                                          setId(name.id);
+                                        }}
                                       >
                                         {name.session_year}
                                       </option>
@@ -1611,13 +1604,13 @@ const Publications = (props) => {
                                     mainsubject.map((name) => (
                                       <option
                                         key={name.id}
-                                        value={name.subject.subject_name}
+                                        value={name.subject__subject_name}
                                         onClick={() => {
                                           setPage(1);
-                                          handleSubjectID(name.subject.id, page);
+                                          setTheSubjectId(name.subject_id);
                                         }}
                                       >
-                                        {name.subject.subject_name}
+                                        {name.subject__subject_name}
                                       </option>
                                     ))}
                                 </Select>
@@ -1656,44 +1649,12 @@ const Publications = (props) => {
                       color='secondary'
                       startIcon={<FilterFilledIcon className={classes.filterIcon} />}
                       className={classes.filterButton}
-                      onClick={handleClickOpen}
+                      onClick={() => {
+                        filterForAllData(theSubjectId, page);
+                      }}
                     >
                       filter
                     </StyledFilterButton>
-                    <Dialog
-                      open={open}
-                      onClose={handleClose}
-                      aria-labelledby='form-dialog-title'
-                    >
-                      <DialogTitle id='form-dialog-title'>Zone</DialogTitle>
-                      <Select
-                        labelId='demo-simple-select-outlined-label'
-                        id='demo-simple-select-outlined'
-                        name='zone'
-                        onChange={handleZone}
-                        outlined
-                        labelWidth={70}
-                        required
-                      >
-                        {branchGet &&
-                          branchGet.map((options) => {
-                            return (
-                              <MenuItem value={options.id} key={options.id}>
-                                {options.branch_name}
-                              </MenuItem>
-                            );
-                          })}
-                      </Select>
-                      <DialogActions>
-                        <Button onClick={handleClose} color='primary'>
-                          Cancel
-                        </Button>
-                        <Button onClick={handleZoneDataGet} color='primary'>
-                          Generate
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
-                    {/* <img src={LineImage} /> */}
                     <StyledFilterButton
                       variant='contained'
                       color='secondary'
@@ -1817,13 +1778,13 @@ const Publications = (props) => {
                                     mainsubject.map((name) => (
                                       <option
                                         key={name.id}
-                                        value={name.subject.subject_name}
+                                        value={name.subject__subject_name}
                                         onClick={() => {
                                           setPage(1);
-                                          handleSubjectID(name.subject.id, page);
+                                          setTheSubjectId(name.subject_id);
                                         }}
                                       >
-                                        {name.subject.subject_name}
+                                        {name.subject__subject_name}
                                       </option>
                                     ))}
                                 </Select>
@@ -1854,43 +1815,12 @@ const Publications = (props) => {
                           style={{ marginLeft: '-5%' }}
                           startIcon={<FilterFilledIcon className={classes.filterIcon} />}
                           className={classes.filterButton}
-                          onClick={handleClickOpen}
+                          onClick={() => {
+                            filterForAllData(theSubjectId, page);
+                          }}
                         >
                           filter
                         </StyledFilterButton>
-                        <Dialog
-                          open={open}
-                          onClose={handleClose}
-                          aria-labelledby='form-dialog-title'
-                        >
-                          <DialogTitle id='form-dialog-title'>Zone</DialogTitle>
-                          <Select
-                            labelId='demo-simple-select-outlined-label'
-                            id='demo-simple-select-outlined'
-                            name='zone'
-                            onChange={handleZone}
-                            outlined
-                            labelWidth={70}
-                            required
-                          >
-                            {branchGet &&
-                              branchGet.map((options) => {
-                                return (
-                                  <MenuItem value={options.id} key={options.id}>
-                                    {options.branch_name}
-                                  </MenuItem>
-                                );
-                              })}
-                          </Select>
-                          <DialogActions>
-                            <Button onClick={handleClose} color='primary'>
-                              Cancel
-                            </Button>
-                            <Button onClick={handleZoneDataGet} color='primary'>
-                              Generate
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
                       </div>
 
                       <StyledFilterButton
@@ -1963,62 +1893,99 @@ const Publications = (props) => {
             <Divider loading={loading} />
 
             <Tabpanel1 value={value} index={0}>
-              <Grid container direction='row' spacing={1} className='gridscroll'>
-                <Post />
-              </Grid>
-              <Grid container direction='row' justify='center' alignItems='center'>
-                <Pagination
-                  onChange={handlePagination}
-                  style={{ marginTop: 25 }}
-                  count={totalPages}
-                  color='primary'
-                  page={page}
-                />
-              </Grid>
+              {changer ? (
+                <>
+                  <Grid container direction='row' spacing={1} className='gridscroll'>
+                    <Post />
+                  </Grid>
+                  <Grid container direction='row' justify='center' alignItems='center'>
+                    <Pagination
+                      onChange={handlePagination}
+                      style={{ marginTop: 25 }}
+                      count={totalPages}
+                      color='primary'
+                      page={page}
+                    />
+                  </Grid>
+                </>
+              ) : (
+                <Grid container direction='row' justify='center' alignItems='center'>
+                  <img src={Nodata} />
+                </Grid>
+              )}
             </Tabpanel1>
             <Tabpanel1 value={value} index={1}>
-              <Grid container direction='row' spacing={2}>
-                <NewDraft loading={loading} />
-              </Grid>
-              {/* {page} */}
-              <Grid container direction='row' justify='center' alignItems='center'>
-                <Pagination
-                  onChange={handlePagination}
-                  style={{ marginTop: 25 }}
-                  count={totalPages}
-                  color='primary'
-                  page={page}
-                />
-              </Grid>
+              {changer2 ? (
+                <>
+                  <Grid container direction='row' spacing={1} className='gridscroll'>
+                    <NewDraft />
+                  </Grid>
+                  {dataDraft && (
+                    <Grid container direction='row' justify='center' alignItems='center'>
+                      <Pagination
+                        onChange={handlePagination}
+                        style={{ marginTop: 25 }}
+                        count={totalPages2}
+                        color='primary'
+                        page={page}
+                      />
+                    </Grid>
+                  )}
+                </>
+              ) : (
+                <Grid container direction='row' justify='center' alignItems='center'>
+                  <img src={Nodata} />
+                </Grid>
+              )}
             </Tabpanel1>
 
             <Tabpanel1 value={value} index={2}>
-              <Grid container direction='row'>
-                <ReviewPost loading={loading} />
-              </Grid>
-              <Grid container direction='row' justify='center' alignItems='center'>
-                <Pagination
-                  onChange={handlePagination}
-                  style={{ marginTop: 25 }}
-                  count={totalPages}
-                  color='primary'
-                  page={page}
-                />
-              </Grid>
+              {changer3 ? (
+                <>
+                  <Grid container direction='row'>
+                    <ReviewPost />
+                  </Grid>
+                  {reviewData && (
+                    <Grid container direction='row' justify='center' alignItems='center'>
+                      <Pagination
+                        onChange={handlePagination}
+                        style={{ marginTop: 25 }}
+                        count={totalPages3}
+                        color='primary'
+                        page={page}
+                      />
+                    </Grid>
+                  )}
+                </>
+              ) : (
+                <Grid container direction='row' justify='center' alignItems='center'>
+                  <img src={Nodata} />
+                </Grid>
+              )}
             </Tabpanel1>
             <Tabpanel1 value={value} index={3}>
-              <Grid container direction='row' spacing={2}>
-                <IndividualPost loading={loading} />
-              </Grid>
-              <Grid container direction='row' justify='center' alignItems='center'>
-                <Pagination
-                  onChange={handlePagination}
-                  style={{ marginTop: 25 }}
-                  count={totalPages}
-                  color='primary'
-                  page={page}
-                />
-              </Grid>
+              {changer4 ? (
+                <>
+                  <Grid container direction='row' spacing={1}>
+                    <IndividualPost />
+                  </Grid>
+                  {individualData && (
+                    <Grid container direction='row' justify='center' alignItems='center'>
+                      <Pagination
+                        onChange={handlePagination}
+                        style={{ marginTop: 25 }}
+                        count={totalPages4}
+                        color='primary'
+                        page={page}
+                      />
+                    </Grid>
+                  )}
+                </>
+              ) : (
+                <Grid container direction='row' justify='center' alignItems='center'>
+                  <img src={Nodata} />
+                </Grid>
+              )}
             </Tabpanel1>
           </Grid>
         </div>

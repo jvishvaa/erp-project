@@ -1,25 +1,22 @@
 import React, { useEffect, useRef } from 'react';
-import Layout from '../Layout/index';
-import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import Pagination from '@material-ui/lab/Pagination';
+
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import BookIcon from '@material-ui/icons/Book';
 
-import BorderColorIcon from '@material-ui/icons/BorderColor';
-import bookimage from '../../assets/images/1.png';
-import { Document, Page, pdfjs } from 'react-pdf';
 import './Styles.css';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 // import { Document, Page } from 'react-pdf';
 import ReactHtmlParser from 'react-html-parser';
-
+import { Pagination } from '@material-ui/lab';
 
 import MediaQuery from 'react-responsive';
 
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const OpenPublication = ({ ID }) => {
-  console.log('bookid:', ID);
   const classes = useStyles();
   const [data, setData] = React.useState([]);
   const [pdf, setPdf] = React.useState([]);
@@ -56,14 +52,11 @@ const OpenPublication = ({ ID }) => {
     axiosInstance.get(`${endpoints.publish.ebook}?publication_id=${ID}`).then((res) => {
       setData(res.data.data);
       const resp = res.data.data[0].file_list;
-      console.log('images', res.data.data[0].file_list);
+
       setPdf(resp);
       setLen(resp.length);
-      console.log('len', resp.length);
-      console.log(`${endpoints.s3}/publication/${resp[0]}`);
     });
   }, []);
-
 
   const [numPages, setNumPages] = React.useState(null);
   const [pageNumber, setPageNumber] = React.useState(1);
@@ -81,6 +74,11 @@ const OpenPublication = ({ ID }) => {
                 src={`${endpoints.s3}/publication/${pdf[increment]}`}
                 width='100%'
                 height='100%'
+                style={{
+                  border: '1px solid darkgrey',
+                  boxShadow: '5px 5px 5px 1px #ccc',
+                  borderRadius: '5px',
+                }}
               />
             </Grid>
           </Grid>
@@ -89,16 +87,18 @@ const OpenPublication = ({ ID }) => {
               <Button
                 onClick={handleClickPrevious}
                 disabled={increment == 0 ? true : false}
+                style={{ margin: '20px' }}
               >
-                Previous
+                <ArrowBackIosIcon />
               </Button>
             </Grid>
             <Grid>
               <Button
                 onClick={handleClick}
                 disabled={increment == len - 1 ? true : false}
+                style={{ margin: '20px' }}
               >
-                Next
+                <ArrowForwardIosIcon />
               </Button>
             </Grid>
           </Grid>
@@ -137,22 +137,24 @@ const OpenPublication = ({ ID }) => {
               }}
             />
           </Grid>
-          <Grid container justify='center' spacing={2}>
+          <Grid container direction='row' justify='center'>
             <Grid>
               {' '}
               <Button
                 onClick={handleClickPrevious}
-                disabled={incrementNext == 1 ? true : false}
+                disabled={increment == 0 ? true : false}
+                style={{ margin: '20px' }}
               >
-                Previous
+                <ArrowBackIosIcon />
               </Button>
             </Grid>
             <Grid>
               <Button
                 onClick={handleClick}
-                disabled={incrementNext == Math.ceil(len / 2) ? true : false}
+                disabled={increment == len - 1 ? true : false}
+                style={{ margin: '20px' }}
               >
-                Next
+                <ArrowForwardIosIcon />
               </Button>
             </Grid>
           </Grid>
@@ -204,36 +206,33 @@ const OpenPublication = ({ ID }) => {
               <KeyboardBackspaceIcon />
             </Button>
           </Grid>
-          {data.map((item, index) => {
-            return (
-              <Grid className={classes.root}>
-                <Typography>{ReactHtmlParser(item.description)}</Typography>
-              </Grid>
-            );
-          })}
 
           <img
             src={`${endpoints.s3}/publication/${pdf[increment]}`}
-            width='100%'
+            width='90%'
             height='100%'
+            style={{
+              border: '1px solid darkgrey',
+              boxShadow: '5px 5px 5px 1px #ccc',
+              borderRadius: '5px',
+              margin: '5%',
+            }}
           />
-          <Grid container direction='row'>
+          <Grid container direction='row' justify='center'>
             <Grid item xs={5}>
               <Button
                 onClick={handleClickPrevious}
                 disabled={increment == 0 ? true : false}
-                style={{ width: '100%', margin: '8%' }}
               >
-                Previous
+                <ArrowBackIosIcon />
               </Button>
             </Grid>
-            <Grid item xs={5}>
+            <Grid>
               <Button
                 onClick={handleClick}
                 disabled={increment == len - 1 ? true : false}
-                style={{ width: '100%', margin: '8%' }}
               >
-                Next
+                <ArrowForwardIosIcon />
               </Button>
             </Grid>
           </Grid>

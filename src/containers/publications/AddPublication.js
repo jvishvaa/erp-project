@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import {
   Button,
-  Card,
   Divider,
   FormControl,
   Grid,
@@ -22,13 +21,10 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { Editor } from '@tinymce/tinymce-react';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import Loading from '../../components/loader/loader';
-import DropZonecom from './DropZonecom';
+
 
 import PublicationPreview from './PublicationPreview';
-import { FilePreviewerThumbnail } from 'react-file-previewer';
 
-// import Dropzone from 'react-dropzone-uploader';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -128,20 +124,23 @@ const AddPublication = ({ handleGoBackPre }) => {
     console.log('before axios');
 
     axiosInstance.get(endpoints.masterManagement.gradesDrop).then((res) => {
-      console.log('res', res.data.data);
+      console.log('res', res.data);
       setGradesGet(res.data.data);
     });
 
     axiosInstance.get(endpoints.academics.branches).then((res) => {
-      console.log('Branches', res.data.data);
-      setBranchGet(res.data.data);
+      console.log('Branches', res.data.data.results);
+      if (res) {
+        setBranchGet(res.data.data.results);
+      } else {
+        setBranchGet('');
+      }
     });
   }, []);
 
   const handleGrade = (e, value) => {
     console.log('The value of grade', e.target.value);
     if (value) {
-      console.log('grade:', value.id);
       setGrade(e.target.value);
     } else {
       setGrade('');
@@ -163,8 +162,8 @@ const AddPublication = ({ handleGoBackPre }) => {
       .get(`${endpoints.masterManagement.subjects}?grade=${grade}`)
       .then((res) => {
         console.log('in axios');
-        setSubject(res.data.result?.results);
-        console.log('responsesubjetcs:', res.data.result?.results);
+        console.log('responsesubjetcs:', res.data.data.results);
+        setSubject(res.data.data.results);
       });
   }, [grade]);
   const handleSubject = (e, value) => {
@@ -356,7 +355,7 @@ const AddPublication = ({ handleGoBackPre }) => {
                     {gradesGet &&
                       gradesGet.map((item) => {
                         return (
-                          <MenuItem value={item.id} key={item.id}>
+                          <MenuItem value={item.grade_id} key={item.grade_id}>
                             {item.grade_name}
                           </MenuItem>
                         );
@@ -384,8 +383,8 @@ const AddPublication = ({ handleGoBackPre }) => {
                     {subject &&
                       subject.map((options) => {
                         return (
-                          <MenuItem value={options.subject.id} key={options.subject.id}>
-                            {options.subject.subject_name}
+                          <MenuItem value={options.id} key={options.id}>
+                            {options.subject_name}
                           </MenuItem>
                         );
                       })}
@@ -515,7 +514,7 @@ const AddPublication = ({ handleGoBackPre }) => {
                         branchGet.map((options) => {
                           return (
                             <MenuItem value={options.id} key={options.id}>
-                              {options.branch_name}
+                              {options.branch.branch_name}
                             </MenuItem>
                           );
                         })}

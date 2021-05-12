@@ -17,6 +17,7 @@ export default {
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
     academicYear: '/erp_user/list-academic_year/',
+    subjectName: '/erp_user/list-academic_year-subjectmapping/',
   },
   communication: {
     roles: '/erp_user/roles/',
