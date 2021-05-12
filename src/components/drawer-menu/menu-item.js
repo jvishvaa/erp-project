@@ -87,7 +87,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Question Paper', Path: '/assessment-question' },
     { name: 'Create Test', Path: '/assesment' },
     { name: 'Take Test', Path: '/assessment' },
-    {name: 'Student Attendance Report', path: '/student-attendance-report'}
+    { name: 'Student Attendance Report', Path: '/student-attendance-report' },
     { name: 'Student Strength', Path: '/student-strength' },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
