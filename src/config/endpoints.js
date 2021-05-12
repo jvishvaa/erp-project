@@ -32,6 +32,7 @@ export default {
     multipleStudentsAttendacne: '/academic/multiple_student_attendance_between_dates/',
     singleStudentAttendance: '/academic/single_student_attendance_between_days/',
     markAttendance: '/academic/bulk_create_attendance/',
+    students: '/academic/get_student_list/',
   },
   profile: {
     userDetails: '/erp_user/user-data/',
@@ -430,6 +431,17 @@ export default {
   },
   OnlineStudent: {
     StudentAttendanceReport: '/academic/student-attendance-by-subject/',
+  },
+  orchadio: {
+    audioUpload: '/academic/orchadio-upload/',
+    createRadioProgram: '/academic/orchadio/',
+    GetRadioProgram: '/academic/orchadio/',
+    OrchadioLikes: '/academic/orchadio-likes-comments/',
+    DeleteOrchadio: '/academic/',
+    PostCommentandLike: '/academic/',
+    ListenedPercentage: '/academic/',
+    AddParticipants: '/academic/branch_students/',
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   },
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,

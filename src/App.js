@@ -59,7 +59,7 @@ import {
   AssessmentAnalysis,
   AssessmentComparisionUI,
 } from './containers/assessment';
-
+import { ViewOrchadio, ManageOrchadio, AddNewOrchadio } from './containers/Orchadio';
 import {
   TeacherBlog,
   ContentView,
@@ -1368,6 +1368,15 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/student-attendance-report'>
                             {({ match }) => <StudentAttendance match={match} />}
+                          </Route>
+                          <Route exact path='/orchadio/view-orchadio'>
+                            {({ match }) => <ViewOrchadio match={match} />}
+                          </Route>
+                          <Route exact path='/orchadio/manage-orchadio'>
+                            {({ match }) => <ManageOrchadio match={match} />}
+                          </Route>
+                          <Route exact path='/orchadio/add-orchadio'>
+                            {({ match }) => <AddNewOrchadio match={match} />}
                           </Route>
                         </Switch>
                       </DailyDairyStore>
