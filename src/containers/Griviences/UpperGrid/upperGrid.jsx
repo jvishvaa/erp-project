@@ -48,7 +48,10 @@ const UpperGrade = (props) => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Griviences Student' && userName.role !== 'SuperUser') {
+            if (
+              item.child_name === 'Griviences Student' &&
+              userName.role !== 'SuperUser'
+            ) {
               setModuleId(item.child_id);
             }
             if (item.child_name === 'Griviences Teacher') {
@@ -288,7 +291,7 @@ const UpperGrade = (props) => {
       let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
       console.log(userName.user_id, 'userName');
       setUserID(userName.user_id);
-      setStudentView(!studentView);
+      setStudentView(false);
       handleGenerateData();
     }
   }, []);

@@ -233,7 +233,7 @@ const GravienceHome = () => {
       <div className='griviences-breadcrums-container'>
         <CommonBreadcrumbs componentName='Griviences' />
       </div>
-      {studentView && setMobileView ? (
+      {setMobileView ? (
         <UpperGrade handlePassData={handlePassData} getGrivienceData={getGrivienceData} />
       ) : (
         <></>
@@ -267,7 +267,7 @@ const GravienceHome = () => {
           </div>
 
           <div>
-            {location.pathname !== '/griviences/student-view' && (
+            {location.pathname == '/griviences/student-view' && (
               <StyledFilterButton onClick={showFilters} startIcon={<FilterFilledIcon />}>
                 Show filters
               </StyledFilterButton>
