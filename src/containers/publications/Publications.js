@@ -511,6 +511,7 @@ const Publications = (props) => {
       .then((res) => {
         if (res.data.total_pages == 0) {
           setChanger(false);
+          setData('');
         } else if (res.data.status_code === 200) {
           setAlert('success', res.data.message);
           setTotalPages(res.data.total_pages);
@@ -518,6 +519,7 @@ const Publications = (props) => {
           setChanger(true);
         } else {
           setAlert('error', res.data.message);
+          setData('');
         }
       });
   };

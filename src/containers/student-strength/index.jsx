@@ -242,32 +242,29 @@ const StudentStrength = ({ history }) => {
                 </Grid>
                 <Grid item md={3} />
 
-                {selectedAcademicYear && (
-                  <Grid item>
-                    <Button
-                      size='small'
-                      href={hRef && hRef[0] && hRef[0].csv}
-                      className='studentStrenghtDownloadButton'
-                    >
-                      Download all Branch excel
-                    </Button>
-                  </Grid>
-                )}
-                {selectedAcademicYear && selectedBranch && (
-                  <Grid item>
-                    <Button
-                      variant='contained'
-                      size='small'
-                      color='primary'
-                      href={hRef && hRef[1] && hRef[1].csv}
-                      className='studentStrenghtFilterButton'
-                    >
-                      Download Branch excel
-                    </Button>
-                  </Grid>
-                )}
+                <Grid item>
+                  <Button
+                    size='small'
+                    href={hRef && hRef[0] && hRef[0].csv}
+                    className='studentStrenghtDownloadButton'
+                  >
+                    Download all Branch excel
+                  </Button>
+                </Grid>
+
+                <Grid item>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    color='primary'
+                    href={hRef && hRef[1] && hRef[1].csv}
+                    className='studentStrenghtFilterButton'
+                  >
+                    Download Branch excel
+                  </Button>
+                </Grid>
               </MediaQuery>
-              <MediaQuery minWidth={1366} maxWidth={1522}>
+              <MediaQuery minWidth={1101} maxWidth={1522}>
                 <Grid item>
                   <Button
                     variant='contained'
@@ -292,35 +289,31 @@ const StudentStrength = ({ history }) => {
                     FILTER
                   </Button>
                 </Grid>
-                <Grid item md={2} />
+                <Grid item md={3} />
 
-                {selectedAcademicYear && (
-                  <Grid item>
-                    <Button
-                      size='small'
-                      href={hRef && hRef[0] && hRef[0].csv}
-                      className='studentStrenghtDownloadButton'
-                    >
-                      Download all Branch excel
-                    </Button>
-                  </Grid>
-                )}
+                <Grid item>
+                  <Button
+                    size='small'
+                    href={hRef && hRef[0] && hRef[0].csv}
+                    className='studentStrenghtDownloadButton'
+                  >
+                    Download all Branch excel
+                  </Button>
+                </Grid>
 
-                {selectedAcademicYear && selectedBranch && (
-                  <Grid item>
-                    <Button
-                      variant='contained'
-                      size='small'
-                      color='primary'
-                      href={hRef && hRef[1] && hRef[1].csv}
-                      className='studentStrenghtFilterButton'
-                    >
-                      Download Branch excel
-                    </Button>
-                  </Grid>
-                )}
+                <Grid item>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    color='primary'
+                    href={hRef && hRef[1] && hRef[1].csv}
+                    className='studentStrenghtFilterButton'
+                  >
+                    Download Branch excel
+                  </Button>
+                </Grid>
               </MediaQuery>
-              <MediaQuery minWidth={900} maxWidth={1365}>
+              <MediaQuery minWidth={600} maxWidth={1100}>
                 <Grid item>
                   <Button
                     variant='contained'
@@ -346,33 +339,29 @@ const StudentStrength = ({ history }) => {
                   </Button>
                 </Grid>
 
-                {selectedAcademicYear && (
-                  <Grid item>
-                    <Button
-                      size='small'
-                      href={hRef && hRef[0] && hRef[0].csv}
-                      className='studentStrenghtDownloadButton'
-                    >
-                      Download all Branch excel
-                    </Button>
-                  </Grid>
-                )}
+                <Grid item>
+                  <Button
+                    size='small'
+                    href={hRef && hRef[0] && hRef[0].csv}
+                    className='studentStrenghtDownloadButton'
+                  >
+                    Download all Branch excel
+                  </Button>
+                </Grid>
 
-                {selectedAcademicYear && selectedBranch && (
-                  <Grid item>
-                    <Button
-                      variant='contained'
-                      size='small'
-                      color='primary'
-                      href={hRef && hRef[1] && hRef[1].csv}
-                      className='studentStrenghtFilterButton'
-                    >
-                      Download Branch excel
-                    </Button>
-                  </Grid>
-                )}
+                <Grid item>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    color='primary'
+                    href={hRef && hRef[1] && hRef[1].csv}
+                    className='studentStrenghtFilterButton'
+                  >
+                    Download Branch excel
+                  </Button>
+                </Grid>
               </MediaQuery>
-              <MediaQuery maxWidth={899}>
+              <MediaQuery maxWidth={599}>
                 <Grid item xs={12}>
                   <Button
                     variant='contained'
@@ -401,32 +390,29 @@ const StudentStrength = ({ history }) => {
                 </Grid>
                 <Grid item md={4} />
 
-                {selectedAcademicYear && (
-                  <Grid item xs={12}>
-                    <Button
-                      size='small'
-                      href={hRef && hRef[0] && hRef[0].csv}
-                      className='studentStrenghtDownloadButton'
-                      fullWidth
-                    >
-                      Download all Branch excel
-                    </Button>
-                  </Grid>
-                )}
-                {selectedAcademicYear && selectedBranch && (
-                  <Grid item xs={12}>
-                    <Button
-                      variant='contained'
-                      size='small'
-                      fullWidth
-                      color='primary'
-                      href={hRef && hRef[1] && hRef[1].csv}
-                      className='studentStrenghtFilterButton'
-                    >
-                      Download Branch excel
-                    </Button>
-                  </Grid>
-                )}
+                <Grid item xs={12}>
+                  <Button
+                    size='small'
+                    href={hRef && hRef[0] && hRef[0].csv}
+                    className='studentStrenghtDownloadButton'
+                    fullWidth
+                  >
+                    Download all Branch excel
+                  </Button>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    fullWidth
+                    color='primary'
+                    href={hRef && hRef[1] && hRef[1].csv}
+                    className='studentStrenghtFilterButton'
+                  >
+                    Download Branch excel
+                  </Button>
+                </Grid>
               </MediaQuery>
             </Grid>
           </Grid>
@@ -448,13 +434,18 @@ const StudentStrength = ({ history }) => {
                 fullData={(filteredData && filteredData.overall_stat) || {}}
               />
             </Grid>
-            <Grid item md={selectedCard ? 6 : 9} xs={12} className='studentStrenghtBody2'>
+            <Grid
+              item
+              md={selectedCard ? 4 : 12}
+              xs={12}
+              className='studentStrenghtBody2'
+            >
               <Grid container spacing={3}>
                 {filteredData &&
                   filteredData.grade_wise_data &&
                   filteredData.grade_wise_data.lenght !== 0 &&
                   filteredData.grade_wise_data.map((item) => (
-                    <Grid item md={selectedCard ? 6 : 4} xs={12} key={item.id}>
+                    <Grid item md={selectedCard ? 12 : 4} xs={12} key={item.id}>
                       <TotalStudentStrengthCard
                         fullData={item || {}}
                         handleSelectCard={setSelectedCard}
@@ -465,7 +456,7 @@ const StudentStrength = ({ history }) => {
               </Grid>
             </Grid>
             {selectedCard && (
-              <Grid item md={6} xs={12} className='studentStrenghtBody2'>
+              <Grid item md={8} xs={12} className='studentStrenghtBody2'>
                 <TotalStudentWiseDetails
                   year={(selectedAcademicYear && selectedAcademicYear.id) || 0}
                   branch={(selectedBranch && selectedBranch.branch.id) || 0}
