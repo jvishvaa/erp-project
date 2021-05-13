@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Button } from '@material-ui/core';
 import './style.scss';
+import MediaQuery from 'react-responsive';
 
 const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) => {
   return (
     <>
       <Grid
         container
-       
         className={
           (fullData && fullData.grade) === (selectedId && selectedId.grade)
             ? 'studentStrengthCardMainDivActive'
-            : 'studentStrengthCardMainDivInActive' 
+            : 'studentStrengthCardMainDivInActive'
         }
       >
         <Grid item md={6} xs={6} style={{ textAlign: 'left', padding: '0px' }}>
@@ -48,26 +48,61 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
                 {(fullData && fullData.permanent_inactive) || '0'}
               </span>
             </Grid>
-            <Grid item md={2}></Grid>
-            {(fullData && fullData.grade) !== (selectedId && selectedId.grade) && (
-              
-              <Grid item md={4} xs={12} style={{ padding: '0px' }}>
-                <Button
-                  size='medium'
-                 
-                  variant='contained'
-                  color='primary'
-                  onClick={() => {
-                    handleSelectCard((fullData && fullData) || '');
-                  }}
-                >
-                  View More
-                </Button>
-              </Grid>
-            )}
+
+            <MediaQuery minWidth={1598}>
+              <Grid item md={1}></Grid>
+              {(fullData && fullData.grade) !== (selectedId && selectedId.grade) && (
+                <Grid item md={5} xs={12} style={{ padding: '0px' }}>
+                  <Button
+                    size='small'
+                    variant='contained'
+                    fullWidth
+                    color='primary'
+                    onClick={() => {
+                      handleSelectCard((fullData && fullData) || '');
+                    }}
+                  >
+                    View More
+                  </Button>
+                </Grid>
+              )}
+            </MediaQuery>
+            <MediaQuery minWidth={600} maxWidth={1597}>
+              {(fullData && fullData.grade) !== (selectedId && selectedId.grade) && (
+                <Grid item md={5} xs={12} style={{ padding: '0px' }}>
+                  <Button
+                    size='small'
+                    variant='contained'
+                    fullWidth
+                    color='primary'
+                    onClick={() => {
+                      handleSelectCard((fullData && fullData) || '');
+                    }}
+                  >
+                    View More
+                  </Button>
+                </Grid>
+              )}
+            </MediaQuery>
+            <MediaQuery maxWidth={599}>
+              {(fullData && fullData.grade) !== (selectedId && selectedId.grade) && (
+                <Grid item xs={12} style={{ padding: '0px' }}>
+                  <Button
+                    size='small'
+                    variant='contained'
+                    fullWidth
+                    color='primary'
+                    onClick={() => {
+                      handleSelectCard((fullData && fullData) || '');
+                    }}
+                  >
+                    View More
+                  </Button>
+                </Grid>
+              )}
+            </MediaQuery>
           </Grid>
         </Grid>
-          
       </Grid>
     </>
   );

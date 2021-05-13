@@ -15,7 +15,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import filterImage from '../../assets/images/unfiltered.svg';
 import Layout from '../Layout';
 import { Pagination } from '@material-ui/lab';
-
+import MediaQuery from 'react-responsive';
 
 const StudentStrength = ({ history }) => {
   const [acadminYearList, setAcadminYearList] = useState([]);
@@ -31,15 +31,12 @@ const StudentStrength = ({ history }) => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
-
-
-
   const handlePagination = (event, page) => {
     setPage(page);
     handleFilter(page);
   };
- 
-const moduleId=178;
+
+  const moduleId = 178;
   useEffect(() => {
     setHRef([
       {
@@ -53,7 +50,6 @@ const moduleId=178;
         }&branch_id=${selectedBranch && selectedBranch.id}
           &export_type=csv`,
       },
-     
     ]);
   }, [selectedAcademicYear, selectedBranch]);
 
@@ -71,7 +67,7 @@ const moduleId=178;
             console.log(result?.data?.data || [], 'checking');
             setBranchList(result?.data?.data?.results || []);
           }
-        
+
           setLoading(false);
         } else {
           setAlert('error', result.data.message);
@@ -108,7 +104,9 @@ const moduleId=178;
       .get(
         `${endpoints.studentListApis.branchWiseStudentCount}?academic_year_id=${
           selectedAcademicYear && selectedAcademicYear.id
-        }&branch_id=${selectedBranch && selectedBranch.id}&page_number=${pageNumber||1}&page_size=${15}`
+        }&branch_id=${selectedBranch && selectedBranch.id}&page_number=${
+          pageNumber || 1
+        }&page_size=${15}`
       )
       .then((result) => {
         setLoading(false);
@@ -116,7 +114,6 @@ const moduleId=178;
           setTotalPages(result.data.total_pages);
           console.log(result.data.total_pages);
           setFilteredData(result.data.data);
-         
         } else {
           setAlert('error', result.data.message);
         }
@@ -149,123 +146,234 @@ const moduleId=178;
           <Grid item md={12} xs={12} className='studentStrengthFilterDiv'>
             <Grid container spacing={2}>
               <Grid item md={4} xs={12}>
-            <Autocomplete
-            style={{ width: '100%' }}
-            size='small'
-            onChange={(event, value) => {
-              setSelectedAcadmeicYear(value);
-              if (value) {
-                callApi(
-                  `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                  'branchList'
-                );
-              }
-              setSelectedBranch([]);
-            }}
-            id='branch_id'
-            className='dropdownIcon'
-            value={selectedAcademicYear || ''}
-            options={academicYear || ''}
-            getOptionLabel={(option) => option?.session_year || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Academic Year'
-                placeholder='Academic Year'
-              />
-            )}
-          />
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={(event, value) => {
+                    setSelectedAcadmeicYear(value);
+                    if (value) {
+                      callApi(
+                        `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                        'branchList'
+                      );
+                    }
+                    setSelectedBranch([]);
+                  }}
+                  id='branch_id'
+                  className='dropdownIcon'
+                  value={selectedAcademicYear || ''}
+                  options={academicYear || ''}
+                  getOptionLabel={(option) => option?.session_year || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Academic Year'
+                      placeholder='Academic Year'
+                    />
+                  )}
+                />
               </Grid>
               <Grid item md={4} xs={12}>
-               <Autocomplete
-            style={{ width: '100%' }}
-            size='small'
-            onChange={(event, value) => {
-              setSelectedBranch([]);
-              if (value) {
-                const selectedId = value.branch.id;
-                setSelectedBranch(value);
-                callApi(
-                  `${endpoints.academics.grades}?session_year=${
-                    selectedAcademicYear.id
-                  }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-                  'gradeList'
-                );
-              }
-            
-            }}
-            id='branch_id'
-            className='dropdownIcon'
-            value={selectedBranch || ''}
-            options={branchList || ''}
-            getOptionLabel={(option) => option?.branch?.branch_name || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Branch'
-                placeholder='Branch'
-              />
-            )}
-          />
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={(event, value) => {
+                    setSelectedBranch([]);
+                    if (value) {
+                      const selectedId = value.branch.id;
+                      setSelectedBranch(value);
+                      callApi(
+                        `${endpoints.academics.grades}?session_year=${
+                          selectedAcademicYear.id
+                        }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                        'gradeList'
+                      );
+                    }
+                  }}
+                  id='branch_id'
+                  className='dropdownIcon'
+                  value={selectedBranch || ''}
+                  options={branchList || ''}
+                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                    />
+                  )}
+                />
               </Grid>
             </Grid>
             <Divider className='studentStrenghtDivider' />
             <Grid container spacing={2}>
-              <Grid item md={1} xs={12}>
-                <Button
-                  variant='contained'
-                  size='medium'
-                  fullWidth
-                  className='studentStrenghtFilterButton'
-                  onClick={() => handleClearFilter()}
-                >
-                  CLEAR ALL
-                </Button>
-              </Grid>
-              <Grid item md={1} xs={12}>
-                <Button
-                  variant='contained'
-                  size='medium'
-                  color='primary'
-                
-                  fullWidth
-                  onClick={() => {setPage(1);handleFilter(1);}}
-                  className='studentStrenghtFilterButton'
-                >
-                  FILTER
-                </Button>
-              </Grid>
-              <Grid item md={4} />
-              {selectedAcademicYear && (
-                <Grid item md={2} xs={12}>
-                  <Button
-                    size='medium'
-                    href={hRef && hRef[0] && hRef[0].csv}
-                    fullWidth
-                    className='studentStrenghtDownloadButton'
-                  >
-                    Download all Branch excel
-                  </Button>
-                </Grid>
-              )}
-              {selectedAcademicYear && selectedBranch && (
-                <Grid item md={2} xs={12}>
+              <MediaQuery minWidth={1523}>
+                <Grid item md={1} xs={12}>
                   <Button
                     variant='contained'
-                    size='medium'
-                    color='primary'
+                    size='small'
                     fullWidth
-                    href={hRef && hRef[1] && hRef[1].csv}
                     className='studentStrenghtFilterButton'
+                    onClick={() => handleClearFilter()}
                   >
-                    Download Branch excel
+                    CLEAR ALL
                   </Button>
                 </Grid>
-              )}
+                <Grid item md={1} xs={12}>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    color='primary'
+                    fullWidth
+                    onClick={() => {
+                      setPage(1);
+                      handleFilter(1);
+                    }}
+                    className='studentStrenghtFilterButton'
+                  >
+                    FILTER
+                  </Button>
+                </Grid>
+                <Grid item md={4} />
+
+                {selectedAcademicYear && (
+                  <Grid item md={3} xs={12}>
+                    <Button
+                      size='small'
+                      href={hRef && hRef[0] && hRef[0].csv}
+                      className='studentStrenghtDownloadButton'
+                    >
+                      Download all Branch excel
+                    </Button>
+                  </Grid>
+                )}
+                {selectedAcademicYear && selectedBranch && (
+                  <Grid item md={2} xs={12} style={{ marginLeft: '-8%' }}>
+                    <Button
+                      variant='contained'
+                      size='small'
+                      color='primary'
+                      href={hRef && hRef[1] && hRef[1].csv}
+                      className='studentStrenghtFilterButton'
+                    >
+                      Download Branch excel
+                    </Button>
+                  </Grid>
+                )}
+              </MediaQuery>
+              <MediaQuery minWidth={960} maxWidth={1522}>
+                <Grid item md={2}>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    fullWidth
+                    className='studentStrenghtFilterButton'
+                    onClick={() => handleClearFilter()}
+                  >
+                    CLEAR ALL
+                  </Button>
+                </Grid>
+                <Grid item md={2}>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    color='primary'
+                    fullWidth
+                    onClick={() => {
+                      setPage(1);
+                      handleFilter(1);
+                    }}
+                    className='studentStrenghtFilterButton'
+                  >
+                    FILTER
+                  </Button>
+                </Grid>
+
+                {selectedAcademicYear && (
+                  <Grid item md={4}>
+                    <Button
+                      size='small'
+                      href={hRef && hRef[0] && hRef[0].csv}
+                      className='studentStrenghtDownloadButton'
+                    >
+                      Download all Branch excel
+                    </Button>
+                  </Grid>
+                )}
+                {selectedAcademicYear && selectedBranch && (
+                  <Grid item md={4} style={{ marginLeft: '-8%' }}>
+                    <Button
+                      variant='contained'
+                      size='small'
+                      color='primary'
+                      href={hRef && hRef[1] && hRef[1].csv}
+                      className='studentStrenghtFilterButton'
+                    >
+                      Download Branch excel
+                    </Button>
+                  </Grid>
+                )}
+              </MediaQuery>
+              <MediaQuery maxWidth={959}>
+                <Grid item md={1} xs={12}>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    fullWidth
+                    className='studentStrenghtFilterButton'
+                    onClick={() => handleClearFilter()}
+                  >
+                    CLEAR ALL
+                  </Button>
+                </Grid>
+                <Grid item md={1} xs={12}>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    color='primary'
+                    fullWidth
+                    onClick={() => {
+                      setPage(1);
+                      handleFilter(1);
+                    }}
+                    className='studentStrenghtFilterButton'
+                  >
+                    FILTER
+                  </Button>
+                </Grid>
+                <Grid item md={4} />
+
+                {selectedAcademicYear && (
+                  <Grid item xs={12}>
+                    <Button
+                      size='small'
+                      href={hRef && hRef[0] && hRef[0].csv}
+                      className='studentStrenghtDownloadButton'
+                      fullWidth
+                    >
+                      Download all Branch excel
+                    </Button>
+                  </Grid>
+                )}
+                {selectedAcademicYear && selectedBranch && (
+                  <Grid item md={2} xs={12}>
+                    <Button
+                      variant='contained'
+                      size='small'
+                      fullWidth
+                      color='primary'
+                      href={hRef && hRef[1] && hRef[1].csv}
+                      className='studentStrenghtFilterButton'
+                    >
+                      Download Branch excel
+                    </Button>
+                  </Grid>
+                )}
+              </MediaQuery>
             </Grid>
           </Grid>
         </Grid>
@@ -286,12 +394,7 @@ const moduleId=178;
                 fullData={(filteredData && filteredData.overall_stat) || {}}
               />
             </Grid>
-            <Grid
-              item
-              md={selectedCard ? 6 : 9}
-              xs={12}
-              className='studentStrenghtBody2'
-            >
+            <Grid item md={selectedCard ? 6 : 9} xs={12} className='studentStrenghtBody2'>
               <Grid container spacing={3}>
                 {filteredData &&
                   filteredData.grade_wise_data &&
@@ -314,6 +417,7 @@ const moduleId=178;
                   branch={(selectedBranch && selectedBranch.id) || 0}
                   grade={selectedCard || 0}
                   hadleClearGrade={setSelectedCard}
+                  fullWidth
                 />
               </Grid>
             )}
@@ -321,14 +425,14 @@ const moduleId=178;
         )}
 
         <Grid container justify='center'>
-        <Pagination
+          <Pagination
             onChange={handlePagination}
             style={{ marginTop: 25 }}
             count={totalPages}
             color='primary'
             page={page}
           />
-          </Grid>
+        </Grid>
         {loading && <Loader />}
       </div>
     </Layout>
