@@ -429,6 +429,9 @@ export default {
     updateContact: '/academic/contact_us_update/',
     filterContact: '/academic/contact_us/',
   },
+  OnlineStudent: {
+    StudentAttendanceReport: '/academic/student-attendance-by-subject/',
+  },
   orchadio: {
     audioUpload: '/academic/orchadio-upload/',
     createRadioProgram: '/academic/orchadio/',
@@ -438,7 +441,7 @@ export default {
     PostCommentandLike: '/academic/',
     ListenedPercentage: '/academic/',
     AddParticipants: '/academic/branch_students/',
-  s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   },
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,

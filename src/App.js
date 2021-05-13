@@ -39,9 +39,9 @@ import MessageTypeTable from './containers/master-management/message-type/messag
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
 import { fetchLoggedInUserDetails } from './redux/actions';
-import TeacherHomeWorkReport from './containers/homework/teacher-homework-report/teacherReport-index'
+import TeacherHomeWorkReport from './containers/homework/teacher-homework-report/teacherReport-index';
 import TeacherHomework from './containers/homework/teacher-homework';
-import StudentHomeworkReport from './containers/homework/student-homework-report/index'
+import StudentHomeworkReport from './containers/homework/student-homework-report/index';
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
 import BulkUpload from './containers/user-management/bulk-upload/bulk-upload';
@@ -248,6 +248,7 @@ import Airpay from './containers/Finance/src/components/Finance/PaymentGateways/
 import UploadPaymentFile from './containers/Finance/src/components/Finance/student/managePayment/UploadPaymentFile.js';
 import TimeTable from './containers/time-table/index';
 import Griviences from './containers/Griviences/index';
+import NewGrivience from './containers/Griviences/NewGrivience';
 import GriviencesCreate from './containers/Griviences/CreateNew/create-new';
 import MarkAttedance from './containers/attendance/MarkAttedance';
 import AttedanceCalender from './containers/attendance/AttedanceCalender';
@@ -269,11 +270,12 @@ import AssessmentReportTypes from './containers/assessment-central/assessment-re
 import ContactUs from 'containers/contact-us';
 import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz';
 import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
-import ClassWork from './containers/Classwork/index'
+import ClassWork from './containers/Classwork/index';
 
 // import Contact from './containers/contact/Contact';
 
 import MultiplayerQuiz from './components/mp-quiz';
+import StudentAttendance from 'containers/online-class/student-attendance/StudentAttendance';
 
 const theme = createMuiTheme({
   palette: {
@@ -424,7 +426,6 @@ function App({ alert }) {
                           {({ match }) => <AssignRole match={match} />}
                         </Route>
                         */}
-                     
                           <Route exact path='/question-bank'>
                             {({ match }) => <QuestionBankList match={match} />}
                           </Route>
@@ -485,7 +486,6 @@ function App({ alert }) {
                           <Route exact path='/blog/admin/contentViewPublishAdmin'>
                             {({ match }) => <ContentViewPublishAdmin match={match} />}
                           </Route>
-
                           <Route exact path='/blog/teacher/publish/view'>
                             {({ match }) => <TeacherPublishBlogView match={match} />}
                           </Route>
@@ -609,7 +609,8 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/homework/teacher'>
                             {({ match }) => <TeacherHomework match={match} />}
-                          </Route>z
+                          </Route>
+
                           <Route exact path='/homework/teacher-report'>
                             {({ match }) => <TeacherHomeWorkReport match={match} />}
                           </Route>
@@ -773,7 +774,6 @@ function App({ alert }) {
                           <Route exact path='/erp-online-resources'>
                             {({ match }) => <OnlineClassResource match={match} />}
                           </Route>
-
                           <Route exact path='/homework/student'>
                             {({ match }) => <StudentHomework match={match} />}
                           </Route>
@@ -965,7 +965,6 @@ function App({ alert }) {
                               <ApplicationFormAcc match={match} alert={alert} />
                             )}
                           </Route>
-
                           <Route exact path='/finance/accountant/NonRTEFormAcc'>
                             {({ match }) => <NonRTEFormAcc match={match} alert={alert} />}
                           </Route>
@@ -1139,7 +1138,6 @@ function App({ alert }) {
                               <PendingStoreRequests match={match} alert={alert} />
                             )}
                           </Route>
-
                           <Route
                             exact
                             path='/finance/Approval/Requests/ApprovedPaymentRequests'
@@ -1172,7 +1170,6 @@ function App({ alert }) {
                               <PendingRequestView match={match} alert={alert} />
                             )}
                           </Route>
-
                           <Route
                             exact
                             path='/finance/Approval/Requests/AcceptRejectPayment'
@@ -1369,6 +1366,24 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/responder-view'>
                             {({ match }) => <ResponderView match={match} />}
+                          </Route>
+                          {/* <Route path='/griviences/admin-view'>
+                            {({ match }) => <NewGrivience match={match} />}
+                          </Route>
+                          <Route path='/griviences/student-view'>
+                            {({ match }) => <NewGrivience match={match} />}
+                          </Route> */}
+                          <Route path='/griviences/admin-view'>
+                            {({ match }) => <Griviences match={match} />}
+                          </Route>
+                          <Route path='/griviences/student-view'>
+                            {({ match }) => <Griviences match={match} />}
+                          </Route>
+                          <Route path='/greviences/createnew'>
+                            {({ match }) => <GriviencesCreate match={match} />}
+                          </Route>
+                          <Route exact path='/student-attendance-report'>
+                            {({ match }) => <StudentAttendance match={match} />}
                           </Route>
                           <Route exact path='/orchadio/view-orchadio'>
                             {({ match }) => <ViewOrchadio match={match} />}

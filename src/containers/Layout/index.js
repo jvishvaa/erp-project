@@ -651,6 +651,16 @@ const Layout = ({ children, history }) => {
         history.push('/student-circular');
         break;
       }
+
+      case 'Griviences Teacher': {
+        history.push('/griviences/admin-view');
+        break;
+      }
+      case 'Griviences Student': {
+        history.push('/griviences/student-view');
+        break;
+      }
+
       case 'Normal Fee Type': {
         history.push('/feeType/normalFeeType');
         break;
@@ -981,6 +991,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Contact Us': {
         history.push('/contact-us');
+        break;
+      }
+      case 'Student Attendance Report': {
+        history.push('/student-attendance-report');
         break;
       }
       case 'Manage Orchadio': {
