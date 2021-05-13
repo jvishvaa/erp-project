@@ -133,7 +133,11 @@ const GriviencesDetailContainer = (props) => {
                 <Grid item sm={12}>
                   <label className={style.text_color}>
                     {' '}
-                    {props?.list_tickets?.description}
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: props?.list_tickets?.description,
+                      }}
+                    />
                   </label>
                 </Grid>
               </Grid>

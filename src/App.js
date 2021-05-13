@@ -246,6 +246,7 @@ import Airpay from './containers/Finance/src/components/Finance/PaymentGateways/
 import UploadPaymentFile from './containers/Finance/src/components/Finance/student/managePayment/UploadPaymentFile.js';
 import TimeTable from './containers/time-table/index';
 import Griviences from './containers/Griviences/index';
+import NewGrivience from './containers/Griviences/NewGrivience';
 import GriviencesCreate from './containers/Griviences/CreateNew/create-new';
 import MarkAttedance from './containers/attendance/MarkAttedance';
 import AttedanceCalender from './containers/attendance/AttedanceCalender';
@@ -383,15 +384,7 @@ function App({ alert }) {
                           <Route path='/time-table/teacher-view'>
                             {({ match }) => <TimeTable match={match} />}
                           </Route>
-                          <Route path='/griviences/admin-view'>
-                            {({ match }) => <Griviences match={match} />}
-                          </Route>
-                          <Route path='/griviences/student-view'>
-                            {({ match }) => <Griviences match={match} />}
-                          </Route>
-                          <Route path='/greviences/createnew'>
-                            {({ match }) => <GriviencesCreate match={match} />}
-                          </Route>
+
                           {/*
                         <Route exact path='/view-users'>
                             {({ match }) => <ViewUsers match={match} />}
@@ -1362,6 +1355,21 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/responder-view'>
                             {({ match }) => <ResponderView match={match} />}
+                          </Route>
+                          {/* <Route path='/griviences/admin-view'>
+                            {({ match }) => <NewGrivience match={match} />}
+                          </Route>
+                          <Route path='/griviences/student-view'>
+                            {({ match }) => <NewGrivience match={match} />}
+                          </Route> */}
+                          <Route path='/griviences/admin-view'>
+                            {({ match }) => <Griviences match={match} />}
+                          </Route>
+                          <Route path='/griviences/student-view'>
+                            {({ match }) => <Griviences match={match} />}
+                          </Route>
+                          <Route path='/greviences/createnew'>
+                            {({ match }) => <GriviencesCreate match={match} />}
                           </Route>
                         </Switch>
                       </DailyDairyStore>

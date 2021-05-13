@@ -35,7 +35,6 @@
     color: white;
     padding: 10px 30px;
     cursor: pointer;
-    
   }
   a {
     color: white;
@@ -43,4 +42,12 @@
     display: flex;
     align-items: center;
   }
+}
+.filterIcon {
+  top: 130px;
+  left: 1670px;
+  width: 17px;
+  height: 17px;
+  background: transparent 0% 0% no-repeat padding-box;
+  opacity: 1;
 }

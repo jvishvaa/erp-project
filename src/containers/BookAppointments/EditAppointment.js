@@ -170,9 +170,11 @@ const EditAppointment = ({
         setLoading(false);
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
+          console.log(result.data.message, '**********************');
           handleGoBack();
         } else {
           setAlert('error', result.data.message);
+          console.log(result.data.message, '=====================>>..');
         }
       })
       .catch((error) => {

@@ -9,6 +9,7 @@ import CallIcon from '@material-ui/icons/Call';
 
 // import FilterAltIcon from '@material-ui/icons/FilterAlt';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
+import Filter_Icon from '../../assets/images/Filter_Icon.svg';
 
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import TextField from '@material-ui/core/TextField';
@@ -254,9 +255,9 @@ const GravienceHome = () => {
               }}
               onClick={showFilters}
             >
+              {/* <img src={Filter_Icon} className='filterIcon' /> */}
+              {/* <img src={FilterIcon} color='primary' fontSize='medium' clss />  */}
               <FilterFilledIcon />
-              {/* <img src={FilterIcon} color='primary' fontSize='medium' clss /> */}
-
               <strong>Show filters</strong>
             </Grid>
             <Button
