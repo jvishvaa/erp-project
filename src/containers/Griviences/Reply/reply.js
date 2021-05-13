@@ -20,16 +20,14 @@ const Reply = (props) => {
               fontSize: '10px',
               backgroundColor: '#78B5F3',
             }}
-            src={props.Replys.user.profile}
+            // src={props.Replys.user.profile}
           >
-            {' '}
-            Harsh
-            {/* {props.Replys.user.name.charAt(0)}{' '} */}
+            {props.Replys.replied_by? props.Replys.replied_by.charAt(0) : ''}
           </Avatar>
           <Typography
             style={{ fontSize: '15px', fontWeight: 'bold', marginLeft: '10px' }}
           >
-            {props.Replys.user.name}
+            {props.Replys.replied_by}
           </Typography>
         </Grid>
         <Grid sm />
