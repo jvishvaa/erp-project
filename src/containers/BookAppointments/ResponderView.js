@@ -109,7 +109,8 @@ const ResponderView = () => {
     setResponse({ ...response, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (id) => {
+  const handleSubmit = (e, id) => {
+    e.preventDefault();
     console.log('id', id);
     console.log('handleSubmit', response);
     console.log('status:', status);
@@ -680,7 +681,7 @@ const ResponderView = () => {
                                 type='submit'
                                 onClick={(e) => {
                                   // e.preventDefault();
-                                  handleSubmit(item.id);
+                                  handleSubmit(e, item.id);
                                 }}
                                 style={{ display: 'inline' }}
                               >
