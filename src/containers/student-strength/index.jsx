@@ -240,10 +240,10 @@ const StudentStrength = ({ history }) => {
                     FILTER
                   </Button>
                 </Grid>
-                <Grid item md={4} />
+                <Grid item md={3} />
 
                 {selectedAcademicYear && (
-                  <Grid item md={3} xs={12}>
+                  <Grid item>
                     <Button
                       size='small'
                       href={hRef && hRef[0] && hRef[0].csv}
@@ -254,7 +254,7 @@ const StudentStrength = ({ history }) => {
                   </Grid>
                 )}
                 {selectedAcademicYear && selectedBranch && (
-                  <Grid item md={2} xs={12} style={{ marginLeft: '-8%' }}>
+                  <Grid item>
                     <Button
                       variant='contained'
                       size='small'
@@ -345,7 +345,6 @@ const StudentStrength = ({ history }) => {
                     FILTER
                   </Button>
                 </Grid>
-              
 
                 {selectedAcademicYear && (
                   <Grid item>
