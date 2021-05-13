@@ -1,5 +1,5 @@
-import { Avatar, Button, Divider, Grid, Paper } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
+import { Avatar, Button, Divider, Grid, Paper, withStyles } from '@material-ui/core';
 import Layout from '../Layout';
 import GriviencesDetailContainer from './GriviencesDetailContainer/GriviencesDetailContainer';
 import Axios from 'axios';
@@ -22,10 +22,29 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import UpperGrade from './UpperGrid/upperGrid';
 import EmojiObjectsSharpIcon from '@material-ui/icons/EmojiObjectsSharp';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
 import './greviences.scss';
+
+const StyledFilterButton = withStyles({
+  root: {
+    color: '#014B7E',
+    marginLeft: '50px',
+    marginBottom: '6px',
+    fontSize: '16px',
+    fontFamily: 'Raleway',
+    float: 'right',
+    textTransform: 'capitalize',
+    backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
+  },
+  iconSize: {},
+})(Button);
 
 const GravienceHome = () => {
   const { setAlert } = useContext(AlertNotificationContext);
+  const location = useLocation();
   const { role_details: roleDetailes } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
   const setMobileView = useMediaQuery('(min-width:800px)');
@@ -45,6 +64,7 @@ const GravienceHome = () => {
   const [flag, setFlag] = useState(false);
   const [grievanceTypeID, setGrievanceTypeID] = useState();
   let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
+
   console.log(userName.user_id, 'userName');
   const handleOpenForm = () => {
     setOpenGrievanceReportForm(true);
@@ -213,7 +233,7 @@ const GravienceHome = () => {
       <div className='griviences-breadcrums-container'>
         <CommonBreadcrumbs componentName='Griviences' />
       </div>
-      {setMobileView ? (
+      {studentView && setMobileView ? (
         <UpperGrade handlePassData={handlePassData} getGrivienceData={getGrivienceData} />
       ) : (
         <></>
@@ -247,7 +267,15 @@ const GravienceHome = () => {
           </div>
 
           <div>
-            <Grid
+            {location.pathname !== '/griviences/student-view' && (
+              <StyledFilterButton
+                onClick={showFilters}
+                startIcon={<FilterFilledIcon />}
+              >
+                Show filters
+              </StyledFilterButton>
+            )}
+            {/* <Grid
               style={{
                 marginBottom: '50px',
                 color: 'pink',
@@ -258,8 +286,12 @@ const GravienceHome = () => {
               {/* <img src={Filter_Icon} className='filterIcon' /> */}
               {/* <img src={FilterIcon} color='primary' fontSize='medium' clss />  */}
               <FilterFilledIcon />
+<<<<<<< HEAD
+=======
+
+>>>>>>> cd4472abc7745721fa29b36b4a20621099683df7
               <strong>Show filters</strong>
-            </Grid>
+            </Grid> */}
             <Button
               color='primary'
               size='small'

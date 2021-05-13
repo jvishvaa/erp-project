@@ -88,6 +88,9 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Create Test', Path: '/assesment' },
     { name: 'Take Test', Path: '/assessment' },
     { name: 'Student Strength', Path: '/student-strength' },
+
+    { name: 'Griviences Teacher', Path: '/griviences/admin-view' },
+    { name: 'Griviences Student', Path: '/griviences/student-view' },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

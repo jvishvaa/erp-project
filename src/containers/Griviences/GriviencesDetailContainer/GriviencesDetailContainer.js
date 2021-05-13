@@ -66,7 +66,7 @@ const GriviencesDetailContainer = (props) => {
   const time = moment(props.list_tickets.createdAt).format('LT');
   const [flag, setFlag] = useState(false);
 
-  // console.log("Token data", token);
+  console.log('reply_list', reply_list);
 
   const openReplyTextEditor = () => {
     setReply(!reply);
@@ -168,6 +168,18 @@ const GriviencesDetailContainer = (props) => {
             </div>
           </Grid>
         </div>
+
+        {reply_list && reply_list?.body && (
+          <div
+            style={{
+              margin: '10px',
+              border: '1px solid #e0e0e0',
+              borderRadius: '10px',
+            }}
+          >
+            <Reply Replys={reply_list} />
+          </div>
+        )}
 
         {!replyList ? (
           <div>
