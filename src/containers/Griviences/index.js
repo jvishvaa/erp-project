@@ -22,7 +22,7 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import UpperGrade from './UpperGrid/upperGrid';
 import EmojiObjectsSharpIcon from '@material-ui/icons/EmojiObjectsSharp';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
-import {useLocation} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import './greviences.scss';
 
 const StyledFilterButton = withStyles({
@@ -268,10 +268,7 @@ const GravienceHome = () => {
 
           <div>
             {location.pathname !== '/griviences/student-view' && (
-              <StyledFilterButton
-                onClick={showFilters}
-                startIcon={<FilterFilledIcon />}
-              >
+              <StyledFilterButton onClick={showFilters} startIcon={<FilterFilledIcon />}>
                 Show filters
               </StyledFilterButton>
             )}
@@ -283,13 +280,9 @@ const GravienceHome = () => {
               }}
               onClick={showFilters}
             >
-              {/* <img src={Filter_Icon} className='filterIcon' /> */}
-              {/* <img src={FilterIcon} color='primary' fontSize='medium' clss />  */}
+              <img src={Filter_Icon} className='filterIcon' />
+              <img src={FilterIcon} color='primary' fontSize='medium' clss /> 
               <FilterFilledIcon />
-<<<<<<< HEAD
-=======
-
->>>>>>> cd4472abc7745721fa29b36b4a20621099683df7
               <strong>Show filters</strong>
             </Grid> */}
             <Button
