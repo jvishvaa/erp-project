@@ -100,13 +100,12 @@ const StudentStrength = ({ history }) => {
       return;
     }
     setLoading(true);
+    console.log(selectedBranch, "branch")
     axiosInstance
       .get(
         `${endpoints.studentListApis.branchWiseStudentCount}?academic_year_id=${
           selectedAcademicYear && selectedAcademicYear.id
-        }&branch_id=${selectedBranch && selectedBranch.id}&page_number=${
-          pageNumber || 1
-        }&page_size=${15}`
+        }&branch_id=${selectedBranch && selectedBranch.branch.id}&page_number=${pageNumber||1}&page_size=${15}`
       )
       .then((result) => {
         setLoading(false);
@@ -143,6 +142,7 @@ const StudentStrength = ({ history }) => {
               </Grid>
             </Grid>
           </Grid>
+         
           <Grid item md={12} xs={12} className='studentStrengthFilterDiv'>
             <Grid container spacing={2}>
               <Grid item md={4} xs={12}>
@@ -411,10 +411,10 @@ const StudentStrength = ({ history }) => {
               </Grid>
             </Grid>
             {selectedCard && (
-              <Grid item md={4} xs={12} className='studentStrenghtBody3'>
+              <Grid item md={6} xs={12} className='studentStrenghtBody2'>
                 <TotalStudentWiseDetails
                   year={(selectedAcademicYear && selectedAcademicYear.id) || 0}
-                  branch={(selectedBranch && selectedBranch.id) || 0}
+                  branch={(selectedBranch && selectedBranch.branch.id) || 0}
                   grade={selectedCard || 0}
                   hadleClearGrade={setSelectedCard}
                   fullWidth
@@ -424,15 +424,16 @@ const StudentStrength = ({ history }) => {
           </Grid>
         )}
 
-        <Grid container justify='center'>
-          <Pagination
+       { filteredData && filteredData.grade_wise_data ?
+       <Grid container justify='center'>
+        <Pagination
             onChange={handlePagination}
             style={{ marginTop: 25 }}
             count={totalPages}
             color='primary'
             page={page}
           />
-        </Grid>
+          </Grid>:''}
         {loading && <Loader />}
       </div>
     </Layout>

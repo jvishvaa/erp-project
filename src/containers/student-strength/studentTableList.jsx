@@ -12,6 +12,7 @@ import {
 import PropTypes from 'prop-types';
 
 const StudentTableList = ({ tableData }) => {
+  console.log('The data', tableData);
   return (
     <>
       <Grid
