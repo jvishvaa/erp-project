@@ -10,6 +10,7 @@ import {
   TableBody,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import MediaQuery from 'react-responsive';
 
 const StudentTableList = ({ tableData }) => {
   console.log('The data', tableData);
@@ -25,38 +26,75 @@ const StudentTableList = ({ tableData }) => {
             <Typography variant='h6'>Students Not Found</Typography>
           </Grid>
         )}
-        {tableData && tableData.length !== 0 && (
-          <Grid item md={12} xs={12} style={{ textAlign: 'center', margin: '10px 0px' }}>
-            <Table
-              style={{ overflow: 'auto', width: '100%' }}
-              stickyHeader
-              aria-label='sticky table'
+        <MediaQuery minWidth={600}>
+          {tableData && tableData.length !== 0 && (
+            <Grid item xs={12} style={{ textAlign: 'center', margin: '10px 0px' }}>
+              <Table
+                style={{ overflow: 'auto', width: '100%' }}
+                stickyHeader
+                aria-label='sticky table'
+              >
+                <TableHead className='table-header-row'>
+                  <TableRow>
+                    <TableCell float='center'>S.No</TableCell>
+                    <TableCell float='center'>Name</TableCell>
+                    <TableCell float='center'>ERP No</TableCell>
+                    <TableCell float='center'>Status</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {tableData &&
+                    tableData.length !== 0 &&
+                    tableData.map((item, index) => (
+                      <TableRow key={item.erp_id}>
+                        <TableCell float='center'>{index + 1}</TableCell>
+                        <TableCell float='center'>{item.name || ''}</TableCell>
+                        <TableCell float='center'>{item.erp_id || ''}</TableCell>
+                        <TableCell float='center'>
+                          {item.is_active ? 'Active' : 'In Active'}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </Grid>
+          )}
+        </MediaQuery>
+        <MediaQuery maxWidth={599}>
+          {tableData && tableData.length !== 0 && (
+            <Grid
+              item
+              md={12}
+              xs={12}
+              style={{ textAlign: 'center', margin: '10px 0px' }}
             >
-              <TableHead className='table-header-row'>
-                <TableRow>
-                  <TableCell float='center'>S.No</TableCell>
-                  <TableCell float='center'>Name</TableCell>
-                  <TableCell float='center'>ERP No</TableCell>
-                  <TableCell float='center'>Status</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {tableData &&
-                  tableData.length !== 0 &&
-                  tableData.map((item, index) => (
-                    <TableRow key={item.erp_id}>
-                      <TableCell float='center'>{index + 1}</TableCell>
-                      <TableCell float='center'>{item.name || ''}</TableCell>
-                      <TableCell float='center'>{item.erp_id || ''}</TableCell>
-                      <TableCell float='center'>
-                        {item.is_active ? 'Active' : 'In Active'}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </Grid>
-        )}
+              <Table
+                style={{ overflow: 'auto', width: '100%' }}
+                stickyHeader
+                aria-label='sticky table'
+              >
+                <TableHead className='table-header-row'>
+                  <TableRow>
+                    <TableCell float='center'>ERP No</TableCell>
+                    <TableCell float='center'>Status</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {tableData &&
+                    tableData.length !== 0 &&
+                    tableData.map((item, index) => (
+                      <TableRow key={item.erp_id}>
+                        <TableCell float='center'>{item.erp_id || ''}</TableCell>
+                        <TableCell float='center'>
+                          {item.is_active ? 'Active' : 'In Active'}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </Grid>
+          )}
+        </MediaQuery>
       </Grid>
     </>
   );

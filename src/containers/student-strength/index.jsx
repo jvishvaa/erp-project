@@ -100,12 +100,14 @@ const StudentStrength = ({ history }) => {
       return;
     }
     setLoading(true);
-    console.log(selectedBranch, "branch")
+    console.log(selectedBranch, 'branch');
     axiosInstance
       .get(
         `${endpoints.studentListApis.branchWiseStudentCount}?academic_year_id=${
           selectedAcademicYear && selectedAcademicYear.id
-        }&branch_id=${selectedBranch && selectedBranch.branch.id}&page_number=${pageNumber||1}&page_size=${15}`
+        }&branch_id=${selectedBranch && selectedBranch.branch.id}&page_number=${
+          pageNumber || 1
+        }&page_size=${15}`
       )
       .then((result) => {
         setLoading(false);
@@ -142,7 +144,7 @@ const StudentStrength = ({ history }) => {
               </Grid>
             </Grid>
           </Grid>
-         
+
           <Grid item md={12} xs={12} className='studentStrengthFilterDiv'>
             <Grid container spacing={2}>
               <Grid item md={4} xs={12}>
@@ -265,24 +267,22 @@ const StudentStrength = ({ history }) => {
                   </Grid>
                 )}
               </MediaQuery>
-              <MediaQuery minWidth={960} maxWidth={1522}>
-                <Grid item md={2}>
+              <MediaQuery minWidth={1366} maxWidth={1522}>
+                <Grid item>
                   <Button
                     variant='contained'
                     size='small'
-                    fullWidth
                     className='studentStrenghtFilterButton'
                     onClick={() => handleClearFilter()}
                   >
                     CLEAR ALL
                   </Button>
                 </Grid>
-                <Grid item md={2}>
+                <Grid item>
                   <Button
                     variant='contained'
                     size='small'
                     color='primary'
-                    fullWidth
                     onClick={() => {
                       setPage(1);
                       handleFilter(1);
@@ -292,9 +292,10 @@ const StudentStrength = ({ history }) => {
                     FILTER
                   </Button>
                 </Grid>
+                <Grid item md={2} />
 
                 {selectedAcademicYear && (
-                  <Grid item md={4}>
+                  <Grid item>
                     <Button
                       size='small'
                       href={hRef && hRef[0] && hRef[0].csv}
@@ -304,8 +305,9 @@ const StudentStrength = ({ history }) => {
                     </Button>
                   </Grid>
                 )}
+
                 {selectedAcademicYear && selectedBranch && (
-                  <Grid item md={4} style={{ marginLeft: '-8%' }}>
+                  <Grid item>
                     <Button
                       variant='contained'
                       size='small'
@@ -318,8 +320,61 @@ const StudentStrength = ({ history }) => {
                   </Grid>
                 )}
               </MediaQuery>
-              <MediaQuery maxWidth={959}>
-                <Grid item md={1} xs={12}>
+              <MediaQuery minWidth={900} maxWidth={1365}>
+                <Grid item>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    className='studentStrenghtFilterButton'
+                    onClick={() => handleClearFilter()}
+                  >
+                    CLEAR ALL
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    color='primary'
+                    onClick={() => {
+                      setPage(1);
+                      handleFilter(1);
+                    }}
+                    className='studentStrenghtFilterButton'
+                  >
+                    FILTER
+                  </Button>
+                </Grid>
+              
+
+                {selectedAcademicYear && (
+                  <Grid item>
+                    <Button
+                      size='small'
+                      href={hRef && hRef[0] && hRef[0].csv}
+                      className='studentStrenghtDownloadButton'
+                    >
+                      Download all Branch excel
+                    </Button>
+                  </Grid>
+                )}
+
+                {selectedAcademicYear && selectedBranch && (
+                  <Grid item>
+                    <Button
+                      variant='contained'
+                      size='small'
+                      color='primary'
+                      href={hRef && hRef[1] && hRef[1].csv}
+                      className='studentStrenghtFilterButton'
+                    >
+                      Download Branch excel
+                    </Button>
+                  </Grid>
+                )}
+              </MediaQuery>
+              <MediaQuery maxWidth={899}>
+                <Grid item xs={12}>
                   <Button
                     variant='contained'
                     size='small'
@@ -330,7 +385,7 @@ const StudentStrength = ({ history }) => {
                     CLEAR ALL
                   </Button>
                 </Grid>
-                <Grid item md={1} xs={12}>
+                <Grid item xs={12}>
                   <Button
                     variant='contained'
                     size='small'
@@ -360,7 +415,7 @@ const StudentStrength = ({ history }) => {
                   </Grid>
                 )}
                 {selectedAcademicYear && selectedBranch && (
-                  <Grid item md={2} xs={12}>
+                  <Grid item xs={12}>
                     <Button
                       variant='contained'
                       size='small'
@@ -424,16 +479,19 @@ const StudentStrength = ({ history }) => {
           </Grid>
         )}
 
-       { filteredData && filteredData.grade_wise_data ?
-       <Grid container justify='center'>
-        <Pagination
-            onChange={handlePagination}
-            style={{ marginTop: 25 }}
-            count={totalPages}
-            color='primary'
-            page={page}
-          />
-          </Grid>:''}
+        {filteredData && filteredData.grade_wise_data ? (
+          <Grid container justify='center'>
+            <Pagination
+              onChange={handlePagination}
+              style={{ marginTop: 25 }}
+              count={totalPages}
+              color='primary'
+              page={page}
+            />
+          </Grid>
+        ) : (
+          ''
+        )}
         {loading && <Loader />}
       </div>
     </Layout>

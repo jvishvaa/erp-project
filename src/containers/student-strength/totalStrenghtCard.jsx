@@ -69,7 +69,7 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
             </MediaQuery>
             <MediaQuery minWidth={600} maxWidth={1597}>
               {(fullData && fullData.grade) !== (selectedId && selectedId.grade) && (
-                <Grid item md={5} xs={12} style={{ padding: '0px' }}>
+                <Grid item xs={12} style={{ padding: '0px' }}>
                   <Button
                     size='small'
                     variant='contained'
