@@ -174,7 +174,7 @@ const EditAppointment = ({
           handleGoBack();
         } else {
           if (result.data.message == 'Something went wrong,please try again later') {
-            setAlert('error', 'Roles cannot be changed');
+            setAlert('warning', 'Roles cannot be changed');
           }
           console.log(result.data.message, '=====================>>..');
         }

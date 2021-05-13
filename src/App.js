@@ -610,7 +610,7 @@ function App({ alert }) {
                           <Route exact path='/homework/teacher'>
                             {({ match }) => <TeacherHomework match={match} />}
                           </Route>
-                          z
+
                           <Route exact path='/homework/teacher-report'>
                             {({ match }) => <TeacherHomeWorkReport match={match} />}
                           </Route>
