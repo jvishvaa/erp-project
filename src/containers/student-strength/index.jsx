@@ -104,11 +104,12 @@ const moduleId=178;
       return;
     }
     setLoading(true);
+    console.log(selectedBranch, "branch")
     axiosInstance
       .get(
         `${endpoints.studentListApis.branchWiseStudentCount}?academic_year_id=${
           selectedAcademicYear && selectedAcademicYear.id
-        }&branch_id=${selectedBranch && selectedBranch.id}&page_number=${pageNumber||1}&page_size=${15}`
+        }&branch_id=${selectedBranch && selectedBranch.branch.id}&page_number=${pageNumber||1}&page_size=${15}`
       )
       .then((result) => {
         setLoading(false);
@@ -307,7 +308,7 @@ const moduleId=178;
               <Grid item md={6} xs={12} className='studentStrenghtBody2'>
                 <TotalStudentWiseDetails
                   year={(selectedAcademicYear && selectedAcademicYear.id) || 0}
-                  branch={(selectedBranch && selectedBranch.id) || 0}
+                  branch={(selectedBranch && selectedBranch.branch.id) || 0}
                   grade={selectedCard || 0}
                   hadleClearGrade={setSelectedCard}
                 />
