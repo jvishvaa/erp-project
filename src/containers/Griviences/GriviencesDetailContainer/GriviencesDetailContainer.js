@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
   blue: {
     backgroundColor: '#78B5F3',
+    variant: 'contained',
   },
   small: {
     width: '20px',
@@ -100,7 +101,9 @@ const GriviencesDetailContainer = (props) => {
         if (response.status == 200) {
           setAlert('success', 'Reply sent');
         } else {
-          setAlert('error', response.data.message);
+          if (response.data.message == 'Something went wrong,please try again later') {
+            setAlert('error', 'Reply cannot be empty');
+          }
         }
       })
       .catch((error) => {
