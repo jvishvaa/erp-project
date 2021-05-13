@@ -39,7 +39,9 @@ import MessageTypeTable from './containers/master-management/message-type/messag
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
 import { fetchLoggedInUserDetails } from './redux/actions';
+import TeacherHomeWorkReport from './containers/homework/teacher-homework-report/teacherReport-index';
 import TeacherHomework from './containers/homework/teacher-homework';
+import StudentHomeworkReport from './containers/homework/student-homework-report/index';
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
 import BulkUpload from './containers/user-management/bulk-upload/bulk-upload';
@@ -57,7 +59,7 @@ import {
   AssessmentAnalysis,
   AssessmentComparisionUI,
 } from './containers/assessment';
-
+import { ViewOrchadio, ManageOrchadio, AddNewOrchadio } from './containers/Orchadio';
 import {
   TeacherBlog,
   ContentView,
@@ -268,10 +270,12 @@ import AssessmentReportTypes from './containers/assessment-central/assessment-re
 import ContactUs from 'containers/contact-us';
 import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz';
 import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
-// import { menuSelectionArray } from '../src/components/drawer-menu/menu-item.js';
+import ClassWork from './containers/Classwork/index';
+
 // import Contact from './containers/contact/Contact';
 
 import MultiplayerQuiz from './components/mp-quiz';
+import StudentAttendance from 'containers/online-class/student-attendance/StudentAttendance';
 
 const theme = createMuiTheme({
   palette: {
@@ -366,12 +370,6 @@ function App({ alert }) {
                           <Route path='/profile'>
                             {({ match }) => <Profile match={match} />}
                           </Route>
-                          <Route path='/time-table/student-view'>
-                            {({ match }) => <TimeTable match={match} />}
-                          </Route>
-                          <Route path='/time-table/teacher-view'>
-                            {({ match }) => <TimeTable match={match} />}
-                          </Route>
                           <Route path='/role-management'>
                             {({ match }) => <RoleManagement match={match} />}
                           </Route>
@@ -384,7 +382,21 @@ function App({ alert }) {
                           <Route path='/time-table/teacher-view'>
                             {({ match }) => <TimeTable match={match} />}
                           </Route>
-
+                          <Route path='/griviences/admin-view'>
+                            {({ match }) => <Griviences match={match} />}
+                          </Route>
+                          <Route path='/griviences/student-view'>
+                            {({ match }) => <Griviences match={match} />}
+                          </Route>
+                          <Route path='/greviences/createnew'>
+                            {({ match }) => <GriviencesCreate match={match} />}
+                          </Route>
+                          <Route path='/homework/student-report'>
+                            {({ match }) => <StudentHomeworkReport match={match} />}
+                          </Route>
+                          <Route path='/erp-online-class/class-work/:param1/:param2'>
+                            {({ match }) => <ClassWork match={match} />}
+                          </Route>
                           {/*
                         <Route exact path='/view-users'>
                             {({ match }) => <ViewUsers match={match} />}
@@ -474,7 +486,6 @@ function App({ alert }) {
                           <Route exact path='/blog/admin/contentViewPublishAdmin'>
                             {({ match }) => <ContentViewPublishAdmin match={match} />}
                           </Route>
-
                           <Route exact path='/blog/teacher/publish/view'>
                             {({ match }) => <TeacherPublishBlogView match={match} />}
                           </Route>
@@ -598,6 +609,10 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/homework/teacher'>
                             {({ match }) => <TeacherHomework match={match} />}
+                          </Route>
+                          z
+                          <Route exact path='/homework/teacher-report'>
+                            {({ match }) => <TeacherHomeWorkReport match={match} />}
                           </Route>
                           <Route exact path='/homework/add/:date/:subject/:id'>
                             {({ match }) => <AddHomework match={match} />}
@@ -759,7 +774,6 @@ function App({ alert }) {
                           <Route exact path='/erp-online-resources'>
                             {({ match }) => <OnlineClassResource match={match} />}
                           </Route>
-
                           <Route exact path='/homework/student'>
                             {({ match }) => <StudentHomework match={match} />}
                           </Route>
@@ -951,7 +965,6 @@ function App({ alert }) {
                               <ApplicationFormAcc match={match} alert={alert} />
                             )}
                           </Route>
-
                           <Route exact path='/finance/accountant/NonRTEFormAcc'>
                             {({ match }) => <NonRTEFormAcc match={match} alert={alert} />}
                           </Route>
@@ -1125,7 +1138,6 @@ function App({ alert }) {
                               <PendingStoreRequests match={match} alert={alert} />
                             )}
                           </Route>
-
                           <Route
                             exact
                             path='/finance/Approval/Requests/ApprovedPaymentRequests'
@@ -1158,7 +1170,6 @@ function App({ alert }) {
                               <PendingRequestView match={match} alert={alert} />
                             )}
                           </Route>
-
                           <Route
                             exact
                             path='/finance/Approval/Requests/AcceptRejectPayment'
@@ -1370,6 +1381,18 @@ function App({ alert }) {
                           </Route>
                           <Route path='/greviences/createnew'>
                             {({ match }) => <GriviencesCreate match={match} />}
+                          </Route>
+                          <Route exact path='/student-attendance-report'>
+                            {({ match }) => <StudentAttendance match={match} />}
+                          </Route>
+                          <Route exact path='/orchadio/view-orchadio'>
+                            {({ match }) => <ViewOrchadio match={match} />}
+                          </Route>
+                          <Route exact path='/orchadio/manage-orchadio'>
+                            {({ match }) => <ManageOrchadio match={match} />}
+                          </Route>
+                          <Route exact path='/orchadio/add-orchadio'>
+                            {({ match }) => <AddNewOrchadio match={match} />}
                           </Route>
                         </Switch>
                       </DailyDairyStore>

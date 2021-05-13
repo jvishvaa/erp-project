@@ -87,10 +87,19 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Question Paper', Path: '/assessment-question' },
     { name: 'Create Test', Path: '/assesment' },
     { name: 'Take Test', Path: '/assessment' },
+    { name: 'Student Attendance Report', Path: '/student-attendance-report' },
     { name: 'Student Strength', Path: '/student-strength' },
 
     { name: 'Griviences Teacher', Path: '/griviences/admin-view' },
     { name: 'Griviences Student', Path: '/griviences/student-view' },
+    {
+      name: 'Manage Orchadio',
+      Path: '/orchadio/manage-orchadio',
+    },
+    {
+      name: 'Student Orchadio',
+      Path: '/orchadio/view-orchadio',
+    },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

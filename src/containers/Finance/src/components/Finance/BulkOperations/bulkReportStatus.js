@@ -93,7 +93,7 @@ const BulkReportStatus = ({
     const userProfile = JSON.parse(localStorage.getItem('userDetails'));
     // const role = userProfile.personal_info.role.toLowerCase()
     const role = userProfile?.personal_info?.role;
-    if (role === 'FinanceAdmin') {
+    if (role === 'FinanceAdmin' || role === 'SuperUser') {
       setIsAdmin(true);
     }
   }, []);
