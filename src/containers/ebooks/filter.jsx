@@ -120,6 +120,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                 {...params}
                 variant='outlined'
                 label='Academic Year'
+                //
                 placeholder='Academic Year'
               />
             )}  
