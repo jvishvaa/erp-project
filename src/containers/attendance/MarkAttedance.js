@@ -393,7 +393,7 @@ const MarkAttedance = () => {
       branch_id: selectedBranch,
       grade_id: selectedGrade,
       section_id: selectedSection,
-      startDate: dateValue,
+      startDate: history?.location?.state?.payload?.startDate,
       endDate: history?.location?.state?.payload?.endDate,
       counter: history?.location?.state?.payload?.counter,
     };

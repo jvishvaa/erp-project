@@ -569,7 +569,7 @@ const CreateClassForm = (props) => {
     // }
     const startTime = `${selectedDate.toString().includes(' ')
       ? selectedDate.toISOString().split('T')[0]
-      : selectedDate
+      : moment(selectedDate).format('YYYY-MM-DD')
       } ${getFormatedTime(selectedTime)}`;
     const coHostEmails = coHosts.map((coHost) => coHost?.email);
     const tutorEmails = [tutorEmail.email , ...coHostEmails];

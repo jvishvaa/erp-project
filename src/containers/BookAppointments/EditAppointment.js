@@ -170,9 +170,13 @@ const EditAppointment = ({
         setLoading(false);
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
+          console.log(result.data.message, '**********************');
           handleGoBack();
         } else {
-          setAlert('error', result.data.message);
+          if (result.data.message == 'Something went wrong,please try again later') {
+            setAlert('warning', 'Roles cannot be changed');
+          }
+          console.log(result.data.message, '=====================>>..');
         }
       })
       .catch((error) => {
