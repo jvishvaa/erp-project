@@ -18,6 +18,7 @@ import moment from 'moment';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
+import { red } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
   text_color: {
@@ -27,10 +28,12 @@ const useStyles = makeStyles((theme) => ({
     // width: '90%',
     marginTop: '20px',
     padding: '20px',
+    border: '1px solid red',
   },
   flex_row: {
     display: 'flex',
     flexDirection: 'row',
+    border: '1px solid red',
   },
   purple: {
     backgroundColor: '#F3D1AB',
@@ -122,29 +125,52 @@ const GriviencesDetailContainer = (props) => {
     >
       <Paper className={style.container}>
         <div className={style.flex_row} style={{ alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div>
-              <Avatar className={style.purple} src={props?.list_tickets?.user?.profile} />
-            </div>
-            <div>
-              <Grid container style={{ padding: '30px' }}>
-                <Grid item sm={12}>
-                  <h5 className={style.text_color} style={{ fontSize: '20px' }}>
-                    {props?.list_tickets?.title}
-                  </h5>
-                </Grid>
-                <Grid item sm={12}>
-                  <label className={style.text_color}>
-                    {' '}
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: props?.list_tickets?.description,
-                      }}
-                    />
+          <div>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                border: '1px solid red',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Avatar
+                  className={style.purple}
+                  src={props?.list_tickets?.user?.profile}
+                />
+
+                <h5
+                  className={style.text_color}
+                  style={{ fontSize: '20px', marginLeft: '5px' }}
+                >
+                  {props?.list_tickets?.title}
+                </h5>
+              </div>
+              <div>
+                <div style={{ alignSelf: 'flex-end' }}>
+                  <label className={style.text_color} style={{ alignSelf: 'flex-end' }}>
+                    {date}
                   </label>
-                </Grid>
-              </Grid>
+                  <label className={style.text_color} style={{ alignSelf: 'flex-end' }}>
+                    {time}
+                  </label>
+                </div>
+              </div>
             </div>
+            <Grid container style={{ padding: '30px' }}>
+              <Grid item sm={12}></Grid>
+              <Grid item sm={12}>
+                <label className={style.text_color}>
+                  {' '}
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: props?.list_tickets?.description,
+                    }}
+                  />
+                </label>
+              </Grid>
+            </Grid>
 
             <Grid sm={3}>
               <div className={style.flex_column}>
@@ -160,16 +186,7 @@ const GriviencesDetailContainer = (props) => {
             </Grid>
           </div>
           <Grid item sm />
-          <Grid sm={4}>
-            <div className={style.flex_column}>
-              <label className={style.text_color} style={{ alignSelf: 'flex-end' }}>
-                {date}
-              </label>
-              <label className={style.text_color} style={{ alignSelf: 'flex-end' }}>
-                {time}
-              </label>
-            </div>
-          </Grid>
+          <Grid sm={4}></Grid>
         </div>
 
         {reply_list && reply_list?.body && (
