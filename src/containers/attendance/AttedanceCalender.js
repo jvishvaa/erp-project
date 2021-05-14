@@ -144,7 +144,7 @@ const AttedanceCalender = () => {
     }
     console.log(history);
     if (history?.location?.state?.payload) {
-      console.log(history?.location?.state?.payload, 'vinod');
+      console.log(history?.location?.state, 'vinod');
       setCounter(history?.location?.state?.payload?.counter);
       setStartDate(history?.location?.state?.payload?.startDate);
       setEndDate(history?.location?.state?.payload?.endDate);
@@ -323,7 +323,7 @@ const AttedanceCalender = () => {
     setSelectedSection([]);
     setStudentDataAll(null);
     setCurrentEvent(null);
-    setCounter(2);
+    // setCounter(2);
     // setStartDate(null)
     // setEndDate(null);
   };
@@ -686,6 +686,26 @@ const AttedanceCalender = () => {
       });
     }
   };
+
+  const handleCreateEvent = () => {
+    const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: moment(startDate).format('YYYY-MM-DD'),
+      endDate: moment(endDate).format('YYYY-MM-DD'),
+      counter: counter,
+    };
+    console.log(payload);
+    history.push({
+      pathname: '/createEvent',
+      state: {
+        data: studentData,
+        payload: payload,
+      },
+    });
+  }
 
   const handleMarkAttendance = () => {
     const payload = {
@@ -1090,7 +1110,8 @@ const AttedanceCalender = () => {
                           />
                           <div className='studentName'>
                             <p className='absentName'>
-                              {data?.student_name?.slice(0, 10)}
+                              {/* {data?.student_name?.slice(0, 10)} */}
+                              {data?.student_name?.split(/\s(.+)/)[0]}
                             </p>
                             {/* <p className='absentName'>{data.student_last_name}</p> */}
                             {/* <Chip  className='chipDays' > {data.absent_count}  </Chip> */}
@@ -1132,7 +1153,8 @@ const AttedanceCalender = () => {
                           />
                           <div className='presentStudent'>
                             <p className='presentFName'>
-                              {data?.student_name.slice(0, 10)}
+                              {/* {data?.student_name.slice(0, 10)} */}
+                              {data?.student_name?.split(/\s(.+)/)[0]}
                             </p>
                             {counter != 1 ? (
                               <div className='absentCount'>
@@ -1178,7 +1200,7 @@ const AttedanceCalender = () => {
               </Grid>
               <Grid item md={6} xs={12} className='event-btn'>
                 {teacherView === true ? (
-                  <Button size='small' href={`/createEvent`} className='add-event-button'>
+                  <Button size='small' onClick={handleCreateEvent} className='add-event-button'>
                     {/* ADD EVENT */}
                     <span className={classes.contentData} id='event-text'>
                       Add Event

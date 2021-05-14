@@ -1,0 +1,106 @@
+import radiobg from '../../assets/images/RadioBg.png';
+
+export default (theme) => ({
+  audioContainer: {
+    width: '98%',
+    minHeight: '150px',
+    border: '1.5px solid #85adad',
+    margin: 'auto',
+    backgroundImage: `url(${radiobg})`,
+    backgroundSize: '100% 100%',
+    objectFit: 'cover',
+    padding: '20px',
+    '&:hover': {
+      border: '1.5px solid #476b6b',
+    },
+    position: 'relative',
+    // filter: 'grayscale(100%)',
+    // opacity: 1,
+    // backdropFilter: 'blur(5px)',
+    // WebkitFilter: 'blur(5px)',
+  },
+  audioOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: 'rgb(0,0,0,0.7)',
+  },
+  audioPlayer: {
+    height: '100%',
+    width: '100%',
+  },
+  icons: {
+    fontSize: '50',
+  },
+  albumDetails: {
+    textAlign: 'left',
+    fontSize: '1.5rem',
+    fontWeight: 'lighter',
+  },
+  meter: {
+    position: 'relative',
+    borderRadius: '25px',
+    border: '1px solid #555',
+    boxShadow: 'inset 0 -1px 1px rgba(255,255,255,0.3)',
+  },
+  progressBar: {
+    display: 'block',
+    height: '100%',
+    padding: '2.5px',
+    backgroundColor: 'yellow',
+    position: 'relative',
+    overflow: 'hidden',
+    zIndex: 2,
+    width: '0%',
+  },
+  albumImage: {
+    width: '20%',
+    border: '1px solid yellow',
+    borderRadius: '100px',
+    // margin: 'auto',
+    // marginLeft: -17%;
+    // marginTop: -95px;
+    overflow: 'hidden',
+    position: 'relative',
+    // boxSizing: 'border-box',
+    padding: '10px',
+    // border: '0.5px solid black',
+  },
+  iconButton: {
+    padding: '0px',
+  },
+  albumDetailsOverlay: {
+    position: 'absolute',
+    minHeight: '40px',
+    lineHeight: '40px',
+    fontWeight: 'lighter',
+    fontSize: '1rem',
+    textAlign: 'center',
+    color: '#f2f2f2',
+    width: '50%',
+    margin: 'auto',
+    backgroundColor: 'rgb(0, 0, 0, 0.8)',
+    bottom: '0px',
+    transform: 'translate(50%)',
+  },
+  timer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%,-50%)',
+  },
+  textRoot: {
+    textAlign: 'center',
+  },
+  likeContainer: {
+    width: '100%',
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+    color: '#f2f2f2',
+    backgroundColor: 'rgb(0, 0, 0, 0.8)',
+  },
+});

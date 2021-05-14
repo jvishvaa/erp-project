@@ -109,7 +109,8 @@ const ResponderView = () => {
     setResponse({ ...response, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (id) => {
+  const handleSubmit = (e, id) => {
+    e.preventDefault();
     console.log('id', id);
     console.log('handleSubmit', response);
     console.log('status:', status);
@@ -129,6 +130,7 @@ const ResponderView = () => {
           if (result.data.status_code === 200) {
             setLoading(false);
             setAlert('success', result.data.message);
+            getAppointments();
           } else {
             setLoading(false);
             setAlert('error', result.data.message);
@@ -140,7 +142,8 @@ const ResponderView = () => {
         });
     }
   };
-  const handleDeclineSubmit = (id) => {
+  const handleDeclineSubmit = (e, id) => {
+    e.preventDefault();
     axiosInstance
       .put(`academic/${id}/${endpoints.Appointments.updateAppointment}`, {
         appointment_status: status,
@@ -148,8 +151,9 @@ const ResponderView = () => {
 
       .then((result) => {
         if (result.data.status_code === 200) {
-          // setLoading(true);
+          setLoading(false);
           setAlert('success', result.data.message);
+          getAppointments();
         } else {
           setLoading(false);
           setAlert('error', result.data.message);
@@ -680,7 +684,7 @@ const ResponderView = () => {
                                 type='submit'
                                 onClick={(e) => {
                                   // e.preventDefault();
-                                  handleSubmit(item.id);
+                                  handleSubmit(e, item.id);
                                 }}
                                 style={{ display: 'inline' }}
                               >
@@ -698,7 +702,7 @@ const ResponderView = () => {
                                 type='submit'
                                 onClick={(e) => {
                                   // e.preventDefault();
-                                  handleDeclineSubmit(item.id);
+                                  handleDeclineSubmit(e, item.id);
                                 }}
                               >
                                 Decline
