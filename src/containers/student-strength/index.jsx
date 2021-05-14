@@ -435,6 +435,7 @@ const StudentStrength = ({ history }) => {
         )}
         {filteredData && (
           <Grid container spacing={2} className='studentStrenghtBody1'>
+          
             <Grid item md={11} xs={12}>
               <TotalStudentBar
                 fullData={(filteredData && filteredData.overall_stat) || {}}

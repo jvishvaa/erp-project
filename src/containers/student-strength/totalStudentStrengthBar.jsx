@@ -9,7 +9,7 @@ const TotalStudentBar = ({ fullData }) => {
   return (
     <>
       <MediaQuery minWidth={1598}>
-        <Grid container spacing={2} className='totalStudentStrenghtMainDiv'>
+        <Grid container spacing={2} className='totalStudentStrenghtMainDiv2'>
           <Grid item md={6} xs={12} className='totalStudentStrenghtSubDiv1'>
             <Grid container spacing={1} direction='row' alignItems='center'>
               <Grid item md={1} xs={12} className='totalStudentStrenghtLabel'>
