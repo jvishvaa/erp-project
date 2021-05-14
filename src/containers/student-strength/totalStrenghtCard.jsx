@@ -98,21 +98,25 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
                 </span>
               </Grid>
 
-              <Grid item md={7} style={{ padding: '0px' }}>
-                <span style={{ color: '#009CE1', fontSize: '13px' }}>
+              <Grid item md={12} style={{ padding: '0px' }}>
+                <span style={{ color: '#009CE1', fontSize: '10px' }}>
                   Temporary Inactive -&nbsp;
                   {(fullData && fullData.temporary_inactive) || '0'}
                 </span>
                 <br />
 
-                <span style={{ color: '#9D9D9D', fontSize: '13px' }}>
+                <span style={{ color: '#9D9D9D', fontSize: '10px' }}>
                   Permanent Inactive -&nbsp;
                   {(fullData && fullData.permanent_inactive) || '0'}
                 </span>
               </Grid>
-              <Grid item md={1} />
+
               {(fullData && fullData.grade) !== (selectedId && selectedId.grade) && (
-                <Grid item style={{ padding: '0px' }}>
+                <Grid
+                  container
+                  justify='flex-end'
+                  style={{ padding: '0px', marginTop: '-10%' }}
+                >
                   <Button
                     size='small'
                     variant='contained'
@@ -121,7 +125,7 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
                       handleSelectCard((fullData && fullData) || '');
                     }}
                   >
-                    View More
+                    <span style={{ fontSize: '13px' }}>View More</span>
                   </Button>
                 </Grid>
               )}

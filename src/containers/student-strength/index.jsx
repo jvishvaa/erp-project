@@ -51,6 +51,7 @@ const StudentStrength = ({ history }) => {
           &export_type=csv`,
       },
     ]);
+    // console.log('The data', selectedBranch.branch?.id);
   }, [selectedAcademicYear, selectedBranch]);
 
   function callApi(api, key) {
@@ -234,6 +235,7 @@ const StudentStrength = ({ history }) => {
                     onClick={() => {
                       setPage(1);
                       handleFilter(1);
+                      setSelectedCard('');
                     }}
                     className='studentStrenghtFilterButton'
                   >
@@ -272,24 +274,26 @@ const StudentStrength = ({ history }) => {
                     className='studentStrenghtFilterButton'
                     onClick={() => handleClearFilter()}
                   >
-                    CLEAR ALL
+                    <span style={{ fontSize: '13px' }}> CLEAR ALL</span>
                   </Button>
                 </Grid>
-                <Grid item>
+                <Grid item md={1}>
                   <Button
                     variant='contained'
                     size='small'
+                    fullWidth
                     color='primary'
                     onClick={() => {
                       setPage(1);
                       handleFilter(1);
+                      setSelectedCard('');
                     }}
                     className='studentStrenghtFilterButton'
                   >
-                    FILTER
+                    <span style={{ fontSize: '13px' }}> FILTER</span>
                   </Button>
                 </Grid>
-                <Grid item md={3} />
+                <Grid item md={4} />
 
                 <Grid item>
                   <Button
@@ -297,7 +301,7 @@ const StudentStrength = ({ history }) => {
                     href={hRef && hRef[0] && hRef[0].csv}
                     className='studentStrenghtDownloadButton'
                   >
-                    Download all Branch excel
+                    <span style={{ fontSize: '13px' }}> Download all Branch excel</span>
                   </Button>
                 </Grid>
 
@@ -309,7 +313,7 @@ const StudentStrength = ({ history }) => {
                     href={hRef && hRef[1] && hRef[1].csv}
                     className='studentStrenghtFilterButton'
                   >
-                    Download Branch excel
+                    <span style={{ fontSize: '13px' }}> Download Branch excel</span>{' '}
                   </Button>
                 </Grid>
               </MediaQuery>
@@ -332,6 +336,7 @@ const StudentStrength = ({ history }) => {
                     onClick={() => {
                       setPage(1);
                       handleFilter(1);
+                      setSelectedCard('');
                     }}
                     className='studentStrenghtFilterButton'
                   >
@@ -382,6 +387,7 @@ const StudentStrength = ({ history }) => {
                     onClick={() => {
                       setPage(1);
                       handleFilter(1);
+                      setSelectedCard('');
                     }}
                     className='studentStrenghtFilterButton'
                   >
@@ -429,23 +435,23 @@ const StudentStrength = ({ history }) => {
         )}
         {filteredData && (
           <Grid container spacing={2} className='studentStrenghtBody1'>
-            <Grid item md={12} xs={12}>
+            <Grid item md={11} xs={12}>
               <TotalStudentBar
                 fullData={(filteredData && filteredData.overall_stat) || {}}
               />
             </Grid>
             <Grid
               item
-              md={selectedCard ? 4 : 12}
+              md={selectedCard ? 6 : 11}
               xs={12}
               className='studentStrenghtBody2'
             >
-              <Grid container spacing={3}>
+              <Grid container spacing={3} style={{ marginLeft: '-20px' }}>
                 {filteredData &&
                   filteredData.grade_wise_data &&
                   filteredData.grade_wise_data.lenght !== 0 &&
                   filteredData.grade_wise_data.map((item) => (
-                    <Grid item md={selectedCard ? 12 : 4} xs={12} key={item.id}>
+                    <Grid item md={selectedCard ? 6 : 4} xs={12} key={item.id}>
                       <TotalStudentStrengthCard
                         fullData={item || {}}
                         handleSelectCard={setSelectedCard}
@@ -456,10 +462,10 @@ const StudentStrength = ({ history }) => {
               </Grid>
             </Grid>
             {selectedCard && (
-              <Grid item md={8} xs={12} className='studentStrenghtBody2'>
+              <Grid item md={5} xs={12} className='studentStrenghtBody2'>
                 <TotalStudentWiseDetails
                   year={(selectedAcademicYear && selectedAcademicYear.id) || 0}
-                  branch={(selectedBranch && selectedBranch.branch.id) || 0}
+                  branch={(selectedBranch && selectedBranch.branch?.id) || 0}
                   grade={selectedCard || 0}
                   hadleClearGrade={setSelectedCard}
                   fullWidth
