@@ -132,11 +132,13 @@ const EbookPdf = (props) => {
       };
       const AnnotateURL = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}`;
       axios
-        .post(AnnotateURL, data1, {
-          headers: {
-            'x-api-key': 'vikash@12345#1231',
-          },
-        })
+        .post(AnnotateURL, data1,
+        //    {
+        //   headers: {
+        //     'x-api-key': 'vikash@12345#1231',
+        //   },
+        // }
+        )
         .then((res) => {})
         .catch((error) => {
           console.log(error);
@@ -163,12 +165,14 @@ const EbookPdf = (props) => {
     if (props.id && page) {
       const imgUrl = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}&page_number=${page}`;
       setLoading(true);
-      axios
-        .get(`${imgUrl}`,{
-          headers: {
-            'x-api-key': 'vikash@12345#1231',
-          },
-        })
+      axiosInstance
+        .get(`${imgUrl}`,
+        // {
+        //   headers: {
+        //     'x-api-key': 'vikash@12345#1231',
+        //   },
+        // }
+        )
         .then((res) => {
           setLoading(false);
           setBookPage(res.data.ebook_image);
@@ -215,18 +219,20 @@ const EbookPdf = (props) => {
   }, [props.id, page, height, width]);
 
   const goBack = () => {
-    axios
+    axiosInstance
       .post(`${endpoints.ebook.EbookUser}`, {
         page_number: page,
         ebook_id: props.id,
         user_id:
           localStorage.getItem('userDetails') &&
           JSON.parse(localStorage.getItem('userDetails'))?.user_id,
-      }, {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
-      })
+      }, 
+      // {
+      //   headers: {
+      //     'x-api-key': 'vikash@12345#1231',
+      //   },
+      // }
+      )
       .then((res) => {
         props.goBackFunction();
       })
@@ -245,12 +251,14 @@ const EbookPdf = (props) => {
       context.clearRect(0, 0, canv.width, canv.height);
     });
     const deleteAnnotateURL = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}&page_number=${page}`;
-    axios
-      .delete(deleteAnnotateURL, {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
-      })
+    axiosInstance
+      .delete(deleteAnnotateURL, 
+      //   {
+      //   headers: {
+      //     'x-api-key': 'vikash@12345#1231',
+      //   },
+      // }
+      )
       .then((res) => {})
       .catch((error) => {
         console.log(error);

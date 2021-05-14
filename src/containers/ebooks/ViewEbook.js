@@ -233,7 +233,6 @@ class ViewEbook extends Component {
   render() {
     const { classes } = this.props;
     const { tabValue, data ,totalEbooks ,pageNo,pageSize,startDate,endDate} = this.state;
-    console.log(data,"@@@@@@data")
 
     return (
       <div className='layout-container-div'>

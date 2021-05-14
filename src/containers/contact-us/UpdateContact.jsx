@@ -188,6 +188,18 @@ function UpdateContact() {
       setAlert('warning', 'campus_incharge contact should not be empty');
       return;
     }
+    if (foe_contact.length < 10) {
+      setAlert('warning', 'Please check foe contact not lessthan 10 digits');
+      return;
+    }
+    if (op_manager_contact.length < 10) {
+      setAlert('warning', 'Please check op_manager_contact not lessthan 10 digits');
+      return;
+    }
+    if (campus_incharge_contact.length < 10) {
+      setAlert('warning', 'Please check campus_incharge_contact not lessthan 10 digits');
+      return;
+    }
     const payload = {
       // academicYear: selectedAcademicYear,
       // branch: selectedBranch,
@@ -207,7 +219,7 @@ function UpdateContact() {
       .catch((err) => {
         setLoading(false);
         // console.log(err);
-        setAlert('error', 'something went wrong');
+        setAlert('error', err.message);
       });
     setSelectedAcadmeicYear('');
     setSelectedBranch([]);

@@ -19,6 +19,7 @@ import MenuBookIcon from '@material-ui/icons/MenuBook';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import ReceiptRoundedIcon from '@material-ui/icons/ReceiptRounded';
 import ViewListIcon from '@material-ui/icons/ViewList';
+import FeedbackIcon from '@material-ui/icons/Feedback';
 
 import {
   AccountBalance,
@@ -256,11 +257,15 @@ const menuIcon = (name) => {
       icon = <ReceiptRoundedIcon />;
       break;
     }
+    case 'Griviences': {
+      icon = <FeedbackIcon />;
+      break;
+    }
     case 'School Strength': {
       icon = <ViewListIcon />;
       break;
     }
-    
+
     default:
       break;
   }

@@ -1,20 +1,25 @@
 import React, { useEffect, useState, useContext } from 'react';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import axiosInstance from '../../../config/axios';
-import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../config/axios';
+import Layout from '../Layout';
+import endpoints from '../../config/endpoints';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import EmojiObjectsSharpIcon from '@material-ui/icons/EmojiObjectsSharp';
 import Select from '@material-ui/core/Select';
 import LayersClearIcon from '@material-ui/icons/LayersClear';
-import FilterFilledIcon from '../../../components/icon/FilterFilledIcon';
-import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import Loader from '../../../components/loader/loader';
-import { Button, IconButton } from '@material-ui/core';
-import './upper-grid.scss';
+import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
+import Loader from '../../components/loader/loader';
+import { Button, Divider, IconButton } from '@material-ui/core';
+import './UpperGrid/upper-grid.scss';
 import { set } from 'lodash';
 import { Link } from 'react-router-dom';
-const UpperGrade = (props) => {
+import { Grid } from '@syncfusion/ej2-grids';
+const NewGrivience = (props) => {
   const [dataMap, setDataMap] = useState([]);
+  const setMobileView = useMediaQuery('(min-width:800px)');
   const { setAlert } = useContext(AlertNotificationContext);
   const [acadamicYearID, setAcadamicYear] = useState('');
   const [loading, setLoading] = useState();
@@ -33,36 +38,8 @@ const UpperGrade = (props) => {
   const [studentView, setStudentView] = useState(false);
   const [userID, setUserID] = useState();
   const [openDialog] = useState(true);
-  let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
-  //const moduleId = 175;
-
-  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  const [moduleId, setModuleId] = useState('');
-
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Griviences' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (
-              item.child_name === 'Griviences Student' &&
-              userName.role !== 'SuperUser'
-            ) {
-              setModuleId(item.child_id);
-            }
-            if (item.child_name === 'Griviences Teacher') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, []);
-
+  const [grivienceList, setGrivienceList] = useState([]);
+  const moduleId = 175;
   const handleChangeMultiple = (event) => {
     const { options } = event.target;
     console.log(event, 'eventtttttttt');
@@ -212,92 +189,59 @@ const UpperGrade = (props) => {
       setCounter(counter + 1);
     }
   };
-  const handleGenerateData = () => {
-    let temp;
-    if (grevancesDataName === 'type 1') {
-      temp = 1;
-    } else if (grevancesDataName === 'type 2') {
-      temp = 2;
-    } else if (grevancesDataName === 'type 3') {
-      temp = 3;
-    } else if (grevancesDataName === 'type 4') {
-      temp = 4;
+  const handleFilter = () => {
+    if (!acadamicYearID) {
+      setAlert('warning', 'Select Academic Year');
+      return;
+    }
+
+    if (!branchID) {
+      setAlert('warning', 'Select Branch');
+      return;
+    }
+    if (!gradeID) {
+      setAlert('warning', 'Select Grade');
+      return;
+    }
+    if (!sectionID) {
+      setAlert('warning', 'Select Section');
+      return;
+    }
+    if (!gevienceTypeID) {
+      setAlert('warning', 'Select Grivience Type');
+      return;
     }
     console.log(
       acadamicYearID,
-      gevienceTypeID,
       branchID,
       gradeID,
       sectionID,
-      temp,
-      userID,
-      '===============================>>>>>>>>>>>>>>>>>>>>'
+      gevienceTypeID,
+      '***************SSSSS***********'
     );
-    if (path === '/griviences/admin-view') {
-      props.getGrivienceData(
-        acadamicYearID,
-        gevienceTypeID,
-        branchID,
-        gradeID,
-        sectionID,
-        temp,
-        openDialog
-      );
-      props.handlePassData(
-        acadamicYearID,
-        gevienceTypeID,
-        branchID,
-        gradeID,
-        sectionID,
-        temp,
-        openDialog
-      );
-    } else if (path === '/griviences/student-view') {
-      props.getGrivienceData(
-        // acadamicYearID,
-        // gevienceTypeID,
-        // branchID,
-        // gradeID,
-        // sectionID,
-        // temp,
-        userID,
-        studentView,
-        openDialog
-      );
-      props.handlePassData(
-        // acadamicYearID,
-        // gevienceTypeID,
-        // branchID,
-        // gradeID,
-        // sectionID,
-        // temp,
-        userID,
-        studentView,
-        openDialog
-      );
-    }
+    axiosInstance
+      .get(
+        `${endpoints.grievances.getGrivienceList}?academic_year=${acadamicYearID[0]}&branch=${branchID[0]}&grade=${gradeID[0]}&section=${sectionID[0]}&grievance_type=${gevienceTypeID[0]}`
+      )
+      .then((res) => {
+        console.log(res, 'list data');
+        if (res.status == 200) {
+          console.log(res.data.data.results, 'list-tickets ddata');
+          setGrivienceList(res.data.data.results);
+        } else {
+          setAlert('error', res.data.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
   };
-
-  let path = window.location.pathname;
-  console.log(path, 'path');
-
-  useEffect(() => {
-    if (path === '/griviences/admin-view') {
-      console.log(path, 'path');
-      setStudentView(false);
-    }
-    if (path === '/griviences/student-view') {
-      // console.log(path, 'path');
-      let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
-      console.log(userName.user_id, 'userName');
-      setUserID(userName.user_id);
-      setStudentView(false);
-      handleGenerateData();
-    }
-  }, []);
   return (
     <>
-      {!studentView ? (
+      <Layout>
+        <div className='griviences-breadcrums-container'>
+          <CommonBreadcrumbs componentName='Griviences' />
+        </div>
         <div className='upper-table-container'>
           <div className='all-box-container'>
             <div
@@ -341,12 +285,6 @@ const UpperGrade = (props) => {
                     </div>
                     <div className='text-fixed-last'>
                       Expand
-                      {/* <IconButton
-                      disabled color="primary"
-                      size='small'
-                    >
-                      <ArrowBackIcon className='arrow-button' />
-                    </IconButton> */}
                       <IconButton
                         aria-label='delete'
                         onClick={() => setCounter(counter + 1)}
@@ -610,13 +548,10 @@ const UpperGrade = (props) => {
               variant='contained'
               color='primary'
               startIcon={<FilterFilledIcon />}
-              onClick={handleGenerateData}
+              onClick={handleFilter}
             >
               <span style={{ color: 'white' }}> Filter</span>
             </Button>
-
-            {/* </div> */}
-            {/* <div className='generate-button'> */}
             <Button size='small' variant='contained' color='primary'>
               <Link
                 to='/greviences/createnew'
@@ -626,14 +561,63 @@ const UpperGrade = (props) => {
               </Link>
             </Button>
           </div>
-          {/* </div> */}
         </div>
-      ) : (
-        ''
-      )}
-      {loading && <Loader />}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginTop: '20px',
+            marginLeft: '50px',
+            marginRight: '50px',
+            paddingLeft: '50px',
+            paddingRight: '50px',
+            alignItems: 'center',
+          }}
+        >
+          <div>
+            <span style={{ color: '#014B7E' }}>
+              <strong>All</strong>
+            </span>
+          </div>
+
+          <div>
+            <Button
+              color='primary'
+              size='small'
+              style={{
+                position: 'relative',
+                top: '-16px',
+              }}
+            >
+              Download
+            </Button>
+          </div>
+        </div>
+        <Divider style={{ backgroundColor: '#78B5F3', width: '90%', marginLeft: '5%' }} />
+        <div
+          style={{
+            maxWidth: '80%',
+            margin: 'auto',
+          }}
+        ></div>
+
+        {!setMobileView ? (
+          <div className='create-report-box'>
+            <div className='create-report-button'>
+              <Link to='/greviences/createnew'>
+                <EmojiObjectsSharpIcon />
+                CREATE REPORT
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
+
+        {loading && <Loader />}
+      </Layout>
     </>
   );
 };
 
-export default UpperGrade;
+export default NewGrivience;
