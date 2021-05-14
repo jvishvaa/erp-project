@@ -1376,6 +1376,9 @@ function App({ alert }) {
                           <Route path='/griviences/admin-view'>
                             {({ match }) => <Griviences match={match} />}
                           </Route>
+                          <Route path='/admin-view'>
+                            {({ match }) => <NewGrivience match={match} />}
+                          </Route>
                           <Route path='/griviences/student-view'>
                             {({ match }) => <Griviences match={match} />}
                           </Route>

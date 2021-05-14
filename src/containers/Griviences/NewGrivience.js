@@ -13,7 +13,6 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import Loader from '../../components/loader/loader';
 import { Button, Divider, IconButton } from '@material-ui/core';
-// import '../UpperGrid/upper-grid.scss';
 import './UpperGrid/upper-grid.scss';
 import { set } from 'lodash';
 import { Link } from 'react-router-dom';
@@ -236,104 +235,7 @@ const NewGrivience = (props) => {
       .catch((error) => {
         setAlert('error', error.message);
       });
-    //   if (optionData == 0) {
-    //     setAlert('warning', 'Select Type');
-    //     return;
-    //   }
-    //   let temp;
-    //   if (optionData === 'type 1') {
-    //     temp = 1;
-    //   } else if (optionData === 'type 2') {
-    //     temp = 2;
-    //   } else if (optionData === 'type 3') {
-    //     temp = 3;
-    //   } else if (optionData === 'type 4') {
-    //     temp = 4;
-    //   }
   };
-  //   const handleGenerateData = () => {
-  //     let temp;
-  //     if (grevancesDataName === 'type 1') {
-  //       temp = 1;
-  //     } else if (grevancesDataName === 'type 2') {
-  //       temp = 2;
-  //     } else if (grevancesDataName === 'type 3') {
-  //       temp = 3;
-  //     } else if (grevancesDataName === 'type 4') {
-  //       temp = 4;
-  //     }
-  //     console.log(
-  //       acadamicYearID,
-  //       gevienceTypeID,
-  //       branchID,
-  //       gradeID,
-  //       sectionID,
-  //       temp,
-  //       userID,
-  //       '===============================>>>>>>>>>>>>>>>>>>>>'
-  //     );
-  //     if (path === '/griviences/admin-view') {
-  //       props.getGrivienceData(
-  //         acadamicYearID,
-  //         gevienceTypeID,
-  //         branchID,
-  //         gradeID,
-  //         sectionID,
-  //         temp,
-  //         openDialog
-  //       );
-  //       props.handlePassData(
-  //         acadamicYearID,
-  //         gevienceTypeID,
-  //         branchID,
-  //         gradeID,
-  //         sectionID,
-  //         temp,
-  //         openDialog
-  //       );
-  //     } else if (path === '/griviences/student-view') {
-  //       props.getGrivienceData(
-  //         // acadamicYearID,
-  //         // gevienceTypeID,
-  //         // branchID,
-  //         // gradeID,
-  //         // sectionID,
-  //         // temp,
-  //         userID,
-  //         studentView,
-  //         openDialog
-  //       );
-  //       props.handlePassData(
-  //         // acadamicYearID,
-  //         // gevienceTypeID,
-  //         // branchID,
-  //         // gradeID,
-  //         // sectionID,
-  //         // temp,
-  //         userID,
-  //         studentView,
-  //         openDialog
-  //       );
-  //     }
-  //   };
-
-  //   let path = window.location.pathname;
-  //   console.log(path, 'path');
-
-  //   useEffect(() => {
-  //     if (path === '/griviences/admin-view') {
-  //       console.log(path, 'path');
-  //       setStudentView(false);
-  //     }
-  //     if (path === '/griviences/student-view') {
-  //       // console.log(path, 'path');
-  //       let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
-  //       console.log(userName.user_id, 'userName');
-  //       setUserID(userName.user_id);
-  //       setStudentView(!studentView);
-  //       handleGenerateData();
-  //     }
-  //   }, []);
   return (
     <>
       <Layout>
@@ -383,12 +285,6 @@ const NewGrivience = (props) => {
                     </div>
                     <div className='text-fixed-last'>
                       Expand
-                      {/* <IconButton
-                      disabled color="primary"
-                      size='small'
-                    >
-                      <ArrowBackIcon className='arrow-button' />
-                    </IconButton> */}
                       <IconButton
                         aria-label='delete'
                         onClick={() => setCounter(counter + 1)}
@@ -656,9 +552,6 @@ const NewGrivience = (props) => {
             >
               <span style={{ color: 'white' }}> Filter</span>
             </Button>
-
-            {/* </div> */}
-            {/* <div className='generate-button'> */}
             <Button size='small' variant='contained' color='primary'>
               <Link
                 to='/greviences/createnew'
@@ -668,7 +561,6 @@ const NewGrivience = (props) => {
               </Link>
             </Button>
           </div>
-          {/* </div> */}
         </div>
         <div
           style={{
@@ -689,41 +581,17 @@ const NewGrivience = (props) => {
           </div>
 
           <div>
-            {/* <Grid
-              
-              onClick={showFilters}
-            >
-              <img src={Filter_Icon} className='filterIcon' />
-
-              <img src={FilterIcon} color='primary' fontSize='medium' clss />
-
-              <strong>Show filters</strong>
-            </Grid> */}
             <Button
               color='primary'
               size='small'
               style={{
                 position: 'relative',
                 top: '-16px',
-                // marginRight: '15%',
-                // marginTop: '5%',
               }}
-              //   onClick={handleDownload}
             >
               Download
             </Button>
           </div>
-          {/* {setMobileView ? (
-            <Button
-              color='primary'
-              size='small'
-              style={{ position: 'relative', marginRight: '5%' }}
-            >
-              <Link to='/greviences/createnew'>Add New</Link>
-            </Button>
-          ) : (
-            <></>
-          )} */}
         </div>
         <Divider style={{ backgroundColor: '#78B5F3', width: '90%', marginLeft: '5%' }} />
         <div
