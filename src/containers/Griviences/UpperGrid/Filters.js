@@ -25,6 +25,7 @@ import EmojiObjectsSharpIcon from '@material-ui/icons/EmojiObjectsSharp';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles({
   root: {
@@ -288,6 +289,7 @@ const AccordionDetails = withStyles((theme) => ({
 
 const Filters = (props) => {
   const classes = useStyles({});
+  const history = useHistory();
   const [academicYear, setAcademicYear] = React.useState([]);
   const [branch, setBranch] = React.useState([]);
   const [grade, setGrade] = React.useState([]);
@@ -374,6 +376,10 @@ const Filters = (props) => {
       type: gType,
     });
   };
+
+  const handleGenerate = () => {
+    history.push('/greviences/createnew');
+  }
 
   const clearFilter = () => {
     //setAcademicYear([]);
@@ -977,6 +983,7 @@ const Filters = (props) => {
               <div style={{ marginTop: '100px', marginBottom: '50px', display: 'flex', alignItems: 'center'}}>
                 <StyledFilterButton
                   startIcon={<EmojiObjectsSharpIcon className={classes.filterIcon} />}
+                  onClick={handleGenerate}
                 >
                   Generate
                 </StyledFilterButton>
