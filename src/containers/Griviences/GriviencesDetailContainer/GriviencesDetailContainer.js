@@ -159,6 +159,9 @@ const GriviencesDetailContainer = (props) => {
 
             <Grid container style={{ padding: '25px' }}>
               <Grid item sm={12}>
+                <Typography className={style.titleText}>
+                  {props?.list_tickets?.title}
+                </Typography>
                 <label className={style.text_color}>
                   {' '}
                   <span
