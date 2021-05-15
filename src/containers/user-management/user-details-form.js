@@ -259,14 +259,14 @@ const UserDetailsForm = ({
       </Grid>
       <Grid item md={4} xs={12}>
         <FormControl variant='outlined' fullWidth size='small'>
-          <InputLabel htmlFor='component-outlined'>Username</InputLabel>
+          <InputLabel htmlFor='component-outlined'>ERP ID</InputLabel>
           <OutlinedInput
             id='username'
             name='username'
             inputProps={{ maxLength: 25 }}
             onChange={formik.handleChange}
             value={formik.values.username}
-            label='Username'
+            label='ERP ID'
           />
           <FormHelperText style={{ color: 'red' }}>
             {formik.errors.username ? formik.errors.username : ''}
