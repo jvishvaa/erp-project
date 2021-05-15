@@ -18,7 +18,7 @@ const TotalStudentBar = ({ fullData }) => {
 
               <Grid item md={11} xs={12} className='totalStudentStrenghtLabel'>
                 <span>Total Strength -&nbsp;</span>
-                <span className='totalbold'>
+                <span className='totalbold1'>
                   &nbsp;
                   {(fullData && fullData.total_strength) || '0'}
                   &nbsp;
@@ -30,7 +30,7 @@ const TotalStudentBar = ({ fullData }) => {
                   &nbsp;
                 </span>
                 <span>&nbsp;Active&nbsp;</span>
-                <span className='totalboldspace123'>
+                <span className='totalbold1'>
                   &nbsp;
                   {fullData?.new_admissions.split('-')[0] +
                     '-' +
@@ -85,8 +85,10 @@ const TotalStudentBar = ({ fullData }) => {
 
               <Grid item md={11}>
                 &nbsp;
-                <span style={{ fontSize: '13px' }}>Total Strength -&nbsp;</span>
-                <span className='totalbold'>
+                <span style={{ fontSize: '13px', fontWeight: 'bold' }}>
+                  Total Strength -&nbsp;
+                </span>
+                <span className='totalbold1'>
                   &nbsp;
                   {(fullData && fullData.total_strength) || '0'}
                   &nbsp;
@@ -97,14 +99,16 @@ const TotalStudentBar = ({ fullData }) => {
                   {(fullData && fullData.total_active) || '0'}
                   &nbsp;
                 </span>
-                <span style={{ fontSize: '13px' }}>&nbsp;Active&nbsp;</span>
+                <span style={{ fontSize: '13px', fontWeight: 'bold' }}>
+                  &nbsp;Active&nbsp;
+                </span>
                 <span className='totalboldspace'>
                   &nbsp;
                   {fullData?.new_admissions.split('-')[0] +
                     '-' +
                     fullData?.new_admissions.split('-')[1] +
                     '-'}
-                  <span className='totalboldspace'>
+                  <span className='totalboldspace1'>
                     {fullData?.new_admissions.split('-')[2]}
                   </span>
                   &nbsp;

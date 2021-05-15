@@ -15,7 +15,9 @@ import MediaQuery from 'react-responsive';
 
 const StudentTableList = ({ tableData }) => {
   console.log('The data', tableData);
-
+  console.log('The data active', tableData[0]?.is_delete);
+  const value = true;
+  const value2 = false;
   return (
     <>
       <Grid
@@ -68,7 +70,14 @@ const StudentTableList = ({ tableData }) => {
                             {item.erp_id || ''}
                           </TableCell>
                           <TableCell float='center' style={{ fontSize: '12px' }}>
-                            {item.is_active ? 'Active' : 'In Active'}
+                            {item.is_active === value && item.is_delete === value2 ? (
+                              'Active'
+                            ) : item.is_active === value ||
+                              (item.is_active === value2 && item.is_delete === value) ? (
+                              <span style={{ color: 'rgb(157, 157, 157)' }}>Deleted</span>
+                            ) : (
+                              'In Active'
+                            )}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -111,7 +120,14 @@ const StudentTableList = ({ tableData }) => {
                             {item.erp_id || ''}
                           </TableCell>
                           <TableCell float='center' style={{ fontSize: '10px' }}>
-                            {item.is_active ? 'Active' : 'In Active'}
+                            {item.is_active === value && item.is_delete === value2 ? (
+                              'Active'
+                            ) : item.is_active === value ||
+                              (item.is_active === value2 && item.is_delete === value) ? (
+                              <span style={{ color: 'rgb(157, 157, 157)' }}>Deleted</span>
+                            ) : (
+                              'In Active'
+                            )}
                           </TableCell>
                         </TableRow>
                       ))}
