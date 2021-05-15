@@ -295,7 +295,7 @@ const StudentStrength = ({ history }) => {
                 </Grid>
                 <Grid item md={4} />
 
-                <Grid item>
+                <Grid item style={{ marginLeft: '5%' }}>
                   <Button
                     size='small'
                     href={hRef && hRef[0] && hRef[0].csv}
@@ -435,7 +435,6 @@ const StudentStrength = ({ history }) => {
         )}
         {filteredData && (
           <Grid container spacing={2} className='studentStrenghtBody1'>
-          
             <Grid item md={11} xs={12}>
               <TotalStudentBar
                 fullData={(filteredData && filteredData.overall_stat) || {}}
@@ -468,6 +467,7 @@ const StudentStrength = ({ history }) => {
                   year={(selectedAcademicYear && selectedAcademicYear.id) || 0}
                   branch={(selectedBranch && selectedBranch.branch?.id) || 0}
                   grade={selectedCard || 0}
+   
                   hadleClearGrade={setSelectedCard}
                   fullWidth
                 />

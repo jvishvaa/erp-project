@@ -14,6 +14,7 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import OpenPublication from './OpenPublication';
 import EditPublication from './EditPublication';
 import MediaQuery from 'react-responsive';
+import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import {
   CardActions,
   CardHeader,
@@ -54,7 +55,7 @@ import AddPublication from './AddPublication';
 import PublicationPreview from './PublicationPreview';
 import Nodata from '../../assets/images/not-found.png';
 import { set } from 'lodash';
-
+import PublishIcon from '@material-ui/icons/Publish';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -73,6 +74,14 @@ const useStyles = makeStyles((theme) => ({
     height: ' 463px',
     margin: '10%',
 
+    borderRadius: '20px',
+  },
+
+  paperMar3: {
+    marginLeft: '2%',
+    marginTop: '5%',
+    width: '280px',
+    height: '167px',
     borderRadius: '20px',
   },
   dividers: {
@@ -99,6 +108,14 @@ const useStyles = makeStyles((theme) => ({
   image1: {
     width: '259px',
     height: '306px',
+    borderRadius: '10px',
+    display: 'block',
+    margin: '2%',
+  },
+
+  image2: {
+    width: '120px',
+    height: '157px',
     borderRadius: '10px',
     display: 'block',
     margin: '2%',
@@ -174,9 +191,9 @@ const StyledFilterButton = withStyles({
 
 const Publications = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
-  const [subject, setSubject] = React.useState('Select Subject');
+
   const [mainsubject, setMainsubject] = React.useState([]);
-  const [branchGet, setBranchGet] = useState();
+
   const [data, setData] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [Filter, setFilter] = useState(true);
@@ -199,7 +216,6 @@ const Publications = (props) => {
   const [goBackFlag, setGoBackFlag] = useState(false);
   const [dataDraft, setDataDraft] = useState();
   const [reviewData, setReviewData] = useState();
-  const [getZoneData, setGetZoneData] = useState();
 
   const [reviewDataPut, setReviewDataPut] = useState('Review');
   const [publishDataPut, setPublishDataPut] = useState('Published');
@@ -354,22 +370,11 @@ const Publications = (props) => {
         } else {
           setAlert('error', res.data.message);
           setDataDraft('');
+          setTotalPages2('');
         }
       });
   };
 
-  const handleZone = (e) => {
-    setGetZoneData(e.target.value);
-  };
-
-  const handleZoneDataGet = () => {
-    axiosInstance
-      .get(`${endpoints.publish.ebook}?zone=${getZoneData}&status_post=Published`)
-      .then((res) => {
-        setData(res.data.data);
-      });
-    handleClose();
-  };
   const handleReviewStatus = (value) => {
     formData.append('status_post', reviewDataPut);
 
@@ -561,18 +566,126 @@ const Publications = (props) => {
   const Post = () => {
     return (
       <>
-        <MediaQuery minWidth={600}>
-          {data.map((item, index) => {
-            return (
-              <div className={classes.paperMar}>
-                {/* {ReactHtmlParser(item.description)} */}
-                <Grid item xs={12}>
+        <MediaQuery minWidth={1733}>
+          {data ? (
+            data.map((item, index) => {
+              return (
+                <div className={classes.paperMar}>
+                  {/* {ReactHtmlParser(item.description)} */}
+                  <Grid item xs={12}>
+                    <Paper elevation={3}>
+                      <Grid container spacing={2}>
+                        <Grid item>
+                          <ButtonBase className={classes.image}>
+                            <img
+                              className={classes.image}
+                              alt='complex'
+                              src={item.thumbnail}
+                            />
+                          </ButtonBase>
+                        </Grid>
+                        <Grid item xs={12} sm container>
+                          <Grid item xs container direction='column' spacing={2}>
+                            <Grid item xs>
+                              <Typography style={{ float: 'right' }}>
+                                <IconButton
+                                  aria-label='settings'
+                                  onClick={handleClickOpen1}
+                                >
+                                  <Tooltip title='Delete' arrow>
+                                    <MoreHorizIcon />
+                                  </Tooltip>
+                                </IconButton>
+                              </Typography>
+                              <Dialog
+                                open={open1}
+                                onClose={handleClose1}
+                                aria-labelledby='alert-dialog-title'
+                                aria-describedby='alert-dialog-description'
+                              >
+                                <DialogTitle id='alert-dialog-title'>
+                                  {'Are you sure to delete?'}
+                                </DialogTitle>
+
+                                <DialogActions>
+                                  <Button onClick={handleClose1} color='primary'>
+                                    cancel
+                                  </Button>
+                                  <Button
+                                    onClick={(e) => {
+                                      handleDelete(item.id, item.subject_id);
+                                      handleClose1();
+                                    }}
+                                    color='primary'
+                                    autoFocus
+                                  >
+                                    Delete
+                                  </Button>
+                                </DialogActions>
+                              </Dialog>
+                            </Grid>
+
+                            <Grid item xs>
+                              <Typography
+                                gutterBottom
+                                variant='subtitle1'
+                                color='secondary'
+                              >
+                                <b>{item.title}</b>
+                              </Typography>
+                              <Typography variant='body2' gutterBottom>
+                                Author:{item.author_name}
+                              </Typography>
+                            </Grid>
+                            <Grid item>
+                              <Typography variant='body2'>
+                                Publication:
+                                {item.publication_type === '1'
+                                  ? 'magazine'
+                                  : 'newsletter'}
+                              </Typography>
+                              <Typography variant='body2'>
+                                {item.created_at.slice(0, 10)}
+                              </Typography>
+                              <Typography>
+                                <Button
+                                  size='small'
+                                  type='submit'
+                                  color='primary'
+                                  style={{ paddingLeft: '50px', paddingRight: '50px' }}
+                                  onClick={(e) => {
+                                    handleRead(item.id);
+                                  }}
+                                >
+                                  READ
+                                </Button>
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Paper>
+                  </Grid>
+                </div>
+              );
+            })
+          ) : (
+            <Grid container direction='row' justify='center' alignItems='center'>
+              <img src={Nodata} />
+            </Grid>
+          )}
+        </MediaQuery>
+        <MediaQuery minWidth={900} maxWidth={1732}>
+          {data ? (
+            data.map((item, index) => {
+              return (
+                <div className={classes.paperMar3}>
                   <Paper elevation={3}>
                     <Grid container spacing={2}>
                       <Grid item>
-                        <ButtonBase className={classes.image}>
+                        <ButtonBase className={classes.image2}>
                           <img
-                            className={classes.image}
+                            className={classes.image2}
                             alt='complex'
                             src={item.thumbnail}
                           />
@@ -619,37 +732,48 @@ const Publications = (props) => {
                             </Dialog>
                           </Grid>
 
-                          <Grid item xs>
+                          <Grid item xs className={{ padding: '5%' }}>
                             <Typography
                               gutterBottom
                               variant='subtitle1'
                               color='secondary'
+                              className='newmargin'
                             >
-                              <b>{item.title}</b>
+                              <b style={{ fontSize: '13px' }}>{item.title}</b>
                             </Typography>
                             <Typography variant='body2' gutterBottom>
-                              Author:{item.author_name}
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Author:
+                                {item.author_name}
+                              </span>
                             </Typography>
                           </Grid>
-                          <Grid item>
+                          <Grid item style={{ marginTop: '-20%' }}>
                             <Typography variant='body2'>
-                              Publication:
-                              {item.publication_type === '1' ? 'magazine' : 'newsletter'}
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Publication:
+                                {item.publication_type === '1'
+                                  ? 'magazine'
+                                  : 'newsletter'}
+                              </span>
                             </Typography>
                             <Typography variant='body2'>
-                              {item.created_at.slice(0, 10)}
+                              <span style={{ fontSize: '13px' }}>
+                                {item.created_at.slice(0, 10)}
+                              </span>
                             </Typography>
                             <Typography>
                               <Button
                                 size='small'
                                 type='submit'
                                 color='primary'
-                                style={{ paddingLeft: '50px', paddingRight: '50px' }}
                                 onClick={(e) => {
                                   handleRead(item.id);
                                 }}
                               >
-                                READ
+                                <span style={{ fontSize: '13px' }}> READ</span>
                               </Button>
                             </Typography>
                           </Grid>
@@ -657,112 +781,124 @@ const Publications = (props) => {
                       </Grid>
                     </Grid>
                   </Paper>
-                </Grid>
-              </div>
-            );
-          })}
+                </div>
+              );
+            })
+          ) : (
+            <Grid container direction='row' justify='center' alignItems='center'>
+              <img src={Nodata} />
+            </Grid>
+          )}
         </MediaQuery>
-        <MediaQuery maxWidth={599}>
-          {data.map((item, index) => {
-            return (
-              <div className={classes.paperMar1}>
-                {/* {ReactHtmlParser(item.description)} */}
-                <Grid item xs={12} className='arrange'>
-                  <Paper elevation={3}>
-                    <Grid container spacing={2}>
-                      <Grid item>
-                        <Typography style={{ float: 'right' }}>
-                          <IconButton aria-label='settings' onClick={handleClickOpen1}>
-                            <Tooltip title='Delete' arrow>
-                              <MoreHorizIcon />
-                            </Tooltip>
-                          </IconButton>
-                        </Typography>
-                        <Dialog
-                          open={open1}
-                          onClose={handleClose1}
-                          aria-labelledby='alert-dialog-title'
-                          aria-describedby='alert-dialog-description'
-                        >
-                          <DialogTitle id='alert-dialog-title'>
-                            {'Are you sure to delete?'}
-                          </DialogTitle>
+        <MediaQuery maxWidth={899}>
+          {data ? (
+            data.map((item, index) => {
+              return (
+                <div className={classes.paperMar1}>
+                  {/* {ReactHtmlParser(item.description)} */}
+                  <Grid item xs={12} className='arrange'>
+                    <Paper elevation={3}>
+                      <Grid container spacing={2}>
+                        <Grid item>
+                          <Typography style={{ float: 'right' }}>
+                            <IconButton aria-label='settings' onClick={handleClickOpen1}>
+                              <Tooltip title='Delete' arrow>
+                                <MoreHorizIcon />
+                              </Tooltip>
+                            </IconButton>
+                          </Typography>
+                          <Dialog
+                            open={open1}
+                            onClose={handleClose1}
+                            aria-labelledby='alert-dialog-title'
+                            aria-describedby='alert-dialog-description'
+                          >
+                            <DialogTitle id='alert-dialog-title'>
+                              {'Are you sure to delete?'}
+                            </DialogTitle>
 
-                          <DialogActions>
-                            <Button onClick={handleClose1} color='primary'>
-                              cancel
-                            </Button>
-                            <Button
-                              onClick={(e) => {
-                                handleDelete(item.id, item.subject_id);
-                                handleClose1();
-                              }}
-                              color='primary'
-                              autoFocus
-                            >
-                              Delete
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
-                        <ButtonBase className={classes.image1}>
-                          <img
-                            className={classes.image1}
-                            alt='complex'
-                            src={item.thumbnail}
-                          />
-                        </ButtonBase>
-                      </Grid>
-                      <Grid item xs={12} sm container>
-                        <Grid
-                          item
-                          xs
-                          container
-                          direction='column'
-                          spacing={2}
-                          style={{ margin: '5%' }}
-                        >
-                          <Grid item xs>
-                            <Typography
-                              gutterBottom
-                              variant='subtitle1'
-                              color='secondary'
-                            >
-                              <b>{item.title}</b>
-                            </Typography>
-                            <Typography variant='body2' gutterBottom>
-                              Author:{item.author_name}
-                            </Typography>
-                          </Grid>
-                          <Grid item>
-                            <Typography variant='body2'>
-                              Publication:
-                              {item.publication_type === '1' ? 'magazine' : 'newsletter'}
-                            </Typography>
-                            <Typography variant='body2'>
-                              {item.created_at.slice(0, 10)}
-                            </Typography>
-                            <Typography>
-                              <Button
-                                size='small'
-                                type='submit'
-                                color='primary'
-                                style={{ paddingLeft: '50px', paddingRight: '50px' }}
-                                onClick={(e) => {
-                                  handleRead(item.id);
-                                }}
-                              >
-                                READ
+                            <DialogActions>
+                              <Button onClick={handleClose1} color='primary'>
+                                cancel
                               </Button>
-                            </Typography>
+                              <Button
+                                onClick={(e) => {
+                                  handleDelete(item.id, item.subject_id);
+                                  handleClose1();
+                                }}
+                                color='primary'
+                                autoFocus
+                              >
+                                Delete
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+                          <ButtonBase className={classes.image1}>
+                            <img
+                              className={classes.image1}
+                              alt='complex'
+                              src={item.thumbnail}
+                            />
+                          </ButtonBase>
+                        </Grid>
+                        <Grid item xs={12} sm container>
+                          <Grid
+                            item
+                            xs
+                            container
+                            direction='column'
+                            spacing={2}
+                            style={{ margin: '5%' }}
+                          >
+                            <Grid item xs>
+                              <Typography
+                                gutterBottom
+                                variant='subtitle1'
+                                color='secondary'
+                              >
+                                <b>{item.title}</b>
+                              </Typography>
+                              <Typography variant='body2' gutterBottom>
+                                Author:{item.author_name}
+                              </Typography>
+                            </Grid>
+                            <Grid item>
+                              <Typography variant='body2'>
+                                Publication:
+                                {item.publication_type === '1'
+                                  ? 'magazine'
+                                  : 'newsletter'}
+                              </Typography>
+                              <Typography variant='body2'>
+                                {item.created_at.slice(0, 10)}
+                              </Typography>
+                              <Typography>
+                                <Button
+                                  size='small'
+                                  type='submit'
+                                  color='primary'
+                                  style={{ paddingLeft: '50px', paddingRight: '50px' }}
+                                  onClick={(e) => {
+                                    handleRead(item.id);
+                                  }}
+                                >
+                                  READ
+                                </Button>
+                              </Typography>
+                            </Grid>
                           </Grid>
                         </Grid>
                       </Grid>
-                    </Grid>
-                  </Paper>
-                </Grid>
-              </div>
-            );
-          })}
+                    </Paper>
+                  </Grid>
+                </div>
+              );
+            })
+          ) : (
+            <Grid container direction='row' justify='center' alignItems='center'>
+              <img src={Nodata} />
+            </Grid>
+          )}
         </MediaQuery>
       </>
     );
@@ -770,7 +906,7 @@ const Publications = (props) => {
   const NewDraft = () => {
     return (
       <>
-        <MediaQuery minWidth={600}>
+        <MediaQuery minWidth={1733}>
           {dataDraft ? (
             dataDraft.map((item, index) => {
               return (
@@ -897,7 +1033,122 @@ const Publications = (props) => {
             </Grid>
           )}
         </MediaQuery>
-        <MediaQuery maxWidth={599}>
+        <MediaQuery minWidth={900} maxWidth={1732}>
+          {dataDraft ? (
+            dataDraft.map((item, index) => {
+              return (
+                <div className={classes.paperMar3}>
+                  <Paper elevation={3}>
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <ButtonBase className={classes.image2}>
+                          <img
+                            className={classes.image2}
+                            alt='complex'
+                            src={item.thumbnail}
+                          />
+                        </ButtonBase>
+                      </Grid>
+                      <Grid item xs={12} sm container>
+                        <Grid item xs container direction='column' spacing={2}>
+                          <Grid item xs>
+                            <Typography style={{ float: 'right' }}>
+                              <IconButton
+                                aria-label='settings'
+                                onClick={handleClickOpen1}
+                              >
+                                <Tooltip title='Delete' arrow>
+                                  <MoreHorizIcon />
+                                </Tooltip>
+                              </IconButton>
+                            </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(item.id, item.subject_id);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+                          </Grid>
+
+                          <Grid item xs className={{ padding: '5%' }}>
+                            <Typography
+                              gutterBottom
+                              variant='subtitle1'
+                              color='secondary'
+                              className='newmargin'
+                            >
+                              <b style={{ fontSize: '13px' }}>{item.title}</b>
+                            </Typography>
+                            <Typography variant='body2' gutterBottom>
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Author:
+                                {item.author_name}
+                              </span>
+                            </Typography>
+                          </Grid>
+                          <Grid item style={{ marginTop: '-20%' }}>
+                            <Typography variant='body2'>
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Publication:
+                                {item.publication_type === '1'
+                                  ? 'magazine'
+                                  : 'newsletter'}
+                              </span>
+                            </Typography>
+                            <Typography variant='body2'>
+                              <span style={{ fontSize: '13px' }}>
+                                {item.created_at.slice(0, 10)}
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <Button
+                                size='small'
+                                type='submit'
+                                color='primary'
+                                onClick={(e) => {
+                                  handleReviewStatus(item.id);
+                                }}
+                              >
+                                Review
+                              </Button>
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                </div>
+              );
+            })
+          ) : (
+            <Grid item md={3}>
+              <h1>Select Above Subject</h1>
+            </Grid>
+          )}
+        </MediaQuery>
+        <MediaQuery maxWidth={899}>
           {dataDraft ? (
             dataDraft.map((item, index) => {
               return (
@@ -1014,7 +1265,7 @@ const Publications = (props) => {
   const IndividualPost = () => {
     return (
       <>
-        <MediaQuery minWidth={600}>
+        <MediaQuery minWidth={1733}>
           {individualData ? (
             individualData.map((item, index) => {
               return (
@@ -1122,7 +1373,122 @@ const Publications = (props) => {
             </Grid>
           )}
         </MediaQuery>
-        <MediaQuery maxWidth={599}>
+        <MediaQuery minWidth={900} maxWidth={1732}>
+          {individualData ? (
+            individualData.map((item, index) => {
+              return (
+                <div className={classes.paperMar3}>
+                  <Paper elevation={3}>
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <ButtonBase className={classes.image2}>
+                          <img
+                            className={classes.image2}
+                            alt='complex'
+                            src={item.thumbnail}
+                          />
+                        </ButtonBase>
+                      </Grid>
+                      <Grid item xs={12} sm container>
+                        <Grid item xs container direction='column' spacing={2}>
+                          <Grid item xs>
+                            <Typography style={{ float: 'right' }}>
+                              <IconButton
+                                aria-label='settings'
+                                onClick={handleClickOpen1}
+                              >
+                                <Tooltip title='Delete' arrow>
+                                  <MoreHorizIcon />
+                                </Tooltip>
+                              </IconButton>
+                            </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(item.id, item.subject_id);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+                          </Grid>
+
+                          <Grid item xs className={{ padding: '5%' }}>
+                            <Typography
+                              gutterBottom
+                              variant='subtitle1'
+                              color='secondary'
+                              className='newmargin'
+                            >
+                              <b style={{ fontSize: '13px' }}>{item.title}</b>
+                            </Typography>
+                            <Typography variant='body2' gutterBottom>
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Author:
+                                {item.author_name}
+                              </span>
+                            </Typography>
+                          </Grid>
+                          <Grid item style={{ marginTop: '-20%' }}>
+                            <Typography variant='body2'>
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Publication:
+                                {item.publication_type === '1'
+                                  ? 'magazine'
+                                  : 'newsletter'}
+                              </span>
+                            </Typography>
+                            <Typography variant='body2'>
+                              <span style={{ fontSize: '13px' }}>
+                                {item.created_at.slice(0, 10)}
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <Button
+                                size='small'
+                                type='submit'
+                                color='primary'
+                                onClick={(e) => {
+                                  handleRead(item.id);
+                                }}
+                              >
+                                READ
+                              </Button>
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                </div>
+              );
+            })
+          ) : (
+            <Grid item md={3}>
+              <h1>Select Above Subject</h1>
+            </Grid>
+          )}
+        </MediaQuery>
+        <MediaQuery maxWidth={899}>
           {individualData ? (
             individualData.map((item, index) => {
               return (
@@ -1239,7 +1605,7 @@ const Publications = (props) => {
   const ReviewPost = () => {
     return (
       <>
-        <MediaQuery minWidth={600}>
+        <MediaQuery minWidth={1733}>
           {reviewData ? (
             reviewData.map((item, index) => {
               return (
@@ -1357,8 +1723,135 @@ const Publications = (props) => {
             </Grid>
           )}
         </MediaQuery>
+        <MediaQuery minWidth={900} maxWidth={1732}>
+          {reviewData ? (
+            reviewData.map((item, index) => {
+              return (
+                <div className={classes.paperMar3}>
+                  <Paper elevation={3}>
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <ButtonBase className={classes.image2}>
+                          <img
+                            className={classes.image2}
+                            alt='complex'
+                            src={item.thumbnail}
+                          />
+                        </ButtonBase>
+                      </Grid>
+                      <Grid item xs={12} sm container>
+                        <Grid item xs container direction='column' spacing={2}>
+                          <Grid item xs>
+                            <Typography style={{ float: 'right' }}>
+                              <IconButton
+                                aria-label='settings'
+                                onClick={handleClickOpen1}
+                              >
+                                <Tooltip title='Delete' arrow>
+                                  <MoreHorizIcon />
+                                </Tooltip>
+                              </IconButton>
+                            </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
 
-        <MediaQuery maxWidth={599}>
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(item.id, item.subject_id);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+                          </Grid>
+
+                          <Grid item xs className={{ padding: '5%' }}>
+                            <Typography
+                              gutterBottom
+                              variant='subtitle1'
+                              color='secondary'
+                              className='newmargin'
+                            >
+                              <b style={{ fontSize: '13px' }}>{item.title}</b>
+                            </Typography>
+                            <Typography variant='body2' gutterBottom>
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Author:
+                                {item.author_name}
+                              </span>
+                            </Typography>
+                          </Grid>
+                          <Grid item style={{ marginTop: '-20%' }}>
+                            <Typography variant='body2'>
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Publication:
+                                {item.publication_type === '1'
+                                  ? 'magazine'
+                                  : 'newsletter'}
+                              </span>
+                            </Typography>
+                            <Typography variant='body2'>
+                              <span style={{ fontSize: '13px' }}>
+                                {item.created_at.slice(0, 10)}
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <button
+                                type='submit'
+                                style={{ margin: '2%', color: 'pink' }}
+                                onClick={(e) => {
+                                  handleRead(item.id);
+                                }}
+                              >
+                                <span style={{ fontSize: '18px' }}>
+                                  <ImportContactsIcon />
+                                </span>
+                              </button>
+                              <button
+                                type='submit'
+                                style={{ margin: '2%', color: 'pink' }}
+                                onClick={(e) => {
+                                  handlePublish(item.id);
+                                }}
+                              >
+                                <span style={{ fontSize: '18px' }}>
+                                  <PublishIcon />
+                                </span>
+                              </button>
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                </div>
+              );
+            })
+          ) : (
+            <Grid item md={3}>
+              <h1>Select Above Subject</h1>
+            </Grid>
+          )}
+        </MediaQuery>
+
+        <MediaQuery maxWidth={899}>
           {reviewData ? (
             reviewData.map((item, index) => {
               return (
@@ -1523,7 +2016,7 @@ const Publications = (props) => {
       {tableFlag && !readFlag && !editFlag && (
         <div>
           <>
-            <MediaQuery minWidth={600}>
+            <MediaQuery minWidth={900}>
               {Filter ? (
                 <div className={classes.root}>
                   <div className='upper-table-container'>
@@ -1968,7 +2461,7 @@ const Publications = (props) => {
             <Tabpanel1 value={value} index={3}>
               {changer4 ? (
                 <>
-                  <Grid container direction='row' spacing={1}>
+                  <Grid container direction='row' spacing={1} className='space'>
                     <IndividualPost />
                   </Grid>
                   {individualData && (

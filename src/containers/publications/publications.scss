@@ -227,7 +227,13 @@
 .gridscroll.MuiGrid-spacing-xs-1 {
   width: 100%;
 }
+.newmargin.MuiTypography-subtitle1.MuiTypography-colorSecondary.MuiTypography-gutterBottom {
+  margin-top: -30% !important;
+}
 
+.space.MuiGrid-container.MuiGrid-spacing-xs-1 {
+  width: 100% !important;
+}
 //*****************************//
 
 .marg {
