@@ -68,11 +68,13 @@ const StudentTableList = ({ tableData }) => {
                             {item.erp_id || ''}
                           </TableCell>
                           <TableCell float='center' style={{ fontSize: '12px' }}>
-                            {item.is_active
-                              ? 'Active'
-                              : item.is_delete
-                              ? 'Deleted'
-                              : 'In Active'}
+                            {item.is_active ? (
+                              'Active'
+                            ) : item.is_delete ? (
+                              <span style={{ color: 'rgb(157, 157, 157)' }}>Deleted</span>
+                            ) : (
+                              'In Active'
+                            )}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -115,11 +117,15 @@ const StudentTableList = ({ tableData }) => {
                             {item.erp_id || ''}
                           </TableCell>
                           <TableCell float='center' style={{ fontSize: '10px' }}>
-                            {item.is_active
-                              ? 'Active'
-                              : item.is_delete
-                              ? 'Deleted'
-                              : 'In Active'}
+                            {item.is_active ? (
+                              'Active'
+                            ) : item.is_delete ? (
+                              <span style={{ color: 'rgb(157, 157, 157)' }}>
+                                'Deleted'
+                              </span>
+                            ) : (
+                              'In Active'
+                            )}
                           </TableCell>
                         </TableRow>
                       ))}
