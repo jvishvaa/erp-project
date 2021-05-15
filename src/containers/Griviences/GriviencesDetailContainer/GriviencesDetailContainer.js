@@ -25,6 +25,11 @@ const useStyles = makeStyles((theme) => ({
   text_color: {
     color: '#014B7E',
   },
+  titleText: {
+    display: 'block',
+    fontSize: '20px',
+    fontWeight: 'bold',
+  },
   container: {
     // width: '90%',
     marginTop: '20px',
@@ -137,13 +142,12 @@ const GriviencesDetailContainer = (props) => {
                   className={style.purple}
                   src={props?.list_tickets?.user?.profile}
                 />
-
-                <h5
-                  className={style.text_color}
-                  style={{ fontSize: '20px', marginLeft: '5px' }}
-                >
-                  {props?.list_tickets?.title}
-                </h5>
+                <span style={{ marginLeft: '10px'}}>
+                  <Typography className={style.titleText}>
+                    {props?.list_tickets?.title}
+                  </Typography>
+                  <Typography style={{fontSize: '18px'}}>{props?.list_tickets?.ticket_type}</Typography>
+                </span>
               </div>
 
               <div style={{ textAlign: 'end' }}>
@@ -155,6 +159,9 @@ const GriviencesDetailContainer = (props) => {
 
             <Grid container style={{ padding: '25px' }}>
               <Grid item sm={12}>
+                <Typography className={style.titleText}>
+                  {props?.list_tickets?.title}
+                </Typography>
                 <label className={style.text_color}>
                   {' '}
                   <span
