@@ -87,6 +87,7 @@ export const fetchUser = (id) => (dispatch) => {
         middle_name: user.user_middle_name || '',
         last_name: user.user.last_name || '',
         email: user.user.email || '',
+        username: user.user.username || '',
         // erp_user: user.erp_user || '',
         // branch_code:user.branch_code || '',
         academic_year: user.academic_year && {
