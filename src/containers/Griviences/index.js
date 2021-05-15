@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Avatar, Button, Divider, Grid, Paper, withStyles } from '@material-ui/core';
+import { Avatar, Button, Divider, Grid, makeStyles, Paper, withStyles } from '@material-ui/core';
 import Layout from '../Layout';
 import GriviencesDetailContainer from './GriviencesDetailContainer/GriviencesDetailContainer';
 import Axios from 'axios';
 // import FilterIcon from '../../assets/images/FilterIcon.png';
 import CallIcon from '@material-ui/icons/Call';
+import Filters from './UpperGrid/Filters';
+import Collapse from '@material-ui/core/Collapse';
 // import FilterAltIcon from '@material-ui/icons/FilterAlt';
 
 // import FilterAltIcon from '@material-ui/icons/FilterAlt';
@@ -25,14 +27,38 @@ import { BrowserRouter as Router, Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import './greviences.scss';
 
+const useStyles = makeStyles({
+  grivienceDiv: {
+    '@media (max-width: 600px)': {
+      marginBottom: '70px'
+    }
+  },
+  buttonContainer: {
+    marginTop: '20px',
+    '@media (min-width: 601px)': {
+      display: 'flex',
+      justifyContent: 'space-between',
+      marginLeft: '50px',
+      marginRight: '50px',
+      paddingLeft: '50px',
+      paddingRight: '50px',
+      alignItems: 'center',
+    },
+    '@media (max-width: 600px)': {
+      display: 'flex',
+      marginLeft: '20px',
+      marginRight: '20px',
+      alignItems: 'center',
+    },
+  },
+})
+
 const StyledFilterButton = withStyles({
   root: {
     color: '#014B7E',
-    marginLeft: '50px',
-    marginBottom: '6px',
+    marginBottom: '5px',
     fontSize: '16px',
     fontFamily: 'Raleway',
-    float: 'right',
     textTransform: 'capitalize',
     backgroundColor: 'transparent',
     '&:hover': {
@@ -43,6 +69,7 @@ const StyledFilterButton = withStyles({
 })(Button);
 
 const GravienceHome = () => {
+  const classes = useStyles({});
   const { setAlert } = useContext(AlertNotificationContext);
   const location = useLocation();
   const { role_details: roleDetailes } =
@@ -64,6 +91,28 @@ const GravienceHome = () => {
   const [flag, setFlag] = useState(false);
   const [grievanceTypeID, setGrievanceTypeID] = useState();
   let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const [expanded, setExpanded] = React.useState(false);
+  const [filters, setFilters] = React.useState({
+    year: '',
+    branch: '',
+    grade: '',
+    section: '',
+    types: '',
+  });
+
+  const handleFilterData = (years, branchs, grades, sections, types) => {
+    setFilters({
+      year: years,
+      branch: branchs,
+      grade: grades,
+      section: sections,
+      types: types
+    });
+  };
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
 
   console.log(userName.user_id, 'userName');
   const handleOpenForm = () => {
@@ -164,20 +213,7 @@ const GravienceHome = () => {
     userID
   ) => {
     if (path === '/griviences/admin-view') {
-      await axiosInstance
-        // .get(
-        //   endpoints.grievances.listTickets +
-        //     // `?academic_year_id=${36}&branch_id=${75}&grievance_type_id${1}`,
-        //     `?academic_year_id=${1}&branch_id=${1}&grievance_type_id${1}`,
-        //   {
-        //     // .get(endpoints.grievances.listTickets, {
-        //     headers: {
-        //       Authorization: `Bearer ${token}`,
-        //     },
-        //   }
-        // )
-
-        .get(
+      await axiosInstance.get(
           `${endpoints.grievances.getGrivienceList}?academic_year=${acadamicYearID[0]}&branch=${branchID[0]}&grade=${gradeID[0]}&section=${sectionID[0]}&grievance_type=${temp}`
         )
         .then((result) => {
@@ -193,21 +229,68 @@ const GravienceHome = () => {
           setAlert('error', error.message);
         });
     } else if (path === '/griviences/student-view') {
-      console.log(path, '********Student-view***********');
-      await axiosInstance
-        // .get(
-        //   endpoints.grievances.listTickets +
-        //     // `?academic_year_id=${36}&branch_id=${75}&grievance_type_id${1}`,
-        //     `?academic_year_id=${1}&branch_id=${1}&grievance_type_id${1}`,
-        //   {
-        //     // .get(endpoints.grievances.listTickets, {
-        //     headers: {
-        //       Authorization: `Bearer ${token}`,
-        //     },
-        //   }
-        // )
+      // await axiosInstance
+      // .get(`${endpoints.grievances.getGrievenceErpList}?erp_id=${userName.user_id}`)
+      //   .then((result) => {
+      //     console.log(result, 'list data');
+      //     if (result.status == 200) {
+      //       console.log(result, 'list-tickets ddata');
+      //       setGravienceList(result.data.data.results);
+      //     } else {
+      //       setAlert('error', result.data.message);
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     setAlert('error', error.message);
+      //   });
+    }
+  };
 
-        .get(`${endpoints.grievances.getGrievenceErpList}?erp_id=${userName.user_id}`)
+  useEffect(() => {
+    console.log(filters,'filters');
+    if (path === '/griviences/admin-view'){
+      if(filters.year !== '' && filters.branch !== '' && filters.grade !== '' && filters.section !== '' && filters.types !== ''){
+        axiosInstance.get(
+          `${endpoints.grievances.getGrivienceList}?academic_year=${filters.year?.id}&branch=${filters.branch?.id}&grade=${filters.grade?.id}&section=${filters.section?.id}&grievance_type=${filters.types?.id}`
+        )
+        .then((result) => {
+          console.log(result, 'list data');
+          if (result.status == 200) {
+            console.log(result, 'list-tickets ddata');
+            setGravienceList(result.data.data.results);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+      } else {
+        // add 
+        axiosInstance.get(
+          `${endpoints.grievances.getGrivienceList}`
+        )
+        .then((result) => {
+          console.log(result, 'list data');
+          if (result.status == 200) {
+            console.log(result, 'list-tickets ddata');
+            setGravienceList(result.data.data.results);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          //setAlert('error', error.message);
+          setAlert('warning', 'Please select filter');
+        });
+      }
+    }
+  },[filters])
+
+  useEffect(() => {
+    if(path === '/griviences/student-view'){
+      axiosInstance
+      .get(`${endpoints.grievances.getGrievenceErpList}?erp_id=${userName.user_id}`)
         .then((result) => {
           console.log(result, 'list data');
           if (result.status == 200) {
@@ -221,7 +304,7 @@ const GravienceHome = () => {
           setAlert('error', error.message);
         });
     }
-  };
+  },[]);
   const showFilters = () => {
     console.log('sameera');
     setStudentView(!studentView);
@@ -233,110 +316,75 @@ const GravienceHome = () => {
       <div className='griviences-breadcrums-container'>
         <CommonBreadcrumbs componentName='Griviences' />
       </div>
-      {setMobileView ? (
-        <UpperGrade handlePassData={handlePassData} getGrivienceData={getGrivienceData} />
-      ) : (
-        <></>
-      )}
-      <div className='Greviences-container'>
-        {/* {setMobileView ? } */}
-        {/* <Dialog
-          open={openGrievanceReportForm}
-          onClose={handleCloseForm}
-          aria-labelledby='form-dialog-title'
-        >
-          <GenerateReport close={handleCloseForm} />
-        </Dialog> */}
-
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginTop: '20px',
-            marginLeft: '50px',
-            marginRight: '50px',
-            paddingLeft: '50px',
-            paddingRight: '50px',
-            alignItems: 'center',
-          }}
-        >
+      <div className={classes.grivienceDiv}>
+        {location.pathname !== '/griviences/student-view' && (
           <div>
-            <span style={{ color: '#014B7E' }}>
-              <strong>All</strong>
-            </span>
+            <Collapse in={expanded}>
+              <Filters handleFilterData={handleFilterData}/>
+            </Collapse>
           </div>
+        )}
 
-          <div>
-            {location.pathname == '/griviences/student-view' && (
-              <StyledFilterButton onClick={showFilters} startIcon={<FilterFilledIcon />}>
-                Show filters
-              </StyledFilterButton>
-            )}
-            {/* <Grid
-              style={{
-                marginBottom: '50px',
-                color: 'pink',
-                cursor: 'pointer',
-              }}
-              onClick={showFilters}
-            >
-              <img src={Filter_Icon} className='filterIcon' />
-              <img src={FilterIcon} color='primary' fontSize='medium' clss /> 
-              <FilterFilledIcon />
-              <strong>Show filters</strong>
-            </Grid> */}
-            <Button
-              color='primary'
-              size='small'
-              style={{
-                position: 'relative',
-                top: '-16px',
-                // marginRight: '15%',
-                // marginTop: '5%',
-              }}
-              onClick={handleDownload}
-            >
-              Download
-            </Button>
+        {/* {setMobileView ? (
+          <UpperGrade handlePassData={handlePassData} getGrivienceData={getGrivienceData} />
+        ) : (
+          <></>
+        )} */}
+        <div className='Greviences-container'>
+          <Grid
+            container
+            className={classes.buttonContainer}
+          >
+            <Grid item xs={12} sm={8}>
+              <span style={{ color: '#014B7E' }}>
+                <strong>All</strong>
+              </span>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Grid container>
+                <Grid item xs={6}>
+                  <Button
+                    color='primary'
+                    onClick={handleDownload}
+                  >
+                    Download
+                  </Button>
+                </Grid>
+                {location.pathname !== '/griviences/student-view' && (
+                  <Grid item xs={6}>
+                    <StyledFilterButton onClick={handleExpandClick} startIcon={<FilterFilledIcon />}>
+                      Show filters
+                    </StyledFilterButton>
+                  </Grid>
+                )}
+              </Grid>
+            </Grid>
+          </Grid>
+          <Divider style={{ backgroundColor: '#78B5F3', width: '90%', marginLeft: '5%' }} />
+          <div
+            style={{
+              maxWidth: '80%',
+              margin: 'auto',
+            }}
+          >
+            {gravienceList != undefined && gravienceList.length != 0
+              ? gravienceList.map((result) => (
+                  <GriviencesDetailContainer list_tickets={result} />
+                ))
+              : null}
           </div>
-          {/* {setMobileView ? (
-            <Button
-              color='primary'
-              size='small'
-              style={{ position: 'relative', marginRight: '5%' }}
-            >
-              <Link to='/greviences/createnew'>Add New</Link>
-            </Button>
-          ) : (
-            <></>
-          )} */}
-        </div>
-        <Divider style={{ backgroundColor: '#78B5F3', width: '90%', marginLeft: '5%' }} />
-        <div
-          style={{
-            maxWidth: '80%',
-            margin: 'auto',
-          }}
-        >
-          {gravienceList != undefined && gravienceList.length != 0
-            ? gravienceList.map((result) => (
-                <GriviencesDetailContainer list_tickets={result} />
-              ))
-            : null}
         </div>
       </div>
-      {!setMobileView ? (
-        <div className='create-report-box'>
-          <div className='create-report-button'>
-            <Link to='/greviences/createnew'>
-              <EmojiObjectsSharpIcon />
-              CREATE REPORT
-            </Link>
+      {!setMobileView && (
+          <div className='create-report-box'>
+            <div className='create-report-button'>
+              <Link to='/greviences/createnew'>
+                <EmojiObjectsSharpIcon />
+                CREATE REPORT
+              </Link>
+            </div>
           </div>
-        </div>
-      ) : (
-        <></>
-      )}
+        )}
     </Layout>
   );
 };

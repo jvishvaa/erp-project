@@ -28,6 +28,7 @@ import StudentClasses from 'containers/online-class/aol-view/StudentClasses';
 import { columnSelectionComplete } from '@syncfusion/ej2-grids';
 import Grid from '@material-ui/core/Grid';
 import { excelQueryCellInfo } from '@syncfusion/ej2-grids';
+import { useHistory, useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -62,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
 const CreateNewForm = (props) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
+  const history = useHistory();
   const [optionData, setOptionData] = useState('');
   const [loading, setLoading] = useState(false);
   const [academicYear, setAcademicYear] = useState([]);
@@ -261,6 +263,7 @@ const CreateNewForm = (props) => {
         if (res.status === 200) {
           setAlert('success', 'Created Succcessfully');
           setLoading(false);
+          history.push('/griviences/admin-view');
         }
       })
       .catch((error) => {
