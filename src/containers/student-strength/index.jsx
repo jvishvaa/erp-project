@@ -36,7 +36,7 @@ const StudentStrength = ({ history }) => {
     handleFilter(page);
   };
 
-  const moduleId = 178;
+  const moduleId = 177;
   useEffect(() => {
     setHRef([
       {
