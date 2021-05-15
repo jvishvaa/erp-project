@@ -115,7 +115,7 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
                 <Grid
                   container
                   justify='flex-end'
-                  style={{ padding: '0px', marginTop: '-50px' }}
+                  style={{ padding: '0px', marginTop: '-50px', marginLeft: '40px' }}
                 >
                   <Button
                     size='small'
