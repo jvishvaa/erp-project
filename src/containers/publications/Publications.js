@@ -5,6 +5,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 
 import Card from '@material-ui/core/Card';
 import FilterImage from '../../assets/images/Filter_Icon.svg';
+import LineImage from '../../assets/images/line.svg';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
@@ -13,6 +14,7 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import OpenPublication from './OpenPublication';
 import EditPublication from './EditPublication';
 import MediaQuery from 'react-responsive';
+import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import {
   CardActions,
   CardHeader,
@@ -45,12 +47,15 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Paginations from './Paginations';
+
 import './publications.scss';
 import { Pagination } from '@material-ui/lab';
-import { DataGrid } from '@material-ui/data-grid';
+
 import AddPublication from './AddPublication';
 import PublicationPreview from './PublicationPreview';
+import Nodata from '../../assets/images/not-found.png';
+import { set } from 'lodash';
+import PublishIcon from '@material-ui/icons/Publish';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -69,6 +74,14 @@ const useStyles = makeStyles((theme) => ({
     height: ' 463px',
     margin: '10%',
 
+    borderRadius: '20px',
+  },
+
+  paperMar3: {
+    marginLeft: '2%',
+    marginTop: '5%',
+    width: '280px',
+    height: '167px',
     borderRadius: '20px',
   },
   dividers: {
@@ -95,6 +108,14 @@ const useStyles = makeStyles((theme) => ({
   image1: {
     width: '259px',
     height: '306px',
+    borderRadius: '10px',
+    display: 'block',
+    margin: '2%',
+  },
+
+  image2: {
+    width: '120px',
+    height: '157px',
     borderRadius: '10px',
     display: 'block',
     margin: '2%',
@@ -170,13 +191,11 @@ const StyledFilterButton = withStyles({
 
 const Publications = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
-  const [subject, setSubject] = React.useState('Select Subject');
+
   const [mainsubject, setMainsubject] = React.useState([]);
-  const [branchGet, setBranchGet] = useState();
+
   const [data, setData] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const [postsPerPage] = React.useState(8);
   const [Filter, setFilter] = useState(true);
   //  const [counter, setCounter] = useState(3);
 
@@ -187,6 +206,7 @@ const Publications = (props) => {
   const [subjectID, setSubjectID] = useState('Select Subject');
   const [counter, setCounter] = useState(2);
   const [academicYear, setAcadamicYearName] = useState('Select Acdemic Year');
+  const [id, setId] = useState();
 
   const [individualData, setIndividualData] = useState();
   const [readFlag, setReadFlag] = useState(false);
@@ -196,7 +216,6 @@ const Publications = (props) => {
   const [goBackFlag, setGoBackFlag] = useState(false);
   const [dataDraft, setDataDraft] = useState();
   const [reviewData, setReviewData] = useState();
-  const [getZoneData, setGetZoneData] = useState();
 
   const [reviewDataPut, setReviewDataPut] = useState('Review');
   const [publishDataPut, setPublishDataPut] = useState('Published');
@@ -211,6 +230,36 @@ const Publications = (props) => {
   const [pub_file, setPub_file] = useState();
   const [pub_author_name, setPub_author_name] = useState();
   const [pub_zone, setPub_zone] = useState();
+  const [open1, setOpen1] = React.useState(false);
+  const [subjectChanger, setSubjectChanger] = useState('');
+  const [changer, setChanger] = useState(true);
+  const [changer2, setChanger2] = useState(true);
+  const [changer3, setChanger3] = useState(true);
+  const [changer4, setChanger4] = useState(true);
+  const [theSubjectId, setTheSubjectId] = useState();
+  //pagination
+  const [page, setPage] = useState(1);
+
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages2, setTotalPages2] = useState(0);
+  const [totalPages3, setTotalPages3] = useState(0);
+  const [totalPages4, setTotalPages4] = useState(0);
+  const formData = new FormData();
+
+  const handlePagination = (event, page) => {
+    setPage(page);
+
+    handleSubjectID(subjectChanger, page);
+    handleAlldata(page);
+  };
+  const handleClickOpen1 = () => {
+    setOpen1(true);
+  };
+
+  const handleClose1 = () => {
+    setOpen1(false);
+  };
+
   const handleEdit = (
     id,
     title,
@@ -223,7 +272,6 @@ const Publications = (props) => {
     zone,
     author_name
   ) => {
-    console.log("Types:'''", publication_type);
     setPub_id(id);
     setPub_title(title);
     setPub_subject(subject);
@@ -240,7 +288,6 @@ const Publications = (props) => {
   };
 
   const handleRead = (value) => {
-    console.log('valuessss:', value);
     setReadID(value);
     setTableFlag(false);
     setReadFlag(true);
@@ -274,49 +321,71 @@ const Publications = (props) => {
     }, 450);
   }, [goBackFlag]);
 
-  const handleSubjectID = (value) => {
-    console.log('subjef6tID:', value);
-    handleDraftSubjectId(value);
-    handleReviewSubjectId(value);
-    axiosInstance
-      .get(`${endpoints.publish.ebook}?subject_id=${value}&status_post=Published`)
-      .then((res) => {
-        console.log('getting', res.data.data);
-        setIndividualData(res.data.data);
-      });
+  const filterForAllData = (theSubjectId, page) => {
+    console.log('the subject id', theSubjectId);
+    setPage(1);
+    handleSubjectID(theSubjectId, page);
   };
-  const handleDraftSubjectId = (value) => {
+  const handleSubjectID = (value, page) => {
+    setSubjectChanger(value);
+
+    handleDraftSubjectId(value, page);
+    handleReviewSubjectId(value, page);
+
     axiosInstance
-      .get(`${endpoints.publish.ebook}?subject_id=${value}&status_post=Draft`)
+      .get(
+        `${
+          endpoints.publish.ebook
+        }?subject_id=${value}&status_post=Published&page_number=${page}&page_size=${8}`
+      )
       .then((res) => {
-        console.log('in axios');
-        console.log('response1:', res.data.data);
-        setDataDraft(res.data.data);
+        if (res.data.total_pages == 0) {
+          setChanger4(false);
+        } else if (res.data.status_code === 200) {
+          setAlert('success', res.data.message);
+          setTotalPages4(res.data.total_pages);
+          setIndividualData(res.data.data);
+          setChanger4(true);
+        } else {
+          setAlert('error', res.data.message);
+        }
       });
   };
 
-  const handleZone = (e) => {
-    console.log('dataaa', e.target.value);
-    setGetZoneData(e.target.value);
+  const handleDraftSubjectId = (value, pageNumber) => {
+    axiosInstance
+      .get(
+        `${
+          endpoints.publish.ebook
+        }?subject_id=${value}&status_post=Draft&page_number=${pageNumber}&page_size=${8}`
+      )
+      .then((res) => {
+        if (res.data.total_pages == 0) {
+          setChanger2(false);
+        } else if (res.data.status_code === 200) {
+          setAlert('success', res.data.message);
+          setTotalPages2(res.data.total_pages);
+          setDataDraft(res.data.data);
+          setChanger2(true);
+        } else {
+          setAlert('error', res.data.message);
+          setDataDraft('');
+          setTotalPages2('');
+        }
+      });
   };
 
-  const handleZoneDataGet = () => {
-    axiosInstance
-      .get(`${endpoints.publish.ebook}?zone=${getZoneData}&status_post=Published`)
-      .then((res) => {
-        console.log('Zones Data:::', res.data.data);
-        setData(res.data.data);
-      });
-    handleClose();
-  };
   const handleReviewStatus = (value) => {
+    formData.append('status_post', reviewDataPut);
+
     axiosInstance
-      .put(`${endpoints.publish.update_delete}?publication_id=${value}`, {
-        status_post: reviewDataPut,
-      })
+      .put(`${endpoints.publish.update_delete}?publication_id=${value}`, formData)
+
       .then((result) => {
+        console.log('the new subject', theSubjectId);
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
+          filterForAllData(theSubjectId, page);
         } else {
           setAlert('error', result.data.message);
         }
@@ -325,13 +394,24 @@ const Publications = (props) => {
         setAlert('error', error.message);
       });
   };
-  const handleReviewSubjectId = (value) => {
+  const handleReviewSubjectId = (value, pageNumber) => {
     axiosInstance
-      .get(`${endpoints.publish.ebook}?subject_id=${value}&status_post=Review`)
+      .get(
+        `${endpoints.publish.ebook}?subject_id=${value}&status_post=Review&page_number=${
+          pageNumber || 1
+        }&page_size=${8}`
+      )
       .then((res) => {
-        console.log('in axios');
-        console.log('response1:', res.data.data);
-        setReviewData(res.data.data);
+        if (res.data.total_pages == 0) {
+          setChanger3(false);
+        } else if (res.data.status_code === 200) {
+          setAlert('success', res.data.message);
+          setTotalPages3(res.data.total_pages);
+          setReviewData(res.data.data);
+          setChanger3(true);
+        } else {
+          setAlert('error', res.data.message);
+        }
       });
   };
   const [open, setOpen] = React.useState(false);
@@ -344,43 +424,14 @@ const Publications = (props) => {
     setOpen(false);
   };
 
-  const handleFilterData = () => {
-    return (
-      <>
-        <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
-          <DialogTitle id='form-dialog-title'>Subscribe</DialogTitle>
-          <Select
-            labelId='demo-simple-select-outlined-label'
-            id='demo-simple-select-outlined'
-            name='zone'
-            // onChange={handleBranch}
-
-            outlined
-            labelWidth={70}
-            required
-          >
-            {branchGet &&
-              branchGet.map((options) => {
-                return (
-                  <MenuItem value={options.id} key={options.id}>
-                    {options.branch_name}
-                  </MenuItem>
-                );
-              })}
-          </Select>
-        </Dialog>
-      </>
-    );
-  };
-
   const handlePublish = (value) => {
+    formData.append('status_post', publishDataPut);
     axiosInstance
-      .put(`${endpoints.publish.update_delete}?publication_id=${value}`, {
-        status_post: publishDataPut,
-      })
+      .put(`${endpoints.publish.update_delete}?publication_id=${value}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
+          filterForAllData(theSubjectId, page);
         } else {
           setAlert('error', result.data.message);
         }
@@ -420,31 +471,31 @@ const Publications = (props) => {
     }
 
     if (counter === 2) {
-      callingSubjectAPI();
+      callingSubjectAPI(id);
     }
   };
 
-  const callingSubjectAPI = () => {
+  const callingSubjectAPI = (id) => {
+    console.log('The subject id:', id);
     axiosInstance
-      .get(endpoints.masterManagement.subjects)
+      .get(`${endpoints.userManagement.subjectName}?academic_year_id=${id}`)
       .then((res) => {
-        console.log('in axios');
-        setDataMap(res.data.result.results);
-        console.log('responseer:', res.data.result.results);
+        console.log('data Api:', res.data.data);
+        if (id) {
+          setMainsubject(res.data.data);
+        } else {
+          setMainsubject('');
+        }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
   const callingAcadamicAPI = () => {
     axiosInstance
-      .get('/erp_user/list-academic_year/', {})
+      .get(endpoints.userManagement.academicYear)
       .then((res) => {
         setDataMap(res.data.data);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   const handleCounter = (value) => {
@@ -455,33 +506,42 @@ const Publications = (props) => {
       setCounter(counter + 1);
     }
   };
+  const handleAlldata = (page) => {
+    axiosInstance
+      .get(
+        `${
+          endpoints.publish.ebook
+        }?status_post=Published&page_number=${page}&page_size=${8}`
+      )
+      .then((res) => {
+        if (res.data.total_pages == 0) {
+          setChanger(false);
+          setData('');
+        } else if (res.data.status_code === 200) {
+          setAlert('success', res.data.message);
+          setTotalPages(res.data.total_pages);
+          setData(res.data.data);
+          setChanger(true);
+        } else {
+          setAlert('error', res.data.message);
+          setData('');
+        }
+      });
+  };
 
   useEffect(() => {
-    axiosInstance.get(`${endpoints.publish.ebook}?status_post=Published`).then((res) => {
-      console.log('in axios');
-      console.log('response1:', res.data.data);
-      setData(res.data.data);
-      // setLoading(false);
-    });
-    axiosInstance.get(endpoints.masterManagement.subjects).then((res) => {
-      console.log('in axios');
-      setMainsubject(res.data.result.results);
-      console.log('responser of subject:', res.data.result.results);
-    });
-    axiosInstance.get(endpoints.academics.branches).then((res) => {
-      console.log('Branches', res.data.data);
-      setBranchGet(res.data.data);
-    });
+    handleAlldata(page);
   }, []);
   const classes = useStyles();
   const theme = useTheme();
-  const handleDelete = (value) => {
-    console.log('valuedelete:', value);
+  const handleDelete = (value, subjectId) => {
     // setLoading(true);
     axiosInstance
       .delete(`${endpoints.publish.update_delete}?publication_id=${value}`)
       .then((result) => {
         if (result.data.status_code === 200) {
+          handleSubjectID(subjectId, page);
+          handleAlldata(page);
           setAlert('success', result.data.message);
         } else {
           setAlert('error', result.data.message);
@@ -497,190 +557,18 @@ const Publications = (props) => {
   const handleChanger = (event, newValue) => {
     setValue(newValue);
   };
-  console.log('subje', subject);
 
   const Tabpanel1 = (props) => {
     const { children, value, index } = props;
     return <div>{value === index && <>{children}</>}</div>;
   };
 
-  const Post = ({ data, loading }) => {
-    if (loading) {
-      return <h2>Loading...</h2>;
-    }
-
+  const Post = () => {
     return (
       <>
-        <MediaQuery minWidth={600}>
-          {data.map((item, index) => {
-            return (
-              <div className={classes.paperMar}>
-                {/* {ReactHtmlParser(item.description)} */}
-                <Grid item xs={12}>
-                  <Paper elevation={3}>
-                    <Grid container spacing={2}>
-                      <Grid item>
-                        <ButtonBase className={classes.image}>
-                          <img
-                            className={classes.image}
-                            alt='complex'
-                            src={item.thumbnail}
-                          />
-                        </ButtonBase>
-                      </Grid>
-                      <Grid item xs={12} sm container>
-                        <Grid item xs container direction='column' spacing={2}>
-                          <Grid item xs>
-                            <Typography style={{ float: 'right' }}>
-                              <IconButton
-                                aria-label='settings'
-                                onClick={(e) => {
-                                  handleDelete(item.id);
-                                }}
-                              >
-                                <Tooltip title='Delete' arrow>
-                                  <MoreHorizIcon />
-                                </Tooltip>
-                              </IconButton>
-                            </Typography>
-                          </Grid>
-                          <Grid item xs>
-                            <Typography
-                              gutterBottom
-                              variant='subtitle1'
-                              color='secondary'
-                            >
-                              <b>{item.title}</b>
-                            </Typography>
-                            <Typography variant='body2' gutterBottom>
-                              Author:{item.author_name}
-                            </Typography>
-                          </Grid>
-                          <Grid item>
-                            <Typography variant='body2'>
-                              Publication:
-                              {item.publication_type === '1' ? 'magazine' : 'newsletter'}
-                            </Typography>
-                            <Typography variant='body2'>
-                              {item.created_at.slice(0, 10)}
-                            </Typography>
-                            <Typography>
-                              <Button
-                                size='small'
-                                type='submit'
-                                color='primary'
-                                style={{ paddingLeft: '50px', paddingRight: '50px' }}
-                                onClick={(e) => {
-                                  handleRead(item.id);
-                                }}
-                              >
-                                READ
-                              </Button>
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Paper>
-                </Grid>
-              </div>
-            );
-          })}
-        </MediaQuery>
-        <MediaQuery maxWidth={599}>
-          {data.map((item, index) => {
-            return (
-              <div className={classes.paperMar1}>
-                {/* {ReactHtmlParser(item.description)} */}
-                <Grid item xs={12} className='arrange'>
-                  <Paper elevation={3}>
-                    <Grid container spacing={2}>
-                      <Grid item>
-                        <Typography style={{ float: 'right' }}>
-                          <IconButton
-                            aria-label='settings'
-                            onClick={(e) => {
-                              handleDelete(item.id);
-                            }}
-                          >
-                            <Tooltip title='Delete' arrow>
-                              <MoreHorizIcon />
-                            </Tooltip>
-                          </IconButton>
-                        </Typography>
-                        <ButtonBase className={classes.image1}>
-                          <img
-                            className={classes.image1}
-                            alt='complex'
-                            src={item.thumbnail}
-                          />
-                        </ButtonBase>
-                      </Grid>
-                      <Grid item xs={12} sm container>
-                        <Grid
-                          item
-                          xs
-                          container
-                          direction='column'
-                          spacing={2}
-                          style={{ margin: '5%' }}
-                        >
-                          <Grid item xs>
-                            <Typography
-                              gutterBottom
-                              variant='subtitle1'
-                              color='secondary'
-                            >
-                              <b>{item.title}</b>
-                            </Typography>
-                            <Typography variant='body2' gutterBottom>
-                              Author:{item.author_name}
-                            </Typography>
-                          </Grid>
-                          <Grid item>
-                            <Typography variant='body2'>
-                              Publication:
-                              {item.publication_type === '1' ? 'magazine' : 'newsletter'}
-                            </Typography>
-                            <Typography variant='body2'>
-                              {item.created_at.slice(0, 10)}
-                            </Typography>
-                            <Typography>
-                              <Button
-                                size='small'
-                                type='submit'
-                                color='primary'
-                                style={{ paddingLeft: '50px', paddingRight: '50px' }}
-                                onClick={(e) => {
-                                  handleRead(item.id);
-                                }}
-                              >
-                                READ
-                              </Button>
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Paper>
-                </Grid>
-              </div>
-            );
-          })}
-        </MediaQuery>
-      </>
-    );
-  };
-  const NewDraft = ({ data, loading }) => {
-    if (loading) {
-      return <h2>Loading...</h2>;
-    }
-
-    return (
-      <>
-        <MediaQuery minWidth={600}>
-          {dataDraft ? (
-            dataDraft.map((item, index) => {
+        <MediaQuery minWidth={1733}>
+          {data ? (
+            data.map((item, index) => {
               return (
                 <div className={classes.paperMar}>
                   {/* {ReactHtmlParser(item.description)} */}
@@ -702,16 +590,41 @@ const Publications = (props) => {
                               <Typography style={{ float: 'right' }}>
                                 <IconButton
                                   aria-label='settings'
-                                  onClick={(e) => {
-                                    handleDelete(item.id);
-                                  }}
+                                  onClick={handleClickOpen1}
                                 >
                                   <Tooltip title='Delete' arrow>
                                     <MoreHorizIcon />
                                   </Tooltip>
                                 </IconButton>
                               </Typography>
+                              <Dialog
+                                open={open1}
+                                onClose={handleClose1}
+                                aria-labelledby='alert-dialog-title'
+                                aria-describedby='alert-dialog-description'
+                              >
+                                <DialogTitle id='alert-dialog-title'>
+                                  {'Are you sure to delete?'}
+                                </DialogTitle>
+
+                                <DialogActions>
+                                  <Button onClick={handleClose1} color='primary'>
+                                    cancel
+                                  </Button>
+                                  <Button
+                                    onClick={(e) => {
+                                      handleDelete(item.id, item.subject_id);
+                                      handleClose1();
+                                    }}
+                                    color='primary'
+                                    autoFocus
+                                  >
+                                    Delete
+                                  </Button>
+                                </DialogActions>
+                              </Dialog>
                             </Grid>
+
                             <Grid item xs>
                               <Typography
                                 gutterBottom
@@ -741,10 +654,10 @@ const Publications = (props) => {
                                   color='primary'
                                   style={{ paddingLeft: '50px', paddingRight: '50px' }}
                                   onClick={(e) => {
-                                    handleReviewStatus(item.id);
+                                    handleRead(item.id);
                                   }}
                                 >
-                                  Review
+                                  READ
                                 </Button>
                               </Typography>
                             </Grid>
@@ -753,6 +666,342 @@ const Publications = (props) => {
                       </Grid>
                     </Paper>
                   </Grid>
+                </div>
+              );
+            })
+          ) : (
+            <Grid container direction='row' justify='center' alignItems='center'>
+              <img src={Nodata} />
+            </Grid>
+          )}
+        </MediaQuery>
+        <MediaQuery minWidth={900} maxWidth={1732}>
+          {data ? (
+            data.map((item, index) => {
+              return (
+                <div className={classes.paperMar3}>
+                  <Paper elevation={3}>
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <ButtonBase className={classes.image2}>
+                          <img
+                            className={classes.image2}
+                            alt='complex'
+                            src={item.thumbnail}
+                          />
+                        </ButtonBase>
+                      </Grid>
+                      <Grid item xs={12} sm container>
+                        <Grid item xs container direction='column' spacing={2}>
+                          <Grid item xs>
+                            <Typography style={{ float: 'right' }}>
+                              <IconButton
+                                aria-label='settings'
+                                onClick={handleClickOpen1}
+                              >
+                                <Tooltip title='Delete' arrow>
+                                  <MoreHorizIcon />
+                                </Tooltip>
+                              </IconButton>
+                            </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(item.id, item.subject_id);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+                          </Grid>
+
+                          <Grid item xs className={{ padding: '5%' }}>
+                            <Typography
+                              gutterBottom
+                              variant='subtitle1'
+                              color='secondary'
+                              className='newmargin'
+                            >
+                              <b style={{ fontSize: '13px' }}>{item.title}</b>
+                            </Typography>
+                            <Typography variant='body2' gutterBottom>
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Author:
+                                {item.author_name}
+                              </span>
+                            </Typography>
+                          </Grid>
+                          <Grid item style={{ marginTop: '-20%' }}>
+                            <Typography variant='body2'>
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Publication:
+                                {item.publication_type === '1'
+                                  ? 'magazine'
+                                  : 'newsletter'}
+                              </span>
+                            </Typography>
+                            <Typography variant='body2'>
+                              <span style={{ fontSize: '13px' }}>
+                                {item.created_at.slice(0, 10)}
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <Button
+                                size='small'
+                                type='submit'
+                                color='primary'
+                                onClick={(e) => {
+                                  handleRead(item.id);
+                                }}
+                              >
+                                <span style={{ fontSize: '13px' }}> READ</span>
+                              </Button>
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                </div>
+              );
+            })
+          ) : (
+            <Grid container direction='row' justify='center' alignItems='center'>
+              <img src={Nodata} />
+            </Grid>
+          )}
+        </MediaQuery>
+        <MediaQuery maxWidth={899}>
+          {data ? (
+            data.map((item, index) => {
+              return (
+                <div className={classes.paperMar1}>
+                  {/* {ReactHtmlParser(item.description)} */}
+                  <Grid item xs={12} className='arrange'>
+                    <Paper elevation={3}>
+                      <Grid container spacing={2}>
+                        <Grid item>
+                          <Typography style={{ float: 'right' }}>
+                            <IconButton aria-label='settings' onClick={handleClickOpen1}>
+                              <Tooltip title='Delete' arrow>
+                                <MoreHorizIcon />
+                              </Tooltip>
+                            </IconButton>
+                          </Typography>
+                          <Dialog
+                            open={open1}
+                            onClose={handleClose1}
+                            aria-labelledby='alert-dialog-title'
+                            aria-describedby='alert-dialog-description'
+                          >
+                            <DialogTitle id='alert-dialog-title'>
+                              {'Are you sure to delete?'}
+                            </DialogTitle>
+
+                            <DialogActions>
+                              <Button onClick={handleClose1} color='primary'>
+                                cancel
+                              </Button>
+                              <Button
+                                onClick={(e) => {
+                                  handleDelete(item.id, item.subject_id);
+                                  handleClose1();
+                                }}
+                                color='primary'
+                                autoFocus
+                              >
+                                Delete
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+                          <ButtonBase className={classes.image1}>
+                            <img
+                              className={classes.image1}
+                              alt='complex'
+                              src={item.thumbnail}
+                            />
+                          </ButtonBase>
+                        </Grid>
+                        <Grid item xs={12} sm container>
+                          <Grid
+                            item
+                            xs
+                            container
+                            direction='column'
+                            spacing={2}
+                            style={{ margin: '5%' }}
+                          >
+                            <Grid item xs>
+                              <Typography
+                                gutterBottom
+                                variant='subtitle1'
+                                color='secondary'
+                              >
+                                <b>{item.title}</b>
+                              </Typography>
+                              <Typography variant='body2' gutterBottom>
+                                Author:{item.author_name}
+                              </Typography>
+                            </Grid>
+                            <Grid item>
+                              <Typography variant='body2'>
+                                Publication:
+                                {item.publication_type === '1'
+                                  ? 'magazine'
+                                  : 'newsletter'}
+                              </Typography>
+                              <Typography variant='body2'>
+                                {item.created_at.slice(0, 10)}
+                              </Typography>
+                              <Typography>
+                                <Button
+                                  size='small'
+                                  type='submit'
+                                  color='primary'
+                                  style={{ paddingLeft: '50px', paddingRight: '50px' }}
+                                  onClick={(e) => {
+                                    handleRead(item.id);
+                                  }}
+                                >
+                                  READ
+                                </Button>
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Paper>
+                  </Grid>
+                </div>
+              );
+            })
+          ) : (
+            <Grid container direction='row' justify='center' alignItems='center'>
+              <img src={Nodata} />
+            </Grid>
+          )}
+        </MediaQuery>
+      </>
+    );
+  };
+  const NewDraft = () => {
+    return (
+      <>
+        <MediaQuery minWidth={1733}>
+          {dataDraft ? (
+            dataDraft.map((item, index) => {
+              return (
+                <div className={classes.paperMar}>
+                  {/* {ReactHtmlParser(item.description)} */}
+
+                  <Paper elevation={3}>
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <ButtonBase className={classes.image}>
+                          <img
+                            className={classes.image}
+                            alt='complex'
+                            src={item.thumbnail}
+                          />
+                        </ButtonBase>
+                      </Grid>
+                      <Grid item xs={12} sm container>
+                        <Grid item xs container direction='column' spacing={2}>
+                          <Grid item xs>
+                            <Typography style={{ float: 'right' }}>
+                              <IconButton
+                                aria-label='settings'
+                                onClick={handleClickOpen1}
+                              >
+                                <Tooltip title='Delete' arrow>
+                                  <MoreHorizIcon />
+                                </Tooltip>
+                              </IconButton>
+                            </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(item.id, item.subject_id);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+                          </Grid>
+                          <Grid item xs>
+                            <Typography
+                              gutterBottom
+                              variant='subtitle1'
+                              color='secondary'
+                            >
+                              <b>{item.title}</b>
+                            </Typography>
+                            <Typography variant='body2' gutterBottom>
+                              Author:{item.author_name}
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <Typography variant='body2'>
+                              Publication:
+                              {item.publication_type === '1' ? 'magazine' : 'newsletter'}
+                            </Typography>
+                            <Typography variant='body2'>
+                              {item.created_at.slice(0, 10)}
+                            </Typography>
+                            <Typography>
+                              <Button
+                                size='small'
+                                type='submit'
+                                color='primary'
+                                style={{ paddingLeft: '50px', paddingRight: '50px' }}
+                                onClick={(e) => {
+                                  handleReviewStatus(item.id);
+                                }}
+                              >
+                                Review
+                              </Button>
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Paper>
 
                   {/* <Button
                           size='small'
@@ -784,7 +1033,122 @@ const Publications = (props) => {
             </Grid>
           )}
         </MediaQuery>
-        <MediaQuery maxWidth={599}>
+        <MediaQuery minWidth={900} maxWidth={1732}>
+          {dataDraft ? (
+            dataDraft.map((item, index) => {
+              return (
+                <div className={classes.paperMar3}>
+                  <Paper elevation={3}>
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <ButtonBase className={classes.image2}>
+                          <img
+                            className={classes.image2}
+                            alt='complex'
+                            src={item.thumbnail}
+                          />
+                        </ButtonBase>
+                      </Grid>
+                      <Grid item xs={12} sm container>
+                        <Grid item xs container direction='column' spacing={2}>
+                          <Grid item xs>
+                            <Typography style={{ float: 'right' }}>
+                              <IconButton
+                                aria-label='settings'
+                                onClick={handleClickOpen1}
+                              >
+                                <Tooltip title='Delete' arrow>
+                                  <MoreHorizIcon />
+                                </Tooltip>
+                              </IconButton>
+                            </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(item.id, item.subject_id);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+                          </Grid>
+
+                          <Grid item xs className={{ padding: '5%' }}>
+                            <Typography
+                              gutterBottom
+                              variant='subtitle1'
+                              color='secondary'
+                              className='newmargin'
+                            >
+                              <b style={{ fontSize: '13px' }}>{item.title}</b>
+                            </Typography>
+                            <Typography variant='body2' gutterBottom>
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Author:
+                                {item.author_name}
+                              </span>
+                            </Typography>
+                          </Grid>
+                          <Grid item style={{ marginTop: '-20%' }}>
+                            <Typography variant='body2'>
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Publication:
+                                {item.publication_type === '1'
+                                  ? 'magazine'
+                                  : 'newsletter'}
+                              </span>
+                            </Typography>
+                            <Typography variant='body2'>
+                              <span style={{ fontSize: '13px' }}>
+                                {item.created_at.slice(0, 10)}
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <Button
+                                size='small'
+                                type='submit'
+                                color='primary'
+                                onClick={(e) => {
+                                  handleReviewStatus(item.id);
+                                }}
+                              >
+                                Review
+                              </Button>
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                </div>
+              );
+            })
+          ) : (
+            <Grid item md={3}>
+              <h1>Select Above Subject</h1>
+            </Grid>
+          )}
+        </MediaQuery>
+        <MediaQuery maxWidth={899}>
           {dataDraft ? (
             dataDraft.map((item, index) => {
               return (
@@ -795,17 +1159,38 @@ const Publications = (props) => {
                       <Grid container spacing={2}>
                         <Grid item>
                           <Typography style={{ float: 'right' }}>
-                            <IconButton
-                              aria-label='settings'
-                              onClick={(e) => {
-                                handleDelete(item.id);
-                              }}
-                            >
+                            <IconButton aria-label='settings' onClick={handleClickOpen1}>
                               <Tooltip title='Delete' arrow>
                                 <MoreHorizIcon />
                               </Tooltip>
                             </IconButton>
                           </Typography>
+                          <Dialog
+                            open={open1}
+                            onClose={handleClose1}
+                            aria-labelledby='alert-dialog-title'
+                            aria-describedby='alert-dialog-description'
+                          >
+                            <DialogTitle id='alert-dialog-title'>
+                              {'Are you sure to delete?'}
+                            </DialogTitle>
+
+                            <DialogActions>
+                              <Button onClick={handleClose1} color='primary'>
+                                cancel
+                              </Button>
+                              <Button
+                                onClick={(e) => {
+                                  handleDelete(item.id, item.subject_id);
+                                  handleClose1();
+                                }}
+                                color='primary'
+                                autoFocus
+                              >
+                                Delete
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
                           <ButtonBase className={classes.image1}>
                             <img
                               className={classes.image1}
@@ -877,13 +1262,10 @@ const Publications = (props) => {
     );
   };
 
-  const IndividualPost = ({ data, loading }) => {
-    if (loading) {
-      return <h2>Loading...</h2>;
-    }
+  const IndividualPost = () => {
     return (
       <>
-        <MediaQuery minWidth={600}>
+        <MediaQuery minWidth={1733}>
           {individualData ? (
             individualData.map((item, index) => {
               return (
@@ -907,15 +1289,39 @@ const Publications = (props) => {
                               <Typography style={{ float: 'right' }}>
                                 <IconButton
                                   aria-label='settings'
-                                  onClick={(e) => {
-                                    handleDelete(item.id);
-                                  }}
+                                  onClick={handleClickOpen1}
                                 >
                                   <Tooltip title='Delete' arrow>
                                     <MoreHorizIcon />
                                   </Tooltip>
                                 </IconButton>
                               </Typography>
+                              <Dialog
+                                open={open1}
+                                onClose={handleClose1}
+                                aria-labelledby='alert-dialog-title'
+                                aria-describedby='alert-dialog-description'
+                              >
+                                <DialogTitle id='alert-dialog-title'>
+                                  {'Are you sure to delete?'}
+                                </DialogTitle>
+
+                                <DialogActions>
+                                  <Button onClick={handleClose1} color='primary'>
+                                    cancel
+                                  </Button>
+                                  <Button
+                                    onClick={(e) => {
+                                      handleDelete(item.id, item.subject_id);
+                                      handleClose1();
+                                    }}
+                                    color='primary'
+                                    autoFocus
+                                  >
+                                    Delete
+                                  </Button>
+                                </DialogActions>
+                              </Dialog>
                             </Grid>
                             <Grid item xs>
                               <Typography
@@ -967,7 +1373,122 @@ const Publications = (props) => {
             </Grid>
           )}
         </MediaQuery>
-        <MediaQuery maxWidth={599}>
+        <MediaQuery minWidth={900} maxWidth={1732}>
+          {individualData ? (
+            individualData.map((item, index) => {
+              return (
+                <div className={classes.paperMar3}>
+                  <Paper elevation={3}>
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <ButtonBase className={classes.image2}>
+                          <img
+                            className={classes.image2}
+                            alt='complex'
+                            src={item.thumbnail}
+                          />
+                        </ButtonBase>
+                      </Grid>
+                      <Grid item xs={12} sm container>
+                        <Grid item xs container direction='column' spacing={2}>
+                          <Grid item xs>
+                            <Typography style={{ float: 'right' }}>
+                              <IconButton
+                                aria-label='settings'
+                                onClick={handleClickOpen1}
+                              >
+                                <Tooltip title='Delete' arrow>
+                                  <MoreHorizIcon />
+                                </Tooltip>
+                              </IconButton>
+                            </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(item.id, item.subject_id);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+                          </Grid>
+
+                          <Grid item xs className={{ padding: '5%' }}>
+                            <Typography
+                              gutterBottom
+                              variant='subtitle1'
+                              color='secondary'
+                              className='newmargin'
+                            >
+                              <b style={{ fontSize: '13px' }}>{item.title}</b>
+                            </Typography>
+                            <Typography variant='body2' gutterBottom>
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Author:
+                                {item.author_name}
+                              </span>
+                            </Typography>
+                          </Grid>
+                          <Grid item style={{ marginTop: '-20%' }}>
+                            <Typography variant='body2'>
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Publication:
+                                {item.publication_type === '1'
+                                  ? 'magazine'
+                                  : 'newsletter'}
+                              </span>
+                            </Typography>
+                            <Typography variant='body2'>
+                              <span style={{ fontSize: '13px' }}>
+                                {item.created_at.slice(0, 10)}
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <Button
+                                size='small'
+                                type='submit'
+                                color='primary'
+                                onClick={(e) => {
+                                  handleRead(item.id);
+                                }}
+                              >
+                                READ
+                              </Button>
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                </div>
+              );
+            })
+          ) : (
+            <Grid item md={3}>
+              <h1>Select Above Subject</h1>
+            </Grid>
+          )}
+        </MediaQuery>
+        <MediaQuery maxWidth={899}>
           {individualData ? (
             individualData.map((item, index) => {
               return (
@@ -978,17 +1499,38 @@ const Publications = (props) => {
                       <Grid container spacing={2}>
                         <Grid item>
                           <Typography style={{ float: 'right' }}>
-                            <IconButton
-                              aria-label='settings'
-                              onClick={(e) => {
-                                handleDelete(item.id);
-                              }}
-                            >
+                            <IconButton aria-label='settings' onClick={handleClickOpen1}>
                               <Tooltip title='Delete' arrow>
                                 <MoreHorizIcon />
                               </Tooltip>
                             </IconButton>
                           </Typography>
+                          <Dialog
+                            open={open1}
+                            onClose={handleClose1}
+                            aria-labelledby='alert-dialog-title'
+                            aria-describedby='alert-dialog-description'
+                          >
+                            <DialogTitle id='alert-dialog-title'>
+                              {'Are you sure to delete?'}
+                            </DialogTitle>
+
+                            <DialogActions>
+                              <Button onClick={handleClose1} color='primary'>
+                                cancel
+                              </Button>
+                              <Button
+                                onClick={(e) => {
+                                  handleDelete(item.id, item.subject.id);
+                                  handleClose1();
+                                }}
+                                color='primary'
+                                autoFocus
+                              >
+                                Delete
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
                           <ButtonBase className={classes.image1}>
                             <img
                               className={classes.image1}
@@ -1060,13 +1602,10 @@ const Publications = (props) => {
     );
   };
 
-  const ReviewPost = ({ data, loading }) => {
-    if (loading) {
-      return <h2>Loading...</h2>;
-    }
+  const ReviewPost = () => {
     return (
       <>
-        <MediaQuery minWidth={600}>
+        <MediaQuery minWidth={1733}>
           {reviewData ? (
             reviewData.map((item, index) => {
               return (
@@ -1090,15 +1629,39 @@ const Publications = (props) => {
                               <Typography style={{ float: 'right' }}>
                                 <IconButton
                                   aria-label='settings'
-                                  onClick={(e) => {
-                                    handleDelete(item.id);
-                                  }}
+                                  onClick={handleClickOpen1}
                                 >
                                   <Tooltip title='Delete' arrow>
                                     <MoreHorizIcon />
                                   </Tooltip>
                                 </IconButton>
                               </Typography>
+                              <Dialog
+                                open={open1}
+                                onClose={handleClose1}
+                                aria-labelledby='alert-dialog-title'
+                                aria-describedby='alert-dialog-description'
+                              >
+                                <DialogTitle id='alert-dialog-title'>
+                                  {'Are you sure to delete?'}
+                                </DialogTitle>
+
+                                <DialogActions>
+                                  <Button onClick={handleClose1} color='primary'>
+                                    cancel
+                                  </Button>
+                                  <Button
+                                    onClick={(e) => {
+                                      handleDelete(item.id, item.subject.id);
+                                      handleClose1();
+                                    }}
+                                    color='primary'
+                                    autoFocus
+                                  >
+                                    Delete
+                                  </Button>
+                                </DialogActions>
+                              </Dialog>
                             </Grid>
                             <Grid item xs>
                               <Typography
@@ -1155,11 +1718,140 @@ const Publications = (props) => {
               );
             })
           ) : (
-            <h1>Select Above Subject</h1>
+            <Grid item md={3}>
+              <h1>Select Above Subject</h1>
+            </Grid>
+          )}
+        </MediaQuery>
+        <MediaQuery minWidth={900} maxWidth={1732}>
+          {reviewData ? (
+            reviewData.map((item, index) => {
+              return (
+                <div className={classes.paperMar3}>
+                  <Paper elevation={3}>
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <ButtonBase className={classes.image2}>
+                          <img
+                            className={classes.image2}
+                            alt='complex'
+                            src={item.thumbnail}
+                          />
+                        </ButtonBase>
+                      </Grid>
+                      <Grid item xs={12} sm container>
+                        <Grid item xs container direction='column' spacing={2}>
+                          <Grid item xs>
+                            <Typography style={{ float: 'right' }}>
+                              <IconButton
+                                aria-label='settings'
+                                onClick={handleClickOpen1}
+                              >
+                                <Tooltip title='Delete' arrow>
+                                  <MoreHorizIcon />
+                                </Tooltip>
+                              </IconButton>
+                            </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(item.id, item.subject_id);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+                          </Grid>
+
+                          <Grid item xs className={{ padding: '5%' }}>
+                            <Typography
+                              gutterBottom
+                              variant='subtitle1'
+                              color='secondary'
+                              className='newmargin'
+                            >
+                              <b style={{ fontSize: '13px' }}>{item.title}</b>
+                            </Typography>
+                            <Typography variant='body2' gutterBottom>
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Author:
+                                {item.author_name}
+                              </span>
+                            </Typography>
+                          </Grid>
+                          <Grid item style={{ marginTop: '-20%' }}>
+                            <Typography variant='body2'>
+                              <span style={{ fontSize: '13px' }}>
+                                {' '}
+                                Publication:
+                                {item.publication_type === '1'
+                                  ? 'magazine'
+                                  : 'newsletter'}
+                              </span>
+                            </Typography>
+                            <Typography variant='body2'>
+                              <span style={{ fontSize: '13px' }}>
+                                {item.created_at.slice(0, 10)}
+                              </span>
+                            </Typography>
+                            <Typography>
+                              <button
+                                type='submit'
+                                style={{ margin: '2%', color: 'pink' }}
+                                onClick={(e) => {
+                                  handleRead(item.id);
+                                }}
+                              >
+                                <span style={{ fontSize: '18px' }}>
+                                  <ImportContactsIcon />
+                                </span>
+                              </button>
+                              <button
+                                type='submit'
+                                style={{ margin: '2%', color: 'pink' }}
+                                onClick={(e) => {
+                                  handlePublish(item.id);
+                                }}
+                              >
+                                <span style={{ fontSize: '18px' }}>
+                                  <PublishIcon />
+                                </span>
+                              </button>
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                </div>
+              );
+            })
+          ) : (
+            <Grid item md={3}>
+              <h1>Select Above Subject</h1>
+            </Grid>
           )}
         </MediaQuery>
 
-        <MediaQuery maxWidth={599}>
+        <MediaQuery maxWidth={899}>
           {reviewData ? (
             reviewData.map((item, index) => {
               return (
@@ -1170,17 +1862,38 @@ const Publications = (props) => {
                       <Grid container spacing={2}>
                         <Grid item>
                           <Typography style={{ float: 'right' }}>
-                            <IconButton
-                              aria-label='settings'
-                              onClick={(e) => {
-                                handleDelete(item.id);
-                              }}
-                            >
+                            <IconButton aria-label='settings' onClick={handleClickOpen1}>
                               <Tooltip title='Delete' arrow>
                                 <MoreHorizIcon />
                               </Tooltip>
                             </IconButton>
                           </Typography>
+                          <Dialog
+                            open={open1}
+                            onClose={handleClose1}
+                            aria-labelledby='alert-dialog-title'
+                            aria-describedby='alert-dialog-description'
+                          >
+                            <DialogTitle id='alert-dialog-title'>
+                              {'Are you sure to delete?'}
+                            </DialogTitle>
+
+                            <DialogActions>
+                              <Button onClick={handleClose1} color='primary'>
+                                cancel
+                              </Button>
+                              <Button
+                                onClick={(e) => {
+                                  handleDelete(item.id, item.subject.id);
+                                  handleClose1();
+                                }}
+                                color='primary'
+                                autoFocus
+                              >
+                                Delete
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
                           <ButtonBase className={classes.image1}>
                             <img
                               className={classes.image1}
@@ -1253,20 +1966,14 @@ const Publications = (props) => {
               );
             })
           ) : (
-            <h1>Select Above Subject</h1>
+            <Grid item md={3}>
+              <h1>Select Above Subject</h1>
+            </Grid>
           )}
         </MediaQuery>
       </>
     );
   };
-  //get current posts
-
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPost = data.slice(indexOfFirstPost, indexOfLastPost);
-
-  //change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const handleFilter = (value) => {
     setFilter(value);
   };
@@ -1309,12 +2016,12 @@ const Publications = (props) => {
       {tableFlag && !readFlag && !editFlag && (
         <div>
           <>
-            <MediaQuery minWidth={600}>
+            <MediaQuery minWidth={900}>
               {Filter ? (
-                <Grid container className={classes.root}>
-                  <Grid className='upper-table-container'>
+                <div className={classes.root}>
+                  <div className='upper-table-container'>
                     <Grid className='all-box-container'>
-                      <Grid
+                      <div
                         className={
                           counter === 1
                             ? 'grade-container'
@@ -1325,9 +2032,9 @@ const Publications = (props) => {
                       >
                         {counter === 1 ? (
                           <>
-                            <Grid className='text-fixed'>Acadamic Year</Grid>
-                            <Grid className='inner-grade-container'>
-                              <Grid className='change-grade-options'>
+                            <div className='text-fixed'>Acadamic Year</div>
+                            <div className='inner-grade-container'>
+                              <div className='change-grade-options'>
                                 <Select
                                   multiple
                                   fullWidth
@@ -1340,16 +2047,18 @@ const Publications = (props) => {
                                       <option
                                         key={name.id}
                                         value={name.id}
-                                        onClick={() =>
-                                          setAcadamicYearName(name.session_year)
-                                        }
+                                        onClick={() => {
+                                          setAcadamicYearName(name.session_year);
+
+                                          setId(name.id);
+                                        }}
                                       >
                                         {name.session_year}
                                       </option>
                                     ))}
                                 </Select>
-                              </Grid>
-                              <Grid className='text-fixed-last'>
+                              </div>
+                              <div className='text-fixed-last'>
                                 Expand
                                 <IconButton
                                   aria-label='delete'
@@ -1358,15 +2067,15 @@ const Publications = (props) => {
                                 >
                                   <ArrowForwardIcon className='arrow-button' />
                                 </IconButton>
-                              </Grid>
-                            </Grid>
+                              </div>
+                            </div>
                           </>
                         ) : (
                           <Grid className='text-rotate'>AcadamicYear</Grid>
                         )}
-                      </Grid>
+                      </div>
 
-                      <Grid
+                      <div
                         className={
                           counter === 2
                             ? 'grade-container'
@@ -1377,9 +2086,9 @@ const Publications = (props) => {
                       >
                         {counter === 2 ? (
                           <>
-                            <Grid className='text-fixed'>Subject</Grid>
-                            <Grid className='inner-grade-container'>
-                              <Grid className='change-grade-options'>
+                            <div className='text-fixed'>Subject</div>
+                            <div className='inner-grade-container'>
+                              <div className='change-grade-options'>
                                 <Select
                                   multiple
                                   fullWidth
@@ -1390,15 +2099,18 @@ const Publications = (props) => {
                                     mainsubject.map((name) => (
                                       <option
                                         key={name.id}
-                                        value={name.subject.subject_name}
-                                        onClick={() => handleSubjectID(name.subject.id)}
+                                        value={name.subject__subject_name}
+                                        onClick={() => {
+                                          setPage(1);
+                                          setTheSubjectId(name.subject_id);
+                                        }}
                                       >
-                                        {name.subject.subject_name}
+                                        {name.subject__subject_name}
                                       </option>
                                     ))}
                                 </Select>
-                              </Grid>
-                              <Grid className='text-fixed-last'>
+                              </div>
+                              <div className='text-fixed-last'>
                                 Expand
                                 <IconButton
                                   aria-label='delete'
@@ -1408,86 +2120,47 @@ const Publications = (props) => {
                                   <ArrowBackIcon className='arrow-button' />
                                   <ArrowForwardIcon className='arrow-button' />
                                 </IconButton>
-                              </Grid>
-                            </Grid>
+                              </div>
+                            </div>
                           </>
                         ) : (
                           <label className='text-rotate'>Subject</label>
                         )}
-                      </Grid>
+                      </div>
                     </Grid>
-                  </Grid>
+                  </div>
 
-                  <Grid container direction='row' justify='flex-end' md={10}>
-                    <Grid>
-                      <StyledClearButton
-                        variant='contained'
-                        startIcon={<ClearIcon />}
-                        href={`/publications`}
-                      >
-                        Clear all
-                      </StyledClearButton>
-                    </Grid>
-                    <Grid>
-                      <StyledFilterButton
-                        variant='contained'
-                        color='secondary'
-                        startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-                        className={classes.filterButton}
-                        onClick={handleClickOpen}
-                      >
-                        filter
-                      </StyledFilterButton>
-                      <Dialog
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby='form-dialog-title'
-                      >
-                        <DialogTitle id='form-dialog-title'>Zone</DialogTitle>
-                        <Select
-                          labelId='demo-simple-select-outlined-label'
-                          id='demo-simple-select-outlined'
-                          name='zone'
-                          onChange={handleZone}
-                          outlined
-                          labelWidth={70}
-                          required
-                        >
-                          {branchGet &&
-                            branchGet.map((options) => {
-                              return (
-                                <MenuItem value={options.id} key={options.id}>
-                                  {options.branch_name}
-                                </MenuItem>
-                              );
-                            })}
-                        </Select>
-                        <DialogActions>
-                          <Button onClick={handleClose} color='primary'>
-                            Cancel
-                          </Button>
-                          <Button onClick={handleZoneDataGet} color='primary'>
-                            Generate
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
-                    </Grid>
-
-                    <Grid>
-                      <StyledFilterButton
-                        variant='contained'
-                        color='secondary'
-                        className={classes.filterButton}
-                        onClick={(e) => {
-                          handleAdd();
-                          RemoveLocalData();
-                        }}
-                      >
-                        ADD NEW
-                      </StyledFilterButton>
-                    </Grid>
-                  </Grid>
-                  <Grid container justify='flex-end' item md={11}>
+                  <span className='marg'>
+                    {' '}
+                    <StyledClearButton
+                      variant='contained'
+                      startIcon={<ClearIcon />}
+                      href={`/publications`}
+                    >
+                      Clear all
+                    </StyledClearButton>
+                    <StyledFilterButton
+                      variant='contained'
+                      color='secondary'
+                      startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+                      className={classes.filterButton}
+                      onClick={() => {
+                        filterForAllData(theSubjectId, page);
+                      }}
+                    >
+                      filter
+                    </StyledFilterButton>
+                    <StyledFilterButton
+                      variant='contained'
+                      color='secondary'
+                      className={classes.filterButton}
+                      onClick={(e) => {
+                        handleAdd();
+                        RemoveLocalData();
+                      }}
+                    >
+                      ADD NEW
+                    </StyledFilterButton>
                     <div
                       className='filter-container'
                       onClick={() => {
@@ -1497,12 +2170,12 @@ const Publications = (props) => {
                       <div className='filter'>HIDE FILTER</div>
                       <img src={FilterImage} />
                     </div>
-                  </Grid>
-                </Grid>
+                  </span>
+                </div>
               ) : (
                 <>
-                  <div className='bread-crumb-container' style={{ float: 'right' }}>
-                    <div
+                  <Grid className='bread-crumb-container' style={{ float: 'right' }}>
+                    <Grid
                       className={
                         Filter ? 'filter-container-hidden' : 'filter-container-show'
                       }
@@ -1510,34 +2183,34 @@ const Publications = (props) => {
                         handleFilter(true);
                       }}
                     >
-                      <div className='filter-show'>
+                      <Grid className='filter-show'>
                         <div className='filter'>SHOW FILTER</div>
                         <img className='filterImage' src={FilterImage} />
-                      </div>
-                    </div>
-                  </div>
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </>
               )}
             </MediaQuery>
             <MediaQuery maxWidth={599}>
               {Filter ? (
-                <Grid container className={classes.root}>
-                  <Grid className='upper-table-container'>
-                    <Grid className='all-box-container'>
-                      <Grid
+                <div className={classes.root} style={{ marginLeft: '-2%' }}>
+                  <div className='upper-table-container1'>
+                    <Grid className='all-box-container1'>
+                      <div
                         className={
                           counter === 1
-                            ? 'grade-container'
+                            ? 'grade-container1'
                             : counter === 2
                             ? 'box-right-2'
-                            : 'acadamic-year-box'
+                            : 'acadamic-year-box1'
                         }
                       >
                         {counter === 1 ? (
                           <>
-                            <Grid className='text-fixed'>Acadamic Year</Grid>
-                            <Grid className='inner-grade-container'>
-                              <Grid className='change-grade-options'>
+                            <div className='text-fixed1'>Acadamic Year</div>
+                            <div className='inner-grade-container1'>
+                              <div className='change-grade-options1'>
                                 <Select
                                   multiple
                                   fullWidth
@@ -1558,28 +2231,28 @@ const Publications = (props) => {
                                       </option>
                                     ))}
                                 </Select>
-                              </Grid>
-                              <Grid className='text-fixed-last'>
+                              </div>
+                              <div className='text-fixed-last1'>
                                 Expand
                                 <IconButton
                                   aria-label='delete'
                                   onClick={() => setCounter(counter + 1)}
                                   size='small'
                                 >
-                                  <ArrowForwardIcon className='arrow-button' />
+                                  <ArrowForwardIcon className='arrow-button1' />
                                 </IconButton>
-                              </Grid>
-                            </Grid>
+                              </div>
+                            </div>
                           </>
                         ) : (
-                          <Grid className='text-rotate'>AcadamicYear</Grid>
+                          <Grid className='text-rotate1'>AcadamicYear</Grid>
                         )}
-                      </Grid>
+                      </div>
 
-                      <Grid
+                      <div
                         className={
                           counter === 2
-                            ? 'grade-container'
+                            ? 'grade-container1'
                             : counter === 1
                             ? 'box-right-1'
                             : 'box-last-1'
@@ -1587,9 +2260,9 @@ const Publications = (props) => {
                       >
                         {counter === 2 ? (
                           <>
-                            <Grid className='text-fixed'>Subject</Grid>
-                            <Grid className='inner-grade-container'>
-                              <Grid className='change-grade-options'>
+                            <div className='text-fixed1'>Subject</div>
+                            <div className='inner-grade-container1'>
+                              <div className='change-grade-options1'>
                                 <Select
                                   multiple
                                   fullWidth
@@ -1600,93 +2273,55 @@ const Publications = (props) => {
                                     mainsubject.map((name) => (
                                       <option
                                         key={name.id}
-                                        value={name.subject.subject_name}
-                                        onClick={() => handleSubjectID(name.subject.id)}
+                                        value={name.subject__subject_name}
+                                        onClick={() => {
+                                          setPage(1);
+                                          setTheSubjectId(name.subject_id);
+                                        }}
                                       >
-                                        {name.subject.subject_name}
+                                        {name.subject__subject_name}
                                       </option>
                                     ))}
                                 </Select>
-                              </Grid>
-                              <Grid className='text-fixed-last'>
+                              </div>
+                              <div className='text-fixed-last1'>
                                 Expand
                                 <IconButton
                                   aria-label='delete'
                                   onClick={() => setCounter(counter - 1)}
                                   size='small'
                                 >
-                                  <ArrowBackIcon className='arrow-button' />
-                                  <ArrowForwardIcon className='arrow-button' />
+                                  <ArrowBackIcon className='arrow-button1' />
+                                  <ArrowForwardIcon className='arrow-button1' />
                                 </IconButton>
-                              </Grid>
-                            </Grid>
+                              </div>
+                            </div>
                           </>
                         ) : (
-                          <label className='text-rotate'>Subject</label>
+                          <label className='text-rotate1'>Subject</label>
                         )}
-                      </Grid>
+                      </div>
                     </Grid>
-                  </Grid>
-
-                  <Grid container direction='row' justify='flex-end' md={10}>
-                    <Grid>
-                      <StyledClearButton
-                        variant='contained'
-                        startIcon={<ClearIcon />}
-                        href={`/publications`}
-                      >
-                        Clear all
-                      </StyledClearButton>
-                    </Grid>
-                    <Grid>
-                      <StyledFilterButton
-                        variant='contained'
-                        color='secondary'
-                        startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-                        className={classes.filterButton}
-                        onClick={handleClickOpen}
-                      >
-                        filter
-                      </StyledFilterButton>
-                      <Dialog
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby='form-dialog-title'
-                      >
-                        <DialogTitle id='form-dialog-title'>Zone</DialogTitle>
-                        <Select
-                          labelId='demo-simple-select-outlined-label'
-                          id='demo-simple-select-outlined'
-                          name='zone'
-                          onChange={handleZone}
-                          outlined
-                          labelWidth={70}
-                          required
+                    <div className='stylerow'>
+                      <div>
+                        <StyledFilterButton
+                          variant='contained'
+                          color='secondary'
+                          style={{ marginLeft: '-5%' }}
+                          startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+                          className={classes.filterButton}
+                          onClick={() => {
+                            filterForAllData(theSubjectId, page);
+                          }}
                         >
-                          {branchGet &&
-                            branchGet.map((options) => {
-                              return (
-                                <MenuItem value={options.id} key={options.id}>
-                                  {options.branch_name}
-                                </MenuItem>
-                              );
-                            })}
-                        </Select>
-                        <DialogActions>
-                          <Button onClick={handleClose} color='primary'>
-                            Cancel
-                          </Button>
-                          <Button onClick={handleZoneDataGet} color='primary'>
-                            Generate
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
-                    </Grid>
+                          filter
+                        </StyledFilterButton>
+                      </div>
 
-                    <Grid>
                       <StyledFilterButton
                         variant='contained'
                         color='secondary'
+                        style={{ marginLeft: '-1%' }}
                         className={classes.filterButton}
                         onClick={(e) => {
                           handleAdd();
@@ -1695,24 +2330,22 @@ const Publications = (props) => {
                       >
                         ADD NEW
                       </StyledFilterButton>
-                    </Grid>
-                  </Grid>
-                  <Grid container justify='flex-end' item md={11}>
-                    <div
-                      className='filter-container'
-                      onClick={() => {
-                        handleFilter(false);
-                      }}
-                    >
-                      <div className='filter'>HIDE FILTER</div>
-                      <img src={FilterImage} />
+                      <div
+                        className='filter-container'
+                        onClick={() => {
+                          handleFilter(false);
+                        }}
+                      >
+                        <div className='filter'>HIDE FILTER</div>
+                        <img src={FilterImage} />
+                      </div>
                     </div>
-                  </Grid>
-                </Grid>
+                  </div>
+                </div>
               ) : (
                 <>
-                  <div className='bread-crumb-container' style={{ float: 'right' }}>
-                    <div
+                  <Grid className='bread-crumb-container' style={{ float: 'right' }}>
+                    <Grid
                       className={
                         Filter ? 'filter-container-hidden' : 'filter-container-show'
                       }
@@ -1720,16 +2353,17 @@ const Publications = (props) => {
                         handleFilter(true);
                       }}
                     >
-                      <div className='filter-show'>
+                      <Grid className='filter-show'>
                         <div className='filter'>SHOW FILTER</div>
                         <img className='filterImage' src={FilterImage} />
-                      </div>
-                    </div>
-                  </div>
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </>
               )}
             </MediaQuery>
           </>
+          <br />
           <Divider />
 
           <br />
@@ -1738,57 +2372,116 @@ const Publications = (props) => {
             <li>{subjectID}</li>
           </Grid>
           <br />
-          <Grid container spacing={3} className='bg-card'>
-            <Grid item md={12} xs={12}>
-              <Tabs
-                value={value}
-                onChange={handleChanger}
-                indicatorColor='primary'
-                textColor='primary'
-                right
-              >
-                <Tab label='All' />
-                <Tab label='Draft' />
-                <Tab label='For Review' />
-                <Tab label='Published' />
-              </Tabs>
-              <Divider loading={loading} />
+          <Grid item md={12} xs={10}>
+            <Tabs
+              value={value}
+              onChange={handleChanger}
+              indicatorColor='primary'
+              textColor='primary'
+              right
+            >
+              <Tab label='All' />
+              <Tab label='Draft' />
+              <Tab label='For Review' />
+              <Tab label='Published' />
+            </Tabs>
+            <Divider loading={loading} />
 
-              <Tabpanel1 value={value} index={0}>
-                <Grid container direction='row' spacing={1}>
-                  <Post data={currentPost} loading={loading} />
-                </Grid>
+            <Tabpanel1 value={value} index={0}>
+              {changer ? (
+                <>
+                  <Grid container direction='row' spacing={1} className='gridscroll'>
+                    <Post />
+                  </Grid>
+                  <Grid container direction='row' justify='center' alignItems='center'>
+                    <Pagination
+                      onChange={handlePagination}
+                      style={{ marginTop: 25 }}
+                      count={totalPages}
+                      color='primary'
+                      page={page}
+                    />
+                  </Grid>
+                </>
+              ) : (
                 <Grid container direction='row' justify='center' alignItems='center'>
-                  <Paginations
-                    postsPerPage={postsPerPage}
-                    totalPosts={data.length}
-                    paginate={paginate}
-                  />
+                  <img src={Nodata} />
                 </Grid>
-              </Tabpanel1>
-              <Tabpanel1 value={value} index={1}>
-                <Grid container direction='row' spacing={2}>
-                  <NewDraft loading={loading} />
+              )}
+            </Tabpanel1>
+            <Tabpanel1 value={value} index={1}>
+              {changer2 ? (
+                <>
+                  <Grid container direction='row' spacing={1} className='gridscroll'>
+                    <NewDraft />
+                  </Grid>
+                  {dataDraft && (
+                    <Grid container direction='row' justify='center' alignItems='center'>
+                      <Pagination
+                        onChange={handlePagination}
+                        style={{ marginTop: 25 }}
+                        count={totalPages2}
+                        color='primary'
+                        page={page}
+                      />
+                    </Grid>
+                  )}
+                </>
+              ) : (
+                <Grid container direction='row' justify='center' alignItems='center'>
+                  <img src={Nodata} />
                 </Grid>
-              </Tabpanel1>
-              <Tabpanel1 value={value} index={2}>
-                <Grid container direction='row'>
-                  <ReviewPost loading={loading} />
+              )}
+            </Tabpanel1>
+
+            <Tabpanel1 value={value} index={2}>
+              {changer3 ? (
+                <>
+                  <Grid container direction='row'>
+                    <ReviewPost />
+                  </Grid>
+                  {reviewData && (
+                    <Grid container direction='row' justify='center' alignItems='center'>
+                      <Pagination
+                        onChange={handlePagination}
+                        style={{ marginTop: 25 }}
+                        count={totalPages3}
+                        color='primary'
+                        page={page}
+                      />
+                    </Grid>
+                  )}
+                </>
+              ) : (
+                <Grid container direction='row' justify='center' alignItems='center'>
+                  <img src={Nodata} />
                 </Grid>
-              </Tabpanel1>
-              <Tabpanel1 value={value} index={3}>
-                <Grid container direction='row' spacing={2}>
-                  <IndividualPost data={currentPost} loading={loading} />
+              )}
+            </Tabpanel1>
+            <Tabpanel1 value={value} index={3}>
+              {changer4 ? (
+                <>
+                  <Grid container direction='row' spacing={1} className='space'>
+                    <IndividualPost />
+                  </Grid>
+                  {individualData && (
+                    <Grid container direction='row' justify='center' alignItems='center'>
+                      <Pagination
+                        onChange={handlePagination}
+                        style={{ marginTop: 25 }}
+                        count={totalPages4}
+                        color='primary'
+                        page={page}
+                      />
+                    </Grid>
+                  )}
+                </>
+              ) : (
+                <Grid container direction='row' justify='center' alignItems='center'>
+                  <img src={Nodata} />
                 </Grid>
-                {/* <Grid container direction='row' justify='center' alignItems='center'>
-                  <Paginations
-                    postsPerPage={postsPerPage}
-                    totalPosts={data.length}
-                    paginate={paginate}
-                  />
-                </Grid> */}
-              </Tabpanel1>
-            </Grid>
+              )}
+            </Tabpanel1>
           </Grid>
         </div>
       )}
