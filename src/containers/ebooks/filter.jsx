@@ -92,7 +92,6 @@ const Filter = ({ handleFilter, clearFilter }) => {
     setSelectedGrade('');
     setSelectedSubject('');
   }
-  console.log(subjectList[0]&&subjectList[0].subject_id_name,"@@@@@@@@@@@@@@@@@@@")
 
   return (
     <>
