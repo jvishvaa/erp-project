@@ -68,7 +68,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
         } else if (key === 'grade') {
           setGradeList(response.data.result);
         } else if (key === 'subject') {
-          setSubjectList(response.data.result[0].subject_id_name);
+          setSubjectList(response.data.result);
         }
       }
       }).catch(error => {
@@ -92,6 +92,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
     setSelectedGrade('');
     setSelectedSubject('');
   }
+  console.log(subjectList[0]&&subjectList[0].subject_id_name,"@@@@@@@@@@@@@@@@@@@")
 
   return (
     <>
@@ -196,7 +197,8 @@ const Filter = ({ handleFilter, clearFilter }) => {
             id='subject'
             options={subjectList}
             value={selectedSubject}
-            getOptionLabel={(option) => option?.erp_sub_name||''}
+            // getOptionLabel={(option) => option?.subject_id_name?.subject_id_name[0]?.erp_sub_name||''}
+            getOptionLabel={(option) => option && option.subject_id_name&& option.subject_id_name[0] &&option.subject_id_name[0].erp_sub_name||''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
