@@ -15,11 +15,18 @@
   justify-content: space-evenly;
   padding-left: 24px;
 }
+.upper-table-container1 {
+  align-items: stretch;
+  justify-content: space-evenly;
+  padding-left: 24px;
+}
+
 .filter-container {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  width: 83%;
+  margin-top: 10px;
+  width: 100%;
 }
 .filter-container-show {
   display: flex;
@@ -44,6 +51,77 @@
   font-weight: 600;
   margin-right: 4px;
   cursor: pointer;
+}
+.all-box-container1 {
+  .text-rotate1 {
+    width: 100%;
+    color: $text-color;
+    font-size: 16px;
+    padding-top: 8px;
+    font-weight: 600;
+    font-family: $font-roboto;
+  }
+  .text-fixed1 {
+    color: $text-color;
+    font-size: 20px;
+    padding: 13px;
+    font-family: $font-roboto;
+  }
+  .acadamic-year-box1 {
+    width: 9%;
+    border-radius: 10px 1px 1px 10px;
+    display: flex;
+    align-items: flex-end;
+    background: #fef5f5;
+  }
+  .grade-container1 {
+    width: 320px;
+    border-radius: 10px;
+    height: 100%;
+    background: #ffd9d9;
+    .arrow-button1 {
+      color: $text-color;
+    }
+    .text-fixed-last1 {
+      color: $text-color;
+
+      font-family: $font-roboto;
+    }
+  }
+  .inner-grade-container1 {
+    display: flex;
+    flex-direction: row;
+  }
+  .change-grade-options1 {
+    width: 100%;
+    height: 100%;
+    margin-left: 32px;
+    margin-bottom: 10px;
+    background: white;
+    border-radius: 10px;
+  }
+  option {
+    color: $text-color;
+  }
+  .box-last-1 {
+    @include box-right();
+    background: #ffe5e5;
+  }
+  .box-last-2 {
+    @include box-right();
+    background: #ffefef;
+  }
+
+  .box-right-1 {
+    @include box-left();
+    background: #ffe5e5;
+    width: 320px;
+  }
+  .box-right-2 {
+    @include box-left();
+    background: #ffefef;
+    width: 320px;
+  }
 }
 .all-box-container {
   display: flex;
@@ -122,10 +200,12 @@
   .box-right-1 {
     @include box-left();
     background: #ffe5e5;
+    height: 94%;
   }
   .box-right-2 {
     @include box-left();
     background: #ffefef;
+    height: 94%;
   }
   .box-right-3 {
     @include box-left();
@@ -144,4 +224,25 @@
   }
 }
 
+.gridscroll.MuiGrid-spacing-xs-1 {
+  width: 100%;
+}
+.newmargin.MuiTypography-subtitle1.MuiTypography-colorSecondary.MuiTypography-gutterBottom {
+  margin-top: -30% !important;
+}
+
+.space.MuiGrid-container.MuiGrid-spacing-xs-1 {
+  width: 100% !important;
+}
 //*****************************//
+
+.marg {
+  margin: auto;
+  margin-top: 10%;
+}
+
+.stylerow {
+  display: flex;
+  margin: 10px;
+  flex-wrap: wrap;
+}

@@ -1,172 +1,195 @@
 .studentStrenghtBody {
-    background-color: #F9F9F9;
-    margin-bottom: 10px !important;
-    .signatureNavDiv {
-        .SignatureNavigationLinks {
-            color: #014B7E;
-            font-weight: bold;
-            font-size: 20px;
-            margin: 1px 10px !important;
-            outline: none !important;
-            background-color: #F9F9F9 !important;
-            border: none !important;
-            cursor: pointer;
-        }
-        .SignatureUploadNavArrow {
-            color: #ff6b6b;
-            font-weight: bold;
-            font-size: 30px;
-        }
+  background-color: #f9f9f9;
+  margin-bottom: 10px !important;
+  .signatureNavDiv {
+    .SignatureNavigationLinks {
+      color: #014b7e;
+      font-weight: bold;
+      font-size: 20px;
+      margin: 1px 10px !important;
+      outline: none !important;
+      background-color: #f9f9f9 !important;
+      border: none !important;
+      cursor: pointer;
     }
+    .SignatureUploadNavArrow {
+      color: #ff6b6b;
+      font-weight: bold;
+      font-size: 30px;
+    }
+  }
 }
 .studentStrenghtBody1 {
-    padding: 20px 40px !important;
+  padding: 20px 40px !important;
+  background-color: white;
 }
 .studentStrengthFilterDiv {
-    padding: 20px 40px !important;
+  padding: 20px 40px !important;
 }
 .studentStrenghtDivider {
-    margin: 30px 0px !important;
+  margin: 30px 0px !important;
 }
 .studentStrenghtFilterButton {
-    // font-size: 11px !important;  
-    border-radius: 8x !important;
+  // font-size: 11px !important;
+  border-radius: 8x !important;
 }
 .studentStrenghtDownloadButton {
-
-    // font-size: 10px !important;
-    border-radius: 8x !important;
-    color: #014B7E !important;
-    border-color: #FF6B6B !important;
-    border: 1px solid #FF6B6B !important;
-    background-color: white !important;
+  // font-size: 10px !important;
+  border-radius: 8x !important;
+  color: #014b7e !important;
+  border-color: #ff6b6b !important;
+  border: 1px solid #ff6b6b !important;
+  background-color: white !important;
 }
-.totalbold{
-    font-size: 20px !important;
-    font-weight: bold !important;
+.totalbold {
+  font-size: 13px !important;
+  font-weight: bold !important;
 }
 
-.totalbold1{
-    font-size: 20px !important;
+.totalbold1 {
+  font-size: 20px !important;
+  font-weight: bold !important;
 }
-.totalbold2{
-    font-size: 25px !important;
-    font-weight: bold !important;
+.totalbold2 {
+  font-size: 20px !important;
+  font-weight: bold !important;
 }
-.totalboldspace{
-    margin-left: 30px!important; 
-    // font-size: 20px !important;
-    font-weight: bold !important;
+.totalboldspace {
+  margin-left: 50px !important;
+  font-size: 13px !important;
+  font-weight: bold !important;
+}
+.totalboldspace1 {
+  margin-left: 10px !important;
+  font-size: 20px !important;
 
-
+  font-weight: bold !important;
 }
 
 .totalStudentStrenghtMainDiv {
-    width: 84% !important;
-    border-radius: 10px !important;
-    border: 1px solid #014B7E;
-    border-color: #014B7E;
-    opacity: 1;
+  width: 84% !important;
+
+  border-radius: 10px !important;
+  border: 1px solid #014b7e;
+  border-color: #014b7e;
+  opacity: 1;
+}
+.totalStudentStrenghtMainDiv2 {
+  width: 100% !important;
+
+  border-radius: 10px !important;
+  border: 1px solid #014b7e;
+  border-color: #014b7e;
+  opacity: 1;
+}
+
+.totalStudentStrenghtMainDivcopy {
+  width: 100% !important;
+
+  border-radius: 10px !important;
+  border: 1px solid #014b7e;
+  border-color: #014b7e;
+  opacity: 1;
 }
 .totalStudentStrenghtSubDiv1 {
-    padding: 2px 5px !important;
-    color: white !important;
-    border-radius: 8px 0px 0px 8px !important;
-    background-color: #014B7E !important;
+  padding: 2px 5px !important;
+  color: white !important;
+  border-radius: 8px 0px 0px 8px !important;
+  background-color: #014b7e !important;
 }
 .totalStudentStrenghtSubDiv2 {
-    padding: 2px 5px !important;
-    border-radius: 8px 0px 0px 8px !important;
+  padding: 2px 5px !important;
+  border-radius: 8px 0px 0px 8px !important;
 }
 .totalStudentSubSubDiv1 {
-    padding: 2px 5px !important;
+  padding: 2px 5px !important;
 }
 .totalStudentStrenghtLabel {
-    font-size: 15px !important;
-    font-family: Raleway;
-    
+  font-size: 15px !important;
+  font-family: Raleway;
 }
 .totalStudentStrenghtLabel1 {
-    color:#009CE1;
-    font-size: 15px !important;
-    font-family: Raleway;
-    font-weight: bold !important;
+  color: #009ce1;
+  font-size: 13px !important;
+  font-family: Raleway;
+  font-weight: bold !important;
 }
 .totalStudentStrenghtLabel2 {
-    color:#9D9D9D;
-    font-size: 15px !important;
-    font-family: Raleway;
-    font-weight: bold !important;
+  color: #9d9d9d;
+  font-size: 13px !important;
+  font-family: Raleway;
+  font-weight: bold !important;
 }
 .totalStudentStrenghtCardLabel {
-    color: #014B7E;
-    font-size: 15px;
-    font-weight: bold !important;
-    font-family: Raleway,
+  color: #014b7e;
+  font-size: 13px;
+  font-weight: bold !important;
+  font-family: Raleway;
 }
 .totalStudentStrenghtCardLabel1 {
-    color: #00A1A7;
-    font-size: 15px;
-    font-family: Raleway,
+  color: #00a1a7;
+  font-size: 13px;
+  font-family: Raleway;
 }
 .studentStrengthCardMainDivInActive {
-    border-radius: 10px;
-    padding: 10px 20px !important;
-    border: 1px solid #E2E2E2;
-    background-color: white;
-    box-shadow: 0px 0px 4px #00000029;
-    
-    
+  border-radius: 10px;
+  padding: 10px 20px !important;
+  border: 1px solid #e2e2e2;
+  background-color: white;
+  box-shadow: 0px 0px 4px #00000029;
 }
-
 
 .studentStrengthCardMainDivActive {
-    border-radius: 10px;
-    padding: 10px 20px !important;
-    border: 1px solid #E2E2E2;
-    background-color: #FCEEEE;
-    box-shadow: 0px 0px 4px #00000029;
-    width: 85% !important;
-    
+  border-radius: 10px;
+  padding: 10px 20px !important;
+  border: 1px solid #e2e2e2;
+  background-color: #fceeee;
+  box-shadow: 0px 0px 4px #00000029;
+  width: 100% !important;
+  height: 100% !important;
 }
 .totalStudentStrenghtCardSubLabel {
-    color: #042955 !important;
-    font-size: 25px !important;
-    margin: 0 !important;
-    
+  color: #042955 !important;
+  font-size: 20px !important;
+  margin: 0 !important;
 }
 .totalStudentStrenghtCardSubLabel1 {
-    color: #009F10;
-    font-size: 15px;
+  color: #009f10;
+  font-size: 13px;
 }
 .totalStudentMainCard {
-    padding: 1px 20px !important;
+  margin-left: '-5%';
 }
-// .MuiGrid-spacing-xs-2 > .MuiGrid-item {
-//     padding: 8px;
-//     margin-right: inherit;
-// }
+
 .totalStudentSubCard {
-    border: 1px solid #FF6B6B;
-    border-radius: 10px;
-    opacity: 1;
+  border: 1px solid #ff6b6b;
+  border-radius: 10px;
+  opacity: 1;
 }
 .totalStudentSubSubCard1 {
-    box-shadow: 0px 2px 6px #00000029;
-    border-radius: 9px 9px 0px 0px;
-    opacity: 1;
-    background-color: #FCEEEE;
-    margin-bottom: 10px !important;
-   
+  box-shadow: 0px 2px 6px #00000029;
+  border-radius: 9px 9px 0px 0px;
+  opacity: 1;
+  background-color: #fceeee;
+  margin-bottom: 10px !important;
+  padding: 8px 10px !important;
 }
 .totalStudentSubcard1Child {
-    padding: 10px 20px 20px 20px !important;
+  padding: 10px 20px 20px 20px !important;
 }
 .studentStrenghtBody2 {
-   padding: 20px 10px !important;
-  
+  padding: 8px 10px !important;
 }
 .studentStrenghtBody3 {
-    padding: 20px 10px !important;
-    margin-left: 17px!important;
- }
+  padding: 20px 10px !important;
+  margin-left: 17px !important;
+  width: 100% !important;
+}
+
+.totalStudentSubCard.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-md-12 {
+  margin-top: 8px;
+}
+
+.totalStudentMainCard.MuiGrid-container.MuiGrid-spacing-xs-2 {
+  width: 100% !important;
+}
