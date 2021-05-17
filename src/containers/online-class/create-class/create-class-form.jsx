@@ -1223,9 +1223,10 @@ const CreateClassForm = (props) => {
               </Button>
             </Grid>
           </Grid>
-          <Grid container>
+          <Grid container className="swipe-container" >
             <SwipeableDrawer
               className='my__swipable'
+              id="private_swipe"
               anchor='right'
               open={isDrawerOpen}
               onClose={toggleDrawer}
