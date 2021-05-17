@@ -146,7 +146,6 @@ const AddPublication = ({ handleGoBackPre }) => {
   };
 
   const handleBranch = (e, value) => {
-    console.log('The value of grade', e.target);
     if (value) {
       console.log('grade:', value.id);
       setPostBranch(e.target.value);
@@ -297,7 +296,39 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   const handleRead = (value) => {
     console.log('valuessss:', value);
+    if (!grade) {
+      setAlert('error', 'Select Grade');
+      return;
+    }
+    if (!postSubjects) {
+      setAlert('error', 'Select Subject');
+      return;
+    }
+    if (!postBranch) {
+      setAlert('error', 'Select Branch');
+      return;
+    }
+    if (!bookTypes) {
+      setAlert('error', 'Select Book Type');
+      return;
+    }
+    if (!postData) {
+      setAlert('error', 'fill all Fields');
+      return;
+    }
 
+    if (!description) {
+      setAlert('error', 'Enter description');
+      return;
+    }
+    if (!thumbnail) {
+      setAlert('error', 'Select Thumbnail');
+      return;
+    }
+    if (!file) {
+      setAlert('error', 'Select Browse');
+      return;
+    }
     setTableFlag(false);
     setReadFlag(true);
   };
@@ -515,16 +546,6 @@ const AddPublication = ({ handleGoBackPre }) => {
                     Drop a file on this or Browse from you Files
                   </Typography>
                   <Grid container justify='center' direction='row'>
-                    {/* <Dropzone
-                    inputRef={fileRef}
-                    accept='.pdf'
-                    onChange={handleFileChange}
-                    style={{ display: 'none' }}
-                    maxFiles={1}
-                    multiple={false}
-                    canCancel={false}
-                    inputContent='Drop A File'
-                  > */}
                     <Grid style={{ marginRight: '1%' }}>
                       <Button onClick={handleClickThumbnail}>
                         Thumbnail
@@ -567,16 +588,8 @@ const AddPublication = ({ handleGoBackPre }) => {
                       />
                       {/* <FilePreviewerThumbnail file={pdfData} /> */}
                     </Grid>
-
-                    {/* </Dropzone> */}
-                    {/* <Dropzone /> */}
                   </Grid>
                 </Grid>
-
-                {/* <DropZonecom /> */}
-                {/* <Grid container justify='center'>
-                <Typography>(Only pdf files support)</Typography>
-              </Grid> */}
               </Paper>
             </Grid>
 
