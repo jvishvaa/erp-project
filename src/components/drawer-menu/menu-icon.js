@@ -20,7 +20,7 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import ReceiptRoundedIcon from '@material-ui/icons/ReceiptRounded';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import FeedbackIcon from '@material-ui/icons/Feedback';
-
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import {
   AccountBalance,
   AccountBalanceWallet,
@@ -130,6 +130,10 @@ const menuIcon = (name) => {
 
     case 'Approvals/Requests': {
       icon = <LibraryAddCheck />;
+      break;
+    }
+    case 'Publication': {
+      icon = <LibraryBooksIcon />;
       break;
     }
     case 'Concession': {

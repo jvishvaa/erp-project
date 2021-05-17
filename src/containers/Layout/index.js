@@ -639,6 +639,10 @@ const Layout = ({ children, history }) => {
         history.push('/student-strength');
         break;
       }
+      case 'View Publication': {
+        history.push('/publications');
+        break;
+      }
       case 'Signature Upload': {
         history.push('/master-management/signature-upload');
         break;
