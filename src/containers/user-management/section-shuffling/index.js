@@ -39,12 +39,23 @@ const StyledButton = withStyles({
         backgroundColor: '#FF6B6B',
         color: '#FFFFFF',
         padding: '8px 15px',
-        float: 'right',
         '&:hover': {
             backgroundColor: '#FF6B6B !important',
           },
     }
 })(Button);
+
+const StyledClearButton = withStyles({
+    root: {
+      backgroundColor: '#E2E2E2',
+      color: '#8C8C8C',
+      padding: '8px 15px',
+      marginLeft: '30px',
+      '&:hover': {
+        backgroundColor: '#E2E2E2 !important',
+      },
+    },
+  })(Button);
 
 const SectionShuffling = () => {
     const classes = useStyles({});
@@ -68,6 +79,10 @@ const SectionShuffling = () => {
         }
     };
 
+    const handleClearAll = () => {
+        fileRef.current.value = null;
+      };
+
     const handleFileUpload = () => {
         const formData = new FormData();
         formData.append('file', file);
@@ -82,6 +97,7 @@ const SectionShuffling = () => {
                 FileSaver.saveAs(blob, 'error.xlsx');
                 //setAlert('success', 'Excel file submited');
                 setUploadFlag(false);
+                fileRef.current.value = null;
             })
             .catch((error) => {
               setAlert('error', 'Something Wrong!');
@@ -102,7 +118,7 @@ const SectionShuffling = () => {
                     />
                 </div>
                 <Grid container>
-                    <Grid item sm={3} xs={12}>
+                    <Grid item sm={4} xs={12}>
                         <Box display='flex' flexDirection='column' style={{marginLeft: '30px'}}>
                             <Input
                                 type='file'
@@ -124,7 +140,10 @@ const SectionShuffling = () => {
                             </Box>
                         </Box>
                     </Grid>
-                    <Grid sm={3} xs={12}>
+                    <Grid sm={2} xs={6}>
+                        <StyledClearButton onClick={handleClearAll}>Clear All</StyledClearButton>
+                    </Grid>
+                    <Grid sm={2} xs={6}>
                         <StyledButton
                             onClick={handleFileUpload}
                         >

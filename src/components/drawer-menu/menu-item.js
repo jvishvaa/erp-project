@@ -48,6 +48,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Bulk Status Upload', Path: '/finance/BulkOperation/BulkUploadStatus' },
     { name: 'Assign Role', Path: '/user-management/assign-role' },
     { name: 'View Class', Path: '/erp-online-class' },
+    { name: 'Section Shuffle', Path: '/user-management/section-shuffling' },
     { name: 'Attend Online Class', Path: '/erp-online-class-student-view' },
     { name: 'Teacher View Class', Path: '/erp-online-class-teacher-view' },
     { name: 'Create Class', Path: '/online-class/create-class' },

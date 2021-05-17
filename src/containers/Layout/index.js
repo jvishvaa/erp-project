@@ -431,6 +431,10 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/view-users');
         break;
       }
+      case 'Section Shuffle': {
+        history.push('/user-management/section-shuffling');
+        break;
+      }
       case 'Assign Role': {
         history.push('/user-management/assign-role');
         break;
