@@ -266,6 +266,7 @@ const GravienceHome = () => {
           setAlert('error', error.message);
         });
       } else {
+        // add 
         axiosInstance.get(
           `${endpoints.grievances.getGrivienceList}`
         )
@@ -279,7 +280,8 @@ const GravienceHome = () => {
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          //setAlert('error', error.message);
+          setAlert('warning', 'Please select filter');
         });
       }
     }

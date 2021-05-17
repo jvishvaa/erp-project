@@ -47,15 +47,22 @@
 }
 
 .totalbold1 {
-  font-size: 13px !important;
+  font-size: 20px !important;
+  font-weight: bold !important;
 }
 .totalbold2 {
-  font-size: 15px !important;
+  font-size: 20px !important;
   font-weight: bold !important;
 }
 .totalboldspace {
-  margin-left: 10px !important;
+  margin-left: 50px !important;
   font-size: 13px !important;
+  font-weight: bold !important;
+}
+.totalboldspace1 {
+  margin-left: 10px !important;
+  font-size: 20px !important;
+
   font-weight: bold !important;
 }
 
@@ -151,7 +158,7 @@
   font-size: 13px;
 }
 .totalStudentMainCard {
-  padding: 10px 20px !important;
+  margin-left: '-5%';
 }
 
 .totalStudentSubCard {
@@ -176,5 +183,13 @@
 .studentStrenghtBody3 {
   padding: 20px 10px !important;
   margin-left: 17px !important;
+  width: 100% !important;
+}
+
+.totalStudentSubCard.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-md-12 {
+  margin-top: 8px;
+}
+
+.totalStudentMainCard.MuiGrid-container.MuiGrid-spacing-xs-2 {
   width: 100% !important;
 }

@@ -50,6 +50,7 @@ const UserDetailsForm = ({
       gender: details.gender,
       profile: details.profile,
       contact: details.contact,
+      username: details.username,
       email: details.email,
       date_of_birth: details.date_of_birth,
       address: details.address,
@@ -253,6 +254,22 @@ const UserDetailsForm = ({
           />
           <FormHelperText style={{ color: 'red' }}>
             {formik.errors.contact ? formik.errors.contact : ''}
+          </FormHelperText>
+        </FormControl>
+      </Grid>
+      <Grid item md={4} xs={12}>
+        <FormControl variant='outlined' fullWidth size='small'>
+          <InputLabel htmlFor='component-outlined'>ERP ID</InputLabel>
+          <OutlinedInput
+            id='username'
+            name='username'
+            inputProps={{ maxLength: 25 }}
+            onChange={formik.handleChange}
+            value={formik.values.username}
+            label='ERP ID'
+          />
+          <FormHelperText style={{ color: 'red' }}>
+            {formik.errors.username ? formik.errors.username : ''}
           </FormHelperText>
         </FormControl>
       </Grid>
