@@ -510,6 +510,7 @@ const EditPublication = ({
                   onEditorChange={handleDES}
                   name='description'
                   initialValue={showdes}
+                  className={classes.root}
                 />
               </Paper>
             </Grid>

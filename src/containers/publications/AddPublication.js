@@ -258,10 +258,10 @@ const AddPublication = ({ handleGoBackPre }) => {
     formData.append('thumbnail', thumbnail);
     formData.append('description', description);
     formData.append('status_post', isPublished);
-    console.log('formData:', formData);
-    console.log('booktype:', bookTypes.id);
-    console.log('subject list:', postSubjects);
-    console.log('grade:', grade);
+    // console.log('formData:', formData);
+    // console.log('booktype:', bookTypes.id);
+    // console.log('subject list:', postSubjects);
+    // console.log('grade:', grade);
 
     axiosInstance
       .post(endpoints.publish.ebook, formData)
