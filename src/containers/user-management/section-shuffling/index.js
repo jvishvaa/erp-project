@@ -13,6 +13,11 @@ const useStyles = makeStyles({
     paperStyled: {
         height: '80vh',
         padding: '50px',
+        marginTop: '15px',
+    },
+    guidelinesText: {
+        fontSize: '20px',
+        fontWeight: 'bold'
     }
 });
 
@@ -128,7 +133,7 @@ const SectionShuffling = () => {
                     </Grid>
                     <Grid item xs={12}>
                         <Paper className={classes.paperStyled}>
-                            <Typography>Guidelines:</Typography>
+                            <Typography className={classes.guidelinesText}>Guidelines:</Typography>
                             {guidelines.map((val, i) => {
                                 return (
                                     <div style={{ color: '#014b7e', fontSize: '16px', padding: '10px' }}>
