@@ -47,7 +47,7 @@ const StudentStrength = ({ history }) => {
       {
         csv: `${endpoints.studentListApis.downloadBranchWiseStudent}?academic_year_id=${
           selectedAcademicYear && selectedAcademicYear.id
-        }&branch_id=${selectedBranch && selectedBranch.id}
+        }&branch_id=${selectedBranch && selectedBranch.branch?.id}
           &export_type=csv`,
       },
     ]);
