@@ -331,7 +331,14 @@ const Publications = (props) => {
   }, [goBackFlag]);
 
   const filterForAllData = (theSubjectId, page) => {
-    console.log('the subject id', theSubjectId);
+     if (!acadamicYearID) {
+       setAlert('error', 'Select Acadminc year');
+       return;
+     }
+     if (!mainsubject) {
+       setAlert('error', 'Select Subject');
+       return;
+     }
     setPage(1);
     handleSubjectID(theSubjectId, page);
   };
