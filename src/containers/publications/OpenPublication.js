@@ -184,10 +184,11 @@ const OpenPublication = ({ ID }) => {
       <div className='ran-style'>
         <MediaQuery minWidth={600}>
           <Grid className={classes.root} container direction='row'>
-            <Grid item md={8}>
+            <Grid item md={6}>
               <Button href={`/publications`}>Close</Button>
             </Grid>
-            <Grid className={classes.new} item md={3}>
+
+            <Grid className={classes.new} item>
               <Button onClick={() => SingleBook()}>
                 SINGLE PAGE <BookIcon />
               </Button>

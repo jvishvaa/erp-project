@@ -56,6 +56,8 @@ import PublicationPreview from './PublicationPreview';
 import Nodata from '../../assets/images/not-found.png';
 import { set } from 'lodash';
 import PublishIcon from '@material-ui/icons/Publish';
+import filterImage2 from '../../assets/images/unfiltered.svg';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -214,7 +216,7 @@ const Publications = (props) => {
   const [tableFlag, setTableFlag] = useState(true);
   const [readID, setReadID] = useState();
   const [goBackFlag, setGoBackFlag] = useState(false);
-  const [dataDraft, setDataDraft] = useState();
+  const [dataDraft, setDataDraft] = useState('');
   const [reviewData, setReviewData] = useState();
 
   const [reviewDataPut, setReviewDataPut] = useState('Review');
@@ -258,6 +260,13 @@ const Publications = (props) => {
 
   const handleClose1 = () => {
     setOpen1(false);
+  };
+
+  const handleclear = () => {
+    setMainsubject('');
+    setReviewData('');
+    setIndividualData('');
+    setDataDraft('');
   };
 
   const handleEdit = (
@@ -1028,8 +1037,18 @@ const Publications = (props) => {
               );
             })
           ) : (
-            <Grid item md={3}>
-              <h1>Select Above Subject</h1>
+            <Grid container spacing={2}>
+              <Grid
+                item
+                md={12}
+                xs={12}
+                style={{ textAlign: 'center', marginTop: '10px' }}
+              >
+                <img src={filterImage2} alt='crash' height='250px' width='250px' />
+                <Typography>
+                  Please select the filter to dislpay student strength
+                </Typography>
+              </Grid>
             </Grid>
           )}
         </MediaQuery>
@@ -1143,8 +1162,18 @@ const Publications = (props) => {
               );
             })
           ) : (
-            <Grid item md={3}>
-              <h1>Select Above Subject</h1>
+            <Grid container spacing={2}>
+              <Grid
+                item
+                md={12}
+                xs={12}
+                style={{ textAlign: 'center', marginTop: '10px' }}
+              >
+                <img src={filterImage2} alt='crash' height='250px' width='250px' />
+                <Typography>
+                  Please select the filter to dislpay student strength
+                </Typography>
+              </Grid>
             </Grid>
           )}
         </MediaQuery>
@@ -1253,8 +1282,18 @@ const Publications = (props) => {
               );
             })
           ) : (
-            <Grid item md={3}>
-              <h1>Select Above Subject</h1>
+            <Grid container spacing={2}>
+              <Grid
+                item
+                md={12}
+                xs={12}
+                style={{ textAlign: 'center', marginTop: '10px' }}
+              >
+                <img src={filterImage2} alt='crash' height='250px' width='250px' />
+                <Typography>
+                  Please select the filter to dislpay student strength
+                </Typography>
+              </Grid>
             </Grid>
           )}
         </MediaQuery>
@@ -1368,8 +1407,18 @@ const Publications = (props) => {
               );
             })
           ) : (
-            <Grid item md={3}>
-              <h1>Select Above Subject</h1>
+            <Grid container spacing={2}>
+              <Grid
+                item
+                md={12}
+                xs={12}
+                style={{ textAlign: 'center', marginTop: '10px' }}
+              >
+                <img src={filterImage2} alt='crash' height='250px' width='250px' />
+                <Typography>
+                  Please select the filter to dislpay student strength
+                </Typography>
+              </Grid>
             </Grid>
           )}
         </MediaQuery>
@@ -1483,8 +1532,18 @@ const Publications = (props) => {
               );
             })
           ) : (
-            <Grid item md={3}>
-              <h1>Select Above Subject</h1>
+            <Grid container spacing={2}>
+              <Grid
+                item
+                md={12}
+                xs={12}
+                style={{ textAlign: 'center', marginTop: '10px' }}
+              >
+                <img src={filterImage2} alt='crash' height='250px' width='250px' />
+                <Typography>
+                  Please select the filter to dislpay student strength
+                </Typography>
+              </Grid>
             </Grid>
           )}
         </MediaQuery>
@@ -1593,8 +1652,18 @@ const Publications = (props) => {
               );
             })
           ) : (
-            <Grid item md={3}>
-              <h1>Select Above Subject</h1>
+            <Grid container spacing={2}>
+              <Grid
+                item
+                md={12}
+                xs={12}
+                style={{ textAlign: 'center', marginTop: '10px' }}
+              >
+                <img src={filterImage2} alt='crash' height='250px' width='250px' />
+                <Typography>
+                  Please select the filter to dislpay student strength
+                </Typography>
+              </Grid>
             </Grid>
           )}
         </MediaQuery>
@@ -1718,8 +1787,18 @@ const Publications = (props) => {
               );
             })
           ) : (
-            <Grid item md={3}>
-              <h1>Select Above Subject</h1>
+            <Grid container spacing={2}>
+              <Grid
+                item
+                md={12}
+                xs={12}
+                style={{ textAlign: 'center', marginTop: '10px' }}
+              >
+                <img src={filterImage2} alt='crash' height='250px' width='250px' />
+                <Typography>
+                  Please select the filter to dislpay student strength
+                </Typography>
+              </Grid>
             </Grid>
           )}
         </MediaQuery>
@@ -1845,8 +1924,18 @@ const Publications = (props) => {
               );
             })
           ) : (
-            <Grid item md={3}>
-              <h1>Select Above Subject</h1>
+            <Grid container spacing={2}>
+              <Grid
+                item
+                md={12}
+                xs={12}
+                style={{ textAlign: 'center', marginTop: '10px' }}
+              >
+                <img src={filterImage2} alt='crash' height='250px' width='250px' />
+                <Typography>
+                  Please select the filter to dislpay student strength
+                </Typography>
+              </Grid>
             </Grid>
           )}
         </MediaQuery>
@@ -1966,8 +2055,18 @@ const Publications = (props) => {
               );
             })
           ) : (
-            <Grid item md={3}>
-              <h1>Select Above Subject</h1>
+            <Grid container spacing={2}>
+              <Grid
+                item
+                md={12}
+                xs={12}
+                style={{ textAlign: 'center', marginTop: '10px' }}
+              >
+                <img src={filterImage2} alt='crash' height='250px' width='250px' />
+                <Typography>
+                  Please select the filter to dislpay student strength
+                </Typography>
+              </Grid>
             </Grid>
           )}
         </MediaQuery>
@@ -1980,14 +2079,14 @@ const Publications = (props) => {
 
   return (
     <Layout>
-      <div className='bread-crumb-container'>
+      <div style={{ width: '95%', margin: '20px auto' }}>
         <CommonBreadcrumbs
           componentName='Publication'
           childComponentName={
             readFlag && !tableFlag
               ? 'OpenPublication'
               : editFlag && !tableFlag
-              ? 'AddPublication'
+              ? 'Add Publication'
               : reviewFlag && !tableFlag
               ? 'Review Publication'
               : null
@@ -2032,7 +2131,7 @@ const Publications = (props) => {
                       >
                         {counter === 1 ? (
                           <>
-                            <div className='text-fixed'>Acadamic Year</div>
+                            <div className='text-fixed'>Academic Year</div>
                             <div className='inner-grade-container'>
                               <div className='change-grade-options'>
                                 <Select
@@ -2071,7 +2170,7 @@ const Publications = (props) => {
                             </div>
                           </>
                         ) : (
-                          <Grid className='text-rotate'>AcadamicYear</Grid>
+                          <Grid className='text-rotate'>AcademicYear</Grid>
                         )}
                       </div>
 
@@ -2135,7 +2234,8 @@ const Publications = (props) => {
                     <StyledClearButton
                       variant='contained'
                       startIcon={<ClearIcon />}
-                      href={`/publications`}
+                      onClick={() => handleclear()}
+                      style={{ fontSize: '13px' }}
                     >
                       Clear all
                     </StyledClearButton>
@@ -2144,6 +2244,7 @@ const Publications = (props) => {
                       color='secondary'
                       startIcon={<FilterFilledIcon className={classes.filterIcon} />}
                       className={classes.filterButton}
+                      style={{ fontSize: '13px' }}
                       onClick={() => {
                         filterForAllData(theSubjectId, page);
                       }}
@@ -2154,6 +2255,7 @@ const Publications = (props) => {
                       variant='contained'
                       color='secondary'
                       className={classes.filterButton}
+                      style={{ fontSize: '13px' }}
                       onClick={(e) => {
                         handleAdd();
                         RemoveLocalData();
@@ -2208,7 +2310,7 @@ const Publications = (props) => {
                       >
                         {counter === 1 ? (
                           <>
-                            <div className='text-fixed1'>Acadamic Year</div>
+                            <div className='text-fixed1'>Academic Year</div>
                             <div className='inner-grade-container1'>
                               <div className='change-grade-options1'>
                                 <Select
@@ -2245,7 +2347,7 @@ const Publications = (props) => {
                             </div>
                           </>
                         ) : (
-                          <Grid className='text-rotate1'>AcadamicYear</Grid>
+                          <Grid className='text-rotate1'>AcademicYear</Grid>
                         )}
                       </div>
 
@@ -2380,10 +2482,38 @@ const Publications = (props) => {
               textColor='primary'
               right
             >
-              <Tab label='All' />
-              <Tab label='Draft' />
-              <Tab label='For Review' />
-              <Tab label='Published' />
+              <Tab
+                label='All'
+                style={{
+
+                  fontFamily: 'Raleway bold',
+                  textTransform: 'capitalize',
+                }}
+              />
+              <Tab
+                label='Draft'
+                style={{
+              
+                  fontFamily: 'Raleway bold',
+                  textTransform: 'capitalize',
+                }}
+              />
+              <Tab
+                label='For Review'
+                style={{
+                
+                  fontFamily: 'Raleway bold',
+                  textTransform: 'capitalize',
+                }}
+              />
+              <Tab
+                label='Published'
+                style={{
+               
+                  fontFamily: 'Raleway bold',
+                  textTransform: 'capitalize',
+                }}
+              />
             </Tabs>
             <Divider loading={loading} />
 
