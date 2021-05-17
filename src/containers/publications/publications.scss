@@ -200,12 +200,12 @@
   .box-right-1 {
     @include box-left();
     background: #ffe5e5;
-    height: 94%;
+    height: 100%;
   }
   .box-right-2 {
     @include box-left();
     background: #ffefef;
-    height: 94%;
+    height: 100%;
   }
   .box-right-3 {
     @include box-left();

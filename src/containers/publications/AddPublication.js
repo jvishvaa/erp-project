@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
+
 import {
   Button,
   Divider,
@@ -14,7 +14,6 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
 import AddIcon from '@material-ui/icons/Add';
 import './Styles.css';
 import endpoints from '../../config/endpoints';
@@ -22,9 +21,7 @@ import axiosInstance from '../../config/axios';
 import { Editor } from '@tinymce/tinymce-react';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
-
 import PublicationPreview from './PublicationPreview';
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,6 +60,7 @@ const AddPublication = ({ handleGoBackPre }) => {
   console.log('publishing', isPublished);
   const [description, setDescription] = useState();
   const [thumbnail, setThumbnail] = useState(null);
+  const [temBranch, setTemBranch] = useState();
   const formData = new FormData();
 
   const [image, setImage] = useState();
@@ -148,7 +146,7 @@ const AddPublication = ({ handleGoBackPre }) => {
   };
 
   const handleBranch = (e, value) => {
-    console.log('The value of grade', e.target.value);
+    console.log('The value of grade', e.target);
     if (value) {
       console.log('grade:', value.id);
       setPostBranch(e.target.value);
@@ -299,7 +297,6 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   const handleRead = (value) => {
     console.log('valuessss:', value);
-    // setReadID(value);
 
     setTableFlag(false);
     setReadFlag(true);
@@ -327,17 +324,6 @@ const AddPublication = ({ handleGoBackPre }) => {
           <div className='bg-card'>
             <Grid container direction='row' className={[classes.root]}>
               <Grid item md={3} xs={12}>
-                {/* <Autocomplete
-                  id='grade'
-                  size='small'
-                  options={grades}
-                  getOptionLabel={(option) => option.grade_name}
-                  name='grade'
-                  onChange={handleGrade}
-                  renderInput={(params) => (
-                    <TextField {...params} label='grades' variant='outlined' required />
-                  )}
-                /> */}
                 <FormControl variant='outlined' size='small' fullWidth>
                   <InputLabel id='demo-simple-select-outlined-label'>Grade</InputLabel>
                   <Select
@@ -391,28 +377,7 @@ const AddPublication = ({ handleGoBackPre }) => {
                   </Select>
                 </FormControl>
               </Grid>
-              {/* <Grid item md={3} xs={12}>
-                <Autocomplete
-                  id='booktype'
-                  size='small'
-                  options={[
-                    { id: 0, name: 'magazine' },
-                    { id: 1, name: 'newsletter' },
-                  ]}
-                  name='publication_type'
-                  onChange={handleBookType}
-                  getOptionLabel={(option) => option.name}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label='booktype'
-                      variant='outlined'
-                      required
-                      defaultValue={localStorage.getItem('book_type')}
-                    />
-                  )}
-                />
-              </Grid> */}
+
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
                   <InputLabel id='demo-simple-select-outlined-label'>BookType</InputLabel>
@@ -533,6 +498,7 @@ const AddPublication = ({ handleGoBackPre }) => {
                   plugins='wordcount'
                   onEditorChange={handleDES}
                   name='description'
+                  className='descBox'
                   fullWidth
                   initialValue={
                     localStorage.getItem('description') === 'undefined'
@@ -628,8 +594,8 @@ const AddPublication = ({ handleGoBackPre }) => {
                   Preview
                 </Button>
               </Grid>
-              <Grid item xs={1}>
-                <Button onClick={handleSubmitDraft}>SaveDraft</Button>
+              <Grid item md={2} xs={2}>
+                <Button onClick={handleSubmitDraft}>Save Draft</Button>
               </Grid>
             </Grid>
           </div>

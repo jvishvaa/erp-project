@@ -100,6 +100,9 @@ const PublicationPreview = ({ fun, handleGoBack }) => {
                         : 'newsletter'}
                     </Typography>
                     <Typography variant='body2'>{dateValue}</Typography>
+                    <Typography variant='body2'>
+                      Branch: {localStorage.getItem('zone')}
+                    </Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -117,16 +120,6 @@ const PublicationPreview = ({ fun, handleGoBack }) => {
           </Grid>
         </Grid>
         <Grid item md={8} container direction='row' style={{ margin: '3%' }}>
-          <Grid item md={3}>
-            <Button
-              size='small'
-              variant='contained'
-              disabled
-              style={{ paddingLeft: '50px', paddingRight: '50px' }}
-            >
-              Delete
-            </Button>
-          </Grid>
           <Grid item md={3}>
             <Button
               size='small'
@@ -208,11 +201,6 @@ const PublicationPreview = ({ fun, handleGoBack }) => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} style={{ margin: '2%' }}>
-          <Button size='small' variant='contained' disabled style={{ width: '100%' }}>
-            Delete
-          </Button>
-        </Grid>
         <Grid item xs={12} style={{ margin: '2%' }}>
           <Button
             size='small'
