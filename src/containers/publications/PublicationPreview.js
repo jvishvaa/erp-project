@@ -1,25 +1,20 @@
 import {
   Button,
   ButtonBase,
-  Card,
-  CardContent,
-  CardHeader,
-  CardMedia,
   Divider,
   Grid,
   IconButton,
   makeStyles,
   Paper,
-  Tooltip,
   Typography,
 } from '@material-ui/core';
-import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
-import Layout from 'containers/Layout';
+
 import MediaQuery from 'react-responsive';
 
 import React, { useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import moment from 'moment';
+import Loader from '../../components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,16 +52,16 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
   },
 }));
-const PublicationPreview = ({ fun, handleGoBack }) => {
+const PublicationPreview = ({ fun, handleGoBack, entireBack }) => {
   const classes = useStyles();
   const [dateValue, setDateValue] = useState(moment(new Date()).format('YYYY-MM-DD'));
-
+  const [loading, setLoading] = React.useState(false);
   return (
     <>
       <MediaQuery minWidth={600}>
         <Grid container direction='row'>
           <Grid container justify='center'>
-            <Button size='small' color='primary' href={`/publications`}>
+            <Button size='small' color='primary' onClick={entireBack}>
               Close
             </Button>
           </Grid>
@@ -220,6 +215,7 @@ const PublicationPreview = ({ fun, handleGoBack }) => {
           </Button>
         </Grid>
       </MediaQuery>
+      {loading && <Loader />}
     </>
   );
 };

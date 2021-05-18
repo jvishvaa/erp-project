@@ -22,6 +22,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 import PublicationPreview from './PublicationPreview';
+import Loading from '../../components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -122,19 +123,19 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-
+   
     axiosInstance.get(endpoints.masterManagement.gradesDrop).then((res) => {
       setGradesGet(res.data.data);
+       setLoading(false);
     });
 
     axiosInstance.get(endpoints.academics.branches).then((res) => {
       if (res) {
         setBranchGet(res.data.data.results);
+        setLoading(false);
       } else {
         setBranchGet('');
+        setLoading(false);
       }
     });
   }, []);
@@ -159,10 +160,12 @@ const AddPublication = ({ handleGoBackPre }) => {
   };
 
   useEffect(() => {
+    setLoading(true);
     axiosInstance
       .get(`${endpoints.masterManagement.subjects}?grade=${grade}`)
       .then((res) => {
         setSubject(res.data.data.results);
+        setLoading(false);
       });
   }, [grade]);
   const handleSubject = (e, value) => {
@@ -200,7 +203,7 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setLoading(true);
     formData.append('zone', postBranch);
     formData.append('subject', postSubjects);
     formData.append('grade', grade);
@@ -231,7 +234,7 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   const handleSubmitDraft = (e) => {
     e.preventDefault();
-
+    setLoading(true);
     if (!grade) {
       setAlert('error', 'Select Grade');
       return;
@@ -276,7 +279,6 @@ const AddPublication = ({ handleGoBackPre }) => {
     formData.append('thumbnail', thumbnail);
     formData.append('description', description);
     formData.append('status_post', isPublished);
-    setLoading(true);
     axiosInstance
       .post(endpoints.publish.ebook, formData)
       .then((result) => {
@@ -354,9 +356,14 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   return (
     <>
+      {loading ? <Loading message='Loading...' /> : null}
       <form>
         {!tableFlag && readFlag && (
-          <PublicationPreview fun={handleSubmit} handleGoBack={handleGoBack} />
+          <PublicationPreview
+            fun={handleSubmit}
+            handleGoBack={handleGoBack}
+            entireBack={handleGoBackPre}
+          />
         )}
         {tableFlag && !readFlag && (
           <div className='bg-card'>
@@ -562,16 +569,6 @@ const AddPublication = ({ handleGoBackPre }) => {
                     Drop a file on this or Browse from you Files
                   </Typography>
                   <Grid container justify='center' direction='row'>
-                    {/* <Dropzone
-                    inputRef={fileRef}
-                    accept='.pdf'
-                    onChange={handleFileChange}
-                    style={{ display: 'none' }}
-                    maxFiles={1}
-                    multiple={false}
-                    canCancel={false}
-                    inputContent='Drop A File'
-                  > */}
                     <Grid style={{ marginRight: '1%' }}>
                       <Button onClick={handleClickThumbnail}>
                         Thumbnail

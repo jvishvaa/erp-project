@@ -66,7 +66,7 @@ const OpenPublication = ({ ID }) => {
   }, []);
 
   const [numPages, setNumPages] = React.useState(null);
-    function onDocumentLoadSuccess({ numPages }) {
+  function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
   const SingleBook = () => {
@@ -157,7 +157,7 @@ const OpenPublication = ({ ID }) => {
             <Grid>
               <Button
                 onClick={handleClick}
-                disabled={increment == len - 1 ? true : false}
+                disabled={increment == len - 2 ? true : false}
                 style={{ margin: '20px' }}
               >
                 <ArrowForwardIosIcon />
