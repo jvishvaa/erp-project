@@ -965,7 +965,7 @@ const JoinClass = (props) => {
                     fullWidth
                     variant='contained'
                     onClick={() =>
-                      window.open(fullData && fullData.presenter_url, '_blank')
+                      window.open(fullData && fullData.join_url, '_blank')
                     }
                     className='teacherFullViewSmallButtons'
                   >
@@ -986,7 +986,7 @@ const JoinClass = (props) => {
                     // }
                     className='teacherFullViewSmallButtons'
                   >
-                    Host
+                    Host Me
                   </Button>
                 ) : (
                   ''
