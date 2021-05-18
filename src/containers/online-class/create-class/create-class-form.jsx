@@ -572,7 +572,7 @@ const CreateClassForm = (props) => {
       : moment(selectedDate).format('YYYY-MM-DD')
       } ${getFormatedTime(selectedTime)}`;
     const coHostEmails = coHosts.map((coHost) => coHost?.email);
-    const tutorEmails = [tutorEmail.email , ...coHostEmails];
+    const tutorEmails = [tutorEmail.email, ...coHostEmails];
     let request = {};
     request['user_id'] = userId;
     request['title'] = title;
@@ -691,7 +691,7 @@ const CreateClassForm = (props) => {
 
   const checkTutorAvailability = async () => {
     const { selectedDate, selectedTime, duration } = onlineClass;
- 
+
     const startTime = `${selectedDate.toString().includes(' ')
       ? selectedDate.toISOString().split('T')[0]
       : moment(selectedDate).format('YYYY-MM-DD')
@@ -1216,8 +1216,10 @@ const CreateClassForm = (props) => {
               <Button
                 variant='contained'
                 color='primary'
+                className='buttonClass'
                 onClick={toggleDrawer}
                 disabled={!onlineClass.tutorEmail}
+                style={{ borderRadius: '10px' }}
               >
                 Filter students
               </Button>
@@ -1339,7 +1341,7 @@ const CreateClassForm = (props) => {
               <Button
                 variant='contained'
                 size='medium'
-                style={{ width: '100%', color: '#8c8c8c' }}
+                style={{ borderRadius: '10px', width: '100%', color: '#8c8c8c' }}
                 onClick={handleClear}
               >
                 Clear all
@@ -1352,7 +1354,7 @@ const CreateClassForm = (props) => {
                 color='primary'
                 size='medium'
                 type='submit'
-                style={{ width: '100%' }}
+                style={{ borderRadius: '10px', width: '100%' }}
               >
                 {creatingOnlineClass ? 'Please wait.Creating new class' : 'Create class'}
               </Button>
