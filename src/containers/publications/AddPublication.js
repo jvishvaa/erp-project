@@ -22,6 +22,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 import PublicationPreview from './PublicationPreview';
+import Loading from '../../components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,7 +58,6 @@ const AddPublication = ({ handleGoBackPre }) => {
   const fileRefer = useRef();
   const [file, setFile] = useState(null);
   const [isPublished, setIsPublished] = useState('Draft');
-  console.log('publishing', isPublished);
   const [description, setDescription] = useState();
   const [thumbnail, setThumbnail] = useState(null);
   const [temBranch, setTemBranch] = useState();
@@ -93,7 +93,7 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   const handleThumbnailChange = (event) => {
     setImage(URL.createObjectURL(event.target.files[0]));
-    console.log('imagess', event.target);
+
     const { files } = event.target;
     const fil = files[0];
     if (fil.name.lastIndexOf('.jpg') > 0) {
@@ -107,37 +107,31 @@ const AddPublication = ({ handleGoBackPre }) => {
       );
     }
   };
-  console.log('Hell0', thumbnail);
 
   const handleDES = (event) => {
-    console.log('evt:::', event);
     setDescription(event);
   };
 
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-    console.log('before axios');
-
+   
     axiosInstance.get(endpoints.masterManagement.gradesDrop).then((res) => {
-      console.log('res', res.data);
       setGradesGet(res.data.data);
+       setLoading(false);
     });
 
     axiosInstance.get(endpoints.academics.branches).then((res) => {
-      console.log('Branches', res.data.data.results);
       if (res) {
         setBranchGet(res.data.data.results);
+        setLoading(false);
       } else {
         setBranchGet('');
+        setLoading(false);
       }
     });
   }, []);
 
   const handleGrade = (e, value) => {
-    console.log('The value of grade', e.target.value);
     if (value) {
       setGrade(e.target.value);
     } else {
@@ -146,12 +140,9 @@ const AddPublication = ({ handleGoBackPre }) => {
   };
 
   const handleBranch = (e, value) => {
-    console.log('The value of grade', e.target);
-    console.log('the data of branch', e.target.value);
     let number = e.target.value;
     let exactNum = number - 1;
     if (value) {
-      console.log('grade data:', branchGet?.[exactNum].branch.branch_name);
       setPostBranch(e.target.value);
       setTemBranch(branchGet?.[exactNum].branch.branch_name);
     } else {
@@ -160,34 +151,31 @@ const AddPublication = ({ handleGoBackPre }) => {
   };
 
   useEffect(() => {
+    setLoading(true);
     axiosInstance
       .get(`${endpoints.masterManagement.subjects}?grade=${grade}`)
       .then((res) => {
-        console.log('in axios');
-        console.log('responsesubjetcs:', res.data.data.results);
         setSubject(res.data.data.results);
+        setLoading(false);
       });
   }, [grade]);
   const handleSubject = (e, value) => {
     if (value) {
-      console.log('subject::::', e.target.value);
       setPostSubjects(e.target.value);
     } else {
       setPostSubjects('');
     }
   };
   const handleBookType = (e, value) => {
-    console.log('This is booktype', value.props.value);
     let number = value.props.value;
     setBookTemp(number);
     if (number) {
-      console.log('booktype:', number);
       setBookTypes(number);
     } else {
       setBookTypes('');
     }
   };
-  console.log('bookkkkkkk', bookTypes);
+
   //local storage
   const LocalData = () => {
     localStorage.setItem('title', postData.title);
@@ -200,21 +188,13 @@ const AddPublication = ({ handleGoBackPre }) => {
     localStorage.setItem('zone', temBranch);
   };
 
-  // console.log('subjectsnames;;', postSubjects.subject.subject_name);
   const handleChange = (e) => {
-    console.log('posdata', e.target.value);
     setpostData({ ...postData, [e.target.name]: e.target.value });
-
-    // console.log('the big data', { ...postData, [e.target.name]: e.target.value });
   };
-
-  console.log('book_type', localStorage.getItem('book_type'));
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    console.log('finalpostdata:', postData);
-
+    setLoading(true);
     formData.append('zone', postBranch);
     formData.append('subject', postSubjects);
     formData.append('grade', grade);
@@ -224,11 +204,6 @@ const AddPublication = ({ handleGoBackPre }) => {
     formData.append('file', file);
     formData.append('thumbnail', thumbnail);
     formData.append('description', description);
-
-    console.log('formData:', formData);
-    console.log('booktype:', bookTypes.id);
-    console.log('subject list:', postSubjects);
-    console.log('grade:', grade);
 
     axiosInstance
       .post(endpoints.publish.ebook, formData)
@@ -250,7 +225,7 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   const handleSubmitDraft = (e) => {
     e.preventDefault();
-
+    setLoading(true);
     if (!grade) {
       setAlert('error', 'Select Grade');
       return;
@@ -295,10 +270,6 @@ const AddPublication = ({ handleGoBackPre }) => {
     formData.append('thumbnail', thumbnail);
     formData.append('description', description);
     formData.append('status_post', isPublished);
-    console.log('formData:', formData);
-    console.log('booktype:', bookTypes.id);
-    console.log('subject list:', postSubjects);
-    console.log('grade:', grade);
 
     axiosInstance
       .post(endpoints.publish.ebook, formData)
@@ -323,16 +294,8 @@ const AddPublication = ({ handleGoBackPre }) => {
   const handleClickThumbnail = (event) => {
     fileRefer.current.click();
   };
-  const onFilesChange = (files) => {
-    console.log(files);
-  };
-
-  const onFilesError = (error, file) => {
-    console.log('error code ' + error.code + ': ' + error.message);
-  };
 
   const handleRead = (value) => {
-    console.log('valuessss:', value);
     if (!grade) {
       setAlert('error', 'Select Grade');
       return;
@@ -366,6 +329,7 @@ const AddPublication = ({ handleGoBackPre }) => {
       setAlert('error', 'Select Browse');
       return;
     }
+
     setTableFlag(false);
     setReadFlag(true);
   };
@@ -381,19 +345,26 @@ const AddPublication = ({ handleGoBackPre }) => {
       setLoading(false);
     }, 450);
   }, [goBackFlag]);
-  console.log('The subjects...........', subject);
+
   return (
     <>
+      {loading ? <Loading message='Loading...' /> : null}
       <form>
         {!tableFlag && readFlag && (
-          <PublicationPreview fun={handleSubmit} handleGoBack={handleGoBack} />
+          <PublicationPreview
+            fun={handleSubmit}
+            handleGoBack={handleGoBack}
+            entireBack={handleGoBackPre}
+          />
         )}
         {tableFlag && !readFlag && (
           <div className='bg-card'>
             <Grid container direction='row' className={[classes.root]}>
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
-                  <InputLabel id='demo-simple-select-outlined-label'>Grade</InputLabel>
+                  <InputLabel id='demo-simple-select-outlined-label' required>
+                    Grade
+                  </InputLabel>
                   <Select
                     labelId='demo-simple-select-outlined-label'
                     id='demo-simple-select-outlined'
@@ -419,7 +390,9 @@ const AddPublication = ({ handleGoBackPre }) => {
               </Grid>
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
-                  <InputLabel id='demo-simple-select-outlined-label'>Subject</InputLabel>
+                  <InputLabel id='demo-simple-select-outlined-label' required>
+                    Subject
+                  </InputLabel>
 
                   <Select
                     labelId='demo-simple-select-outlined-label'
@@ -448,7 +421,9 @@ const AddPublication = ({ handleGoBackPre }) => {
 
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
-                  <InputLabel id='demo-simple-select-outlined-label'>BookType</InputLabel>
+                  <InputLabel id='demo-simple-select-outlined-label' required>
+                    BookType
+                  </InputLabel>
 
                   <Select
                     labelId='demo-simple-select-outlined-label'
@@ -518,6 +493,7 @@ const AddPublication = ({ handleGoBackPre }) => {
                     placeholder='Some Name'
                     style={{ width: '100%' }}
                     multiline
+                    required
                   />
                 </Grid>
               </Grid>
@@ -527,7 +503,9 @@ const AddPublication = ({ handleGoBackPre }) => {
                 </Typography>
                 <Grid>
                   <FormControl variant='outlined' size='small' fullWidth>
-                    <InputLabel id='demo-simple-select-outlined-label'>Branch</InputLabel>
+                    <InputLabel id='demo-simple-select-outlined-label' required>
+                      Branch
+                    </InputLabel>
 
                     <Select
                       labelId='demo-simple-select-outlined-label'
@@ -625,8 +603,16 @@ const AddPublication = ({ handleGoBackPre }) => {
                       />
                       {/* <FilePreviewerThumbnail file={pdfData} /> */}
                     </Grid>
+
+                    {/* </Dropzone> */}
+                    {/* <Dropzone /> */}
                   </Grid>
                 </Grid>
+
+                {/* <DropZonecom /> */}
+                {/* <Grid container justify='center'>
+                <Typography>(Only pdf files support)</Typography>
+              </Grid> */}
               </Paper>
             </Grid>
 

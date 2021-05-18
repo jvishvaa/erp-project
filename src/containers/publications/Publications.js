@@ -57,7 +57,7 @@ import Nodata from '../../assets/images/not-found.png';
 import { set } from 'lodash';
 import PublishIcon from '@material-ui/icons/Publish';
 import filterImage2 from '../../assets/images/unfiltered.svg';
-
+import Loader from '../../components/loader/loader';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -216,7 +216,7 @@ const Publications = (props) => {
   const [tableFlag, setTableFlag] = useState(true);
   const [readID, setReadID] = useState();
   const [goBackFlag, setGoBackFlag] = useState(false);
-  const [dataDraft, setDataDraft] = useState('');
+  const [dataDraft, setDataDraft] = useState();
   const [reviewData, setReviewData] = useState();
 
   const [reviewDataPut, setReviewDataPut] = useState('Review');
@@ -264,6 +264,9 @@ const Publications = (props) => {
 
   const handleclear = () => {
     setMainsubject('');
+    setAcadamicYear('');
+    setAcadamicYearName('');
+    setSubjectID('');
     setReviewData('');
     setIndividualData('');
     setDataDraft('');
@@ -347,7 +350,7 @@ const Publications = (props) => {
 
     handleDraftSubjectId(value, page);
     handleReviewSubjectId(value, page);
-
+    setLoading(true);
     axiosInstance
       .get(
         `${
@@ -358,17 +361,20 @@ const Publications = (props) => {
         if (res.data.total_pages == 0) {
           setChanger4(false);
         } else if (res.data.status_code === 200) {
-          setAlert('success', res.data.message);
+          // setAlert('success', res.data.message);
           setTotalPages4(res.data.total_pages);
           setIndividualData(res.data.data);
           setChanger4(true);
+          setLoading(false);
         } else {
           setAlert('error', res.data.message);
+          setLoading(false);
         }
       });
   };
 
   const handleDraftSubjectId = (value, pageNumber) => {
+    setLoading(true);
     axiosInstance
       .get(
         `${
@@ -378,39 +384,46 @@ const Publications = (props) => {
       .then((res) => {
         if (res.data.total_pages == 0) {
           setChanger2(false);
+          setLoading(false);
         } else if (res.data.status_code === 200) {
-          setAlert('success', res.data.message);
+          // setAlert('success', res.data.message);
           setTotalPages2(res.data.total_pages);
           setDataDraft(res.data.data);
+          setLoading(false);
           setChanger2(true);
         } else {
           setAlert('error', res.data.message);
           setDataDraft('');
           setTotalPages2('');
+          setLoading(false);
         }
       });
   };
 
   const handleReviewStatus = (value) => {
     formData.append('status_post', reviewDataPut);
-
+    setLoading(true);
     axiosInstance
       .put(`${endpoints.publish.update_delete}?publication_id=${value}`, formData)
 
       .then((result) => {
         console.log('the new subject', theSubjectId);
         if (result.data.status_code === 200) {
-          setAlert('success', result.data.message);
+          // setAlert('success', result.data.message);
           filterForAllData(theSubjectId, page);
+          setLoading(false);
         } else {
           setAlert('error', result.data.message);
+          setLoading(false);
         }
       })
       .catch((error) => {
         setAlert('error', error.message);
+        setLoading(false);
       });
   };
   const handleReviewSubjectId = (value, pageNumber) => {
+    setLoading(true);
     axiosInstance
       .get(
         `${endpoints.publish.ebook}?subject_id=${value}&status_post=Review&page_number=${
@@ -420,13 +433,16 @@ const Publications = (props) => {
       .then((res) => {
         if (res.data.total_pages == 0) {
           setChanger3(false);
+          setLoading(false);
         } else if (res.data.status_code === 200) {
-          setAlert('success', res.data.message);
+          // setAlert('success', res.data.message);
           setTotalPages3(res.data.total_pages);
           setReviewData(res.data.data);
           setChanger3(true);
+          setLoading(false);
         } else {
           setAlert('error', res.data.message);
+          setLoading(false);
         }
       });
   };
@@ -442,18 +458,22 @@ const Publications = (props) => {
 
   const handlePublish = (value) => {
     formData.append('status_post', publishDataPut);
+    setLoading(true);
     axiosInstance
       .put(`${endpoints.publish.update_delete}?publication_id=${value}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setAlert('success', result.data.message);
+          // setAlert('success', result.data.message);
           filterForAllData(theSubjectId, page);
+          setLoading(false);
         } else {
           setAlert('error', result.data.message);
+          setLoading(false);
         }
       })
       .catch((error) => {
         setAlert('error', error.message);
+        setLoading(false);
       });
   };
   const handleChangeMultiple = (event) => {
@@ -492,26 +512,35 @@ const Publications = (props) => {
   };
 
   const callingSubjectAPI = (id) => {
-    console.log('The subject id:', id);
+    // console.log('The subject id:', id);
+    setLoading(true);
     axiosInstance
       .get(`${endpoints.userManagement.subjectName}?academic_year_id=${id}`)
       .then((res) => {
-        console.log('data Api:', res.data.data);
+        // console.log('data Api:', res.data.data);
         if (id) {
           setMainsubject(res.data.data);
+          setLoading(false);
         } else {
           setMainsubject('');
+          setLoading(false);
         }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        setLoading(false);
+      });
   };
   const callingAcadamicAPI = () => {
+    setLoading(true);
     axiosInstance
       .get(endpoints.userManagement.academicYear)
       .then((res) => {
         setDataMap(res.data.data);
+        setLoading(false);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        setLoading(false);
+      });
   };
 
   const handleCounter = (value) => {
@@ -523,6 +552,7 @@ const Publications = (props) => {
     }
   };
   const handleAlldata = (page) => {
+    setLoading(true);
     axiosInstance
       .get(
         `${
@@ -533,14 +563,17 @@ const Publications = (props) => {
         if (res.data.total_pages == 0) {
           setChanger(false);
           setData('');
+          setLoading(false);
         } else if (res.data.status_code === 200) {
-          setAlert('success', res.data.message);
+          // setAlert('success', res.data.message);
           setTotalPages(res.data.total_pages);
           setData(res.data.data);
           setChanger(true);
+          setLoading(false);
         } else {
           setAlert('error', res.data.message);
           setData('');
+          setLoading(false);
         }
       });
   };
@@ -551,20 +584,23 @@ const Publications = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   const handleDelete = (value, subjectId) => {
-    // setLoading(true);
+    setLoading(true);
     axiosInstance
       .delete(`${endpoints.publish.update_delete}?publication_id=${value}`)
       .then((result) => {
         if (result.data.status_code === 200) {
+          setAlert('success', result.data.message);
           handleSubjectID(subjectId, page);
           handleAlldata(page);
-          setAlert('success', result.data.message);
+          setLoading(false);
         } else {
           setAlert('error', result.data.message);
+          setLoading(false);
         }
       })
       .catch((error) => {
         setAlert('error', error.message);
+        setLoading(false);
       });
   };
 
@@ -629,7 +665,7 @@ const Publications = (props) => {
                                   </Button>
                                   <Button
                                     onClick={(e) => {
-                                      handleDelete(item.id, item.subject_id);
+                                      handleDelete(item.id, item.subject);
                                       handleClose1();
                                     }}
                                     color='primary'
@@ -736,7 +772,7 @@ const Publications = (props) => {
                                 </Button>
                                 <Button
                                   onClick={(e) => {
-                                    handleDelete(item.id, item.subject_id);
+                                    handleDelete(item.id, item.subject);
                                     handleClose1();
                                   }}
                                   color='primary'
@@ -839,7 +875,7 @@ const Publications = (props) => {
                               </Button>
                               <Button
                                 onClick={(e) => {
-                                  handleDelete(item.id, item.subject_id);
+                                  handleDelete(item.id, item.subject);
                                   handleClose1();
                                 }}
                                 color='primary'
@@ -969,7 +1005,7 @@ const Publications = (props) => {
                                 </Button>
                                 <Button
                                   onClick={(e) => {
-                                    handleDelete(item.id, item.subject_id);
+                                    handleDelete(item.id, item.subject);
                                     handleClose1();
                                   }}
                                   color='primary'
@@ -1052,9 +1088,7 @@ const Publications = (props) => {
                 style={{ textAlign: 'center', marginTop: '10px' }}
               >
                 <img src={filterImage2} alt='crash' height='250px' width='250px' />
-                <Typography>
-                  Please select the filter to dislpay student strength
-                </Typography>
+                <Typography>Please select the filter to dislpay Publications</Typography>
               </Grid>
             </Grid>
           )}
@@ -1104,7 +1138,7 @@ const Publications = (props) => {
                                 </Button>
                                 <Button
                                   onClick={(e) => {
-                                    handleDelete(item.id, item.subject_id);
+                                    handleDelete(item.id, item.subject);
                                     handleClose1();
                                   }}
                                   color='primary'
@@ -1177,9 +1211,7 @@ const Publications = (props) => {
                 style={{ textAlign: 'center', marginTop: '10px' }}
               >
                 <img src={filterImage2} alt='crash' height='250px' width='250px' />
-                <Typography>
-                  Please select the filter to dislpay student strength
-                </Typography>
+                <Typography>Please select the filter to dislpay Publications</Typography>
               </Grid>
             </Grid>
           )}
@@ -1217,7 +1249,7 @@ const Publications = (props) => {
                               </Button>
                               <Button
                                 onClick={(e) => {
-                                  handleDelete(item.id, item.subject_id);
+                                  handleDelete(item.id, item.subject);
                                   handleClose1();
                                 }}
                                 color='primary'
@@ -1297,9 +1329,7 @@ const Publications = (props) => {
                 style={{ textAlign: 'center', marginTop: '10px' }}
               >
                 <img src={filterImage2} alt='crash' height='250px' width='250px' />
-                <Typography>
-                  Please select the filter to dislpay student strength
-                </Typography>
+                <Typography>Please select the filter to dislpay Publications</Typography>
               </Grid>
             </Grid>
           )}
@@ -1358,7 +1388,7 @@ const Publications = (props) => {
                                   </Button>
                                   <Button
                                     onClick={(e) => {
-                                      handleDelete(item.id, item.subject_id);
+                                      handleDelete(item.id, item.subject);
                                       handleClose1();
                                     }}
                                     color='primary'
@@ -1422,9 +1452,7 @@ const Publications = (props) => {
                 style={{ textAlign: 'center', marginTop: '10px' }}
               >
                 <img src={filterImage2} alt='crash' height='250px' width='250px' />
-                <Typography>
-                  Please select the filter to dislpay student strength
-                </Typography>
+                <Typography>Please select the filter to dislpay Publications</Typography>
               </Grid>
             </Grid>
           )}
@@ -1474,7 +1502,7 @@ const Publications = (props) => {
                                 </Button>
                                 <Button
                                   onClick={(e) => {
-                                    handleDelete(item.id, item.subject_id);
+                                    handleDelete(item.id, item.subject);
                                     handleClose1();
                                   }}
                                   color='primary'
@@ -1547,9 +1575,7 @@ const Publications = (props) => {
                 style={{ textAlign: 'center', marginTop: '10px' }}
               >
                 <img src={filterImage2} alt='crash' height='250px' width='250px' />
-                <Typography>
-                  Please select the filter to dislpay student strength
-                </Typography>
+                <Typography>Please select the filter to dislpay Publications</Typography>
               </Grid>
             </Grid>
           )}
@@ -1587,7 +1613,7 @@ const Publications = (props) => {
                               </Button>
                               <Button
                                 onClick={(e) => {
-                                  handleDelete(item.id, item.subject.id);
+                                  handleDelete(item.id, item.subject);
                                   handleClose1();
                                 }}
                                 color='primary'
@@ -1667,9 +1693,7 @@ const Publications = (props) => {
                 style={{ textAlign: 'center', marginTop: '10px' }}
               >
                 <img src={filterImage2} alt='crash' height='250px' width='250px' />
-                <Typography>
-                  Please select the filter to dislpay student strength
-                </Typography>
+                <Typography>Please select the filter to dislpay Publications</Typography>
               </Grid>
             </Grid>
           )}
@@ -1728,7 +1752,7 @@ const Publications = (props) => {
                                   </Button>
                                   <Button
                                     onClick={(e) => {
-                                      handleDelete(item.id, item.subject.id);
+                                      handleDelete(item.id, item.subject);
                                       handleClose1();
                                     }}
                                     color='primary'
@@ -1802,9 +1826,7 @@ const Publications = (props) => {
                 style={{ textAlign: 'center', marginTop: '10px' }}
               >
                 <img src={filterImage2} alt='crash' height='250px' width='250px' />
-                <Typography>
-                  Please select the filter to dislpay student strength
-                </Typography>
+                <Typography>Please select the filter to dislpay Publications </Typography>
               </Grid>
             </Grid>
           )}
@@ -1854,7 +1876,7 @@ const Publications = (props) => {
                                 </Button>
                                 <Button
                                   onClick={(e) => {
-                                    handleDelete(item.id, item.subject_id);
+                                    handleDelete(item.id, item.subject);
                                     handleClose1();
                                   }}
                                   color='primary'
@@ -1939,9 +1961,7 @@ const Publications = (props) => {
                 style={{ textAlign: 'center', marginTop: '10px' }}
               >
                 <img src={filterImage2} alt='crash' height='250px' width='250px' />
-                <Typography>
-                  Please select the filter to dislpay student strength
-                </Typography>
+                <Typography>Please select the filter to dislpay Publications</Typography>
               </Grid>
             </Grid>
           )}
@@ -1980,7 +2000,7 @@ const Publications = (props) => {
                               </Button>
                               <Button
                                 onClick={(e) => {
-                                  handleDelete(item.id, item.subject.id);
+                                  handleDelete(item.id, item.subject);
                                   handleClose1();
                                 }}
                                 color='primary'
@@ -2070,9 +2090,7 @@ const Publications = (props) => {
                 style={{ textAlign: 'center', marginTop: '10px' }}
               >
                 <img src={filterImage2} alt='crash' height='250px' width='250px' />
-                <Typography>
-                  Please select the filter to dislpay student strength
-                </Typography>
+                <Typography>Please select the filter to dislpay Publications</Typography>
               </Grid>
             </Grid>
           )}
@@ -2616,6 +2634,7 @@ const Publications = (props) => {
               )}
             </Tabpanel1>
           </Grid>
+          {loading && <Loader />}
         </div>
       )}
     </Layout>
