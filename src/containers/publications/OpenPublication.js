@@ -66,8 +66,7 @@ const OpenPublication = ({ ID }) => {
   }, []);
 
   const [numPages, setNumPages] = React.useState(null);
-  const [pageNumber, setPageNumber] = React.useState(1);
-  function onDocumentLoadSuccess({ numPages }) {
+    function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
   const SingleBook = () => {

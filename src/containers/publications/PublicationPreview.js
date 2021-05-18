@@ -100,9 +100,9 @@ const PublicationPreview = ({ fun, handleGoBack }) => {
                         : 'newsletter'}
                     </Typography>
                     <Typography variant='body2'>{dateValue}</Typography>
-                    {/* <Typography variant='body2'>
+                    <Typography variant='body2'>
                       Branch: {localStorage.getItem('zone')}
-                    </Typography> */}
+                    </Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -183,6 +183,9 @@ const PublicationPreview = ({ fun, handleGoBack }) => {
                     </Grid>
                     <Grid>
                       <Typography variant='body2'>{dateValue}</Typography>
+                      <Typography variant='body2'>
+                        Branch: {localStorage.getItem('zone')}
+                      </Typography>
                     </Grid>
                   </Grid>
                 </Grid>

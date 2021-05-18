@@ -147,9 +147,13 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   const handleBranch = (e, value) => {
     console.log('The value of grade', e.target);
+    console.log('the data of branch', e.target.value);
+    let number = e.target.value;
+    let exactNum = number - 1;
     if (value) {
-      console.log('grade:', value.id);
+      console.log('grade data:', branchGet?.[exactNum].branch.branch_name);
       setPostBranch(e.target.value);
+      setTemBranch(branchGet?.[exactNum].branch.branch_name);
     } else {
       setPostBranch('');
     }
@@ -193,7 +197,7 @@ const AddPublication = ({ handleGoBackPre }) => {
     localStorage.setItem('description', description);
     localStorage.setItem('subjects_local', postSubjects);
     localStorage.setItem('grade', grade);
-    localStorage.setItem('zone', postBranch);
+    localStorage.setItem('zone', temBranch);
   };
 
   // console.log('subjectsnames;;', postSubjects.subject.subject_name);
@@ -247,7 +251,39 @@ const AddPublication = ({ handleGoBackPre }) => {
   const handleSubmitDraft = (e) => {
     e.preventDefault();
 
-    console.log('finalpostdata:', postData);
+    if (!grade) {
+      setAlert('error', 'Select Grade');
+      return;
+    }
+    if (!postSubjects) {
+      setAlert('error', 'Select Subject');
+      return;
+    }
+    if (!postBranch) {
+      setAlert('error', 'Select Branch');
+      return;
+    }
+    if (!bookTypes) {
+      setAlert('error', 'Select Book Type');
+      return;
+    }
+    if (!postData) {
+      setAlert('error', 'fill all Fields');
+      return;
+    }
+
+    if (!description) {
+      setAlert('error', 'Enter description');
+      return;
+    }
+    if (!thumbnail) {
+      setAlert('error', 'Select Thumbnail');
+      return;
+    }
+    if (!file) {
+      setAlert('error', 'Select Browse');
+      return;
+    }
 
     formData.append('zone', postBranch);
     formData.append('subject', postSubjects);

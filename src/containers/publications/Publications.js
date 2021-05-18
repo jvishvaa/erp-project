@@ -331,14 +331,14 @@ const Publications = (props) => {
   }, [goBackFlag]);
 
   const filterForAllData = (theSubjectId, page) => {
-     if (!acadamicYearID) {
-       setAlert('error', 'Select Acadminc year');
-       return;
-     }
-     if (!mainsubject) {
-       setAlert('error', 'Select Subject');
-       return;
-     }
+    if (!acadamicYearID) {
+      setAlert('error', 'Select Acadminc year');
+      return;
+    }
+    if (!mainsubject) {
+      setAlert('error', 'Select Subject');
+      return;
+    }
     setPage(1);
     handleSubjectID(theSubjectId, page);
   };
@@ -2091,7 +2091,7 @@ const Publications = (props) => {
           componentName='Publication'
           childComponentName={
             readFlag && !tableFlag
-              ? 'OpenPublication'
+              ? 'Open Publication'
               : editFlag && !tableFlag
               ? 'Add Publication'
               : reviewFlag && !tableFlag
@@ -2492,7 +2492,6 @@ const Publications = (props) => {
               <Tab
                 label='All'
                 style={{
-
                   fontFamily: 'Raleway bold',
                   textTransform: 'capitalize',
                 }}
@@ -2500,7 +2499,6 @@ const Publications = (props) => {
               <Tab
                 label='Draft'
                 style={{
-              
                   fontFamily: 'Raleway bold',
                   textTransform: 'capitalize',
                 }}
@@ -2508,7 +2506,6 @@ const Publications = (props) => {
               <Tab
                 label='For Review'
                 style={{
-                
                   fontFamily: 'Raleway bold',
                   textTransform: 'capitalize',
                 }}
@@ -2516,7 +2513,6 @@ const Publications = (props) => {
               <Tab
                 label='Published'
                 style={{
-               
                   fontFamily: 'Raleway bold',
                   textTransform: 'capitalize',
                 }}

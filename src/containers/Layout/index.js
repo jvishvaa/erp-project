@@ -431,6 +431,10 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/view-users');
         break;
       }
+      case 'Section Shuffle': {
+        history.push('/user-management/section-shuffling');
+        break;
+      }
       case 'Assign Role': {
         history.push('/user-management/assign-role');
         break;
@@ -637,10 +641,6 @@ const Layout = ({ children, history }) => {
       }
       case 'View School Strength': {
         history.push('/student-strength');
-        break;
-      }
-      case 'View Publication': {
-        history.push('/publications');
         break;
       }
       case 'Signature Upload': {
