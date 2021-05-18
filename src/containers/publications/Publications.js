@@ -57,7 +57,7 @@ import Nodata from '../../assets/images/not-found.png';
 import { set } from 'lodash';
 import PublishIcon from '@material-ui/icons/Publish';
 import filterImage2 from '../../assets/images/unfiltered.svg';
-import Loader from '../../components/loader/loader';
+import Loading from '../../components/loader/loader';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -642,39 +642,18 @@ const Publications = (props) => {
                               <Typography style={{ float: 'right' }}>
                                 <IconButton
                                   aria-label='settings'
-                                  onClick={handleClickOpen1}
+                                  onClick={(e) => {
+                                    handleDelete(item.id, item.subject);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
                                 >
                                   <Tooltip title='Delete' arrow>
                                     <MoreHorizIcon />
                                   </Tooltip>
                                 </IconButton>
                               </Typography>
-                              <Dialog
-                                open={open1}
-                                onClose={handleClose1}
-                                aria-labelledby='alert-dialog-title'
-                                aria-describedby='alert-dialog-description'
-                              >
-                                <DialogTitle id='alert-dialog-title'>
-                                  {'Are you sure to delete?'}
-                                </DialogTitle>
-
-                                <DialogActions>
-                                  <Button onClick={handleClose1} color='primary'>
-                                    cancel
-                                  </Button>
-                                  <Button
-                                    onClick={(e) => {
-                                      handleDelete(item.id, item.subject);
-                                      handleClose1();
-                                    }}
-                                    color='primary'
-                                    autoFocus
-                                  >
-                                    Delete
-                                  </Button>
-                                </DialogActions>
-                              </Dialog>
                             </Grid>
 
                             <Grid item xs>
@@ -749,39 +728,20 @@ const Publications = (props) => {
                             <Typography style={{ float: 'right' }}>
                               <IconButton
                                 aria-label='settings'
-                                onClick={handleClickOpen1}
+                                
+                                onClick={(e) => {
+                                  handleDelete(item.id, item.subject);
+                                  handleClose1();
+                                }}
+                                color='primary'
+                                autoFocus
                               >
                                 <Tooltip title='Delete' arrow>
                                   <MoreHorizIcon />
                                 </Tooltip>
                               </IconButton>
+                            
                             </Typography>
-                            <Dialog
-                              open={open1}
-                              onClose={handleClose1}
-                              aria-labelledby='alert-dialog-title'
-                              aria-describedby='alert-dialog-description'
-                            >
-                              <DialogTitle id='alert-dialog-title'>
-                                {'Are you sure to delete?'}
-                              </DialogTitle>
-
-                              <DialogActions>
-                                <Button onClick={handleClose1} color='primary'>
-                                  cancel
-                                </Button>
-                                <Button
-                                  onClick={(e) => {
-                                    handleDelete(item.id, item.subject);
-                                    handleClose1();
-                                  }}
-                                  color='primary'
-                                  autoFocus
-                                >
-                                  Delete
-                                </Button>
-                              </DialogActions>
-                            </Dialog>
                           </Grid>
 
                           <Grid item xs className={{ padding: '5%' }}>
@@ -853,27 +813,9 @@ const Publications = (props) => {
                       <Grid container spacing={2}>
                         <Grid item>
                           <Typography style={{ float: 'right' }}>
-                            <IconButton aria-label='settings' onClick={handleClickOpen1}>
-                              <Tooltip title='Delete' arrow>
-                                <MoreHorizIcon />
-                              </Tooltip>
-                            </IconButton>
-                          </Typography>
-                          <Dialog
-                            open={open1}
-                            onClose={handleClose1}
-                            aria-labelledby='alert-dialog-title'
-                            aria-describedby='alert-dialog-description'
-                          >
-                            <DialogTitle id='alert-dialog-title'>
-                              {'Are you sure to delete?'}
-                            </DialogTitle>
-
-                            <DialogActions>
-                              <Button onClick={handleClose1} color='primary'>
-                                cancel
-                              </Button>
-                              <Button
+                             <IconButton
+                                aria-label='settings'
+                                
                                 onClick={(e) => {
                                   handleDelete(item.id, item.subject);
                                   handleClose1();
@@ -881,10 +823,11 @@ const Publications = (props) => {
                                 color='primary'
                                 autoFocus
                               >
-                                Delete
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
+                                <Tooltip title='Delete' arrow>
+                                  <MoreHorizIcon />
+                                </Tooltip>
+                              </IconButton>
+                            </Typography>
                           <ButtonBase className={classes.image1}>
                             <img
                               className={classes.image1}
@@ -982,39 +925,19 @@ const Publications = (props) => {
                             <Typography style={{ float: 'right' }}>
                               <IconButton
                                 aria-label='settings'
-                                onClick={handleClickOpen1}
+                                
+                                onClick={(e) => {
+                                  handleDelete(item.id, item.subject);
+                                  handleClose1();
+                                }}
+                                color='primary'
+                                autoFocus
                               >
                                 <Tooltip title='Delete' arrow>
                                   <MoreHorizIcon />
                                 </Tooltip>
                               </IconButton>
                             </Typography>
-                            <Dialog
-                              open={open1}
-                              onClose={handleClose1}
-                              aria-labelledby='alert-dialog-title'
-                              aria-describedby='alert-dialog-description'
-                            >
-                              <DialogTitle id='alert-dialog-title'>
-                                {'Are you sure to delete?'}
-                              </DialogTitle>
-
-                              <DialogActions>
-                                <Button onClick={handleClose1} color='primary'>
-                                  cancel
-                                </Button>
-                                <Button
-                                  onClick={(e) => {
-                                    handleDelete(item.id, item.subject);
-                                    handleClose1();
-                                  }}
-                                  color='primary'
-                                  autoFocus
-                                >
-                                  Delete
-                                </Button>
-                              </DialogActions>
-                            </Dialog>
                           </Grid>
                           <Grid item xs>
                             <Typography
@@ -1115,39 +1038,19 @@ const Publications = (props) => {
                             <Typography style={{ float: 'right' }}>
                               <IconButton
                                 aria-label='settings'
-                                onClick={handleClickOpen1}
+                                
+                                onClick={(e) => {
+                                  handleDelete(item.id, item.subject);
+                                  handleClose1();
+                                }}
+                                color='primary'
+                                autoFocus
                               >
                                 <Tooltip title='Delete' arrow>
                                   <MoreHorizIcon />
                                 </Tooltip>
                               </IconButton>
                             </Typography>
-                            <Dialog
-                              open={open1}
-                              onClose={handleClose1}
-                              aria-labelledby='alert-dialog-title'
-                              aria-describedby='alert-dialog-description'
-                            >
-                              <DialogTitle id='alert-dialog-title'>
-                                {'Are you sure to delete?'}
-                              </DialogTitle>
-
-                              <DialogActions>
-                                <Button onClick={handleClose1} color='primary'>
-                                  cancel
-                                </Button>
-                                <Button
-                                  onClick={(e) => {
-                                    handleDelete(item.id, item.subject);
-                                    handleClose1();
-                                  }}
-                                  color='primary'
-                                  autoFocus
-                                >
-                                  Delete
-                                </Button>
-                              </DialogActions>
-                            </Dialog>
                           </Grid>
 
                           <Grid item xs className={{ padding: '5%' }}>
@@ -1227,27 +1130,9 @@ const Publications = (props) => {
                       <Grid container spacing={2}>
                         <Grid item>
                           <Typography style={{ float: 'right' }}>
-                            <IconButton aria-label='settings' onClick={handleClickOpen1}>
-                              <Tooltip title='Delete' arrow>
-                                <MoreHorizIcon />
-                              </Tooltip>
-                            </IconButton>
-                          </Typography>
-                          <Dialog
-                            open={open1}
-                            onClose={handleClose1}
-                            aria-labelledby='alert-dialog-title'
-                            aria-describedby='alert-dialog-description'
-                          >
-                            <DialogTitle id='alert-dialog-title'>
-                              {'Are you sure to delete?'}
-                            </DialogTitle>
-
-                            <DialogActions>
-                              <Button onClick={handleClose1} color='primary'>
-                                cancel
-                              </Button>
-                              <Button
+                             <IconButton
+                                aria-label='settings'
+                                
                                 onClick={(e) => {
                                   handleDelete(item.id, item.subject);
                                   handleClose1();
@@ -1255,10 +1140,11 @@ const Publications = (props) => {
                                 color='primary'
                                 autoFocus
                               >
-                                Delete
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
+                                <Tooltip title='Delete' arrow>
+                                  <MoreHorizIcon />
+                                </Tooltip>
+                              </IconButton>
+                            </Typography>
                           <ButtonBase className={classes.image1}>
                             <img
                               className={classes.image1}
@@ -1364,40 +1250,20 @@ const Publications = (props) => {
                             <Grid item xs>
                               <Typography style={{ float: 'right' }}>
                                 <IconButton
-                                  aria-label='settings'
-                                  onClick={handleClickOpen1}
-                                >
-                                  <Tooltip title='Delete' arrow>
-                                    <MoreHorizIcon />
-                                  </Tooltip>
-                                </IconButton>
-                              </Typography>
-                              <Dialog
-                                open={open1}
-                                onClose={handleClose1}
-                                aria-labelledby='alert-dialog-title'
-                                aria-describedby='alert-dialog-description'
+                                aria-label='settings'
+                                
+                                onClick={(e) => {
+                                  handleDelete(item.id, item.subject);
+                                  handleClose1();
+                                }}
+                                color='primary'
+                                autoFocus
                               >
-                                <DialogTitle id='alert-dialog-title'>
-                                  {'Are you sure to delete?'}
-                                </DialogTitle>
-
-                                <DialogActions>
-                                  <Button onClick={handleClose1} color='primary'>
-                                    cancel
-                                  </Button>
-                                  <Button
-                                    onClick={(e) => {
-                                      handleDelete(item.id, item.subject);
-                                      handleClose1();
-                                    }}
-                                    color='primary'
-                                    autoFocus
-                                  >
-                                    Delete
-                                  </Button>
-                                </DialogActions>
-                              </Dialog>
+                                <Tooltip title='Delete' arrow>
+                                  <MoreHorizIcon />
+                                </Tooltip>
+                              </IconButton>
+                            </Typography>
                             </Grid>
                             <Grid item xs>
                               <Typography
@@ -1479,39 +1345,18 @@ const Publications = (props) => {
                             <Typography style={{ float: 'right' }}>
                               <IconButton
                                 aria-label='settings'
-                                onClick={handleClickOpen1}
+                                onClick={(e) => {
+                                  handleDelete(item.id, item.subject);
+                                  handleClose1();
+                                }}
+                                color='primary'
+                                autoFocus
                               >
                                 <Tooltip title='Delete' arrow>
                                   <MoreHorizIcon />
                                 </Tooltip>
                               </IconButton>
                             </Typography>
-                            <Dialog
-                              open={open1}
-                              onClose={handleClose1}
-                              aria-labelledby='alert-dialog-title'
-                              aria-describedby='alert-dialog-description'
-                            >
-                              <DialogTitle id='alert-dialog-title'>
-                                {'Are you sure to delete?'}
-                              </DialogTitle>
-
-                              <DialogActions>
-                                <Button onClick={handleClose1} color='primary'>
-                                  cancel
-                                </Button>
-                                <Button
-                                  onClick={(e) => {
-                                    handleDelete(item.id, item.subject);
-                                    handleClose1();
-                                  }}
-                                  color='primary'
-                                  autoFocus
-                                >
-                                  Delete
-                                </Button>
-                              </DialogActions>
-                            </Dialog>
                           </Grid>
 
                           <Grid item xs className={{ padding: '5%' }}>
@@ -1591,38 +1436,20 @@ const Publications = (props) => {
                       <Grid container spacing={2}>
                         <Grid item>
                           <Typography style={{ float: 'right' }}>
-                            <IconButton aria-label='settings' onClick={handleClickOpen1}>
+                            <IconButton
+                              aria-label='settings'
+                              onClick={(e) => {
+                                handleDelete(item.id, item.subject);
+                                handleClose1();
+                              }}
+                              color='primary'
+                              autoFocus
+                            >
                               <Tooltip title='Delete' arrow>
                                 <MoreHorizIcon />
                               </Tooltip>
                             </IconButton>
-                          </Typography>
-                          <Dialog
-                            open={open1}
-                            onClose={handleClose1}
-                            aria-labelledby='alert-dialog-title'
-                            aria-describedby='alert-dialog-description'
-                          >
-                            <DialogTitle id='alert-dialog-title'>
-                              {'Are you sure to delete?'}
-                            </DialogTitle>
-
-                            <DialogActions>
-                              <Button onClick={handleClose1} color='primary'>
-                                cancel
-                              </Button>
-                              <Button
-                                onClick={(e) => {
-                                  handleDelete(item.id, item.subject);
-                                  handleClose1();
-                                }}
-                                color='primary'
-                                autoFocus
-                              >
-                                Delete
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
+                          </Typography>{' '}
                           <ButtonBase className={classes.image1}>
                             <img
                               className={classes.image1}
@@ -1729,39 +1556,18 @@ const Publications = (props) => {
                               <Typography style={{ float: 'right' }}>
                                 <IconButton
                                   aria-label='settings'
-                                  onClick={handleClickOpen1}
+                                  onClick={(e) => {
+                                    handleDelete(item.id, item.subject);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
                                 >
                                   <Tooltip title='Delete' arrow>
                                     <MoreHorizIcon />
                                   </Tooltip>
                                 </IconButton>
-                              </Typography>
-                              <Dialog
-                                open={open1}
-                                onClose={handleClose1}
-                                aria-labelledby='alert-dialog-title'
-                                aria-describedby='alert-dialog-description'
-                              >
-                                <DialogTitle id='alert-dialog-title'>
-                                  {'Are you sure to delete?'}
-                                </DialogTitle>
-
-                                <DialogActions>
-                                  <Button onClick={handleClose1} color='primary'>
-                                    cancel
-                                  </Button>
-                                  <Button
-                                    onClick={(e) => {
-                                      handleDelete(item.id, item.subject);
-                                      handleClose1();
-                                    }}
-                                    color='primary'
-                                    autoFocus
-                                  >
-                                    Delete
-                                  </Button>
-                                </DialogActions>
-                              </Dialog>
+                              </Typography>{' '}
                             </Grid>
                             <Grid item xs>
                               <Typography
@@ -1853,39 +1659,18 @@ const Publications = (props) => {
                             <Typography style={{ float: 'right' }}>
                               <IconButton
                                 aria-label='settings'
-                                onClick={handleClickOpen1}
+                                onClick={(e) => {
+                                  handleDelete(item.id, item.subject);
+                                  handleClose1();
+                                }}
+                                color='primary'
+                                autoFocus
                               >
                                 <Tooltip title='Delete' arrow>
                                   <MoreHorizIcon />
                                 </Tooltip>
                               </IconButton>
-                            </Typography>
-                            <Dialog
-                              open={open1}
-                              onClose={handleClose1}
-                              aria-labelledby='alert-dialog-title'
-                              aria-describedby='alert-dialog-description'
-                            >
-                              <DialogTitle id='alert-dialog-title'>
-                                {'Are you sure to delete?'}
-                              </DialogTitle>
-
-                              <DialogActions>
-                                <Button onClick={handleClose1} color='primary'>
-                                  cancel
-                                </Button>
-                                <Button
-                                  onClick={(e) => {
-                                    handleDelete(item.id, item.subject);
-                                    handleClose1();
-                                  }}
-                                  color='primary'
-                                  autoFocus
-                                >
-                                  Delete
-                                </Button>
-                              </DialogActions>
-                            </Dialog>
+                            </Typography>{' '}
                           </Grid>
 
                           <Grid item xs className={{ padding: '5%' }}>
@@ -1978,38 +1763,20 @@ const Publications = (props) => {
                       <Grid container spacing={2}>
                         <Grid item>
                           <Typography style={{ float: 'right' }}>
-                            <IconButton aria-label='settings' onClick={handleClickOpen1}>
+                            <IconButton
+                              aria-label='settings'
+                              onClick={(e) => {
+                                handleDelete(item.id, item.subject);
+                                handleClose1();
+                              }}
+                              color='primary'
+                              autoFocus
+                            >
                               <Tooltip title='Delete' arrow>
                                 <MoreHorizIcon />
                               </Tooltip>
                             </IconButton>
                           </Typography>
-                          <Dialog
-                            open={open1}
-                            onClose={handleClose1}
-                            aria-labelledby='alert-dialog-title'
-                            aria-describedby='alert-dialog-description'
-                          >
-                            <DialogTitle id='alert-dialog-title'>
-                              {'Are you sure to delete?'}
-                            </DialogTitle>
-
-                            <DialogActions>
-                              <Button onClick={handleClose1} color='primary'>
-                                cancel
-                              </Button>
-                              <Button
-                                onClick={(e) => {
-                                  handleDelete(item.id, item.subject);
-                                  handleClose1();
-                                }}
-                                color='primary'
-                                autoFocus
-                              >
-                                Delete
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
                           <ButtonBase className={classes.image1}>
                             <img
                               className={classes.image1}
@@ -2103,6 +1870,8 @@ const Publications = (props) => {
   };
 
   return (
+    <>
+     {loading ? <Loading message='Loading...' /> : null}
     <Layout>
       <div style={{ width: '95%', margin: '20px auto' }}>
         <CommonBreadcrumbs
@@ -2634,10 +2403,11 @@ const Publications = (props) => {
               )}
             </Tabpanel1>
           </Grid>
-          {loading && <Loader />}
+         
         </div>
       )}
     </Layout>
+    </>
   );
 };
 
