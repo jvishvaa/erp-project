@@ -146,6 +146,7 @@ const AddPublication = ({ handleGoBackPre }) => {
   };
 
   const handleBranch = (e, value) => {
+    console.log('The value of grade', e.target);
     if (value) {
       console.log('grade:', value.id);
       setPostBranch(e.target.value);
@@ -258,10 +259,10 @@ const AddPublication = ({ handleGoBackPre }) => {
     formData.append('thumbnail', thumbnail);
     formData.append('description', description);
     formData.append('status_post', isPublished);
-    // console.log('formData:', formData);
-    // console.log('booktype:', bookTypes.id);
-    // console.log('subject list:', postSubjects);
-    // console.log('grade:', grade);
+    console.log('formData:', formData);
+    console.log('booktype:', bookTypes.id);
+    console.log('subject list:', postSubjects);
+    console.log('grade:', grade);
 
     axiosInstance
       .post(endpoints.publish.ebook, formData)
@@ -296,39 +297,7 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   const handleRead = (value) => {
     console.log('valuessss:', value);
-    if (!grade) {
-      setAlert('error', 'Select Grade');
-      return;
-    }
-    if (!postSubjects) {
-      setAlert('error', 'Select Subject');
-      return;
-    }
-    if (!postBranch) {
-      setAlert('error', 'Select Branch');
-      return;
-    }
-    if (!bookTypes) {
-      setAlert('error', 'Select Book Type');
-      return;
-    }
-    if (!postData) {
-      setAlert('error', 'fill all Fields');
-      return;
-    }
 
-    if (!description) {
-      setAlert('error', 'Enter description');
-      return;
-    }
-    if (!thumbnail) {
-      setAlert('error', 'Select Thumbnail');
-      return;
-    }
-    if (!file) {
-      setAlert('error', 'Select Browse');
-      return;
-    }
     setTableFlag(false);
     setReadFlag(true);
   };
@@ -356,7 +325,7 @@ const AddPublication = ({ handleGoBackPre }) => {
             <Grid container direction='row' className={[classes.root]}>
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
-                  <InputLabel id='demo-simple-select-outlined-label'>Grade</InputLabel>
+                  <InputLabel id='demo-simple-select-outlined-label' required>Grade</InputLabel>
                   <Select
                     labelId='demo-simple-select-outlined-label'
                     id='demo-simple-select-outlined'
@@ -382,7 +351,7 @@ const AddPublication = ({ handleGoBackPre }) => {
               </Grid>
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
-                  <InputLabel id='demo-simple-select-outlined-label'>Subject</InputLabel>
+                  <InputLabel id='demo-simple-select-outlined-label' required>Subject</InputLabel>
 
                   <Select
                     labelId='demo-simple-select-outlined-label'
@@ -411,7 +380,7 @@ const AddPublication = ({ handleGoBackPre }) => {
 
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
-                  <InputLabel id='demo-simple-select-outlined-label'>BookType</InputLabel>
+                  <InputLabel id='demo-simple-select-outlined-label' required>BookType</InputLabel>
 
                   <Select
                     labelId='demo-simple-select-outlined-label'
@@ -439,7 +408,7 @@ const AddPublication = ({ handleGoBackPre }) => {
             <Divider />
             <Grid container direction='row' className={[classes.root]}>
               <Grid item md={3} xs={12}>
-                <Typography variant='subtitle1' style={{ marginBottom: '2%' }}>
+                <Typography variant='subtitle1' style={{ marginBottom: '2%' }} >
                   Book Title
                 </Typography>
                 <Grid>
@@ -481,6 +450,7 @@ const AddPublication = ({ handleGoBackPre }) => {
                     placeholder='Some Name'
                     style={{ width: '100%' }}
                     multiline
+                    required
                   />
                 </Grid>
               </Grid>
@@ -490,7 +460,7 @@ const AddPublication = ({ handleGoBackPre }) => {
                 </Typography>
                 <Grid>
                   <FormControl variant='outlined' size='small' fullWidth>
-                    <InputLabel id='demo-simple-select-outlined-label'>Branch</InputLabel>
+                    <InputLabel id='demo-simple-select-outlined-label' required>Branch</InputLabel>
 
                     <Select
                       labelId='demo-simple-select-outlined-label'
@@ -546,8 +516,18 @@ const AddPublication = ({ handleGoBackPre }) => {
                     Drop a file on this or Browse from you Files
                   </Typography>
                   <Grid container justify='center' direction='row'>
+                    {/* <Dropzone
+                    inputRef={fileRef}
+                    accept='.pdf'
+                    onChange={handleFileChange}
+                    style={{ display: 'none' }}
+                    maxFiles={1}
+                    multiple={false}
+                    canCancel={false}
+                    inputContent='Drop A File'
+                  > */}
                     <Grid style={{ marginRight: '1%' }}>
-                      <Button onClick={handleClickThumbnail}>
+                      <Button onClick={handleClickThumbnail} >
                         Thumbnail
                         <AddIcon />
                       </Button>
@@ -588,8 +568,16 @@ const AddPublication = ({ handleGoBackPre }) => {
                       />
                       {/* <FilePreviewerThumbnail file={pdfData} /> */}
                     </Grid>
+
+                    {/* </Dropzone> */}
+                    {/* <Dropzone /> */}
                   </Grid>
                 </Grid>
+
+                {/* <DropZonecom /> */}
+                {/* <Grid container justify='center'>
+                <Typography>(Only pdf files support)</Typography>
+              </Grid> */}
               </Paper>
             </Grid>
 

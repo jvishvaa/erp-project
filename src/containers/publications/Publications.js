@@ -207,7 +207,7 @@ const Publications = (props) => {
 
   const [subjectID, setSubjectID] = useState('Select Subject');
   const [counter, setCounter] = useState(2);
-  const [academicYear, setAcadamicYearName] = useState('Select Acdemic Year');
+  const [academicYear, setAcadamicYearName] = useState('Select Academic Year');
   const [id, setId] = useState();
 
   const [individualData, setIndividualData] = useState();
