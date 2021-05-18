@@ -20,7 +20,7 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import ReceiptRoundedIcon from '@material-ui/icons/ReceiptRounded';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import FeedbackIcon from '@material-ui/icons/Feedback';
-
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import {
   AccountBalance,
   AccountBalanceWallet,
@@ -119,9 +119,9 @@ const menuIcon = (name) => {
       icon = <Money />;
       break;
     }
-    case 'Misc. Fee To Class': {
-      icon = <Money />;
-      break;
+    case 'Publication': {
+      icon = <LibraryBooksIcon />;
+      break; 
     }
     case 'Transport Fees': {
       icon = <EmojiTransportation />;
@@ -167,6 +167,10 @@ const menuIcon = (name) => {
 
     case 'Student Wallet': {
       icon = <AccountBalanceWallet />;
+      break;
+    }
+    case 'Bulk Operations': {
+      icon = <GroupAdd />;
       break;
     }
     case 'Bulk Operations': {
