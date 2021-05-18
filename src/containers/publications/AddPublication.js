@@ -124,10 +124,10 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   useEffect(() => {
     setLoading(true);
-   
+
     axiosInstance.get(endpoints.masterManagement.gradesDrop).then((res) => {
       setGradesGet(res.data.data);
-       setLoading(false);
+      setLoading(false);
     });
 
     axiosInstance.get(endpoints.academics.branches).then((res) => {

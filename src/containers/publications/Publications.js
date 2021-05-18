@@ -247,6 +247,8 @@ const Publications = (props) => {
   const [totalPages3, setTotalPages3] = useState(0);
   const [totalPages4, setTotalPages4] = useState(0);
   const formData = new FormData();
+  const [did, setDid] = useState();
+  const [dsubject, setDsubject] = useState();
 
   const handlePagination = (event, page) => {
     setPage(page);
@@ -254,8 +256,10 @@ const Publications = (props) => {
     handleSubjectID(subjectChanger, page);
     handleAlldata(page);
   };
-  const handleClickOpen1 = () => {
+  const handleClickOpen1 = (did, dsubject) => {
     setOpen1(true);
+    setDid(did);
+    setDsubject(dsubject);
   };
 
   const handleClose1 = () => {
@@ -265,11 +269,11 @@ const Publications = (props) => {
   const handleclear = () => {
     setMainsubject('');
     setAcadamicYear('');
-    setAcadamicYearName('');
-    setSubjectID('');
     setReviewData('');
     setIndividualData('');
     setDataDraft('');
+    setAcadamicYearName('');
+    setSubjectID('');
   };
 
   const handleEdit = (
@@ -642,18 +646,41 @@ const Publications = (props) => {
                               <Typography style={{ float: 'right' }}>
                                 <IconButton
                                   aria-label='settings'
-                                  onClick={(e) => {
-                                    handleDelete(item.id, item.subject);
-                                    handleClose1();
+                                  onClick={() => {
+                                    handleClickOpen1(item.id, item.subject);
                                   }}
-                                  color='primary'
-                                  autoFocus
                                 >
                                   <Tooltip title='Delete' arrow>
                                     <MoreHorizIcon />
                                   </Tooltip>
                                 </IconButton>
                               </Typography>
+                              <Dialog
+                                open={open1}
+                                onClose={handleClose1}
+                                aria-labelledby='alert-dialog-title'
+                                aria-describedby='alert-dialog-description'
+                              >
+                                <DialogTitle id='alert-dialog-title'>
+                                  {'Are you sure to delete?'}
+                                </DialogTitle>
+
+                                <DialogActions>
+                                  <Button onClick={handleClose1} color='primary'>
+                                    cancel
+                                  </Button>
+                                  <Button
+                                    onClick={(e) => {
+                                      handleDelete(did, dsubject);
+                                      handleClose1();
+                                    }}
+                                    color='primary'
+                                    autoFocus
+                                  >
+                                    Delete
+                                  </Button>
+                                </DialogActions>
+                              </Dialog>
                             </Grid>
 
                             <Grid item xs>
@@ -728,20 +755,41 @@ const Publications = (props) => {
                             <Typography style={{ float: 'right' }}>
                               <IconButton
                                 aria-label='settings'
-                                
-                                onClick={(e) => {
-                                  handleDelete(item.id, item.subject);
-                                  handleClose1();
+                                onClick={() => {
+                                  handleClickOpen1(item.id, item.subject);
                                 }}
-                                color='primary'
-                                autoFocus
                               >
                                 <Tooltip title='Delete' arrow>
                                   <MoreHorizIcon />
                                 </Tooltip>
                               </IconButton>
-                            
                             </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(did, dsubject);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
                           </Grid>
 
                           <Grid item xs className={{ padding: '5%' }}>
@@ -813,21 +861,43 @@ const Publications = (props) => {
                       <Grid container spacing={2}>
                         <Grid item>
                           <Typography style={{ float: 'right' }}>
-                             <IconButton
-                                aria-label='settings'
-                                
+                            <IconButton
+                              aria-label='settings'
+                              onClick={() => {
+                                handleClickOpen1(item.id, item.subject);
+                              }}
+                            >
+                              <Tooltip title='Delete' arrow>
+                                <MoreHorizIcon />
+                              </Tooltip>
+                            </IconButton>
+                          </Typography>
+                          <Dialog
+                            open={open1}
+                            onClose={handleClose1}
+                            aria-labelledby='alert-dialog-title'
+                            aria-describedby='alert-dialog-description'
+                          >
+                            <DialogTitle id='alert-dialog-title'>
+                              {'Are you sure to delete?'}
+                            </DialogTitle>
+
+                            <DialogActions>
+                              <Button onClick={handleClose1} color='primary'>
+                                cancel
+                              </Button>
+                              <Button
                                 onClick={(e) => {
-                                  handleDelete(item.id, item.subject);
+                                  handleDelete(did, dsubject);
                                   handleClose1();
                                 }}
                                 color='primary'
                                 autoFocus
                               >
-                                <Tooltip title='Delete' arrow>
-                                  <MoreHorizIcon />
-                                </Tooltip>
-                              </IconButton>
-                            </Typography>
+                                Delete
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
                           <ButtonBase className={classes.image1}>
                             <img
                               className={classes.image1}
@@ -925,19 +995,41 @@ const Publications = (props) => {
                             <Typography style={{ float: 'right' }}>
                               <IconButton
                                 aria-label='settings'
-                                
-                                onClick={(e) => {
-                                  handleDelete(item.id, item.subject);
-                                  handleClose1();
+                                onClick={() => {
+                                  handleClickOpen1(item.id, item.subject);
                                 }}
-                                color='primary'
-                                autoFocus
                               >
                                 <Tooltip title='Delete' arrow>
                                   <MoreHorizIcon />
                                 </Tooltip>
                               </IconButton>
                             </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(did, dsubject);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
                           </Grid>
                           <Grid item xs>
                             <Typography
@@ -1038,19 +1130,41 @@ const Publications = (props) => {
                             <Typography style={{ float: 'right' }}>
                               <IconButton
                                 aria-label='settings'
-                                
-                                onClick={(e) => {
-                                  handleDelete(item.id, item.subject);
-                                  handleClose1();
+                                onClick={() => {
+                                  handleClickOpen1(item.id, item.subject);
                                 }}
-                                color='primary'
-                                autoFocus
                               >
                                 <Tooltip title='Delete' arrow>
                                   <MoreHorizIcon />
                                 </Tooltip>
                               </IconButton>
                             </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(did, dsubject);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
                           </Grid>
 
                           <Grid item xs className={{ padding: '5%' }}>
@@ -1130,21 +1244,43 @@ const Publications = (props) => {
                       <Grid container spacing={2}>
                         <Grid item>
                           <Typography style={{ float: 'right' }}>
-                             <IconButton
-                                aria-label='settings'
-                                
+                            <IconButton
+                              aria-label='settings'
+                              onClick={() => {
+                                handleClickOpen1(item.id, item.subject);
+                              }}
+                            >
+                              <Tooltip title='Delete' arrow>
+                                <MoreHorizIcon />
+                              </Tooltip>
+                            </IconButton>
+                          </Typography>
+                          <Dialog
+                            open={open1}
+                            onClose={handleClose1}
+                            aria-labelledby='alert-dialog-title'
+                            aria-describedby='alert-dialog-description'
+                          >
+                            <DialogTitle id='alert-dialog-title'>
+                              {'Are you sure to delete?'}
+                            </DialogTitle>
+
+                            <DialogActions>
+                              <Button onClick={handleClose1} color='primary'>
+                                cancel
+                              </Button>
+                              <Button
                                 onClick={(e) => {
-                                  handleDelete(item.id, item.subject);
+                                  handleDelete(did, dsubject);
                                   handleClose1();
                                 }}
                                 color='primary'
                                 autoFocus
                               >
-                                <Tooltip title='Delete' arrow>
-                                  <MoreHorizIcon />
-                                </Tooltip>
-                              </IconButton>
-                            </Typography>
+                                Delete
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
                           <ButtonBase className={classes.image1}>
                             <img
                               className={classes.image1}
@@ -1250,20 +1386,42 @@ const Publications = (props) => {
                             <Grid item xs>
                               <Typography style={{ float: 'right' }}>
                                 <IconButton
-                                aria-label='settings'
-                                
-                                onClick={(e) => {
-                                  handleDelete(item.id, item.subject);
-                                  handleClose1();
-                                }}
-                                color='primary'
-                                autoFocus
+                                  aria-label='settings'
+                                  onClick={() => {
+                                    handleClickOpen1(item.id, item.subject);
+                                  }}
+                                >
+                                  <Tooltip title='Delete' arrow>
+                                    <MoreHorizIcon />
+                                  </Tooltip>
+                                </IconButton>
+                              </Typography>
+                              <Dialog
+                                open={open1}
+                                onClose={handleClose1}
+                                aria-labelledby='alert-dialog-title'
+                                aria-describedby='alert-dialog-description'
                               >
-                                <Tooltip title='Delete' arrow>
-                                  <MoreHorizIcon />
-                                </Tooltip>
-                              </IconButton>
-                            </Typography>
+                                <DialogTitle id='alert-dialog-title'>
+                                  {'Are you sure to delete?'}
+                                </DialogTitle>
+
+                                <DialogActions>
+                                  <Button onClick={handleClose1} color='primary'>
+                                    cancel
+                                  </Button>
+                                  <Button
+                                    onClick={(e) => {
+                                      handleDelete(did, dsubject);
+                                      handleClose1();
+                                    }}
+                                    color='primary'
+                                    autoFocus
+                                  >
+                                    Delete
+                                  </Button>
+                                </DialogActions>
+                              </Dialog>
                             </Grid>
                             <Grid item xs>
                               <Typography
@@ -1345,18 +1503,41 @@ const Publications = (props) => {
                             <Typography style={{ float: 'right' }}>
                               <IconButton
                                 aria-label='settings'
-                                onClick={(e) => {
-                                  handleDelete(item.id, item.subject);
-                                  handleClose1();
+                                onClick={() => {
+                                  handleClickOpen1(item.id, item.subject);
                                 }}
-                                color='primary'
-                                autoFocus
                               >
                                 <Tooltip title='Delete' arrow>
                                   <MoreHorizIcon />
                                 </Tooltip>
                               </IconButton>
                             </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(did, dsubject);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
                           </Grid>
 
                           <Grid item xs className={{ padding: '5%' }}>
@@ -1438,18 +1619,41 @@ const Publications = (props) => {
                           <Typography style={{ float: 'right' }}>
                             <IconButton
                               aria-label='settings'
-                              onClick={(e) => {
-                                handleDelete(item.id, item.subject);
-                                handleClose1();
+                              onClick={() => {
+                                handleClickOpen1(item.id, item.subject);
                               }}
-                              color='primary'
-                              autoFocus
                             >
                               <Tooltip title='Delete' arrow>
                                 <MoreHorizIcon />
                               </Tooltip>
                             </IconButton>
-                          </Typography>{' '}
+                          </Typography>
+                          <Dialog
+                            open={open1}
+                            onClose={handleClose1}
+                            aria-labelledby='alert-dialog-title'
+                            aria-describedby='alert-dialog-description'
+                          >
+                            <DialogTitle id='alert-dialog-title'>
+                              {'Are you sure to delete?'}
+                            </DialogTitle>
+
+                            <DialogActions>
+                              <Button onClick={handleClose1} color='primary'>
+                                cancel
+                              </Button>
+                              <Button
+                                onClick={(e) => {
+                                  handleDelete(did, dsubject);
+                                  handleClose1();
+                                }}
+                                color='primary'
+                                autoFocus
+                              >
+                                Delete
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
                           <ButtonBase className={classes.image1}>
                             <img
                               className={classes.image1}
@@ -1556,18 +1760,41 @@ const Publications = (props) => {
                               <Typography style={{ float: 'right' }}>
                                 <IconButton
                                   aria-label='settings'
-                                  onClick={(e) => {
-                                    handleDelete(item.id, item.subject);
-                                    handleClose1();
+                                  onClick={() => {
+                                    handleClickOpen1(item.id, item.subject);
                                   }}
-                                  color='primary'
-                                  autoFocus
                                 >
                                   <Tooltip title='Delete' arrow>
                                     <MoreHorizIcon />
                                   </Tooltip>
                                 </IconButton>
-                              </Typography>{' '}
+                              </Typography>
+                              <Dialog
+                                open={open1}
+                                onClose={handleClose1}
+                                aria-labelledby='alert-dialog-title'
+                                aria-describedby='alert-dialog-description'
+                              >
+                                <DialogTitle id='alert-dialog-title'>
+                                  {'Are you sure to delete?'}
+                                </DialogTitle>
+
+                                <DialogActions>
+                                  <Button onClick={handleClose1} color='primary'>
+                                    cancel
+                                  </Button>
+                                  <Button
+                                    onClick={(e) => {
+                                      handleDelete(did, dsubject);
+                                      handleClose1();
+                                    }}
+                                    color='primary'
+                                    autoFocus
+                                  >
+                                    Delete
+                                  </Button>
+                                </DialogActions>
+                              </Dialog>
                             </Grid>
                             <Grid item xs>
                               <Typography
@@ -1659,18 +1886,41 @@ const Publications = (props) => {
                             <Typography style={{ float: 'right' }}>
                               <IconButton
                                 aria-label='settings'
-                                onClick={(e) => {
-                                  handleDelete(item.id, item.subject);
-                                  handleClose1();
+                                onClick={() => {
+                                  handleClickOpen1(item.id, item.subject);
                                 }}
-                                color='primary'
-                                autoFocus
                               >
                                 <Tooltip title='Delete' arrow>
                                   <MoreHorizIcon />
                                 </Tooltip>
                               </IconButton>
-                            </Typography>{' '}
+                            </Typography>
+                            <Dialog
+                              open={open1}
+                              onClose={handleClose1}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to delete?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose1} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleDelete(did, dsubject);
+                                    handleClose1();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
                           </Grid>
 
                           <Grid item xs className={{ padding: '5%' }}>
@@ -1765,18 +2015,41 @@ const Publications = (props) => {
                           <Typography style={{ float: 'right' }}>
                             <IconButton
                               aria-label='settings'
-                              onClick={(e) => {
-                                handleDelete(item.id, item.subject);
-                                handleClose1();
+                              onClick={() => {
+                                handleClickOpen1(item.id, item.subject);
                               }}
-                              color='primary'
-                              autoFocus
                             >
                               <Tooltip title='Delete' arrow>
                                 <MoreHorizIcon />
                               </Tooltip>
                             </IconButton>
                           </Typography>
+                          <Dialog
+                            open={open1}
+                            onClose={handleClose1}
+                            aria-labelledby='alert-dialog-title'
+                            aria-describedby='alert-dialog-description'
+                          >
+                            <DialogTitle id='alert-dialog-title'>
+                              {'Are you sure to delete?'}
+                            </DialogTitle>
+
+                            <DialogActions>
+                              <Button onClick={handleClose1} color='primary'>
+                                cancel
+                              </Button>
+                              <Button
+                                onClick={(e) => {
+                                  handleDelete(did, dsubject);
+                                  handleClose1();
+                                }}
+                                color='primary'
+                                autoFocus
+                              >
+                                Delete
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
                           <ButtonBase className={classes.image1}>
                             <img
                               className={classes.image1}
@@ -1871,354 +2144,185 @@ const Publications = (props) => {
 
   return (
     <>
-     {loading ? <Loading message='Loading...' /> : null}
-    <Layout>
-      <div style={{ width: '95%', margin: '20px auto' }}>
-        <CommonBreadcrumbs
-          componentName='Publication'
-          childComponentName={
-            readFlag && !tableFlag
-              ? 'Open Publication'
-              : editFlag && !tableFlag
-              ? 'Add Publication'
-              : reviewFlag && !tableFlag
-              ? 'Review Publication'
-              : null
-          }
-        />
-      </div>
+      {loading ? <Loading message='Loading...' /> : null}
+      <Layout>
+        <div style={{ width: '95%', margin: '20px auto' }}>
+          <CommonBreadcrumbs
+            componentName='Publication'
+            childComponentName={
+              readFlag && !tableFlag
+                ? 'Open Publication'
+                : editFlag && !tableFlag
+                ? 'Add Publication'
+                : reviewFlag && !tableFlag
+                ? 'Review Publication'
+                : null
+            }
+          />
+        </div>
 
-      {!tableFlag && editFlag && <AddPublication handleGoBackPre={handleGoBackPre} />}
-      {!tableFlag && readFlag && <OpenPublication ID={readID} />}
-      {!tableFlag && reviewFlag && (
-        <EditPublication
-          ID={pub_id}
-          showtitle={pub_title}
-          showgrade={pub_grade}
-          showsubject={pub_subject}
-          showbooktype={pub_publication_type}
-          showauthor={pub_author_name}
-          showdes={pub_description}
-          IMG={pub_thumbnail}
-          PDF={pub_file}
-          showzone={pub_zone}
-          handleGoBackPre={handleGoBackPre}
-        />
-      )}
+        {!tableFlag && editFlag && <AddPublication handleGoBackPre={handleGoBackPre} />}
+        {!tableFlag && readFlag && <OpenPublication ID={readID} />}
+        {!tableFlag && reviewFlag && (
+          <EditPublication
+            ID={pub_id}
+            showtitle={pub_title}
+            showgrade={pub_grade}
+            showsubject={pub_subject}
+            showbooktype={pub_publication_type}
+            showauthor={pub_author_name}
+            showdes={pub_description}
+            IMG={pub_thumbnail}
+            PDF={pub_file}
+            showzone={pub_zone}
+            handleGoBackPre={handleGoBackPre}
+          />
+        )}
 
-      {tableFlag && !readFlag && !editFlag && (
-        <div>
-          <>
-            <MediaQuery minWidth={900}>
-              {Filter ? (
-                <div className={classes.root}>
-                  <div className='upper-table-container'>
-                    <Grid className='all-box-container'>
-                      <div
-                        className={
-                          counter === 1
-                            ? 'grade-container'
-                            : counter === 2
-                            ? 'box-right-2'
-                            : 'acadamic-year-box'
-                        }
-                      >
-                        {counter === 1 ? (
-                          <>
-                            <div className='text-fixed'>Academic Year</div>
-                            <div className='inner-grade-container'>
-                              <div className='change-grade-options'>
-                                <Select
-                                  multiple
-                                  fullWidth
-                                  native
-                                  value={acadamicYearID}
-                                  onChange={handleChangeMultiple}
-                                >
-                                  {dataMap &&
-                                    dataMap.map((name) => (
-                                      <option
-                                        key={name.id}
-                                        value={name.id}
-                                        onClick={() => {
-                                          setAcadamicYearName(name.session_year);
-
-                                          setId(name.id);
-                                        }}
-                                      >
-                                        {name.session_year}
-                                      </option>
-                                    ))}
-                                </Select>
-                              </div>
-                              <div className='text-fixed-last'>
-                                Expand
-                                <IconButton
-                                  aria-label='delete'
-                                  onClick={() => setCounter(counter + 1)}
-                                  size='small'
-                                >
-                                  <ArrowForwardIcon className='arrow-button' />
-                                </IconButton>
-                              </div>
-                            </div>
-                          </>
-                        ) : (
-                          <Grid className='text-rotate'>AcademicYear</Grid>
-                        )}
-                      </div>
-
-                      <div
-                        className={
-                          counter === 2
-                            ? 'grade-container'
-                            : counter === 1
-                            ? 'box-right-1'
-                            : 'box-last-1'
-                        }
-                      >
-                        {counter === 2 ? (
-                          <>
-                            <div className='text-fixed'>Subject</div>
-                            <div className='inner-grade-container'>
-                              <div className='change-grade-options'>
-                                <Select
-                                  multiple
-                                  fullWidth
-                                  native
-                                  onChange={handleChangeMultiple}
-                                >
-                                  {mainsubject &&
-                                    mainsubject.map((name) => (
-                                      <option
-                                        key={name.id}
-                                        value={name.subject__subject_name}
-                                        onClick={() => {
-                                          setPage(1);
-                                          setTheSubjectId(name.subject_id);
-                                        }}
-                                      >
-                                        {name.subject__subject_name}
-                                      </option>
-                                    ))}
-                                </Select>
-                              </div>
-                              <div className='text-fixed-last'>
-                                Expand
-                                <IconButton
-                                  aria-label='delete'
-                                  onClick={() => setCounter(counter - 1)}
-                                  size='small'
-                                >
-                                  <ArrowBackIcon className='arrow-button' />
-                                  <ArrowForwardIcon className='arrow-button' />
-                                </IconButton>
-                              </div>
-                            </div>
-                          </>
-                        ) : (
-                          <label className='text-rotate'>Subject</label>
-                        )}
-                      </div>
-                    </Grid>
-                  </div>
-
-                  <span className='marg'>
-                    {' '}
-                    <StyledClearButton
-                      variant='contained'
-                      startIcon={<ClearIcon />}
-                      onClick={() => handleclear()}
-                      style={{ fontSize: '13px' }}
-                    >
-                      Clear all
-                    </StyledClearButton>
-                    <StyledFilterButton
-                      variant='contained'
-                      color='secondary'
-                      startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-                      className={classes.filterButton}
-                      style={{ fontSize: '13px' }}
-                      onClick={() => {
-                        filterForAllData(theSubjectId, page);
-                      }}
-                    >
-                      filter
-                    </StyledFilterButton>
-                    <StyledFilterButton
-                      variant='contained'
-                      color='secondary'
-                      className={classes.filterButton}
-                      style={{ fontSize: '13px' }}
-                      onClick={(e) => {
-                        handleAdd();
-                        RemoveLocalData();
-                      }}
-                    >
-                      ADD NEW
-                    </StyledFilterButton>
-                    <div
-                      className='filter-container'
-                      onClick={() => {
-                        handleFilter(false);
-                      }}
-                    >
-                      <div className='filter'>HIDE FILTER</div>
-                      <img src={FilterImage} />
-                    </div>
-                  </span>
-                </div>
-              ) : (
-                <>
-                  <Grid className='bread-crumb-container' style={{ float: 'right' }}>
-                    <Grid
-                      className={
-                        Filter ? 'filter-container-hidden' : 'filter-container-show'
-                      }
-                      onClick={() => {
-                        handleFilter(true);
-                      }}
-                    >
-                      <Grid className='filter-show'>
-                        <div className='filter'>SHOW FILTER</div>
-                        <img className='filterImage' src={FilterImage} />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </>
-              )}
-            </MediaQuery>
-            <MediaQuery maxWidth={599}>
-              {Filter ? (
-                <div className={classes.root} style={{ marginLeft: '-2%' }}>
-                  <div className='upper-table-container1'>
-                    <Grid className='all-box-container1'>
-                      <div
-                        className={
-                          counter === 1
-                            ? 'grade-container1'
-                            : counter === 2
-                            ? 'box-right-2'
-                            : 'acadamic-year-box1'
-                        }
-                      >
-                        {counter === 1 ? (
-                          <>
-                            <div className='text-fixed1'>Academic Year</div>
-                            <div className='inner-grade-container1'>
-                              <div className='change-grade-options1'>
-                                <Select
-                                  multiple
-                                  fullWidth
-                                  native
-                                  value={acadamicYearID}
-                                  onChange={handleChangeMultiple}
-                                >
-                                  {dataMap &&
-                                    dataMap.map((name) => (
-                                      <option
-                                        key={name.id}
-                                        value={name.id}
-                                        onClick={() =>
-                                          setAcadamicYearName(name.session_year)
-                                        }
-                                      >
-                                        {name.session_year}
-                                      </option>
-                                    ))}
-                                </Select>
-                              </div>
-                              <div className='text-fixed-last1'>
-                                Expand
-                                <IconButton
-                                  aria-label='delete'
-                                  onClick={() => setCounter(counter + 1)}
-                                  size='small'
-                                >
-                                  <ArrowForwardIcon className='arrow-button1' />
-                                </IconButton>
-                              </div>
-                            </div>
-                          </>
-                        ) : (
-                          <Grid className='text-rotate1'>AcademicYear</Grid>
-                        )}
-                      </div>
-
-                      <div
-                        className={
-                          counter === 2
-                            ? 'grade-container1'
-                            : counter === 1
-                            ? 'box-right-1'
-                            : 'box-last-1'
-                        }
-                      >
-                        {counter === 2 ? (
-                          <>
-                            <div className='text-fixed1'>Subject</div>
-                            <div className='inner-grade-container1'>
-                              <div className='change-grade-options1'>
-                                <Select
-                                  multiple
-                                  fullWidth
-                                  native
-                                  onChange={handleChangeMultiple}
-                                >
-                                  {mainsubject &&
-                                    mainsubject.map((name) => (
-                                      <option
-                                        key={name.id}
-                                        value={name.subject__subject_name}
-                                        onClick={() => {
-                                          setPage(1);
-                                          setTheSubjectId(name.subject_id);
-                                        }}
-                                      >
-                                        {name.subject__subject_name}
-                                      </option>
-                                    ))}
-                                </Select>
-                              </div>
-                              <div className='text-fixed-last1'>
-                                Expand
-                                <IconButton
-                                  aria-label='delete'
-                                  onClick={() => setCounter(counter - 1)}
-                                  size='small'
-                                >
-                                  <ArrowBackIcon className='arrow-button1' />
-                                  <ArrowForwardIcon className='arrow-button1' />
-                                </IconButton>
-                              </div>
-                            </div>
-                          </>
-                        ) : (
-                          <label className='text-rotate1'>Subject</label>
-                        )}
-                      </div>
-                    </Grid>
-                    <div className='stylerow'>
-                      <div>
-                        <StyledFilterButton
-                          variant='contained'
-                          color='secondary'
-                          style={{ marginLeft: '-5%' }}
-                          startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-                          className={classes.filterButton}
-                          onClick={() => {
-                            filterForAllData(theSubjectId, page);
-                          }}
+        {tableFlag && !readFlag && !editFlag && (
+          <div>
+            <>
+              <MediaQuery minWidth={900}>
+                {Filter ? (
+                  <div className={classes.root}>
+                    <div className='upper-table-container'>
+                      <Grid className='all-box-container'>
+                        <div
+                          className={
+                            counter === 1
+                              ? 'grade-container'
+                              : counter === 2
+                              ? 'box-right-2'
+                              : 'acadamic-year-box'
+                          }
                         >
-                          filter
-                        </StyledFilterButton>
-                      </div>
+                          {counter === 1 ? (
+                            <>
+                              <div className='text-fixed'>Academic Year</div>
+                              <div className='inner-grade-container'>
+                                <div className='change-grade-options'>
+                                  <Select
+                                    multiple
+                                    fullWidth
+                                    native
+                                    value={acadamicYearID}
+                                    onChange={handleChangeMultiple}
+                                  >
+                                    {dataMap &&
+                                      dataMap.map((name) => (
+                                        <option
+                                          key={name.id}
+                                          value={name.id}
+                                          onClick={() => {
+                                            setAcadamicYearName(name.session_year);
 
+                                            setId(name.id);
+                                          }}
+                                        >
+                                          {name.session_year}
+                                        </option>
+                                      ))}
+                                  </Select>
+                                </div>
+                                <div className='text-fixed-last'>
+                                  Expand
+                                  <IconButton
+                                    aria-label='delete'
+                                    onClick={() => setCounter(counter + 1)}
+                                    size='small'
+                                  >
+                                    <ArrowForwardIcon className='arrow-button' />
+                                  </IconButton>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <Grid className='text-rotate'>AcademicYear</Grid>
+                          )}
+                        </div>
+
+                        <div
+                          className={
+                            counter === 2
+                              ? 'grade-container'
+                              : counter === 1
+                              ? 'box-right-1'
+                              : 'box-last-1'
+                          }
+                        >
+                          {counter === 2 ? (
+                            <>
+                              <div className='text-fixed'>Subject</div>
+                              <div className='inner-grade-container'>
+                                <div className='change-grade-options'>
+                                  <Select
+                                    multiple
+                                    fullWidth
+                                    native
+                                    onChange={handleChangeMultiple}
+                                  >
+                                    {mainsubject &&
+                                      mainsubject.map((name) => (
+                                        <option
+                                          key={name.id}
+                                          value={name.subject__subject_name}
+                                          onClick={() => {
+                                            setPage(1);
+                                            setTheSubjectId(name.subject_id);
+                                          }}
+                                        >
+                                          {name.subject__subject_name}
+                                        </option>
+                                      ))}
+                                  </Select>
+                                </div>
+                                <div className='text-fixed-last'>
+                                  Expand
+                                  <IconButton
+                                    aria-label='delete'
+                                    onClick={() => setCounter(counter - 1)}
+                                    size='small'
+                                  >
+                                    <ArrowBackIcon className='arrow-button' />
+                                    <ArrowForwardIcon className='arrow-button' />
+                                  </IconButton>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <label className='text-rotate'>Subject</label>
+                          )}
+                        </div>
+                      </Grid>
+                    </div>
+
+                    <span className='marg'>
+                      {' '}
+                      <StyledClearButton
+                        variant='contained'
+                        startIcon={<ClearIcon />}
+                        onClick={() => handleclear()}
+                        style={{ fontSize: '13px' }}
+                      >
+                        Clear all
+                      </StyledClearButton>
                       <StyledFilterButton
                         variant='contained'
                         color='secondary'
-                        style={{ marginLeft: '-1%' }}
+                        startIcon={<FilterFilledIcon className={classes.filterIcon} />}
                         className={classes.filterButton}
+                        style={{ fontSize: '13px' }}
+                        onClick={() => {
+                          filterForAllData(theSubjectId, page);
+                        }}
+                      >
+                        filter
+                      </StyledFilterButton>
+                      <StyledFilterButton
+                        variant='contained'
+                        color='secondary'
+                        className={classes.filterButton}
+                        style={{ fontSize: '13px' }}
                         onClick={(e) => {
                           handleAdd();
                           RemoveLocalData();
@@ -2235,178 +2339,363 @@ const Publications = (props) => {
                         <div className='filter'>HIDE FILTER</div>
                         <img src={FilterImage} />
                       </div>
-                    </div>
+                    </span>
                   </div>
-                </div>
-              ) : (
-                <>
-                  <Grid className='bread-crumb-container' style={{ float: 'right' }}>
-                    <Grid
-                      className={
-                        Filter ? 'filter-container-hidden' : 'filter-container-show'
-                      }
-                      onClick={() => {
-                        handleFilter(true);
-                      }}
-                    >
-                      <Grid className='filter-show'>
-                        <div className='filter'>SHOW FILTER</div>
-                        <img className='filterImage' src={FilterImage} />
+                ) : (
+                  <>
+                    <Grid className='bread-crumb-container' style={{ float: 'right' }}>
+                      <Grid
+                        className={
+                          Filter ? 'filter-container-hidden' : 'filter-container-show'
+                        }
+                        onClick={() => {
+                          handleFilter(true);
+                        }}
+                      >
+                        <Grid className='filter-show'>
+                          <div className='filter'>SHOW FILTER</div>
+                          <img className='filterImage' src={FilterImage} />
+                        </Grid>
                       </Grid>
                     </Grid>
-                  </Grid>
-                </>
-              )}
-            </MediaQuery>
-          </>
-          <br />
-          <Divider />
+                  </>
+                )}
+              </MediaQuery>
+              <MediaQuery maxWidth={599}>
+                {Filter ? (
+                  <div className={classes.root} style={{ marginLeft: '-2%' }}>
+                    <div className='upper-table-container1'>
+                      <Grid className='all-box-container1'>
+                        <div
+                          className={
+                            counter === 1
+                              ? 'grade-container1'
+                              : counter === 2
+                              ? 'box-right-2'
+                              : 'acadamic-year-box1'
+                          }
+                        >
+                          {counter === 1 ? (
+                            <>
+                              <div className='text-fixed1'>Academic Year</div>
+                              <div className='inner-grade-container1'>
+                                <div className='change-grade-options1'>
+                                  <Select
+                                    multiple
+                                    fullWidth
+                                    native
+                                    value={acadamicYearID}
+                                    onChange={handleChangeMultiple}
+                                  >
+                                    {dataMap &&
+                                      dataMap.map((name) => (
+                                        <option
+                                          key={name.id}
+                                          value={name.id}
+                                          onClick={() =>
+                                            setAcadamicYearName(name.session_year)
+                                          }
+                                        >
+                                          {name.session_year}
+                                        </option>
+                                      ))}
+                                  </Select>
+                                </div>
+                                <div className='text-fixed-last1'>
+                                  Expand
+                                  <IconButton
+                                    aria-label='delete'
+                                    onClick={() => setCounter(counter + 1)}
+                                    size='small'
+                                  >
+                                    <ArrowForwardIcon className='arrow-button1' />
+                                  </IconButton>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <Grid className='text-rotate1'>AcademicYear</Grid>
+                          )}
+                        </div>
 
-          <br />
-          <Grid container direction='row'>
-            {academicYear}
-            <li>{subjectID}</li>
-          </Grid>
-          <br />
-          <Grid item md={12} xs={10}>
-            <Tabs
-              value={value}
-              onChange={handleChanger}
-              indicatorColor='primary'
-              textColor='primary'
-              right
-            >
-              <Tab
-                label='All'
-                style={{
-                  fontFamily: 'Raleway bold',
-                  textTransform: 'capitalize',
-                }}
-              />
-              <Tab
-                label='Draft'
-                style={{
-                  fontFamily: 'Raleway bold',
-                  textTransform: 'capitalize',
-                }}
-              />
-              <Tab
-                label='For Review'
-                style={{
-                  fontFamily: 'Raleway bold',
-                  textTransform: 'capitalize',
-                }}
-              />
-              <Tab
-                label='Published'
-                style={{
-                  fontFamily: 'Raleway bold',
-                  textTransform: 'capitalize',
-                }}
-              />
-            </Tabs>
-            <Divider loading={loading} />
+                        <div
+                          className={
+                            counter === 2
+                              ? 'grade-container1'
+                              : counter === 1
+                              ? 'box-right-1'
+                              : 'box-last-1'
+                          }
+                        >
+                          {counter === 2 ? (
+                            <>
+                              <div className='text-fixed1'>Subject</div>
+                              <div className='inner-grade-container1'>
+                                <div className='change-grade-options1'>
+                                  <Select
+                                    multiple
+                                    fullWidth
+                                    native
+                                    onChange={handleChangeMultiple}
+                                  >
+                                    {mainsubject &&
+                                      mainsubject.map((name) => (
+                                        <option
+                                          key={name.id}
+                                          value={name.subject__subject_name}
+                                          onClick={() => {
+                                            setPage(1);
+                                            setTheSubjectId(name.subject_id);
+                                          }}
+                                        >
+                                          {name.subject__subject_name}
+                                        </option>
+                                      ))}
+                                  </Select>
+                                </div>
+                                <div className='text-fixed-last1'>
+                                  Expand
+                                  <IconButton
+                                    aria-label='delete'
+                                    onClick={() => setCounter(counter - 1)}
+                                    size='small'
+                                  >
+                                    <ArrowBackIcon className='arrow-button1' />
+                                    <ArrowForwardIcon className='arrow-button1' />
+                                  </IconButton>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <label className='text-rotate1'>Subject</label>
+                          )}
+                        </div>
+                      </Grid>
+                      <div className='stylerow'>
+                        <div>
+                          <StyledFilterButton
+                            variant='contained'
+                            color='secondary'
+                            style={{ marginLeft: '-5%' }}
+                            startIcon={
+                              <FilterFilledIcon className={classes.filterIcon} />
+                            }
+                            className={classes.filterButton}
+                            onClick={() => {
+                              filterForAllData(theSubjectId, page);
+                            }}
+                          >
+                            filter
+                          </StyledFilterButton>
+                        </div>
 
-            <Tabpanel1 value={value} index={0}>
-              {changer ? (
-                <>
-                  <Grid container direction='row' spacing={1} className='gridscroll'>
-                    <Post />
-                  </Grid>
+                        <StyledFilterButton
+                          variant='contained'
+                          color='secondary'
+                          style={{ marginLeft: '-1%' }}
+                          className={classes.filterButton}
+                          onClick={(e) => {
+                            handleAdd();
+                            RemoveLocalData();
+                          }}
+                        >
+                          ADD NEW
+                        </StyledFilterButton>
+                        <div
+                          className='filter-container'
+                          onClick={() => {
+                            handleFilter(false);
+                          }}
+                        >
+                          <div className='filter'>HIDE FILTER</div>
+                          <img src={FilterImage} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <Grid className='bread-crumb-container' style={{ float: 'right' }}>
+                      <Grid
+                        className={
+                          Filter ? 'filter-container-hidden' : 'filter-container-show'
+                        }
+                        onClick={() => {
+                          handleFilter(true);
+                        }}
+                      >
+                        <Grid className='filter-show'>
+                          <div className='filter'>SHOW FILTER</div>
+                          <img className='filterImage' src={FilterImage} />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </>
+                )}
+              </MediaQuery>
+            </>
+            <br />
+            <Divider />
+
+            <br />
+            <Grid container direction='row'>
+              {academicYear}
+              <li>{subjectID}</li>
+            </Grid>
+            <br />
+            <Grid item md={12} xs={10}>
+              <Tabs
+                value={value}
+                onChange={handleChanger}
+                indicatorColor='primary'
+                textColor='primary'
+                right
+              >
+                <Tab
+                  label='All'
+                  style={{
+                    fontFamily: 'Raleway bold',
+                    textTransform: 'capitalize',
+                  }}
+                />
+                <Tab
+                  label='Draft'
+                  style={{
+                    fontFamily: 'Raleway bold',
+                    textTransform: 'capitalize',
+                  }}
+                />
+                <Tab
+                  label='For Review'
+                  style={{
+                    fontFamily: 'Raleway bold',
+                    textTransform: 'capitalize',
+                  }}
+                />
+                <Tab
+                  label='Published'
+                  style={{
+                    fontFamily: 'Raleway bold',
+                    textTransform: 'capitalize',
+                  }}
+                />
+              </Tabs>
+              <Divider loading={loading} />
+
+              <Tabpanel1 value={value} index={0}>
+                {changer ? (
+                  <>
+                    <Grid container direction='row' spacing={1} className='gridscroll'>
+                      <Post />
+                    </Grid>
+                    <Grid container direction='row' justify='center' alignItems='center'>
+                      <Pagination
+                        onChange={handlePagination}
+                        style={{ marginTop: 25 }}
+                        count={totalPages}
+                        color='primary'
+                        page={page}
+                      />
+                    </Grid>
+                  </>
+                ) : (
                   <Grid container direction='row' justify='center' alignItems='center'>
-                    <Pagination
-                      onChange={handlePagination}
-                      style={{ marginTop: 25 }}
-                      count={totalPages}
-                      color='primary'
-                      page={page}
-                    />
+                    <img src={Nodata} />
                   </Grid>
-                </>
-              ) : (
-                <Grid container direction='row' justify='center' alignItems='center'>
-                  <img src={Nodata} />
-                </Grid>
-              )}
-            </Tabpanel1>
-            <Tabpanel1 value={value} index={1}>
-              {changer2 ? (
-                <>
-                  <Grid container direction='row' spacing={1} className='gridscroll'>
-                    <NewDraft />
-                  </Grid>
-                  {dataDraft && (
-                    <Grid container direction='row' justify='center' alignItems='center'>
-                      <Pagination
-                        onChange={handlePagination}
-                        style={{ marginTop: 25 }}
-                        count={totalPages2}
-                        color='primary'
-                        page={page}
-                      />
+                )}
+              </Tabpanel1>
+              <Tabpanel1 value={value} index={1}>
+                {changer2 ? (
+                  <>
+                    <Grid container direction='row' spacing={1} className='gridscroll'>
+                      <NewDraft />
                     </Grid>
-                  )}
-                </>
-              ) : (
-                <Grid container direction='row' justify='center' alignItems='center'>
-                  <img src={Nodata} />
-                </Grid>
-              )}
-            </Tabpanel1>
+                    {dataDraft && (
+                      <Grid
+                        container
+                        direction='row'
+                        justify='center'
+                        alignItems='center'
+                      >
+                        <Pagination
+                          onChange={handlePagination}
+                          style={{ marginTop: 25 }}
+                          count={totalPages2}
+                          color='primary'
+                          page={page}
+                        />
+                      </Grid>
+                    )}
+                  </>
+                ) : (
+                  <Grid container direction='row' justify='center' alignItems='center'>
+                    <img src={Nodata} />
+                  </Grid>
+                )}
+              </Tabpanel1>
 
-            <Tabpanel1 value={value} index={2}>
-              {changer3 ? (
-                <>
-                  <Grid container direction='row'>
-                    <ReviewPost />
-                  </Grid>
-                  {reviewData && (
-                    <Grid container direction='row' justify='center' alignItems='center'>
-                      <Pagination
-                        onChange={handlePagination}
-                        style={{ marginTop: 25 }}
-                        count={totalPages3}
-                        color='primary'
-                        page={page}
-                      />
+              <Tabpanel1 value={value} index={2}>
+                {changer3 ? (
+                  <>
+                    <Grid container direction='row'>
+                      <ReviewPost />
                     </Grid>
-                  )}
-                </>
-              ) : (
-                <Grid container direction='row' justify='center' alignItems='center'>
-                  <img src={Nodata} />
-                </Grid>
-              )}
-            </Tabpanel1>
-            <Tabpanel1 value={value} index={3}>
-              {changer4 ? (
-                <>
-                  <Grid container direction='row' spacing={1} className='space'>
-                    <IndividualPost />
+                    {reviewData && (
+                      <Grid
+                        container
+                        direction='row'
+                        justify='center'
+                        alignItems='center'
+                      >
+                        <Pagination
+                          onChange={handlePagination}
+                          style={{ marginTop: 25 }}
+                          count={totalPages3}
+                          color='primary'
+                          page={page}
+                        />
+                      </Grid>
+                    )}
+                  </>
+                ) : (
+                  <Grid container direction='row' justify='center' alignItems='center'>
+                    <img src={Nodata} />
                   </Grid>
-                  {individualData && (
-                    <Grid container direction='row' justify='center' alignItems='center'>
-                      <Pagination
-                        onChange={handlePagination}
-                        style={{ marginTop: 25 }}
-                        count={totalPages4}
-                        color='primary'
-                        page={page}
-                      />
+                )}
+              </Tabpanel1>
+              <Tabpanel1 value={value} index={3}>
+                {changer4 ? (
+                  <>
+                    <Grid container direction='row' spacing={1} className='space'>
+                      <IndividualPost />
                     </Grid>
-                  )}
-                </>
-              ) : (
-                <Grid container direction='row' justify='center' alignItems='center'>
-                  <img src={Nodata} />
-                </Grid>
-              )}
-            </Tabpanel1>
-          </Grid>
-         
-        </div>
-      )}
-    </Layout>
+                    {individualData && (
+                      <Grid
+                        container
+                        direction='row'
+                        justify='center'
+                        alignItems='center'
+                      >
+                        <Pagination
+                          onChange={handlePagination}
+                          style={{ marginTop: 25 }}
+                          count={totalPages4}
+                          color='primary'
+                          page={page}
+                        />
+                      </Grid>
+                    )}
+                  </>
+                ) : (
+                  <Grid container direction='row' justify='center' alignItems='center'>
+                    <img src={Nodata} />
+                  </Grid>
+                )}
+              </Tabpanel1>
+            </Grid>
+          </div>
+        )}
+      </Layout>
     </>
   );
 };

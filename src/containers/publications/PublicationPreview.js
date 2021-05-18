@@ -61,7 +61,7 @@ const PublicationPreview = ({ fun, handleGoBack, entireBack }) => {
       <MediaQuery minWidth={600}>
         <Grid container direction='row'>
           <Grid container justify='center'>
-            <Button size='small' color='primary' onClick={entireBack}>
+            <Button size='small' color='primary' href={`/publications`}>
               Close
             </Button>
           </Grid>
