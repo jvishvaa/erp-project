@@ -193,9 +193,11 @@ const CreateEvent = () => {
       .then((result) => {
         setAlert('success', result.data.message);
 
-        history.push({
-          pathname: '/attendance-calendar/teacher-view',
-        });
+        // history.push({
+        //   pathname: '/attendance-calendar/teacher-view',
+        // });
+
+        handleBackButtonClick()
       })
       .catch((error) => {
         setLoading(false);

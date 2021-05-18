@@ -5,7 +5,7 @@ import CreateClassForm from './create-class-form';
 
 const CreateClass = () => {
   return (
-    <div>
+    <div className="wholeCreateContainer" >
       <Layout>
         <CreateclassProvider>
           <CreateClassForm />

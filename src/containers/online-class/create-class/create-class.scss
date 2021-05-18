@@ -67,6 +67,12 @@
   }
 }
 
+.wholeCreateContainer{
+  .swipe-container{
+  display: none;
+}
+}
+
 .MuiPickersTimePickerToolbar-toolbarAmpmLeftPadding h2,
 .MuiPickersTimePickerToolbar-toolbarAmpmLeftPadding h6 {
   color: white !important;
