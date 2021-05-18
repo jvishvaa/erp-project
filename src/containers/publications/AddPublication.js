@@ -20,7 +20,8 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { Editor } from '@tinymce/tinymce-react';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-
+import MyTinyEditor from '../../containers/question-bank/create-question/tinymce-editor';
+// import MyTinyEditor from '../../../../question-bank/create-question/tinymce-editor';
 import PublicationPreview from './PublicationPreview';
 import Loading from '../../components/loader/loader';
 
@@ -548,7 +549,7 @@ const AddPublication = ({ handleGoBackPre }) => {
             </Grid>
             <Grid container item md={11} xs={10} className={[classes.root1]}>
               <Paper elevation={3} style={{ width: '100%' }} >
-                <Editor
+                <MyTinyEditor
                   plugins='wordcount'
                   onEditorChange={handleDES}
                   name='description'
