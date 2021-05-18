@@ -5,19 +5,45 @@ import Layout from '../../Layout';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import axiosInstance from '../../../config/axios';
 import FileSaver from 'file-saver';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+//import exportFromJSON from 'export-from-json';
+import { CSVLink } from "react-csv";
 
 const useStyles = makeStyles({
     parentDiv: {
 
     },
     paperStyled: {
-        height: '80vh',
+        minHeight: '80vh',
+        height: '100%',
         padding: '50px',
         marginTop: '15px',
     },
     guidelinesText: {
         fontSize: '20px',
         fontWeight: 'bold'
+    },
+    errorText: {
+        fontSize: '20px',
+        fontWeight: 'bold',
+        color: '#fe6b6b',
+        marginBottom: '30px',
+        display: 'inline-block',
+    },
+    table: {
+        minWidth: 650,
+    },
+    downloadExcel: {
+        float: 'right',
+        fontSize: '16px',
+        // textDecoration: 'none',
+        // backgroundColor: '#fe6b6b',
+        // color: '#ffffff',
     }
 });
 
@@ -30,8 +56,8 @@ const guidelines = [
     { name: 'Current Grade', field: ' is a required field, Example: [3,7]' },
     { name: 'Current SectionMapping', field: ' is a required field, Example: [3,7]' },
     { name: 'Change Grade', field: ' is a mandatory field, Example: [24,25]' },
-    { name: 'Change Section Mapping', field: ' is a mandatory field, Example: [70’0]' },
-    { name: 'Change Subject', field: ' is a required field, Example: [6,9’’]' },
+    { name: 'Change Section Mapping', field: ' is a mandatory field, Example: [700]' },
+    { name: 'Change Subject', field: ' is a required field, Example: [6,9]' },
   ];
 
 const StyledButton = withStyles({
@@ -63,6 +89,14 @@ const SectionShuffling = () => {
     const {setAlert} = useContext(AlertNotificationContext);
     const [file, setFile] = useState(null);
     const [uploadFlag, setUploadFlag] = useState(false);
+    const [data, setData] = useState([]);
+    const [failed, setFailed] = useState(false);
+    const [excelData] = useState([]);
+
+    const headers = [
+        { label: "ERP Code", key: "erp_id" },
+        { label: "Error", key: "error_msg" },
+      ];
 
     const handleFileChange = (event) => {
         const { files } = event.target;
@@ -81,9 +115,10 @@ const SectionShuffling = () => {
 
     const handleClearAll = () => {
         fileRef.current.value = null;
-      };
+    };
 
     const handleFileUpload = () => {
+        setFailed(false);
         const formData = new FormData();
         formData.append('file', file);
         if (file) {
@@ -91,11 +126,18 @@ const SectionShuffling = () => {
           axiosInstance
             .put('/erp_user/update_bulk_users_grade/', formData)
             .then((result) => {
-              //if (result.data.status_code === 200) {
-                //onUploadSuccess();
-                var blob = new Blob([result.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                FileSaver.saveAs(blob, 'error.xlsx');
-                //setAlert('success', 'Excel file submited');
+                setAlert('success', 'Excel file submited successfully');
+                function addDataToExcel(xlsData){
+                    xlsData.map((record) => {
+                        console.log(Object.keys(record) +': '+Object.values(record));
+                        excelData.push({erp_id: Object.keys(record) ,error_msg: Object.values(record)})
+                    })
+                }
+                if(result.data?.data.length > 0){
+                    setFailed(true);
+                    setData(result.data.data);
+                    addDataToExcel(result.data.data)
+                }
                 setUploadFlag(false);
                 fileRef.current.value = null;
             })
@@ -104,9 +146,16 @@ const SectionShuffling = () => {
               setUploadFlag(false);
             });
         } else {
-            setAlert('error', 'Something Wrong!');
+            setAlert('warning', 'Please select file');
         }
     };
+
+    // const fileName = 'error_list'  
+    // const exportType = 'xls'
+
+    // const ExportToExcel = () => {  
+    //     exportFromJSON({ data, fileName, exportType })  
+    // }
     
     return (
         <Layout>
@@ -152,15 +201,49 @@ const SectionShuffling = () => {
                     </Grid>
                     <Grid item xs={12}>
                         <Paper className={classes.paperStyled}>
+                            {failed && (
+                                <div style={{ marginBottom: '30px'}}>
+                                    <Typography className={classes.errorText}>
+                                        Error: <span style={{color:'#014b7e'}}>Failed records</span>
+                                    </Typography>
+                                    <CSVLink data={excelData} headers={headers} className={classes.downloadExcel}>Download Excel</CSVLink>
+                                    {/* <StyledButton onClick={(e) => ExportToExcel()} style={{float: 'right'}}>Download Excel</StyledButton> */}
+                                    
+                                    <TableContainer component={Paper}>
+                                        <Table className={classes.table} aria-label="simple table">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell align="left">ERP Code</TableCell>
+                                                    <TableCell>Error Massage</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {data.map((row) => (
+                                                    <TableRow key={row.name}>
+                                                        <TableCell component="th" scope="row" align="left">
+                                                            {Object.keys(row)}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <span style={{color: 'red'}}>
+                                                                {Object.values(row)}
+                                                            </span>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </div>
+                            )}
                             <Typography className={classes.guidelinesText}>Guidelines:</Typography>
                             {guidelines.map((val, i) => {
                                 return (
                                     <div style={{ color: '#014b7e', fontSize: '16px', padding: '10px' }}>
                                         {i + 1}. 
-                                    <span style={{ color: '#fe6b6b', fontWeight: '600' }}>
-                                        {val.name}
-                                    </span>
-                                    <span>{val.field}</span>
+                                        <span style={{ color: '#fe6b6b', fontWeight: '600' }}>
+                                            {val.name}
+                                        </span>
+                                        <span>{val.field}</span>
                                     </div>
                                 );
                             })}
