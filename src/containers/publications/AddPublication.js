@@ -146,6 +146,7 @@ const AddPublication = ({ handleGoBackPre }) => {
   };
 
   const handleBranch = (e, value) => {
+    console.log('The value of grade', e.target);
     console.log('the data of branch', e.target.value);
     let number = e.target.value;
     let exactNum = number - 1;
