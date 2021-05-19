@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import Loader from '../../components/loader/loader'; 
-import Loading from '../../components/loader/loader';
+import MyTinyEditor from '../../containers/question-bank/create-question/tinymce-editor';
 import {
   Button,
   Divider,
@@ -14,7 +13,7 @@ import {
   Select,
   TextField,
   Typography,
-  withStyles
+  withStyles,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import './Styles.css';
@@ -22,8 +21,9 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { Editor } from '@tinymce/tinymce-react';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import MyTinyEditor from '../../containers/question-bank/create-question/tinymce-editor';
+
 import PublicationPreview from './PublicationPreview';
+import Loading from '../../components/loader/loader';
 
 
 const StyledFilterButton = withStyles({
@@ -44,7 +44,6 @@ const StyledFilterButton = withStyles({
     stroke: '#FFFFFF',
   },
 })(Button);
-
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
@@ -59,7 +58,6 @@ const useStyles = makeStyles((theme) => ({
       marginRight: theme.spacing(4)
     },
   },
-  
   new: {
     '& > *': {
       margin: theme.spacing(1),
@@ -144,19 +142,19 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
 
     axiosInstance.get(endpoints.masterManagement.gradesDrop).then((res) => {
       setGradesGet(res.data.data);
+      setLoading(false);
     });
 
     axiosInstance.get(endpoints.academics.branches).then((res) => {
       if (res) {
         setBranchGet(res.data.data.results);
+        setLoading(false);
       } else {
         setBranchGet('');
+        setLoading(false);
       }
     });
   }, []);
@@ -181,10 +179,12 @@ const AddPublication = ({ handleGoBackPre }) => {
   };
 
   useEffect(() => {
+    setLoading(true);
     axiosInstance
       .get(`${endpoints.masterManagement.subjects}?grade=${grade}`)
       .then((res) => {
         setSubject(res.data.data.results);
+        setLoading(false);
       });
   }, [grade]);
   const handleSubject = (e, value) => {
@@ -222,7 +222,7 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setLoading(true);
     formData.append('zone', postBranch);
     formData.append('subject', postSubjects);
     formData.append('grade', grade);
@@ -253,7 +253,7 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   const handleSubmitDraft = (e) => {
     e.preventDefault();
-
+    setLoading(true);
     if (!grade) {
       setAlert('error', 'Select Grade');
       return;
@@ -298,7 +298,7 @@ const AddPublication = ({ handleGoBackPre }) => {
     formData.append('thumbnail', thumbnail);
     formData.append('description', description);
     formData.append('status_post', isPublished);
-    setLoading(true);
+
     axiosInstance
       .post(endpoints.publish.ebook, formData)
       .then((result) => {
@@ -376,10 +376,14 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   return (
     <>
-     {loading ? <Loading message='Loading...' /> : null}
+      {loading ? <Loading message='Loading...' /> : null}
       <form>
         {!tableFlag && readFlag && (
-          <PublicationPreview fun={handleSubmit} handleGoBack={handleGoBack} />
+          <PublicationPreview
+            fun={handleSubmit}
+            handleGoBack={handleGoBack}
+            entireBack={handleGoBackPre}
+          />
         )}
         {tableFlag && !readFlag && (
           <div className='bg-card'>
@@ -387,7 +391,7 @@ const AddPublication = ({ handleGoBackPre }) => {
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
                   <InputLabel id='demo-simple-select-outlined-label' required>
-                    Grade
+                    <b>Grade</b>
                   </InputLabel>
                   <Select
                     labelId='demo-simple-select-outlined-label'
@@ -415,7 +419,7 @@ const AddPublication = ({ handleGoBackPre }) => {
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
                   <InputLabel id='demo-simple-select-outlined-label' required>
-                    Subject
+                    <b>Subject</b>
                   </InputLabel>
 
                   <Select
@@ -446,7 +450,7 @@ const AddPublication = ({ handleGoBackPre }) => {
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
                   <InputLabel id='demo-simple-select-outlined-label' required>
-                    BookType
+                   <b>BookType</b>
                   </InputLabel>
 
                   <Select
@@ -500,7 +504,7 @@ const AddPublication = ({ handleGoBackPre }) => {
               </Grid>
               <Grid item md={3} xs={12}>
                 <Typography variant='subtitle1' style={{ marginBottom: '2%' }}>
-                 <b>Author Name</b> 
+                  <b>Author Name</b>
                 </Typography>
                 <Grid>
                   <TextField
@@ -523,7 +527,7 @@ const AddPublication = ({ handleGoBackPre }) => {
               </Grid>
               <Grid item md={3} xs={12}>
                 <Typography variant='subtitle1' style={{ marginBottom: '2%' }}>
-                  <b>Zone</b>
+                 <b> Zone</b>
                 </Typography>
                 <Grid>
                   <FormControl variant='outlined' size='small' fullWidth>
@@ -563,7 +567,7 @@ const AddPublication = ({ handleGoBackPre }) => {
               <Typography variant='subtitle1'><b>Book description</b></Typography>
             </Grid>
             <Grid container item md={11} xs={10} className={[classes.root1]}>
-              <Paper elevation={3} style={{ width: '100%' }} >
+              <Paper elevation={3} style={{ width: '100%' }}>
               <MyTinyEditor
                   plugins='wordcount'
                   handleEditorChange={handleDES}
@@ -585,7 +589,7 @@ const AddPublication = ({ handleGoBackPre }) => {
                   <Typography variant='h5'>
                     Drop a file on this or Browse from you Files
                   </Typography>
-                  <Grid container justify='center'  style={{ marginBottom:'35px' }} direction='row'>
+                  <Grid container justify='center' direction='row' style={{ marginBottom:'35px' }}>
                     <Grid style={{ marginRight: '1%' }}>
                       <StyledFilterButton onClick={handleClickThumbnail}>
                         Thumbnail
@@ -646,7 +650,6 @@ const AddPublication = ({ handleGoBackPre }) => {
                   onClick={() => {
                     handleRead();
                     LocalData();
-
                   }}
                 >
                   Preview
@@ -658,7 +661,6 @@ const AddPublication = ({ handleGoBackPre }) => {
             </Grid>
           </div>
         )}
-
       </form>
     </>
   );
