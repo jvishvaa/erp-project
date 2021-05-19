@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddPublication = ({ handleGoBackPre }) => {
+const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
   const classes = useStyles();
   const [subject, setSubject] = useState();
   const [branchGet, setBranchGet] = useState();
@@ -135,10 +135,11 @@ const AddPublication = ({ handleGoBackPre }) => {
       );
     }
   };
-
-  const handleDES = (event) => {
-    setDescription(event);
-  };
+  const handleDES = (content, editor) => {
+    setDescription(content);
+    console.log('description',content);
+    }; 
+ 
 
   useEffect(() => {
     setLoading(true);
@@ -242,6 +243,7 @@ const AddPublication = ({ handleGoBackPre }) => {
           setDelFlag(!delFlag);
           setLoading(false);
           setAlert('success', result.data.message);
+          handleGoBackPre();
         } else {
           setLoading(false);
           setAlert('error', result.data.message);
@@ -258,35 +260,43 @@ const AddPublication = ({ handleGoBackPre }) => {
     setLoading(true);
     if (!grade) {
       setAlert('error', 'Select Grade');
+      setLoading(false);
       return;
     }
     if (!postSubjects) {
       setAlert('error', 'Select Subject');
-      return;
-    }
-    if (!postBranch) {
-      setAlert('error', 'Select Branch');
+      setLoading(false);
       return;
     }
     if (!bookTypes) {
       setAlert('error', 'Select Book Type');
+      setLoading(false);
       return;
     }
     if (!postData) {
       setAlert('error', 'fill all Fields');
+      setLoading(false);
+      return;
+    }
+    if (!postBranch) {
+      setAlert('error', 'Select Branch');
+      setLoading(false);
       return;
     }
 
     if (!description) {
       setAlert('error', 'Enter description');
+      setLoading(false);
       return;
     }
     if (!thumbnail) {
       setAlert('error', 'Select Thumbnail');
+      setLoading(false);
       return;
     }
     if (!file) {
       setAlert('error', 'Select Browse');
+      setLoading(false);
       return;
     }
 
@@ -308,6 +318,7 @@ const AddPublication = ({ handleGoBackPre }) => {
           setDelFlag(!delFlag);
           setLoading(false);
           setAlert('success', result.data.message);
+          handleGoBackPre();
         } else {
           setLoading(false);
           setAlert('error', result.data.message);
@@ -328,35 +339,43 @@ const AddPublication = ({ handleGoBackPre }) => {
   const handleRead = (value) => {
     if (!grade) {
       setAlert('error', 'Select Grade');
+      setLoading(false);
       return;
     }
     if (!postSubjects) {
       setAlert('error', 'Select Subject');
+
+      setLoading(false);
       return;
     }
-    if (!postBranch) {
-      setAlert('error', 'Select Branch');
-      return;
-    }
+
     if (!bookTypes) {
       setAlert('error', 'Select Book Type');
+      setLoading(false);
       return;
     }
     if (!postData) {
       setAlert('error', 'fill all Fields');
+      setLoading(false);
       return;
     }
-
+    if (!postBranch) {
+      setAlert('error', 'Select Branch');
+      setLoading(false);
+      return;
+    }
     if (!description) {
       setAlert('error', 'Enter description');
       return;
     }
     if (!thumbnail) {
       setAlert('error', 'Select Thumbnail');
+      setLoading(false);
       return;
     }
     if (!file) {
       setAlert('error', 'Select Browse');
+      setLoading(false);
       return;
     }
 
@@ -374,7 +393,7 @@ const AddPublication = ({ handleGoBackPre }) => {
     setTimeout(() => {
       setLoading(false);
     }, 450);
-  }, [goBackFlag]);
+  }, [goBackFlag, readFlag]);
 
   return (
     <>
@@ -571,13 +590,12 @@ const AddPublication = ({ handleGoBackPre }) => {
             <Grid container item md={11} xs={10} className={[classes.root1]}>
               <Paper elevation={3} style={{ width: '100%' }}>
               <MyTinyEditor
-                  plugins='wordcount'
+                   id='descriptioneditor'
                   handleEditorChange={handleDES}
                   placeholder='Book description...'
                   name='description'
                   className='descBox'
-                  fullWidth
-                  Value={
+                  content={
                     localStorage.getItem('description') === 'undefined'
                       ? ''
                       : localStorage.getItem('description')
@@ -640,7 +658,7 @@ const AddPublication = ({ handleGoBackPre }) => {
             </Grid>
             <Grid container direction='row' className={[classes.root]}>
               <Grid item xs={1}>
-                <StyledFilterButton onClick={handleGoBackPre}>Back</StyledFilterButton>
+                <StyledFilterButton onClick={handleGoBackPre1}>Back</StyledFilterButton>
               </Grid>
               <Grid item xs={1}>
                 <StyledFilterButton
