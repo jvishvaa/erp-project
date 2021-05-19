@@ -604,15 +604,11 @@ const AddPublication = ({ handleGoBackPre }) => {
                       {/* <FilePreviewerThumbnail file={pdfData} /> */}
                     </Grid>
 
-                    {/* </Dropzone> */}
-                    {/* <Dropzone /> */}
+                
                   </Grid>
                 </Grid>
 
-                {/* <DropZonecom /> */}
-                {/* <Grid container justify='center'>
-                <Typography>(Only pdf files support)</Typography>
-              </Grid> */}
+
               </Paper>
             </Grid>
 

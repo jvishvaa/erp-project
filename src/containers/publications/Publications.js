@@ -272,6 +272,7 @@ const Publications = (props) => {
     setReviewData('');
     setIndividualData('');
     setDataDraft('');
+    handleAlldata(page);
     setAcadamicYearName('');
     setSubjectID('');
   };
@@ -354,6 +355,7 @@ const Publications = (props) => {
 
     handleDraftSubjectId(value, page);
     handleReviewSubjectId(value, page);
+    handleAllSubjectData(value, page);
     setLoading(true);
     axiosInstance
       .get(
@@ -376,7 +378,32 @@ const Publications = (props) => {
         }
       });
   };
-
+  const handleAllSubjectData = (value, pageNumber) => {
+    setLoading(true);
+    axiosInstance
+      .get(
+        `${
+          endpoints.publish.ebook
+        }?subject_id=${value}&page_number=${pageNumber}&page_size=${8}`
+      )
+      .then((res) => {
+        if (res.data.total_pages == 0) {
+          setChanger(false);
+          setData('');
+          setLoading(false);
+        } else if (res.data.status_code === 200) {
+          // setAlert('success', res.data.message);
+          setTotalPages(res.data.total_pages);
+          setData(res.data.data);
+          setChanger(true);
+          setLoading(false);
+        } else {
+          setAlert('error', res.data.message);
+          setData('');
+          setLoading(false);
+        }
+      });
+  };
   const handleDraftSubjectId = (value, pageNumber) => {
     setLoading(true);
     axiosInstance
@@ -558,11 +585,7 @@ const Publications = (props) => {
   const handleAlldata = (page) => {
     setLoading(true);
     axiosInstance
-      .get(
-        `${
-          endpoints.publish.ebook
-        }?status_post=Published&page_number=${page}&page_size=${8}`
-      )
+      .get(`${endpoints.publish.ebook}?page_number=${page}&page_size=${8}`)
       .then((res) => {
         if (res.data.total_pages == 0) {
           setChanger(false);
