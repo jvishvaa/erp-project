@@ -33,23 +33,25 @@ const useStyles = makeStyles((theme) => ({
   },
 
   image: {
-    width: '170px',
-    height: '217px',
+    width: '120px',
+    height: '177px',
     borderRadius: '10px',
     display: 'block',
     margin: '2%',
   },
   image1: {
-    width: '140px',
-    height: '217px',
+    width: '120px',
+    height: '177px',
     borderRadius: '10px',
     display: 'block',
     margin: '2%',
   },
   paperSize: {
-    width: '382px',
-    height: '237px',
-    borderRadius: '10px',
+    marginLeft: '2%',
+    marginTop: '5%',
+    width: '350px',
+    height: '187px',
+    borderRadius: '20px',
   },
 }));
 const PublicationPreview = ({ fun, handleGoBack, entireBack }) => {
@@ -81,23 +83,34 @@ const PublicationPreview = ({ fun, handleGoBack, entireBack }) => {
               <Grid item xs={12} sm container>
                 <Grid item xs container direction='column' spacing={2}>
                   <Grid item xs>
-                    <Typography gutterBottom variant='subtitle1'>
-                      {localStorage.getItem('title')}
+                    <Typography gutterBottom variant='subtitle1' color='secondary'>
+                      <b style={{ fontSize: '16px' }}>{localStorage.getItem('title')}</b>
                     </Typography>
                     <Typography variant='body2' gutterBottom>
-                      Author: {localStorage.getItem('author')}
+                      <span style={{ fontSize: '16px' }}>
+                        {' '}
+                        Author: {localStorage.getItem('author')}
+                      </span>
                     </Typography>
                   </Grid>
                   <Grid item>
                     <Typography variant='body2'>
-                      Publication:
-                      {localStorage.getItem('book_type') === 1
-                        ? 'magazine'
-                        : 'newsletter'}
+                      <span style={{ fontSize: '16px' }}>
+                        Publication:
+                        {localStorage.getItem('book_type') === 1
+                          ? 'magazine'
+                          : 'newsletter'}
+                      </span>
                     </Typography>
-                    <Typography variant='body2'>{dateValue}</Typography>
                     <Typography variant='body2'>
-                      Branch: {localStorage.getItem('zone')}
+                      {' '}
+                      <span style={{ fontSize: '16px' }}>{dateValue}</span>
+                    </Typography>
+                    <Typography variant='body2'>
+                      <span style={{ fontSize: '16px' }}>
+                        {' '}
+                        Branch: {localStorage.getItem('zone')}
+                      </span>
                     </Typography>
                   </Grid>
                 </Grid>
@@ -161,26 +174,39 @@ const PublicationPreview = ({ fun, handleGoBack, entireBack }) => {
                   <Grid container direction='column'>
                     <Grid>
                       <Typography gutterBottom variant='subtitle1'>
-                        {localStorage.getItem('title')}
+                        <b style={{ fontSize: '16px' }}>
+                          {localStorage.getItem('title')}
+                        </b>
                       </Typography>
                     </Grid>
                     <Grid>
                       <Typography variant='body2' gutterBottom>
-                        Author: {localStorage.getItem('author')}
+                        <span style={{ fontSize: '16px' }}>
+                          {' '}
+                          Author: {localStorage.getItem('author')}
+                        </span>
                       </Typography>
                     </Grid>
                     <Grid>
                       <Typography variant='body2'>
-                        Publication:
-                        {localStorage.getItem('book_type') === 1
-                          ? 'magazine'
-                          : 'newsletter'}
+                        <span style={{ fontSize: '16px' }}>
+                          Publication:
+                          {localStorage.getItem('book_type') === 1
+                            ? 'magazine'
+                            : 'newsletter'}
+                        </span>
                       </Typography>
                     </Grid>
                     <Grid>
-                      <Typography variant='body2'>{dateValue}</Typography>
                       <Typography variant='body2'>
-                        Branch: {localStorage.getItem('zone')}
+                        {' '}
+                        <span style={{ fontSize: '16px' }}>{dateValue}</span>
+                      </Typography>
+                      <Typography variant='body2'>
+                        <span style={{ fontSize: '16px' }}>
+                          {' '}
+                          Branch: {localStorage.getItem('zone')}
+                        </span>
                       </Typography>
                     </Grid>
                   </Grid>

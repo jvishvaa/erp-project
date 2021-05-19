@@ -214,6 +214,7 @@ const AddPublication = ({ handleGoBackPre }) => {
           setDelFlag(!delFlag);
           setLoading(false);
           setAlert('success', result.data.message);
+          handleGoBackPre();
         } else {
           setLoading(false);
           setAlert('error', result.data.message);
@@ -236,16 +237,16 @@ const AddPublication = ({ handleGoBackPre }) => {
       setAlert('error', 'Select Subject');
       return;
     }
-    if (!postBranch) {
-      setAlert('error', 'Select Branch');
-      return;
-    }
     if (!bookTypes) {
       setAlert('error', 'Select Book Type');
       return;
     }
     if (!postData) {
       setAlert('error', 'fill all Fields');
+      return;
+    }
+    if (!postBranch) {
+      setAlert('error', 'Select Branch');
       return;
     }
 
@@ -280,6 +281,7 @@ const AddPublication = ({ handleGoBackPre }) => {
           setDelFlag(!delFlag);
           setLoading(false);
           setAlert('success', result.data.message);
+          handleGoBackPre();
         } else {
           setLoading(false);
           setAlert('error', result.data.message);
@@ -329,6 +331,7 @@ const AddPublication = ({ handleGoBackPre }) => {
     }
     if (!file) {
       setAlert('error', 'Select Browse');
+      setLoading(false);
       return;
     }
 
@@ -346,7 +349,7 @@ const AddPublication = ({ handleGoBackPre }) => {
     setTimeout(() => {
       setLoading(false);
     }, 450);
-  }, [goBackFlag]);
+  }, [goBackFlag, readFlag]);
 
   return (
     <>
