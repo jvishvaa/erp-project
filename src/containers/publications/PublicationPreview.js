@@ -14,7 +14,7 @@ import MediaQuery from 'react-responsive';
 import React, { useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import moment from 'moment';
-import Loader from '../../components/loader/loader';
+import Loading from '../../components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,6 +58,7 @@ const PublicationPreview = ({ fun, handleGoBack, entireBack }) => {
   const [loading, setLoading] = React.useState();
   return (
     <>
+      {loading ? <Loading message='Loading...' /> : null}
       <MediaQuery minWidth={600}>
         <Grid container direction='row'>
           <Grid container justify='center'>
@@ -215,7 +216,6 @@ const PublicationPreview = ({ fun, handleGoBack, entireBack }) => {
           </Button>
         </Grid>
       </MediaQuery>
-      {loading && <Loader />}
     </>
   );
 };
