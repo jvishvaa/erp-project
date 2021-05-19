@@ -324,7 +324,16 @@ const Publications = (props) => {
   const handleGoBackPre = () => {
     setTableFlag(true);
     setEditFlag(false);
+    setPage(1);
     setGoBackFlag(!goBackFlag);
+    setMainsubject('');
+    setAcadamicYear('');
+    setReviewData('');
+    setIndividualData('');
+    setDataDraft('');
+    handleAlldata(page);
+    setAcadamicYearName('');
+    setSubjectID('');
   };
 
   const handleAdd = (value) => {
@@ -357,6 +366,7 @@ const Publications = (props) => {
 
     handleDraftSubjectId(value, page);
     handleReviewSubjectId(value, page);
+    handleAllSubjectData(value, page);
 
     setLoading(true);
     axiosInstance
@@ -617,10 +627,10 @@ const Publications = (props) => {
     axiosInstance
       .delete(`${endpoints.publish.update_delete}?publication_id=${value}`)
       .then((result) => {
-        if ((result.data.status_code === 200) & subjectId) {
+        if (result.data.status_code === 200 && subjectId === theSubjectId) {
           setAlert('success', result.data.message);
           handleSubjectID(subjectId, page);
-          handleAllSubjectData(subjectId, page);
+
           setLoading(false);
         } else if (result.data.status_code === 200) {
           handleAlldata(page);
@@ -838,7 +848,7 @@ const Publications = (props) => {
                               </span>
                             </Typography>
                           </Grid>
-                          <Grid item style={{ marginTop: '-20%' }}>
+                          <Grid item style={{ marginTop: '-30%' }}>
                             <Typography variant='body2'>
                               <span style={{ fontSize: '13px' }}>
                                 {' '}
@@ -1213,7 +1223,7 @@ const Publications = (props) => {
                               </span>
                             </Typography>
                           </Grid>
-                          <Grid item style={{ marginTop: '-20%' }}>
+                          <Grid item style={{ marginTop: '-30%' }}>
                             <Typography variant='body2'>
                               <span style={{ fontSize: '13px' }}>
                                 {' '}
@@ -1586,7 +1596,7 @@ const Publications = (props) => {
                               </span>
                             </Typography>
                           </Grid>
-                          <Grid item style={{ marginTop: '-20%' }}>
+                          <Grid item style={{ marginTop: '-30%' }}>
                             <Typography variant='body2'>
                               <span style={{ fontSize: '13px' }}>
                                 {' '}
@@ -1969,7 +1979,7 @@ const Publications = (props) => {
                               </span>
                             </Typography>
                           </Grid>
-                          <Grid item style={{ marginTop: '-20%' }}>
+                          <Grid item style={{ marginTop: '-30%' }}>
                             <Typography variant='body2'>
                               <span style={{ fontSize: '13px' }}>
                                 {' '}
