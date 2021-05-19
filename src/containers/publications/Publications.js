@@ -335,6 +335,13 @@ const Publications = (props) => {
     setAcadamicYearName('');
     setSubjectID('');
   };
+    const handleGoBackPre1 = () => {
+      setTableFlag(true);
+      setEditFlag(false);
+      setPage(1);
+      setGoBackFlag(!goBackFlag);
+ 
+    };
 
   const handleAdd = (value) => {
     setTableFlag(false);
@@ -377,8 +384,7 @@ const Publications = (props) => {
       )
       .then((res) => {
         if (res.data.total_pages == 0) {
-          setChanger4(true);
-          setLoading(false);
+          setChanger4(false);
         } else if (res.data.status_code === 200) {
           // setAlert('success', res.data.message);
           setTotalPages4(res.data.total_pages);
@@ -427,7 +433,7 @@ const Publications = (props) => {
       )
       .then((res) => {
         if (res.data.total_pages == 0) {
-          setChanger2(true);
+          setChanger2(false);
           setLoading(false);
         } else if (res.data.status_code === 200) {
           // setAlert('success', res.data.message);
@@ -476,7 +482,7 @@ const Publications = (props) => {
       )
       .then((res) => {
         if (res.data.total_pages == 0) {
-          setChanger3(true);
+          setChanger3(false);
           setLoading(false);
         } else if (res.data.status_code === 200) {
           // setAlert('success', res.data.message);
@@ -601,7 +607,7 @@ const Publications = (props) => {
       .get(`${endpoints.publish.ebook}?page_number=${page || 1}&page_size=${8}`)
       .then((res) => {
         if (res.data.total_pages == 0) {
-          setChanger(true);
+          setChanger(false);
           setData('');
           setLoading(false);
         } else if (res.data.status_code === 200) {
@@ -2201,7 +2207,12 @@ const Publications = (props) => {
           />
         </div>
 
-        {!tableFlag && editFlag && <AddPublication handleGoBackPre={handleGoBackPre} />}
+        {!tableFlag && editFlag && (
+          <AddPublication
+            handleGoBackPre={handleGoBackPre}
+            handleGoBackPre1={handleGoBackPre1}
+          />
+        )}
         {!tableFlag && readFlag && <OpenPublication ID={readID} />}
         {!tableFlag && reviewFlag && (
           <EditPublication
