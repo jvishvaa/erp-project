@@ -470,14 +470,22 @@ const CreateClassForm = (props) => {
     return isValidTime
   };
 
+  // const handleTimeChange = (event) => {
+  //   const { selectedDate } = onlineClass;
+  //   const time = new Date(event);
+  //   if (validateClassTime(time)) {
+  //     dispatch(clearTutorEmailValidation());
+  //     setOnlineClass((prevState) => ({ ...prevState, selectedTime: time }));
+  //   } else {
+  //     setAlert('error', 'Class must be between 06:00AM - 10:00PM')
+  //   }
+  // };
   const handleTimeChange = (event) => {
     const { selectedDate } = onlineClass;
     const time = new Date(event);
-    if (validateClassTime(time)) {
+    if (time) {
       dispatch(clearTutorEmailValidation());
       setOnlineClass((prevState) => ({ ...prevState, selectedTime: time }));
-    } else {
-      setAlert('error', 'Class must be between 06:00AM - 10:00PM')
     }
   };
 
