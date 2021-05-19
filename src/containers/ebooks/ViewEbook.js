@@ -80,7 +80,7 @@ class ViewEbook extends Component {
       data:[],
       tabValue: 0,
       pageNo: 1,
-      pageSize: 8,
+      pageSize: 9,
       moduleId:112,
       totalEbooks:0,
       clearFilter: '',
