@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import Loader from '../../components/loader/loader'; 
+import Loading from '../../components/loader/loader';
 import {
   Button,
   Divider,
@@ -375,6 +376,7 @@ const AddPublication = ({ handleGoBackPre }) => {
 
   return (
     <>
+     {loading ? <Loading message='Loading...' /> : null}
       <form>
         {!tableFlag && readFlag && (
           <PublicationPreview fun={handleSubmit} handleGoBack={handleGoBack} />
@@ -569,7 +571,7 @@ const AddPublication = ({ handleGoBackPre }) => {
                   name='description'
                   className='descBox'
                   fullWidth
-                  defaultValue={
+                  initialvalue={
                     localStorage.getItem('description') === 'undefined'
                       ? ''
                       : localStorage.getItem('description')
@@ -579,21 +581,11 @@ const AddPublication = ({ handleGoBackPre }) => {
             </Grid>
             <Grid container item md={11} xs={12} className={[classes.root]}>
               <Paper elevation={3} style={{ width: '100%' }} fullWidth>
-                <Grid container justify='center'>
+                <Grid container justify='center' style={{ marginTop:'35px' }}>
                   <Typography variant='h5'>
                     Drop a file on this or Browse from you Files
                   </Typography>
-                  <Grid container justify='center' direction='row'>
-                    {/* <Dropzone
-                    inputRef={fileRef}
-                    accept='.pdf'
-                    onChange={handleFileChange}
-                    style={{ display: 'none' }}
-                    maxFiles={1}
-                    multiple={false}
-                    canCancel={false}
-                    inputContent='Drop A File'
-                  > */}
+                  <Grid container justify='center'  style={{ marginBottom:'35px' }} direction='row'>
                     <Grid style={{ marginRight: '1%' }}>
                       <StyledFilterButton onClick={handleClickThumbnail}>
                         Thumbnail
