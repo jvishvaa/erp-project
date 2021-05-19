@@ -1,25 +1,20 @@
 import {
   Button,
   ButtonBase,
-  Card,
-  CardContent,
-  CardHeader,
-  CardMedia,
   Divider,
   Grid,
   IconButton,
   makeStyles,
   Paper,
-  Tooltip,
   Typography,
 } from '@material-ui/core';
-import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
-import Layout from 'containers/Layout';
+
 import MediaQuery from 'react-responsive';
 
 import React, { useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import moment from 'moment';
+import Loading from '../../components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,12 +52,13 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
   },
 }));
-const PublicationPreview = ({ fun, handleGoBack }) => {
+const PublicationPreview = ({ fun, handleGoBack, entireBack }) => {
   const classes = useStyles();
   const [dateValue, setDateValue] = useState(moment(new Date()).format('YYYY-MM-DD'));
-
+  const [loading, setLoading] = React.useState();
   return (
     <>
+      {loading ? <Loading message='Loading...' /> : null}
       <MediaQuery minWidth={600}>
         <Grid container direction='row'>
           <Grid container justify='center'>
@@ -100,6 +96,9 @@ const PublicationPreview = ({ fun, handleGoBack }) => {
                         : 'newsletter'}
                     </Typography>
                     <Typography variant='body2'>{dateValue}</Typography>
+                    <Typography variant='body2'>
+                      Branch: {localStorage.getItem('zone')}
+                    </Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -117,16 +116,6 @@ const PublicationPreview = ({ fun, handleGoBack }) => {
           </Grid>
         </Grid>
         <Grid item md={8} container direction='row' style={{ margin: '3%' }}>
-          <Grid item md={3}>
-            <Button
-              size='small'
-              variant='contained'
-              disabled
-              style={{ paddingLeft: '50px', paddingRight: '50px' }}
-            >
-              Delete
-            </Button>
-          </Grid>
           <Grid item md={3}>
             <Button
               size='small'
@@ -190,6 +179,9 @@ const PublicationPreview = ({ fun, handleGoBack }) => {
                     </Grid>
                     <Grid>
                       <Typography variant='body2'>{dateValue}</Typography>
+                      <Typography variant='body2'>
+                        Branch: {localStorage.getItem('zone')}
+                      </Typography>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -208,11 +200,6 @@ const PublicationPreview = ({ fun, handleGoBack }) => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} style={{ margin: '2%' }}>
-          <Button size='small' variant='contained' disabled style={{ width: '100%' }}>
-            Delete
-          </Button>
-        </Grid>
         <Grid item xs={12} style={{ margin: '2%' }}>
           <Button
             size='small'

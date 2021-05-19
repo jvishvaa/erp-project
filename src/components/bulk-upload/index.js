@@ -159,7 +159,6 @@ const BulkUpload = ({ onUploadSuccess }) => {
       name: 'date_of_birth',
       field: ' is a mandatory field with following format (YYYY-MM-DD)',
     },
-    { name: 'ERP', field: ' is a non-required field, Example: 1234567890_XYZ' },
     { name: 'contact', field: ' is a mandatory field, Example: 996565xxxx' },
     { name: 'email', field: ' is a mandatory field, Example: john.doe@gmail.com' },
     { name: 'address', field: ' is a mandatory field, Example: Next to Brookfield Mall' },

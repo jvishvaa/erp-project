@@ -371,6 +371,10 @@ const Layout = ({ children, history }) => {
         history.push('/communication/viewgroup');
         break;
       }
+      case 'View Publication': {
+        history.push('/publications');
+        break;
+      }
       case 'Send Message': {
         history.push('/communication/sendmessage');
         break;

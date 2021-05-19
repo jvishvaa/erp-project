@@ -52,9 +52,9 @@ const guidelines = [
       name: '',
       field: "Please don't remove or manipulate any header in the file format",
     },
-    { name: 'Erp Code', field: ' is a required field, Example: 2003970002_OLV' },
-    { name: 'Current Grade', field: ' is a required field, Example: [3,7]' },
-    { name: 'Current SectionMapping', field: ' is a required field, Example: [3,7]' },
+    { name: 'Erp Code', field: ' is a mandatory field, Example: 2003970002_OLV' },
+    { name: 'Current Grade', field: ' is a mandatory field, Example: [3,7]' },
+    { name: 'Current Section Mapping', field: ' is a mandatory field, Example: [3,7]' },
     { name: 'Change Grade', field: ' is a mandatory field, Example: [24,25]' },
     { name: 'Change Section Mapping', field: ' is a mandatory field, Example: [700]' },
     { name: 'Change Subject', field: ' is a required field, Example: [6,9]' },
@@ -206,7 +206,7 @@ const SectionShuffling = () => {
                                     <Typography className={classes.errorText}>
                                         Error: <span style={{color:'#014b7e'}}>Failed records</span>
                                     </Typography>
-                                    <CSVLink data={excelData} headers={headers} className={classes.downloadExcel}>Download Excel</CSVLink>
+                                    <CSVLink data={excelData} headers={headers} filename={"error_list.xls"} className={classes.downloadExcel}>Download Excel</CSVLink>
                                     {/* <StyledButton onClick={(e) => ExportToExcel()} style={{float: 'right'}}>Download Excel</StyledButton> */}
                                     
                                     <TableContainer component={Paper}>
@@ -214,7 +214,7 @@ const SectionShuffling = () => {
                                             <TableHead>
                                                 <TableRow>
                                                     <TableCell align="left">ERP Code</TableCell>
-                                                    <TableCell>Error Massage</TableCell>
+                                                    <TableCell>Error Message</TableCell>
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
