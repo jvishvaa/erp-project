@@ -24,7 +24,6 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 
 import PublicationPreview from './PublicationPreview';
 import Loading from '../../components/loader/loader';
-import MyTinyEditor from '../../containers/question-bank/create-question/tinymce-editor';
 
 
 const StyledFilterButton = withStyles({
@@ -178,6 +177,7 @@ const AddPublication = ({ handleGoBackPre }) => {
       setPostBranch('');
     }
   };
+
 
   useEffect(() => {
     setLoading(true);
@@ -570,25 +570,14 @@ const AddPublication = ({ handleGoBackPre }) => {
             </Grid>
             <Grid container item md={11} xs={10} className={[classes.root1]}>
               <Paper elevation={3} style={{ width: '100%' }}>
-<<<<<<< HEAD
               <MyTinyEditor
                   plugins='wordcount'
                   handleEditorChange={handleDES}
                   placeholder='Book description...'
-=======
-                <MyTinyEditor
-                  plugins='wordcount'
-                  handleEditorChange={handleDES}
->>>>>>> 614ca54dec221e2ce0a88d26d9a122f5dc1efef4
                   name='description'
-                  placeholder='Book description...'
                   className='descBox'
                   fullWidth
-<<<<<<< HEAD
-                  initialvalue={
-=======
-                  value={
->>>>>>> 614ca54dec221e2ce0a88d26d9a122f5dc1efef4
+                  Value={
                     localStorage.getItem('description') === 'undefined'
                       ? ''
                       : localStorage.getItem('description')
@@ -649,7 +638,6 @@ const AddPublication = ({ handleGoBackPre }) => {
                 </Grid>
               </Paper>
             </Grid>
-            {/* {localStorage.getItem('description')} */}
             <Grid container direction='row' className={[classes.root]}>
               <Grid item xs={1}>
                 <StyledFilterButton onClick={handleGoBackPre}>Back</StyledFilterButton>
