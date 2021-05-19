@@ -319,6 +319,7 @@ const Publications = (props) => {
     localStorage.removeItem('subjects_local');
     localStorage.removeItem('grade');
     localStorage.removeItem('zone');
+    localStorage.removeItem('branch');
   };
   const handleGoBackPre = () => {
     setTableFlag(true);
@@ -349,13 +350,14 @@ const Publications = (props) => {
     }
     setPage(1);
     handleSubjectID(theSubjectId, page);
+    handleAllSubjectData(theSubjectId, page);
   };
   const handleSubjectID = (value, page) => {
     setSubjectChanger(value);
 
     handleDraftSubjectId(value, page);
     handleReviewSubjectId(value, page);
-    handleAllSubjectData(value, page);
+
     setLoading(true);
     axiosInstance
       .get(
@@ -382,9 +384,9 @@ const Publications = (props) => {
     setLoading(true);
     axiosInstance
       .get(
-        `${
-          endpoints.publish.ebook
-        }?subject_id=${value}&page_number=${pageNumber}&page_size=${8}`
+        `${endpoints.publish.ebook}?subject_id=${value}&page_number=${
+          pageNumber || 1
+        }&page_size=${8}`
       )
       .then((res) => {
         if (res.data.total_pages == 0) {
@@ -408,9 +410,9 @@ const Publications = (props) => {
     setLoading(true);
     axiosInstance
       .get(
-        `${
-          endpoints.publish.ebook
-        }?subject_id=${value}&status_post=Draft&page_number=${pageNumber}&page_size=${8}`
+        `${endpoints.publish.ebook}?subject_id=${value}&status_post=Draft&page_number=${
+          pageNumber || 1
+        }&page_size=${8}`
       )
       .then((res) => {
         if (res.data.total_pages == 0) {
@@ -585,7 +587,7 @@ const Publications = (props) => {
   const handleAlldata = (page) => {
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.publish.ebook}?page_number=${page}&page_size=${8}`)
+      .get(`${endpoints.publish.ebook}?page_number=${page || 1}&page_size=${8}`)
       .then((res) => {
         if (res.data.total_pages == 0) {
           setChanger(false);
@@ -615,10 +617,14 @@ const Publications = (props) => {
     axiosInstance
       .delete(`${endpoints.publish.update_delete}?publication_id=${value}`)
       .then((result) => {
-        if (result.data.status_code === 200) {
+        if ((result.data.status_code === 200) & subjectId) {
           setAlert('success', result.data.message);
           handleSubjectID(subjectId, page);
+          handleAllSubjectData(subjectId, page);
+          setLoading(false);
+        } else if (result.data.status_code === 200) {
           handleAlldata(page);
+
           setLoading(false);
         } else {
           setAlert('error', result.data.message);
