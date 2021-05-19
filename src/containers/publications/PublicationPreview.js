@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 const PublicationPreview = ({ fun, handleGoBack, entireBack }) => {
   const classes = useStyles();
   const [dateValue, setDateValue] = useState(moment(new Date()).format('YYYY-MM-DD'));
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState();
   return (
     <>
       <MediaQuery minWidth={600}>

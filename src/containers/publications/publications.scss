@@ -249,3 +249,22 @@
 .MuiBackdrop-root {
   background: none !important;
 }
+.table-top-header {
+  display: flex;
+  flex-direction: row;
+  margin-left: 1%;
+  .dot {
+    height: 7px;
+    width: 7px;
+    background-color: #014b7e;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 10px 7px;
+  }
+  .table-header-data {
+    font-size: 19px;
+    color: $text-color;
+    font-weight: 600;
+    font-family: $font-roboto;
+  }
+}
