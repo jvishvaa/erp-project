@@ -135,10 +135,11 @@ const AddPublication = ({ handleGoBackPre }) => {
       );
     }
   };
-
-  const handleDES = (event) => {
-    setDescription(event);
-  };
+  const handleDES = (content, editor) => {
+    setDescription(content);
+    console.log('description',content);
+    }; 
+ 
 
   useEffect(() => {
     setLoading(true);
@@ -571,13 +572,12 @@ const AddPublication = ({ handleGoBackPre }) => {
             <Grid container item md={11} xs={10} className={[classes.root1]}>
               <Paper elevation={3} style={{ width: '100%' }}>
               <MyTinyEditor
-                  plugins='wordcount'
+                   id='descriptioneditor'
                   handleEditorChange={handleDES}
                   placeholder='Book description...'
                   name='description'
                   className='descBox'
-                  fullWidth
-                  Value={
+                  content={
                     localStorage.getItem('description') === 'undefined'
                       ? ''
                       : localStorage.getItem('description')
