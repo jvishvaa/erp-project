@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddPublication = ({ handleGoBackPre }) => {
+const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
   const classes = useStyles();
   const [subject, setSubject] = useState();
   const [branchGet, setBranchGet] = useState();
@@ -631,7 +631,7 @@ const AddPublication = ({ handleGoBackPre }) => {
             {/* {localStorage.getItem('description')} */}
             <Grid container direction='row' className={[classes.root]}>
               <Grid item xs={1}>
-                <Button onClick={handleGoBackPre}>Back</Button>
+                <Button onClick={handleGoBackPre1}>Back</Button>
               </Grid>
               <Grid item xs={1}>
                 <Button

@@ -335,6 +335,13 @@ const Publications = (props) => {
     setAcadamicYearName('');
     setSubjectID('');
   };
+    const handleGoBackPre1 = () => {
+      setTableFlag(true);
+      setEditFlag(false);
+      setPage(1);
+      setGoBackFlag(!goBackFlag);
+ 
+    };
 
   const handleAdd = (value) => {
     setTableFlag(false);
@@ -2200,7 +2207,12 @@ const Publications = (props) => {
           />
         </div>
 
-        {!tableFlag && editFlag && <AddPublication handleGoBackPre={handleGoBackPre} />}
+        {!tableFlag && editFlag && (
+          <AddPublication
+            handleGoBackPre={handleGoBackPre}
+            handleGoBackPre1={handleGoBackPre1}
+          />
+        )}
         {!tableFlag && readFlag && <OpenPublication ID={readID} />}
         {!tableFlag && reviewFlag && (
           <EditPublication
