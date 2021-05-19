@@ -377,8 +377,7 @@ const Publications = (props) => {
       )
       .then((res) => {
         if (res.data.total_pages == 0) {
-          setChanger4(true);
-          setLoading(false);
+          setChanger4(false);
         } else if (res.data.status_code === 200) {
           // setAlert('success', res.data.message);
           setTotalPages4(res.data.total_pages);
@@ -427,7 +426,7 @@ const Publications = (props) => {
       )
       .then((res) => {
         if (res.data.total_pages == 0) {
-          setChanger2(true);
+          setChanger2(false);
           setLoading(false);
         } else if (res.data.status_code === 200) {
           // setAlert('success', res.data.message);
@@ -476,7 +475,7 @@ const Publications = (props) => {
       )
       .then((res) => {
         if (res.data.total_pages == 0) {
-          setChanger3(true);
+          setChanger3(false);
           setLoading(false);
         } else if (res.data.status_code === 200) {
           // setAlert('success', res.data.message);
@@ -601,7 +600,7 @@ const Publications = (props) => {
       .get(`${endpoints.publish.ebook}?page_number=${page || 1}&page_size=${8}`)
       .then((res) => {
         if (res.data.total_pages == 0) {
-          setChanger(true);
+          setChanger(false);
           setData('');
           setLoading(false);
         } else if (res.data.status_code === 200) {
