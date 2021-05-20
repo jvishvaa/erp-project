@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Button, Grid, Paper, Typography } from '@material-ui/core';
+import { Button, Grid, Paper, Typography,withStyles } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import MenuBookIcon from '@material-ui/icons/MenuBook';
@@ -17,6 +17,25 @@ import MediaQuery from 'react-responsive';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+
+const StyledFilterButton = withStyles({
+  root: {
+    backgroundColor: '#FF6B6B',
+    color: '#FFFFFF',
+    height: '42px',
+    borderRadius: '10px',
+    padding: '12px 40px',
+    marginLeft: '20px',
+    marginTop: 'auto',
+    '&:hover': {
+      backgroundColor: '#FF6B6B',
+    },
+  },
+  startIcon: {
+    fill: '#FFFFFF',
+    stroke: '#FFFFFF',
+  },
+})(Button);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,7 +85,6 @@ const OpenPublication = ({ ID }) => {
   }, []);
 
   const [numPages, setNumPages] = React.useState(null);
-  const [pageNumber, setPageNumber] = React.useState(1);
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
@@ -91,22 +109,22 @@ const OpenPublication = ({ ID }) => {
           </Grid>
           <Grid container justify='center'>
             <Grid>
-              <Button
+              <StyledFilterButton
                 onClick={handleClickPrevious}
                 disabled={increment == 0 ? true : false}
                 style={{ margin: '20px' }}
               >
                 <ArrowBackIosIcon />
-              </Button>
+              </StyledFilterButton>
             </Grid>
             <Grid>
-              <Button
+              <StyledFilterButton
                 onClick={handleClick}
                 disabled={increment == len - 1 ? true : false}
                 style={{ margin: '20px' }}
               >
                 <ArrowForwardIosIcon />
-              </Button>
+              </StyledFilterButton>
             </Grid>
           </Grid>
         </MediaQuery>
@@ -147,22 +165,22 @@ const OpenPublication = ({ ID }) => {
           <Grid container direction='row' justify='center'>
             <Grid>
               {' '}
-              <Button
+              <StyledFilterButton
                 onClick={handleClickPrevious}
                 disabled={increment == 0 ? true : false}
                 style={{ margin: '20px' }}
               >
                 <ArrowBackIosIcon />
-              </Button>
+              </StyledFilterButton>
             </Grid>
             <Grid>
-              <Button
+              <StyledFilterButton
                 onClick={handleClick}
-                disabled={increment == len - 1 ? true : false}
+                disabled={increment == len - 2 ? true : false}
                 style={{ margin: '20px' }}
               >
                 <ArrowForwardIosIcon />
-              </Button>
+              </StyledFilterButton>
             </Grid>
           </Grid>
         </Grid>
@@ -184,17 +202,18 @@ const OpenPublication = ({ ID }) => {
       <div className='ran-style'>
         <MediaQuery minWidth={600}>
           <Grid className={classes.root} container direction='row'>
-            <Grid item md={8}>
-              <Button href={`/publications`}>Close</Button>
+            <Grid item md={6}>
+              <StyledFilterButton href={`/publications`}>Close</StyledFilterButton>
             </Grid>
-            <Grid className={classes.new} item md={3}>
-              <Button onClick={() => SingleBook()}>
+
+            <Grid className={classes.new} item>
+              <StyledFilterButton onClick={() => SingleBook()}>
                 SINGLE PAGE <BookIcon />
-              </Button>
-              <Button onClick={() => BookLet()}>
+              </StyledFilterButton>
+              <StyledFilterButton onClick={() => BookLet()}>
                 DOUBLE PAGE
                 <MenuBookIcon />
-              </Button>
+              </StyledFilterButton>
             </Grid>
           </Grid>
 
@@ -209,9 +228,9 @@ const OpenPublication = ({ ID }) => {
         </MediaQuery>
         <MediaQuery maxWidth={599}>
           <Grid className={classes.root}>
-            <Button href={`/publications`}>
+            <StyledFilterButton href={`/publications`}>
               <KeyboardBackspaceIcon />
-            </Button>
+            </StyledFilterButton>
           </Grid>
 
           <img
@@ -227,20 +246,20 @@ const OpenPublication = ({ ID }) => {
           />
           <Grid container direction='row' justify='center'>
             <Grid item xs={5}>
-              <Button
+              <StyledFilterButton
                 onClick={handleClickPrevious}
                 disabled={increment == 0 ? true : false}
               >
                 <ArrowBackIosIcon />
-              </Button>
+              </StyledFilterButton>
             </Grid>
             <Grid>
-              <Button
+              <StyledFilterButton
                 onClick={handleClick}
                 disabled={increment == len - 1 ? true : false}
               >
                 <ArrowForwardIosIcon />
-              </Button>
+              </StyledFilterButton>
             </Grid>
           </Grid>
         </MediaQuery>

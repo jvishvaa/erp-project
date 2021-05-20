@@ -49,6 +49,7 @@ import Layout from '../../Layout';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 // import './view-users.css';
 import ViewUserCard from '../../../components/view-user-card';
+import { CSVLink } from "react-csv";
 import './styles.scss';
 
 const useStyles = makeStyles((theme) => ({
@@ -93,6 +94,16 @@ const useStyles = makeStyles((theme) => ({
   tablePaginationCaption: {
     fontWeight: '600 !important',
   },
+  downloadExcel: {
+    float: 'right',
+    padding: '8px 15px',
+    borderRadius: '5px',
+    fontSize: '18px',
+    fontWeight: 400,
+    textDecoration: 'none',
+    backgroundColor: '#fe6b6b',
+    color: '#ffffff',
+  }
 }));
 
 // eslint-disable-next-line no-unused-vars
@@ -126,6 +137,21 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+  const [excelData] = useState([]);
+
+  const headers = [
+    { label: "ERP ID", key: "erp_id" },
+    { label: "Firstname", key: "first_name" },
+    { label: "Lastname", key: "last_name" },
+    { label: "Username", key: "username" },
+    { label: "Email ID", key: "email" },
+    { label: 'Contact', key: 'contact' },
+    { label: 'Gender', key: 'gender' },
+    { label: 'Profile', key: 'role_name' },
+    { label: 'Grade', key: 'grade_name' },
+    { label: 'Section', key: 'section_name' },
+    { label: 'Status', key: 'status' },
+  ];
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -243,6 +269,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         },
       });
       const resultUsers = [];
+      excelData.length = 0;
       if (result.status === 200) {
         setTotalCount(result.data.count);
         result.data.results.map((items) =>
@@ -254,6 +281,33 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             active: items.is_active,
           })
         );
+        function addDataToExcel(xlsData){
+          xlsData.map((record) => {
+              //console.log(record, 'record');
+              const grades = [];
+              const sections = [];
+              record.section_mapping.map((data) => {
+                grades.push(data?.grade.id);
+                sections.push(data?.section.id)
+              })
+              excelData.push({
+                erp_id: record.erp_id,
+                first_name: record.user.first_name,
+                last_name: record.user.last_name,
+                username: record.user.username,
+                email: record.user.email,
+                contact: record.contact,
+                gender: record.gender,
+                role_name: record.roles.role_name,
+                grade_name: grades,
+                section_name: sections,
+                status: record.status
+              })
+          })
+        }
+        if(result.data?.results.length > 0){
+            addDataToExcel(result.data.results)
+        }
         setUsersData(resultUsers);
         setTotalPages(result.data.total_pages);
       } else {
@@ -683,6 +737,20 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 </Button>
               </Box>
             </Grid>
+            {/* <Grid item xs={12} md={10}>
+              <Box
+                style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}
+              >
+                <CSVLink
+                  data={excelData}
+                  headers={headers}
+                  filename={"user_list.xls"}
+                  className={classes.downloadExcel}
+                >
+                  Download Excel
+                </CSVLink>
+              </Box>
+            </Grid> */}
           </Grid>
         </div>
         {/* <span className='view_users__reset_icon' onClick={handleResetFilters}>
