@@ -273,10 +273,6 @@ const CreateNewForm = (props) => {
     // }
     // console.log('data', error);
   };
-
-  const handleBackButton = () => {
-    window.history.back();
-  }
   return (
     <>
       <Layout>
@@ -586,10 +582,10 @@ const CreateNewForm = (props) => {
            
           </div> */}
           <div className={setMobileView ? classes.flex : classes.flexMobile}>
-            <IconButton size='small' onClick={e => handleBackButton()}>
-              {/* <Link to='/griviences/admin-view' style={{ textDecoration: 'none' }}> */}
+            <IconButton size='small'>
+              <Link to='/griviences/admin-view' style={{ textDecoration: 'none' }}>
                 <div className='cancel-button'>BACK</div>
-              {/* </Link> */}
+              </Link>
             </IconButton>
             <IconButton color='primary' size='small'>
               <div className='post-button' onClick={handlePostData}>

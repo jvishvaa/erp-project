@@ -679,6 +679,12 @@ const JoinClass = (props) => {
   const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
   const diffTime = classTimeMilli - 5 * 60 * 1000;
   const diffAttachTime = classTimeMilli - 15 * 60 * 1000;
+  console.log(
+   
+    diffAttachTime,
+    currTime,
+  
+  );
 
   const handleCloseData = () => {
     setAnchorEl(null);

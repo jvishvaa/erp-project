@@ -429,12 +429,12 @@ const Filters = (props) => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Griviences' &&
+          item.parent_modules === 'Discussion Forum' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Griviences Teacher') {
+            if (item.child_name === 'Teacher Forum') {
               setModuleId(item.child_id);
             }
           });

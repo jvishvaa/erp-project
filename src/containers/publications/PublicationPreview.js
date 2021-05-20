@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 const PublicationPreview = ({ fun, handleGoBack, entireBack }) => {
   const classes = useStyles();
   const [dateValue, setDateValue] = useState(moment(new Date()).format('YYYY-MM-DD'));
-  const [loading, setLoading] = React.useState();
+  const [loading, setLoading] = React.useState(false);
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}

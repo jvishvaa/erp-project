@@ -207,7 +207,7 @@ const Publications = (props) => {
 
   const [subjectID, setSubjectID] = useState('Select Subject');
   const [counter, setCounter] = useState(2);
-  const [academicYear, setAcadamicYearName] = useState('Select Academic Year');
+  const [academicYear, setAcadamicYearName] = useState('Select Acdemic Year');
   const [id, setId] = useState();
 
   const [individualData, setIndividualData] = useState();
@@ -2590,11 +2590,8 @@ const Publications = (props) => {
 
             <br />
             <Grid container direction='row'>
-            <div className='table-top-header'>
-                    <div className='table-header-data'>{academicYear}</div>
-                    <span class='dot'></span>
-                    <div className='table-header-data'>{subjectID}</div>
-                  </div>
+              {academicYear}
+              <li>{subjectID}</li>
             </Grid>
             <br />
             <Grid item md={12} xs={10}>

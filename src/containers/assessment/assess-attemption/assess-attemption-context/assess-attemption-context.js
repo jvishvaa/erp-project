@@ -137,7 +137,7 @@ export const AssessmentHandlerContextProvider = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuesionId, startedAt]);
 
-  function retrieveLocalQuestion(questionId, questionType) {
+  function retrieveLocalQuestion(questionId) {
     let localData = {};
     try {
       localData = localStorage.getItem(storageKey);
@@ -148,7 +148,7 @@ export const AssessmentHandlerContextProvider = ({
     const { questions = {} } = localData || {};
     const defaultData = {
       user_response: {
-        attemption_status: questionType || null, // null | false | true,
+        attemption_status: null, // null | false | true,
         // ... rest key value pairs for the answer.
       },
     };
@@ -167,9 +167,8 @@ export const AssessmentHandlerContextProvider = ({
             last_updated_at: new Date().getTime()
         },
     */
-    const questionsArray = Object.values(questionsDataObj || {});
-    // const questionsArray = getSortedAndMainQuestions(questionsDataObj || {});
-    // console.log(questionsArray, Object.values(questionsDataObj || {}), 'ddddddddddd');
+    // const questionsArray = Object.values(questionsDataObj || {});
+    const questionsArray = getSortedAndMainQuestions(questionsDataObj || {});
     const noOfQuestions = questionsArray.length;
     let noOfAttempted = 0; //  if attemption_status in user_response is true, count it as attempted.
     let noOfIncomplete = 0; //  if attemption_status in user_response is true, count it as attempted.
@@ -207,7 +206,6 @@ export const AssessmentHandlerContextProvider = ({
 
   function updateLocalDataAndSetMetaInfo(questionsData) {
     const metaInfo = formulateQuestionMetaInfo(questionsData) || {};
-    // console.log(metaInfo, questionsData, 'dddddddd');
     setLocalData({ questions: questionsData });
     setLocalData({ meta: metaInfo });
     setQuestionsMetaInfo(metaInfo);
@@ -225,12 +223,12 @@ export const AssessmentHandlerContextProvider = ({
     const { [qId]: questionObj = {} } = questionsDataObj || {};
     const { user_reponse: prevUserResponse } = questionObj;
     const updatedUserResponse = { ...prevUserResponse, ...userResponse };
+
     updateQuestionsDataObj({
       ...questionsDataObj,
       [qId]: { ...questionObj, user_response: updatedUserResponse },
     });
   }
-
   function attemptQuestion(qId, userResponse = {}) {
     if (readOnly) {
     } else {
@@ -277,11 +275,12 @@ export const AssessmentHandlerContextProvider = ({
     const { questions = [], sections = [] } = apiData;
     const questionSectionsObj = parseSectionData(sections);
     const questionsObj = {};
-    const processFunc = (element, index, subIndex = null, isSubQuestion = false, Qtype = false) => {
+    const processFunc = (element, index, subIndex = null, isSubQuestion = false) => {
       const { id: questionId } = element || {};
+
       const { id: nextQuesId = null } = questions[index + 1] || {};
       const { id: prevQuesId = null } = questions[index - 1] || {};
-      const { user_response: userResponse } = retrieveLocalQuestion(questionId, Qtype) || {};
+      const { user_response: userResponse } = retrieveLocalQuestion(questionId) || {};
       const { [questionId]: questionSectionName } = questionSectionsObj || {};
       const { [questionSectionName]: questionSectionObj } = questionSectionsObj || {};
       questionsObj[questionId] = {
@@ -301,8 +300,7 @@ export const AssessmentHandlerContextProvider = ({
       };
     };
     questions.forEach((element, index) => {
-      const Qtype = element?.question_type === 7;
-      processFunc(element, index, null, null, Qtype);
+      processFunc(element, index, null);
       const { sub_questions: subQuestions = [] } = element || {};
       subQuestions.forEach((subeElement, subIndex) => {
         const isSubQuestion = true;
@@ -446,6 +444,7 @@ export const AssessmentHandlerContextProvider = ({
       user_response: userReponses,
       questions: getSortedAndMainQuestions(questionsDataObj || {})
     };
+
     // const API = 'http://13.232.30.169/qbox/assessment/user_response/';
     const { onStart = () => {}, onResolve = () => {}, onReject = () => {} } =
       callbacks || {};

@@ -25,7 +25,7 @@ const MyTinyEditor = ({
         selector: 'textarea#myTextArea',
         placeholder: placeholder,
         menubar: false,
-        plugins: (id?.startsWith('studentAnswerEditor') || id?.startsWith('descriptioneditor'))
+        plugins: id?.startsWith('studentAnswerEditor')
           ? ['lists link file paste wordcount']
           : ['lists link file image paste wordcount'],
         content_style: 'body { color: #014b7e; font-size: 14pt; font-family: Arial; }',

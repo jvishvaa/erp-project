@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import MyTinyEditor from '../../containers/question-bank/create-question/tinymce-editor';
+
 import {
   Button,
   Divider,
@@ -13,7 +13,6 @@ import {
   Select,
   TextField,
   Typography,
-  withStyles,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import './Styles.css';
@@ -24,38 +23,12 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 
 import PublicationPreview from './PublicationPreview';
 import Loading from '../../components/loader/loader';
+import MyTinyEditor from '../../containers/question-bank/create-question/tinymce-editor';
 
-
-const StyledFilterButton = withStyles({
-  root: {
-    backgroundColor: '#FF6B6B',
-    color: '#FFFFFF',
-    height: '42px',
-    borderRadius: '10px',
-    padding: '12px 40px',
-    marginLeft: '20px',
-    marginTop: 'auto',
-    '&:hover': {
-      backgroundColor: '#FF6B6B',
-    },
-  },
-  startIcon: {
-    fill: '#FFFFFF',
-    stroke: '#FFFFFF',
-  },
-})(Button);
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
       margin: theme.spacing(4),
-    },
-  },
-  root1: {
-    '& > *': {
-      marginTop: theme.spacing(0),
-      marginBottom: theme.spacing(0),
-      marginLeft: theme.spacing(4),
-      marginRight: theme.spacing(4)
     },
   },
   new: {
@@ -135,11 +108,10 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
       );
     }
   };
-  const handleDES = (content, editor) => {
-    setDescription(content);
-    console.log('description',content);
-    }; 
- 
+
+  const handleDES = (event) => {
+    setDescription(event);
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -178,7 +150,6 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
       setPostBranch('');
     }
   };
-
 
   useEffect(() => {
     setLoading(true);
@@ -412,7 +383,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
                   <InputLabel id='demo-simple-select-outlined-label' required>
-                    <b>Grade</b>
+                    Grade
                   </InputLabel>
                   <Select
                     labelId='demo-simple-select-outlined-label'
@@ -440,7 +411,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
                   <InputLabel id='demo-simple-select-outlined-label' required>
-                    <b>Subject</b>
+                    Subject
                   </InputLabel>
 
                   <Select
@@ -471,7 +442,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
                   <InputLabel id='demo-simple-select-outlined-label' required>
-                   <b>BookType</b>
+                    BookType
                   </InputLabel>
 
                   <Select
@@ -501,7 +472,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
             <Grid container direction='row' className={[classes.root]}>
               <Grid item md={3} xs={12}>
                 <Typography variant='subtitle1' style={{ marginBottom: '2%' }}>
-                  <b>Book Title</b>
+                  Book Title
                 </Typography>
                 <Grid>
                   <TextField
@@ -525,7 +496,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
               </Grid>
               <Grid item md={3} xs={12}>
                 <Typography variant='subtitle1' style={{ marginBottom: '2%' }}>
-                  <b>Author Name</b>
+                  Author Name
                 </Typography>
                 <Grid>
                   <TextField
@@ -548,7 +519,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
               </Grid>
               <Grid item md={3} xs={12}>
                 <Typography variant='subtitle1' style={{ marginBottom: '2%' }}>
-                 <b> Zone</b>
+                  Zone
                 </Typography>
                 <Grid>
                   <FormControl variant='outlined' size='small' fullWidth>
@@ -584,18 +555,19 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
               </Grid>
             </Grid>
             <Grid container direction='row' className={[classes.root]}></Grid>
-            <Grid item md={12} xs={12} className={[classes.root1]}>
-              <Typography variant='subtitle1'><b>Book description</b></Typography>
+            <Grid item md={4} xs={12} className={[classes.root]}>
+              <Typography variant='subtitle1'>Book description</Typography>
             </Grid>
-            <Grid container item md={11} xs={10} className={[classes.root1]}>
+            <Grid container item md={11} xs={10} className={[classes.root]}>
               <Paper elevation={3} style={{ width: '100%' }}>
-              <MyTinyEditor
-                   id='descriptioneditor'
+                <MyTinyEditor
+                  plugins='wordcount'
                   handleEditorChange={handleDES}
-                  placeholder='Book description...'
                   name='description'
+                  placeholder='Book description...'
                   className='descBox'
-                  content={
+                  fullWidth
+                  value={
                     localStorage.getItem('description') === 'undefined'
                       ? ''
                       : localStorage.getItem('description')
@@ -605,16 +577,16 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
             </Grid>
             <Grid container item md={11} xs={12} className={[classes.root]}>
               <Paper elevation={3} style={{ width: '100%' }} fullWidth>
-                <Grid container justify='center' style={{ marginTop:'35px' }}>
+                <Grid container justify='center'>
                   <Typography variant='h5'>
                     Drop a file on this or Browse from you Files
                   </Typography>
-                  <Grid container justify='center' direction='row' style={{ marginBottom:'35px' }}>
+                  <Grid container justify='center' direction='row'>
                     <Grid style={{ marginRight: '1%' }}>
-                      <StyledFilterButton onClick={handleClickThumbnail}>
+                      <Button onClick={handleClickThumbnail}>
                         Thumbnail
                         <AddIcon />
-                      </StyledFilterButton>
+                      </Button>
                       <Input
                         type='file'
                         inputRef={fileRefer}
@@ -639,10 +611,10 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
                       )}
                     </Grid>
                     <Grid>
-                      <StyledFilterButton onClick={handleClick}>
+                      <Button onClick={handleClick}>
                         Browse
                         <AddIcon />
-                      </StyledFilterButton>
+                      </Button>
                       <Input
                         type='file'
                         inputRef={fileRef}
@@ -656,22 +628,23 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
                 </Grid>
               </Paper>
             </Grid>
+            {/* {localStorage.getItem('description')} */}
             <Grid container direction='row' className={[classes.root]}>
               <Grid item xs={1}>
-                <StyledFilterButton onClick={handleGoBackPre1}>Back</StyledFilterButton>
+                <Button onClick={handleGoBackPre1}>Back</Button>
               </Grid>
               <Grid item xs={1}>
-                <StyledFilterButton
+                <Button
                   onClick={() => {
                     handleRead();
                     LocalData();
                   }}
                 >
                   Preview
-                </StyledFilterButton>
+                </Button>
               </Grid>
               <Grid item md={2} xs={2}>
-                <StyledFilterButton onClick={handleSubmitDraft}>Save Draft</StyledFilterButton>
+                <Button onClick={handleSubmitDraft}>Save Draft</Button>
               </Grid>
             </Grid>
           </div>

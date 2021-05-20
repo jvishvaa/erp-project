@@ -91,7 +91,7 @@ const GravienceHome = () => {
   const [flag, setFlag] = useState(false);
   const [grievanceTypeID, setGrievanceTypeID] = useState();
   let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const [expanded, setExpanded] = React.useState(true);
+  const [expanded, setExpanded] = React.useState(false);
   const [filters, setFilters] = React.useState({
     year: '',
     branch: '',
@@ -267,22 +267,22 @@ const GravienceHome = () => {
         });
       } else {
         // add 
-        // axiosInstance.get(
-        //   `${endpoints.grievances.getGrivienceList}`
-        // )
-        // .then((result) => {
-        //   console.log(result, 'list data');
-        //   if (result.status == 200) {
-        //     console.log(result, 'list-tickets ddata');
-        //     setGravienceList(result.data.data.results);
-        //   } else {
-        //     setAlert('error', result.data.message);
-        //   }
-        // })
-        // .catch((error) => {
-        //   //setAlert('error', error.message);
-        //   setAlert('warning', 'Please select filter');
-        // });
+        axiosInstance.get(
+          `${endpoints.grievances.getGrivienceList}`
+        )
+        .then((result) => {
+          console.log(result, 'list data');
+          if (result.status == 200) {
+            console.log(result, 'list-tickets ddata');
+            setGravienceList(result.data.data.results);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          //setAlert('error', error.message);
+          setAlert('warning', 'Please select filter');
+        });
       }
     }
   },[filters])

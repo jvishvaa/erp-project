@@ -5,8 +5,6 @@ import './style.scss';
 import { withRouter } from 'react-router-dom';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Pagination } from '@material-ui/lab';
-import MediaQuery from 'react-responsive';
 import Loader from '../../components/loader/loader';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
@@ -16,6 +14,8 @@ import TotalStudentWiseDetails from './totalStudentWiseDetails';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import filterImage from '../../assets/images/unfiltered.svg';
 import Layout from '../Layout';
+import { Pagination } from '@material-ui/lab';
+import MediaQuery from 'react-responsive';
 
 const StudentStrength = ({ history }) => {
   const [acadminYearList, setAcadminYearList] = useState([]);
@@ -47,7 +47,7 @@ const StudentStrength = ({ history }) => {
       {
         csv: `${endpoints.studentListApis.downloadBranchWiseStudent}?academic_year_id=${
           selectedAcademicYear && selectedAcademicYear.id
-        }&branch_id=${selectedBranch?.branch?.id}
+        }&branch_id=${selectedBranch && selectedBranch.id}
           &export_type=csv`,
       },
     ]);
@@ -467,6 +467,7 @@ const StudentStrength = ({ history }) => {
                   year={(selectedAcademicYear && selectedAcademicYear.id) || 0}
                   branch={(selectedBranch && selectedBranch.branch?.id) || 0}
                   grade={selectedCard || 0}
+   
                   hadleClearGrade={setSelectedCard}
                   fullWidth
                 />

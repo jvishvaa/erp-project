@@ -253,7 +253,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                 variant='contained'
                 color='primary'
                 fullWidth
-                onClick={()=> handleFilter(selectedAcad, selectedBranch?.branch?.id, selectedGrade, selectedSubject, selectedVolume)}
+                onClick={()=> handleFilter(selectedAcad, selectedBranch.branch.id, selectedGrade, selectedSubject, selectedVolume)}
               >
                 Filter
               </Button>
