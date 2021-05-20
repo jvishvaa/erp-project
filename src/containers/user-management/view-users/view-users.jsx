@@ -737,7 +737,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 </Button>
               </Box>
             </Grid>
-            <Grid item xs={12} md={10}>
+            {/* <Grid item xs={12} md={10}>
               <Box
                 style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}
               >
@@ -750,7 +750,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   Download Excel
                 </CSVLink>
               </Box>
-            </Grid>
+            </Grid> */}
           </Grid>
         </div>
         {/* <span className='view_users__reset_icon' onClick={handleResetFilters}>
