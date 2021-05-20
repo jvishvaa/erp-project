@@ -300,10 +300,19 @@ const { is_ended=false,ended_at,lobby_identifier, question_paper } = lobbyInfo||
        
 }
        </div>
+       <div>
+      <Button
+      variant='contained'
+      style={{ width: '50%', backgroundColor: 'lightgray' }}
+      size='medium'
+      onClick={()=>history.goBack()}
+      >
+      BACK
+      </Button>
+      </div>
        </div>
        </div>
        </div>
-
       </Layout>
     </>
   )
