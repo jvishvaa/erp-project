@@ -219,6 +219,7 @@ const Publications = (props) => {
   const [changer2, setChanger2] = useState(true);
   const [changer3, setChanger3] = useState(true);
   const [changer4, setChanger4] = useState(true);
+  const [changer5, setChanger5] = useState(true);
   const [theSubjectId, setTheSubjectId] = useState();
   //pagination
   const [page, setPage] = useState(1);
@@ -227,11 +228,13 @@ const Publications = (props) => {
   const [totalPages2, setTotalPages2] = useState(0);
   const [totalPages3, setTotalPages3] = useState(0);
   const [totalPages4, setTotalPages4] = useState(0);
+  const [totalPages5, setTotalPages5] = useState(0);
   const formData = new FormData();
   const [did, setDid] = useState();
   const [dsubject, setDsubject] = useState();
   const [dialPublish, setDialPublish] = useState();
   const [dialReview, setDialReview] = useState();
+  const [filterPage, setFilterPage] = useState(false);
   const handlePagination = (event, page) => {
     setPage(page);
     console.log('The page number:', page);
@@ -269,6 +272,7 @@ const Publications = (props) => {
 
   const handleclear = () => {
     const newPage = 1;
+    setFilterPage(false);
     setMainsubject('');
     setPage(1);
     setAcadamicYear('');
@@ -339,7 +343,7 @@ const Publications = (props) => {
       setAlert('error', 'Select Subject');
       return;
     }
-
+    setFilterPage(true);
     handleSubjectID(theSubjectId, page);
     handleAllSubjectData(theSubjectId, page);
 
@@ -381,14 +385,14 @@ const Publications = (props) => {
       )
       .then((res) => {
         if (res.data.total_pages === 0) {
-          setChanger(false);
+          setChanger5(false);
           setData('');
           setLoading(false);
         } else if (res.data.status_code === 200) {
           // setAlert('success', res.data.message);
-          setTotalPages(res.data.total_pages);
+          setTotalPages5(res.data.total_pages);
           setData(res.data.data);
-          setChanger(true);
+          setChanger5(true);
           setLoading(false);
         } else {
           setAlert('error', res.data.message);
@@ -2632,15 +2636,38 @@ const Publications = (props) => {
                     <Grid container direction='row' spacing={1} className='gridscroll'>
                       <Post />
                     </Grid>
-                    <Grid container direction='row' justify='center' alignItems='center'>
-                      <Pagination
-                        onChange={handlePagination}
-                        style={{ marginTop: 25 }}
-                        count={totalPages}
-                        color='primary'
-                        page={page}
-                      />
-                    </Grid>
+                    {!filterPage && (
+                      <Grid
+                        container
+                        direction='row'
+                        justify='center'
+                        alignItems='center'
+                      >
+                        <Pagination
+                          onChange={handlePagination}
+                          style={{ marginTop: 25 }}
+                          count={totalPages}
+                          color='primary'
+                          page={page}
+                        />
+                      </Grid>
+                    )}
+                    {filterPage && (
+                      <Grid
+                        container
+                        direction='row'
+                        justify='center'
+                        alignItems='center'
+                      >
+                        <Pagination
+                          onChange={handlePagination}
+                          style={{ marginTop: 25 }}
+                          count={totalPages5}
+                          color='primary'
+                          page={page}
+                        />
+                      </Grid>
+                    )}
                   </>
                 ) : (
                   <Grid container direction='row' justify='center' alignItems='center'>
