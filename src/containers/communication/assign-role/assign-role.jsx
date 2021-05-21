@@ -136,11 +136,11 @@ const AssignRole = (props) => {
   }, [pageno, assignedRole, clearAll, filterCheck,moduleId]);
 
   useEffect(() => {
-    if (isNewSeach) {
+    if (isNewSeach && moduleId) {
       setIsNewSearch(false);
       displayUsersList();
     }
-  }, [isNewSeach]);
+  }, [isNewSeach,moduleId]);
 
   const getRoleApi = async () => {
     try {
@@ -226,7 +226,7 @@ const AssignRole = (props) => {
   };
 
   const displayUsersList = async () => {
-    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
+    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
 
     if (selectedMultipleRoles.length) {
       const selectedRoleId = selectedMultipleRoles.map((el) => el.id);
