@@ -321,6 +321,31 @@ const AttedanceCalender = () => {
               let temp = [...res.data.present_list, ...res.data.absent_list];
               setStudentData(temp);
               setAlert('success', 'Data Sucessfully Fetched');
+              if (res?.data?.last_update_attendance[0]) {
+                let options = {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                };
+                let date = new Date(res?.data?.last_update_attendance);
+                // let datedata = moment(date).format('25 Mar 2015');
+                setUpdatedDays(date.toLocaleDateString('en-US', options));
+                console.log(date, 'Date====');
+                // setUpdatedDays(datedata);
+              }
+              if (res?.data?.last_update_events[0]) {
+                let options = {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                };
+                let date = new Date(res?.data?.last_update_attendance);
+                // let datedata = moment(date).format('25 Mar 2015');
+                setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+                // setUpdatedDays(datedata);
+              }
             })
             .catch((error) => {
               setLoading(false);
@@ -729,6 +754,31 @@ const AttedanceCalender = () => {
           let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
           setAlert('success', 'Data Sucessfully Fetched');
+          if (res?.data?.last_update_attendance[0]) {
+            let options = {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            };
+            let date = new Date(res?.data?.last_update_attendance);
+            // let datedata = moment(date).format('25 Mar 2015');
+            setUpdatedDays(date.toLocaleDateString('en-US', options));
+            console.log(date, 'Date====');
+            // setUpdatedDays(datedata);
+          }
+          if (res?.data?.last_update_events[0]) {
+            let options = {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            };
+            let date = new Date(res?.data?.last_update_attendance);
+            // let datedata = moment(date).format('25 Mar 2015');
+            setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+            // setUpdatedDays(datedata);
+          }
         })
         .catch((error) => {
           setLoading(false);
@@ -756,6 +806,31 @@ const AttedanceCalender = () => {
           let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
           setAlert('success', 'Data Sucessfully Fetched');
+          if (res?.data?.last_update_attendance[0]) {
+            let options = {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            };
+            let date = new Date(res?.data?.last_update_attendance);
+            // let datedata = moment(date).format('25 Mar 2015');
+            setUpdatedDays(date.toLocaleDateString('en-US', options));
+            console.log(date, 'Date====');
+            // setUpdatedDays(datedata);
+          }
+          if (res?.data?.last_update_events[0]) {
+            let options = {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            };
+            let date = new Date(res?.data?.last_update_attendance);
+            // let datedata = moment(date).format('25 Mar 2015');
+            setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+            // setUpdatedDays(datedata);
+          }
         })
         .catch((error) => {
           setLoading(false);

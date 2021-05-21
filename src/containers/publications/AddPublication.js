@@ -25,7 +25,6 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import PublicationPreview from './PublicationPreview';
 import Loading from '../../components/loader/loader';
 
-
 const StyledFilterButton = withStyles({
   root: {
     backgroundColor: '#FF6B6B',
@@ -55,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(0),
       marginBottom: theme.spacing(0),
       marginLeft: theme.spacing(4),
-      marginRight: theme.spacing(4)
+      marginRight: theme.spacing(4),
     },
   },
   new: {
@@ -130,11 +129,23 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
       );
     }
   };
+  // const handleDES = (content, editor) => {
+  //   setDescription(content);
+  //   console.log('description', content);
+  // };
+
   const handleDES = (content, editor) => {
-    setDescription(content);
-    console.log('description',content);
-    }; 
- 
+    const WORDS = editor.getContent({ format: 'text' }).split(' ');
+    const MAX_WORDS = WORDS.length;
+    const MAX_LENGTH = 100;
+    if (MAX_WORDS <= MAX_LENGTH) {
+      setDescription(content);
+    } else {
+      editor.setContent(description);
+      setDescription(description);
+      setAlert('error', 'Maximum word limit reached!');
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -173,7 +184,6 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
       setPostBranch('');
     }
   };
-
 
   useEffect(() => {
     setLoading(true);
@@ -476,7 +486,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
                   <InputLabel id='demo-simple-select-outlined-label' required>
-                   <b>BookType</b>
+                    <b>BookType</b>
                   </InputLabel>
 
                   <Select
@@ -553,7 +563,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
               </Grid>
               <Grid item md={3} xs={12}>
                 <Typography variant='subtitle1' style={{ marginBottom: '2%' }}>
-                 <b> Zone</b>
+                  <b> Zone</b>
                 </Typography>
                 <Grid>
                   <FormControl variant='outlined' size='small' fullWidth>
@@ -590,12 +600,14 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
             </Grid>
             <Grid container direction='row' className={[classes.root]}></Grid>
             <Grid item md={12} xs={12} className={[classes.root1]}>
-              <Typography variant='subtitle1'><b>Book description</b></Typography>
+              <Typography variant='subtitle1'>
+                <b>Book description</b>
+              </Typography>
             </Grid>
             <Grid container item md={11} xs={10} className={[classes.root1]}>
               <Paper elevation={3} style={{ width: '100%' }}>
-              <MyTinyEditor
-                   id='descriptioneditor'
+                <MyTinyEditor
+                  id='descriptioneditor'
                   handleEditorChange={handleDES}
                   placeholder='Book description...'
                   name='description'
@@ -610,11 +622,16 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
             </Grid>
             <Grid container item md={11} xs={12} className={[classes.root]}>
               <Paper elevation={3} style={{ width: '100%' }} fullWidth>
-                <Grid container justify='center' style={{ marginTop:'35px' }}>
+                <Grid container justify='center' style={{ marginTop: '35px' }}>
                   <Typography variant='h5'>
                     Drop a file on this or Browse from you Files
                   </Typography>
-                  <Grid container justify='center' direction='row' style={{ marginBottom:'35px' }}>
+                  <Grid
+                    container
+                    justify='center'
+                    direction='row'
+                    style={{ marginBottom: '35px' }}
+                  >
                     <Grid style={{ marginRight: '1%' }}>
                       <StyledFilterButton onClick={handleClickThumbnail}>
                         Thumbnail
@@ -676,7 +693,9 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
                 </StyledFilterButton>
               </Grid>
               <Grid item md={2} xs={2}>
-                <StyledFilterButton onClick={handleSubmitDraft}>Save Draft</StyledFilterButton>
+                <StyledFilterButton onClick={handleSubmitDraft}>
+                  Save Draft
+                </StyledFilterButton>
               </Grid>
             </Grid>
           </div>
