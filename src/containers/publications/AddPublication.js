@@ -69,9 +69,6 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
   const [subject, setSubject] = useState();
   const [branchGet, setBranchGet] = useState();
   const [gradesGet, setGradesGet] = useState([]);
-  const Pdf_file = 'http://www.africau.edu/images/default/sample.pdf';
-  const [pdfData, setPdfData] = useState({ url: Pdf_file });
-
   // data for post api
   const [grade, setGrade] = useState();
   const [postSubjects, setPostSubjects] = useState();
@@ -99,25 +96,23 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
   const [delFlag, setDelFlag] = useState(false);
   const [loading, setLoading] = React.useState(false);
   const [goBackFlag, setGoBackFlag] = useState(false);
+ const handleFileChange = (event) => {
+   const { files } = event.target;
+   const fil = files[0];
+   if (fil.name.lastIndexOf('.pdf') > 0) {
+     if (fil.size / 1024 / 1024 <= 5) {
+       setFile(fil);
+     } else {
+       setAlert('error', 'Please Select lessthan 5MB!');
+     }
 
-  const handleFileChange = (event) => {
-    const fileReader = new window.FileReader();
-    const { files } = event.target;
-    const fil = files[0];
-    if (fil.name.lastIndexOf('.pdf') > 0) {
-      setFile(fil);
-      fileReader.onload = (fileLoad) => {
-        const { result } = fileLoad.target;
-        setPdfData({ url: result });
-      };
-      fileReader.readAsDataURL(fil);
-    } else {
-      setFile(null);
-      fileRef.current.value = null;
-      setAlert('error', 'Only pdf file is acceptable either with .pdf extension');
-    }
-  };
-
+     console.log('upload', fil);
+   } else {
+     setFile(null);
+     fileRef.current.value = null;
+     setAlert('error', 'Only pdf file is acceptable either with .pdf extension');
+   }
+ };
   const handleThumbnailChange = (event) => {
     setImage(URL.createObjectURL(event.target.files[0]));
 
@@ -134,10 +129,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
       );
     }
   };
-  // const handleDES = (content, editor) => {
-  //   setDescription(content);
-  //   console.log('description', content);
-  // };
+ 
 
   const handleDES = (content, editor) => {
     const WORDS = editor.getContent({ format: 'text' }).split(' ');
@@ -269,43 +261,48 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
     e.preventDefault();
     setLoading(true);
     if (!grade) {
-      setAlert('error', 'Select Grade');
+      setAlert('error', 'Select Grade !');
       setLoading(false);
       return;
     }
     if (!postSubjects) {
-      setAlert('error', 'Select Subject');
+      setAlert('error', 'Select Subject !');
       setLoading(false);
       return;
     }
     if (!bookTypes) {
-      setAlert('error', 'Select Book Type');
+      setAlert('error', 'Select Book Type !');
       setLoading(false);
       return;
     }
-    if (!postData) {
-      setAlert('error', 'fill all Fields');
+    if (!postData.title) {
+      setAlert('error', 'Enter title !');
       setLoading(false);
       return;
     }
+        if (!postData.author) {
+          setAlert('error', 'Enter Author Name !');
+          setLoading(false);
+          return;
+        }
     if (!postBranch) {
-      setAlert('error', 'Select Branch');
+      setAlert('error', 'Select Branch !');
       setLoading(false);
       return;
     }
 
     if (!description) {
-      setAlert('error', 'Enter description');
+      setAlert('error', 'Enter Description !');
       setLoading(false);
       return;
     }
     if (!thumbnail) {
-      setAlert('error', 'Select Thumbnail');
+      setAlert('error', 'Select Thumbnail !');
       setLoading(false);
       return;
     }
     if (!file) {
-      setAlert('error', 'Select Browse');
+      setAlert('error', 'Select Browse !');
       setLoading(false);
       return;
     }
@@ -348,43 +345,48 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
 
   const handleRead = (value) => {
     if (!grade) {
-      setAlert('error', 'Select Grade');
+      setAlert('error', 'Select Grade !');
       setLoading(false);
       return;
     }
     if (!postSubjects) {
-      setAlert('error', 'Select Subject');
+      setAlert('error', 'Select Subject !');
 
       setLoading(false);
       return;
     }
 
     if (!bookTypes) {
-      setAlert('error', 'Select Book Type');
+      setAlert('error', 'Select Book Type !');
       setLoading(false);
       return;
     }
-    if (!postData) {
-      setAlert('error', 'fill all Fields');
-      setLoading(false);
-      return;
-    }
+  if (!postData.title) {
+    setAlert('error', 'Enter title');
+    setLoading(false);
+    return;
+  }
+  if (!postData.author) {
+    setAlert('error', 'Enter Author Name !');
+    setLoading(false);
+    return;
+  }
     if (!postBranch) {
-      setAlert('error', 'Select Branch');
+      setAlert('error', 'Select Branch !');
       setLoading(false);
       return;
     }
     if (!description) {
-      setAlert('error', 'Enter description');
+      setAlert('error', 'Enter Description !');
       return;
     }
     if (!thumbnail) {
-      setAlert('error', 'Select Thumbnail');
+      setAlert('error', 'Select Thumbnail !');
       setLoading(false);
       return;
     }
     if (!file) {
-      setAlert('error', 'Select Browse');
+      setAlert('error', 'Select Browse !');
       setLoading(false);
       return;
     }

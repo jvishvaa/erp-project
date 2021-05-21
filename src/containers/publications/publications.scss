@@ -268,3 +268,7 @@
     font-family: $font-roboto;
   }
 }
+
+.margin-grid.MuiGrid-item.MuiGrid-grid-md-3{
+  flex-basis: 15% !important;
+}
