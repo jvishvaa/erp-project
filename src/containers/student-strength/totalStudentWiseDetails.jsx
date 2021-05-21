@@ -2,7 +2,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import CloseIcon from '@material-ui/icons/Close';
-import { Grid, TextField, IconButton } from '@material-ui/core';
+import { Grid, TextField, IconButton, Button } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Loader from '../../components/loader/loader';
 import './style.scss';
@@ -78,6 +78,7 @@ const TotalStudentWiseDetails = ({ year, branch, grade, hadleClearGrade }) => {
                         {(grade && grade.grade_name) || ''}
                       </span>
                     </Grid>
+
                     <Grid item md={12} xs={1}>
                       <span className='totalStudentStrenghtCardSubLabel'>
                         {(grade && grade.student_count) || '0'}
@@ -107,7 +108,7 @@ const TotalStudentWiseDetails = ({ year, branch, grade, hadleClearGrade }) => {
                   <Grid container spacing={2}>
                     <Grid item md={12} xs={12}>
                       <Autocomplete
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', paddingLeft: '20px' }}
                         size='small'
                         onChange={(event, value) => {
                           setSelectedSection(value);
@@ -130,7 +131,9 @@ const TotalStudentWiseDetails = ({ year, branch, grade, hadleClearGrade }) => {
                             {...params}
                             variant='outlined'
                             label='Section'
+                            size='small'
                             placeholder='Section'
+                            style={{ backgroundColor: 'white' }}
                           />
                         )}
                       />

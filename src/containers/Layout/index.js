@@ -376,6 +376,10 @@ const Layout = ({ children, history }) => {
         history.push('/communication/viewgroup');
         break;
       }
+      case 'View Publication': {
+        history.push('/publications');
+        break;
+      }
       case 'Send Message': {
         history.push('/communication/sendmessage');
         break;
@@ -434,6 +438,10 @@ const Layout = ({ children, history }) => {
       }
       case 'View User': {
         history.push('/user-management/view-users');
+        break;
+      }
+      case 'Section Shuffle': {
+        history.push('/user-management/section-shuffling');
         break;
       }
       case 'Assign Role': {
@@ -656,6 +664,16 @@ const Layout = ({ children, history }) => {
         history.push('/student-circular');
         break;
       }
+
+      case 'Griviences Teacher': {
+        history.push('/griviences/admin-view');
+        break;
+      }
+      case 'Griviences Student': {
+        history.push('/griviences/student-view');
+        break;
+      }
+
       case 'Normal Fee Type': {
         history.push('/feeType/normalFeeType');
         break;
@@ -986,6 +1004,18 @@ const Layout = ({ children, history }) => {
       }
       case 'Contact Us': {
         history.push('/contact-us');
+        break;
+      }
+      case 'Student Attendance Report': {
+        history.push('/student-attendance-report');
+        break;
+      }
+      case 'Manage Orchadio': {
+        history.push('/orchadio/manage-orchadio');
+        break;
+      }
+      case 'Student Orchadio': {
+        history.push('/orchadio/view-orchadio');
         break;
       }
       default:

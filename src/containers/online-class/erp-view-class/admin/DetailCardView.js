@@ -679,12 +679,6 @@ const JoinClass = (props) => {
   const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
   const diffTime = classTimeMilli - 5 * 60 * 1000;
   const diffAttachTime = classTimeMilli - 15 * 60 * 1000;
-  console.log(
-   
-    diffAttachTime,
-    currTime,
-  
-  );
 
   const handleCloseData = () => {
     setAnchorEl(null);
@@ -900,7 +894,7 @@ const JoinClass = (props) => {
               <AttachFileIcon />
             </IconButton>
           </Tooltip>
-          <Grid item xs={3}>
+           <Grid item xs={3}>
             <IconButton
               color='primary'
               onClick={() =>
@@ -911,7 +905,7 @@ const JoinClass = (props) => {
             >
               <ClassIcon />
             </IconButton>
-          </Grid>
+          </Grid> 
         </>
       ) : (
         ''
@@ -965,7 +959,7 @@ const JoinClass = (props) => {
                     fullWidth
                     variant='contained'
                     onClick={() =>
-                      window.open(fullData && fullData.presenter_url, '_blank')
+                      window.open(fullData && fullData.join_url, '_blank')
                     }
                     className='teacherFullViewSmallButtons'
                   >
@@ -986,7 +980,7 @@ const JoinClass = (props) => {
                     // }
                     className='teacherFullViewSmallButtons'
                   >
-                    Host
+                    Host Me
                   </Button>
                 ) : (
                   ''
@@ -1213,6 +1207,10 @@ const DetailCardView = ({
 
   const handleAttendance = () => {
     dispatch(attendanceAction(fullData ? fullData.online_class?.start_time : ''));
+   if(window.location.pathname === '/erp-online-class'){
+    history.push(`/erp-attendance-list/${fullData.online_class && fullData.id}`);
+   }
+   if(window.location.pathname === '/')
     history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`);
   };
   const handleCoursePlan = () => {

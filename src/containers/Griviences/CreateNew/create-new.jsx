@@ -28,6 +28,7 @@ import StudentClasses from 'containers/online-class/aol-view/StudentClasses';
 import { columnSelectionComplete } from '@syncfusion/ej2-grids';
 import Grid from '@material-ui/core/Grid';
 import { excelQueryCellInfo } from '@syncfusion/ej2-grids';
+import { useHistory, useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -62,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
 const CreateNewForm = (props) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
+  const history = useHistory();
   const [optionData, setOptionData] = useState('');
   const [loading, setLoading] = useState(false);
   const [academicYear, setAcademicYear] = useState([]);
@@ -261,6 +263,7 @@ const CreateNewForm = (props) => {
         if (res.status === 200) {
           setAlert('success', 'Created Succcessfully');
           setLoading(false);
+          history.push('/griviences/admin-view');
         }
       })
       .catch((error) => {
@@ -270,6 +273,10 @@ const CreateNewForm = (props) => {
     // }
     // console.log('data', error);
   };
+
+  const handleBackButton = () => {
+    window.history.back();
+  }
   return (
     <>
       <Layout>
@@ -579,10 +586,10 @@ const CreateNewForm = (props) => {
            
           </div> */}
           <div className={setMobileView ? classes.flex : classes.flexMobile}>
-            <IconButton size='small'>
-              <Link to='/griviences/admin-view' style={{ textDecoration: 'none' }}>
+            <IconButton size='small' onClick={e => handleBackButton()}>
+              {/* <Link to='/griviences/admin-view' style={{ textDecoration: 'none' }}> */}
                 <div className='cancel-button'>BACK</div>
-              </Link>
+              {/* </Link> */}
             </IconButton>
             <IconButton color='primary' size='small'>
               <div className='post-button' onClick={handlePostData}>

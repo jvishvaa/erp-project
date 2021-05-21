@@ -107,6 +107,7 @@ const MarkAttedance = () => {
   const [allData, setAllData] = useState();
   const history = useHistory();
   const themeContext = useTheme();
+  const [counterDataFilter, setCounterDataFilter] = useState(1);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [state, setState] = React.useState({
     checkedA: true,
@@ -140,10 +141,16 @@ const MarkAttedance = () => {
       });
     }
     console.log(history);
-    if (history?.location?.state?.payload) {
-      console.log('vinod');
-    }
+    // if (history?.location?.state?.payload) {
+    //   handleFilter();
+    // }
   }, []);
+  useEffect(() => {
+    if (selectedSection.section_id && counterDataFilter < 3) {
+      handleFilter();
+      setCounterDataFilter(counterDataFilter+1);
+    }
+  }, [selectedSection.section_id]);
   console.log(moduleId, 'MODULE_ID');
 
   const handleChange = (event) => {
@@ -234,7 +241,7 @@ const MarkAttedance = () => {
   };
 
   const handleFilter = () => {
-    console.log(selectedSection.id, 'section_mapping_id');
+    console.log(selectedSection.id, 'calling filter data');
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
       return;
@@ -393,7 +400,7 @@ const MarkAttedance = () => {
       branch_id: selectedBranch,
       grade_id: selectedGrade,
       section_id: selectedSection,
-      startDate: dateValue,
+      startDate: history?.location?.state?.payload?.startDate,
       endDate: history?.location?.state?.payload?.endDate,
       counter: history?.location?.state?.payload?.counter,
     };
@@ -520,7 +527,7 @@ const MarkAttedance = () => {
       })
       .catch((err) => {
         setLoading(false);
-        console.log(err);
+        console.log(err.message);
       });
   };
   const StudentData = () => {

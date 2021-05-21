@@ -80,7 +80,7 @@ class ViewEbook extends Component {
       data:[],
       tabValue: 0,
       pageNo: 1,
-      pageSize: 8,
+      pageSize: 9,
       moduleId:112,
       totalEbooks:0,
       clearFilter: '',
@@ -182,7 +182,7 @@ class ViewEbook extends Component {
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}`:''}`;
     const filterGrade = `${grade ? `&grade=${grade?.central_grade}`: ''}`;
-    const filterSubject = `${subject ? `&subject=${grade?.central_subject}`: ''}`;
+    const filterSubject = `${subject ? `&subject=${subject}`: ''}`;
     const filterVolumes = `${vol ? `&volume=${vol?.id}`: ''}`;
     const { pageNo, pageSize,tabValue,moduleId } = this.state;
     let urlPath = ''
@@ -217,9 +217,9 @@ class ViewEbook extends Component {
     this.state.acadmicYear = acad;
     this.state.selectedBranch = branch;
     this.state.selectedGrade = grade;
-    this.state.selectedSubject = sub;
+    this.state.selectedSubject = sub.central_subject;
     this.state.selectedVolume = vol;
-    this.getEbook(acad, branch, grade, sub, vol);
+    this.getEbook(acad, branch, grade, sub.central_subject, vol);
   }
   handleClearFilter = () => {
     this.state.acadmicYear= '';
@@ -233,7 +233,6 @@ class ViewEbook extends Component {
   render() {
     const { classes } = this.props;
     const { tabValue, data ,totalEbooks ,pageNo,pageSize,startDate,endDate} = this.state;
-    console.log(data,"@@@@@@data")
 
     return (
       <div className='layout-container-div'>

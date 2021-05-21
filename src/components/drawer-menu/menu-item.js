@@ -48,6 +48,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Bulk Status Upload', Path: '/finance/BulkOperation/BulkUploadStatus' },
     { name: 'Assign Role', Path: '/user-management/assign-role' },
     { name: 'View Class', Path: '/erp-online-class' },
+    { name: 'Section Shuffle', Path: '/user-management/section-shuffling' },
     { name: 'Attend Online Class', Path: '/erp-online-class-student-view' },
     { name: 'Teacher View Class', Path: '/erp-online-class-teacher-view' },
     { name: 'Teacher View Attendance', Path: '/online-class/attendance-teacher-view' },
@@ -88,7 +89,19 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Question Paper', Path: '/assessment-question' },
     { name: 'Create Test', Path: '/assesment' },
     { name: 'Take Test', Path: '/assessment' },
+    { name: 'Student Attendance Report', Path: '/student-attendance-report' },
     { name: 'Student Strength', Path: '/student-strength' },
+
+    { name: 'Griviences Teacher', Path: '/griviences/admin-view' },
+    { name: 'Griviences Student', Path: '/griviences/student-view' },
+    {
+      name: 'Manage Orchadio',
+      Path: '/orchadio/manage-orchadio',
+    },
+    {
+      name: 'Student Orchadio',
+      Path: '/orchadio/view-orchadio',
+    },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

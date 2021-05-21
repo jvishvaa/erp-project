@@ -111,6 +111,8 @@ const AttedanceCalender = () => {
   const [studentData, setStudentData] = useState([]);
   const [teacherView, setTeacherView] = useState(true);
   const [backButton, setBackButton] = useState(false);
+  const [updatedDays, setUpdatedDays] = useState();
+  const [updatedEventDays, setUpdatedEventDays] = useState();
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -144,14 +146,12 @@ const AttedanceCalender = () => {
     }
     console.log(history);
     if (history?.location?.state?.payload) {
-      console.log(history?.location?.state?.payload, 'vinod');
+      console.log(history?.location?.state, 'vinod');
       setCounter(history?.location?.state?.payload?.counter);
       setStartDate(history?.location?.state?.payload?.startDate);
       setEndDate(history?.location?.state?.payload?.endDate);
     }
   }, []);
-  console.log(moduleId, 'MODULE_ID');
-
   useEffect(() => {
     if (path === '/attendance-calendar/teacher-view') {
       console.log(path, 'path');
@@ -208,11 +208,35 @@ const AttedanceCalender = () => {
             })
             .then((res) => {
               setLoading(false);
-              console.log(res, 'respond teacher');
               setStudentDataAll(res.data);
               let temp = [...res.data.present_list, ...res.data.absent_list];
               setStudentData(temp);
               setAlert('success', 'Data Sucessfully Fetched');
+              if (res?.data?.last_update_attendance[0]) {
+                let options = {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                };
+                let date = new Date(res?.data?.last_update_attendance);
+                // let datedata = moment(date).format('25 Mar 2015');
+                setUpdatedDays(date.toLocaleDateString('en-US', options));
+                console.log(date, 'Date====');
+                // setUpdatedDays(datedata);
+              }
+              if (res?.data?.last_update_events[0]) {
+                let options = {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                };
+                let date = new Date(res?.data?.last_update_attendance);
+                // let datedata = moment(date).format('25 Mar 2015');
+                setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+                // setUpdatedDays(datedata);
+              }
             })
             .catch((error) => {
               setLoading(false);
@@ -249,6 +273,31 @@ const AttedanceCalender = () => {
               console.log(res.data.events, 'current eventssss');
               setCurrentEvent(res.data.events);
               setStudentDataAll(res.data);
+              if (res?.data?.last_update_attendance[0]) {
+                let options = {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                };
+                let date = new Date(res?.data?.last_update_attendance);
+                // let datedata = moment(date).format('25 Mar 2015');
+                setUpdatedDays(date.toLocaleDateString('en-US', options));
+                console.log(date, 'Date====');
+                // setUpdatedDays(datedata);
+              }
+              if (res?.data?.last_update_events[0]) {
+                let options = {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                };
+                let date = new Date(res?.data?.last_update_attendance);
+                // let datedata = moment(date).format('25 Mar 2015');
+                setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+                // setUpdatedDays(datedata);
+              }
             })
             .catch((error) => {
               setLoading(false);
@@ -272,6 +321,31 @@ const AttedanceCalender = () => {
               let temp = [...res.data.present_list, ...res.data.absent_list];
               setStudentData(temp);
               setAlert('success', 'Data Sucessfully Fetched');
+              if (res?.data?.last_update_attendance[0]) {
+                let options = {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                };
+                let date = new Date(res?.data?.last_update_attendance);
+                // let datedata = moment(date).format('25 Mar 2015');
+                setUpdatedDays(date.toLocaleDateString('en-US', options));
+                console.log(date, 'Date====');
+                // setUpdatedDays(datedata);
+              }
+              if (res?.data?.last_update_events[0]) {
+                let options = {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                };
+                let date = new Date(res?.data?.last_update_attendance);
+                // let datedata = moment(date).format('25 Mar 2015');
+                setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+                // setUpdatedDays(datedata);
+              }
             })
             .catch((error) => {
               setLoading(false);
@@ -323,7 +397,7 @@ const AttedanceCalender = () => {
     setSelectedSection([]);
     setStudentDataAll(null);
     setCurrentEvent(null);
-    setCounter(2);
+    // setCounter(2);
     // setStartDate(null)
     // setEndDate(null);
   };
@@ -517,6 +591,31 @@ const AttedanceCalender = () => {
           let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
           setAlert('success', 'Data Sucessfully Fetched');
+          if (res?.data?.last_update_attendance[0]) {
+            let options = {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            };
+            let date = new Date(res?.data?.last_update_attendance);
+            // let datedata = moment(date).format('25 Mar 2015');
+            setUpdatedDays(date.toLocaleDateString('en-US', options));
+            console.log(date, 'Date====');
+            // setUpdatedDays(datedata);
+          }
+          if (res?.data?.last_update_events[0]) {
+            let options = {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            };
+            let date = new Date(res?.data?.last_update_attendance);
+            // let datedata = moment(date).format('25 Mar 2015');
+            setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+            // setUpdatedDays(datedata);
+          }
         })
         .catch((error) => {
           setLoading(false);
@@ -550,6 +649,31 @@ const AttedanceCalender = () => {
           let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
           setAlert('success', 'Data Sucessfully Fetched');
+          if (res?.data?.last_update_attendance[0]) {
+            let options = {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            };
+            let date = new Date(res?.data?.last_update_attendance);
+            // let datedata = moment(date).format('25 Mar 2015');
+            setUpdatedDays(date.toLocaleDateString('en-US', options));
+            console.log(date, 'Date====');
+            // setUpdatedDays(datedata);
+          }
+          if (res?.data?.last_update_events[0]) {
+            let options = {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            };
+            let date = new Date(res?.data?.last_update_attendance);
+            // let datedata = moment(date).format('25 Mar 2015');
+            setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+            // setUpdatedDays(datedata);
+          }
         })
         .catch((error) => {
           setLoading(false);
@@ -576,6 +700,31 @@ const AttedanceCalender = () => {
         console.log(res.data.events, 'current eventssss');
         setCurrentEvent(res.data.events);
         setStudentDataAll(res.data);
+        if (res?.data?.last_update_attendance[0]) {
+          let options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          };
+          let date = new Date(res?.data?.last_update_attendance);
+          // let datedata = moment(date).format('25 Mar 2015');
+          setUpdatedDays(date.toLocaleDateString('en-US', options));
+          console.log(date, 'Date====');
+          // setUpdatedDays(datedata);
+        }
+        if (res?.data?.last_update_events[0]) {
+          let options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          };
+          let date = new Date(res?.data?.last_update_attendance);
+          // let datedata = moment(date).format('25 Mar 2015');
+          setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+          // setUpdatedDays(datedata);
+        }
       })
       .catch((error) => {
         setLoading(false);
@@ -588,14 +737,15 @@ const AttedanceCalender = () => {
   const getStudentRange = () => {
     if (counter === 2) {
       axiosInstance
-        .get(`academic/student_calender/?start_date=${startDate}&end_date=${endDate}&erp_id=${userName[0]}`
-        // , {
-        //   params: {
-        //     start_date: startDate,
-        //     end_date: endDate,
-        //     erp_id: userName[0],
-        //   },
-        // }
+        .get(
+          `academic/student_calender/?start_date=${startDate}&end_date=${endDate}&erp_id=${userName[0]}`
+          // , {
+          //   params: {
+          //     start_date: startDate,
+          //     end_date: endDate,
+          //     erp_id: userName[0],
+          //   },
+          // }
         )
         .then((res) => {
           setLoading(false);
@@ -604,6 +754,31 @@ const AttedanceCalender = () => {
           let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
           setAlert('success', 'Data Sucessfully Fetched');
+          if (res?.data?.last_update_attendance[0]) {
+            let options = {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            };
+            let date = new Date(res?.data?.last_update_attendance);
+            // let datedata = moment(date).format('25 Mar 2015');
+            setUpdatedDays(date.toLocaleDateString('en-US', options));
+            console.log(date, 'Date====');
+            // setUpdatedDays(datedata);
+          }
+          if (res?.data?.last_update_events[0]) {
+            let options = {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            };
+            let date = new Date(res?.data?.last_update_attendance);
+            // let datedata = moment(date).format('25 Mar 2015');
+            setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+            // setUpdatedDays(datedata);
+          }
         })
         .catch((error) => {
           setLoading(false);
@@ -631,6 +806,31 @@ const AttedanceCalender = () => {
           let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
           setAlert('success', 'Data Sucessfully Fetched');
+          if (res?.data?.last_update_attendance[0]) {
+            let options = {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            };
+            let date = new Date(res?.data?.last_update_attendance);
+            // let datedata = moment(date).format('25 Mar 2015');
+            setUpdatedDays(date.toLocaleDateString('en-US', options));
+            console.log(date, 'Date====');
+            // setUpdatedDays(datedata);
+          }
+          if (res?.data?.last_update_events[0]) {
+            let options = {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            };
+            let date = new Date(res?.data?.last_update_attendance);
+            // let datedata = moment(date).format('25 Mar 2015');
+            setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+            // setUpdatedDays(datedata);
+          }
         })
         .catch((error) => {
           setLoading(false);
@@ -685,6 +885,26 @@ const AttedanceCalender = () => {
         },
       });
     }
+  };
+
+  const handleCreateEvent = () => {
+    const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: moment(startDate).format('YYYY-MM-DD'),
+      endDate: moment(endDate).format('YYYY-MM-DD'),
+      counter: counter,
+    };
+    console.log(payload);
+    history.push({
+      pathname: '/createEvent',
+      state: {
+        data: studentData,
+        payload: payload,
+      },
+    });
   };
 
   const handleMarkAttendance = () => {
@@ -1050,7 +1270,7 @@ const AttedanceCalender = () => {
                     </Button>
                   ) : (
                     <>
-                      <p id='teacherUpdate'>Updated 1 day ago</p>
+                      <p id='teacherUpdate'>Updated At {updatedDays}</p>
                     </>
                   )}
                 </Grid>
@@ -1065,7 +1285,7 @@ const AttedanceCalender = () => {
                   <p className='erpId'>ERP_ID :{userName[0]}</p>
                 ) : (
                   <>
-                    <p id='studentPara'>Updated 1 day ago</p>
+                    <p id='studentPara'>Updated At {updatedDays}</p>
                   </>
                 )}
                 {/* <KeyboardArrowDownIcon className='downIcon' /> */}
@@ -1090,7 +1310,8 @@ const AttedanceCalender = () => {
                           />
                           <div className='studentName'>
                             <p className='absentName'>
-                              {data?.student_name?.slice(0, 10)}
+                              {/* {data?.student_name?.slice(0, 10)} */}
+                              {data?.student_name?.split(/\s(.+)/)[0]}
                             </p>
                             {/* <p className='absentName'>{data.student_last_name}</p> */}
                             {/* <Chip  className='chipDays' > {data.absent_count}  </Chip> */}
@@ -1132,7 +1353,8 @@ const AttedanceCalender = () => {
                           />
                           <div className='presentStudent'>
                             <p className='presentFName'>
-                              {data?.student_name.slice(0, 10)}
+                              {/* {data?.student_name.slice(0, 10)} */}
+                              {data?.student_name?.split(/\s(.+)/)[0]}
                             </p>
                             {counter != 1 ? (
                               <div className='absentCount'>
@@ -1178,7 +1400,11 @@ const AttedanceCalender = () => {
               </Grid>
               <Grid item md={6} xs={12} className='event-btn'>
                 {teacherView === true ? (
-                  <Button size='small' href={`/createEvent`} className='add-event-button'>
+                  <Button
+                    size='small'
+                    onClick={handleCreateEvent}
+                    className='add-event-button'
+                  >
                     {/* ADD EVENT */}
                     <span className={classes.contentData} id='event-text'>
                       Add Event
@@ -1196,7 +1422,7 @@ const AttedanceCalender = () => {
                 </Grid>
                 <Grid item md={7} className='detailsPara'>
                   <Typography className={classes.contentsmall} id='updated'>
-                    Updated:1 Day ago
+                    Updated at {updatedEventDays}
                   </Typography>
                 </Grid>
               </div>

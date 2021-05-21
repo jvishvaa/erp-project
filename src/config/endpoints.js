@@ -32,6 +32,7 @@ export default {
     multipleStudentsAttendacne: '/academic/multiple_student_attendance_between_dates/',
     singleStudentAttendance: '/academic/single_student_attendance_between_days/',
     markAttendance: '/academic/bulk_create_attendance/',
+    students: '/academic/get_student_list/',
   },
   profile: {
     userDetails: '/erp_user/user-data/',
@@ -39,6 +40,7 @@ export default {
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
     academicYear: '/erp_user/list-academic_year/',
+    subjectName: '/erp_user/list-academic_year-subjectmapping/',
   },
   timeTable: {
     tableData: '/academic/time_table/',
@@ -150,8 +152,8 @@ export default {
     branchWiseStudentCount: '/academic/school_strength/',
     gradeWiseStudentCount: '/academic/grade_wise_students/',
     sectionWiseStudentCount: '/academic/grade_wise_students/',
-    downloadBranchWiseStudent: '/academic/branch_strength_excel_data/',
-    downloadExcelAllstudents: '/academic/all_branch_strength_excel_data/',
+    downloadBranchWiseStudent: '/qbox/academic/branch_strength_excel_data/',
+    downloadExcelAllstudents: '/qbox/academic/all_branch_strength_excel_data/',
   },
 
   idCards: {
@@ -290,8 +292,8 @@ export default {
   },
   ebook: {
     ebook: `${baseURLCentral}/ebook/ebook_school_wise_filter/`,
-    EbookUser: `${baseURLCentral}/ebook/ebook_user/`,
-    AnnotateEbook: `${baseURLCentral}/ebook/ebook_user_status/`,
+    EbookUser: `/academic/ebook_user/`,
+    AnnotateEbook: `/academic/ebook_user_status/`,
     EbookMappedGrade: '/academic/ebook_mapped_grades/',
   },
   teacherViewBatches: {
@@ -383,6 +385,7 @@ export default {
   publish: {
     ebook: `erp_user/publication/`,
     update_delete: `erp_user/update-destroy-publication/`,
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   },
   assessmentApis: {
     gradesList: `/academic/sm-grades-list/`,
@@ -428,9 +431,22 @@ export default {
     updateContact: '/academic/contact_us_update/',
     filterContact: '/academic/contact_us/',
   },
-
+  OnlineStudent: {
+    StudentAttendanceReport: '/academic/student-attendance-by-subject/',
+  },
   attendanceTeacherView: {
     getTeacherAttendanceView: "/academic/teacher-attendance-by-subject/",
+  },
+  orchadio: {
+    audioUpload: '/academic/orchadio-upload/',
+    createRadioProgram: '/academic/orchadio/',
+    GetRadioProgram: '/academic/orchadio/',
+    OrchadioLikes: '/academic/orchadio-likes-comments/',
+    DeleteOrchadio: '/academic/',
+    PostCommentandLike: '/academic/',
+    ListenedPercentage: '/academic/',
+    AddParticipants: '/academic/branch_students/',
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   },
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,

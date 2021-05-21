@@ -193,9 +193,11 @@ const CreateEvent = () => {
       .then((result) => {
         setAlert('success', result.data.message);
 
-        history.push({
-          pathname: '/attendance-calendar/teacher-view',
-        });
+        // history.push({
+        //   pathname: '/attendance-calendar/teacher-view',
+        // });
+
+        handleBackButtonClick()
       })
       .catch((error) => {
         setLoading(false);
@@ -204,9 +206,23 @@ const CreateEvent = () => {
       });
   };
   const handleBackButtonClick = (e) => {
+    const payload = {
+      academic_year_id: history?.location?.state?.payload?.academic_year_id,
+      branch_id: history?.location?.state?.payload?.branch_id,
+      grade_id: history?.location?.state?.payload?.grade_id,
+      section_id: history?.location?.state?.payload?.section_id,
+      startDate: history?.location?.state?.payload?.startDate,
+      endDate: history?.location?.state?.payload?.endDate,
+      counter: history?.location?.state?.payload?.counter,
+    };
     history.push({
       pathname: '/attendance-calendar/teacher-view',
+      state: {
+        payload: payload,
+        backButtonStatus: true,
+      },
     });
+    console.log(payload , "payloadcreate event");
   };
 
   const styles = {
@@ -279,6 +295,7 @@ const CreateEvent = () => {
         }
       });
     }
+    console.log(history , "test history");
   }, [window.location.pathname]);
   console.log(moduleId, 'MODULE_ID');
 

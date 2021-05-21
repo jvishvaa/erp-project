@@ -66,7 +66,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
         } else if(key === 'branch') {
           setBranchList(response.data.data.results);
         } else if (key === 'grade') {
-          setGradeList(response.data.data);
+          setGradeList(response.data.result);
         } else if (key === 'subject') {
           setSubjectList(response.data.result);
         }
@@ -120,6 +120,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                 {...params}
                 variant='outlined'
                 label='Academic Year'
+                //
                 placeholder='Academic Year'
               />
             )}  
@@ -133,7 +134,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
             onChange={(event, value) => {
               setSelectedBranch(value);
               if(value) {
-                withAxiosInstance(`${endpoints.communication.grades}?session_year=${selectedAcad?.id}&branch_id=${value.branch.id}&module_id=${getModuleInfo('Ebook View').id}`, 'grade');
+                withAxiosInstance(`${endpoints.ebook.EbookMappedGrade}?session_year=${selectedAcad?.id}&branch_id=${value.branch.id}&module_id=${getModuleInfo('Ebook View').id}`, 'grade');
               }
               setSelectedGrade('');
               setSelectedSubject('');
@@ -159,7 +160,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
             onChange={(event, value) => {
               if(value) {
                 withAxiosInstance(
-                  `${endpoints.lessonPlan.gradeSubjectMappingList}?session_year=${selectedAcad?.id}&branch=${selectedBranch.branch.id}&grade=${value.grade_id}&module_id=${getModuleInfo('Ebook View').id}`,
+                  `${endpoints.ebook.EbookMappedGrade}?branch_id=${selectedBranch.branch.id}&grade_id=${value.erp_grade}`,
                   'subject'
                 );
               }
@@ -171,7 +172,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
             id='grade'
             options={gradeList}
             value={selectedGrade}
-            getOptionLabel={(option) => option?.grade__grade_name||''}
+            getOptionLabel={(option) => option?.erp_grade_name||''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -194,8 +195,9 @@ const Filter = ({ handleFilter, clearFilter }) => {
             style={{ width: '100%' }}
             id='subject'
             options={subjectList}
+            getOptionLabel={(option) => option && option.subject_id_name&& option.subject_id_name[0] &&option.subject_id_name[0].erp_sub_name||''}
             value={selectedSubject}
-            getOptionLabel={(option) => option?.subject_name||''}
+            // getOptionLabel={(option) => option?.erp_sub_name||''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -252,7 +254,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                 variant='contained'
                 color='primary'
                 fullWidth
-                onClick={()=> handleFilter(selectedAcad, selectedBranch.branch.id, selectedGrade, selectedSubject, selectedVolume)}
+                onClick={()=> handleFilter(selectedAcad, selectedBranch?.branch?.id, selectedGrade, selectedSubject, selectedVolume)}
               >
                 Filter
               </Button>
