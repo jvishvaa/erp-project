@@ -327,6 +327,11 @@ const Layout = ({ children, history }) => {
         history.push('/online-class/create-class');
         break;
       }
+
+      case 'Attendance Teacher View': {
+        history.push('/online-class/attendance-teacher-view');
+        break;
+      }
       case 'Create Class': {
         history.push('/online-class/create-class');
         break;

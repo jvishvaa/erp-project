@@ -434,6 +434,9 @@ export default {
   OnlineStudent: {
     StudentAttendanceReport: '/academic/student-attendance-by-subject/',
   },
+  attendanceTeacherView: {
+    getTeacherAttendanceView: "/academic/teacher-attendance-by-subject/",
+  },
   orchadio: {
     audioUpload: '/academic/orchadio-upload/',
     createRadioProgram: '/academic/orchadio/',
