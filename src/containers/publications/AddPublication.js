@@ -103,7 +103,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
      if (fil.size / 1024 / 1024 <= 5) {
        setFile(fil);
      } else {
-       setAlert('error', 'Please select lessthan 5MB');
+       setAlert('error', 'Please Select lessthan 5MB!');
      }
 
      console.log('upload', fil);
@@ -129,10 +129,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
       );
     }
   };
-  // const handleDES = (content, editor) => {
-  //   setDescription(content);
-  //   console.log('description', content);
-  // };
+ 
 
   const handleDES = (content, editor) => {
     const WORDS = editor.getContent({ format: 'text' }).split(' ');
@@ -264,48 +261,48 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
     e.preventDefault();
     setLoading(true);
     if (!grade) {
-      setAlert('error', 'Select Grade');
+      setAlert('error', 'Select Grade !');
       setLoading(false);
       return;
     }
     if (!postSubjects) {
-      setAlert('error', 'Select Subject');
+      setAlert('error', 'Select Subject !');
       setLoading(false);
       return;
     }
     if (!bookTypes) {
-      setAlert('error', 'Select Book Type');
+      setAlert('error', 'Select Book Type !');
       setLoading(false);
       return;
     }
     if (!postData.title) {
-      setAlert('error', 'Enter title');
+      setAlert('error', 'Enter title !');
       setLoading(false);
       return;
     }
         if (!postData.author) {
-          setAlert('error', 'Enter Author Name');
+          setAlert('error', 'Enter Author Name !');
           setLoading(false);
           return;
         }
     if (!postBranch) {
-      setAlert('error', 'Select Branch');
+      setAlert('error', 'Select Branch !');
       setLoading(false);
       return;
     }
 
     if (!description) {
-      setAlert('error', 'Enter description');
+      setAlert('error', 'Enter Description !');
       setLoading(false);
       return;
     }
     if (!thumbnail) {
-      setAlert('error', 'Select Thumbnail');
+      setAlert('error', 'Select Thumbnail !');
       setLoading(false);
       return;
     }
     if (!file) {
-      setAlert('error', 'Select Browse');
+      setAlert('error', 'Select Browse !');
       setLoading(false);
       return;
     }
@@ -348,19 +345,19 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
 
   const handleRead = (value) => {
     if (!grade) {
-      setAlert('error', 'Select Grade');
+      setAlert('error', 'Select Grade !');
       setLoading(false);
       return;
     }
     if (!postSubjects) {
-      setAlert('error', 'Select Subject');
+      setAlert('error', 'Select Subject !');
 
       setLoading(false);
       return;
     }
 
     if (!bookTypes) {
-      setAlert('error', 'Select Book Type');
+      setAlert('error', 'Select Book Type !');
       setLoading(false);
       return;
     }
@@ -370,26 +367,26 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
     return;
   }
   if (!postData.author) {
-    setAlert('error', 'Enter Author Name');
+    setAlert('error', 'Enter Author Name !');
     setLoading(false);
     return;
   }
     if (!postBranch) {
-      setAlert('error', 'Select Branch');
+      setAlert('error', 'Select Branch !');
       setLoading(false);
       return;
     }
     if (!description) {
-      setAlert('error', 'Enter description');
+      setAlert('error', 'Enter Description !');
       return;
     }
     if (!thumbnail) {
-      setAlert('error', 'Select Thumbnail');
+      setAlert('error', 'Select Thumbnail !');
       setLoading(false);
       return;
     }
     if (!file) {
-      setAlert('error', 'Select Browse');
+      setAlert('error', 'Select Browse !');
       setLoading(false);
       return;
     }
