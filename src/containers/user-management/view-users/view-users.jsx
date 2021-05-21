@@ -281,33 +281,33 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             active: items.is_active,
           })
         );
-        function addDataToExcel(xlsData){
-          xlsData.map((record) => {
-              //console.log(record, 'record');
-              const grades = [];
-              const sections = [];
-              record.section_mapping.map((data) => {
-                grades.push(data?.grade.id);
-                sections.push(data?.section.id)
-              })
-              excelData.push({
-                erp_id: record.erp_id,
-                first_name: record.user.first_name,
-                last_name: record.user.last_name,
-                username: record.user.username,
-                email: record.user.email,
-                contact: record.contact,
-                gender: record.gender,
-                role_name: record.roles.role_name,
-                grade_name: grades,
-                section_name: sections,
-                status: record.status
-              })
-          })
-        }
-        if(result.data?.results.length > 0){
-            addDataToExcel(result.data.results)
-        }
+        // function addDataToExcel(xlsData){
+        //   xlsData.map((record) => {
+        //       //console.log(record, 'record');
+        //       const grades = [];
+        //       const sections = [];
+        //       record.section_mapping.map((data) => {
+        //         grades.push(data?.grade.id);
+        //         sections.push(data?.section.id)
+        //       })
+        //       excelData.push({
+        //         erp_id: record.erp_id,
+        //         first_name: record.user.first_name,
+        //         last_name: record.user.last_name,
+        //         username: record.user.username,
+        //         email: record.user.email,
+        //         contact: record.contact,
+        //         gender: record.gender,
+        //         role_name: record?.roles?.role_name,
+        //         grade_name: grades,
+        //         section_name: sections,
+        //         status: record.status
+        //       })
+        //   })
+        // }
+        // if(result.data?.results.length > 0){
+        //     addDataToExcel(result.data.results)
+        // }
         setUsersData(resultUsers);
         setTotalPages(result.data.total_pages);
       } else {
