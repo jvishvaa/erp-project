@@ -735,6 +735,9 @@ function App({ alert }) {
                           <Route exact path='/assessment/:assessmentId/analysis'>
                             {({ match }) => <AssessmentAnalysis match={match} />}
                           </Route>
+                          <Route exact path='/erp-attendance-list/:id?'>
+                            {({ match }) => <AttendeeListRemake match={match} />}
+                          </Route>
                           <Route exact path='/aol-attendance-list/:id?'>
                             {({ match }) => <AttendeeListRemake match={match} />}
                           </Route>
