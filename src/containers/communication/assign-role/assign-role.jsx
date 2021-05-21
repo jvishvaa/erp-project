@@ -136,11 +136,11 @@ const AssignRole = (props) => {
   }, [pageno, assignedRole, clearAll, filterCheck,moduleId]);
 
   useEffect(() => {
-    if (isNewSeach) {
+    if (isNewSeach && moduleId) {
       setIsNewSearch(false);
       displayUsersList();
     }
-  }, [isNewSeach]);
+  }, [isNewSeach,moduleId]);
 
   const getRoleApi = async () => {
     try {

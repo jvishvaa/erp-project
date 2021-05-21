@@ -160,7 +160,12 @@ const AttendeeListRemake = (props) => {
       });
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.download = `aol_attendance_report_${excelDate}.xlsx`;
+      if(window.location.pathname === `/erp-attendance-list/${id}`){
+        link.download = `erp_attendance_report_${excelDate}.xlsx`;
+      }
+      if(window.location.pathname === `/aol-attendance-list/${id}`){
+        link.download = `aol_attendance_report_${excelDate}.xlsx`;
+      }
       link.click();
       link.remove();
     } catch (error) {
@@ -218,7 +223,7 @@ const AttendeeListRemake = (props) => {
           </Grid>
           <Grid item xs={12} sm={3}>
             <Typography variant='h5' style={{ color: 'green' }}>
-              Attended count
+              Attended Count
               <Chip
                 label={<Typography variant='h6'>{totalAttended}</Typography>}
                 style={{ marginLeft: 10 }}
@@ -227,7 +232,7 @@ const AttendeeListRemake = (props) => {
           </Grid>
           <Grid item xs={12} sm={3}>
             <Typography variant='h5' style={{ color: 'red' }}>
-              Absent count
+              Absent Count
               <Chip
                 label={<Typography variant='h6'>{totalAbsent}</Typography>}
                 style={{ marginLeft: 10 }}
@@ -243,7 +248,7 @@ const AttendeeListRemake = (props) => {
                   name='Edit attendance'
                 />
               }
-              label={<Typography variant='h6'>Edit attendance</Typography>}
+              label={<Typography variant='h6'>Edit Attendance</Typography>}
             />
           </Grid>
           <Grid item xs={12} sm={2}>
@@ -264,9 +269,9 @@ const AttendeeListRemake = (props) => {
                 <TableCell align='center' className={`${isHidden ? 'hide' : 'show'}`}>
                   SL_NO.
                 </TableCell>
-                <TableCell align='center'>Student name</TableCell>
-                <TableCell align='center'>Erp</TableCell>
-                <TableCell align='center'>Attended status</TableCell>
+                <TableCell align='center'>Student Name</TableCell>
+                <TableCell align='center'>ERP</TableCell>
+                <TableCell align='center'>Attended Status</TableCell>
               </TableRow>
             </TableHead>
             {attendeeList && attendeeList.length >0 ? (

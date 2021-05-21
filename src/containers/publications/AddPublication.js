@@ -25,7 +25,6 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import PublicationPreview from './PublicationPreview';
 import Loading from '../../components/loader/loader';
 
-
 const StyledFilterButton = withStyles({
   root: {
     backgroundColor: '#FF6B6B',
@@ -55,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(0),
       marginBottom: theme.spacing(0),
       marginLeft: theme.spacing(4),
-      marginRight: theme.spacing(4)
+      marginRight: theme.spacing(4),
     },
   },
   new: {
@@ -70,9 +69,6 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
   const [subject, setSubject] = useState();
   const [branchGet, setBranchGet] = useState();
   const [gradesGet, setGradesGet] = useState([]);
-  const Pdf_file = 'http://www.africau.edu/images/default/sample.pdf';
-  const [pdfData, setPdfData] = useState({ url: Pdf_file });
-
   // data for post api
   const [grade, setGrade] = useState();
   const [postSubjects, setPostSubjects] = useState();
@@ -100,25 +96,23 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
   const [delFlag, setDelFlag] = useState(false);
   const [loading, setLoading] = React.useState(false);
   const [goBackFlag, setGoBackFlag] = useState(false);
+ const handleFileChange = (event) => {
+   const { files } = event.target;
+   const fil = files[0];
+   if (fil.name.lastIndexOf('.pdf') > 0) {
+     if (fil.size / 1024 / 1024 <= 5) {
+       setFile(fil);
+     } else {
+       setAlert('error', 'Please Select lessthan 5MB!');
+     }
 
-  const handleFileChange = (event) => {
-    const fileReader = new window.FileReader();
-    const { files } = event.target;
-    const fil = files[0];
-    if (fil.name.lastIndexOf('.pdf') > 0) {
-      setFile(fil);
-      fileReader.onload = (fileLoad) => {
-        const { result } = fileLoad.target;
-        setPdfData({ url: result });
-      };
-      fileReader.readAsDataURL(fil);
-    } else {
-      setFile(null);
-      fileRef.current.value = null;
-      setAlert('error', 'Only pdf file is acceptable either with .pdf extension');
-    }
-  };
-
+     console.log('upload', fil);
+   } else {
+     setFile(null);
+     fileRef.current.value = null;
+     setAlert('error', 'Only pdf file is acceptable either with .pdf extension');
+   }
+ };
   const handleThumbnailChange = (event) => {
     setImage(URL.createObjectURL(event.target.files[0]));
 
@@ -135,11 +129,20 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
       );
     }
   };
-  const handleDES = (content, editor) => {
-    setDescription(content);
-    console.log('description',content);
-    }; 
  
+
+  const handleDES = (content, editor) => {
+    const WORDS = editor.getContent({ format: 'text' }).split(' ');
+    const MAX_WORDS = WORDS.length;
+    const MAX_LENGTH = 100;
+    if (MAX_WORDS <= MAX_LENGTH) {
+      setDescription(content);
+    } else {
+      editor.setContent(description);
+      setDescription(description);
+      setAlert('error', 'Maximum word limit reached!');
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -178,7 +181,6 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
       setPostBranch('');
     }
   };
-
 
   useEffect(() => {
     setLoading(true);
@@ -259,43 +261,48 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
     e.preventDefault();
     setLoading(true);
     if (!grade) {
-      setAlert('error', 'Select Grade');
+      setAlert('error', 'Select Grade !');
       setLoading(false);
       return;
     }
     if (!postSubjects) {
-      setAlert('error', 'Select Subject');
+      setAlert('error', 'Select Subject !');
       setLoading(false);
       return;
     }
     if (!bookTypes) {
-      setAlert('error', 'Select Book Type');
+      setAlert('error', 'Select Book Type !');
       setLoading(false);
       return;
     }
-    if (!postData) {
-      setAlert('error', 'fill all Fields');
+    if (!postData.title) {
+      setAlert('error', 'Enter title !');
       setLoading(false);
       return;
     }
+        if (!postData.author) {
+          setAlert('error', 'Enter Author Name !');
+          setLoading(false);
+          return;
+        }
     if (!postBranch) {
-      setAlert('error', 'Select Branch');
+      setAlert('error', 'Select Branch !');
       setLoading(false);
       return;
     }
 
     if (!description) {
-      setAlert('error', 'Enter description');
+      setAlert('error', 'Enter Description !');
       setLoading(false);
       return;
     }
     if (!thumbnail) {
-      setAlert('error', 'Select Thumbnail');
+      setAlert('error', 'Select Thumbnail !');
       setLoading(false);
       return;
     }
     if (!file) {
-      setAlert('error', 'Select Browse');
+      setAlert('error', 'Select Browse !');
       setLoading(false);
       return;
     }
@@ -338,43 +345,48 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
 
   const handleRead = (value) => {
     if (!grade) {
-      setAlert('error', 'Select Grade');
+      setAlert('error', 'Select Grade !');
       setLoading(false);
       return;
     }
     if (!postSubjects) {
-      setAlert('error', 'Select Subject');
+      setAlert('error', 'Select Subject !');
 
       setLoading(false);
       return;
     }
 
     if (!bookTypes) {
-      setAlert('error', 'Select Book Type');
+      setAlert('error', 'Select Book Type !');
       setLoading(false);
       return;
     }
-    if (!postData) {
-      setAlert('error', 'fill all Fields');
-      setLoading(false);
-      return;
-    }
+  if (!postData.title) {
+    setAlert('error', 'Enter title');
+    setLoading(false);
+    return;
+  }
+  if (!postData.author) {
+    setAlert('error', 'Enter Author Name !');
+    setLoading(false);
+    return;
+  }
     if (!postBranch) {
-      setAlert('error', 'Select Branch');
+      setAlert('error', 'Select Branch !');
       setLoading(false);
       return;
     }
     if (!description) {
-      setAlert('error', 'Enter description');
+      setAlert('error', 'Enter Description !');
       return;
     }
     if (!thumbnail) {
-      setAlert('error', 'Select Thumbnail');
+      setAlert('error', 'Select Thumbnail !');
       setLoading(false);
       return;
     }
     if (!file) {
-      setAlert('error', 'Select Browse');
+      setAlert('error', 'Select Browse !');
       setLoading(false);
       return;
     }
@@ -471,7 +483,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
               <Grid item md={3} xs={12}>
                 <FormControl variant='outlined' size='small' fullWidth>
                   <InputLabel id='demo-simple-select-outlined-label' required>
-                   <b>BookType</b>
+                    <b>BookType</b>
                   </InputLabel>
 
                   <Select
@@ -548,7 +560,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
               </Grid>
               <Grid item md={3} xs={12}>
                 <Typography variant='subtitle1' style={{ marginBottom: '2%' }}>
-                 <b> Zone</b>
+                  <b> Zone</b>
                 </Typography>
                 <Grid>
                   <FormControl variant='outlined' size='small' fullWidth>
@@ -585,12 +597,14 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
             </Grid>
             <Grid container direction='row' className={[classes.root]}></Grid>
             <Grid item md={12} xs={12} className={[classes.root1]}>
-              <Typography variant='subtitle1'><b>Book description</b></Typography>
+              <Typography variant='subtitle1'>
+                <b>Book description</b>
+              </Typography>
             </Grid>
             <Grid container item md={11} xs={10} className={[classes.root1]}>
               <Paper elevation={3} style={{ width: '100%' }}>
-              <MyTinyEditor
-                   id='descriptioneditor'
+                <MyTinyEditor
+                  id='descriptioneditor'
                   handleEditorChange={handleDES}
                   placeholder='Book description...'
                   name='description'
@@ -605,11 +619,16 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
             </Grid>
             <Grid container item md={11} xs={12} className={[classes.root]}>
               <Paper elevation={3} style={{ width: '100%' }} fullWidth>
-                <Grid container justify='center' style={{ marginTop:'35px' }}>
+                <Grid container justify='center' style={{ marginTop: '35px' }}>
                   <Typography variant='h5'>
                     Drop a file on this or Browse from you Files
                   </Typography>
-                  <Grid container justify='center' direction='row' style={{ marginBottom:'35px' }}>
+                  <Grid
+                    container
+                    justify='center'
+                    direction='row'
+                    style={{ marginBottom: '35px' }}
+                  >
                     <Grid style={{ marginRight: '1%' }}>
                       <StyledFilterButton onClick={handleClickThumbnail}>
                         Thumbnail
@@ -671,7 +690,9 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
                 </StyledFilterButton>
               </Grid>
               <Grid item md={2} xs={2}>
-                <StyledFilterButton onClick={handleSubmitDraft}>Save Draft</StyledFilterButton>
+                <StyledFilterButton onClick={handleSubmitDraft}>
+                  Save Draft
+                </StyledFilterButton>
               </Grid>
             </Grid>
           </div>

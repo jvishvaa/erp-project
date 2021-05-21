@@ -23,6 +23,7 @@ import Dashboard from './containers/dashboard';
 import { listSubjects } from './redux/actions/academic-mapping-actions';
 import OnlineclassViewProvider from './containers/online-class/online-class-context/online-class-state';
 import CreateClass from './containers/online-class/create-class';
+import OnlineAttendanceTeacherView from 'containers/online-class/online-attendance/OnlineAttendanceTeacherView';
 import ViewClassManagement from './containers/online-class/view-class/view-class-management/view-class-management';
 import AttendeeList from './containers/online-class/view-class/view-class-management/attendee-list/attendee-list';
 import ViewClassStudentCollection from './containers/online-class/view-class/view-class-student/view-class-student-collection';
@@ -735,6 +736,9 @@ function App({ alert }) {
                           <Route exact path='/assessment/:assessmentId/analysis'>
                             {({ match }) => <AssessmentAnalysis match={match} />}
                           </Route>
+                          <Route exact path='/erp-attendance-list/:id?'>
+                            {({ match }) => <AttendeeListRemake match={match} />}
+                          </Route>
                           <Route exact path='/aol-attendance-list/:id?'>
                             {({ match }) => <AttendeeListRemake match={match} />}
                           </Route>
@@ -774,6 +778,10 @@ function App({ alert }) {
                           <Route exact path='/erp-online-resources'>
                             {({ match }) => <OnlineClassResource match={match} />}
                           </Route>
+                          <Route exact path='/online-class/attendance-teacher-view'>
+                            {({ match }) => <OnlineAttendanceTeacherView match={match} />}
+                          </Route>
+
                           <Route exact path='/homework/student'>
                             {({ match }) => <StudentHomework match={match} />}
                           </Route>
