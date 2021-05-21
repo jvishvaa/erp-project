@@ -226,7 +226,7 @@ const AssignRole = (props) => {
   };
 
   const displayUsersList = async () => {
-    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
+    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
 
     if (selectedMultipleRoles.length) {
       const selectedRoleId = selectedMultipleRoles.map((el) => el.id);
