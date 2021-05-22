@@ -369,16 +369,10 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       responseType: 'arraybuffer',
     })
     .then((res) => {
-      //console.log(res.data);
       const blob = new Blob([res.data], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
       FileSaver.saveAs(blob, "user_list.xls");
-      // const link = document.createElement('a');
-      // link.href = window.URL.createObjectURL(blob);
-      // link.download = 'user_list.xlsx';
-      // link.click();
-      // link.remove();
     })
     .catch((error) => setAlert('error', 'Something Wrong!'));
   }
