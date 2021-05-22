@@ -1207,6 +1207,10 @@ const DetailCardView = ({
 
   const handleAttendance = () => {
     dispatch(attendanceAction(fullData ? fullData.online_class?.start_time : ''));
+   if(window.location.pathname === '/erp-online-class'){
+    history.push(`/erp-attendance-list/${fullData.online_class && fullData.id}`);
+   }
+   if(window.location.pathname === '/')
     history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`);
   };
   const handleCoursePlan = () => {

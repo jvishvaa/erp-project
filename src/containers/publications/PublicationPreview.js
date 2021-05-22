@@ -63,7 +63,8 @@ const PublicationPreview = ({ fun, handleGoBack, entireBack }) => {
       {loading ? <Loading message='Loading...' /> : null}
       <MediaQuery minWidth={600}>
         <Grid container direction='row'>
-          <Grid container justify='center'>
+          <Grid container>
+            <Grid item md={8} />
             <Button size='small' color='primary' href={`/publications`}>
               Close
             </Button>
@@ -128,8 +129,15 @@ const PublicationPreview = ({ fun, handleGoBack, entireBack }) => {
             <Divider />
           </Grid>
         </Grid>
-        <Grid item md={8} container direction='row' style={{ margin: '3%' }}>
-          <Grid item md={3}>
+        <Grid
+          item
+          md={12}
+          container
+          direction='row'
+          justify='center'
+          style={{ margin: '3%' }}
+        >
+          <Grid item md={3} className='margin-grid'>
             <Button
               size='small'
               color='primary'
