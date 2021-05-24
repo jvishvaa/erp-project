@@ -51,6 +51,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Section Shuffle', Path: '/user-management/section-shuffling' },
     { name: 'Attend Online Class', Path: '/erp-online-class-student-view' },
     { name: 'Teacher View Class', Path: '/erp-online-class-teacher-view' },
+    { name: 'Teacher View Attendance', Path: '/online-class/attendance-teacher-view' },
     { name: 'Create Class', Path: '/online-class/create-class' },
     { name: 'Online Class', Path: '/online-class/attend-class' },
     { name: 'Management View', Path: '/homework/coordinator' },

@@ -3,42 +3,32 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import './publications.scss';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
-import Card from '@material-ui/core/Card';
 import FilterImage from '../../assets/images/Filter_Icon.svg';
 import LineImage from '../../assets/images/line.svg';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
+
 import Typography from '@material-ui/core/Typography';
 import Layout from '../Layout/index';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import OpenPublication from './OpenPublication';
-import EditPublication from './EditPublication';
 import MediaQuery from 'react-responsive';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import {
-  CardActions,
-  CardHeader,
   DialogActions,
   Grid,
   ButtonBase,
-  GridList,
   Paper,
   Tooltip,
   withStyles,
 } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
-import FilterIcon from '../../components/icon/FilterIcon';
 import ClearIcon from '../../components/icon/ClearIcon';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
-import ReactHtmlParser from 'react-html-parser';
-import MenuItem from '@material-ui/core/MenuItem';
 
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
@@ -54,7 +44,6 @@ import { Pagination } from '@material-ui/lab';
 import AddPublication from './AddPublication';
 import PublicationPreview from './PublicationPreview';
 import Nodata from '../../assets/images/not-found.png';
-import { set } from 'lodash';
 import PublishIcon from '@material-ui/icons/Publish';
 import filterImage2 from '../../assets/images/unfiltered.svg';
 import Loading from '../../components/loader/loader';
@@ -221,23 +210,16 @@ const Publications = (props) => {
 
   const [reviewDataPut, setReviewDataPut] = useState('Review');
   const [publishDataPut, setPublishDataPut] = useState('Published');
-  const [reviewFlag, setReviewFlag] = useState(false);
-  const [pub_id, setPub_id] = useState('');
-  const [pub_title, setPub_title] = useState();
-  const [pub_subject, setPub_subject] = useState('');
-  const [pub_grade, setPub_grade] = useState();
-  const [pub_publication_type, setPub_publication_type] = useState();
-  const [pub_description, setPub_description] = useState();
-  const [pub_thumbnail, setPub_thambnail] = useState();
-  const [pub_file, setPub_file] = useState();
-  const [pub_author_name, setPub_author_name] = useState();
-  const [pub_zone, setPub_zone] = useState();
+
   const [open1, setOpen1] = React.useState(false);
+  const [open2, setOpen2] = React.useState(false);
+  const [open3, setOpen3] = React.useState(false);
   const [subjectChanger, setSubjectChanger] = useState('');
   const [changer, setChanger] = useState(true);
   const [changer2, setChanger2] = useState(true);
   const [changer3, setChanger3] = useState(true);
   const [changer4, setChanger4] = useState(true);
+  const [changer5, setChanger5] = useState(true);
   const [theSubjectId, setTheSubjectId] = useState();
   //pagination
   const [page, setPage] = useState(1);
@@ -246,12 +228,16 @@ const Publications = (props) => {
   const [totalPages2, setTotalPages2] = useState(0);
   const [totalPages3, setTotalPages3] = useState(0);
   const [totalPages4, setTotalPages4] = useState(0);
+  const [totalPages5, setTotalPages5] = useState(0);
   const formData = new FormData();
   const [did, setDid] = useState();
   const [dsubject, setDsubject] = useState();
-
+  const [dialPublish, setDialPublish] = useState();
+  const [dialReview, setDialReview] = useState();
+  const [filterPage, setFilterPage] = useState(false);
   const handlePagination = (event, page) => {
     setPage(page);
+    console.log('The page number:', page);
 
     handleSubjectID(subjectChanger, page);
     handleAlldata(page);
@@ -266,42 +252,36 @@ const Publications = (props) => {
     setOpen1(false);
   };
 
+  const handleClickOpen2 = (dialPublish) => {
+    setOpen2(true);
+    setDialPublish(dialPublish);
+  };
+
+  const handleClose2 = () => {
+    setOpen2(false);
+  };
+
+  const handleClickOpen3 = (dialReview) => {
+    setOpen3(true);
+    setDialReview(dialReview);
+  };
+
+  const handleClose3 = () => {
+    setOpen3(false);
+  };
+
   const handleclear = () => {
+    const newPage = 1;
+    setFilterPage(false);
     setMainsubject('');
+    setPage(1);
     setAcadamicYear('');
     setReviewData('');
     setIndividualData('');
     setDataDraft('');
-    handleAlldata(page);
-    setAcadamicYearName('');
-    setSubjectID('');
-  };
-
-  const handleEdit = (
-    id,
-    title,
-    subject,
-    grade,
-    publication_type,
-    description,
-    thumbnail,
-    file,
-    zone,
-    author_name
-  ) => {
-    setPub_id(id);
-    setPub_title(title);
-    setPub_subject(subject);
-    setPub_grade(grade);
-    setPub_publication_type(publication_type);
-    setPub_description(description);
-    setPub_thambnail(thumbnail);
-    setPub_file(file);
-    setPub_author_name(author_name);
-    setPub_zone(zone);
-
-    setTableFlag(false);
-    setReviewFlag(true);
+    handleAlldata(newPage);
+    setAcadamicYearName('Select Academic Year');
+    setSubjectID('Select Subject');
   };
 
   const handleRead = (value) => {
@@ -332,16 +312,15 @@ const Publications = (props) => {
     setIndividualData('');
     setDataDraft('');
     handleAlldata(page);
-    setAcadamicYearName('');
-    setSubjectID('');
+    setAcadamicYearName('Select Academic Year');
+    setSubjectID('Select Subject');
   };
-    const handleGoBackPre1 = () => {
-      setTableFlag(true);
-      setEditFlag(false);
-      setPage(1);
-      setGoBackFlag(!goBackFlag);
- 
-    };
+  const handleGoBackPre1 = () => {
+    setTableFlag(true);
+    setEditFlag(false);
+    setPage(1);
+    setGoBackFlag(!goBackFlag);
+  };
 
   const handleAdd = (value) => {
     setTableFlag(false);
@@ -364,16 +343,15 @@ const Publications = (props) => {
       setAlert('error', 'Select Subject');
       return;
     }
-    setPage(1);
+    setFilterPage(true);
     handleSubjectID(theSubjectId, page);
     handleAllSubjectData(theSubjectId, page);
+
+    handleDraftSubjectId(theSubjectId, page);
+    handleReviewSubjectId(theSubjectId, page);
   };
   const handleSubjectID = (value, page) => {
     setSubjectChanger(value);
-
-    handleDraftSubjectId(value, page);
-    handleReviewSubjectId(value, page);
-    handleAllSubjectData(value, page);
 
     setLoading(true);
     axiosInstance
@@ -383,7 +361,7 @@ const Publications = (props) => {
         }?subject_id=${value}&status_post=Published&page_number=${page}&page_size=${8}`
       )
       .then((res) => {
-        if (res.data.total_pages == 0) {
+        if (res.data.total_pages === 0) {
           setChanger4(false);
         } else if (res.data.status_code === 200) {
           // setAlert('success', res.data.message);
@@ -401,20 +379,20 @@ const Publications = (props) => {
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.publish.ebook}?subject_id=${value}&page_number=${
-          pageNumber || 1
-        }&page_size=${8}`
+        `${
+          endpoints.publish.ebook
+        }?subject_id=${value}&page_number=${pageNumber}&page_size=${8}`
       )
       .then((res) => {
-        if (res.data.total_pages == 0) {
-          setChanger(false);
+        if (res.data.total_pages === 0) {
+          setChanger5(false);
           setData('');
           setLoading(false);
         } else if (res.data.status_code === 200) {
           // setAlert('success', res.data.message);
-          setTotalPages(res.data.total_pages);
+          setTotalPages5(res.data.total_pages);
           setData(res.data.data);
-          setChanger(true);
+          setChanger5(true);
           setLoading(false);
         } else {
           setAlert('error', res.data.message);
@@ -427,12 +405,12 @@ const Publications = (props) => {
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.publish.ebook}?subject_id=${value}&status_post=Draft&page_number=${
-          pageNumber || 1
-        }&page_size=${8}`
+        `${
+          endpoints.publish.ebook
+        }?subject_id=${value}&status_post=Draft&page_number=${pageNumber}&page_size=${8}`
       )
       .then((res) => {
-        if (res.data.total_pages == 0) {
+        if (res.data.total_pages === 0) {
           setChanger2(false);
           setLoading(false);
         } else if (res.data.status_code === 200) {
@@ -476,12 +454,12 @@ const Publications = (props) => {
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.publish.ebook}?subject_id=${value}&status_post=Review&page_number=${
-          pageNumber || 1
-        }&page_size=${8}`
+        `${
+          endpoints.publish.ebook
+        }?subject_id=${value}&status_post=Review&page_number=${pageNumber}&page_size=${8}`
       )
       .then((res) => {
-        if (res.data.total_pages == 0) {
+        if (res.data.total_pages === 0) {
           setChanger3(false);
           setLoading(false);
         } else if (res.data.status_code === 200) {
@@ -604,9 +582,9 @@ const Publications = (props) => {
   const handleAlldata = (page) => {
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.publish.ebook}?page_number=${page || 1}&page_size=${8}`)
+      .get(`${endpoints.publish.ebook}?page_number=${page}&page_size=${8}`)
       .then((res) => {
-        if (res.data.total_pages == 0) {
+        if (res.data.total_pages === 0) {
           setChanger(false);
           setData('');
           setLoading(false);
@@ -637,6 +615,10 @@ const Publications = (props) => {
         if (result.data.status_code === 200 && subjectId === theSubjectId) {
           setAlert('success', result.data.message);
           handleSubjectID(subjectId, page);
+          handleAllSubjectData(subjectId, page);
+
+          handleDraftSubjectId(subjectId, page);
+          handleReviewSubjectId(subjectId, page);
 
           setLoading(false);
         } else if (result.data.status_code === 200) {
@@ -1115,28 +1097,6 @@ const Publications = (props) => {
                       </Grid>
                     </Grid>
                   </Paper>
-
-                  {/* <Button
-                          size='small'
-                          type='submit'
-                          color='primary'
-                          onClick={(e) => {
-                            handleEdit(
-                              item.id,
-                              item.title,
-                              item.grade,
-                              item.subject,
-                              item.publication_type,
-                              item.description,
-                              item.thumbnail,
-                              item.file,
-                              item.zone,
-                              item.author_name
-                            );
-                          }}
-                        >
-                          Edit
-                        </Button> */}
                 </div>
               );
             })
@@ -1251,12 +1211,38 @@ const Publications = (props) => {
                                 type='submit'
                                 color='primary'
                                 onClick={(e) => {
-                                  handleReviewStatus(item.id);
+                                  handleClickOpen3(item.id);
                                 }}
                               >
                                 Review
                               </Button>
                             </Typography>
+                            <Dialog
+                              open={open3}
+                              onClose={handleClose3}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to Review?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose3} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handleReviewStatus(dialReview);
+                                    handleClose3();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Review
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
                           </Grid>
                         </Grid>
                       </Grid>
@@ -1868,7 +1854,6 @@ const Publications = (props) => {
                                 <Button
                                   size='small'
                                   type='submit'
-                                  color='primary'
                                   style={{ margin: '2%' }}
                                   onClick={(e) => {
                                     handleRead(item.id);
@@ -1879,7 +1864,6 @@ const Publications = (props) => {
                                 <Button
                                   size='small'
                                   type='submit'
-                                  color='primary'
                                   onClick={(e) => {
                                     handlePublish(item.id);
                                   }}
@@ -2004,27 +1988,54 @@ const Publications = (props) => {
                             <Typography>
                               <button
                                 type='submit'
-                                style={{ margin: '2%', color: 'pink' }}
+                                style={{ margin: '2%', color: '#ff6b6b' }}
                                 onClick={(e) => {
                                   handleRead(item.id);
                                 }}
                               >
-                                <span style={{ fontSize: '18px' }}>
+                                <span style={{ fontSize: '18px', color: '#ff6b6b' }}>
                                   <ImportContactsIcon />
                                 </span>
                               </button>
+
                               <button
                                 type='submit'
-                                style={{ margin: '2%', color: 'pink' }}
-                                onClick={(e) => {
-                                  handlePublish(item.id);
+                                style={{ margin: '2%', color: '#ff6b6b' }}
+                                onClick={() => {
+                                  handleClickOpen2(item.id);
                                 }}
                               >
-                                <span style={{ fontSize: '18px' }}>
+                                <span style={{ fontSize: '18px', color: '#ff6b6b' }}>
                                   <PublishIcon />
                                 </span>
                               </button>
                             </Typography>
+                            <Dialog
+                              open={open2}
+                              onClose={handleClose2}
+                              aria-labelledby='alert-dialog-title'
+                              aria-describedby='alert-dialog-description'
+                            >
+                              <DialogTitle id='alert-dialog-title'>
+                                {'Are you sure to Publish?'}
+                              </DialogTitle>
+
+                              <DialogActions>
+                                <Button onClick={handleClose2} color='primary'>
+                                  cancel
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    handlePublish(dialPublish);
+                                    handleClose2();
+                                  }}
+                                  color='primary'
+                                  autoFocus
+                                >
+                                  Publish
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
                           </Grid>
                         </Grid>
                       </Grid>
@@ -2200,8 +2211,6 @@ const Publications = (props) => {
                 ? 'Open Publication'
                 : editFlag && !tableFlag
                 ? 'Add Publication'
-                : reviewFlag && !tableFlag
-                ? 'Review Publication'
                 : null
             }
           />
@@ -2214,21 +2223,6 @@ const Publications = (props) => {
           />
         )}
         {!tableFlag && readFlag && <OpenPublication ID={readID} />}
-        {!tableFlag && reviewFlag && (
-          <EditPublication
-            ID={pub_id}
-            showtitle={pub_title}
-            showgrade={pub_grade}
-            showsubject={pub_subject}
-            showbooktype={pub_publication_type}
-            showauthor={pub_author_name}
-            showdes={pub_description}
-            IMG={pub_thumbnail}
-            PDF={pub_file}
-            showzone={pub_zone}
-            handleGoBackPre={handleGoBackPre}
-          />
-        )}
 
         {tableFlag && !readFlag && !editFlag && (
           <div>
@@ -2590,11 +2584,11 @@ const Publications = (props) => {
 
             <br />
             <Grid container direction='row'>
-            <div className='table-top-header'>
-                    <div className='table-header-data'>{academicYear}</div>
-                    <span class='dot'></span>
-                    <div className='table-header-data'>{subjectID}</div>
-                  </div>
+              <div className='table-top-header'>
+                <div className='table-header-data'>{academicYear}</div>
+                <span class='dot'></span>
+                <div className='table-header-data'>{subjectID}</div>
+              </div>
             </Grid>
             <br />
             <Grid item md={12} xs={10}>
@@ -2642,15 +2636,38 @@ const Publications = (props) => {
                     <Grid container direction='row' spacing={1} className='gridscroll'>
                       <Post />
                     </Grid>
-                    <Grid container direction='row' justify='center' alignItems='center'>
-                      <Pagination
-                        onChange={handlePagination}
-                        style={{ marginTop: 25 }}
-                        count={totalPages}
-                        color='primary'
-                        page={page}
-                      />
-                    </Grid>
+                    {!filterPage && (
+                      <Grid
+                        container
+                        direction='row'
+                        justify='center'
+                        alignItems='center'
+                      >
+                        <Pagination
+                          onChange={handlePagination}
+                          style={{ marginTop: 25 }}
+                          count={totalPages}
+                          color='primary'
+                          page={page}
+                        />
+                      </Grid>
+                    )}
+                    {filterPage && (
+                      <Grid
+                        container
+                        direction='row'
+                        justify='center'
+                        alignItems='center'
+                      >
+                        <Pagination
+                          onChange={handlePagination}
+                          style={{ marginTop: 25 }}
+                          count={totalPages5}
+                          color='primary'
+                          page={page}
+                        />
+                      </Grid>
+                    )}
                   </>
                 ) : (
                   <Grid container direction='row' justify='center' alignItems='center'>

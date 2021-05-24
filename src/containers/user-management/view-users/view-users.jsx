@@ -6,7 +6,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles, useTheme, withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -50,6 +50,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 // import './view-users.css';
 import ViewUserCard from '../../../components/view-user-card';
 import { CSVLink } from "react-csv";
+import FileSaver from 'file-saver';
 import './styles.scss';
 
 const useStyles = makeStyles((theme) => ({
@@ -105,6 +106,17 @@ const useStyles = makeStyles((theme) => ({
     color: '#ffffff',
   }
 }));
+
+const StyledButton = withStyles({
+  root: {
+      backgroundColor: '#FF6B6B',
+      color: '#FFFFFF',
+      padding: '8px 15px',
+      '&:hover': {
+          backgroundColor: '#FF6B6B !important',
+        },
+  }
+})(Button);
 
 // eslint-disable-next-line no-unused-vars
 const ViewUsers = withRouter(({ history, ...props }) => {
@@ -281,33 +293,33 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             active: items.is_active,
           })
         );
-        function addDataToExcel(xlsData){
-          xlsData.map((record) => {
-              //console.log(record, 'record');
-              const grades = [];
-              const sections = [];
-              record.section_mapping.map((data) => {
-                grades.push(data?.grade.id);
-                sections.push(data?.section.id)
-              })
-              excelData.push({
-                erp_id: record.erp_id,
-                first_name: record.user.first_name,
-                last_name: record.user.last_name,
-                username: record.user.username,
-                email: record.user.email,
-                contact: record.contact,
-                gender: record.gender,
-                role_name: record.roles.role_name,
-                grade_name: grades,
-                section_name: sections,
-                status: record.status
-              })
-          })
-        }
-        if(result.data?.results.length > 0){
-            addDataToExcel(result.data.results)
-        }
+        // function addDataToExcel(xlsData){
+        //   xlsData.map((record) => {
+        //       //console.log(record, 'record');
+        //       const grades = [];
+        //       const sections = [];
+        //       record.section_mapping.map((data) => {
+        //         grades.push(data?.grade.id);
+        //         sections.push(data?.section.id)
+        //       })
+        //       excelData.push({
+        //         erp_id: record.erp_id,
+        //         first_name: record.user.first_name,
+        //         last_name: record.user.last_name,
+        //         username: record.user.username,
+        //         email: record.user.email,
+        //         contact: record.contact,
+        //         gender: record.gender,
+        //         role_name: record?.roles?.role_name,
+        //         grade_name: grades,
+        //         section_name: sections,
+        //         status: record.status
+        //       })
+        //   })
+        // }
+        // if(result.data?.results.length > 0){
+        //     addDataToExcel(result.data.results)
+        // }
         setUsersData(resultUsers);
         setTotalPages(result.data.total_pages);
       } else {
@@ -331,6 +343,39 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     setCurrentPage(1);
     setIsNewSearch(true);
   };
+
+  const handleExcel = () => {
+    const rolesId = [];
+    const gradesId = [];
+    if (selectedRoles && selectedRoles !== 'All') {
+      rolesId.push(selectedRoles.id);
+    }
+    let getUserListUrl = `communication/erp-user-info-excel/?module_id=${moduleId}`;
+    if (rolesId.length && selectedRoles !== 'All') {
+      getUserListUrl += `&role=${rolesId.toString()}`;
+    }
+    /*
+    if (gradesId.length && !selectedGrades.includes('All')) {
+      getUserListUrl += `&grade=${gradesId.toString()}`;
+    }
+    */
+    if (gradeIds.length && !selectedGrades.includes('All')) {
+      getUserListUrl += `&grade=${gradeIds.toString()}`;
+    }
+    if (searchText) {
+      getUserListUrl += `&search=${searchText}`;
+    }
+    axiosInstance.get(`${getUserListUrl}`,{
+      responseType: 'arraybuffer',
+    })
+    .then((res) => {
+      const blob = new Blob([res.data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      FileSaver.saveAs(blob, "user_list.xls");
+    })
+    .catch((error) => setAlert('error', 'Something Wrong!'));
+  }
 
   const handleTextSearch = (e) => {
     setIsNewSearch(true);
@@ -737,20 +782,21 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 </Button>
               </Box>
             </Grid>
-            {/* <Grid item xs={12} md={10}>
+            <Grid item xs={12} md={10}>
               <Box
                 style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}
               >
-                <CSVLink
+                <StyledButton onClick={e => handleExcel(e)}>Download Excel</StyledButton>
+                {/* <CSVLink
                   data={excelData}
                   headers={headers}
                   filename={"user_list.xls"}
                   className={classes.downloadExcel}
                 >
                   Download Excel
-                </CSVLink>
+                </CSVLink> */}
               </Box>
-            </Grid> */}
+            </Grid>
           </Grid>
         </div>
         {/* <span className='view_users__reset_icon' onClick={handleResetFilters}>
