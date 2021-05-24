@@ -680,6 +680,9 @@ const JoinClass = (props) => {
   const diffTime = classTimeMilli - 5 * 60 * 1000;
   const diffAttachTime = classTimeMilli - 15 * 60 * 1000;
 
+  const { email = '' } = JSON.parse(localStorage.getItem('userDetails'));
+
+  console.log(props,'props',email)
   const handleCloseData = () => {
     setAnchorEl(null);
     // setJoinAnchor(null)
@@ -958,12 +961,18 @@ const JoinClass = (props) => {
                     color='secondary'
                     fullWidth
                     variant='contained'
-                    onClick={() =>
-                      window.open(fullData && fullData.join_url, '_blank')
+                    onClick={() =>{
+                      if(email !== props?.fullData?.online_class?.teacher?.email){
+                        window.open(fullData && fullData?.join_url, '_blank')
+                      }
+                      if(email === props?.fullData?.online_class?.teacher?.email){
+                        window.open(fullData && fullData?.presenter_url, '_blank')
+                      }
+                    }
                     }
                     className='teacherFullViewSmallButtons'
                   >
-                    Audit
+                   { email === props?.fullData?.online_class?.teacher?.email ?"Host" :"Audit"}
                   </Button>
                 ) : (
                   ''
