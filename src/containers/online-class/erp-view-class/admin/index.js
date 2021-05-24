@@ -528,6 +528,10 @@ const ErpAdminViewClass = ({ history }) => {
     }
     setDateRangeTechPer(v1);
   }
+  function handleDownload(){
+    alert('hello')
+    //need to be API Integration
+  }
   return (
     <>
       <Layout>
@@ -927,6 +931,16 @@ const ErpAdminViewClass = ({ history }) => {
                     onClick={() => handleFilter()}
                   >
                     Get Classes
+                  </Button>
+                </Grid>
+                <Grid item md={2} xs={12}>
+                  <Button
+                    variant='contained'
+                    size='large'
+                    className='BatchViewfilterButtons'
+                    onClick={handleDownload}
+                  >
+                    DOWNLOAD CLASS DATA
                   </Button>
                 </Grid>
               </Grid>
