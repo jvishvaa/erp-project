@@ -1,7 +1,74 @@
-// .upload-dialog-box{
-    
-// }
-.box-size-dialog{
-    width: 419px;
-    height: 100px;
+.upload-dialog-box {
+  & .MuiDialog-paper {
+    border-radius: 10px;
+    width: 90%;
+    max-height: 30vw;
+    @media screen and (max-width: 768px) {
+      width: 80%;
+      max-height: 80%;
+    }
+    & .MuiDialogTitle-root {
+      padding: 10px 0;
+      margin: 0 12px;
+      font-weight: 600;
+      border-bottom: 1px solid #e2e2e2;
+    }
+    & .MuiDialogContent-root {
+      padding: 10px;
+      & .noImagesTag {
+        text-align: center;
+        color: #014b7e;
+        font-weight: 600;
+        margin: 1% auto;
+        line-height: 50px;
+      }
+      & .optionImageContainer1 {
+        display: flex;
+        flex-wrap: wrap;
+        & .optionImageThumbnailContainer1 {
+          position: relative;
+          width: 140px;
+          max-width: 300px;
+          height: auto;
+          padding: 0.5rem;
+          @media screen and (max-width: 768px) {
+            width: 100%;
+          }
+          & .optionImageAttachment1 {
+            border-radius: 4px;
+            width: 100%;
+            height: auto;
+            box-shadow: 0px 0px 2px 0.1px #014b7e;
+            @media screen and (max-width: 768px) {
+              margin-right: 0;
+            }
+          }
+          .optionImageRemoveIcon1 {
+            display: flex;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            text-align: center;
+            & .MuiIconButton-root {
+              color: #ff6b6b;
+              opacity: 0.5;
+            }
+            & .MuiIconButton-root:hover {
+              opacity: 0.9;
+              transform: scale(1.1);
+            }
+          }
+        }
+      }
+    }
+    & .MuiDialogActions-root {
+      padding: 10px;
+      & .box-size-dialog {
+        position: absolute;
+        left: 1.5%;
+      }
+    }
+  }
 }

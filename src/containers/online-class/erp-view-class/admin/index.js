@@ -28,12 +28,6 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import DetailCardView from './DetailCardView';
 
 const ErpAdminViewClass = ({ history }) => {
-  // const [dateRangeTechPer, setDateRangeTechPer] = useState([
-  //   moment().subtract(6, 'days'),
-  //   moment(),
-  // ]);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
   const [branchList, setBranchList] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
@@ -53,20 +47,15 @@ const ErpAdminViewClass = ({ history }) => {
   const [selectedSubject, setSelectedSubject] = useState([]);
   const [courseList, setCourseList] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState('');
-  const [batchList, setBatchList] = useState([]);
-  const [selectedBatch, setSelectedBatch] = useState('');
   const [filterList, setFilterList] = useState('');
-  const [filterFullData, setFilterFullData] = useState('');
-  const [selectedModule] = useState(4);
   const [selectedViewMore, setSelectedViewMore] = useState('');
   const viewMoreRef = useRef(null);
   const limit = 9;
+
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
     moment().subtract(6, 'days'),
     moment(),
   ]);
-  const [startDateTechPer, setStartDateTechPer] = useState(moment().format('YYYY-MM-DD'));
-  const [endDateTechPer, setEndDateTechPer] = useState(getDaysAfter(moment(), 7));
 
   const [classTypes, setClassTypes] = useState([
     { id: 0, type: 'Compulsory Class' },
@@ -266,24 +255,23 @@ const ErpAdminViewClass = ({ history }) => {
           }
           if (key === 'filter') {
             setTotalCount(result?.data?.count);
-            setFilterFullData(result?.data);
             setFilterList(result?.data?.data);
             setSelectedViewMore('');
             const viewData = JSON.parse(localStorage.getItem('viewMoreData')) || '';
-            setSelectedViewMore(viewData);
+            if (viewData?.id) {
+              setSelectedViewMore(viewData);
+            }
           }
           setLoading(false);
         } else {
           setAlert('error', result?.data?.message);
           setLoading(false);
-          setFilterFullData([]);
           setFilterList([]);
         }
       })
       .catch((error) => {
         setAlert('error', error.message);
         setLoading(false);
-        setFilterFullData([]);
         setFilterList([]);
       });
   }
@@ -344,7 +332,7 @@ const ErpAdminViewClass = ({ history }) => {
   }
 
   useEffect(() => {
-    if (moduleId) {
+    if (moduleId && window.location.pathname !== '/erp-online-class-student-view') {
       callApi(
         `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
         'academicYearList'
@@ -418,13 +406,9 @@ const ErpAdminViewClass = ({ history }) => {
     localStorage.removeItem('filterData');
     localStorage.removeItem('viewMoreData');
     setDateRangeTechPer([moment().subtract(6, 'days'), moment()]);
-    setEndDate('');
-    setStartDate('');
     setSelectedGrade([]);
     setCourseList([]);
     setSelectedCourse('');
-    setBatchList([]);
-    setSelectedBatch('');
     setFilterList([]);
     setSelectedViewMore('');
     setSectionList([]);
@@ -521,20 +505,40 @@ const ErpAdminViewClass = ({ history }) => {
     }
   }
 
-  function handleDate(v1) {
-    if (v1 && v1.length !== 0) {
-      setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
-      setEndDate(moment(new Date(v1[1])).format('YYYY-MM-DD'));
+  // function handleDate(v1) {
+  //   if (v1 && v1.length !== 0) {
+  //     setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
+  //     setEndDate(moment(new Date(v1[1])).format('YYYY-MM-DD'));
+  //   }
+  //   setDateRangeTechPer(v1);
+  // }
+  const handleDownload= async()=>{
+    const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
+    try{
+      const {data} = await axiosInstance.get(`${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
+      {
+        responseType: 'arraybuffer',
+      }
+    );
+    const blob = new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download =`erp_classes_from${moment(startDateTechPer).format('YYYY-MM-DD')}_to_${moment(endDateTechPer).format('YYYY-MM-DD')}`
+    link.click();
+    link.remove();
     }
-    setDateRangeTechPer(v1);
+    catch{
+      setAlert('error','Failed To Download, Try After Some Time')
+    }
+
   }
-  function handleDownload(){
-    alert('hello')
-    //need to be API Integration
-  }
+
   return (
     <>
       <Layout>
+        {loading && <Loader />}
         <Grid container spacing={2} className='teacherBatchViewMainDiv'>
           <Grid item md={12} xs={12}>
             <Grid container spacing={2} justify='middle' className='signatureNavDiv'>
@@ -583,8 +587,6 @@ const ErpAdminViewClass = ({ history }) => {
                     setSelectedGrade([]);
                     setCourseList([]);
                     setSelectedCourse('');
-                    setBatchList([]);
-                    setSelectedBatch('');
                     setFilterList([]);
                     setSelectedViewMore('');
                     setSectionList([]);
@@ -631,8 +633,6 @@ const ErpAdminViewClass = ({ history }) => {
                         setSelectedGrade([]);
                         setCourseList([]);
                         setSelectedCourse('');
-                        setBatchList([]);
-                        setSelectedBatch('');
                         setFilterList([]);
                         setSelectedViewMore('');
                         setSectionList([]);
@@ -681,8 +681,6 @@ const ErpAdminViewClass = ({ history }) => {
                         setSelectedGrade([]);
                         setCourseList([]);
                         setSelectedCourse('');
-                        setBatchList([]);
-                        setSelectedBatch('');
                         setFilterList([]);
                         setSectionList([]);
                         setSelectedSection([]);
@@ -731,8 +729,6 @@ const ErpAdminViewClass = ({ history }) => {
                         }
                         setCourseList([]);
                         setSelectedCourse('');
-                        setBatchList([]);
-                        setSelectedBatch('');
                         setFilterList([]);
                         setSectionList([]);
                         setSelectedSection([]);
@@ -779,8 +775,6 @@ const ErpAdminViewClass = ({ history }) => {
                             'subject'
                           );
                         }
-                        setBatchList([]);
-                        setSelectedBatch('');
                         setSelectedCourse('');
                         setSubjectList([]);
                         setSelectedSubject([]);
@@ -816,8 +810,6 @@ const ErpAdminViewClass = ({ history }) => {
                             const ids = value.map((el) => el) || [];
                             setSelectedSubject(ids);
                           }
-                          setBatchList([]);
-                          setSelectedBatch('');
                           setFilterList([]);
                           setPage(1);
                         }}
@@ -844,8 +836,6 @@ const ErpAdminViewClass = ({ history }) => {
                         size='small'
                         onChange={(event, value) => {
                           setSelectedCourse(value);
-                          setBatchList([]);
-                          setSelectedBatch('');
                           setFilterList([]);
                           setPage(1);
                         }}
@@ -1004,10 +994,9 @@ const ErpAdminViewClass = ({ history }) => {
                               <Grid item md={selectedViewMore ? 6 : 4} xs={12}>
                                 <CardView
                                   fullData={item}
-                                  // index={i}
+                                  index={i}
                                   handleViewMore={setSelectedViewMore}
                                   selectedViewMore={selectedViewMore || {}}
-                                  viewMoreRef={viewMoreRef}
                                 />
                               </Grid>
                             ))}
@@ -1016,8 +1005,9 @@ const ErpAdminViewClass = ({ history }) => {
                       {selectedViewMore?.id && (
                         <Grid item md={selectedViewMore ? 4 : 0} xs={12}>
                           <DetailCardView
+                            loading={loading}
+                            setLoading={setLoading}
                             fullData={selectedViewMore}
-                            // index={i}
                             handleClose={handleClose}
                             viewMoreRef={viewMoreRef}
                             selectedClassType={selectedClassType}
@@ -1041,7 +1031,6 @@ const ErpAdminViewClass = ({ history }) => {
             </Grid>
           </Grid>
         </Grid>
-        {loading && <Loader />}
       </Layout>
     </>
   );

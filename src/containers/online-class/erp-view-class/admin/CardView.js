@@ -3,7 +3,12 @@ import moment from 'moment';
 // import './style.scss';
 import { Grid, Card, Button, Typography } from '@material-ui/core';
 
-const CardView = ({ fullData, handleViewMore, selectedViewMore, viewMoreRef }) => {
+const CardView = ({
+  fullData,
+  handleViewMore,
+  selectedViewMore,
+  index,
+}) => {
   return (
     <>
       <Grid container spacing={2} className='teacherbatchsCardMain'>
