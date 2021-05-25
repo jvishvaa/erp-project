@@ -6,3 +6,28 @@
   min-width: 16px;
   max-height: calc(100% - 32px);
 }
+
+.detailCardViewContainer.MuiGrid-item {
+  height:17vw;
+  max-height: 22vw;
+  overflow-y: scroll;
+}
+
+.teacherBatchFullViewMainParentDiv {
+  top:0%;
+  position: sticky;
+}
+
+.takeQuizButton.MuiButton-root {
+  font-size: 0.9rem;
+  color: #FFFFFF;
+  background-color: #344ADE;
+  border-radius: 8px;
+}
+
+@media screen and (max-width: 768px) {
+.detailCardViewContainer.MuiGrid-item {
+  height: 50vh;
+  max-height:60vh;
+}
+}
