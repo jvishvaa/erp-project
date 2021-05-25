@@ -42,6 +42,7 @@ deploy_dev:
       - erp_revamp_frontend
     only:
       - dev
+      - qa
 
 
 deploy_prod:
