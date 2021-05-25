@@ -219,21 +219,21 @@ const JoinClass = (props) => {
           </Grid>
 
           <Grid item xs={3}>
-            <IconButton
+            {/* <IconButton
               color='primary'
               onClick={() => {
                 setDialogClassWorkBox(true);
               }}
             >
               <PhotoCamera />
-            </IconButton>
-            <UploadDialogBox
+            </IconButton> */}
+            {/* <UploadDialogBox
               periodData={props?.data}
               setLoading={setLoading}
               fullData={fullData}
               classWorkDialog={classWorkDialog}
               OpenDialogBox={handleOpenClassWorkDialogBox}
-            />
+            /> */}
           </Grid>
         </>
       ) : (
