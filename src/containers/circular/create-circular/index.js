@@ -102,15 +102,15 @@ const CraeteCircular = () => {
   };
 
   const handleRole = (event, value) => {
-    setFilterData({ ...filterData, role: '' });
+    setFilterData({ ...filterData, role: '',grade:'',section:'' });
     if (value) {
-      setFilterData({ ...filterData, role: value });
+      setFilterData({ ...filterData, role: value,grade:'',section:'' });
     }
   };
   const handleAcademicYear = (event, value) => {
-    setFilterData({ ...filterData, year: '' });
+    setFilterData({ ...filterData, year: '',branch:'',role:'',grade:'',section:'' });
     if (value) {
-      setFilterData({ ...filterData, year: value });
+      setFilterData({ ...filterData, year: value ,branch:'',role:'',grade:'',section:''});
       //.get(`${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`)
       axiosInstance
         .get(`${endpoints.communication.branches}?session_year=${value.id}&module_id=${moduleId}`)
@@ -134,15 +134,17 @@ const CraeteCircular = () => {
   };
 
   const handleBranch = (event, value) => {
-    setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
+    setFilterData({ ...filterData, branch: '',role:'', grade: '', subject: '', chapter: '' ,section:''});
     setOverviewSynopsis([]);
     if (value) {
       setFilterData({
         ...filterData,
         branch: value,
+        role:'',
         grade: '',
         subject: '',
         chapter: '',
+        section:'',
       });
       axiosInstance
         .get(`${endpoints.communication.grades}?branch_id=${value?.branch.id}&session_year=${filterData.year?.id}&module_id=${moduleId}`)
@@ -170,7 +172,7 @@ const CraeteCircular = () => {
   };
 
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: '', subject: '', chapter: '' });
+    setFilterData({ ...filterData, grade: '', subject: '', chapter: '',section:'' });
     setOverviewSynopsis([]);
     if (value && filterData?.branch) {
       setFilterData({
@@ -178,6 +180,7 @@ const CraeteCircular = () => {
         grade: value,
         subject: '',
         chapter: '',
+        section:'',
       });
       axiosInstance
         .get(

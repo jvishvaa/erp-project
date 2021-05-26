@@ -116,9 +116,9 @@ const CircularFilters = ({
   };
 
   const handleAcademicYear = (event, value) => {
-    setFilterData({ ...filterData, year: '' });
+    setFilterData({ ...filterData, year: '',branch:'',grade:'',section:'' });
     if (value) {
-      setFilterData({ ...filterData, year: value });
+      setFilterData({ ...filterData, year: value ,branch:'',grade:'',section:''});
       axiosInstance
         .get(
           `${endpoints.communication.branches}?session_year=${value.id}&module_id=${moduleId}`
@@ -141,7 +141,7 @@ const CircularFilters = ({
     }
   };
   const handleBranch = (event, value) => {
-    setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
+    setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '',section:'' });
     setOverviewSynopsis([]);
     if (value) {
       setFilterData({
@@ -150,6 +150,7 @@ const CircularFilters = ({
         grade: '',
         subject: '',
         chapter: '',
+        section:'',
       });
       axiosInstance
         // for teacher_module_id=167 ><<<admin=8
@@ -181,10 +182,10 @@ const CircularFilters = ({
   };
 
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: '', subject: '', chapter: '' });
+    setFilterData({ ...filterData, grade: '', subject: '', chapter: '',section:'' });
     setOverviewSynopsis([]);
     if (value && filterData.branch) {
-      setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
+      setFilterData({ ...filterData, grade: value, subject: '', chapter: '',section:'' });
       axiosInstance
         .get(
           `${endpoints.masterManagement.sections}?branch_id=${filterData.branch?.branch?.id}&session_year=${filterData.year.id}&grade_id=${value.grade_id}&module_id=${moduleId}`
