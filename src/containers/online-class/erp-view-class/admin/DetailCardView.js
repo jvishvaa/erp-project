@@ -28,10 +28,7 @@ import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { AttachFile as AttachFileIcon } from '@material-ui/icons';
 
 const JoinClass = (props) => {
-  const {
-    setLoading,
-    index,
-  } = props;
+  const { setLoading, index } = props;
   const fullData = props.fullData;
   const handleClose = props.handleClose;
   const { setAlert } = useContext(AlertNotificationContext);
@@ -205,7 +202,7 @@ const JoinClass = (props) => {
       </Grid>
       {window.location.pathname === '/erp-online-class-student-view' ? (
         <>
-          <Grid item xs={3}>
+          <Grid item xs={6} sm={6} md={3}>
             <Button
               size='small'
               color='secondary'
@@ -214,11 +211,11 @@ const JoinClass = (props) => {
               onClick={() => handleTakeQuiz(fullData)}
               className='takeQuizButton'
             >
-              TakeQuiz
+              Take Quiz
             </Button>
           </Grid>
 
-          <Grid item xs={3}>
+          <Grid item xs={6} sm={6} md={3}>
             {/* <IconButton
               color='primary'
               onClick={() => {
@@ -227,13 +224,27 @@ const JoinClass = (props) => {
             >
               <PhotoCamera />
             </IconButton> */}
-            {/* <UploadDialogBox
-              periodData={props?.data}
-              setLoading={setLoading}
-              fullData={fullData}
-              classWorkDialog={classWorkDialog}
-              OpenDialogBox={handleOpenClassWorkDialogBox}
-            /> */}
+            <Button
+              size='small'
+              color='primary'
+              fullWidth
+              variant='contained'
+              onClick={() => {
+                setDialogClassWorkBox(true);
+              }}
+              className='classworkButton'
+            >
+              Class Work
+            </Button>
+            {classWorkDialog && (
+              <UploadDialogBox
+                periodData={props?.data}
+                setLoading={setLoading}
+                fullData={fullData}
+                classWorkDialog={classWorkDialog}
+                OpenDialogBox={handleOpenClassWorkDialogBox}
+              />
+            )}
           </Grid>
         </>
       ) : (
@@ -243,7 +254,7 @@ const JoinClass = (props) => {
       fullData &&
       fullData.online_class &&
       fullData.online_class.question_paper_id ? (
-        <Grid item xs={3}>
+        <Grid item xs={6} sm={6} md={3}>
           <Button
             size='small'
             color='secondary'
@@ -274,7 +285,7 @@ const JoinClass = (props) => {
               <AttachFileIcon />
             </IconButton>
           </Tooltip>
-          <Grid item xs={3}>
+          <Grid item xs={6} sm={6} md={3}>
             <IconButton
               color='primary'
               onClick={() =>
@@ -292,7 +303,7 @@ const JoinClass = (props) => {
       )}
 
       {isAccept ? (
-        <Grid item xs={6}>
+        <Grid item xs={6} sm={6} md={3}>
           <Button
             size='small'
             color='secondary'
@@ -314,24 +325,26 @@ const JoinClass = (props) => {
             </Grid>
           ) : ( */}
           {endTime < currTime ? (
-            <Button
-              size='small'
-              color='secondary'
-              variant='contained'
-              disabled='true'
-              className='teacherFullViewSmallButtons'
-            >
-              Class Over
-            </Button>
+            <Grid item xs={6} sm={6} md={3}>
+              <Button
+                size='small'
+                color='secondary'
+                variant='contained'
+                disabled='true'
+                className='classOverButton'
+              >
+                Class Over
+              </Button>
+            </Grid>
           ) : isRejected ? (
             <>
-              <Grid item xs={6}>
+              <Grid item xs={6} sm={6} md={3}>
                 <Typography style={{ color: '#ff6b6b' }}>Rejected</Typography>
               </Grid>
             </>
           ) : (
             <>
-              <Grid item md={3} xs={6}>
+              <Grid item xs={6} sm={6} md={3}>
                 {window.location.pathname === '/erp-online-class' ? (
                   <Button
                     size='small'
@@ -746,16 +759,18 @@ const DetailCardView = ({
           </Card>
         </Grid>
       </Grid>
-      <ResourceDialog
-        selectedValue={selectedValue}
-        open={openPopup}
-        onClose={handleClosePopup}
-        title={fullData?.online_class?.title}
-        resourceId={fullData?.id}
-        onlineClassId={fullData?.online_class?.id}
-        startDate={fullData?.online_class?.start_time}
-        endDate={fullData?.online_class?.end_time}
-      />
+      {openPopup && (
+        <ResourceDialog
+          selectedValue={selectedValue}
+          open={openPopup}
+          onClose={handleClosePopup}
+          title={fullData?.online_class?.title}
+          resourceId={fullData?.id}
+          onlineClassId={fullData?.online_class?.id}
+          startDate={fullData?.online_class?.start_time}
+          endDate={fullData?.online_class?.end_time}
+        />
+      )}
       {loading && <Loader />}
     </>
   );

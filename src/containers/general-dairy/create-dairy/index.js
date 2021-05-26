@@ -372,8 +372,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
 
   const handleAcademicYear = (event, value) => {
     setSearchAcademicYear('');
+    setFilterData({...filterData,branch:'',grade:'',section:''})
     if (value) {
       setSearchAcademicYear(value.id);
+      setFilterData({...filterData,branch:'',grade:'',section:''})
       axiosInstance
         .get(
           `${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${

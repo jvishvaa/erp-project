@@ -47,7 +47,7 @@ const ErpAdminViewClass = ({ history }) => {
   const [selectedSubject, setSelectedSubject] = useState([]);
   const [courseList, setCourseList] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState('');
-  const [filterList, setFilterList] = useState('');
+  const [filterList, setFilterList] = useState([]);
   const [selectedViewMore, setSelectedViewMore] = useState('');
   const viewMoreRef = useRef(null);
   const limit = 9;
@@ -56,7 +56,6 @@ const ErpAdminViewClass = ({ history }) => {
     moment().subtract(6, 'days'),
     moment(),
   ]);
-
   const [classTypes, setClassTypes] = useState([
     { id: 0, type: 'Compulsory Class' },
     { id: 1, type: 'Optional Class' },
@@ -137,88 +136,90 @@ const ErpAdminViewClass = ({ history }) => {
         } = JSON.parse(localStorage.getItem('filterData')) || {};
         setPage(pageNumber);
         if (classtype?.id >= 0) {
-          setSelectedClassType(classtype);
-          if (window.location.pathname === '/erp-online-class-student-view') {
-            callApi(
-              `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-                studentDetails &&
-                studentDetails.role_details &&
-                studentDetails.role_details.erp_user_id
-              }&page_number=${pageNumber}&page_size=${limit}&class_type=${classtype?.id}`,
-              'filter'
-            );
+          setSelectedClassType(classtype); //Issue found here
+          // if (window.location.pathname === '/erp-online-class-student-view') {
+          //   callApi(
+          //     `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+          //       studentDetails &&
+          //       studentDetails.role_details &&
+          //       studentDetails.role_details.erp_user_id
+          //     }&page_number=${pageNumber}&page_size=${limit}&class_type=${classtype?.id}`,
+          //     'filter'
+          //   );
+          // }
+        }
+        if (window.location.pathname !== '/erp-online-class-student-view') {
+          if (date?.length) {
+            setDateRangeTechPer([moment(date?.[0]), moment(date?.[1])]);
           }
-        }
-        if (date?.length) {
-          setDateRangeTechPer([moment(date?.[0]), moment(date?.[1])]);
-        }
-        if (academic?.id) {
-          setSelectedAcadmeicYear(academic);
-          const acadId = academic?.id || '';
-          callApi(
-            `${endpoints.communication.branches}?session_year=${acadId}&module_id=${moduleId}`,
-            'branchList'
-          );
-          if (branch?.length) {
-            setSelectedBranch(branch);
-            const branchIds = branch.map((el) => el?.branch?.id) || [];
+          if (academic?.id) {
+            setSelectedAcadmeicYear(academic);
+            const acadId = academic?.id || '';
             callApi(
-              `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`,
-              'gradeList'
+              `${endpoints.communication.branches}?session_year=${acadId}&module_id=${moduleId}`,
+              'branchList'
             );
-            if (grade?.length) {
-              setSelectedGrade(grade);
-              const gradeIds = grade.map((el) => el?.grade_id) || [];
+            if (branch?.length) {
+              setSelectedBranch(branch);
+              const branchIds = branch.map((el) => el?.branch?.id) || [];
               callApi(
-                `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}&module_id=${moduleId}`,
-                'section'
+                `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`,
+                'gradeList'
               );
-              callApi(
-                `${endpoints.teacherViewBatches.courseListApi}?grade=${gradeIds}`,
-                'course'
-              );
-              if (section?.length) {
-                setSelectedSection(section);
-                const sectionIds = section.map((el) => el?.section_id) || [];
+              if (grade?.length) {
+                setSelectedGrade(grade);
+                const gradeIds = grade.map((el) => el?.grade_id) || [];
                 callApi(
-                  `${endpoints.academics.subjects}?branch=${branchIds}&session_year=${acadId}&grade=${gradeIds}&section=${sectionIds}&module_id=${moduleId}`,
-                  'subject'
+                  `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}&module_id=${moduleId}`,
+                  'section'
                 );
-                if (classtype?.id === 0) {
-                  if (subject?.length) {
-                    setSelectedSubject(subject);
-                    callApi(
-                      `${
-                        endpoints.aol.classes
-                      }?is_aol=0&session_year=${acadId}&section_mapping_ids=${section.map(
-                        (el) => el?.id
-                      )}&subject_id=${subject.map((el) => el?.subject__id)}&class_type=${
-                        classtype?.id
-                      }&start_date=${moment(date?.[0]).format(
-                        'YYYY-MM-DD'
-                      )}&end_date=${moment(date?.[1]).format(
-                        'YYYY-MM-DD'
-                      )}&module_id=${moduleId}&page_number=${pageNumber}&page_size=${limit}`,
-                      'filter'
-                    );
-                  }
-                } else {
-                  if (course?.id) {
-                    setSelectedCourse(course);
-                    callApi(
-                      `${
-                        endpoints.aol.classes
-                      }?is_aol=0&session_year=${acadId}&section_mapping_ids=${section.map(
-                        (el) => el?.id
-                      )}&class_type=${classtype?.id}&start_date=${moment(
-                        date?.[0]
-                      ).format('YYYY-MM-DD')}&end_date=${moment(date?.[1]).format(
-                        'YYYY-MM-DD'
-                      )}&course_id=${
-                        course?.id
-                      }&page_number=${pageNumber}&page_size=${limit}&module_id=${moduleId}`,
-                      'filter'
-                    );
+                callApi(
+                  `${endpoints.teacherViewBatches.courseListApi}?grade=${gradeIds}`,
+                  'course'
+                );
+                if (section?.length) {
+                  setSelectedSection(section);
+                  const sectionIds = section.map((el) => el?.section_id) || [];
+                  callApi(
+                    `${endpoints.academics.subjects}?branch=${branchIds}&session_year=${acadId}&grade=${gradeIds}&section=${sectionIds}&module_id=${moduleId}`,
+                    'subject'
+                  );
+                  if (classtype?.id === 0) {
+                    if (subject?.length) {
+                      setSelectedSubject(subject);
+                      // callApi(
+                      //   `${
+                      //     endpoints.aol.classes
+                      //   }?is_aol=0&session_year=${acadId}&section_mapping_ids=${section.map(
+                      //     (el) => el?.id
+                      //   )}&subject_id=${subject.map(
+                      //     (el) => el?.subject__id
+                      //   )}&class_type=${classtype?.id}&start_date=${moment(
+                      //     date?.[0]
+                      //   ).format('YYYY-MM-DD')}&end_date=${moment(date?.[1]).format(
+                      //     'YYYY-MM-DD'
+                      //   )}&module_id=${moduleId}&page_number=${pageNumber}&page_size=${limit}`,
+                      //   'filter'
+                      // );
+                    }
+                  } else if (classtype.id > 0) {
+                    if (course?.id) {
+                      setSelectedCourse(course);
+                      // callApi(
+                      //   `${
+                      //     endpoints.aol.classes
+                      //   }?is_aol=0&session_year=${acadId}&section_mapping_ids=${section.map(
+                      //     (el) => el?.id
+                      //   )}&class_type=${classtype?.id}&start_date=${moment(
+                      //     date?.[0]
+                      //   ).format('YYYY-MM-DD')}&end_date=${moment(date?.[1]).format(
+                      //     'YYYY-MM-DD'
+                      //   )}&course_id=${
+                      //     course?.id
+                      //   }&page_number=${pageNumber}&page_size=${limit}&module_id=${moduleId}`,
+                      //   'filter'
+                      // );
+                    }
                   }
                 }
               }
@@ -298,12 +299,12 @@ const ErpAdminViewClass = ({ history }) => {
         window.location.pathname === '/erp-online-class' ||
         window.location.pathname === '/erp-online-class-teacher-view'
       ) {
-        if (selectedCourse.id) {
+        if (selectedCourse?.id) {
           callApi(
             `${endpoints.aol.classes}?is_aol=0&session_year=${
-              selectedAcademicYear.id
+              selectedAcademicYear?.id
             }&section_mapping_ids=${selectedSection.map((el) => el.id)}&class_type=${
-              selectedClassType.id
+              selectedClassType?.id
             }&start_date=${startDateTechPer?.format(
               'YYYY-MM-DD'
             )}&end_date=${endDateTechPer?.format('YYYY-MM-DD')}&course_id=${
@@ -338,17 +339,23 @@ const ErpAdminViewClass = ({ history }) => {
         'academicYearList'
       );
     }
-    if (window.location.pathname === '/erp-online-class-student-view') {
-      callApi(
-        `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-          studentDetails &&
-          studentDetails.role_details &&
-          studentDetails.role_details.erp_user_id
-        }&page_number=${page}&page_size=${limit}&class_type=${selectedClassType?.id}`,
-        'filter'
-      );
-    }
-  }, [selectedClassType, moduleId]);
+    // if (
+    //   window.location.pathname === '/erp-online-class-student-view' &&
+    //   selectedClassType?.id >= 0 &&
+    //   moduleId
+    // ) {
+    //   callApi(
+    //     `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+    //       studentDetails &&
+    //       studentDetails.role_details &&
+    //       studentDetails.role_details.erp_user_id
+    //     }&page_number=${page}&page_size=${limit}&class_type=${
+    //       selectedClassType?.id
+    //     }&module_id=${moduleId}`,
+    //     'filter'
+    //   );
+    // }
+  }, [moduleId]); //Issue found here
 
   useEffect(() => {
     if (page) {
@@ -388,19 +395,22 @@ const ErpAdminViewClass = ({ history }) => {
         }
       } else if (
         window.location.pathname === '/erp-online-class-student-view' &&
-        selectedClassType
+        selectedClassType?.id >= 0 &&
+        moduleId
       ) {
         callApi(
           `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
             studentDetails &&
             studentDetails.role_details &&
             studentDetails.role_details.erp_user_id
-          }&page_number=${page}&page_size=${limit}&class_type=${selectedClassType?.id}`,
+          }&page_number=${page}&page_size=${limit}&class_type=${
+            selectedClassType?.id
+          }&module_id=${moduleId}`,
           'filter'
         );
       }
     }
-  }, [page]);
+  }, [page, selectedClassType]);  //Issue found here
 
   function handleClearFilter() {
     localStorage.removeItem('filterData');
@@ -512,28 +522,31 @@ const ErpAdminViewClass = ({ history }) => {
   //   }
   //   setDateRangeTechPer(v1);
   // }
-  const handleDownload= async()=>{
+  const handleDownload = async () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-    try{
-      const {data} = await axiosInstance.get(`${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
-      {
-        responseType: 'arraybuffer',
-      }
-    );
-    const blob = new Blob([data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.download =`erp_classes_from${moment(startDateTechPer).format('YYYY-MM-DD')}_to_${moment(endDateTechPer).format('YYYY-MM-DD')}`
-    link.click();
-    link.remove();
+    try {
+      const { data } = await axiosInstance.get(
+        `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
+          startDateTechPer
+        ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
+        {
+          responseType: 'arraybuffer',
+        }
+      );
+      const blob = new Blob([data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `erp_classes_from${moment(startDateTechPer).format(
+        'YYYY-MM-DD'
+      )}_to_${moment(endDateTechPer).format('YYYY-MM-DD')}`;
+      link.click();
+      link.remove();
+    } catch {
+      setAlert('error', 'Failed To Download, Try After Some Time');
     }
-    catch{
-      setAlert('error','Failed To Download, Try After Some Time')
-    }
-
-  }
+  };
 
   return (
     <>
@@ -575,6 +588,16 @@ const ErpAdminViewClass = ({ history }) => {
                   size='small'
                   onChange={(event, value) => {
                     if (window.location.pathname === '/erp-online-class-student-view') {
+                      // callApi(
+                      //   `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+                      //     studentDetails &&
+                      //     studentDetails.role_details &&
+                      //     studentDetails.role_details.erp_user_id
+                      //   }&page_number=${page}&page_size=${limit}&class_type=${
+                      //     value?.id
+                      //   }&module_id=${moduleId}`,
+                      //   'filter'
+                      // );
                       localStorage.setItem(
                         'filterData',
                         JSON.stringify({
@@ -582,6 +605,7 @@ const ErpAdminViewClass = ({ history }) => {
                         })
                       );
                     }
+                    setTotalCount(0);
                     localStorage.removeItem('viewMoreData');
                     setSelectedClassType(value);
                     setSelectedGrade([]);

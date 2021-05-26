@@ -193,10 +193,10 @@ const GeneralDairyFilter = ({
 
   let sectionId = [];
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: '', subject: '', chapter: '', sections: '' });
+    setFilterData({ ...filterData, grade: '', subject: '', chapter: '', sections: [],sectionIds:[] });
     if (value && filterData.branch) {
       // https://erpnew.letseduvate.com/qbox/academic/general-dairy-messages/?branch=5&grades=25&sections=44&page=1&start_date=2021-02-02&end_date=2021-02-08&dairy_type=2
-      setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
+      setFilterData({ ...filterData, grade: value, subject: '', chapter: '' ,sections: [],sectionIds:[] });
       axiosInstance.get(`${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${value.grade_id}&module_id=${moduleId}`)
       .then(result => {
         if (result.data.status_code === 200) {
@@ -219,9 +219,9 @@ const GeneralDairyFilter = ({
   };
 
   const handleAcademicYear = (event, value) => {
-    setFilterData({ ...filterData, year: '' });
+    setFilterData({ ...filterData, year: '',branch:'',grade:'',sectionIds:[],sections:[] });
     if (value) {
-      setFilterData({ ...filterData, year: value });
+      setFilterData({ ...filterData, year: value,branch:'',grade:'' });
       axiosInstance
         .get(`${endpoints.masterManagement.branchMappingTable}?session_year=${value.id}&module_id=${moduleId}`)
         .then((result) => {
@@ -250,10 +250,10 @@ const GeneralDairyFilter = ({
   };
 
   const handleBranch = (event, value) => {
-    setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
+    setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '',sections:[],sectionIds:[] });
     // setOverviewSynopsis([]);
     if (value) {
-      setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '' });
+      setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '',sections:[],sectionIds:[]  });
       axiosInstance.get(`${endpoints.communication.grades}?session_year=${filterData?.year?.id}&branch_id=${value.branch.id}&module_id=${moduleId}`)
       .then(result => {
         if (result.data.status_code === 200) {
@@ -347,7 +347,7 @@ const GeneralDairyFilter = ({
               onChange={handleAcademicYear}
               id='academic-year'
               className='dropdownIcon'
-              value={filterData?.year}
+              value={filterData?.year || {}}
               options={academicYearDropdown}
               getOptionLabel={(option) => option?.session_year}
               filterSelectedOptions
@@ -368,7 +368,7 @@ const GeneralDairyFilter = ({
               onChange={handleBranch}
               id='academic-year'
               className='dropdownIcon'
-              value={filterData?.branch}
+              value={filterData?.branch || {}}
               options={branchDropdown}
               getOptionLabel={(option) => option?.branch?.branch_name}
               filterSelectedOptions
@@ -393,7 +393,7 @@ const GeneralDairyFilter = ({
             onChange={handleGrade}
             id='volume'
             className='dropdownIcon'
-            value={filterData?.grade}
+            value={filterData?.grade || {}}
             options={gradeDropdown}
             getOptionLabel={(option) => option?.grade__grade_name}
             filterSelectedOptions
@@ -412,7 +412,7 @@ const GeneralDairyFilter = ({
             onChange={handleSection}
             id='subj'
             className='dropdownIcon'
-            value={filterData?.sections}
+            value={filterData?.sections || {}}
             options={sectionDropdown}
             getOptionLabel={(option) => option?.section__section_name}
             filterSelectedOptions
