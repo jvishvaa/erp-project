@@ -236,7 +236,7 @@ const JoinClass = (props) => {
             >
               Class Work
             </Button>
-            {classWorkDialog && (
+            {/* {classWorkDialog && (
               <UploadDialogBox
                 periodData={props?.data}
                 setLoading={setLoading}
@@ -244,7 +244,7 @@ const JoinClass = (props) => {
                 classWorkDialog={classWorkDialog}
                 OpenDialogBox={handleOpenClassWorkDialogBox}
               />
-            )}
+            )} */}
           </Grid>
         </>
       ) : (

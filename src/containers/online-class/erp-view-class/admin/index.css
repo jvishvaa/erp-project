@@ -19,10 +19,22 @@
 }
 
 .takeQuizButton.MuiButton-root {
-  font-size: 0.9rem;
   color: #FFFFFF;
   background-color: #344ADE;
   border-radius: 8px;
+  word-wrap: break-word;
+}
+
+.classworkButton.MuiButton-root {
+  color: #FFFFFF;
+  background-color: #ff6b6b;
+  border-radius: 8px;
+  word-wrap: break-word;
+}
+
+.classOverButton.MuiButton-root {
+  border-radius: 8px;
+  word-wrap: break-word;
 }
 
 @media screen and (max-width: 768px) {
