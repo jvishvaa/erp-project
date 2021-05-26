@@ -112,7 +112,7 @@ const CircularList = () => {
         .get(
           `${endpoints.circular.circularList}?is_superuser=True&branch=${
             branch.branch?.id
-          }&grade=${grade.grade_id}&section=${section.id}&academic_year=${
+          }&grade=${grade.grade_id}&section=${section?.section_id}&academic_year=${
             year.id
           }&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format(
             'YYYY-MM-DD'

@@ -1,97 +1,122 @@
-import Timer from 'react-compound-timer';
-
 import React from 'react';
-import { Tune } from '@material-ui/icons';
+import moment from 'moment';
+// import './style.scss';
+import { Grid, Card, Button, Typography } from '@material-ui/core';
 
-function CountdownTimer({timer}) {
-  const classStartMin = 1;
-  const countStartWithInMIn = 1*(30/100);
-  const defaultStartTime=new Date(new Date().getTime() + classStartMin * 60 * 1000).getTime()
-  const [classStartsAt] = React.useState(defaultStartTime);
-  const [timerWillStartOn, setTimerWillStartOn] = React.useState(null)
-  const [timeDiffInMilliSec, setTimeDiffInMilliSec]= React.useState(null)
-  const [classWillStartOn, setClassWillStartOn]= React.useState(null)
-
-//   function timeChecker() {
-//     const timeNow = new Date().getTime();
-//     const timeDiffInMilliSec = classStartsAt - timeNow;
-//     if (timeDiffInMilliSec <= countStartWithInMIn * 60 * 1000) {
-//         return true;
-//     } else {
-//       console.log('Timer start on', timeDiffInMilliSec);
-//       return null;
-//     }
-//   }
-  const getTimerStartsOn =()=>{
-    const timeNow = new Date().getTime();
-    return ((classStartsAt||defaultStartTime) - countStartWithInMIn*60*1000)-timeNow
-  }
-  const getClassStartsOn =()=>{
-    const timeNow = new Date().getTime();
-    return ((classStartsAt||defaultStartTime))-timeNow
-  }
-  const [canStartTimer, startTimer] = React.useState(null);
-  const checKkUpdate =()=>{
-    const timeNow = new Date().getTime();
-    const timeDiffInMilliSec = (classStartsAt||defaultStartTime) - timeNow;
-    setTimeDiffInMilliSec(timeDiffInMilliSec)
-    const timerStartsOn =getTimerStartsOn()
-    if(timerStartsOn/1000>1){
-        setTimerWillStartOn(timerStartsOn)
-    }
-    const classStartsOn =getClassStartsOn()
-    if(classStartsOn/1000>1){
-        setClassWillStartOn(classStartsOn)
-    }
-    if (canStartTimer!==true && timerStartsOn/1000 <= 1) {
-      startTimer(true);
-    }
-  }
-  React.useEffect(() => {
-    checKkUpdate()
-  });
+const CardView = ({
+  fullData,
+  handleViewMore,
+  selectedViewMore,
+  index,
+}) => {
+  
   return (
-      <div key='timer'>
-          {/* { */}
-            {/* //   canStartTimer ? ( */}
-            <p>Class starts at : {new Date(classStartsAt).toString()}</p>
-                      <hr />
-                      <p key={timerWillStartOn}>Time diff to start timer {timerWillStartOn/1000}</p>
-                      <hr />
-                      <p key={classWillStartOn}>Time diff to start timer {classWillStartOn/1000}</p>
-                      <hr />
-                      <button type='button' 
-                                  onClick={()=>{checKkUpdate()}}
-                                  >Check</button>
-                      <br />
-                      {
-                          canStartTimer &&(
-                            <Timer
-                            key='timer-comppound'
-                              initialTime={countStartWithInMIn*60*1000}
-                              direction='backward'
-                              checkpoints={[
-                                {
-                                  time: 0,
-                                  callback: () => window.alert('Started'),
-                                },
-                              ]}
-                            >
-                              {({ start, resume, pause, stop, reset, timerState }) => (
-                                <React.Fragment>
-                                  <div>
-                                    <Timer.Days /> days
-                                    <Timer.Hours /> hours
-                                    <Timer.Minutes /> minutes
-                                    <Timer.Seconds /> seconds
-                                  </div>
-                                </React.Fragment>
-                              )}
-                            </Timer>
-                          )
-                      }
-      </div>
+    <>
+      <Grid container spacing={2} className='teacherbatchsCardMain'>
+        <Grid item md={12} xs={12}>
+          <Card
+            className={
+              (fullData && fullData.id) === (selectedViewMore && selectedViewMore.id)
+                ? 'teacherBatchCardActive'
+                : 'teacherBatchCardInActive'
+            }
+          >
+            <Grid container spacing={2}>
+              <Grid item md={9} xs={9} style={{ padding: '5px' }}>
+                {fullData &&
+                  fullData.online_class &&
+                  fullData.online_class.course_name && (
+                    <span className='teacherBatchCardLable'>
+                      {fullData.online_class.course_name}
+                    </span>
+                  )}{' '}
+                <br />
+                {fullData && fullData.online_class && fullData.online_class.title && (
+                  <span className='teacherBatchCardLable'>
+                    {fullData.online_class.title}
+                  </span>
+                )}
+              </Grid>
+              <Grid item xs={3}>
+                <Typography>
+                  {moment(
+                    fullData.online_class ? fullData.online_class.start_time : ''
+                  ).format('hh:mm A')}
+                </Typography>
+              </Grid>
+              <Grid item md={12} xs={12} style={{ padding: '5px' }}>
+                <span className='teacherBatchCardLable'>
+                  {(fullData &&
+                    fullData.online_class &&
+                    fullData.online_class.subject &&
+                    fullData.online_class.subject.length !== 0 &&
+                    fullData.online_class.subject.map((item) => (
+                      <span>
+                        {item.subject_name || ''}
+                        &nbsp;
+                      </span>
+                    ))) ||
+                    ''}
+                </span>
+              </Grid>
+              <Grid item md={12} xs={12} style={{ padding: '5px' }}>
+                <span className='teacherBatchCardLable1'>
+                  Start Date:&nbsp;
+                  {/*(fullData &&
+                    fullData.online_class &&
+                    fullData.online_class.start_time &&
+                    new Date(fullData.online_class.start_time)
+                      .toString()
+                      .split('G')[0]
+                      .substring(0, 16)) ||
+                  ''*/}
+                  {fullData.online_class
+                    ? moment(fullData.online_class.start_time).format('DD-MM-YYYY')
+                    : ''}
+                </span>
+              </Grid>
+              <Grid item md={12} xs={12} style={{ padding: '5px' }}>
+                <span className='teacherBatchCardLable1'>
+                  End Date:&nbsp;
+                  {/*(fullData &&
+                    fullData.online_class &&
+                    fullData.online_class.end_time &&
+                    new Date(fullData.online_class.end_time)
+                      .toString()
+                      .split('G')[0]
+                      .substring(0, 16)) ||
+                  '' */}
+                  {fullData.online_class
+                    ? moment(fullData.online_class.end_time).format('DD-MM-YYYY')
+                    : ''}
+                </span>
+              </Grid>
+              <Grid item md={12} xs={12} style={{ textAlign: 'right' }}>
+                <Button
+                  variant='contained'
+                  color='secondary'
+                  className='TeacherBatchCardViewMoreButton'
+                  style={{
+                    display:
+                      (fullData && fullData.id) ===
+                      (selectedViewMore && selectedViewMore.id)
+                        ? 'none'
+                        : '',
+                  }}
+                  onClick={() => {
+                    handleViewMore(fullData);
+                    localStorage.setItem('viewMoreData', JSON.stringify(fullData));
+                  }}
+                >
+                  View More
+                </Button>
+              </Grid>
+            </Grid>
+          </Card>
+        </Grid>
+      </Grid>
+    </>
   );
-}
+};
 
-export default CountdownTimer;
+export default CardView;
