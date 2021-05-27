@@ -482,12 +482,15 @@ const CreateClassForm = (props) => {
   };
 
   const [selectedDays, setSelectedDays] = useState([]);
+  const [daysLength, setDaysLength] = useState(0);
   const handleDays = (event, value) => {
     setSelectedDays(value);
     if (value?.length > 0) {
+      setDaysLength(prev => prev + 1);
       const sendData = value.map((obj) => obj.send);
       setOnlineClass((prevState) => ({ ...prevState, days: sendData }));
     } else {
+      setDaysLength(prev => prev - 1);
       setOnlineClass((prevState) => ({ ...prevState, days: [] }));
     }
   };
@@ -736,7 +739,8 @@ const CreateClassForm = (props) => {
     onlineClass.selectedTime &&
     onlineClass.tutorEmail &&
     onlineClass.weeks &&
-    [...selectedDays].length :
+    daysLength
+    :
     onlineClass.duration &&
     onlineClass.subject &&
     onlineClass.gradeIds?.length &&
@@ -759,7 +763,7 @@ const CreateClassForm = (props) => {
     onlineClass.selectedTime,
     onlineClass.tutorEmail,
     onlineClass.weeks,
-    [...selectedDays].length]
+    daysLength]
   );
 
   useEffect(() => {
@@ -820,7 +824,7 @@ const CreateClassForm = (props) => {
                 onChange={handleClassType}
                 id='create__class-type'
                 options={classTypes}
-                getOptionLabel={(option) => option?.type}
+                getOptionLabel={(option) => option?.type || ''}
                 filterSelectedOptions
                 className='dropdownIcon'
                 value={selectedClassType}
@@ -1088,7 +1092,7 @@ const CreateClassForm = (props) => {
                     size='small'
                     id='create__class-subject'
                     options={daysList}
-                    getOptionLabel={(option) => option.day}
+                    getOptionLabel={(option) => option.day || ''}
                     filterSelectedOptions
                     value={selectedDays}
                     onChange={handleDays}
@@ -1149,7 +1153,7 @@ const CreateClassForm = (props) => {
                 size='small'
                 id='create__class-tutor-email'
                 options={tutorEmailList}
-                getOptionLabel={(option) => option.email}
+                getOptionLabel={(option) => option?.name || ''}
                 filterSelectedOptions
                 value={onlineClass.tutorEmail}
                 onChange={handleTutorEmail}
@@ -1162,8 +1166,8 @@ const CreateClassForm = (props) => {
                     className='create__class-textfield'
                     {...params}
                     variant='outlined'
-                    label='Tutor Email'
-                    placeholder='Tutor Email'
+                    label='Tutor Name'
+                    placeholder='Tutor Name'
                     required
                   />
                 )}
@@ -1254,9 +1258,9 @@ const CreateClassForm = (props) => {
                     options={tutorEmailList.filter(
                       (email) => email.email !== onlineClass.tutorEmail?.email
                     )}
-                    getOptionLabel={(option) => option.email}
+                    getOptionLabel={(option) => option?.name || ''}
                     filterSelectedOptions
-                    value={onlineClass.coHosts}
+                    value={onlineClass?.coHosts}
                     onChange={handleCoHost}
                     className='dropdownIcon'
                     disabled={tutorEmailsLoading}
@@ -1358,11 +1362,27 @@ const CreateClassForm = (props) => {
               >
                 {creatingOnlineClass ? 'Please wait.Creating new class' : 'Create class'}
               </Button>
+              {/* {creatingOnlineClass ?
+                (<div className="creatingOnlineClassTag">
+                  Please wait.Creating new class
+                </div>)
+                :
+                (<Button
+                  disabled={createBtnDisabled}
+                  variant='contained'
+                  color='primary'
+                  size='medium'
+                  type='submit'
+                  style={{ borderRadius: '10px', width: '100%' }}
+                >
+                  {creatingOnlineClass ? 'Please wait.Creating new class' : 'Create Class'}
+                </Button>)
+              } */}
             </Grid>
           </Grid>
         </form>
       </div>
-    </div>
+    </div >
   );
 };
 

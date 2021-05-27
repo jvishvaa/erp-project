@@ -83,6 +83,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     chapter: '',
   });
 
+  //to-get-diff-in-merge
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));

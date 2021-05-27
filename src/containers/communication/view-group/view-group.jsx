@@ -418,8 +418,8 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                             <IconButton
                               title='Edit'
                               style={{ padding: '5px' }}
-                              // onClick={() => handleUpdate(items)}
-                              onClick={() => handleEdit(items.groupId, i)}
+                              onClick={() => handleUpdate(items)}
+                              // onClick={() => handleEdit(items.groupId, i)}
                             >
                               <EditOutlinedIcon style={{ color: '#ff6b6b' }} />
                             </IconButton>

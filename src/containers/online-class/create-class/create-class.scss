@@ -5,6 +5,16 @@
   width: 100%;
   margin: 0 auto;
 
+  .creatingOnlineClassTag {
+    background: #e0e0e0;
+    color: rgb(140, 140, 140);
+    width: 100%;
+    font-size: 1rem;
+    padding: 6px 16px;
+    border-radius:10px;
+    text-align: center;
+  }
+
   .breadcrumb-container-create {
     width: 95%;
     margin: 20px auto 30px auto;

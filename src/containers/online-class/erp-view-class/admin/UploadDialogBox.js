@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
+import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -54,7 +55,7 @@ const UploadClassWorkDiaogBox = (props) => {
   const { openLightbox } = useLightbox();
 
   useEffect(() => {
-    if (periodDate!=='') getPeriodDetails();
+    if (periodDate !== '') getPeriodDetails();
   }, [periodDate]);
 
   function getPeriodDetails() {
@@ -179,9 +180,16 @@ const UploadClassWorkDiaogBox = (props) => {
         <DialogContent>
           <SimpleReactLightbox>
             <SRLWrapper>
-              <div className='optionImageContainer1'>
+              <Grid container spacing={2} className='optionImageContainer1'>
                 {uploadFiles?.map((url, index) => (
-                  <div className='optionImageThumbnailContainer1'>
+                  <Grid
+                    item
+                    xs={6}
+                    sm={3}
+                    md={3}
+                    lg={3}
+                    className='optionImageThumbnailContainer1'
+                  >
                     <img
                       ref={imageRef}
                       alt='file'
@@ -204,9 +212,9 @@ const UploadClassWorkDiaogBox = (props) => {
                         <DeleteIcon />
                       </IconButton>
                     </div>
-                  </div>
+                  </Grid>
                 ))}
-              </div>
+              </Grid>
             </SRLWrapper>
           </SimpleReactLightbox>
           {uploadFiles?.length === 0 && (

@@ -163,7 +163,7 @@ const SectionShuffling = () => {
                 <div style={{ width: '95%', margin: '20px auto' }}>
                     <CommonBreadcrumbs
                         componentName='User Management'
-                        childComponentName='Section Shuffling'
+                        childComponentName='Section Shuffle'
                     />
                 </div>
                 <Grid container>

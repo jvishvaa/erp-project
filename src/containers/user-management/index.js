@@ -31,7 +31,7 @@ const RoutesIndex = () => {
         <Route path={`${match.url}/edit-user/:id`}>
           {({ match, history }) => <EditUser match={match} history={history} />}
         </Route>
-        <Route path={`${match.url}/section-shuffling`}>
+        <Route path={`${match.url}/section-shuffling`} exact>
           {({ match, history }) => <SectionShuffling match={match} history={history} />}
         </Route>
         {/* <Route path={`${match.url}`} exact>

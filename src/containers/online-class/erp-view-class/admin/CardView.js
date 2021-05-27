@@ -9,6 +9,7 @@ const CardView = ({
   selectedViewMore,
   index,
 }) => {
+  
   return (
     <>
       <Grid container spacing={2} className='teacherbatchsCardMain'>
