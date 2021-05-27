@@ -224,7 +224,7 @@ const JoinClass = (props) => {
             >
               <PhotoCamera />
             </IconButton> */}
-            <Button
+            {/* <Button
               size='small'
               color='primary'
               fullWidth
@@ -235,7 +235,7 @@ const JoinClass = (props) => {
               className='classworkButton'
             >
               Class Work
-            </Button>
+            </Button> */}
             {/* {classWorkDialog && (
               <UploadDialogBox
                 periodData={props?.data}
