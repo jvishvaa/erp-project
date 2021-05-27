@@ -42,7 +42,47 @@ deploy_dev:
       - erp_revamp_frontend
     only:
       - dev
+
+deploy_qa:
+    before_script:
+      - sleep 10
+      - ip a
+      - sudo chmod 777 -R /home/gitlab-runner/
+      - whoami
+      - pwd
+      - sudo chmod 777 -R /home/gitlab-runner/ 
+      - sudo npm cache clean --force
+      - sudo npm install -g serve
+      - sudo npm install -g forever
+    variables:
+      GIT_STRATEGY: clone
+    stage: deploy
+    script:
+      - whoami
+      - pwd
+      - sudo systemctl restart nginx
+      - echo "Deploy to QA server"
+      - sleep 10 
+      - sudo npm ci
+      - grep home package.json || true
+      - export CI=false
+      - export NODE_OPTIONS=--max_old_space_size=2048
+      - sudo -E bash -c "set \"CI=false\" &&  npm run build"
+      - sudo rm -rf /home/ubuntu/build_qa/
+      - sudo cp -r build/ /home/ubuntu/build_qa
+      - forever stop qa || true
+      - forever start --uid "qa" -a -l forever.log -o out.log -e err.log $(which serve) -s /home/ubuntu/build_qa -l 9004
+#      - sonar-scanner   -Dsonar.projectKey=ERP-Revamp-User-Frontend   -Dsonar.sources=.   -Dsonar.host.url=http://3.6.23.199:9000   -Dsonar.login=40cf8e68959fee394596fa649b681f0f5875aef9 > sonar.log
+#      - cat sonar.log | grep -i browse
+    environment:
+      name: qa-erp-frontend
+      url: 
+    tags:
+      - qa-erp-frontend
+    only:
       - qa
+
+
 
 
 deploy_prod:
