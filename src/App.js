@@ -4,6 +4,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
 import CreateGroup from './containers/communication/create-group/create-group';
 import ViewGroup from './containers/communication/view-group/view-group';
+import UpdateGroup from './containers/communication/update-group/index';
 import MessageCredit from './containers/communication/message-credit/message-credit';
 import SendMessage from './containers/communication/send-message/send-message';
 import MessageLog from './containers/communication/message-log/message-log';
@@ -304,6 +305,9 @@ const theme = createMuiTheme({
       // Name of the rule
       root: {
         // Some CSS
+        textTransform: 'capitailize',
+        textDecoration: 'none',
+        borderRadius: '10px',
         color: '#ffffff',
         backgroundColor: ' #ff6b6b',
       },
@@ -525,6 +529,9 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/communication/viewgroup'>
                             {({ match }) => <ViewGroup match={match} />}
+                          </Route>
+                          <Route exact path='/communication/updategroup'>
+                            {({ match }) => <UpdateGroup match={match} />}
                           </Route>
                           <Route exact path='/communication/sendmessage'>
                             {({ match }) => <SendMessage match={match} />}
