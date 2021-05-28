@@ -107,16 +107,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const StyledButton = withStyles({
-  root: {
-      backgroundColor: '#FF6B6B',
-      color: '#FFFFFF',
-      padding: '8px 15px',
-      '&:hover': {
-          backgroundColor: '#FF6B6B !important',
-        },
-  }
-})(Button);
+// const StyledButton = withStyles({
+//   root: {
+//     backgroundColor: '#FF6B6B',
+//     color: '#FFFFFF',
+//     padding: '7px 15px',
+//     '&:hover': {
+//       backgroundColor: '#FF6B6B !important',
+//     },
+//   }
+// })(Button);
 
 // eslint-disable-next-line no-unused-vars
 const ViewUsers = withRouter(({ history, ...props }) => {
@@ -203,7 +203,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     try {
       const result = await axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`);
       if (result.status === 200) {
-        setAcademicYearList(result.data.data);
+        setAcademicYearList(result.data?.data);
+        const defaultYear = result.data?.data?.[0];
+        setSelectedYear(defaultYear);
       } else {
         setAlert('error', result.data.message);
       }
@@ -293,33 +295,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             active: items.is_active,
           })
         );
-        // function addDataToExcel(xlsData){
-        //   xlsData.map((record) => {
-        //       //console.log(record, 'record');
-        //       const grades = [];
-        //       const sections = [];
-        //       record.section_mapping.map((data) => {
-        //         grades.push(data?.grade.id);
-        //         sections.push(data?.section.id)
-        //       })
-        //       excelData.push({
-        //         erp_id: record.erp_id,
-        //         first_name: record.user.first_name,
-        //         last_name: record.user.last_name,
-        //         username: record.user.username,
-        //         email: record.user.email,
-        //         contact: record.contact,
-        //         gender: record.gender,
-        //         role_name: record?.roles?.role_name,
-        //         grade_name: grades,
-        //         section_name: sections,
-        //         status: record.status
-        //       })
-        //   })
-        // }
-        // if(result.data?.results.length > 0){
-        //     addDataToExcel(result.data.results)
-        // }
         setUsersData(resultUsers);
         setTotalPages(result.data.total_pages);
       } else {
@@ -354,27 +329,27 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     if (rolesId.length && selectedRoles !== 'All') {
       getUserListUrl += `&role=${rolesId.toString()}`;
     }
-    /*
+    // /*
     if (gradesId.length && !selectedGrades.includes('All')) {
       getUserListUrl += `&grade=${gradesId.toString()}`;
     }
-    */
-    if (gradeIds.length && !selectedGrades.includes('All')) {
-      getUserListUrl += `&grade=${gradeIds.toString()}`;
-    }
+    // */
+    // if (gradeIds.length && !selectedGrades.includes('All')) {
+    //   getUserListUrl += `&grade=${gradeIds.toString()}`;
+    // }
     if (searchText) {
       getUserListUrl += `&search=${searchText}`;
     }
-    axiosInstance.get(`${getUserListUrl}`,{
+    axiosInstance.get(`${getUserListUrl}`, {
       responseType: 'arraybuffer',
     })
-    .then((res) => {
-      const blob = new Blob([res.data], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      });
-      FileSaver.saveAs(blob, "user_list.xls");
-    })
-    .catch((error) => setAlert('error', 'Something Wrong!'));
+      .then((res) => {
+        const blob = new Blob([res.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+        FileSaver.saveAs(blob, "user_list.xls");
+      })
+      .catch((error) => setAlert('error', 'Something Wrong!'));
   }
 
   const handleTextSearch = (e) => {
@@ -464,10 +439,10 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   }, [moduleId]);
 
   useEffect(() => {
-    if(moduleId) {
+    if (moduleId) {
       getUsersData();
     }
-  }, [currentPage,moduleId]);
+  }, [currentPage, moduleId]);
 
   useEffect(() => {
     if (selectedYear) {
@@ -489,9 +464,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       setCurrentPage(1);
       getUsersData();
     }
-  }, [isNewSeach,moduleId]);
+  }, [isNewSeach, moduleId]);
 
-  const handleYear = (event, value) => {
+  const handleYear = (event = {}, value = '') => {
     setSelectedYear('');
     setSelectedBranch('');
     setBranchList([]);
@@ -536,7 +511,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             <Grid item xs={12} md={3}>
               <FormControl
                 variant='outlined'
-                className={classes.formControl}
+                className={'searchViewUser'}
                 fullWidth
                 size='small'
               >
@@ -559,7 +534,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   setSelectedRoles(value);
                 }}
                 id='role_id'
-                //className='dropdownIcon'
+                className='dropdownIcon'
                 value={selectedRoles?.role_name}
                 options={roleList}
                 getOptionLabel={(option) => option?.role_name}
@@ -574,34 +549,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 )}
               />
             </Grid>
-            {/*
-            <Grid item xs={12} md={3}>
-              <FormControl
-                variant='outlined'
-                className={classes.formControl}
-                fullWidth
-                size='small'
-              >
-                <InputLabel>Role</InputLabel>
-                <Select
-                  labelId='demo-simple-select-outlined-label'
-                  id='demo-simple-select-outlined'
-                  value={selectedRoles}
-                  onChange={(e) => setSelectedRoles(e.target.value)}
-                  label='Role'
-                >
-                  <MenuItem value=''>
-                    <em>None</em>
-                  </MenuItem>
-                  {roleList.map((items, index) => (
-                    <MenuItem key={`role_user_details_${index}`} value={items.id}>
-                      {items.role_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            */}
             <Grid item md={3} xs={12}>
               <Autocomplete
                 style={{ width: '100%' }}
@@ -609,7 +556,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 //onChange={(e) => setSelectedBranch(e.target.value)}
                 onChange={handleYear}
                 id='branch_id'
-                //className='dropdownIcon'
+                className='dropdownIcon'
                 value={selectedYear || ''}
                 options={academicYearList || []}
                 getOptionLabel={(option) => option?.session_year || ''}
@@ -631,7 +578,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 //onChange={(e) => setSelectedBranch(e.target.value)}
                 onChange={handleBranch}
                 id='branch_id'
-                //className='dropdownIcon'
+                className='dropdownIcon'
                 value={selectedBranch}
                 options={branchList}
                 getOptionLabel={(option) => option?.branch_name}
@@ -646,46 +593,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 )}
               />
             </Grid>
-
-            {/*
-            <Grid item xs={12} md={3}>
-              <FormControl
-                variant='outlined'
-                className={classes.formControl}
-                fullWidth
-                size='small'
-              >
-                <InputLabel id='demo-simple-select-outlined-label'>Branch</InputLabel>
-                <Select
-                  labelId='demo-simple-select-outlined-label'
-                  id='demo-simple-select-outlined'
-                  value={selectedBranch}
-                  onChange={(e) => setSelectedBranch(e.target.value)}
-                  label='Branch'
-                  color='primary'
-                >
-                  <MenuItem value='' style={{position: 'relative'}}>
-                    <em>None</em>
-                  </MenuItem>
-<<<<<<< HEAD
-                  {branchList.map((items, index) => (
-                    <MenuItem key={`branch_user_details_${index}`} value={items.id} style={{position: 'relative'}}>
-=======
-<<<<<<< HEAD
-                  {branchList?.map((items, index) => (
-                    <MenuItem key={`branch_user_details_${index}`} value={items.id}>
-=======
-                  {branchList.map((items, index) => (
-                    <MenuItem key={`branch_user_details_${index}`} value={items.id} style={{position: 'relative'}}>
->>>>>>> develop
->>>>>>> dd73581248eaccccae2e5476c720dfe72c22c21b
-                      {items.branch_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            */}
             <Grid item xs={12} sm={3}>
               <Autocomplete
                 //key={clearKey}
@@ -694,6 +601,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 onChange={handleGrade}
                 id='create__class-branch'
                 options={gradeList}
+                className='dropdownIcon'
                 getOptionLabel={(option) => option?.grade__grade_name}
                 filterSelectedOptions
                 value={selectedGrades}
@@ -708,64 +616,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 )}
               />
             </Grid>
-
-            {/* selectedBranch && selectedBranch.id && (
-              <Grid item xs={12} md={3}>
-                <FormControl
-                  variant='outlined'
-                  className={classes.formControl}
-                  fullWidth
-                  size='small'
-                >
-                  <InputLabel id='demo-simple-select-outlined-label'>Grade</InputLabel>
-                  <Select
-                    labelId='demo-simple-select-outlined-label'
-                    id='demo-simple-select-outlined'
-                    variant='outlined'
-                    value={selectedGrades}
-                    onChange={(e) => {
-                      const values = e.target.value;
-                      if (values.includes('none')) {
-                        setSelectedGrades([]);
-                      } else {
-                        setSelectedGrades(e.target.value);
-                      }
-                    }}
-                    label='Grade'
-                    color='primary'
-                    multiple
-                    renderValue={(selected) => (
-                      <div className={classes.chips}>
-                        {selected.map((value, index) => (
-                          <Chip
-                            key={`${value}_${index}`}
-                            label={value}
-                            className={classes.chip}
-                            onDelete={() => {
-                              setSelectedGrades(
-                                selectedGrades.filter((item) => item !== value)
-                              );
-                            }}
-                            onMouseDown={(event) => {
-                              event.stopPropagation();
-                            }}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  >
-                    <MenuItem value='none'>
-                      <em>None</em>
-                    </MenuItem>
-                    {grade.map((item, index) => (
-                      <MenuItem key={`branch_user_details_${index}`} value={item}>
-                        {item}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-                    ) */}
           </Grid>
           <Grid container className='spacer'>
             <Grid item xs={12} md={2}>
@@ -782,11 +632,21 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 </Button>
               </Box>
             </Grid>
-            <Grid item xs={12} md={10}>
+            <Grid item xs={12} md={1}></Grid>
+            <Grid item xs={12} md={2}>
               <Box
                 style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}
               >
-                <StyledButton onClick={e => handleExcel(e)}>Download Excel</StyledButton>
+                <Button
+                  variant='contained'
+                  style={{ color: 'white' }}
+                  color='primary'
+                  className='custom_button_master'
+                  size='medium'
+                  onClick={handleExcel}
+                >
+                  Download Excel
+            </Button>
                 {/* <CSVLink
                   data={excelData}
                   headers={headers}
@@ -799,63 +659,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             </Grid>
           </Grid>
         </div>
-        {/* <span className='view_users__reset_icon' onClick={handleResetFilters}>
-          <SettingsBackupRestoreIcon />
-        </span> */}
-        {/* <div className='view_users_filter_wrapper'>
-          <div className='user_details_role_wrapper'>
-            <FormControl variant='outlined' className={classes.formControl}>
-              <InputLabel id='demo-simple-select-outlined-label'>Role</InputLabel>
-              <Select
-                labelId='demo-simple-select-outlined-label'
-                id='demo-simple-select-outlined'
-                value={selectedRoles}
-                onChange={(e) => setSelectedRoles(e.target.value)}
-                label='Role'
-              >
-                <MenuItem value=''>
-                  <em>None</em>
-                </MenuItem>
-                {roleList.map((items, index) => (
-                  <MenuItem key={`role_user_details_${index}`} value={items.id}>
-                    {items.role_name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-          <div className='user_details_branch_wrapper'>
-            <FormControl variant='outlined' className={classes.formControl}>
-              <InputLabel id='demo-simple-select-outlined-label'>Branch</InputLabel>
-              <Select
-                labelId='demo-simple-select-outlined-label'
-                id='demo-simple-select-outlined'
-                value={selectedBranch}
-                onChange={(e) => setSelectedBranch(e.target.value)}
-                label='Branch'
-              >
-                <MenuItem value=''>
-                  <em>None</em>
-                </MenuItem>
-                {branchList.map((items, index) => (
-                  <MenuItem key={`branch_user_details_${index}`} value={items.id}>
-                    {items.branch_name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-          {selectedBranch ? (
-            <div>
-              <CustomMultiSelect
-                selections={selectedGrades}
-                setSelections={setSelectedGrades}
-                nameOfDropdown='Grade'
-                optionNames={grade}
-              />
-            </div>
-          ) : null}
-        </div> */}
         <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
           <DialogTitle
             style={{ cursor: 'move', color: '#014b7e' }}
@@ -877,27 +680,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             </Button>
           </DialogActions>
         </Dialog>
-        {/* {deleteAlert ? (
-        <div className='view_users_delete_alert_wrapper'>
-          <span className='view_users_delete_alert_tag'>
-            Do you want to Delete the user
-          </span>
-          <div className='view_users_delete_alert_button_wrapper'>
-            <input
-              className='view_users_delete_alert_button'
-              type='button'
-              onClick={handleDeleteConfirm}
-              value='Delete'
-            />
-            <input
-              className='view_users_delete_alert_button'
-              type='button'
-              onClick={handleDeleteCancel}
-              value='cancel'
-            />
-          </div>
-        </div>
-      ) : null} */}
         {!isMobile && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer

@@ -197,8 +197,14 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const getYears = async () => {
     try {
       const data = await axios.get(`erp_user/list-academic_year/?module_id=${moduleId}`);
-      if (data.data.status_code === 200) setYearList(data.data.data);
-      else setYearList([]);
+      if (data.data?.status_code === 200) {
+        const {
+          data: { data: acadYearData = [] },
+        } = data || {};
+        setYearList(acadYearData);
+        setYearDisplay(acadYearData?.[0]);
+        getBranches(acadYearData?.[0]?.id);
+      } else setYearList([]);
     } catch (error) {
       console.log('failed to load years');
     }
@@ -271,6 +277,22 @@ const BulkUpload = ({ onUploadSuccess }) => {
     }
   };
 
+  const getBranches = (acadId) => {
+    axiosInstance
+      .get(`erp_user/branch/?session_year=${acadId}&module_id=${moduleId}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          const modifiedResponse = result?.data?.data?.results.map(
+            (obj) => (obj && obj.branch) || {}
+          );
+          setBranchList(modifiedResponse);
+        } else console.log('');
+      })
+      .catch((error) => {
+        console.log('');
+      });
+  };
+
   const handleYearChange = (event, data) => {
     setYear(data?.id);
     setAcademicYearVal(data?.session_year);
@@ -278,30 +300,9 @@ const BulkUpload = ({ onUploadSuccess }) => {
     setBranchList([]);
     setBranchDisplay('');
     setBranch(null);
-    // if (data?.id) {
-    //   axiosInstance
-    //     .get(`erp_user/list-all-branch/?session_year=${data?.id}&module_id=${moduleId}`)
-    //     .then((result) => {
-    //       if (result.data.status_code === 200) setBranchList(result.data.data);
-    //       else console.log('');
-    //     })
-    //     .catch((error) => {
-    //       console.log('');
-    //     });
-    // }
-
-    axiosInstance
-    .get(`erp_user/branch/?session_year=${data?.id}&module_id=${moduleId}`)
-    .then((result) => {
-      if (result.data.status_code === 200) {
-        const modifiedResponse=result?.data?.data?.results.map(obj=>((obj&&obj.branch)||{}));
-        setBranchList(modifiedResponse);
-      }
-      else console.log('');
-    })
-    .catch((error) => {
-      console.log('');
-    });
+    if (data) {
+      getBranches(data?.id);
+    }
   };
 
   const handleBranchChange = (event, data) => {

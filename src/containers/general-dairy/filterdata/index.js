@@ -1,7 +1,16 @@
 import React, { useContext, useEffect, useState, useStyles } from 'react';
 import Divider from '@material-ui/core/Divider';
-import {useHistory} from 'react-router-dom'
-import { Grid, TextField, Button, useTheme, withStyles, Tabs, Tab, Typography} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
+import {
+  Grid,
+  TextField,
+  Button,
+  useTheme,
+  withStyles,
+  Tabs,
+  Tab,
+  Typography,
+} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -10,7 +19,7 @@ import axiosInstance from '../../../config/axios';
 import moment from 'moment';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
-import { useLocation } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 const StyledTabs = withStyles({
   indicator: {
@@ -56,13 +65,13 @@ const GeneralDairyFilter = ({
 
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
-  const [sectionDropdown,setSectionDropdown] = useState([])
+  const [sectionDropdown, setSectionDropdown] = useState([]);
   const [branchDropdown, setBranchDropdown] = useState([]);
-//   const [subjectIds, setSubjectIds] = useState([]);
-  const [sectionIds,setSectionIds] = useState([])
+  //   const [subjectIds, setSubjectIds] = useState([]);
+  const [sectionIds, setSectionIds] = useState([]);
   const [currentTab, setCurrentTab] = useState(0);
   const [isEmail, setIsEmail] = useState(false);
-  const [ activeTab, setActiveTab ] = useState(0);
+  const [activeTab, setActiveTab] = useState(0);
 
   const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
@@ -71,9 +80,9 @@ const GeneralDairyFilter = ({
     moment(),
   ]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
-  const [page,setPage] = useState(1)
-  const [clicked,setClicked] = useState(false)
-  const history=useHistory()
+  const [page, setPage] = useState(1);
+  const [clicked, setClicked] = useState(false);
+  const history = useHistory();
   const [studentModuleId, setStudentModuleId] = useState();
   // const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const location = useLocation();
@@ -84,8 +93,8 @@ const GeneralDairyFilter = ({
     branch: '',
     subject: '',
     sectionIds: [],
-    sections:[],
-    year:''
+    sections: [],
+    year: '',
     // setSectionDropdown([])
   });
   const [moduleId, setModuleId] = useState();
@@ -100,10 +109,16 @@ const GeneralDairyFilter = ({
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item?.child_name === 'Student Diary' && window.location.pathname=== '/diary/student') {
+            if (
+              item?.child_name === 'Student Diary' &&
+              window.location.pathname === '/diary/student'
+            ) {
               setModuleId(item.child_id);
             }
-            if (item?.child_name === 'Teacher Diary' && window.location.pathname=== '/diary/teacher') {
+            if (
+              item?.child_name === 'Teacher Diary' &&
+              window.location.pathname === '/diary/teacher'
+            ) {
               setModuleId(item.child_id);
             }
           });
@@ -125,7 +140,7 @@ const GeneralDairyFilter = ({
   //               setStudentModuleId(item?.child_id);
   //           } else if(location.pathname === "/diary/teacher" && item.child_name === "Teacher Diary") {
   //               setTeacherModuleId(item?.child_id);
-  //           } 
+  //           }
   //         });
   //       }
   //     });
@@ -136,7 +151,7 @@ const GeneralDairyFilter = ({
     // TODO: replace with implementation for your date library
     return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
   }
-  
+
   function getDaysBefore(date, amount) {
     // TODO: replace with implementation for your date library
     return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
@@ -148,8 +163,8 @@ const GeneralDairyFilter = ({
       grade: '',
       branch: '',
       sectionIds: [],
-      sections:[],
-      year:''
+      sections: [],
+      year: '',
       // setSectionDropdown([])
     });
     setSectionDropdown([]);
@@ -167,63 +182,88 @@ const GeneralDairyFilter = ({
 
   const handleActiveTab = (tab) => {
     setActiveTab(tab);
-    if (tab === 2 && !isTeacher){
-      axiosInstance.get(`${endpoints.dailyDairy.chapterList}?module_id=${moduleId}`)
-      .then(res => {
-        if (res.data.status_code === 200){
-          setSubjectDropdown(res.data.result)
-        }
-        else {
-          setAlert('error', res.data.message)
-        }
-      }).catch(error => {
-        setAlert('error',error.message)
-      })
+    if (tab === 2 && !isTeacher) {
+      axiosInstance
+        .get(`${endpoints.dailyDairy.chapterList}?module_id=${moduleId}`)
+        .then((res) => {
+          if (res.data.status_code === 200) {
+            setSubjectDropdown(res.data.result);
+          } else {
+            setAlert('error', res.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
     }
     // else if(tab === 0){
     //   handleFilter(tab)
     // }
-  }
+  };
 
   useEffect(() => {
-    if(clicked){
-      handleFilter(activeTab)
+    if (clicked) {
+      handleFilter(activeTab);
     }
-  }, [activeTab])
+  }, [activeTab]);
 
   let sectionId = [];
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: '', subject: '', chapter: '', sections: [],sectionIds:[] });
+    setFilterData({
+      ...filterData,
+      grade: '',
+      subject: '',
+      chapter: '',
+      sections: [],
+      sectionIds: [],
+    });
     if (value && filterData.branch) {
       // https://erpnew.letseduvate.com/qbox/academic/general-dairy-messages/?branch=5&grades=25&sections=44&page=1&start_date=2021-02-02&end_date=2021-02-08&dairy_type=2
-      setFilterData({ ...filterData, grade: value, subject: '', chapter: '' ,sections: [],sectionIds:[] });
-      axiosInstance.get(`${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${value.grade_id}&module_id=${moduleId}`)
-      .then(result => {
-        if (result.data.status_code === 200) {
-          setSectionDropdown(result.data.data);
-          setSectionIds([])
-        }
-        else {
-          setAlert('error', result.data.message);
-          setSectionDropdown([])
-        }
-      })
-      .catch(error => {
-        setAlert('error', error.message);
-        setSectionDropdown([]);
-      })
-    }
-    else {
-      setSectionDropdown([])
+      setFilterData({
+        ...filterData,
+        grade: value,
+        subject: '',
+        chapter: '',
+        sections: [],
+        sectionIds: [],
+      });
+      axiosInstance
+        .get(
+          `${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${value.grade_id}&module_id=${moduleId}`
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setSectionDropdown(result.data.data);
+            setSectionIds([]);
+          } else {
+            setAlert('error', result.data.message);
+            setSectionDropdown([]);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+          setSectionDropdown([]);
+        });
+    } else {
+      setSectionDropdown([]);
     }
   };
 
-  const handleAcademicYear = (event, value) => {
-    setFilterData({ ...filterData, year: '',branch:'',grade:'',sectionIds:[],sections:[] });
+  const handleAcademicYear = (event = {}, value = '') => {
+    setFilterData({
+      ...filterData,
+      year: '',
+      branch: '',
+      grade: '',
+      sectionIds: [],
+      sections: [],
+    });
     if (value) {
-      setFilterData({ ...filterData, year: value,branch:'',grade:'' });
+      setFilterData({ ...filterData, year: value, branch: '', grade: '' });
       axiosInstance
-        .get(`${endpoints.masterManagement.branchMappingTable}?session_year=${value.id}&module_id=${moduleId}`)
+        .get(
+          `${endpoints.masterManagement.branchMappingTable}?session_year=${value.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result?.data?.status_code) {
             setBranchDropdown(result?.data?.data?.results);
@@ -239,52 +279,74 @@ const GeneralDairyFilter = ({
     sectionId = [];
     setFilterData({ ...filterData });
     if (value.length) {
-      const ids = value && value.map((el) => {
-        sectionId.push(el.id);
-        return el.section_id
-      });
-      setFilterData({...filterData, sections:value
-      })
-      setSectionIds(ids)
+      const ids =
+        value &&
+        value.map((el) => {
+          sectionId.push(el.id);
+          return el.section_id;
+        });
+      setFilterData({ ...filterData, sections: value });
+      setSectionIds(ids);
     }
   };
 
   const handleBranch = (event, value) => {
-    setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '',sections:[],sectionIds:[] });
+    setFilterData({
+      ...filterData,
+      branch: '',
+      grade: '',
+      subject: '',
+      chapter: '',
+      sections: [],
+      sectionIds: [],
+    });
     // setOverviewSynopsis([]);
     if (value) {
-      setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '',sections:[],sectionIds:[]  });
-      axiosInstance.get(`${endpoints.communication.grades}?session_year=${filterData?.year?.id}&branch_id=${value.branch.id}&module_id=${moduleId}`)
-      .then(result => {
-        if (result.data.status_code === 200) {
-          setGradeDropdown(result.data.data);
-        }
-        else {
-          setAlert('error', result.data.message);
+      setFilterData({
+        ...filterData,
+        branch: value,
+        grade: '',
+        subject: '',
+        chapter: '',
+        sections: [],
+        sectionIds: [],
+      });
+      axiosInstance
+        .get(
+          `${endpoints.communication.grades}?session_year=${filterData?.year?.id}&branch_id=${value.branch.id}&module_id=${moduleId}`
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setGradeDropdown(result.data.data);
+          } else {
+            setAlert('error', result.data.message);
+            setGradeDropdown([]);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
           setGradeDropdown([]);
-        }
-      })
-      .catch(error => {
-        setAlert('error', error.message);
-        setGradeDropdown([]);
-      })
-    }
-    else {
+        });
+    } else {
       setGradeDropdown([]);
     }
   };
 
   const handleFilter = (e) => {
-    setClicked(true)
+    setClicked(true);
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-    if (e === undefined && activeTab === 0){
-      return
+    if (e === undefined && activeTab === 0) {
+      return;
     }
-    if(isTeacher){
-      if(filterData.year === '' || filterData.branch === '' || filterData.grade ==='' || sectionIds.length === 0){
+    if (isTeacher) {
+      if (
+        filterData.year === '' ||
+        filterData.branch === '' ||
+        filterData.grade === '' ||
+        sectionIds.length === 0
+      ) {
         setAlert('warning', 'Please select filters');
-      }
-      else {
+      } else {
         handleDairyList(
           filterData.branch.branch.id,
           filterData.grade.grade_id,
@@ -297,8 +359,7 @@ const GeneralDairyFilter = ({
           moduleId
         );
       }
-    }
-    else if (userDetails?.personal_info?.role !== 'SuperUser' && !isTeacher){
+    } else if (userDetails?.personal_info?.role !== 'SuperUser' && !isTeacher) {
       const grade_id = userDetails.role_details?.grades[0]?.grade_id;
       const branch_id = userDetails.role_details?.branch[0]?.id;
       handleDairyList(
@@ -317,20 +378,26 @@ const GeneralDairyFilter = ({
 
   const handleSubject = (event, value) => {
     setFilterData({ ...filterData, subject: value, chapter: '' });
-  }
+  };
 
   useEffect(() => {
-    axiosInstance.get(`${endpoints.userManagement.academicYear}`)
-    .then(result => {
-      if (result.data.status_code === 200) {
-        setAcademicYearDropdown(result?.data?.data);
-      } else {
-        setAlert('error', result?.data?.message);
-      }
-    }).catch(error => {
-      setAcademicYearDropdown('error', error.message);
-    })
-  }, []);
+    if (moduleId) {
+      axiosInstance
+        .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setAcademicYearDropdown(result?.data?.data);
+            const defaultValue = result.data?.data?.[0];
+            handleAcademicYear({}, defaultValue);
+          } else {
+            setAlert('error', result?.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  }, [moduleId]);
 
   return (
     <Grid
@@ -348,7 +415,7 @@ const GeneralDairyFilter = ({
               id='academic-year'
               className='dropdownIcon'
               value={filterData?.year || {}}
-              options={academicYearDropdown}
+              options={academicYearDropdown || []}
               getOptionLabel={(option) => option?.session_year}
               filterSelectedOptions
               renderInput={(params) => (
@@ -384,7 +451,7 @@ const GeneralDairyFilter = ({
           </Grid>
         </>
       )}
-      
+
       {isTeacher && (
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
@@ -398,7 +465,12 @@ const GeneralDairyFilter = ({
             getOptionLabel={(option) => option?.grade__grade_name}
             filterSelectedOptions
             renderInput={(params) => (
-              <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' />
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Grade'
+                placeholder='Grade'
+              />
             )}
           />
         </Grid>
@@ -427,29 +499,36 @@ const GeneralDairyFilter = ({
           />
         </Grid>
       )}
-      {(showSubjectDropDown && activeTab === 2) ? (
-        <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+      {showSubjectDropDown && activeTab === 2 ? (
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+        >
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
             onChange={handleSubject}
             id='subject'
-            className="dropdownIcon"
+            className='dropdownIcon'
             // value={filterData?.subject}
             options={subjectDropdown}
             getOptionLabel={(option) => option?.subject_name}
             filterSelectedOptions
             renderInput={(params) => (
-                <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Subject'
-                    placeholder='Subject'
-                />
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Subject'
+                placeholder='Subject'
+              />
             )}
           />
         </Grid>
-      ) : ''}
+      ) : (
+        ''
+      )}
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <LocalizationProvider dateAdapter={MomentUtils}>
           <DateRangePicker
@@ -482,7 +561,7 @@ const GeneralDairyFilter = ({
       <Grid item xs={12} sm={12}>
         <Divider />
       </Grid>
-      
+
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
@@ -516,7 +595,7 @@ const GeneralDairyFilter = ({
             className='custom_button_master'
             size='medium'
             type='submit'
-            onClick={()=>history.push("/create/general-diary")}
+            onClick={() => history.push('/create/general-diary')}
           >
             CREATE GENERAL DIARY
           </Button>
@@ -531,7 +610,7 @@ const GeneralDairyFilter = ({
             className='custom_button_master'
             size='medium'
             type='submit'
-            onClick={()=>history.push("/create/daily-diary")}
+            onClick={() => history.push('/create/daily-diary')}
           >
             CREATE DAILY DIARY
           </Button>
@@ -544,9 +623,18 @@ const GeneralDairyFilter = ({
           onChange={handleTabChange}
           aria-label='styled tabs example'
         >
-          <StyledTab label={<Typography variant='h8'>All</Typography>} onClick={(e) => handleActiveTab(0)} />
-          <StyledTab label={<Typography variant='h8'>Daily Diary</Typography>} onClick={(e) => handleActiveTab(2)}/>
-          <StyledTab label={<Typography variant='h8'>General Diary</Typography>} onClick={(e) => handleActiveTab(1)}/>
+          <StyledTab
+            label={<Typography variant='h8'>All</Typography>}
+            onClick={(e) => handleActiveTab(0)}
+          />
+          <StyledTab
+            label={<Typography variant='h8'>Daily Diary</Typography>}
+            onClick={(e) => handleActiveTab(2)}
+          />
+          <StyledTab
+            label={<Typography variant='h8'>General Diary</Typography>}
+            onClick={(e) => handleActiveTab(1)}
+          />
         </StyledTabs>
       </Grid>
     </Grid>

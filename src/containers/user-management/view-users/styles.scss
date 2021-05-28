@@ -29,6 +29,22 @@
   }
 }
 
+.searchViewUser {
+  & .MuiInputBase-root {
+    border-radius: 10px;
+  }
+  & .MuiInputLabel-root {
+    color: #014b7e;
+  }
+  & .MuiInputBase-input {
+    color: #014b7e;
+  }
+
+  & .MuiFormLabel-root.Mui-focused {
+    font-weight: 600;
+    color: #014b7e;
+  }
+}
 .pagination-white {
   button.Mui-selected {
     color: #ffffff;

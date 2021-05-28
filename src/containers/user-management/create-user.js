@@ -260,7 +260,7 @@ class CreateUser extends Component {
                   color='primary'
                 />
               }
-              label='Upload excel'
+              label='Upload Excel'
             />
           </div>
           {bulkUpload ? (

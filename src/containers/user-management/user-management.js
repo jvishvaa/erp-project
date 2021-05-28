@@ -107,7 +107,7 @@ class UserManagement extends Component {
                   name='checked'
                 />
               }
-              label='Upload excel'
+              label='Upload Excel'
             />
           </div>
           <div style={{ marginTop: 20 }}>
@@ -117,6 +117,7 @@ class UserManagement extends Component {
                   <Autocomplete
                     size='small'
                     id='create__class-subject'
+                    className='dropdownIcon'
                     options={this.state.branches}
                     getOptionLabel={(option) => option.branch_name}
                     filterSelectedOptions
@@ -138,6 +139,7 @@ class UserManagement extends Component {
                   <Autocomplete
                     size='small'
                     id='create__class-subject'
+                    className='dropdownIcon'
                     options={this.state.years}
                     getOptionLabel={(option) => option.session_year}
                     filterSelectedOptions

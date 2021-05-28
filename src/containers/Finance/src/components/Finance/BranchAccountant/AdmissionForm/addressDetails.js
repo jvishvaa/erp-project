@@ -72,6 +72,7 @@ class AddressDetailsFormAcc extends Component {
   }
 
   componentDidMount () {
+    console.log(this.props.studentDetailsForAdmission, "address");
     if (this.props.adressdetails) {
       const newaddressDetails = { ...this.props.studentparentdetails }
       this.setState({
@@ -205,7 +206,8 @@ class AddressDetailsFormAcc extends Component {
 }
 const mapStateToProps = state => ({
   user: state.authentication.user,
-  session: state.academicSession.items
+  session: state.academicSession.items,
+  studentDetailsForAdmission: state.finance.accountantReducer.admissionForm.studentDetailsforAdmisssion
 })
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId))
