@@ -124,6 +124,8 @@ const CreateClassForm = (props) => {
         session_year: obj.session_year,
       }));
       setYearList(transformedData);
+      const defaultYear = transformedData?.[0];
+      setSelectedYear(defaultYear);
     });
   };
 
@@ -168,7 +170,7 @@ const CreateClassForm = (props) => {
   }, [moduleId]);
 
   useEffect(() => {
-    if (selectedYear) fetchBranches(selectedYear.id);
+    if (selectedYear) fetchBranches(selectedYear?.id);
   }, [selectedYear]);
 
   useEffect(() => {
@@ -232,7 +234,7 @@ const CreateClassForm = (props) => {
     dispatch(clearCourses());
     if (value) {
       setSelectedYear(value);
-      setOnlineClass((prevState) => ({ ...prevState, acadId: value.id }));
+      setOnlineClass((prevState) => ({ ...prevState, acadId: value?.id }));
     } else {
       dispatch(clearGrades());
     }
