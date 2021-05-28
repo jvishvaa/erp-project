@@ -172,8 +172,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
 
   const [overviewSynopsis, setOverviewSynopsis] = useState([]);
   const [doc, setDoc] = useState(null);
-  useEffect(() => {
-  })
+  // useEffect(() => {});
 
   const selectionArray = [];
 
@@ -187,7 +186,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   if (selectAll) {
     selectionArray.push(0);
   }
-
 
   const handleClear = () => {
     setFilterData({
@@ -247,9 +245,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       });
       axiosInstance
         .get(
-          `${
-            endpoints.communication.grades
-          }?session_year=${searchAcademicYear}&branch_id=${value.id}&module_id=${
+          `${endpoints.communication.grades}?session_year=${
+            searchAcademicYear?.id
+          }&branch_id=${value.id}&module_id=${
             location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
           }`
         )
@@ -283,7 +281,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       ...(filterData.grade = []),
       subject: '',
       chapter: '',
-      section: ''
+      section: '',
     });
     setOverviewSynopsis([]);
     if (value && filterData.branch) {
@@ -292,13 +290,13 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         grade: [...filterData.grade, value],
         subject: '',
         chapter: '',
-        section: ''
+        section: '',
       });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?session_year=${searchAcademicYear}&branch_id=${
-            filterData?.branch[0]?.id
-          }&grade_id=${value.grade_id}&module_id=${
+          `${endpoints.masterManagement.sections}?session_year=${
+            searchAcademicYear?.id
+          }&branch_id=${filterData?.branch[0]?.id}&grade_id=${value.grade_id}&module_id=${
             location.pathname === '/lesson-plan/student-view'
               ? studentModuleId
               : teacherModuleId
@@ -328,17 +326,31 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     }
   };
 
+  const validateFileSize = (size) => {
+    return size / 1024 / 1024 > 25 ? false : true;
+  };
+
   const handleImageChange = (event) => {
-    let fileType = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf']
-    let selectedFileType = event.target.files[0]?.type
+    let fileType = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+    let selectedFileType = event.target.files[0]?.type;
     if (!fileType.includes(selectedFileType)) {
-      return setAlert('error', 'File Type not supported');
+      setAlert('error', 'File Type not supported');
+      event.target.value = "";
+      return;
     }
-    
+
+    const fileSize = event.target.files[0]?.size;
+    if (!validateFileSize(fileSize)) {
+      setAlert('error', 'File size must be less than 25MB');
+      event.target.value = "";
+      return;
+    }
+
     if (!filterData.grade || !filterData.section || !filterData.branch) {
-      return setAlert('error', 'Select all fields');
+      setAlert('error', 'Select all fields');
+      return;
     }
-    
+
     setDoc(event.target.files[0]?.name);
     setLoading(true);
     if (filePath.length < 10) {
@@ -370,12 +382,12 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     }
   };
 
-  const handleAcademicYear = (event, value) => {
+  const handleAcademicYear = (event = {}, value = '') => {
     setSearchAcademicYear('');
-    setFilterData({...filterData,branch:'',grade:'',section:''})
+    setFilterData({ ...filterData, branch: '', grade: '', section: '' });
     if (value) {
-      setSearchAcademicYear(value.id);
-      setFilterData({...filterData,branch:'',grade:'',section:''})
+      setSearchAcademicYear(value);
+      setFilterData({ ...filterData, branch: '', grade: '', section: '' });
       axiosInstance
         .get(
           `${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${
@@ -396,9 +408,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     displayUsersList();
   }, [pageno, searchAcademicYear]);
 
-  useEffect(() => {
-    // getBranchApi();
-  }, []);
+  // useEffect(() => {
+  //   // getBranchApi();
+  // }, []);
+
   useEffect(() => {
     if (selectedBranch) {
       setGrade([]);
@@ -426,19 +439,27 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     //     }).catch(error => {
     //         setBranchDropdown('error', error.message);
     //     })
-    axiosInstance
-      .get(endpoints.userManagement.academicYear)
-      .then((result) => {
-        if (result.status === 200) {
-          setAcademicYear(result.data.data);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
-  }, []);
+    if (teacherModuleId || studentModuleId) {
+      axiosInstance
+        .get(
+          `${endpoints.userManagement.academicYear}?module_id=${
+            location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+          }`
+        )
+        .then((result) => {
+          if (result.data?.status_code === 200) {
+            setAcademicYear(result.data?.data);
+            const defaultValue = result.data.data?.[0];
+            handleAcademicYear({}, defaultValue);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  }, [teacherModuleId, studentModuleId]);
   const handleTabChange = (event, tab) => {
     setCurrentTab(tab);
     setIsEmail(!isEmail);
@@ -453,9 +474,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       return;
     }
     let getUserListUrl;
-    getUserListUrl = `${
-      endpoints.generalDairy.studentList
-    }?academic_year=${searchAcademicYear}&active=${
+    getUserListUrl = `${endpoints.generalDairy.studentList}?academic_year=${
+      searchAcademicYear?.id
+    }&active=${
       !isEmail ? '0' : '1'
     }&page=${pageno}&page_size=15&bgs_mapping=${filterData.section.map(
       (s) => s.id
@@ -570,7 +591,11 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     try {
       setLoading(true);
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${searchAcademicYear}&branch_id=${selectedBranch.id}&module_id=${moduleId}`,
+        `${endpoints.communication.grades}?session_year=${
+          searchAcademicYear?.id
+        }&branch_id=${selectedBranch.id}&module_id=${
+          location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+        }`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -607,7 +632,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       const result = await axiosInstance.get(
         `${endpoints.communication.sections}?branch_id=${
           selectedBranch.id
-        }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
+        }&grade_id=${gradesId.toString()}&module_id=${
+          location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+        }`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -823,9 +850,11 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                 style={{ width: '100%' }}
                 onChange={handleAcademicYear}
                 id='year'
-                options={academicYear}
+                value={searchAcademicYear || ''}
+                options={academicYear || []}
                 getOptionLabel={(option) => option?.session_year}
                 filterSelectedOptions
+                className='dropdownIcon'
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -844,7 +873,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                 id='grade'
                 className='dropdownIcon'
                 value={filterData?.branch[0] || ''}
-                options={branchDropdown}
+                options={branchDropdown || []}
                 getOptionLabel={(option) => option?.branch_name}
                 filterSelectedOptions
                 renderInput={(params) => (
@@ -1077,15 +1106,23 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                 </Grid>
               </Grid>
               <div className='attachmentContainer'>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', padding: '10px' }} className='scrollsable'>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '10px',
+                    padding: '10px',
+                  }}
+                  className='scrollsable'
+                >
                   {filePath?.length > 0
                     ? filePath?.map((file, i) => (
                         <FileRow
-                        key={`homework_student_question_attachment_${i}`}
-                        file={file}
-                        index={i}
-                        onClose={() => removeFileHandler(i)}
-                      />
+                          key={`homework_student_question_attachment_${i}`}
+                          file={file}
+                          index={i}
+                          onClose={() => removeFileHandler(i)}
+                        />
                       ))
                     : null}
                 </div>
@@ -1128,7 +1165,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                       accept='image/*, .pdf'
                       onChange={handleImageChange}
                     />
-                    {'Add Document' }
+                    {'Add Document'}
                   </Button>
                   <small
                     style={{
@@ -1145,7 +1182,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
               </div>
             </div>
             <div>
-            <Button
+              <Button
                 style={{ marginLeft: '37px' }}
                 onClick={() => history.goBack()}
                 className='submit_button'
@@ -1159,7 +1196,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
               >
                 SUBMIT
               </Button>
-
             </div>
           </div>
         </div>

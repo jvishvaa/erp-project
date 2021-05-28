@@ -99,7 +99,8 @@ const BulkUpload = () => {
         .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
         .then((result) => {
           if (result.data.status_code === 200) {
-            setAcademicYear(result.data.data);
+            setAcademicYear(result.data?.data);
+            handleAcademicYear({}, result.data?.data[0]);
           } else {
             setAlert('error', result.data.message);
           }
@@ -112,8 +113,8 @@ const BulkUpload = () => {
 
   useEffect(() => {
     let request = `${endpoints.userManagement.bulkUpload}?page=${page}&page_size=${limit}`;
-    if (searchAcademicYear) request += `&academic_year=${searchAcademicYear}`;
-    if (searchBranch) request += `&branch=${searchBranch}`;
+    if (searchAcademicYear) request += `&academic_year=${searchAcademicYear?.id}`;
+    if (searchBranch) request += `&branch=${searchBranch?.id}`;
 
     axiosInstance
       .get(request)
@@ -138,19 +139,21 @@ const BulkUpload = () => {
     setSearchBranch('');
     if (value) {
       setPage(1);
-      setSearchBranch(value.id);
+      setSearchBranch(value);
     }
   };
 
-  const handleAcademicYear = (event, value) => {
+  const handleAcademicYear = (event = {}, value = '') => {
     setSearchAcademicYear('');
     setSearchBranch('');
     setBranches([]);
     if (value) {
       setPage(1);
-      setSearchAcademicYear(value.id);
+      setSearchAcademicYear(value);
       axiosInstance
-        .get(`${endpoints.masterManagement.branchList}?session_year=${value?.id}&module_id=${moduleId}`)
+        .get(
+          `${endpoints.masterManagement.branchList}?session_year=${value?.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result.data?.status_code === 200) {
             setBranches(result.data?.data);
@@ -187,11 +190,13 @@ const BulkUpload = () => {
               <Autocomplete
                 size='small'
                 style={{ width: '100%' }}
+                value={searchAcademicYear}
                 onChange={handleAcademicYear}
                 id='year'
                 options={academicYear || []}
                 getOptionLabel={(option) => option?.session_year || ''}
                 filterSelectedOptions
+                className='dropdownIcon'
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -208,11 +213,13 @@ const BulkUpload = () => {
               <Autocomplete
                 size='small'
                 style={{ width: '100%' }}
+                value={searchBranch}
                 onChange={handleBranch}
                 id='branch'
                 options={branches || []}
                 getOptionLabel={(option) => option?.branch_name || ''}
                 filterSelectedOptions
+                className='dropdownIcon'
                 renderInput={(params) => (
                   <TextField
                     {...params}
