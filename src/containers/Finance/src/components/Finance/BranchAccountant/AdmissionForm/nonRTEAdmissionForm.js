@@ -102,6 +102,7 @@ class NonRTEFormAcc extends Component {
     this.setState({
       regNo: this.props.history.location.regNo
     })
+    console.log(this.props.studentDetailsForAdmission, "student data");
   }
 
   componentWillReceiveProps (nextProps) {
@@ -140,6 +141,7 @@ class NonRTEFormAcc extends Component {
     }
 
     getStudentDetail = (dataOb) => {
+      console.log(dataOb , "data student")
       this.setState({
         studentdetails: dataOb
       })
@@ -152,6 +154,7 @@ class NonRTEFormAcc extends Component {
     }
 
     getAddressDetail = (dataOb) => {
+      console.log(dataOb , "data address")
       this.setState({
         adressdetails: dataOb
       })

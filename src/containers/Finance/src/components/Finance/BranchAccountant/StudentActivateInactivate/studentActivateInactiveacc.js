@@ -221,7 +221,9 @@ class StudentActivateInactiveAcc extends Component {
       academic_year: this.state.studentInfo.academicyear,
       is_active: true,
       erp: this.state.updaterow.erp,
-      remarks: this.state.remark
+      remarks: this.state.remark,
+      branch_id:this.state.selectedBranches?.value
+
     }
     this.props.postStudentActivateInactivate(body, this.props.user, this.props.alert)
     this.setState({ updaterow: '' })
