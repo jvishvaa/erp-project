@@ -65,6 +65,20 @@ function UpdateContact() {
         'academicYearList'
       );
     }
+    const close = document.getElementsByClassName('MuiAutocomplete-clearIndicator')[0];
+    const close1 = document.getElementsByClassName('MuiAutocomplete-clearIndicator')[1];
+    // Add a Click Event Listener to the button
+    close.addEventListener('click', () => {
+      setFoeContact('');
+      setOpManagerContact('');
+      setCampusInchargeContact('');
+    });
+
+       close1.addEventListener('click', () => {
+         setFoeContact('');
+         setOpManagerContact('');
+         setCampusInchargeContact('');
+       });
   }, [moduleId]);
   const handleFoeContact = (e) => {
     const re = /^[0-9]+$/g;
@@ -84,6 +98,7 @@ function UpdateContact() {
       setOpManagerContact(e.target.value);
     }
   };
+
   const handleCampusInchargeContact = (e) => {
     const re = /^[0-9]+$/g;
     if (
@@ -132,6 +147,7 @@ function UpdateContact() {
       setAlert('warning', 'Select Branch');
       return;
     }
+
     const payload = {
       academicYear: selectedAcademicYear,
       branch: selectedBranch,
@@ -144,15 +160,20 @@ function UpdateContact() {
       )
       .then((res) => {
         // console.log(res.data.data, 'filter data');
-        setLoading(false);
-        setContactId(res.data.data[0].id);
-        setFoeContact(res.data.data[0].foe_contact_number);
-        // console.log(res.data.data[0].foe_contact_numbe);
-        // console.log(res.data.data[0].operation_manager_contact_number);
-        // console.log(res.data.data[0].campus_in_charge_contact_number);
-        setOpManagerContact(res.data.data[0].operation_manager_contact_number);
-        setCampusInchargeContact(res.data.data[0].campus_in_charge_contact_number);
-        setAlert('success', 'Data fetched successfully');
+        if (res.data.data.length === 0) {
+          setLoading(false);
+          setAlert('warning', "data doesn't exist");
+        } else {
+          setLoading(false);
+          setContactId(res.data.data[0].id);
+          setFoeContact(res.data.data[0].foe_contact_number);
+          // console.log(res.data.data[0].foe_contact_numbe);
+          // console.log(res.data.data[0].operation_manager_contact_number);
+          // console.log(res.data.data[0].campus_in_charge_contact_number);
+          setOpManagerContact(res.data.data[0].operation_manager_contact_number);
+          setCampusInchargeContact(res.data.data[0].campus_in_charge_contact_number);
+          setAlert('success', 'Data fetched successfully');
+        }
       })
       .catch((err) => {
         setLoading(false);
