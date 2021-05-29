@@ -11,6 +11,9 @@ import moment from 'moment';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import './lesson-report.css';
+import { getModuleInfo }from '../../../utility-functions'
+import { useLocation } from "react-router-dom";
+
 
 const LessonViewFilters = ({
   handleLessonList,
@@ -23,6 +26,7 @@ const LessonViewFilters = ({
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
+  const [academicYear, setAcademicYear] = useState([]);
 
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const [volumeDropdown, setVolumeDropdown] = useState([]);
@@ -31,6 +35,8 @@ const LessonViewFilters = ({
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [subjectIds, setSubjectIds] = useState([]);
   const [branchId, setBranchId] = useState('');
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [adminModuleId, setAdminModuleId] = useState();
 
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [selectedCol, setSelectedCol] = useState({});
@@ -39,6 +45,8 @@ const LessonViewFilters = ({
   // const [modulePermision, setModulePermision] = useState(true);
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(getDaysAfter(moment(), 7));
+  const location = useLocation();
+  const [erpYear, setErpYear] = useState({});
 
   const [startDateTechPer, setStartDateTechPer] = useState(moment().format('YYYY-MM-DD'));
   const [endDateTechPer, setEndDateTechPer] = useState(getDaysAfter(moment(), 7));
@@ -64,6 +72,7 @@ const LessonViewFilters = ({
     grade: '',
     branch: '',
   });
+  
 
   function getDaysAfter(date, amount) {
     // TODO: replace with implementation for your date library
@@ -140,11 +149,23 @@ const LessonViewFilters = ({
   };
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: '' });
+    let erp_year;
+    const acad = academicYear.map((year) => {
+      if(year.session_year === filterData.year.session_year){
+          erp_year = year;
+          setErpYear(year);
+          setFilterData({ ...filterData, academic: year})
+          return year;
+      }
+      return {}
+    })
+
+
     if (value) {
       setFilterData({ ...filterData, branch: value });
       
       axiosInstance
-        .get(`${endpoints.academics.grades}?branch_id=${value.id}&module_id=8`)
+        .get(`${endpoints.academics.grades}?branch_id=${value.id}&module_id=${getModuleId()}&session_year=${erp_year?.id}`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setGradeDropdown(result.data.data);
@@ -158,6 +179,25 @@ const LessonViewFilters = ({
     
     }
   };
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Lesson Plan' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if(location.pathname === "/lesson-plan/report" && item.child_name === "Management Report") {
+                setAdminModuleId(item?.child_id);
+            } 
+          });
+        }
+      });
+    }
+  }, [location.pathname]);
+
+
 
   const handleFilter = () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
@@ -169,8 +209,24 @@ const LessonViewFilters = ({
       endDateTechPer
     );
   };
+  function getModuleId(){
+    const tempObj = {
+        "/lesson-plan/report/":"Management Report",
+        "default":"Management Report",
+    }
+    const moduleName = tempObj[location.pathname]||tempObj["default"]
+    return getModuleInfo(moduleName).id
+}
+
 
   useEffect(() => {
+    axiosInstance.get(`${endpoints.userManagement.academicYear}?module_id=${getModuleId()}`)
+    .then(res => {
+        setAcademicYear(res.data.data);
+    }).catch(error => {
+        setAlert('error ', error);
+    });
+
     axios
       .get(`${endpoints.lessonPlan.academicYearList}`, {
         headers: {
@@ -203,7 +259,6 @@ const LessonViewFilters = ({
       .catch((error) => {
         setAlert('error', error.message);
       });
-
     axiosInstance
       .get(`${endpoints.communication.branches}`)
       .then((result) => {
