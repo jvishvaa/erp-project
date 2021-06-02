@@ -612,12 +612,6 @@ function App({ alert }) {
                           <Route exact path='/homework/homework-card'>
                             {({ match }) => <HomeworkCard match={match} />}
                           </Route>
-                          <Route exact path='/homework/student'>
-                            {({ match }) => <StudentHomework match={match} />}
-                          </Route>
-                          <Route exact path='/homework/teacher'>
-                            {({ match }) => <TeacherHomework match={match} />}
-                          </Route>
 
                           <Route exact path='/homework/teacher-report'>
                             {({ match }) => <TeacherHomeWorkReport match={match} />}
@@ -625,16 +619,26 @@ function App({ alert }) {
                           <Route exact path='/homework/add/:date/:subject/:id'>
                             {({ match }) => <AddHomework match={match} />}
                           </Route>
+                          <Route exact path='/homework/student'>
+                            {({ match }) => <StudentHomework match={match} />}
+                          </Route>
+                          <Route exact path='/homework/teacher'>
+                            {({ match }) => <TeacherHomework match={match} />}
+                          </Route>
+                          <Route exact path='/homework/add/:date/:session_year/:branch/:grade/:subject/:id'>
+                            {({ match }) => <AddHomework match={match} />}
+                          </Route>
                           <Route exact path='/homework/admin'>
                             {({ match }) => <HomeworkAdmin match={match} />}
                           </Route>
+
                           <Route exact path='/homework/coordinator'>
                             {/* added by Vijay to display particular teacher details */}
                             {({ match }) => <CoordinatorHomework match={match} />}
                           </Route>
                           <Route
                             exact
-                            path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'
+                            path='/homework/cadd/:date/:session_year/:branch/:grade/:subject/:id/:coord_selected_teacher_id'
                           >
                             {({ match }) => <AddHomeworkCoord match={match} />}
                           </Route>
