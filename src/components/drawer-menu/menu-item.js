@@ -98,6 +98,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
       name: 'Manage Orchadio',
       Path: '/orchadio/manage-orchadio',
     },
+    { name: 'Teacher Homework Report', Path: '/homework-report-teacher-view' },
+    { name: 'Student Homework Report', Path: '/homework/student-report'},
+    { name: 'Teacher Classwork Report', Path: '/classwork-report-teacher-view' },
+    { name: 'Student Classwork Report', Path: '/classwork/student-report' },
     {
       name: 'Student Orchadio',
       Path: '/orchadio/view-orchadio',
