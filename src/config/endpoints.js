@@ -63,7 +63,8 @@ export default {
     groupList: '/communication/groups-list/',
     getMessageTypes: '/communication/message-types/',
     sendMessage: '/communication/send-messages/',
-    getSmsCredit: '/communication/sms-credits/',
+    // getSmsCredit: '/communication/sms-credits/',
+    getSmsCredit: '/communication/get-sms-credits-/',
     assignRole: '/erp_user/assign_role/',
     userStatusChange: '/erp_user/',
     getMessages: '/communication/email-sms-logs/',
@@ -87,6 +88,8 @@ export default {
     feedback: '/erp_user/onlineclass_attendancecheck/',
     updateTutor: '/erp_user/update_tutor_email/',
     PreQuiz: '/mp_quiz/online-class-details/',
+    downloadOnlineClass_EXCEL: '/erp_user/online-class-list-date-wise/',
+    periodDetails: '/erp_user/rstoc/',
   },
   masterManagement: {
     subjects: '/erp_user/subjects-list/',
@@ -435,7 +438,7 @@ export default {
     StudentAttendanceReport: '/academic/student-attendance-by-subject/',
   },
   attendanceTeacherView: {
-    getTeacherAttendanceView: "/academic/teacher-attendance-by-subject/",
+    getTeacherAttendanceView: '/academic/teacher-attendance-by-subject/',
   },
   orchadio: {
     audioUpload: '/academic/orchadio-upload/',
@@ -455,3 +458,5 @@ export default {
   // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing
   baseURLCentral,
 };
+
+

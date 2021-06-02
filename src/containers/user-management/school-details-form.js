@@ -81,6 +81,11 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
         session_year: obj.session_year,
       }));
       setAcademicYears(transformedData);
+      if (!details.academic_year) {
+        const defaultYear = transformedData?.[0];
+        formik.setFieldValue('academic_year', defaultYear);
+        fetchBranches(defaultYear?.id);
+      }
     });
   };
 
@@ -229,26 +234,26 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   useEffect(() => {
     if (moduleId) {
       fetchAcademicYears(moduleId);
-      // if (details.academic_year) {
-      //   fetchBranches(details.academic_year.id);
-      //   if (details.branch) {
-      //     handleChangeBranch(details.branch, details.academic_year.id);
-      //     if (details.grade && details.grade.length > 0) {
-      //       handleChangeGrade(details.grade, details.academic_year.id, details.branch);
-      //       if (details.section && details.section.length > 0) {
-      //         handleChangeSection(
-      //           details.section,
-      //           details.academic_year.id,
-      //           details.branch,
-      //           details.grade
-      //         );
-      //         if (details.subjects && details.subjects.length > 0) {
-      //           formik.setFieldValue('subjects', details.subjects);
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
+      if (details.academic_year) {
+        fetchBranches(details.academic_year.id);
+        if (details.branch) {
+          handleChangeBranch(details.branch, details.academic_year.id);
+          if (details.grade && details.grade.length > 0) {
+            handleChangeGrade(details.grade, details.academic_year.id, details.branch);
+            if (details.section && details.section.length > 0) {
+              handleChangeSection(
+                details.section,
+                details.academic_year.id,
+                details.branch,
+                details.grade
+              );
+              if (details.subjects && details.subjects.length > 0) {
+                formik.setFieldValue('subjects', details.subjects);
+              }
+            }
+          }
+        }
+      }
     }
   }, [moduleId]);
 
@@ -274,6 +279,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             value={formik.values.academic_year || ''}
             options={academicYears || []}
             filterSelectedOptions
+            className='dropdownIcon'
             getOptionLabel={(option) => option?.session_year || ''}
             renderInput={(params) => (
               <TextField
@@ -312,6 +318,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             value={formik.values.branch[0] || []}
             options={branches || []}
             filterSelectedOptions
+            className='dropdownIcon'
             getOptionLabel={(option) => option.branch_name || ''}
             renderInput={(params) => (
               <TextField
@@ -346,6 +353,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             value={formik.values.grade || []}
             options={grades}
             filterSelectedOptions
+            className='dropdownIcon'
             limitTags={2}
             getOptionLabel={(option) => option.grade_name || ''}
             renderInput={(params) => (
@@ -382,6 +390,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             multiple
             limitTags={2}
             filterSelectedOptions
+            className='dropdownIcon'
             getOptionLabel={(option) => option.section_name || ''}
             renderInput={(params) => (
               <TextField
@@ -421,6 +430,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             multiple
             options={subjects || []}
             filterSelectedOptions
+            className='dropdownIcon'
             getOptionLabel={(option) => option.subject_name || ''}
             renderInput={(params) => (
               <TextField

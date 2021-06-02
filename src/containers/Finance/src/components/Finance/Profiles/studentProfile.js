@@ -127,7 +127,7 @@ class StudentProfile extends Component {
       studentName: studentData && studentData.student_name ? studentData.student_name : null,
       fatherName: studentData && studentData.father_name ? studentData.father_name : null,
       fatherNumber: studentData && studentData.father_mobile ? studentData.father_mobile : null,
-      studentAddress: studentData && studentData.student_Address ? studentData.student_Address : null,
+      studentAddress: studentData && studentData.student_address ? studentData.student_address : null,
       emailId: studentData && studentData.email_id ? studentData.email_id : null,
       secondLang: studentData.second_lang && studentData.second_lang.id ? {
         label: studentData.second_lang && studentData.second_lang.second_lang,
@@ -273,7 +273,7 @@ class StudentProfile extends Component {
             this.props.alert.success('Successfully Saved')
             const newStudentData = { ...this.state.studentData }
             newStudentData['student_name'] = response.data.student_name
-            newStudentData['student_Address'] = response.data.student_Address
+            newStudentData['student_Address'] = response.data.student_address
             newStudentData['father_name'] = response.data.father_name
             newStudentData['father_mobile'] = response.data.father_mobile
             newStudentData['parent_access'] = response.data.parent_access
@@ -520,7 +520,7 @@ class StudentProfile extends Component {
                 <hr />
                 <div>Staff Kid : <strong /></div>
                 <hr />
-                <div>Address : <strong>{this.state.studentData.student_Address}</strong></div>
+                <div>Address : <strong>{this.state.studentData.student_address}</strong></div>
               </div>
             </div>
             <div className={customClasses.admissionContainer}>

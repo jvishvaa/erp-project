@@ -69,6 +69,9 @@ class NonRTEAddressDetailsFormAcc extends Component {
       }
     }
   }
+  componentDidMount () {
+    console.log(this.props.studentDetailsForAdmission, "address");
+  }
 
   componentDidUpdate () {
     this.props.getAddressDetail(this.state.addressDetails)
@@ -212,7 +215,8 @@ class NonRTEAddressDetailsFormAcc extends Component {
 }
 const mapStateToProps = state => ({
   user: state.authentication.user,
-  session: state.academicSession.items
+  session: state.academicSession.items,
+  studentDetailsForAdmission: state.finance.accountantReducer.admissionForm.studentDetailsforAdmisssion
 })
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId))

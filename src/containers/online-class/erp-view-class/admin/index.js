@@ -238,6 +238,17 @@ const ErpAdminViewClass = ({ history }) => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
             setAcademicYear(result?.data?.data || []);
+            const viewMoreData = JSON.parse(localStorage.getItem('viewMoreData'));
+            const defaultYear = result?.data?.data?.[0];
+            if (
+              window.location.pathname !== '/erp-online-class-student-view' &&
+              !viewMoreData?.academic
+            )
+              setSelectedAcadmeicYear(defaultYear);
+            callApi(
+              `${endpoints.communication.branches}?session_year=${defaultYear?.id}&module_id=${moduleId}`,
+              'branchList'
+            );
           }
           if (key === 'branchList') {
             setBranchList(result?.data?.data?.results || []);
@@ -410,7 +421,7 @@ const ErpAdminViewClass = ({ history }) => {
         );
       }
     }
-  }, [page, selectedClassType]);  //Issue found here
+  }, [page, selectedClassType]); //Issue found here
 
   function handleClearFilter() {
     localStorage.removeItem('filterData');
@@ -547,7 +558,30 @@ const ErpAdminViewClass = ({ history }) => {
       setAlert('error', 'Failed To Download, Try After Some Time');
     }
   };
-
+  const handleAcademicYear = (event = {}, value = '') => {
+    if (value) {
+      setSelectedAcadmeicYear(value);
+      callApi(
+        `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+        'branchList'
+      );
+    }
+    setSelectedAcadmeicYear('');
+    setBranchList([]);
+    setGradeList([]);
+    setSelectedGrade([]);
+    setCourseList([]);
+    setSelectedCourse('');
+    setFilterList([]);
+    setSelectedViewMore('');
+    setSectionList([]);
+    setSelectedSection([]);
+    setSubjectList([]);
+    setSelectedSubject([]);
+    setSelectedBranch([]);
+    setFilterList([]);
+    setPage(1);
+  };
   return (
     <>
       <Layout>
@@ -588,16 +622,6 @@ const ErpAdminViewClass = ({ history }) => {
                   size='small'
                   onChange={(event, value) => {
                     if (window.location.pathname === '/erp-online-class-student-view') {
-                      // callApi(
-                      //   `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-                      //     studentDetails &&
-                      //     studentDetails.role_details &&
-                      //     studentDetails.role_details.erp_user_id
-                      //   }&page_number=${page}&page_size=${limit}&class_type=${
-                      //     value?.id
-                      //   }&module_id=${moduleId}`,
-                      //   'filter'
-                      // );
                       localStorage.setItem(
                         'filterData',
                         JSON.stringify({
@@ -618,7 +642,6 @@ const ErpAdminViewClass = ({ history }) => {
                     setSubjectList([]);
                     setSelectedSubject([]);
                     setSelectedBranch([]);
-                    setSelectedAcadmeicYear('');
                     setFilterList([]);
                     setPage(1);
                   }}
@@ -644,33 +667,11 @@ const ErpAdminViewClass = ({ history }) => {
                     <Autocomplete
                       style={{ width: '100%' }}
                       size='small'
-                      onChange={(event, value) => {
-                        setSelectedAcadmeicYear(value);
-                        if (value) {
-                          callApi(
-                            `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                            'branchList'
-                          );
-                        }
-                        setBranchList([]);
-                        setGradeList([]);
-                        setSelectedGrade([]);
-                        setCourseList([]);
-                        setSelectedCourse('');
-                        setFilterList([]);
-                        setSelectedViewMore('');
-                        setSectionList([]);
-                        setSelectedSection([]);
-                        setSubjectList([]);
-                        setSelectedSubject([]);
-                        setSelectedBranch([]);
-                        setFilterList([]);
-                        setPage(1);
-                      }}
+                      onChange={handleAcademicYear}
                       id='branch_id'
                       className='dropdownIcon'
-                      value={selectedAcademicYear}
-                      options={academicYear}
+                      value={selectedAcademicYear || ''}
+                      options={academicYear || []}
                       getOptionLabel={(option) => option?.session_year}
                       filterSelectedOptions
                       renderInput={(params) => (
@@ -697,7 +698,7 @@ const ErpAdminViewClass = ({ history }) => {
                           setSelectedBranch(ids);
                           callApi(
                             `${endpoints.academics.grades}?session_year=${
-                              selectedAcademicYear.id
+                              selectedAcademicYear?.id
                             }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
                             'gradeList'
                           );
@@ -715,9 +716,9 @@ const ErpAdminViewClass = ({ history }) => {
                       }}
                       id='branch_id'
                       className='dropdownIcon'
-                      value={selectedBranch}
-                      options={branchList}
-                      getOptionLabel={(option) => option?.branch?.branch_name}
+                      value={selectedBranch || ''}
+                      options={branchList || []}
+                      getOptionLabel={(option) => option?.branch?.branch_name || ''}
                       filterSelectedOptions
                       renderInput={(params) => (
                         <TextField
@@ -822,7 +823,7 @@ const ErpAdminViewClass = ({ history }) => {
                     />
                   </Grid>
 
-                  {selectedClassType?.id === 0 && gradeList.length > 0 ? (
+                  {selectedClassType?.id === 0 && (
                     <Grid item md={3} xs={12}>
                       <Autocomplete
                         multiple
@@ -853,7 +854,9 @@ const ErpAdminViewClass = ({ history }) => {
                         )}
                       />
                     </Grid>
-                  ) : (
+                  )}
+
+                  {selectedClassType?.id > 0 && (
                     <Grid item md={3} xs={12}>
                       <Autocomplete
                         style={{ width: '100%' }}
