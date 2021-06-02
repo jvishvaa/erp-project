@@ -132,7 +132,7 @@ const HomeworkAdmin = () => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '0 0 -1rem 1.5%';
-  const widerWidth = isMobile ? '90%' : '85%';
+  const widerWidth = isMobile ? '90%' : '88%';
   const [searchGrade, setSearchGrade] = useState('');
   const [searchSection, setSearchSection] = useState('');
   const [sectionDisplay, setSectionDisplay] = useState([]);
@@ -311,7 +311,8 @@ const HomeworkAdmin = () => {
         .then((result) => {
           if (result.data.status_code === 200) {
             setLoading(false);
-            setAlert('success', result.data.message);
+            //setAlert('success', result.data.message);
+            setAlert('success', 'Sucessfully configuration data added');
             setSectionDisplay([]);
             setSections([]);
             setOtherSubjects([]);
@@ -612,7 +613,7 @@ const HomeworkAdmin = () => {
       <Layout>
         <Grid
           container
-          spacing={isMobile ? 3 : 5}
+          spacing={isMobile ? 3 : 4}
           style={{ width: widerWidth, margin: wider }}
         >
           <Grid item xs={12} sm={3}>

@@ -5,6 +5,7 @@ import {
   OutlinedInput,
   FormHelperText,
   Button,
+  TextField,
   Typography,
   Grid,
   withStyles,
@@ -20,6 +21,9 @@ import QuestionCard from '../../../components/question-card';
 import { addHomeWork, setSelectedHomework } from '../../../redux/actions';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
 
 const validateQuestions = (obj) => {
   let error = false;
@@ -43,6 +47,10 @@ const StyledOutlinedButton = withStyles({
 const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [sections, setSections] = useState([]);
+  const [sectionDisplay, setSectionDisplay] = useState([]);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [teacherModuleId, setTeacherModuleId] = useState(null);
   const [errors, setErrors] = useState({ name: '', description: '' });
   const [questions, setQuestions] = useState([
     {
@@ -59,9 +67,16 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const params = useParams();
   const [queIndexCounter, setQueIndexCounter] = useState(0);
   const themeContext = useTheme();
+  const sessionYear = params.session_year;
+  const branch = params.branch;
+  const grade = params.grade;
 
   const validateHomework = () => {
     let isFormValid = true;
+    if(sectionDisplay.length === 0){
+      isFormValid = false;
+      setAlert('warning', 'Please Select Section')
+    }
     if (!name.trim()) {
       isFormValid = false;
       setErrors((prevState) => ({ ...prevState, name: '*Title is required...' }));
@@ -90,9 +105,11 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const handleAddHomeWork = async () => {
     const isFormValid = validateHomework();
     if (isFormValid) {
+      //const sectionId = params.section.split(',').map( n => parseInt(n, 10))
       const reqObj = {
         name,
         description,
+        section_mapping: sectionDisplay.map(data => parseInt(data.id, 10)),
         subject: params.id,
         date: params.date,
         questions: questions.map((q) => {
@@ -154,6 +171,51 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
     history.push('/homework/teacher');
   }
 
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Homework' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Homework') {
+              setTeacherModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if(teacherModuleId && sessionYear && branch && grade) {
+      axiosInstance.get(`${endpoints.academics.sections}?session_year=${sessionYear}&branch_id=${branch}&grade_id=${grade}&module_id=${teacherModuleId}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setSections(result.data?.data);
+        } else {
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+    }
+  },[teacherModuleId, sessionYear, branch, grade])
+
+  const handleSection = (event, value) => {
+    //setSearchSection([]);
+    setSectionDisplay([]);
+    //let sec_id = [];
+    if (value) {
+      //let id = value.map(({ id }) => sec_id.push(id));
+      //setSearchSection(sec_id);
+      setSectionDisplay(value);
+    }
+  };
+
   return (
     <Layout>
       <div className='add-homework-container'>
@@ -161,7 +223,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
           <CommonBreadcrumbs componentName='Homework' childComponentName='Add Homework' />
         </div>
         <Grid container className='add-homework-inner-container' spacing={2}>
-          <Grid item xs={12} className='add-homework-title-container' md={2}>
+          <Grid item xs={12} className='add-homework-title-container' md={3}>
             <div className='nav-cards-container'>
               <div
                 className='nav-card'
@@ -183,9 +245,32 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
             className='homework-create-questions-container'
             container
             xs={12}
-            md={10}
+            md={9}
           >
-            <div style={{ width: '95%', margin: '0 auto' }}>
+            <Grid container style={{ width: '95%', margin: '0 auto' }}>
+              <Grid item xs={12} style={{width: '30%', marginBottom: '20px'}}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleSection}
+                  id='section'
+                  required
+                  multiple
+                  value={sectionDisplay || []}
+                  options={sections || []}
+                  getOptionLabel={(option) => option?.section__section_name || ''}
+                  filterSelectedOptions
+                  className='dropdownIcon'
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Sections'
+                      placeholder='Sections'
+                    />
+                  )}
+                />
+              </Grid>
               <Grid item xs={12} className='form-field'>
                 <FormControl variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Title</InputLabel>
@@ -296,7 +381,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                 </Button>
               </div>
             </Grid> */}
-            </div>
+            </Grid>
           </Grid>
         </Grid>
       </div>

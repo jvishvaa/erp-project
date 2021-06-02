@@ -84,6 +84,7 @@ const ViewHomework = withRouter(
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const classes = useStyles();
+    console.log(viewHomework,'ViewHomework1')
     const { isOpen, subjectId, date, subjectName, homeworkId } = viewHomework || {};
     const [isQuestionWise, setIsQuestionWise] = useState(false);
 
@@ -139,12 +140,23 @@ const ViewHomework = withRouter(
             <div className='homework_submit_wrapper'>
               <div className='homework_block_wrapper home-work-date-subject-name no-border'>
                 <div className='homework_block homework_submit_tag'>
-                  Homework - {subjectName?.split('_')[2]},{' '}
+                  {/* Homework - {viewHomework?.subjectName?.split('_')[2]},{' '} */}
+                  Homework - {subjectName} :{' '} {selectedHomeworkDetails?.homework_name},{' '}
                   {moment(date).format('DD-MM-YYYY')}
                 </div>
+                {/* <div>
+                  <Typography style={{display: 'block'}}>
+                    Discription: {selectedHomeworkDetails?.description}
+                  </Typography>
+                </div> */}
+                {/* <Typography style={{display: 'block'}}>
+                  Homework - {subjectName},{' '}
+                  {moment(date).format('DD-MM-YYYY')}
+                </Typography>
+                <Typography style={{display: 'block'}}>Title: {selectedHomeworkDetails?.homework_name}</Typography> */}
               </div>
 
-              {selectedHomeworkDetails?.map((question, index) => (
+              {selectedHomeworkDetails?.hw_questions?.map((question, index) => (
                 <ViewHomeworkQuestion question={question} index={index} />
               ))}
 
