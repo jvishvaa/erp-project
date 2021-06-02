@@ -17,6 +17,7 @@ import MediaQuery from 'react-responsive';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import placeholder from '../../assets/images/placeholder_small.jpg';
 
 const StyledFilterButton = withStyles({
   root: {
@@ -97,6 +98,9 @@ const OpenPublication = ({ ID }) => {
             <Grid>
               <img
                 src={`${endpoints.publish.s3}/publication/${pdf[increment]}`}
+                onError={(e) => {
+                  e.target.src = placeholder;
+                }}
                 width='100%'
                 height='100%'
                 style={{
@@ -141,6 +145,9 @@ const OpenPublication = ({ ID }) => {
           <Grid item md={5}>
             <img
               src={`${endpoints.publish.s3}/publication/${pdf[increment]}`}
+              onError={(e) => {
+                e.target.src = placeholder;
+              }}
               width='100%'
               height='100%'
               style={{
@@ -153,6 +160,9 @@ const OpenPublication = ({ ID }) => {
           <Grid item md={5}>
             <img
               src={`${endpoints.publish.s3}/publication/${pdf[incrementNext]}`}
+              onError={(e) => {
+                e.target.src = placeholder;
+              }}
               width='100%'
               height='100%'
               style={{
@@ -235,6 +245,9 @@ const OpenPublication = ({ ID }) => {
 
           <img
             src={`${endpoints.s3}/publication/${pdf[increment]}`}
+            onError={(e) => {
+              e.target.src = placeholder;
+            }}
             width='90%'
             height='100%'
             style={{

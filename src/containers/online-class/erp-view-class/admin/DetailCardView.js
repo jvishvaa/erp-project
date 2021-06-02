@@ -36,24 +36,24 @@ const JoinClass = (props) => {
   const [joinAnchor, setJoinAnchor] = useState(null);
   const [classWorkDialog, setDialogClassWorkBox] = useState(false);
   const [isAccept, setIsAccept] = useState(props.data ? props.data.is_accepted : false);
-  const [isRejected, setIsRejected] = useState(
-    props.data ? props.data.is_restricted : false
-  );
-  const [attach, setAttach] = useState(false);
   const history = useHistory();
-
   const classStartTime = moment(props && props?.data && props?.data?.date).format(
     'DD-MM-YYYY'
   );
+
   const currDate = moment(new Date()).format('DD-MM-YYYY');
 
-  const startTime = props && props?.data?.start_time;
-  const currTime = moment(new Date()).format('x');
-  const endTime = new Date(`${props.data.date}T${props?.data?.end_time}`).getTime();
-  const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
-  const diffTime = classTimeMilli - 5 * 60 * 1000;
-  const diffAttachTime = classTimeMilli - 15 * 60 * 1000;
+  const startTimeProp = props?.data?.start_time;
+  const endTimeProp = props?.data?.end_time;
+
+  const startTime = new Date(`${props.data.date}T${startTimeProp}`).getTime(); //in milliseconds
+  const endTime = new Date(`${props.data.date}T${endTimeProp}`).getTime(); //in milliseconds
+
   const { email = '' } = JSON.parse(localStorage.getItem('userDetails'));
+
+  const getCurrentTime = () => {
+    return parseInt(moment(new Date()).format('x')) || 0;
+  };
 
   const handleCloseData = () => {
     setAnchorEl(null);
@@ -71,10 +71,15 @@ const JoinClass = (props) => {
   };
 
   const handleClickAccept = (event) => {
-    if (diffTime > parseInt(currTime)) {
+    const currentTime = getCurrentTime();
+    const diffTime = startTime - 5 * 60 * 1000;
+    if (diffTime > currentTime) {
       setJoinAnchor(event.currentTarget);
-    } else if (parseInt(currTime) > diffTime || parseInt(currTime) === diffTime) {
+    } else if (endTime >= currentTime && currentTime >= diffTime) {
       handleIsAccept();
+    } else {
+      setClassOver(true);
+      setAlert('error', 'Class has ended!');
     }
   };
 
@@ -114,10 +119,18 @@ const JoinClass = (props) => {
       });
   };
 
+  const [classOver, setClassOver] = useState(false);
   const handleJoinButton = (callback) => {
-    handleIsAttended();
-    callback();
+    const currentTime = getCurrentTime();
+    if (endTime >= currentTime) {
+      handleIsAttended();
+      callback();
+    } else {
+      setClassOver(true);
+      setAlert('error', 'Class has ended!');
+    }
   };
+
   function handleCancel() {
     setLoading(true);
     const params1 = {
@@ -171,38 +184,83 @@ const JoinClass = (props) => {
     }
   };
 
+  const [disableHost, setDisableHost] = useState(false);
+
+  const handleHostDisable = () => {
+    let disableFlag = false;
+    const isActiveEnd = endTime;
+    const isActiveStart = startTime - 5 * 60 * 1000;
+    if (isActiveStart <= getCurrentTime() && getCurrentTime() <= isActiveEnd) {
+      setDisableHost(false);
+      disableFlag = false;
+    } else {
+      setDisableHost(true);
+      disableFlag = true;
+    }
+    return disableFlag;
+  };
+
+  useEffect(() => {
+    if (window.location.pathname === '/erp-online-class-teacher-view') {
+      handleHostDisable();
+    }
+  }, [new Date().getSeconds()]);
+
   function handleHost(data) {
-    setLoading(true);
-    axiosInstance
-      .get(`${endpoints.teacherViewBatches.hostApi}?id=${data.id}`)
-      .then((res) => {
-        setLoading(false);
-        if (res?.data?.url) {
-          window.open(res?.data?.url, '_blank');
-        } else {
-          setAlert('error', res?.data?.message);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
+    if (!handleHostDisable()) {
+      setLoading(true);
+      axiosInstance
+        .get(`${endpoints.teacherViewBatches.hostApi}?id=${data.id}`)
+        .then((res) => {
+          setLoading(false);
+          if (res?.data?.url) {
+            window.open(res?.data?.url, '_blank');
+          } else {
+            setAlert('error', res?.data?.message);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          setAlert('error', error.message);
+        });
+    } else {
+      setDisableHost(true);
+      setAlert('error', "Class can't be started now");
+    }
   }
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   const openJoin = Boolean(joinAnchor);
   const ids = open ? 'accept-popover' : undefined;
+
   return (
     <Grid container spacing={2} direction='row' alignItems='center'>
-      <Grid item md={12} xs={12}>
+      <Grid item xs={4}>
         <span className='TeacherFullViewdescreption1'>
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
       </Grid>
+      <Grid item xs={1}>
+        {window.location.pathname === '/erp-online-class-teacher-view' && (
+          <Tooltip title='Attach Question Paper'>
+            <IconButton
+              onClick={() =>
+                history.push({
+                  pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
+                  state: { data: fullData.online_class.id },
+                })
+              }
+            >
+              <AttachFileIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Grid>
+      <Grid item xs={7} />
       {window.location.pathname === '/erp-online-class-student-view' ? (
         <>
-          <Grid item xs={6} sm={6} md={3}>
+          <Grid item xs={4}>
             <Button
               size='small'
               color='secondary'
@@ -215,7 +273,7 @@ const JoinClass = (props) => {
             </Button>
           </Grid>
 
-          <Grid item xs={6} sm={6} md={3}>
+          <Grid item xs={4}>
             {/* <IconButton
               color='primary'
               onClick={() => {
@@ -224,7 +282,7 @@ const JoinClass = (props) => {
             >
               <PhotoCamera />
             </IconButton> */}
-            {/* <Button
+            <Button
               size='small'
               color='primary'
               fullWidth
@@ -235,8 +293,8 @@ const JoinClass = (props) => {
               className='classworkButton'
             >
               Class Work
-            </Button> */}
-            {/* {classWorkDialog && (
+            </Button>
+            {classWorkDialog && (
               <UploadDialogBox
                 periodData={props?.data}
                 setLoading={setLoading}
@@ -244,7 +302,7 @@ const JoinClass = (props) => {
                 classWorkDialog={classWorkDialog}
                 OpenDialogBox={handleOpenClassWorkDialogBox}
               />
-            )} */}
+            )}
           </Grid>
         </>
       ) : (
@@ -254,7 +312,7 @@ const JoinClass = (props) => {
       fullData &&
       fullData.online_class &&
       fullData.online_class.question_paper_id ? (
-        <Grid item xs={6} sm={6} md={3}>
+        <Grid item xs={4}>
           <Button
             size='small'
             color='secondary'
@@ -273,7 +331,7 @@ const JoinClass = (props) => {
         </Grid>
       ) : window.location.pathname === '/erp-online-class-teacher-view' ? (
         <>
-          <Tooltip title='Attach Question Paper'>
+          {/* <Tooltip title='Attach Question Paper'>
             <IconButton
               onClick={() =>
                 history.push({
@@ -284,18 +342,22 @@ const JoinClass = (props) => {
             >
               <AttachFileIcon />
             </IconButton>
-          </Tooltip>
-          <Grid item xs={6} sm={6} md={3}>
-            <IconButton
+          </Tooltip> */}
+          <Grid item xs={4}>
+            <Button
+              size='small'
               color='primary'
+              fullWidth
+              variant='contained'
               onClick={() =>
                 history.push({
                   pathname: `/erp-online-class/class-work/${fullData.online_class.id}/${fullData.id}`,
                 })
               }
+              className='classworkButton'
             >
-              <ClassIcon />
-            </IconButton>
+              Class Work
+            </Button>
           </Grid>
         </>
       ) : (
@@ -303,29 +365,36 @@ const JoinClass = (props) => {
       )}
 
       {isAccept ? (
-        <Grid item xs={6} sm={6} md={3}>
-          <Button
-            size='small'
-            color='secondary'
-            fullWidth
-            variant='contained'
-            onClick={() =>
-              handleJoinButton(() => window.open(fullData && fullData.join_url))
-            }
-            className='teacherFullViewSmallButtons'
-          >
-            Join
-          </Button>
+        <Grid item xs={4}>
+          {endTime >= getCurrentTime() && !classOver ? (
+            <Button
+              size='small'
+              color='secondary'
+              fullWidth
+              variant='contained'
+              onClick={() =>
+                handleJoinButton(() => window.open(fullData && fullData.join_url))
+              }
+              className='teacherFullViewSmallButtons'
+            >
+              Join
+            </Button>
+          ) : (
+            <Button
+              size='small'
+              color='secondary'
+              variant='contained'
+              disabled='true'
+              className='classOverButton'
+            >
+              Class Over
+            </Button>
+          )}
         </Grid>
       ) : (
         <>
-          {/* {isRejected ? (
-            <Grid item xs={6}>
-              <Typography style={{ color: '#ff6b6b' }}>Rejected</Typography>
-            </Grid>
-          ) : ( */}
-          {endTime < currTime ? (
-            <Grid item xs={6} sm={6} md={3}>
+          {endTime < getCurrentTime() && !classOver ? (
+            <Grid item xs={4}>
               <Button
                 size='small'
                 color='secondary'
@@ -336,16 +405,10 @@ const JoinClass = (props) => {
                 Class Over
               </Button>
             </Grid>
-          ) : isRejected ? (
-            <>
-              <Grid item xs={6} sm={6} md={3}>
-                <Typography style={{ color: '#ff6b6b' }}>Rejected</Typography>
-              </Grid>
-            </>
           ) : (
             <>
-              <Grid item xs={6} sm={6} md={3}>
-                {window.location.pathname === '/erp-online-class' ? (
+              <Grid item xs={4}>
+                {window.location.pathname === '/erp-online-class' && (
                   <Button
                     size='small'
                     color='secondary'
@@ -365,27 +428,21 @@ const JoinClass = (props) => {
                       ? 'Host'
                       : 'Audit'}
                   </Button>
-                ) : (
-                  ''
                 )}
-                {window.location.pathname === '/erp-online-class-teacher-view' ? (
+                {window.location.pathname === '/erp-online-class-teacher-view' && (
                   <Button
                     size='small'
                     color='secondary'
                     fullWidth
                     variant='contained'
+                    disabled={disableHost}
                     onClick={() => handleHost(fullData)}
-                    // onClick={() =>
-                    //   window.open(fullData && fullData.presenter_url, '_blank')
-                    // }
                     className='teacherFullViewSmallButtons'
                   >
                     Host Me
                   </Button>
-                ) : (
-                  ''
                 )}
-                {window.location.pathname === '/erp-online-class-student-view' ? (
+                {window.location.pathname === '/erp-online-class-student-view' && (
                   <>
                     <Popover
                       id={ids}
@@ -417,7 +474,7 @@ const JoinClass = (props) => {
                         <Grid item md={12} xs={12}>
                           <Typography>
                             You Can Join 5mins Before :{' '}
-                            {moment(`${props?.data?.date}T${startTime}`).format(
+                            {moment(`${props?.data?.date}T${startTimeProp}`).format(
                               'hh:mm:ss A'
                             )}
                           </Typography>
@@ -437,11 +494,9 @@ const JoinClass = (props) => {
                       Accept
                     </Button>
                   </>
-                ) : (
-                  ''
                 )}
               </Grid>
-              <Grid item md={3} xs={6}>
+              <Grid item xs={4}>
                 <Popover
                   id={id}
                   open={open}
@@ -488,7 +543,7 @@ const JoinClass = (props) => {
                     </Grid>
                   </Grid>
                 </Popover>
-                <Button
+                {/* <Button
                   size='small'
                   fullWidth
                   variant='contained'
@@ -498,7 +553,19 @@ const JoinClass = (props) => {
                   {window.location.pathname === '/erp-online-class-student-view'
                     ? 'Reject'
                     : 'Cancel'}
-                </Button>
+                  Cancel
+                </Button> */}
+                {window.location.pathname !== '/erp-online-class-student-view' && (
+                  <Button
+                    size='small'
+                    fullWidth
+                    variant='contained'
+                    onClick={(e) => handleClick(e)}
+                    className='teacherFullViewSmallButtons1'
+                  >
+                    Cancel
+                  </Button>
+                )}
               </Grid>
             </>
           )}
@@ -522,11 +589,9 @@ const DetailCardView = ({
   const dispatch = useDispatch();
   const [noOfPeriods, setNoOfPeriods] = useState([]);
   const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
-
   useEffect(() => {
     if (fullData?.id) {
       handleCallaData();
-      console.log(noOfPeriods, 'noOfPeriods');
     }
   }, [fullData?.id]);
 
@@ -563,30 +628,30 @@ const DetailCardView = ({
     return `${hour}:${min} ${part}`;
   };
 
-  function handleCancel() {
-    setLoading(true);
-    const params = {
-      zoom_meeting_id: fullData && fullData.id,
-      class_date: fullData && fullData?.online_class?.start_time.split('T')[0],
-    };
-    let url = '';
-    if (window.location.pathname === '/erp-online-class-student-view') {
-      url = endpoints.studentViewBatchesApi.rejetBatchApi;
-    } else {
-      url = endpoints.teacherViewBatches.cancelBatchApi;
-    }
-    axiosInstance
-      .put(url, params)
-      .then((res) => {
-        setLoading(false);
-        setAlert('success', res.data.message);
-        handleClose('success');
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
-  }
+  // function handleCancel() {
+  //   setLoading(true);
+  //   const params = {
+  //     zoom_meeting_id: fullData && fullData.id,
+  //     class_date: fullData && fullData?.online_class?.start_time.split('T')[0],
+  //   };
+  //   let url = '';
+  //   if (window.location.pathname === '/erp-online-class-student-view') {
+  //     url = endpoints.studentViewBatchesApi.rejetBatchApi;
+  //   } else {
+  //     url = endpoints.teacherViewBatches.cancelBatchApi;
+  //   }
+  //   axiosInstance
+  //     .put(url, params)
+  //     .then((res) => {
+  //       setLoading(false);
+  //       setAlert('success', res.data.message);
+  //       handleClose('success');
+  //     })
+  //     .catch((error) => {
+  //       setLoading(false);
+  //       setAlert('error', error.message);
+  //     });
+  // }
 
   const handleAttendance = () => {
     dispatch(attendanceAction(fullData ? fullData.online_class?.start_time : ''));

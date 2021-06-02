@@ -125,7 +125,7 @@ const CreateClassForm = (props) => {
       }));
       setYearList(transformedData);
       const defaultYear = transformedData?.[0];
-      setSelectedYear(defaultYear);
+      handleYear({}, defaultYear);
     });
   };
 
@@ -222,7 +222,7 @@ const CreateClassForm = (props) => {
     }
   };
 
-  const handleYear = (event, value) => {
+  const handleYear = (event = {}, value = '') => {
     setSelectedYear('');
     setBranches([]);
     setSelectedBranches([]);
@@ -261,7 +261,7 @@ const CreateClassForm = (props) => {
   const handleGrade = (event, value) => {
     dispatch(clearFilteredStudents());
     setSelectedGrades(value);
-    if (value.length) {
+    if (value?.length > 0) {
       const ids = value.map((el) => el.grade_id);
       setOnlineClass((prevState) => ({ ...prevState, gradeIds: ids }));
       dispatch(clearTutorEmailValidation());
@@ -664,6 +664,7 @@ const CreateClassForm = (props) => {
     setSelectedSections([]);
     setSelectedSubject([]);
     setSelectedYear('');
+    setBranches([]);
     setSelectedClassType('');
     setSelectedBranches([]);
     setSelectedCourse('');

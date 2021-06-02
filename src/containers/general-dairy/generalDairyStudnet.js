@@ -66,7 +66,7 @@ const GeneralDairyStudentList = () => {
                 if (result.data.status_code === 200) {
                     setTotalCount(result.data.result.count);
                     setLoading(false);
-                    setPeriodData(result.data.result.results.reverse());
+                    setPeriodData(result.data.result.results);
                 } else {
                     setLoading(false);
                     setAlert('error', result.data.description);

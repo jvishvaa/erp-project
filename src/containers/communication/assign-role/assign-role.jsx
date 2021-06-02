@@ -123,7 +123,7 @@ const AssignRole = (props) => {
   }, [selectedGrades]);
 
   useEffect(() => {
-   if(moduleId) displayUsersList();
+    if (moduleId) displayUsersList();
     if (assignedRole) {
       setAssigenedRole(false);
     }
@@ -133,14 +133,14 @@ const AssignRole = (props) => {
     if (filterCheck) {
       setFilterCheck(false);
     }
-  }, [pageno, assignedRole, clearAll, filterCheck,moduleId]);
+  }, [pageno, assignedRole, clearAll, filterCheck, moduleId]);
 
   useEffect(() => {
     if (isNewSeach && moduleId) {
       setIsNewSearch(false);
       displayUsersList();
     }
-  }, [isNewSeach,moduleId]);
+  }, [isNewSeach, moduleId]);
 
   const getRoleApi = async () => {
     try {
@@ -164,8 +164,10 @@ const AssignRole = (props) => {
   const getYearApi = async () => {
     try {
       const result = await axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`);
-      if (result.status === 200) {
+      if (result.data?.status_code === 200) {
         setAcademicYearList(result.data.data);
+        const defaultYear = result.data?.data?.[0];
+        setSelectedYear(defaultYear);
       } else {
         setAlert('error', result.data.message);
       }
@@ -366,15 +368,15 @@ const AssignRole = (props) => {
   };
 
   const handleMultipleRoles = (event, value) => {
-    if (value.length) {
-      const ids = value.map((el) => el);
+    if (value?.length) {
+      const ids = value.map((el) => el) || [];
       setSelectedMultipleRoles(ids);
     } else {
       setSelectedMultipleRoles([]);
     }
   };
 
-  const handleYear = (event, value) => {
+  const handleYear = (event = {}, value = '') => {
     setSelectedYear('');
     setSelectedBranch('');
     setSelectedGrades([]);
@@ -538,10 +540,10 @@ const AssignRole = (props) => {
 
         </Grid> */}
           <Grid container spacing={2} className={classes.spacer}>
-          <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={3}>
               <FormControl
                 variant='outlined'
-                className={classes.formControl}
+                className={'searchViewUser'}
                 fullWidth
                 size='small'
               >
@@ -561,6 +563,7 @@ const AssignRole = (props) => {
                 size='small'
                 onChange={handleMultipleRoles}
                 value={selectedMultipleRoles}
+                className='dropdownIcon'
                 id='message_log-smsType'
                 options={roles}
                 getOptionLabel={(option) => option?.role_name}
@@ -582,7 +585,8 @@ const AssignRole = (props) => {
                 onChange={handleYear}
                 value={selectedYear || ''}
                 id='message_log-branch'
-                className='message_log_branch'
+                className='message_log_branch dropdownIcon'
+                value={selectedYear || ''}
                 options={academicYearList || []}
                 getOptionLabel={(option) => option?.session_year || ''}
                 filterSelectedOptions
@@ -604,7 +608,7 @@ const AssignRole = (props) => {
                   onChange={handleBranch}
                   value={selectedBranch || ''}
                   id='message_log-branch'
-                  className='message_log_branch'
+                  className='message_log_branch dropdownIcon'
                   options={branchList || []}
                   getOptionLabel={(option) => option?.branch_name || ''}
                   filterSelectedOptions
@@ -628,6 +632,7 @@ const AssignRole = (props) => {
                   onChange={handleGrades}
                   value={selectedGrades || ''}
                   id='message_log-smsType'
+                  className='dropdownIcon'
                   options={gradeList || []}
                   getOptionLabel={(option) => option?.grade__grade_name || ''}
                   filterSelectedOptions
@@ -651,6 +656,7 @@ const AssignRole = (props) => {
                   onChange={handleSections}
                   value={selectedSections || ''}
                   id='message_log-smsType'
+                  className='dropdownIcon'
                   options={sectionList || []}
                   getOptionLabel={(option) => option?.section__section_name || []}
                   filterSelectedOptions
@@ -828,7 +834,7 @@ const AssignRole = (props) => {
                   setSelectedRole(value);
                 }}
                 id='branch_id'
-                //className='dropdownIcon'
+                className='dropdownIcon'
                 value={selectedRole}
                 options={roles}
                 getOptionLabel={(option) => option?.role_name}
