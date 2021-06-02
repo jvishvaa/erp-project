@@ -262,7 +262,7 @@ const TeacherHomework = withRouter(
       const [startDate, endDate] = dateRange;
       if (teacherModuleId) {
         if (activeView === 'list-homework') {
-          if (startDate && endDate && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id, sectionDisplay?.id) {
+          if (startDate && endDate && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id && sectionDisplay?.id) {
             //alert(searchSection)
             getTeacherHomeworkDetails(
               teacherModuleId,
@@ -358,6 +358,7 @@ const TeacherHomework = withRouter(
       setBranchList([]);
       setGrades([]);
       setSections([]);
+      setSectionDisplay([]);
       //setSearchGrade('');
       //setSearchSection('');
       setSelectedBranch([]);
