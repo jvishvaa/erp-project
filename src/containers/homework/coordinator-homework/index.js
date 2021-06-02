@@ -24,6 +24,7 @@ import {
   Badge,
   IconButton,
   useMediaQuery,
+  withStyles,
   List,
   ListItem,
   ListItemIcon,
@@ -60,6 +61,8 @@ import {
   setSelectedHomework,
   fetchStudentsListForTeacherHomework,
   setTeacherUserIDCoord,
+  setSelectedCoFilters,
+  resetSelectedCoFilters,
 } from '../../../redux/actions';
 import HomeworkRow from './homework-row';
 import ViewHomework from './view-homework';
@@ -87,6 +90,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const StyledClearButton = withStyles({
+  root: {
+    backgroundColor: '#E2E2E2',
+    color: '#8C8C8C',
+    height: '35px',
+    width: '90%',
+    '@media (max-width: 600px)': {
+      width: '100% !important',
+    },
+    borderRadius: '5px',
+    marginRight: '15px',
+    '&:hover': {
+      backgroundColor: '#E2E2E2 !important',
+    },
+  },
+})(Button);
+
 function getDaysAfter(date, amount) {
   // TODO: replace with implementation for your date library
   return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
@@ -99,6 +119,9 @@ function getDaysBefore(date, amount) {
 const CoordinatorTeacherHomework = withRouter(
   ({
     getCoordinateTeacherHomeworkDetails,
+    onSetSelectedFilters,
+    onResetSelectedFilters,
+    selectedFilters,
     homeworkCols,
     homeworkRows,
     fetchingTeacherHomework,
@@ -135,16 +158,24 @@ const CoordinatorTeacherHomework = withRouter(
     // const [moduleId, setModuleId] = useState();
     // const [modulePermision, setModulePermision] = useState(true);
     const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
-    const [endDate, setEndDate] = useState(getDaysAfter(moment(), 7));
+    const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
 
     const [startDateTechPer, setStartDateTechPer] = useState(
       moment().format('YYYY-MM-DD')
     );
-    const [endDateTechPer, setEndDateTechPer] = useState(getDaysAfter(moment(), 7));
+    const [endDateTechPer, setEndDateTechPer] = useState(getDaysAfter(moment(), 6));
 
     const [selectedCoTeacherOptValue, setselectedCoTeacherOptValue] = useState([]);
     const [selectedCoTeacherOpt, setSelectedCoTeacherOpt] = useState([]);
     const [selectedTeacherUser_id, setSelectedTeacherUser_id] = useState();
+    const [academicYear, setAcademicYear] = useState([]);
+    const [selectedAcademicYear, setSelectedAcadmeicYear] = useState(selectedFilters.year);
+    const [branchList, setBranchList] = useState([]);
+    const [selectedBranch, setSelectedBranch] = useState(selectedFilters.branch);
+    const [grades, setGrades] = useState([]);
+    const [sections, setSections] = useState([]);
+    const [sectionDisplay, setSectionDisplay] = useState(selectedFilters.section);
+    const [gradeDisplay, setGradeDisplay] = useState(selectedFilters.grade);
 
     const [viewHomework, setViewHomework] = useState({
       subjectId: '',
@@ -212,8 +243,8 @@ const CoordinatorTeacherHomework = withRouter(
     // };
 
     const handleSelectCol = (col, view) => {
-      const { homeworkId, subjectId, coord_selected_teacher_id } = col;
-      fetchStudentLists(homeworkId, subjectId, coord_selected_teacher_id);
+      const { homeworkId, subjectId, sectionId, coord_selected_teacher_id } = col;
+      fetchStudentLists(homeworkId, subjectId, sectionId, coord_selected_teacher_id);
       setSelectedCol(col);
       if (isMobile) {
         setActiveView('card-view');
@@ -264,12 +295,12 @@ const CoordinatorTeacherHomework = withRouter(
       const [startDate, endDate] = dateRange;
       if (teacherModuleId) {
         if (activeView === 'list-homework') {
-          if (startDate && endDate) {
+          if (startDate && endDate && sectionDisplay?.id) {
             getTeacherListApi();
           }
         }
       }
-    }, [getCoordinateTeacherHomeworkDetails, dateRange, activeView, teacherModuleId]);
+    }, [getCoordinateTeacherHomeworkDetails, dateRange, activeView, teacherModuleId, sectionDisplay]);
 
     const getTeacherListApi = async () => {
       const [startDate, endDate] = dateRange;
@@ -277,8 +308,7 @@ const CoordinatorTeacherHomework = withRouter(
       try {
         setLoading(true);
         // alert(2, startDate, endDate);
-        const result = await axiosInstance.get(
-          endpoints.coordinatorTeacherHomeworkApi.getAllTeacherList,
+        const result = await axiosInstance.get(`${endpoints.coordinatorTeacherHomeworkApi.getAllTeacherList}?section_mapping=${sectionDisplay?.id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -305,9 +335,14 @@ const CoordinatorTeacherHomework = withRouter(
           }
 
           if (activeView === 'list-homework') {
-            if (startDate && endDate) {
+            if (startDate && endDate && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id && sectionDisplay?.id) {
               getCoordinateTeacherHomeworkDetails(
                 teacherModuleId,
+                selectedAcademicYear.id,
+                selectedBranch.branch.id,
+                gradeDisplay.grade_id,
+                sectionDisplay.id,
+                sectionDisplay.section_id,
                 startDate.format('YYYY-MM-DD'),
                 endDate.format('YYYY-MM-DD'),
                 newCoorTechID
@@ -326,60 +361,72 @@ const CoordinatorTeacherHomework = withRouter(
     };
 
     const handleCoordinateTeacher = (e, value) => {
-      if (value?.user_id > 0) {
+      if (value?.user_id && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id, sectionDisplay?.id) {
         setFirstTeacherUserIdOnloadCordinatorHomewok(value);
         setSelectedTeacherUser_id(value?.user_id);
         setselectedCoTeacherOptValue(value);
         getCoordinateTeacherHomeworkDetails(
           teacherModuleId,
+          selectedAcademicYear.id,
+          selectedBranch.branch.id,
+          gradeDisplay.grade_id,
+          sectionDisplay.id,
+          sectionDisplay.section_id,
           startDate,
           endDate,
-          value.user_id
+          value?.user_id
         );
       }
     };
 
     const downloadGetTeacherPerformanceListApi = async () => {
       const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-      try {
-        setLoading(true);
-        if (startDateTechPer && startDateTechPer) {
-          const dwURL = `${
-            endpoints.coordinatorTeacherHomeworkApi.getTecherPerformance
-          }?start_date=${startDateTechPer.format(
-            'YYYY-MM-DD'
-          )}&end_date=${endDateTechPer.format(
-            'YYYY-MM-DD'
-          )}&user_id=${selectedTeacherByCoordinatorToCreateHw}`;
-
-          const result = await axiosInstance.get(dwURL, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            responseType: 'blob', //important
-          });
-          if (result.status === 200) {
-            setLoading(false);
-            const downloadUrl = window.URL.createObjectURL(new Blob([result.data]));
-            const link = document.createElement('a');
-            link.href = downloadUrl;
-            link.setAttribute(
-              'download',
-              'Teacher_performance_' +
-                startDateTechPer.format('YYYY-MM-DD') +
-                '_' +
-                endDateTechPer.format('YYYY-MM-DD') +
-                '.xls'
-            ); //any other extension
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            setAlert('success', 'File downloaded successfully');
+      if(selectedBranch?.branch?.id && selectedTeacherByCoordinatorToCreateHw) {
+        try {
+          setLoading(true);
+          if (startDateTechPer && startDateTechPer) {
+            const dwURL = `${
+              endpoints.coordinatorTeacherHomeworkApi.getTecherPerformance
+            }?start_date=${startDateTechPer.format(
+              'YYYY-MM-DD'
+            )}&end_date=${endDateTechPer.format(
+              'YYYY-MM-DD'
+            )}&user_id=${
+              selectedTeacherByCoordinatorToCreateHw
+            }&branch_mp_id=${selectedBranch.id}`;
+  
+            const result = await axiosInstance.get(dwURL, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              responseType: 'blob', //important
+            });
+            if (result.status === 200) {
+              setLoading(false);
+              const downloadUrl = window.URL.createObjectURL(new Blob([result.data]));
+              const link = document.createElement('a');
+              link.href = downloadUrl;
+              link.setAttribute(
+                'download',
+                'Teacher_performance_' +
+                  startDateTechPer.format('YYYY-MM-DD') +
+                  '_' +
+                  endDateTechPer.format('YYYY-MM-DD') +
+                  '.xls'
+              ); //any other extension
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+              setAlert('success', 'File downloaded successfully');
+            }
           }
+        } catch (error) {
+          setAlert('error', error.message);
+          setLoading(false);
         }
-      } catch (error) {
-        setAlert('error', error.message);
-        setLoading(false);
+      }
+      else {
+        setAlert('warning', 'Please select Filters');
       }
     };
 
@@ -389,6 +436,166 @@ const CoordinatorTeacherHomework = withRouter(
 
     const tableContainer = useRef(null);
 
+    useEffect(() => {
+      if (teacherModuleId) {
+        setLoading(true);
+        axiosInstance.get(`${endpoints.userManagement.academicYear}?module_id=${teacherModuleId}`)
+        .then((result) => {
+          if (result.status === 200) {
+            setAcademicYear(result?.data?.data || []);
+            setLoading(false);
+          } else {
+            setAlert('error', 'Something Wrong');
+            setLoading(false);
+          }
+        })
+        .catch((error) => setAlert('error', 'Something wrong'))
+      }
+    }, [teacherModuleId]);
+
+    const handleYear = (event, value) => {
+      setGradeDisplay([]);
+      setBranchList([]);
+      setGrades([]);
+      setSections([]);
+      setSectionDisplay([]);
+      //setSearchGrade('');
+      //setSearchSection('');
+      setSelectedBranch([]);
+      setSelectedAcadmeicYear(value);
+      if (value) {
+        setLoading(true);
+        onSetSelectedFilters({
+          year: value,
+          branch: '',
+          grade: '',
+          section: '',
+        });
+        axiosInstance.get(`${endpoints.mappingStudentGrade.branch}?session_year=${value?.id}&module_id=${teacherModuleId}`)
+        .then((result) => {
+          if (result.status === 200) {
+            handleGrade();
+            //setBranchList(result?.data?.data || []);
+            //setBranchList(result?.data?.data?.results.map(obj=>((obj&&obj.branch)||{})) || []);
+            setBranchList(result?.data?.data?.results || []);
+            setLoading(false);
+          } else {
+            setAlert('error', 'Something Wrong');
+            setLoading(false);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', 'Something Wrong');
+          setLoading(false);
+        })
+      }
+    };
+
+    const handleBranch = (event, value) => {
+      setGrades([]);
+      setSections([]);
+      setGradeDisplay([]);
+      setSectionDisplay([]);
+      //setSearchGrade('');
+      //setSearchSection([]);
+      setSelectedBranch([]);
+      if (value) {
+        setSelectedBranch(value);
+        setLoading(true);
+        onSetSelectedFilters({
+          year: selectedAcademicYear,
+          branch: value,
+          grade: '',
+          section: '',
+        });
+        // endpoints.masterManagement.gradesDrop
+        axiosInstance.get(`${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${value.branch.id}&module_id=${teacherModuleId}`)
+        .then((result) => {
+          if (result.status === 200) {
+            setGrades(result.data.data || []);
+            setLoading(false);
+          } else {
+            setAlert('error', 'Something Wrong');
+            setLoading(false);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', 'Something wrong');
+          setLoading(false);
+        })
+      }
+    };
+
+    const handleGrade = (event, value) => {
+      setSectionDisplay([]);
+      setSections([]);
+      setGradeDisplay([]);
+      setSelectedCoTeacherOpt([]);
+      setselectedCoTeacherOptValue([]);
+      setSelectedTeacherUser_id('');
+      //setSearchGrade('');
+      //setSearchSection([]);
+      if (value) {
+        //setSearchGrade(value?.grade_id);
+        setGradeDisplay(value);
+        setLoading(true);
+        onSetSelectedFilters({
+          year: selectedAcademicYear,
+          branch: selectedBranch,
+          grade: value,
+          section: '',
+        });
+        axiosInstance
+          .get(
+            `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${value.grade_id}&module_id=${teacherModuleId}`
+          )
+          .then((result) => {
+            if (result.data.status_code === 200) {
+              setSections(result.data?.data);
+              setLoading(false);
+            } else {
+              setAlert('error', result.data.message);
+              setLoading(false);
+            }
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
+            setLoading(false);
+          });
+      }
+    };
+
+    const handleSection = (event, value) => {
+      //setSearchSection([]);
+      setSectionDisplay([]);
+      setSelectedCoTeacherOpt([]);
+      setselectedCoTeacherOptValue([]);
+      setSelectedTeacherUser_id('');
+      //let sec_id = [];
+      if (value) {
+        //let id = value.map(({ id }) => sec_id.push(id));
+        //setSearchSection(sec_id);
+        setSectionDisplay(value);
+        onSetSelectedFilters({
+          year: selectedAcademicYear,
+          branch: selectedBranch,
+          grade: gradeDisplay,
+          section: value
+        });
+        //getTeacherListApi();
+      }
+    };
+
+    const handleCrearFilter = () => {
+      setSelectedAcadmeicYear('');
+      setSelectedBranch([]);
+      setGradeDisplay([]);
+      setSectionDisplay([]);
+      setSelectedCoTeacherOpt([]);
+      setselectedCoTeacherOptValue([]);
+      setSelectedTeacherUser_id('');
+      onResetSelectedFilters();
+    }
 
     return (
       <>
@@ -400,130 +607,249 @@ const CoordinatorTeacherHomework = withRouter(
             </div>
             <div className='message_log_white_wrapper'>
               {activeView !== 'view-homework' && activeView !== 'view-received-homework' && (
-                <Grid container className='date-container' spacing={3}>
-                  <Grid item xs={12} sm={3} className='date-container2'>
-                    <Grid className={classes.paper}>
-                      <Autocomplete
-                        size='small'
-                        id='Teacher'
-                        options={selectedCoTeacherOpt}
-                        getOptionLabel={(option) => option?.name}
-                        onChange={handleCoordinateTeacher}
-                        // filterSelectedOptions
-                        value={selectedCoTeacherOptValue}
-                        renderInput={(params) => (
+                <Grid container className='date-container'>
+                  <Grid item xs={12} sm={8}>
+                    <Grid container spacing={1}>
+                      <Grid item xs={12} sm={4}>
+                        <Autocomplete
+                          style={{ width: '100%' }}
+                          size='small'
+                          onChange={handleYear}
+                          id='branch_id'
+                          className='dropdownIcon'
+                          value={selectedAcademicYear}
+                          options={academicYear || []}
+                          getOptionLabel={(option) => option?.session_year || ''}
+                          filterSelectedOptions
+                          renderInput={(params) => (
                           <TextField
-                            className=''
                             {...params}
                             variant='outlined'
-                            label='Teacher'
-                            placeholder='Teacher'
+                            label='Academic Year'
+                            placeholder='Academic Year'
                           />
                         )}
                       />
                     </Grid>
-                  </Grid>
-                  <Grid item xs={12} sm={3} className='date-container3'>
-                    <Grid className={classes.paper}>
-                      <LocalizationProvider dateAdapter={MomentUtils}>
-                        <DateRangePicker
-                          disableCloseOnSelect={false}
-                          startText='Select-dates'
-                          PopperProps={{ open: datePopperOpen }}
-                          // endText='End-date'
-                          value={dateRange}
-                          // calendars='1'
-                          onChange={(newValue) => {
-                            const [startDate, endDate] = newValue;
-                            const sevenDaysAfter = moment(startDate).add(6, 'days');
-                            setDateRange([startDate, sevenDaysAfter]);
-                            setDatePopperOpen(false);
-                          }}
-                          renderInput={(
-                            // {
-                            //   inputProps: { value: startValue, ...restStartInputProps },
-                            //   ...startProps
-                            // },
-                            // {
-                            //   inputProps: { value: endValue, ...restEndInputProps },
-                            //   ...endProps
-                            // }
-                            { inputProps, ...startProps },
-                            // startProps,
-                            endProps
-                          ) => {
-                            return (
-                              <>
-                                <TextField
-                                  {...startProps}
-                                  inputProps={{
-                                    ...inputProps,
-                                    value: `${inputProps.value} - ${endProps.inputProps.value}`,
-                                    readOnly: true,
-                                  }}
-                                  size='small'
-                                  style={{ minWidth: '100%' }}
-                                  onClick={() => {
-                                    setDatePopperOpen(true);
-                                  }}
-                                />
-                                {/* <TextField {...startProps} size='small' /> */}
-                                {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
-                                {/* <TextField {...endProps} size='small' /> */}
-                              </>
-                            );
-                          }}
+                    <Grid item xs={12} sm={4}>
+                      <Autocomplete
+                        style={{ width: '100%' }}
+                        size='small'
+                        onChange={handleBranch}
+                        id='branch_id'
+                        className='dropdownIcon'
+                        value={selectedBranch}
+                        options={branchList || []}
+                        getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                        filterSelectedOptions
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Branch'
+                            placeholder='Branch'
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <Autocomplete
+                        style={{ width: '100%' }}
+                        size='small'
+                        onChange={handleGrade}
+                        id='grade'
+                        required
+                        value={gradeDisplay}
+                        options={grades || []}
+                        getOptionLabel={(option) => option?.grade__grade_name || ''}
+                        filterSelectedOptions
+                        className='dropdownIcon'
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Grades'
+                            placeholder='Grades'
+                          />
+                        )}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sm={4}>
+                      <Autocomplete
+                        style={{ width: '100%' }}
+                        size='small'
+                        onChange={handleSection}
+                        id='section'
+                        required
+                        //multiple
+                        value={sectionDisplay}
+                        options={sections || []}
+                        getOptionLabel={(option) => option?.section__section_name || ''}
+                        filterSelectedOptions
+                        className='dropdownIcon'
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Sections'
+                            placeholder='Sections'
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4} className='date-container2'>
+                      <Grid className={classes.paper}>
+                        <Autocomplete
+                          size='small'
+                          id='Teacher'
+                          options={selectedCoTeacherOpt}
+                          getOptionLabel={(option) => option?.name}
+                          onChange={handleCoordinateTeacher}
+                          // filterSelectedOptions
+                          value={selectedCoTeacherOptValue}
+                          renderInput={(params) => (
+                            <TextField
+                              className=''
+                              {...params}
+                              variant='outlined'
+                              label='Teacher'
+                              placeholder='Teacher'
+                            />
+                          )}
                         />
-                      </LocalizationProvider>
+                      </Grid>
+                    </Grid>
+                    <Grid item xs={12} sm={4} className='date-container3'>
+                      <Grid className={classes.paper}>
+                        <LocalizationProvider dateAdapter={MomentUtils}>
+                          <DateRangePicker
+                            disableCloseOnSelect={false}
+                            startText='Select-dates'
+                            PopperProps={{ open: datePopperOpen }}
+                            // endText='End-date'
+                            value={dateRange}
+                            // calendars='1'
+                            onChange={(newValue) => {
+                              const [startDate, endDate] = newValue;
+                              const sevenDaysAfter = moment(startDate).add(6, 'days');
+                              setDateRange([startDate, sevenDaysAfter]);
+                              setDatePopperOpen(false);
+                            }}
+                            renderInput={(
+                              // {
+                              //   inputProps: { value: startValue, ...restStartInputProps },
+                              //   ...startProps
+                              // },
+                              // {
+                              //   inputProps: { value: endValue, ...restEndInputProps },
+                              //   ...endProps
+                              // }
+                              { inputProps, ...startProps },
+                              // startProps,
+                              endProps
+                            ) => {
+                              return (
+                                <>
+                                  <TextField
+                                    {...startProps}
+                                    inputProps={{
+                                      ...inputProps,
+                                      value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                                      readOnly: true,
+                                    }}
+                                    size='small'
+                                    style={{ minWidth: '100%' }}
+                                    onClick={() => {
+                                      setDatePopperOpen(true);
+                                    }}
+                                  />
+                                  {/* <TextField {...startProps} size='small' /> */}
+                                  {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
+                                  {/* <TextField {...endProps} size='small' /> */}
+                                </>
+                              );
+                            }}
+                          />
+                        </LocalizationProvider>
+                      </Grid>
+                    </Grid>
                     </Grid>
                   </Grid>
                   {isMobile ? (
                     <Grid item xs={12} className='date-container4'>
-                      <Divider />
+                      <Divider style={{ backgroundColor: '#ff6b6b', marginTop: '15px', marginBottom: '15px', }}/>
                     </Grid>
                   ) : (
                     <div className='vertical_divider'></div>
                   )}
-
-                  <Grid item xs={12} sm={4} className='bulk_container'>
-                    <LocalizationProvider dateAdapter={MomentUtils}>
-                      <DateRangePicker
-                        startText='Select-date-range'
-                        value={dateRangeTechPer}
-                        onChange={(newValue) => {
-                          setDateRangeTechPer(newValue);
-                        }}
-                        renderInput={({ inputProps, ...startProps }, endProps) => {
-                          return (
-                            <>
-                              <TextField
-                                {...startProps}
-                                inputProps={{
-                                  ...inputProps,
-                                  value: `${inputProps.value} - ${endProps.inputProps.value}`,
-                                  readOnly: true,
-                                }}
-                                size='small'
-                                style={{ minWidth: '100%' }}
-                              />
-                            </>
-                          );
-                        }}
-                      />
-                    </LocalizationProvider>
-                    <div className='download_button'>
-                      <Button
-                        style={{
-                          cursor: 'pointer',
-                          backgroundColor: '#ffffff',
-                          border: '1px solid #ff6b6b',
-                          borderRadius: '5px',
-                        }}
-                        onClick={downloadGetTeacherPerformanceListApi}
-                      >
-                        <GetAppIcon color='primary' />
-                      </Button>
-                    </div>
+                  <Grid item xs={12} sm={3}>
+                    <Grid container>
+                      <Grid item xs={12} sm={12} className='date-container3'>
+                        <LocalizationProvider dateAdapter={MomentUtils}>
+                          <DateRangePicker
+                            startText='Select-date-range'
+                            value={dateRangeTechPer}
+                            onChange={(newValue) => {
+                              setDateRangeTechPer(newValue);
+                            }}
+                            renderInput={({ inputProps, ...startProps }, endProps) => {
+                              return (
+                                <>
+                                  <TextField
+                                    {...startProps}
+                                    inputProps={{
+                                      ...inputProps,
+                                      value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                                      readOnly: true,
+                                    }}
+                                    size='small'
+                                    style={{ minWidth: '100%' }}
+                                  />
+                                </>
+                              );
+                            }}
+                          />
+                        </LocalizationProvider>
+                        {/* <div className='download_button'>
+                          <Button
+                            style={{
+                              cursor: 'pointer',
+                              backgroundColor: '#ffffff',
+                              border: '1px solid #ff6b6b',
+                              borderRadius: '5px',
+                            }}
+                            onClick={downloadGetTeacherPerformanceListApi}
+                          >
+                            <GetAppIcon color='primary' />
+                          </Button>
+                        </div> */}
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <div className='download_button'>
+                          <StyledClearButton onClick={e => handleCrearFilter()}>Clear Filters</StyledClearButton>
+                        </div>
+                      </Grid>
+                      <Grid item xs={12} sm={6} className='bulk_container'>
+                        <div className='download_button'>
+                          <Button
+                            style={{
+                              cursor: 'pointer',
+                              backgroundColor: '#ffffff',
+                              color: '#ff6b6b',
+                              border: '1px solid #ff6b6b',
+                              borderRadius: '5px',
+                              height: '35px',
+                              width: '100%',
+                            }}
+                            onClick={downloadGetTeacherPerformanceListApi}
+                            endIcon={<GetAppIcon style={{color: '#ff6b6b',}} />}
+                          >
+                            Download
+                          </Button>
+                        </div>
+                      </Grid>
+                    </Grid>
                   </Grid>
                 </Grid>
               )}
@@ -676,6 +1002,7 @@ const CoordinatorTeacherHomework = withRouter(
                                       data={row}
                                       cols={homeworkCols}
                                       selectedCol={selectedCol}
+                                      sectionId={sectionDisplay?.id}
                                       setSelectedCol={handleSelectCol}
                                       handleViewHomework={handleViewHomework}
                                       coord_selected_teacher_id={selectedTeacherUser_id}
@@ -727,6 +1054,7 @@ const CoordinatorTeacherHomework = withRouter(
                                                   date: row.date,
                                                   subject: col.subject_name,
                                                   subjectId: col.id,
+                                                  sectionId: sectionDisplay?.id,
                                                   selectedTeacherByCoordinatorToCreateHw: selectedTeacherByCoordinatorToCreateHw
                                                     ? selectedTeacherByCoordinatorToCreateHw
                                                     : selectedCoTeacherOptValue,
@@ -742,7 +1070,7 @@ const CoordinatorTeacherHomework = withRouter(
                                                   handleViewHomework({
                                                     date: row.date,
                                                     subject: col.subject_name,
-                                                    subjectId: col.id,
+                                                    subjectId: col.subject_id,
                                                     homeworkId: data.hw_id,
                                                     coord_selected_teacher_id: selectedTeacherUser_id,
                                                   });
@@ -769,7 +1097,8 @@ const CoordinatorTeacherHomework = withRouter(
                                                     handleSelectCol({
                                                       date: row.date,
                                                       subject: col.subject_name,
-                                                      subjectId: col.id,
+                                                      subjectId: col.subject_id,
+                                                      sectionId: sectionDisplay?.id,
                                                       homeworkId: data.hw_id,
                                                       view: 'submissionStats',
                                                       coord_selected_teacher_id: selectedTeacherUser_id,
@@ -805,7 +1134,8 @@ const CoordinatorTeacherHomework = withRouter(
                                                     handleSelectCol({
                                                       date: row.date,
                                                       subject: col.subject_name,
-                                                      subjectId: col.id,
+                                                      subjectId: col.subject_id,
+                                                      sectionId: sectionDisplay?.id,
                                                       homeworkId: data.hw_id,
                                                       view: 'evaluationStats',
                                                       coord_selected_teacher_id: selectedTeacherUser_id,
@@ -879,6 +1209,7 @@ const CoordinatorTeacherHomework = withRouter(
 );
 
 const mapStateToProps = (state) => ({
+  selectedFilters: state.teacherHomework.selectedCoFilters,
   homeworkCols: state.teacherHomework.homeworkCols,
   homeworkRows: state.teacherHomework.homeworkRows,
   fetchingTeacherHomework: state.teacherHomework.fetchingTeacherHomework,
@@ -894,6 +1225,11 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getCoordinateTeacherHomeworkDetails: (
     teacherModuleId,
+    acadYear,
+    branch,
+    grade,
+    sectionId,
+    section,
     startDate,
     endDate,
     selectedTeacherUser_id
@@ -901,6 +1237,11 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(
       fetchCoordinateTeacherHomeworkDetails(
         teacherModuleId,
+        acadYear,
+        branch,
+        grade,
+        sectionId,
+        section,
         startDate,
         endDate,
         selectedTeacherUser_id
@@ -910,12 +1251,14 @@ const mapDispatchToProps = (dispatch) => ({
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
   },
-  fetchStudentLists: (id, subjectId,selectedTeacherUser_id) => {
-    dispatch(fetchStudentsListForTeacherHomework(id, subjectId, selectedTeacherUser_id));
+  fetchStudentLists: (id, subjectId, sectionId, selectedTeacherUser_id) => {
+    dispatch(fetchStudentsListForTeacherHomework(id, subjectId, sectionId, selectedTeacherUser_id));
   },
   setFirstTeacherUserIdOnloadCordinatorHomewok: (selectedTeacherUser_id) => {
     return dispatch(setTeacherUserIDCoord(selectedTeacherUser_id));
   },
+  onSetSelectedFilters: (data) => {dispatch(setSelectedCoFilters(data))},
+  onResetSelectedFilters: () => { dispatch(resetSelectedCoFilters())},
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CoordinatorTeacherHomework);

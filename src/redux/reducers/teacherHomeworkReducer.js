@@ -18,10 +18,61 @@ const INITIAL_STATE = {
   collatedSubmissionFiles: [],
   fetchingSubmittedHomeworkDetails: false,
   selectedTeacherByCoordinatorToCreateHw: false,
+  selectedFilters: {
+    year: '',
+    branch: '',
+    grade: '',
+    section: ''
+  },
+  selectedCoFilters: {
+    year: '',
+    branch: '',
+    grade: '',
+    section: ''
+  }
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
   switch (action.type) {
+    case teacherHomeworkActions.SET_SELECTED_FILTERS:
+      return {
+        ...state,
+        selectedFilters: action.data ,
+        fetchingTeacherHomework: false
+      };
+    case teacherHomeworkActions.RESET_SELECTED_FILTERS:
+      return {
+        ...state,
+        selectedFilters: {
+          year: '',
+          branch: '',
+          grade: '',
+          section: ''
+        },
+        homeworkRows: [],
+        homeworkCols: [],
+        fetchingTeacherHomework: false
+      };
+    case teacherHomeworkActions.SET_SELECTED_COFILTERS:
+      return {
+        ...state,
+        selectedCoFilters: action.data ,
+        fetchingTeacherHomework: false
+      };
+    case teacherHomeworkActions.RESET_SELECTED_COFILTERS:
+      return {
+        ...state,
+        selectedCoFilters: {
+          year: '',
+          branch: '',
+          grade: '',
+          section: ''
+        },
+        homeworkRows: [],
+        homeworkCols: [],
+        fetchingTeacherHomework: false
+      };
+    
     case teacherHomeworkActions.FETCH_TEACHER_HOMEWORK_REQUEST:
       return { ...state, fetchingTeacherHomework: true };
     case teacherHomeworkActions.FETCH_TEACHER_HOMEWORK_SUCCESS:

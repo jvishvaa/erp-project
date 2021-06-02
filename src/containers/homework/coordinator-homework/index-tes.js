@@ -95,7 +95,7 @@ const CoordinatorTeacherHomework = withRouter(
     const [moduleId, setModuleId] = useState();
     const [modulePermision, setModulePermision] = useState(true);
     const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
-    const [endDate, setEndDate] = useState(getDaysAfter(moment(), 7));
+    const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
     const [viewHomework, setViewHomework] = useState({
       subjectId: '',
       date: '',
@@ -124,14 +124,14 @@ const CoordinatorTeacherHomework = withRouter(
     };
 
     const handleStartDateChange = (date) => {
-      const endDate = getDaysAfter(date.clone(), 7);
+      const endDate = getDaysAfter(date.clone(), 6);
       setEndDate(endDate);
       setStartDate(date.format('YYYY-MM-DD'));
       getTeacherHomeworkDetails(2, date, endDate);
     };
 
     const handleEndDateChange = (date) => {
-      const startDate = getDaysBefore(date.clone(), 7);
+      const startDate = getDaysBefore(date.clone(), 6);
       setStartDate(startDate);
       setEndDate(date.format('YYYY-MM-DD'));
       getTeacherHomeworkDetails(2, startDate, date);
@@ -473,7 +473,7 @@ const CoordinatorTeacherHomework = withRouter(
     const [selectedCoTeacherOpt, setSelectedCoTeacherOpt] = useState([]);
 
     const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
-    const [endDate, setEndDate] = useState(getDaysAfter(moment(), 7));
+    const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
     const [viewHomework, setViewHomework] = useState({
       subjectId: '',
       date: '',
@@ -502,14 +502,14 @@ const CoordinatorTeacherHomework = withRouter(
     };
 
     const handleStartDateChange = (date) => {
-      const endDate = getDaysAfter(date.clone(), 7);
+      const endDate = getDaysAfter(date.clone(), 6);
       setEndDate(endDate);
       setStartDate(date.format('YYYY-MM-DD'));
       getTeacherHomeworkDetails(2, date, endDate);
     };
 
     const handleEndDateChange = (date) => {
-      const startDate = getDaysBefore(date.clone(), 7);
+      const startDate = getDaysBefore(date.clone(), 6);
       setStartDate(startDate);
       setEndDate(date.format('YYYY-MM-DD'));
       getTeacherHomeworkDetails(2, startDate, date);
