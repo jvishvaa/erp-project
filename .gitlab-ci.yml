@@ -65,6 +65,7 @@ deploy_qa:
       - echo "Deploy to QA server"
       - sleep 10 
       - sudo npm ci
+      - export REACT_APP_UI_ENV=DEV
       - grep home package.json || true
       - export CI=false
       - export NODE_OPTIONS=--max_old_space_size=5000

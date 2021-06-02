@@ -6,6 +6,7 @@ import {
   FormHelperText,
   Button,
   Typography,
+  TextField,
   Grid,
   withStyles,
 } from '@material-ui/core';
@@ -19,6 +20,9 @@ import QuestionCard from '../../../components/question-card';
 import { addHomeWorkCoord, setSelectedHomework } from '../../../redux/actions';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
 
 const validateQuestions = (obj) => {
   let error = false;
@@ -36,6 +40,9 @@ const StyledOutlinedButton = withStyles({
     color: '#FE6B6B',
     border: '1px solid #FF6B6B',
     backgroundColor: 'transparent',
+    '@media (min-width: 600px)': {
+      marginRight: '10px',
+    },
   },
 })(Button);
 
@@ -43,6 +50,10 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [errors, setErrors] = useState({ name: '', description: '' });
+  const [sections, setSections] = useState([]);
+  const [sectionDisplay, setSectionDisplay] = useState([]);
+  const [teacherModuleId, setTeacherModuleId] = useState(null);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [questions, setQuestions] = useState([
     {
       id: cuid(),
@@ -58,6 +69,9 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
   const history = useHistory();
   const params = useParams();
   const themeContext = useTheme();
+  const sessionYear = params.session_year;
+  const branch = params.branch;
+  const grade = params.grade;
 
   const validateHomework = () => {
     let isFormValid = true;
@@ -92,6 +106,7 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
       const reqObj = {
         name,
         description,
+        section_mapping: sectionDisplay.map(data => parseInt(data.id, 10)),
         subject: params.id,
         date: params.date,
         questions: questions.map((q) => {
@@ -150,14 +165,62 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Homework' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Management View') {
+              setTeacherModuleId(item.child_id);
+            }
+            // if (item.child_name === 'Management View') {
+            //   setTeacherModuleId(item.child_id);
+            // }
+          });
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if(teacherModuleId && sessionYear && branch && grade) {
+      axiosInstance.get(`${endpoints.academics.sections}?session_year=${sessionYear}&branch_id=${branch}&grade_id=${grade}&module_id=${teacherModuleId}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setSections(result.data?.data);
+        } else {
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+    }
+  },[teacherModuleId, sessionYear, branch, grade])
+
+  const handleSection = (event, value) => {
+    //setSearchSection([]);
+    setSectionDisplay([]);
+    //let sec_id = [];
+    if (value) {
+      //let id = value.map(({ id }) => sec_id.push(id));
+      //setSearchSection(sec_id);
+      setSectionDisplay(value);
+    }
+  };
+
   return (
     <Layout>
       <div className='add-homework-container-coordinator'>
         <div className='message_log_breadcrumb_wrapper'>
-          <CommonBreadcrumbs componentName='Homework' childComponentName='Add' />
+          <CommonBreadcrumbs componentName='Homework' childComponentName='Add Homework' />
         </div>
-        <Grid container className='add-homework-inner-container'>
-          <Grid item xs={12} className='add-homework-title-container' md={4}>
+        <Grid container spacing={2} className='add-homework-inner-container'>
+          <Grid item xs={12} className='add-homework-title-container' md={3}>
             <div className='nav-cards-container'>
               <div
                 className='nav-card'
@@ -176,91 +239,120 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
             </div>
           </Grid>
 
-          <Grid item container xs={12} md={8}>
-            <Grid item xs={12} className='form-field'>
-              <FormControl variant='outlined' fullWidth size='small'>
-                <InputLabel htmlFor='component-outlined'>Title</InputLabel>
-                <OutlinedInput
-                  id='title'
-                  name='title'
-                  onChange={() => {}}
-                  inputProps={{ maxLength: 20 }}
-                  label='Title'
-                  autoFocus
-                  onChange={(e) => {
-                    setName(e.target.value);
-                  }}
+          <Grid item container xs={12} md={9}>
+            <Grid container style={{ width: '95%', margin: '0 auto' }}>
+              <Grid item xs={12} sm={4} style={{ marginBottom: '20px'}}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleSection}
+                  id='section'
+                  required
+                  multiple
+                  value={sectionDisplay || []}
+                  options={sections || []}
+                  getOptionLabel={(option) => option?.section__section_name || ''}
+                  filterSelectedOptions
+                  className='dropdownIcon'
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Sections'
+                      placeholder='Sections'
+                    />
+                  )}
                 />
-                <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} className='form-field'>
-              <FormControl variant='outlined' fullWidth size='small'>
-                <InputLabel htmlFor='component-outlined'>Description</InputLabel>
-                <OutlinedInput
-                  id='description'
-                  name='description'
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                  }}
-                  inputProps={{ maxLength: 150 }}
-                  multiline
-                  rows={4}
-                  rowsMax={6}
-                  label='Description'
-                />
-                <FormHelperText style={{ color: 'red' }}>
-                  {errors.description}
-                </FormHelperText>
-              </FormControl>
-            </Grid>
-            {questions.map((question, index) => (
-              <QuestionCard
-                key={question.id}
-                question={question}
-                index={index}
-                addNewQuestion={addNewQuestion}
-                handleChange={handleChange}
-                removeQuestion={removeQuestion}
-              />
-            ))}
-
-            <Grid container item xs={12} spacing={1}>
-              <Grid item xs={12} md={6} className='form-field'>
-                <div className='finish-btn-container'>
-                  {/**
-                   * <Button
-                    startIcon={<AddCircleOutlineIcon />}
-                    onClick={() => {
-                      setQueIndexCounter(queIndexCounter + 1);
-                      addNewQuestion(queIndexCounter + 1);
-                    }}
-                    title='Add Question'
-                    className='btn add-quesiton-btn outlined-btn'
-                    color='primary'
-                    variant='outlined'
-                  >
-                    Add another question
-                  </Button>
-                   */}
-                  <StyledOutlinedButton
-                    startIcon={<AddCircleOutlineIcon />}
-                    onClick={() => {
-                      setQueIndexCounter(queIndexCounter + 1);
-                      addNewQuestion(queIndexCounter + 1);
-                    }}
-                    fullWidth
-                  >
-                    Add another question
-                  </StyledOutlinedButton>
-                </div>
               </Grid>
-              <Grid item xs={12} md={6} className='form-field'>
-                <div className='finish-btn-container'>
-                  <Button className='btn' color='primary' onClick={handleAddHomeWork}>
-                    Finish
-                  </Button>
-                </div>
+              <Grid item xs={12} className='form-field'>
+                <FormControl variant='outlined' fullWidth size='small'>
+                  <InputLabel htmlFor='component-outlined'>Title</InputLabel>
+                  <OutlinedInput
+                    id='title'
+                    name='title'
+                    onChange={() => {}}
+                    inputProps={{ maxLength: 20 }}
+                    label='Title'
+                    autoFocus
+                    onChange={(e) => {
+                      setName(e.target.value);
+                    }}
+                  />
+                  <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} className='form-field'>
+                <FormControl variant='outlined' fullWidth size='small'>
+                  <InputLabel htmlFor='component-outlined'>Description</InputLabel>
+                  <OutlinedInput
+                    id='description'
+                    name='description'
+                    onChange={(e) => {
+                      setDescription(e.target.value);
+                    }}
+                    inputProps={{ maxLength: 150 }}
+                    multiline
+                    rows={4}
+                    rowsMax={6}
+                    label='Description'
+                  />
+                  <FormHelperText style={{ color: 'red' }}>
+                    {errors.description}
+                  </FormHelperText>
+                </FormControl>
+              </Grid>
+              {questions.map((question, index) => (
+                <QuestionCard
+                  key={question.id}
+                  question={question}
+                  index={index}
+                  addNewQuestion={addNewQuestion}
+                  handleChange={handleChange}
+                  removeQuestion={removeQuestion}
+                />
+              ))}
+
+              <Grid container item xs={12}>
+                <Grid item xs={12} md={6} className='form-field'>
+                  <div className='finish-btn-container'>
+                    {/**
+                     * <Button
+                      startIcon={<AddCircleOutlineIcon />}
+                      onClick={() => {
+                        setQueIndexCounter(queIndexCounter + 1);
+                        addNewQuestion(queIndexCounter + 1);
+                      }}
+                      title='Add Question'
+                      className='btn add-quesiton-btn outlined-btn'
+                      color='primary'
+                      variant='outlined'
+                    >
+                      Add another question
+                    </Button>
+                    */}
+                    <StyledOutlinedButton
+                      startIcon={<AddCircleOutlineIcon />}
+                      onClick={() => {
+                        setQueIndexCounter(queIndexCounter + 1);
+                        addNewQuestion(queIndexCounter + 1);
+                      }}
+                      fullWidth
+                    >
+                      Add another question
+                    </StyledOutlinedButton>
+                  </div>
+                </Grid>
+                <Grid item xs={12} md={6} >
+                  <div className='finish-btn-container'>
+                    <Button
+                      className='btn'
+                      color='primary'
+                      onClick={handleAddHomeWork}
+                    >
+                      Finish
+                    </Button>
+                  </div>
+                </Grid>
               </Grid>
             </Grid>            
           </Grid>

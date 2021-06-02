@@ -40,6 +40,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const options ={
+  settings:{
+    autoplaySpeed: 0,
+  }
+}
+
 const UploadClassWorkDiaogBox = (props) => {
   const {
     setLoading,
@@ -179,7 +185,7 @@ const UploadClassWorkDiaogBox = (props) => {
         </DialogTitle>
         <DialogContent>
           <SimpleReactLightbox>
-            <SRLWrapper>
+            <SRLWrapper options={options}>
               <Grid container spacing={2} className='optionImageContainer1'>
                 {uploadFiles?.map((url, index) => (
                   <Grid
@@ -205,7 +211,7 @@ const UploadClassWorkDiaogBox = (props) => {
                           onClick={() => {
                             imageRef.current.click();
                           }}
-                          style={{ color: '#ffffff' }}
+                          style={{ color: '#ff6b6b' }}
                         />
                       </IconButton>
                       <IconButton onClick={() => handleDeleteImage(index)}>
@@ -241,6 +247,7 @@ const UploadClassWorkDiaogBox = (props) => {
                 Upload
               </Button>
             </label>
+            <span style={{color:"red"}}>(jpeg,jpg,png)</span>
           </div>
           <Button className={classes.cancelButton} onClick={handleClose}>
             Cancel

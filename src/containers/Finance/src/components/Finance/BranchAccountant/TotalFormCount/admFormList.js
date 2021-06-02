@@ -97,7 +97,7 @@ const AdmFormList = ({ session,
   useEffect(() => {
     const { session, fromDate, toDate, branch, isAdmin, selectedDates, selectedReport } = history.location.state
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-    const role = userProfile.personal_info.role.toLowerCase()
+    const role = userProfile?.personal_info?.role?.toLowerCase()
     // setIsAdmin(isAdmin)
     // const userProfile = JSON.parse(localStorage.getItem('user_profile'))
     // const userId = userProfile.personal_info.user_id

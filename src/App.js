@@ -278,7 +278,9 @@ import ClassWork from './containers/Classwork/index';
 
 import MultiplayerQuiz from './components/mp-quiz';
 import StudentAttendance from 'containers/online-class/student-attendance/StudentAttendance';
-
+import HomeWorkReportTeacher from 'containers/homework/homework-report/homework-teacher/HomeWorkReportTeacher';
+import StudentClassWorkReport from 'containers/Classwork/StudentClassWork';
+import ClassWorkTeacherReport from 'containers/Classwork/classwork-report/classwork-report-teacher/ClassWorkTeacherReport';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -612,12 +614,6 @@ function App({ alert }) {
                           <Route exact path='/homework/homework-card'>
                             {({ match }) => <HomeworkCard match={match} />}
                           </Route>
-                          <Route exact path='/homework/student'>
-                            {({ match }) => <StudentHomework match={match} />}
-                          </Route>
-                          <Route exact path='/homework/teacher'>
-                            {({ match }) => <TeacherHomework match={match} />}
-                          </Route>
 
                           <Route exact path='/homework/teacher-report'>
                             {({ match }) => <TeacherHomeWorkReport match={match} />}
@@ -625,16 +621,26 @@ function App({ alert }) {
                           <Route exact path='/homework/add/:date/:subject/:id'>
                             {({ match }) => <AddHomework match={match} />}
                           </Route>
+                          <Route exact path='/homework/student'>
+                            {({ match }) => <StudentHomework match={match} />}
+                          </Route>
+                          <Route exact path='/homework/teacher'>
+                            {({ match }) => <TeacherHomework match={match} />}
+                          </Route>
+                          <Route exact path='/homework/add/:date/:session_year/:branch/:grade/:subject/:id'>
+                            {({ match }) => <AddHomework match={match} />}
+                          </Route>
                           <Route exact path='/homework/admin'>
                             {({ match }) => <HomeworkAdmin match={match} />}
                           </Route>
+
                           <Route exact path='/homework/coordinator'>
                             {/* added by Vijay to display particular teacher details */}
                             {({ match }) => <CoordinatorHomework match={match} />}
                           </Route>
                           <Route
                             exact
-                            path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'
+                            path='/homework/cadd/:date/:session_year/:branch/:grade/:subject/:id/:coord_selected_teacher_id'
                           >
                             {({ match }) => <AddHomeworkCoord match={match} />}
                           </Route>
@@ -1408,6 +1414,15 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/orchadio/manage-orchadio'>
                             {({ match }) => <ManageOrchadio match={match} />}
+                          </Route>
+                          <Route exact path='/homework-report-teacher-view'>
+                            {({ match }) => <HomeWorkReportTeacher match={match} />}
+                          </Route>
+                           <Route exact path='/classwork/student-report'>
+                            {({ match }) => <StudentClassWorkReport  match={match} />}
+                          </Route>
+                          <Route exact path='/classwork-report-teacher-view'>
+                            {({ match }) => <ClassWorkTeacherReport match={match} />}
                           </Route>
                           <Route exact path='/orchadio/add-orchadio'>
                             {({ match }) => <AddNewOrchadio match={match} />}

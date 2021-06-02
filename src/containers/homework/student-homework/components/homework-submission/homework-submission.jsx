@@ -94,6 +94,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [penToolUrl, setPenToolUrl] = useState('');
   const [penToolIndex, setPenToolIndex] = useState('');
   const [comment, setComment ] = useState('');
+  const [homeworkTitle, setHomeworkTitle] = useState('')
   const [desc, setDesc] = useState('');
   const [questionwiseComment, setQuestionwiseComment] = useState('');
   const [questionwiseRemark, setQuestionwiseRemark] = useState('');
@@ -174,6 +175,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         if (result.data.status_code === 200) {
           if (homeworkSubmission.status === 1) {
             setSubjectQuestions(result.data.data.hw_questions);
+            setHomeworkTitle(result.data.data.homework_name);
             setDesc(result.data.data.description);
             for (let i = 0; i < result.data.data.hw_questions.length; i++) {
               attachmentCount.push(0);
@@ -480,7 +482,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
           <div className='homework_submit_wrapper'>
             <div className='homework_block_wrapper_submit'>
               <div className='homework_block homework_submit_tag'>
-                Homework - {subjectName}, {date}
+                Homework - {subjectName} : {homeworkTitle}, {date}
               </div>
               {homeworkSubmission.status === 1 &&
                 <div className="checkWrapper">

@@ -136,17 +136,7 @@ const ErpAdminViewClass = ({ history }) => {
         } = JSON.parse(localStorage.getItem('filterData')) || {};
         setPage(pageNumber);
         if (classtype?.id >= 0) {
-          setSelectedClassType(classtype); //Issue found here
-          // if (window.location.pathname === '/erp-online-class-student-view') {
-          //   callApi(
-          //     `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-          //       studentDetails &&
-          //       studentDetails.role_details &&
-          //       studentDetails.role_details.erp_user_id
-          //     }&page_number=${pageNumber}&page_size=${limit}&class_type=${classtype?.id}`,
-          //     'filter'
-          //   );
-          // }
+          setSelectedClassType(classtype);
         }
         if (window.location.pathname !== '/erp-online-class-student-view') {
           if (date?.length) {
@@ -173,10 +163,12 @@ const ErpAdminViewClass = ({ history }) => {
                   `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}&module_id=${moduleId}`,
                   'section'
                 );
-                callApi(
-                  `${endpoints.teacherViewBatches.courseListApi}?grade=${gradeIds}`,
-                  'course'
-                );
+                if (classtype?.id > 0) {
+                  callApi(
+                    `${endpoints.teacherViewBatches.courseListApi}?grade=${gradeIds}`,
+                    'course'
+                  );
+                }
                 if (section?.length) {
                   setSelectedSection(section);
                   const sectionIds = section.map((el) => el?.section_id) || [];
@@ -187,38 +179,10 @@ const ErpAdminViewClass = ({ history }) => {
                   if (classtype?.id === 0) {
                     if (subject?.length) {
                       setSelectedSubject(subject);
-                      // callApi(
-                      //   `${
-                      //     endpoints.aol.classes
-                      //   }?is_aol=0&session_year=${acadId}&section_mapping_ids=${section.map(
-                      //     (el) => el?.id
-                      //   )}&subject_id=${subject.map(
-                      //     (el) => el?.subject__id
-                      //   )}&class_type=${classtype?.id}&start_date=${moment(
-                      //     date?.[0]
-                      //   ).format('YYYY-MM-DD')}&end_date=${moment(date?.[1]).format(
-                      //     'YYYY-MM-DD'
-                      //   )}&module_id=${moduleId}&page_number=${pageNumber}&page_size=${limit}`,
-                      //   'filter'
-                      // );
                     }
                   } else if (classtype.id > 0) {
                     if (course?.id) {
                       setSelectedCourse(course);
-                      // callApi(
-                      //   `${
-                      //     endpoints.aol.classes
-                      //   }?is_aol=0&session_year=${acadId}&section_mapping_ids=${section.map(
-                      //     (el) => el?.id
-                      //   )}&class_type=${classtype?.id}&start_date=${moment(
-                      //     date?.[0]
-                      //   ).format('YYYY-MM-DD')}&end_date=${moment(date?.[1]).format(
-                      //     'YYYY-MM-DD'
-                      //   )}&course_id=${
-                      //     course?.id
-                      //   }&page_number=${pageNumber}&page_size=${limit}&module_id=${moduleId}`,
-                      //   'filter'
-                      // );
                     }
                   }
                 }
@@ -254,10 +218,21 @@ const ErpAdminViewClass = ({ history }) => {
             setBranchList(result?.data?.data?.results || []);
           }
           if (key === 'gradeList') {
-            setGradeList(result?.data?.data || []);
+            const gradeData = result?.data?.data || [];
+            gradeData.unshift({
+              grade__grade_name: 'Select All',
+              grade_id: 'all',
+              id: 'all',
+            });
+            setGradeList(gradeData);
           }
           if (key === 'section') {
-            setSectionList(result?.data?.data);
+            const sectionData = result?.data?.data || [];
+            sectionData.unshift({
+              id: 'all',
+              section__section_name: 'Select All',
+            });
+            setSectionList(sectionData);
           }
           if (key === 'course') {
             setCourseList(result?.data?.result || []);
@@ -314,7 +289,7 @@ const ErpAdminViewClass = ({ history }) => {
           callApi(
             `${endpoints.aol.classes}?is_aol=0&session_year=${
               selectedAcademicYear?.id
-            }&section_mapping_ids=${selectedSection.map((el) => el.id)}&class_type=${
+            }&section_mapping_ids=${selectedSection.map((el) => el?.id)}&class_type=${
               selectedClassType?.id
             }&start_date=${startDateTechPer?.format(
               'YYYY-MM-DD'
@@ -328,7 +303,7 @@ const ErpAdminViewClass = ({ history }) => {
             `${endpoints.aol.classes}?is_aol=0&session_year=${
               selectedAcademicYear?.id
             }&section_mapping_ids=${selectedSection.map(
-              (el) => el.id
+              (el) => el?.id
             )}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${
               selectedClassType?.id
             }&start_date=${startDateTechPer?.format(
@@ -350,23 +325,7 @@ const ErpAdminViewClass = ({ history }) => {
         'academicYearList'
       );
     }
-    // if (
-    //   window.location.pathname === '/erp-online-class-student-view' &&
-    //   selectedClassType?.id >= 0 &&
-    //   moduleId
-    // ) {
-    //   callApi(
-    //     `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-    //       studentDetails &&
-    //       studentDetails.role_details &&
-    //       studentDetails.role_details.erp_user_id
-    //     }&page_number=${page}&page_size=${limit}&class_type=${
-    //       selectedClassType?.id
-    //     }&module_id=${moduleId}`,
-    //     'filter'
-    //   );
-    // }
-  }, [moduleId]); //Issue found here
+  }, [moduleId]);
 
   useEffect(() => {
     if (page) {
@@ -421,7 +380,7 @@ const ErpAdminViewClass = ({ history }) => {
         );
       }
     }
-  }, [page, selectedClassType]); //Issue found here
+  }, [page, selectedClassType]);
 
   function handleClearFilter() {
     localStorage.removeItem('filterData');
@@ -558,7 +517,35 @@ const ErpAdminViewClass = ({ history }) => {
       setAlert('error', 'Failed To Download, Try After Some Time');
     }
   };
+
+  const handleClassType = (event = {}, value = '') => {
+    if (window.location.pathname === '/erp-online-class-student-view') {
+      localStorage.setItem(
+        'filterData',
+        JSON.stringify({
+          classtype: value,
+        })
+      );
+    }
+    setSelectedClassType(value);
+    setSelectedBranch([]);
+    setSelectedGrade([]);
+    setSelectedSection([]);
+    setSelectedSubject([]);
+    setSelectedCourse('');
+    setGradeList([]);
+    setCourseList([]);
+    setSectionList([]);
+    setSubjectList([]);
+    setSelectedViewMore('');
+    setFilterList([]);
+    setPage(1);
+    setTotalCount(0);
+    localStorage.removeItem('viewMoreData');
+  };
+
   const handleAcademicYear = (event = {}, value = '') => {
+    setSelectedAcadmeicYear('');
     if (value) {
       setSelectedAcadmeicYear(value);
       callApi(
@@ -566,13 +553,12 @@ const ErpAdminViewClass = ({ history }) => {
         'branchList'
       );
     }
-    setSelectedAcadmeicYear('');
+    setTotalCount(0);
     setBranchList([]);
     setGradeList([]);
     setSelectedGrade([]);
     setCourseList([]);
     setSelectedCourse('');
-    setFilterList([]);
     setSelectedViewMore('');
     setSectionList([]);
     setSelectedSection([]);
@@ -582,6 +568,111 @@ const ErpAdminViewClass = ({ history }) => {
     setFilterList([]);
     setPage(1);
   };
+
+  const handleBranch = (event = {}, value = []) => {
+    setSelectedBranch([]);
+    setGradeList([]);
+    if (value?.length) {
+      const ids = value.map((el) => el);
+      const selectedId = value.map((el) => el?.branch?.id);
+      setSelectedBranch(ids);
+      callApi(
+        `${endpoints.academics.grades}?session_year=${
+          selectedAcademicYear?.id
+        }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+        'gradeList'
+      );
+    }
+    setTotalCount(0);
+    setSelectedGrade([]);
+    setCourseList([]);
+    setSelectedCourse('');
+    setFilterList([]);
+    setSectionList([]);
+    setSelectedSection([]);
+    setSubjectList([]);
+    setSelectedSubject([]);
+    setFilterList([]);
+    setPage(1);
+  };
+
+  const handleGrade = (event = {}, value = []) => {
+    setSelectedGrade([]);
+    if (value?.length) {
+      value =
+        value.filter(({ grade_id }) => grade_id === 'all').length === 1
+          ? [...gradeList].filter(({ grade_id }) => grade_id !== 'all')
+          : value;
+      const ids = value.map((el) => el) || [];
+      const selectedId = value.map((el) => el?.grade_id) || [];
+      const branchId = selectedBranch.map((el) => el?.branch?.id) || [];
+      setSelectedGrade(ids);
+      callApi(
+        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+        'section'
+      );
+      if (selectedClassType?.id > 0) {
+        callApi(
+          `${endpoints.teacherViewBatches.courseListApi}?grade=${selectedId}`,
+          'course'
+        );
+      }
+    }
+    setCourseList([]);
+    setSelectedCourse('');
+    setFilterList([]);
+    setSectionList([]);
+    setSelectedSection([]);
+    setSubjectList([]);
+    setSelectedSubject([]);
+    setFilterList([]);
+    setPage(1);
+  };
+
+  const handleSection = (event = {}, value = []) => {
+    setSelectedSection([]);
+    if (value?.length) {
+      value =
+        value.filter(({ id }) => id === 'all').length === 1
+          ? [...sectionList].filter(({ id }) => id !== 'all')
+          : value;
+      const ids = value.map((el) => el);
+      const secId = value.map((el) => el?.section_id);
+      setSelectedSection(ids);
+      callApi(
+        `${endpoints.academics.subjects}?branch=${selectedBranch.map(
+          (el) => el?.branch?.id
+        )}&session_year=${selectedAcademicYear?.id}&grade=${selectedGrade.map(
+          (el) => el?.grade_id
+        )}&section=${secId}&module_id=${moduleId}`,
+        'subject'
+      );
+    }
+    setSelectedCourse('');
+    setSubjectList([]);
+    setSelectedSubject([]);
+    setFilterList([]);
+    setPage(1);
+  };
+
+  const handleSubject = (event = {}, value = []) => {
+    setSelectedSubject([]);
+    if (value?.length) {
+      const ids = value.map((el) => el) || [];
+      setSelectedSubject(ids);
+    }
+    setFilterList([]);
+    setPage(1);
+  };
+
+  const handleCourse = (event = {}, value = '') => {
+    if (value) {
+      setSelectedCourse(value);
+    }
+    setFilterList([]);
+    setPage(1);
+  };
+
   return (
     <>
       <Layout>
@@ -620,37 +711,14 @@ const ErpAdminViewClass = ({ history }) => {
                 <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
-                  onChange={(event, value) => {
-                    if (window.location.pathname === '/erp-online-class-student-view') {
-                      localStorage.setItem(
-                        'filterData',
-                        JSON.stringify({
-                          classtype: value,
-                        })
-                      );
-                    }
-                    setTotalCount(0);
-                    localStorage.removeItem('viewMoreData');
-                    setSelectedClassType(value);
-                    setSelectedGrade([]);
-                    setCourseList([]);
-                    setSelectedCourse('');
-                    setFilterList([]);
-                    setSelectedViewMore('');
-                    setSectionList([]);
-                    setSelectedSection([]);
-                    setSubjectList([]);
-                    setSelectedSubject([]);
-                    setSelectedBranch([]);
-                    setFilterList([]);
-                    setPage(1);
-                  }}
+                  onChange={handleClassType}
                   id='branch_id'
                   className='dropdownIcon'
                   value={selectedClassType}
                   options={classTypes || []}
                   getOptionLabel={(option) => option?.type || ''}
-                  filterSelectedOptions
+                  // filterSelectedOptions
+                  getOptionSelected={(option, value) => option?.id == value?.id}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -672,8 +740,9 @@ const ErpAdminViewClass = ({ history }) => {
                       className='dropdownIcon'
                       value={selectedAcademicYear || ''}
                       options={academicYear || []}
-                      getOptionLabel={(option) => option?.session_year}
-                      filterSelectedOptions
+                      getOptionLabel={(option) => option?.session_year || ''}
+                      // filterSelectedOptions
+                      getOptionSelected={(option, value) => option?.id == value?.id}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -689,37 +758,16 @@ const ErpAdminViewClass = ({ history }) => {
                       multiple
                       style={{ width: '100%' }}
                       size='small'
-                      onChange={(event, value) => {
-                        setSelectedBranch([]);
-                        setGradeList([]);
-                        if (value?.length) {
-                          const ids = value.map((el) => el);
-                          const selectedId = value.map((el) => el?.branch?.id);
-                          setSelectedBranch(ids);
-                          callApi(
-                            `${endpoints.academics.grades}?session_year=${
-                              selectedAcademicYear?.id
-                            }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-                            'gradeList'
-                          );
-                        }
-                        setSelectedGrade([]);
-                        setCourseList([]);
-                        setSelectedCourse('');
-                        setFilterList([]);
-                        setSectionList([]);
-                        setSelectedSection([]);
-                        setSubjectList([]);
-                        setSelectedSubject([]);
-                        setFilterList([]);
-                        setPage(1);
-                      }}
+                      onChange={handleBranch}
                       id='branch_id'
                       className='dropdownIcon'
-                      value={selectedBranch || ''}
+                      value={selectedBranch || []}
                       options={branchList || []}
                       getOptionLabel={(option) => option?.branch?.branch_name || ''}
-                      filterSelectedOptions
+                      // filterSelectedOptions
+                      getOptionSelected={(option, value) =>
+                        option?.branch?.id == value?.branch?.id
+                      }
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -735,39 +783,17 @@ const ErpAdminViewClass = ({ history }) => {
                       multiple
                       style={{ width: '100%' }}
                       size='small'
-                      onChange={(event, value) => {
-                        setSelectedGrade([]);
-                        if (value?.length) {
-                          const ids = value.map((el) => el) || [];
-                          const selectedId = value.map((el) => el?.grade_id) || [];
-                          const branchId =
-                            selectedBranch.map((el) => el?.branch?.id) || [];
-                          setSelectedGrade(ids);
-                          callApi(
-                            `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
-                            'section'
-                          );
-                          callApi(
-                            `${endpoints.teacherViewBatches.courseListApi}?grade=${selectedId}`,
-                            'course'
-                          );
-                        }
-                        setCourseList([]);
-                        setSelectedCourse('');
-                        setFilterList([]);
-                        setSectionList([]);
-                        setSelectedSection([]);
-                        setSubjectList([]);
-                        setSelectedSubject([]);
-                        setFilterList([]);
-                        setPage(1);
-                      }}
+                      limitTags={2}
+                      onChange={handleGrade}
                       id='grade_id'
                       className='dropdownIcon'
-                      value={selectedGrade}
-                      options={gradeList}
-                      getOptionLabel={(option) => option?.grade__grade_name}
-                      filterSelectedOptions
+                      value={selectedGrade || []}
+                      options={gradeList || []}
+                      getOptionLabel={(option) => option?.grade__grade_name || ''}
+                      // filterSelectedOptions
+                      getOptionSelected={(option, value) =>
+                        option?.grade_id == value?.grade_id
+                      }
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -783,35 +809,15 @@ const ErpAdminViewClass = ({ history }) => {
                       multiple
                       style={{ width: '100%' }}
                       size='small'
-                      onChange={(event, value) => {
-                        setSelectedSection([]);
-                        if (value?.length) {
-                          const ids = value.map((el) => el);
-                          const secId = value.map((el) => el?.section_id);
-                          setSelectedSection(ids);
-                          callApi(
-                            `${endpoints.academics.subjects}?branch=${selectedBranch.map(
-                              (el) => el?.branch?.id
-                            )}&session_year=${
-                              selectedAcademicYear?.id
-                            }&grade=${selectedGrade.map(
-                              (el) => el?.grade_id
-                            )}&section=${secId}&module_id=${moduleId}`,
-                            'subject'
-                          );
-                        }
-                        setSelectedCourse('');
-                        setSubjectList([]);
-                        setSelectedSubject([]);
-                        setFilterList([]);
-                        setPage(1);
-                      }}
+                      limitTags={2}
+                      onChange={handleSection}
                       id='section_id'
                       className='dropdownIcon'
-                      value={selectedSection}
-                      options={sectionList}
+                      value={selectedSection || []}
+                      options={sectionList || []}
                       getOptionLabel={(option) => option?.section__section_name || ''}
-                      filterSelectedOptions
+                      // filterSelectedOptions
+                      getOptionSelected={(option, value) => option?.id == value?.id}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -829,21 +835,16 @@ const ErpAdminViewClass = ({ history }) => {
                         multiple
                         style={{ width: '100%' }}
                         size='small'
-                        onChange={(event, value) => {
-                          setSelectedSubject([]);
-                          if (value?.length) {
-                            const ids = value.map((el) => el) || [];
-                            setSelectedSubject(ids);
-                          }
-                          setFilterList([]);
-                          setPage(1);
-                        }}
+                        onChange={handleSubject}
                         id='course_id'
                         className='dropdownIcon'
                         value={selectedSubject}
                         options={subjectList}
                         getOptionLabel={(option) => option?.subject__subject_name}
-                        filterSelectedOptions
+                        // filterSelectedOptions
+                        getOptionSelected={(option, value) =>
+                          option?.subject__id == value?.subject__id
+                        }
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -861,17 +862,14 @@ const ErpAdminViewClass = ({ history }) => {
                       <Autocomplete
                         style={{ width: '100%' }}
                         size='small'
-                        onChange={(event, value) => {
-                          setSelectedCourse(value);
-                          setFilterList([]);
-                          setPage(1);
-                        }}
+                        onChange={handleCourse}
                         id='course_id'
                         className='dropdownIcon'
-                        value={selectedCourse}
-                        options={courseList}
-                        getOptionLabel={(option) => option?.course_name}
+                        value={selectedCourse || ''}
+                        options={courseList || []}
+                        getOptionLabel={(option) => option?.course_name || ''}
                         filterSelectedOptions
+                        getOptionSelected={(option, value) => option?.id == value?.id}
                         renderInput={(params) => (
                           <TextField
                             {...params}

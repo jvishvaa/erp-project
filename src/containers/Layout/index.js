@@ -392,6 +392,22 @@ const Layout = ({ children, history }) => {
         history.push('/communication/messageLog');
         break;
       }
+      case 'Teacher Homework Report': {
+        history.push('/homework-report-teacher-view');
+        break;
+      }
+      case 'Student Homework Report': {
+        history.push('/homework/student-report');
+        break;
+      }
+      case 'Teacher Classwork Report': {
+        history.push('/classwork-report-teacher-view');
+        break;
+      }
+      case 'Student Classwork Report': {
+        history.push('/classwork/student-report');
+        break;
+      }
       case 'Dashboard': {
         history.push('/dashboard');
         break;
