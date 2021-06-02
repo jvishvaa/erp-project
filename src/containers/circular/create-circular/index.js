@@ -41,14 +41,9 @@ const CraeteCircular = () => {
   const history = useHistory();
   const [isFilter, setIsFilter] = useState(true);
 
-  const [branchDropdown, setBranchDropdown] = useState([]);
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
-  const [volumeDropdown, setVolumeDropdown] = useState([]);
+  const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
-  const [subjectDropdown, setSubjectDropdown] = useState([]);
-  const [chapterDropdown, setChapterDropdown] = useState([]);
-  const [overviewSynopsis, setOverviewSynopsis] = useState([]);
-  const [centralGsMappingId, setCentralGsMappingId] = useState();
   const [sectionDropdown, setSectionDropdown] = useState([]);
 
   // alert(circularKey,'k')
@@ -99,21 +94,42 @@ const CraeteCircular = () => {
       role: '',
       year: '',
     });
+    setBranchDropdown([]);
+    setGradeDropdown([]);
+    setSectionDropdown([]);
   };
 
   const handleRole = (event, value) => {
-    setFilterData({ ...filterData, role: '',grade:'',section:'' });
+    setFilterData({ ...filterData, role: '', grade: '', section: '' });
     if (value) {
-      setFilterData({ ...filterData, role: value,grade:'',section:'' });
+      setFilterData({ ...filterData, role: value, grade: '', section: '' });
     }
   };
-  const handleAcademicYear = (event, value) => {
-    setFilterData({ ...filterData, year: '',branch:'',role:'',grade:'',section:'' });
+  const handleAcademicYear = (event = {}, value = '') => {
+    setBranchDropdown([]);
+    setGradeDropdown([]);
+    setFilterData({
+      ...filterData,
+      year: '',
+      branch: '',
+      role: '',
+      grade: '',
+      section: '',
+    });
     if (value) {
-      setFilterData({ ...filterData, year: value ,branch:'',role:'',grade:'',section:''});
+      setFilterData({
+        ...filterData,
+        year: value,
+        branch: '',
+        role: '',
+        grade: '',
+        section: '',
+      });
       //.get(`${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`)
       axiosInstance
-        .get(`${endpoints.communication.branches}?session_year=${value.id}&module_id=${moduleId}`)
+        .get(
+          `${endpoints.communication.branches}?session_year=${value.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result?.data?.status_code) {
             setBranchDropdown(result?.data?.data?.results);
@@ -125,7 +141,6 @@ const CraeteCircular = () => {
     }
   };
 
-
   const handleSection = (event, value) => {
     setFilterData({ ...filterData, section: '' });
     if (value) {
@@ -134,53 +149,58 @@ const CraeteCircular = () => {
   };
 
   const handleBranch = (event, value) => {
-    setFilterData({ ...filterData, branch: '',role:'', grade: '', subject: '', chapter: '' ,section:''});
-    setOverviewSynopsis([]);
+    setGradeDropdown([]);
+    setSectionDropdown([]);
+    setFilterData({
+      ...filterData,
+      branch: '',
+      role: '',
+      grade: '',
+      subject: '',
+      chapter: '',
+      section: '',
+    });
     if (value) {
       setFilterData({
         ...filterData,
         branch: value,
-        role:'',
+        role: '',
         grade: '',
         subject: '',
         chapter: '',
-        section:'',
+        section: '',
       });
       axiosInstance
-        .get(`${endpoints.communication.grades}?branch_id=${value?.branch.id}&session_year=${filterData.year?.id}&module_id=${moduleId}`)
+        .get(
+          `${endpoints.communication.grades}?branch_id=${value?.branch.id}&session_year=${filterData.year?.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             setGradeDropdown(result?.data?.data);
           } else {
             setAlert('error', result?.data?.message);
             setGradeDropdown([]);
-            setSubjectDropdown([]);
-            setChapterDropdown([]);
           }
         })
         .catch((error) => {
           setAlert('error', error?.message);
           setGradeDropdown([]);
-          setSubjectDropdown([]);
-          setChapterDropdown([]);
         });
     } else {
       setGradeDropdown([]);
-      setSubjectDropdown([]);
-      setChapterDropdown([]);
     }
   };
 
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: '', subject: '', chapter: '',section:'' });
-    setOverviewSynopsis([]);
+    setSectionDropdown([]);
+    setFilterData({ ...filterData, grade: '', subject: '', chapter: '', section: '' });
     if (value && filterData?.branch) {
       setFilterData({
         ...filterData,
         grade: value,
         subject: '',
         chapter: '',
-        section:'',
+        section: '',
       });
       axiosInstance
         .get(
@@ -200,17 +220,15 @@ const CraeteCircular = () => {
         });
     } else {
       setSectionDropdown([]);
-      setChapterDropdown([]);
     }
   };
 
-  function handleTitle(e){
-      if(e.target.value.split(' ').length <= 20){
-        setTitle(e.target.value)
-      }
-      else{
-        setAlert('warning','Max Word Limit Is 20')
-      }
+  function handleTitle(e) {
+    if (e.target.value.split(' ').length <= 20) {
+      setTitle(e.target.value);
+    } else {
+      setAlert('warning', 'Max Word Limit Is 20');
+    }
   }
   const handleImageChange = (event) => {
     if (event.target.files[0].name.split('.')[1] === 'csv') {
@@ -221,7 +239,10 @@ const CraeteCircular = () => {
       const data = event.target.files[0];
       const fd = new FormData();
       fd.append('file', event.target.files[0]);
-      fd.append('branch', filterData?.branch?.branch && filterData?.branch?.branch?.branch_name);
+      fd.append(
+        'branch',
+        filterData?.branch?.branch && filterData?.branch?.branch?.branch_name
+      );
       // fd.append('grade',filterData.grade[0].id)
       // fd.append('section',filterData.section.id)
       axiosInstance.post(`${endpoints.circular.fileUpload}`, fd).then((result) => {
@@ -286,41 +307,48 @@ const CraeteCircular = () => {
     );
   };
 
-  const removeFileHandler = (i,file) => {
+  const removeFileHandler = (i, file) => {
     const list = [...filePath];
-    setLoading(true)
-    axiosInstance.post(`${endpoints.circular.deleteFile}`,{
-      file_name:`dev/circular_files/${filterData?.branch?.branch?.branch_name}/${file}`
-    }).then((result)=>{
-      if (result.data.status_code === 204) {
-        list.splice(i, 1);
-        setFilePath(list);
-        setAlert('success', result.data.message);
-        setLoading(false);
-      }else {
-        setAlert('error', result.data.message);
-        setLoading(false);
-      }
-    }).catch(error => {
-      setAlert('error', error.message);
-      setLoading(false);
-    })
-  };
-
-  useEffect(() => {
+    setLoading(true);
     axiosInstance
-      .get(`${endpoints.userManagement.academicYear}`)
+      .post(`${endpoints.circular.deleteFile}`, {
+        file_name: `dev/circular_files/${filterData?.branch?.branch?.branch_name}/${file}`,
+      })
       .then((result) => {
-        if (result.data.status_code === 200) {
-          setAcademicYearDropdown(result?.data?.data);
+        if (result.data.status_code === 204) {
+          list.splice(i, 1);
+          setFilePath(list);
+          setAlert('success', result.data.message);
+          setLoading(false);
         } else {
           setAlert('error', result.data.message);
+          setLoading(false);
         }
       })
       .catch((error) => {
         setAlert('error', error.message);
+        setLoading(false);
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    if (moduleId) {
+      axiosInstance
+        .get(`${endpoints.userManagement.academicYear}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setAcademicYearDropdown(result?.data?.data);
+            const defaultValue = result.data?.data?.[0];
+            handleAcademicYear({}, defaultValue);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  }, [moduleId]);
 
   const handleSubmit = () => {
     if (!title) {
@@ -377,77 +405,75 @@ const CraeteCircular = () => {
     if (!filterData.section) {
       return setAlert('warning', 'Select Section');
     }
-    if(filePath.length>0){
+    if (filePath.length > 0) {
       axiosInstance
-      .put(`${endpoints.circular.updateCircular}`, {
-        circular_id: circularKey,
-        circular_name: title,
-        description: description,
-        module_name: filterData.role.value,
-        media:filePath,
-        Branch: [filterData?.branch?.id],
-        grades: [filterData?.grade?.id],
-        sections: [filterData?.section?.section_id || filterData?.section?.id],
-        academic_year: filterData?.year?.id,
-      })
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setTitle('');
-          setDescription('');
-          setFilterData({
-            branch: '',
-            grade: '',
-            section: '',
-            role: '',
-          });
-          setFilePath([]);
-          setFilterEvent(false);
-          setAlert('success', result?.data?.message);
-          history.push('/teacher-circular');
-        } else {
-          setAlert('error', result?.data?.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error?.data?.message);
-      });
+        .put(`${endpoints.circular.updateCircular}`, {
+          circular_id: circularKey,
+          circular_name: title,
+          description: description,
+          module_name: filterData.role.value,
+          media: filePath,
+          Branch: [filterData?.branch?.id],
+          grades: [filterData?.grade?.id],
+          sections: [filterData?.section?.section_id || filterData?.section?.id],
+          academic_year: filterData?.year?.id,
+        })
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setTitle('');
+            setDescription('');
+            setFilterData({
+              branch: '',
+              grade: '',
+              section: '',
+              role: '',
+            });
+            setFilePath([]);
+            setFilterEvent(false);
+            setAlert('success', result?.data?.message);
+            history.push('/teacher-circular');
+          } else {
+            setAlert('error', result?.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error?.data?.message);
+        });
     }
-    if(filePath.length === 0){
+    if (filePath.length === 0) {
       axiosInstance
-      .put(`${endpoints.circular.updateCircular}`, {
-        circular_id: circularKey,
-        circular_name: title,
-        description: description,
-        module_name: filterData.role.value,
-        Branch: [filterData?.branch?.id],
-        grades: [filterData?.grade?.id],
-        sections: [filterData?.section?.section_id || filterData?.section?.id],
-        academic_year: filterData?.year?.id,
-      })
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setTitle('');
-          setDescription('');
-          setFilterData({
-            branch: '',
-            grade: '',
-            section: '',
-            role: '',
-          });
-          setFilePath([]);
-          setFilterEvent(false);
-          setAlert('success', result?.data?.message);
-          history.push('/teacher-circular');
-        } else {
-          setAlert('error', result?.data?.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error?.data?.message);
-      });
+        .put(`${endpoints.circular.updateCircular}`, {
+          circular_id: circularKey,
+          circular_name: title,
+          description: description,
+          module_name: filterData.role.value,
+          Branch: [filterData?.branch?.id],
+          grades: [filterData?.grade?.id],
+          sections: [filterData?.section?.section_id || filterData?.section?.id],
+          academic_year: filterData?.year?.id,
+        })
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setTitle('');
+            setDescription('');
+            setFilterData({
+              branch: '',
+              grade: '',
+              section: '',
+              role: '',
+            });
+            setFilePath([]);
+            setFilterEvent(false);
+            setAlert('success', result?.data?.message);
+            history.push('/teacher-circular');
+          } else {
+            setAlert('error', result?.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error?.data?.message);
+        });
     }
-
-
   };
 
   //////EDIT USE-EFFECT
@@ -511,9 +537,9 @@ const CraeteCircular = () => {
                 onChange={handleAcademicYear}
                 id='grade'
                 className='dropdownIcon'
-                value={filterData?.year}
-                options={academicYearDropdown}
-                getOptionLabel={(option) => option?.session_year}
+                value={filterData?.year || ''}
+                options={academicYearDropdown || []}
+                getOptionLabel={(option) => option?.session_year || ''}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -534,7 +560,9 @@ const CraeteCircular = () => {
                 className='dropdownIcon'
                 value={filterData?.branch}
                 options={branchDropdown}
-                getOptionLabel={(option) => option?.branch?.branch_name || filterData?.branch?.branch_name}
+                getOptionLabel={(option) =>
+                  option?.branch?.branch_name || filterData?.branch?.branch_name
+                }
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -682,7 +710,7 @@ const CraeteCircular = () => {
                     value={title}
                     variant='outlined'
                     // onChange={(e) => setTitle(e.target.value)}
-                    onChange={(e)=>handleTitle(e)}
+                    onChange={(e) => handleTitle(e)}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -707,7 +735,7 @@ const CraeteCircular = () => {
                           key={`create_circular_${i}`}
                           file={file}
                           index={i}
-                          onClose={() => removeFileHandler(i,file)}
+                          onClose={() => removeFileHandler(i, file)}
                         />
                       ))
                     : null}
@@ -758,16 +786,19 @@ const CraeteCircular = () => {
                     Accepted files: [jpeg,jpg,png,mp3,mp4,pdf]
                   </small>
                 </div>
-                <div>
-                </div>
+                <div></div>
               </div>
             </div>
             <div>
-            {circularKey && <Button   className='submit_button' onClick={()=>history.goBack()}>BACK</Button>}
+              {circularKey && (
+                <Button className='submit_button' onClick={() => history.goBack()}>
+                  BACK
+                </Button>
+              )}
               <Button
                 onClick={circularKey ? handleEdited : handleSubmit}
                 className='submit_button'
-                style={{background:'#ff6b6b'}}
+                style={{ background: '#ff6b6b' }}
               >
                 SUBMIT
               </Button>

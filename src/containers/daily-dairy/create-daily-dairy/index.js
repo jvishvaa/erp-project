@@ -38,7 +38,7 @@ import {
 } from '../../../redux/actions/index';
 import { Context } from '../context/context';
 import communicationStyles from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.styles';
-import './Styles.css';
+
 const CreateDailyDairy = (details, onSubmit) => {
   const [academicYears, setAcademicYears] = useState([]);
   const [branches, setBranches] = useState([]);
@@ -321,9 +321,9 @@ const CreateDailyDairy = (details, onSubmit) => {
   const handleSubject = (event, value) => {
     formik.setFieldValue('chapters', '' || []);
     formik.setFieldValue('subjects', '' || []);
-    setFilterData({ ...filterData, subject: '', chapter: '' });
+    setFilterData({...filterData,subject:'',chapter:''})
     if (value) {
-      setFilterData({ ...filterData, subject: value, chapter: '' });
+      setFilterData({...filterData,subject:value,chapter:''})
       formik.setFieldValue('subjects', value);
       formik.setFieldValue('chapters', '' || []);
       setSubjectIds(value?.id);
@@ -353,13 +353,13 @@ const CreateDailyDairy = (details, onSubmit) => {
     let selectedFileType = event.target.files[0]?.type;
     if (!fileType.includes(selectedFileType)) {
       setAlert('error', 'File Type not supported');
-      event.target.value = '';
+      event.target.value = "";
       return;
     }
     const fileSize = event.target.files[0]?.size;
     if (!validateFileSize(fileSize)) {
       setAlert('error', 'File size must be less than 25MB');
-      event.target.value = '';
+      event.target.value = "";
       return;
     }
     if (filePath.length < 10) {
@@ -401,7 +401,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       setLoading(false);
     }
   };
-  console.log('the data ', formik);
+
   const handleSubmit = async () => {
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
     const mapId = formik.values.section.section_mapping_id;
@@ -409,9 +409,6 @@ const CreateDailyDairy = (details, onSubmit) => {
       ? [formik.values.section].map((el) => el.id)
       : setAlert('error', 'Fill all the required fields');
     const grade = formik.values.grade ? [formik.values.grade].map((el) => el.id) : '';
-    const section = formik.values.section
-      ? [formik.values.section].map((el) => el.id)
-      : '';
     // const subjectId = formik.values.subjects
     //   ? formik?.values?.subjects.map((el) => el?.id)
     //   : setAlert('error', 'check');
@@ -433,7 +430,6 @@ const CreateDailyDairy = (details, onSubmit) => {
               module_id: moduleId,
               branch: formik.values?.branch?.id,
               grade,
-              section,
               section_mapping: [mapId],
               subject: subjectIds,
               chapter: formik.values.chapters?.id,
@@ -452,7 +448,6 @@ const CreateDailyDairy = (details, onSubmit) => {
               branch: formik.values?.branch?.id,
               module_id: moduleId,
               grade,
-              section,
               section_mapping: [mapId],
               subject: subjectIds,
               chapter: formik.values?.chapters?.id,
@@ -855,7 +850,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                 size='small'
                 onChange={(e, value) => {
                   formik.setFieldValue('chapters', value);
-                  setFilterData({ ...filterData, chapter: value });
+                  setFilterData({...filterData,chapter:value})
                 }}
                 // value={state.isEdit ? editData.chapter : formik.values.chapters || {}}
                 value={state.isEdit ? editData.chapter : filterData.chapter || {}}

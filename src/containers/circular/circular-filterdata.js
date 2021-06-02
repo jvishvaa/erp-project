@@ -1,7 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Divider from '@material-ui/core/Divider';
 import { useHistory } from 'react-router-dom';
-import { Grid, TextField, Button, useTheme, SvgIcon } from '@material-ui/core';
+import {
+  Grid,
+  TextField,
+  Button,
+  useTheme,
+  SvgIcon,
+  InputAdornment,
+} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 // import download from '../../assets/images/downloadAll.svg';
@@ -15,7 +22,7 @@ import endpoints from '../../config/endpoints';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 // import './lesson.css';
 import '../circular/create-circular/create-circular.css';
-//import communicationStyles from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.styles';
+import DateRangeIcon from '@material-ui/icons/DateRange';
 
 const CircularFilters = ({
   handlePeriodList,
@@ -31,14 +38,10 @@ const CircularFilters = ({
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
   const history = useHistory();
-  const [branchDropdown, setBranchDropdown] = useState([]);
+
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
-  const [volumeDropdown, setVolumeDropdown] = useState([]);
+  const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
-  const [subjectDropdown, setSubjectDropdown] = useState([]);
-  const [chapterDropdown, setChapterDropdown] = useState([]);
-  const [overviewSynopsis, setOverviewSynopsis] = useState([]);
-  const [centralGsMappingId, setCentralGsMappingId] = useState();
   const [sectionDropdown, setSectionDropdown] = useState([]);
 
   const [startDateTechPer, setStartDateTechPer] = useState(moment().format('YYYY-MM-DD'));
@@ -104,21 +107,20 @@ const CircularFilters = ({
       branch: '',
     });
     setPeriodData([]);
-    setSubjectDropdown([]);
-    setChapterDropdown([]);
     setViewMoreData({});
     setViewMore(false);
     setFilterDataDown({});
-    setOverviewSynopsis([]);
     setSelectedIndex(-1);
-    setCentralGsMappingId();
     setDateRangeTechPer([moment().subtract(6, 'days'), moment()]);
   };
 
-  const handleAcademicYear = (event, value) => {
-    setFilterData({ ...filterData, year: '',branch:'',grade:'',section:'' });
+  const handleAcademicYear = (event = {}, value = '') => {
+    setBranchDropdown([]);
+    setGradeDropdown([]);
+    setSectionDropdown([]);
+    setFilterData({ ...filterData, year: '', branch: '', grade: '', section: '' });
     if (value) {
-      setFilterData({ ...filterData, year: value ,branch:'',grade:'',section:''});
+      setFilterData({ ...filterData, year: value, branch: '', grade: '', section: '' });
       axiosInstance
         .get(
           `${endpoints.communication.branches}?session_year=${value.id}&module_id=${moduleId}`
@@ -141,8 +143,16 @@ const CircularFilters = ({
     }
   };
   const handleBranch = (event, value) => {
-    setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '',section:'' });
-    setOverviewSynopsis([]);
+    setGradeDropdown([]);
+    setSectionDropdown([]);
+    setFilterData({
+      ...filterData,
+      branch: '',
+      grade: '',
+      subject: '',
+      chapter: '',
+      section: '',
+    });
     if (value) {
       setFilterData({
         ...filterData,
@@ -150,7 +160,7 @@ const CircularFilters = ({
         grade: '',
         subject: '',
         chapter: '',
-        section:'',
+        section: '',
       });
       axiosInstance
         // for teacher_module_id=167 ><<<admin=8
@@ -164,28 +174,28 @@ const CircularFilters = ({
           } else {
             setAlert('error', result.data.message);
             setGradeDropdown([]);
-            setSubjectDropdown([]);
-            setChapterDropdown([]);
           }
         })
         .catch((error) => {
           setAlert('error', error.message);
           setGradeDropdown([]);
-          setSubjectDropdown([]);
-          setChapterDropdown([]);
         });
     } else {
       setGradeDropdown([]);
-      setSubjectDropdown([]);
-      setChapterDropdown([]);
     }
   };
 
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: '', subject: '', chapter: '',section:'' });
-    setOverviewSynopsis([]);
+    setSectionDropdown([]);
+    setFilterData({ ...filterData, grade: '', subject: '', chapter: '', section: '' });
     if (value && filterData.branch) {
-      setFilterData({ ...filterData, grade: value, subject: '', chapter: '',section:'' });
+      setFilterData({
+        ...filterData,
+        grade: value,
+        subject: '',
+        chapter: '',
+        section: '',
+      });
       axiosInstance
         .get(
           `${endpoints.masterManagement.sections}?branch_id=${filterData.branch?.branch?.id}&session_year=${filterData.year.id}&grade_id=${value.grade_id}&module_id=${moduleId}`
@@ -204,7 +214,6 @@ const CircularFilters = ({
         });
     } else {
       setSectionDropdown([]);
-      setChapterDropdown([]);
     }
   };
 
@@ -247,19 +256,24 @@ const CircularFilters = ({
   };
 
   useEffect(() => {
-    axiosInstance
-      .get(`${endpoints.userManagement.academicYear}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setAcademicYearDropdown(result?.data?.data);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
-  }, []);
+    if (moduleId && window.location.pathname === '/teacher-circular') {
+      axiosInstance
+        .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setAcademicYearDropdown(result?.data?.data);
+            const defaultValue = result.data?.data?.[0];
+            handleAcademicYear({}, defaultValue);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  }, [moduleId]);
+
   return (
     <Grid
       container
@@ -308,8 +322,15 @@ const CircularFilters = ({
                     format={(date) => moment(date).format('DD-MM-YYYY')}
                     inputProps={{
                       ...inputProps,
-                      value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                      value: `${moment(inputProps.value).format('DD-MM-YYYY')} - ${moment(
+                        endProps.inputProps.value
+                      ).format('DD-MM-YYYY')}`,
                       readOnly: true,
+                      endAdornment: (
+                        <InputAdornment position='end'>
+                          <DateRangeIcon style={{ width: '35px' }} color='primary' />
+                        </InputAdornment>
+                      ),
                     }}
                     size='small'
                     style={{ minWidth: '100%' }}
