@@ -158,7 +158,13 @@ export default {
     downloadBranchWiseStudent: '/qbox/academic/branch_strength_excel_data/',
     downloadExcelAllstudents: '/qbox/academic/all_branch_strength_excel_data/',
   },
-
+  homeworkReport:{
+    branchWiseData:'/academic/teacher_homework_report/',
+    subjectList:'/academic/fetch_subjects/',
+  },
+  classworkReport:{
+    tableData:'/academic/teacher_classwork_report/',
+  },
   idCards: {
     getIdCardsApi: '/erp_user/get-user-details/',
   },
