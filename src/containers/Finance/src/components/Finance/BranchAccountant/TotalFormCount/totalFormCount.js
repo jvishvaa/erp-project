@@ -78,7 +78,7 @@ let moduleId
 if (NavData && NavData.length) {
   NavData.forEach((item) => {
     if (
-      item.parent_modules === 'Reports' &&
+      item.parent_modules === 'Report' &&
       item.child_module &&
       item.child_module.length > 0
     ) {
