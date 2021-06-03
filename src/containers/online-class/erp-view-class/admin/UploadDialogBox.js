@@ -40,31 +40,38 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const options ={
-  settings:{
-    autoplaySpeed: 0,
-  }
-}
-
 const UploadClassWorkDiaogBox = (props) => {
   const {
+    isTeacher = false,
+    imageList = [],
     setLoading,
-    periodData: { date: periodDate },
-    fullData: {
-      online_class: { id: onlineClassId },
-    },
-  } = props;
+    periodData = {},
+    classWorkDialog = false,
+    OpenDialogBox,
+    fullData = {},
+  } = props || {};
+  const { online_class = {} } = fullData || {};
+  const { id: onlineClassId = '' } = online_class || {};
+  const { date: periodDate = '' } = periodData || {};
 
   const classes = useStyles();
   const [uploadFiles, setUploadFiles] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const { openLightbox } = useLightbox();
+  const [originalFiles, setOriginalFiles] = useState([]);
 
   useEffect(() => {
-    if (periodDate !== '') getPeriodDetails();
+    if (isTeacher) {
+      setUploadFiles(imageList);
+    }
+  }, [isTeacher]);
+
+  useEffect(() => {
+    if (periodDate !== '' && !isTeacher) getPeriodDetails();
   }, [periodDate]);
 
   function getPeriodDetails() {
+    setLoading(true);
     axiosInstance
       .get(
         `${endpoints.onlineClass.periodDetails}?online_class_id=${onlineClassId}&date=${periodDate}`
@@ -73,11 +80,16 @@ const UploadClassWorkDiaogBox = (props) => {
         if (result.data.status_code === 200) {
           const exstingFiles = result.data?.data || [];
           if (exstingFiles?.length) {
-            setUploadFiles(exstingFiles);
+            setOriginalFiles([...exstingFiles]);
+            setUploadFiles([...exstingFiles]);
           }
         }
+        setLoading(false);
       })
-      .catch((error) => setAlert('error', error?.message));
+      .catch((error) => {
+        setAlert('error', error?.message);
+        setLoading(false);
+      });
   }
 
   function validateImageFile(imageName) {
@@ -118,8 +130,8 @@ const UploadClassWorkDiaogBox = (props) => {
       setAlert('error', "Can't upload more than 20 images");
       return;
     }
-    setLoading(true);
     if (validateImageFile(value?.name)) {
+      setLoading(true);
       const fd = new FormData();
       fd.append('file', value);
       fd.append('online_class_id', onlineClassId);
@@ -144,16 +156,39 @@ const UploadClassWorkDiaogBox = (props) => {
     } else {
       setAlert('error', 'Image can be of .jpg / .jpeg / .png format');
     }
+    e.target.value = '';
   };
 
   const handleClose = () => {
-    props.OpenDialogBox(false);
+    OpenDialogBox(false);
+  };
+
+  const handleValidateFileChange = () => {
+    let canUpload = false;
+    if (originalFiles?.length !== uploadFiles?.length) {
+      canUpload = true;
+    }
+    if (originalFiles?.length === uploadFiles?.length) {
+      for (let i = 0; i < originalFiles?.length; i++) {
+        if (!uploadFiles.includes(originalFiles[i])) {
+          canUpload = true;
+          break;
+        }
+      }
+    }
+    return canUpload;
   };
 
   const submitClassWorkAPI = () => {
     if (uploadFiles?.length <= 0) {
       setAlert('error', 'Please select atleast 1 file to upload!');
       return;
+    }
+    if (originalFiles?.length) {
+      if (!handleValidateFileChange()) {
+        setAlert('error', 'Nothing to submit!');
+        return;
+      }
     }
     let obj = {
       online_class_id: onlineClassId,
@@ -176,16 +211,17 @@ const UploadClassWorkDiaogBox = (props) => {
     <div>
       <Dialog
         className='upload-dialog-box'
-        open={props.classWorkDialog}
+        open={classWorkDialog}
+        style={{ zIndex: '3' }}
         onClose={handleClose}
         aria-labelledby='form-dialog-title'
       >
         <DialogTitle className={classes.uploadBoxTitle} id='form-dialog-title'>
-          Upload Classwork
+          {isTeacher ? 'Classwork' : 'Upload Classwork'}
         </DialogTitle>
         <DialogContent>
           <SimpleReactLightbox>
-            <SRLWrapper options={options}>
+            <SRLWrapper>
               <Grid container spacing={2} className='optionImageContainer1'>
                 {uploadFiles?.map((url, index) => (
                   <Grid
@@ -202,7 +238,7 @@ const UploadClassWorkDiaogBox = (props) => {
                       onError={(e) => {
                         e.target.src = placeholder;
                       }}
-                      src={`${endpoints.assessmentErp.s3}${url}`}
+                      src={isTeacher ? url : `${endpoints.assessmentErp.s3}${url}`}
                       className='optionImageAttachment1'
                     />
                     <div className='optionImageRemoveIcon1'>
@@ -211,12 +247,14 @@ const UploadClassWorkDiaogBox = (props) => {
                           onClick={() => {
                             imageRef.current.click();
                           }}
-                          style={{ color: '#ff6b6b' }}
+                          style={{ color: '#014b7e' }}
                         />
                       </IconButton>
-                      <IconButton onClick={() => handleDeleteImage(index)}>
-                        <DeleteIcon />
-                      </IconButton>
+                      {!isTeacher && (
+                        <IconButton onClick={() => handleDeleteImage(index)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      )}
                     </div>
                   </Grid>
                 ))}
@@ -228,37 +266,40 @@ const UploadClassWorkDiaogBox = (props) => {
           )}
         </DialogContent>
         <DialogActions>
-          <div className='box-size-dialog'>
-            <input
-              accept='image/*'
-              className={classes.input}
-              id='contained-button-file'
-              type='file'
-              onChange={(e) => handleUploadFile(e)}
-            />
-            <label htmlFor='contained-button-file' style={{ color: 'white' }}>
-              <Button
-                startIcon={<CloudUploadIcon />}
-                className={classes.submitButton}
-                variant='contained'
-                color='primary'
-                component='span'
-              >
-                Upload
-              </Button>
-            </label>
-            <span style={{color:"red"}}>(jpeg,jpg,png)</span>
-          </div>
+          {!isTeacher && (
+            <div className='box-size-dialog'>
+              <input
+                accept='image/*'
+                className={classes.input}
+                id='contained-button-file'
+                type='file'
+                onChange={(e) => handleUploadFile(e)}
+              />
+              <label htmlFor='contained-button-file' style={{ color: 'white' }}>
+                <Button
+                  startIcon={<CloudUploadIcon />}
+                  className={classes.submitButton}
+                  variant='contained'
+                  color='primary'
+                  component='span'
+                >
+                  Upload
+                </Button>
+              </label>
+            </div>
+          )}
           <Button className={classes.cancelButton} onClick={handleClose}>
-            Cancel
+            {isTeacher ? 'Close' : 'Cancel'}
           </Button>
-          <Button
-            className={classes.submitButton}
-            onClick={submitClassWorkAPI}
-            color='primary'
-          >
-            Submit
-          </Button>
+          {!isTeacher && (
+            <Button
+              className={classes.submitButton}
+              onClick={submitClassWorkAPI}
+              color='primary'
+            >
+              Submit
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </div>
