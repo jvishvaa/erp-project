@@ -274,14 +274,6 @@ const JoinClass = (props) => {
           </Grid>
 
           <Grid item xs={4}>
-            {/* <IconButton
-              color='primary'
-              onClick={() => {
-                setDialogClassWorkBox(true);
-              }}
-            >
-              <PhotoCamera />
-            </IconButton> */}
             <Button
               size='small'
               color='primary'
@@ -349,11 +341,14 @@ const JoinClass = (props) => {
               color='primary'
               fullWidth
               variant='contained'
-              onClick={() =>
+              onClick={() => {
+                const { id = '', online_class = {} } = fullData || {};
+                const { id: onlineClassId = '', start_time = '' } = online_class || {};
+                const startDate = start_time.split('T')[0] || '';
                 history.push({
-                  pathname: `/erp-online-class/class-work/${fullData.online_class.id}/${fullData.id}`,
-                })
-              }
+                  pathname: `/erp-online-class/class-work/${onlineClassId}/${id}/${startDate}`,
+                });
+              }}
               className='classworkButton'
             >
               Class Work

@@ -106,6 +106,9 @@ const CircularFilters = ({
       section: '',
       branch: '',
     });
+    setBranchDropdown([]);
+    setGradeDropdown([]);
+    setSectionDropdown([]);
     setPeriodData([]);
     setViewMoreData({});
     setViewMore(false);
