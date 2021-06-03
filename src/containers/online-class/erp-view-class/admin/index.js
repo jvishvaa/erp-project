@@ -238,7 +238,13 @@ const ErpAdminViewClass = ({ history }) => {
             setCourseList(result?.data?.result || []);
           }
           if (key === 'subject') {
-            setSubjectList(result?.data?.data);
+            const transformedData = result?.data?.data.map((sub, index) => {
+              return {
+                id: index,
+                ...sub,
+              };
+            }) || [];
+            setSubjectList(transformedData);
           }
           if (key === 'filter') {
             setTotalCount(result?.data?.count);
@@ -791,9 +797,7 @@ const ErpAdminViewClass = ({ history }) => {
                       options={gradeList || []}
                       getOptionLabel={(option) => option?.grade__grade_name || ''}
                       // filterSelectedOptions
-                      getOptionSelected={(option, value) =>
-                        option?.grade_id == value?.grade_id
-                      }
+                      getOptionSelected={(option, value) => option?.id == value?.id}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -843,7 +847,7 @@ const ErpAdminViewClass = ({ history }) => {
                         getOptionLabel={(option) => option?.subject__subject_name}
                         // filterSelectedOptions
                         getOptionSelected={(option, value) =>
-                          option?.subject__id == value?.subject__id
+                          option?.id == value?.id
                         }
                         renderInput={(params) => (
                           <TextField
@@ -897,9 +901,9 @@ const ErpAdminViewClass = ({ history }) => {
                                 inputProps={{
                                   ...inputProps,
                                   value: `${moment(inputProps.value).format(
-                                    'DD-MM-YYYY'
+                                    'MM/DD/YYYY'
                                   )} - ${moment(endProps.inputProps.value).format(
-                                    'DD-MM-YYYY'
+                                    'MM/DD/YYYY'
                                   )}`,
                                   readOnly: true,
                                   endAdornment: (

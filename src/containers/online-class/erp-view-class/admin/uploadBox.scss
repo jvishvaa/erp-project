@@ -56,8 +56,16 @@
               opacity: 0.8;
             }
             & .MuiIconButton-root:hover {
-              opacity: 1;
               transform: scale(1.1);
+            }
+          }
+          &:hover {
+            img {
+              opacity: 0.7;
+              transition-duration: 0.5s;
+            }
+            & .MuiIconButton-root {
+              opacity: 1;
             }
           }
         }
