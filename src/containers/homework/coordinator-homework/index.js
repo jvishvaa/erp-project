@@ -335,7 +335,7 @@ const CoordinatorTeacherHomework = withRouter(
           }
 
           if (activeView === 'list-homework') {
-            if (startDate && endDate && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id && sectionDisplay?.id) {
+            if (startDate && endDate && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id, sectionDisplay?.id) {
               getCoordinateTeacherHomeworkDetails(
                 teacherModuleId,
                 selectedAcademicYear.id,
@@ -361,7 +361,7 @@ const CoordinatorTeacherHomework = withRouter(
     };
 
     const handleCoordinateTeacher = (e, value) => {
-      if (value?.user_id && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id, sectionDisplay?.id) {
+      if (value?.user_id > 0 && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id, sectionDisplay?.id) {
         setFirstTeacherUserIdOnloadCordinatorHomewok(value);
         setSelectedTeacherUser_id(value?.user_id);
         setselectedCoTeacherOptValue(value);
@@ -374,7 +374,7 @@ const CoordinatorTeacherHomework = withRouter(
           sectionDisplay.section_id,
           startDate,
           endDate,
-          value?.user_id
+          value.user_id
         );
       }
     };
@@ -458,7 +458,6 @@ const CoordinatorTeacherHomework = withRouter(
       setBranchList([]);
       setGrades([]);
       setSections([]);
-      setSectionDisplay([]);
       //setSearchGrade('');
       //setSearchSection('');
       setSelectedBranch([]);
@@ -495,7 +494,6 @@ const CoordinatorTeacherHomework = withRouter(
       setGrades([]);
       setSections([]);
       setGradeDisplay([]);
-      setSectionDisplay([]);
       //setSearchGrade('');
       //setSearchSection([]);
       setSelectedBranch([]);

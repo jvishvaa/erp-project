@@ -228,14 +228,14 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
               <div
                 className='nav-card'
                 onClick={() => {
-                  history.push('/homework/teacher');
+                  window.history.back('/homework/teacher');
                 }}
               >
-                <div className='header-text text-center'>All Homeworks</div>
+                <div className='header-text text-center' style={{cursor:'pointer'}}>All Homeworks</div>
               </div>
               <div className='nav-card'>
-                <div className='header-text text-center'>{params.date}</div>
-                <div className='header-text text-center'>{params.subject}</div>
+                <div className='header-text text-center' style={{cursor:'pointer'}}>{params.date}</div>
+                <div className='header-text text-center' style={{cursor:'pointer'}}>{params.subject}</div>
               </div>
             </div>
           </Grid>
@@ -248,7 +248,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
             md={9}
           >
             <Grid container style={{ width: '95%', margin: '0 auto' }}>
-              <Grid item xs={12} style={{width: '30%', marginBottom: '20px'}}>
+              <Grid item xs={12} sm={4} style={{ marginBottom: '20px'}}>
                 <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
@@ -292,10 +292,10 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
               </Grid>
               <Grid item xs={12} className='form-field'>
                 <FormControl variant='outlined' fullWidth size='small'>
-                  <InputLabel htmlFor='component-outlined'>Description</InputLabel>
+                  <InputLabel htmlFor='component-outlined'>Instruction</InputLabel>
                   <OutlinedInput
                     id='description'
-                    name='description'
+                    name='Instruction'
                     onChange={(e) => {
                       setDescription(e.target.value);
                     }}
@@ -303,7 +303,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                     multiline
                     rows={4}
                     rowsMax={6}
-                    label='Description'
+                    label='Instruction'
                     //error={true}
                     //helperText="Description required"
                   />

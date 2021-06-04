@@ -775,7 +775,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           </Typography>
                           <div className='attachments-list-outer-container'>
                             <div className='prev-btn'>
-                              {question.submitted_files.length > 1 && (
+                              {question?.submitted_files?.length > 1 && (
                                 <IconButton onClick={() => handleScroll('left')}>
                                   <ArrowBackIosIcon />
                                 </IconButton>
@@ -862,7 +862,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                               </SimpleReactLightbox>
                             }
                             <div className='next-btn'>
-                              {question.submitted_files.length > 1 && (
+                              {question?.submitted_files?.length > 1 && (
                                 <IconButton onClick={() => handleScroll('right')}>
                                   <ArrowForwardIosIcon color='primary' />
                                 </IconButton>
