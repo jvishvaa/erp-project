@@ -36,7 +36,7 @@ const prod = {
 const PROD = 'PROD';
 const DEV = 'DEV';
 const env = { [PROD]: prod, [DEV]: dev };
-const config = env[process.env.REACT_APP_UI_ENV] || olv;
+const config = env[process.env.REACT_APP_UI_ENV] || local;
 
 export default {
   // Add common config values here
