@@ -5,10 +5,10 @@ import TableRow from '@material-ui/core/TableRow';
 import HomeworkCol from './homework-col';
 import moment from 'moment';
 
-const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomework, coord_selected_teacher_id}) => {
+const HomeworkRow = ({ data, cols, selectedCol, sectionId, setSelectedCol, handleViewHomework, coord_selected_teacher_id}) => {
   const history = useHistory();
-  const navigateToAddScreen = ({ date, subject, subjectId }) => {
-    history.push(`/homework/cadd/${date}/${subject}/${subjectId}/${coord_selected_teacher_id}`);
+  const navigateToAddScreen = ({ date, sessionYear, branch, grade, subject, subjectId }) => {
+    history.push(`/homework/cadd/${date}/${sessionYear}/${branch}/${grade}/${subject}/${subjectId}/${coord_selected_teacher_id}`);
   };
   return (
     <TableRow>
@@ -25,7 +25,8 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
               setSelectedCol({
                 date: data.date,
                 subject: col.subject_name,
-                subjectId: col.id,
+                subjectId: col.subject_id,
+                sectionId: sectionId,
                 homeworkId: data[col.subject_name].hw_id,
                 view,
                 coord_selected_teacher_id
@@ -34,8 +35,12 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
             handleNavigationToAddScreen={() => {
               navigateToAddScreen({
                 date: data.date,
+                //section: sectionId,
+                sessionYear: data.sessionYear,
+                branch: data.branch,
+                grade: data.grade,
                 subject: col.subject_name,
-                subjectId: col.id,
+                subjectId: col.subject_id,
                 coord_selected_teacher_id
               });
             }}
@@ -43,7 +48,7 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
               handleViewHomework({
                 date: data.date,
                 subject: col.subject_name,
-                subjectId: col.id,
+                subjectId: col.subject_id,
                 homeworkId: data[col.subject_name].hw_id,
                 coord_selected_teacher_id
               });

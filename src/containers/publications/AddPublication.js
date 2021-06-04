@@ -225,9 +225,12 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
     setpostData({ ...postData, [e.target.name]: e.target.value });
   };
 
+  const [publishFlag, setPublishFlag] = useState(false);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+    setPublishFlag(true);
     formData.append('zone', postBranch);
     formData.append('subject', postSubjects);
     formData.append('grade', grade);
@@ -244,15 +247,18 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
         if (result.data.status_code === 200) {
           setDelFlag(!delFlag);
           setLoading(false);
+          setPublishFlag(false);
           setAlert('success', result.data.message);
           handleGoBackPre();
         } else {
           setLoading(false);
+          setPublishFlag(false);
           setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
         setLoading(false);
+        setPublishFlag(false);
         setAlert('error', error.message);
       });
   };
@@ -409,7 +415,11 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
 
   return (
     <>
-      {loading ? <Loading message='Loading...' /> : null}
+      {loading ? (
+        <Loading
+          message={publishFlag ? "Please don't refresh or leave this page." : 'Loading...'}
+        />
+      ) : null}
       <form>
         {!tableFlag && readFlag && (
           <PublicationPreview

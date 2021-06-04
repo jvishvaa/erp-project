@@ -135,11 +135,11 @@ const ViewHomework = withRouter(
             <div className='homework_submit_wrapper'>
               <div className='homework_block_wrapper'>
                 <div className='homework_block homework_submit_tag'>
-                  Homework - {subjectName?.split('_')[2]}, {date}
+                  Homework - {subjectName}:{' '}{selectedHomeworkDetails?.homework_name}, {date}
                 </div>
               </div>
 
-              {selectedHomeworkDetails && !!selectedHomeworkDetails.length && selectedHomeworkDetails?.map((question, index) => (
+              {selectedHomeworkDetails && selectedHomeworkDetails?.hw_questions?.map((question, index) => (
                 <div
                   className='homework-question-container-coordinator'
                   key={`homework_student_question_${index}`}

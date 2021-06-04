@@ -160,6 +160,7 @@
   }
 
   .add-homework-inner-container {
+    margin-top: 20px !important;
     padding: 20px 2.5%;
     background: white;
     flex: 1;
@@ -531,19 +532,20 @@
 }
 
 .bulk_container {
-  display: flex;
+  //display: flex;
 }
 
 .download_button {
-  margin-left: 25px;
+  //margin-left: 25px;
+  margin-top: 10px;
   align-self: flex-start;
 }
 
 .vertical_divider {
-  height: 40px;
+  height: 80px;
   width: 1px;
-  margin: 15px 25px;
-  background-color: #0000001F;
+  margin: 5px 20px;
+  background-color: #ff6b6b;
 }
 
 //homework list mobile view

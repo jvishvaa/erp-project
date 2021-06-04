@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 const StudentHomeWorkReport = () => {
   const classes = useStyles();
-  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  // const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const { setAlert } = useContext(AlertNotificationContext);
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [messageRows, setMessageRows] = useState({ header: [], data: [] });
@@ -78,7 +78,7 @@ const StudentHomeWorkReport = () => {
   const [reportHeaderData, setReportHeaderData] = useState([]);
   useEffect(() => {
     callApiReportData();
-  }, [startDate, endDate, moduleId]);
+  }, [startDate, endDate]);
   const handleStartDateChange = (date) => {
     const endDate = getDaysAfter(date.clone(), 6);
     setEndDate(endDate);
@@ -139,34 +139,6 @@ const StudentHomeWorkReport = () => {
       }
     }
 
-    // studentHomeworkData.data.forEach((items) => {
-    //   const tempobj = { date: items.class_date };
-    //   if (items.hw_details.length) {
-    //     tempHeader.forEach((header) => {
-    //       if (header.subject_slag !== 'date') {
-    //         items.hw_details.forEach((subjects) => {
-    //           if (subjects.subject === header.id)
-    //             tempobj[header.subject_slag] = {
-    //               homeworkId: subjects.id,
-    //               isHomework: true,
-    //               isSubmited: subjects.hw_status.is_submitted,
-    //               isEvaluted: subjects.hw_status.is_evaluated,
-    //               isOpened: subjects.hw_status.is_opened,
-    //             };
-    //         });
-    //         if (!tempobj[header.subject_slag]) {
-    //           tempobj[header.subject_slag] = { isHomework: false };
-    //         }
-    //       }
-    //     });
-    //   } else {
-    //     tempHeader.forEach((header) => {
-    //       if (header.subject_slag !== 'date')
-    //         tempobj[header.subject_slag] = { isHomework: false };
-    //     });
-    //   }
-    //   temprows.push(tempobj);
-    // });
     setMessageRows({ header: tempHeader, data: temprows });
   };
   useEffect(() => {
@@ -211,42 +183,23 @@ const StudentHomeWorkReport = () => {
       setSelectedOtherSubjects();
     }
   };
-
-  //   const handleCellClick = (row, index) => {
-  //     if (isSelectedCell.row === row && isSelectedCell.index === index) {
-  //       setIsSelectedCell({ row: '', index: '' });
-  //       return;
-  //     }
-  //     setIsSelectedCell({ row, index });
-  //   };
-
-  //   const handleOpenHomework = (id, classDate, subjectName, status) => {
-  //     setHomeworkSubmission({
-  //       isOpen: true,
-  //       homeworkId: id,
-  //       date: classDate,
-  //       subjectName,
-  //       status,
+  // useEffect(() => {
+  //   if (NavData && NavData.length) {
+  //     NavData.forEach((item) => {
+  //       if (
+  //         item.parent_modules === 'Homework' &&
+  //         item.child_module &&
+  //         item.child_module.length > 0
+  //       ) {
+  //         item.child_module.forEach((item) => {
+  //           if (item.child_name === 'Student Homework') {
+  //             setModuleId(item.child_id);
+  //           }
+  //         });
+  //       }
   //     });
-  //   };
-
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Homework' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Student Homework') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, []);
+  //   }
+  // }, []);
   //   const callApiReportData = async () => {
   //     try {
   //       const result = await axiosInstance.get(
@@ -267,19 +220,19 @@ const StudentHomeWorkReport = () => {
   const callApiReportData = () => {
     axiosInstance
       .get(
-        `/academic/student-homework-count/?module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}`
+        `/academic/student_homework_report/?start_date=${startDate}&end_date=${endDate}`
       )
       .then((res) => {
         console.log(res, 'student-homework');
-        if (res.data.data[0].hw_given) {
-          setReportData(res?.data?.data);
-          setReportHeaderData(res?.data?.header);
+        if (res.data.status_code==200) {
+          setReportData(res?.data?.result?.hw_report);
+          setReportHeaderData(res?.data?.result?.hw_report);
           setTableDisplay(true);
-          setStudentHomeworkData(res?.data);
-          setMendaterySubjects(res.data.header?.mandatory_subjects);
-          setOptionalSubjects(res.data.header.optional_subjects);
-          setOtherSubjects(res.data.header.others_subjects);
-          handleChangeDataFormat();
+          // setStudentHomeworkData(res?.data);
+          // setMendaterySubjects(res.data.header?.mandatory_subjects);
+          // setOptionalSubjects(res.data.header.optional_subjects);
+          // setOtherSubjects(res.data.header.others_subjects);
+          // handleChangeDataFormat();
         } else {
           setTableDisplay(false);
         }
@@ -325,39 +278,32 @@ const StudentHomeWorkReport = () => {
                     <TableHead className='view_groups_header tb-header'>
                       <TableRow>
                         <TableCell className='homework_header homework_header_dropdown_wrapper'>
-                          Titles
+                          S.No
                         </TableCell>
-                        <TableCell>HomeWork given</TableCell>
-                        <TableCell>Homework Submitted</TableCell>
-                        <TableCell>Homework Evaluated</TableCell>
-                        <TableCell>Homework Not submitted</TableCell>
+                        <TableCell>Total HomeWork Got</TableCell>
+                        <TableCell>Total HomeWork Submitted</TableCell>
+                        <TableCell>Total HomeWork Evaluated</TableCell>
+                        <TableCell>Total HomeWork Not Evaluated</TableCell>
                       </TableRow>
                     </TableHead>
 
                     <TableBody className='table_body'>
-                      {/* {reportData &&
-                        reportData?.map((dataSubject, index) => (
-                          <> */}
-
-                      {reportData &&
-                        reportData.map((data) => (
                           <TableRow>
                             <TableCell className='homework_header'>
-                              {data?.subject_name}
+                              1
                             </TableCell>
-                            <TableCell align='middle'>{data?.hw_given}</TableCell>
-                            <TableCell align='middle'>{data?.hw_submitted}</TableCell>
-                            <TableCell align='middle'>{data?.hw_evaluated}</TableCell>
-                            <TableCell align='middle'>{data?.not_submitted}</TableCell>
+                            <TableCell align='middle'>{reportData.total_hw_given}</TableCell>
+                            <TableCell align='middle'>{reportData.total_hw_submitted}</TableCell>
+                            <TableCell align='middle'>{reportData.total_hw_evaluated}</TableCell>
+                            <TableCell align='middle'>{reportData.total_hw_not_evaluated}</TableCell>
                           </TableRow>
-                        ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
               </>
-            ) : (
+             ) : ( 
               <></>
-            )}
+             )} 
           </Paper>
         </div>
       </Layout>

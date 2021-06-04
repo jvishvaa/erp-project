@@ -55,6 +55,7 @@ const DailyDairyList = () => {
   const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate) => {
     setLoading(true);
     setPeriodData([]);
+
     axiosInstance
       .get(
         `${
@@ -67,6 +68,7 @@ const DailyDairyList = () => {
       // axiosInstance.get(`${endpoints.generalDairy.dairyList}?grades=${gradeId}&sections=${sectionIds}`)
       .then((result) => {
         if (result.data.status_code === 200) {
+         
           setTotalCount(result.data.result.count);
           setLoading(false);
           setPeriodData(result.data.result.results.reverse());

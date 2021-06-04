@@ -134,7 +134,9 @@ const GeneralDairyList = () => {
     const diaryUrl = isTeacher
       ? `${
           endpoints.generalDairy.dairyList
-        }?module_id=${teacherModuleId}&branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&page_size=${limit}&start_date=${startDate.format(
+        }?module_id=${teacherModuleId}&branch=${branchId}&grades=${gradeId}&sections=${
+          sectionIds[0]
+        }&page=${page}&page_size=${limit}&start_date=${startDate.format(
           'YYYY-MM-DD'
         )}&end_date=${endDate.format('YYYY-MM-DD')}${
           activeTab !== 0 ? '&dairy_type=' + activeTab : ''
@@ -158,6 +160,8 @@ const GeneralDairyList = () => {
       .get(diaryUrl)
       .then((result) => {
         // console.log(result.data.result.results.reverse());
+        console.log('the section id:', sectionIds[0]);
+        console.log('the grade:', gradeId);
         if (result.data.status_code === 200) {
           setTotalCount(result.data.result.count);
           setLoading(false);

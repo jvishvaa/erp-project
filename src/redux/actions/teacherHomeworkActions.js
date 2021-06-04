@@ -26,6 +26,10 @@ export const teacherHomeworkActions = {
   ADD_HOMEWORK_SUCCESS_COORD: 'ADD_HOMEWORK_SUCCESS_COORD',
   SET_TEACHER_HOMEWORK_ID_FROM_CORD: 'SET_TEACHER_HOMEWORK_ID_FROM_CORD',
   SET_TEACHER_HOMEWORK_ID_FROM_CORD_SUCCESS: 'SET_TEACHER_HOMEWORK_ID_FROM_CORD_SUCCESS',
+  SET_SELECTED_FILTERS: 'SET_SELECTED_FILTERS',
+  RESET_SELECTED_FILTERS: 'RESET_SELECTED_FILTERS',
+  SET_SELECTED_COFILTERS: 'SET_SELECTED_COFILTERS',
+  RESET_SELECTED_COFILTERS: 'RESET_SELECTED_COFILTERS',
 };
 
 const {
@@ -48,7 +52,37 @@ const {
   ADD_HOMEWORK_SUCCESS_COORD,
   SET_TEACHER_HOMEWORK_ID_FROM_CORD,
   SET_TEACHER_HOMEWORK_ID_FROM_CORD_SUCCESS,
+  SET_SELECTED_FILTERS,
+  RESET_SELECTED_FILTERS,
+  SET_SELECTED_COFILTERS,
+  RESET_SELECTED_COFILTERS,
 } = teacherHomeworkActions;
+
+export const setSelectedFilters = (data) => {
+  return {
+    type: SET_SELECTED_FILTERS,
+    data: data,
+  }
+}
+
+export const resetSelectedFilters = () => {
+  return {
+    type: RESET_SELECTED_FILTERS,
+  }
+}
+
+export const setSelectedCoFilters = (data) => {
+  return {
+    type: SET_SELECTED_COFILTERS,
+    data: data,
+  }
+}
+
+export const resetSelectedCoFilters = () => {
+  return {
+    type: RESET_SELECTED_COFILTERS,
+  }
+}
 
 export const addHomeWork = (data) => async (dispatch) => {
   dispatch({ type: ADD_HOMEWORK_REQUEST });
@@ -69,7 +103,7 @@ export const fetchTeacherHomeworkDetailsById = (id) => async (dispatch) => {
     const response = await axios.get(`/academic/${id}/hw-questions/?hw_status=1`);
     dispatch({
       type: FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_SUCCESS,
-      data: response.data.data.hw_questions,
+      data: response.data.data,
     });
   } catch (error) {
     dispatch({ type: FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_FAILURE });
@@ -106,13 +140,14 @@ export const fetchSubmittedHomeworkDetails = (id) => async (dispatch) => {
   }
 };
 
-export const fetchTeacherHomeworkDetails = (moduleId, startDate, endDate) => async (
+export const fetchTeacherHomeworkDetails = (moduleId, acadYear, branch, garde, sectionId, section, startDate, endDate) => async (
   dispatch
 ) => {
   dispatch({ type: FETCH_TEACHER_HOMEWORK_REQUEST });
+  //const sectionIds = sectionId.split(',').map( n => parseInt(n, 10))
   try {
     const response = await axios.get(
-      `/academic/student-homework/?module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}`
+      `/academic/student-homework/?module_id=${moduleId}&session_year=${acadYear}&branch=${branch}&grade=${garde}&section_mapping=${sectionId}&section=${section}&start_date=${startDate}&end_date=${endDate}`
     );
     const { header, rows } = response.data.data;
     // const {
@@ -122,9 +157,9 @@ export const fetchTeacherHomeworkDetails = (moduleId, startDate, endDate) => asy
     // } = header;
     const homeworkColumns = [...header];
     const homeworkRows = rows.map((row) => {
-      const obj = { date: row.class_date, canUpload: row.can_upload };
+      const obj = { date: row.class_date, canUpload: row.can_upload, sessionYear: row.session_year, branch: row.branch, grade: row.grade };
       homeworkColumns.forEach((col) => {
-        const homeworkStatus = row.hw_details.find((detail) => detail.subject === col.id);
+        const homeworkStatus = row.hw_details.find((detail) => detail.subject === col.subject_id);
         obj[col.subject_name] = homeworkStatus
           ? { hw_id: homeworkStatus.id, ...homeworkStatus.status }
           : {};
@@ -147,12 +182,12 @@ export const setSelectedHomework = (data) => ({
   data,
 });
 
-export const fetchStudentsListForTeacherHomework = (id, subjectId, selectedTeacherUser_id) => async (dispatch) => {
+export const fetchStudentsListForTeacherHomework = (id, subjectId, sectionId, selectedTeacherUser_id) => async (dispatch) => {
   dispatch({ type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_REQUEST });
   try {
     const response = await axios.get(selectedTeacherUser_id ?
-      `/academic/homework-submitted-data/?homework=${id}&user=${selectedTeacherUser_id}&subject=${subjectId}`
-      : `/academic/homework-submitted-data/?homework=${id}&subject=${subjectId}`);
+      `/academic/homework-submitted-data/?homework=${id}&user=${selectedTeacherUser_id}&subject=${subjectId}&section_mapping=${sectionId}`
+      : `/academic/homework-submitted-data/?homework=${id}&subject=${subjectId}&section_mapping=${sectionId}`);
     const {
       evaluated_list: evaluatedStudents,
       submitted_list: submittedStudents,
@@ -211,6 +246,11 @@ export const addHomeWorkCoord = (data) => async (dispatch) => {
 //Added By Vijay============
 export const fetchCoordinateTeacherHomeworkDetails = (
   moduleId,
+  acadYear,
+  branch,
+  garde,
+  sectionId,
+  section,
   startDate,
   endDate,
   user_id
@@ -218,7 +258,7 @@ export const fetchCoordinateTeacherHomeworkDetails = (
   dispatch({ type: FETCH_TEACHER_HOMEWORK_REQUEST });
   try {
     const response = await axios.get(
-      `/academic/student-homework/?module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}&teacher_id=${user_id}`
+      `/academic/student-homework/?module_id=${moduleId}&session_year=${acadYear}&branch=${branch}&grade=${garde}&section_mapping=${sectionId}&section=${section}&start_date=${startDate}&end_date=${endDate}&teacher_id=${user_id}`
     );
     const { header, rows } = response.data.data;
     // const {
@@ -233,9 +273,9 @@ export const fetchCoordinateTeacherHomeworkDetails = (
     // header[0].subject_name="Grade2_SecA_hindi1--CCCCCCC";
     const homeworkColumns = [...header];
     const homeworkRows = rows.map((row) => {
-      const obj = { date: row.class_date, canUpload: row.can_upload };
+      const obj = { date: row.class_date, canUpload: row.can_upload, sessionYear:row.session_year, branch: row.branch, grade: row.grade };
       homeworkColumns.forEach((col) => {
-        const homeworkStatus = row.hw_details.find((detail) => detail.subject === col.id);
+        const homeworkStatus = row.hw_details.find((detail) => detail.subject === col.subject_id);
 
         obj[col.subject_name] = homeworkStatus
           ? { hw_id: homeworkStatus.id, ...homeworkStatus.status }
