@@ -335,14 +335,14 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     let selectedFileType = event.target.files[0]?.type;
     if (!fileType.includes(selectedFileType)) {
       setAlert('error', 'File Type not supported');
-      event.target.value = "";
+      event.target.value = '';
       return;
     }
 
     const fileSize = event.target.files[0]?.size;
     if (!validateFileSize(fileSize)) {
       setAlert('error', 'File size must be less than 25MB');
-      event.target.value = "";
+      event.target.value = '';
       return;
     }
 
@@ -508,11 +508,11 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         const selectionRows = [];
         setHeaders([
           { field: 'name', headerName: 'Name', width: 500 },
-          { field: 'erp_id', headerName: 'Erp Id', width: 500 },
+          { field: 'erp_id', headerName: 'ERP Id', width: 500 },
         ]);
-
+        const res = result.data.result.results;
         result.data.result &&
-          result.data.result.results.forEach((items) => {
+          res.reverse().forEach((items) => {
             rows.push({
               id: items.id,
               erp_id: items.erp_id,
@@ -676,7 +676,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       }
     }
   };
-
+  console.log('the data section', filterData.section[0]?.section_id);
+  console.log('the data', filterData);
   const handleSubmit = async () => {
     // if (!!filePath.length) {
     //   return setAlert('error', 'Upload attachment!');
@@ -716,7 +717,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
               branch: filterData.branch[0].id,
               // grades:[54],
               grade: filterData.grade.map((g) => g.grade_id),
-              mapping_bgs: filterData.section.map((s) => s.id),
+              section_mapping: filterData.section.map((s) => s.id),
+              section: filterData.section.map((g) => g.section_id),
               user_id: selectionArray,
               dairy_type: 1,
             }
@@ -725,7 +727,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
               message: description,
               branch: filterData.branch[0].id,
               grade: filterData.grade.map((g) => g.grade_id),
-              mapping_bgs: filterData.section.map((s) => s.id),
+              section_mapping: filterData.section.map((s) => s.id),
+              section: filterData.section.map((g) => g.section_id),
               user_id: selectionArray,
               dairy_type: 1,
             },
@@ -738,7 +741,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       );
       const { message, status_code: statusCode } = response.data;
       if (statusCode === 200) {
-        setAlert('success', message);
+        setAlert('success', 'General Dairy Created Successfully ');
         history.push('/diary/teacher');
         setSelectedUsers([]);
         setSelectectUserError('');

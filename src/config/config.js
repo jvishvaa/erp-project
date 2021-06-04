@@ -16,6 +16,7 @@ const dev = {
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
+    // baseURL: 'http://localhost:8000/qbox',
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
   },
