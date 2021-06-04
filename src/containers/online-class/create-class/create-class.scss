@@ -11,7 +11,7 @@
     width: 100%;
     font-size: 1rem;
     padding: 6px 16px;
-    border-radius:10px;
+    border-radius: 10px;
     text-align: center;
   }
 
@@ -77,10 +77,10 @@
   }
 }
 
-.wholeCreateContainer{
-  .swipe-container{
-  display: none;
-}
+.wholeCreateContainer {
+  .swipe-container {
+    display: none;
+  }
 }
 
 .MuiPickersTimePickerToolbar-toolbarAmpmLeftPadding h2,
@@ -122,4 +122,8 @@
       width: 85%;
     }
   }
+}
+
+.reminderDialog .MuiDialog-paperScrollPaper {
+  border-radius: 10px;
 }
