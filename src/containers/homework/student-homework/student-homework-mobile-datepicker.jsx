@@ -27,6 +27,10 @@ const MobileDatepicker = (props) => {
   ]);
   const [datePopperOpen, setDatePopperOpen] = useState(false);
 
+  React.useEffect(() => {
+      props.handleStartDateChange(moment().startOf('isoWeek'));
+  }, [])
+
   return (
     <div className="date-ranger">
       <LocalizationProvider dateAdapter={MomentUtils}>

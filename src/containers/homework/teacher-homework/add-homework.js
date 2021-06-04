@@ -248,7 +248,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
             md={9}
           >
             <Grid container style={{ width: '95%', margin: '0 auto' }}>
-              <Grid item xs={12} style={{width: '30%', marginBottom: '20px'}}>
+              <Grid item xs={12} sm={4} style={{ marginBottom: '20px'}}>
                 <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
