@@ -24,6 +24,9 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import axiosInstance from '../../../config/axios';
 import MobileDatepicker from '../student-homework/student-homework-mobile-datepicker';
 import '../student-homework/student-homework.css';
+import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
+import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
@@ -51,172 +54,20 @@ const StudentHomeWorkReport = () => {
   const classes = useStyles();
   // const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const { setAlert } = useContext(AlertNotificationContext);
-  const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
-  const [messageRows, setMessageRows] = useState({ header: [], data: [] });
-
-  const [studentHomeworkData, setStudentHomeworkData] = useState({
-    header: [],
-    data: [],
-  });
-  const [homeworkSubmission, setHomeworkSubmission] = useState({
-    isOpen: false,
-    subjectId: '',
-    date: '',
-    subjectName: '',
-    status: 1,
-  });
-  const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [moduleId, setModuleId] = useState();
-  const [selectedOtherLanguages, setSelectedOtherLanguages] = useState();
   const [tableDisplay, setTableDisplay] = useState(false);
   const [reportData, setReportData] = useState([]);
-  const [optionalSubjects, setOptionalSubjects] = useState([]);
-  const [mendaterySubjects, setMendaterySubjects] = useState([]);
-  const [selectedOtherSubjects, setSelectedOtherSubjects] = useState();
-  const [selectSub, setSelectSub] = useState('');
-  const [otherSubjects, setOtherSubjects] = useState([]);
+  const [selectedOtherLanguages, setSelectedOtherLanguages] = useState();
   const [reportHeaderData, setReportHeaderData] = useState([]);
+   const [dateRangeTechPer, setDateRangeTechPer] = useState([
+    moment().subtract(6, 'days'),
+    moment(),
+  ]);
   useEffect(() => {
     callApiReportData();
   }, [startDate, endDate]);
-  const handleStartDateChange = (date) => {
-    const endDate = getDaysAfter(date.clone(), 6);
-    setEndDate(endDate);
-    setStartDate(date.format('YYYY-MM-DD'));
-    // getTeacherHomeworkDetails(2, date, endDate);
-  };
-
-  const handleEndDateChange = (date) => {
-    const startDate = getDaysBefore(date.clone(), 6);
-    setStartDate(startDate);
-    setEndDate(date.format('YYYY-MM-DD'));
-    // getTeacherHomeworkDetails(2, startDate, date);
-  };
-  function getDaysAfter(date, amount) {
-    return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
-  }
-  function getDaysBefore(date, amount) {
-    return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
-  }
-  const handleTableData = () => {
-    const tempHeader = [{ subject_slag: 'date' }];
-    const temprows = [];
-    if (Object.keys(studentHomeworkData.header).length) {
-      studentHomeworkData.header.mandatory_subjects.forEach((items) => {
-        tempHeader.push({ ...items, isOptional: false, isOthers: false });
-      });
-      if (!selectedOtherLanguages) {
-        setSelectedOtherLanguages({
-          ...studentHomeworkData.header.optional_subjects[0],
-          isOptional: true,
-          isOthers: false,
-          isFirst: true,
-        });
-        tempHeader.push({
-          ...studentHomeworkData.header.optional_subjects[0],
-          isOptional: true,
-          isFirst: true,
-        });
-      } else {
-        tempHeader.push(selectedOtherLanguages);
-      }
-
-      if (!selectedOtherSubjects) {
-        setSelectedOtherSubjects({
-          ...studentHomeworkData.header.others_subjects[0],
-          isOptional: false,
-          isOthers: true,
-          isFirstOther: true,
-        });
-        tempHeader.push({
-          ...studentHomeworkData.header.others_subjects[0],
-          isOptional: false,
-          isOthers: true,
-          isFirstOther: true,
-        });
-      } else {
-        tempHeader.push(selectedOtherSubjects);
-      }
-    }
-
-    setMessageRows({ header: tempHeader, data: temprows });
-  };
-  useEffect(() => {
-    if (studentHomeworkData?.data?.length) {
-      handleTableData();
-    }
-  }, [studentHomeworkData]);
-
-  useEffect(() => {
-    if (selectedOtherLanguages && !selectedOtherLanguages.isFirst) {
-      handleTableData();
-    }
-  }, [selectedOtherLanguages]);
-  useEffect(() => {
-    if (selectedOtherSubjects && !selectedOtherSubjects.isFirstOther) {
-      handleTableData();
-    }
-  }, [selectedOtherSubjects]);
-  const handleOtherLanguage = (event, value) => {
-    setSelectSub(event.target.value);
-    if (value) {
-      setSelectedOtherLanguages({
-        ...value,
-        isOptional: true,
-        isOthers: false,
-        isFirst: false,
-      });
-    } else {
-      setSelectedOtherLanguages();
-    }
-  };
-
-  const handleOtherSubject = (event, value) => {
-    if (value) {
-      setSelectedOtherSubjects({
-        ...value,
-        isOptional: false,
-        isOthers: true,
-        isFirstOther: false,
-      });
-    } else {
-      setSelectedOtherSubjects();
-    }
-  };
-  // useEffect(() => {
-  //   if (NavData && NavData.length) {
-  //     NavData.forEach((item) => {
-  //       if (
-  //         item.parent_modules === 'Homework' &&
-  //         item.child_module &&
-  //         item.child_module.length > 0
-  //       ) {
-  //         item.child_module.forEach((item) => {
-  //           if (item.child_name === 'Student Homework') {
-  //             setModuleId(item.child_id);
-  //           }
-  //         });
-  //       }
-  //     });
-  //   }
-  // }, []);
-  //   const callApiReportData = async () => {
-  //     try {
-  //       const result = await axiosInstance.get(
-  //         `/academic/student-homework-count/?module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}`
-  //       );
-  //       if (result.data.status_code === 200) {
-  //         //   setStudentHomeworkData(result.data.data);
-  //         //   setMendaterySubjects(result.data.data.header.mandatory_subjects);
-  //         //   setOptionalSubjects(result.data.data.header.optional_subjects);
-  //         //   setOtherSubjects(result.data.data.header.others_subjects);
-  //       } else {
-  //         setAlert('error', result.data.message);
-  //       }
-  //     } catch (error) {
-  //       setAlert('error', error.message);
-  //     }
-  //   };
   const callApiReportData = () => {
     axiosInstance
       .get(
@@ -228,11 +79,6 @@ const StudentHomeWorkReport = () => {
           setReportData(res?.data?.result?.hw_report);
           setReportHeaderData(res?.data?.result?.hw_report);
           setTableDisplay(true);
-          // setStudentHomeworkData(res?.data);
-          // setMendaterySubjects(res.data.header?.mandatory_subjects);
-          // setOptionalSubjects(res.data.header.optional_subjects);
-          // setOtherSubjects(res.data.header.others_subjects);
-          // handleChangeDataFormat();
         } else {
           setTableDisplay(false);
         }
@@ -241,11 +87,41 @@ const StudentHomeWorkReport = () => {
         if (error.message === "Cannot read property 'hw_given' of undefined") {
           setAlert('error', 'No data present');
         } else {
-          setAlert('error', error.message);
+          // setAlert('error', error.message);
         }
       });
   };
-  const handleChangeDataFormat = () => {};
+  function checkDate(){
+    console.log(startDate,endDate,'Black Panther')
+    //  axiosInstance
+    //   .get(
+    //     `/academic/student_homework_report/?start_date=${startDate}&end_date=${endDate}`
+    //   )
+    //   .then((res) => {
+    //     console.log(res, 'student-homework');
+    //     if (res.data.status_code==200) {
+    //       setReportData(res?.data?.result?.hw_report);
+    //       setReportHeaderData(res?.data?.result?.hw_report);
+    //       setTableDisplay(true);
+    //       // setStudentHomeworkData(res?.data);
+    //       // setMendaterySubjects(res.data.header?.mandatory_subjects);
+    //       // setOptionalSubjects(res.data.header.optional_subjects);
+    //       // setOtherSubjects(res.data.header.others_subjects);
+    //       // handleChangeDataFormat();
+    //     } else {
+    //       setTableDisplay(false);
+    //     }
+  }
+  function handleDate(v1) {
+    if (v1 && v1.length !== 0) {
+      setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
+      setEndDate(moment(new Date(v1[1])).format('YYYY-MM-DD'));
+      // console.log('start date', moment(new Date(v1[0])).format('YYYY-MM-DD'));
+      // console.log('end date', moment(new Date(v1[1])).format('YYYY-MM-DD'));
+    }
+    setDateRangeTechPer(v1);
+    checkDate();
+  }
   return (
     <div>
       <Layout className='layout-container'>
@@ -256,14 +132,38 @@ const StudentHomeWorkReport = () => {
           <CommonBreadcrumbs componentName='Homework Report' />
         </div>
         <div className='create_group_filter_container'>
-          <Grid container spacing={5} className='message_log_container'>
-            <div className='mobile-date-picker'>
-              <MobileDatepicker
-                onChange={(date) => handleEndDateChange(date)}
-                handleStartDateChange={handleStartDateChange}
-                handleEndDateChange={handleEndDateChange}
+          <Grid item xs={12} sm={3}>
+            <LocalizationProvider dateAdapter={MomentUtils} className='dropdownIcon'>
+              <DateRangePicker
+                startText='Select-Date-Range'
+                size='small'
+                value={dateRangeTechPer || ''}
+                onChange={(newValue) => {
+                  handleDate(newValue)
+                  // setDateRangeTechPer(newValue);
+                  // setDateRangeTechPer(()=>newValue);
+                }}
+                renderInput={({ inputProps, ...startProps }, endProps) => {
+                  return (
+                    <>
+                      <TextField
+                        {...startProps}
+                        format={(date) => moment(date).format('DD-MM-YYYY')}
+                        inputProps={{
+                          ...inputProps,
+                          value: `${moment(inputProps.value).format(
+                            'DD-MM-YYYY'
+                          )} - ${moment(endProps.inputProps.value).format('DD-MM-YYYY')}`,
+                          readOnly: true,
+                        }}
+                        size='small'
+                        style={{ minWidth: '100%' }}
+                      />
+                    </>
+                  );
+                }}
               />
-            </div>
+            </LocalizationProvider>
           </Grid>
         </div>
         <div className={classes.table}>
@@ -278,7 +178,7 @@ const StudentHomeWorkReport = () => {
                     <TableHead className='view_groups_header tb-header'>
                       <TableRow>
                         <TableCell className='homework_header homework_header_dropdown_wrapper'>
-                          S.No
+                          S No
                         </TableCell>
                         <TableCell>Total HomeWork Got</TableCell>
                         <TableCell>Total HomeWork Submitted</TableCell>
