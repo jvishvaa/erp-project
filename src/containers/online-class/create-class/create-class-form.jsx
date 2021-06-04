@@ -31,6 +31,7 @@ import { CreateclassContext } from './create-class-context/create-class-state';
 import FilterStudents from './filter-students';
 import {
   emailRegExp,
+  getPopup,
   getFormatedTime,
   initialFormStructure,
   isBetweenNonSchedulingTime,
@@ -41,6 +42,7 @@ import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { fetchAcademicYears, fetchBranchesForCreateUser } from '../../../redux/actions';
+import ReminderDialog from './reminderDialog';
 
 const CreateClassForm = (props) => {
   const tutorEmailRef = useRef(null);
@@ -61,6 +63,7 @@ const CreateClassForm = (props) => {
   const [selectedClassType, setSelectedClassType] = useState('');
   const [yearList, setYearList] = useState([]);
   const [branches, setBranches] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
   const {
     listGradesCreateClass,
     listCoursesCreateClass,
@@ -130,13 +133,13 @@ const CreateClassForm = (props) => {
   };
 
   const [daysList, setDays] = useState([
+    { id: 0, day: 'Sunday', send: 'S' },
     { id: 1, day: 'Monday', send: 'M' },
     { id: 2, day: 'Tuesday', send: 'T' },
     { id: 3, day: 'Wednesday', send: 'W' },
     { id: 4, day: 'Thursday', send: 'TH' },
     { id: 5, day: 'Friday', send: 'F' },
     { id: 6, day: 'Saturday', send: 'SA' },
-    { id: 7, day: 'Sunday', send: 'S' },
   ]);
 
   const [classTypes, setClassTypes] = useState([
@@ -426,21 +429,12 @@ const CreateClassForm = (props) => {
   //   verifyTutorEmail(tutorEmail, selectedDate, selectedTime, duration, data);
   // }
   // };
+
   const resolveSelectedDays = (val) => {
     if (toggle && [...selectedDays].length) {
-      // if ([...selectedDays].length)
       return [...selectedDays].map((obj) => obj.send);
-      // else
-      // return [daysList[new Date(val).getDay() - 1]?.send] || [];
     }
-    else if (!toggle && new Date(val).getDay() === 0) {
-      // if (new Date(val).getDay() === 0)
-      return ['S'];
-      // else
-      // return [daysList[new Date(val).getDay() - 1]?.send] || [];
-    }
-    else
-      return [daysList[new Date(val).getDay() - 1]?.send] || [];
+    return [daysList[new Date(val).getDay()]?.send] || [];
   }
 
   const handleDateChange = (event, value) => {
@@ -451,12 +445,8 @@ const CreateClassForm = (props) => {
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({
       ...prevState,
-      selectedDate: value,
+      selectedDate: moment(value).format('YYYY-MM-DD'),
       days: resolveSelectedDays(value),
-      // days:
-      //   !toggle && new Date(value).getDay() === 0
-      //     ? ['S']
-      //     : [daysList[new Date(value).getDay() - 1]?.send] || [],
     }));
   };
 
@@ -535,9 +525,7 @@ const CreateClassForm = (props) => {
   const callGrades = () => {
     dispatch(listGradesCreateClass(onlineClass?.branchIds, moduleId, selectedYear.id));
   };
-  const validateForm = (e) => {
-    callGrades();
-    e.preventDefault();
+  const handleCreateClass = () => {
     const {
       title,
       subject,
@@ -554,24 +542,6 @@ const CreateClassForm = (props) => {
       courseId,
     } = onlineClass;
 
-    // for (let i = 0; i < coHosts.length; i++) {
-    //   if (!coHosts[i].isValid === true) {
-    //     setAlert('error', 'Cohost email is not valid');
-    //     return;
-    //   }
-    // }
-
-    // if (isBetweenNonSchedulingTime(selectedTime)) {
-    //   setAlert(
-    //     'error',
-    //     'Classes cannot be scheduled between 9PM and 6AM. Please check the Start Time.'
-    //   );
-    //   return;
-    // }
-    // if (!isTutorEmailValid) {
-    //   setAlert('error', 'Tutor email is not valid');
-    //   return;
-    // }
     const startTime = `${selectedDate.toString().includes(' ')
       ? selectedDate.toISOString().split('T')[0]
       : moment(selectedDate).format('YYYY-MM-DD')
@@ -624,6 +594,16 @@ const CreateClassForm = (props) => {
         if (filteredStudents?.length <= 0)
           setAlert('warning', 'No. of students should be atleast 1.');
       }
+    }
+  };
+
+  const validateForm = (e) => {
+    callGrades();
+    e.preventDefault();
+    if (getPopup()) {
+      setOpenModal(true);
+    } else {
+      handleCreateClass();
     }
   };
 
@@ -725,12 +705,9 @@ const CreateClassForm = (props) => {
       setSelectedDays([]);
       setOnlineClass((prevState) => ({
         ...prevState,
-        selectedDate: new Date(),
+        selectedDate: onlineClass?.selectedDate,
         weeks: '',
-        days:
-          !toggle && new Date().getDay() === 0
-            ? ['S']
-            : [daysList[new Date().getDay() - 1]?.send] || [],
+        days: [daysList[new Date(onlineClass?.selectedDate).getDay()]?.send] || [],
       }));
     }
   }, [toggle]);
@@ -799,7 +776,6 @@ const CreateClassForm = (props) => {
   useEffect(() => {
     setOnlineClass((prevState) => ({ ...prevState, selectedTime: new Date() }));
   }, []);
-
   return (
     <div className='create__class' key={formKey}>
       <div className='breadcrumb-container-create'>
@@ -1062,7 +1038,7 @@ const CreateClassForm = (props) => {
                   margin='none'
                   id='date-picker'
                   label='Start date'
-                  value={onlineClass.selectedDate}
+                  value={onlineClass?.selectedDate}
                   minDate={new Date()}
                   onChange={handleDateChange}
                   KeyboardButtonProps={{
@@ -1094,10 +1070,10 @@ const CreateClassForm = (props) => {
                     multiple
                     size='small'
                     id='create__class-subject'
-                    options={daysList}
+                    options={daysList || []}
                     getOptionLabel={(option) => option.day || ''}
                     filterSelectedOptions
-                    value={selectedDays}
+                    value={selectedDays || []}
                     onChange={handleDays}
                     className='dropdownIcon'
                     renderInput={(params) => (
@@ -1385,6 +1361,13 @@ const CreateClassForm = (props) => {
           </Grid>
         </form>
       </div>
+      {openModal &&
+        <ReminderDialog
+          createClass={() => handleCreateClass()}
+          onlineClass={onlineClass}
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+        />}
     </div >
   );
 };
