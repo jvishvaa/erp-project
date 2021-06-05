@@ -189,6 +189,9 @@ const Layout = ({ children, history }) => {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleLogout = () => {
+    localStorage.removeItem('filterData');
+    localStorage.removeItem('viewMoreData');
+    localStorage.removeItem('moduleId');
     dispatch(logout());
     setIsLogout(true);
   };
@@ -360,6 +363,22 @@ const Layout = ({ children, history }) => {
         history.push('/homework/teacher');
         break;
       }
+      case 'Teacher Classwork Report': {
+        history.push('/classwork-report-teacher-view');
+        break;
+      }
+      case 'Student Classwork Report': {
+        history.push('/classwork/student-report');
+        break;
+      }
+      case 'Teacher Homework Report': {
+        history.push('/homework-report-teacher-view');
+        break;
+      }
+      case 'Student Homework Report': {
+        history.push('/homework/student-report');
+        break;
+      }
       case 'Communication': {
         history.push('/communication');
         break;
@@ -390,22 +409,6 @@ const Layout = ({ children, history }) => {
       }
       case 'SMS&Email Log': {
         history.push('/communication/messageLog');
-        break;
-      }
-      case 'Teacher Homework Report': {
-        history.push('/homework-report-teacher-view');
-        break;
-      }
-      case 'Student Homework Report': {
-        history.push('/homework/student-report');
-        break;
-      }
-      case 'Teacher Classwork Report': {
-        history.push('/classwork-report-teacher-view');
-        break;
-      }
-      case 'Student Classwork Report': {
-        history.push('/classwork/student-report');
         break;
       }
       case 'Dashboard': {
@@ -1034,6 +1037,14 @@ const Layout = ({ children, history }) => {
         history.push('/orchadio/view-orchadio');
         break;
       }
+      case 'Teacher Homework Report' :{
+        history.push('/homework-report-teacher-view')
+        break;
+      }
+      case 'Teacher Classwork Report' :{
+        history.push('/classwork-report-teacher-view')
+        break;
+      }
       default:
         break;
     }
@@ -1098,9 +1109,10 @@ const Layout = ({ children, history }) => {
             variant='h6'
             color='inherit'
             noWrap
+            cursor='default'
           >
-            Welcome!
-            <span style={{ fontSize: '1rem', marginLeft: '1rem' }}>Have a great day</span>
+            <span style={{ cursor: 'default' }}>Welcome!</span>
+            <span style={{ fontSize: '1rem', marginLeft: '1rem' ,cursor: 'default' }}>Have a great day</span>
           </Typography>
           {superUser ? (
             <div className={clsx(classes.grow, classes.desktopToolbarComponents)}>

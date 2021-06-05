@@ -120,11 +120,11 @@ function BranchTable(props) {
                 <TableHead>
                   <TableRow>
                     <TableCell align='right'></TableCell>
-                    <TableCell align='right'>SL NO.</TableCell>
+                    <TableCell align='right'>S NO.</TableCell>
                     <TableCell>Grade</TableCell>
-                    <TableCell>TOTAL HW GIVEN</TableCell>
-                    <TableCell>TOTAL HW SUBMITTED</TableCell>
-                    <TableCell align='right'>TOTAL HW EVALUATED</TableCell>
+                    <TableCell>Total Homework Given</TableCell>
+                    <TableCell>Total Homework Submitted</TableCell>
+                    <TableCell align='right'>Total Homework Evaluated</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -222,11 +222,11 @@ function GradeTable(props) {
                 <TableHead>
                   <TableRow>
                     <TableCell></TableCell>
-                    <TableCell>SL NO.</TableCell>
+                    <TableCell>S No.</TableCell>
                     <TableCell>Section</TableCell>
-                    <TableCell>TOTAL HW GIVEN</TableCell>
-                    <TableCell align='right'>TOTAL HW SUBMITTED</TableCell>
-                    <TableCell align='right'>TOTAL HW EVALUATED</TableCell>
+                    <TableCell>Total Homework Given</TableCell>
+                    <TableCell align='right'>Total Homework Submitted</TableCell>
+                    <TableCell align='right'>Total Homework Evaluated</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -325,11 +325,11 @@ function SecTable(props) {
               <Table size='small' aria-label='purchases'>
                 <TableHead>
                   <TableRow>
-                    <TableCell>SL NO.</TableCell>
+                    <TableCell>S NO.</TableCell>
                     <TableCell>Student Name</TableCell>
-                    <TableCell>TOTAL HW GIVEN</TableCell>
-                    <TableCell align='right'>TOTAL HW SUBMITTED</TableCell>
-                    <TableCell align='right'>TOTAL HW EVALUATED</TableCell>
+                    <TableCell>Total Homework Given</TableCell>
+                    <TableCell align='right'>Total Homework Submitted</TableCell>
+                    <TableCell align='right'>Total Homework Evaluated</TableCell>
                   </TableRow>
                 </TableHead>
                 {studentWiseData?.length > 0 ? (
@@ -370,6 +370,7 @@ export default function HomeWorkReportTeacher() {
   const [loading, setLoading] = useState(false);
   const wider = '-10px 0px 20px 8px';
   const widerWidth = '95%';
+  
 
   ///<<<<<<<<<<<<<<<<<<<<<<TABLE STATES>>>>>>>>>>>>>>>>>>>>>>>
   useEffect(() => {
@@ -435,7 +436,7 @@ export default function HomeWorkReportTeacher() {
         <div style={{ width: '95%', margin: '20px auto', marginLeft: '30px' }}>
           <CommonBreadcrumbs
             componentName={`Homework`}
-            childComponentName={`Teacher Report`}
+            childComponentName={`Teacher HW Report`}
           />
         </div>
         <Grid container spacing={5} style={{ width: widerWidth, margin: wider }}>
@@ -482,8 +483,8 @@ export default function HomeWorkReportTeacher() {
                         inputProps={{
                           ...inputProps,
                           value: `${moment(inputProps.value).format(
-                            'DD-MM-YYYY'
-                          )} - ${moment(endProps.inputProps.value).format('DD-MM-YYYY')}`,
+                            'MM-DD-YYYY'
+                          )} - ${moment(endProps.inputProps.value).format('MM-DD-YYYY')}`,
                           readOnly: true,
                         }}
                         size='small'
@@ -502,11 +503,11 @@ export default function HomeWorkReportTeacher() {
               <TableHead>
                 <TableRow className={classes.head}>
                   <TableCell />
-                  <TableCell>SL NO.</TableCell>
+                  <TableCell>S No</TableCell>
                   <TableCell align='right'>Branch</TableCell>
-                  <TableCell align='right'>TOTAL HW GIVEN</TableCell>
-                  <TableCell align='right'>TOTAL HW SUBMITTED</TableCell>
-                  <TableCell align='right'>TOTAL HW EVALUATED</TableCell>
+                  <TableCell align='right'>Total Homework Given</TableCell>
+                  <TableCell align='right'>Total Homework Submitted</TableCell>
+                  <TableCell align='right'>Total Homework Evaluated</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

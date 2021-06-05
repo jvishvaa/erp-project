@@ -102,7 +102,8 @@ const StyledClearButton = withStyles({
     width: '150px',
     borderRadius: '5px',
     '&:hover': {
-      backgroundColor: '#E2E2E2 !important',
+      backgroundColor: '#FA8072 !important',
+      color:'white'
     },
   },
 })(Button);
@@ -262,7 +263,7 @@ const TeacherHomework = withRouter(
       const [startDate, endDate] = dateRange;
       if (teacherModuleId) {
         if (activeView === 'list-homework') {
-          if (startDate && endDate && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id && sectionDisplay?.id) {
+          if (startDate && endDate && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id, sectionDisplay?.id) {
             //alert(searchSection)
             getTeacherHomeworkDetails(
               teacherModuleId,
@@ -358,7 +359,6 @@ const TeacherHomework = withRouter(
       setBranchList([]);
       setGrades([]);
       setSections([]);
-      setSectionDisplay([]);
       //setSearchGrade('');
       //setSearchSection('');
       setSelectedBranch([]);
@@ -596,9 +596,9 @@ const TeacherHomework = withRouter(
                                     InputProps={{
                                       ...inputProps,
                                       value: `${moment(inputProps.value).format(
-                                        'DD-MM-YYYY'
+                                        'MM-DD-YYYY'
                                       )} - ${moment(endProps.inputProps.value).format(
-                                        'DD-MM-YYYY'
+                                        'MM-DD-YYYY'
                                       )}`,
                                       readOnly: true,
                                       endAdornment: (
@@ -628,7 +628,7 @@ const TeacherHomework = withRouter(
                     {/* </div> */}
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <StyledClearButton onClick={e => handleCrearFilter()}>Clear Filters</StyledClearButton>
+                    <StyledClearButton onClick={e => handleCrearFilter()} className='classes.chk'>Clear All</StyledClearButton>
                   </Grid>
                 </Grid>
               )}
