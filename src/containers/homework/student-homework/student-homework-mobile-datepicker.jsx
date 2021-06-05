@@ -21,11 +21,16 @@ import {
 import './student-homework.css';
 const MobileDatepicker = (props) => {
   //const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
+  const weekDay = moment().startOf('isoWeek');
   const [dateRange, setDateRange] = useState([
-    moment().startOf('isoWeek'),
-    moment().endOf('week'),
+    weekDay,
+    moment(weekDay).add(6, 'days'),
   ]);
   const [datePopperOpen, setDatePopperOpen] = useState(false);
+
+  React.useEffect(() => {
+      props.handleStartDateChange(moment().startOf('isoWeek'));
+  }, [])
 
   return (
     <div className="date-ranger">
