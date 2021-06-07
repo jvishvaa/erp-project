@@ -27,7 +27,11 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 class EditRole extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      moduleId: '',
+      academicYearList: [],
+      NavData : JSON.parse(localStorage.getItem('navigationData')),
+    };
   }
 
   componentDidMount() {
@@ -44,14 +48,39 @@ class EditRole extends Component {
     }
     // fetchBranches();
 
-    fetchAcademicYears().then((data) => {
-      let transformedData = '';
-      transformedData = data?.map((obj) => ({
-        id: obj.id,
-        session_year: obj.session_year,
-      }));
-      this.setState({ academicYearList: transformedData });
-    });
+
+    if (this.state.NavData && this.state.NavData.length) {
+      this.state.NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Role Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'View Role') {
+              this.setState({moduleId:item.child_id});
+                fetchAcademicYears(item.child_id).then((data) => {
+                  let transformedData = '';
+                  transformedData = data?.map((obj) => ({
+                    id: obj.id,
+                    session_year: obj.session_year,
+                  }));
+                  this.setState({ academicYearList: transformedData });
+                });
+            }
+          });
+        }
+      });
+    }
+
+    // fetchAcademicYears().then((data) => {
+    //   let transformedData = '';
+    //   transformedData = data?.map((obj) => ({
+    //     id: obj.id,
+    //     session_year: obj.session_year,
+    //   }));
+    //   this.setState({ academicYearList: transformedData });
+    // });
   }
 
   alterEditRolePermissions = (module) => {

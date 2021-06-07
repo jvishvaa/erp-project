@@ -224,3 +224,37 @@ export const fetchSubjects = () => {
     })
     .catch(() => {});
 };
+
+export const fetchMappedSections = (moduleId, grades) => {
+  const gradeMappingIds =
+    grades && grades.length > 0 ? grades.map((grade) => grade?.id).join(',') : '';
+  return axios
+    .get(
+      `/erp_user/mapped-sections-list/?module_id=${moduleId}&grade_mapped_list=${gradeMappingIds}`
+    )
+    .then((response) => {
+      if (response.data.status_code === 200) {
+        return response.data?.result || [];
+      }
+      return [];
+    })
+    .catch(() => {});
+};
+
+export const fetchMappedSubjects = (moduleId, sections) => {
+  const sectionMappingIds =
+    sections && sections.length > 0
+      ? sections.map((section) => section?.id).join(',')
+      : '';
+  return axios
+    .get(
+      `/erp_user/mapped-subjects-list/?module_id=${moduleId}&section_mapping=${sectionMappingIds}`
+    )
+    .then((response) => {
+      if (response.data.status_code === 200) {
+        return response.data.result;
+      }
+      return [];
+    })
+    .catch(() => {});
+};

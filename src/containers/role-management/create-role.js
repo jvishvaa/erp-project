@@ -233,7 +233,7 @@ class CreateRole extends Component {
                 label='Role name'
                 defaultValue=''
                 variant='outlined'
-                inputProps={{ maxLength: 20 }}
+                inputProps={{ maxLength: 100 }}
                 onChange={this.handleRoleNameChange}
                 color='secondary'
                 size='small'
