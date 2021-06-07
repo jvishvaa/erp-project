@@ -305,6 +305,9 @@ export default {
     AnnotateEbook: `/academic/ebook_user_status/`,
     EbookMappedGrade: '/academic/ebook_mapped_grades/',
   },
+  email:{
+    email:'/academic/email/'
+  },
   teacherViewBatches: {
     courseListApi: '/aol/courses/',
     batchSizeList: '/aol/aol-course-batch/',
