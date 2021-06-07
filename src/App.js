@@ -87,6 +87,7 @@ import {
   ContentViewPublishAdmin,
   ContentViewPublishPrincipal,
   EditWordCountConfig,
+  SendEmailAttCwHw,
 } from './containers/blog';
 import { CreateEbook, ViewEbook } from './containers/ebooks';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
@@ -450,6 +451,9 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/assessment-reports'>
                             {({ match }) => <AssessmentReportTypes match={match} />}
+                          </Route>
+                          <Route exact path='/attendance-hw-cw/send-email'>
+                            {({ match }) => <SendEmailAttCwHw match={match} />}
                           </Route>
                           <Route exact path='/blog/genre'>
                             {({ match }) => <CreateGenre match={match} />}

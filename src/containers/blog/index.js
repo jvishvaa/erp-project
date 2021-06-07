@@ -28,3 +28,4 @@ export { default as ContentViewPublishPrincipal } from './Principal/ContentViewP
 
 export {default as CreateWordCountConfig} from './Teacher/CreateWordCountConfig'
 export {default as EditWordCountConfig} from './Teacher/EditWordCountConfig'
+export {default as SendEmailAttCwHw} from './Teacher/SendEmailAttCwHw'
