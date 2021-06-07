@@ -600,6 +600,10 @@ const CreateClassForm = (props) => {
   const validateForm = (e) => {
     callGrades();
     e.preventDefault();
+    if (!validateClassTime(onlineClass?.selectedTime)) {
+      setAlert('error', 'Class must be between 06:00AM - 10:00PM')
+      return;
+    }
     if (getPopup()) {
       setOpenModal(true);
     } else {
@@ -1249,8 +1253,8 @@ const CreateClassForm = (props) => {
                         className='create__class-textfield'
                         {...params}
                         variant='outlined'
-                        label='Tutor Email'
-                        placeholder='Tutor Email'
+                        label='Tutor Name'
+                        placeholder='Tutor Name'
                       />
                     )}
                   />
