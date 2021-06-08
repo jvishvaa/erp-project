@@ -19,8 +19,6 @@ import {
   fetchGrades as getGrades,
   fetchSections as getSections,
   fetchSubjects as getSubjects,
-  fetchMappedSections as getMappedSections,
-  fetchMappedSubjects as getMappedSubjects,
 } from '../../redux/actions';
 import './customscope.css';
 
@@ -177,9 +175,7 @@ const CustomScopeModal = ({
           branch_name: obj.branch_name,
           // branch_code: obj.branch_code,
         }));
-        if (transformedData.length > 1) {
-          transformedData.unshift({ id: 'all', branch_name: 'Select All' });
-        }
+        transformedData.unshift({ id: 'all', branch_name: 'Select All' });
         setBranches(transformedData);
       });
     }
@@ -197,9 +193,7 @@ const CustomScopeModal = ({
             grade_name: grade.grade__grade_name,
           }))
         : [];
-      if (transformedData.length > 1) {
-        transformedData.unshift({ item_id: 'all', id: 'all', grade_name: 'Select All' });
-      }
+      transformedData.unshift({ item_id: 'all', id: 'all', grade_name: 'Select All' });
       setGrades(transformedData);
     });
   };
@@ -214,52 +208,15 @@ const CustomScopeModal = ({
       custom_section: customScope.custom_section,
       custom_subject: customScope.custom_subject,
     };
-    // getSections(acadId, customScope.custom_branch, grades, moduleId).then((data) => {
-    //   const transformedData = data
-    //     ? data.map((section) => ({
-    //         item_id: section.id,
-    //         id: section.section_id,
-    //         section_name: `${section.section__section_name}`,
-    //       }))
-    //     : [];
-    //   transformedData.unshift({ item_id: 'all', id: 'all', section_name: 'Select All' });
-    //   setSections(transformedData);
-
-    //   // if (setFilteredResults) {
-    //   //   const filteredSelectedSections = customScopeObj.custom_section.filter(
-    //   //     (section) => transformedData.findIndex((sec) => sec.id === section.id) > -1
-    //   //   );
-    //   //   customScopeObj.custom_section = filteredSelectedSections;
-    //   //   if (filteredSelectedSections && filteredSelectedSections.length > 0) {
-    //   //     fetchSubjects(
-    //   //       customScope.custom_year[0]?.id,
-    //   //       customScope.custom_branch,
-    //   //       grades,
-    //   //       customScopeObj,
-    //   //       setFilteredResults
-    //   //     );
-    //   //   } else {
-    //   //     customScopeObj.custom_subject = [];
-    //   //     onCustomScopeChange('custom_section', customScopeObj);
-    //   //   }
-    //   // }
-    // });
-
-    getMappedSections(moduleId, grades).then((data) => {
+    getSections(acadId, customScope.custom_branch, grades, moduleId).then((data) => {
       const transformedData = data
         ? data.map((section) => ({
-            id: section.id,
-            item_id: section.section_id,
+            item_id: section.id,
+            id: section.section_id,
             section_name: `${section.section__section_name}`,
           }))
         : [];
-      if (transformedData.length > 1) {
-        transformedData.unshift({
-          item_id: 'all',
-          id: 'all',
-          section_name: 'Select All',
-        });
-      }
+      transformedData.unshift({ item_id: 'all', id: 'all', section_name: 'Select All' });
       setSections(transformedData);
 
       // if (setFilteredResults) {
@@ -293,52 +250,28 @@ const CustomScopeModal = ({
     setSubjects([]);
     const customScopeObject = JSON.parse(JSON.stringify(customScopeObj));
     if (branches && branches.length > 0 && grades && grades.length > 0) {
-      // getSubjects(acadId, branches, grades, customScopeObj.custom_section, moduleId).then(
-      //   (data) => {
-      //     const transformedData = data
-      //       ? data.map((subject) => ({
-      //           id: subject.subject__id,
-      //           subject_name: `${subject.subject__subject_name}`,
-      //         }))
-      //       : [];
-      //     transformedData.unshift({
-      //       id: 'all',
-      //       subject_name: 'Select All',
-      //     });
-      //     setSubjects(transformedData);
-      //     // if (setFilteredResults) {
-      //     //   const filteredSelectedSubjects = customScopeObject.custom_subject.filter(
-      //     //     (subject) => transformedData.findIndex((sub) => sub.id == subject.id) > -1
-      //     //   );
-      //     //   customScopeObject.custom_subject = filteredSelectedSubjects;
-      //     //   onCustomScopeChange('custom_subject', customScopeObject);
-      //     // }
-      //   }
-      // );
-      getMappedSubjects(moduleId, customScopeObj.custom_section).then((data) => {
-        const transformedData = data
-          ? data.map((subject) => ({
-              id: subject.id,
-              item_id: subject.subject__id,
-              subject_name: `${subject.subject__subject_name}`,
-            }))
-          : [];
-        if (transformedData.length > 1) {
+      getSubjects(acadId, branches, grades, customScopeObj.custom_section, moduleId).then(
+        (data) => {
+          const transformedData = data
+            ? data.map((subject) => ({
+                id: subject.subject__id,
+                subject_name: `${subject.subject__subject_name}`,
+              }))
+            : [];
           transformedData.unshift({
-            item_id: 'all',
             id: 'all',
             subject_name: 'Select All',
           });
+          setSubjects(transformedData);
+          // if (setFilteredResults) {
+          //   const filteredSelectedSubjects = customScopeObject.custom_subject.filter(
+          //     (subject) => transformedData.findIndex((sub) => sub.id == subject.id) > -1
+          //   );
+          //   customScopeObject.custom_subject = filteredSelectedSubjects;
+          //   onCustomScopeChange('custom_subject', customScopeObject);
+          // }
         }
-        setSubjects(transformedData);
-        // if (setFilteredResults) {
-        //   const filteredSelectedSubjects = customScopeObject.custom_subject.filter(
-        //     (subject) => transformedData.findIndex((sub) => sub.id == subject.id) > -1
-        //   );
-        //   customScopeObject.custom_subject = filteredSelectedSubjects;
-        //   onCustomScopeChange('custom_subject', customScopeObject);
-        // }
-      });
+      );
     } else {
       customScopeObject.custom_subject = [];
       onCustomScopeChange('custom_subject', customScopeObject);
@@ -469,15 +402,6 @@ const CustomScopeModal = ({
               customScope.custom_grade,
               false
             ); // not neccessary to filter out selcted data based on response list
-            if (customScope.custom_section && customScope.custom_section.length > 0) {
-              fetchSubjects(
-                customScope.custom_year[0]?.id,
-                customScope.custom_branch,
-                customScope.custom_grade,
-                customScope,
-                true
-              );
-            }
           }
         }
       }
@@ -607,7 +531,7 @@ const CustomScopeModal = ({
                     {...params}
                     variant='outlined'
                     label='Grades'
-                    placeholder='Grades'
+                    placeholder='grades'
                   />
                 )}
                 onChange={(e, value) => {
@@ -641,7 +565,7 @@ const CustomScopeModal = ({
                   // const filteredValues = value.filter((value) => value);
                   handleChangeSection(value);
                 }}
-                getOptionSelected={(option, value) => option.id == value.id}
+                getOptionSelected={(option, value) => option.item_id == value.item_id}
               />
             </FormControl>
           </Grid>
