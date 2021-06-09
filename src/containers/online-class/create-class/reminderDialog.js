@@ -37,7 +37,7 @@ const ReminderDialog = ({ createClass, onlineClass, openModal, setOpenModal }) =
         style={{ cursor: 'move', color: '#014b7e' }}
         id='draggable-dialog-title'
       >
-        <div>Class is scheduled for</div>
+        <div>You are scheduling class for</div>
         <div>
           {date?.[0]}, {date?.[2]} {date?.[1]}, {formatAMPM(selectedTime)}
         </div>
