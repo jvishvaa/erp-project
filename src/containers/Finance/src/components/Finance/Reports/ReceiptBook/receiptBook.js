@@ -69,7 +69,7 @@ class ReceiptBook extends Component {
     componentDidMount () {
       // this.todayDate()
       const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-      const role = userProfile && userProfile.personal_info && userProfile.personal_info.role.toLowerCase()
+      const role = userProfile && userProfile?.personal_info && userProfile?.personal_info?.role?.toLowerCase()
       this.setState({
         role
       }
