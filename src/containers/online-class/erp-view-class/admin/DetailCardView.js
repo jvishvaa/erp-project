@@ -12,6 +12,7 @@ import UploadDialogBox from './UploadDialogBox';
 import ClassIcon from '@material-ui/icons/Class';
 import './index.css';
 import { useDispatch } from 'react-redux';
+import { SvgIcon } from '@material-ui/core';
 import { attendanceAction } from '../../../../redux/actions/onlineClassActions';
 import {
   Grid,
@@ -26,6 +27,7 @@ import {
 import { useHistory, Route, withRouter } from 'react-router-dom';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { AttachFile as AttachFileIcon } from '@material-ui/icons';
+import edxtag from '../../../../assets/images/edxtag.jpeg';
 
 const JoinClass = (props) => {
   const { setLoading, index } = props;
@@ -709,7 +711,15 @@ const DetailCardView = ({
         <Grid item md={12} xs={12} className='teacherBatchFullViewMainDiv'>
           <Card className='teacherBatchFullViewMainCard'>
             <Grid container spacing={2} className='teacherBatchFullViewHeader'>
-              <Grid item xs={12} style={{ textAlign: 'right' }}>
+              <Grid item xs={10}>
+                {(fullData?.join_url?.includes('present-staging') ||
+                  fullData?.presenter_url?.includes('present-staging')) && (
+                  <div className='edxTag'>
+                    <SvgIcon component={() => <img src={edxtag} />} />
+                  </div>
+                )}
+              </Grid>
+              <Grid item xs={2} style={{ textAlign: 'right' }}>
                 <CloseIcon style={{ color: '#014B7E' }} onClick={() => handleClose()} />
               </Grid>
               <Grid item xs={12}>
