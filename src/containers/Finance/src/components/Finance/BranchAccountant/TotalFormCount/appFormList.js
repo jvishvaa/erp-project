@@ -94,7 +94,7 @@ const AppFormList = ({ session,
     const { session, fromDate, toDate, branch, isAdmin, selectedDates, selectedReport } = history.location.state
     setIsAdmin(isAdmin)
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-      const role = userProfile.personal_info.role.toLowerCase()
+      const role = userProfile?.personal_info?.role?.toLowerCase()
     // const userProfile = JSON.parse(localStorage.getItem('user_profile'))
     // const userId = userProfile.personal_info.user_id
     // const userIndex = accessList.indexOf(+userId)
