@@ -99,23 +99,27 @@ export const fetchUser = (id) => (dispatch) => {
           user.mapping_bgs[0].branch.length > 0 &&
           user.mapping_bgs[0].branch.map((branch) => ({
             id: branch.branch_id,
-            branch_name: branch.branch__branch_name,
+            branch_name: branch.branch__branch_name, 
             branch_code: branch?.branch_code,
           })),
         grade:
           user.mapping_bgs[0].grade &&
           user.mapping_bgs[0].grade.map((grade) => ({
             id: grade.grade_id,
+            branch_id: grade.acad_session__branch_id, // Added
             grade_name: grade.grade__grade_name,
           })),
         section:
           user.mapping_bgs[0].section &&
           user.mapping_bgs[0].section.map((section) => ({
             id: section.section_id,
+            grade_id : section.grade_id, // Added
+            branch_id: section.acad_session__branch_id, // Added
             section_name: section.section__section_name,
           })),
         subjects: user?.subjects.map((subject) => ({
           id: subject.id,
+          item_id: subject.subject_mapping_id,
           subject_name: subject.subject_name,
         })),
         contact: user?.contact || '',
