@@ -195,12 +195,12 @@ export const fetchGrades = (acadId, branches, moduleId) => {
 
 export const fetchSubjects = (acadId, branches, grades, sections, moduleId) => {
   const branchIds =
-    branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
+    branches && branches.length > 0 ? [...new Set(branches.map((branch) => branch?.id))].join(',') : '';
   const gradeIds =
-    grades && grades.length > 0 ? grades.map((grade) => grade.id).join(',') : '';
+    grades && grades.length > 0 ? [...new Set(grades.map((grade) => grade?.id))].join(',') : '';
   const sectionIds =
     sections && sections.length > 0
-      ? sections.map((section) => section.id).join(',')
+      ? [...new Set(sections.map((section) => section?.id))].join(',')
       : '';
   return axios
     .get(
@@ -218,9 +218,9 @@ export const fetchSubjects = (acadId, branches, grades, sections, moduleId) => {
 
 export const fetchSections = (acadId, branches, grades, moduleId) => {
   const branchIds =
-    branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
+    branches && branches.length > 0 ? [...new Set(branches.map((branch) => branch?.id))].join(',') : '';
   const gradeIds =
-    grades && grades.length > 0 ? grades.map((grade) => grade.id).join(',') : '';
+    grades && grades.length > 0 ? [...new Set(grades.map((grade) => grade?.id))].join(',') : '';
   return axios
     .get(
       // `/erp_user/sectionmapping/?session_year=${acadId}&branch_id=${branchIds}&grade_id=${grades.id}&module_id=${moduleId}`

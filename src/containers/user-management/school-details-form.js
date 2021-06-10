@@ -29,7 +29,7 @@ const BackButton = withStyles({
   },
 })(Button);
 
-const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
+const SchoolDetailsForm = ({ details, onSubmit }) => {
   const [academicYears, setAcademicYears] = useState([]);
   const [branches, setBranches] = useState([]);
   const [grades, setGrades] = useState([]);
@@ -97,6 +97,13 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
           branch_name: obj.branch_name,
           branch_code: obj.branch_code,
         }));
+        if (transformedData?.length > 1) {
+          transformedData.unshift({
+            id: 'all',
+            branch_name: 'Select All',
+            branch_code: 'all',
+          });
+        }
         setBranches(transformedData);
       });
     }
@@ -131,16 +138,29 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
     setGrades([]);
     setSections([]);
     setSubjects([]);
+    values =
+      values.filter(({ id }) => id === 'all').length === 1
+        ? [...branches].filter(({ id }) => id !== 'all')
+        : values;
+    formik.setFieldValue('branch', values);
     if (values?.length > 0) {
       fetchGrades(acadId, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
-              item_id: grade.id,
-              id: grade.grade_id,
-              grade_name: grade.grade__grade_name,
+              item_id: grade?.id,
+              id: grade?.grade_id,
+              grade_name: grade?.grade__grade_name,
+              branch_id: grade?.acad_session__branch_id,
             }))
           : [];
-        transformedData.unshift({ item_id: 'all', id: 'all', grade_name: 'Select All' });
+        if (transformedData?.length > 1) {
+          transformedData.unshift({
+            item_id: 'all',
+            id: 'all',
+            grade_name: 'Select All',
+            branch_id: '',
+          });
+        }
         setGrades(transformedData);
       });
     }
@@ -155,19 +175,26 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
         : values;
     formik.setFieldValue('grade', values);
     if (values?.length > 0) {
-      fetchSections(acadId, branch, values, moduleId).then((data) => {
+      const branchList = values.map((element) => ({ id: element?.branch_id })) || branch; // Added
+      fetchSections(acadId, branchList, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               item_id: section.id,
               id: section.section_id,
               section_name: `${section.section__section_name}`,
+              branch_id: section?.branch_id,
+              grade_id: section?.grade_id,
             }))
           : [];
-        transformedData.unshift({
-          id: 'all',
-          item_id: 'all',
-          section_name: 'Select All',
-        });
+        if (transformedData?.length > 1) {
+          transformedData.unshift({
+            id: 'all',
+            item_id: 'all',
+            section_name: 'Select All',
+            branch_id: '',
+            grade_id: '',
+          });
+        }
         // const filteredSelectedSections = formik.values.section.filter(
         //   (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1
         // );
@@ -188,17 +215,23 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
         : values;
     formik.setFieldValue('section', values);
     if (values?.length > 0) {
-      getSubjects(acadId, branch, grade, values, moduleId).then((data) => {
+      const branchList = values.map((element) => ({ id: element?.branch_id })) || branch; // Added
+      const gradeList = values.map((element) => ({ id: element?.grade_id })) || grade; // Added
+      getSubjects(acadId, branchList, gradeList, values, moduleId).then((data) => {
         const transformedData =
           data &&
           data.map((obj) => ({
             id: obj.subject__id,
+            item_id: obj.id,
             subject_name: obj.subject__subject_name,
           }));
-        transformedData.unshift({
-          id: 'all',
-          subject_name: 'Select All',
-        });
+        if (transformedData?.length > 1) {
+          transformedData.unshift({
+            id: 'all',
+            item_id: 'all',
+            subject_name: 'Select All',
+          });
+        }
         setSubjects(transformedData);
         // const filteredSelectedSections = formik.values.section.filter(
         //   (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1
@@ -278,8 +311,9 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             }}
             value={formik.values.academic_year || ''}
             options={academicYears || []}
-            filterSelectedOptions
+            // filterSelectedOptions
             className='dropdownIcon'
+            getOptionSelected={(option, value) => option.id == value.id}
             getOptionLabel={(option) => option?.session_year || ''}
             renderInput={(params) => (
               <TextField
@@ -307,19 +341,23 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             id='branch'
             name='branch'
             onChange={(e, value) => {
-              formik.setFieldValue('branch', [value]);
+              // formik.setFieldValue('branch', [value]);
+              // formik.setFieldValue('branch', value);
               formik.setFieldValue('grade', []);
               formik.setFieldValue('section', []);
               formik.setFieldValue('subjects', []);
-              handleChangeBranch([value], formik.values.academic_year?.id);
-              //   handleChangeBranch(value ? [value] : null);
+              // handleChangeBranch([value], formik.values.academic_year?.id);
+              handleChangeBranch(value, formik.values.academic_year?.id);
+              // handleChangeBranch(value ? [value] : null);
             }}
-            // multiple
-            value={formik.values.branch[0] || []}
+            multiple
+            value={formik.values.branch || []}
             options={branches || []}
-            filterSelectedOptions
+            // filterSelectedOptions
+            limitTags={2}
             className='dropdownIcon'
             getOptionLabel={(option) => option.branch_name || ''}
+            getOptionSelected={(option, value) => option.id == value.id}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -352,7 +390,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             multiple
             value={formik.values.grade || []}
             options={grades}
-            filterSelectedOptions
+            // filterSelectedOptions
             className='dropdownIcon'
             limitTags={2}
             getOptionLabel={(option) => option.grade_name || ''}
@@ -364,7 +402,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
                 placeholder='Grade'
               />
             )}
-            getOptionSelected={(option, value) => option.item_id == value.item_id}
+            getOptionSelected={(option, value) => option.grade_name == value.grade_name}
             size='small'
           />
           <FormHelperText style={{ color: 'red' }}>
@@ -389,7 +427,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             options={sections || []}
             multiple
             limitTags={2}
-            filterSelectedOptions
+            // filterSelectedOptions
             className='dropdownIcon'
             getOptionLabel={(option) => option.section_name || ''}
             renderInput={(params) => (
@@ -400,7 +438,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
                 placeholder='Section'
               />
             )}
-            // getOptionSelected={(option, value) => option.item_id == value.item_id}
+            getOptionSelected={(option, value) => option.section_name == value.section_name}
             size='small'
           />
           <FormHelperText style={{ color: 'red' }}>
@@ -429,7 +467,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             limitTags={2}
             multiple
             options={subjects || []}
-            filterSelectedOptions
+            // filterSelectedOptions
             className='dropdownIcon'
             getOptionLabel={(option) => option.subject_name || ''}
             renderInput={(params) => (
@@ -440,7 +478,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
                 placeholder='Subjects'
               />
             )}
-            // getOptionSelected={(option, value) => option.item_id == value.item_id}
+            getOptionSelected={(option, value) => option.item_id == value.item_id}
             size='small'
           />
           <FormHelperText style={{ color: 'red' }}>
