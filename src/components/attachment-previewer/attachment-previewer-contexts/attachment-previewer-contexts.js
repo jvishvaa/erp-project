@@ -20,6 +20,10 @@ export function AttachmentPreviewerContextProvider({ children }) {
   const [isOpen, setIsOpen] = React.useState(null);
   const [currentAttachmentIndex, setAttachmentIndex] = React.useState(0);
 
+  const [numPages, setNumPages] = React.useState(null);
+  const [pageNumber, setPageNumber] = React.useState(1);
+  const [scaleValue, setScaleValue] = React.useState(1);
+
   const [
     onPreviewCloseCallBackExpression,
     setPreviewCloseCallBackExpression,
@@ -50,6 +54,9 @@ export function AttachmentPreviewerContextProvider({ children }) {
     setIsOpen(false);
   }
   function openPreview(propObj) {
+    setNumPages(null);
+    setPageNumber(1);
+    setScaleValue(1);
     const {
       currentAttachmentIndex: currentAttachmentIndexFromConsumer = null,
       attachmentsArray,
@@ -104,6 +111,12 @@ export function AttachmentPreviewerContextProvider({ children }) {
         currentAttachmentIndex,
         openPreview,
         closePreview,
+        numPages, 
+        setNumPages,
+        pageNumber,
+        setPageNumber,
+        scaleValue,
+        setScaleValue,
         controls: {
           next: nextAttachment,
           prev: prevAttachment,

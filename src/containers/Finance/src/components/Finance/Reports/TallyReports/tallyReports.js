@@ -72,7 +72,7 @@ class TallyReports extends Component {
       }
       today = yyyy + '-' + mm + '-' + dd
       const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-      const role = userProfile && userProfile.personal_info && userProfile.personal_info.role.toLowerCase()
+      const role = userProfile && userProfile?.personal_info && userProfile?.personal_info?.role?.toLowerCase()
       // const role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
       this.setState({
         todayDate: today,

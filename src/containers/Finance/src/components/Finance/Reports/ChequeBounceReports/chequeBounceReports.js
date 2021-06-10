@@ -86,7 +86,7 @@ const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downlo
 
   useEffect(() => {
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-    const role = userProfile && userProfile.personal_info && userProfile.personal_info.role.toLowerCase()
+    const role = userProfile && userProfile?.personal_info && userProfile?.personal_info?.role?.toLowerCase()
     setRole(role)
   }, [])
 
