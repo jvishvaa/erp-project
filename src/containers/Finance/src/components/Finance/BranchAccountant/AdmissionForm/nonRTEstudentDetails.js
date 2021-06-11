@@ -126,7 +126,9 @@ class NonRTEStudentDetailsFormAcc extends Component {
   }
 
   componentDidMount () {
-    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId, this.props.branch, this.state.studentDetails.academicyear)
+    let tempYear = this.props.studentDetailsForAdmission?.academic_year?.session_year;
+    console.log(tempYear , "academic session check");
+    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId, this.props.branch , tempYear  )
     this.props.fetchClassGroup(this.props.alert, this.props.user)
   }
 
@@ -366,12 +368,12 @@ class NonRTEStudentDetailsFormAcc extends Component {
               <label>Class*</label>
               <Select
                 placeholder='Select'
-                isDisabled
+                // isDisabled
                 // defaultValue={{ value: this.state.studentDetails.class.id, label: this.state.studentDetails.class.grade }}
                 value={{ value: this.state.studentDetails.class ? this.state.studentDetails.class.value : null, label: this.state.studentDetails.class ? this.state.studentDetails.class.label : null }}
                 options={this.props.gradeList ? this.props.gradeList.map(grades => ({
-                  value: grades.id,
-                  label: grades.grade
+                  value: grades.grade.id,
+                  label: grades.grade.grade
                 }))
                   : []
                 }
