@@ -3,9 +3,15 @@ const local = {
     BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
   },
   apiGateway: {
+<<<<<<< HEAD
     // baseURL: 'http://dev.olvorchidnaigaon.letseduvate.com/qbox',
     baseURL: 'http://localhost:8000/qbox',
     // baseURL: `${window.location.origin}/qbox`,
+=======
+    // baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
+    // baseURL: 'http://localhost:8000/qbox',
+    baseURL: `${window.location.origin}/qbox`,
+>>>>>>> 508f9c599554b92bb99c11ada78ec3f7e241582b
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
   },

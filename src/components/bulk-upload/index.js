@@ -202,7 +202,11 @@ const BulkUpload = ({ onUploadSuccess }) => {
           data: { data: acadYearData = [] },
         } = data || {};
         setYearList(acadYearData);
-        setYearDisplay(acadYearData?.[0]);
+        const defaultYear = acadYearData?.[0];
+        if (defaultYear) {
+          handleYearChange({}, defaultYear);
+        }
+
         getBranches(acadYearData?.[0]?.id);
       } else setYearList([]);
     } catch (error) {
@@ -230,10 +234,12 @@ const BulkUpload = ({ onUploadSuccess }) => {
   };
 
   const handleClearAll = () => {
-    setBranchDisplay('');
     setYearDisplay('');
-    setBranch(null);
     setYear(null);
+    setBranchDisplay('');
+    setBranch(null);
+    setBranchList([]);
+    setBranchCode('');
     fileRef.current.value = null;
   };
 
@@ -293,7 +299,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
       });
   };
 
-  const handleYearChange = (event, data) => {
+  const handleYearChange = (event = {}, data = '') => {
     setYear(data?.id);
     setAcademicYearVal(data?.session_year);
     setYearDisplay(data);
@@ -411,6 +417,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
           <Autocomplete
             size='small'
             id='create__class-subject'
+            className='dropdownIcon'
             options={yearList || []}
             value={yearDisplay || ''}
             getOptionLabel={(option) => option.session_year || ''}
@@ -434,6 +441,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
           <Autocomplete
             size='small'
             id='create__class-subject'
+            className='dropdownIcon'
             options={branchList || []}
             value={branchDisplay || ''}
             getOptionLabel={(option) => option.branch_name || ''}

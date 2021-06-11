@@ -168,8 +168,7 @@ const CreateClassForm = (props) => {
   }, []);
 
   useEffect(() => {
-    if (moduleId)
-      fetchYears();
+    if (moduleId) fetchYears();
   }, [moduleId]);
 
   useEffect(() => {
@@ -406,7 +405,7 @@ const CreateClassForm = (props) => {
           isSuperUser ? 1 : 0,
           gradeIds,
           onlineClass?.branchIds,
-          onlineClass?.acadId,
+          onlineClass?.acadId
         )
       );
     } else {
@@ -456,10 +455,9 @@ const CreateClassForm = (props) => {
     const CLASS_MINUTES = time.getMinutes();
     if (CLASS_HOURS >= 6 && CLASS_HOURS <= 22) {
       isValidTime = true;
-      if (CLASS_HOURS === 22 && CLASS_MINUTES > 0)
-        isValidTime = false;
+      if (CLASS_HOURS === 22 && CLASS_MINUTES > 30) isValidTime = false;
     }
-    return isValidTime
+    return isValidTime;
   };
 
   const handleTimeChange = (event) => {
@@ -469,7 +467,7 @@ const CreateClassForm = (props) => {
       dispatch(clearTutorEmailValidation());
       setOnlineClass((prevState) => ({ ...prevState, selectedTime: time }));
     } else {
-      setAlert('error', 'Class must be between 06:00AM - 10:00PM')
+      setAlert('error', 'Class must be between 06:00AM - 10:30PM');
     }
   };
 
@@ -600,6 +598,10 @@ const CreateClassForm = (props) => {
   const validateForm = (e) => {
     callGrades();
     e.preventDefault();
+    if (!validateClassTime(onlineClass?.selectedTime)) {
+      setAlert('error', 'Class must be between 06:00AM - 10:30PM')
+      return;
+    }
     if (getPopup()) {
       setOpenModal(true);
     } else {
@@ -683,9 +685,15 @@ const CreateClassForm = (props) => {
       : moment(selectedDate).format('YYYY-MM-DD')
       } ${getFormatedTime(selectedTime)}`;
     try {
-      let url = toggle ?
-        `/erp_user/check-tutor-time/?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}&no_of_week=${onlineClass.weeks}&is_recurring=1&week_days=${[...selectedDays].map((obj) => obj.send).join(',')}`
-        : `/erp_user/check-tutor-time/?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}`
+      let url = toggle
+        ? `/erp_user/check-tutor-time/?tutor_email=${
+            onlineClass.tutorEmail.email
+          }&start_time=${startTime}&duration=${duration}&no_of_week=${
+            onlineClass.weeks
+          }&is_recurring=1&week_days=${[...selectedDays]
+            .map((obj) => obj.send)
+            .join(',')}`
+        : `/erp_user/check-tutor-time/?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}`;
 
       const { data } = await axiosInstance.get(url);
       if (data.status_code === 200) {
@@ -729,9 +737,7 @@ const CreateClassForm = (props) => {
     onlineClass.tutorEmail;
 
   useEffect(() => {
-    if (
-      checkTutorFlag
-    ) {
+    if (checkTutorFlag) {
       // fetchTutorEmails();
       checkTutorAvailability();
     }
@@ -1249,8 +1255,8 @@ const CreateClassForm = (props) => {
                         className='create__class-textfield'
                         {...params}
                         variant='outlined'
-                        label='Tutor Email'
-                        placeholder='Tutor Email'
+                        label='Tutor Name'
+                        placeholder='Tutor Name'
                       />
                     )}
                   />

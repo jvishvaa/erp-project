@@ -23,7 +23,7 @@ const BulkReportUpload = ({ classes, session, branches, bulkReportList, reports,
   const [reportId, setReportId] = useState(null)
   const [isAdmin, setIsAdmin] = useState(false)
   useLayoutEffect(() => {
-    const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
+    const role = (JSON.parse(localStorage.getItem('user_profile')))?.personal_info?.role
     if (role === 'FinanceAdmin') {
       setIsAdmin(true)
     }

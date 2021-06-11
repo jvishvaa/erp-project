@@ -56,7 +56,7 @@
     bottom: 0;
     /* left: 24px; */
     left: 0;
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
     overflow-y: auto;
     position: absolute;
     top: 0;
@@ -113,13 +113,6 @@
     color: #fff;
 }
 
-
-
-
-
-
-
-
 .attachment-viewer-next-frame-btn {
     right: 0;
     width: 10%;
@@ -128,21 +121,73 @@
     left: 0;
     width: 10%;
 }
+ 
+/*New Css*/
+.attachment-viewer-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-evenly;
+    position: absolute;
+    bottom: 1%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 40;
+    width: 18%; 
+}
 
+.attachment-viewer-buttons .MuiIconButton-root {
+    height:2.2rem;
+    width: 2.2rem;
+    padding: 2px;
+    opacity: 0.7;
+    margin-top: 1%;
+}
+
+.attachment-viewer-buttons .MuiIconButton-root svg {
+    font-size:2rem;
+}
+
+.attachment-viewer-prev-frame-btn.MuiIconButton-root,
+.attachment-viewer-next-frame-btn.MuiIconButton-root {
+    background-color: black;
+    opacity: 0.7;
+}
+
+.attachment-viewer-prev-frame-btn.MuiIconButton-root.Mui-disabled ,
+.attachment-viewer-next-frame-btn.MuiIconButton-root.Mui-disabled {
+    background-color: rgba(140,140,140);
+}
+
+.attachment-viewer-prev-frame-btn.MuiIconButton-root:hover ,
+.attachment-viewer-next-frame-btn.MuiIconButton-root:hover {
+    background-color: black;
+    opacity: 1;
+}
+
+.attachment-viewer-zoom-out-btn.MuiIconButton-root:hover,
+.attachment-viewer-zoom-in-btn.MuiIconButton-root:hover {
+    opacity: 1;
+}
 
 .attachment-viewer-next-frame-btn, .attachment-viewer-prev-frame-btn {
     position: absolute !important;
-    height: 100px;
-    bottom: 0;
+    bottom: 4%;
     z-index: 40;
+    height:40px;
+    width: 40px;
 }
 
+.attachment-viewer-next-frame-btn.MuiIconButton-root,
+.attachment-viewer-prev-frame-btn.MuiIconButton-root svg {
+    font-size: 2rem;
+}
 
-
-
-
-
-
+.attachment-viewer-next-frame-btn {
+    right: 4%;
+}
+.attachment-viewer-prev-frame-btn {
+    left: 4%;
+}
 
 .attachment-viewer-frame-preview-iframe {
     background-color: #fff;
@@ -162,4 +207,50 @@
     margin: 8px auto;
     padding: 16px 24px;
     max-width: 250px;
+}
+
+.pdf-document {
+    margin: 20px auto 100px auto;
+    display:flex;
+    align-items: center;
+    justify-content:center;
+}
+
+.attachment-viewer-center-frame {
+    /* font-weight: 600; */
+    color: #000;
+}
+.attachment-viewer-center-frame p {
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0px 0px 20px 0px gray;
+    background: #fff;
+}
+
+@media screen and (max-width: 768px) { 
+
+    .pdf-page canvas{
+        width: 100% !important;
+    }
+    
+    .attachment-viewer-buttons {
+        width: 50%; 
+        bottom: 1%;
+    }
+
+    .attachment-viewer-next-frame-btn, .attachment-viewer-prev-frame-btn {
+        height:30px;
+        width: 30px;
+    }
+
+    .attachment-viewer-next-frame-btn.MuiIconButton-root,
+    .attachment-viewer-prev-frame-btn.MuiIconButton-root svg {
+        font-size: 1.5rem;
+    }
+}
+
+@media print {
+    .pdf-document {
+        display: none;
+    }
 }

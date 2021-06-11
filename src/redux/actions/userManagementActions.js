@@ -99,23 +99,27 @@ export const fetchUser = (id) => (dispatch) => {
           user.mapping_bgs[0].branch.length > 0 &&
           user.mapping_bgs[0].branch.map((branch) => ({
             id: branch.branch_id,
-            branch_name: branch.branch__branch_name,
+            branch_name: branch.branch__branch_name, 
             branch_code: branch?.branch_code,
           })),
         grade:
           user.mapping_bgs[0].grade &&
           user.mapping_bgs[0].grade.map((grade) => ({
             id: grade.grade_id,
+            branch_id: grade.acad_session__branch_id, // Added
             grade_name: grade.grade__grade_name,
           })),
         section:
           user.mapping_bgs[0].section &&
           user.mapping_bgs[0].section.map((section) => ({
             id: section.section_id,
+            grade_id : section.grade_id, // Added
+            branch_id: section.acad_session__branch_id, // Added
             section_name: section.section__section_name,
           })),
         subjects: user?.subjects.map((subject) => ({
           id: subject.id,
+          item_id: subject.subject_mapping_id,
           subject_name: subject.subject_name,
         })),
         contact: user?.contact || '',
@@ -221,6 +225,40 @@ export const fetchSubjects = () => {
     .get('/erp_user/subject/')
     .then((response) => {
       return response.data.data;
+    })
+    .catch(() => {});
+};
+
+export const fetchMappedSections = (moduleId, grades) => {
+  const gradeMappingIds =
+    grades && grades.length > 0 ? grades.map((grade) => grade?.id).join(',') : '';
+  return axios
+    .get(
+      `/erp_user/mapped-sections-list/?module_id=${moduleId}&grade_mapped_list=${gradeMappingIds}`
+    )
+    .then((response) => {
+      if (response.data.status_code === 200) {
+        return response.data?.result || [];
+      }
+      return [];
+    })
+    .catch(() => {});
+};
+
+export const fetchMappedSubjects = (moduleId, sections) => {
+  const sectionMappingIds =
+    sections && sections.length > 0
+      ? sections.map((section) => section?.id).join(',')
+      : '';
+  return axios
+    .get(
+      `/erp_user/mapped-subjects-list/?module_id=${moduleId}&section_mapping=${sectionMappingIds}`
+    )
+    .then((response) => {
+      if (response.data.status_code === 200) {
+        return response.data.result;
+      }
+      return [];
     })
     .catch(() => {});
 };
