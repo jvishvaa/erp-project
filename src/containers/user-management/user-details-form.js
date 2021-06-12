@@ -93,6 +93,7 @@ const UserDetailsForm = ({
       },
     },
   });
+
   return (
     <Grid container spacing={4} className='user-details-form-container'>
       <Grid container item xs={12}>
@@ -247,7 +248,7 @@ const UserDetailsForm = ({
           <OutlinedInput
             id='contact'
             name='contact'
-            inputProps={{ maxLength: 10 }}
+            inputProps={{ maxLength: 15 }}
             onChange={formik.handleChange}
             value={formik.values.contact}
             label='Mobile no.'
@@ -292,7 +293,7 @@ const UserDetailsForm = ({
       {/* </Grid> */}
       {/* <Grid container item xs={12} spacing={4}> */}
       <Grid item md={4} xs={12}>
-        <FormControl variant='outlined' fullWidth size='small'>
+        <FormControl required variant='outlined' fullWidth size='small'>
           <InputLabel htmlFor='component-outlined'>Address</InputLabel>
           <OutlinedInput
             id='address'
@@ -301,6 +302,7 @@ const UserDetailsForm = ({
             value={formik.values.address}
             inputProps={{ maxLength: 150 }}
             multiline
+            required
             rows={4}
             rowsMax={6}
             label='Address'

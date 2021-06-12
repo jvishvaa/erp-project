@@ -100,7 +100,8 @@ const BulkUpload = () => {
         .then((result) => {
           if (result.data.status_code === 200) {
             setAcademicYear(result.data?.data);
-            handleAcademicYear({}, result.data?.data[0]);
+            const defaultYear = result.data?.data[0];
+            handleAcademicYear({}, defaultYear);
           } else {
             setAlert('error', result.data.message);
           }

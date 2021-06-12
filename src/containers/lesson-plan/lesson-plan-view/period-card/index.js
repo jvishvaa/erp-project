@@ -15,8 +15,22 @@ import downloadAll from '../../../../assets/images/downloadAll.svg';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { useLocation } from 'react-router-dom';
 
-const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore, viewMore, filterDataDown, setLoading, index, setCompletedStatus, periodColor, setPeriodColor, setSelectedIndex, centralGradeName, centralSubjectName }) => {
-
+const PeriodCard = ({
+  period,
+  setPeriodDataForView,
+  setViewMoreData,
+  setViewMore,
+  viewMore,
+  filterDataDown,
+  setLoading,
+  index,
+  setCompletedStatus,
+  periodColor,
+  setPeriodColor,
+  setSelectedIndex,
+  centralGradeName,
+  centralSubjectName,
+}) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -37,55 +51,60 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
 
   const handleViewMore = (index) => {
     setLoading(true);
-    let request = `${endpoints.lessonPlan.periodCardData}?lesson_plan_id=${period.id}`;
-    if(location.pathname === "/lesson-plan/student-view") {
-      request+=`&student=1`;
-    } 
-    axios.get(request, {
-      headers: {
-        'x-api-key': 'vikash@12345#1231',
-      }
-    }).then(result => {
-      if (result.data.status_code === 200) {
-        if (result.data.result?.length > 0) {
-          setLoading(false);
-          setViewMore(true);
-          setViewMoreData(result.data.result);
-          setPeriodDataForView(period);
-          setSelectedIndex(index);
-          setPeriodColor(true);
-          axiosInstance.get(`${endpoints.lessonPlan.periodCompletedStatus}?subject=${filterDataDown?.subject.id}&chapter=${filterDataDown?.chapter.id}&period=${period?.id}`)
-            .then(result => {
-              setCompletedStatus(result.data.is_completed);
-            })
-            .catch(error => {
-              setAlert('error', error.message);
-            })
+    let request = `${endpoints.lessonPlan.periodCardData}?lesson_plan_id=${period?.id}`;
+    if (location.pathname === '/lesson-plan/student-view') {
+      request += `&student=1`;
+    }
+    axios
+      .get(request, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          if (result.data.result?.length > 0) {
+            setLoading(false);
+            setViewMore(true);
+            setViewMoreData(result.data.result);
+            setPeriodDataForView(period);
+            setSelectedIndex(index);
+            setPeriodColor(true);
+            axiosInstance
+              .get(
+                `${endpoints.lessonPlan.periodCompletedStatus}?subject=${filterDataDown?.subject?.subject_id}&chapter=${filterDataDown?.chapter?.id}&period=${period?.id}`
+              )
+              .then((result) => {
+                setCompletedStatus(result?.data?.is_completed);
+              })
+              .catch((error) => {
+                setAlert('error', error?.message);
+              });
+          } else {
+            setLoading(false);
+            setPeriodColor(true);
+            setAlert('error', 'No data available');
+          }
         } else {
           setLoading(false);
+          setViewMore(false);
+          setViewMoreData({});
+          setPeriodDataForView();
+          setAlert('error', result?.data?.message);
+          setSelectedIndex(-1);
           setPeriodColor(true);
-          setAlert('error', 'No data available');
         }
-      } else {
-        setLoading(false);
-        setViewMore(false);
-        setViewMoreData({});
-        setPeriodDataForView();
-        setAlert('error', result.data.message);
-        setSelectedIndex(-1);
-        setPeriodColor(true);
-      }
-    })
+      })
       .catch((error) => {
         setLoading(false);
         setViewMore(false);
         setViewMoreData({});
         setPeriodDataForView();
-        setAlert('error', error.message);
+        setAlert('error', error?.message);
         setSelectedIndex();
         setPeriodColor(true);
-      })
-  }
+      });
+  };
 
   const handleBulkDownload = () => {
     const formData = new FormData();
@@ -95,30 +114,36 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
     formData.append('subject', centralSubjectName);
     formData.append('chapter', filterDataDown?.chapter?.chapter_name);
     formData.append('period', period?.period_name);
-    axios.post(`${endpoints.lessonPlan.bulkDownload}`, formData, {
-      headers: {
-        'x-api-key': 'vikash@12345#1231',
-      }
-    }).then(result => {
-      if (result.data.status_code === 200) {
-        let a = document.createElement("a");
-        if (result.data.result) {
-          a.href = result.data.result;
-          a.click();
-          a.remove();
+    axios
+      .post(`${endpoints.lessonPlan.bulkDownload}`, formData, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          let a = document.createElement('a');
+          if (result?.data?.result) {
+            a.href = result?.data?.result;
+            a.click();
+            a.remove();
+          } else {
+            setAlert('error', 'Nothing to download!');
+          }
         } else {
-          setAlert('error', 'Nothing to download!');
+          setAlert('error', result?.data?.description);
         }
-      } else {
-        setAlert('error', result.data.description);
-      }
-    }).catch(error => {
-      setAlert('error', error.message);
-    })
-  }
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+      });
+  };
 
   return (
-    <Paper className={periodColor ? classes.selectedRoot : classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}>
+    <Paper
+      className={periodColor ? classes.selectedRoot : classes.root}
+      style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}
+    >
       <Grid container spacing={2}>
         <Grid item xs={8}>
           <Box>
@@ -188,7 +213,7 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
               color='secondary'
             >
               Last Updated On
-              </Typography>
+            </Typography>
           </Box>
           <Box>
             <Typography
@@ -202,17 +227,18 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
           </Box>
         </Grid>
         <Grid item xs={6} className={classes.textRight}>
-          {!periodColor &&
+          {!periodColor && (
             <Button
               variant='contained'
               style={{ color: 'white' }}
-              color="primary"
-              className="custom_button_master modifyDesign"
+              color='primary'
+              className='custom_button_master modifyDesign'
               size='small'
               onClick={() => handleViewMore(index)}
             >
               VIEW MORE
-          </Button>}
+            </Button>
+          )}
         </Grid>
       </Grid>
     </Paper>

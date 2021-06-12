@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-const phoneRegExp = /^\+?1?\d{10}$/;
+const phoneRegExp = /^\+?1?\d{10,15}$/;
 
 const validationSchema = (validateParent, validateGuardian) => {
   const parentValidationObj = Yup.object({
