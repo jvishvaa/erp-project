@@ -16,6 +16,35 @@ export const PUT_ADMISSION = 'PUT_ADMISSION'
 export const SEARCH_ADMISSION_OTHERS = 'SEARCH_ADMISSION_OTHERS'
 export const GET_FEE_DETAILS = 'GET_FEE_DETAILS'
 export const GET_FEE_INSTALLMENT = 'GET_FEE_INSTALLMENT'
+export const FETCH_GRADES = 'FETCH_GRADES'
+
+
+export const fetchGrade = (payload) => {
+  return (dispatch) => {
+    dispatch(actionTypes.dataLoading())
+    axios
+      .get(urls.StudentGradeAcc + '?academic_year=' + payload.session + '&branch_id=' + payload.branch, {
+        headers: {
+          Authorization: 'Bearer ' + payload.user
+        }
+      }).then(response => {
+        dispatch({
+          type: FETCH_GRADES,
+          payload: {
+            data: response.data
+          }
+        })
+        dispatch(actionTypes.dataLoaded())
+      }).catch(error => {
+        dispatch(actionTypes.dataLoaded())
+        if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
+          // payload.alert.warning(error.response.data.err_msg)
+        } else {
+          // payload.alert.warning('Something Went Wrong!')
+        }
+      })
+  }
+}
 
 export const postAdmission = (payload) => {
   return (dispatch) => {

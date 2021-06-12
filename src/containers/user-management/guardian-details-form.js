@@ -157,7 +157,7 @@ const GuardianDetailsForm = ({
                     id='father_mobile'
                     name='father_mobile'
                     onChange={formik.handleChange}
-                    inputProps={{maxLength:10,pattern:'^[0-9]{10}$'}}
+                    inputProps={{maxLength:15}}
                     placeholder='Ex: 995656xxxx'
                     value={formik.values.father_mobile}
                     label='Mobile no.'
@@ -302,7 +302,7 @@ const GuardianDetailsForm = ({
                   <OutlinedInput
                     id='mother_mobile'
                     name='mother_mobile'
-                    inputProps={{maxLength:10,pattern:'^[0-9]{10}$'}}
+                    inputProps={{maxLength:15}}
                     placeholder='Ex: 995656xxxx'
                     onChange={formik.handleChange}
                     value={formik.values.mother_mobile}
@@ -444,7 +444,7 @@ const GuardianDetailsForm = ({
                     name='guardian_mobile'
                     onChange={formik.handleChange}
                     value={formik.values.guardian_mobile}
-                    inputProps={{maxLength:10,pattern:'^[0-9]{10}$'}}
+                    inputProps={{maxLength:15}}
                     placeholder='Ex: 995656xxxx'
                     label='Mobile no.'
                   />
