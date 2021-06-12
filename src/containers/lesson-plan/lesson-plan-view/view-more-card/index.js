@@ -34,17 +34,21 @@ const ViewMoreCard = ({
   const [onComplete, setOnComplete] = useState(false);
   const location = useLocation();
   const {
-    year: yearDetails = {},
-    grade: { grade__grade_name, id: gradeId },
-    subject: subjectDetails = {},
-    chapter: chapterDetails = {},
-    volume: volumeDetails = {},
+    year: yearData = {},
+    grade: gradeData = {},
+    subject: subjectData = {},
+    chapter: chapterData = {},
+    volume: volumeData = {},
   } = filterDataDown;
-
-  const { session_year = '', id: yearId = '' } = yearDetails || {};
-  const { subject_name = '', id: subjectId = '' } = subjectDetails || {};
-  const { chapter_name = '', id: chapterId = '' } = chapterDetails || {};
-  const { volume_name = '', id: volumeId = '' } = volumeDetails || {};
+  const { session_year = '', id: yearId = '' } = yearData || {};
+  const { grade__grade_name = '', id: gradeId = '' } = gradeData || {};
+  const {
+    subject_name = '',
+    id: subjectMappingId = '',
+    subject_id: subjectId = '',
+  } = subjectData || {};
+  const { chapter_name = '', id: chapterId = '' } = chapterData || {};
+  const { volume_name = '', id: volumeId = '' } = volumeData || {};
 
   const handleComplete = () => {
     setLoading(true);
@@ -62,55 +66,55 @@ const ViewMoreCard = ({
     axiosInstance
       .post(`${endpoints.lessonPlan.periodCompleted}`, request)
       .then((result) => {
-        if (result.data.status_code === 200) {
-          setAlert('success', result.data.message);
-          setCompletedStatus(result.data.result.is_completed);
+        if (result?.data?.status_code === 200) {
+          setAlert('success', result?.data?.message);
+          setCompletedStatus(result?.data?.result?.is_completed);
           // setOnComplete(result.data.result.is_completed);
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result?.data?.message);
           // setOnComplete(false);
         }
         setLoading(false);
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', error?.message);
         // setOnComplete(false);
         setLoading(false);
       });
   };
 
-//   const handleBulkDownload = () => {
-//     const formData = new FormData();
-//     formData.append('academic_year', session_year);
-//     formData.append('volume', volume_name);
-//     formData.append('grade', centralGradeName);
-//     formData.append('subject', centralSubjectName);
-//     formData.append('chapter', chapter_name);
-//     formData.append('period', periodDataForView?.period_name);
-//     axios
-//       .post(`${endpoints.lessonPlan.bulkDownload}`, formData, {
-//         headers: {
-//           'x-api-key': 'vikash@12345#1231',
-//         },
-//       })
-//       .then((result) => {
-//         if (result.data.status_code === 200) {
-//           let a = document.createElement('a');
-//           if (result.data.result) {
-//             a.href = result.data.result;
-//             a.click();
-//             a.remove();
-//           } else {
-//             setAlert('error', 'Nothing to download!');
-//           }
-//         } else {
-//           setAlert('error', result.data.description);
-//         }
-//       })
-//       .catch((error) => {
-//         setAlert('error', error.message);
-//       });
-//   };
+  // const handleBulkDownload = () => {
+  //   const formData = new FormData();
+  //   formData.append('academic_year', session_year);
+  //   formData.append('volume', volume_name);
+  //   formData.append('grade', centralGradeName);
+  //   formData.append('subject', centralSubjectName);
+  //   formData.append('chapter', chapter_name);
+  //   formData.append('period', periodDataForView?.period_name);
+  //   axios
+  //     .post(`${endpoints.lessonPlan.bulkDownload}`, formData, {
+  //       headers: {
+  //         'x-api-key': 'vikash@12345#1231',
+  //       },
+  //     })
+  //     .then((result) => {
+  //       if (result.data.status_code === 200) {
+  //         let a = document.createElement('a');
+  //         if (result.data.result) {
+  //           a.href = result.data.result;
+  //           a.click();
+  //           a.remove();
+  //         } else {
+  //           setAlert('error', 'Nothing to download!');
+  //         }
+  //       } else {
+  //         setAlert('error', result.data.description);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setAlert('error', error.message);
+  //     });
+  // };
 
   // const getS3DomainURL = (file, p)=>{
   //     `${endpoints.lessonPlan.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${centralGradeName}/${centralSubjectName}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}`

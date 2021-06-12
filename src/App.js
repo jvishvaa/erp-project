@@ -274,6 +274,8 @@ import ContactUs from 'containers/contact-us';
 import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz';
 import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
 import ClassWork from './containers/Classwork/index';
+import { Helmet } from 'react-helmet';
+import logo from '../src/assets/images/logo_mobile.png';
 
 // import Contact from './containers/contact/Contact';
 
@@ -365,6 +367,10 @@ function App({ alert }) {
   }, []);
   return (
     <div className='App'>
+      <Helmet>
+        <title>Eduvate</title>
+        <link rel='icon' href={logo} />
+      </Helmet>
       <Router>
         <AlertNotificationProvider>
           <OnlineclassViewProvider>
@@ -631,7 +637,10 @@ function App({ alert }) {
                           <Route exact path='/homework/teacher'>
                             {({ match }) => <TeacherHomework match={match} />}
                           </Route>
-                          <Route exact path='/homework/add/:date/:session_year/:branch/:grade/:subject/:id'>
+                          <Route
+                            exact
+                            path='/homework/add/:date/:session_year/:branch/:grade/:subject/:id'
+                          >
                             {({ match }) => <AddHomework match={match} />}
                           </Route>
                           <Route exact path='/homework/admin'>
@@ -1422,8 +1431,8 @@ function App({ alert }) {
                           <Route exact path='/homework-report-teacher-view'>
                             {({ match }) => <HomeWorkReportTeacher match={match} />}
                           </Route>
-                           <Route exact path='/classwork/student-report'>
-                            {({ match }) => <StudentClassWorkReport  match={match} />}
+                          <Route exact path='/classwork/student-report'>
+                            {({ match }) => <StudentClassWorkReport match={match} />}
                           </Route>
                           <Route exact path='/classwork-report-teacher-view'>
                             {({ match }) => <ClassWorkTeacherReport match={match} />}
