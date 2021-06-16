@@ -4,7 +4,7 @@
 
 .custom_button_master{
   width: 100% !important;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
 	cursor: pointer;
   outline: none !important;
 }

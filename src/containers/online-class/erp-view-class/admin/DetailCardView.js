@@ -30,14 +30,14 @@ import { AttachFile as AttachFileIcon } from '@material-ui/icons';
 import edxtag from '../../../../assets/images/edxtag.jpeg';
 
 const JoinClass = (props) => {
-  const { setLoading, index } = props;
+  const { setLoading, index, cardIndex, getClassName } = props;
   const fullData = props.fullData;
   const handleClose = props.handleClose;
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const [joinAnchor, setJoinAnchor] = useState(null);
   const [classWorkDialog, setDialogClassWorkBox] = useState(false);
-  const [isAccept, setIsAccept] = useState(props.data ? props.data.is_accepted : false);
+  const [isAccept, setIsAccept] = useState(props.data ? props?.data?.is_accepted : false);
   const history = useHistory();
   const classStartTime = moment(props && props?.data && props?.data?.date).format(
     'DD-MM-YYYY'
@@ -239,7 +239,7 @@ const JoinClass = (props) => {
   return (
     <Grid container spacing={2} direction='row' alignItems='center'>
       <Grid item xs={4}>
-        <span className='TeacherFullViewdescreption1'>
+        <span className={`teacherFullViewdescreption1 ${getClassName()[2]}`}>
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
       </Grid>
@@ -269,7 +269,9 @@ const JoinClass = (props) => {
               fullWidth
               variant='contained'
               onClick={() => handleTakeQuiz(fullData)}
-              className='takeQuizButton'
+              disabled={props?.data?.class_status === 'Cancelled'}
+              // className='takeQuizButton'
+              className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
               Take Quiz
             </Button>
@@ -278,13 +280,13 @@ const JoinClass = (props) => {
           <Grid item xs={4}>
             <Button
               size='small'
-              color='primary'
               fullWidth
               variant='contained'
               onClick={() => {
                 setDialogClassWorkBox(true);
               }}
-              className='classworkButton'
+              disabled={props?.data?.class_status === 'Cancelled'}
+              className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
               Class Work
             </Button>
@@ -318,7 +320,9 @@ const JoinClass = (props) => {
                 state: { data: fullData.online_class.id },
               })
             }
-            className='teacherFullViewSmallButtons'
+            disabled={props?.data?.is_cancelled}
+            className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
+            // className='teacherFullViewSmallButtons'
           >
             Launch Quiz
           </Button>
@@ -340,7 +344,7 @@ const JoinClass = (props) => {
           <Grid item xs={4}>
             <Button
               size='small'
-              color='primary'
+              color='#344ADE'
               fullWidth
               variant='contained'
               onClick={() => {
@@ -351,7 +355,9 @@ const JoinClass = (props) => {
                   pathname: `/erp-online-class/class-work/${onlineClassId}/${id}/${startDate}`,
                 });
               }}
-              className='classworkButton'
+              // className='classworkButton'
+              disabled={props?.data?.is_cancelled}
+              className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
               Class Work
             </Button>
@@ -369,10 +375,11 @@ const JoinClass = (props) => {
               color='secondary'
               fullWidth
               variant='contained'
+              disabled={props?.data?.class_status === 'Cancelled'}
               onClick={() =>
                 handleJoinButton(() => window.open(fullData && fullData.join_url))
               }
-              className='teacherFullViewSmallButtons'
+              className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
             >
               Join
             </Button>
@@ -410,6 +417,7 @@ const JoinClass = (props) => {
                     size='small'
                     color='secondary'
                     fullWidth
+                    disabled={props?.data?.is_cancelled}
                     variant='contained'
                     onClick={() => {
                       if (email !== props?.fullData?.online_class?.teacher?.email) {
@@ -419,7 +427,7 @@ const JoinClass = (props) => {
                         window.open(fullData && fullData?.presenter_url, '_blank');
                       }
                     }}
-                    className='teacherFullViewSmallButtons'
+                    className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
                   >
                     {email === props?.fullData?.online_class?.teacher?.email
                       ? 'Host'
@@ -432,11 +440,12 @@ const JoinClass = (props) => {
                     color='secondary'
                     fullWidth
                     variant='contained'
-                    disabled={disableHost}
+                    disabled={disableHost || props?.data?.is_cancelled}
                     onClick={() => handleHost(fullData)}
-                    className='teacherFullViewSmallButtons'
+                    className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
                   >
-                    Host Me
+                    {/* Host Me */}
+                    Host
                   </Button>
                 )}
                 {window.location.pathname === '/erp-online-class-student-view' && (
@@ -485,8 +494,11 @@ const JoinClass = (props) => {
                       variant='contained'
                       // onClick={handleIsAccept}
                       onClick={(e) => handleClickAccept(e)}
-                      disabled={classStartTime === currDate ? false : true}
-                      className='teacherFullViewSmallButtons'
+                      disabled={
+                        props?.data?.class_status === 'Cancelled' ||
+                        (classStartTime === currDate ? false : true)
+                      }
+                      className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
                     >
                       Accept
                     </Button>
@@ -556,11 +568,12 @@ const JoinClass = (props) => {
                   <Button
                     size='small'
                     fullWidth
+                    disabled={props?.data?.is_cancelled}
                     variant='contained'
                     onClick={(e) => handleClick(e)}
-                    className='teacherFullViewSmallButtons1'
+                    className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
                   >
-                    Cancel
+                    {props?.data?.is_cancelled ? 'Cancelled' : 'Cancel'}
                   </Button>
                 )}
               </Grid>
@@ -573,12 +586,14 @@ const JoinClass = (props) => {
 };
 
 const DetailCardView = ({
+  tabValue,
   fullData,
   handleClose,
   viewMoreRef,
   selectedClassType,
   loading,
   setLoading,
+  index,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -592,6 +607,14 @@ const DetailCardView = ({
     }
   }, [fullData?.id]);
 
+  const handleSetData = (response) => {
+    const bifuracionArray = ['today', 'upcoming', 'Completed', 'Cancelled'];
+    return (
+      response.filter((element) => element?.class_status === bifuracionArray[tabValue]) ||
+      []
+    );
+  };
+
   const handleCallaData = () => {
     let detailsURL =
       window.location.pathname === '/erp-online-class-student-view'
@@ -603,7 +626,15 @@ const DetailCardView = ({
         .get(detailsURL)
         .then((res) => {
           if (res?.data?.status_code === 200) {
-            setNoOfPeriods(res.data?.data);
+            const response = res?.data?.data;
+            let result = [];
+            if (response?.length === 1) {
+              result = response;
+            }
+            if (response?.length > 1) {
+              result = handleSetData(response);
+            }
+            setNoOfPeriods(result);
           } else {
             setAlert('error', res?.data?.message);
           }
@@ -700,6 +731,19 @@ const DetailCardView = ({
     setSelectedValue(value);
   };
 
+  const getClassName = () => {
+    let classIndex = '1';
+    if (index % 3 === 0) classIndex = '3';
+    else if (index % 2 === 0) classIndex = '2';
+    else classIndex = '1';
+    return [
+      `teacherBatchFullViewMainCard${classIndex}`,
+      `teacherBatchFullViewHeader${classIndex}`,
+      `addTextColor${classIndex}`,
+      `darkButtonBackground${classIndex}`,
+    ];
+  };
+
   return (
     <>
       <Grid
@@ -709,8 +753,12 @@ const DetailCardView = ({
         className='teacherBatchFullViewMainParentDiv'
       >
         <Grid item md={12} xs={12} className='teacherBatchFullViewMainDiv'>
-          <Card className='teacherBatchFullViewMainCard'>
-            <Grid container spacing={2} className='teacherBatchFullViewHeader'>
+          <Card className={`teacherBatchFullViewMainCard ${getClassName()[0]}`}>
+            <Grid
+              container
+              spacing={2}
+              className={`teacherBatchFullViewHeader ${getClassName()[1]}`}
+            >
               <Grid item xs={10}>
                 {(fullData?.join_url?.includes('present-staging') ||
                   fullData?.presenter_url?.includes('present-staging')) && (
@@ -720,7 +768,7 @@ const DetailCardView = ({
                 )}
               </Grid>
               <Grid item xs={2} style={{ textAlign: 'right' }}>
-                <CloseIcon style={{ color: '#014B7E' }} onClick={() => handleClose()} />
+                <CloseIcon style={{ color: 'white' }} onClick={() => handleClose()} />
               </Grid>
               <Grid item xs={12}>
                 <Grid container spacing={2}>
@@ -753,8 +801,8 @@ const DetailCardView = ({
                         ''}
                     </h4>
                     <h4 className='teacherBatchFullCardLable'>
-                      {noOfPeriods && noOfPeriods.length}
-                      &nbsp;Periods
+                      {noOfPeriods?.length} &nbsp;
+                      {noOfPeriods?.length > 1 ? 'Periods' : 'Period'}
                     </h4>
                   </Grid>
                 </Grid>
@@ -771,21 +819,28 @@ const DetailCardView = ({
             </Grid>
             <Grid container spacing={2}>
               <Grid item md={12} xs={12}>
-                <span className='TeacherFullViewdescreption'>Periods Date</span>
+                <span className={`teacherFullViewdescreption ${getClassName()[2]}`}>
+                  Periods Date
+                </span>
               </Grid>
               <Grid item md={12} xs={12} className='detailCardViewContainer'>
                 <Divider className='fullViewDivider' />
                 {noOfPeriods && noOfPeriods.length === 0 && (
-                  <Typography style={{ color: '#ff6b6b', margin: '10px' }}>
+                  <Typography
+                    style={{ margin: '10px' }}
+                    className={`${getClassName()[2]}`}
+                  >
                     No Record found
                   </Typography>
                 )}
                 {noOfPeriods &&
                   noOfPeriods.length > 0 &&
-                  noOfPeriods.map((data, index) => (
+                  noOfPeriods.map((data, i) => (
                     <JoinClass
+                      cardIndex={index}
+                      getClassName={getClassName}
                       setLoading={setLoading}
-                      index={index}
+                      index={i}
                       data={data}
                       fullData={fullData}
                       handleClose={handleClose}
