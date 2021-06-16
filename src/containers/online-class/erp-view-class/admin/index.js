@@ -26,6 +26,7 @@ import { AlertNotificationContext } from '../../../../context-api/alert-context/
 import Layout from '../../../Layout';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import DetailCardView from './DetailCardView';
+import TabPanel from './tab-panel/TabPanel';
 
 const ErpAdminViewClass = ({ history }) => {
   const [branchList, setBranchList] = useState([]);
@@ -51,6 +52,9 @@ const ErpAdminViewClass = ({ history }) => {
   const [selectedViewMore, setSelectedViewMore] = useState('');
   const viewMoreRef = useRef(null);
   const limit = 9;
+  const [tabValue, setTabValue] = useState(
+    JSON.parse(localStorage.getItem('filterData'))?.tabValue || null
+  );
 
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
     moment().subtract(6, 'days'),
@@ -62,6 +66,7 @@ const ErpAdminViewClass = ({ history }) => {
     { id: 2, type: 'Special Class' },
     { id: 3, type: 'Parent Class' },
   ]);
+  const [index, setIndex] = useState(0);
   const [selectedClassType, setSelectedClassType] = useState('');
   const [moduleId, setModuleId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -133,8 +138,12 @@ const ErpAdminViewClass = ({ history }) => {
           course = {},
           date = [moment().subtract(6, 'days'), moment()],
           page: pageNumber = 1,
+          tabValue: tabVal = 0,
+          index: indexVal = 0,
         } = JSON.parse(localStorage.getItem('filterData')) || {};
         setPage(pageNumber);
+        setIndex(indexVal);
+        setTabValue(tabVal);
         if (classtype?.id >= 0) {
           setSelectedClassType(classtype);
         }
@@ -194,6 +203,8 @@ const ErpAdminViewClass = ({ history }) => {
     }
   }, [moduleId, window.location.pathname]);
 
+  const [totalData, setTotalData] = useState('');
+
   function callApi(api, key) {
     setLoading(true);
     axiosInstance
@@ -238,17 +249,29 @@ const ErpAdminViewClass = ({ history }) => {
             setCourseList(result?.data?.result || []);
           }
           if (key === 'subject') {
-            const transformedData = result?.data?.data.map((sub, index) => {
-              return {
-                id: index,
-                ...sub,
-              };
-            }) || [];
+            const transformedData =
+              result?.data?.data.map((sub, index) => {
+                return {
+                  id: index,
+                  ...sub,
+                };
+              }) || [];
             setSubjectList(transformedData);
           }
           if (key === 'filter') {
             setTotalCount(result?.data?.count);
-            setFilterList(result?.data?.data);
+            let data = JSON.parse(localStorage.getItem('filterData')) || '';
+            const response = result?.data?.data || [];
+            const transformedObject = {};
+            Object.entries(response).forEach(([key, array]) => {
+              if (Array.isArray(array)) {
+                transformedObject[key] = [
+                  ...new Map(array.map((item) => [item['id'], item])).values(),
+                ];
+              }
+            });
+            setTotalData(transformedObject);
+            handleTabData(transformedObject);
             setSelectedViewMore('');
             const viewData = JSON.parse(localStorage.getItem('viewMoreData')) || '';
             if (viewData?.id) {
@@ -260,12 +283,14 @@ const ErpAdminViewClass = ({ history }) => {
           setAlert('error', result?.data?.message);
           setLoading(false);
           setFilterList([]);
+          setTotalData('');
         }
       })
       .catch((error) => {
         setAlert('error', error.message);
         setLoading(false);
         setFilterList([]);
+        setTotalData('');
       });
   }
 
@@ -405,98 +430,115 @@ const ErpAdminViewClass = ({ history }) => {
     setSelectedClassType('');
     setSelectedAcadmeicYear('');
     setPage(1);
+    setTotalData('');
+    setTabValue(0);
   }
 
   function handleFilter() {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-
-    if (!selectedClassType) {
-      setAlert('warning', 'Select Classtype');
-      return;
-    }
-    if (!selectedAcademicYear) {
-      setAlert('warning', 'Select Academic Year');
-      return;
-    }
-    if (!selectedBranch?.length > 0) {
-      setAlert('warning', 'Select Branch');
-      return;
-    }
-    if (!selectedGrade?.length > 0) {
-      setAlert('warning', 'Select Grade');
-      return;
-    }
-    if (!selectedSection?.length > 0) {
-      setAlert('warning', 'Select Section');
-      return;
-    }
-    if (selectedClassType?.id !== 0) {
-      if (!selectedCourse) {
-        setAlert('warning', 'Select Course');
-        return;
-      }
-    } else {
-      if (!selectedSubject?.length > 0) {
-        setAlert('warning', 'Select Subject');
-        return;
-      }
-    }
-    setLoading(true);
-    setPage(1);
-
-    localStorage.removeItem('viewMoreData');
-    localStorage.setItem(
-      'filterData',
-      JSON.stringify({
-        classtype: selectedClassType,
-        academic: selectedAcademicYear,
-        branch: selectedBranch,
-        grade: selectedGrade,
-        section: selectedSection,
-        subject: selectedSubject,
-        course: selectedCourse,
-        date: dateRangeTechPer,
-        page,
-      })
-    );
-
-    if (selectedCourse?.id) {
+    setTabValue(0);
+    if (window.location.pathname === '/erp-online-class-student-view') {
+      // setAlert('warning', 'studentView');
       callApi(
-        `${endpoints.aol.classes}?is_aol=0&session_year=${
-          selectedAcademicYear?.id
-        }&section_mapping_ids=${selectedSection.map((el) => el?.id)}&class_type=${
+        `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+          studentDetails &&
+          studentDetails.role_details &&
+          studentDetails.role_details.erp_user_id
+        }&page_number=${page}&page_size=${limit}&class_type=${
           selectedClassType?.id
-        }&start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(
-          endDateTechPer
-        ).format('YYYY-MM-DD')}&course_id=${
-          selectedCourse?.id
-        }&page_number=${page}&page_size=${limit}&module_id=${moduleId}`,
+        }&module_id=${moduleId}`,
         'filter'
       );
     } else {
-      callApi(
-        `${endpoints.aol.classes}?is_aol=0&session_year=${
-          selectedAcademicYear?.id
-        }&section_mapping_ids=${selectedSection.map(
-          (el) => el?.id
-        )}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${
-          selectedClassType?.id
-        }&start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(
-          endDateTechPer
-        ).format(
-          'YYYY-MM-DD'
-        )}&module_id=${moduleId}&page_number=${page}&page_size=${limit}`,
-        'filter'
+      if (!selectedClassType) {
+        setAlert('warning', 'Select Classtype');
+        return;
+      }
+      if (!selectedAcademicYear) {
+        setAlert('warning', 'Select Academic Year');
+        return;
+      }
+      if (!selectedBranch?.length > 0) {
+        setAlert('warning', 'Select Branch');
+        return;
+      }
+      if (!selectedGrade?.length > 0) {
+        setAlert('warning', 'Select Grade');
+        return;
+      }
+      if (!selectedSection?.length > 0) {
+        setAlert('warning', 'Select Section');
+        return;
+      }
+      if (selectedClassType?.id !== 0) {
+        if (!selectedCourse) {
+          setAlert('warning', 'Select Course');
+          return;
+        }
+      } else {
+        if (!selectedSubject?.length > 0) {
+          setAlert('warning', 'Select Subject');
+          return;
+        }
+      }
+      setLoading(true);
+      setPage(1);
+
+      localStorage.removeItem('viewMoreData');
+      localStorage.setItem(
+        'filterData',
+        JSON.stringify({
+          classtype: selectedClassType,
+          academic: selectedAcademicYear,
+          branch: selectedBranch,
+          grade: selectedGrade,
+          section: selectedSection,
+          subject: selectedSubject,
+          course: selectedCourse,
+          date: dateRangeTechPer,
+          page,
+          tabValue,
+        })
       );
+
+      if (selectedCourse?.id) {
+        callApi(
+          `${endpoints.aol.classes}?is_aol=0&session_year=${
+            selectedAcademicYear?.id
+          }&section_mapping_ids=${selectedSection.map((el) => el?.id)}&class_type=${
+            selectedClassType?.id
+          }&start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(
+            endDateTechPer
+          ).format('YYYY-MM-DD')}&course_id=${
+            selectedCourse?.id
+          }&page_number=${page}&page_size=${limit}&module_id=${moduleId}`,
+          'filter'
+        );
+      } else {
+        callApi(
+          `${endpoints.aol.classes}?is_aol=0&session_year=${
+            selectedAcademicYear?.id
+          }&section_mapping_ids=${selectedSection.map(
+            (el) => el?.id
+          )}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${
+            selectedClassType?.id
+          }&start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(
+            endDateTechPer
+          ).format(
+            'YYYY-MM-DD'
+          )}&module_id=${moduleId}&page_number=${page}&page_size=${limit}`,
+          'filter'
+        );
+      }
     }
   }
 
   // function handleDate(v1) {
-  //   if (v1 && v1.length !== 0) {
-  //     setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
-  //     setEndDate(moment(new Date(v1[1])).format('YYYY-MM-DD'));
-  //   }
-  //   setDateRangeTechPer(v1);
+  // if (v1 && v1.length !== 0) {
+  // setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
+  // setEndDate(moment(new Date(v1[1])).format('YYYY-MM-DD'));
+  // }
+  // setDateRangeTechPer(v1);
   // }
   const handleDownload = async () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
@@ -547,6 +589,7 @@ const ErpAdminViewClass = ({ history }) => {
     setFilterList([]);
     setPage(1);
     setTotalCount(0);
+    setTabValue(0);
     localStorage.removeItem('viewMoreData');
   };
 
@@ -572,6 +615,7 @@ const ErpAdminViewClass = ({ history }) => {
     setSelectedSubject([]);
     setSelectedBranch([]);
     setFilterList([]);
+    setTabValue(0);
     setPage(1);
   };
 
@@ -593,13 +637,13 @@ const ErpAdminViewClass = ({ history }) => {
     setSelectedGrade([]);
     setCourseList([]);
     setSelectedCourse('');
-    setFilterList([]);
     setSectionList([]);
     setSelectedSection([]);
     setSubjectList([]);
     setSelectedSubject([]);
     setFilterList([]);
     setPage(1);
+    setTabValue(0);
   };
 
   const handleGrade = (event = {}, value = []) => {
@@ -626,13 +670,13 @@ const ErpAdminViewClass = ({ history }) => {
     }
     setCourseList([]);
     setSelectedCourse('');
-    setFilterList([]);
     setSectionList([]);
     setSelectedSection([]);
     setSubjectList([]);
     setSelectedSubject([]);
     setFilterList([]);
     setPage(1);
+    setTabValue(0);
   };
 
   const handleSection = (event = {}, value = []) => {
@@ -659,6 +703,7 @@ const ErpAdminViewClass = ({ history }) => {
     setSelectedSubject([]);
     setFilterList([]);
     setPage(1);
+    setTabValue(0);
   };
 
   const handleSubject = (event = {}, value = []) => {
@@ -669,6 +714,7 @@ const ErpAdminViewClass = ({ history }) => {
     }
     setFilterList([]);
     setPage(1);
+    setTabValue(0);
   };
 
   const handleCourse = (event = {}, value = '') => {
@@ -677,7 +723,31 @@ const ErpAdminViewClass = ({ history }) => {
     }
     setFilterList([]);
     setPage(1);
+    setTabValue(0);
   };
+
+  const handleTabData = (param1 = '') => {
+    const onlineClassData = param1 || totalData;
+    const {
+      today = [],
+      upcoming = [],
+      completed = [],
+      cancelled = [],
+    } = onlineClassData || {};
+    if (tabValue === 0) setFilterList(today);
+    if (tabValue === 1) setFilterList(upcoming);
+    if (tabValue === 2) setFilterList(completed);
+    if (tabValue === 3) setFilterList(cancelled);
+    let data = JSON.parse(localStorage.getItem('filterData')) || '';
+    localStorage.setItem('filterData', JSON.stringify({ ...data, tabValue }));
+  };
+
+  useEffect(() => {
+    if (tabValue >= 0 && totalData) {
+      handleTabData();
+      setSelectedViewMore('');
+    }
+  }, [tabValue]);
 
   return (
     <>
@@ -723,7 +793,7 @@ const ErpAdminViewClass = ({ history }) => {
                   value={selectedClassType}
                   options={classTypes || []}
                   getOptionLabel={(option) => option?.type || ''}
-                  // filterSelectedOptions
+                  filterSelectedOptions
                   getOptionSelected={(option, value) => option?.id == value?.id}
                   renderInput={(params) => (
                     <TextField
@@ -844,11 +914,10 @@ const ErpAdminViewClass = ({ history }) => {
                         className='dropdownIcon'
                         value={selectedSubject}
                         options={subjectList}
+                        limitTags={2}
                         getOptionLabel={(option) => option?.subject__subject_name}
                         // filterSelectedOptions
-                        getOptionSelected={(option, value) =>
-                          option?.id == value?.id
-                        }
+                        getOptionSelected={(option, value) => option?.id == value?.id}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -935,8 +1004,8 @@ const ErpAdminViewClass = ({ history }) => {
                 <Grid item md={2} xs={12}>
                   <Button
                     variant='contained'
-                    size='large'
-                    className='BatchViewfilterButtons'
+                    size='medium'
+                    className='custom_button_master labelColor'
                     onClick={() => handleClearFilter()}
                   >
                     Clear All
@@ -945,21 +1014,25 @@ const ErpAdminViewClass = ({ history }) => {
                 <Grid item md={2} xs={12}>
                   <Button
                     variant='contained'
-                    size='large'
-                    className='BatchViewfilterButtons'
+                    size='medium'
+                    style={{ color: 'white' }}
+                    color='primary'
+                    className='custom_button_master'
                     onClick={() => handleFilter()}
                   >
                     Get Classes
                   </Button>
                 </Grid>
-                <Grid item md={2} xs={12}>
+                <Grid item md={3} xs={12}>
                   <Button
                     variant='contained'
-                    size='large'
-                    className='BatchViewfilterButtons'
+                    size='medium'
+                    color='primary'
+                    style={{ color: 'white' }}
+                    className='custom_button_master'
                     onClick={handleDownload}
                   >
-                    DOWNLOAD CLASS DATA
+                    Download Class Data
                   </Button>
                 </Grid>
               </Grid>
@@ -968,6 +1041,11 @@ const ErpAdminViewClass = ({ history }) => {
               <Divider style={{ margin: '10px 0px' }} />
             )}
             <Grid container spacing={2}>
+              {totalData && (
+                <Grid item md={12} xs={12} className='teacherBatchViewLCardList'>
+                  <TabPanel tabValue={tabValue} setTabValue={setTabValue} />
+                </Grid>
+              )}
               {window.location.pathname !== '/erp-online-class-student-view' && (
                 <Grid item md={12} xs={12}>
                   {!filterList && (
@@ -1022,8 +1100,10 @@ const ErpAdminViewClass = ({ history }) => {
                             filterList.map((item, i) => (
                               <Grid item md={selectedViewMore ? 6 : 4} xs={12}>
                                 <CardView
+                                  tabValue={tabValue}
                                   fullData={item}
                                   index={i}
+                                  setIndex={setIndex}
                                   handleViewMore={setSelectedViewMore}
                                   selectedViewMore={selectedViewMore || {}}
                                 />
@@ -1034,6 +1114,8 @@ const ErpAdminViewClass = ({ history }) => {
                       {selectedViewMore?.id && (
                         <Grid item md={selectedViewMore ? 4 : 0} xs={12}>
                           <DetailCardView
+                            tabValue={tabValue}
+                            index={index}
                             loading={loading}
                             setLoading={setLoading}
                             fullData={selectedViewMore}

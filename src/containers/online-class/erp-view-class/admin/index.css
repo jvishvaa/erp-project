@@ -17,7 +17,7 @@
   top:0%;
   position: sticky;
 }
-
+/* 
 .takeQuizButton.MuiButton-root {
   color: #FFFFFF;
   background-color: #344ADE;
@@ -27,14 +27,25 @@
 
 .classworkButton.MuiButton-root {
   color: #FFFFFF;
-  background-color: #ff6b6b;
+  background-color: #344ADE;
   border-radius: 8px;
   word-wrap: break-word;
+}
+ */
+.countdownTimerWrapper {
+  margin-right: 10px;
+  text-align: right;
+}
+
+.countdownTimerContainer {
+  display: flex;
+  font-size: 1.2rem;
 }
 
 .classOverButton.MuiButton-root {
   border-radius: 8px;
   word-wrap: break-word;
+  width: 100%;
 }
 
 @media screen and (max-width: 768px) {

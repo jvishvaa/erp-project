@@ -1,156 +1,242 @@
-.teacherBatchViewMainDiv {
-    padding: 10px !important;
-    width: 100% !important;
-    background-color: #F9F9F9 !important;
-    .signatureNavDiv {
-        .SignatureNavigationLinks {
-            color: #014B7E;
-            font-weight: bold;
-            font-size: 20px;
-            margin: 1px 10px !important;
-            outline: none !important;
-            background-color: #F9F9F9 !important;
-            border: none !important;
-            cursor: pointer;
-        }
-        .SignatureUploadNavArrow {
-            color: #ff6b6b;
-            font-weight: bold;
-            font-size: 30px;
-        }
-    }   
-    .teacherBatchViewFilter {
-        padding: 10px 30px !important;
-        .BatchViewfilterButtons {
-         font-size: 12px !important;   
-         font-family: Raleway;
-         color: #fff;
-         font-weight: bold;
-         border-radius: 10px;
-         background-color: #FFAF7A !important;
-        }
-    }
-    .teacherBatchViewLCardList {
-        border : 1px solid lightgray;
-        border-radius: 10px;
-        padding: 20px 20px !important;
-    }
+$color1: #fea45f;
+$color2: #678aff;
+$color3: #9b7ad5;
+$borderColor1: #e86400;
+$borderColor2: #4d73ef;
+$borderColor3: #5019b1;
 
+.teacherBatchViewMainDiv {
+  padding: 10px !important;
+  width: 100% !important;
+  background-color: #f9f9f9 !important;
+  .signatureNavDiv {
+    .SignatureNavigationLinks {
+      color: #014b7e;
+      font-weight: bold;
+      font-size: 20px;
+      margin: 1px 10px !important;
+      font-family: Raleway;
+      outline: none !important;
+      background-color: #f9f9f9 !important;
+      border: none !important;
+      cursor: pointer;
+    }
+    .SignatureUploadNavArrow {
+      color: #ff6b6b;
+      font-weight: bold;
+      font-size: 30px;
+    }
+  }
+  .teacherBatchViewFilter {
+    padding: 0px 15px !important;
+    .BatchViewfilterButtons {
+      font-size: 14px !important;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 10px;
+      text-transform: capitalize;
+      background-color: #ff6b6b !important;
+    }
+  }
+  .teacherBatchViewLCardList {
+    border-radius: 10px;
+    padding: 20px 20px !important;
+  }
+}
+.teachercount {
+  padding-bottom: 1 5px !important;
+  border-radius: 8px !important;
 }
 .teacherbatchsCardMain {
-    padding: 1px !important;
-    .teacherBatchCardActive{
-        border-radius: 8px !important;
-        padding: 10px !important;
-        border: 1px solid #F9D474;
-        background-color: #F9D474;
-        cursor: pointer;
-        height: 195px;
-    }
-    .teacherBatchCardInActive{
-        border-radius: 8px !important;
-        padding: 10px !important;
-        border: 1px solid #F9D474;
-        background-color: #FFFADF;
-        height: 195px;
-        cursor: pointer;
-    }
-    .teacherBatchCardLable {
-        color: #001495;
-        font-size: 16px;
-        font-weight: bold;
-        font-family: Poppins;
-    }
-    .teacherBatchCardLable1 {
-        color: #014B7E;
-        font-size: 16px;
-        font-weight: bold;
-        font-family: Poppins;
-    }
-    .TeacherBatchCardViewMoreButton {
-        font-size: 12px !important;
-        font-family: Raleway;
-        font-weight: bold;
-        border-radius: 8px !important;
-        color: #FFFFFF;
-        background-color: #344ADE;
-    }
-}
-.teacherBatchFullViewMainDiv {
+  padding: 1px !important;
+  .teacherBatchCardActive {
+    border-radius: 8px !important;
     padding: 10px !important;
-    .teacherBatchFullViewMainCard {
-     background-color: white;
-     border-radius: 8px !important;
-     border: 1px solid #F9D474;
-     padding: 10px !important;   
-    }
-    .teacherBatchFullViewHeader {
-        padding: 0 !important;
-        margin-bottom: 10px !important;
-        border-radius: 8px 8px 0px 0px !important;
-        background-color: #F9D474;
-        .teacherBatchFullCardLable {
-            color: #014B7E;
-            margin: 4px 0px !important;
-            padding: 1px !important;
-            font-size: 16px;
-            font-weight: bold;
-            font-family: Poppins;   
-        }
-        .teacherBatchFullViewClose {
-            font-size: 10px !important;
-            .teacherBatchFullViewCloseIcon{
-                color: #014B7E;;
-            }
-        }
-    }
-    .TeacherFullViewdescreption {
-        font-size: 20px !important;
-        color: #344ADE;
-        font-family: Poppins;
-        font-weight: bold !important;
-    }
-    .TeacherFullViewdescreption1 {
-        font-size: 18px !important;
-        font-family: Poppins;
-        color: #344ADE;
-    }
-    .teacherFullViewSmallButtons {
-        font-size: 15px !important;   
-        font-family: Poppins;
-        color: #FFFFFF;
-        background-color: #344ADE;
-        border-radius: 8px;
-    }
-    .teacherFullViewSmallButtons1 {
-        font-size: 15px !important;   
-        font-family: Raleway;
-        color: #fff;
-        font-weight: bold;
-        border-radius: 8px;
-        background-color: #FFAF7A !important;
-    }
-    .teacherFullViewFullButtons {
-        font-size: 15px !important;
-        font-family: Poppins;
-        margin-top: 10px !important;
-        font-family: Raleway;
-        color: #fff;
-        font-weight: bold;
-        border-radius: 8px;
-        background-color: #FFAF7A !important;
-    }
-    .fullViewDivider{
-        margin: 5px 0px 10px 0px !important;
-        color: lightgray !important;
-    }
+    // border: 1px solid #F9D474;
+    // background-color: #F9D474;
+    cursor: pointer;
+    height: 195px;
+  }
+  .teacherBatchCardInActive {
+    border-radius: 8px !important;
+    padding: 10px !important;
+    // border: 1px solid #F9D474;
+    // background-color: #FFFADF;
+    height: 195px;
+    cursor: pointer;
+  }
 
+  .teacherBatchCardActive1 {
+    background-color: $color1;
+    border: 2px solid $borderColor1;
+  }
+
+  .teacherBatchCardActive2 {
+    background-color: $color2;
+    border: 2px solid $borderColor2;
+  }
+
+  .teacherBatchCardActive3 {
+    background-color: $color3;
+    border: 2px solid $borderColor3;
+  }
+
+  .teacherBatchCardInActive1 {
+    background-color: $color1 !important;
+  }
+
+  .teacherBatchCardInActive2 {
+    background-color: $color2 !important;
+  }
+
+  .teacherBatchCardInActive3 {
+    background-color: $color3 !important;
+  }
+
+  .teacherBatchCardLable {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .teacherBatchCardLable1 {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .TeacherBatchCardViewMoreButton {
+    font-size: 14px !important;
+    font-weight: bold;
+    background-color: white;
+    transform: translateY(2px);
+    transition-duration: 0.2s;
+  }
+  .viewMoreButton1 {
+    color: $borderColor1;
+    border: 2px solid $borderColor1;
+  }
+  .viewMoreButton2 {
+    color: $borderColor2;
+    border: 2px solid $borderColor2;
+  }
+  .viewMoreButton3 {
+    color: $borderColor3;
+    border: 2px solid $borderColor3;
+  }
+  .TeacherBatchCardViewMoreButton:hover {
+    background-color: white;
+    transform: translateY(-2px);
+    transition-duration: 0.2s;
+  }
+}
+
+.teacherBatchFullViewMainDiv {
+  padding: 10px !important;
+  .teacherBatchFullViewMainCard {
+    background-color: white;
+    border-radius: 10px !important;
+    padding: 10px !important;
+  }
+  .teacherBatchFullViewMainCard1 {
+    border: 2px solid $borderColor1 !important;
+  }
+  .teacherBatchFullViewMainCard2 {
+    border: 2px solid $borderColor2 !important;
+  }
+  .teacherBatchFullViewMainCard3 {
+    border: 2px solid $borderColor3 !important;
+  }
+
+  .teacherBatchFullViewHeader {
+    padding: 0 !important;
+    margin-bottom: 10px !important;
+    border-radius: 10px 10px 0px 0px !important;
+    .teacherBatchFullCardLable {
+      color: white;
+      margin: 4px 0px !important;
+      padding: 1px !important;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .teacherBatchFullViewClose {
+      font-size: 10px !important;
+      .teacherBatchFullViewCloseIcon {
+        color: #014b7e;
+      }
+    }
+  }
+  .teacherBatchFullViewHeader1 {
+    background-color: $color1;
+  }
+  .teacherBatchFullViewHeader2 {
+    background-color: $color2;
+  }
+  .teacherBatchFullViewHeader3 {
+    background-color: $color3;
+  }
+  .teacherFullViewdescreption {
+    font-size: 20px !important;
+    font-weight: bold !important;
+  }
+  .teacherFullViewdescreption1 {
+    font-size: 18px !important;
+  }
+  .addTextColor1 {
+    color: $borderColor1;
+  }
+  .addTextColor2 {
+    color: $borderColor2;
+  }
+  .addTextColor3 {
+    color: $borderColor3;
+  }
+  .teacherFullViewSmallButtons {
+    font-size: 15px !important;
+    color: #ffffff;
+    border-radius: 8px;
+    &.MuiButton-contained.Mui-disabled {
+      color: #e2e2e2;
+    }
+  }
+  .teacherFullViewSmallButtons1 {
+    font-size: 15px !important;
+    color: #fff !important;
+    font-weight: bold;
+    border-radius: 8px;
+    &.MuiButton-contained:hover {
+      background-color: none;
+    }
+    &.MuiButton-contained.Mui-disabled {
+      color: #e2e2e2;
+    }
+  }
+  .darkButtonBackground1 {
+    background-color: $borderColor1 !important;
+  }
+  .darkButtonBackground2 {
+    background-color: $borderColor2 !important;
+  }
+  .darkButtonBackground3 {
+    background-color: $borderColor3 !important;
+  }
+  .teacherFullViewFullButtons {
+    font-size: 15px !important;
+    margin-top: 10px !important;
+    font-family: Raleway;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 8px;
+    background-color: #ff6b6b !important;
+  }
+  .fullViewDivider {
+    margin: 5px 0px 10px 0px !important;
+    color: lightgray !important;
+  }
 }
 .deletePopover.MuiPopover-paper {
-        outline: 0;
-        position: absolute;
-        max-width: calc(100% - 32px);
-        min-width: 16px;
-        max-height: calc(100% - 32px);
-        min-height: 16px;
+  outline: 0;
+  position: absolute;
+  max-width: calc(100% - 32px);
+  min-width: 16px;
+  max-height: calc(100% - 32px);
+  min-height: 16px;
 }
