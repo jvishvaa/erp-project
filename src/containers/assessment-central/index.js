@@ -167,10 +167,10 @@ const Assesment = () => {
     }
   };
 
-  const getSubjects = async (acadId,mappingId) => {
+  const getSubjects = async (acadId, mappingId) => {
     try {
       setSubjects([]);
-      const data = await fetchSubjects(acadId,mappingId);
+      const data = await fetchSubjects(acadId, mappingId);
       setSubjects(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch subjects');
@@ -285,7 +285,7 @@ const Assesment = () => {
       if (formik.values.branch) {
         getGrades(formik.values.academic?.id, formik.values.branch?.branch?.id);
         if (formik.values.grade) {
-          getSubjects(formik.values.branch?.id,formik.values.grade?.grade_id);
+          getSubjects(formik.values.branch?.id, formik.values.grade?.grade_id);
         } else {
           setSubjects([]);
         }
@@ -404,7 +404,7 @@ const Assesment = () => {
   const handleGrade = (event, value) => {
     formik.setFieldValue('grade', '');
     if (value) {
-      getSubjects(formik.values.branch?.id,value?.grade_id);
+      getSubjects(formik.values.branch?.id, value?.grade_id);
       formik.setFieldValue('grade', value);
       // initSetFilter('selectedGrade', value);
     }
@@ -417,6 +417,7 @@ const Assesment = () => {
       // initSetFilter('selectedSubject', value);
     }
   };
+  // console.log('The View Data:---', selectedAssesmentTest);
 
   return (
     <Layout>

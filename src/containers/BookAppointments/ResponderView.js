@@ -215,9 +215,7 @@ const ResponderView = () => {
             const defaultValue=result?.data?.data?.[0];
             handleYear({},defaultValue)
             setAcademicYear(result?.data?.data || []);
-            if(academicYear){
-              handleYear("",{id: 1, is_delete: false, session_year: "2021-22", branch: null, created_by: null})
-            }
+          
           }
           if (key === 'branchList') {
             console.log(result?.data?.data|| []);
@@ -282,16 +280,7 @@ const ResponderView = () => {
     //   });
   };
 
-  const handleYear = (event, value) => {
-      setSelectedBranch([]);
-      setSelectedAcadmeicYear(value);
-      if (value?.id) {
-        callApi(
-          `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-          'branchList'
-        );
-      }
-    };
+  
   // let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
   // console.log(userName.first_name, 'userName');
   // console.log(userName.erp, 'Erp ID');
@@ -315,16 +304,6 @@ const ResponderView = () => {
                 fullWidth
                 // getOptionLabel={(option) => option.branch_name}
                 onChange={handleYear}
-                // onChange={(event, value) => {
-                //   console.log('moduleIdDDD', moduleId);
-                //   setSelectedAcadmeicYear(value);
-                //   if (value) {
-                //     callApi(
-                //       `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                //       'branchList'
-                //     );
-                //   }
-                // }}
                 id='branch_id'
                 className='dropdownIcon'
                 value={selectedAcademicYear || ''}

@@ -75,7 +75,10 @@ export const fetchAssesmentTests = async (
     }
     const response = await axiosInstance.get(url);
     if (response.data.status_code === 200) {
-      return { totalPages: response.data.result.total_pages, results: response.data.result.results };
+      return {
+        totalPages: response.data.result.total_pages,
+        results: response.data.result.results,
+      };
     }
     throw new Error();
   } catch (e) {
@@ -97,9 +100,8 @@ export const fetchAssesmentTestDetail = async (id) => {
   }
 };
 
-
-export const deleteAssessmentTest = async(id)=>{
-  try{
+export const deleteAssessmentTest = async (id) => {
+  try {
     const response = await axiosInstance.delete(
       `${endpoints.assessmentErp.deleteAssessmentTest}${id}/test/`
     );
@@ -107,7 +109,7 @@ export const deleteAssessmentTest = async(id)=>{
       return { results: response.data };
     }
     throw new Error();
-  }catch (e) {
+  } catch (e) {
     throw new Error();
   }
-}
+};
