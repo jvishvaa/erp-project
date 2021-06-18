@@ -97,7 +97,7 @@ const AssessmentView = () => {
           `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branch?.branch?.id}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue?.id}${tabVal}&page=${page}&page_size=${limit}`
         )
         .then((result) => {
-          if (result.data.status_code === 200) {
+          if (result?.data?.status_code === 200) {
             setTotalCount(result?.data?.result?.count);
             setLoading(false);
             setPeriodData(result?.data?.result?.results);
@@ -116,23 +116,23 @@ const AssessmentView = () => {
       setTabValue(1);
       axiosInstance
         .get(
-          `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branch?.branch?.id}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue.id}&is_draft=True&page=${page}&page_size=${limit}`
+          `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branch?.branch?.id}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue?.id}&is_draft=True&page=${page}&page_size=${limit}`
         )
         .then((result) => {
-          if (result.data.status_code === 200) {
-            setTotalCount(result.data.result.count);
+          if (result?.data?.status_code === 200) {
+            setTotalCount(result?.data?.result?.count);
             setLoading(false);
-            setPeriodData(result.data.result.results);
+            setPeriodData(result?.data?.result?.results);
             setViewMore(false);
             setViewMoreData([]);
           } else {
             setLoading(false);
-            setAlert('error', result.data.description);
+            setAlert('error', result?.data?.description);
           }
         })
         .catch((error) => {
           setLoading(false);
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     } else if (newValue == 2) {
       setTabValue(2);
@@ -141,42 +141,42 @@ const AssessmentView = () => {
           `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branch?.branch?.id}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue.id}&is_review=True&page=${page}&page_size=${limit}`
         )
         .then((result) => {
-          if (result.data.status_code === 200) {
-            setTotalCount(result.data.result.count);
+          if (result?.data?.status_code === 200) {
+            setTotalCount(result?.data?.result?.count);
             setLoading(false);
-            setPeriodData(result.data.result.results);
+            setPeriodData(result?.data?.result?.results);
             setViewMore(false);
             setViewMoreData([]);
           } else {
             setLoading(false);
-            setAlert('error', result.data.description);
+            setAlert('error', result?.data?.description);
           }
         })
         .catch((error) => {
           setLoading(false);
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     } else if (newValue == 3) {
       setTabValue(3);
       axiosInstance
         .get(
-          `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branch?.branch?.id}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue.id}&is_verified=True&page=${page}&page_size=${limit}`
+          `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branch?.branch?.id}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue?.id}&is_verified=True&page=${page}&page_size=${limit}`
         )
         .then((result) => {
-          if (result.data.status_code === 200) {
-            setTotalCount(result.data.result.count);
+          if (result?.data?.status_code === 200) {
+            setTotalCount(result?.data?.result?.count);
             setLoading(false);
-            setPeriodData(result.data.result.results);
+            setPeriodData(result?.data?.result?.results);
             setViewMore(false);
             setViewMoreData([]);
           } else {
             setLoading(false);
-            setAlert('error', result.data.description);
+            setAlert('error', result?.data?.description);
           }
         })
         .catch((error) => {
           setLoading(false);
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     }
   };

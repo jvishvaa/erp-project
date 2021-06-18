@@ -33,14 +33,11 @@ const QuestionBankFilters = ({
   const widerWidth = isMobile ? '98%' : '95%';
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const [branchDropdown, setBranchDropdown] = useState([]);
-  const [volumeDropdown, setVolumeDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
-  const [sectionDropdown, setSectionDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [topicDropdown, setTopicDropdown] = useState([]);
   const [queTypeDropdown, setQueTypeDropdown] = useState([]);
-
   const [quesCatData, setQuesCatData] = useState([]);
   const [quesLevel, setQuesLevel] = useState([]);
 
@@ -110,6 +107,9 @@ const QuestionBankFilters = ({
         .then((result) => {
           if (result.data.status_code === 200) {
             setAcademicYearDropdown(result?.data?.data);
+            const defaultValue = result.data?.data?.[0];
+            handleAcademicYear({}, defaultValue);
+
             setLoading(false);
           } else {
             setAlert('error', result.data?.message);
@@ -345,17 +345,15 @@ const QuestionBankFilters = ({
     setChapterDropdown([]);
     setLoading(true);
     if (value) {
+      console.log(value, 'test');
       setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
       axiosInstance
-        // .get(`${endpoints.questionBank.subjects}?grade=${value.id}`) //central_api
         .get(
-          `${endpoints.questionBank.subjectList}?grade=${value.grade_id}&module_id=${moduleId}`
+          `${endpoints.questionBank.subjectList}?session_year=${filterData.branch?.id}&grade=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
             setSubjectDropdown(result?.data?.result);
-            // setSectionDropdown(result?.data?.data);
-            // setMapId(result.data.result.results);
             setLoading(false);
           } else {
             setAlert('error', result?.data?.message);
@@ -364,7 +362,7 @@ const QuestionBankFilters = ({
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
           setSubjectDropdown([]);
           setChapterDropdown([]);
         });
@@ -588,10 +586,11 @@ const QuestionBankFilters = ({
       filterData.subject?.subject_id,
       quesLevel,
       filterData.topicId,
-      filterData.year?.id,
+      // filterData.year?.id,
+      filterData.branch?.id,
       filterData.grade?.grade_id,
       filterData.chapter,
-      filterData.is_erp_central
+      filterData.is_erp_central,
     );
     setSelectedIndex(-1);
 
@@ -630,7 +629,7 @@ const QuestionBankFilters = ({
             style={{ width: '100%' }}
             size='small'
             onChange={handleAcademicYear}
-            id='grade'
+            id='academicyear'
             className='dropdownIcon'
             value={filterData?.year}
             options={academicYearDropdown}
@@ -651,7 +650,7 @@ const QuestionBankFilters = ({
             style={{ width: '100%' }}
             size='small'
             onChange={handleBranch}
-            id='grade'
+            id='branch'
             className='dropdownIcon'
             value={filterData?.branch}
             options={branchDropdown}

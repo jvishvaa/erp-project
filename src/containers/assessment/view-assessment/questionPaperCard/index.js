@@ -33,7 +33,7 @@ const QuestionPaperCard = ({
           <h3 className={classes.cardTitleHeading}>{testTitle}</h3>
           <h4 className={classes.cardDescription}>
             {/* Some test name, (This includes module) */}
-            {testDescription}
+            {/* {testDescription} */}
           </h4>
         </div>
         <div className={classes.cardEasyWrapper}>
@@ -41,6 +41,10 @@ const QuestionPaperCard = ({
             <div className={classes.cardDescription}>
               {[gradeName, ...(subjects || [])].join(', ')}
             </div>
+            <div className={classes.cardAttemptedTextRed}>
+                Start Time - &nbsp;
+                {testDate.slice(11,16)}
+              </div>
             {isTestAttempted ? (
               <div className={classes.cardAttemptedTextGreen}>
                 Completed at - &nbsp;

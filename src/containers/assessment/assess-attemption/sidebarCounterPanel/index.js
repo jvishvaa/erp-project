@@ -10,6 +10,7 @@ import GeneralGuide from '../generalGuide';
 import TimerComponent from './timer';
 import { AssessmentHandlerContext } from '../assess-attemption-context';
 import './sidebarPanel.css';
+import { duration } from 'moment';
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -95,6 +96,36 @@ const SidebarCounterPanel = (props) => {
     submit({ onResolve: onSubmitSuccess, onReject: onSubmitFailure });
   };
 
+  const submitRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const duratonPassedAlreadyInMilliSec = new Date() - new Date(startedAt);
+    const testDur = testDuration || JSON.parse(localStorage.getItem('testDuration'));
+    const testDurationInMilliSec = testDur * 60 * 1000;
+    const durationLeft = testDurationInMilliSec - duratonPassedAlreadyInMilliSec;
+
+    let continuosCall = '';
+    if (+durationLeft > 0) {
+      continuosCall = setTimeout(() => {
+        localStorage.removeItem(`testDuration`);
+        localStorage.removeItem(`assessment-${assessmentId}`);
+        submitRef.current.click();
+        window.alert('Time ran out!');
+      }, durationLeft);
+    } else {
+      localStorage.removeItem(`testDuration`);
+      Object.entries(localStorage).forEach(([key, value]) => {
+        if (key?.startsWith('assessment-')) {
+          localStorage.removeItem(key);
+        }
+      });
+      props.history.push(`/assessment/`);
+    }
+    return () => {
+      clearTimeout(continuosCall);
+    };
+  }, []);
+  
   const body = (
     <div style={modalStyle} className={classes.paper}>
       {/* <h2 id='simple-modal-title'>Text in a modal</h2> */}
@@ -181,7 +212,8 @@ const SidebarCounterPanel = (props) => {
           className='contained'
           variant='contained'
           color='primary'
-          disabled={!isReadyToSubmit}
+          // disabled={!isReadyToSubmit}
+          ref={submitRef}
           onClick={submitTheResult}
         >
           Submit

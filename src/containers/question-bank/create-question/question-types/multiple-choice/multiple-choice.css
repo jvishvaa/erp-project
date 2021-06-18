@@ -117,14 +117,14 @@
 }
 
 .attachmentButton.MuiButtonBase-root {
-  border: 1px solid #dbdbdb;
-  background: white;
-  box-shadow: none;
-  padding: 10px;
+  /* border: 1px solid #dbdbdb; */
+  /* background: white; */
+  /* box-shadow: none; */
+  /* padding: 10px; */
 }
 
 .attachmentButton .MuiButton-label {
-  color: #014b7e;
+  /* color: #014b7e; */
 }
 
 .optionsContainer {

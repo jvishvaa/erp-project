@@ -253,7 +253,7 @@ const ViewMoreCard = ({
           )}
         </div>
       </div>
-      <div className='resourceBulkDownload'>Questions</div>
+      <div className='assesmentQuestions'>Questions</div>
       <div className='divider'>{/* <Divider/> */}</div>
 
       <div className='viewMoreBody'>
@@ -299,7 +299,7 @@ const ViewMoreCard = ({
               ))}
             </div>
 
-            <div className='resourceBulkDownload'>Answers</div>
+            <div className='assesmentAnswers'>Answers</div>
             <div className='question-container'>
               {Data[0]?.answer.map((obj, i) => (
                 <div>{obj}</div>
@@ -384,7 +384,7 @@ const ViewMoreCard = ({
               ))}
             </div>
 
-            <div className='resourceBulkDownload'>Answers</div>
+            <div className='assesmentAnswers'>Answers</div>
             {/* <Divider className='secondary-divider' /> */}
             <div>
               {Data[0]?.questionAnswer?.map((obj, index) => (
@@ -494,7 +494,7 @@ const ViewMoreCard = ({
                           </div>
                         </div>
 
-                        <div className='resourceBulkDownload'>Answers</div>
+                        <div className='assesmentAnswers'>Answers</div>
 
                         <div className='question-container'>
                           <div style={{ color: '#014B7E' }}>
@@ -523,7 +523,7 @@ const ViewMoreCard = ({
                             <div>{obj}</div>
                           ))}
                         </div> */}
-                        <div className='resourceBulkDownload'>Answers</div>
+                        <div className='assesmentAnswers'>Answers</div>
                         <div>
                           {childQuestions?.question_answer[0]?.options.map((obj, i) => (
                             <div className='question-container'>
@@ -581,7 +581,7 @@ const ViewMoreCard = ({
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='resourceBulkDownload'>Answers</div>
+                        <div className='assesmentAnswers'>Answers</div>
                         <div className='question-container'>
                           {childQuestions?.question_answer[0]?.answer.map((obj, i) => (
                             <div>{obj}</div>
@@ -614,7 +614,7 @@ const ViewMoreCard = ({
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='resourceBulkDownload'>Answers</div>
+                        <div className='assesmentAnswers'>Answers</div>
                         <div>
                           {childQuestions?.question_answer[0]?.questionAnswer?.map(
                             (obj, index) => (
@@ -698,7 +698,7 @@ const ViewMoreCard = ({
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='resourceBulkDownload'>Answers</div>
+                        <div className='assesmentAnswers'>Answers</div>
                         <div>
                           {childQuestions?.question_answer[0]?.questionAnswer?.map(
                             (obj, index) => (
@@ -820,7 +820,7 @@ const ViewMoreCard = ({
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='resourceBulkDownload'>Answers</div>
+                        <div className='assesmentAnswers'>Answers</div>
                         <div className='question-container'>
                           {childQuestions?.question_answer[0]?.answer.map((obj, i) => (
                             <div>{obj}</div>
@@ -917,7 +917,7 @@ const ViewMoreCard = ({
               ))}
             </div>
 
-            <div className='resourceBulkDownload'>Answers</div>
+            <div className='assesmentAnswers'>Answers</div>
             {/* <Divider className='secondary-divider' /> */}
             <div>
               {Data[0]?.questionAnswer?.map((obj, index) => (
@@ -1032,7 +1032,7 @@ const ViewMoreCard = ({
                           </div>
                         </div>
 
-                        <div className='resourceBulkDownload'>Answers</div>
+                        <div className='assesmentAnswers'>Answers</div>
 
                         <div className='question-container'>
                           <div style={{ color: '#014B7E' }}>
@@ -1061,7 +1061,7 @@ const ViewMoreCard = ({
                             <div>{obj}</div>
                           ))}
                         </div> */}
-                        <div className='resourceBulkDownload'>Answers</div>
+                        <div className='assesmentAnswers'>Answers</div>
                         <div>
                           {childQuestions?.question_answer[0]?.options.map((obj, i) => (
                             <div className='question-container'>
@@ -1119,7 +1119,7 @@ const ViewMoreCard = ({
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='resourceBulkDownload'>Answers</div>
+                        <div className='assesmentAnswers'>Answers</div>
                         <div className='question-container'>
                           {childQuestions?.question_answer[0]?.answer.map((obj, i) => (
                             <div>{obj}</div>
@@ -1152,7 +1152,7 @@ const ViewMoreCard = ({
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='resourceBulkDownload'>Answers</div>
+                        <div className='assesmentAnswers'>Answers</div>
                         <div>
                           {childQuestions?.question_answer[0]?.questionAnswer?.map(
                             (obj, index) => (
@@ -1236,7 +1236,7 @@ const ViewMoreCard = ({
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='resourceBulkDownload'>Answers</div>
+                        <div className='assesmentAnswers'>Answers</div>
                         <div>
                           {childQuestions?.question_answer[0]?.questionAnswer?.map(
                             (obj, index) => (
@@ -1358,7 +1358,7 @@ const ViewMoreCard = ({
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='resourceBulkDownload'>Answers</div>
+                        <div className='assesmentAnswers'>Answers</div>
                         <div className='question-container'>
                           {childQuestions?.question_answer[0]?.answer.map((obj, i) => (
                             <div>{obj}</div>
@@ -1455,7 +1455,7 @@ const ViewMoreCard = ({
                   </div>
                 ))}
             </div>
-            <div className='resourceBulkDownload'>Answers</div>
+            <div className='assesmentAnswers'>Answers</div>
             <div className='question-container'>
               {Data && Data[0]?.answer.map((obj, i) => <div>{obj}</div>)}
             </div>
@@ -1520,7 +1520,7 @@ const ViewMoreCard = ({
             <div className='question-container'>
               {Data && Data[0]?.answer.map((obj, i) => <div>{obj}</div>)}
             </div> */}
-            <div className='resourceBulkDownload'>Answers</div>
+            <div className='assesmentAnswers'>Answers</div>
             <div>
               {Data &&
                 Data[0]?.options.map((obj, i) => (
@@ -1600,7 +1600,7 @@ const ViewMoreCard = ({
                 ))}
             </div>
 
-            <div className='resourceBulkDownload'>Answers</div>
+            <div className='assesmentAnswers'>Answers</div>
 
             <div className='question-container'>
               {Data &&

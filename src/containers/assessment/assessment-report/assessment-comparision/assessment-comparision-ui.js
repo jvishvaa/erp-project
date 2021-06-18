@@ -67,8 +67,7 @@ const TestComparisionUI = () => {
   // });
   const [testOneObj, setTestOneObj] = React.useState();
   const [testTwoObj, setTestTwoObj] = React.useState();
-  const [subjectSelected, setSubjectSelected] = React.useState();
-
+  const [subjectSelected, setSubjectSelected] = React.useState('');
   const setTestOne = (valueObj) => {
     setTestOneObj(valueObj || undefined);
 
@@ -101,7 +100,7 @@ const TestComparisionUI = () => {
   }, []);
 
   React.useEffect(() => {
-    const { id: selectedSubjectId } = subjectSelected || {};
+    const { subject_id: selectedSubjectId } = subjectSelected || {};
     if (selectedSubjectId) {
       fetchUserTests({ user, subject: selectedSubjectId });
     }

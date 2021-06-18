@@ -183,13 +183,13 @@ const MultipleChoice = ({
           axiosInstance
             .post(`${endpoints.assessmentErp.fileUpload}`, formData)
             .then((result) => {
-              if (result.data.status_code === 200) {
-                list[index][name].push(result.data.result);
+              if (result?.data?.status_code === 200) {
+                list[index][name].push(result?.data?.result);
                 setLoading(false);
-                setAlert('success', result.data.message);
+                setAlert('success', result?.data?.message);
               } else {
                 setLoading(false);
-                setAlert('error', result.data.message);
+                setAlert('error', result?.data?.message);
               }
             })
             .catch((error) => {
@@ -225,22 +225,20 @@ const MultipleChoice = ({
           setLoading(true);
           const formData = new FormData();
           formData.append('file', file[0]);
-          formData.append('grade_name', filterDataTop.grade?.grade_name);
-          formData.append('subject_name', filterDataTop.subject?.subject?.subject_name);
-          formData.append('question_categories', filterDataBottom.category.category);
-          formData.append('question_type', filterDataBottom.type?.question_type);
-          axios
-            .post(`${endpoints.questionBank.uploadFile}`, formData, {
-              headers: { 'x-api-key': 'vikash@12345#1231' },
-            })
+          formData.append('grade_id', filterDataTop?.grade?.grade_id);
+          formData.append('subject_name', filterDataTop?.subject?.subject_id);
+          formData.append('question_categories_id', filterDataBottom.category?.id);
+          formData.append('question_type', filterDataBottom.type?.id);
+          axiosInstance
+            .post(`${endpoints.assessmentErp.fileUpload}`, formData)
             .then((result) => {
-              if (result.data.status_code === 200) {
-                list[index][name].push(result.data.result);
+              if (result?.data?.status_code === 200) {
+                list[index][name].push(result?.data?.result);
                 setLoading(false);
-                setAlert('success', result.data.message);
+                setAlert('success', result?.data?.message);
               } else {
                 setLoading(false);
-                setAlert('error', result.data.message);
+                setAlert('error', result?.data?.message);
               }
             })
             .catch((error) => {
@@ -419,7 +417,8 @@ const MultipleChoice = ({
     if (!editData?.id)
       requestBody = {
         ...requestBody,
-        academic_session: filterDataTop.academic?.id,
+        // academic_session: filterDataTop.academic?.id,
+        academic_session: filterDataTop.branch?.id,
         is_central_chapter: filterDataTop.chapter?.is_central,
         grade: filterDataTop.grade?.grade_id,
         subject: filterDataTop.subject?.subject_id,
@@ -431,7 +430,8 @@ const MultipleChoice = ({
         question_type: showQuestionType?.id,
         question_level: filterDataBottom.level.id,
         question_categories: filterDataBottom.category.id,
-        academic_session: filterDataTop.academic?.id,
+        // academic_session: filterDataTop.academic?.id,
+        academic_session: filterDataTop.branch?.id,
         is_central_chapter: filterDataTop.chapter?.is_central,
         grade: filterDataTop.grade?.grade_id,
         subject: filterDataTop.subject?.subject_id,

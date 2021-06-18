@@ -2,12 +2,10 @@ import React from 'react';
 import {
   TextField,
   Button,
-  useTheme,
   SvgIcon,
   IconButton,
   Checkbox,
 } from '@material-ui/core';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import endpoints from '../../../../../../config/endpoints';
 import CancelIcon from '@material-ui/icons/Cancel';
 import checkedicon from '../../../../../../assets/images/checkedicon.svg';
@@ -17,6 +15,7 @@ import attachmentIcon from '../../../../../../assets/images/attachmenticon.svg';
 import deletematch from '../../../../../../assets/images/deletematch.svg';
 import './single-option.css';
 import axios from 'axios';
+import placeholder from '../../../../../../assets/images/placeholder_small.jpg'
 
 const SingleOption = ({
   option,
@@ -145,6 +144,9 @@ const SingleOption = ({
                         src={`${endpoints.assessmentErp.s3}${image}`}
                         alt='Not found'
                         className='optionImageAttachment'
+                        onError={(e) => {
+                          e.target.src = placeholder;
+                        }}
                       />
                     </div>
                     <div className='optionImageRemoveIcon'>
@@ -189,15 +191,12 @@ const SingleOption = ({
                       style={{
                         color: 'white',
                         textTransform: 'none',
-                        width: '12%',
-                        margin: '0px 5px 0px 15px',
+                        // width: '100%',
+                        // margin: '15px 5px 0px 0px',
                       }}
                       color='primary'
-                      className='modifyDesign'
                       title='Attach Image'
-                      size='medium'
                       component='label'
-                      style={{ textTransform: 'none' }}
                     >
                       <input
                         type='file'
@@ -205,7 +204,9 @@ const SingleOption = ({
                         style={{ display: 'none' }}
                         id='raised-button-file2'
                         accept='image/*'
-                        onChange={(e) => handleOptionData(e, index)}
+                        onChange={(e) => {
+                          handleOptionData(e, index)
+                        }}
                       />
                       Attach Image
                     </Button>
