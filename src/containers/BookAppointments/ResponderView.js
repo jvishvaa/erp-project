@@ -212,6 +212,9 @@ const ResponderView = () => {
           if (key === 'academicYearList') {
             console.log('this academic year', result?.data?.data || []);
             setAcademicYear(result?.data?.data || []);
+            if(academicYear){
+              handleYear("",{id: 1, is_delete: false, session_year: "2021-22", branch: null, created_by: null})
+            }
           }
           if (key === 'branchList') {
             console.log(result?.data?.data || []);
@@ -262,6 +265,17 @@ const ResponderView = () => {
     //     setTotalCount(res.data.data.count);
     //   });
   };
+
+  const handleYear = (event, value) => {
+      setSelectedBranch([]);
+      setSelectedAcadmeicYear(value);
+      if (value?.id) {
+        callApi(
+          `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+          'branchList'
+        );
+      }
+    };
   // let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
   // console.log(userName.first_name, 'userName');
   // console.log(userName.erp, 'Erp ID');
@@ -284,16 +298,17 @@ const ResponderView = () => {
                 style={{ marginTop: '40px', marginLeft: '20px' }}
                 fullWidth
                 // getOptionLabel={(option) => option.branch_name}
-                onChange={(event, value) => {
-                  console.log('moduleIdDDD', moduleId);
-                  setSelectedAcadmeicYear(value);
-                  if (value) {
-                    callApi(
-                      `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                      'branchList'
-                    );
-                  }
-                }}
+                onChange={handleYear}
+                // onChange={(event, value) => {
+                //   console.log('moduleIdDDD', moduleId);
+                //   setSelectedAcadmeicYear(value);
+                //   if (value) {
+                //     callApi(
+                //       `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                //       'branchList'
+                //     );
+                //   }
+                // }}
                 id='branch_id'
                 className='dropdownIcon'
                 value={selectedAcademicYear || ''}
