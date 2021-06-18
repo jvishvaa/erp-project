@@ -315,6 +315,8 @@ const LessonPlanGraphReport = ({
         const obj = {...item, school:schoolAcademicYearsObjMap[item.session_year]}
         academicYears.push(obj)
       })
+      console.log(academicYears?.[3],"acadmicyear")
+      handleAcademicYear({},academicYears?.[3]);
       setAcademicYearDropdown(academicYears)
     }).catch(e=>{
         setAlert('error', 'Failed to fetch academic sessions.');
@@ -362,6 +364,7 @@ const LessonPlanGraphReport = ({
       })
       .then((result) => {
         if (result.data.status_code === 200) {
+          
           setVolumeDropdown(result.data.result.results);
         } else {
           setAlert('error', result.data.message);
