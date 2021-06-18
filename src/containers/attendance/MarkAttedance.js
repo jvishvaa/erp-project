@@ -333,6 +333,8 @@ const MarkAttedance = () => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
             console.log(result?.data?.data || [], 'checking');
+            const defaultValue=result?.data?.data?.[0];
+            handleAcademicYear({},defaultValue);
             setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
@@ -613,6 +615,22 @@ const MarkAttedance = () => {
     );
   };
 
+  const handleAcademicYear=(event, value)=>{
+    
+      setSelectedAcadmeicYear(value);
+      if (value) {
+        callApi(
+          `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+          'branchList'
+        );
+      }
+      setSelectedGrade([]);
+      setSectionList([]);
+      setSelectedSection([]);
+      setSelectedBranch([]);
+    }
+  
+
   return (
     <Layout>
       <div className='profile_breadcrumb_wrapper'>
@@ -651,19 +669,7 @@ const MarkAttedance = () => {
             style={{ width: '100%' }}
             size='small'
             onOpen={() => handleOpenOnViewDetails()}
-            onChange={(event, value) => {
-              setSelectedAcadmeicYear(value);
-              if (value) {
-                callApi(
-                  `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                  'branchList'
-                );
-              }
-              setSelectedGrade([]);
-              setSectionList([]);
-              setSelectedSection([]);
-              setSelectedBranch([]);
-            }}
+            onChange={handleAcademicYear}
             id='branch_id'
             className='dropdownIcon'
             value={selectedAcademicYear || ''}
