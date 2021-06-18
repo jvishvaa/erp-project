@@ -113,7 +113,7 @@ const AttedanceCalender = () => {
   const [backButton, setBackButton] = useState(false);
   const [updatedDays, setUpdatedDays] = useState();
   const [updatedEventDays, setUpdatedEventDays] = useState();
-
+  console.log("year",academicYear)
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
@@ -410,6 +410,8 @@ const AttedanceCalender = () => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
             console.log(result?.data?.data || []);
+            const defaultValue=result?.data?.data?.[0];
+            handleAcademicYear({},defaultValue);
             setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
@@ -948,6 +950,23 @@ const AttedanceCalender = () => {
   })(Button);
   const [value, setValue] = React.useState([null, null]);
 
+  const handleAcademicYear=(event, value)=>{
+   
+      setSelectedAcadmeicYear(value);
+      console.log(value, 'test');
+      if (value) {
+        callApi(
+          `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+          'branchList'
+        );
+      }
+      setSelectedGrade([]);
+      setSectionList([]);
+      setSelectedSection([]);
+      setSelectedBranch([]);
+    }
+  
+
   return (
     <Layout>
       <div className='profile_breadcrumb_wrapper'>
@@ -965,25 +984,13 @@ const AttedanceCalender = () => {
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
-              onChange={(event, value) => {
-                setSelectedAcadmeicYear(value);
-                console.log(value, 'test');
-                if (value) {
-                  callApi(
-                    `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                    'branchList'
-                  );
-                }
-                setSelectedGrade([]);
-                setSectionList([]);
-                setSelectedSection([]);
-                setSelectedBranch([]);
-              }}
+              onChange={handleAcademicYear}
               id='branch_id'
               className='dropdownIcon'
               value={selectedAcademicYear || ''}
               options={academicYear || ''}
               getOptionLabel={(option) => option?.session_year || ''}
+              defaultValue={academicYear[1]}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
