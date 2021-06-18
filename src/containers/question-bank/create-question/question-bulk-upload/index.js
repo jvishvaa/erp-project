@@ -6,7 +6,7 @@ import { IconButton, Button, Grid, Paper } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 
-// import axiosInstance from '../../../../config/axios';
+import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
 import endpoints from '../../../../config/endpoints';
 
@@ -17,6 +17,7 @@ import { AlertNotificationContext } from '../../../../context-api/alert-context/
 import DNDFileUpload from '../../../../components/dnd-file-upload';
 
 import ENVCONFIG from '../../../../config/config';
+// import axiosInstance from 'config/axios';
 
 const {
   apiGateway: { xAPIKey },
@@ -59,7 +60,7 @@ const trueOrFQuesTypeId = 8;
 const templateFiles = {
   [singleChoiceQuesTypeId]: {
     templateFile:
-      'http://omrsheet.s3.ap-south-1.amazonaws.com/prod/assessment_config_files/assessment_single_choice.xlsx',
+      'https://omrsheet.s3.ap-south-1.amazonaws.com/prod/assessment_config_files/assessment_single_choice.xlsx',
     url: endpoints.createQuestionBulk.BulkUploadSingleChoiceQuestion,
     label: 'Single choice questions',
     fileConf: {
@@ -79,7 +80,7 @@ const templateFiles = {
   },
   [fillBlankQuesTypeId]: {
     templateFile:
-      'http://omrsheet.s3.ap-south-1.amazonaws.com/prod/assessment_config_files/assessment_fill_in_the_blanks.xlsx',
+      'https://omrsheet.s3.ap-south-1.amazonaws.com/prod/assessment_config_files/assessment_fill_in_the_blanks.xlsx',
     url: endpoints.createQuestionBulk.FillBlankUploadQuestion,
     label: 'Fill in the blank questions',
     fileConf: {
@@ -91,7 +92,7 @@ const templateFiles = {
   },
   [trueOrFQuesTypeId]: {
     templateFile:
-      'http://omrsheet.s3.ap-south-1.amazonaws.com/prod/assessment_config_files/assessment_true_or_false.xlsx',
+      'https://omrsheet.s3.ap-south-1.amazonaws.com/prod/assessment_config_files/assessment_true_or_false.xlsx',
     url: endpoints.createQuestionBulk.BulkUploadTrueOrFalse,
     label: 'True or false questions',
     fileConf: {
@@ -108,9 +109,14 @@ function QuestionBulkCreation(props) {
     category: { id: questionCategoryId = 1, category: categoryLabel } = {},
     level: { id: questionLevelId = 1, level: levelLabel } = {},
     type: { id: questionTypeId = 9, question_type: questionTypeLabel } = {},
-    subject: { id: gradeSubjectMappingId = 147 },
-    topic: { id: topicId = 6 },
+    subject: { subject_id: subjectId = '', id: gradeSubjectMappingId = 147 } = {},
+    topic: { id: topicId = 6 } = {},
+    academic: { id: acadId = '', session_year: acadYear = '' } = {},
+    grade: { grade_id: gradeId = '' } = {},
+    branch: { branch: branchData = {} } = {},
+    chapter: {id: chapterId = ''}
   } = attributes || {};
+  const { id: branchId = '' } = branchData || {};
   const classes = useStyles();
   // const [questionTypeId] = useState(questionTypeIdFromProps);
   const [file, setFile] = useState(null);
@@ -137,6 +143,11 @@ function QuestionBulkCreation(props) {
         label: 'Topic',
         validationText: 'Please choose topic.',
       },
+      chapter: {
+        value: chapterId,
+        label: 'Chapter',
+        validationText: 'Please choose chapter.',
+      },
       question_level: {
         value: questionLevelId,
         label: 'Question level',
@@ -152,6 +163,26 @@ function QuestionBulkCreation(props) {
         label: 'Question type',
         validationText: 'Please choose question type.',
       },
+      grade: {
+        value: gradeId,
+        label: 'Grade',
+        validationText: 'Please choose grade.',
+      },
+      subject: {
+        value: subjectId,
+        label: 'Subject',
+        validationText: 'Please choose subject.',
+      },
+      academic_year: {
+        value: acadId,
+        label: 'Academic Year',
+        validationText: 'Please choose academic year.',
+      },
+      branch: {
+        value: branchId,
+        label: 'Branch',
+        validationText: 'Please choose branch.',
+      },
     };
     const formData = new FormData();
     const isValid = Object.entries(payLoad).every(([key, valueObj]) => {
@@ -164,11 +195,15 @@ function QuestionBulkCreation(props) {
     });
     if (isValid) {
       setUploading(true);
-      axios
+      axiosInstance
         // .post(apiURL, formData, { responseType: 'blob' })
-        .post(apiURL, formData, {
-          headers: { 'x-api-key': xAPIKey },
-        })
+        .post(
+          apiURL,
+          formData
+          //    {
+          //   headers: { 'x-api-key': xAPIKey },
+          // }
+        )
         .then((response) => {
           setUploading(false);
           const {

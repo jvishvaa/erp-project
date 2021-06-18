@@ -3,10 +3,10 @@ const local = {
     BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
   },
   apiGateway: {
-    baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
+    // baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
     // baseURL: 'http://localhost:8000/qbox',
     baseURL: `${window.location.origin}/qbox`,
-    // baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
+    baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
   },
 };
@@ -16,6 +16,17 @@ const dev = {
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
+    baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
+    xAPIKey: 'vikash@12345#1231',
+  },
+};
+
+const olv = {
+  s3: {
+    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+  },
+  apiGateway: {
+    baseURL: `https://dev.olvorchidnaigaon.letseduvate.com/qbox`,
     // baseURL: 'http://localhost:8000/qbox',
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
@@ -40,6 +51,7 @@ const config = env[process.env.REACT_APP_UI_ENV] || local;
 
 export default {
   // Add common config values here
+  TINYMCE_API_KEY: 'g8mda2t3wiq0cvb9j0vi993og4lm8rrylzof5e6lml5x8wua',
   MAX_ATTACHMENT_SIZE: 5000000,
   isCentral: false,
   ...config,

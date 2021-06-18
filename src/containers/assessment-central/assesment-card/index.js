@@ -120,9 +120,11 @@ const AssesmentCard = ({
             }
           </p>
           {/* <p className='completed'>Completed -30.12.2020</p> */}
-          <p className='scheduled'>{`Scheduled on - ${moment(value.test_date).format(
-            'DD-MM-YYYY'
-          )}`}</p>
+          <p className='scheduled'>
+            {`Scheduled on - ${moment(value.test_date).format('DD-MM-YYYY')}`}
+            {', '}
+            {value?.test_date?.slice(11, 16)}
+          </p>
         </div>
         <div className='btn-container'>
           {!isSelected && (

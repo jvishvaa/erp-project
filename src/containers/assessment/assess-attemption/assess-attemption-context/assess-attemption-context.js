@@ -73,7 +73,7 @@ export const AssessmentHandlerContextProvider = ({
       question_paper__subject_name: questionPaperSubjectNames = [],
       question_paper__grade_name: questionPaperGradeName,
     } = assessmentDetailsObj || {};
-
+    localStorage.setItem('testDuration',testDuration);
     let userDetails = {};
     try {
       const { user_id: userId, role_details: { name: userName } = {} } =

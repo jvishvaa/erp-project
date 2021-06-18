@@ -23,8 +23,10 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
         <div className='primary-header-container'>
           <div className='primary-header-text-container'>
             <span className='primary-text font-lg'>{testType}</span>
-            <span className='secondary-text'>{`${grade}`
-            //  ${subjects.join(', ')}`
+            <br />
+            <span className='secondary-text'>{
+              `${grade}`
+              //  ${subjects.join(', ')}`
             }</span>
           </div>
           <div className='close-icon'>
@@ -35,9 +37,14 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
         </div>
         <div className='secondary-header-container'>
           <div className='secondary-text font-lg'>{testName}</div>
-          <div className='secondary-text font-lg'>
-            <div> Scheduled on</div>
-            <div>{testDate ? moment(testDate).format('DD-MM-YYYY') : '--'}</div>
+          <div className='secondary-text font-sm sop'>
+            <div>Scheduled on</div>
+            {console.log(testDate?.slice(11, 16), 'dateteimeeeeee')}
+            <div>
+              {testDate ? moment(testDate).format('DD-MM-YYYY') : '--'}{' '}
+              {testDate ? testDate?.slice(11, 16) : '--'}
+            </div>
+            {/* <p style={{marginRight:'90px'}}>Scheduled on {testDate ? moment(testDate).format('DD-MM-YYYY') : '--'}</p> */}
           </div>
         </div>
       </div>
@@ -58,40 +65,53 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
             ))} */}
             <Grid item md={4} className='parameter-cell-grid'>
               <div className='parameter-cell'>
-                <p className='cell-header'>Test type</p>
-                <p className='cell-header right-align'>{testType}</p>
+                <p className='cell-header' style={{ color: '#ff6b6b' }}>
+                  Test type
+                </p>
+                <p className='cell-header left-align'>{testType}</p>
               </div>
             </Grid>
             <Grid item md={4} className='parameter-cell-grid'>
               <div className='parameter-cell'>
-                <p className='cell-header'>Test ID</p>
-                <p className='cell-header right-align'>{id}</p>
+                <p className='cell-header' style={{ color: '#ff6b6b' }}>
+                  Test ID
+                </p>
+                <p className='cell-header left-align'>{id}</p>
               </div>
             </Grid>
             <Grid item md={4} className='parameter-cell-grid'>
               <div className='parameter-cell'>
-                <p className='cell-header'>Duration</p>
-                <p className='cell-header right-align'>{testDuration}</p>
+                <p className='cell-header' style={{ color: '#ff6b6b' }}>
+                  Duration
+                </p>
+                {/* <p className='cell-header right-align'>{testDuration}</p> */}
+                <p className='cell-header left-align'>{testDuration}</p>
               </div>
             </Grid>
             <Grid item md={4} className='parameter-cell-grid'>
               <div className='parameter-cell'>
-                <p className='cell-header'>Total marks</p>
-                <p className='cell-header right-align'>{totalMark}</p>
+                <p className='cell-header' style={{ color: '#ff6b6b' }}>
+                  Total marks
+                </p>
+                <p className='cell-header left-align'>{totalMark}</p>
               </div>
             </Grid>
             <Grid item md={4} className='parameter-cell-grid'>
               <div className='parameter-cell'>
-                <p className='cell-header'>Created</p>
-                <p className='cell-header right-align'>
+                <p className='cell-header' style={{ color: '#ff6b6b' }}>
+                  Created
+                </p>
+                <p className='cell-header left-align'>
                   {createdDate ? moment(createdDate).format('DD-MM-YYYY') : ''}
                 </p>
               </div>
             </Grid>
             <Grid item md={4} className='parameter-cell-grid'>
               <div className='parameter-cell'>
-                <p className='cell-header'>Updated</p>
-                <p className='cell-header right-align'>
+                <p className='cell-header' style={{ color: '#ff6b6b' }}>
+                  Updated
+                </p>
+                <p className='cell-header left-align'>
                   {updatedDate ? moment(updatedDate).format('DD-MM-YYYY') : ''}
                 </p>
               </div>

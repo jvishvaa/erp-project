@@ -9,6 +9,7 @@ import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
 import './top-filters.css';
+import { headerRefreshed } from '@syncfusion/ej2-grids';
 
 const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -63,6 +64,9 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
         .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
         .then((result) => {
           if (result.data.status_code === 200) {
+            const defaultValue = result.data?.data?.[0];
+            handleAcademicYear({}, defaultValue);
+
             setDropdownData({
               academic: result.data?.data,
               branch: [],
@@ -190,7 +194,9 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
     if (value) {
       setFilterData({ ...filterData, grade: value, subject: '', chapter: '', topic: '' });
       axiosInstance
-        .get(`${endpoints.assessmentErp.subjectList}?grade=${value?.grade_id}`)
+        .get(
+          `${endpoints.assessmentErp.subjectList}?session_year=${filterData.branch?.id}&grade=${value?.grade_id}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             setDropdownData({
@@ -329,6 +335,12 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       }
     }
   };
+  const handleBack = () => {
+    history.push({
+      pathname: '/question-bank',
+    });
+    // window.location.href = '/question-bank';
+  };
 
   return (
     <Grid
@@ -457,6 +469,17 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           <Divider />
         </Grid>
       )}
+      {isMobile && <Grid item xs={3} sm={0} />}
+      <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+        <Button
+          variant='contained'
+          className='custom_button_master labelColor modifyDesign'
+          size='medium'
+          onClick={handleBack}
+        >
+          BACK
+        </Button>
+      </Grid>
       {isMobile && <Grid item xs={3} sm={0} />}
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button

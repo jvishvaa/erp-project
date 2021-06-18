@@ -3,6 +3,7 @@ import {
   FormControl,
   FormHelperText,
   Grid,
+  makeStyles,
   IconButton,
   Typography,
   useTheme,
@@ -18,10 +19,75 @@ import {
   Popover,
   MenuItem,
 } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import { withStyles } from '@material-ui/core/styles';
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import MuiDialogContent from '@material-ui/core/DialogContent';
+import MuiDialogActions from '@material-ui/core/DialogActions';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useHistory } from 'react-router-dom';
+import moment from 'moment';
+import CloseIcon from '@material-ui/icons/Close';
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    margin: 20,
+  },
+  dailog: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  dialogPaper: {
+    minHeight: '45vh',
+    maxHeight: '45vh',
+  },
+  dgsize: {
+    width: '100%',
+  },
+}));
+const styles = (theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(2),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+});
+
+const DialogTitle = withStyles(styles)((props) => {
+  const { children, classes, onClose, ...other } = props;
+  return (
+    <MuiDialogTitle disableTypography className={classes.root} {...other}>
+      <Typography variant='h6'>{children}</Typography>
+      {onClose ? (
+        <IconButton aria-label='close' className={classes.closeButton} onClick={onClose}>
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </MuiDialogTitle>
+  );
+});
+
+const DialogContent = withStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}))(MuiDialogContent);
+
+const DialogActions = withStyles((theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(1),
+  },
+}))(MuiDialogActions);
 const resolveQuestionTypeName = (type) => {
   switch (type) {
     case 1:
@@ -51,12 +117,14 @@ const resolveQuestionTypeName = (type) => {
 
 const ITEM_HEIGHT = 48;
 
-const menuOptions = ['Delete'];
+const menuOptions = ['Remove'];
 
 const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) => {
   let history = useHistory();
 
   const themeContext = useTheme();
+  const [Diaopen, setdiaOpen] = React.useState(false);
+  const [deleteAlert, setDeleteAlert] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
@@ -67,15 +135,27 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
-  const handleDelete = () => {
-    handleMenuClose();
-    onDelete(questionId, section.id);
+  const DiaClickOpen = () => {
+    setdiaOpen(true);
   };
 
+  const DiaClose = () => {
+    setdiaOpen(false);
+  };
+
+  const handleDelete = () => {
+    setDeleteAlert(true);
+  };
+  const handleDeleteConfirm = () => {
+    setDeleteAlert(false);
+    onDelete(questionId, section.id);
+  };
   const handleDeleteQuestion = (q) => {
     handleMenuClose();
-    onDeleteQuestion(q?.id, section)
+    onDeleteQuestion(q?.id, section);
+  };
+  const handleDeleteCancel = () => {
+    setDeleteAlert(false);
   };
 
   return (
@@ -151,6 +231,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
                 key={option}
                 selected={option === 'Pyxis'}
                 onClick={handleDelete}
+                // onClick={DiaClickOpen}
                 style={{
                   color: themeContext.palette.primary.main,
                 }}
@@ -158,6 +239,27 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
                 {option}
               </MenuItem>
             ))}
+            <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
+              <DialogTitle
+                style={{ cursor: 'move', color: '#014b7e' }}
+                id='draggable-dialog-title'
+              >
+                Delete Question
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Are you sure you want to delete this Question ?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
+                  Cancel
+                </Button>
+                <Button color='primary' onClick={handleDeleteConfirm}>
+                  Confirm
+                </Button>
+              </DialogActions>
+            </Dialog>
           </Popover>
         </div>
       </div>
@@ -228,12 +330,14 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
             <div className='content'>
               <div className='left'>
                 <div style={{ fontWeight: 550, fontSize: '1rem' }}>Online</div>
-                <div> {q.is_published ? 'Published' : 'Draft'}</div>
+                <div> {q.is_published ? 'Draft' : 'Published'}</div>
               </div>
               <div className='right'>
                 <div className='created'>
                   <div>Created on</div>
-                  <div style={{ fontWeight: 550, fontSize: '1rem' }}>30.12.2020</div>
+                  <div style={{ fontWeight: 550, fontSize: '1rem' }}>
+                    {`${moment(q.test_date).format('DD-MM-YYYY')}`}
+                  </div>
                 </div>
                 {/* <div>
                   <Button variant='contained' color='primary'>
