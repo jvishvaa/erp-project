@@ -60,9 +60,16 @@ const Filter = ({ handleFilter, clearFilter }) => {
      .get(url)
      .then(response => {
       setLoading(false);
+      const defaultYear = response?.data?.current_acad_session_data?.[0];
       if (response.data.status_code === 200) {
         if (key === 'acad') {
+          setSelectedAcad(defaultYear)
           setAcadList(response.data.data);
+          withAxiosInstance(
+            `${endpoints.communication.branches}?session_year=${defaultYear?.id}&module_id=${getModuleInfo('Ebook View')}`,
+            'branch'
+          );
+
         } else if(key === 'branch') {
           setBranchList(response.data.data.results);
         } else if (key === 'grade') {
