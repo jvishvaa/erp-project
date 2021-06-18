@@ -105,6 +105,9 @@ function AddContact() {
           if (key === 'academicYearList') {
             // console.log(result?.data?.data || []);
             setAcademicYear(result?.data?.data || []);
+            if(academicYear){
+              handleYear("",{id: 1, is_delete: false, session_year: "2021-22", branch: null, created_by: null})
+            }
           }
           if (key === 'branchList') {
             // console.log(result?.data?.data || []);
@@ -193,6 +196,17 @@ function AddContact() {
     setCampusInchargeContact('');
   };
 
+  const handleYear = (event, value) => {
+      setSelectedBranch([]);
+      setSelectedAcadmeicYear(value);
+      if (value?.id) {
+        callApi(
+          `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+          'branchList'
+        );
+      }
+    };
+
   return (
     <>
       <Grid
@@ -208,17 +222,18 @@ function AddContact() {
             size='small'
             fullWidth
             style={{ width: '100%' }}
-            onChange={(event, value) => {
-              setSelectedAcadmeicYear(value);
-              // console.log(value, 'test');
-              if (value) {
-                callApi(
-                  `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                  'branchList'
-                );
-              }
-              setSelectedBranch([]);
-            }}
+            onChange={handleYear}
+            // onChange={(event, value) => {
+            //   setSelectedAcadmeicYear(value);
+            //   // console.log(value, 'test');
+            //   if (value) {
+            //     callApi(
+            //       `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+            //       'branchList'
+            //     );
+            //   }
+            //   setSelectedBranch([]);
+            // }}
             id='branch_id'
             className='dropdownIcon'
             value={selectedAcademicYear || ''}
