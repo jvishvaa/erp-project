@@ -168,7 +168,6 @@ const CreateChapterType = ({
     }
   }, [moduleId]);
 
-
   // const handleAcademicYear = (event, value) => {
   //   setFilterData({ year: '', branch: '', grade: '', subject: '', chapter: '' });
   //   if (value) {
@@ -204,14 +203,14 @@ const CreateChapterType = ({
   };
 
   useEffect(() => {
-    if(academicYear.length > 0) {
+    if (academicYear.length > 0) {
       academicYear.map((option) => {
-            if(option.session_year === "2021-22") {
-                handleAcademicYear('',option);
-            }
-        })
+        if (option.session_year === '2021-22') {
+          handleAcademicYear('', option);
+        }
+      });
     }
-},[academicYear])
+  }, [academicYear]);
 
   const fetchBranches = () => {
     fetchBranchesForCreateUser().then((data) => {
@@ -531,25 +530,25 @@ const CreateChapterType = ({
                 />
               )}
             /> */}
-              <Autocomplete
-                  size='small'
-                  style={{ width: '100%' }}
-                  onChange={handleAcademicYear}
-                  id='year'
-                  className='dropdownIcon'
-                  value={filterData.year}
-                  options={academicYear}
-                  getOptionLabel={(option) => option?.session_year}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Academic Year'
-                      placeholder='Academic Year'
-                    />
-                  )}
+            <Autocomplete
+              size='small'
+              style={{ width: '100%' }}
+              onChange={handleAcademicYear}
+              id='year'
+              className='dropdownIcon'
+              value={filterData.year}
+              options={academicYear}
+              getOptionLabel={(option) => option?.session_year}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Academic Year'
+                  placeholder='Academic Year'
                 />
+              )}
+            />
           </Grid>
           {/* <Grid
             item
@@ -557,7 +556,7 @@ const CreateChapterType = ({
             sm={4}
             className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
           > */}
-            {/* <Autocomplete
+          {/* <Autocomplete
               style={{ width: '100%' }}
               size='small'
               onChange={handleBranch}
@@ -578,31 +577,31 @@ const CreateChapterType = ({
             /> */}
           {/* </Grid> */}
           <Grid
-                item
-                xs={12}
-                sm={4}
-                className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
-              >
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={handleBranch}
-                  id='branch'
-                  className='dropdownIcon'
-                  value={filterData?.branch || ''}
-                  options={branchDropdown || []}
-                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Branch'
-                      placeholder='Branch'
-                    />
-                  )}
+            item
+            xs={12}
+            sm={4}
+            className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+          >
+            <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              onChange={handleBranch}
+              id='branch'
+              className='dropdownIcon'
+              value={filterData?.branch || ''}
+              options={branchDropdown || []}
+              getOptionLabel={(option) => option?.branch?.branch_name || ''}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  placeholder='Branch'
                 />
-              </Grid>
+              )}
+            />
+          </Grid>
           <Grid
             item
             xs={12}
@@ -678,16 +677,16 @@ const CreateChapterType = ({
           </Grid>
 
           {/* <Grid container spacing={5}> */}
-          <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
+          <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
             <TextField
               id='categoryname'
               label='Chapter Name'
-              style={{ width: '100%', marginTop: '-10px' }}
+              style={{ width: '100%' }}
               variant='outlined'
               size='small'
-              // placeholder='Ex: Attendance List'
+              className='dropdownIcon'
               value={categoryName}
-              inputProps={{ maxLength: 40 }}
+              inputProps={{ maxLength: 100 }}
               name='categoryname'
               onChange={(e) => setCategoryName(e.target.value)}
               required

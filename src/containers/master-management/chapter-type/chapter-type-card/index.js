@@ -9,35 +9,31 @@ import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import useStyles from './useStyles';
 
 const ChapterTypeCard = (props) => {
-  const {
-    msgtype,
-    handleDelete,
-    handleEditMessageType,
-  } = props;
+  const { msgtype, handleDelete, handleEditMessageType } = props;
   const classes = useStyles();
   return (
     <Paper className={classes.root}>
       <Grid container spacing={2}>
-          <Grid item xs={8}>
-              <Typography
-                className={classes.title}
-                variant='p'
-                component='p'
-                color='secondary'
-              >
-                Chapter Type
-              </Typography>
-              <Typography
-                className={classes.content}
-                variant='p'
-                component='p'
-                color='secondary'
-                title={msgtype?.chapter_name}
-                noWrap
-              >
-                {msgtype.chapter_name}
-              </Typography>
-          </Grid>
+        <Grid item xs={8}>
+          <Typography
+            className={classes.title}
+            variant='p'
+            component='p'
+            color='secondary'
+          >
+            Chapter
+          </Typography>
+          <Typography
+            className={classes.content}
+            variant='p'
+            component='p'
+            color='secondary'
+            title={msgtype?.chapter_name}
+            noWrap
+          >
+            {msgtype.chapter_name}
+          </Typography>
+        </Grid>
         <Grid item xs={12}>
           <Divider />
         </Grid>
@@ -47,10 +43,7 @@ const ChapterTypeCard = (props) => {
               <IconButton
                 className='removePadding'
                 onClick={() => {
-                  handleEditMessageType(
-                    msgtype.id,
-                    msgtype.chapter_name,
-                  );
+                  handleEditMessageType(msgtype.id, msgtype.chapter_name);
                 }}
               >
                 <EditOutlinedIcon color='primary' />
