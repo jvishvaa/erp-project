@@ -114,7 +114,7 @@ const CreateQuestionPaper = ({
         if (formik.values.branch) {
           getGrades(formik.values.academic?.id, formik.values.branch?.branch?.id);
           if (formik.values.grade) {
-            getSubjects(formik.values.grade?.grade_id);
+            getSubjects(formik.values.branch?.id, formik.values.grade?.grade_id);
           } else {
             setSubjects([]);
           }
@@ -153,6 +153,7 @@ const CreateQuestionPaper = ({
     try {
       const data = await fetchAcademicYears(moduleId);
       setAcademicDropdown(data);
+      // handleAcademicYear({}, data[0]);
     } catch (e) {
       setAlert('error', 'Failed to fetch academic');
     }
@@ -176,10 +177,10 @@ const CreateQuestionPaper = ({
     }
   };
 
-  const getSubjects = async (gradeId) => {
+  const getSubjects = async (acadId, gradeId) => {
     try {
       setSubjects([]);
-      const data = await fetchSubjects(gradeId);
+      const data = await fetchSubjects(acadId, gradeId);
       setSubjects(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch subjects');
@@ -209,7 +210,13 @@ const CreateQuestionPaper = ({
     const question = { id: cuid(), sections };
     initAddQuestion(question);
   };
-
+  const handleClearAll = () => {
+    initSetFilter('selectedAcademic', '');
+    initSetFilter('selectedBranch', '');
+    initSetFilter('selectedGrade', []);
+    initSetFilter('selectedSubject', []);
+    initSetFilter('selectedLevel', '');
+  };
   const handleClearFilters = () => {
     formik.setFieldValue('academic', {});
     formik.setFieldValue('branch', {});
@@ -260,12 +267,15 @@ const CreateQuestionPaper = ({
         academic_session: formik.values.branch.id,
         subjects: formik.values.subject.map((obj) => obj?.subject_id),
         paper_level: formik.values.question_paper_level.id,
-        question: questionData.flat(),
         section: sectionData,
         sections: sectionData,
         is_review: 'True',
         is_draft: 'False',
       };
+
+      if (questionData?.length) {
+        reqObj = { ...reqObj, question: questionData.flat() };
+      }
 
       if (centralQuestionData?.length) {
         reqObj = { ...reqObj, central_question: centralQuestionData.flat() };
@@ -287,7 +297,7 @@ const CreateQuestionPaper = ({
           break;
         }
       }
-
+      console.log(formik.values.grade, '====>');
       let submitArray = {
         Section: sectionFlag,
         'Question Paper Name': questionPaperName,
@@ -295,7 +305,7 @@ const CreateQuestionPaper = ({
         Subject: formik.values.subject.length,
         Grade: formik.values.grade.grade_id,
       };
-
+      console.log(submitArray, '==ii>');
       let finalSubmitFlag =
         Object.entries(submitArray).every(([key, value]) => value) && sectionData.length;
 
@@ -322,7 +332,7 @@ const CreateQuestionPaper = ({
     }
   };
 
-  const handleAcademicYear = (event, value) => {
+  const handleAcademicYear = (event = {}, value = '') => {
     formik.setFieldValue('academic', {});
     formik.setFieldValue('branch', {});
     formik.setFieldValue('grade', {});
@@ -346,10 +356,10 @@ const CreateQuestionPaper = ({
   };
 
   const handleGrade = (event, value) => {
-    formik.setFieldValue('grade', {});
     formik.setFieldValue('subject', []);
+    console.log(value, '===>');
     if (value) {
-      getSubjects(value?.grade_id);
+      getSubjects(formik.values.branch?.id, value?.grade_id);
       formik.setFieldValue('grade', value);
       initSetFilter('selectedGrade', value);
     }
@@ -572,6 +582,7 @@ const CreateQuestionPaper = ({
                 className='disabled-btn'
                 style={{ borderRadius: '10px' }}
                 onClick={() => {
+                  handleClearAll();
                   formik.handleReset();
                 }}
               >
@@ -603,7 +614,10 @@ const CreateQuestionPaper = ({
               handleAddQuestion={handleAddQuestion}
               onCreateQuestionPaper={handleCreateQuestionPaper}
               onChangePaperName={(e) =>
-                initSetFilter('questionPaperName', e.target.value)
+                initSetFilter(
+                  'questionPaperName',
+                  e.target.value.replace(/\b(\w)/g, (s) => s.toUpperCase())
+                )
               }
               questionPaperName={questionPaperName}
               onDeleteSection={handleDeleteSection}

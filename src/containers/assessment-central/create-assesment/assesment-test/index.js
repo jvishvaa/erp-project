@@ -21,6 +21,8 @@ import infoicon from '../../../../assets/images/infoicon.svg';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import './styles.scss';
 import QuestionDetailCard from '../question-detail-card.js';
+import ENVCONFIG from '../../../../config/config';
+
 
 const menuOptions = [
   'Assign marks',
@@ -100,6 +102,9 @@ const AssesmentTest = ({
       }
     }
   };
+
+  const { TINYMCE_API_KEY = 'g8mda2t3wiq0cvb9j0vi993og4lm8rrylzof5e6lml5x8wua' } =
+    ENVCONFIG || {};
 
   return (
     <div className='create-container'>
@@ -187,7 +192,6 @@ const AssesmentTest = ({
                           color='primary'
                           style={{ width: isMobile ? '50%' : '100%' }}
                           onChange={(e) => {
-                            console.log(e.target.value)
                             onTestDateChange(e.target.value);
                           }}
                         />
@@ -211,12 +215,6 @@ const AssesmentTest = ({
                           name='duration'
                           value={testDuration}
                           style={{ width: '100%' }}
-                          // onChange={(e) => {
-                          // const { target: { value } = {} } = e || {};
-                          // if (Number.isFinite(+value)) {
-                          // onTestDurationChange(+value);
-                          // }
-                          // }}
                           onChange={(e) => handleChange(e)}
                         />
                       </div>
@@ -269,6 +267,7 @@ const AssesmentTest = ({
               <div className='form-field-header'>GENERAL INSTRUCTIONS</div>
               {openEditor && (
                 <Editor
+                apiKey={TINYMCE_API_KEY}
                   init={{
                     height: 300,
                     menubar: false,

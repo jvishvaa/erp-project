@@ -13,7 +13,7 @@ function QuestionReview() {
   const { questionsArray = [], questionsDataObj = {} } =
     React.useContext(AssessmentReviewContext) || {};
   const questionsUI = (quesArray) => {
-    return quesArray.map((Q, index) => {
+    return quesArray?.map((Q, index) => {
       const questionId = Q.id;
       const {
         question_type: questionType,
@@ -42,7 +42,7 @@ function QuestionReview() {
             <span>{ReactHtmlParser(question)}</span>
           </div>
           {questionType === 7 ? (
-            questionsUI(Q.sub_questions || {})
+            questionsUI(Q?.sub_questions || [])
           ) : (
             <div className={classes.answersContainer}>
               <p>

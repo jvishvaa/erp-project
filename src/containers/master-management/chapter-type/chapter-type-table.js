@@ -8,6 +8,7 @@ import {
   Grid,
   Button,
   Paper,
+  Divider,
   TableContainer,
   Table,
   TableHead,
@@ -200,14 +201,14 @@ const ChapterTypeTable = (setCentralSubjectName) => {
   };
 
   useEffect(() => {
-    if(academicYear.length > 0) {
+    if (academicYear.length > 0) {
       academicYear.map((option) => {
-            if(option.session_year === "2021-22") {
-                handleAcademicYear('',option);
-            }
-        })
+        if (option.session_year === '2021-22') {
+          handleAcademicYear('', option);
+        }
+      });
     }
-},[academicYear])
+  }, [academicYear]);
 
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
@@ -348,6 +349,16 @@ const ChapterTypeTable = (setCentralSubjectName) => {
         setAlert('error', error.message);
       });
   };
+
+  const handleClear = () => {
+    setFilterData({
+      year: '',
+      branch: [],
+      grade: [],
+      section: [],
+      role: '',
+    });
+  };
   const handleSection = (event, value) => {
     setFilterData({ ...filterData, section: '' });
     if (value) {
@@ -403,12 +414,12 @@ const ChapterTypeTable = (setCentralSubjectName) => {
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='Master Management'
-              childComponentName='Chapter Type List'
+              childComponentName='Chapter List'
               childComponentNameNext={
                 addFlag && !tableFlag
-                  ? 'Add Chapter Type'
+                  ? 'Add Chapter'
                   : editFlag && !tableFlag
-                  ? 'Edit Message Type'
+                  ? 'Edit Chapter'
                   : null
               }
             />
@@ -429,25 +440,6 @@ const ChapterTypeTable = (setCentralSubjectName) => {
 
         {tableFlag && !addFlag && !editFlag && (
           <div>
-            <Grid
-              container
-              spacing={isMobile ? 3 : 5}
-              style={{ width: widerWidth, margin: wider }}
-            >
-              <Grid item xs={12} sm={4} className='addButtonPadding'>
-                <Button
-                  startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-                  variant='contained'
-                  color='primary'
-                  size='small'
-                  style={{ color: 'white' }}
-                  title='Add Message Type'
-                  onClick={handleAddChapterType}
-                >
-                  Add Chapter Type
-                </Button>
-              </Grid>
-            </Grid>
             <Grid
               container
               spacing={isMobile ? 3 : 5}
@@ -579,17 +571,64 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-                <Button
-                  variant='contained'
-                  style={{ color: 'white' }}
-                  color='primary'
-                  className='custom_button_master modifyDesign'
-                  size='medium'
-                  onClick={handleFilter}
+              <Grid
+                container
+                spacing={isMobile ? 3 : 5}
+                style={{ width: widerWidth, margin: wider }}
+              >
+                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                  <Button
+                    variant='contained'
+                    className='labelColor buttonModifiedDesign'
+                    size='medium'
+                    onClick={handleClear}
+                  >
+                    CLEAR ALL
+                  </Button>
+                </Grid>
+                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                  <Button
+                    variant='contained'
+                    style={{ color: 'white' }}
+                    color='primary'
+                    className='buttonModifiedDesign'
+                    size='medium'
+                    onClick={handleFilter}
+                  >
+                    FILTER
+                  </Button>
+                </Grid>
+                <div>
+                  <Divider
+                    orientation='vertical'
+                    style={{
+                      backgroundColor: '#014e7b',
+                      height: '40px',
+                      marginTop: '1rem',
+                      marginLeft: '2rem',
+                      marginRight: '1.25rem',
+                    }}
+                  />
+                </div>
+                <Grid
+                  item
+                  xs={8}
+                  sm={3}
+                  className={isMobile ? 'createButton' : 'createButton addButtonPadding'}
                 >
-                  FILTER
-                </Button>
+                  <Button
+                    startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                    variant='contained'
+                    color='primary'
+                    size='medium'
+                    className='buttonModifiedDesign'
+                    style={{ color: 'white' }}
+                    title='Add Chapter'
+                    onClick={handleAddChapterType}
+                  >
+                    Add Chapter
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
           </div>
@@ -625,7 +664,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                             onClick={(e) => {
                               handleDelete(msgtype);
                             }}
-                            title='Delete Message Type'
+                            title='Delete Chapter'
                           >
                             <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
                           </IconButton>
@@ -634,7 +673,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                             onClick={(e) =>
                               handleEditMessageType(msgtype.id, msgtype.chapter_name)
                             }
-                            title='Edit Message Type'
+                            title='Edit Chapter'
                           >
                             <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
                           </IconButton>
@@ -687,10 +726,10 @@ const ChapterTypeTable = (setCentralSubjectName) => {
             style={{ cursor: 'move', color: '#014b7e' }}
             id='draggable-dialog-title'
           >
-            Delete Message Type
+            Delete Chapter
           </DialogTitle>
           <DialogContent>
-            <DialogContentText>{`Confirm Delete Message Type ${categoryName}`}</DialogContentText>
+            <DialogContentText>{`Confirm Delete Chapter ${categoryName}`}</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>

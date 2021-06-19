@@ -167,10 +167,10 @@ const Assesment = () => {
     }
   };
 
-  const getSubjects = async (mappingId) => {
+  const getSubjects = async (acadId, mappingId) => {
     try {
       setSubjects([]);
-      const data = await fetchSubjects(mappingId);
+      const data = await fetchSubjects(acadId, mappingId);
       setSubjects(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch subjects');
@@ -285,7 +285,7 @@ const Assesment = () => {
       if (formik.values.branch) {
         getGrades(formik.values.academic?.id, formik.values.branch?.branch?.id);
         if (formik.values.grade) {
-          getSubjects(formik.values.grade?.grade_id);
+          getSubjects(formik.values.branch?.id, formik.values.grade?.grade_id);
         } else {
           setSubjects([]);
         }
@@ -372,7 +372,7 @@ const Assesment = () => {
       setAlert('error', 'Select Grade');
       return;
     }
-    if (!formik?.values?.subject.length) {
+    if (!formik?.values?.subject?.length) {
       setAlert('error', 'Select Subject');
       return;
     }
@@ -384,6 +384,7 @@ const Assesment = () => {
   };
 
   const handleAcademicYear = (event, value) => {
+    formik.setFieldValue('academic', '');
     if (value) {
       getBranch(value?.id);
       formik.setFieldValue('academic', value);
@@ -392,6 +393,7 @@ const Assesment = () => {
   };
 
   const handleBranch = (event, value) => {
+    formik.setFieldValue('branch', '');
     if (value) {
       getGrades(formik.values.academic?.id, value?.branch?.id);
       formik.setFieldValue('branch', value);
@@ -400,35 +402,29 @@ const Assesment = () => {
   };
 
   const handleGrade = (event, value) => {
+    formik.setFieldValue('grade', '');
     if (value) {
-      getSubjects(value?.grade_id);
+      getSubjects(formik.values.branch?.id, value?.grade_id);
       formik.setFieldValue('grade', value);
       // initSetFilter('selectedGrade', value);
     }
   };
 
   const handleSubject = (event, value) => {
+    formik.setFieldValue('subject', '');
     if (value) {
       formik.setFieldValue('subject', value);
       // initSetFilter('selectedSubject', value);
     }
   };
+  // console.log('The View Data:---', selectedAssesmentTest);
 
   return (
     <Layout>
       <div className='assesment-container'>
-        <div className='lesson-plan-breadcrumb-wrapper'>
-          <CommonBreadcrumbs componentName='Assesment' />
-        </div>
-        <div className='content-container'>
-          <Accordion
-            className='collapsible-section'
-            square
-            expanded={expandFilter}
-            onChange={() => {}}
-          >
-            <AccordionSummary>
-              <div className='header mv-20'>
+        <div className='lesson-plan-breadcrumb-wrapper' style={{display:'flex',justifyContent:'space-between'}}>
+          <CommonBreadcrumbs componentName='Assessment' />
+         <div >
                 {!expandFilter ? (
                   <IconButton
                     onClick={() => {
@@ -453,7 +449,7 @@ const Assesment = () => {
                     <Typography
                       component='h4'
                       color='secondary'
-                      style={{ marginRight: '5px' }}
+                      style={{ marginRight: '5px'}}
                     >
                       Close Filter
                     </Typography>
@@ -461,9 +457,18 @@ const Assesment = () => {
                   </IconButton>
                 )}
               </div>
+        </div>
+        <div className='content-container'>
+          <Accordion
+            className='collapsible-section'
+            square
+            expanded={expandFilter}
+            onChange={() => {}}
+          >
+            <AccordionSummary>
             </AccordionSummary>
             <AccordionDetails>
-              <div className='form-grid-container mv-20'>
+              <div className='form-grid-container mv-20' style={{marginTop:'-50px'}}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} md={3}>
                     <FormControl fullWidth variant='outlined'>
@@ -723,8 +728,8 @@ const Assesment = () => {
                           <TextField
                             {...params}
                             variant='outlined'
-                            label='Assesment Type'
-                            placeholder='Assesment Type'
+                            label='Assessment Type'
+                            placeholder='Assessment Type'
                           />
                         )}
                         size='small'

@@ -72,6 +72,8 @@ const AssessmentFilters = ({
         .then((result) => {
           if (result.data.status_code === 200) {
             setAcademicDropdown(result.data?.data);
+            const defaultValue = result.data?.data?.[0];
+            handleAcademicYear({}, defaultValue);
           } else {
             setAlert('error', result.data?.message);
           }
@@ -172,16 +174,18 @@ const AssessmentFilters = ({
     if (value) {
       setFilterData({ ...filterData, grade: value });
       axiosInstance
-        .get(`${endpoints.assessmentErp.subjectList}?grade=${value?.grade_id}`)
+        .get(
+          `${endpoints.assessmentErp.subjectList}?session_year=${filterData.branch?.id}&grade=${value?.grade_id}`
+        )
         .then((result) => {
-          if (result.data.status_code === 200) {
-            setSubjectDropdown(result.data?.result);
+          if (result?.data?.status_code === 200) {
+            setSubjectDropdown(result?.data?.result);
           } else {
-            setAlert('error', result.data?.message);
+            setAlert('error', result?.data?.message);
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     }
   };

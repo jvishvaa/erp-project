@@ -52,14 +52,12 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
   const [periodDataForView, setPeriodDataForView] = useState([]);
   const [filterDataDown, setFilterDataDown] = useState({});
   const limit = 9;
-  const [chapterSearch, setChapterSearch] = useState();
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [isFilter, setIsFilter] = useState(true);
   const [periodColor, setPeriodColor] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
-  const [tabPanelGradeValue, setTabPanelGradeValue] = useState('');
   const [tabMapId, setTabMapId] = useState('');
   const [tabQueLevel, setTabQueLevel] = useState([]);
   const [tabQueTypeId, setTabQueTypeId] = useState('');
@@ -99,12 +97,6 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
         history.push(`/create-question-paper?show-question-paper=true`);
       } else setAlert('error', 'Question already added!');
     }
-    // if (!questionIds.includes(question.id)) {
-    //   initAddQuestionToSection(question, questionId, section);
-    //   history.push(`/create-question-paper?show-question-paper=true`);
-    // } else {
-    //   setAlert('error', 'Question already added!');
-    // }
   };
 
   const handlePagination = (event, page) => {
@@ -125,15 +117,12 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     isErpCentral,
     newValue
   ) => {
-    // setTabValue(newValue);
     if (!subjMapId || !quesLevel) {
       setAlert('error', 'Select all the fields!');
       return;
     }
     setLoading(true);
     setPeriodData([]);
-    // setChapterSearch(searchChapter);
-    // setTabPanelGradeValue(gradeId);
     setTabQueTypeId(quesTypeId);
     setTabQueCatId(quesCatId);
     setTabTopicId(topicId);
@@ -145,43 +134,8 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     setTabIsErpCentral(isErpCentral);
 
     const erpQuestionList = endpoints.questionBank.erpQuestionList;
-    // const centralQuestionList=endpoints.questionBank.centralQuestionList
     if (newValue == 0 || newValue == undefined) {
       setTabValue(0);
-      const filterStatus = '';
-      // if (tabValue) {
-      //   filterStatus = `&question_status=${tabValue}`;
-      // }
-      // axiosInstance
-      //   .get(
-      //     `${endpoints.questionBank.questionData}?mapping_id=${subjMapId?.id}&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}${filterStatus}`
-      //     // `${endpoints.questionBank.questionData}?mapping_id=14&question_type=7&question_categories=2&question_level=2`
-      //   )
-      // axios
-      //   .get(
-      //     `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}&school=${subDomainName}`,
-      //     {
-      //       headers: { 'x-api-key': 'vikash@12345#1231' },
-      //     }
-      //   )
-      //   .then((result) => {
-      //     if (result.data.status_code === 200) {
-      //       setTotalCount(result?.data?.result?.count);
-      //       setLoading(false);
-      //       setPeriodData(result?.data?.result?.results);
-      //       setViewMore(false);
-      //       setViewMoreData({});
-      //       setSelectedIndex(-1);
-      //     } else {
-      //       setLoading(false);
-      //       setAlert('error', result?.data?.description);
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     setLoading(false);
-      //     setAlert('error', error?.message);
-      //   });
-      console.log(isErpCentral, '==========');
       if (!isErpCentral?.flag) {
         axiosInstance
           .get(
@@ -230,29 +184,6 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       }
     } else if (newValue == 1) {
       setTabValue(1);
-      // axios
-      //   .get(
-      //     `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=1&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}&school=${subDomainName}`,
-      //     {
-      //       headers: { 'x-api-key': 'vikash@12345#1231' },
-      //     }
-      //   )
-      //   .then((result) => {
-      //     if (result?.data?.status_code === 200) {
-      //       setTotalCount(result?.data?.result?.count);
-      //       setLoading(false);
-      //       setPeriodData(result?.data?.result?.results);
-      //       setViewMore(false);
-      //       setViewMoreData({});
-      //     } else {
-      //       setLoading(false);
-      //       setAlert('error', result?.data?.description);
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     setLoading(false);
-      //     setAlert('error', error?.message);
-      //   });
       if (!isErpCentral?.flag) {
         axiosInstance
           .get(
@@ -301,29 +232,6 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       }
     } else if (newValue == 2) {
       setTabValue(2);
-      // axios
-      //   .get(
-      //     `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=3&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}&school=${subDomainName}`,
-      //     {
-      //       headers: { 'x-api-key': 'vikash@12345#1231' },
-      //     }
-      //   )
-      //   .then((result) => {
-      //     if (result?.data?.status_code === 200) {
-      //       setTotalCount(result?.data?.result?.count);
-      //       setLoading(false);
-      //       setPeriodData(result?.data?.result?.results);
-      //       setViewMore(false);
-      //       setViewMoreData({});
-      //     } else {
-      //       setLoading(false);
-      //       setAlert('error', result?.data?.description);
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     setLoading(false);
-      //     setAlert('error', error?.message);
-      //   });
       if (!isErpCentral?.flag) {
         axiosInstance
           .get(
@@ -372,29 +280,6 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       }
     } else if (newValue == 3) {
       setTabValue(3);
-      // axios
-      //   .get(
-      //     `${endpoints.questionBank.questionData}?mapping_id=${subjMapId}&question_status=2&question_type=${quesTypeId}&question_categories=${quesCatId?.value}&question_level=${quesLevel?.value}&topic=${topicId?.id}&page=${page}&page_size=${limit}&school=${subDomainName}`,
-      //     {
-      //       headers: { 'x-api-key': 'vikash@12345#1231' },
-      //     }
-      //   )
-      //   .then((result) => {
-      //     if (result?.data?.status_code === 200) {
-      //       setTotalCount(result?.data?.result?.count);
-      //       setLoading(false);
-      //       setPeriodData(result?.data?.result?.results);
-      //       setViewMore(false);
-      //       setViewMoreData({});
-      //     } else {
-      //       setLoading(false);
-      //       setAlert('error', result?.data?.description);
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     setLoading(false);
-      //     setAlert('error', error?.message);
-      //   });
       if (!isErpCentral?.flag) {
         axiosInstance
           .get(

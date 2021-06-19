@@ -19,6 +19,7 @@ import {
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import { useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -78,7 +79,7 @@ const CreateAssesment = ({
   const [testDuration, setTestDuration] = useState(initialTestDuration);
   const [totalMarks, setTotalmarks] = useState(initialTotalMarks);
   const [paperchecked, setChecked] = React.useState(false);
-
+  const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
 
   const formik = useFormik({
@@ -195,7 +196,6 @@ const CreateAssesment = ({
     });
 
     if (!paperchecked) {
-
       if (testMarksArr.length < initQuestionsLength) {
         setAlert('error', 'Please enter marks for every question!');
         return;
@@ -220,7 +220,14 @@ const CreateAssesment = ({
       }
     }
 
-    const reqObj = {
+    if (paperchecked) {
+      if (totalMarks <= 0) {
+        setAlert('error', 'Total marks should be greater than zero!');
+        return;
+      }
+    }
+
+    let reqObj = {
       question_paper: selectedQuestionPaper?.id,
       test_id: testId,
       test_name: testName,
@@ -229,16 +236,20 @@ const CreateAssesment = ({
       test_type: formik.values.test_type?.id,
       test_duration: testDuration,
       instructions,
-      descriptions: 'Hello',
-      test_mark: testMarksArr,
+      descriptions: 'Assessment',
       is_question_wise: !paperchecked,
     };
+
+    if (!paperchecked) {
+      reqObj = { ...reqObj, test_mark: testMarksArr };
+    }
 
     try {
       const { results = {} } = (await initCreateAssesment(reqObj)) || {};
       if (results?.status_code === 200) {
         setAlert('success', results?.message);
         resetForm();
+        history.push('/assesment');
       } else {
         setAlert('error', results?.message);
       }
@@ -363,9 +374,8 @@ const CreateAssesment = ({
       <div className='create-assesment-container'>
         <div>
           <CommonBreadcrumbs
-            componentName='Dashboard'
-            childComponentName='Assesment'
-            childComponentNameNext='Create assesment'
+            componentName='Assessment'
+            childComponentName='Create Test'
           />
         </div>
         <div className='content-container'>

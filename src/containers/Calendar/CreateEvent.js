@@ -254,6 +254,8 @@ const CreateEvent = () => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
             console.log(result?.data?.data || []);
+            const defaultValue=result?.data?.data?.[0];
+            handleAcademicYear({},defaultValue);
             setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
@@ -358,6 +360,22 @@ const CreateEvent = () => {
     document.getElementById('eventname').value = '';
     // document.getElementById("coustom-date");
   };
+  const handleAcademicYear=(event,value)=>{
+    
+      console.log('moduleIdDDD', moduleId);
+      setSelectedAcadmeicYear(value);
+      if (value) {
+        callApi(
+          `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+          'branchList'
+        );
+      }
+      setSelectedGrade([]);
+      setSectionList([]);
+      setSelectedSection([]);
+      setSelectedBranch([]);
+    }
+  
 
   // const handleEventTypeChange = (e, value) => {
   //   if (value) {
@@ -419,20 +437,9 @@ const CreateEvent = () => {
                 <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
-                  onChange={(event, value) => {
-                    console.log('moduleIdDDD', moduleId);
-                    setSelectedAcadmeicYear(value);
-                    if (value) {
-                      callApi(
-                        `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                        'branchList'
-                      );
-                    }
-                    setSelectedGrade([]);
-                    setSectionList([]);
-                    setSelectedSection([]);
-                    setSelectedBranch([]);
-                  }}
+                 
+                  onChange={handleAcademicYear}
+                   
                   id='branch_id'
                   className='dropdownIcon'
                   value={selectedAcademicYear || ''}

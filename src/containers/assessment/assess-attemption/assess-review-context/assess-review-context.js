@@ -265,7 +265,7 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
 
         questionsDataObj,
 
-        questionsArray: getSortedAndMainQuestions(questionsDataObj || {}),
+        questionsArray: getSortedAndMainQuestions(questionsDataObj || {}) || [] ,
 
         currentQuesionId,
         controls: {

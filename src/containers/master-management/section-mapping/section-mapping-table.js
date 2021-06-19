@@ -541,8 +541,8 @@ const AcademicYearApi = ()=>{
                   <TextField
                     {...params}
                     variant='outlined'
-                    label='Session Year'
-                    placeholder='Session Year'
+                    label='Academic Year'
+                    placeholder='Academic Year'
                   />
                 )}
               />
@@ -695,15 +695,15 @@ const AcademicYearApi = ()=>{
                       grade: { grade_name },
                       acad_session: {
                         branch: branchObj = {},
-                        session_year: sessionObj ={},
+                        academic_year: sessionObj ={},
                       },
                     } = sect;
                     const  { branch_name = 'Branch not found' }  = branchObj || {}
-                    const { session_year = 'Session not found'} = sessionObj || {}
+                    const { academic_year = 'Session not found'} = sessionObj || {}
                     return (
                       <TableRow hover section='checkbox' tabIndex={-1} key={index}>
                         <TableCell className={classes.tableCell}>
-                          {session_year || ''}
+                          {academic_year || ''}
                         </TableCell>
                         <TableCell className={classes.tableCell}>{branch_name}</TableCell>
                         <TableCell className={classes.tableCell}>{grade_name}</TableCell>

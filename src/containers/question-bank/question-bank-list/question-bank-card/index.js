@@ -1,6 +1,15 @@
 import React, { useState, useContext } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import MuiDialogContent from '@material-ui/core/DialogContent';
+import MuiDialogActions from '@material-ui/core/DialogActions';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Button, useTheme, IconButton, SvgIcon } from '@material-ui/core';
@@ -14,6 +23,67 @@ import axios from 'axios';
 import downloadAll from '../../../../assets/images/downloadAll.svg';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { Context } from '../../context/QuestionStore';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+// import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import { withStyles } from '@material-ui/core/styles';
+import CloseIcon from '@material-ui/icons/Close';
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     flexGrow: 1,
+//     margin: 20,
+//   },
+//   dailog: {
+//     display: 'flex',
+//     flexDirection: 'column',
+//     alignItems: 'center',
+//   },
+//   dialogPaper: {
+//     minHeight: '45vh',
+//     maxHeight: '45vh',
+//   },
+//   dgsize: {
+//     width: '100%',
+//   },
+// }));
+// const styles = (theme) => ({
+//   root: {
+//     margin: 0,
+//     padding: theme.spacing(2),
+//   },
+//   closeButton: {
+//     position: 'absolute',
+//     right: theme.spacing(1),
+//     top: theme.spacing(1),
+//     color: theme.palette.grey[500],
+//   },
+// });
+
+// const DialogTitle = withStyles(styles)((props) => {
+//   const { children, classes, onClose, ...other } = props;
+//   return (
+//     <MuiDialogTitle disableTypography className={classes.root} {...other}>
+//       <Typography variant='h6'>{children}</Typography>
+//       {onClose ? (
+//         <IconButton aria-label='close' className={classes.closeButton} onClick={onClose}>
+//           <CloseIcon />
+//         </IconButton>
+//       ) : null}
+//     </MuiDialogTitle>
+//   );
+// });
+
+// const DialogContent = withStyles((theme) => ({
+//   root: {
+//     padding: theme.spacing(2),
+//   },
+// }))(MuiDialogContent);
+
+// const DialogActions = withStyles((theme) => ({
+//   root: {
+//     margin: 0,
+//     padding: theme.spacing(1),
+//   },
+// }))(MuiDialogActions);
 
 const QuestionBankCard = ({
   period,
@@ -48,6 +118,8 @@ const QuestionBankCard = ({
   const classes = useStyles();
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
+  // const [Diaopen, setdiaOpen] = React.useState(false);
+  const [deleteAlert, setDeleteAlert] = useState(false);
 
   const [questionName, setQuestionName] = useState(period.question_answer);
 
@@ -163,7 +235,17 @@ const QuestionBankCard = ({
     span.innerHTML = s;
     return span.textContent || span.innerText;
   }
-  const handleDelete = (obj) => {
+  // const DiaClickOpen = () => {
+  //   setdiaOpen(true);
+  // };
+
+  // const DiaClose = () => {
+  //   setdiaOpen(false);
+  // };
+  const handleDelete = () => {
+    setDeleteAlert(true);
+  };
+  const handleDeleteConfirm = (obj) => {
     axiosInstance
       .put(`${endpoints.questionBank.erpQuestionPublishing}`, {
         question: obj.id,
@@ -171,7 +253,8 @@ const QuestionBankCard = ({
       })
       .then((result) => {
         if (result.data.status_code === 200) {
-          handlePeriodList(tabQueTypeId,
+          handlePeriodList(
+            tabQueTypeId,
             tabQueCatId,
             tabMapId,
             tabQueLevel,
@@ -179,8 +262,10 @@ const QuestionBankCard = ({
             tabYearId,
             tabGradeId,
             tabChapterId,
-            tabIsErpCentral);
+            tabIsErpCentral
+          );
           setAlert('success', 'Question Deleted Successfully');
+          setDeleteAlert(false);
         } else {
           setAlert('error', 'ERROR!');
         }
@@ -189,10 +274,23 @@ const QuestionBankCard = ({
         setAlert('error', error.message);
       });
   };
+  const handleDeleteCancel = () => {
+    setDeleteAlert(false);
+  };
   return (
     <Paper
       className={periodColor ? classes.selectedRoot : classes.root}
-      style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}
+      style={
+        isMobile
+          ? { margin: '0rem auto' }
+          : {
+              margin: '0rem auto -1.1rem auto',
+              background: period?.question_status === '2' ? '#FCEEEE ' : '',
+              border: period?.question_status === '2' ? '1px solid red ' : '',
+            }
+        // ? { margin: '0rem auto', height: '165px' }
+        // : { margin: '0rem auto -1.1rem auto', height: '165px' }
+      }
     >
       <Grid container spacing={2}>
         <Grid item xs={8}>
@@ -259,7 +357,59 @@ const QuestionBankCard = ({
                 {showPeriodIndex === index && showMenu ? (
                   <div className='tooltipContainer'>
                     <span className='tooltiptext'>
-                      <div onClick={(e) => handleDelete(period)}>Delete</div>
+                      {/* <div onClick={(e) => handleDelete(period)}>Delete</div> */}
+                      <div onClick={handleDelete}>Delete</div>
+                      <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
+                        <DialogTitle
+                          style={{ cursor: 'move', color: '#014b7e' }}
+                          id='draggable-dialog-title'
+                        >
+                          Delete Question
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Are you sure you want to delete ?
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={handleDeleteCancel}
+                            className='labelColor cancelButton'
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            color='primary'
+                            onClick={(e) => handleDeleteConfirm(period)}
+                          >
+                            Confirm
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                      {/* <Dialog
+                        open={Diaopen}
+                        onClose={DiaClose}
+                        // style={{ backgroundColor: 'transparent', opacity: '0.4' }}
+                        aria-labelledby='alert-dialog-title'
+                        aria-describedby='alert-dialog-description'
+                      >
+                        <DialogTitle id='alert-dialog-title'>
+                          {'Confirmation For Delete'}
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id='alert-dialog-description'>
+                            Are You Sure to Delete ??.
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={(e) => handleDelete(period)} color='primary'>
+                            yes
+                          </Button>
+                          <Button onClick={DiaClose} color='primary' autoFocus>
+                            No
+                          </Button>
+                        </DialogActions>
+                      </Dialog> */}
                     </span>
                   </div>
                 ) : null}
@@ -291,10 +441,21 @@ const QuestionBankCard = ({
           </Box>
         </Grid>
         <Grid item xs={6} className={classes.textRight}>
-          {!periodColor && (
+          {!periodColor ? (
             <Button
               variant='contained'
               style={{ color: 'white', borderRadius: '10px' }}
+              color='primary'
+              className='custom_button_master'
+              size='small'
+              onClick={handleViewMore}
+            >
+              VIEW MORE
+            </Button>
+          ) : (
+            <Button
+              variant='contained'
+              style={{ color: 'white', borderRadius: '10px', visibility: 'hidden' }}
               color='primary'
               className='custom_button_master'
               size='small'

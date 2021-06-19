@@ -47,14 +47,16 @@ const TrueFalseQuestion = (props) => {
               value='option1'
               // control={<Radio />}
               control={<Radio checked={existingAnswer === 'option1'} />}
-              label={options[0].option1.isChecked ? 'True' : 'False'}
+              // label={options[0].option1.isChecked ? 'True' : 'False'}
+              label={'True'}
             />
             <FormControlLabel
               className='mcq-options'
               value='option2'
               // control={<Radio />}
               control={<Radio checked={existingAnswer === 'option2'} />}
-              label={options[1].option2.isChecked ? 'True' : 'False'}
+              // label={options[1].option2.isChecked ? 'True' : 'False'}
+              label={'False'}
             />
           </RadioGroup>
         </FormControl>

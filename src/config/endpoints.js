@@ -158,13 +158,7 @@ export default {
     downloadBranchWiseStudent: '/qbox/academic/branch_strength_excel_data/',
     downloadExcelAllstudents: '/qbox/academic/all_branch_strength_excel_data/',
   },
-  homeworkReport:{
-    branchWiseData:'/academic/teacher_homework_report/',
-    subjectList:'/academic/fetch_subjects/',
-  },
-  classworkReport:{
-    tableData:'/academic/teacher_classwork_report/',
-  },
+
   idCards: {
     getIdCardsApi: '/erp_user/get-user-details/',
   },
@@ -321,7 +315,7 @@ export default {
     listTickets: '/academic/list_tickets/',
     getGrivienceList: '/academic/grevience-filter/',
     grievance_reply: '/academic/grievance_reply/',
-    getGrievenceErpList: '/academic/grevience-erp-filter/',
+    getGrievenceErpList: '/academic/greivance-reply-list/',
   },
   studentViewBatchesApi: {
     getBatchesApi: '/erp_user/student_online_class/v2/',
@@ -432,9 +426,9 @@ export default {
     createQuestion: `${baseURLCentral}/assessment/create-question/`,
   },
   createQuestionBulk: {
-    BulkUploadTrueOrFalse: `${baseURLCentral}/assessment/bulk_upload_tf/`,
-    BulkUploadSingleChoiceQuestion: `${baseURLCentral}/assessment/upload-sc-questions/`,
-    FillBlankUploadQuestion: `${baseURLCentral}/assessment/fill_bulk_upload/`,
+    BulkUploadTrueOrFalse: `/assessment/bulk_upload_tf/`,
+    BulkUploadSingleChoiceQuestion: `/assessment/upload-sc-questions/`,
+    FillBlankUploadQuestion: `/assessment/fill_bulk_upload/`,
   },
   // contact us api
   contactUs: {
@@ -459,6 +453,13 @@ export default {
     ListenedPercentage: '/academic/',
     AddParticipants: '/academic/branch_students/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+  },
+  homeworkReport:{
+    branchWiseData:'/academic/teacher_homework_report/',
+    subjectList:'/academic/fetch_subjects/',
+  },
+  classworkReport:{
+    tableData:'/academic/teacher_classwork_report/',
   },
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,

@@ -14,14 +14,26 @@ const TimerComponent = (props) => {
   const duratonPassedAlreadyInMilliSec = new Date() - new Date(startedAt);
   const testDurationInMilliSec = durationInMin * 60 * 1000;
   const durationLeft = testDurationInMilliSec - duratonPassedAlreadyInMilliSec;
-  if (durationLeft <= 0) {
-    // const isConfirm = window.confirm('Time ran out.');
-    // if (isConfirm) {
-    //   submit();
-    // } else {
-    //   window.alert('Please submit the test');
-    // }
-  }
+  // if (durationLeft <= 0) {
+  // const isConfirm = window.confirm('Time ran out.');
+  // submit();
+  // if (isConfirm) {
+  //   submit();
+  // } else {
+  //   window.alert('Please submit the test');
+  // }
+  // }
+
+  // React.useEffect(() => {
+  //   let continuosCall = setTimeout(() => {
+  //     window.alert('Time ran out!');
+  //     submit();
+  //   }, durationLeft);
+  //   return () => {
+  //     clearTimeout(continuosCall);
+  //   };
+  // }, []);
+
   return (
     <Timer
       initialTime={durationLeft}

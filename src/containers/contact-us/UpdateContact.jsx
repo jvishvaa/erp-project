@@ -108,6 +108,7 @@ function UpdateContact() {
       setCampusInchargeContact(e.target.value);
     }
   };
+  
   function callApi(api, key) {
     setLoading(true);
     axiosInstance
@@ -116,6 +117,8 @@ function UpdateContact() {
         if (result.status === 200) {
           if (key === 'academicYearList') {
             // console.log(result?.data?.data || []);
+            const defaultValue=result?.data?.data?.[0];
+            handleAcademicYear({},defaultValue);
             setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
@@ -248,6 +251,19 @@ function UpdateContact() {
     setOpManagerContact('');
     setCampusInchargeContact('');
   };
+  const handleAcademicYear=(event, value)=>{
+    
+      setSelectedAcadmeicYear(value);
+      // console.log(value, 'test');
+      if (value) {
+        callApi(
+          `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+          'branchList'
+        );
+      }
+      setSelectedBranch([]);
+    }
+  
 
   return (
     <>
@@ -264,17 +280,7 @@ function UpdateContact() {
             size='small'
             fullWidth
             style={{ width: '100%' }}
-            onChange={(event, value) => {
-              setSelectedAcadmeicYear(value);
-              // console.log(value, 'test');
-              if (value) {
-                callApi(
-                  `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                  'branchList'
-                );
-              }
-              setSelectedBranch([]);
-            }}
+            onChange={handleAcademicYear}
             id='branch_id'
             className='dropdownIcon'
             value={selectedAcademicYear || ''}

@@ -4,7 +4,7 @@ import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
-
+import ENVCONFIG from '../../../../config/config';
 const MyTinyEditor = ({
   id,
   content,
@@ -14,6 +14,8 @@ const MyTinyEditor = ({
   filterDataTop = {},
   filterDataBottom = {},
 }) => {
+  const { TINYMCE_API_KEY = 'g8mda2t3wiq0cvb9j0vi993og4lm8rrylzof5e6lml5x8wua' } =
+    ENVCONFIG || {};
   const { setAlert } = useContext(AlertNotificationContext);
   return (
     <Editor
@@ -21,13 +23,15 @@ const MyTinyEditor = ({
       name='tinymce'
       value={content}
       onEditorChange={handleEditorChange}
+      apiKey={TINYMCE_API_KEY}
       init={{
         selector: 'textarea#myTextArea',
         placeholder: placeholder,
         menubar: false,
-        plugins: (id?.startsWith('studentAnswerEditor') || id?.startsWith('descriptioneditor'))
-          ? ['lists link file paste wordcount']
-          : ['lists link file image paste wordcount'],
+        plugins:
+          id?.startsWith('studentAnswerEditor') || id?.startsWith('descriptioneditor')
+            ? ['lists link file paste wordcount']
+            : ['lists link file image paste wordcount'],
         content_style: 'body { color: #014b7e; font-size: 14pt; font-family: Arial; }',
         toolbar:
           'fontselect fontsizeselect bold italic alignleft aligncenter alignright underline bullist numlist file image customInsertButton',

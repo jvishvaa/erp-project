@@ -82,6 +82,7 @@ const QuestionPaper = ({
                 value={questionPaperName||''}
                 inputProps={{
                   autoComplete: 'off',
+                  maxLength:100,
                 }}
                 // InputProps={{
                 //   endAdornment: (

@@ -94,12 +94,13 @@ const ResponderView = () => {
     setTimeout(() => {
       setLoading(false);
     }, 1500);
-    console.log('in useeffect');
+    
     axiosInstance.get(endpoints.masterManagement.branchList).then((res) => {
-      console.log('res', res.data.data);
-      setBranches(res.data.data);
-    });
+      setBranches(res?.data?.data);
+      // const defaultYear=res?.data?.data?.[0];
 
+    });
+    
     getAppointments();
   }, [page]);
 
@@ -210,11 +211,15 @@ const ResponderView = () => {
       .then((result) => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
-            console.log('this academic year', result?.data?.data || []);
+            console.log('this academic year', result?.data?.data?.[0] || []);
+            const defaultValue=result?.data?.data?.[0];
+            handleYear({},defaultValue)
             setAcademicYear(result?.data?.data || []);
+          
           }
           if (key === 'branchList') {
-            console.log(result?.data?.data || []);
+            console.log(result?.data?.data|| []);
+            
             setBranchList(result?.data?.data?.results || []);
           }
           // if (key === 'gradeList') {
@@ -242,6 +247,18 @@ const ResponderView = () => {
   //     'academicYearList'
   //   );
   // });
+  const handleYear=(event, value)=>{
+   
+      console.log('moduleIdDDD', moduleId);
+      setSelectedAcadmeicYear(value);
+      if (value) {
+        callApi(
+          `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+          'branchList'
+        );
+      }
+    }
+  
 
   const handleFilter = (e) => {
     e.preventDefault();
@@ -262,6 +279,8 @@ const ResponderView = () => {
     //     setTotalCount(res.data.data.count);
     //   });
   };
+
+  
   // let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
   // console.log(userName.first_name, 'userName');
   // console.log(userName.erp, 'Erp ID');
@@ -284,16 +303,7 @@ const ResponderView = () => {
                 style={{ marginTop: '40px', marginLeft: '20px' }}
                 fullWidth
                 // getOptionLabel={(option) => option.branch_name}
-                onChange={(event, value) => {
-                  console.log('moduleIdDDD', moduleId);
-                  setSelectedAcadmeicYear(value);
-                  if (value) {
-                    callApi(
-                      `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                      'branchList'
-                    );
-                  }
-                }}
+                onChange={handleYear}
                 id='branch_id'
                 className='dropdownIcon'
                 value={selectedAcademicYear || ''}
