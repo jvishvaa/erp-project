@@ -324,7 +324,7 @@ const TeacherHomework = withRouter(
               setAcademicYear(result?.data?.data || []);
               setLoading(false);
               if(academicYear){
-                handleYear("",{id: 1, is_delete: false, session_year: "2021-22", branch: null, created_by: null})
+                handleYear("",result.data.current_acad_session_data[0])
               }
             }
             if (key === 'branchList') {
