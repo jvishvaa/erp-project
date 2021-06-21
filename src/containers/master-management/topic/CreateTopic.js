@@ -41,6 +41,7 @@ const CreateTopic = ({ grades, setLoading, handleGoBack }) => {
     grade: '',
     subject: '',
     chapter: '',
+    branch: ''
   });
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -64,17 +65,18 @@ const CreateTopic = ({ grades, setLoading, handleGoBack }) => {
   }, []);
 
   useEffect(() => {
+    if(moduleId) {
     axiosInstance
-      .get(`${endpoints.masterManagement.academicYear}`)
+      .get(`${endpoints.masterManagement.academicYear}?module_id=${moduleId}`)
       .then((result) => {
-        if (result.data.status_code === 200) {
-          setAcademicYearDropdown(result.data.result.results);
+        if (result?.data?.status_code === 200) {
+          setAcademicYearDropdown(result?.data?.result?.results);
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result?.data?.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', error?.message);
       });
 
     // axiosInstance.get(`${endpoints.masterManagement.volumes}`)
@@ -87,26 +89,27 @@ const CreateTopic = ({ grades, setLoading, handleGoBack }) => {
     //     }).catch(error => {
     //         setAlert('error', error.message);
     //     })
-  }, []);
+    }
+  }, [moduleId]);
 
   useEffect(() => {
-    if (filterData.branch) {
+    if (filterData.year && filterData.branch) {
       axiosInstance
         .get(
-          `${endpoints.academics.grades}?branch_id=${filterData.branch?.branch?.id}&module_id=${moduleId}`
+          `${endpoints.academics.grades}?session_year=${filterData.year?.id}&branch_id=${filterData.branch?.branch?.id}&module_id=${moduleId}`
         )
         .then((result) => {
-          if (result.data.status_code === 200) {
-            setGradeDropdown(result.data.data);
+          if (result?.data?.status_code === 200) {
+            setGradeDropdown(result?.data?.data);
           } else {
-            setAlert('error', result.data.message);
+            setAlert('error', result?.data?.message);
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     }
-  }, [filterData]);
+  }, [filterData.branch]);
 
   useEffect(() => {
     if (filterData.year.id && filterData.subject.id) {
@@ -122,8 +125,6 @@ const CreateTopic = ({ grades, setLoading, handleGoBack }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('hi', filterData.chapter.id, topicName, filterData.year.id);
-
     setLoading(true);
     const params = {
       chapter: filterData.chapter.id,
@@ -210,7 +211,7 @@ const CreateTopic = ({ grades, setLoading, handleGoBack }) => {
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.subjects}?grade=${value.grade_id}&branch_id=${filterData.branch?.branch?.id}`
+          `${endpoints.masterManagement.subjects}?grade=${value?.grade_id}&branch_id=${filterData.branch?.branch?.id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
