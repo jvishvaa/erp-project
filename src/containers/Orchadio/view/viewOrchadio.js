@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useContext, useCallback , useState } from 'react';
+import React, { Component, useEffect, useContext, useCallback, useState } from 'react';
 import { withRouter, useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -192,21 +192,19 @@ function ViewOrchadio() {
               item.child_name === 'Student Orchadio'
             ) {
               setModuleId(item?.child_id);
-              console.log(item?.child_id , "module id");
+              console.log(item?.child_id, 'module id');
             } else if (
               location.pathname === '/orchadio/manage-orchadio' &&
               item.child_name === 'Manage Orchadio'
             ) {
               setModuleId(item?.child_id);
-              console.log(item?.child_id , "module id");
+              console.log(item?.child_id, 'module id');
             }
           });
         }
       });
     }
   }, []);
-
-
 
   let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
   console.log(userName[0], 'userName');
@@ -262,7 +260,7 @@ function ViewOrchadio() {
     arr = [...arr.flat()];
     setBranchName(selectedItem);
     if (arr.length) {
-      console.log(arr , "arr");
+      console.log(arr, 'arr');
       // setData(arr);
       scrollToTop();
     }
@@ -285,7 +283,7 @@ function ViewOrchadio() {
       })
       .then((result) => {
         if (result.data.status_code === 200) {
-          setComment('')
+          setComment('');
           setLoading(false);
           setAlert('success', result.data.message);
           const dat = data.map((it) => {
@@ -295,7 +293,7 @@ function ViewOrchadio() {
             }
             return it;
           });
-          console.log(dat , "datttt");
+          console.log(dat, 'datttt');
           setData(dat);
           // console.log(result.data.result);
           // setData(result.data.result);
@@ -342,83 +340,82 @@ function ViewOrchadio() {
     let url;
     if (tabValue === 0) {
       setData([]);
-      console.log(data , "data");
+      console.log(data, 'data');
       // url = `${endpoints.orchadio.GetRadioProgram}`;
       axios
-      .get(endpoints.orchadio.GetRadioProgram)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setLoading(false);
-          setAlert('success', result.data.message);
-          console.log(result.data.result);
-          setData(result.data.result.data);
-          const firstItem =
-            result.data.result.data.length && result.data.result.data.slice(0, 1);
-          // setAudioLink(result.data.result);
-          // setBranchName(firstItem);
-          Expandpanel(firstItem[0]);
-        } else {
-          console.log(result.data.message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        .get(endpoints.orchadio.GetRadioProgram)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setLoading(false);
+            setAlert('success', result.data.message);
+            console.log(result.data.result);
+            setData(result.data.result.data);
+            const firstItem =
+              result.data.result.data.length && result.data.result.data.slice(0, 1);
+            // setAudioLink(result.data.result);
+            // setBranchName(firstItem);
+            Expandpanel(firstItem[0]);
+          } else {
+            console.log(result.data.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else if (tabValue === 1) {
       setData([]);
-      console.log(data , "data1");
+      console.log(data, 'data1');
       // Liked
       // url = `${endpoints.orchadio.GetRadioProgram}?category_type=1`;
       axios
-      .get(`${endpoints.orchadio.GetRadioProgram}?category_type=1`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setLoading(false);
-          setAlert('success', result.data.message);
-          console.log(result.data.result);
-          setData(result.data.result.data);
-          const firstItem =
-            result.data.result.data.length && result.data.result.data.slice(0, 1);
-          // setAudioLink(result.data.result);
-          // setBranchName(firstItem);
-          Expandpanel(firstItem[0]);
-        } else {
-          console.log(result.data.message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        .get(`${endpoints.orchadio.GetRadioProgram}?category_type=1`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setLoading(false);
+            setAlert('success', result.data.message);
+            console.log(result.data.result);
+            setData(result.data.result.data);
+            const firstItem =
+              result.data.result.data.length && result.data.result.data.slice(0, 1);
+            // setAudioLink(result.data.result);
+            // setBranchName(firstItem);
+            Expandpanel(firstItem[0]);
+          } else {
+            console.log(result.data.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else if (tabValue === 2) {
       setData([]);
-      console.log(data , "data2");
+      console.log(data, 'data2');
       // eslint-disable-next-line no-debugger
-     
+
       // Archived
       // url = `${endpoints.orchadio.GetRadioProgram}?category_type=1`;
       // url = `${endpoints.orchadio.GetRadioProgram}?is_deleted=True`;
       axios
-      .get(`${endpoints.orchadio.GetRadioProgram}?is_deleted=True`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setLoading(false);
-          setAlert('success', result.data.message);
-          console.log(result.data.result);
-          setData(result.data.result.data);
-          const firstItem =
-            result.data.result.data.length && result.data.result.data.slice(0, 1);
-          // setAudioLink(result.data.result);
-          // setBranchName(firstItem);
-          Expandpanel(firstItem[0]);
-        } else {
-          console.log(result.data.message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        .get(`${endpoints.orchadio.GetRadioProgram}?is_deleted=True`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setLoading(false);
+            setAlert('success', result.data.message);
+            console.log(result.data.result);
+            setData(result.data.result.data);
+            const firstItem =
+              result.data.result.data.length && result.data.result.data.slice(0, 1);
+            // setAudioLink(result.data.result);
+            // setBranchName(firstItem);
+            Expandpanel(firstItem[0]);
+          } else {
+            console.log(result.data.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-    
   };
   useEffect(() => {
     getRadio();
@@ -446,8 +443,8 @@ function ViewOrchadio() {
     // getRadio();
   };
   useEffect(() => {
-    console.log("data change");
-    setData(null)
+    console.log('data change');
+    setData(null);
     getRadio();
   }, [tabValue]);
   const handleChange = (panel) => (event, expanded) => {
@@ -584,7 +581,7 @@ function ViewOrchadio() {
   return isMobile ? (
     <ViewOrchadioMobile />
   ) : (
-    <div className='layout-container-div' id="viewAudioContainer" >
+    <div className='layout-container-div' id='viewAudioContainer'>
       <Layout className='layout-container'>
         <div className='message_log_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
           <div
@@ -671,7 +668,7 @@ function ViewOrchadio() {
                     {data.length ? getRadioList() : ''}
                     {/* <RadioPlayer data={branchName} /> */}
                     {data.map((item, index) => (
-                      <Grid item xs={12} className="audioArea" >
+                      <Grid item xs={12} className='audioArea'>
                         {/* <Grid container alignItems='center' className={classes.paperRoot}> */}
                         {/* <div className={classes.root}> */}
                         <ExpansionPanel
@@ -787,7 +784,7 @@ function ViewOrchadio() {
                               </Tooltip>
                             </Grid>
                             <Grid item xs={3}>
-                              <Tooltip title='Like'>
+                              <Tooltip title='Comment'>
                                 <IconButton
                                   className={
                                     index % 2 === 0
