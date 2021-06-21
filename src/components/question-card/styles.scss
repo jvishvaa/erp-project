@@ -14,12 +14,15 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-left: 10%;
+        margin-left: 20%;
         &.max-attachments {
           .question-ctrl-label {
-            font-size: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
             color: $secondary-color;
-            margin-right: 1.5rem;
+            padding-right: 1rem;
           }
         }
         .question-ctrl {
@@ -32,11 +35,16 @@
           &.MuiFormControlLabel-labelPlacementStart {
             font-size: 1rem;
             margin-left: -10%;
-            .MuiSwitch-root{
-              margin-right: 15%;
+            .MuiSwitch-root {
+              margin-right: 20%;
             }
           }
         }
+      }
+      .question-ctrl-outer-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
     .MuiBadge-root {
@@ -90,4 +98,7 @@
     }
   }
   // }
+}
+.question-cntrl-file-upload {
+  margin-left: 2rem !important;
 }
