@@ -43,22 +43,22 @@ import './styles.scss';
 
 const StyledButton = withStyles({
   root: {
-      color: '#FFFFFF',
+    color: '#FFFFFF',
+    backgroundColor: '#FF6B6B',
+    '&:hover': {
       backgroundColor: '#FF6B6B',
-      '&:hover': {
-          backgroundColor: '#FF6B6B',
-      },
-  }
+    },
+  },
 })(Button);
-  
+
 const CancelButton = withStyles({
   root: {
-      color: '#8C8C8C',
+    color: '#8C8C8C',
+    backgroundColor: '#e0e0e0',
+    '&:hover': {
       backgroundColor: '#e0e0e0',
-      '&:hover': {
-          backgroundColor: '#e0e0e0',
-      },
-  }
+    },
+  },
 })(Button);
 
 const QuestionCard = ({
@@ -113,8 +113,8 @@ const QuestionCard = ({
     //     setSizeValied(false);
     //   }
     // }
-    
-    if(isValid?.isValid) {
+
+    if (isValid?.isValid) {
       try {
         if (
           file.name.lastIndexOf('.pdf') > 0 ||
@@ -148,14 +148,14 @@ const QuestionCard = ({
     }
   };
 
-  // Confirm Popover 
+  // Confirm Popover
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleClick = (event) => {
-      setAnchorEl(true);
+    setAnchorEl(true);
   };
 
   const handleClose = () => {
-      setAnchorEl(null);
+    setAnchorEl(null);
   };
 
   const open = Boolean(anchorEl);
@@ -314,7 +314,7 @@ const QuestionCard = ({
                                   fileName={`Attachment-${i + 1}`}
                                   urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                   index={i}
-                                  actions={['preview', 'download','delete']}
+                                  actions={['preview', 'download', 'delete']}
                                   onDelete={removeAttachment}
                                 />
                               </div>
@@ -349,9 +349,9 @@ const QuestionCard = ({
               )}
             </Grid>
             <Grid container className='question-ctrls-container'>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={3}>
                 <Box className='question-ctrl-inner-container'>
-                  <IconButton>
+                  <IconButton className='question-cntrl-file-upload'>
                     <CloudUploadIcon color='primary' />
                   </IconButton>
                   <FormControlLabel
@@ -371,9 +371,27 @@ const QuestionCard = ({
                   />
                 </Box>
               </Grid>
+              {enableAttachments && (
+                <Grid item xs={12} md={4} className='question-ctrl-outer-container'>
+                  <Box className='question-ctrl-inner-container max-attachments'>
+                    <div className='question-ctrl-label'>Maximum number of files</div>
+
+                    <Select
+                      native
+                      labelId='demo-customized-select-label'
+                      id='demo-customized-select'
+                      onChange={(e) => onChange('max_attachment', e.target.value)}
+                    >
+                      {Array.from({ length: 10 }, (_, index) => (
+                        <option value={index + 1}>{index + 1}</option>
+                      ))}
+                    </Select>
+                  </Box>
+                </Grid>
+              )}
               <Grid item xs={12} md={4}>
                 <Box className='question-ctrl-inner-container'>
-                  <IconButton>
+                  <IconButton className='question-cntrl-file-upload'>
                     <CreateIcon color='primary' />
                   </IconButton>
                   <FormControlLabel
@@ -392,23 +410,6 @@ const QuestionCard = ({
                   />
                 </Box>
               </Grid>
-              {enableAttachments && (
-                <Grid item xs={12} md={4}>
-                  <Box className='question-ctrl-inner-container max-attachments'>
-                    <div className='question-ctrl-label'>Maximum number of files</div>
-
-                    <Select
-                      labelId='demo-customized-select-label'
-                      id='demo-customized-select'
-                      onChange={(e) => onChange('max_attachment', e.target.value)}
-                    >
-                      {Array.from({ length: 10 }, (_, index) => (
-                        <MenuItem value={index + 1}>{index + 1}</MenuItem>
-                      ))}
-                    </Select>
-                  </Box>
-                </Grid>
-              )}
             </Grid>
           </CardContent>
         </Card>
@@ -459,11 +460,18 @@ const QuestionCard = ({
                 horizontal: 'center',
               }}
             >
-              <div style={{ padding: '20px 30px'}}>
-                <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure you want to delete?</Typography>
+              <div style={{ padding: '20px 30px' }}>
+                <Typography style={{ fontSize: '20px', marginBottom: '15px' }}>
+                  Are you sure you want to delete?
+                </Typography>
                 <div>
                   <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
-                  <StyledButton onClick={() => removeQuestion(index)} style={{float: 'right'}}>Confirm</StyledButton>
+                  <StyledButton
+                    onClick={() => removeQuestion(index)}
+                    style={{ float: 'right' }}
+                  >
+                    Confirm
+                  </StyledButton>
                 </div>
               </div>
             </Popover>
