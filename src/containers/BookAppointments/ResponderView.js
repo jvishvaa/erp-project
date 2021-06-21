@@ -35,6 +35,12 @@ const useStyles = makeStyles((theme) => ({
   display: {
     display: 'inline-block',
   },
+  fbutton:{
+    marginTop: '22%',
+    marginLeft: '10%',
+    paddingLeft: '30px',
+    paddingRight: '30px',
+  }
 }));
 
 const ResponderView = () => {
@@ -55,7 +61,7 @@ const ResponderView = () => {
   const [totalCount, setTotalCount] = useState(0);
   const { setAlert } = useContext(AlertNotificationContext);
   const [opened, setOpened] = useState(false);
-  const moduleId = 175;
+  const moduleId = 264;
   const [usrName, setUsrName] = useState('');
   const [userId, setUSerId] = useState('');
 
@@ -289,7 +295,7 @@ const ResponderView = () => {
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         <Grid md={12} sm={12} xs={12}>
-          <CommonBreadcrumbs componentName='ResponderView' />
+          <CommonBreadcrumbs componentName='Responder View' />
         </Grid>
         <form>
           <Grid container direction='row' spacing={2} style={{ width: '100%' }}>
@@ -368,7 +374,7 @@ const ResponderView = () => {
                 variant='contained'
                 type='submit'
                 color='primary'
-                style={{ marginTop: '16%', marginLeft: '20%' }}
+                className={classes.fbutton}
                 onClick={handleFilter}
               >
                 Filter
