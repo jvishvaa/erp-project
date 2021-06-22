@@ -114,7 +114,7 @@ const MultipleChoice = ({
     }
   }, []);
 
-  const handleCancel = () => {
+  const handleSetDefault = () => {
     const list = { ...showQuestionType };
     for (let key in list) {
       if (list[key]) {
@@ -125,18 +125,57 @@ const MultipleChoice = ({
     setShowQuestionType(list);
     setIsQuestionFilterOpen(true);
     setIsCreateManuallyOpen(false);
+  };
+
+  const handleCancel = () => {
+    handleSetDefault();
     if (editData?.id) {
       history.push('/question-bank');
     }
   };
 
+  const handleFileUpload = (list, file, name, index) => {
+    if (
+      file &&
+      file[0] &&
+      (file[0].name.lastIndexOf('.jpg') > 0 ||
+        file[0].name.lastIndexOf('.jpeg') > 0 ||
+        file[0].name.lastIndexOf('.png') > 0)
+    ) {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('file', file[0]);
+      formData.append('grade_id', filterDataTop?.grade?.grade_id);
+      formData.append('subject_name', filterDataTop?.subject?.subject_id);
+      formData.append('question_categories_id', filterDataBottom.category?.id);
+      formData.append('question_type', filterDataBottom.type?.id);
+      axiosInstance
+        .post(`${endpoints.assessmentErp.fileUpload}`, formData)
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            list[index][name].push(result?.data?.result);
+            setLoading(false);
+            setAlert('success', result?.data?.message);
+          } else {
+            setLoading(false);
+            setAlert('error', result?.data?.message);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+        });
+    } else {
+      setAlert('error', 'Only .jpg, .jpeg, .png format is acceptable');
+    }
+  };
+
   const handleOptionData = (e, index) => {
-    let name = e.target.name;
+    let name = e.target?.name;
     let value;
     const list = [...optionsList];
 
     if (name === 'isChecked') {
-      value = e.target.checked;
+      value = e.target?.checked;
       list[index][name] = value;
       if (showQuestionType?.MultipleChoiceSingleSelect || showQuestionType?.TrueFalse) {
         for (let i = 0; i < list?.length; i++) {
@@ -161,43 +200,12 @@ const MultipleChoice = ({
         setAnswers([...new Set(answerList)]);
       }
     } else if (name === 'optionValue') {
-      value = e.target.value;
+      value = e.target?.value;
       list[index][name] = value;
     } else if (name === 'images' && !showQuestionType?.TrueFalse) {
       if (list[index][name]?.length < 2) {
-        const file = e.target.files;
-        if (
-          file &&
-          file[0] &&
-          (file[0]?.name.lastIndexOf('.jpg') > 0 ||
-            file[0]?.name.lastIndexOf('.jpeg') > 0 ||
-            file[0]?.name.lastIndexOf('.png') > 0)
-        ) {
-          setLoading(true);
-          const formData = new FormData();
-          formData.append('file', file[0]);
-          formData.append('grade_id', filterDataTop?.grade?.grade_id);
-          formData.append('subject_name', filterDataTop?.subject?.subject_id);
-          formData.append('question_categories_id', filterDataBottom.category?.id);
-          formData.append('question_type', filterDataBottom.type?.id);
-          axiosInstance
-            .post(`${endpoints.assessmentErp.fileUpload}`, formData)
-            .then((result) => {
-              if (result?.data?.status_code === 200) {
-                list[index][name].push(result?.data?.result);
-                setLoading(false);
-                setAlert('success', result?.data?.message);
-              } else {
-                setLoading(false);
-                setAlert('error', result?.data?.message);
-              }
-            })
-            .catch((error) => {
-              setLoading(false);
-            });
-        } else {
-          setAlert('error', 'Only .jpg, .jpeg, .png format is acceptable');
-        }
+        const file = e.target?.files;
+        handleFileUpload([...optionsList], file, name, index);
       } else {
         setAlert('error', "Can't upload more than 2 images for one option");
       }
@@ -206,47 +214,16 @@ const MultipleChoice = ({
   };
 
   const handleMatchingOptionData = (e, index) => {
-    let name = e.target.name;
+    let name = e.target?.name;
     let value;
     let list = [...matchingOptionsList];
     if (name === 'optionValue') {
-      value = e.target.value;
+      value = e.target?.value;
       list[index][name] = value;
     } else if (name === 'images') {
       if (list[index][name]?.length < 1) {
-        const file = e.target.files;
-        if (
-          file &&
-          file[0] &&
-          (file[0].name.lastIndexOf('.jpg') > 0 ||
-            file[0].name.lastIndexOf('.jpeg') > 0 ||
-            file[0].name.lastIndexOf('.png') > 0)
-        ) {
-          setLoading(true);
-          const formData = new FormData();
-          formData.append('file', file[0]);
-          formData.append('grade_id', filterDataTop?.grade?.grade_id);
-          formData.append('subject_name', filterDataTop?.subject?.subject_id);
-          formData.append('question_categories_id', filterDataBottom.category?.id);
-          formData.append('question_type', filterDataBottom.type?.id);
-          axiosInstance
-            .post(`${endpoints.assessmentErp.fileUpload}`, formData)
-            .then((result) => {
-              if (result?.data?.status_code === 200) {
-                list[index][name].push(result?.data?.result);
-                setLoading(false);
-                setAlert('success', result?.data?.message);
-              } else {
-                setLoading(false);
-                setAlert('error', result?.data?.message);
-              }
-            })
-            .catch((error) => {
-              setLoading(false);
-            });
-        } else {
-          setAlert('error', 'Only .jpg, .jpeg, .png format is acceptable');
-        }
+        const file = e.target?.files;
+        handleFileUpload([...matchingOptionsList], file, name, index);
       } else {
         setAlert('error', "Can't upload more than 1 image for matching option");
       }
@@ -262,7 +239,7 @@ const MultipleChoice = ({
         file_name: list[rowIndex]['images'][imageIndex],
       })
       .then((result) => {
-        if (result.data.status_code === 204) {
+        if (result?.data?.status_code === 204) {
           if (isMatching) {
             list[rowIndex]['images'].splice(imageIndex, 1);
             setMatchingOptionsList(list);
@@ -270,15 +247,15 @@ const MultipleChoice = ({
             list[rowIndex]['images'].splice(imageIndex, 1);
             setOptionsList(list);
           }
-          setAlert('success', result.data.message);
+          setAlert('success', result?.data?.message);
           setLoading(false);
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result?.data?.message);
           setLoading(false);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', error?.message);
         setLoading(false);
       });
   };
@@ -482,149 +459,81 @@ const MultipleChoice = ({
             setAlert('error', error.message);
           });
       }
-      // } else {
-      //   setAlert('error', 'Please choose the correct answer.');
-      // }
     }
   };
 
   const handleSave = () => {
-    if (question?.length > 0) {
-      handleSendData(false);
-      const list = { ...showQuestionType };
-      for (let key in list) {
-        if (list[key]) {
-          list[key] = false;
-          break;
-        }
-      }
-      setShowQuestionType(list);
-      setIsQuestionFilterOpen(true);
-      setIsCreateManuallyOpen(false);
-    } else {
+    if (!question) {
       setAlert('error', 'At least question is compulsory!');
+      return;
     }
+    handleSendData(false);
+    handleSetDefault();
+  };
+
+  const handleErrorMessage = (i, isMatchingOption) => {
+    return isMatchingOption
+      ? showQuestionType?.MatrixQuestion
+        ? `Value is required for Matrix Option ${String.fromCharCode(i + 65)}`
+        : `Value or Image is required for Matching Option ${String.fromCharCode(i + 65)}`
+      : `Value or Image is required for ${
+          showQuestionType?.FillInTheBlanks ? 'Blank' : 'Option'
+        } ${String.fromCharCode(i + 65)}`;
+  };
+
+  const handleValidateOptions = (list, isMatchingOption) => {
+    for (let i = 0; i < list?.length; i++) {
+      let validateOption =
+        isMatchingOption && showQuestionType?.MatrixQuestion
+          ? list[i]['optionValue'] === ''
+          : list[i]['optionValue'] === '' && list[i]['images']?.length === 0;
+      if (validateOption) {
+        setAlert('error', handleErrorMessage(i, isMatchingOption));
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const handleCheckAnswerFlag = () => {
+    return showQuestionType?.MultipleChoiceMultipleSelect ||
+      showQuestionType?.MultipleChoiceSingleSelect
+      ? answers.length
+      : true;
   };
 
   const handleSubmit = () => {
-    if (question?.length > 0) {
-      if (!showQuestionType.TrueFalse && !showQuestionType.Descriptive) {
-        let j = 0;
-        if (showQuestionType?.MatchTheFollowing || showQuestionType?.MatrixQuestion) {
-          for (j = 0; j < matchingOptionsList?.length; j++) {
-            if (matchingOptionsList[j]['optionValue']?.length === 0) {
-              setAlert(
-                'error',
-                `Value is required for ${
-                  showQuestionType?.MatchTheFollowing ? 'Matching' : 'Matrix'
-                } Option ${String.fromCharCode(j + 65)}`
-              );
-              break;
-            }
-          }
-        }
-
-        let i = 0;
-        for (i = 0; i < optionsList?.length; i++) {
-          if (optionsList[i]['optionValue']?.length === 0) {
-            setAlert(
-              'error',
-              `Value is required for ${
-                showQuestionType?.FillInTheBlanks ? 'Blank' : 'Option'
-              } ${String.fromCharCode(i + 65)}`
-            );
-            break;
-          }
-        }
-
-        const checkFlag =
-          showQuestionType?.MatchTheFollowing || showQuestionType?.MatrixQuestion
-            ? i === optionsList?.length && j === matchingOptionsList?.length
-            : i === optionsList?.length;
-
-        if (checkFlag) {
-          const answerCheckFlag =
-            showQuestionType?.MultipleChoiceMultipleSelect ||
-            showQuestionType?.MultipleChoiceSingleSelect
-              ? // showQuestionType?.TrueFalse
-                answers.length
-              : true;
-          if (answerCheckFlag) {
-            handleSendData(true);
-            const list = { ...showQuestionType };
-            for (let key in list) {
-              if (list[key]) {
-                list[key] = false;
-                break;
-              }
-            }
-            setShowQuestionType(list);
-            setIsQuestionFilterOpen(true);
-            setIsCreateManuallyOpen(false);
-          } else {
-            setAlert('error', `Answer is required!`);
-          }
-        } else {
-          if (showQuestionType?.MatchTheFollowing || showQuestionType?.MatrixQuestion) {
-            for (let j = 0; j < matchingOptionsList?.length; j++) {
-              if (matchingOptionsList[j]['optionValue']?.length === 0) {
-                setAlert(
-                  'error',
-                  `Value is required for ${
-                    showQuestionType?.MatchTheFollowing ? 'Matching' : 'Matrix'
-                  } Option ${String.fromCharCode(j + 65)}`
-                );
-                break;
-              }
-            }
-          }
-          for (let i = 0; i < optionsList?.length; i++) {
-            if (optionsList[i]['optionValue']?.length === 0) {
-              setAlert(
-                'error',
-                `Value is required for ${
-                  showQuestionType?.FillInTheBlanks ? 'Blank' : 'Option'
-                } ${String.fromCharCode(i + 65)}`
-              );
-              break;
-            }
-          }
-        }
-      } else if (showQuestionType.Descriptive) {
-        if (descriptiveAnswer.length > 0) {
-          handleSendData(true);
-          const list = { ...showQuestionType };
-          for (let key in list) {
-            if (list[key]) {
-              list[key] = false;
-              break;
-            }
-          }
-          setShowQuestionType(list);
-          setIsQuestionFilterOpen(true);
-          setIsCreateManuallyOpen(false);
-        } else {
-          setAlert('error', 'Answer is required!');
-        }
-      } else if (showQuestionType.TrueFalse) {
-        if (answers.length) {
-          handleSendData(true);
-          const list = { ...showQuestionType };
-          for (let key in list) {
-            if (list[key]) {
-              list[key] = false;
-              break;
-            }
-          }
-          setShowQuestionType(list);
-          setIsQuestionFilterOpen(true);
-          setIsCreateManuallyOpen(false);
-        } else {
-          setAlert('error', 'Select either True or False');
-        }
-      }
-    } else {
+    if (!question) {
       setAlert('error', 'Question is compulsory!');
+      return;
+    }
+    if (!showQuestionType.TrueFalse && !showQuestionType.Descriptive) {
+      if (!handleValidateOptions([...optionsList], false)) return;
+      if (showQuestionType?.MatchTheFollowing || showQuestionType?.MatrixQuestion) {
+        if (!handleValidateOptions([...matchingOptionsList], true)) return;
+      }
+      if (!handleCheckAnswerFlag()) {
+        setAlert('error', `Answer is required!`);
+        return;
+      }
+      handleSendData(true);
+      handleSetDefault();
+    }
+    if (showQuestionType.Descriptive) {
+      if (descriptiveAnswer.length > 0) {
+        handleSendData(true);
+        handleSetDefault();
+      } else {
+        setAlert('error', 'Answer is required!');
+      }
+    }
+    if (showQuestionType.TrueFalse) {
+      if (answers.length) {
+        handleSendData(true);
+        handleSetDefault();
+      } else {
+        setAlert('error', 'Select either True or False');
+      }
     }
   };
 
