@@ -207,6 +207,8 @@ function CategoryPage() {
   }
 
   const handleChangeCategory = (event, value) => {
+    setSelectedSubCategory();
+    setSelectedSubSubCategory();
     if(value){
       setSelectedCategory(value);
     } else {
@@ -215,6 +217,7 @@ function CategoryPage() {
   };
 
   const handleChangeSubCategory = (event, value) => {
+    setSelectedSubSubCategory();
     if(value){
       setSelectedSubCategory(value);
     } else {
