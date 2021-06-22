@@ -11,6 +11,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Box from '@material-ui/core/Box';
+import Pagination from '@material-ui/lab/Pagination';
 import {
   Grid,
   IconButton,
@@ -149,6 +150,12 @@ const useStyles = makeStyles((theme) => ({
   unSelectBg: {
     backgroundColor: 'white',
   },
+  paginationStyle: {
+    '& > *': {
+      marginTop: theme.spacing(2),
+      paddingLeft: '150px'
+    },
+  }
 }));
 
 function ViewOrchadio() {
@@ -168,6 +175,9 @@ function ViewOrchadio() {
   // const [loading, setLoading] = React.useState(false);
   const [branchName, setBranchName] = React.useState([]);
   const [comment, setComment] = React.useState('');
+  const [pageNumber, setPageNumber] = React.useState(1)
+  const limit = 5;
+  const [totalPages, setTotalPages] = React.useState('')
   const [startDate, setStartDate] = React.useState(
     moment(new Date()).format('YYYY-MM-DD')
   );
@@ -286,6 +296,7 @@ function ViewOrchadio() {
           setComment('');
           setLoading(false);
           setAlert('success', result.data.message);
+          setLoading(false);
           const dat = data.map((it) => {
             if (it.id === item.id) {
               // it.total_program_likes += 1
@@ -295,6 +306,7 @@ function ViewOrchadio() {
           });
           console.log(dat, 'datttt');
           setData(dat);
+          setTotalPages(result.data.result.total_pages)
           // console.log(result.data.result);
           // setData(result.data.result);
         } else {
@@ -343,50 +355,52 @@ function ViewOrchadio() {
       console.log(data, 'data');
       // url = `${endpoints.orchadio.GetRadioProgram}`;
       axios
-        .get(endpoints.orchadio.GetRadioProgram)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setLoading(false);
-            setAlert('success', result.data.message);
-            console.log(result.data.result);
-            setData(result.data.result.data);
-            const firstItem =
-              result.data.result.data.length && result.data.result.data.slice(0, 1);
-            // setAudioLink(result.data.result);
-            // setBranchName(firstItem);
-            Expandpanel(firstItem[0]);
-          } else {
-            console.log(result.data.message);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      .get(`${endpoints.orchadio.GetRadioProgram}?page_number=${pageNumber}&page_size=${limit}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setAlert('success', result.data.message);
+          setLoading(false);
+          console.log(result.data.result);
+          setData(result.data.result.data);
+          setTotalPages(result.data.result.total_pages)
+          const firstItem =
+            result.data.result.data.length && result.data.result.data.slice(0, 1);
+          // setAudioLink(result.data.result);
+          // setBranchName(firstItem);
+          Expandpanel(firstItem[0]);
+        } else {
+          console.log(result.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     } else if (tabValue === 1) {
       setData([]);
       console.log(data, 'data1');
       // Liked
       // url = `${endpoints.orchadio.GetRadioProgram}?category_type=1`;
       axios
-        .get(`${endpoints.orchadio.GetRadioProgram}?category_type=1`)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setLoading(false);
-            setAlert('success', result.data.message);
-            console.log(result.data.result);
-            setData(result.data.result.data);
-            const firstItem =
-              result.data.result.data.length && result.data.result.data.slice(0, 1);
-            // setAudioLink(result.data.result);
-            // setBranchName(firstItem);
-            Expandpanel(firstItem[0]);
-          } else {
-            console.log(result.data.message);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      .get(`${endpoints.orchadio.GetRadioProgram}?category_type=1&page_number=${pageNumber}&page_size=${limit}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setAlert('success', result.data.message);
+          setLoading(false);
+          console.log(result.data.result);
+          setData(result.data.result.data);
+          setTotalPages(result.data.result.total_pages)
+          const firstItem =
+            result.data.result.data.length && result.data.result.data.slice(0, 1);
+          // setAudioLink(result.data.result);
+          // setBranchName(firstItem);
+          Expandpanel(firstItem[0]);
+        } else {
+          console.log(result.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     } else if (tabValue === 2) {
       setData([]);
       console.log(data, 'data2');
@@ -396,25 +410,26 @@ function ViewOrchadio() {
       // url = `${endpoints.orchadio.GetRadioProgram}?category_type=1`;
       // url = `${endpoints.orchadio.GetRadioProgram}?is_deleted=True`;
       axios
-        .get(`${endpoints.orchadio.GetRadioProgram}?is_deleted=True`)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setLoading(false);
-            setAlert('success', result.data.message);
-            console.log(result.data.result);
-            setData(result.data.result.data);
-            const firstItem =
-              result.data.result.data.length && result.data.result.data.slice(0, 1);
-            // setAudioLink(result.data.result);
-            // setBranchName(firstItem);
-            Expandpanel(firstItem[0]);
-          } else {
-            console.log(result.data.message);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      .get(`${endpoints.orchadio.GetRadioProgram}?is_deleted=True`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setAlert('success', result.data.message);
+          setLoading(false);
+          console.log(result.data.result);
+          setData(result.data.result.data);
+          setTotalPages(result.data.result.total_pages)
+          const firstItem =
+            result.data.result.data.length && result.data.result.data.slice(0, 1);
+          // setAudioLink(result.data.result);
+          // setBranchName(firstItem);
+          Expandpanel(firstItem[0]);
+        } else {
+          console.log(result.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
   };
   useEffect(() => {
@@ -440,13 +455,15 @@ function ViewOrchadio() {
   };
   const handleTabChange = (event, newValue) => {
     settabValue(newValue);
+    setLoading(true)
+    setPageNumber(1)
     // getRadio();
   };
   useEffect(() => {
     console.log('data change');
     setData(null);
     getRadio();
-  }, [tabValue]);
+  }, [tabValue,pageNumber]);
   const handleChange = (panel) => (event, expanded) => {
     setExpandedPanel(expanded ? panel.id : false);
     Expandpanel(panel);
@@ -454,6 +471,8 @@ function ViewOrchadio() {
     //   expanded: expanded ? panel : false,
     // });
   };
+
+ 
   const handleFilter = () => {
     axios
       .get(
@@ -461,9 +480,10 @@ function ViewOrchadio() {
       )
       .then((result) => {
         if (result.data.status_code === 200) {
-          setLoading(false);
           setAlert('success', result.data.message);
+          setLoading(false);
           setData(result.data.result.data);
+          setTotalPages(result.data.result.total_pages)
           const firstItem =
             result.data.result.data.length && result.data.result.data.slice(0, 1);
           // setAudioLink(result.data.result);
@@ -485,8 +505,8 @@ function ViewOrchadio() {
       .put(`${endpoints.orchadio.PostCommentandLike}${item.id}/orchido-like/`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setLoading(false);
           setAlert('success', result.data.message);
+          setLoading(false);
           // console.log(result.data.result);
           // setData(result.data.result);
           // if (result.data && result.data.success === 'true') {
@@ -503,6 +523,7 @@ function ViewOrchadio() {
             return it;
           });
           setData(dat);
+          setTotalPages(result.data.result.total_pages)
           // }
           // if (result.data && result.data.success === 'false') {
           //   const dat = data.map((it) => {
@@ -523,6 +544,11 @@ function ViewOrchadio() {
       .catch((error) => {
         setAlert('error', 'Something went wrong.. Try again later');
       });
+  };
+
+  const handlePagination = (event, page) => {
+    setPageNumber(page);
+    setLoading(true)
   };
   const getRadioList = () => {
     const list = branchName.map((item, i) => {
@@ -852,6 +878,15 @@ function ViewOrchadio() {
                   </TabPanel>
                 );
               })}
+              <Grid container justify='center'>
+                {data && !loading && <Pagination 
+                  onChange={handlePagination}
+                  count = {totalPages}
+                  color='primary'
+                  page={pageNumber}
+                  color='primary'
+                />}
+              </Grid>
             </div>
           </div>
         </div>

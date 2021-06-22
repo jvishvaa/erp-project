@@ -54,6 +54,7 @@ import BlackOrchidsRadio from './BlackOrchadio.png';
 import Loading from '../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './manageorchido.scss';
+import Pagination from '@material-ui/lab/Pagination';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -179,15 +180,18 @@ function ManageOrchadio() {
   const [academicYear, setAcademicYear] = useState([]);
   const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
   const [secSelectedId, setSecSelectedId] = useState([]);
-  const [ userId , setUserId ] = useState([]);
+  const [userId, setUserId] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
   const [studentList, setStudentList] = useState([]);
+  const [pageNumber, setPageNumber] = React.useState(1)
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState();
   const location = useLocation();
+  const limit = 5;
+  const [totalPages, setTotalPages] = React.useState('')
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -206,14 +210,14 @@ function ManageOrchadio() {
               item.child_name === 'Student Orchadio'
             ) {
               setModuleId(item?.child_id);
-              console.log(item?.child_id , "module id");
+              console.log(item?.child_id, "module id");
             } else if (
               location.pathname === '/orchadio/manage-orchadio' &&
               item.child_name === 'Manage Orchadio'
             ) {
               setModuleId(item?.child_id);
-              console.log(item?.child_id , "module id");
-              localStorage.setItem('moduleIdOrchido',item?.child_id);
+              console.log(item?.child_id, "module id");
+              localStorage.setItem('moduleIdOrchido', item?.child_id);
             }
           });
         }
@@ -224,13 +228,14 @@ function ManageOrchadio() {
 
   const getRadio = () => {
     axios
-      .get(`${endpoints.orchadio.GetRadioProgram}`)
+      .get(`${endpoints.orchadio.GetRadioProgram}?page_number=${pageNumber}&page_size=${limit}`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setLoading(false);
           setAlert('success', result.data.message);
+          setLoading(false);
           // console.log(result.data.result);
           setData(result.data.result.data);
+          setTotalPages(result.data.result.total_pages)
           // const firstItem = result.data.result.slice(0, 1);
           // setAudioLink(result.data.result);
           // setBranchName(firstItem);
@@ -239,7 +244,7 @@ function ManageOrchadio() {
           console.log(result.data.message);
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   const getBranch = () => {
     axios
@@ -251,7 +256,7 @@ function ManageOrchadio() {
           console.log(result.data.message);
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   useEffect(() => {
     getRadio();
@@ -259,7 +264,7 @@ function ManageOrchadio() {
       `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
       'academicYearList'
     );
-  }, [moduleId]);
+  }, [moduleId, pageNumber]);
 
   function callApi(api, key) {
     setLoading(true);
@@ -284,7 +289,7 @@ function ManageOrchadio() {
             setSectionList(result.data.data);
           }
           if (key === 'student') {
-            console.log(result.data.result || [] , "studentsss");
+            console.log(result.data.result || [], "studentsss");
             setStudentList(result?.data?.result);
           }
           setLoading(false);
@@ -340,6 +345,8 @@ function ManageOrchadio() {
   };
   const handleTabChange = (event, newValue) => {
     settabValue(newValue);
+    setPageNumber(1)
+    // setLoading(true)
   };
   const getDaysAfter = (date, amount) => {
     return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
@@ -365,6 +372,12 @@ function ManageOrchadio() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handlePagination = (event, page) => {
+    setPageNumber(page);
+    setLoading(true)
+  };
+
   const handleFilter = () => {
     axios
       .get(
@@ -372,10 +385,11 @@ function ManageOrchadio() {
       )
       .then((result) => {
         if (result.data.status_code === 200) {
-          setLoading(false);
           setAlert('success', result.data.message);
+          setLoading(false);
           // console.log(result.data.result);
           setData(result.data.result.data);
+          setTotalPages(result.data.result.total_pages)
         } else {
           setAlert('warning', result.data.message);
           console.log(result.data.message);
@@ -396,6 +410,7 @@ function ManageOrchadio() {
           setAlert('success', result.data.message);
           // console.log(result.data.result);
           setData(result.data.result);
+          // setTotalPages(result.data.result.total_pages)
         } else {
           setAlert('warning', result.data.message);
           console.log(result.data.message);
@@ -597,12 +612,12 @@ function ManageOrchadio() {
                                       >
                                         {item.branch
                                           ? item.branch.map((i) => {
-                                              const str = i.branch_name;
-                                              // let str = 'karthick raja j'
-                                              const matches = str.match(/\b(\w)/g);
-                                              const acronym = matches.join('');
-                                              return acronym;
-                                            })
+                                            const str = i.branch_name;
+                                            // let str = 'karthick raja j'
+                                            const matches = str.match(/\b(\w)/g);
+                                            const acronym = matches.join('');
+                                            return acronym;
+                                          })
                                           : ''}
                                       </Avatar>
                                     )}
@@ -635,7 +650,7 @@ function ManageOrchadio() {
                                             >
                                               {item.program_schedule
                                                 ? JSON.parse(item.program_schedule)[0]
-                                                    .datetime
+                                                  .datetime
                                                 : ''}
                                             </Typography>
                                           </Grid>
@@ -886,9 +901,9 @@ function ManageOrchadio() {
                                                     </Typography>
                                                   )
                                                 }
-                                            >  
-                                            <Typography>Participants List</Typography>
-                                            </Tooltip> 
+                                              >
+                                                <Typography>Participants List</Typography>
+                                              </Tooltip>
                                             )}
                                           </Grid>
                                         </Grid>
@@ -902,7 +917,7 @@ function ManageOrchadio() {
                                                 .datetime}
                                           </Typography>
                                         </Grid>
-                                  }
+                                        }
                                       </Grid>
                                     </>
                                   }
@@ -1024,192 +1039,191 @@ function ManageOrchadio() {
                   <div className={classes.modalPaper}>
                     <h2 id='transition-modal-title'>Schedule</h2>
                     <Grid container>
-                    <Grid item md={3} xs={12}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedAcadmeicYear(value);
-                console.log(value, 'test');
-                if (value) {
-                  callApi(
-                    `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                    'branchList'
-                  );
-                }
-                setSelectedGrade([]);
-                setSectionList([]);
-                setSelectedSection([]);
-                setSelectedBranch([]);
-              }}
-              id='branch_id'
-              className='dropdownIcon'
-              value={selectedAcademicYear || ''}
-              options={academicYear || ''}
-              getOptionLabel={(option) => option?.session_year || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Academic Year'
-                  placeholder='Academic Year'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedBranch([]);
-                if (value) {
-                  // const ids = value.map((el)=>el)
-                  const selectedId = value.branch.id;
-                  setSelectedBranch(value);
-                  console.log(value);
-                  callApi(
-                    `${endpoints.academics.grades}?session_year=${
-                      selectedAcademicYear.id
-                    }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-                    'gradeList'
-                  );
-                }
-                setSelectedGrade([]);
-                setSectionList([]);
-                setSelectedSection([]);
-              }}
-              id='branch_id'
-              className='dropdownIcon'
-              value={selectedBranch || ''}
-              options={branchList || ''}
-              getOptionLabel={(option) => option?.branch?.branch_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedGrade([]);
-                if (value) {
-                  // const ids = value.map((el)=>el)
-                  const selectedId = value.grade_id;
-                  // console.log(selectedBranch.branch)
-                  const branchId = selectedBranch.branch.id;
-                  setSelectedGrade(value);
-                  callApi(
-                    `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
-                    'section'
-                  );
-                }
-                setSectionList([]);
-                setSelectedSection([]);
-              }}
-              id='grade_id'
-              className='dropdownIcon'
-              value={selectedGrade || ''}
-              options={gradeList || ''}
-              getOptionLabel={(option) => option?.grade__grade_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Grade'
-                  placeholder='Grade'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedSection([]);
-                if (value) {
-                  const ids = value.id;
-                  const branchId = selectedBranch.branch.id;
-                  const gradeId = selectedGrade.grade_id;
-                  const secId = value.section_id;
-                  setSelectedSection(value);
-                  setSecSelectedId(secId);
-                  callApi(
-                    `${endpoints.academics.students}?academic_year_id=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${gradeId}&section_id=${secId}&module_id=${moduleId}`,
-                    'student'
-                  );
-                }
-                setStudentList([])
-                setSelectedStudent([])
-              }}
-              id='section_id'
-              className='dropdownIcon'
-              value={selectedSection || ''}
-              options={sectionList || ''}
-              getOptionLabel={(option) =>
-                option?.section__section_name || option?.section_name || ''
-              }
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Section'
-                  placeholder='Section'
-                />
-              )}
-            />
-          </Grid>
+                      <Grid item md={3} xs={12}>
+                        <Autocomplete
+                          style={{ width: '100%' }}
+                          size='small'
+                          onChange={(event, value) => {
+                            setSelectedAcadmeicYear(value);
+                            console.log(value, 'test');
+                            if (value) {
+                              callApi(
+                                `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                                'branchList'
+                              );
+                            }
+                            setSelectedGrade([]);
+                            setSectionList([]);
+                            setSelectedSection([]);
+                            setSelectedBranch([]);
+                          }}
+                          id='branch_id'
+                          className='dropdownIcon'
+                          value={selectedAcademicYear || ''}
+                          options={academicYear || ''}
+                          getOptionLabel={(option) => option?.session_year || ''}
+                          filterSelectedOptions
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Academic Year'
+                              placeholder='Academic Year'
+                            />
+                          )}
+                        />
+                      </Grid>
+                      <Grid item md={3} xs={12}>
+                        <Autocomplete
+                          // multiple
+                          style={{ width: '100%' }}
+                          size='small'
+                          onChange={(event, value) => {
+                            setSelectedBranch([]);
+                            if (value) {
+                              // const ids = value.map((el)=>el)
+                              const selectedId = value.branch.id;
+                              setSelectedBranch(value);
+                              console.log(value);
+                              callApi(
+                                `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id
+                                }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                                'gradeList'
+                              );
+                            }
+                            setSelectedGrade([]);
+                            setSectionList([]);
+                            setSelectedSection([]);
+                          }}
+                          id='branch_id'
+                          className='dropdownIcon'
+                          value={selectedBranch || ''}
+                          options={branchList || ''}
+                          getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                          filterSelectedOptions
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Branch'
+                              placeholder='Branch'
+                            />
+                          )}
+                        />
+                      </Grid>
+                      <Grid item md={3} xs={12}>
+                        <Autocomplete
+                          // multiple
+                          style={{ width: '100%' }}
+                          size='small'
+                          onChange={(event, value) => {
+                            setSelectedGrade([]);
+                            if (value) {
+                              // const ids = value.map((el)=>el)
+                              const selectedId = value.grade_id;
+                              // console.log(selectedBranch.branch)
+                              const branchId = selectedBranch.branch.id;
+                              setSelectedGrade(value);
+                              callApi(
+                                `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+                                'section'
+                              );
+                            }
+                            setSectionList([]);
+                            setSelectedSection([]);
+                          }}
+                          id='grade_id'
+                          className='dropdownIcon'
+                          value={selectedGrade || ''}
+                          options={gradeList || ''}
+                          getOptionLabel={(option) => option?.grade__grade_name || ''}
+                          filterSelectedOptions
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Grade'
+                              placeholder='Grade'
+                            />
+                          )}
+                        />
+                      </Grid>
+                      <Grid item md={3} xs={12}>
+                        <Autocomplete
+                          // multiple
+                          style={{ width: '100%' }}
+                          size='small'
+                          onChange={(event, value) => {
+                            setSelectedSection([]);
+                            if (value) {
+                              const ids = value.id;
+                              const branchId = selectedBranch.branch.id;
+                              const gradeId = selectedGrade.grade_id;
+                              const secId = value.section_id;
+                              setSelectedSection(value);
+                              setSecSelectedId(secId);
+                              callApi(
+                                `${endpoints.academics.students}?academic_year_id=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${gradeId}&section_id=${secId}&module_id=${moduleId}`,
+                                'student'
+                              );
+                            }
+                            setStudentList([])
+                            setSelectedStudent([])
+                          }}
+                          id='section_id'
+                          className='dropdownIcon'
+                          value={selectedSection || ''}
+                          options={sectionList || ''}
+                          getOptionLabel={(option) =>
+                            option?.section__section_name || option?.section_name || ''
+                          }
+                          filterSelectedOptions
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Section'
+                              placeholder='Section'
+                            />
+                          )}
+                        />
+                      </Grid>
 
-          <Grid item md={3} xs={12}>
-            <Autocomplete
-              // multiple
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedStudent([]);
-                if (value) {
-                  const ids = value.id;
-                  console.log(value, "userrr");
-                  const stuId = value.user;
-                  setSelectedStudent(value);
-                  setSecSelectedId(stuId);
-                  setUserId(stuId);
-                }
-              }}
-              id='section_id'
-              className='dropdownIcon'
-              value={selectedStudent || ''}
-              options={studentList || ''}
-              getOptionLabel={(option) =>
-                option?.name  || ''
-              }
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Student'
-                  placeholder='Students'
-                />
-              )}
-            />
-          </Grid>
-                     
+                      <Grid item md={3} xs={12}>
+                        <Autocomplete
+                          // multiple
+                          style={{ width: '100%' }}
+                          size='small'
+                          onChange={(event, value) => {
+                            setSelectedStudent([]);
+                            if (value) {
+                              const ids = value.id;
+                              console.log(value, "userrr");
+                              const stuId = value.user;
+                              setSelectedStudent(value);
+                              setSecSelectedId(stuId);
+                              setUserId(stuId);
+                            }
+                          }}
+                          id='section_id'
+                          className='dropdownIcon'
+                          value={selectedStudent || ''}
+                          options={studentList || ''}
+                          getOptionLabel={(option) =>
+                            option?.name || ''
+                          }
+                          filterSelectedOptions
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Student'
+                              placeholder='Students'
+                            />
+                          )}
+                        />
+                      </Grid>
+
                       <Grid item xs={12}>
                         <div style={{ marginTop: 20 }}>
                           <Button
@@ -1245,6 +1259,17 @@ function ManageOrchadio() {
             </div>
           </div>
         </div>
+        <Grid container justify='center'>
+          {data && !loading && <Pagination
+            onChange={handlePagination}
+            // style={{ paddingLeft: '150px' }}
+            // count={Math.ceil(totalGenre / limit)}
+            count={totalPages}
+            color='primary'
+            page={pageNumber}
+            color='primary'
+          />}
+        </Grid>
       </Layout>
     </div>
   );
