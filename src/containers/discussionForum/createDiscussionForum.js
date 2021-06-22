@@ -500,7 +500,7 @@ const CreateDiscussionForum = () => {
         <div className='breadcrumb-container-create' style={{ marginLeft: '15px' }}>
           <CommonBreadcrumbs
             componentName='Discussion forum'
-            childComponentName='Create'
+            childComponentName='Create Post'
           />
         </div>
         {(location.pathname !== '/student-forum/create' &&
@@ -675,7 +675,7 @@ const CreateDiscussionForum = () => {
               label="Title"
               defaultValue=''
               value={title}
-              placeholder="Title not more than 100 words"
+              placeholder="Title not more than 10 words"
               variant='outlined'
               style={{ width: '100%' }}
               inputProps={{ maxLength: 100 }}

@@ -420,11 +420,12 @@ export default function DiscussionComponent(props) {
                 {`${props.rowData.post_by.first_name} ${props.rowData.post_by.last_name} /`}
               </span>
               <span className={classes.discussionTime}>
-                {`${moment(props.rowData.post_at).format('hh : mm A')} /`}
+                {moment(props.rowData.post_at).format('DD.MM.YYYY')}/
               </span>
               <span className={classes.discussionTime}>
-                {moment(props.rowData.post_at).format('DD.MM.YYYY')}
+                {`${moment(props.rowData.post_at).format('hh : mm A')} `}
               </span>
+              
             </div>
           </span>
           <span className={classes.discussionIconRow}>
