@@ -44,7 +44,7 @@ const TypeFiltersContainer = ({ levels, categories, filterData, setFilterData })
       })
       .then((result) => {
         if (result.data.status_code === 200) {
-          setQuestionTypes(result.data?.result?.filter((obj) => obj?.id !== 5));
+          setQuestionTypes(result.data?.result);
         } else {
           setAlert('error', result.data?.message);
         }

@@ -247,7 +247,6 @@ const QuestionTypeFilters = ({
     if (!editData?.id) {
       requestBody = {
         ...requestBody,
-        // academic_session: filterDataDisplay.academic?.id,
         academic_session: filterDataDisplay.branch?.id,
         is_central_chapter: filterDataDisplay.chapter?.is_central,
         grade: filterDataDisplay.grade?.grade_id,
