@@ -92,7 +92,7 @@ const Discussionforum = () => {
   const location = useLocation();
   //let postURL = endpoints.discussionForum.postList;
 
-  const [showFilter, setShowFilter] = React.useState(false);
+  const [showFilter, setShowFilter] = React.useState(true);
   const [filterData, setFilterData] = React.useState([]);
   const [postList, setPostList] = React.useState([]);
   const [selectedFilter, setSelectedFilter] = React.useState(false);
@@ -117,7 +117,11 @@ const Discussionforum = () => {
   };
 
   const handleFilter = () => {
-    setShowFilter(!showFilter);
+    if(showFilter === true){
+    setShowFilter(false);
+    } else {
+      setShowFilter(true)
+    }
     //postURL = `${endpoints.discussionForum.postList}?category=19&grade=54&section=1,2`
   };
 

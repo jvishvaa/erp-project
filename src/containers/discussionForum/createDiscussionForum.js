@@ -97,6 +97,9 @@ const CreateDiscussionForum = () => {
 
   // new duscussion submit
   const handleSubmit = (e) => {
+    if (title === '' || descriptionDisplay === '' ) {
+      setAlert('warning', 'Title and Description filed is Required');
+    } else {
     e.preventDefault()
     setLoading(true);
     const sectionsId = [];
@@ -149,6 +152,7 @@ const CreateDiscussionForum = () => {
       setLoading(false);        
       setAlert('error', error.message);
     })
+  }
   };
 
   // updatePost
@@ -283,6 +287,8 @@ const CreateDiscussionForum = () => {
   }, []);
 
   const handleCategoryChange = (event,value) => {
+    setSelectedSubCategory(null);
+    setSelectedSubSubCategory(null);
     if (value && value.id) {
       setSelectedCategory(value);
       setSelectedSubCategory(null);
@@ -306,6 +312,7 @@ const CreateDiscussionForum = () => {
     }
   }
   const handleSubCategoryChange = (event,value) => {
+    setSelectedSubSubCategory(null);
     if (value && value.sub_category_id){
     setSelectedSubCategory(value)
     setSelectedSubSubCategory(null);
@@ -712,7 +719,7 @@ const CreateDiscussionForum = () => {
               onClick={(location.pathname === `/student-forum/edit/${postsId.id}` || location.pathname === `/teacher-forum/edit/${postsId.id}`) ? handleUpdatePost : handleSubmit}
               disabled={!selectedSubCategory || !selectedCategory ||!selectedSubSubCategory || !setTitle ||!setDescriptionDisplay }
             >
-              {(location.pathname === `/student-forum/edit/${postsId.id}` || location.pathname === `/teacher-forum/edit/${postsId.id}`) ? 'Upadate' : 'Submit'}
+              {(location.pathname === `/student-forum/edit/${postsId.id}` || location.pathname === `/teacher-forum/edit/${postsId.id}`) ? 'Update' : 'Submit'}
             </Button>
           </Grid>
         </Grid>
