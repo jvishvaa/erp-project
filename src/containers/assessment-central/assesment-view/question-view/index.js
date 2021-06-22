@@ -239,14 +239,14 @@ const QuestionView = ({ question, showHeader, index }) => {
           {questionType === 10 && (
             <div className='descriptive-container'>
               <div className='question-container'>
-              {extractContent(question.question_answer[0]?.question)}
+                {extractContent(question.question_answer[0]?.question)}
               </div>
               <div className='answers-container'>
                 <div className='answers-header '>Answers</div>
                 <Divider className='secondary-divider' />
                 <div className='options-container'>
                   <div className='option'>
-                  {extractContent(question.question_answer[0]?.answer)}
+                    {extractContent(question.question_answer[0]?.answer)}
                   </div>
                 </div>
               </div>
@@ -259,7 +259,9 @@ const QuestionView = ({ question, showHeader, index }) => {
                 <ReactPlayer
                   playing={false}
                   controls={true}
-                  url={`${endpoints.s3}${question?.question_answer[0]?.video}`}
+                  url={`${
+                    question?.is_central ? endpoints.s3 : endpoints.assessmentErp.s3
+                  }/${question?.question_answer[0]?.video}`}
                   style={{ maxWidth: '100%' }}
                 />
               </div>

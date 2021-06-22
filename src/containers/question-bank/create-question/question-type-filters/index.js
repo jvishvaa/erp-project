@@ -247,7 +247,6 @@ const QuestionTypeFilters = ({
     if (!editData?.id) {
       requestBody = {
         ...requestBody,
-        // academic_session: filterDataDisplay.academic?.id,
         academic_session: filterDataDisplay.branch?.id,
         is_central_chapter: filterDataDisplay.chapter?.is_central,
         grade: filterDataDisplay.grade?.grade_id,
@@ -560,7 +559,7 @@ const QuestionTypeFilters = ({
           <div className='player-wrapper'>
             <ReactPlayer
               className='react-player'
-              url={`${endpoints.assessmentErp.s3}${videoURL}`}
+              url={`${endpoints.assessmentErp.s3}/${videoURL}`}
               playing={false}
               controls
               width='85%'

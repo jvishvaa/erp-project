@@ -125,7 +125,7 @@ const SidebarCounterPanel = (props) => {
       clearTimeout(continuosCall);
     };
   }, []);
-  
+
   const body = (
     <div style={modalStyle} className={classes.paper}>
       {/* <h2 id='simple-modal-title'>Text in a modal</h2> */}
@@ -187,14 +187,14 @@ const SidebarCounterPanel = (props) => {
           <div className='box'>
             <div className='demo-box green' /> Attempted
           </div>
-          <div className='box'>
+          {/* <div className='box'>
             <div className='demo-box purple' /> Incomplete
-          </div>
+          </div> */}
           <div className='box'>
             <div className='demo-box' /> Unattempted
           </div>
           <div className='box'>
-            <div className='demo-box purple ongoing' /> Ongoing.&nbsp;&nbsp;&nbsp;.
+            <div className='demo-box ongoing' /> Ongoing.&nbsp;&nbsp;&nbsp;.
           </div>
         </div>
         <p>Note: Only attempted questions will be considered for review.</p>

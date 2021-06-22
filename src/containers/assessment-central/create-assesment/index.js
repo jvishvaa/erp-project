@@ -35,6 +35,7 @@ import {
   fetchQuestionPaperDetails,
   createAssesment,
   changeTestFormField,
+  fetchAssesmentTypes,
   resetFormState,
 } from '../../../redux/actions';
 
@@ -78,13 +79,14 @@ const CreateAssesment = ({
   const [instructions, setInstructions] = useState(initialTestInstructions);
   const [testDuration, setTestDuration] = useState(initialTestDuration);
   const [totalMarks, setTotalmarks] = useState(initialTotalMarks);
-  const [paperchecked, setChecked] = React.useState(false);
+  const [paperchecked, setChecked] = React.useState(true);
   const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
-
+  const [assesmentTypes, setAssesmentTypes] = useState([]);
   const formik = useFormik({
     initialValues: {
-      test_type: selectedTestType || testTypes[0],
+      test_mode: selectedTestType || testTypes[0],
+      test_type: ''
     },
     onSubmit: (values) => {},
     validateOnChange: false,
@@ -101,6 +103,19 @@ const CreateAssesment = ({
     setTestMarks([]);
     initResetFormState();
   };
+ const getAssesmentTypes = async () => {
+    try {
+      const data = await fetchAssesmentTypes();
+      setAssesmentTypes(data);
+      formik.setFieldValue('test_type',data[0]);
+    } catch (e) {}
+  };
+  // useEffect(() => {
+  //   if (moduleId) {
+  //     getAcademic();
+  //   }
+  //   getAssesmentTypes();
+  // }, [moduleId]);
 
   useEffect(() => {
     if (clearForm) {
@@ -125,6 +140,11 @@ const CreateAssesment = ({
 
     if (!selectedQuestionPaper?.id) {
       setAlert('warning', 'Please add a question paper.');
+      return;
+    }
+
+    if (!formik.values.test_type?.id) {
+      setAlert('error', 'Select Assessment Type');
       return;
     }
 
@@ -233,6 +253,7 @@ const CreateAssesment = ({
       test_name: testName,
       total_mark: totalMarks,
       test_date: testDate,
+      test_mode: formik.values.test_mode?.id,
       test_type: formik.values.test_type?.id,
       test_duration: testDuration,
       instructions,
@@ -367,6 +388,7 @@ const CreateAssesment = ({
       // initFetchQuestionPaperDetails(3);
       initFetchQuestionPaperDetails(selectedQuestionPaper?.id);
     }
+    getAssesmentTypes();
     // initFetchQuestionPaperDetails(3);
   }, [selectedQuestionPaper]);
   return (
@@ -425,18 +447,20 @@ const CreateAssesment = ({
               </div>
             </AccordionSummary>
             <AccordionDetails>
-              <div className='form-grid-container mv-20'>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} md={4}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
+              <div className='form-grid-container'>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} md={12}>
+                    <FormControl  variant='outlined'  style={{display:'flex'}}>
+                      <Grid container spacing={1} direction='row' >
+                        <Grid item xs={12} md={4}>
+                           <Autocomplete
                         id='branch'
                         name='branch'
                         onChange={(e, value) => {
-                          formik.setFieldValue('test_type', value);
+                          formik.setFieldValue('test_mode', value);
                           initSetFilter('selectedTestType', value);
                         }}
-                        value={formik.values.test_type}
+                        value={formik.values.test_mode}
                         options={testTypes}
                         className='dropdownIcon'
                         getOptionLabel={(option) => option.name || ''}
@@ -444,12 +468,36 @@ const CreateAssesment = ({
                           <TextField
                             {...params}
                             variant='outlined'
-                            label='Test type'
-                            placeholder='Test type'
+                            label='Test Mode'
+                            placeholder='Test Mode'
                           />
                         )}
                         size='small'
                       />
+                        </Grid>
+                        <Grid item xs={12} md={4}>
+                          <Autocomplete
+                        id='assesment_type'
+                        name='assesment_type'
+                        className='dropdownIcon'
+                        onChange={(e, value) => {
+                          formik.setFieldValue('test_type', value);
+                        }}
+                        value={formik.values.test_type}
+                        options={assesmentTypes}
+                        getOptionLabel={(option) => option.exam_name || ''}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Assessment Type'
+                            placeholder='Assessment Type'
+                          />
+                        )}
+                        size='small'
+                      />
+                        </Grid>
+                      </Grid>
                       <FormHelperText style={{ color: 'red' }}>
                         {formik.errors.branch ? formik.errors.branch : ''}
                       </FormHelperText>

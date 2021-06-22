@@ -238,7 +238,7 @@ const UploadClassWorkDiaogBox = (props) => {
                       onError={(e) => {
                         e.target.src = placeholder;
                       }}
-                      src={isTeacher ? url : `${endpoints.assessmentErp.s3}${url}`}
+                      src={isTeacher ? url : `${endpoints.assessmentErp.s3}/${url}`}
                       className='optionImageAttachment1'
                     />
                     <div className='optionImageRemoveIcon1'>

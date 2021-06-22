@@ -465,11 +465,12 @@ export default function DiscussionPostComponent(props) {
                               </span>
                               {postsData.post_at && (
                                 <>
+                                  
+                                  <span className={classes.discussionTime}>{moment(postsData.post_at).format('DD.MM.YYYY')}/</span>
                                   <span className={classes.discussionTime}>
                                     {moment(postsData.post_at).format('hh:mm A')}
-                                    {' '}/
+                                    {' '}
                                   </span>
-                                  <span className={classes.discussionTime}>{moment(postsData.post_at).format('DD.MM.YYYY')}</span>
                                 </>
                               )}
                             </span>

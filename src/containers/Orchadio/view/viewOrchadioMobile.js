@@ -47,6 +47,7 @@ import {
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import Pagination from '@material-ui/lab/Pagination';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -134,6 +135,9 @@ const ViewOrchadioMobile = () => {
   const { first_name: name } = JSON.parse(localStorage.getItem('userDetails') || {});
   const [collapseId, setCollapseId] = React.useState('');
   const tabs = ['All', 'Liked', 'Archived'];
+  const limit = 5;
+  const [totalPages, setTotalPages] = React.useState('')
+  const [pageNumber, setPageNumber] = React.useState(1)
 
   const handleExpandClick = (index) => {
     setCollapseId(index);
@@ -243,16 +247,22 @@ const ViewOrchadioMobile = () => {
         setAlert('error', 'Something went wrong.. Try again later');
       });
   };
+
+  const handlePagination = (event, page) => {
+    setPageNumber(page);
+    setLoading(true)
+  };
+
   const getRadio = () => {
     let url;
     if (tabValue === 0) {
-      url = `${endpoints.orchadio.GetRadioProgram}`;
+      url = `${endpoints.orchadio.GetRadioProgram}?page_number=${pageNumber}&page_size=${limit}`;
     } else if (tabValue === 1) {
       // Liked
-      url = `${endpoints.orchadio.GetRadioProgram}?category_type=1`;
+      url = `${endpoints.orchadio.GetRadioProgram}?category_type=1&page_number=${pageNumber}&page_size=${limit}`;
     } else if (tabValue === 2) {
       // eslint-disable-next-line no-debugger
-      debugger;
+      // debugger;
       // Archived
       // url = `${endpoints.orchadio.GetRadioProgram}?category_type=1`;
       url = `${endpoints.orchadio.GetRadioProgram}?is_deleted=True`;
@@ -261,10 +271,11 @@ const ViewOrchadioMobile = () => {
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setLoading(false);
           setAlert('success', result.data.message);
+          setLoading(false);
           console.log(result.data.result);
           setData(result.data.result.data);
+          setTotalPages(result.data.result.total_pages);
           //   const firstItem =
           //     result.data.result.data.length && result.data.result.data.slice(0, 1);
           // setAudioLink(result.data.result);
@@ -288,7 +299,7 @@ const ViewOrchadioMobile = () => {
   };
   useEffect(() => {
     getRadio();
-  }, [tabValue]);
+  }, [tabValue,pageNumber]);
   const handleComment = (event) => {
     setComment(event.target.value);
   };
@@ -559,6 +570,17 @@ const ViewOrchadioMobile = () => {
                       </TabPanel>
                     );
                   })}
+                     <Grid container justify='center'>
+                    {data && !loading && <Pagination 
+                      onChange={handlePagination}
+                      // style={{ paddingLeft: '150px' }}
+                      // count={Math.ceil(totalGenre / limit)}
+                      count = {totalPages}
+                      color='primary'
+                      page={pageNumber}
+                      color='primary'
+                    />}
+              </Grid>
                 </div>
               </Grid>
             </div>

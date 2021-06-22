@@ -73,7 +73,8 @@ const QuestionPaper = ({
             <div className='form-field'>
               <TextField
                 id='outlined-search'
-                label='Question paper name'
+                label='Question Paper Name'
+                placeholder='Question Paper Name'
                 variant='outlined'
                 size='small'
                 className='dropdownIcon'
@@ -206,7 +207,7 @@ const QuestionPaper = ({
                       </div>
                     </div>
                   )}
-                  <div className='info'>Add sections for this question paper</div>
+                  <div className='info'>Add Sections For This Question Paper</div>
                   <div
                     className='add-new-btn-container'
                     style={{ display: 'flex', alignItems: 'center' }}

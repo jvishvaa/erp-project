@@ -212,7 +212,7 @@ const Cal1 = () => {
   //       });
   //   }
   // }, [moduleId, updateFlag]);
-  
+
 
   useEffect(() => {
     if (moduleId) {
@@ -227,7 +227,7 @@ const Cal1 = () => {
         });
     }
     setEditFlag(false)
-  }, [moduleId, updateFlag,pageNumber,deleteFlag]);
+  }, [moduleId, updateFlag, pageNumber, deleteFlag]);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -292,7 +292,7 @@ const Cal1 = () => {
     setDummyData([]);
   };
 
-  
+
 
   const handleSave = () => {
     setLoading(true);
@@ -303,9 +303,9 @@ const Cal1 = () => {
           event_category_name: eventName,
           event_category_color: custColor,
         })
-        
+
         .then((result) => {
-          console.log(result,"yuj")
+          console.log(result, "yuj")
           setLoading(false);
           setEventName('');
           let fullData = eventType;
@@ -315,14 +315,14 @@ const Cal1 = () => {
             event_category_color: custColor,
           });
           axiosInstance
-        .get(
-          `${endpoints.eventBat.getPaginatedCategories}?page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
-        )
-        .then((result) => {
-          setDummyData(result?.data?.data?.results);
+            .get(
+              `${endpoints.eventBat.getPaginatedCategories}?page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
+            )
+            .then((result) => {
+              setDummyData(result?.data?.data?.results);
 
-          setTotalGenre(result?.data?.data?.count);
-        });
+              setTotalGenre(result?.data?.data?.count);
+            });
           // setDummyData([...dummyData,result.data.data])
           // setEventType(fullData);
           setOpen(false);
@@ -381,23 +381,23 @@ const Cal1 = () => {
   };
 
 
-const handleClears=()=>{
-  if (moduleId) {
-    axiosInstance
-      .get(
-        `${endpoints.eventBat.getPaginatedCategories}?page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
-      )
-      .then((result) => {
-        setDummyData(result?.data?.data?.results);
+  const handleClears = () => {
+    if (moduleId) {
+      axiosInstance
+        .get(
+          `${endpoints.eventBat.getPaginatedCategories}?page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
+        )
+        .then((result) => {
+          setDummyData(result?.data?.data?.results);
 
-        setTotalGenre(result?.data?.data?.count);
-      });
-  }
-  setEditFlag(false)
-};
-  
+          setTotalGenre(result?.data?.data?.count);
+        });
+    }
+    setEditFlag(false)
+  };
 
-  
+
+
   const handleDelete = (e, idx) => {
     axiosInstance
       .delete(`${endpoints.eventBat.deleteEventCategory}${element_id}?module_id=${moduleId}`)
@@ -414,17 +414,17 @@ const handleClears=()=>{
       .catch((error) => setAlert('warning', 'Something went wrong'));
   };
   const handleSearch = (e, value) => {
-    console.log(typeof(e) ,pageNumber,"checking search")
-    if(e.length===0){
+    console.log(typeof (e), pageNumber, "checking search")
+    if (e.length === 0) {
       axiosInstance
-      .get(
-        `${endpoints.eventBat.getPaginatedCategories}?page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
-      )
-      .then((result) => {
-        setDummyData(result?.data?.data?.results);
+        .get(
+          `${endpoints.eventBat.getPaginatedCategories}?page_num=${pageNumber}&page_size=${limit}&module_id=${moduleId}`
+        )
+        .then((result) => {
+          setDummyData(result?.data?.data?.results);
 
-        setTotalGenre(result?.data?.data?.count);
-      });
+          setTotalGenre(result?.data?.data?.count);
+        });
     }
     if (e.length > 0) {
       axiosInstance
@@ -437,7 +437,7 @@ const handleClears=()=>{
           setTotalGenre(result?.data?.data?.count);
         })
 
-         // setDummyData([])
+        // setDummyData([])
         .catch((err) => {
           setDummyData([])
           setAlert('warning', "something went Wrong");
@@ -470,18 +470,18 @@ const handleClears=()=>{
     axiosInstance
       .put(`${endpoints.eventBat.patchUpdateEvent}${isEditId}`, params)
       .then((result) => {
-        console.log(result,"kopila")
+        console.log(result, "kopila")
         if (result.status === 200) {
           console.log(result.data, 'Update Data');
           setIsEditId('');
           setEventName('');
-          for(let i=0;i<dummyData.length;i++){
-            if(dummyData[i].id===isEditId){
-              dummyData[i].event_category_color=result.data.event_category_color
-              dummyData[i].event_category_name=result.data.event_category_name
+          for (let i = 0; i < dummyData.length; i++) {
+            if (dummyData[i].id === isEditId) {
+              dummyData[i].event_category_color = result.data.event_category_color
+              dummyData[i].event_category_name = result.data.event_category_name
             }
           }
-          console.log(dummyData,"chkkl")
+          console.log(dummyData, "chkkl")
           setDummyData([...dummyData])
           setEditFlag(!editFlag);
           handleSearch(searchData)
@@ -523,9 +523,9 @@ const handleClears=()=>{
               /> */}
               <SearchBar
                 // value={filterData?.selectedEventType || ''}
-                onCancelSearch={(e)=>{handleClears(e)}}
+                onCancelSearch={(e) => { handleClears(e) }}
                 value={searchData}
-                onChange={(e)=>handleSearch(e)}
+                onChange={(e) => handleSearch(e)}
               />
             </Grid>
 
@@ -561,7 +561,7 @@ const handleClears=()=>{
               <Button
                 variant='contained'
                 color='primary'
-                style={{color:'white'}}
+                style={{ color: 'white' }}
                 className='custom_button_master '
                 // className={classes.buttonCol}
                 onClick={handleClickOpen}
@@ -581,7 +581,7 @@ const handleClears=()=>{
             />
             </Grid> */}
           </Grid>
-          <br/>
+          <br />
           <Divider />
           <Dialog
             onClose={handleClose}
@@ -600,9 +600,9 @@ const handleClears=()=>{
                 id='role'
                 variant='outlined'
                 label='Event Type Name'
-                inputProps={{ 
-                  maxlength:'20'
-                }}             
+                inputProps={{
+                  maxlength: '20'
+                }}
                 value={eventName || ''}
                 onChange={handleEventName}
                 placeholder='Event Type Name'
@@ -646,10 +646,10 @@ const handleClears=()=>{
             spacing={2}
             direction='row'
           >
-              {console.log(dummyData,"dummmm")}
+            {console.log(dummyData, "dummmm")}
             {dummyData.map((item) => {
-              
-            return (
+
+              return (
                 <div key={item.event_category_name}>
                   <Grid container>
                     <Grid item xs={12} md={4}>
@@ -699,29 +699,29 @@ const handleClears=()=>{
                               >
                                 <MenuItem onClick={handleEdit}>Edit</MenuItem>
                                 {/* <MenuItem onClick={handleDelete}>Delete</MenuItem> */}
-                                <MenuItem  color="primary" onClick={DiaClickOpen}>Delete</MenuItem>
-                                 <Dialog
-                                    open={Diaopen}
-                                    onClose={DiaClose}
-                                    style={{backgroundColor:'transparent',opacity:'0.4'}}
-                                    aria-labelledby="alert-dialog-title"
-                                    aria-describedby="alert-dialog-description"
-                                  >
-                                    <DialogTitle id="alert-dialog-title">{"Conformation For Delete"}</DialogTitle>
-                                    <DialogContent >
-                                      <DialogContentText id="alert-dialog-description">
-                                        Are You Sure to Delete the EventCategory.
-                                      </DialogContentText>
-                                    </DialogContent>
-                                    <DialogActions>
-                                      <Button onClick={handleDelete} color="primary">
-                                        yes
-                                      </Button>
-                                      <Button onClick={DiaClose} color="primary" autoFocus>
-                                        No
-                                      </Button>
-                                    </DialogActions>
-                                  </Dialog>
+                                <MenuItem color="primary" onClick={DiaClickOpen}>Delete</MenuItem>
+                                <Dialog
+                                  open={Diaopen}
+                                  onClose={DiaClose}
+                                  style={{ backgroundColor: 'transparent', opacity: '0.4' }}
+                                  aria-labelledby="alert-dialog-title"
+                                  aria-describedby="alert-dialog-description"
+                                >
+                                  <DialogTitle id="alert-dialog-title">{"Conformation For Delete"}</DialogTitle>
+                                  <DialogContent >
+                                    <DialogContentText id="alert-dialog-description">
+                                      Are You Sure to Delete the EventCategory.
+                                    </DialogContentText>
+                                  </DialogContent>
+                                  <DialogActions>
+                                    <Button onClick={handleDelete} color="primary">
+                                      yes
+                                    </Button>
+                                    <Button onClick={DiaClose} color="primary" autoFocus>
+                                      No
+                                    </Button>
+                                  </DialogActions>
+                                </Dialog>
                               </Menu>
                             </Grid>
                           </Grid>
@@ -736,7 +736,7 @@ const handleClears=()=>{
 
           <Grid container justify='center'>
             {dummyData && totalGenre > 9 && (
-              <Pagination 
+              <Pagination
                 onChange={handlePagination}
                 // style={{ paddingLeft: '150px' }}
                 count={Math.ceil(totalGenre / limit)}
@@ -750,22 +750,22 @@ const handleClears=()=>{
       </form>
       {!dummyData
         ? !totalGenre && (
-            <div style={{ width: '10%', marginLeft: '40%' }}>
-              <SvgIcon component={() => <img src={unfiltered} />} />
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={
-                      isMobile
-                        ? { height: '20px', width: '250px' }
-                        : { height: '50px', width: '400px' }
-                    }
-                    src={selectfilter}
-                  />
-                )}
-              />
-            </div>
-          )
+          <div style={{ width: '10%', marginLeft: '40%' }}>
+            <SvgIcon component={() => <img src={unfiltered} />} />
+            <SvgIcon
+              component={() => (
+                <img
+                  style={
+                    isMobile
+                      ? { height: '20px', width: '250px' }
+                      : { height: '50px', width: '400px' }
+                  }
+                  src={selectfilter}
+                />
+              )}
+            />
+          </div>
+        )
         : []}
       {loading && <Loader />}
     </Layout>

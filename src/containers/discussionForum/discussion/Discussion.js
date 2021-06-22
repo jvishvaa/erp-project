@@ -317,6 +317,7 @@ export default function DiscussionComponent(props) {
   const [silverCount, setSilverCount] = React.useState(0);
   const [bronzeCount, setBronzeCount] = React.useState(0);
   const [postId, setPostId] = React.useState('');
+  const [ showOption , setShowOption ] = React.useState(false);
   const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handleClickOpen = (id) => {
@@ -344,6 +345,9 @@ export default function DiscussionComponent(props) {
   }
 
   React.useEffect(() => {
+    if(props.rowData.post_by.id === userDetails.user_id){
+      setShowOption(true)
+    }
     props.rowData && props.rowData.awards.map((award) => {
       setAwardsCount(awardsCount + award.gold + award.silver + award.bronze);
       award.gold && setGoldCount(award.gold);
@@ -420,11 +424,12 @@ export default function DiscussionComponent(props) {
                 {`${props.rowData.post_by.first_name} ${props.rowData.post_by.last_name} /`}
               </span>
               <span className={classes.discussionTime}>
-                {`${moment(props.rowData.post_at).format('hh : mm A')} /`}
+                {moment(props.rowData.post_at).format('DD.MM.YYYY')}/
               </span>
               <span className={classes.discussionTime}>
-                {moment(props.rowData.post_at).format('DD.MM.YYYY')}
+                {`${moment(props.rowData.post_at).format('hh : mm A')} `}
               </span>
+              
             </div>
           </span>
           <span className={classes.discussionIconRow}>
@@ -504,9 +509,11 @@ export default function DiscussionComponent(props) {
                 </span>
               </span>
             )}
+            {showOption ? 
             <IconButton onClick={handleDiscussionAction} style={{verticalAlign: 'baseline',}}>
               <MoreVertIcon className={classes.discussionDotIcon}/>
             </IconButton>
+            : '' }
             {/* <ClickAwayListener onClickAway={handlePopoverActionClose}> */}
               <Popover
                 id={id2}
