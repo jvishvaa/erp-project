@@ -299,8 +299,8 @@ export default {
     AnnotateEbook: `/academic/ebook_user_status/`,
     EbookMappedGrade: '/academic/ebook_mapped_grades/',
   },
-  email:{
-    email:'/academic/email/'
+  email: {
+    email: '/academic/email/',
   },
   teacherViewBatches: {
     courseListApi: '/aol/courses/',
@@ -365,7 +365,7 @@ export default {
     createQuestionPaper: `/assessment/question-paper/`,
     createAssessment: '/assessment/test/',
     deleteAssessmentTest: '/assessment/',
-    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   },
 
   assessment: {
@@ -454,12 +454,12 @@ export default {
     AddParticipants: '/academic/branch_students/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   },
-  homeworkReport:{
-    branchWiseData:'/academic/teacher_homework_report/',
-    subjectList:'/academic/fetch_subjects/',
+  homeworkReport: {
+    branchWiseData: '/academic/teacher_homework_report/',
+    subjectList: '/academic/fetch_subjects/',
   },
-  classworkReport:{
-    tableData:'/academic/teacher_classwork_report/',
+  classworkReport: {
+    tableData: '/academic/teacher_classwork_report/',
   },
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,
@@ -468,5 +468,3 @@ export default {
   // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing
   baseURLCentral,
 };
-
-

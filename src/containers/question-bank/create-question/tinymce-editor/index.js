@@ -71,7 +71,7 @@ const MyTinyEditor = ({
                 .post(`${endpoints.assessmentErp.fileUpload}`, formData)
                 .then((result) => {
                   if (result.data.status_code === 200) {
-                    let imageUrl = `${endpoints.assessmentErp.s3}${result.data?.result}`;
+                    let imageUrl = `${endpoints.assessmentErp.s3}/${result.data?.result}`;
                     cb(imageUrl, { alt: 'My alt text' });
                   } else {
                     setAlert('error', "Can't upload the following image.");

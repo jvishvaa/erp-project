@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  TextField,
-  Button,
-  SvgIcon,
-  IconButton,
-  Checkbox,
-} from '@material-ui/core';
+import { TextField, Button, SvgIcon, IconButton, Checkbox } from '@material-ui/core';
 import endpoints from '../../../../../../config/endpoints';
 import CancelIcon from '@material-ui/icons/Cancel';
 import checkedicon from '../../../../../../assets/images/checkedicon.svg';
@@ -15,7 +9,7 @@ import attachmentIcon from '../../../../../../assets/images/attachmenticon.svg';
 import deletematch from '../../../../../../assets/images/deletematch.svg';
 import './single-option.css';
 import axios from 'axios';
-import placeholder from '../../../../../../assets/images/placeholder_small.jpg'
+import placeholder from '../../../../../../assets/images/placeholder_small.jpg';
 
 const SingleOption = ({
   option,
@@ -141,7 +135,7 @@ const SingleOption = ({
                   <div className='optionImageThumbnailContainer'>
                     <div className='optionImageThumbnail'>
                       <img
-                        src={`${endpoints.assessmentErp.s3}${image}`}
+                        src={`${endpoints.assessmentErp.s3}/${image}`}
                         alt='Not found'
                         className='optionImageAttachment'
                         onError={(e) => {
@@ -205,7 +199,7 @@ const SingleOption = ({
                         id='raised-button-file2'
                         accept='image/*'
                         onChange={(e) => {
-                          handleOptionData(e, index)
+                          handleOptionData(e, index);
                         }}
                       />
                       Attach Image

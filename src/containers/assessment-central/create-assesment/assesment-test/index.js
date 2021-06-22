@@ -142,9 +142,14 @@ const AssesmentTest = ({
                         <TextField
                           variant='outlined'
                           size='small'
+                          placeholder='Test Name'
                           className='bg-white'
                           style={{ width: '100%' }}
                           value={testName}
+                          inputProps={{
+                            autocomplete: 'off',
+                            maxLength:100
+                          }}
                           onChange={(e) => {
                             onTestNameChange(e.target.value);
                           }}
@@ -159,6 +164,7 @@ const AssesmentTest = ({
                       <div className='input-container'>
                         <TextField
                           variant='outlined'
+                          placeholder='Test ID'
                           size='small'
                           style={{ width: '100%' }}
                           className='bg-white'
@@ -206,13 +212,12 @@ const AssesmentTest = ({
                           variant='outlined'
                           type='number'
                           inputProps={{
-                            min: 0,
-                            max: 1440,
-                            maxLength: 4,
+                            maxLength: 4
                           }}
                           size='small'
                           className='bg-white'
                           name='duration'
+                          placeholder='In Minutes'
                           value={testDuration}
                           style={{ width: '100%' }}
                           onChange={(e) => handleChange(e)}
