@@ -180,7 +180,7 @@ handleFilter = () => {
   if(selectedSection){
     urlPath = `${endpoints.blog.Blog}?page_number=${
             pageNo 
-          }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&grade_id=${selectedGrade.grade_id}&branch_id=${selectedBranch.id}`
+          }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&grade_id=${selectedGrade.grade_id}&branch_id=${selectedBranch.branch.id}`
   }else if(selectedGrade){
     urlPath = `${endpoints.blog.Blog}?page_number=${
             pageNo 
