@@ -155,6 +155,7 @@ const CreateCategories = () => {
       }
       else {
         dispatch(createAllCategory(params));
+        // history.push('/master-management/discussion-category');
       }
     }
     else if(selectedCategory && !selectedSubCategory && !selectedSubSubCategory) {
@@ -165,6 +166,7 @@ const CreateCategories = () => {
       }
       else {
         dispatch(createAllCategory(params));
+        // history.push('/master-management/discussion-category');
       }
     }
     else if(selectedCategory && selectedSubCategory) {
@@ -175,6 +177,7 @@ const CreateCategories = () => {
       }
       else {
         dispatch(createAllCategory(params));
+        // history.push('/master-management/discussion-category');
       }
     }
   }
@@ -185,6 +188,7 @@ const CreateCategories = () => {
         setAlert('success', 'Category Created');
         setCategory('');
         dispatch(createNewCategory());
+        
       }
       if(category && subCategory && !subSubCategory){
         setAlert('success', 'Sub Category Created');
@@ -206,7 +210,7 @@ const CreateCategories = () => {
           <div className='breadcrumb-container-create'>
             <CommonBreadcrumbs
               componentName='Category'
-              childComponentName='Create'
+              childComponentName='Create New Category'
             />
           </div>
           <Grid container className={classes.categoryContainer} spacing={2}>
