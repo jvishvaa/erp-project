@@ -394,7 +394,7 @@ const QuestionView = ({
                     question?.question_answer?.map((obj) => (
                       <div style={{ height: '400px' }}>
                         <img
-                          src={`${endpoints.s3}${obj?.file}`}
+                          src={`${endpoints.s3}/${obj?.file}`}
                           alt='ppt'
                           style={{ maxWidth: '100%', maxHeight: '100%' }}
                         />

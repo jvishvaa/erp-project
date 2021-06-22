@@ -268,6 +268,7 @@ const Assesment = () => {
   const handleSelectTest = async (test) => {
     try {
       const { results } = await fetchAssesmentTestDetail(test.id);
+      // console.log('THe all fetched Data', results);
       setSelectedAssesmentTest({
         ...results,
         testType: test.test_type__exam_name,

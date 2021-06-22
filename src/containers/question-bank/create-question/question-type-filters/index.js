@@ -559,7 +559,7 @@ const QuestionTypeFilters = ({
           <div className='player-wrapper'>
             <ReactPlayer
               className='react-player'
-              url={`${endpoints.assessmentErp.s3}${videoURL}`}
+              url={`${endpoints.assessmentErp.s3}/${videoURL}`}
               playing={false}
               controls
               width='85%'
