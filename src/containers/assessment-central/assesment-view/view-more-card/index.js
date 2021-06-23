@@ -1,23 +1,18 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import Paper from '@material-ui/core/Paper';
-import { useTheme, IconButton, SvgIcon } from '@material-ui/core';
+import { IconButton, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import './view-more-card.css';
-
 import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
-import downloadAll from '../../../../assets/images/downloadAll.svg';
-import download from '../../../../assets/images/download.svg';
-import endpoints from '../../../../config/endpoints';
-import axiosInstance from '../../../../config/axios';
-
 import QuestionDetailCard from '../question-details-card';
 import './styles.scss';
+import endpoints from '../../../../config/endpoints';
+import axiosInstance from '../../../../config/axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,18 +39,42 @@ const ViewMoreCard = ({
   filterDataDown,
   periodDataForView,
   setSelectedIndex,
+  setPublishFlag,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
-
-  // const qData = viewMoreData?.questions;
-  // const sData = viewMoreData?.sections
-
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
-
   const handleChange = (index) => (event, isExpanded) => {
     setExpanded(isExpanded ? index : false);
   };
+
+  const handlePublish = (isPublish = true) => {
+    setPublishFlag(false);
+    let requestBody = {
+      is_verified: isPublish,
+      is_draft: !isPublish,
+      is_review: false,
+    };
+    const url = endpoints.assessmentErp?.publishQuestionPaper.replace(
+      '<question-paper-id>',
+      periodDataForView?.id
+    );
+    axiosInstance
+      .put(url, requestBody)
+      .then((result) => {
+        if (result?.data?.status_code > 199 && result?.data?.status_code < 300) {
+          setAlert('success', result?.data?.message);
+          setPublishFlag(true);
+          setSelectedIndex(-1);
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+  };
+
   return (
     <Paper className='rootViewMore'>
       <div className='viewMoreHeader'>
@@ -122,6 +141,30 @@ const ViewMoreCard = ({
                   {/* </AccordionDetails> */}
                 </Accordion>
               ))}
+            </div>
+            <div style={{ margin: '5px 15px 15px 5px' }}>
+              {periodDataForView?.is_review && (
+                <Button
+                  style={{ marginRight: '1rem' }}
+                  onClick={() => handlePublish(true)}
+                  color='primary'
+                  variant='contained'
+                  size='small'
+                >
+                  PUBLISH
+                </Button>
+              )}
+              {(periodDataForView?.is_verified || periodDataForView?.is_review) && (
+                <Button
+                  style={{ marginRight: '1rem' }}
+                  onClick={() => handlePublish(false)}
+                  color='secondary'
+                  variant='contained'
+                  size='small'
+                >
+                  REJECT
+                </Button>
+              )}
             </div>
           </div>
 

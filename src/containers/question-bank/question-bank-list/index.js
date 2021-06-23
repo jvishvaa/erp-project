@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useRef, useEffect, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import { Grid, useTheme, SvgIcon, IconButton } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
@@ -24,9 +24,6 @@ import selectfilter from '../../../assets/images/selectfilter.svg';
 import hidefilter from '../../../assets/images/hidefilter.svg';
 import showfilter from '../../../assets/images/showfilter.svg';
 import { addQuestionToSection } from '../../../redux/actions';
-import { getSubDomainName } from '../../../utility-functions';
-
-const subDomainName = getSubDomainName();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,6 +70,17 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
   const query = new URLSearchParams(location.search);
   const questionId = query.get('question');
   const section = query.get('section');
+  const filterRef = useRef(null);
+
+  const addQuestionToPaper = (question, questionId, section) => {
+    initAddQuestionToSection(question, questionId, section);
+    setAlert('success', 'Question added successfully!');
+    filterRef.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+      inline: 'nearest',
+    });
+  };
 
   const handleAddQuestionToQuestionPaper = (question) => {
     const questionIds = [];
@@ -88,13 +96,11 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     });
     if (!question?.is_central) {
       if (!questionIds.includes(question?.id)) {
-        initAddQuestionToSection(question, questionId, section);
-        history.push(`/create-question-paper?show-question-paper=true`);
+        addQuestionToPaper(question, questionId, section);
       } else setAlert('error', 'Question already added!');
     } else {
       if (!centralQuestionIds.includes(question?.id)) {
-        initAddQuestionToSection(question, questionId, section);
-        history.push(`/create-question-paper?show-question-paper=true`);
+        addQuestionToPaper(question, questionId, section);
       } else setAlert('error', 'Question already added!');
     }
   };
@@ -355,6 +361,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       );
     }
   }, [page]);
+
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -401,9 +408,10 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
           </div>
         </div>
 
-        <div className={isFilter ? 'showFilters' : 'hideFilters'}>
+        <div className={isFilter ? 'showFilters' : 'hideFilters'} ref={filterRef}>
           <QuestionBankFilters
             questionId={questionId}
+            section={section}
             handlePeriodList={handlePeriodList}
             setPeriodData={setPeriodData}
             setViewMore={setViewMore}

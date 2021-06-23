@@ -304,7 +304,6 @@ function ViewOrchadio() {
             }
             return it;
           });
-          console.log(dat, 'datttt');
           setData(dat);
           setTotalPages(result.data.result.total_pages)
           // console.log(result.data.result);
@@ -500,6 +499,7 @@ function ViewOrchadio() {
   };
 
   const likeHandler = (item) => {
+    setLoading(true)
     // setisLiked(!status);
     axios
       .put(`${endpoints.orchadio.PostCommentandLike}${item.id}/orchido-like/`)

@@ -85,9 +85,8 @@ const Assesment = () => {
   const [assesmentTestsTotalPage, setAssesmentTestsTotalPage] = useState(0);
   const [filteredAssesmentTests, setFilteredAssesmentTests] = useState([]);
   const [filteredAssesmentTestsPage, setFilteredAssesmentTestPage] = useState(1);
-  const [filteredAssesmentTestsTotalPage, setFilteredAssesmentTestsTotalPage] = useState(
-    0
-  );
+  const [filteredAssesmentTestsTotalPage, setFilteredAssesmentTestsTotalPage] =
+    useState(0);
   const [showFilteredList, setShowFilteredList] = useState(false);
   const [selectedAssesmentTest, setSelectedAssesmentTest] = useState();
   const [fetchingTests, setFetchingTests] = useState(false);
@@ -138,6 +137,7 @@ const Assesment = () => {
       setGrades([]);
       setSubjects([]);
       const data = await fetchAcademicYears(moduleId);
+      handleAcademicYear({}, data[0]);
       setAcademicDropdown(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch academic');
@@ -384,7 +384,7 @@ const Assesment = () => {
     formik.handleSubmit();
   };
 
-  const handleAcademicYear = (event, value) => {
+  const handleAcademicYear = (event = {}, value = '') => {
     formik.setFieldValue('academic', '');
     if (value) {
       getBranch(value?.id);
@@ -423,41 +423,44 @@ const Assesment = () => {
   return (
     <Layout>
       <div className='assesment-container'>
-        <div className='lesson-plan-breadcrumb-wrapper' style={{display:'flex',justifyContent:'space-between'}}>
+        <div
+          className='lesson-plan-breadcrumb-wrapper'
+          style={{ display: 'flex', justifyContent: 'space-between' }}
+        >
           <CommonBreadcrumbs componentName='Assessment' />
-         <div >
-                {!expandFilter ? (
-                  <IconButton
-                    onClick={() => {
-                      setExpandFilter(true);
-                    }}
-                  >
-                    <Typography
-                      component='h4'
-                      color='secondary'
-                      style={{ marginRight: '5px' }}
-                    >
-                      Expand Filter
-                    </Typography>
-                    <FilterListIcon color='secondary' />
-                  </IconButton>
-                ) : (
-                  <IconButton
-                    onClick={() => {
-                      setExpandFilter(false);
-                    }}
-                  >
-                    <Typography
-                      component='h4'
-                      color='secondary'
-                      style={{ marginRight: '5px'}}
-                    >
-                      Close Filter
-                    </Typography>
-                    <FilterListIcon color='secondary' />
-                  </IconButton>
-                )}
-              </div>
+          <div>
+            {!expandFilter ? (
+              <IconButton
+                onClick={() => {
+                  setExpandFilter(true);
+                }}
+              >
+                <Typography
+                  component='h4'
+                  color='secondary'
+                  style={{ marginRight: '5px' }}
+                >
+                  Expand Filter
+                </Typography>
+                <FilterListIcon color='secondary' />
+              </IconButton>
+            ) : (
+              <IconButton
+                onClick={() => {
+                  setExpandFilter(false);
+                }}
+              >
+                <Typography
+                  component='h4'
+                  color='secondary'
+                  style={{ marginRight: '5px' }}
+                >
+                  Close Filter
+                </Typography>
+                <FilterListIcon color='secondary' />
+              </IconButton>
+            )}
+          </div>
         </div>
         <div className='content-container'>
           <Accordion
@@ -466,10 +469,9 @@ const Assesment = () => {
             expanded={expandFilter}
             onChange={() => {}}
           >
-            <AccordionSummary>
-            </AccordionSummary>
+            <AccordionSummary></AccordionSummary>
             <AccordionDetails>
-              <div className='form-grid-container mv-20' style={{marginTop:'-50px'}}>
+              <div className='form-grid-container mv-20' style={{ marginTop: '-50px' }}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} md={3}>
                     <FormControl fullWidth variant='outlined'>
