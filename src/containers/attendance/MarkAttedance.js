@@ -145,6 +145,14 @@ const MarkAttedance = () => {
     //   handleFilter();
     // }
   }, []);
+
+
+  useEffect(()=>{
+    if(moduleId){
+    callApi(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`, 'academicYearList');
+  }
+
+  },[moduleId])
   useEffect(() => {
     if (selectedSection.section_id && counterDataFilter < 3) {
       handleFilter();

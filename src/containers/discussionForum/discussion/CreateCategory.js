@@ -188,6 +188,7 @@ const CreateCategories = () => {
         setAlert('success', 'Category Created');
         setCategory('');
         dispatch(createNewCategory());
+        history.push('/master-management/discussion-category');
         
       }
       if(category && subCategory && !subSubCategory){
