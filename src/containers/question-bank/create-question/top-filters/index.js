@@ -64,177 +64,178 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
         .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
         .then((result) => {
           if (result.data.status_code === 200) {
-            const defaultValue = result.data?.data?.[0];
+            setDropdownData((prev) => ({
+              ...prev,
+              academic: result?.data?.data,
+            }));
+            const defaultValue = result?.data?.data?.[0];
             handleAcademicYear({}, defaultValue);
-
-            setDropdownData({
-              academic: result.data?.data,
-              branch: [],
-              grades: [],
-              subjects: [],
-              chapters: [],
-              topics: [],
-            });
           } else {
-            setAlert('error', result.data?.message);
+            setAlert('error', result?.data?.message);
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     }
   }, [moduleId]);
 
-  const handleAcademicYear = (event, value) => {
-    setFilterData({
+  const handleAcademicYear = (event = {}, value = '') => {
+    setFilterData(() => ({
       academic: '',
       branch: '',
       grade: '',
       subject: '',
       chapter: '',
       topic: '',
-    });
-    setDropdownData({
-      ...dropdownData,
+    }));
+    setDropdownData((prev) => ({
+      ...prev,
       branch: [],
       grades: [],
       subjects: [],
       chapters: [],
       topics: [],
-    });
+    }));
     if (value) {
-      setFilterData({
-        ...filterData,
+      setFilterData((prev) => ({
+        ...prev,
         academic: value,
         branch: '',
         grade: '',
         subject: '',
         chapter: '',
         topic: '',
-      });
+      }));
       axiosInstance
         .get(
-          `${endpoints.academics.branches}?session_year=${value.id}&module_id=${moduleId}`
+          `${endpoints.academics.branches}?session_year=${value?.id}&module_id=${moduleId}`
         )
         .then((result) => {
-          if (result.data.status_code === 200) {
-            setDropdownData({
-              ...dropdownData,
-              branch: result.data?.data?.results,
-            });
+          if (result?.data?.status_code === 200) {
+            setDropdownData((prev) => ({
+              ...prev,
+              branch: result?.data?.data?.results,
+            }));
           } else {
-            setAlert('error', result.data?.message);
+            setAlert('error', result?.data?.message);
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     }
   };
 
   const handleBranch = (event, value) => {
-    setFilterData({
-      ...filterData,
+    setFilterData((prev) => ({
+      ...prev,
       branch: '',
       grade: '',
       subject: '',
       chapter: '',
       topic: '',
-    });
-    setDropdownData({
-      ...dropdownData,
+    }));
+    setDropdownData((prev) => ({
+      ...prev,
       grades: [],
       subjects: [],
       chapters: [],
       topics: [],
-    });
+    }));
     if (value) {
-      setFilterData({
-        ...filterData,
+      setFilterData((prev) => ({
+        ...prev,
         branch: value,
         grade: '',
         subject: '',
         chapter: '',
         topic: '',
-      });
+      }));
       axiosInstance
         .get(
           `${endpoints.academics.grades}?session_year=${filterData.academic?.id}&branch_id=${value?.branch?.id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
-            setDropdownData({
-              ...dropdownData,
-              grades: result.data?.data,
-            });
+            setDropdownData((prev) => ({
+              ...prev,
+              grades: result?.data?.data,
+            }));
           } else {
-            setAlert('error', result.data?.message);
+            setAlert('error', result?.data?.message);
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     }
   };
 
   const handleGrade = (event, value) => {
-    setFilterData({
-      ...filterData,
+    setFilterData((prev) => ({
+      ...prev,
       grade: '',
       subject: '',
       chapter: '',
       topic: '',
-    });
-    setDropdownData({
-      ...dropdownData,
+    }));
+    setDropdownData((prev) => ({
+      ...prev,
       subjects: [],
       chapters: [],
       topics: [],
-    });
+    }));
     if (value) {
-      setFilterData({ ...filterData, grade: value, subject: '', chapter: '', topic: '' });
+      setFilterData((prev) => ({
+        ...prev,
+        grade: value,
+        subject: '',
+        chapter: '',
+        topic: '',
+      }));
       axiosInstance
         .get(
           `${endpoints.assessmentErp.subjectList}?session_year=${filterData.branch?.id}&grade=${value?.grade_id}`
         )
         .then((result) => {
-          if (result.data.status_code === 200) {
-            setDropdownData({
-              ...dropdownData,
-              subjects: result.data?.result,
-            });
+          if (result?.data?.status_code === 200) {
+            setDropdownData((prev) => ({
+              ...prev,
+              subjects: result?.data?.result,
+            }));
           } else {
-            setAlert('error', result.data?.message);
+            setAlert('error', result?.data?.message);
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     }
   };
 
   const handleSubject = (event, value) => {
-    setFilterData({
-      ...filterData,
+    setFilterData((prev) => ({
+      ...prev,
       subject: '',
       chapter: '',
       topic: '',
-    });
-    setDropdownData({
-      ...dropdownData,
+    }));
+    setDropdownData((prev) => ({
+      ...prev,
       chapters: [],
       topics: [],
-    });
+    }));
     if (value) {
-      setFilterData({ ...filterData, subject: value, chapter: '', topic: '' });
+      setFilterData((prev) => ({ ...prev, subject: value, chapter: '', topic: '' }));
       axiosInstance
         .get(`${endpoints.assessmentErp.chapterList}?subject=${value?.subject_id}`)
         .then((result) => {
           if (result.data.status_code === 200) {
-            setDropdownData({
-              ...dropdownData,
+            setDropdownData((prev) => ({
+              ...prev,
               chapters: result.data?.result,
-            });
+            }));
           } else {
             setAlert('error', result.data?.message);
           }
@@ -246,46 +247,46 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
   };
 
   const handleChapter = (event, value) => {
-    setFilterData({ ...filterData, chapter: '', topic: '' });
-    setDropdownData({ ...dropdownData, topics: [] });
+    setFilterData((prev) => ({ ...prev, chapter: '', topic: '' }));
+    setDropdownData((prev) => ({ ...prev, topics: [] }));
     if (value) {
-      setFilterData({ ...filterData, chapter: value, topic: '' });
+      setFilterData((prev) => ({ ...prev, chapter: value, topic: '' }));
       if (value?.is_central) {
         axios
           .get(`${endpoints.createQuestionApis.topicList}?chapter=${value?.id}`, {
             headers: { 'x-api-key': 'vikash@12345#1231' },
           })
           .then((result) => {
-            if (result.data.status_code === 200) {
-              setDropdownData({ ...dropdownData, topics: result.data?.result });
+            if (result?.data?.status_code === 200) {
+              setDropdownData((prev) => ({ ...prev, topics: result?.data?.result }));
             } else {
-              setAlert('error', result.data?.message);
+              setAlert('error', result?.data?.message);
             }
           })
           .catch((error) => {
-            setAlert('error', error.message);
+            setAlert('error', error?.message);
           });
       } else {
         axiosInstance
           .get(`${endpoints.assessmentErp.topicList}?chapter=${value?.id}`)
           .then((result) => {
-            if (result.data.status_code === 200) {
-              setDropdownData({ ...dropdownData, topics: result.data?.result });
+            if (result?.data?.status_code === 200) {
+              setDropdownData((prev) => ({ ...prev, topics: result?.data?.result }));
             } else {
-              setAlert('error', result.data?.message);
+              setAlert('error', result?.data?.message);
             }
           })
           .catch((error) => {
-            setAlert('error', error.message);
+            setAlert('error', error?.message);
           });
       }
     }
   };
 
   const handleTopic = (event, value) => {
-    setFilterData({ ...filterData, topic: '' });
+    setFilterData((prev) => ({ ...prev, topic: '' }));
     if (value) {
-      setFilterData({ ...filterData, topic: value });
+      setFilterData((prev) => ({ ...prev, topic: value }));
     }
   };
 
@@ -304,14 +305,14 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       chapter: '',
       topic: '',
     });
-    setDropdownData({
-      ...dropdownData,
+    setDropdownData((prev) => ({
+      ...prev,
       branches: [],
       grades: [],
       subjects: [],
       chapters: [],
       topics: [],
-    });
+    }));
     setIsFilter(false);
   };
 

@@ -394,7 +394,6 @@ const MultipleChoice = ({
     if (!editData?.id)
       requestBody = {
         ...requestBody,
-        // academic_session: filterDataTop.academic?.id,
         academic_session: filterDataTop.branch?.id,
         is_central_chapter: filterDataTop.chapter?.is_central,
         grade: filterDataTop.grade?.grade_id,
@@ -407,7 +406,6 @@ const MultipleChoice = ({
         question_type: showQuestionType?.id,
         question_level: filterDataBottom.level.id,
         question_categories: filterDataBottom.category.id,
-        // academic_session: filterDataTop.academic?.id,
         academic_session: filterDataTop.branch?.id,
         is_central_chapter: filterDataTop.chapter?.is_central,
         grade: filterDataTop.grade?.grade_id,
@@ -433,30 +431,30 @@ const MultipleChoice = ({
         axiosInstance
           .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody)
           .then((result) => {
-            if (result.data?.status_code === 200) {
-              setAlert('success', result.data?.message);
+            if (result?.data?.status_code === 200) {
+              setAlert('success', result?.data?.message);
               setEditData([]);
               history.push('/question-bank');
             } else {
-              setAlert('error', result.data?.message);
+              setAlert('error', result?.data?.message);
             }
           })
           .catch((error) => {
-            setAlert('error', error.message);
+            setAlert('error', error?.message);
           });
       } else {
         axiosInstance
           .post(`${endpoints.assessmentErp.createQuestion}`, requestBody)
           .then((result) => {
-            if (result.data.status_code === 200) {
-              setAlert('success', result.data?.message);
+            if (result?.data?.status_code === 200) {
+              setAlert('success', result?.data?.message);
               history.push('/question-bank');
             } else {
-              setAlert('error', result.data?.message);
+              setAlert('error', result?.data?.message);
             }
           })
           .catch((error) => {
-            setAlert('error', error.message);
+            setAlert('error', error?.message);
           });
       }
     }
