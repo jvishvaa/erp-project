@@ -381,7 +381,7 @@ const handleGrade = (event, value) => {
     try {
       setLoading(true);
       const result = await axiosInstance.get(
-        `${endpoints.masterManagement.grades}?page=${1}&page_size=${30}`,
+        `${endpoints.masterManagement.grades}?page=${1}&page_size=${0}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
