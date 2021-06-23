@@ -17,6 +17,7 @@ import './question-bank.css';
 const QuestionBankFilters = ({
   questionList,
   questionId,
+  section,
   handlePeriodList,
   setPeriodData,
   setViewMore,
@@ -590,7 +591,7 @@ const QuestionBankFilters = ({
       filterData.branch?.id,
       filterData.grade?.grade_id,
       filterData.chapter,
-      filterData.is_erp_central,
+      filterData.is_erp_central
     );
     setSelectedIndex(-1);
 
@@ -859,6 +860,21 @@ const QuestionBankFilters = ({
         {!isMobile && (
           <Grid item xs={12} sm={12}>
             <Divider />
+          </Grid>
+        )}
+        {section && questionId && (
+          <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+            <Button
+              variant='contained'
+              style={{ color: 'white', borderRadius: '10px' }}
+              className='custom_button_master labelColor'
+              size='medium'
+              onClick={() =>
+                history.push(`/create-question-paper?show-question-paper=true`)
+              }
+            >
+              BACK
+            </Button>
           </Grid>
         )}
         {isMobile && <Grid item xs={3} sm={0} />}
