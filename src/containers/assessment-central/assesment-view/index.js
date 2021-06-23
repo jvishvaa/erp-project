@@ -49,13 +49,11 @@ const AssessmentView = () => {
   const [periodDataForView, setPeriodDataForView] = useState({});
   const [filterDataDown, setFilterDataDown] = useState({});
   const limit = 9;
-  const [chapterSearch, setChapterSearch] = useState();
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [isFilter, setIsFilter] = useState(false);
   const [periodColor, setPeriodColor] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-
   const [tabValue, setTabValue] = useState(0);
   const [tabAcademic, setTabAcademic] = useState('');
   const [tabBranch, setTabBranch] = useState('');
@@ -294,6 +292,7 @@ const AssessmentView = () => {
                     setViewMore={setViewMore}
                     filterDataDown={filterDataDown}
                     periodDataForView={periodDataForView}
+                    setPublishFlag={setPublishFlag}
                   />
                 </Grid>
               )}

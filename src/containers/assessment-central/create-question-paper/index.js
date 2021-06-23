@@ -213,7 +213,7 @@ const CreateQuestionPaper = ({
   const handleClearAll = () => {
     initSetFilter('selectedAcademic', '');
     initSetFilter('selectedBranch', '');
-    initSetFilter('selectedGrade', []);
+    initSetFilter('selectedGrade', '');
     initSetFilter('selectedSubject', []);
     initSetFilter('selectedLevel', '');
   };
@@ -297,7 +297,6 @@ const CreateQuestionPaper = ({
           break;
         }
       }
-      console.log(formik.values.grade, '====>');
       let submitArray = {
         Section: sectionFlag,
         'Question Paper Name': questionPaperName,
@@ -305,7 +304,6 @@ const CreateQuestionPaper = ({
         Subject: formik.values.subject.length,
         Grade: formik.values.grade.grade_id,
       };
-      console.log(submitArray, '==ii>');
       let finalSubmitFlag =
         Object.entries(submitArray).every(([key, value]) => value) && sectionData.length;
 
@@ -337,6 +335,13 @@ const CreateQuestionPaper = ({
     formik.setFieldValue('branch', {});
     formik.setFieldValue('grade', {});
     formik.setFieldValue('subject', []);
+    initSetFilter('selectedAcademic', '');
+    initSetFilter('selectedBranch', '');
+    initSetFilter('selectedGrade', '');
+    initSetFilter('selectedSubject', []);
+    setBranchDropdown([]);
+    setGrades([]);
+    setSubjects([]);
     if (value) {
       getBranch(value?.id);
       formik.setFieldValue('academic', value);
@@ -348,6 +353,11 @@ const CreateQuestionPaper = ({
     formik.setFieldValue('branch', {});
     formik.setFieldValue('grade', {});
     formik.setFieldValue('subject', []);
+    initSetFilter('selectedBranch', '');
+    initSetFilter('selectedGrade', '');
+    initSetFilter('selectedSubject', []);
+    setGrades([]);
+    setSubjects([]);
     if (value) {
       getGrades(formik.values.academic?.id, value.branch.id);
       formik.setFieldValue('branch', value);
@@ -356,8 +366,11 @@ const CreateQuestionPaper = ({
   };
 
   const handleGrade = (event, value) => {
+    formik.setFieldValue('grade', {});
     formik.setFieldValue('subject', []);
-    console.log(value, '===>');
+    initSetFilter('selectedGrade', '');
+    initSetFilter('selectedSubject', []);
+    setSubjects([]);
     if (value) {
       getSubjects(formik.values.branch?.id, value?.grade_id);
       formik.setFieldValue('grade', value);
@@ -367,6 +380,7 @@ const CreateQuestionPaper = ({
 
   const handleSubject = (event, value) => {
     formik.setFieldValue('subject', []);
+    initSetFilter('selectedSubject', []);
     if (value.length > 0) {
       formik.setFieldValue('subject', value);
       initSetFilter('selectedSubject', value);
