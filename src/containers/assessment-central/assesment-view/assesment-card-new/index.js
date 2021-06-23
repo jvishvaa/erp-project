@@ -73,6 +73,7 @@ const AssessmentCard = ({
         if (result.data.status_code > 199 && result.data.status_code < 300) {
           setAlert('success', result.data.message);
           setPublishFlag(true);
+          setSelectedIndex(-1);
         } else {
           setAlert('error', result.data.message);
         }
@@ -82,9 +83,33 @@ const AssessmentCard = ({
       });
   };
 
+  const handleDelete = () => {
+    setPublishFlag(false);
+    const url = endpoints.assessmentErp?.publishQuestionPaper.replace(
+      '<question-paper-id>',
+      period?.id
+    );
+    axiosInstance
+      .put(url, {
+        is_delete: true,
+      })
+      .then((result) => {
+        if (result?.data?.status_code > 199 && result?.data?.status_code < 300) {
+          setAlert('success', result?.data?.message);
+          setPublishFlag(true);
+          setSelectedIndex(-1);
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+      });
+  };
+
   const handleViewMore = () => {
     setLoading(true);
-
+    setPeriodDataForView({});
     const url = endpoints.assessmentErp?.questionPaperViewMore.replace(
       '<question-paper-id>',
       period?.id
@@ -182,13 +207,15 @@ const AssessmentCard = ({
               {showPeriodIndex === index && showMenu ? (
                 <div className='tooltipContainer'>
                   {period.is_verified && (
-                    <span className='tooltiptext' onClick={handleAssign}>
-                      Assign To Test
+                    <span className='tooltiptext'>
+                      <span onClick={handleAssign}>Assign To Test</span>
+                      <span onClick={handleDelete}>Delete</span>
                     </span>
                   )}
                   {!period.is_verified && (
-                    <span className='tooltiptext' onClick={handlePublish}>
-                      Publish Paper
+                    <span className='tooltiptext'>
+                      <span onClick={handlePublish}>Publish Paper</span>
+                      <span onClick={handleDelete}>Delete</span>
                     </span>
                   )}
                 </div>
