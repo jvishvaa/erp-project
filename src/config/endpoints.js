@@ -366,6 +366,7 @@ export default {
     createAssessment: '/assessment/test/',
     deleteAssessmentTest: '/assessment/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+    examTypeList: '/assessment/exam-type-list/',
   },
 
   assessment: {
