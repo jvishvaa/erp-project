@@ -188,6 +188,8 @@ function CategoryPage() {
   //const [totalCount, setTotalCount] = React.useState();
   const limit = 12;
 
+  console.log(categoryList , "total")
+
   const handleClearFilter = () => {
     setSelectedCategory();
     setSelectedSubCategory();
@@ -402,7 +404,7 @@ function CategoryPage() {
                     <StyledTab label='Active' value='active' />
                     <StyledTab label='In-active' value='inactive' />
                     <Typography className={classes.numberofDiscussionText}>
-                      Number of Categories : {totalCount}
+                      Number of Categories : {categoryList.length}
                     </Typography>
                   </StyledTabs>
                   <Divider />
