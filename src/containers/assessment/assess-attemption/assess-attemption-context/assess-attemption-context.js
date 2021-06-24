@@ -424,6 +424,11 @@ export const AssessmentHandlerContextProvider = ({
         is_central: isCentral,
       } = item || {};
       const hasParentId = parentId > 0;
+      if (questionType === 9) {
+        Object.entries(answer).forEach(
+          ([key, value]) => (answer[key] = value.trim().toLowerCase())
+        );
+      }
       const obj = {
         question: qId,
         question_categories: questionCategories,

@@ -84,12 +84,13 @@ class TeacherPublishBlogView extends Component {
     this.getBlog(status);
   }
   getBlog = (status) => {
-    const { pageNo, pageSize ,tabValue,moduleId} = this.state;
+    // const { pageNo, pageSize ,tabValue,moduleId} = this.state;
+    const { pageNo, pageSize ,tabValue,startDate,endDate,moduleId} = this.state;
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
           pageNo 
-        }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&published_level=${tabValue+1}`
+        }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&published_level=${tabValue+1}&start_date=${startDate}&end_date=${endDate}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {

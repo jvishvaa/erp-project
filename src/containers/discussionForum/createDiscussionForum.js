@@ -116,7 +116,8 @@ const CreateDiscussionForum = () => {
       const branch_id = userDetails.role_details?.branch[0]?.id;
       requestData = {
         "title": title,
-        "description": descriptionDisplay,
+        // "description": descriptionDisplay,
+        "description":description,
         "category": selectedSubSubCategory.sub_sub_category_id,
         "branch": branch_id,
         "grade": [grade_id],
@@ -126,7 +127,8 @@ const CreateDiscussionForum = () => {
     else {
       requestData = {
         "title": title,
-        "description": descriptionDisplay,
+        // "description": descriptionDisplay,
+        "description":description,
         "category": selectedSubSubCategory.sub_sub_category_id,
         "branch": selectedBranch.branch.id,
         "grade": selectedGradeIds,
@@ -166,7 +168,8 @@ const CreateDiscussionForum = () => {
       const branch_id = userDetails.role_details?.branch[0]?.id;
       requestData = {
         "title": title,
-        "description": descriptionDisplay,
+        // "description": descriptionDisplay,
+        "description":description,
         "category": selectedSubSubCategory.sub_sub_category_id ?? selectedSubSubCategory.id,
         "branch": branch_id,
         "grade": [grade_id],
@@ -176,7 +179,8 @@ const CreateDiscussionForum = () => {
     else {
       requestData = {
         "title": title,
-        "description": descriptionDisplay,
+        // "description": descriptionDisplay,
+        "description":description,
         "category": selectedSubSubCategory.id,
         "branch": editData?.branch_id,
         "grade": [editData?.grade_id],
