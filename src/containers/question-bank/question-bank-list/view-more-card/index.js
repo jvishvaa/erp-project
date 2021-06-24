@@ -3,18 +3,14 @@ import { useHistory } from 'react-router-dom';
 // import { browserHistory } from 'react-router-dom'
 import ReactPlayer from 'react-player';
 import Paper from '@material-ui/core/Paper';
-import { useTheme, IconButton, SvgIcon, Divider, Button } from '@material-ui/core';
+import { IconButton, SvgIcon, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { Flare } from '@material-ui/icons';
 import axiosInstance from '../../../../config/axios';
 import './view-more.css';
 // import './styles.scss';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import endpoints from '../../../../config/endpoints';
-import download from '../../../../assets/images/download.svg';
-import downloadAll from '../../../../assets/images/downloadAll.svg';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
-import { Context } from '../../context/QuestionStore';
 import { AttachmentPreviewerContext } from '../../../../components/attachment-previewer/attachment-previewer-contexts';
 import axios from 'axios';
 
@@ -35,22 +31,16 @@ const ViewMoreCard = ({
   tabChapterId,
   tabIsErpCentral,
 }) => {
-  // const { year: { session_year }, grade: { grade_name }, subject: { subject: { subject_name } }, chapter: { chapter_name }, volume: { volume_name } } = filterDataDown;
-  // const { setAlert } = useContext(AlertNotificationContext);
-  // context data
-  // const [state,setState]= useContext(Context)
   const { setAlert } = useContext(AlertNotificationContext);
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
-
-  const [queName, setQueName] = useState(viewMoreData.parent);
   const compData = viewMoreData?.child;
   const Data = periodDataForView?.question_answer;
   const history = useHistory();
-  const [queSRC, setQueSRC] = useState('');
-  const optData = viewMoreData.parent;
   const getS3DomainURL = (fileSrc) => {
-    return `${endpoints.assessment.s3}${fileSrc}`;
+    return `${
+      viewMoreData?.parent?.is_central ? endpoints.s3 : endpoints.assessmentErp.s3
+    }/${fileSrc}`;
   };
   const resolveQuestionTypeName = (type) => {
     switch (type) {
@@ -90,7 +80,6 @@ const ViewMoreCard = ({
   };
 
   const handlePublish = (obj) => {
-    // axiosInstance
     if (obj?.parent?.is_central) {
       axios
         .put(

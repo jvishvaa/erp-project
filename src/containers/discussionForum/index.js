@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, Button, withStyles, Collapse, Grid } from '@material-ui/core';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { Provider } from 'react-redux';
@@ -92,7 +92,7 @@ const Discussionforum = () => {
   const location = useLocation();
   //let postURL = endpoints.discussionForum.postList;
 
-  const [showFilter, setShowFilter] = React.useState(true);
+  const [showFilter, setShowFilter] = React.useState(false);
   const [filterData, setFilterData] = React.useState([]);
   const [postList, setPostList] = React.useState([]);
   const [selectedFilter, setSelectedFilter] = React.useState(false);
@@ -103,6 +103,8 @@ const Discussionforum = () => {
     grade: '',
     section: '',
   });
+
+  let path = window.location.pathname;
 
   const handleFilterData = (years, branchs, grades, sections) => {
     setFilters({
@@ -115,6 +117,15 @@ const Discussionforum = () => {
     //setFilterData(data.result);
     //setPostURL(`${endpoints.discussionForum.postList}?grade=${grdaeId}&section=${sectionId}`);
   };
+
+  useEffect(() => {
+    if (path === '/student-forum') {
+      setShowFilter(false)
+    }
+    if (path === '/teacher-forum') {
+      setShowFilter(true)
+    }
+    },[path]);
 
   const handleFilter = () => {
     if(showFilter === true){
@@ -141,6 +152,7 @@ const Discussionforum = () => {
     <>
       <Layout>
         <Provider store={store}>
+          {showFilter === true ?
           <div className='breadcrumb-container-create' style={{ padding: '10px 20px'}}>
             <CommonBreadcrumbs componentName='Discussion forum' />
             {!showFilter && (
@@ -193,6 +205,7 @@ const Discussionforum = () => {
               <Filters url={postURL} handleFilterData={handleFilterData} />
             </Collapse>
           </div>
+          : ' ' }
           <Category
             handleFilter={handleFilter}
             showFilter={showFilter}
