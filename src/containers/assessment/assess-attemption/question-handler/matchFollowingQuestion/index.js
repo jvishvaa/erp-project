@@ -21,6 +21,7 @@ const MatchFollowingQuestion = (props) => {
       // attemption_status: attemptionStatus,
       answer: existingAnswer = [],
     } = {},
+    is_central: isCentral = false,
   } = currentQuestionObj || {};
 
   const [{ options = [], question, matchingOptions }] =
@@ -61,14 +62,14 @@ const MatchFollowingQuestion = (props) => {
           name: `p${rowIndex + 1}1`,
           option: options[rowIndex],
           matchingOption: matchingOptions[rowIndex],
-          src: `${endpoints.assessment.s3}${quesImgSrc}`,
+          src: `${isCentral ? endpoints.s3 : endpoints.assessmentErp.s3}/${quesImgSrc}`,
           value: questionValue,
         },
         {
           name: `p${rowIndex + 1}2`,
           option: options[rowIndex],
           matchingOption: matchingOptions[rowIndex],
-          src: `${endpoints.assessment.s3}${ansImgSrc}`,
+          src: `${isCentral ? endpoints.s3 : endpoints.assessmentErp.s3}/${ansImgSrc}`,
           value: answerValue,
         },
       ];
