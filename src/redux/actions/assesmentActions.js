@@ -7,13 +7,17 @@ import axiosInstance from 'config/axios';
 
 export const fetchAssesmentTypes = async () => {
   try {
-    const response = await axios.get(
-      `${endpoints.baseURLCentral}/assessment/exam-type-list/`,
-      {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      }
-    );
-    return response.data.result;
+    const response =
+      // await axios.get(
+      //   `${endpoints.baseURLCentral}/assessment/exam-type-list/`,
+      //   {
+      //     headers: { 'x-api-key': 'vikash@12345#1231' },
+      //   }
+      // );
+      await axiosInstance.get(`${endpoints.assessmentErp.examTypeList}`);
+    if (response.data) {
+      return response?.data?.result;
+    }
   } catch (e) {
     throw new Error(e);
   }
