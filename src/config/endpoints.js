@@ -301,6 +301,8 @@ export default {
   },
   email: {
     email: '/academic/email/',
+    whatsapp:'/academic/whatsapp/',
+    teacherTimingsReport:'/academic/teacher_timings_report/email/'
   },
   teacherViewBatches: {
     courseListApi: '/aol/courses/',

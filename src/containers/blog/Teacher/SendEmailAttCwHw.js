@@ -72,6 +72,9 @@ const SendEmailAttCwHw = (props) => {
   const [selectedGrades, setSelectedGrades] = useState('');
   const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
   const [sucessCount,setSucessCount]=useState('');
+  const [sucessCountWhats,setSucessCountWhats]=useState('');
+  const [sucessCountTeacherTimingReport,setSucessCountTeacherTimingReport]=useState('');
+
   const [gradeList, setGradeList] = useState([]);
   const [branchId]= useState(roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0])
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -95,9 +98,42 @@ const SendEmailAttCwHw = (props) => {
       setAlert('error', "duplicates not allowed");
     })
     };
-
+    const handleSubmitWhatsapp = (e) => {
+      axiosInstance.post(`${endpoints.email.whatsapp}`)
+      .then(result=>{
+      if (result.data.status_code === 200) {
+        setSucessCountWhats(result.data.result)
+        setLoading(false);
+        setAlert('success', result.data.message);
+      } else {        
+        setLoading(false);
+        setAlert('error', "duplicates not allowed");
+      }
+      }).catch((error)=>{
+        setLoading(false);        
+        setAlert('error', "duplicates not allowed");
+      })
+      };
   
+  
+      const handleSubmitTeacherTimingReport = (e) => {
 
+        axiosInstance.post(`${endpoints.email.teacherTimingsReport}`)
+        .then(result=>{
+        if (result.data.status_code === 200) {
+          setSucessCountTeacherTimingReport(result.data.result)
+          setLoading(false);
+          setAlert('success', result.data.message);
+        } else {        
+          setLoading(false);
+          setAlert('error', "duplicates not allowed");
+        }
+        }).catch((error)=>{
+          setLoading(false);        
+          setAlert('error', "duplicates not allowed");
+        })
+        };
+    
 
 
 
@@ -226,13 +262,52 @@ const handleGrade = (event, value) => {
               type='submit'
               onClick={handleSubmit}
               >
-              Send Email
+              Send Email HW/CW/ATTENDANCE
         </Button>
               <p  style={{width:'500px',fontSize:'12px',marginTop:'30px'}}
 >*Note:Email will send only to configured Grades of Attendace/HW/CW</p>
 <p style={{width:'500px',fontSize:'12px',marginTop:'40px',color:'green'}}> {sucessCount ? "Email delivered to " +  sucessCount  +  "  students":'' }</p>
           </Grid>
         </Grid>
+        <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '-1.25rem 1.5% 0 1.5%' }}>
+
+<Grid item xs={6} sm={2}>
+  <Button
+    variant='contained'
+    style={{ color: 'white' }}
+    color="primary"
+    className="custom_button_master"
+    size='medium'
+    type='submit'
+    onClick={handleSubmitWhatsapp}
+    >
+    Send Whatsapp HW/CW/ATTENDANCE
+</Button>
+    <p  style={{width:'500px',fontSize:'12px',marginTop:'30px'}}
+>*Note:whatsapp will send only to configured Grades of Attendace/HW/CW</p>
+<p style={{width:'500px',fontSize:'12px',marginTop:'40px',color:'green'}}> {sucessCountWhats ? "whatsapp  delivered to " +  sucessCountWhats  +  "  students/parents":'' }</p>
+</Grid>
+</Grid>
+
+<Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '-1.25rem 1.5% 0 1.5%' }}>
+
+<Grid item xs={6} sm={2}>
+  <Button
+    variant='contained'
+    style={{ color: 'white' }}
+    color="primary"
+    className="custom_button_master"
+    size='medium'
+    type='submit'
+    onClick={handleSubmitTeacherTimingReport}
+    >
+    Send Email Teacher Timings Report 
+</Button>
+    <p  style={{width:'500px',fontSize:'12px',marginTop:'30px'}}>*Note:Email will send only to configured Branch Principals </p>
+<p style={{width:'500px',fontSize:'12px',marginTop:'40px',color:'green'}}>* {sucessCountTeacherTimingReport ? "Email delivered to " +  sucessCountTeacherTimingReport  +  "  principals":'' }</p>
+</Grid>
+</Grid>
+
       </Layout>
     </>
   )
