@@ -7,7 +7,9 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import PropTypes from 'prop-types';
 import { Typography, Grid, CircularProgress } from '@material-ui/core/';
-
+import axios from 'axios';
+import axiosInstance from '../../../../../../../config/axios';
+import {urls} from '../../../../urls';
 import FeeDetails from './feeDetails';
 import MakePayment from './makePayment';
 // import OtherFee from './otherFee'
@@ -94,33 +96,54 @@ class ManagePayment extends Component {
     };
     let superUser = JSON.parse(localStorage.getItem('rememberDetails')) || {};
     let NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-    console.log(this.state.student , "student state");
+    let user_id = JSON.parse(localStorage.getItem('userDetails')).erp || {};
 
+    console.log(this.state.student , "student state");
+    this.checkPayment()
     console.log(superUser[0], 'super');
-      if (NavData && NavData.length) {
-        NavData.forEach((item) => {
-          if (
-            item.parent_modules === 'Online Class' &&
-            item.child_module &&
-            item.child_module.length > 0
-          ) {
-            item.child_module.forEach((item) => {
-              if (item.child_name === 'Attend Online Class') {
-                // setModuleId(item.child_id);
-                console.log('Student');
-                this.setState({
-                  student: true,
-                });
-                return;
-                // console.log(item.child_id, 'Chekk');
-              }
-            });
-          }
-        });
-      }
+      // if (NavData && NavData.length) {
+      //   NavData.forEach((item) => {
+      //     if (
+      //       item.parent_modules === 'Online Class' &&
+      //       item.child_module &&
+      //       item.child_module.length > 0
+      //     ) {
+      //       item.child_module.forEach((item) => {
+      //         if (item.child_name === 'Attend Online Class') {
+      //           // setModuleId(item.child_id);
+      //           console.log('Student');
+      //           this.setState({
+      //             student: true,
+      //           });
+      //           return;
+      //           // console.log(item.child_id, 'Chekk');
+      //         }
+      //       });
+      //     }
+      //   });
+      // }
     // document.addEventListener('contextmenu', event => event.preventDefault())
   
+   
+
 }
+
+  checkPayment(){
+    let user_id = JSON.parse(localStorage.getItem('userDetails')).erp || {};
+    let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
+    axios
+    .get(urls.CheckPayment + '?student=' + user_id ,{
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }).then((res) => {
+      console.log(res, 'current eventssss');
+    this.setState({ student: res.data.is_allowed });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
 
   componentDidUpdate(){
     console.log(this.state.student , "student state");
@@ -132,7 +155,10 @@ class ManagePayment extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, sessionData: e, getList: true });
+    console.log("hit academic");
   };
+
+
 
   render() {
     // const panes = [
@@ -154,13 +180,13 @@ class ManagePayment extends Component {
           <AppBar position='static'>
             <Tabs value={this.state.value} onChange={this.handleChangeAppBar}>
               <Tab value='one' label='Fee Details' />
-              {this.state.student ? '' : (
+              {this.state.student ? (
                 <Tab value='two' label='Make Payment' />
-              ) }
+              ) : '' }
               {/* <Tab value='three' label='Other Fees' /> */}
-              {this.state.student ? '' : (
+              {this.state.student ? (
                 <Tab value='four' label='Current Transactions' />
-              ) }
+              ) : '' }
               <Tab value='five' label='All Transactions' />
             </Tabs>
           </AppBar>
