@@ -534,8 +534,8 @@ const CreateDiscussionForum = () => {
                     className='message_log-textfield'
                     {...params}
                     variant='outlined'
-                    label='Acadmic Year'
-                    placeholder='Acadmic Year'
+                    label='Academic Year'
+                    placeholder='Academic Year'
                   />
                 )}
               />
