@@ -21,7 +21,7 @@ const MyTinyEditor = ({
     <Editor
       id={id}
       name='tinymce'
-      value={content}
+      initialValue={content}       //value={content}
       onEditorChange={handleEditorChange}
       apiKey={TINYMCE_API_KEY}
       init={{
