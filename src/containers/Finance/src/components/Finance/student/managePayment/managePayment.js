@@ -138,7 +138,7 @@ class ManagePayment extends Component {
       }
     }).then((res) => {
       console.log(res, 'current eventssss');
-    this.setState({ student: res.data.is_allowed });
+    // this.setState({ student: res.data.is_allowed });
     })
     .catch((error) => {
       console.log(error);
@@ -180,13 +180,14 @@ class ManagePayment extends Component {
           <AppBar position='static'>
             <Tabs value={this.state.value} onChange={this.handleChangeAppBar}>
               <Tab value='one' label='Fee Details' />
-              {this.state.student ? (
+              {/* {this.state.student ? (
                 <Tab value='two' label='Make Payment' />
-              ) : '' }
+              ) : '' } */}
               {/* <Tab value='three' label='Other Fees' /> */}
-              {this.state.student ? (
+              {/* {this.state.student ? (
                 <Tab value='four' label='Current Transactions' />
-              ) : '' }
+              ) : '' } */}
+                <Tab value='four' label='Current Transactions' />
               <Tab value='five' label='All Transactions' />
             </Tabs>
           </AppBar>
