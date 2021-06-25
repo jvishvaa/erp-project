@@ -977,7 +977,8 @@ const urls = {
   OnlineClassQuizResults: BASE + '/academic/quiz/student/filter/marks/',
   StudentWallet: BASE + '/store/student-wallet-amount/',
   AllStudentTransection: BASE + '/store/student-wallet-transaction-info/',
-  HomeWorkReport: BASE + '/academic/homework/get_homework_summary_report/'
+  HomeWorkReport: BASE + '/academic/homework/get_homework_summary_report/',
+  CheckPayment : BASE + '/pg/allow_payment/'
 }
 const staticUrls = {
   AssessmentExcel: STATIC_BASE + '/oms/assessment_excel_sheet.xlsx',
