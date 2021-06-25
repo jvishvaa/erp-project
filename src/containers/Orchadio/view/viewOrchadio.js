@@ -305,6 +305,7 @@ function ViewOrchadio() {
             return it;
           });
           setData(dat);
+          setTotalPages(result.data.result.total_pages)
           // console.log(result.data.result);
           // setData(result.data.result);
         } else {
@@ -522,6 +523,7 @@ function ViewOrchadio() {
             return it;
           });
           setData(dat);
+          setTotalPages(result.data.result.total_pages)
           // }
           // if (result.data && result.data.success === 'false') {
           //   const dat = data.map((it) => {
