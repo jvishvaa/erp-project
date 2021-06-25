@@ -164,7 +164,8 @@ const Layout = ({ children, history }) => {
 
   useEffect(() => {
     if (isLogout) {
-      history.push('/');
+      // history.push('/');
+      window.location.href = '/';
       setIsLogout(false);
     }
   }, [isLogout]);
