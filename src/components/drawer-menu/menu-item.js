@@ -49,6 +49,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Assign Role', Path: '/user-management/assign-role' },
     { name: 'View Class', Path: '/erp-online-class' },
     { name: 'Section Shuffle', Path: '/user-management/section-shuffling' },
+    { name: 'Access-Blocker', Path: '/user-management/access-blocker' },
     { name: 'Attend Online Class', Path: '/erp-online-class-student-view' },
     { name: 'Teacher View Class', Path: '/erp-online-class-teacher-view' },
     { name: 'Teacher View Attendance', Path: '/online-class/attendance-teacher-view' },
@@ -58,6 +59,11 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Configuration', Path: '/homework/admin' },
     { name: 'Student Homework', Path: '/homework/student' },
     { name: 'Teacher Homework', Path: '/homework/teacher' },
+    { name: 'Teacher Classwork Report', Path: '/classwork-report-teacher-view' },
+    { name: 'Student Classwork Report', Path: '/classwork/student-report' },
+    { name: 'Teacher Homework Report', Path: '/homework-report-teacher-view' },
+    { name: 'Student Homework Report', Path: '/homework/student-report'},
+    // { name: 'Student Homework Report', Path: '/classwork-report-teacher-view' },
     { name: 'Assessment', Path: '/assessment' },
     { name: 'Communication', Path: '/communication' },
     { name: 'Add Group', Path: '/communication/addgroup' },
@@ -98,13 +104,17 @@ const MenuItem = withRouter(({ history, ...props }) => {
       name: 'Manage Orchadio',
       Path: '/orchadio/manage-orchadio',
     },
-    { name: 'Teacher Homework Report', Path: '/homework-report-teacher-view' },
-    { name: 'Student Homework Report', Path: '/homework/student-report'},
-    { name: 'Teacher Classwork Report', Path: '/classwork-report-teacher-view' },
-    { name: 'Student Classwork Report', Path: '/classwork/student-report' },
     {
       name: 'Student Orchadio',
       Path: '/orchadio/view-orchadio',
+    },
+    {
+      name: 'Teacher Homework Report',
+      path: '/homework-report-teacher-view',
+    },
+    {
+      name: 'Teacher Classwork Report',
+      path: '/classwork-report-teacher-view',
     },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);

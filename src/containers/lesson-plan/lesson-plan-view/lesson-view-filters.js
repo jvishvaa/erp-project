@@ -286,7 +286,11 @@ const LessonViewFilters = ({
           }
         })
         .catch((error) => {
+          if ( error.message === 'Request failed with status code 402' ){
+            setAlert('error', 'Please clear your payment to access these contents. For further information please contact your branch')
+          } else {
           setAlert('error', error?.message);
+          }
         });
     } else {
       setAlert('warning', 'Please select a chapter!');
@@ -309,8 +313,17 @@ const LessonViewFilters = ({
     axiosInstance
       .get(`${endpoints.userManagement.academicYear}?module_id=${getModuleId()}`)
       .then((res) => {
-        if (res?.data?.status_code === 200) setAcademicYear(res?.data?.data);
-      })
+        if (res?.data?.status_code === 200) 
+        {
+          setAcademicYear(res?.data?.data);
+          if(academicYear){
+            handleAcademicYear("",{id: 1, is_delete: false, session_year: "2021-22", branch: null, created_by: null})
+          }
+        }
+        
+
+      }
+      )
       .catch((error) => {
         setAlert('error ', error?.message);
       });
@@ -323,8 +336,10 @@ const LessonViewFilters = ({
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          setAcademicYearDropdown(result?.data?.result?.results);
-        } else {
+          // const defaultValue=result?.data?.result?.results?.[3];
+          // handleAcademicYear({},defaultValue);
+         setAcademicYearDropdown(result?.data?.result?.results);
+          } else {
           setAlert('error', result?.data?.message);
         }
       })

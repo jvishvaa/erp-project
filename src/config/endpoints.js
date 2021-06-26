@@ -294,7 +294,7 @@ export default {
     WordCountConfig: '/academic/word_count_config/',
   },
   ebook: {
-    ebook: `${baseURLCentral}/ebook/ebook_school_wise_filter/`,
+    ebook: `/academic/ebook_school_wise_filter/`,
     EbookUser: `/academic/ebook_user/`,
     AnnotateEbook: `/academic/ebook_user_status/`,
     EbookMappedGrade: '/academic/ebook_mapped_grades/',

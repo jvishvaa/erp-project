@@ -164,8 +164,7 @@ const Layout = ({ children, history }) => {
 
   useEffect(() => {
     if (isLogout) {
-      // history.push('/');
-      window.location.href = '/';
+      history.push('/');
       setIsLogout(false);
     }
   }, [isLogout]);
@@ -464,6 +463,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Section Shuffle': {
         history.push('/user-management/section-shuffling');
+        break;
+      }
+      case 'Access-Blocker': {
+        history.push('/user-management/access-blocker');
         break;
       }
       case 'Assign Role': {

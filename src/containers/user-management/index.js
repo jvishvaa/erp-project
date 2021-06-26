@@ -8,6 +8,7 @@ import ViewUsers from './view-users/view-users';
 import AssignRole from '../communication/assign-role/assign-role';
 import BulkUpload from './bulk-upload/bulk-upload';
 import SectionShuffling from './section-shuffling';
+import AccessBlocker from './access-blocker';
 import './styles.scss';
 
 const RoutesIndex = () => {
@@ -33,6 +34,9 @@ const RoutesIndex = () => {
         </Route>
         <Route path={`${match.url}/section-shuffling`} exact>
           {({ match, history }) => <SectionShuffling match={match} history={history} />}
+        </Route>
+        <Route path={`${match.url}/access-blocker`} exact>
+          {({ match, history }) => <AccessBlocker match={match} history={history} />}
         </Route>
         {/* <Route path={`${match.url}`} exact>
           {({ match, history }) => <UserManagement match={match} history={history} />}
