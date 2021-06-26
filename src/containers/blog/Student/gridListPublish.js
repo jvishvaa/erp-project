@@ -36,6 +36,8 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     backgroundPosition: 'center',
     backgroundSize: 'auto',
+    backgroundColor:'black',
+    border: '2px solid black',
   },
 }));
 
@@ -63,6 +65,7 @@ function GridListPublish(props) {
 
             }}
             className={classes.card} >
+              <div style={{opacity:0.7,backgroundColor:"black",height:'290px'}}>
               <CardHeader
                 subheader={
                   <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
@@ -118,7 +121,7 @@ function GridListPublish(props) {
                   </Button>
 
                 </CardActions>
-             
+              </div>
             </Card>
           </Grid>
           <Grid container spacing={2}>
@@ -136,6 +139,7 @@ function GridListPublish(props) {
                 borderRadius: 10,
 
               }}>
+                <div style={{opacity:0.7,backgroundColor:"black",height:'350px'}}>
                 <CardHeader
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
@@ -171,7 +175,7 @@ function GridListPublish(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions>
+                <CardActions style={{marginTop:'30%'}}>
                   <Button
                     size='small'
                     color='primary'
@@ -186,6 +190,7 @@ function GridListPublish(props) {
                   </Button>
 
                 </CardActions>
+                </div>
               </Card>
             </Grid>
             <Grid item xs={6}>
@@ -204,6 +209,7 @@ function GridListPublish(props) {
 
                 }}
               >
+                <div style={{opacity:0.7,backgroundColor:"black",height:'350px'}}>
                 <CardHeader
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
@@ -243,7 +249,7 @@ function GridListPublish(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions >
+                <CardActions style={{marginTop:'30%'}}>
                   <Button
                     size='small'
                     color='primary'
@@ -258,6 +264,7 @@ function GridListPublish(props) {
                   </Button>
 
                 </CardActions>
+                </div>
               </Card>
             </Grid>
           </Grid>
@@ -278,6 +285,7 @@ function GridListPublish(props) {
                 borderRadius: 10,
 
               }}>
+                <div style={{opacity:0.7,backgroundColor:"black",height:'350px'}}>
                 <CardHeader
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
@@ -317,7 +325,7 @@ function GridListPublish(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions>
+                <CardActions style={{marginTop:'30%'}}>
                   <Button
                     size='small'
                     color='primary'
@@ -332,6 +340,7 @@ function GridListPublish(props) {
                   </Button>
 
                 </CardActions>
+                </div>
               </Card>
             </Grid>
             <Grid item xs={6}>
@@ -349,6 +358,7 @@ function GridListPublish(props) {
                 borderRadius: 10,
 
               }}>
+                <div style={{opacity:0.7,backgroundColor:"black",height:'350px'}}>
                 <CardHeader
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
@@ -388,7 +398,7 @@ function GridListPublish(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions >
+                <CardActions style={{marginTop:'30%'}}>
                   <Button
                     size='small'
                     color='primary'
@@ -403,6 +413,7 @@ function GridListPublish(props) {
                   </Button>
 
                 </CardActions>
+                </div>
               </Card>
             </Grid>
           </Grid>
@@ -420,6 +431,7 @@ function GridListPublish(props) {
               borderRadius: 10,
 
             }}>
+                <div style={{opacity:0.7,backgroundColor:"black",height:'290px'}}>
               <CardHeader
                 subheader={
                   <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
@@ -473,6 +485,7 @@ function GridListPublish(props) {
                   </Button>
 
                 </CardActions>
+                </div>
             </Card>
           </Grid>
         </Grid>

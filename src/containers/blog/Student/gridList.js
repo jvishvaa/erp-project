@@ -38,6 +38,8 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     backgroundPosition: 'center',
     backgroundSize: 'auto',
+    backgroundColor:'black',
+    border: '2px solid black',
   },
 }));
 
@@ -84,6 +86,7 @@ function GridList(props) {
 
                 }}
               >
+                <div style={{opacity:0.7,backgroundColor:"black",height:'290px'}}>
                 <CardHeader
                   subheader={
                     <Typography
@@ -131,15 +134,15 @@ function GridList(props) {
                 </CardActionArea>
                 {data[0]&&data[0].status === '4' ?
                 <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' ,marginLeft: '20px',
-             paddingRight: '310px'
-            //  ,paddingTop:'100px'
+                  paddingRight: '310px'
+                //  ,paddingTop:'100px'
                 }}>
                   {data[0]&&data[0].status === '4' ?
                    data[0]&&data[0].published_level === "2" ?
                    'Published at branch level' :data[0]&&data[0].published_level === "3" ?
                   'Published at grade level':data[0]&&data[0].published_level === "4" ?
                   'Published at section level': "Published at orchids level" :''}</p> :''}
-                <CardActions style={{ float: 'right' }}>
+                <CardActions style={{ float: 'left',marginTop:'20%' }}>
                   <Button
                     size='small'
                     color='primary'
@@ -155,10 +158,12 @@ function GridList(props) {
                   <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>
                     {data[0]&&data[0].status === '5' ? 'Revision' :''}</p>
                 </CardActions>
+                </div>
               </Card>
             </Grid>
             <Grid container spacing={2}>
               <Grid item xs={6}>
+                
                 <Card
                   style={{
                     display:data.length >= 2 ? 'flex' : 'none',
@@ -175,6 +180,7 @@ function GridList(props) {
                   }}
                   className={classes.card}
                 >
+                  <div style={{opacity:0.7,backgroundColor:"black",height:'350px'}}>
                   <CardHeader
                     subheader={
                       <Typography
@@ -217,16 +223,15 @@ function GridList(props) {
                   </CardActionArea>
                   {data[1]&&data[1].status === '4' ?
                   <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' ,marginLeft: '20px',
-             paddingRight: '90px'
-            //  ,paddingTop:'100px'
-                }}>
+                    paddingRight: '90px'
+                    //  ,paddingTop:'100px'
+                  }}>
                   {data[1]&&data[1].status === '4' ?
                    data[1]&&data[1].published_level === "2" ?
                    'Published at branch level' :data[1]&&data[1].published_level === "3" ?
                   'Published at grade level':data[1]&&data[1].published_level === "4" ?
                   'Published at section level': "Published at orchids level" :''}</p> :''}
-                  <CardActions style={{ float: 'right' }}>
-                    
+                  <CardActions style={{marginTop:'40%' }}>
                     <Button
                       size='small'
                       color='primary'
@@ -243,6 +248,7 @@ function GridList(props) {
                       {data[1]&&data[1].status === '5' ? 'Revision' :''}</p>
 
                   </CardActions>
+                  </div>
                 </Card>
               </Grid>
               <Grid item xs={6}>
@@ -259,10 +265,10 @@ function GridList(props) {
                   borderRadius: 10,
 
 
-                }}
-                 
+                 }}
                   className={classes.card}
                 >
+                  <div style={{opacity:0.7,backgroundColor:"black",height:'350px'}}>
                   <CardHeader
                     subheader={
                       <Typography
@@ -306,15 +312,15 @@ function GridList(props) {
                   </CardActionArea>
                   {data[2]&&data[2].status === '4' ?
                   <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' ,marginLeft: '20px',
-             paddingRight: '90px'
-            //  ,paddingTop:'100px'
-                }}>
+                   paddingRight: '90px'
+                  //  ,paddingTop:'100px'
+                  }}>
                   {data[2]&&data[2].status === '4' ?
                    data[2]&&data[2].published_level === "2" ?
                    'Published at branch level' :data[2]&&data[2].published_level === "3" ?
                   'Published at grade level':data[2]&&data[2].published_level === "4" ?
                   'Published at section level': "Published at orchids level" :''}</p> :''}
-                  <CardActions style={{ float: 'right' }}>
+                  <CardActions style={{marginTop:'40%' }}>
                  
                     <Button
                       size='small'
@@ -332,6 +338,7 @@ function GridList(props) {
                       {data[2]&&data[2].status === '5' ? 'Revision' :''}</p>
 
                   </CardActions>
+                  </div>
                 </Card>
               </Grid>
             </Grid>
@@ -355,6 +362,7 @@ function GridList(props) {
                   }}
                   className={classes.card}
                 >
+                  <div style={{opacity:0.7,backgroundColor:"black",height:'350px'}}>
                   <CardHeader
                     subheader={
                       <Typography
@@ -397,15 +405,15 @@ function GridList(props) {
                   </CardActionArea>
                   {data[3]&&data[3].status === '4' ?
                   <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' ,marginLeft: '20px',
-             paddingRight: '90px'
-            //  ,paddingTop:'100px'
-                }}>
+                   paddingRight: '90px'
+                  //  ,paddingTop:'100px'
+                  }}>
                   {data[3]&&data[3].status === '4' ?
                    data[3]&&data[3].published_level === "2" ?
                    'Published at branch level' :data[3]&&data[3].published_level === "3" ?
                   'Published at grade level':data[3]&&data[3].published_level === "4" ?
                   'Published at section level': "Published at orchids level" :''}</p> :''}
-                  <CardActions style={{ float: 'right' }}>
+                  <CardActions style={{marginTop:'40%' }}>
                     <Button
                       size='small'
                       color='primary'
@@ -422,6 +430,7 @@ function GridList(props) {
                       {data[3]&&data[3].status === '5' ? 'Revision' : ''}</p>
 
                   </CardActions>
+                  </div>
                 </Card>
               </Grid>
               <Grid item xs={6}>
@@ -442,6 +451,7 @@ function GridList(props) {
                   
                   className={classes.card}
                 >
+                  <div style={{opacity:0.7,backgroundColor:"black",height:'350px'}}>
                   <CardHeader
                     subheader={
                       <Typography
@@ -484,15 +494,15 @@ function GridList(props) {
                   </CardActionArea>
                   {data[4]&&data[4].status === '4' ?
                   <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' ,marginLeft: '20px',
-             paddingRight: '90px'
-            //  ,paddingTop:'100px'
-                }}>
+                    paddingRight: '90px'
+                    //  ,paddingTop:'100px'
+                  }}>
                   {data[4]&&data[4].status === '4' ?
                    data[4]&&data[4].published_level === "2" ?
                    'Published at branch level' :data[4]&&data[4].published_level === "3" ?
                   'Published at grade level':data[4]&&data[4].published_level === "4" ?
                   'Published at section level': "Published at orchids level" :''}</p> : ''}
-                  <CardActions style={{ float: 'right' }}>
+                  <CardActions style={{marginTop:'40%' }}>
                     <Button
                       size='small'
                       color='primary'
@@ -509,6 +519,7 @@ function GridList(props) {
                       {data[4]&&data[4].status === '5' ? 'Revision' : ''}</p>
 
                   </CardActions>
+                  </div>
                 </Card>
               </Grid>
             </Grid>
@@ -528,6 +539,7 @@ function GridList(props) {
                 }}
                 className={classes.card}
               >
+                <div style={{opacity:0.7,backgroundColor:"black",height:'290px'}}>
                 <CardHeader
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
@@ -564,15 +576,15 @@ function GridList(props) {
                 </CardActionArea>
                 {data[5]&&data[5].status === '4' ?
                 <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' ,marginLeft: '20px',
-             paddingRight: '310px'
-            //  ,paddingTop:'100px'
+                  paddingRight: '310px'
+                  //  ,paddingTop:'100px'
                 }}>
                   {data[5]&&data[5].status === '4' ?
                    data[5]&&data[5].published_level === "2" ?
                    'Published at branch level' :data[5]&&data[5].published_level === "3" ?
                   'Published at grade level':data[5]&&data[5].published_level === "4" ?
                   'Published at section level': "Published at orchids level" :''}</p> :''}
-                <CardActions style={{ float: 'right' }}>
+                <CardActions style={{ float: 'left',marginTop:'20%' }}>
                   <Button
                     size='small'
                     color='primary'
@@ -589,6 +601,7 @@ function GridList(props) {
                     {data[5]&&data[5].status === '5' ? 'Revision' :''}</p>
 
                 </CardActions>
+                </div>
               </Card>
             </Grid>
           </Grid>
