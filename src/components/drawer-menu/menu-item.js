@@ -74,7 +74,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Management Blogs', Path: '/blog/admin' },
     { name: 'Principal Blogs', Path: '/blog/principal' },
     { name: 'Genre', Path: '/blog/genre' },
-    { name: 'Word Count Cofiguration', Path: '/blog/wordcount-config' },
+    { name: 'Word Count Configuration', Path: '/blog/wordcount-config' },
     // { name: 'ID Cards', Path: '/student-id-card' },
     { name: 'ID Card View', Path: '/student-id-card' },
     { name: 'Student Strength', Path: '/student-strength' },

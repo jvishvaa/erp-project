@@ -614,7 +614,7 @@ const Layout = ({ children, history }) => {
         history.push('/blog/genre');
         break;
       }
-      case 'Word Count Cofiguration': {
+      case 'Word Count Configuration': {
         history.push('/blog/wordcount-config');
         break;
       }
