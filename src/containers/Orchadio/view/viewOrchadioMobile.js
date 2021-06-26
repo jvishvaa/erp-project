@@ -265,7 +265,7 @@ const ViewOrchadioMobile = () => {
       // debugger;
       // Archived
       // url = `${endpoints.orchadio.GetRadioProgram}?category_type=1`;
-      url = `${endpoints.orchadio.GetRadioProgram}?is_deleted=True`;
+      url = `${endpoints.orchadio.GetRadioProgram}?is_deleted=True&page_number=${pageNumber}&page_size=${limit}`;
     }
     axios
       .get(url)
@@ -295,6 +295,8 @@ const ViewOrchadioMobile = () => {
   }, []);
   const handleTabChange = (event, newValue) => {
     settabValue(newValue);
+    setLoading(true)
+    setPageNumber(1)
     // getRadio();
   };
   useEffect(() => {

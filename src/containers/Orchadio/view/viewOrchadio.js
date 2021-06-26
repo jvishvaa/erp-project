@@ -286,7 +286,12 @@ function ViewOrchadio() {
   const handleComment = (event) => {
     setComment(event.target.value);
   };
+
   const postComment = (item) => {
+    if(!comment){
+      setAlert('warning', "Please enter comment");
+     return
+    }
     axios
       .put(`${endpoints.orchadio.PostCommentandLike}${item.id}/create-orchido-comment/`, {
         comment,
@@ -408,7 +413,7 @@ function ViewOrchadio() {
       // url = `${endpoints.orchadio.GetRadioProgram}?category_type=1`;
       // url = `${endpoints.orchadio.GetRadioProgram}?is_deleted=True`;
       axios
-      .get(`${endpoints.orchadio.GetRadioProgram}?is_deleted=True`)
+      .get(`${endpoints.orchadio.GetRadioProgram}?is_deleted=True&page_number=${pageNumber}&page_size=${limit}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
@@ -436,20 +441,24 @@ function ViewOrchadio() {
   }, []);
 
   const getDaysAfter = (date, amount) => {
-    return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
+    // return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
+    return date ? date.add(amount, 'days').format('DD-MM-YYYY') : undefined;
   };
   const getDaysBefore = (date, amount) => {
-    return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
+    // return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
+    return date ? date.subtract(amount, 'days').format('DD-MM-YYYY') : undefined;
   };
   const handleStartDateChange = (date) => {
     const endDate = getDaysAfter(date.clone(), 6);
     setEndDate(endDate);
-    setStartDate(date.format('YYYY-MM-DD'));
+    // setStartDate(date.format('YYYY-MM-DD'));
+    setStartDate(date.format('DD-MM-YYYY'));
   };
   const handleEndDateChange = (date) => {
     const startDate = getDaysBefore(date.clone(), 6);
     setStartDate(startDate);
-    setEndDate(date.format('YYYY-MM-DD'));
+    // setEndDate(date.format('YYYY-MM-DD'));
+    setEndDate(date.format('DD-MM-YYYY'));
   };
   const handleTabChange = (event, newValue) => {
     settabValue(newValue);
@@ -831,6 +840,7 @@ function ViewOrchadio() {
                                 label='Enter your Comment'
                                 multiline
                                 size='small'
+                                required
                                 // fullWidth
                                 rowsMax={4}
                                 // InputProps={{ classes: { input: classes.commentInput } }}
