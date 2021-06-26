@@ -32,6 +32,8 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     backgroundPosition: 'center',
     backgroundSize: 'auto',
+    backgroundColor:'black',
+    border: '2px solid black',
   },
 }));
 
@@ -58,6 +60,7 @@ function GridList(props) {
 
             }}
             className={classes.card} >
+            <div style={{opacity:0.7,backgroundColor:"black",height:'290px'}}>
               <CardHeader
                 subheader={
                   <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
@@ -112,7 +115,7 @@ function GridList(props) {
                   <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem','margin-top': '100px' }}>{data[0]&&data[0].status === '5'? 'Revision' :''}</p>
 
                 </CardActions>
-             
+              </div>
             </Card>
           </Grid>
           <Grid container spacing={2}>
@@ -129,6 +132,7 @@ function GridList(props) {
                 borderRadius: 10,
 
               }}>
+                <div style={{opacity:0.7,backgroundColor:"black",height:'350px'}}>
                 <CardHeader
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
@@ -164,7 +168,7 @@ function GridList(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions>
+                <CardActions style={{marginTop:'40%' }}>
                   <Button
                     size='small'
                     color='primary'
@@ -180,6 +184,7 @@ function GridList(props) {
                   <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem', 'margin-left': '1rem','margin-top': '50px' }}>{data[1]&&data[1].status === '5'? 'Revision' :''}</p>
 
                 </CardActions>
+                </div>
               </Card>
             </Grid>
             <Grid item xs={6}>
@@ -198,6 +203,7 @@ function GridList(props) {
 
                 }}
               >
+                <div style={{opacity:0.7,backgroundColor:"black",height:'350px'}}>
                 <CardHeader
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
@@ -233,7 +239,7 @@ function GridList(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions >
+                <CardActions style={{marginTop:'40%' }}>
                   <Button
                     size='small'
                     color='primary'
@@ -249,6 +255,7 @@ function GridList(props) {
                   <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem', 'margin-left': '1rem','margin-top': '50px' }}>{data[2]&&data[2].status === '5'? 'Revision' :''}</p>
 
                 </CardActions>
+                </div>
               </Card>
             </Grid>
           </Grid>
@@ -269,6 +276,7 @@ function GridList(props) {
                 backgroundRepeat: 'no-repeat',
 
               }}>
+                <div style={{opacity:0.7,backgroundColor:"black",height:'350px'}}>
                 <CardHeader
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
@@ -305,7 +313,7 @@ function GridList(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions>
+                <CardActions style={{marginTop:'40%' }}>
                   <Button
                     size='small'
                     color='primary'
@@ -322,6 +330,7 @@ function GridList(props) {
 
 
                 </CardActions>
+                </div>
               </Card>
             </Grid>
             <Grid item xs={6}>
@@ -339,6 +348,7 @@ function GridList(props) {
                 backgroundRepeat: 'no-repeat',
 
               }}>
+                <div style={{opacity:0.7,backgroundColor:"black",height:'350px'}}>
                 <CardHeader
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
@@ -376,7 +386,7 @@ function GridList(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions >
+                <CardActions style={{marginTop:'40%' }}>
                   <Button
                     size='small'
                     color='primary'
@@ -393,6 +403,7 @@ function GridList(props) {
                     {data[4]&&data[4].status === '5'? 'Revision' :''}</p>
 
                 </CardActions>
+                </div>
               </Card>
             </Grid>
           </Grid>
@@ -410,6 +421,7 @@ function GridList(props) {
               backgroundRepeat: 'no-repeat',
 
             }}>
+              <div style={{opacity:0.7,backgroundColor:"black",height:'350px'}}>
               <CardHeader
                 subheader={
                   <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
@@ -463,6 +475,7 @@ function GridList(props) {
                     {data[5]&&data[5].status === '5'? 'Revision' :''}</p>
 
                 </CardActions>
+              </div>
             </Card>
           </Grid>
         </Grid>

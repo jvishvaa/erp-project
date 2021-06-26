@@ -26,6 +26,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import Layout from '../../Layout';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const styles = (theme) => ({
   root: {
@@ -83,6 +84,7 @@ class ContentView extends Component {
     };
   }
 
+  static contextType = AlertNotificationContext
   componentDidMount() {
     const { files } = this.state;
     const imageUrl = URL.createObjectURL( files && files[0]);
@@ -114,6 +116,7 @@ class ContentView extends Component {
       .post(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
+          this.context.setAlert('success',"Blog Successfully Submitted")
           this.props.history.push({
             pathname: '/blog/student/dashboard',
           });

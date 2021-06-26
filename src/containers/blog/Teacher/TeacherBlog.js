@@ -100,13 +100,14 @@ class TeacherBlog extends Component {
     // this.getBranch();
   }
   getBlog = (status) => {
-    const { pageNo, pageSize,tabValue ,moduleId} = this.state;
+    // const { pageNo, pageSize,tabValue ,moduleId} = this.state;
+  const { pageNo, pageSize ,tabValue,moduleId,startDate,endDate} = this.state
     
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
           pageNo 
-        }&page_size=${pageSize}&status=${status}&module_id=${moduleId}`
+        }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
