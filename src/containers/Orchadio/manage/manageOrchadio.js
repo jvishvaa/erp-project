@@ -55,7 +55,8 @@ import Loading from '../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './manageorchido.scss';
 import Pagination from '@material-ui/lab/Pagination';
-// import selectfilter from '../../../assets/images/selectfilter.svg';
+import unfiltered  from '../../../assets/images/unfiltered.svg';
+import selectFilter  from '../../../assets/images/selectfilter.svg';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -151,6 +152,23 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 0,
     // backgroundColor: theme.palette.background.paper,
   },
+  selectFilterGrid: {
+    height: '400px',
+    justifyContent: 'center',
+    textAlign: 'center',
+},
+unfilteredImg: {
+  display: 'block',
+  height: '50%',
+  margin: 'auto',
+  marginTop: '20px',
+},
+unfilteredTextImg: {
+  display: 'block',
+  marginTop: '10px',
+  margin: 'auto',
+  paddingLeft:'25px',
+}
 }));
 
 function ManageOrchadio() {
@@ -762,15 +780,19 @@ function ManageOrchadio() {
                             ))}
                         </Grid>
                       ) : (
-                        <Typography variant='subtitle1'>No Data Found</Typography>
-                      //         <img
-                      //   style={
-                      //     isMobile
-                      //       ? { height: '20px', width: '250px' }
-                      //       : { height: '50px', width: '400px' }
-                      //   }
-                      //   src={selectfilter}
-                      // />
+                        // <Typography variant='subtitle1'>No Data Found</Typography>
+                      <Grid item xs={12} className={classes.selectFilterGrid}>
+                                <img
+                                    src={unfiltered}
+                                    alt="unFilter"
+                                    className={classes.unfilteredImg}
+                                />
+                                <img
+                                    src={selectFilter}
+                                    alt="unFilter"
+                                    className={classes.unfilteredTextImg}
+                                />
+                      </Grid>
                       )}
                     </TabPanel>
                     <TabPanel value={tabValue} index={1}>
@@ -1076,15 +1098,19 @@ function ManageOrchadio() {
                           ))}
                         </Grid>
                       ) : (
-                        <Typography variant='subtitle1'>No Data Found</Typography>
-                      //   <img
-                      //   style={
-                      //     isMobile
-                      //       ? { height: '20px', width: '250px' }
-                      //       : { height: '50px', width: '400px' }
-                      //   }
-                      //   src={selectfilter}
-                      // />
+                        // <Typography variant='subtitle1'>No Data Found</Typography>
+                        <Grid item xs={12} className={classes.selectFilterGrid}>
+                                <img
+                                    src={unfiltered}
+                                    alt="unFilter"
+                                    className={classes.unfilteredImg}
+                                />
+                                <img
+                                    src={selectFilter}
+                                    alt="unFilter"
+                                    className={classes.unfilteredTextImg}
+                                />
+                      </Grid>
                       )}
                     </TabPanel>
                   </div>
