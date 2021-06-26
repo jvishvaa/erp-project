@@ -165,7 +165,10 @@ const AssessmentCard = ({
   return (
     <Paper
       className={periodColor ? classes.selectedRoot : classes.root}
-      style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}
+      style={
+        (isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' },
+        period.is_verified ? { background: '#FCEEEE' } : { background: '#FFF' })
+      }
     >
       <Grid container spacing={2}>
         <Grid item xs={8}>

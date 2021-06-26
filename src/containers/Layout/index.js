@@ -154,7 +154,7 @@ const Layout = ({ children, history }) => {
     }
     if (userDetails) {
       userDetails = JSON.parse(userDetails);
-      const { is_superuser } = userDetails;
+      const { is_superuser = false } = userDetails;
       setSuperUser(is_superuser);
     }
     if (containerRef.scrollTop > 50) {
@@ -189,10 +189,12 @@ const Layout = ({ children, history }) => {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleLogout = () => {
-    localStorage.removeItem('filterData');
-    localStorage.removeItem('viewMoreData');
-    localStorage.removeItem('moduleId');
     dispatch(logout());
+    if (JSON.parse(localStorage.getItem('rememberDetails'))) {
+      Object.keys(localStorage).forEach((key) => {
+        if (key !== 'rememberDetails') localStorage.removeItem(key);
+      });
+    } else localStorage.clear();
     setIsLogout(true);
   };
 
@@ -463,6 +465,10 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/section-shuffling');
         break;
       }
+      case 'Access-Blocker': {
+        history.push('/user-management/access-blocker');
+        break;
+      }
       case 'Assign Role': {
         history.push('/user-management/assign-role');
         break;
@@ -611,7 +617,7 @@ const Layout = ({ children, history }) => {
         history.push('/blog/genre');
         break;
       }
-      case 'Word Count Cofiguration': {
+      case 'Word Count Configuration': {
         history.push('/blog/wordcount-config');
         break;
       }
@@ -1037,12 +1043,12 @@ const Layout = ({ children, history }) => {
         history.push('/orchadio/view-orchadio');
         break;
       }
-      case 'Teacher Homework Report' :{
-        history.push('/homework-report-teacher-view')
+      case 'Teacher Homework Report': {
+        history.push('/homework-report-teacher-view');
         break;
       }
-      case 'Teacher Classwork Report' :{
-        history.push('/classwork-report-teacher-view')
+      case 'Teacher Classwork Report': {
+        history.push('/classwork-report-teacher-view');
         break;
       }
       default:
@@ -1112,7 +1118,9 @@ const Layout = ({ children, history }) => {
             cursor='default'
           >
             <span style={{ cursor: 'default' }}>Welcome!</span>
-            <span style={{ fontSize: '1rem', marginLeft: '1rem' ,cursor: 'default' }}>Have a great day</span>
+            <span style={{ fontSize: '1rem', marginLeft: '1rem', cursor: 'default' }}>
+              Have a great day
+            </span>
           </Typography>
           {superUser ? (
             <div className={clsx(classes.grow, classes.desktopToolbarComponents)}>
@@ -1439,7 +1447,7 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-          {navigationData && drawerOpen && navigationData.length > 0 && (
+          {navigationData && drawerOpen && navigationData?.length > 0 && (
             <DrawerMenu
               superUser={superUser}
               navigationItems={navigationData}

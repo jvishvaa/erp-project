@@ -291,7 +291,8 @@ function SignIn({ onLogin, history, aolOnLogin }) {
       };
       onLogin(params).then((response) => {
         if (response?.isLogin) {
-          history.push('/profile');
+          // history.push('/profile');
+          window.location.href = '/profile';
         } else {
           setAlert('error', response?.message);
         }

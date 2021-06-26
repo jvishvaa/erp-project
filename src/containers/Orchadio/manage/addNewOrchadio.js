@@ -42,6 +42,7 @@ import endpoints from '../../../config/endpoints';
 import MobileDatepicker from './datePicker';
 import Loading from '../../../components/loader/loader';
 import { useHistory } from 'react-router';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import './addorcido.scss';
 
 
@@ -126,7 +127,7 @@ function AddNewOrchadio() {
   const [open, setOpen] = React.useState(false);
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [selectedTime, setSelectedTime] = React.useState(new Date());
-  const [duration, setDuration] = React.useState(0);
+  const [duration, setDuration] = React.useState();
   const [albumTitle, setAlbumTitle] = React.useState(0);
   const [branchId, setBranchId] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
@@ -139,6 +140,7 @@ function AddNewOrchadio() {
   const history = useHistory();
   const moduleId = localStorage.getItem('moduleIdOrchido');
   console.log(moduleId, "moduleId");
+  // const [errorDuration, setErrorDuration] = useState(false)
 
   // const [branchList, setBranchList] = useState([]);
   // const [selectedBranch, setSelectedBranch] = useState([]);
@@ -285,9 +287,14 @@ bytes
       // this.props.alert.warning('You can select only a single image at once')
       return;
     }
+    if(files[0].type !== "audio/mpeg"){
+      setAlert('error', 'Please upload mp3 file');
+    }else{
+      setFiles(files);
+      audioUpload(files);
 
-    setFiles(files);
-    audioUpload(files);
+    }
+    
 
     // console.log(URL.createObjectURL(files[0]));
   };
@@ -320,8 +327,21 @@ bytes
     return `${hours}:${minutes}:${seconds}`;
   };
 
+  // const durationCondition = () =>{
+  //   if(duration === 0 || duration === null || duration === undefined){
+  //     setErrorDuration(true)
+  //     return false
+  //   }
+  //   return true
+  // }
+
   const handleSubmit = () => {
-    if (branchId && albumTitle && files.length && selectedTime && selectedDate) {
+    // console.log(duration,'duration')
+    if (branchId && albumTitle && files.length && selectedTime && selectedDate && duration && duration !== '0') {
+      // if(duration === '0'){
+      //   setAlert('error', 'Duration can not be 0');
+      // }
+      // else{
       //   audioUpload();
       //   if (audioLink.length) {
       console.log(files[0]);
@@ -359,9 +379,9 @@ bytes
           setAlert('error', 'Something Went Wrong');
         });
       handleClose();
-      //   }
+        // }
     } else {
-      setAlert('error', 'Please Fill All the fields');
+      setAlert('error', 'Duration can not be empty and zero');
     }
   };
   const handleFilter = () => {
@@ -499,7 +519,7 @@ bytes
                     helperText={`${
                       albumTitle.length === undefined ? 0 : albumTitle.length
                     }/100`}
-                    placeholder='Title should not be more than 100 words'
+                    placeholder='Title should not be more than 100 character'
                     variant='outlined'
                     multiline
                     // endAdornment={<InputAdornment position='end'>Kg</InputAdornment>}
@@ -654,6 +674,7 @@ bytes
                         fullWidth
                         id='outlined-number'
                         label='Duration in mins'
+                        Required
                         type='number'
                         value={duration}
                         inputProps={{
@@ -667,6 +688,9 @@ bytes
                         }}
                         variant='outlined'
                       />
+                      {/* { errorDuration && 
+                      <FormHelperText style={{color:"red"}}>Duration can't be zero</FormHelperText>
+                      } */}
                       <div style={{ marginTop: 20 }}>
                         <MuiPickersUtilsProvider utils={MomentUtils}>
                           <Grid container justify='space-around'>

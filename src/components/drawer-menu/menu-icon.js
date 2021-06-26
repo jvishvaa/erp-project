@@ -205,7 +205,7 @@ const menuIcon = (name) => {
       icon = <Store />;
       break;
     }
-    case 'Orchidio': {
+    case 'Orchadio': {
       icon = <School />;
       break;
     }

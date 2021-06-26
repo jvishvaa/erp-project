@@ -55,6 +55,8 @@ import Loading from '../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './manageorchido.scss';
 import Pagination from '@material-ui/lab/Pagination';
+import unfiltered  from '../../../assets/images/unfiltered.svg';
+import selectFilter  from '../../../assets/images/selectfilter.svg';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -150,6 +152,23 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 0,
     // backgroundColor: theme.palette.background.paper,
   },
+  selectFilterGrid: {
+    height: '400px',
+    justifyContent: 'center',
+    textAlign: 'center',
+},
+unfilteredImg: {
+  display: 'block',
+  height: '50%',
+  margin: 'auto',
+  marginTop: '20px',
+},
+unfilteredTextImg: {
+  display: 'block',
+  marginTop: '10px',
+  margin: 'auto',
+  paddingLeft:'25px',
+}
 }));
 
 function ManageOrchadio() {
@@ -190,6 +209,7 @@ function ManageOrchadio() {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState();
   const location = useLocation();
+  const [filterFlag, setFilterFlag] = useState(0);
   const limit = 5;
   const [totalPages, setTotalPages] = React.useState('')
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -264,7 +284,7 @@ function ManageOrchadio() {
       `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
       'academicYearList'
     );
-  }, [moduleId, pageNumber]);
+  }, [moduleId]);
 
   function callApi(api, key) {
     setLoading(true);
@@ -349,20 +369,24 @@ function ManageOrchadio() {
     // setLoading(true)
   };
   const getDaysAfter = (date, amount) => {
-    return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
+    // return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
+    return date ? date.add(amount, 'days').format('DD-MM-YYYY') : undefined;
   };
   const getDaysBefore = (date, amount) => {
-    return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
+    // return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
+    return date ? date.subtract(amount, 'days').format('DD-MM-YYYY') : undefined;
   };
   const handleStartDateChange = (date) => {
     const endDate = getDaysAfter(date.clone(), 6);
     setEndDate(endDate);
-    setStartDate(date.format('YYYY-MM-DD'));
+    // setStartDate(date.format('YYYY-MM-DD'));
+    setStartDate(date.format('DD-MM-YYYY'));
   };
   const handleEndDateChange = (date) => {
     const startDate = getDaysBefore(date.clone(), 6);
     setStartDate(startDate);
-    setEndDate(date.format('YYYY-MM-DD'));
+    // setEndDate(date.format('YYYY-MM-DD'));
+    setEndDate(date.format('DD-MM-YYYY'));
   };
 
   const handleOpen = () => {
@@ -375,43 +399,90 @@ function ManageOrchadio() {
 
   const handlePagination = (event, page) => {
     setPageNumber(page);
-    setLoading(true)
+      if(filterFlag === 0){
+        setLoading(true)
+        axios
+        .get(`${endpoints.orchadio.GetRadioProgram}?page_number=${page}&page_size=${limit}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setAlert('success', result.data.message);
+            setLoading(false);
+            setData(result.data.result.data);
+            setTotalPages(result.data.result.total_pages)
+          } else {
+            console.log(result.data.message);
+          }
+        })
+        .catch((error) => { });
+       
+      }else if(filterFlag === 1){
+        setLoading(true); 
+        axios
+          .get(
+            `${endpoints.orchadio.GetRadioProgram}?start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=${limit}`
+          )
+          .then((result) => {
+            if (result.data.status_code === 200) {
+              setAlert('success', result.data.message);
+              setData(result.data.result.data);
+              setTotalPages(result.data.result.total_pages)
+              setLoading(false)
+            } else {
+              setLoading(false)
+              setAlert('warning', result.data.message);
+              console.log(result.data.message);
+            }
+          })
+          .catch((error) => {
+            setLoading(false)
+            setAlert('error', 'Something went wrong.. Try again later');
+          });
+      }
   };
 
   const handleFilter = () => {
+    setFilterFlag(1);
+    setTotalPages(1)
+    setLoading(true); 
     axios
       .get(
-        `${endpoints.orchadio.GetRadioProgram}?start_date=${startDate}&end_date=${endDate}`
+        `${endpoints.orchadio.GetRadioProgram}?start_date=${startDate}&end_date=${endDate}&page_number=${pageNumber}&page_size=${limit}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
-          setLoading(false);
           // console.log(result.data.result);
           setData(result.data.result.data);
           setTotalPages(result.data.result.total_pages)
+          setLoading(false)
         } else {
+          setLoading(false)
           setAlert('warning', result.data.message);
           console.log(result.data.message);
         }
       })
       .catch((error) => {
+        setLoading(false)
         setAlert('error', 'Something went wrong.. Try again later');
       });
   };
 
   const handleDelete = (item) => {
-    console.log(item);
+    // console.log(item);
+    setLoading(true)
     axios
       .delete(`${endpoints.orchadio.DeleteOrchadio}${item.id}/update-orchadio/`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setLoading(false);
+           if (filterFlag) { 
+          handleFilter(); 
+          } else { 
+            getRadio(); 
+           } 
           setAlert('success', result.data.message);
-          // console.log(result.data.result);
-          setData(result.data.result);
-          // setTotalPages(result.data.result.total_pages)
         } else {
+          setLoading(false);
           setAlert('warning', result.data.message);
           console.log(result.data.message);
         }
@@ -419,7 +490,6 @@ function ManageOrchadio() {
       .catch((error) => {
         setAlert('error', 'Something went wrong.. Try again later');
       });
-    getRadio();
   };
   const handleParticipantsCollapse = (index) => {
     setParticipantOpen(!ParticipantOpen);
@@ -710,7 +780,19 @@ function ManageOrchadio() {
                             ))}
                         </Grid>
                       ) : (
-                        <Typography variant='subtitle1'>No Data Found</Typography>
+                        // <Typography variant='subtitle1'>No Data Found</Typography>
+                      <Grid item xs={12} className={classes.selectFilterGrid}>
+                                <img
+                                    src={unfiltered}
+                                    alt="unFilter"
+                                    className={classes.unfilteredImg}
+                                />
+                                <img
+                                    src={selectFilter}
+                                    alt="unFilter"
+                                    className={classes.unfilteredTextImg}
+                                />
+                      </Grid>
                       )}
                     </TabPanel>
                     <TabPanel value={tabValue} index={1}>
@@ -1016,7 +1098,19 @@ function ManageOrchadio() {
                           ))}
                         </Grid>
                       ) : (
-                        <Typography variant='subtitle1'>No Data Found</Typography>
+                        // <Typography variant='subtitle1'>No Data Found</Typography>
+                        <Grid item xs={12} className={classes.selectFilterGrid}>
+                                <img
+                                    src={unfiltered}
+                                    alt="unFilter"
+                                    className={classes.unfilteredImg}
+                                />
+                                <img
+                                    src={selectFilter}
+                                    alt="unFilter"
+                                    className={classes.unfilteredTextImg}
+                                />
+                      </Grid>
                       )}
                     </TabPanel>
                   </div>

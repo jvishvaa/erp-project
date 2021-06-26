@@ -369,7 +369,7 @@ class WriteBlog extends Component {
                       id='outlined-textarea'
                       placeholder='Title not to be more than 100 characters'
                       inputProps={{ maxLength: 100 }}
-                      helperText={`Charater: ${title.length}/${TITLE_CHARACTER_LIMIT}`}
+                      helperText={`Character: ${title.length}/${TITLE_CHARACTER_LIMIT}`}
                       onChange={this.handleTitle}
                       multiline
                       required
