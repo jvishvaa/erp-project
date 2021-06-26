@@ -1,7 +1,7 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/no-unused-state */
-import React, { Component } from 'react';
+import React, { Component , useContext } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { Grid, Button, Divider } from '@material-ui/core';
 // import TextField from '@material-ui/core/TextField';
@@ -15,6 +15,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Layout from '../Layout';
 import { Pagination } from '@material-ui/lab';
 // import Filter from './Filter';
@@ -23,6 +24,7 @@ import GridList from './gridList';
 import axios from 'axios';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -90,8 +92,9 @@ class ViewEbook extends Component {
       selectedSubject: '',
       selectedVolume:'',
     };
-
-  }
+  } 
+  static contextType = AlertNotificationContext
+  
 
   componentDidMount() {
     this.getEbook();
@@ -163,6 +166,7 @@ class ViewEbook extends Component {
 
 
   getEbook = (acad, branch, grade, subject, vol) => {
+    let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     const {host}= new URL(axiosInstance.defaults.baseURL) // "dev.olvorchidnaigaon.letseduvate.com"
     const hostSplitArray = host.split('.')
     const subDomainLevels = hostSplitArray.length - 2
@@ -195,10 +199,10 @@ class ViewEbook extends Component {
         pageNo 
       }&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`
     }
-    axios
+    axiosInstance
       .get(urlPath, {
         headers: {
-          'x-api-key': 'vikash@12345#1231',
+        Authorization: 'Bearer ' + token
         },
       })
       .then((result) => {
@@ -209,6 +213,10 @@ class ViewEbook extends Component {
         }
       })
       .catch((error) => {
+        console.log(error.message , "err");
+        if ( error.message === 'Request failed with status code 402' ){
+          this.context.setAlert('error', 'Please clear your payment to access these contents. For further information please contact your branch')
+        }
       });
   };
   
@@ -260,8 +268,10 @@ class ViewEbook extends Component {
                           onChange={this.handleTabChange}
                           aria-label='simple tabs example'
                         >
+                          
                           <Tab label='General' {...a11yProps(0)} />
                           <Tab label='Curriculum' {...a11yProps(1)} />
+                          
 
                           {/* <Tab label='Deleted' {...a11yProps(2)} /> */}
                         </Tabs>
@@ -283,7 +293,7 @@ class ViewEbook extends Component {
                             />
                           )}
                         </TabPanel>
-                        <TabPanel value={tabValue} index={2}>
+                        {/* <TabPanel value={tabValue} index={2}>
                           {data && (
                             <GridList
                               data={data}
@@ -291,7 +301,7 @@ class ViewEbook extends Component {
                               totalEbooks={totalEbooks}
                             />
                           )}
-                        </TabPanel>
+                        </TabPanel> */}
                       </div>
                     </Grid>
                     <Grid item xs={12} md={12} style={{textAlign: 'center'}}>
