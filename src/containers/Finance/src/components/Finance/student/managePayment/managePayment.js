@@ -99,14 +99,14 @@ class ManagePayment extends Component {
     let user_id = JSON.parse(localStorage.getItem('userDetails')).erp || {};
 
 
-    let domain = window.location.href;
-    let arr = domain.split("/");
-    let sub = arr[0] + "//" + arr[2]
-    console.log(sub , "domain");
+    // let domain = window.location.href;
+    // let arr = domain.split("/");
+    // let sub = arr[0] + "//" + arr[2]
+    // console.log(sub , "domain");
 
-    console.log(this.state.student , "student state");
-    this.checkPayment(sub)
-    console.log(superUser[0], 'super');
+    // console.log(this.state.student , "student state");
+    // this.checkPayment(sub)
+    // console.log(superUser[0], 'super');
       // if (NavData && NavData.length) {
       //   NavData.forEach((item) => {
       //     if (
@@ -150,12 +150,12 @@ class ManagePayment extends Component {
     //   console.log(error);
     // });
 
-    if ( sub === 'https://aolschool.letseduvate.com'  ) {
-      this.setState({ student: true});
-    } else {
-      this.setState({ student: false});
+    // if ( sub === 'https://dev.olvorchidnaigaon.letseduvate.com'  ) {
+    //   this.setState({ student: true});
+    // } else {
+    //   this.setState({ student: false});
 
-    }
+    // }
   }
 
   componentDidUpdate(){
@@ -193,9 +193,9 @@ class ManagePayment extends Component {
           <AppBar position='static'>
             <Tabs value={this.state.value} onChange={this.handleChangeAppBar}>
               <Tab value='one' label='Fee Details' />
-              {this.state.student ? (
+              {/* {this.state.student ? (
                 <Tab value='two' label='Make Payment' />
-              ) : '' }
+              ) : '' } */}
               {/* <Tab value='three' label='Other Fees' /> */}
               {/* {this.state.student ? (
                 <Tab value='four' label='Current Transactions' />
