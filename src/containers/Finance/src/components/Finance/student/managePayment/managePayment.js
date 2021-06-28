@@ -151,7 +151,7 @@ class ManagePayment extends Component {
     // });
 
     // if ( sub === 'https://dev.olvorchidnaigaon.letseduvate.com'  ) {
-    if ( sub === 'aol.letseduvate.com' ) {
+    if ( sub === 'aolschool.letseduvate.com' ) {
 
       this.setState({ student: true});
     } else {
