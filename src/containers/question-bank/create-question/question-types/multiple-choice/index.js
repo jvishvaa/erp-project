@@ -337,7 +337,7 @@ const MultipleChoice = ({
     let answerList = [];
     if (showQuestionType?.FillInTheBlanks) {
       for (let k = 0; k < list?.length; k++) {
-        answerList.push(list[k]['optionValue']);
+        answerList.push(list[k]['optionValue'].trim().toLowerCase());
       }
     }
     //Converting optionsList in the requested format

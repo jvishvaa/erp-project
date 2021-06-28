@@ -96,10 +96,6 @@ export const aolLogin = (token) => (dispatch) => {
 
 export const logout = () => (dispatch) => {
   dispatch({ type: LOGOUT_REQUEST });
-  if (JSON.parse(localStorage.getItem('rememberDetails'))) {
-    localStorage.removeItem('userDetails');
-    localStorage.removeItem('navigationData');
-  } else localStorage.clear();
 };
 
 export const fetchLoggedInUserDetails = () => (dispatch) => {

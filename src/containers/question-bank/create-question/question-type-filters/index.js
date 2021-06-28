@@ -105,11 +105,11 @@ const QuestionTypeFilters = ({
         question_categories,
         question_type: qType,
         question_answer: [{ question: editQuestion, video: editVideo }],
-      } = editData;
+      } = editData || {};
 
       setFilterData({
-        level: levels.filter((obj) => obj.id === question_level)[0],
-        category: categories.filter((obj) => obj.id === question_categories)[0],
+        level: levels.filter((obj) => obj?.id === question_level)[0],
+        category: categories.filter((obj) => obj?.id === question_categories)[0],
         type: qType,
       });
       let count = 1;
@@ -343,20 +343,20 @@ const QuestionTypeFilters = ({
       setLoading(true);
       const formData = new FormData();
       formData.append('file', file[0]);
-      formData.append('grade_name', filterDataDisplay.grade?.grade_id);
-      formData.append('subject_name', filterDataDisplay.subject?.subject_id);
-      formData.append('question_categories_id', filterData.category?.id);
-      formData.append('question_type', filterData.type?.id);
+      formData.append('grade_name', filterDataDisplay?.grade?.grade_id);
+      formData.append('subject_name', filterDataDisplay?.subject?.subject_id);
+      formData.append('question_categories_id', filterData?.category?.id);
+      formData.append('question_type', filterData?.type?.id);
       axiosInstance
         .post(`${endpoints.assessmentErp.fileUpload}`, formData)
         .then((result) => {
-          if (result.data.status_code === 200) {
-            setVideoURL(result.data.result);
+          if (result?.data?.status_code === 200) {
+            setVideoURL(result?.data?.result);
             setLoading(false);
-            setAlert('success', result.data.message);
+            setAlert('success', result?.data?.message);
           } else {
             setLoading(false);
-            setAlert('error', result.data.message);
+            setAlert('error', result?.data?.message);
           }
         })
         .catch((error) => {
@@ -374,18 +374,18 @@ const QuestionTypeFilters = ({
         file_name: videoURL,
       })
       .then((result) => {
-        if (result.data.status_code === 204) {
+        if (result?.data?.status_code === 204) {
           setVideoURL('');
           setComprehensionQuestions([]);
-          setAlert('success', result.data.message);
+          setAlert('success', result?.data?.message);
           setLoading(false);
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result?.data?.message);
           setLoading(false);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', error?.message);
         setLoading(false);
       });
   };
@@ -413,9 +413,9 @@ const QuestionTypeFilters = ({
           <div className='questionPaperTypeTag'>Question Set Parameters</div>
           {!isQuestionFilterOpen && (
             <div className='lctBoxes'>
-              <div className='levelBox'>{filterData.level.level}</div>
-              <div className='categoryBox'>{filterData.category.category}</div>
-              <div className='typeBox'>{filterData.type.question_type}</div>
+              <div className='levelBox'>{filterData?.level?.level}</div>
+              <div className='categoryBox'>{filterData?.category?.category}</div>
+              <div className='typeBox'>{filterData?.type?.question_type}</div>
             </div>
           )}
           {!isCreateManuallyOpen && (

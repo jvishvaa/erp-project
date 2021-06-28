@@ -349,7 +349,7 @@ const QuestionCard = ({
               )}
             </Grid>
             <Grid container className='question-ctrls-container'>
-              <Grid item xs={12} md={3}>
+              <Grid item xs={12} md={3} className='question-ctrls-inner'>
                 <Box className='question-ctrl-inner-container'>
                   <IconButton className='question-cntrl-file-upload'>
                     <CloudUploadIcon color='primary' />

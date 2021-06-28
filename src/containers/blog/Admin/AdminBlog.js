@@ -116,13 +116,14 @@ class AdminBlog extends Component {
   }
   
   getBlog = (status) => {
-    const { pageNo, pageSize,tabValue,moduleId } = this.state;
+    // const { pageNo, pageSize,tabValue,moduleId } = this.state;
+    const { pageNo, pageSize ,tabValue,startDate,endDate,moduleId} = this.state
    
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
           pageNo 
-        }&page_size=${pageSize}&status=${status}&module_id=${moduleId}`
+        }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {

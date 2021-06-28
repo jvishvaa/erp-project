@@ -192,6 +192,7 @@ function AttachmentPreviewerUI() {
           </div>
           </div>
         </div> */}
+        {src.endsWith('.pdf') &&
           <IconButton
             // style={{ opacity: isNextAvailable ? 1 : 0 }}
             // style={{ color: isNextAvailable ? 'white' : 'black' }}
@@ -210,6 +211,7 @@ function AttachmentPreviewerUI() {
               fontSize='inherit'
             />
           </IconButton>
+          }
           {numPages && (
             <div className='attachment-viewer-buttons'>
               <Tooltip title='Zoom Out' placement='left'>
@@ -249,6 +251,7 @@ function AttachmentPreviewerUI() {
               </Tooltip>
             </div>
           )}
+          {src.endsWith('.pdf') &&
           <IconButton
             // style={{ color: isPrevAvailable ? 'white' : 'black' }}
             // disabled={!isPrevAvailable}
@@ -265,7 +268,7 @@ function AttachmentPreviewerUI() {
               style={{ color: pageNumber !== 1 ? 'white' : 'black' }}
               fontSize='inherit'
             />
-          </IconButton>
+          </IconButton>}
         </div>
       </Dialog>
     </>

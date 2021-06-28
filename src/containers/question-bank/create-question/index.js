@@ -54,11 +54,11 @@ const CreateQuestion = () => {
       .get(`${endpoints.assessmentErp.chapterList}?subject=${subjectId}`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          const chapterList = result.data?.result;
+          const chapterList = result?.data?.result;
           const chapterSelected = chapterList.filter(({ id }) => id === chapterId);
           setChapterDisplay(chapterSelected?.[0]?.chapter_name);
         } else {
-          setAlert('error', result.data?.message);
+          setAlert('error', result?.data?.message);
         }
       })
       .catch((error) => setAlert('error', error?.message));
@@ -71,27 +71,27 @@ const CreateQuestion = () => {
           headers: { 'x-api-key': 'vikash@12345#1231' },
         })
         .then((result) => {
-          if (result.data.status_code === 200) {
+          if (result?.data?.status_code === 200) {
             const topicList = result.data?.result;
             const topicSelected = topicList.filter(({ id }) => id === topicId);
             setTopicDisplay(topicSelected?.[0]?.topic_name);
           } else {
-            setAlert('error', result.data?.message);
+            setAlert('error', result?.data?.message);
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     } else {
       axiosInstance
         .get(`${endpoints.assessmentErp.topicList}?chapter=${chapterId}`)
         .then((result) => {
-          if (result.data.status_code === 200) {
-            const topicList = result.data?.result;
+          if (result?.data?.status_code === 200) {
+            const topicList = result?.data?.result;
             const topicSelected = topicList.filter(({ id }) => id === topicId);
             setTopicDisplay(topicSelected?.[0]?.topic_name);
           } else {
-            setAlert('error', result.data?.message);
+            setAlert('error', result?.data?.message);
           }
         })
         .catch((error) => setAlert('error', error?.message));
@@ -103,23 +103,32 @@ const CreateQuestion = () => {
       axiosInstance
         .get(`/assessment/${qId}/retrieve_update_question/`)
         .then((res) => {
-          const { status_code, result, message, error_msg } = res?.data;
+          const {
+            status_code = '',
+            result = {},
+            message = 'Error',
+            error_msg = 'Error',
+          } = res?.data || {};
           if (status_code === 200) {
             setEditData(result);
             const {
               academic_session: academicSession = {},
-              grade: { id: gradeId, grade_name: gradeName },
-              subject: { id: subjectId, subject_name: subjectName },
-              chapter: chapterId,
-              topic: topicId,
+              grade: gradeDetails = {},
+              subject: subjectDetails = {},
+              chapter: chapterId = '',
+              topic: topicId = '',
               is_central_chapter: isCentralChapter,
             } = result || {};
-
+            const { id: gradeId = '', grade_name: gradeName = '' } = gradeDetails || {};
+            const { id: subjectId = '', subject_name: subjectName = '' } =
+              subjectDetails || {};
             const {
-              branch: { id: branchId, branch_name: branchName },
-              id: acadSessionId,
-              session_year: { id: acadId, session_year: sessionYear },
+              branch: branchDetails = {},
+              id: acadSessionId = '',
+              session_year: academicYearDetails = {},
             } = academicSession || {};
+            const { id: branchId, branch_name: branchName } = branchDetails || {};
+            const { id: acadId, session_year: sessionYear } = academicYearDetails || {};
 
             setFilterDataDisplay({
               academic: {
@@ -225,15 +234,15 @@ const CreateQuestion = () => {
             <Paper className={classes.root}>
               <div className='filterDataHeader'>
                 <div className='divfilterData'>
-                  {filterDataDisplay.grade?.grade__grade_name}
+                  {filterDataDisplay?.grade?.grade__grade_name}
                 </div>
                 <div className='divfilterData'>
-                  {filterDataDisplay.subject?.subject_name}
+                  {filterDataDisplay?.subject?.subject_name}
                 </div>
                 <div className='divfilterData'>
-                  {filterDataDisplay.chapter?.chapter_name}
+                  {filterDataDisplay?.chapter?.chapter_name}
                 </div>
-                <div className='divfilterData'>{filterDataDisplay.topic?.topic_name}</div>
+                <div className='divfilterData'>{filterDataDisplay?.topic?.topic_name}</div>
               </div>
               <QuestionTypeFilters
                 editData={editData}

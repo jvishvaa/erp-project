@@ -66,11 +66,12 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
   const [tabIsErpCentral, setTabIsErpCentral] = useState(null);
   const [tabValue, setTabValue] = useState(0);
   const location = useLocation();
-  const history = useHistory();
   const query = new URLSearchParams(location.search);
   const questionId = query.get('question');
   const section = query.get('section');
   const filterRef = useRef(null);
+  const [clearFlag, setClearFlag] = useState(false);
+  const [callFlag, setCallFlag] = useState(false);
 
   const addQuestionToPaper = (question, questionId, section) => {
     initAddQuestionToSection(question, questionId, section);
@@ -111,22 +112,17 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
   };
 
   const handlePeriodList = (
-    // gradeId,
     quesTypeId,
-    quesCatId,
+    quesCatId = '',
     subjMapId,
     quesLevel,
-    topicId,
+    topicId = '',
     yearId,
     gradeId,
     chapterObj,
     isErpCentral,
-    newValue
+    newValue = 0
   ) => {
-    if (!subjMapId || !quesLevel) {
-      setAlert('error', 'Select all the fields!');
-      return;
-    }
     setLoading(true);
     setPeriodData([]);
     setTabQueTypeId(quesTypeId);
@@ -138,215 +134,50 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     setTabGradeId(gradeId);
     setTabChapterId(chapterObj);
     setTabIsErpCentral(isErpCentral);
-
-    const erpQuestionList = endpoints.questionBank.erpQuestionList;
-    if (newValue == 0 || newValue == undefined) {
-      setTabValue(0);
-      if (!isErpCentral?.flag) {
-        axiosInstance
-          .get(
-            `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=1&page=${page}`
-          )
-          .then((result) => {
-            if (result.data.status_code === 200) {
-              setTotalCount(result?.data?.result?.count);
-              setLoading(false);
-              setPeriodData(result?.data?.result?.results);
-              setViewMore(false);
-              setViewMoreData({});
-              setSelectedIndex(-1);
-            } else {
-              setLoading(false);
-              setAlert('error', result?.data?.description);
-            }
-          })
-          .catch((error) => {
-            setLoading(false);
-            setAlert('error', error?.message);
-          });
-      }
-      if (isErpCentral?.flag) {
-        axiosInstance
-          .get(
-            `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=2&page=${page}`
-          )
-          .then((result) => {
-            if (result.data.status_code === 200) {
-              setTotalCount(result?.data?.result?.count);
-              setLoading(false);
-              setPeriodData(result?.data?.result?.results);
-              setViewMore(false);
-              setViewMoreData({});
-              setSelectedIndex(-1);
-            } else {
-              setLoading(false);
-              setAlert('error', result?.data?.description);
-            }
-          })
-          .catch((error) => {
-            setLoading(false);
-            setAlert('error', error?.message);
-          });
-      }
-    } else if (newValue == 1) {
-      setTabValue(1);
-      if (!isErpCentral?.flag) {
-        axiosInstance
-          .get(
-            `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=1&page=${page}&question_status=1`
-          )
-          .then((result) => {
-            if (result.data.status_code === 200) {
-              setTotalCount(result?.data?.result?.count);
-              setLoading(false);
-              setPeriodData(result?.data?.result?.results);
-              setViewMore(false);
-              setViewMoreData({});
-              setSelectedIndex(-1);
-            } else {
-              setLoading(false);
-              setAlert('error', result?.data?.description);
-            }
-          })
-          .catch((error) => {
-            setLoading(false);
-            setAlert('error', error?.message);
-          });
-      }
-      if (isErpCentral?.flag) {
-        axiosInstance
-          .get(
-            `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=2&page=${page}&question_status=1`
-          )
-          .then((result) => {
-            if (result.data.status_code === 200) {
-              setTotalCount(result?.data?.result?.count);
-              setLoading(false);
-              setPeriodData(result?.data?.result?.results);
-              setViewMore(false);
-              setViewMoreData({});
-              setSelectedIndex(-1);
-            } else {
-              setLoading(false);
-              setAlert('error', result?.data?.description);
-            }
-          })
-          .catch((error) => {
-            setLoading(false);
-            setAlert('error', error?.message);
-          });
-      }
-    } else if (newValue == 2) {
-      setTabValue(2);
-      if (!isErpCentral?.flag) {
-        axiosInstance
-          .get(
-            `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=1&page=${page}&question_status=3`
-          )
-          .then((result) => {
-            if (result.data.status_code === 200) {
-              setTotalCount(result?.data?.result?.count);
-              setLoading(false);
-              setPeriodData(result?.data?.result?.results);
-              setViewMore(false);
-              setViewMoreData({});
-              setSelectedIndex(-1);
-            } else {
-              setLoading(false);
-              setAlert('error', result?.data?.description);
-            }
-          })
-          .catch((error) => {
-            setLoading(false);
-            setAlert('error', error?.message);
-          });
-      }
-      if (isErpCentral?.flag) {
-        axiosInstance
-          .get(
-            `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=2&page=${page}&question_status=3`
-          )
-          .then((result) => {
-            if (result.data.status_code === 200) {
-              setTotalCount(result?.data?.result?.count);
-              setLoading(false);
-              setPeriodData(result?.data?.result?.results);
-              setViewMore(false);
-              setViewMoreData({});
-              setSelectedIndex(-1);
-            } else {
-              setLoading(false);
-              setAlert('error', result?.data?.description);
-            }
-          })
-          .catch((error) => {
-            setLoading(false);
-            setAlert('error', error?.message);
-          });
-      }
-    } else if (newValue == 3) {
-      setTabValue(3);
-      if (!isErpCentral?.flag) {
-        axiosInstance
-          .get(
-            `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=1&page=${page}&question_status=2`
-          )
-          .then((result) => {
-            if (result.data.status_code === 200) {
-              setTotalCount(result?.data?.result?.count);
-              setLoading(false);
-              setPeriodData(result?.data?.result?.results);
-              setViewMore(false);
-              setViewMoreData({});
-              setSelectedIndex(-1);
-            } else {
-              setLoading(false);
-              setAlert('error', result?.data?.description);
-            }
-          })
-          .catch((error) => {
-            setLoading(false);
-            setAlert('error', error?.message);
-          });
-      }
-      if (isErpCentral?.flag) {
-        axiosInstance
-          .get(
-            `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&topic=${topicId?.id}&question_level=${quesLevel?.value}&question_categories=${quesCatId?.value}&question_type=${quesTypeId}&page_size=${limit}&request_type=2&page=${page}&question_status=2`
-          )
-          .then((result) => {
-            if (result.data.status_code === 200) {
-              setTotalCount(result?.data?.result?.count);
-              setLoading(false);
-              setPeriodData(result?.data?.result?.results);
-              setViewMore(false);
-              setViewMoreData({});
-              setSelectedIndex(-1);
-            } else {
-              setLoading(false);
-              setAlert('error', result?.data?.description);
-            }
-          })
-          .catch((error) => {
-            setLoading(false);
-            setAlert('error', error?.message);
-          });
-      }
+    setTabValue(newValue);
+    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&question_level=${quesLevel?.value}&question_type=${quesTypeId}&page_size=${limit}&page=${page}`;
+    requestUrl += `&request_type=${isErpCentral?.flag ? 2 : 1}`;
+    if (newValue) {
+      requestUrl += `&question_status=${newValue}`;
     }
+    if (quesCatId) {
+      requestUrl += `&question_categories=${quesCatId?.value}`;
+    }
+    if (topicId) {
+      requestUrl += `&topic=${topicId?.id}`;
+    }
+    axiosInstance
+      .get(requestUrl)
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setTotalCount(result?.data?.result?.count);
+          setLoading(false);
+          setPeriodData(result?.data?.result?.results);
+          setViewMore(false);
+          setViewMoreData({});
+          setSelectedIndex(-1);
+        } else {
+          setLoading(false);
+          setAlert('error', result?.data?.description);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error?.message);
+      });
   };
 
   useEffect(() => {
     if (
       tabQueTypeId &&
-      tabQueCatId &&
       tabMapId &&
       tabQueLevel &&
-      tabTopicId &&
       tabYearId &&
       tabGradeId &&
       tabChapterId &&
       tabIsErpCentral
     ) {
+      setSelectedIndex(-1);
       handlePeriodList(
         tabQueTypeId,
         tabQueCatId,
@@ -360,7 +191,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
         tabValue
       );
     }
-  }, [page]);
+  }, [page, tabValue]);
 
   return (
     <>
@@ -430,23 +261,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
           spacing={5}
         >
           <Grid item xs={12} sm={12}>
-            <TabPanel
-              setSelectedIndex={setSelectedIndex}
-              handlePeriodList={handlePeriodList}
-              // tabPanelGradeValue={tabPanelGradeValue}
-              tabQueTypeId={tabQueTypeId}
-              tabQueCatId={tabQueCatId}
-              tabTopicId={tabTopicId}
-              tabMapId={tabMapId}
-              tabQueLevel={tabQueLevel}
-              tabYearId={tabYearId}
-              tabGradeId={tabGradeId}
-              tabChapterId={tabChapterId}
-              tabIsErpCentral={tabIsErpCentral}
-              setTabValue={setTabValue}
-              tabValue={tabValue}
-              setPage={setPage}
-            />
+            <TabPanel setTabValue={setTabValue} tabValue={tabValue} setPage={setPage} />
           </Grid>
         </Grid>
         <Grid

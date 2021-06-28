@@ -294,13 +294,15 @@ export default {
     WordCountConfig: '/academic/word_count_config/',
   },
   ebook: {
-    ebook: `${baseURLCentral}/ebook/ebook_school_wise_filter/`,
+    ebook: `/academic/ebook_school_wise_filter/`,
     EbookUser: `/academic/ebook_user/`,
     AnnotateEbook: `/academic/ebook_user_status/`,
     EbookMappedGrade: '/academic/ebook_mapped_grades/',
   },
   email: {
     email: '/academic/email/',
+    whatsapp:'/academic/whatsapp/',
+    teacherTimingsReport:'/academic/teacher_timings_report/email/'
   },
   teacherViewBatches: {
     courseListApi: '/aol/courses/',
@@ -366,6 +368,7 @@ export default {
     createAssessment: '/assessment/test/',
     deleteAssessmentTest: '/assessment/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+    examTypeList: '/assessment/exam-type-list/',
   },
 
   assessment: {
