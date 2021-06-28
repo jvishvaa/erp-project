@@ -52,18 +52,16 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [isFilter, setIsFilter] = useState(true);
-  const [periodColor, setPeriodColor] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-
   const [tabMapId, setTabMapId] = useState('');
-  const [tabQueLevel, setTabQueLevel] = useState([]);
+  const [tabQueLevel, setTabQueLevel] = useState('');
   const [tabQueTypeId, setTabQueTypeId] = useState('');
   const [tabQueCatId, setTabQueCatId] = useState('');
   const [tabTopicId, setTabTopicId] = useState('');
   const [tabYearId, setTabYearId] = useState('');
   const [tabGradeId, setTabGradeId] = useState('');
   const [tabChapterId, setTabChapterId] = useState('');
-  const [tabIsErpCentral, setTabIsErpCentral] = useState(null);
+  const [tabIsErpCentral, setTabIsErpCentral] = useState(false);
   const [tabValue, setTabValue] = useState(0);
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -120,7 +118,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     yearId,
     gradeId,
     chapterObj,
-    isErpCentral,
+    isErpCentral = false,
     newValue = 0
   ) => {
     setLoading(true);
@@ -175,7 +173,8 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
       tabYearId &&
       tabGradeId &&
       tabChapterId &&
-      tabIsErpCentral
+      tabIsErpCentral &&
+      page
     ) {
       setSelectedIndex(-1);
       handlePeriodList(
@@ -191,7 +190,19 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
         tabValue
       );
     }
-  }, [page, tabValue]);
+  }, [page, tabValue, callFlag]);
+
+  useEffect(() => {
+    setTabMapId('')
+    setTabQueLevel('');
+    setTabQueTypeId('');
+    setTabQueCatId('');
+    setTabTopicId('');
+    setTabYearId('');
+    setTabGradeId('');
+    setTabChapterId('');
+    setTabIsErpCentral(false);
+  }, [clearFlag]);
 
   return (
     <>
@@ -241,6 +252,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
 
         <div className={isFilter ? 'showFilters' : 'hideFilters'} ref={filterRef}>
           <QuestionBankFilters
+            setClearFlag={setClearFlag}
             questionId={questionId}
             section={section}
             handlePeriodList={handlePeriodList}
@@ -299,22 +311,12 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
                         period={period}
                         setSelectedIndex={setSelectedIndex}
                         periodColor={selectedIndex === i}
-                        setPeriodColor={setPeriodColor}
                         viewMore={viewMore}
                         setLoading={setLoading}
                         setViewMore={setViewMore}
                         setViewMoreData={setViewMoreData}
                         setPeriodDataForView={setPeriodDataForView}
-                        handlePeriodList={handlePeriodList}
-                        tabQueTypeId={tabQueTypeId}
-                        tabQueCatId={tabQueCatId}
-                        tabMapId={tabMapId}
-                        tabTopicId={tabTopicId}
-                        tabIsErpCentral={tabIsErpCentral}
-                        tabYearId={tabYearId}
-                        tabGradeId={tabGradeId}
-                        tabChapterId={tabChapterId}
-                        tabQueLevel={tabQueLevel}
+                        setCallFlag={setCallFlag}
                         onClick={
                           questionId && section ? handleAddQuestionToQuestionPaper : null
                         }
@@ -332,16 +334,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
                     setViewMore={setViewMore}
                     filterDataDown={filterDataDown}
                     periodDataForView={periodDataForView}
-                    handlePeriodList={handlePeriodList}
-                    tabQueTypeId={tabQueTypeId}
-                    tabQueCatId={tabQueCatId}
-                    tabMapId={tabMapId}
-                    tabQueLevel={tabQueLevel}
-                    tabTopicId={tabTopicId}
-                    tabIsErpCentral={tabIsErpCentral}
-                    tabYearId={tabYearId}
-                    tabGradeId={tabGradeId}
-                    tabChapterId={tabChapterId}
+                    setCallFlag={setCallFlag}
                   />
                 </Grid>
               )}

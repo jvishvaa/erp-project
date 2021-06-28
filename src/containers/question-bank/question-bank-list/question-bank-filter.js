@@ -24,6 +24,7 @@ const QuestionBankFilters = ({
   setViewMoreData,
   setFilterDataDown,
   setSelectedIndex,
+  setClearFlag,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
@@ -39,15 +40,25 @@ const QuestionBankFilters = ({
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [topicDropdown, setTopicDropdown] = useState([]);
   const [queTypeDropdown, setQueTypeDropdown] = useState([]);
-  const [quesCatData, setQuesCatData] = useState('');
-  const [quesLevel, setQuesLevel] = useState('');
 
-  const [is_ERP_CENTRAL, setIs_ERP_CENTRAL] = useState([
+  const question_level_options = [
+    { value: 1, Question_level: 'Easy' },
+    { value: 2, Question_level: 'Average' },
+    { value: 3, Question_level: 'Difficult' },
+  ];
+
+  const question_categories_options = [
+    { value: 1, q_cat: 'Knowledge' },
+    { value: 2, q_cat: 'Understanding' },
+    { value: 3, q_cat: 'Application' },
+    { value: 4, q_cat: 'Analyse' },
+  ];
+
+  const is_ERP_CENTRAL = [
     { id: 1, flag: false, name: 'ERP' },
     { id: 2, flag: true, name: 'CENTRAL' },
-  ]);
+  ];
 
-  const [mapId, setMapId] = useState('');
   const [filterData, setFilterData] = useState({
     year: '',
     branch: '',
@@ -61,18 +72,6 @@ const QuestionBankFilters = ({
     question_category: '',
     is_erp_central: is_ERP_CENTRAL[0],
   });
-  const question_level_options = [
-    { value: 1, Question_level: 'Easy' },
-    { value: 2, Question_level: 'Average' },
-    { value: 3, Question_level: 'Difficult' },
-  ];
-
-  const question_categories_options = [
-    { value: 1, q_cat: 'Knowledge' },
-    { value: 2, q_cat: 'Understanding' },
-    { value: 3, q_cat: 'Application' },
-    { value: 4, q_cat: 'Analyse' },
-  ];
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -110,7 +109,6 @@ const QuestionBankFilters = ({
             setAcademicYearDropdown(result?.data?.data);
             const defaultValue = result?.data?.data?.[0];
             handleAcademicYear({}, defaultValue);
-
             setLoading(false);
           } else {
             setAlert('error', result?.data?.message);
@@ -142,6 +140,7 @@ const QuestionBankFilters = ({
   }, []);
 
   const handleClear = () => {
+    setClearFlag((prev) => !prev);
     setFilterData({
       year: '',
       branch: '',
@@ -262,7 +261,6 @@ const QuestionBankFilters = ({
     setPeriodData([]);
     setLoading(true);
     if (value) {
-      setQuesCatData(value);
       setFilterData({ ...filterData, question_category: value });
       setLoading(false);
     } else {
@@ -280,7 +278,6 @@ const QuestionBankFilters = ({
     setPeriodData([]);
     setLoading(true);
     if (value) {
-      setQuesLevel(value);
       setFilterData({ ...filterData, question_level: value });
       setLoading(false);
     } else {
@@ -467,16 +464,21 @@ const QuestionBankFilters = ({
       setAlert('error', 'Select Question Level!');
       return;
     }
+    if (!filterData?.is_erp_central) {
+      setAlert('error', 'Select Question From!');
+      return;
+    }
     handlePeriodList(
       filterData?.quesType?.id,
-      quesCatData,
+      filterData?.question_category,
       filterData?.subject?.subject_id,
-      quesLevel,
+      filterData?.question_level,
       filterData?.topicId,
       filterData?.branch?.id,
       filterData?.grade?.grade_id,
       filterData?.chapter,
-      filterData?.is_erp_central
+      filterData?.is_erp_central,
+      0
     );
     setSelectedIndex(-1);
   };

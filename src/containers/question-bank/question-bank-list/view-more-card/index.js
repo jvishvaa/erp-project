@@ -20,16 +20,7 @@ const ViewMoreCard = ({
   filterDataDown,
   periodDataForView,
   setSelectedIndex,
-  handlePeriodList,
-  tabQueTypeId,
-  tabQueCatId,
-  tabMapId,
-  tabQueLevel,
-  tabTopicId,
-  tabYearId,
-  tabGradeId,
-  tabChapterId,
-  tabIsErpCentral,
+  setCallFlag,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const { openPreview, closePreview } =
@@ -86,7 +77,7 @@ const ViewMoreCard = ({
           `${endpoints.questionBank.deleteQuestion}`,
           {
             question_status: 2,
-            question: obj.parent.id,
+            question: obj?.parent?.id,
           },
           {
             headers: { 'x-api-key': 'vikash@12345#1231' },
@@ -95,17 +86,7 @@ const ViewMoreCard = ({
         .then((result) => {
           if (result?.data?.status_code === 200) {
             setSelectedIndex(-1);
-            handlePeriodList(
-              tabQueTypeId,
-              tabQueCatId,
-              tabMapId,
-              tabQueLevel,
-              tabTopicId,
-              tabYearId,
-              tabGradeId,
-              tabChapterId,
-              tabIsErpCentral
-            );
+            setCallFlag((prev) => !prev);
             setAlert('success', result?.data?.message);
           } else {
             setAlert('error', 'ERROR!');
@@ -117,22 +98,12 @@ const ViewMoreCard = ({
       axiosInstance
         .put(`${endpoints.questionBank.erpQuestionPublishing}`, {
           question_status: 2,
-          question: obj.parent.id,
+          question: obj?.parent?.id,
         })
         .then((result) => {
           if (result?.data?.status_code === 200) {
             setSelectedIndex(-1);
-            handlePeriodList(
-              tabQueTypeId,
-              tabQueCatId,
-              tabMapId,
-              tabQueLevel,
-              tabTopicId,
-              tabYearId,
-              tabGradeId,
-              tabChapterId,
-              tabIsErpCentral
-            );
+            setCallFlag((prev) => !prev);
             setAlert('success', result?.data?.message);
           } else {
             setAlert('error', 'ERROR!');
@@ -157,17 +128,7 @@ const ViewMoreCard = ({
         .then((result) => {
           if (result?.data?.status_code === 200) {
             setSelectedIndex(-1);
-            handlePeriodList(
-              tabQueTypeId,
-              tabQueCatId,
-              tabMapId,
-              tabQueLevel,
-              tabTopicId,
-              tabYearId,
-              tabGradeId,
-              tabChapterId,
-              tabIsErpCentral
-            );
+            setCallFlag((prev) => !prev);
             setAlert('success', 'Question Moved To Draft');
           } else {
             setAlert('error', 'ERROR!');
@@ -184,17 +145,7 @@ const ViewMoreCard = ({
         .then((result) => {
           if (result?.data?.status_code === 200) {
             setSelectedIndex(-1);
-            handlePeriodList(
-              tabQueTypeId,
-              tabQueCatId,
-              tabMapId,
-              tabQueLevel,
-              tabTopicId,
-              tabYearId,
-              tabGradeId,
-              tabChapterId,
-              tabIsErpCentral
-            );
+            setCallFlag((prev) => !prev);
             setAlert('success', 'Question Moved To Draft');
           } else {
             setAlert('error', 'ERROR!');
