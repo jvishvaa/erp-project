@@ -6,10 +6,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Button, useTheme, IconButton, SvgIcon } from '@material-ui/core';
@@ -19,108 +15,29 @@ import useStyles from './useStyles';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
-// import '../../lesson-plan.css';
-import downloadAll from '../../../../assets/images/downloadAll.svg';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
-import { Context } from '../../context/QuestionStore';
-import { confirmAlert } from 'react-confirm-alert'; // Import
-// import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
-import { withStyles } from '@material-ui/core/styles';
-import CloseIcon from '@material-ui/icons/Close';
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     flexGrow: 1,
-//     margin: 20,
-//   },
-//   dailog: {
-//     display: 'flex',
-//     flexDirection: 'column',
-//     alignItems: 'center',
-//   },
-//   dialogPaper: {
-//     minHeight: '45vh',
-//     maxHeight: '45vh',
-//   },
-//   dgsize: {
-//     width: '100%',
-//   },
-// }));
-// const styles = (theme) => ({
-//   root: {
-//     margin: 0,
-//     padding: theme.spacing(2),
-//   },
-//   closeButton: {
-//     position: 'absolute',
-//     right: theme.spacing(1),
-//     top: theme.spacing(1),
-//     color: theme.palette.grey[500],
-//   },
-// });
-
-// const DialogTitle = withStyles(styles)((props) => {
-//   const { children, classes, onClose, ...other } = props;
-//   return (
-//     <MuiDialogTitle disableTypography className={classes.root} {...other}>
-//       <Typography variant='h6'>{children}</Typography>
-//       {onClose ? (
-//         <IconButton aria-label='close' className={classes.closeButton} onClick={onClose}>
-//           <CloseIcon />
-//         </IconButton>
-//       ) : null}
-//     </MuiDialogTitle>
-//   );
-// });
-
-// const DialogContent = withStyles((theme) => ({
-//   root: {
-//     padding: theme.spacing(2),
-//   },
-// }))(MuiDialogContent);
-
-// const DialogActions = withStyles((theme) => ({
-//   root: {
-//     margin: 0,
-//     padding: theme.spacing(1),
-//   },
-// }))(MuiDialogActions);
 
 const QuestionBankCard = ({
   period,
   setPeriodDataForView,
   setViewMoreData,
   setViewMore,
-  viewMore,
-  filterDataDown,
-  handlePeriodList,
-  tabQueTypeId,
-  tabQueCatId,
-  tabMapId,
-  tabQueLevel,
-  tabTopicId,
-  tabYearId,
-  tabGradeId,
-  tabChapterId,
-  tabIsErpCentral,
   setLoading,
   index,
-  periodColor,
-  setPeriodColor,
   setSelectedIndex,
+  setCallFlag,
   onClick,
   showAddToQuestionPaper,
+  periodColor,
 }) => {
+
   const themeContext = useTheme();
-  // context data
-  // const [state,setState] = useContext(Context)
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
-  // const [Diaopen, setdiaOpen] = React.useState(false);
   const [deleteAlert, setDeleteAlert] = useState(false);
-
   const [questionName, setQuestionName] = useState(period.question_answer);
 
   const handlePeriodMenuOpen = (index, id) => {
@@ -149,7 +66,6 @@ const QuestionBankCard = ({
             // setState({editData:result.data.result})
             setPeriodDataForView(period);
             setSelectedIndex(index);
-            setPeriodColor(true);
           } else {
             setLoading(false);
             setViewMore(false);
@@ -157,7 +73,6 @@ const QuestionBankCard = ({
             setPeriodDataForView([]);
             setAlert('error', result?.data?.message);
             setSelectedIndex(-1);
-            setPeriodColor(true);
           }
         })
         .catch((error) => {
@@ -167,7 +82,6 @@ const QuestionBankCard = ({
           setPeriodDataForView([]);
           setAlert('error', error?.message);
           setSelectedIndex(-1);
-          setPeriodColor(true);
         });
     }
     if (!period.is_central) {
@@ -181,7 +95,6 @@ const QuestionBankCard = ({
             // setState({editData:result.data.result})
             setPeriodDataForView(period);
             setSelectedIndex(index);
-            setPeriodColor(true);
           } else {
             setLoading(false);
             setViewMore(false);
@@ -189,7 +102,6 @@ const QuestionBankCard = ({
             setPeriodDataForView([]);
             setAlert('error', result?.data?.message);
             setSelectedIndex(-1);
-            setPeriodColor(true);
           }
         })
         .catch((error) => {
@@ -199,7 +111,6 @@ const QuestionBankCard = ({
           setPeriodDataForView([]);
           setAlert('error', error?.message);
           setSelectedIndex(-1);
-          setPeriodColor(true);
         });
     }
   };
@@ -248,22 +159,12 @@ const QuestionBankCard = ({
   const handleDeleteConfirm = (obj) => {
     axiosInstance
       .put(`${endpoints.questionBank.erpQuestionPublishing}`, {
-        question: obj.id,
+        question: obj?.id,
         is_delete: true,
       })
       .then((result) => {
-        if (result.data.status_code === 200) {
-          handlePeriodList(
-            tabQueTypeId,
-            tabQueCatId,
-            tabMapId,
-            tabQueLevel,
-            tabTopicId,
-            tabYearId,
-            tabGradeId,
-            tabChapterId,
-            tabIsErpCentral
-          );
+        if (result?.data?.status_code === 200) {
+          setCallFlag((prev) => !prev);
           setAlert('success', 'Question Deleted Successfully');
           setDeleteAlert(false);
         } else {
@@ -271,7 +172,7 @@ const QuestionBankCard = ({
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', error?.message);
       });
   };
   const handleDeleteCancel = () => {
