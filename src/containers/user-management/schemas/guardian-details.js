@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-const phoneRegExp = /^\+?1?\d{10,15}$/;
+const phoneRegExp = /^\+?1?\d{10,11}$/;
 
 const validationSchema = (validateParent, validateGuardian) => {
   const parentValidationObj = Yup.object({
@@ -10,9 +10,11 @@ const validationSchema = (validateParent, validateGuardian) => {
     mother_last_name: Yup.string().required('Required'),
     father_email: Yup.string().email('Provide a valid email').required('Required'),
     mother_email: Yup.string().email('Provide a valid email').required('Required'),
+    father_country_code:Yup.string().required("Required"),
     father_mobile: Yup.string()
       .matches(phoneRegExp, 'Phone number is not valid')
       .required('Required'),
+    mother_country_code:Yup.string().required("Required"),
     mother_mobile: Yup.string()
       .matches(phoneRegExp, 'Phone number is not valid')
       .required('Required'),
@@ -23,6 +25,7 @@ const validationSchema = (validateParent, validateGuardian) => {
     guardian_first_name: Yup.string().required('Required'),
     guardian_last_name: Yup.string().required('Required'),
     guardian_email: Yup.string().email('Provide a valid email').required('Required'),
+    guardian_country_code:Yup.string().required("Required"),
     guardian_mobile: Yup.string()
       .matches(phoneRegExp, 'Phone number is not valid')
       .required('Required'),
@@ -35,9 +38,11 @@ const validationSchema = (validateParent, validateGuardian) => {
     mother_last_name: Yup.string().required('Required'),
     father_email: Yup.string().email('Provide a valid email').required('Required'),
     mother_email: Yup.string().email('Provide a valid email').required('Required'),
+    father_country_code:Yup.string().required("Required"),
     father_mobile: Yup.string()
       .matches(phoneRegExp, 'Phone number is not valid')
       .required('Required'),
+    mother_country_code:Yup.string().required("Required"),
     mother_mobile: Yup.string()
       .matches(phoneRegExp, 'Phone number is not valid')
       .required('Required'),
@@ -45,6 +50,7 @@ const validationSchema = (validateParent, validateGuardian) => {
     guardian_first_name: Yup.string().required('Required'),
     guardian_last_name: Yup.string().required('Required'),
     guardian_email: Yup.string().email('Provide a valid email').required('Required'),
+    guardian_country_code:Yup.string().required("Required"),
     guardian_mobile: Yup.string()
       .matches(phoneRegExp, 'Phone number is not valid')
       .required('Required'),

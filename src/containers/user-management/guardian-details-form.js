@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -16,6 +16,7 @@ import { useStyles } from './useStyles';
 import resolveValidationSchema from './schemas/guardian-details';
 import ImageUpload from '../../components/image-upload';
 import { ContainerContext } from '../../containers/Layout';
+import CustomizedSelects from './country-code';
 import './styles.scss';
 
 const GuardianDetailsForm = ({
@@ -31,6 +32,7 @@ const GuardianDetailsForm = ({
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();
   const validationSchema = resolveValidationSchema(showParentForm, showGuardianForm);
+
   const formik = useFormik({
     initialValues: {
       father_first_name: details.father_first_name,
@@ -41,8 +43,22 @@ const GuardianDetailsForm = ({
       mother_last_name: details.mother_last_name,
       father_email: details.father_email,
       mother_email: details.mother_email,
-      father_mobile: details.father_mobile,
-      mother_mobile: details.mother_mobile,
+      father_country_code:
+        details.father_mobile.split('-').length > 1
+          ? details.father_mobile.split('-')[0]
+          : '',
+      father_mobile:
+        details.father_mobile.split('-').length > 1
+          ? details.father_mobile.split('-')[1]
+          : details.father_mobile,
+      mother_country_code:
+        details.mother_mobile.split('-').length > 1
+          ? details.mother_mobile.split('-')[0]
+          : '',
+      mother_mobile:
+        details.mother_mobile.split('-').length > 1
+          ? details.mother_mobile.split('-')[1]
+          : details.mother_mobile,
       mother_photo: details.mother_photo,
       father_photo: details.father_photo,
       address: details.address,
@@ -50,7 +66,14 @@ const GuardianDetailsForm = ({
       guardian_middle_name: details.guardian_middle_name,
       guardian_last_name: details.guardian_last_name,
       guardian_email: details.guardian_email,
-      guardian_mobile: details.guardian_mobile,
+      guardian_country_code:
+        details.guardian_mobile.split('-').length > 1
+          ? details.guardian_mobile.split('-')[0]
+          : '',
+      guardian_mobile:
+        details.guardian_mobile.split('-').length > 1
+          ? details.guardian_mobile.split('-')[1]
+          : details.guardian_mobile,
       guardian_photo: details.guardian_photo,
     },
     validationSchema,
@@ -64,6 +87,19 @@ const GuardianDetailsForm = ({
     // pageTop.current.scrollIntoView();
     containerRef.current.scrollTop = 0;
   }, []);
+
+  const handleFatherCountryCode = (code) => {
+    formik.setFieldValue('father_country_code', code);
+  };
+
+  const handleMotherCountryCode = (code) => {
+    formik.setFieldValue('mother_country_code', code);
+  };
+
+  const handleGuardianCountryCode = (code) => {
+    formik.setFieldValue('guardian_country_code', code);
+  };
+
   return (
     <>
       {showParentForm && (
@@ -83,7 +119,13 @@ const GuardianDetailsForm = ({
                 />
               </Grid>
               <Grid item md={4} xs={12}>
-                <FormControl required variant='outlined' fullWidth color='secondary' size='small'>
+                <FormControl
+                  required
+                  variant='outlined'
+                  fullWidth
+                  color='secondary'
+                  size='small'
+                >
                   <InputLabel htmlFor='component-outlined'>First name</InputLabel>
                   <OutlinedInput
                     id='father_first_name'
@@ -150,14 +192,26 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4} xs={12}>
-                <FormControl required variant='outlined' fullWidth size='small'>
+              <Grid item md={2} xs={2}>
+                <CustomizedSelects
+                  name={'father_country_code'}
+                  value={formik.values.father_country_code}
+                  handlePropsData={(code) => handleFatherCountryCode(code)}
+                />
+                <FormHelperText style={{ color: 'red' }}>
+                  {formik.errors.father_country_code
+                    ? formik.errors.father_country_code
+                    : ''}
+                </FormHelperText>
+              </Grid>
+              <Grid item md={2} xs={4}>
+                <FormControl required variant='outlined' size='small'>
                   <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
                   <OutlinedInput
                     id='father_mobile'
                     name='father_mobile'
                     onChange={formik.handleChange}
-                    inputProps={{maxLength:15}}
+                    inputProps={{ maxLength: 11 }}
                     placeholder='Ex: 995656xxxx'
                     value={formik.values.father_mobile}
                     label='Mobile no.'
@@ -296,13 +350,25 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4} xs={12}>
-                <FormControl required variant='outlined' fullWidth size='small'>
+              <Grid item md={2} xs={2}>
+                <CustomizedSelects
+                  name={'mother_country_code'}
+                  value={formik.values.mother_country_code}
+                  handlePropsData={(code) => handleMotherCountryCode(code)}
+                />
+                <FormHelperText style={{ color: 'red' }}>
+                  {formik.errors.mother_country_code
+                    ? formik.errors.mother_country_code
+                    : ''}
+                </FormHelperText>
+                </Grid>
+                <Grid item md={2} xs={4}>
+                <FormControl required variant='outlined' size='small'>
                   <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
                   <OutlinedInput
                     id='mother_mobile'
                     name='mother_mobile'
-                    inputProps={{maxLength:15}}
+                    inputProps={{ maxLength: 11 }}
                     placeholder='Ex: 995656xxxx'
                     onChange={formik.handleChange}
                     value={formik.values.mother_mobile}
@@ -436,7 +502,19 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4} xs={12}>
+              <Grid item md={2} xs={2}>
+                <CustomizedSelects
+                  name={'guardian_country_code'}
+                  value={formik.values.guardian_country_code}
+                  handlePropsData={(code) => handleGuardianCountryCode(code)}
+                />
+                <FormHelperText style={{ color: 'red' }}>
+                  {formik.errors.guardian_country_code
+                    ? formik.errors.guardian_country_code
+                    : ''}
+                </FormHelperText>
+                </Grid>
+                <Grid item md={2} xs={4}>
                 <FormControl required variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
                   <OutlinedInput
@@ -444,7 +522,7 @@ const GuardianDetailsForm = ({
                     name='guardian_mobile'
                     onChange={formik.handleChange}
                     value={formik.values.guardian_mobile}
-                    inputProps={{maxLength:15}}
+                    inputProps={{ maxLength: 11 }}
                     placeholder='Ex: 995656xxxx'
                     label='Mobile no.'
                   />

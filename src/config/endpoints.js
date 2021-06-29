@@ -190,7 +190,7 @@ export default {
   },
   lessonPlan: {
     gradeSubjectMappingListCentral: `${baseURLCentral}/lesson_plan/list-grade-subject-mapping/`,
-    periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
+    periodData: `/academic/chapter-period/`,
     periodCardData: `${baseURLCentral}/lesson_plan/lesson/`,
     academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
@@ -201,7 +201,7 @@ export default {
     periodCompleted: '/academic/lessonplan-completed-status/',
     periodCompletedStatus: '/academic/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
-    overviewSynopsis: `${baseURLCentral}/lesson_plan/list-lesson-overview/`,
+    overviewSynopsis: `/academic/list-lesson-overview/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
   aol: {
