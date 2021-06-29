@@ -331,6 +331,7 @@ const GeneralDairyFilter = ({
       setGradeDropdown([]);
     }
   };
+  console.log('The grade id', userDetails);
 
   const handleFilter = (e) => {
     setClicked(true);
@@ -360,8 +361,9 @@ const GeneralDairyFilter = ({
         );
       }
     } else if (userDetails?.personal_info?.role !== 'SuperUser' && !isTeacher) {
-      const grade_id = userDetails.role_details?.grades?.grades[0]?.grade_id;
+      const grade_id = userDetails.role_details?.grades[0]?.grade_id;
       const branch_id = userDetails.role_details?.branch[0]?.id;
+
       handleDairyList(
         branch_id,
         grade_id,
