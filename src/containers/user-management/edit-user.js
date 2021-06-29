@@ -96,6 +96,7 @@ class EditUser extends Component {
 
   onEditUser = (requestWithParentorGuradianDetails) => {
     const { user } = this.state;
+    // console.log('the user', user);
     const { editUser, history, selectedUser } = this.props;
     let requestObj = user;
     const {
@@ -110,6 +111,7 @@ class EditUser extends Component {
       gender,
       date_of_birth,
       address,
+      student_country_code,
       contact,
       email,
       profile,
@@ -121,6 +123,7 @@ class EditUser extends Component {
       father_middle_name,
       father_last_name,
       father_email,
+      father_country_code,
       father_mobile,
       father_photo,
       address: parent_address,
@@ -128,17 +131,20 @@ class EditUser extends Component {
       mother_middle_name,
       mother_last_name,
       mother_email,
+      mother_country_code,
       mother_mobile,
       mother_photo,
       guardian_first_name,
       guardian_middle_name,
       guardian_last_name,
       guardian_email,
+      guardian_country_code,
       guardian_mobile,
     } = parent;
 
     requestObj = {
       erp_id: selectedUser.erp_id,
+
       academic_year: academic_year.id,
       branch: branch.map(({ id }) => id).join(),
       grade: grade.map((grade) => grade.id).join(),
@@ -150,7 +156,7 @@ class EditUser extends Component {
       gender,
       date_of_birth,
       address,
-      contact,
+      contact: student_country_code + '-' + contact,
       email,
       erp_user,
       profile,
@@ -162,18 +168,18 @@ class EditUser extends Component {
         father_middle_name,
         father_last_name,
         father_email,
-        father_mobile,
+        father_mobile: father_country_code + '-' + father_mobile,
         address: parent_address,
         mother_first_name,
         mother_middle_name,
         mother_last_name,
         mother_email,
-        mother_mobile,
+        mother_mobile: mother_country_code + '-' + mother_mobile,
         guardian_first_name,
         guardian_middle_name,
         guardian_last_name,
         guardian_email,
-        guardian_mobile,
+        guardian_mobile: guardian_country_code + '-' + guardian_mobile,
       },
     };
 
@@ -209,6 +215,7 @@ class EditUser extends Component {
     const showParentOrGuardianForm = showParentForm || showGuardianForm;
     const steps = getSteps(showParentOrGuardianForm);
     const { classes, creatingUser, fetchingUserDetails, selectedUser } = this.props;
+
     return (
       <Layout>
         <div className='edit-user-container'>

@@ -108,7 +108,6 @@ class CreateUser extends Component {
   };
 
   onSubmitGuardianDetails = (details) => {
-
     this.setState(
       (prevState) => ({
         user: { ...prevState.user, parent: { ...prevState.user.parent, ...details } },
@@ -137,6 +136,7 @@ class CreateUser extends Component {
       username,
       date_of_birth,
       address,
+      student_country_code,
       contact,
       email,
       // erp_user,
@@ -149,6 +149,7 @@ class CreateUser extends Component {
       father_middle_name,
       father_last_name,
       father_email,
+      father_country_code,
       father_mobile,
       father_photo,
       address: parent_address,
@@ -156,12 +157,14 @@ class CreateUser extends Component {
       mother_middle_name,
       mother_last_name,
       mother_email,
+      mother_country_code,
       mother_mobile,
       mother_photo,
       guardian_first_name,
       guardian_middle_name,
       guardian_last_name,
       guardian_email,
+      guardian_country_code,
       guardian_mobile,
       guardian_photo,
     } = parent;
@@ -170,8 +173,8 @@ class CreateUser extends Component {
       academic_year: academic_year.id,
       academic_year_value: academic_year.session_year,
       // branch: branch.id,
-      branch: branch.map(({id}) => id).join(),
-      branch_code: branch.map(branch => branch.branch_code).join(),
+      branch: branch.map(({ id }) => id).join(),
+      branch_code: branch.map((branch) => branch.branch_code).join(),
       grade: grade.map((grade) => grade.id).join(),
       section: section.map((section) => section.id).join(),
       subjects: subjects.map((sub) => sub.id).join(),
@@ -182,7 +185,7 @@ class CreateUser extends Component {
       date_of_birth,
       username,
       address,
-      contact,
+      contact: student_country_code + '-' + contact,
       email,
       // erp_user,
       profile,
@@ -194,18 +197,18 @@ class CreateUser extends Component {
         father_middle_name,
         father_last_name,
         father_email,
-        father_mobile,
+        father_mobile: father_country_code + '-' + father_mobile,
         address: parent_address,
         mother_first_name,
         mother_middle_name,
         mother_last_name,
         mother_email,
-        mother_mobile,
+        mother_mobile: mother_country_code + '-' + mother_mobile,
         guardian_first_name,
         guardian_middle_name,
         guardian_last_name,
         guardian_email,
-        guardian_mobile,
+        guardian_mobile: guardian_country_code + '-' + guardian_mobile,
       },
     };
 
@@ -224,7 +227,11 @@ class CreateUser extends Component {
         setAlert('success', 'User created Successfully');
       })
       .catch(() => {
-        setAlert('error', 'User creation failed');
+        // setAlert(
+        //   'warning',
+        //   'Error in username, Please provide the correct format for username. Ex: 2021000001_OIS'
+        // );
+        setAlert('error', 'User Creation Failed');
       });
   };
 

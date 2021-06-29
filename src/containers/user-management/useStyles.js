@@ -43,6 +43,9 @@ const styles = (theme) => ({
   stepLabel: {
     color: `${theme.palette.primary.main} !important`,
   },
+  phoneNumber:{
+    backgroundColor:'transparent',
+  }
 });
 
 const useStyles = makeStyles(styles);
