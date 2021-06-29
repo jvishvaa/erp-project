@@ -167,6 +167,10 @@ const GeneralDairyFilter = ({
       year: '',
       // setSectionDropdown([])
     });
+    setDateRangeTechPer([ moment().subtract(6, 'days'),
+    moment(),]);
+    setDateRange([moment().subtract(6, 'days'), moment()]);
+    setFilterData({ ...filterData, subject: '', chapter: '' });
     setSectionDropdown([]);
     setSectionIds([]);
     setPeriodData([]);
@@ -514,7 +518,7 @@ const GeneralDairyFilter = ({
             onChange={handleSubject}
             id='subject'
             className='dropdownIcon'
-            // value={filterData?.subject}
+            value={filterData?.subject}
             options={subjectDropdown}
             getOptionLabel={(option) => option?.subject_name}
             filterSelectedOptions
