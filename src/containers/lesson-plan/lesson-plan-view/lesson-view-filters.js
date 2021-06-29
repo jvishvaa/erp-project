@@ -48,6 +48,7 @@ const LessonViewFilters = ({
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [overviewSynopsis, setOverviewSynopsis] = useState([]);
   const [centralGsMappingId, setCentralGsMappingId] = useState();
+  let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
   const [erpYear, setErpYear] = useState({});
   const [filterData, setFilterData] = useState({
     academic: '',
@@ -269,12 +270,12 @@ const LessonViewFilters = ({
     if (filterData.chapter) {
       handlePeriodList(filterData.chapter?.id);
       setFilterDataDown(filterData);
-      axios
+      axiosInstance
         .get(
           `${endpoints.lessonPlan.overviewSynopsis}?volume=${filterData.volume.id}&grade_subject_mapping_id=${centralGsMappingId}&academic_year_id=${filterData.year.id}`,
           {
             headers: {
-              'x-api-key': 'vikash@12345#1231',
+              Authorization: 'Bearer ' + token
             },
           }
         )
@@ -287,7 +288,7 @@ const LessonViewFilters = ({
         })
         .catch((error) => {
           if ( error.message === 'Request failed with status code 402' ){
-            setAlert('error', 'Please clear your payment to access these contents. For further information please contact your branch')
+            setAlert('error', 'Access Error')
           } else {
           setAlert('error', error?.message);
           }

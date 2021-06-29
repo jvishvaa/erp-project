@@ -215,7 +215,7 @@ class ViewEbook extends Component {
       .catch((error) => {
         console.log(error.message , "err");
         if ( error.message === 'Request failed with status code 402' ){
-          this.context.setAlert('error', 'Please clear your payment to access these contents. For further information please contact your branch')
+          this.context.setAlert('error', 'Access Error')
         }
       });
   };
