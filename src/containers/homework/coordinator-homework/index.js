@@ -784,7 +784,7 @@ const CoordinatorTeacherHomework = withRouter(
                   <Grid item xs={12} sm={3}>
                     <Grid container>
                       <Grid item xs={12} sm={12} className='date-container3'>
-                        <LocalizationProvider dateAdapter={MomentUtils}>
+                        {/* <LocalizationProvider dateAdapter={MomentUtils}>
                           <DateRangePicker
                             startText='Select-date-range'
                             value={dateRangeTechPer}
@@ -808,7 +808,7 @@ const CoordinatorTeacherHomework = withRouter(
                               );
                             }}
                           />
-                        </LocalizationProvider>
+                        </LocalizationProvider> */}
                         {/* <div className='download_button'>
                           <Button
                             style={{
@@ -828,7 +828,7 @@ const CoordinatorTeacherHomework = withRouter(
                           <StyledClearButton onClick={e => handleCrearFilter()}>Clear Filters</StyledClearButton>
                         </div>
                       </Grid>
-                      <Grid item xs={12} sm={6} className='bulk_container'>
+                      {/* <Grid item xs={12} sm={6} className='bulk_container'>
                         <div className='download_button'>
                           <Button
                             style={{
@@ -846,7 +846,7 @@ const CoordinatorTeacherHomework = withRouter(
                             Download
                           </Button>
                         </div>
-                      </Grid>
+                      </Grid> */}
                     </Grid>
                   </Grid>
                 </Grid>
