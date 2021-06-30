@@ -270,7 +270,7 @@ const Discussionforum = (props) => {
           />
         </div>
               {  !isViewmoreView && (
-<div className="df-container" >
+              <div className="df-container" >
                     <Grid container spacing={2}>
                         <Grid item xs={10} style={{ display: 'flex', marginTop: 30, marginLeft: 20, borderBottom: '1px solid #E2E2E2', }}>
                             <div className="branch-dropdown">
