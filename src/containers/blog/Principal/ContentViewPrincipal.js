@@ -25,6 +25,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import ReviewPrincipal from './ReviewPrincipal'
 import Layout from '../../Layout';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const styles = (theme) => ({
   root: {
@@ -94,6 +95,7 @@ class ContentView extends Component {
     };
 
   }
+  static contextType = AlertNotificationContext
   componentDidMount() {
     let {blogId} = this.state
     this.handleView(blogId)
@@ -186,6 +188,7 @@ if (result.data.status_code === 200) {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
+        this.context.setAlert('success',"Blog Published Successfully")
           this.props.history.push({
             pathname: '/blog/principal',
           });

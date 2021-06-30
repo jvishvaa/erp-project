@@ -222,6 +222,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       });
   }, []);
 
+  const handleBulkNotification = () => {
+    if (bulkDataDisplay.length >= maxCount) {
+      setAlert('warning', `Can\'t upload more than ${maxCount} attachments in total.`);
+    }
+  }
   const handleBulkUpload = (e) => {
     e.persist()
     if (bulkDataDisplay.length >= maxCount) {
@@ -514,15 +519,17 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     style={{ color: 'white' }}
                     component='label'
                     size='medium'
+                    onClick={handleBulkNotification}
                   >
                     Bulk Upload
+                  {bulkDataDisplay.length < maxCount ?
                   <input
                       type='file'
                       accept=".png, .jpg, .jpeg, .mp3, .mp4, .pdf"
                       style={{ display: 'none' }}
                       id='raised-button-file'
                       onChange={e => handleBulkUpload(e)}
-                    />
+                    />:null}
                   </Button>
                                    
                 </div>

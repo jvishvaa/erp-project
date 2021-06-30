@@ -106,6 +106,7 @@ class ContentView extends Component {
    
 
   }
+  static contextType = AlertNotificationContext
   componentDidMount() {
     let {blogId} = this.state
     this.handleView(blogId)
@@ -166,6 +167,7 @@ class ContentView extends Component {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
+        this.context.setAlert('success',"Blog Published Successfully")
           this.props.history.push({
             pathname: '/blog/teacher',
           });
