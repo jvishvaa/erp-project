@@ -557,7 +557,7 @@ const HomeworkAdmin = () => {
 
   useEffect(() => {
     if (searchGrade && searchSection) {
-      let request = `${endpoints.homework.completeData}?branch=${selectedBranch.id}&grade=${searchGrade}&section=${searchSection}`;
+      let request = `${endpoints.homework.completeData}?session_year=${selectedAcademicYear.id}&branch=${selectedBranch.id}&grade=${searchGrade}&section=${searchSection}`;
       axiosInstance
         .get(request)
         .then((result) => {
