@@ -134,11 +134,11 @@ const AttedanceCalender = () => {
           item.child_module.forEach((item) => {
             if (item.child_name === 'Teacher Calendar') {
               setModuleId(item.child_id);
-              console.log(teacherView, 'teacher view');
-              console.log(item.child_id, 'Chekk');
+              localStorage.setItem('moduleId', item.child_id);
             }
             if (item.child_name === 'Student Calendar') {
               setModuleId(item.child_id);
+              localStorage.setItem('moduleId', item.child_id);
             }
           });
         }
@@ -388,10 +388,55 @@ const AttedanceCalender = () => {
     }
   }, [moduleId]);
 
+  useEffect(() => {
+    let modId = +JSON.parse(localStorage.getItem('moduleId'));
+    if (moduleId) {
+      if (modId !== moduleId) {
+        handleClearAll();
+      }
+      if (modId === moduleId) {
+        const {
+          academic = {},
+          branch = {},
+          grade = {},
+          section = {},
+        } = JSON.parse(localStorage.getItem('teacherFilters')) || {};
+        if (window.location.pathname === '/attendance-calendar/teacher-view') {
+          if (academic?.id) {
+            setSelectedAcadmeicYear(academic);
+            const acadId = academic?.id || '';
+            callApi(
+              `${endpoints.communication.branches}?session_year=${acadId}&module_id=${moduleId}`,
+              'branchList'
+            );
+            if (Object.keys(branch).length !== 0) {
+              setSelectedBranch(branch);
+              const branchIds = branch.branch.id
+              callApi(
+                `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`,
+                'gradeList'
+              )
+              if (Object.keys(grade).length !== 0) {
+                setSelectedGrade(grade);
+                const gradeIds = grade.grade_id
+                callApi(
+                  `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}&module_id=${moduleId}`,
+                  'section'
+                );
+                if (section) {
+                  setSelectedSection(section);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }, [moduleId, window.location.pathname])
+
   const handleClearAll = () => {
     console.log('clear all');
     setSelectedAcadmeicYear('');
-    setSelectedBranch([]);
     setSelectedBranch([]);
     setSelectedGrade([]);
     setSelectedSection([]);
@@ -551,6 +596,16 @@ const AttedanceCalender = () => {
       endDate: endDate,
     };
     console.log(payload, 'attendance calendar');
+
+    localStorage.setItem(
+      'teacherFilters',
+      JSON.stringify({
+        academic: selectedAcademicYear,
+        branch: selectedBranch,
+        grade: selectedGrade,
+        section: selectedSection,
+      })
+    );
 
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
@@ -950,8 +1005,13 @@ const AttedanceCalender = () => {
   })(Button);
   const [value, setValue] = React.useState([null, null]);
 
-  const handleAcademicYear=(event, value)=>{
-   
+  const handleAcademicYear = (event, value) => {   
+    const teacherfilterdata = JSON.parse(localStorage.getItem('teacherFilters'))
+    
+    if (JSON.stringify(teacherfilterdata && teacherfilterdata.academic) === JSON.stringify(value)) {
+
+      console.log("data will be same")
+    } else {
       setSelectedAcadmeicYear(value);
       console.log(value, 'test');
       if (value) {
@@ -964,7 +1024,9 @@ const AttedanceCalender = () => {
       setSectionList([]);
       setSelectedSection([]);
       setSelectedBranch([]);
+      localStorage.removeItem('teacherFilters')
     }
+  }
   
 
   return (

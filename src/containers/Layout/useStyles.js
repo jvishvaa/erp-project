@@ -30,15 +30,16 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto !important',
   },
   searchInputContainer: {
-    display: 'flex',
+    //display: 'flex',
     alignItems: 'center',
-    borderRadius: '30px',
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-    width: '70%',
+    border: '0.5px solid #9A9A9A',
+    borderRadius: '26px',
+    width: '50%',
     boxShadow: 'none',
-    borderBottom: '1px solid lightgray',
+    //borderBottom: '1px solid lightgray',
     height: '40px',
+    marginTop:'5px',
+    marginLeft:'370px',
   },
   searchInputMobile: {
     color: 'white',
@@ -50,13 +51,14 @@ const useStyles = makeStyles((theme) => ({
   searchInput: {
     padding: '2px 10px',
     flex: 1,
+    color:'#FFCDCD'
   },
   searchIconButton: {
-    background: theme.palette.primary.main,
+    //background: theme.palette.primary.main,
     borderRadius: 'inherit',
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
-    color: '#ffffff',
+    color: '#FF9898',
     height: '40px',
   },
   clearIconButtonMobile: {
@@ -66,6 +68,16 @@ const useStyles = makeStyles((theme) => ({
     height: '40px',
     marginLeft: '-1%',
     marginRight: '-1%',
+    marginBottom: '1%',
+  },
+  clearIconButton: {
+    color: '#ffffff',
+    background: theme.palette.primary.main,
+    borderRadius: '26px',
+    height: '40px',
+    marginLeft: '150px',
+    marginRight: '-1px',
+    marginTop:'-1px',
     marginBottom: '1%',
   },
   searchIconButtonMobile: {
@@ -78,9 +90,17 @@ const useStyles = makeStyles((theme) => ({
   },
   logoBtn: {
     height: theme.mixins.toolbar.minHeight,
+    padding: '0px 15px 0px 60px',
+    //fontSize:'70px'
+  },
+  schoolLogoBtn: {
+    height: theme.mixins.toolbar.minHeight,
+    //padding: '5px 45px 0px 0px',
+    fontSize:'45px',
+    height:'70px'
   },
   toolbar: {
-    padding: '10px 15px',
+    // padding: '10px 15px 0px 60px',
     maxHeight: '64px',
     [`${theme.breakpoints.up('xs')} and (orientation: landscape)`]: {
       minHeight: '64px',
@@ -101,7 +121,6 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    width: drawerWidth,
     [theme.breakpoints.down('xs')]: { width: '100vw' },
   },
   drawerPaperClose: {
@@ -112,7 +131,7 @@ const useStyles = makeStyles((theme) => ({
     overflowX: 'hidden',
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(7) + 1,
+      width: '70px',  
     },
     [theme.breakpoints.down('xs')]: { display: 'none' },
   },
@@ -140,9 +159,9 @@ const useStyles = makeStyles((theme) => ({
   },
   search: {
     position: 'relative',
-    backgroundColor: fade(theme.palette.common.white, 0.15),
+    //backgroundColor: fade(theme.palette.common.white, 0.15),
     '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
+      //backgroundColor: fade(theme.palette.common.white, 0.25),
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
@@ -182,8 +201,10 @@ const useStyles = makeStyles((theme) => ({
   },
   sectionDesktop: {
     display: 'none',
+    color:'#FF6B6B',
     [theme.breakpoints.up('md')]: {
       display: 'flex',
+      color:'#FF6B6B',
     },
   },
   sectionMobile: {
@@ -238,6 +259,18 @@ const useStyles = makeStyles((theme) => ({
     color: '#ffffff',
     padding: '10px',
   },
+  notificationsIcon:{
+    alignItems: 'center',
+    color:'#FF6B6B',
+    fontSize:'42px',
+    
+  },
+  loginAvatar:{
+    marginLeft:'-90px'
+  },
+  hideIcon:{
+    display:'none'
+  }
 }));
 
 export default useStyles;

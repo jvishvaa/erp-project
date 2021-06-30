@@ -243,11 +243,12 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         subject: '',
         chapter: '',
       });
+
       axiosInstance
         .get(
           `${endpoints.communication.grades}?session_year=${
             searchAcademicYear?.id
-          }&branch_id=${value.id}&module_id=${
+          }&branch_id=${value?.branch?.id}&module_id=${
             location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
           }`
         )
@@ -292,11 +293,12 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         chapter: '',
         section: '',
       });
+    
       axiosInstance
         .get(
           `${endpoints.masterManagement.sections}?session_year=${
             searchAcademicYear?.id
-          }&branch_id=${filterData?.branch[0]?.id}&grade_id=${value.grade_id}&module_id=${
+          }&branch_id=${filterData?.branch[0]?.branch?.id}&grade_id=${value.grade_id}&module_id=${
             location.pathname === '/lesson-plan/student-view'
               ? studentModuleId
               : teacherModuleId
