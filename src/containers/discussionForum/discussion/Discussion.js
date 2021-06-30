@@ -372,8 +372,9 @@ export default function DiscussionComponent(props) {
   const id2 = open2 ? 'simple-popover1' : undefined;
 
   const handleDelete = (id) => {
+    console.log(id,"id of user");
     axiosInstance
-      .delete(`/academic/${id}/update-post/`)
+      .delete(`${endpoints.discussionForum.deletePost}${id}/update-post/`)
       .then((res) => {
         if(res.data.status_code === 200){
           setAlert('success', res.data.message);
