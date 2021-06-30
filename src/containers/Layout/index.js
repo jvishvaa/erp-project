@@ -41,6 +41,7 @@ import ListItem from '@material-ui/core/ListItem';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 import clsx from 'clsx';
 import EventAvailableIcon from '@material-ui/icons/EventAvailable';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
@@ -63,6 +64,7 @@ import './styles.scss';
 import logoMobile from '../../assets/images/logo_mobile.png';
 import online_classpng from '../../assets/images/Online classes-01.svg';
 import logo from '../../assets/images/logo.png';
+import orchidsPlaceholderLogo from '../../assets/images/orchidsPlaceholderLogo2x.png'
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
@@ -71,10 +73,11 @@ import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserInfo from '../../components/user-info';
 import PublishIcon from '@material-ui/icons/Publish';
+import menuIcon from 'components/drawer-menu/menu-icon';
 
 export const ContainerContext = createContext();
 
-const Layout = ({ children, history }) => {
+const Layout = ({ children, history, ...props }) => {
   const containerRef = useRef(null);
   const dispatch = useDispatch();
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -84,7 +87,6 @@ const Layout = ({ children, history }) => {
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [masterMenuOpen, setMasterMenuOpen] = useState(false);
   const [superUser, setSuperUser] = useState(false);
   const [searchUserDetails, setSearchUserDetails] = useState([]);
   const searchInputRef = useRef();
@@ -164,7 +166,8 @@ const Layout = ({ children, history }) => {
 
   useEffect(() => {
     if (isLogout) {
-      history.push('/');
+      // history.push('/');
+      window.location.href = '/';
       setIsLogout(false);
     }
   }, [isLogout]);
@@ -187,6 +190,7 @@ const Layout = ({ children, history }) => {
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+ 
 
   const handleLogout = () => {
     dispatch(logout());
@@ -285,6 +289,15 @@ const Layout = ({ children, history }) => {
         <p style={{ color: '#014B7E' }}>My Profile</p>
       </MenuItem>
 
+    {superUser?
+      <MenuItem onClick={(e) => history.push('/setting')}>
+        <IconButton aria-label='settings' color='inherit'>
+          <SettingsIcon color='primary' style={{ fontSize: '2rem' }} />
+        </IconButton>
+        <p style={{ color: '#014B7E' }}>Settings</p>
+      </MenuItem>
+      :null
+}
       <MenuItem onClick={handleLogout}>
         <IconButton aria-label='logout button' color='inherit'>
           <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
@@ -461,6 +474,7 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/view-users');
         break;
       }
+      
       case 'Section Shuffle': {
         history.push('/user-management/section-shuffling');
         break;
@@ -1056,6 +1070,10 @@ const Layout = ({ children, history }) => {
     }
   };
 
+  const handleOpen = (value) => {  
+    setDrawerOpen((value) => !value)
+  };
+
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
@@ -1097,9 +1115,9 @@ const Layout = ({ children, history }) => {
             aria-label='open drawer'
             className={clsx(classes.logoBtn, classes.desktopToolbarComponents)}
           >
-            <img src={logo} alt='logo' style={{ height: '45px' }} />
+            <img src={logo} alt='logo' style={{ height: '35px' }} />
           </IconButton>
-          <Divider
+          {/* <Divider
             orientation='vertical'
             flexItem
             style={{
@@ -1107,7 +1125,7 @@ const Layout = ({ children, history }) => {
               margin: '5px 10px',
             }}
             className={classes.desktopToolbarComponents}
-          />
+          /> */}
 
           <Typography
             className={classes.desktopToolbarComponents}
@@ -1117,18 +1135,25 @@ const Layout = ({ children, history }) => {
             noWrap
             cursor='default'
           >
-            <span style={{ cursor: 'default' }}>Welcome!</span>
+            {/* <span style={{ cursor: 'default' }}>Welcome!</span>
             <span style={{ fontSize: '1rem', marginLeft: '1rem', cursor: 'default' }}>
               Have a great day
-            </span>
+            </span> */}
           </Typography>
           {superUser ? (
             <div className={clsx(classes.grow, classes.desktopToolbarComponents)}>
               <Paper component='form' className={classes.searchInputContainer}>
+              <IconButton
+                  type='submit'
+                  className={classes.searchIconButton}
+                  aria-label='search'
+                >
+                  <SearchIcon />
+                </IconButton>
                 <InputBase
                   value={searchedText}
                   className={classes.searchInput}
-                  placeholder='Search..'
+                  placeholder='Search'
                   inputProps={{ 'aria-label': 'search across site' }}
                   inputRef={searchInputRef}
                   onChange={changeQuery}
@@ -1144,13 +1169,7 @@ const Layout = ({ children, history }) => {
                     <CloseIcon />
                   </IconButton>
                 ) : null}
-                <IconButton
-                  type='submit'
-                  className={classes.searchIconButton}
-                  aria-label='search'
-                >
-                  <SearchIcon />
-                </IconButton>
+                
               </Paper>
               <Popper
                 open={searching}
@@ -1309,7 +1328,11 @@ const Layout = ({ children, history }) => {
                   </Fade>
                 )}
               </Popper>
-              {displayUserDetails ? (
+              </div>
+            
+          ) : null}
+          <Box display='flex'>
+          {displayUserDetails ? (
                 <UserDetails
                   close={setDisplayUserDetails}
                   mobileSearch={setMobileSeach}
@@ -1318,8 +1341,11 @@ const Layout = ({ children, history }) => {
                   setSearching={setSearching}
                 />
               ) : null}
-            </div>
-          ) : null}
+              
+              <IconButton className={classes.hideIcon} aria-label='my notifications' color='inherit'>
+              <NotificationsIcon className={classes.notificationsIcon}/>
+              </IconButton>
+            
           <div
             className={`${clsx(
               classes.sectionDesktop,
@@ -1332,19 +1358,27 @@ const Layout = ({ children, history }) => {
               aria-haspopup='true'
               onClick={handleMobileMenuOpen}
               color='inherit'
+              className={classes.loginAvatar}
             >
               {roleDetails && roleDetails.user_profile ? (
                 <img
-                  style={{ fontSize: '0.4rem' }}
                   src={roleDetails.user_profile}
                   alt='no img'
                   className='profile_img'
                 />
               ) : (
-                <AccountCircle color='primary' style={{ fontSize: '2rem' }} />
+                <AccountCircle style={{fontSize:'42px'}}/>
               )}
-              {profileOpen ? <ExpandLess /> : <ExpandMore />}
+              {/* {profileOpen ? <ExpandLess /> : <ExpandMore />} */}
             </IconButton>
+            <IconButton 
+            edge='end'
+            //color='inherit'
+            aria-label='open drawer'
+            className={clsx(classes.schoolLogoBtn, classes.hideIcon, classes.desktopToolbarComponents)}
+          >
+            <img src={orchidsPlaceholderLogo} alt='logo' style={{ height: '35px' }} />
+          </IconButton>
           </div>
 
           {/* <div className={classes.sectionMobile}>
@@ -1358,6 +1392,7 @@ const Layout = ({ children, history }) => {
               <MoreIcon />
             </IconButton>
           </div> */}
+          </Box>
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
@@ -1443,17 +1478,37 @@ const Layout = ({ children, history }) => {
             onClick={() => setDrawerOpen((prevState) => !prevState)}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-              {drawerOpen ? <CloseIcon /> : <MenuIcon />}
+              {drawerOpen ?
+               <>
+              <CloseIcon /> 
+              </>
+              :
+              <>
+              <MenuIcon />
+              </>
+              }
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-          {navigationData && drawerOpen && navigationData?.length > 0 && (
+          {drawerOpen?(
+           navigationData && navigationData.length > 0 && (
+            <DrawerMenu
+              superUser={superUser}
+               drawerOpen={drawerOpen}
+              navigationItems={navigationData}
+              onClick={handleRouting}
+              // flag={flag}
+            />
+          )):(navigationData && navigationData.length > 0 && (
             <DrawerMenu
               superUser={superUser}
               navigationItems={navigationData}
-              onClick={handleRouting}
+              // onClick={()=>setDrawerOpen(true)}
+              onClick={handleOpen}
+              drawerOpen={drawerOpen}
+              // onClick={handleRouting}
             />
-          )}
+          ))}
         </List>
       </Drawer>
       <main className={classes.content}>
