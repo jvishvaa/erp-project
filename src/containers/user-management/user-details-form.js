@@ -293,7 +293,7 @@ const UserDetailsForm = ({
           <OutlinedInput
             id='username'
             name='username'
-            inputProps={{ maxLength: 14 }}
+            inputProps={{ maxLength: 20 }}
             onChange={formik.handleChange}
             value={formik.values.username}
             label='Username'
