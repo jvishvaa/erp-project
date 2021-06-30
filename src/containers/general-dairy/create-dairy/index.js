@@ -247,7 +247,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         .get(
           `${endpoints.communication.grades}?session_year=${
             searchAcademicYear?.id
-          }&branch_id=${value.id}&module_id=${
+          }&branch_id=${value?.branch?.id}&module_id=${
             location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
           }`
         )
@@ -292,11 +292,12 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         chapter: '',
         section: '',
       });
+    
       axiosInstance
         .get(
           `${endpoints.masterManagement.sections}?session_year=${
             searchAcademicYear?.id
-          }&branch_id=${filterData?.branch[0]?.id}&grade_id=${value.grade_id}&module_id=${
+          }&branch_id=${filterData?.branch[0]?.branch?.id}&grade_id=${value.grade_id}&module_id=${
             location.pathname === '/lesson-plan/student-view'
               ? studentModuleId
               : teacherModuleId
@@ -390,13 +391,15 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       setFilterData({ ...filterData, branch: '', grade: '', section: '' });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${
+          `${endpoints.masterManagement.branchMappingTable}?session_year=${
+            value.id
+          }&module_id=${
             location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
           }`
         )
         .then((result) => {
           if (result?.data?.status_code) {
-            setBranchDropdown(result?.data?.data);
+            setBranchDropdown(result?.data?.data.results);
           } else {
             setAlert('error', result?.data?.message);
           }
@@ -590,6 +593,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const getGradeApi = async () => {
     try {
       setLoading(true);
+      
       const result = await axiosInstance.get(
         `${endpoints.communication.grades}?session_year=${
           searchAcademicYear?.id
@@ -629,6 +633,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         .forEach((items) => {
           gradesId.push(items.grade_id);
         });
+      
       const result = await axiosInstance.get(
         `${endpoints.communication.sections}?branch_id=${
           selectedBranch.id
@@ -877,7 +882,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                 className='dropdownIcon'
                 value={filterData?.branch[0] || ''}
                 options={branchDropdown || []}
-                getOptionLabel={(option) => option?.branch_name}
+                getOptionLabel={(option) => option?.branch?.branch_name || ''}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField

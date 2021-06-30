@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
 
 const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const classes = useStyles();
-  const { homeworkSubmission, setHomeworkSubmission, setLoading } = props || {};
+  const { homeworkSubmission, setHomeworkSubmission, setLoading, setDisplayRatingBox } = props || {};
   const { isOpen, subjectId, date, subjectName } = homeworkSubmission || {};
   const [isQuestionWise, setIsQuestionWise] = useState(false);
   const [allQuestionAttachment, setAllQuestionAttachment] = useState([]);
@@ -143,7 +143,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   };
 
   const handleHomeworkCancel = () => {
-    setHomeworkSubmission({ isOpen: false, subjectId: '', date: '', subjectName: '' });
+    setDisplayRatingBox(false);
+    setHomeworkSubmission(prev => ({ ...prev, isOpen: false, subjectId: '', subjectName: '' }));
   };
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -222,6 +223,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       });
   }, []);
 
+  const handleBulkNotification = () => {
+    if (bulkDataDisplay.length >= maxCount) {
+      setAlert('warning', `Can\'t upload more than ${maxCount} attachments in total.`);
+    }
+  }
   const handleBulkUpload = (e) => {
     e.persist()
     if (bulkDataDisplay.length >= maxCount) {
@@ -514,15 +520,17 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     style={{ color: 'white' }}
                     component='label'
                     size='medium'
+                    onClick={handleBulkNotification}
                   >
                     Bulk Upload
+                  {bulkDataDisplay.length < maxCount ?
                   <input
                       type='file'
                       accept=".png, .jpg, .jpeg, .mp3, .mp4, .pdf"
                       style={{ display: 'none' }}
                       id='raised-button-file'
                       onChange={e => handleBulkUpload(e)}
-                    />
+                    />:null}
                   </Button>
                                    
                 </div>

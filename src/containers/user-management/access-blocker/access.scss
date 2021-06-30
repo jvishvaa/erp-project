@@ -1,0 +1,36 @@
+
+#singleStudent{
+    .MuiFormControlLabel-root{
+        min-width: 10px !important;
+    }
+    .lessonPlan{
+        display: flex;
+        justify-content: space-between;
+        width: 80%;
+        margin: 3px;
+    }
+    .Module-container{
+        display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    }
+   
+}
+.listcontainer{
+    .filterStudent{
+        display: flex;
+        margin: 20px 0;
+    }
+    .filterArea{
+        display: flex;
+        margin: 20px 0;
+    }
+    .searchArea{
+        display: flex;
+    justify-content: flex-end;
+    }
+    .searchViewUser{
+        margin: 20px;
+    }
+}
