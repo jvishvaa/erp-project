@@ -73,11 +73,10 @@ import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserInfo from '../../components/user-info';
 import PublishIcon from '@material-ui/icons/Publish';
-import menuIcon from 'components/drawer-menu/menu-icon';
 
 export const ContainerContext = createContext();
 
-const Layout = ({ children, history, ...props }) => {
+const Layout = ({ children, history}) => {
   const containerRef = useRef(null);
   const dispatch = useDispatch();
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -87,6 +86,7 @@ const Layout = ({ children, history, ...props }) => {
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [masterMenuOpen, setMasterMenuOpen] = useState(false);
   const [superUser, setSuperUser] = useState(false);
   const [searchUserDetails, setSearchUserDetails] = useState([]);
   const searchInputRef = useRef();
@@ -166,8 +166,7 @@ const Layout = ({ children, history, ...props }) => {
 
   useEffect(() => {
     if (isLogout) {
-      // history.push('/');
-      window.location.href = '/';
+      history.push('/');
       setIsLogout(false);
     }
   }, [isLogout]);
@@ -289,15 +288,6 @@ const Layout = ({ children, history, ...props }) => {
         <p style={{ color: '#014B7E' }}>My Profile</p>
       </MenuItem>
 
-    {superUser?
-      <MenuItem onClick={(e) => history.push('/setting')}>
-        <IconButton aria-label='settings' color='inherit'>
-          <SettingsIcon color='primary' style={{ fontSize: '2rem' }} />
-        </IconButton>
-        <p style={{ color: '#014B7E' }}>Settings</p>
-      </MenuItem>
-      :null
-}
       <MenuItem onClick={handleLogout}>
         <IconButton aria-label='logout button' color='inherit'>
           <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
@@ -1070,9 +1060,6 @@ const Layout = ({ children, history, ...props }) => {
     }
   };
 
-  const handleOpen = (value) => {  
-    setDrawerOpen((value) => !value)
-  };
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -1478,37 +1465,19 @@ const Layout = ({ children, history, ...props }) => {
             onClick={() => setDrawerOpen((prevState) => !prevState)}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-              {drawerOpen ?
-               <>
-              <CloseIcon /> 
-              </>
-              :
-              <>
-              <MenuIcon />
-              </>
-              }
+            {drawerOpen ? <CloseIcon /> : <MenuIcon />}
+
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-          {drawerOpen?(
-           navigationData && navigationData.length > 0 && (
+          {navigationData && drawerOpen && navigationData?.length > 0 && (
             <DrawerMenu
               superUser={superUser}
-               drawerOpen={drawerOpen}
               navigationItems={navigationData}
               onClick={handleRouting}
               // flag={flag}
             />
-          )):(navigationData && navigationData.length > 0 && (
-            <DrawerMenu
-              superUser={superUser}
-              navigationItems={navigationData}
-              // onClick={()=>setDrawerOpen(true)}
-              onClick={handleOpen}
-              drawerOpen={drawerOpen}
-              // onClick={handleRouting}
-            />
-          ))}
+          )}
         </List>
       </Drawer>
       <main className={classes.content}>
