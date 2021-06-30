@@ -707,7 +707,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                       <Grid className='homework_right_wrapper' container>
                         <Grid lg={12} className='homework_right_wrapper_items' item>
                           <Accordion
-                            onChange={() => setDisplayRatingBox(true)}
+                            onChange={() => setDisplayRatingBox(prev => !prev)}
                           >
                             <AccordionSummary
                               expandIcon={<ExpandMoreIcon />}
