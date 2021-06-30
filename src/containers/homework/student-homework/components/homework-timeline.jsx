@@ -100,7 +100,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
     <>
       <div className='subject-homework-details-wrapper'>
         <div className='subject-homework-tag-wrapper'>
-          <Autocomplete
+          {/* <Autocomplete
             size='small'
             onChange={handleDayChange}
             value={selectedDays}
@@ -117,16 +117,14 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                 variant='outlined'
               />
             )}
-          />
+          /> */}
           <div className='subject-homework-tag'>Timeline</div>
         </div>
         <div className="receivedSubmittedContainer">
           <div>
             <div className="finishedHomeworkTag">Homeworks finished</div>
-            <div>
-              <span className="submittedHomeworkTag">{submittedHomework > 0 ? submittedHomework : '0'}</span>
-              <span className="totalHomeworkTag"><span className="slashClass">/</span>{totalHomework > 0 ? totalHomework : '0'}</span>
-            </div>
+            <span className="submittedHomeworkTag">{submittedHomework > 0 ? submittedHomework : '0'}</span>
+            <span className="totalHomeworkTag"><span className="slashClass">/</span>{totalHomework > 0 ? totalHomework : '0'}</span>
           </div>
           <div className="maleFemaleContainer">
             <SvgIcon
@@ -137,10 +135,10 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                     height: '150px',
                     marginRight: '5px',
                   } : {
-                      width: '115px',
-                      height: '150px',
-                      marginRight: '5px',
-                    }}
+                    width: '115px',
+                    height: '150px',
+                    marginRight: '5px',
+                  }}
                   src={gender === '1' ? MaleRating : FemaleRating}
                 />
               )}
@@ -193,7 +191,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                           {subject.subject_name}
                         </span>
                       </span>
-                      <span className="starContainer" style={{ marginRight: '10px'}}>
+                      <span className="starContainer" style={{ marginRight: '10px' }}>
                         <StyledRating
                           name="customized-empty"
                           defaultValue={subject.rating}
@@ -214,7 +212,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                               )}
                             />
                           } */
-                          emptyIcon={<StarBorderIcon fontSize="inherit"/>}
+                          emptyIcon={<StarBorderIcon fontSize="inherit" />}
                         />
                         {/*[...Array(subject.rating)].map((e, i) => (
                           <SvgIcon

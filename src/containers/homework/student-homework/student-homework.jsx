@@ -1,37 +1,27 @@
-/* eslint-disable react/jsx-curly-newline */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-one-expression-per-line */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable react/no-array-index-key */
 import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import clsx from 'clsx';
 import {
+  Table,
+  TableContainer,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
   Grid,
   TextField,
-  Button,
   SvgIcon,
-  Icon,
-  Slide,
   useTheme,
 } from '@material-ui/core';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-
-import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Loading from '../../../components/loader/loader';
 import hwGiven from '../../../assets/images/hw-given.svg';
@@ -50,12 +40,6 @@ import './student-homework.css';
 import StudenthomeworkMobileScreen from './student-homework-mobile-screen';
 import MobileIconScreen from './student-homework-mobileScreen-Icon';
 import MobileDatepicker from './student-homework-mobile-datepicker';
-///
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,24 +57,22 @@ const useStyles = makeStyles((theme) => ({
   container: {
     maxHeight: 440,
   },
+  homeworkSubmissionIsOpen: {
+    display: 'none',
+  },
 }));
 
 const StudentHomework = withRouter(({ history, ...props }) => {
   const classes = useStyles();
   const themeContext = useTheme();
-  const isMobileRender = useMediaQuery(themeContext.breakpoints.down('sm'));
-
   const { setAlert } = useContext(AlertNotificationContext);
-  const [isHidden, setIsHidden] = useState(window.innerWidth < 600);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [messageRows, setMessageRows] = useState({ header: [], rows: [] });
   const [studentHomeworkData, setStudentHomeworkData] = useState({
     header: [],
     rows: [],
   });
   const [isSelectedCell, setIsSelectedCell] = useState({ row: '', index: '' });
-  const [branchList, setBranchList] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [homeworkSubmission, setHomeworkSubmission] = useState({
     isOpen: false,
@@ -109,76 +91,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   const [mendaterySubjects, setMendaterySubjects] = useState([]);
   const [otherSubjects, setOtherSubjects] = useState([]);
   const [moduleId, setModuleId] = useState();
-  const [modulePermision, setModulePermision] = useState(true);
   const [homeworkTimelineDisplay, setHomeworkTimelineDisplay] = useState(true);
-  const [selectSub, setSelectSub] = useState('');
-
-  //   header: ['date', 'english', 'history', 'math', 'other', 'science'],
-  //   rows: [
-  // 	{
-  // 	  id: 0,
-  // 	  date: '11-10-20',
-  // 	  english: { isHomework: true, isSubmited: false },
-  // 	  history: { isHomework: true, isSubmited: true },
-  // 	  math: { isHomework: false },
-  // 	  other: { isHomework: true, isSubmited: false },
-  // 	  science: { isHomework: true, isSubmited: false },
-  // 	},
-  // 	{
-  // 	  id: 1,
-  // 	  date: '12-10-20',
-  // 	  english: { isHomework: true, isSubmited: false },
-  // 	  history: { isHomework: true, isSubmited: true },
-  // 	  math: { isHomework: false },
-  // 	  other: { isHomework: true, isSubmited: true },
-  // 	  science: { isHomework: true, isSubmited: false },
-  // 	},
-  // 	{
-  // 	  id: 2,
-  // 	  date: '13-10-20',
-  // 	  english: { isHomework: true, isSubmited: true },
-  // 	  history: { isHomework: true, isSubmited: false },
-  // 	  math: { isHomework: false },
-  // 	  other: { isHomework: true, isSubmited: false },
-  // 	  science: { isHomework: true, isSubmited: true },
-  // 	},
-  // 	{
-  // 	  id: 3,
-  // 	  date: '14-10-20',
-  // 	  english: { isHomework: true, isSubmited: false },
-  // 	  history: { isHomework: true, isSubmited: true },
-  // 	  math: { isHomework: false },
-  // 	  other: { isHomework: true, isSubmited: false },
-  // 	  science: { isHomework: true, isSubmited: false },
-  // 	},
-  // 	{
-  // 	  id: 4,
-  // 	  date: '15-10-20',
-  // 	  english: { isHomework: true, isSubmited: false },
-  // 	  history: { isHomework: true, isSubmited: false },
-  // 	  math: { isHomework: false },
-  // 	  other: { isHomework: true, isSubmited: false },
-  // 	  science: { isHomework: true, isSubmited: false },
-  // 	},
-  // 	{
-  // 	  id: 5,
-  // 	  date: '16-10-20',
-  // 	  english: { isHomework: true, isSubmited: false },
-  // 	  history: { isHomework: false },
-  // 	  math: { isHomework: true, isSubmited: true },
-  // 	  other: { isHomework: true, isSubmited: true },
-  // 	  science: { isHomework: true, isSubmited: false },
-  // 	},
-  // 	{
-  // 	  id: 6,
-  // 	  date: '17-10-20',
-  // 	  english: { isHomework: true, isSubmited: false },
-  // 	  history: { isHomework: true, isSubmited: false },
-  // 	  math: { isHomework: false },
-  // 	  other: { isHomework: true, isSubmited: false },
-  // 	  science: { isHomework: true, isSubmited: false },
-  // 	},
-  //   ],
+  const [displayRatingBox, setDisplayRatingBox] = useState(false);
 
   const getTableDetails = async () => {
     try {
@@ -271,7 +185,6 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   };
 
   const handleOtherLanguage = (event, value) => {
-    setSelectSub(event.target.value);
     if (value) {
       setSelectedOtherLanguages({
         ...value,
@@ -363,7 +276,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   }, []);
 
   useEffect(() => {
-    if (moduleId) {
+    if (moduleId && !homeworkSubmission.isOpen) {
       getTableDetails();
     }
   }, [homeworkSubmission.isOpen, startDate, endDate, moduleId]);
@@ -385,10 +298,6 @@ const StudentHomework = withRouter(({ history, ...props }) => {
     }
   }, [selectedOtherSubjects]);
 
-  // const mydiv = document.getElementById("MuiAutocomplete-hasPopupIcon");
-  // var newcontent = document.createElement('div');
-  // newcontent.innerHTML = "bar";
-
   return (
     <div className='layout-container-div'>
       {loading ? <Loading message='Loading...' /> : null}
@@ -400,57 +309,24 @@ const StudentHomework = withRouter(({ history, ...props }) => {
           >
             <CommonBreadcrumbs componentName='Homework' />
           </div>
-          {!homeworkSubmission.isOpen && (
-            <div className='create_group_filter_container'>
-              <Grid container spacing={5} className='message_log_container'>
-                {
-                  <div className='mobile-date-picker'>
-                    <MobileDatepicker
-                      onChange={(date) => handleEndDateChange(date)}
-                      handleStartDateChange={handleStartDateChange}
-                      handleEndDateChange={handleEndDateChange}
-                    />
-                  </div>
-
-                  // <MuiPickersUtilsProvider utils={MomentUtils} className='date_provider'>
-                  //   <Grid item xs={12} sm={3}>
-                  //     <KeyboardDatePicker
-                  //       // clearable
-                  //       // margin='normal'
-                  //       id='date-picker-dialog'
-                  //       label='Start Date'
-                  //       className='message_log_date_piker'
-                  //       format='YYYY-MM-DD'
-                  //       value={startDate}
-                  //       onChange={(date) => handleStartDateChange(date)}
-                  //       // maxDate={new Date()}
-                  //       KeyboardButtonProps={{
-                  //         'aria-label': 'change date',
-                  //       }}
-                  //     />
-                  //   </Grid>
-                  //   <Grid item xs={12} sm={3}>
-
-                  //     <KeyboardDatePicker
-                  //       margin='normal'
-                  //       id='date-picker-dialog'
-                  //       label='End Date'
-                  //       className='message_log_date_piker'
-                  //       format='YYYY-MM-DD'
-                  //       value={endDate}
-                  //       onChange={(date) => handleEndDateChange(date)}
-                  //       // maxDate={new Date()}
-                  //       KeyboardButtonProps={{
-                  //         'aria-label': 'change date',
-                  //       }}
-                  //     />
-
-                  //   </Grid>
-                  // </MuiPickersUtilsProvider>
-                }
-              </Grid>
-            </div>
-          )}
+          <div
+            className={clsx(
+              'create_group_filter_container',
+              homeworkSubmission.isOpen && classes.homeworkSubmissionIsOpen
+            )}
+          >
+            <Grid container spacing={5} className='message_log_container'>
+              {
+                <div className='mobile-date-picker'>
+                  <MobileDatepicker
+                    onChange={(date) => handleEndDateChange(date)}
+                    handleStartDateChange={handleStartDateChange}
+                    handleEndDateChange={handleEndDateChange}
+                  />
+                </div>
+              }
+            </Grid>
+          </div>
           <div className='message_log_white_wrapper'>
             {isMobile ? (
               <MobileIconScreen isOpen={homeworkSubmission.isOpen} />
@@ -528,7 +404,9 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <span style={{ fontSize: '16px', color: '#014b7e' }}>Not Submitted</span>
+                    <span style={{ fontSize: '16px', color: '#014b7e' }}>
+                      Not Submitted
+                    </span>
                   </div>
                 </div>
               )
@@ -539,6 +417,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                 loading={loading}
                 setLoading={setLoading}
                 homeworkSubmission={homeworkSubmission}
+                setDisplayRatingBox={setDisplayRatingBox}
                 setHomeworkSubmission={setHomeworkSubmission}
               />
             ) : (
@@ -559,7 +438,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                       xs={12}
                       lg={
                         studentHomeworkData.header?.is_top_performers ||
-                        !homeworkTimelineDisplay
+                          !homeworkTimelineDisplay
                           ? 9
                           : 12
                       }
@@ -661,7 +540,10 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                     headers.subject_slag === 'date' ? (
                                       <TableCell>
                                         <div className='table-date'>
-                                          <div className='day-icon' style={{ marginRight: '5px'}}>
+                                          <div
+                                            className='day-icon'
+                                            style={{ marginRight: '5px' }}
+                                          >
                                             {moment(row.date).format('dddd').split('')[0]}
                                           </div>
                                           <div className='date-web'>
@@ -675,7 +557,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                         onClick={() => handleCellClick(rowIndex, i)}
                                         className={
                                           isSelectedCell.row === rowIndex &&
-                                          isSelectedCell.index === i
+                                            isSelectedCell.index === i
                                             ? 'selected'
                                             : 'not_selected'
                                         }
@@ -707,10 +589,10 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                             />
                                           </span>
                                         ) : new Date(
-                                            new Date().getFullYear(),
-                                            new Date().getMonth(),
-                                            new Date().getDate()
-                                          ) >= new Date(row.date) ? (
+                                          new Date().getFullYear(),
+                                          new Date().getMonth(),
+                                          new Date().getDate()
+                                        ) >= new Date(row.date) ? (
                                           <SvgIcon
                                             component={() => (
                                               <img
@@ -824,18 +706,47 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                     <Grid xs={12} lg={3} item>
                       <Grid className='homework_right_wrapper' container>
                         <Grid lg={12} className='homework_right_wrapper_items' item>
-                          {studentHomeworkData.header?.is_hw_ration &&
-                            homeworkTimelineDisplay && (
-                              <HomeworkTimeline
-                                setHomeworkTimelineDisplay={setHomeworkTimelineDisplay}
-                                moduleId={moduleId}
-                              />
-                            )}
+                          <Accordion
+                            onChange={() => setDisplayRatingBox(true)}
+                          >
+                            <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls='panel1a-content'
+                              id='panel1a-header'
+                            >
+                              <Typography>Student Rating</Typography>
+                            </AccordionSummary>
+
+                            <AccordionDetails>
+                              {displayRatingBox &&
+                                studentHomeworkData.header?.is_hw_ration &&
+                                homeworkTimelineDisplay && (
+                                  <HomeworkTimeline
+                                    setHomeworkTimelineDisplay={
+                                      setHomeworkTimelineDisplay
+                                    }
+                                    moduleId={moduleId}
+                                  />
+                                )}
+                            </AccordionDetails>
+                          </Accordion>
                         </Grid>
                         <Grid lg={12} className='homework_right_wrapper_items' item>
-                          {studentHomeworkData.header?.is_top_performers && (
-                            <TopPerformerCard subjects={mendaterySubjects} />
-                          )}
+                          <Accordion>
+                            <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls='panel1a-content'
+                              id='panel1a-header'
+                            >
+                              <Typography>Top Performer</Typography>
+                            </AccordionSummary>
+
+                            <AccordionDetails>
+                              {studentHomeworkData.header?.is_top_performers && (
+                                <TopPerformerCard subjects={mendaterySubjects} />
+                              )}
+                            </AccordionDetails>
+                          </Accordion>
                         </Grid>
                       </Grid>
                     </Grid>
