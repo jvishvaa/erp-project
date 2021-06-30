@@ -243,7 +243,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         subject: '',
         chapter: '',
       });
-      console.log(value?.branch?.id,'qty1')
+
       axiosInstance
         .get(
           `${endpoints.communication.grades}?session_year=${
@@ -293,7 +293,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         chapter: '',
         section: '',
       });
-      console.log(filterData?.branch[0]?.branch?.id,'qty4')
+    
       axiosInstance
         .get(
           `${endpoints.masterManagement.sections}?session_year=${
@@ -592,7 +592,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const getGradeApi = async () => {
     try {
       setLoading(true);
-      console.log(selectedBranch.id,'qty3')
       const result = await axiosInstance.get(
         `${endpoints.communication.grades}?session_year=${
           searchAcademicYear?.id
@@ -632,7 +631,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         .forEach((items) => {
           gradesId.push(items.grade_id);
         });
-        console.log( selectedBranch.id,'qty2')
       const result = await axiosInstance.get(
         `${endpoints.communication.sections}?branch_id=${
           selectedBranch.id
