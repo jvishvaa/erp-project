@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import Button from '@material-ui/core/Button';
@@ -28,7 +28,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import validationSchema from './schemas/user-details';
 import { useStyles } from './useStyles';
 import ImageUpload from '../../components/image-upload';
-
+import CustomizedSelects from './country-code';
 const UserDetailsForm = ({
   details,
   onSubmit,
@@ -49,7 +49,13 @@ const UserDetailsForm = ({
       middle_name: details.middle_name,
       gender: details.gender,
       profile: details.profile,
-      contact: details.contact,
+      // contact: details.contact,
+      student_country_code:
+        details.contact.split('-').length > 1 ? details.contact.split('-')[0] : '',
+      contact:
+        details.contact.split('-').length > 1
+          ? details.contact.split('-')[1]
+          : details.contact,
       username: details.username,
       email: details.email,
       date_of_birth: details.date_of_birth,
@@ -93,6 +99,13 @@ const UserDetailsForm = ({
       },
     },
   });
+  const userChange = () => {
+    formik.handleChange();
+  };
+
+  const handlePropsData = (code) => {
+    formik.setFieldValue('student_country_code', code);
+  };
 
   return (
     <Grid container spacing={4} className='user-details-form-container'>
@@ -242,13 +255,29 @@ const UserDetailsForm = ({
       </Grid>
       {/* </Grid> */}
       {/* <Grid container item xs={12} spacing={4}> */}
-      <Grid item md={4} xs={12}>
-        <FormControl required variant='outlined' fullWidth size='small'>
+      <Grid item md={2} xs={2}>
+        <CustomizedSelects
+          name={'student_country_code'}
+          value={formik.values.student_country_code}
+          handlePropsData={(code) => handlePropsData(code)}
+        />
+        <FormHelperText style={{ color: 'red' }}>
+          {formik.errors.student_country_code ? formik.errors.student_country_code : ''}
+        </FormHelperText>
+      </Grid>
+
+      <Grid item md={2} xs={4}>
+        <FormControl
+          required
+          fullWidth
+          variant='outlined'
+          size='small'
+        >
           <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
           <OutlinedInput
             id='contact'
             name='contact'
-            inputProps={{ maxLength: 15 }}
+            inputProps={{ maxLength: 11 }}
             onChange={formik.handleChange}
             value={formik.values.contact}
             label='Mobile no.'
@@ -264,7 +293,7 @@ const UserDetailsForm = ({
           <OutlinedInput
             id='username'
             name='username'
-            inputProps={{ maxLength: 25 }}
+            inputProps={{ maxLength: 14 }}
             onChange={formik.handleChange}
             value={formik.values.username}
             label='Username'
@@ -329,7 +358,7 @@ const UserDetailsForm = ({
         <Divider />
       </Grid>
       <Grid item md={4} xs={12}>
-        <FormControl required component='fieldset' fullWidth size='small'>
+        <FormControl component='fieldset' fullWidth size='small'>
           <FormLabel component='legend'>Parent/Guardian</FormLabel>
           <FormGroup row>
             <FormControlLabel

@@ -219,7 +219,7 @@ const AccessBlocker = () => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('academic_year',selectedAcademicYear?.id)
-        formData.append('branch',selectedBranch?.id)
+        formData.append('branch',selectedBranch?.branch?.id)
         console.log(file , "file");
         if (selectedBranch.length === 0 ) {
             setAlert('warning', 'Please select branch');

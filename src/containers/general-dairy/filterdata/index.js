@@ -167,6 +167,10 @@ const GeneralDairyFilter = ({
       year: '',
       // setSectionDropdown([])
     });
+    setDateRangeTechPer([ moment().subtract(6, 'days'),
+    moment(),]);
+    setDateRange([moment().subtract(6, 'days'), moment()]);
+    setFilterData({ ...filterData, subject: '', chapter: '' });
     setSectionDropdown([]);
     setSectionIds([]);
     setPeriodData([]);
@@ -331,6 +335,7 @@ const GeneralDairyFilter = ({
       setGradeDropdown([]);
     }
   };
+  console.log('The grade id', userDetails);
 
   const handleFilter = (e) => {
     setClicked(true);
@@ -360,8 +365,9 @@ const GeneralDairyFilter = ({
         );
       }
     } else if (userDetails?.personal_info?.role !== 'SuperUser' && !isTeacher) {
-      const grade_id = userDetails.role_details?.grades?.grades[0]?.grade_id;
+      const grade_id = userDetails.role_details?.grades[0]?.grade_id;
       const branch_id = userDetails.role_details?.branch[0]?.id;
+
       handleDairyList(
         branch_id,
         grade_id,
@@ -512,7 +518,7 @@ const GeneralDairyFilter = ({
             onChange={handleSubject}
             id='subject'
             className='dropdownIcon'
-            // value={filterData?.subject}
+            value={filterData?.subject}
             options={subjectDropdown}
             getOptionLabel={(option) => option?.subject_name}
             filterSelectedOptions

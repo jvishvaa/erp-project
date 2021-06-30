@@ -54,6 +54,8 @@ const LessonPlan = () => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [centralGradeName, setCentralGradeName] = useState('');
   const [centralSubjectName, setCentralSubjectName] = useState('');
+  let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
+
 
   const handlePagination = (event, page) => {
     setPage(page);
@@ -63,12 +65,14 @@ const LessonPlan = () => {
     setLoading(true);
     setPeriodData([]);
     setChapterSearch(searchChapter);
-    axios
+    axiosInstance
       .get(
         `${endpoints.lessonPlan.periodData}?chapter=${searchChapter}&page=${page}&page_size=${limit}`,
         {
           headers: {
-            'x-api-key': 'vikash@12345#1231',
+            // 'x-api-key': 'vikash@12345#1231',
+        Authorization: 'Bearer ' + token
+
           },
         }
       )
@@ -86,7 +90,11 @@ const LessonPlan = () => {
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        if ( error.message === 'Request failed with status code 402' ){
+          setAlert('error', 'Access Error')
+        } else {
+        setAlert('error', error?.message);
+        }
       });
   };
 

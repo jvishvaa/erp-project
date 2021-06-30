@@ -104,7 +104,7 @@ function AttachmentPreviewerUI() {
           <div className='attachment-viewer-frames'>
             <div className='attachment-viewer-frame'>
               <div className='attachment-viewer-frame-preview-wrapper'>
-                {imageFileFormats.includes(extension) ? (
+                {imageFileFormats.includes(extension.toLowerCase()) ? (
                   <div className='attachment-viewer-frame-preview attachment-viewer-frame-preview-image-wrapper'>
                     <img
                       alt='sd'
@@ -112,7 +112,7 @@ function AttachmentPreviewerUI() {
                       src={src}
                     />
                   </div>
-                ) : src.endsWith('.mp4') || src.endsWith('.mp3') ? (
+                ) : src.toLowerCase().endsWith('.mp4') || src.toLowerCase().endsWith('.mp3') ? (
                   <video
                     id='attachment-iframe'
                     style={{
@@ -125,7 +125,7 @@ function AttachmentPreviewerUI() {
                     autoPlay
                     controlsList='nodownload'
                   >
-                    {src.endsWith('.mp4') ? (
+                    {src.toLowerCase().endsWith('.mp4') ? (
                       <source src={src} type='video/mp4' />
                     ) : (
                       <source src={src} type='audio/mp3' />
@@ -192,7 +192,7 @@ function AttachmentPreviewerUI() {
           </div>
           </div>
         </div> */}
-        {src.endsWith('.pdf') &&
+        {src.toLowerCase().endsWith('.pdf') &&
           <IconButton
             // style={{ opacity: isNextAvailable ? 1 : 0 }}
             // style={{ color: isNextAvailable ? 'white' : 'black' }}
@@ -251,7 +251,7 @@ function AttachmentPreviewerUI() {
               </Tooltip>
             </div>
           )}
-          {src.endsWith('.pdf') &&
+          {src.toLowerCase().endsWith('.pdf') &&
           <IconButton
             // style={{ color: isPrevAvailable ? 'white' : 'black' }}
             // disabled={!isPrevAvailable}
