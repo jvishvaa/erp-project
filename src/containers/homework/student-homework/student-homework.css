@@ -54,7 +54,7 @@
 	  margin-top: 20px;
   }
   .starContainer{
-	width: 35%;
+	width: 45%;
 }
   /* .message_log_white_wrapper{
 	  margin-top: 45px
@@ -198,6 +198,7 @@
 	/* padding: 5%; */
     border: 1px solid #ff6b6b;
     border-radius: 20px;
+	width: 100%;
 }
 
 .subject-homework-details-tag{
@@ -249,6 +250,12 @@ font-weight: 600;
 .create_group_filter_container .MuiFormHelperText-marginDense{
 	display: none;
 }
+
+.homework_right_wrapper .MuiPaper-root.MuiAccordion-root {
+	border-radius: 10px;
+	margin: 10px 0;
+}
+
 @media only screen and (max-width: 768px) {
 	/* For mobile phones: */
 	/* .makeStyles-root-3 .makeStyles-container-35 .message_log_wrapper{
