@@ -120,7 +120,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
-
+  const [flag, setFlag] = useState(false);
   const [sectionDropdown, setSectionDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [sectionIds, setSectionIds] = useState([]);
@@ -197,7 +197,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   };
 
   const handleChangePage = (event, newPage) => {
+    setFlag(true);
     setPageno(newPage + 1);
+    // displayUsersList();
+    // console.log(newPage, 'newpage')
   };
   const [filterData, setFilterData] = useState({
     branch: '',
@@ -292,7 +295,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         chapter: '',
         section: '',
       });
-    
       axiosInstance
         .get(
           `${endpoints.masterManagement.sections}?session_year=${
@@ -473,7 +475,14 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     const rolesId = [];
     const gradesId = [];
     const sectionsId = [];
-    if (e === undefined && activeTab === 0) {
+    if (e === undefined && activeTab === 0 && !flag) {
+      return;
+    }
+    if (
+      filterData.branch.length === 0 ||
+      filterData.section.length === 0 ||
+      filterData.grade.length === 0
+    ) {
       return;
     }
     let getUserListUrl;
@@ -481,7 +490,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       searchAcademicYear?.id
     }&active=${
       !isEmail ? '0' : '1'
-    }&page=${pageno}&page_size=15&bgs_mapping=${filterData.section.map(
+    }&page=${pageno}&page_size=15&bgs_mapping=${filterData?.section?.map(
       (s) => s.id
     )}&module_id=${
       location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
@@ -593,7 +602,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const getGradeApi = async () => {
     try {
       setLoading(true);
-      
       const result = await axiosInstance.get(
         `${endpoints.communication.grades}?session_year=${
           searchAcademicYear?.id
@@ -633,7 +641,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         .forEach((items) => {
           gradesId.push(items.grade_id);
         });
-      
       const result = await axiosInstance.get(
         `${endpoints.communication.sections}?branch_id=${
           selectedBranch.id
@@ -1041,7 +1048,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                 setSelectAll={setSelectAll}
                 pageno={pageno}
                 selectedUsers={selectedUsers}
-                changePage={setPageno}
+                changePage={handleChangePage}
                 setSelectedUsers={(data) => {
                   setSelectedUsers(data);
                 }}
