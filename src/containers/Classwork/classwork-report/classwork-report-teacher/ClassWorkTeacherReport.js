@@ -436,8 +436,8 @@ export default function ClassWorkTeacherReport() {
         {loading && <Loader />}
         <div style={{ width: '95%', margin: '20px auto', marginLeft: '30px' }}>
           <CommonBreadcrumbs
-            componentName={`Classwork`}
-            childComponentName={`Teacher Report`}
+            componentName={`Online Class`}
+            childComponentName={`Teacher Classwork Report`}
           />
         </div>
         <Grid container spacing={5} style={{ width: widerWidth, margin: wider }}>

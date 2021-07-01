@@ -169,6 +169,33 @@ class CreateUser extends Component {
       guardian_photo,
     } = parent;
 
+    //console.log(student_country_code, 'student, 444');
+    const parentDetail={};
+    if(guardian_first_name){
+      Object.assign(parentDetail,{
+        guardian_first_name,
+      guardian_middle_name,
+      guardian_last_name,
+      guardian_email,
+      address: parent_address,
+      guardian_mobile: guardian_country_code + '-' + guardian_mobile,
+      })
+    }
+    if(father_first_name||mother_first_name){
+      Object.assign(parentDetail,{
+        father_first_name,
+        father_middle_name,
+        father_last_name,
+        father_email,
+        father_mobile: father_country_code + '-' + father_mobile,
+        address: parent_address,
+        mother_first_name,
+        mother_middle_name,
+        mother_last_name,
+        mother_email,
+        mother_mobile: mother_country_code + '-' + mother_mobile,
+      })
+    }
     requestObj = {
       academic_year: academic_year.id,
       academic_year_value: academic_year.session_year,
@@ -192,24 +219,7 @@ class CreateUser extends Component {
       father_photo,
       mother_photo,
       guardian_photo,
-      parent: {
-        father_first_name,
-        father_middle_name,
-        father_last_name,
-        father_email,
-        father_mobile: father_country_code + '-' + father_mobile,
-        address: parent_address,
-        mother_first_name,
-        mother_middle_name,
-        mother_last_name,
-        mother_email,
-        mother_mobile: mother_country_code + '-' + mother_mobile,
-        guardian_first_name,
-        guardian_middle_name,
-        guardian_last_name,
-        guardian_email,
-        guardian_mobile: guardian_country_code + '-' + guardian_mobile,
-      },
+      parent:parentDetail
     };
 
     if (!requestWithParentorGuradianDetails) {

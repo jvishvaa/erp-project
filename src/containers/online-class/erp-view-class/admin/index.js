@@ -21,6 +21,7 @@ import Loader from '../../../../components/loader/loader';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import filterImage from '../../../../assets/images/unfiltered.svg';
+import CommonBreadcrumbs from '../../../../components/common-breadcrumbs/breadcrumbs';
 import CardView from './CardView';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import Layout from '../../../Layout';
@@ -757,27 +758,26 @@ const ErpAdminViewClass = ({ history }) => {
           <Grid item md={12} xs={12}>
             <Grid container spacing={2} justify='middle' className='signatureNavDiv'>
               <Grid item md={12} xs={12} style={{ display: 'flex' }}>
-                <button
-                  type='button'
-                  className='SignatureNavigationLinks'
-                  onClick={() => history.push('/dashboard')}
-                >
-                  Dashboard
-                </button>
-                <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                <span className='SignatureNavigationLinks'>Online Class</span>
-                <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                <span className='SignatureNavigationLinks'>
-                  {window.location.pathname === '/erp-online-class'
-                    ? 'Online Class View'
+                <CommonBreadcrumbs componentName='Online Class'
+                //    <button
+                //   type='button'
+                //   className='SignatureNavigationLinks'
+                //   onClick={() => history.push('/dashboard')}
+                // >
+                //   Dashboard
+                // </button>
+                // <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
+                // <span className='SignatureNavigationLinks'>Online Class</span>
+                // <ArrowForwardIosIcon className='SignatureUploadNavArrow' /> 
+                //    <span className='SignatureNavigationLinks'> 
+                  childComponentName={window.location.pathname === '/erp-online-class'
+                    ? 'Online Class View' :
+                    window.location.pathname === '/erp-online-class-teacher-view'
+                    ? 'Teacher Class View' :
+                    window.location.pathname === '/erp-online-class-student-view'
+                    ?  'Student Class View' 
                     : ''}
-                  {window.location.pathname === '/erp-online-class-teacher-view'
-                    ? 'Teacher Class View'
-                    : ''}
-                  {window.location.pathname === '/erp-online-class-student-view'
-                    ? 'Student Class View'
-                    : ''}
-                </span>
+                />
               </Grid>
             </Grid>
           </Grid>
