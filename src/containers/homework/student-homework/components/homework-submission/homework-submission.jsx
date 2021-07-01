@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
 
 const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const classes = useStyles();
-  const { homeworkSubmission, setHomeworkSubmission, setLoading } = props || {};
+  const { homeworkSubmission, setHomeworkSubmission, setLoading, setDisplayRatingBox } = props || {};
   const { isOpen, subjectId, date, subjectName } = homeworkSubmission || {};
   const [isQuestionWise, setIsQuestionWise] = useState(false);
   const [allQuestionAttachment, setAllQuestionAttachment] = useState([]);
@@ -143,7 +143,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   };
 
   const handleHomeworkCancel = () => {
-    setHomeworkSubmission({ isOpen: false, subjectId: '', date: '', subjectName: '' });
+    setDisplayRatingBox(false);
+    setHomeworkSubmission(prev => ({ ...prev, isOpen: false, subjectId: '', subjectName: '' }));
   };
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
