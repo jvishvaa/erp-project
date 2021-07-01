@@ -34,3 +34,22 @@
         margin: 20px;
     }
 }
+@media only screen and (max-width: 600px) {
+    .listcontainer{
+        .filterStudent{
+            display: flex;
+            flex-direction: column;
+        }
+    }
+    #singleStudent{
+        .lessonPlan{
+            width: 100%;
+        }
+    }
+        .bulkBranch{
+            margin: 0 20px !important ;
+        }
+        #blockArea{
+            min-width: 250px;
+        }
+}

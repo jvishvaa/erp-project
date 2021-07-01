@@ -15,7 +15,7 @@ import Paper from '@material-ui/core/Paper';
 import moment from 'moment';
 import Layout from '../Layout';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import Breadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import axiosInstance from '../../config/axios';
 import MobileDatepicker from './MobileDatePicker'
 import endpoints from 'config/endpoints';
@@ -148,8 +148,15 @@ function handleDate(v1) {
     <>
       <Layout>
           <Grid container direction='row'>
-          <Grid item md={3} xs={12} style={{marginTop:"10px",marginLeft:'10px',marginBottom:'70px'}}>
-            <Breadcrumbs componentName='Classwork Report' />
+          <Grid item md={12} xs={12} style={{marginTop:"10px",marginLeft:'10px',marginBottom:'70px'}}>
+            <Grid container spacing={2} justify='middle' className='signatureNavDiv'>
+              <Grid item md={12} xs={12} style={{ display: 'flex' }}>         
+               <CommonBreadcrumbs
+            componentName={`Online Class`}
+            childComponentName={`Student Classwork Report`}
+          />
+          </Grid>
+          </Grid>
           </Grid>
         </Grid>
         <form>

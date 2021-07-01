@@ -42,6 +42,7 @@ const LessonViewFilters = ({
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const [academicYear, setAcademicYear] = useState([]);
+  const [defaultAcademicYear, setDefaultAcademicYear] = useState([]);
   const [volumeDropdown, setVolumeDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
@@ -81,6 +82,9 @@ const LessonViewFilters = ({
     setCentralGsMappingId();
     setCentralSubjectName('');
     setCentralGradeName('');
+    if(defaultAcademicYear){
+      handleAcademicYear("",defaultAcademicYear)
+    }
   };
 
   useEffect(() => {
@@ -317,12 +321,11 @@ const LessonViewFilters = ({
         if (res?.data?.status_code === 200) 
         {
           setAcademicYear(res?.data?.data);
+          setDefaultAcademicYear(res?.data?.current_acad_session_data[0])
           if(academicYear){
-            handleAcademicYear("",{id: 1, is_delete: false, session_year: "2021-22", branch: null, created_by: null})
+            handleAcademicYear("",res?.data?.current_acad_session_data[0])
           }
         }
-        
-
       }
       )
       .catch((error) => {

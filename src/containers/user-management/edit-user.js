@@ -142,6 +142,33 @@ class EditUser extends Component {
       guardian_mobile,
     } = parent;
 
+    const parentDetail={};
+    if(guardian_first_name){
+      Object.assign(parentDetail,{
+        guardian_first_name,
+      guardian_middle_name,
+      guardian_last_name,
+      guardian_email,
+      address: parent_address || '',
+      guardian_mobile: guardian_country_code + '-' + guardian_mobile,
+      })
+    }
+    if(father_first_name||mother_first_name){
+      Object.assign(parentDetail,{
+        father_first_name,
+        father_middle_name,
+        father_last_name,
+        father_email,
+        father_mobile: father_country_code + '-' + father_mobile,
+        address: parent_address,
+        mother_first_name,
+        mother_middle_name,
+        mother_last_name,
+        mother_email,
+        mother_mobile: mother_country_code + '-' + mother_mobile,
+      })
+    }
+
     requestObj = {
       erp_id: selectedUser.erp_id,
 
@@ -162,25 +189,7 @@ class EditUser extends Component {
       profile,
       father_photo,
       mother_photo,
-      parent: {
-        id: selectedUser.parent.id,
-        father_first_name,
-        father_middle_name,
-        father_last_name,
-        father_email,
-        father_mobile: father_country_code + '-' + father_mobile,
-        address: parent_address,
-        mother_first_name,
-        mother_middle_name,
-        mother_last_name,
-        mother_email,
-        mother_mobile: mother_country_code + '-' + mother_mobile,
-        guardian_first_name,
-        guardian_middle_name,
-        guardian_last_name,
-        guardian_email,
-        guardian_mobile: guardian_country_code + '-' + guardian_mobile,
-      },
+      parent: parentDetail,
     };
 
     if (!requestWithParentorGuradianDetails) {

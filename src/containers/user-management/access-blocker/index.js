@@ -179,7 +179,7 @@ const AccessBlocker = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [isNewSeach, setIsNewSearch] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [limit, setLimit] = useState('4');
+  const [limit, setLimit] = useState('10');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const [ studentList , setStudentList ] = useState([]);
@@ -642,7 +642,7 @@ const AccessBlocker = () => {
               />
             </Grid>
 
-            <Grid item md={3} xs={12}>
+            <Grid item md={3} xs={12} className="bulkBranch" >
               <Autocomplete
                 // multiple
                 style={{ width: '100%' }}
@@ -900,7 +900,7 @@ const AccessBlocker = () => {
                           {items?.erp_user?.erp_id}
                         </TableCell>
                         <TableCell className={classes.tableCell}>{items?.erp_user?.name}</TableCell>
-                        <TableCell className={classes.tableCell}>
+                        <TableCell className={classes.tableCell} id="blockArea" >
                           <div className='Module-container'>
                             <div className='lessonPlan'>
                               <p>Lesson Plan</p>

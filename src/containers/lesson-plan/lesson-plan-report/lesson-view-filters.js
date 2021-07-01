@@ -224,10 +224,12 @@ const LessonViewFilters = ({
   };
   function getModuleId() {
     const tempObj = {
-      '/lesson-plan/teacher-view/': 'Teacher View',
-      '/lesson-plan/teacher-view': 'Teacher View',
-      '/lesson-plan/student-view': 'Student View',
-      '/lesson-plan/student-view/': 'Student View',
+      // '/lesson-plan/teacher-view/': 'Teacher View',
+      // '/lesson-plan/teacher-view': 'Teacher View',
+      // '/lesson-plan/student-view': 'Student View',
+      // '/lesson-plan/student-view/': 'Student View',
+
+      '/lesson-plan/report': 'Management Report',
       default: 'Teacher View',
     };
     const moduleName = tempObj[location.pathname] || tempObj['default'];
@@ -239,7 +241,7 @@ const LessonViewFilters = ({
       .then((res) => {
         setAcademicYear(res.data.data);
         
-        const defaultYear=res?.data?.data?.[0];
+        const defaultYear=res?.data?.current_acad_session_data[0]
         handleAcademicYear({},defaultYear);
       })
       .catch((error) => {

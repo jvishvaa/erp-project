@@ -118,7 +118,7 @@ const CreateDiscussionForum = () => {
         "title": title,
         // "description": descriptionDisplay,
         "description":description,
-        "category": selectedSubSubCategory.sub_sub_category_id,
+        "category": selectedSubSubCategory?.sub_sub_category_id || selectedCategory.id,
         "branch": branch_id,
         "grade": [grade_id],
         //"section": selectedSectionIds
@@ -129,7 +129,8 @@ const CreateDiscussionForum = () => {
         "title": title,
         // "description": descriptionDisplay,
         "description":description,
-        "category": selectedSubSubCategory.sub_sub_category_id,
+        // "category": selectedSubSubCategory.sub_sub_category_id,
+        "category": selectedSubSubCategory?.sub_sub_category_id || selectedCategory.id,
         "branch": selectedBranch.branch.id,
         "grade": selectedGradeIds,
         "section_mapping": sectionsId
@@ -721,7 +722,7 @@ const CreateDiscussionForum = () => {
               size='medium'
               type='submit'
               onClick={(location.pathname === `/student-forum/edit/${postsId.id}` || location.pathname === `/teacher-forum/edit/${postsId.id}`) ? handleUpdatePost : handleSubmit}
-              disabled={!selectedSubCategory || !selectedCategory ||!selectedSubSubCategory || !setTitle ||!setDescriptionDisplay }
+              disabled={ !selectedCategory  || !setTitle ||!setDescriptionDisplay }
             >
               {(location.pathname === `/student-forum/edit/${postsId.id}` || location.pathname === `/teacher-forum/edit/${postsId.id}`) ? 'Update' : 'Submit'}
             </Button>
