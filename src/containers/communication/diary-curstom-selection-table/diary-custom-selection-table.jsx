@@ -4,9 +4,9 @@
 /* eslint-disable no-console */
 import * as React from 'react';
 import { DataGrid } from '@material-ui/data-grid';
-import './custom-selection-table.css';
+import './diary-custom-selection-table.css';
 
-export default function CustomSelectionTable({ pageSize, ...props }) {
+export default function DiaryCustomSelectionTable({ pageSize, ...props }) {
   const {
     header,
     rows,
@@ -77,8 +77,8 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
         pageSize={pageSize || 15}
         rowCount={totalRows}
         checkboxSelection
-        // onPageChange={(e) => changePage(e, e.page)}
-        onPageChange={pageChange}
+        onPageChange={(e) => changePage(e, e.page)}
+        // onPageChange={pageChange}
         hideFooterSelectedRowCount
         hideFooterRowCount
         paginationMode='server'
