@@ -54,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
     color:'#FFCDCD'
   },
   searchIconButton: {
+    "&:hover": {
+      backgroundColor: "transparent"
+    },
     //background: theme.palette.primary.main,
     borderRadius: 'inherit',
     borderTopLeftRadius: 0,
@@ -75,10 +78,10 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.primary.main,
     borderRadius: '26px',
     height: '40px',
-    marginLeft: '150px',
+    float:'right',
     marginRight: '-1px',
     marginTop:'-1px',
-    marginBottom: '1%',
+    marginBottom:'1px'
   },
   searchIconButtonMobile: {
     background: '#ffffff',
