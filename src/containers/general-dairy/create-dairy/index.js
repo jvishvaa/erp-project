@@ -44,7 +44,9 @@ import { Context } from '../context/context';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 
-import CustomSelectionTable from '../../communication/custom-selection-table/custom-selection-table';
+// import CustomSelectionTable from '../../communication/custom-selection-table/custom-selection-table';
+import DiaryCustomSelectionTable from '../../communication/diary-curstom-selection-table/diary-custom-selection-table';
+
 
 // import CustomSelectionTable from '../../../containers/communication/custom-selection-table';
 
@@ -1026,7 +1028,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
           {totalPage ? (
             <div>
               <span className='create_group_error_span'>{selectectUserError}</span>
-              <CustomSelectionTable
+              <DiaryCustomSelectionTable
                 // header={headers}
                 // rows={usersRow}
                 // checkAll={checkAll}

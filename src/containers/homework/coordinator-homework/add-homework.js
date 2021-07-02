@@ -60,7 +60,7 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
       question: '',
       attachments: [],
       is_attachment_enable: false,
-      max_attachment: 5,
+      max_attachment: 2,
       penTool: false,
     },
   ]);
@@ -135,7 +135,7 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
         question: '',
         attachments: [],
         is_attachment_enable: false,
-        max_attachment: 5,
+        max_attachment: 2,
         penTool: false,
       },
       ...prevState.slice(index),
