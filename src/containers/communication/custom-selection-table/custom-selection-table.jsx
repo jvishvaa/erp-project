@@ -51,7 +51,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
     }
   };
   const pageChange = (e) => {
-    // changePage(e.page + 1);
+    changePage(e.page + 1);
   };
   const data = {
     rows: [...rows],
@@ -77,7 +77,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
         pageSize={pageSize || 15}
         rowCount={totalRows}
         checkboxSelection
-        onPageChange={(e) => changePage(e, e.page)}
+        onPageChange={pageChange}
         hideFooterSelectedRowCount
         hideFooterRowCount
         paginationMode='server'
