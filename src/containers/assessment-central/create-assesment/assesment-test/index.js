@@ -23,7 +23,6 @@ import './styles.scss';
 import QuestionDetailCard from '../question-detail-card.js';
 import ENVCONFIG from '../../../../config/config';
 
-
 const menuOptions = [
   'Assign marks',
   // 'Without marks',
@@ -63,7 +62,7 @@ const AssesmentTest = ({
   setChecked,
 }) => {
   const [minimize, setMinimize] = useState(false);
-  const [openEditor, setOpenEditor] = useState(false);
+  const [openEditor, setOpenEditor] = useState(true);
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const history = useHistory();
@@ -148,7 +147,7 @@ const AssesmentTest = ({
                           value={testName}
                           inputProps={{
                             autocomplete: 'off',
-                            maxLength:100
+                            maxLength: 100,
                           }}
                           onChange={(e) => {
                             onTestNameChange(e.target.value);
@@ -192,7 +191,7 @@ const AssesmentTest = ({
                           variant='outlined'
                           type='datetime-local'
                           size='small'
-                          inputProps={{ min: new Date().toISOString().slice(0,16) }}
+                          inputProps={{ min: new Date().toISOString().slice(0, 16) }}
                           className='date-time-picker bg-white'
                           value={testDate}
                           color='primary'
@@ -210,9 +209,8 @@ const AssesmentTest = ({
                       <div className='input-container duration'>
                         <TextField
                           variant='outlined'
-                          type='number'
                           inputProps={{
-                            maxLength: 4
+                            maxLength: 4,
                           }}
                           size='small'
                           className='bg-white'
@@ -241,7 +239,6 @@ const AssesmentTest = ({
                         <div className='input-container duration'>
                           <TextField
                             variant='outlined'
-                            type='number'
                             inputProps={{
                               min: 0,
                               max: 1000,
@@ -252,12 +249,6 @@ const AssesmentTest = ({
                             name='testmarks'
                             value={totalMarks}
                             style={{ width: '100%' }}
-                            // onChange={(e) => {
-                            //   const { target: { value } = {} } = e || {};
-                            //   if (Number.isFinite(+value)) {
-                            //     onTotalMarksChange(+value);
-                            //   }
-                            // }}
                             onChange={(e) => handleChange(e)}
                           />
                         </div>
@@ -272,12 +263,12 @@ const AssesmentTest = ({
               <div className='form-field-header'>GENERAL INSTRUCTIONS</div>
               {openEditor && (
                 <Editor
-                apiKey={TINYMCE_API_KEY}
+                  apiKey={TINYMCE_API_KEY}
                   init={{
                     height: 300,
                     menubar: false,
                     toolbar:
-                      'fontselect fontsizeselect bold italic alignleft aligncenter alignright underline bullist numlist file image customInsertButton',
+                      'fontselect fontsizeselect bold italic underline alignleft aligncenter alignright  bullist numlist file image  ', //customInsertButton
                     setup(editor) {
                       editor.ui.registry.addButton('customInsertButton', {
                         text: 'Finish',
@@ -302,7 +293,7 @@ const AssesmentTest = ({
                   onChange={(e) => {
                     onInstructionsChange(e.target.value);
                   }}
-                  inputProps={{ autocomplete: 'off' }}
+                  inputProps={{ autocomplete: 'off', maxLength: 500 }}
                   InputProps={{
                     endAdornment: (
                       <>
