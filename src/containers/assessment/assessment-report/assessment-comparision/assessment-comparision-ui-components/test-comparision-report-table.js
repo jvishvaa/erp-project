@@ -36,14 +36,14 @@ const useStyles = makeStyles(() => ({
 const columns = [
   {
     id: 'test_id',
-    label: 'Test ID',
+    label: 'Test Id',
     // minWidth: 100,
     align: 'center',
     labelAlign: 'center',
   },
   {
     id: 'total_marks',
-    label: 'Total marks',
+    label: 'Total Marks',
     // minWidth: 100,
     align: 'center',
     labelAlign: 'center',
@@ -51,7 +51,7 @@ const columns = [
 
   {
     id: 'obtained_marks',
-    label: 'Obtained marks',
+    label: 'Obtained Marks',
     // minWidth: 100,
     align: 'center',
     labelAlign: 'center',
