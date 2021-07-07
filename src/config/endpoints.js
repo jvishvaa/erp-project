@@ -300,12 +300,9 @@ export default {
     EbookMappedGrade: '/academic/ebook_mapped_grades/',
     getCentralGrade: '/academic/ebook_grade_wise_filter/',
   },
-<<<<<<< HEAD
-=======
   ibook: {
     studentBook: '/academic/student-books-list/',
   },
->>>>>>> 6ca781b3 (Ebook list based on grade)
   email: {
     email: '/academic/email/',
     whatsapp: '/academic/whatsapp/',
