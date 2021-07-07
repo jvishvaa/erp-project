@@ -103,13 +103,10 @@ function AddContact() {
       .then((result) => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
-            console.log(result?.data?.data?.[0] ,"dataacademic");
-            const defaultValue=result?.data?.data?.[0];
+            // console.log(result?.data?.current_acad_session_data?.[0] ,"dataacademic");
+            const defaultValue=result?.data?.current_acad_session_data?.[0];
             handleAcademicYear({},defaultValue);
             setAcademicYear(result?.data?.data || []);
-            if(academicYear){
-              handleYear("",{id: 1, is_delete: false, session_year: "2021-22", branch: null, created_by: null})
-            }
           }
           if (key === 'branchList') {
             // console.log(result?.data?.data || []);
@@ -210,17 +207,6 @@ function AddContact() {
       setSelectedBranch([]);
     }
   
-
-  const handleYear = (event, value) => {
-      setSelectedBranch([]);
-      setSelectedAcadmeicYear(value);
-      if (value?.id) {
-        callApi(
-          `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-          'branchList'
-        );
-      }
-    };
 
   return (
     <>
