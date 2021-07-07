@@ -121,8 +121,9 @@ const TestComparisionUI = () => {
             childComponentName='Report - Student test comparision'
           />
           <br />
-          <Divider />
+          <Divider/>
           <br />
+          <br/>
           <UserSpecificSubjectDropdown
             options={userSubjects && userSubjects.data ? userSubjects.data : []}
             value={subjectSelected || {}}
@@ -130,6 +131,8 @@ const TestComparisionUI = () => {
               setSubjectSelected(valueObj);
             }}
           />
+          <br/>
+          <br/>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={5} md={4}>
               <TestCardDropdown

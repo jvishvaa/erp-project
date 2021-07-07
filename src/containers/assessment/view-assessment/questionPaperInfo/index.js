@@ -72,6 +72,9 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
     <>
       <div style={{ display: 'flex' }}>
         <Button
+        //  className={classes.customHover}
+         variant='contained'
+         color='primary'
           style={{
             padding: '0.3rem 1rem',
             borderRadius: '0.6rem',
@@ -223,6 +226,8 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
         </Button>
           :
           <Button
+          variant='contained'
+          color='primary'
             style={{
               padding: '0.3rem 1rem',
               borderRadius: '0.6rem',

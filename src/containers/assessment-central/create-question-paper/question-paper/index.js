@@ -271,6 +271,8 @@ const QuestionPaper = ({
         )}
         <div className='submit-btn-conntainer mv-20'>
           <Button
+           variant='contained'
+           color='primary'
             style={{ borderRadius: '10px' }}
             className='outlined-btn'
             onClick={() => {

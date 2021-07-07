@@ -210,7 +210,6 @@ const AssesmentTest = ({
                       <div className='input-container duration'>
                         <TextField
                           variant='outlined'
-                          type='number'
                           inputProps={{
                             maxLength: 4
                           }}
@@ -241,7 +240,6 @@ const AssesmentTest = ({
                         <div className='input-container duration'>
                           <TextField
                             variant='outlined'
-                            type='number'
                             inputProps={{
                               min: 0,
                               max: 1000,
