@@ -10,6 +10,8 @@ import {
   IconButton,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import moment from 'moment';
+
 
 const HomeworkCard = ({
   data,
@@ -38,7 +40,7 @@ const HomeworkCard = ({
         </div>
         <div className='cardHeader'>
           <div className='subjectName'>{subject}</div>
-          <div>{date}</div>
+          <div> {moment(date).format('DD-MM-YYYY')}</div>
         </div>
         <div className='divider'></div>
         {view === 'evaluationStats' && (

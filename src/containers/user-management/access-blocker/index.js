@@ -905,25 +905,25 @@ const AccessBlocker = () => {
                             <div className='lessonPlan'>
                               <p>Lesson Plan</p>
                               {items.is_lesson_plan ? (
-                                <StyledButtonBlock onClick={()=>changeLesson(items)}>Block</StyledButtonBlock>
-                              ) : (
                                 <StyledButtonUnblock onClick={()=>changeLesson(items)} >UnBlock</StyledButtonUnblock>
+                                ) : (
+                                <StyledButtonBlock onClick={()=>changeLesson(items)}>Block</StyledButtonBlock>
                               )}
                             </div>
                             <div className='lessonPlan'>
                               <p>Online Class</p>
                               {items.is_online_class ? (
-                                <StyledButtonBlock onClick={()=>changeOnlineClass(items)} >Block</StyledButtonBlock>
-                              ) : (
-                                <StyledButtonUnblock onClick={()=>changeOnlineClass(items)} >UnBlock</StyledButtonUnblock>
+                              <StyledButtonUnblock onClick={()=>changeOnlineClass(items)} >UnBlock</StyledButtonUnblock>
+                                ) : (
+                              <StyledButtonBlock onClick={()=>changeOnlineClass(items)} >Block</StyledButtonBlock>
                               )}
                             </div>
                             <div className='lessonPlan'>
                               <p>Ebook</p>
                               {items.is_ebook ? (
-                                <StyledButtonBlock onClick={()=>changeEbook(items)} >Block</StyledButtonBlock>
-                              ) : (
                                 <StyledButtonUnblock onClick={()=>changeEbook(items)} >UnBlock</StyledButtonUnblock>
+                                ) : (
+                                <StyledButtonBlock onClick={()=>changeEbook(items)} >Block</StyledButtonBlock>
                               )}
                             </div>
                           </div>
