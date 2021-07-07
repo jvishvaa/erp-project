@@ -80,7 +80,10 @@ const HomeworkCard = ({
                         className='cardRow'
                         onClick={() => onClick(student.student_homework_id)}
                       >
-                        <div className='studentName'>{`${student.first_name} ${student.last_name}`}</div>
+                        <div className='studentName'>
+                          {`${student.first_name.charAt(0).toUpperCase() + student.first_name.slice(1)} 
+                          ${student.last_name.charAt(0).toUpperCase() + student.last_name.slice(1)}`}
+                        </div>
                       </div>
                     ))
                   ) : (
@@ -105,7 +108,10 @@ const HomeworkCard = ({
                         className='cardRow'
                         //onClick={() => onClick(student.student_homework_id)}
                       >
-                        <div className='studentName'>{`${student.first_name} ${student.last_name}`}</div>
+                        <div className='studentName'>
+                          {`${student.first_name.charAt(0).toUpperCase() + student.first_name.slice(1)} 
+                          ${student.last_name.charAt(0).toUpperCase() + student.last_name.slice(1)}`}
+                        </div>
                       </div>
                     ))
                   ) : (
