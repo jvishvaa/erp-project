@@ -19,6 +19,12 @@
 	transform: translateY(-50%);
 	background-color: #ff6b6b;
   } */
+
+  .nav-card{
+    .allHomeWorkButton{
+      font-weight: 600;
+    }
+  }
 .message_log_wrapper {
   &.teacher-homework {
     .date-container {
@@ -119,6 +125,8 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: hidden;
   .message_log_breadcrumb_wrapper {
     height: 25px;
     margin: 20px auto !important;

@@ -93,7 +93,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [penToolOpen, setPenToolOpen] = useState(false)
   const [penToolUrl, setPenToolUrl] = useState('');
   const [penToolIndex, setPenToolIndex] = useState('');
-  const [comment, setComment ] = useState('');
+  const [comment, setComment] = useState('');
   const [homeworkTitle, setHomeworkTitle] = useState('')
   const [desc, setDesc] = useState('');
   const [questionwiseComment, setQuestionwiseComment] = useState('');
@@ -102,7 +102,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [overallScore, setOverallScore] = useState('');
   const [attachmentCount, setAttachmentCount] = useState([]);
   const [maxCount, setMaxCount] = useState(0);
-  const [calssNameWise, setClassName]= useState('');
+  const [calssNameWise, setClassName] = useState('');
   const handleHomeworkSubmit = () => {
 
     let count = 0;
@@ -169,7 +169,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   }, []);
 
   useEffect(() => {
-    let maxVal=0;
+    let maxVal = 0;
     axiosInstance
       .get(`/academic/${homeworkSubmission.homeworkId}/hw-questions/?hw_status=${homeworkSubmission.status}&module_id=1`)
       .then((result) => {
@@ -380,7 +380,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const FileRow = (props) => {
     const { file, onClose, index } = props;
     return (
-      <div className='file_row_hw' style={{width: '130px'}}>
+      <div className='file_row_hw' style={{ width: '130px' }}>
         <div className='file_name_container_hw'>
           File {index + 1}
         </div>
@@ -474,7 +474,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               className='homework_type_item non_selected_homework_type_item all-homeWorks'
               onClick={handleHomeworkCancel}
             >
-              All Homeworks 
+              All Homeworks
             </div>
             <div className='homework_type_item selected all-homeWorks home-sub'>
               <div className="date-sub-home">
@@ -488,7 +488,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
           <div className='homework_submit_wrapper'>
             <div className='homework_block_wrapper_submit'>
               <div className='homework_block homework_submit_tag'>
-                Homework - {subjectName} : {homeworkTitle}, {date}
+                Homework - {subjectName} : {homeworkTitle}
               </div>
               {homeworkSubmission.status === 1 &&
                 <div className="checkWrapper">
@@ -496,9 +496,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     <Checkbox
                       onChange={() => {
                         setIsQuestionWise(!isQuestionWise);
-                        if(!isQuestionWise){
+                        if (!isQuestionWise) {
                           setClassName('upload-wise')
-                        }else{
+                        } else {
                           setClassName('')
 
                         }
@@ -532,9 +532,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                       onChange={e => handleBulkUpload(e)}
                     />:null}
                   </Button>
-                                   
+
                 </div>
-                <small style={{ width: '100%',color: '#014b7e' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>
+                <small style={{ width: '100%', color: '#014b7e' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>
                 <div className="bulk_upload_attachments">
                   {bulkDataDisplay.map((file, i) => (
                     <FileRow
@@ -623,7 +623,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   key={`homework_student_question_${index}`}
                 >
                   <div className={`homework-question ${calssNameWise}`} >
-                    <span className='question'>Q{index+1}: {question.question}</span>
+                    <span className='question'>Q{index + 1}: {question.question}</span>
                   </div>
                   {isQuestionWise &&
                     <div className="questionWiseAttachmentsContainer ">
@@ -641,8 +641,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           onChange={(e) => uploadFileHandler(e, index, question.max_attachment)}
                           className={classes.fileInput}
                         />
-                      </IconButton>                      
-                      <small style={{ width: '100%',color: '#014b7e' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>                      
+                      </IconButton>
+                      <small style={{ width: '100%', color: '#014b7e' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>
                       {attachmentDataDisplay[index]?.map((file, i) => (
                         <FileRow
                           key={`homework_student_question_attachment_${i}`}
@@ -670,7 +670,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                 }}
                               >
                                 {attachmentData[index]?.attachments.map((file, i) => (
-                                  <div className='attachment' style={{ height: '200px', width: '300px'}}>
+                                  <div className='attachment' style={{ height: '200px', width: '300px' }}>
                                     <Attachment
                                       key={`homework_student_question_attachment_${i}`}
                                       fileUrl={file}
@@ -896,10 +896,10 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                       <div className='attachments-list-outer-container'>
                         {}
                         <div className='prev-btn'>
-                          {submittedEvaluatedFilesBulk.length>5 &&
-                          <IconButton onClick={() => handleScroll('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>}
+                          {submittedEvaluatedFilesBulk.length > 5 &&
+                            <IconButton onClick={() => handleScroll('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>}
                         </div>
                         <SimpleReactLightbox>
                           <div
@@ -939,12 +939,12 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             </div>
                           </div>
                         </SimpleReactLightbox>
-                        {submittedEvaluatedFilesBulk.length>5 &&
-                        <div className='next-btn'>
-                          <IconButton onClick={() => handleScroll('right')}>
-                            <ArrowForwardIosIcon color='primary' />
-                          </IconButton>
-                        </div>}
+                        {submittedEvaluatedFilesBulk.length > 5 &&
+                          <div className='next-btn'>
+                            <IconButton onClick={() => handleScroll('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          </div>}
                       </div>
                     </div>
                     {homeworkSubmission.status === 3 ?
