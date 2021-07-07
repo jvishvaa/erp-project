@@ -125,7 +125,6 @@ const AssesmentCard = ({
             {', '}
             {value?.test_date?.slice(11, 16)}
           </p>
-          {console.log(value?.test_date?.slice(11, 16), 'timeeeeee')}
         </div>
         <div className='btn-container'>
           {!isSelected && (

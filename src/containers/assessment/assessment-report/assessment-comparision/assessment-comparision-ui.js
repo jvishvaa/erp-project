@@ -68,7 +68,6 @@ const TestComparisionUI = () => {
   const [testOneObj, setTestOneObj] = React.useState();
   const [testTwoObj, setTestTwoObj] = React.useState();
   const [subjectSelected, setSubjectSelected] = React.useState('');
-  console.log(subjectSelected,'====>')
   const setTestOne = (valueObj) => {
     setTestOneObj(valueObj || undefined);
 
@@ -101,10 +100,8 @@ const TestComparisionUI = () => {
   }, []);
 
   React.useEffect(() => {
-    console.log(subjectSelected,'====>')
     const { subject_id: selectedSubjectId } = subjectSelected || {};
     if (selectedSubjectId) {
-      console.log(selectedSubjectId,'ooooo')
       fetchUserTests({ user, subject: selectedSubjectId });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -122,9 +119,9 @@ const TestComparisionUI = () => {
             childComponentName='Report - Student test comparision'
           />
           <br />
-          <Divider/>
+          <Divider />
           <br />
-          <br/>
+          <br />
           <UserSpecificSubjectDropdown
             options={userSubjects && userSubjects.data ? userSubjects.data : []}
             value={subjectSelected || {}}
@@ -132,8 +129,8 @@ const TestComparisionUI = () => {
               setSubjectSelected(valueObj);
             }}
           />
-          <br/>
-          <br/>
+          <br />
+          <br />
           <Grid container spacing={2}>
             <Grid item xs={12} sm={5} md={4}>
               <TestCardDropdown
@@ -160,7 +157,12 @@ const TestComparisionUI = () => {
             </Grid>
           </Grid>
           <br />
-          <Button variant="contained" color="primary" onClick={fetchComparionData} className={classes.comparenowBtn}>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={fetchComparionData}
+            className={classes.comparenowBtn}
+          >
             {fetching ? 'fetching...' : 'Compare Now'}
           </Button>
           <hr className={classes.hr} />
