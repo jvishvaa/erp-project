@@ -10,6 +10,8 @@ import {
   IconButton,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import moment from 'moment';
+
 
 const HomeworkCard = ({
   data,
@@ -38,7 +40,7 @@ const HomeworkCard = ({
         </div>
         <div className='cardHeader'>
           <div className='subjectName'>{subject}</div>
-          <div>{date}</div>
+          <div> {moment(date).format('DD-MM-YYYY')}</div>
         </div>
         <div className='divider'></div>
         {view === 'evaluationStats' && (
@@ -80,7 +82,10 @@ const HomeworkCard = ({
                         className='cardRow'
                         onClick={() => onClick(student.student_homework_id)}
                       >
-                        <div className='studentName'>{`${student.first_name} ${student.last_name}`}</div>
+                        <div className='studentName'>
+                          {`${student.first_name.charAt(0).toUpperCase() + student.first_name.slice(1)} 
+                          ${student.last_name.charAt(0).toUpperCase() + student.last_name.slice(1)}`}
+                        </div>
                       </div>
                     ))
                   ) : (
@@ -105,7 +110,10 @@ const HomeworkCard = ({
                         className='cardRow'
                         //onClick={() => onClick(student.student_homework_id)}
                       >
-                        <div className='studentName'>{`${student.first_name} ${student.last_name}`}</div>
+                        <div className='studentName'>
+                          {`${student.first_name.charAt(0).toUpperCase() + student.first_name.slice(1)} 
+                          ${student.last_name.charAt(0).toUpperCase() + student.last_name.slice(1)}`}
+                        </div>
                       </div>
                     ))
                   ) : (
