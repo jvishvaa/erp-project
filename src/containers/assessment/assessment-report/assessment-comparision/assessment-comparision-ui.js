@@ -100,10 +100,8 @@ const TestComparisionUI = () => {
   }, []);
 
   React.useEffect(() => {
-    console.log(subjectSelected, '====>');
     const { subject_id: selectedSubjectId } = subjectSelected || {};
     if (selectedSubjectId) {
-      console.log(selectedSubjectId, 'ooooo');
       fetchUserTests({ user, subject: selectedSubjectId });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -123,6 +121,7 @@ const TestComparisionUI = () => {
           <br />
           <Divider />
           <br />
+          <br />
           <UserSpecificSubjectDropdown
             options={userSubjects && userSubjects.data ? userSubjects.data : []}
             value={subjectSelected || {}}
@@ -130,6 +129,8 @@ const TestComparisionUI = () => {
               setSubjectSelected(valueObj);
             }}
           />
+          <br />
+          <br />
           <Grid container spacing={2}>
             <Grid item xs={12} sm={5} md={4}>
               <TestCardDropdown

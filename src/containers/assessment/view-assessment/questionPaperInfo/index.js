@@ -37,7 +37,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
         obtained_mark: obtainedMarks,
         analysis = {},
         user_response: userResponseObj,
-        test_duration: testDuration
+        test_duration: testDuration,
       } = {},
       fetching,
       fetchFailed,
@@ -46,7 +46,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
     questionsArray,
   } = useContext(AssessmentReviewContext) || {};
 
-  const testEndTime = new Date(testDate).getTime() + (testDuration * 60 * 1000)
+  const testEndTime = new Date(testDate).getTime() + testDuration * 60 * 1000;
 
   const isTestAttempted = !!userResponseObj;
   const {
@@ -72,6 +72,9 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
     <>
       <div style={{ display: 'flex' }}>
         <Button
+        //  className={classes.customHover}
+         variant='contained'
+         color='primary'
           style={{
             padding: '0.3rem 1rem',
             borderRadius: '0.6rem',
@@ -105,11 +108,13 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
             <div className={classes.timeTakenContainer}>
               <div className={classes.timeTakenLabel}>You took</div>
               <div className={classes.timeTaken}>
-                {`${timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.minutes
-                  }`}
+                {`${
+                  timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.minutes
+                }`}
                 <span className={classes.timeUnits}>min</span>
-                {` ${timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.seconds
-                  }`}
+                {` ${
+                  timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.seconds
+                }`}
                 <span className={classes.timeUnits}>secs</span>
               </div>
             </div>
@@ -160,8 +165,9 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
           </h4>
         </div>
         <div className={classes.cardDate}>
-          {`${isTestAttempted ? 'Appeared on' : 'Scheduled at'} \n ${new Date(testDate).toDateString() || (fetching ? 'Loading...' : '')
-            }`}
+          {`${isTestAttempted ? 'Appeared on' : 'Scheduled at'} \n ${
+            new Date(testDate).toDateString() || (fetching ? 'Loading...' : '')
+          }`}
         </div>
       </div>
     </>
@@ -205,8 +211,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
         >
           Take Test
         </Button> */}
-        {testEndTime < new Date().getTime() ?
-
+        {testEndTime < new Date().getTime() ? (
           <Button
             style={{
               padding: '0.3rem 1rem',
@@ -215,14 +220,16 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
               margin: 'auto',
             }}
             disabled
-          // onClick={() => {
-          //   restProps.history.push(`/assessment/${questionPaperId}/attempt/`);
-          // }}
+            // onClick={() => {
+            //   restProps.history.push(`/assessment/${questionPaperId}/attempt/`);
+            // }}
           >
-            Not attempted
-        </Button>
-          :
+            Not Attempted
+          </Button>
+        ) : (
           <Button
+          variant='contained'
+          color='primary'
             style={{
               padding: '0.3rem 1rem',
               borderRadius: '0.6rem',
@@ -240,8 +247,8 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
             }}
           >
             Take Test
-        </Button>
-        }
+          </Button>
+        )}
       </div>
       {/* <br /> */}
     </div>

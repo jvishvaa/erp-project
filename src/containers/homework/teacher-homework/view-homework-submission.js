@@ -101,12 +101,23 @@ const ViewHomework = withRouter(
     const [currentEvaluatedFileName, setcurrentEvaluatedFileName] = useState(null);
 
     const scrollableContainer = useRef(null);
+    const scrollableContainerEvaluated = useRef(null);
 
     const handleScroll = (dir) => {
+      console.log( collatedSubmissionFiles.length ,  "direction");
       if (dir === 'left') {
         scrollableContainer.current.scrollLeft -= 150;
       } else {
         scrollableContainer.current.scrollLeft += 150;
+      }
+    };
+
+    const handleScrollEvaluate = (dir) => {
+      console.log( collatedSubmissionFiles.length ,  "direction");
+      if (dir === 'left') {
+        scrollableContainerEvaluated.current.scrollLeft -= 150;
+      } else {
+        scrollableContainerEvaluated.current.scrollLeft += 150;
       }
     };
 
@@ -465,7 +476,7 @@ const ViewHomework = withRouter(
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
                           {collatedQuestionState.corrected_submission?.length > 2 && (
-                            <IconButton onClick={() => handleScroll('left')}>
+                            <IconButton onClick={() => handleScrollEvaluate('left')}>
                               <ArrowBackIosIcon />
                             </IconButton>
                           )}
@@ -473,7 +484,7 @@ const ViewHomework = withRouter(
                         <SimpleReactLightbox>
                           <div
                             className='attachments-list'
-                            ref={scrollableContainer}
+                            ref={scrollableContainerEvaluated}
                             onScroll={(e) => {
                               e.preventDefault();
                             }}
@@ -520,7 +531,7 @@ const ViewHomework = withRouter(
                         </SimpleReactLightbox>
                         <div className='next-btn'>
                           {collatedQuestionState.corrected_submission?.length > 2 && (
-                            <IconButton onClick={() => handleScroll('right')}>
+                            <IconButton onClick={() => handleScrollEvaluate('right')}>
                               <ArrowForwardIosIcon color='primary' />
                             </IconButton>
                           )}
