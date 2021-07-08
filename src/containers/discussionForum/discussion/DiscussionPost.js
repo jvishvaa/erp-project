@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext,useEffect } from 'react';
 import { Paper, Divider } from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -314,17 +314,22 @@ export default function DiscussionPostComponent(props) {
     setOpenGiveAward(true);
   };
 
+useEffect(()=>{
+  handleAwardsCount(id);
+
+},[])
+
   const handleAwardsCount = (id) =>{
     if(id === 1){
-      setGoldCount(goldCount + 1);
+      setGoldCount(goldCount);
     }
     if(id === 2){
-      setSilverCount(silverCount + 1);
+      setSilverCount(silverCount);
     }
     if(id === 3){
-      setBronzeCount(bronzeCount + 1);
+      setBronzeCount(bronzeCount);
     }
-    setAwardsCount(awardsCount + 1);
+    setAwardsCount(awardsCount);
   }
   const handleClose = (value) => {
     setOpenGiveAward(false);
@@ -334,12 +339,12 @@ export default function DiscussionPostComponent(props) {
   React.useEffect(() => {
     postsData &&
       postsData.awards.map((award) => {
-        setAwardsCount(awardsCount + award.gold + award.silver + award.bronze);
+        setAwardsCount(awardsCount );
         award.gold && setGoldCount(award.gold);
         award.silver && setSilverCount(award.silver);
         award.bronze && setBronzeCount(award.bronze);
       });
-  }, [postsData]);
+  }, []);
 
   return (
       <Layout>
