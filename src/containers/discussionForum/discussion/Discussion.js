@@ -321,6 +321,7 @@ export default function DiscussionComponent(props) {
   const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handleClickOpen = (id) => {
+
     //handlePopoverClose();
     setPostId(id);
     setOpenGiveAward(true);
@@ -334,14 +335,20 @@ export default function DiscussionComponent(props) {
   const handleAwardsCount = (id) =>{
     if(id === 1){
       setGoldCount(goldCount + 1);
+      setSilverCount(0);
+      setBronzeCount(0);
     }
     if(id === 2){
       setSilverCount(silverCount + 1);
+      setGoldCount(0);
+      setBronzeCount(0);
     }
     if(id === 3){
       setBronzeCount(bronzeCount + 1);
+      setGoldCount(0);
+      setSilverCount(0);
     }
-    setAwardsCount(awardsCount + 1);
+    setAwardsCount(awardsCount );
   }
 
   React.useEffect(() => {
@@ -349,7 +356,8 @@ export default function DiscussionComponent(props) {
       setShowOption(true)
     }
     props.rowData && props.rowData.awards.map((award) => {
-      setAwardsCount(awardsCount + award.gold + award.silver + award.bronze);
+      console.log(award,"awardinaward")
+      setAwardsCount( award.gold + award.silver + award.bronze);
       award.gold && setGoldCount(award.gold);
       award.silver && setSilverCount(award.silver);
       award.bronze && setBronzeCount(award.bronze);
@@ -607,6 +615,7 @@ export default function DiscussionComponent(props) {
           open={openGiveAward}
           onClose={handleClose}
           handleAwardsCount={handleAwardsCount}
+          handlePass={(id)=>props.handlePass(id)} 
         />
       </Grid>
     </Grid>
