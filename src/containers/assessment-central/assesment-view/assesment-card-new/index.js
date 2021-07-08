@@ -178,6 +178,7 @@ const AssessmentCard = ({
               variant='p'
               component='p'
               color='primary'
+              noWrap
             >
               {period.paper_name}
             </Typography>

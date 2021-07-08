@@ -298,11 +298,15 @@ export default {
     EbookUser: `/academic/ebook_user/`,
     AnnotateEbook: `/academic/ebook_user_status/`,
     EbookMappedGrade: '/academic/ebook_mapped_grades/',
+    getCentralGrade: '/academic/ebook_grade_wise_filter/',
+  },
+  ibook: {
+    studentBook: '/academic/student-books-list/',
   },
   email: {
     email: '/academic/email/',
-    whatsapp:'/academic/whatsapp/',
-    teacherTimingsReport:'/academic/teacher_timings_report/email/'
+    whatsapp: '/academic/whatsapp/',
+    teacherTimingsReport: '/academic/teacher_timings_report/email/',
   },
   teacherViewBatches: {
     courseListApi: '/aol/courses/',

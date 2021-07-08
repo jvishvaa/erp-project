@@ -248,7 +248,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
               </DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                  Are you sure you want to delete this Question ?
+                  Are you sure you want to remove this section ?
                 </DialogContentText>
               </DialogContent>
               <DialogActions>

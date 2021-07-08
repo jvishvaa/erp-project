@@ -321,10 +321,10 @@ const LessonViewFilters = ({
         if (res?.data?.status_code === 200) 
         {
           setAcademicYear(res?.data?.data);
-          setDefaultAcademicYear(res?.data?.current_acad_session_data[0])
-          if(academicYear){
-            handleAcademicYear("",res?.data?.current_acad_session_data[0])
-          }
+          // setDefaultAcademicYear(res?.data?.current_acad_session_data[0])
+          // if(academicYear){
+          //   handleAcademicYear("",res?.data?.current_acad_session_data[0])
+          // }
         }
       }
       )
@@ -343,6 +343,10 @@ const LessonViewFilters = ({
           // const defaultValue=result?.data?.result?.results?.[3];
           // handleAcademicYear({},defaultValue);
          setAcademicYearDropdown(result?.data?.result?.results);
+          setDefaultAcademicYear(result?.data?.current_acad_session_data[0])
+          if(academicYear && academicYearDropdown){
+            handleAcademicYear("",result?.data?.current_acad_session_data[0])
+          }
           } else {
           setAlert('error', result?.data?.message);
         }
@@ -370,7 +374,7 @@ const LessonViewFilters = ({
   }, []);
 
   useEffect(() => {
-    if (filterData.year?.id) {
+    if (academicYear.length && filterData.year?.id) {
       let erp_year;
       const acad = academicYear.map((year) => {
         if (year?.session_year === filterData.year?.session_year) {
@@ -402,7 +406,7 @@ const LessonViewFilters = ({
           setAlert('error', error.message);
         });
     }
-  }, [filterData.year]);
+  }, [filterData.year,academicYear]);
 
   return (
     <Grid

@@ -217,11 +217,11 @@ const ResponderView = () => {
       .then((result) => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
-            console.log('this academic year', result?.data?.data?.[0] || []);
-            const defaultValue=result?.data?.data?.[0];
-            handleYear({},defaultValue)
+            // console.log('this academic year', result?.data?.data?.[0] || []);
+            // const defaultValue=result?.data?.data?.[0];
+            // handleYear({},defaultValue)
             setAcademicYear(result?.data?.data || []);
-          
+            handleYear("",result?.data?.current_acad_session_data[0])
           }
           if (key === 'branchList') {
             console.log(result?.data?.data|| []);

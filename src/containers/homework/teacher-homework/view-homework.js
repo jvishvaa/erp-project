@@ -106,7 +106,14 @@ const ViewHomework = withRouter(
           <Grid item xs={12} className='add-homework-title-container' md={2}>
             <div className='nav-cards-container'>
               <div className='nav-card' onClick={onClose}>
-                <div className='header-text text-center'>All Homeworks</div>
+                <div className='header-text text-center'>
+                  <Button 
+                  style={{ background : 'white' , color : '#014b7e' , padding : '0', fontSize: '14px' }}
+                  className="allHomeWorkButton"
+                  >
+                  All Homeworks
+                  </Button>
+                  </div>
               </div>
               <div className='nav-card'>
                 <div className='header-text text-center'>
@@ -142,7 +149,7 @@ const ViewHomework = withRouter(
                 <div className='homework_block homework_submit_tag'>
                   {/* Homework - {viewHomework?.subjectName?.split('_')[2]},{' '} */}
                   Homework - {subjectName} :{' '} {selectedHomeworkDetails?.homework_name},{' '}
-                  {moment(date).format('DD-MM-YYYY')}
+                  {/* {moment(date).format('DD-MM-YYYY')} */}
                 </div>
                 {/* <div>
                   <Typography style={{display: 'block'}}>

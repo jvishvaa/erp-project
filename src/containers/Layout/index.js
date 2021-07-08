@@ -1171,7 +1171,7 @@ const Layout = ({ children, history}) => {
                       searchInputRef.current.getBoundingClientRect().top + 44
                     : searchInputRef.current &&
                       searchInputRef.current.getBoundingClientRect().top + 32,
-                  left: 'auto',
+                  left: '750px',
                   right: `calc(${isMobile ? '92vw' : '100vw'} - ${
                     searchInputRef.current &&
                     searchInputRef.current.getBoundingClientRect().left +

@@ -52,12 +52,19 @@ const menuOptions = [
   // 'Relative marking',
 ];
 
-const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks, createdAt,paperchecked }) => {
+const QuestionDetailCard = ({
+  question,
+  expanded,
+  onChangeMarks,
+  testMarks,
+  createdAt,
+  paperchecked,
+}) => {
   const themeContext = useTheme();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
-  
+
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -99,10 +106,12 @@ const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks, crea
               {resolveQuestionTypeName(question.question_type)}
             </div>
             <div className='icon'>
-            {!paperchecked &&  <IconButton onClick={handleMenuOpen}>
-                <MoreHorizIcon color='primary' />
-              </IconButton>}
-             <Popover
+              {!paperchecked && (
+                <IconButton onClick={handleMenuOpen}>
+                  <MoreHorizIcon color='primary' />
+                </IconButton>
+              )}
+              <Popover
                 id=''
                 open={menuOpen}
                 anchorEl={anchorEl}
@@ -167,7 +176,7 @@ const QuestionDetailCard = ({ question, expanded, onChangeMarks, testMarks, crea
                             question.id,
                             true,
                             option,
-                            e.target.value,
+                            e.target.value > 1000 ? 1000 : e.target.value,
                             question.is_central
                           );
                         }}
