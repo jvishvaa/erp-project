@@ -1038,18 +1038,16 @@ const CreateDailyDairy = (details, onSubmit) => {
               </Grid>
             </Grid>
           </div>
-          <div
-            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-          >
+          <div>
             <Button
-              // style={isMobile ? { marginLeft: '' } : { marginLeft: '60%' }}
+              style={{ marginLeft: '37px' }}
               onClick={() => history.goBack()}
               className='submit_button'
             >
               BACK
             </Button>
             <Button
-              // style={isMobile ? { marginLeft: '' } : { marginLeft: '80%' }}
+              style={{ marginLeft: '20px' }}
               onClick={state.isEdit ? handleEdited : handleSubmit}
               className='submit_button'
             >
