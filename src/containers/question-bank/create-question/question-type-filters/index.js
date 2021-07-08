@@ -714,6 +714,7 @@ const QuestionTypeFilters = ({
               <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                 <Button
                   variant='contained'
+                  color='primary'
                   className='custom_button_master modifyDesign saveAsDraftButton'
                   size='medium'
                   style={{ textTransform: 'none' }}
