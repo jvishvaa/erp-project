@@ -21,14 +21,14 @@ const QuestionPaper = ({
   onChangePaperName,
   questionPaperName,
   onDeleteSection,
-  onDeleteQuestion
+  onDeleteQuestion,
 }) => {
   const [minimize, setMinimize] = useState(false);
   const [noOfSections, setNoOfSections] = useState(1);
   const [showPopup, setShowPopup] = useState(false);
   const addNewContainerRef = useRef(null);
   const handleAddSection = () => {
-    setNoOfSections(noOfSections => noOfSections + 1);
+    setNoOfSections((noOfSections) => noOfSections + 1);
     handleAddQuestion(noOfSections);
   };
 
@@ -80,10 +80,10 @@ const QuestionPaper = ({
                 className='dropdownIcon'
                 fullWidth
                 onChange={onChangePaperName}
-                value={questionPaperName||''}
+                value={questionPaperName || ''}
                 inputProps={{
                   autoComplete: 'off',
-                  maxLength:100,
+                  maxLength: 100,
                 }}
                 // InputProps={{
                 //   endAdornment: (
@@ -169,7 +169,11 @@ const QuestionPaper = ({
               </div>
               <div className='questions-content'>
                 {questions?.map((question) => (
-                  <Question question={question} onDeleteSection={onDeleteSection} onDeleteQuestion={onDeleteQuestion} />
+                  <Question
+                    question={question}
+                    onDeleteSection={onDeleteSection}
+                    onDeleteQuestion={onDeleteQuestion}
+                  />
                 ))}
 
                 <div className='add-new' ref={addNewContainerRef}>
@@ -244,13 +248,15 @@ const QuestionPaper = ({
                       )}
                     </div> */}
 
-                    <div
+                    <Button
                       className='action'
+                      variant='contained'
+                      color='primary'
                       style={{ cursor: 'pointer' }}
                       onClick={handleAddSection}
                     >
                       ADD NEW
-                    </div>
+                    </Button>
 
                     {/* <div
                       className='action'
@@ -262,7 +268,6 @@ const QuestionPaper = ({
                     >
                       ADD NEW
                     </div> */}
-
                   </div>
                 </div>
               </div>

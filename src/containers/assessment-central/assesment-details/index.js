@@ -17,6 +17,8 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
     created_at: createdDate,
     updated_at: updatedDate,
   } = test;
+  // console.log('the test:---', test);
+
   return (
     <div className='assesment-details-container'>
       <div className='header-container'>

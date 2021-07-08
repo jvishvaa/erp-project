@@ -4,7 +4,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { useMediaQuery, useTheme, Container, Grid, Divider } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
-import { ContainerContext } from '../../Layout';
+import Layout, { ContainerContext } from '../../Layout';
 import { generateQueryParamSting } from '../../../utility-functions';
 
 import Loading from '../../../components/loader/loader';
@@ -59,7 +59,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const [status, setStatus] = useState(+getSearchParams(restProps).status || 0);
   // const [questionPaperInfoObj, setQuestionPaperInfoObj] = useState();
 
-  const { containerRef } = React.useContext(ContainerContext);
+  // const { containerRef } = React.useContext(ContainerContext);
 
   const getInfoDefaultVal = () => {
     const questionPaperId = getSearchParams(restProps).info;
@@ -72,12 +72,14 @@ const ViewAssessments = ({ history, ...restProps }) => {
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.assessment.questionPaperList}?user=${user}&page=${page}&status=${status}`
+        `${
+          endpoints.assessment.questionPaperList
+        }?user=${user}&page=${page}&page_size=${9}&status=${status}`
       )
       .then((response) => {
         if (response.data.status_code === 200) {
-          setQuestionPaperList(response.data.result.results);
-          setTotalCount(response.data.result.count);
+          setQuestionPaperList(response?.data?.result?.results);
+          setTotalCount(response?.data?.result?.count);
           setLoading(false);
         } else {
           setLoading(false);
@@ -99,10 +101,10 @@ const ViewAssessments = ({ history, ...restProps }) => {
 
   const handlePagination = (event, page) => {
     setPageNumber(page);
-    if (containerRef.current) {
-      containerRef.current.style.scrollBehavior = 'smooth';
-      containerRef.current.scrollTo(0, 0);
-    }
+    // if (containerRef.current) {
+    //   containerRef.current.style.scrollBehavior = 'smooth';
+    //   containerRef.current.scrollTo(0, 0);
+    // }
   };
 
   const handleShowInfo = (paperInfoObj) => {
@@ -148,7 +150,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
-      <Container>
+      <Layout>
         <CommonBreadcrumbs componentName='Assessment' />
         {tabBar()}
         <Divider variant='middle' />
@@ -202,7 +204,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
             </Grid>
           )}
         </Grid>
-      </Container>
+      </Layout>
     </>
   );
 };

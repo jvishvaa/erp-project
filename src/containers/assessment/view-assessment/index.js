@@ -8,9 +8,9 @@ const ViewAssessments = () => {
   return (
     <>
       <AssessmentReviewContextProvider>
-        <Layout>
-          <ViewAssessmentsUI />
-        </Layout>
+        {/* <Layout> */}
+        <ViewAssessmentsUI />
+        {/* </Layout> */}
       </AssessmentReviewContextProvider>
     </>
   );

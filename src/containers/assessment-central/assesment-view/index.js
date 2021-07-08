@@ -271,7 +271,7 @@ const AssessmentView = () => {
                         filterDataDown={filterDataDown}
                         period={period}
                         setSelectedIndex={setSelectedIndex}
-                        periodColor={selectedIndex === i}
+                        periodColor={selectedIndex === i ? true : false}
                         setPeriodColor={setPeriodColor}
                         viewMore={viewMore}
                         setLoading={setLoading}
