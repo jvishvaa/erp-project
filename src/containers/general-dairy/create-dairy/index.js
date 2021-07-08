@@ -47,7 +47,6 @@ import selectfilter from '../../../assets/images/selectfilter.svg';
 // import CustomSelectionTable from '../../communication/custom-selection-table/custom-selection-table';
 import DiaryCustomSelectionTable from '../../communication/diary-curstom-selection-table/diary-custom-selection-table';
 
-
 // import CustomSelectionTable from '../../../containers/communication/custom-selection-table';
 
 const StyledTabs = withStyles({
@@ -243,7 +242,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     if (value) {
       setFilterData({
         ...filterData,
-        branch: [...filterData.branch, value],
+        branch: [value],
         grade: '',
         subject: '',
         chapter: '',
@@ -292,7 +291,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     if (value && filterData.branch) {
       setFilterData({
         ...filterData,
-        grade: [...filterData.grade, value],
+        grade: [value],
         subject: '',
         chapter: '',
         section: '',
@@ -301,7 +300,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         .get(
           `${endpoints.masterManagement.sections}?session_year=${
             searchAcademicYear?.id
-          }&branch_id=${filterData?.branch[0]?.branch?.id}&grade_id=${value.grade_id}&module_id=${
+          }&branch_id=${filterData?.branch[0]?.branch?.id}&grade_id=${
+            value.grade_id
+          }&module_id=${
             location.pathname === '/lesson-plan/student-view'
               ? studentModuleId
               : teacherModuleId
@@ -327,7 +328,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const handleSection = (event, value) => {
     setFilterData({ ...filterData, ...(filterData.section = []) });
     if (value) {
-      setFilterData({ ...filterData, section: [...filterData.section, value] });
+      setFilterData({ ...filterData, section: [value] });
     }
   };
 
@@ -690,8 +691,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       }
     }
   };
-  console.log('the data section', filterData.section[0]?.section_id);
-  console.log('the data', filterData);
+  // console.log('the data section', filterData.section[0]?.section_id);
+  // console.log('the data', filterData);
   const handleSubmit = async () => {
     // if (!!filePath.length) {
     //   return setAlert('error', 'Upload attachment!');

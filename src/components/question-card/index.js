@@ -38,9 +38,9 @@ import placeholder from '../../assets/images/placeholder_small.jpg';
 import Attachment from '../../containers/homework/teacher-homework/attachment';
 import endpoints from '../../config/endpoints';
 import FileValidators from '../../components/file-validation/FileValidators';
-
+import InputLabel from '@material-ui/core/InputLabel';
 import './styles.scss';
-
+import { makeStyles } from '@material-ui/core/styles';
 const StyledButton = withStyles({
   root: {
     color: '#FFFFFF',
@@ -50,7 +50,15 @@ const StyledButton = withStyles({
     },
   },
 })(Button);
-
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 240,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
 const CancelButton = withStyles({
   root: {
     color: '#8C8C8C',
@@ -68,6 +76,7 @@ const QuestionCard = ({
   handleChange,
   removeQuestion,
 }) => {
+  const classes = useStyles();
   const [attachments, setAttachments] = useState([]);
   const [attachmentPreviews, setAttachmentPreviews] = useState([]);
   const [enableAttachments, setEnableAttachments] = useState(false);
@@ -248,22 +257,22 @@ const QuestionCard = ({
                         />
                       </div>
                     ) : (
-                      <>
-                        <IconButton
-                          onClick={() => fileUploadInput.current.click()}
-                          title='Attach files'
-                        >
-                          <Badge badgeContent={attachmentPreviews.length} color='primary'>
-                            <AttachFileIcon color='primary' />
-                          </Badge>
-                        </IconButton>
-                        <small style={{ width: '100%', color: '#014b7e' }}>
-                          {' '}
+                        <>
+                          <IconButton
+                            onClick={() => fileUploadInput.current.click()}
+                            title='Attach files'
+                          >
+                            <Badge badgeContent={attachmentPreviews.length} color='primary'>
+                              <AttachFileIcon color='primary' />
+                            </Badge>
+                          </IconButton>
+                          <small style={{ width: '100%', color: '#014b7e' }}>
+                            {' '}
                           Accepted files: jpeg,jpg,mp3,mp4,pdf,png
                           {/*sizeValied ? 'Accepted files: jpeg,jpg,mp3,mp4,pdf,png' : 'Document size should be less than 5MB !'*/}
-                        </small>
-                      </>
-                    )}
+                          </small>
+                        </>
+                      )}
                   </div>
                   <div>
                     {/* {attachmentPreviews.slice(0, 2).map((url) => (
@@ -375,11 +384,11 @@ const QuestionCard = ({
                 <Grid item xs={12} md={4} className='question-ctrl-outer-container'>
                   <Box className='question-ctrl-inner-container max-attachments'>
                     <div className='question-ctrl-label'>Maximum number of files</div>
-
                     <Select
                       native
                       labelId='demo-customized-select-label'
                       id='demo-customized-select'
+                      defaultValue={2}
                       onChange={(e) => onChange('max_attachment', e.target.value)}
                     >
                       {Array.from({ length: 10 }, (_, index) => (

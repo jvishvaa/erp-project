@@ -230,7 +230,6 @@ const SectionTable = () => {
     setYearDisplay(value);
     if (value) {
       setPage(1);
-      console.log("year", value.id)
       setSelectedYear(value.id);
     }
   };
@@ -285,7 +284,6 @@ const SectionTable = () => {
   const handleBranch = (event, value) => {
     setSearchBranch('');
     setSearchGrades([]);
-    console.log("branch",value)
 
     // setSearchSections([]);
     if (value) {
@@ -295,7 +293,6 @@ const SectionTable = () => {
 
   const handleGrades = (event, value) => {
     setSearchGrades([]);
-    console.log(value)
     // setSearchSections([]);
     if (value.length) {
       const ids = value.map((el) => el);
@@ -440,9 +437,7 @@ const AcademicYearApi = ()=>{
         setAlert('error', error.message);
       });
   }, [delFlag, goBackFlag, page, searchSection, selectedYear]);
-
   const getBranchApi = async () => {
-    console.log(selectedYear,'test')
     try {
       const result = await axiosInstance.get(
         `${endpoints.communication.branches}?session_year=${selectedYear}&module_id=${moduleId}`
@@ -695,15 +690,15 @@ const AcademicYearApi = ()=>{
                       grade: { grade_name },
                       acad_session: {
                         branch: branchObj = {},
-                        academic_year: sessionObj ={},
+                        session_year: sessionObj ={},
                       },
                     } = sect;
                     const  { branch_name = 'Branch not found' }  = branchObj || {}
-                    const { academic_year = 'Session not found'} = sessionObj || {}
+                    const { session_year = 'Session not found'} = sessionObj || {}
                     return (
                       <TableRow hover section='checkbox' tabIndex={-1} key={index}>
                         <TableCell className={classes.tableCell}>
-                          {academic_year || ''}
+                          {session_year || ''}
                         </TableCell>
                         <TableCell className={classes.tableCell}>{branch_name}</TableCell>
                         <TableCell className={classes.tableCell}>{grade_name}</TableCell>

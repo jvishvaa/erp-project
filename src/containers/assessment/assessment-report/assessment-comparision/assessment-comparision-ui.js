@@ -119,7 +119,7 @@ const TestComparisionUI = () => {
             childComponentName='Report - Student test comparision'
           />
           <br />
-          <Divider />
+          <Divider/>
           <br />
           <br />
           <UserSpecificSubjectDropdown

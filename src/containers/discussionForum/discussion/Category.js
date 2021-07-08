@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import {
   Grid,
   Typography,
@@ -233,6 +233,7 @@ const Category = (props) => {
   const [page, setPage] = React.useState(1);
   const [totalCount, setTotalCount] = React.useState();
   const limit = 6;
+  const [awardy ,setAwardy]=React.useState(false);
 
   const hideFilter = () => {
     props.handleFilter();
@@ -324,8 +325,22 @@ const Category = (props) => {
     .then((res) => {
       setPostList(res.data.data.results);
       setTotalCount(res.data.data.count? res.data.data.count : res.data.data.results.length);
+      setAwardy(false);
     })
     .catch((error) => console.log(error));
+  }
+
+  const handlePass = (id) => {
+    // const grade_id = userDetails.role_details?.grades[0]?.grade_id;
+    // const branch_id = userDetails.role_details?.branch[0]?.id;
+    // axiosInstance.get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&is_delete=False`)
+    // .then((res) => {
+    //   setPostList(res.data.data.results);
+    //   setTotalCount(res.data.data.count? res.data.data.count : res.data.data.results.length);
+    // })
+    // .catch((error) => console.log(error));
+    console.log(id,"id of award")
+    setAwardy(id)
   }
 
   // post list API
@@ -371,10 +386,11 @@ const Category = (props) => {
           //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&category=${categoryId}&grade=${grades}`
           // );
         }
+
       }
     }
     //let postURL = endpoints.discussionForum.postList;
-  }, [props.url, props.filters, categoryId, moduleId, deleteEdit, page]);
+  }, [props.url, props.filters, categoryId, moduleId, deleteEdit, page,awardy]);
 
   const handlePagination = (event, page) => {
         setPage(page);
@@ -473,7 +489,7 @@ const Category = (props) => {
         <Grid container>
           <Grid item xs={12}>
             {postList && postList.map((data) => (
-              <Discussion rowData={data} key={data.id} deleteEdit={handleDeleteEdit}/>
+              <Discussion rowData={data} key={data.id} handlePass={(id)=>handlePass(id)}  deleteEdit={handleDeleteEdit}/>
             ))}
           </Grid>
           <Grid item xs={12} style={{display: 'flex', justifyContent: 'center'}}>
@@ -491,3 +507,4 @@ const Category = (props) => {
 };
 
 export default Category;
+//handlePass={(id)=>handlePass(id)} 
