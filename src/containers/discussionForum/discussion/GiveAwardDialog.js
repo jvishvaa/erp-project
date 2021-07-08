@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -27,7 +27,7 @@ function GiveAwardDialog(props) {
     onClose(selectedValue);
   };
 
-  const giveAwardHandler = (awardId) => {
+  const giveAwardHandler=(awardId)=> {
     const params = {
       award_id: awardId,
       post_id: postId,
@@ -38,11 +38,15 @@ function GiveAwardDialog(props) {
         if (res.data && res.data.status_code === 200) {
           setAlert('success', 'Successfully Award Given');
           props.handleAwardsCount(awardId);
+          props.handlePass(true);
           onClose(selectedValue);
         }
       })
       .catch((error) => console.log(error));
   };
+
+  
+ 
 
   return (
     <Dialog onClose={handleClose} aria-labelledby='simple-dialog-title' open={open}>
@@ -76,6 +80,7 @@ GiveAwardDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
   selectedValue: PropTypes.string.isRequired,
+  
 };
 
 export default GiveAwardDialog;
