@@ -133,6 +133,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
           onChange={(e, a) => {
             setPageNumber(1);
             setStatus(a);
+            setShowInfo(undefined)
           }}
           aria-label='simple tabs example'
         >
