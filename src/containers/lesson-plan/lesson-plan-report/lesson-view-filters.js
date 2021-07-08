@@ -148,7 +148,7 @@ const LessonViewFilters = ({
   const handleSubject = (event, value) => {
     setSelectedSubjects([]);
     if (value.length) {
-      const ids = value.map((el) => el.id);
+      const ids = value.map((el) => el.subject_id);
       setSubjectIds(ids);
       const subjs = value.map((el) => el) || [];
       setSelectedSubjects(subjs);
@@ -193,7 +193,6 @@ const LessonViewFilters = ({
 
   const handleFilter = () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-    console.log(dateRangeTechPer,'dateeee')
     if (!filterData?.year) {
       return setAlert('warning', 'Select Year');
     }

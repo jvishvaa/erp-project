@@ -10,7 +10,7 @@ import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
-const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex}) => {
+const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex,apiParams,setApiParams}) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -35,15 +35,20 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
         if (result.data.status_code === 200) {
           setLoading(false);
           setViewMore(true);
-          setViewMoreData(result.data.result);
+          setViewMoreData(result?.data?.result);
           setPeriodDataForView(lesson);
           setSelectedIndex(index);
           setPeriodColor(true);
+
+          //after getting card
+          // setApiParams({...apiParams,central_gs_mapping_id:1,volume_id:2,acad_year_id:3,completed_by:4})
+
+          // setApiParams({...apiParams,central_gs_mapping_id:lesson.central_gs_mapping_id,volume_id:lesson.volume_id,acad_year_id:lesson.academic_year_id,completed_by:lesson.completed_by})
         } else {
           setLoading(false);
           setViewMore(false);
           setViewMoreData({});
-          setAlert('error', result.data.message);
+          setAlert('error', result?.data?.message);
           setPeriodDataForView();
           setSelectedIndex(-1);
           setPeriodColor(true);
@@ -52,7 +57,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
       .catch((error) => {
         setViewMore(false);
         setViewMoreData({});
-        setAlert('error', error.message);
+        setAlert('error', error?.message);
         setPeriodDataForView();
         setSelectedIndex(-1);
         setPeriodColor(true);
@@ -70,7 +75,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               component='p'
               color='primary'
             >
-              {lesson.first_name}
+              {lesson?.first_name}
             </Typography>
           </Box>
           <Box>
@@ -81,7 +86,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               color='secondary'
               noWrap
             >
-             {lesson.section_name}
+             {lesson?.section_name}
             </Typography>
           </Box>
         </Grid>
@@ -94,10 +99,18 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               component='p'
               color='secondary'
             >
-              Completed - {lesson.completed}
+              Completed Periods - {lesson?.completed}
               </Typography>
           </Box>
           <Box>
+          <Typography
+              className={classes.title}
+              variant='p'
+              component='p'
+              color='secondary'
+            >
+              Total Periods - {lesson?.no_of_periods}
+              </Typography>
           </Box>
         </Grid>
         <Grid item xs={6} className={classes.textRight}> 
