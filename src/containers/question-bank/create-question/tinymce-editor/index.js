@@ -21,7 +21,7 @@ const MyTinyEditor = ({
     <Editor
       id={id}
       name='tinymce'
-      initialValue={content}       //value={content}
+      initialValue={content} //value={content}
       onEditorChange={handleEditorChange}
       apiKey={TINYMCE_API_KEY}
       init={{
@@ -62,11 +62,18 @@ const MyTinyEditor = ({
                 file[0].name.lastIndexOf('.png') > 0)
             ) {
               const formData = new FormData();
-              formData.append('file', file[0]);
-              formData.append('grade_id', filterDataTop?.grade?.grade_id);
-              formData.append('subject_name', filterDataTop?.subject?.subject_id);
-              formData.append('question_categories_id', filterDataBottom?.category?.id);
-              formData.append('question_type', filterDataBottom?.type?.id);
+              const payload = {
+                file: file[0],
+                grade_id: filterDataTop?.grade?.grade_id,
+                subject_name: filterDataTop?.subject?.subject_id,
+                question_categories_id: filterDataBottom.category?.id,
+                question_type: filterDataBottom.type?.id,
+              };
+              Object.entries(payload).forEach(([key, value]) => {
+                if (value) {
+                  formData.append(key, value);
+                }
+              });
               axiosInstance
                 .post(`${endpoints.assessmentErp.fileUpload}`, formData)
                 .then((result) => {

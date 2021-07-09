@@ -88,9 +88,15 @@ const MultipleChoice = ({
     if (editData?.id) {
       const {
         question_answer: [
-          { answer, question: editQuestion, options, matchingOptions, matrixOptions },
+          {
+            answer = '',
+            question: editQuestion = '',
+            options = [],
+            matchingOptions = [],
+            matrixOptions = [],
+          },
         ],
-      } = editData;
+      } = editData || {};
       setQuestion(editQuestion);
       setAnswers(answer);
       if (showQuestionType?.Descriptive) {
@@ -144,11 +150,18 @@ const MultipleChoice = ({
     ) {
       setLoading(true);
       const formData = new FormData();
-      formData.append('file', file[0]);
-      formData.append('grade_id', filterDataTop?.grade?.grade_id);
-      formData.append('subject_name', filterDataTop?.subject?.subject_id);
-      formData.append('question_categories_id', filterDataBottom.category?.id);
-      formData.append('question_type', filterDataBottom.type?.id);
+      const payload = {
+        file: file[0],
+        grade_id: filterDataTop?.grade?.grade_id,
+        subject_name: filterDataTop?.subject?.subject_id,
+        question_categories_id: filterDataBottom?.category?.id,
+        question_type: filterDataBottom?.type?.id,
+      };
+      Object.entries(payload).forEach(([key, value]) => {
+        if (value) {
+          formData.append(key, value);
+        }
+      });
       axiosInstance
         .post(`${endpoints.assessmentErp.fileUpload}`, formData)
         .then((result) => {
@@ -240,11 +253,10 @@ const MultipleChoice = ({
       })
       .then((result) => {
         if (result?.data?.status_code === 204) {
+          list[rowIndex]['images'].splice(imageIndex, 1);
           if (isMatching) {
-            list[rowIndex]['images'].splice(imageIndex, 1);
             setMatchingOptionsList(list);
           } else {
-            list[rowIndex]['images'].splice(imageIndex, 1);
             setOptionsList(list);
           }
           setAlert('success', result?.data?.message);
@@ -283,6 +295,7 @@ const MultipleChoice = ({
     }
   };
 
+  //only for match the following & matrix question options
   const handleAddMatchingOption = () => {
     if (matchingOptionsList?.length < 6) {
       if (showQuestionType?.MatchTheFollowing) {
@@ -326,13 +339,73 @@ const MultipleChoice = ({
     }
   };
 
-  //Call inside handleSave or handleSubmit
-  const handleSendData = (isSubmit) => {
-    let list = [...optionsList];
-    let matchList = [];
-    if (showQuestionType?.MatchTheFollowing || showQuestionType?.MatrixQuestion)
-      matchList = [...matchingOptionsList];
+  const handleCallApi = (requestBody = {}) => {
+    const api = editData?.id
+      ? `/assessment/${editData?.id}/retrieve_update_question/`
+      : endpoints.assessmentErp.createQuestion;
+    axiosInstance[editData?.id ? 'put' : 'post'](api, requestBody)
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setAlert('success', result?.data?.message);
+          setEditData([]);
+          history.push('/question-bank');
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+      });
+  };
 
+  const createDescriptiveQuestionAnswer = () => {
+    return [
+      {
+        answer: descriptiveAnswer,
+        question: question,
+      },
+    ];
+  };
+
+  const createMatchQuestionAnswer = () => {
+    let questionAnswer = [];
+    let list = [...optionsList];
+    let matchList = [...matchingOptionsList];
+    for (let k = 0; k < list?.length; k++) {
+      questionAnswer.push({
+        question: list[k]['optionValue'],
+        answer: matchList[k]['optionValue'],
+      });
+    }
+    return [
+      {
+        question: question,
+        questionAnswer: questionAnswer,
+        options: optionsList,
+        matchingOptions: matchingOptionsList,
+      },
+    ];
+  };
+
+  const createMatrixQuestionAnswer = () => {
+    return [
+      {
+        question: question,
+        options: optionsList,
+        matrixOptions: matchingOptionsList,
+      },
+    ];
+  };
+
+  const createOtherQuestionAnswer = () => {
+    let list = [...optionsList];
+    //Converting optionsList in the requested format as expected by backend
+    let optionsData = [];
+    for (let i = 0; i < list?.length; i++) {
+      let obj = {};
+      obj[`option${i + 1}`] = list[i];
+      optionsData.push(obj);
+    }
     //answers for fill in the blanks are the optionValues
     let answerList = [];
     if (showQuestionType?.FillInTheBlanks) {
@@ -340,123 +413,96 @@ const MultipleChoice = ({
         answerList.push(list[k]['optionValue'].trim().toLowerCase());
       }
     }
-    //Converting optionsList in the requested format
-    let optionsData = [];
-    for (let i = 0; i < list?.length; i++) {
-      let obj = {};
-      obj[`option${i + 1}`] = list[i];
-      optionsData.push(obj);
-    }
-    let questionAndAnswer = [];
-    if (showQuestionType?.Descriptive) {
-      questionAndAnswer.push({
-        answer: descriptiveAnswer,
-        question: question,
-      });
-    } else if (showQuestionType?.MatchTheFollowing) {
-      let questionAnswer = [];
-      for (let k = 0; k < list?.length; k++) {
-        questionAnswer.push({
-          question: list[k]['optionValue'],
-          answer: matchList[k]['optionValue'],
-        });
-      }
-      questionAndAnswer.push({
-        question: question,
-        questionAnswer: questionAnswer,
-        options: optionsList,
-        matchingOptions: matchingOptionsList,
-      });
-    } else if (showQuestionType?.MatrixQuestion) {
-      questionAndAnswer.push({
-        question: question,
-        options: optionsList,
-        matrixOptions: matchingOptionsList,
-      });
-    } else {
-      questionAndAnswer.push({
+    return [
+      {
         answer: showQuestionType?.FillInTheBlanks ? answerList : answers,
         options: optionsData,
         question: question,
-      });
-    }
+      },
+    ];
+  };
 
-    let requestBody = {
+  const createQuestionAnswer = () => {
+    if (showQuestionType?.Descriptive) {
+      return createDescriptiveQuestionAnswer();
+    }
+    if (showQuestionType?.MatchTheFollowing) {
+      return createMatchQuestionAnswer();
+    }
+    if (showQuestionType?.MatrixQuestion) {
+      return createMatrixQuestionAnswer();
+    }
+    if (
+      showQuestionType?.FillInTheBlanks ||
+      showQuestionType?.MultipleChoiceSingleSelect ||
+      showQuestionType?.MultipleChoiceMultipleSelect ||
+      showQuestionType?.TrueFalse
+    ) {
+      return createOtherQuestionAnswer();
+    }
+  };
+
+  const generateCommonRequestBody = () => {
+    return {
+      question_level: filterDataBottom?.level?.id,
+      question_categories: filterDataBottom?.category?.id,
+      academic_session: filterDataTop?.branch?.id,
+      is_central_chapter: filterDataTop?.chapter?.is_central,
+      grade: filterDataTop?.grade?.grade_id,
+      subject: filterDataTop?.subject?.subject_id,
+      chapter: filterDataTop?.chapter?.id,
+      topic: filterDataTop?.topic?.id,
+    };
+  };
+
+  //Only for comprehension/video/ppt question
+  const createSubQuestionRequest = (questionAndAnswer = [], isSubmit) => {
+    let req = {
       question_answer: questionAndAnswer,
-      question_level: filterDataBottom.level?.id,
-      question_categories: filterDataBottom.category.id,
-      question_type: filterDataBottom.type.id,
-      chapter: filterDataTop.chapter?.id,
-      topic: filterDataTop.topic?.id,
       question_status: isSubmit ? 3 : 1,
+      question_type: showQuestionType?.id,
+      ...generateCommonRequestBody(),
     };
 
+    //On edit of comprehension question just question id is added for all sub questions
+    if (editData?.id) req = { ...req, id: editData?.id };
+
+    if (parentQuestionType?.ComprehensionQuestions) {
+      subQuestions.push(req);
+    }
+    if (parentQuestionType?.VideoQuestion) {
+      req = { ...req, time_or_slide: showQuestionType?.time };
+      subQuestions.push(req);
+    }
+  };
+
+  //Not for comprehension/video/ppt question
+  const generateRequestForQuestion = (questionAndAnswer = [], isSubmit) => {
+    //Only for edit
+    let requestBody = {
+      question_answer: questionAndAnswer,
+      question_status: isSubmit ? 3 : 1,
+    };
+    //Only for creation
     if (!editData?.id)
       requestBody = {
+        question_type: filterDataBottom?.type?.id,
         ...requestBody,
-        academic_session: filterDataTop.branch?.id,
-        is_central_chapter: filterDataTop.chapter?.is_central,
-        grade: filterDataTop.grade?.grade_id,
-        subject: filterDataTop.subject?.subject_id,
+        ...generateCommonRequestBody(),
       };
+    return requestBody;
+  };
 
+  //Call inside handleSave or handleSubmit
+  const handleSendData = (isSubmit) => {
+    let questionAndAnswer = createQuestionAnswer();
     if (submitFlag || saveFlag) {
-      let req = {
-        question_answer: questionAndAnswer,
-        question_type: showQuestionType?.id,
-        question_level: filterDataBottom.level.id,
-        question_categories: filterDataBottom.category.id,
-        academic_session: filterDataTop.branch?.id,
-        is_central_chapter: filterDataTop.chapter?.is_central,
-        grade: filterDataTop.grade?.grade_id,
-        subject: filterDataTop.subject?.subject_id,
-        chapter: filterDataTop.chapter?.id,
-        topic: filterDataTop.topic?.id,
-        question_status: isSubmit ? 3 : 1,
-      };
-
-      if (editData?.id) req = { ...req, id: editData?.id };
-
-      if (parentQuestionType?.ComprehensionQuestions) {
-        subQuestions.push(req);
-      } else if (parentQuestionType?.VideoQuestion) {
-        req = { ...req, time_or_slide: showQuestionType?.time };
-        subQuestions.push(req);
-      }
+      //Below req is for sub questions of comprehension/video question
+      createSubQuestionRequest(questionAndAnswer, isSubmit);
     } else {
-      if (editData?.id) {
-        // const apiEndPoint = editData?'dasd':'post ur'
-        // axiosInstance[editData?'put':'post'](apiEndPoint, requestBody).then((e)=>{
-        // })
-        axiosInstance
-          .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody)
-          .then((result) => {
-            if (result?.data?.status_code === 200) {
-              setAlert('success', result?.data?.message);
-              setEditData([]);
-              history.push('/question-bank');
-            } else {
-              setAlert('error', result?.data?.message);
-            }
-          })
-          .catch((error) => {
-            setAlert('error', error?.message);
-          });
-      } else {
-        axiosInstance
-          .post(`${endpoints.assessmentErp.createQuestion}`, requestBody)
-          .then((result) => {
-            if (result?.data?.status_code === 200) {
-              setAlert('success', result?.data?.message);
-              history.push('/question-bank');
-            } else {
-              setAlert('error', result?.data?.message);
-            }
-          })
-          .catch((error) => {
-            setAlert('error', error?.message);
-          });
-      }
+      let requestBody = generateRequestForQuestion(questionAndAnswer, isSubmit);
+      //Following API call is for questions other than comprehension/video
+      handleCallApi(requestBody);
     }
   };
 
