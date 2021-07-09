@@ -97,34 +97,34 @@ const SidebarCounterPanel = (props) => {
   };
 
   const submitRef = React.useRef(null);
+  
+  // React.useEffect(() => {
+  //   const duratonPassedAlreadyInMilliSec = new Date() - new Date(startedAt);
+  //   const testDur = testDuration
+  //   const testDurationInMilliSec = testDur * 60 * 1000;
+  //   const durationLeft = testDurationInMilliSec - duratonPassedAlreadyInMilliSec;
 
-  React.useEffect(() => {
-    const duratonPassedAlreadyInMilliSec = new Date() - new Date(startedAt);
-    const testDur = testDuration || JSON.parse(localStorage.getItem('testDuration'));
-    const testDurationInMilliSec = testDur * 60 * 1000;
-    const durationLeft = testDurationInMilliSec - duratonPassedAlreadyInMilliSec;
-
-    let continuosCall = '';
-    if (+durationLeft > 0) {
-      continuosCall = setTimeout(() => {
-        localStorage.removeItem(`testDuration`);
-        localStorage.removeItem(`assessment-${assessmentId}`);
-        submitRef.current.click();
-        window.alert('Time ran out!');
-      }, durationLeft);
-    } else {
-      localStorage.removeItem(`testDuration`);
-      Object.entries(localStorage).forEach(([key, value]) => {
-        if (key?.startsWith('assessment-')) {
-          localStorage.removeItem(key);
-        }
-      });
-      props.history.push(`/assessment/`);
-    }
-    return () => {
-      clearTimeout(continuosCall);
-    };
-  }, []);
+  //   let continuosCall = '';
+  //   if (+durationLeft > 0) {
+  //     continuosCall = setTimeout(() => {
+  //       localStorage.removeItem(`testDuration`);
+  //       localStorage.removeItem(`assessment-${assessmentId}`);
+  //       submitRef.current.click();
+  //       // window.alert('Time ran out!');
+  //     }, durationLeft);
+  //   } else {
+  //     // localStorage.removeItem(`testDuration`);
+  //     // Object.entries(localStorage).forEach(([key, value]) => {
+  //     //   if (key?.startsWith('assessment-')) {
+  //     //     localStorage.removeItem(key);
+  //     //   }
+  //     // });
+  //     // props.history.push(`/assessment/`);
+  //   }
+  //   return () => {
+  //     clearTimeout(continuosCall);
+  //   };
+  // }, []);
 
   const body = (
     <div style={modalStyle} className={classes.paper}>

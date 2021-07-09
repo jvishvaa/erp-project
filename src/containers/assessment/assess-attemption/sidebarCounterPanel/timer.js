@@ -11,10 +11,22 @@ m:
 s */
 const TimerComponent = (props) => {
   const { submit, startedAt, duration: durationInMin } = props || {};
-  const duratonPassedAlreadyInMilliSec = new Date() - new Date(startedAt);
-  const testDurationInMilliSec = durationInMin * 60 * 1000;
-  const durationLeft = testDurationInMilliSec - duratonPassedAlreadyInMilliSec;
-  // if (durationLeft <= 0) {
+  let duratonPassedAlreadyInMilliSec = new Date() - new Date(startedAt);
+  let testDurationInMilliSec = durationInMin * 60 * 1000;
+  let durationLeft = testDurationInMilliSec - duratonPassedAlreadyInMilliSec;
+
+  React.useEffect(() => {
+    let checkDuration = setInterval(() => {
+      durationLeft = durationInMin * 60 * 1000 - new Date().getTime() + new Date(startedAt).getTime();
+      if (durationLeft<=0) {
+        submit();
+      }
+    },1000);
+    return () => {
+      clearInterval(checkDuration);
+    }
+  }, []);
+  // if (durationLeft <= 0 || !!!durationLeft) {
   // const isConfirm = window.confirm('Time ran out.');
   // submit();
   // if (isConfirm) {
