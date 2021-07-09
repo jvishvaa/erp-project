@@ -172,6 +172,7 @@ const QuestionDetailCard = ({
                         type='number'
                         value={fetchMarks(option)}
                         onChange={(e) => {
+                          // console.log(e.target.value, '==>');
                           onChangeMarks(
                             question.id,
                             true,

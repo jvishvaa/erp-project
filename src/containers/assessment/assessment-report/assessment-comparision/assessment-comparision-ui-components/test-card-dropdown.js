@@ -39,6 +39,12 @@ const TestCardDropdown = ({ tests = [], title, value, ...restProps }) => {
   // const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const hasValue = value && Object.keys(value).length;
   const { test__test_name: testName } = value || {};
+  const {test__test_date: testDate} = value || {};
+
+  let date;
+  if(testDate){
+  date = testDate.split(',').slice(0,1)
+  }
   return (
     <>
       <Box className={classes.root}>
@@ -59,7 +65,7 @@ const TestCardDropdown = ({ tests = [], title, value, ...restProps }) => {
             component='p'
             color='primary'
           >
-            {hasValue ? 'Conducted on 29.11.2020' : <br />}
+            {hasValue ? date : <br />}
           </Typography>
         </Box>
         <Box>
