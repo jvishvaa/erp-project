@@ -77,7 +77,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
         }?user=${user}&page=${page}&page_size=${9}&status=${status}`
       )
       .then((response) => {
-        if (response.data.status_code === 200) {
+        if (response?.data?.status_code === 200) {
           setQuestionPaperList(response?.data?.result?.results);
           setTotalCount(response?.data?.result?.count);
           setLoading(false);

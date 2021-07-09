@@ -167,30 +167,30 @@ const QuestionTypeFilters = ({
   }, [submitFlag, saveFlag]);
 
   const handleCreateManually = (variant = 'create_manaully') => {
-    if (filterData.type != '' && filterData.level != '' && filterData.category != '') {
-      let count = 1;
-      const objlist = { ...showQuestionType };
-      for (const key in objlist) {
-        if (filterData.type?.id === count) {
-          objlist[key] = true;
-          setShowQuestionType(objlist);
-          setIsQuestionFilterOpen(false);
-          setIsTopFilterOpen(false);
-          if (variant === 'bulk_creation') {
-            setUploadInBulk(true);
-          } else {
-            setIsCreateManuallyOpen(true);
-          }
-          break;
-        }
-        count++;
-      }
-    } else if (filterData.level === '') {
+    if (filterData.level === '') {
       setAlert('error', 'Question Level is required');
-    } else if (filterData.category === '') {
-      setAlert('error', 'Question Category is required');
-    } else if (filterData.type === '') {
+      return;
+    }
+    if (filterData.type === '') {
       setAlert('error', 'Question Type is required');
+      return;
+    }
+    let count = 1;
+    const objlist = { ...showQuestionType };
+    for (const key in objlist) {
+      if (filterData.type?.id === count) {
+        objlist[key] = true;
+        setShowQuestionType(objlist);
+        setIsQuestionFilterOpen(false);
+        setIsTopFilterOpen(false);
+        if (variant === 'bulk_creation') {
+          setUploadInBulk(true);
+        } else {
+          setIsCreateManuallyOpen(true);
+        }
+        break;
+      }
+      count++;
     }
   };
 
@@ -237,20 +237,20 @@ const QuestionTypeFilters = ({
     let requestBody = {
       sub_questions: subQuestions,
       question_answer: questionAndAnswer,
-      question_level: filterData.level.id,
-      question_categories: filterData.category.id,
-      question_type: filterData.type.id,
-      chapter: filterDataDisplay.chapter?.id,
-      topic: filterDataDisplay.topic?.id,
+      question_level: filterData?.level?.id,
+      question_categories: filterData?.category?.id,
+      question_type: filterData?.type?.id,
+      chapter: filterDataDisplay?.chapter?.id,
+      topic: filterDataDisplay?.topic?.id,
       question_status: isSubmit ? 3 : 1,
     };
     if (!editData?.id) {
       requestBody = {
         ...requestBody,
-        academic_session: filterDataDisplay.branch?.id,
-        is_central_chapter: filterDataDisplay.chapter?.is_central,
-        grade: filterDataDisplay.grade?.grade_id,
-        subject: filterDataDisplay.subject?.subject_id,
+        academic_session: filterDataDisplay?.branch?.id,
+        is_central_chapter: filterDataDisplay?.chapter?.is_central,
+        grade: filterDataDisplay?.grade?.grade_id,
+        subject: filterDataDisplay?.subject?.subject_id,
       };
     }
     if (editData?.id) {
@@ -258,14 +258,14 @@ const QuestionTypeFilters = ({
         ...requestBody,
         id: editData?.id,
         delete_questions: comprehensionQuestions
-          .filter((obj) => obj.is_delete)
+          .filter((obj) => obj?.is_delete)
           .map((obj) => obj?.data?.id)
           .filter(Boolean),
       };
       axiosInstance
         .put(`/assessment/${editData?.id}/retrieve_update_question/`, requestBody)
         .then((result) => {
-          if (result.data.status_code === 200) {
+          if (result?.data?.status_code === 200) {
             const objlist = { ...showQuestionType };
             for (const key in objlist) {
               if (objlist[key]) {
@@ -283,24 +283,24 @@ const QuestionTypeFilters = ({
             setSubmitFlag(false);
             setSaveFlag(false);
             setEditData([]);
+            setAlert('success', result?.data?.message);
             history.push('/question-bank');
-            setAlert('success', result.data?.message);
           } else {
             setSubmitFlag(false);
             setSaveFlag(false);
-            setAlert('error', result.data?.message);
+            setAlert('error', result?.data?.message);
           }
         })
         .catch((error) => {
           setSubmitFlag(false);
           setSaveFlag(false);
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     } else {
       axiosInstance
         .post(`${endpoints.assessmentErp.createQuestion}`, requestBody)
         .then((result) => {
-          if (result.data.status_code === 200) {
+          if (result?.data?.status_code === 200) {
             const objlist = { ...showQuestionType };
             for (const key in objlist) {
               if (objlist[key]) {
@@ -317,18 +317,18 @@ const QuestionTypeFilters = ({
             setSubQuestions([]);
             setSubmitFlag(false);
             setSaveFlag(false);
-            setAlert('success', result.data?.message);
+            setAlert('success', result?.data?.message);
             history.push('/question-bank');
           } else {
             setSubmitFlag(false);
             setSaveFlag(false);
-            setAlert('error', result.data?.message);
+            setAlert('error', result?.data?.message);
           }
         })
         .catch((error) => {
           setSubmitFlag(false);
           setSaveFlag(false);
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     }
   };

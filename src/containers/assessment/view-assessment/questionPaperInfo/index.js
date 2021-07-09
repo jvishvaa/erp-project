@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Paper, Button } from '@material-ui/core';
 import ReactHtmlParser from 'react-html-parser';
 import { withRouter } from 'react-router-dom';
@@ -45,7 +45,6 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
     } = {},
     questionsArray,
   } = useContext(AssessmentReviewContext) || {};
-
   const testEndTime = new Date(testDate).getTime() + testDuration * 60 * 1000;
 
   const isTestAttempted = !!userResponseObj;
@@ -62,19 +61,24 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
   // const themeContext = useTheme();
   // const { setAlert } = useContext(AlertNotificationContext);
   // const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+
+  const getTestStatus = () => {
+    return new Date(testDate).getTime() <= new Date().getTime();
+  };
+
   useEffect(() => {
     if (assessmentIdFromContext !== assessmentId) {
       setAssessmentId(assessmentId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const testAnalysisRouteBtn = (
     <>
       <div style={{ display: 'flex' }}>
         <Button
-        //  className={classes.customHover}
-         variant='contained'
-         color='primary'
+          //  className={classes.customHover}
+          variant='contained'
+          color='primary'
           style={{
             padding: '0.3rem 1rem',
             borderRadius: '0.6rem',
@@ -91,7 +95,6 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
       <br />
     </>
   );
-
   const assessmentAnalysis = (
     <>
       <div className={classes.analysisWrapper}>
@@ -228,15 +231,15 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
           </Button>
         ) : (
           <Button
-          variant='contained'
-          color='primary'
+            variant='contained'
+            color='primary'
             style={{
               padding: '0.3rem 1rem',
               borderRadius: '0.6rem',
               fontSize: '0.9rem',
               margin: 'auto',
             }}
-            disabled={!questionPaperId}
+            disabled={!getTestStatus()}
             onClick={() => {
               Object.entries(localStorage).forEach(([key, value]) => {
                 if (key?.startsWith('assessment-')) {
@@ -246,7 +249,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
               restProps.history.push(`/assessment/${questionPaperId}/attempt/`);
             }}
           >
-            Take Test
+            {getTestStatus() ? 'Take Test' : 'Not Started'}
           </Button>
         )}
       </div>

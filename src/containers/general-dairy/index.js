@@ -165,7 +165,7 @@ const GeneralDairyList = () => {
         if (result.data.status_code === 200) {
           setTotalCount(result.data.result.count);
           setLoading(false);
-          setPeriodData(result.data.result.results.reverse());
+          setPeriodData(result.data.result.results);
           setTotalPages(result.data.result.total_pages);
         } else {
           setLoading(false);

@@ -318,13 +318,18 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
 
   const handleFilter = () => {
     let filterObject = {
-      Topic: filterData?.topic,
       Chapter: filterData?.chapter,
       Subject: filterData?.subject,
       Grade: filterData?.grade,
       Branch: filterData?.branch,
       Academic: filterData?.academic,
     };
+    if (filterData?.topic) {
+      filterObject = {
+        ...filterObject,
+        Topic: filterData?.topic,
+      };
+    }
     let filterFlag = Object.values(filterObject).every(Boolean);
     if (filterFlag) {
       setIsFilter(true);
