@@ -128,7 +128,7 @@ class StudentProfile extends Component {
       fatherName: studentData && studentData.father_name ? studentData.father_name : null,
       fatherNumber: studentData && studentData.father_mobile ? studentData.father_mobile : null,
       studentAddress: studentData && studentData.student_address ? studentData.student_address : null,
-      emailId: studentData && studentData.email_id ? studentData.email_id : null,
+      emailId: studentData && studentData.father_email ? studentData.father_email : null,
       secondLang: studentData.second_lang && studentData.second_lang.id ? {
         label: studentData.second_lang && studentData.second_lang.second_lang,
         value: studentData.second_lang && studentData.second_lang.id
@@ -209,7 +209,7 @@ class StudentProfile extends Component {
         })
         break
       }
-      case 'address': {
+      case 'student_address': {
         this.setState({
           studentAddress: event.target.value
         })
@@ -273,11 +273,11 @@ class StudentProfile extends Component {
             this.props.alert.success('Successfully Saved')
             const newStudentData = { ...this.state.studentData }
             newStudentData['student_name'] = response.data.student_name
-            newStudentData['student_Address'] = response.data.student_address
+            newStudentData['student_address'] = response.data.student_address
             newStudentData['father_name'] = response.data.father_name
             newStudentData['father_mobile'] = response.data.father_mobile
             newStudentData['parent_access'] = response.data.parent_access
-            newStudentData['email_id'] = response.data.email_id
+            newStudentData['father_email'] = response.data.father_email
             newStudentData['second_lang'] = response.data.second_lang
             newStudentData['third_lang'] = response.data.third_lang
             newStudentData['shift_choices'] = response.data.shift_choices
@@ -357,7 +357,7 @@ class StudentProfile extends Component {
               </Grid>
               <Grid item xs={3}>
                 <TextField
-                  id='address'
+                  id='student_address'
                   label='Address'
                   className={classes.textField}
                   value={studentAddress}
@@ -500,7 +500,7 @@ class StudentProfile extends Component {
             <div><Edit style={{ cursor: 'pointer' }} onClick={() => { this.showEditStudentHandler() }} /></div>
           </div>
           <div className={customClasses.studentDetails}>
-            <div>Email Id : <strong>{this.state.studentData.email_id}</strong></div>
+            <div>Email Id : <strong>{this.state.studentData.father_email}</strong></div>
           </div>
           <div className={customClasses.seperator} />
           <div className={customClasses.otherDetails}>

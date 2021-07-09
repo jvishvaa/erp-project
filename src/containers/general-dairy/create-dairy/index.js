@@ -729,7 +729,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
               // branch:filterData.branch.map(function (b) {
               //     return b.id
               //   }),
-              branch: filterData.branch[0].id,
+
+              branch: filterData.branch[0].branch.id,
               // grades:[54],
               grade: filterData.grade.map((g) => g.grade_id),
               section_mapping: filterData.section.map((s) => s.id),
