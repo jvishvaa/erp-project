@@ -13,6 +13,7 @@ import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
 import { addQuestionPaperToTest } from '../../../../redux/actions';
+import Divider from '@material-ui/core/Divider';
 
 // import '../../lesson-plan-view/lesson.css';
 // import downloadAll from '../../../../assets/images/downloadAll.svg';
@@ -211,8 +212,9 @@ const AssessmentCard = ({
               {showPeriodIndex === index && showMenu ? (
                 <div className='tooltipContainer'>
                   {period.is_verified && (
-                    <span className='tooltiptext'>
-                      <span onClick={handleAssign}>Assign To Test</span>
+                    <span className='tooltiptext' style={{width:'105px'}}>
+                      <span onClick={handleAssign}>Assign Test</span>
+                      <Divider/>
                       <span onClick={handleDelete}>Delete</span>
                     </span>
                   )}
