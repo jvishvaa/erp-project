@@ -86,7 +86,7 @@ const CreateAssesment = ({
   const formik = useFormik({
     initialValues: {
       test_mode: selectedTestType || testTypes[0],
-      test_type: ''
+      test_type: '',
     },
     onSubmit: (values) => {},
     validateOnChange: false,
@@ -103,11 +103,11 @@ const CreateAssesment = ({
     setTestMarks([]);
     initResetFormState();
   };
- const getAssesmentTypes = async () => {
+  const getAssesmentTypes = async () => {
     try {
       const data = await fetchAssesmentTypes();
       setAssesmentTypes(data);
-      formik.setFieldValue('test_type',data[0]);
+      formik.setFieldValue('test_type', data[0]);
     } catch (e) {}
   };
   // useEffect(() => {
@@ -450,52 +450,52 @@ const CreateAssesment = ({
               <div className='form-grid-container'>
                 <Grid container spacing={1}>
                   <Grid item xs={12} md={12}>
-                    <FormControl  variant='outlined'  style={{display:'flex'}}>
-                      <Grid container spacing={1} direction='row' >
+                    <FormControl variant='outlined' style={{ display: 'flex' }}>
+                      <Grid container spacing={1} direction='row'>
                         <Grid item xs={12} md={4}>
-                           <Autocomplete
-                        id='branch'
-                        name='branch'
-                        onChange={(e, value) => {
-                          formik.setFieldValue('test_mode', value);
-                          initSetFilter('selectedTestType', value);
-                        }}
-                        value={formik.values.test_mode}
-                        options={testTypes}
-                        className='dropdownIcon'
-                        getOptionLabel={(option) => option.name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Test Mode'
-                            placeholder='Test Mode'
+                          <Autocomplete
+                            id='branch'
+                            name='branch'
+                            onChange={(e, value) => {
+                              formik.setFieldValue('test_mode', value);
+                              initSetFilter('selectedTestType', value);
+                            }}
+                            value={formik.values.test_mode}
+                            options={testTypes}
+                            className='dropdownIcon'
+                            getOptionLabel={(option) => option.name || ''}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                variant='outlined'
+                                label='Test Mode'
+                                placeholder='Test Mode'
+                              />
+                            )}
+                            size='small'
                           />
-                        )}
-                        size='small'
-                      />
                         </Grid>
                         <Grid item xs={12} md={4}>
                           <Autocomplete
-                        id='assesment_type'
-                        name='assesment_type'
-                        className='dropdownIcon'
-                        onChange={(e, value) => {
-                          formik.setFieldValue('test_type', value);
-                        }}
-                        value={formik.values.test_type}
-                        options={assesmentTypes}
-                        getOptionLabel={(option) => option.exam_name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Assessment Type'
-                            placeholder='Assessment Type'
+                            id='assesment_type'
+                            name='assesment_type'
+                            className='dropdownIcon'
+                            onChange={(e, value) => {
+                              formik.setFieldValue('test_type', value);
+                            }}
+                            value={formik.values.test_type}
+                            options={assesmentTypes}
+                            getOptionLabel={(option) => option.exam_name || ''}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                variant='outlined'
+                                label='Assessment Type'
+                                placeholder='Assessment Type'
+                              />
+                            )}
+                            size='small'
                           />
-                        )}
-                        size='small'
-                      />
                         </Grid>
                       </Grid>
                       <FormHelperText style={{ color: 'red' }}>
