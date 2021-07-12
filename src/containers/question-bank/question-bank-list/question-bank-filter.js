@@ -357,7 +357,9 @@ const QuestionBankFilters = ({
       setFilterData({ ...filterData, subject: value, chapter: '', topic: '' });
       if (value) {
         axiosInstance
-          .get(`${endpoints.questionBank.chapterList}?subject=${value?.id}`)
+          .get(
+            `${endpoints.questionBank.chapterList}?subject_id=${value?.id}&subject=${value?.subject_id}&session_year=${filterData?.branch?.id}`
+          )
           .then((result) => {
             if (result?.data?.status_code === 200) {
               setChapterDropdown(result?.data?.result);

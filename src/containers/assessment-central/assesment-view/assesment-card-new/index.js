@@ -24,12 +24,9 @@ const AssessmentCard = ({
   setPeriodDataForView,
   setViewMoreData,
   setViewMore,
-  viewMore,
-  filterDataDown,
   setLoading,
   index,
   periodColor,
-  setPeriodColor,
   setSelectedIndex,
   initAddQuestionPaperToTest,
   setPublishFlag,
@@ -141,7 +138,6 @@ const AssessmentCard = ({
           setViewMoreData(parsedResponse);
           setPeriodDataForView(period);
           setSelectedIndex(index);
-          setPeriodColor(true);
         } else {
           setLoading(false);
           setViewMore(false);
@@ -149,7 +145,6 @@ const AssessmentCard = ({
           setPeriodDataForView();
           setAlert('error', result.data.message);
           setSelectedIndex(-1);
-          setPeriodColor(true);
         }
       })
       .catch((error) => {
@@ -159,7 +154,6 @@ const AssessmentCard = ({
         setPeriodDataForView();
         setAlert('error', error.message);
         setSelectedIndex(-1);
-        setPeriodColor(true);
       });
   };
 

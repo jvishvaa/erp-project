@@ -30,13 +30,11 @@ import { useHistory } from 'react-router-dom';
 import Layout from '../Layout';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import TabPanel from '../lesson-plan/create-lesson-plan/tab-panel';
-
 import './styles.scss';
 import AssesmentCard from './assesment-card';
 import AssesmentDetails from './assesment-details';
 import {
   fetchAssesmentTypes,
-  fetchTopics,
   fetchAssesmentTests,
   fetchAssesmentTestDetail,
 } from '../../redux/actions';
@@ -117,7 +115,7 @@ const Assesment = () => {
     initialValues: {
       status: '',
       date: [moment().startOf('isoWeek'), moment().endOf('week')],
-      branch: '',
+      branch: [],
       academic: '',
       grade: '',
       subject: [],
@@ -167,38 +165,15 @@ const Assesment = () => {
     }
   };
 
-  const getSubjects = async (acadId, mappingId) => {
+  const getSubjects = async (acadSessionIds, mappingId) => {
     try {
       setSubjects([]);
-      const data = await fetchSubjects(acadId, mappingId);
+      const data = await fetchSubjects(acadSessionIds, mappingId);
       setSubjects(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch subjects');
     }
   };
-
-  // const getGrades = async () => {
-  //   try {
-  //     const data = await fetchGrades();
-  //     setGrades(data);
-  //   } catch (e) {
-  //     setAlert('error', 'Failed to fetch grades');
-  //   }
-  // };
-
-  // const getSubjects = async (gradeId) => {
-  //   try {
-  //     const data = await fetchSubjects(gradeId);
-  //     setSubjects(data);
-  //   } catch (e) {}
-  // };
-
-  // const getTopics = async () => {
-  //   try {
-  //     const data = await fetchTopics();
-  //     setTopics(data);
-  //   } catch (e) {}
-  // };
 
   const getAssesmentTypes = async () => {
     try {
@@ -209,21 +184,22 @@ const Assesment = () => {
 
   const filterResults = async (page) => {
     const {
-      branch,
+      branch = [],
       grade,
       subject,
       assesment_type: assesmentType,
       date,
       status,
     } = formik.values;
-    const acadSessionId = branch?.id;
+    // const acadSessionId = branch?.id;
+    const acadSessionIds = branch.map((element) => element?.id) || [];
     const subjectIds = subject.map(({ subject_id }) => subject_id);
     try {
       setFetchingTests(true);
       const { results, totalPages } = await fetchAssesmentTests(
         false,
         activeTab,
-        acadSessionId,
+        acadSessionIds,
         grade?.grade_id,
         subjectIds,
         assesmentType.id,
@@ -242,20 +218,6 @@ const Assesment = () => {
     }
   };
 
-  const getAllAssesmentTests = async () => {
-    try {
-      setFetchingTests(true);
-      const { results, totalPages } = await fetchAssesmentTests(true, activeTab);
-      setShowFilteredList(false);
-      setAssesmentTestsTotalPage(totalPages);
-      setAssesmentTests(results);
-      setFetchingTests(false);
-    } catch (e) {
-      setFetchingTests(false);
-      setAlert('error', 'Fetching tests failed');
-    }
-  };
-
   const handleAssesmentTestsPageChange = async (page) => {
     if (showFilteredList) {
       setFilteredAssesmentTestPage(page);
@@ -268,7 +230,6 @@ const Assesment = () => {
   const handleSelectTest = async (test) => {
     try {
       const { results } = await fetchAssesmentTestDetail(test.id);
-      // console.log('THe all fetched Data', results);
       setSelectedAssesmentTest({
         ...results,
         testType: test.test_type__exam_name,
@@ -284,9 +245,12 @@ const Assesment = () => {
     if (formik.values.academic) {
       getBranch(formik.values.academic?.id);
       if (formik.values.branch) {
-        getGrades(formik.values.academic?.id, formik.values.branch?.branch?.id);
+        const branchIds =
+          formik.values.branch.map((element) => element?.branch?.id) || [];
+        getGrades(formik.values.academic?.id, branchIds);
         if (formik.values.grade) {
-          getSubjects(formik.values.branch?.id, formik.values.grade?.grade_id);
+          const acadSessionIds = formik.values.branch.map((element) => element?.id) || [];
+          getSubjects(acadSessionIds, formik.values.grade?.grade_id);
         } else {
           setSubjects([]);
         }
@@ -304,14 +268,6 @@ const Assesment = () => {
     }
     getAssesmentTypes();
   }, [moduleId]);
-
-  // useEffect(() => {
-  //   if (formik.values.grade) {
-  //     getSubjects(formik.values.grade.id);
-  //   } else {
-  //     setSubjects([]);
-  //   }
-  // }, [formik.values.grade]);
 
   const clearResults = () => {
     formik.handleReset();
@@ -338,16 +294,6 @@ const Assesment = () => {
     }
   }, [formik.values.status]);
 
-  // const filterRef = useRef(false);
-
-  // useEffect(() => {
-  //   if (filterRef.current) {
-  //     filterResults();
-  //   } else {
-  //     filterRef.current = true;
-  //   }
-  // }, [filteredAssesmentTestsPage]);
-
   let results = [];
 
   if (showFilteredList) {
@@ -365,7 +311,7 @@ const Assesment = () => {
       setAlert('error', 'Select Academic Year');
       return;
     }
-    if (!formik?.values?.branch) {
+    if (formik?.values?.branch.length === 0) {
       setAlert('error', 'Select Branch');
       return;
     }
@@ -389,25 +335,24 @@ const Assesment = () => {
     if (value) {
       getBranch(value?.id);
       formik.setFieldValue('academic', value);
-      // initSetFilter('selectedAcademic', value);
     }
   };
 
   const handleBranch = (event, value) => {
-    formik.setFieldValue('branch', '');
-    if (value) {
-      getGrades(formik.values.academic?.id, value?.branch?.id);
+    formik.setFieldValue('branch', []);
+    if (value.length > 0) {
+      const branchIds = value?.map((element) => element?.branch?.id) || [];
+      getGrades(formik.values.academic?.id, branchIds);
       formik.setFieldValue('branch', value);
-      // initSetFilter('selectedBranch', value);
     }
   };
 
   const handleGrade = (event, value) => {
     formik.setFieldValue('grade', '');
     if (value) {
-      getSubjects(formik.values.branch?.id, value?.grade_id);
+      const acadSessionIds = formik.values.branch.map((element) => element?.id) || [];
+      getSubjects(acadSessionIds, value?.grade_id);
       formik.setFieldValue('grade', value);
-      // initSetFilter('selectedGrade', value);
     }
   };
 
@@ -415,10 +360,8 @@ const Assesment = () => {
     formik.setFieldValue('subject', '');
     if (value) {
       formik.setFieldValue('subject', value);
-      // initSetFilter('selectedSubject', value);
     }
   };
-  // console.log('The View Data:---', selectedAssesmentTest);
 
   return (
     <Layout>
@@ -524,10 +467,6 @@ const Assesment = () => {
                         name='academic'
                         className='dropdownIcon'
                         onChange={handleAcademicYear}
-                        // onChange={(e, value) => {
-                        //   formik.setFieldValue('academic', value);
-                        //   initSetFilter('selectedAcademic', value);
-                        // }}
                         value={formik.values.academic}
                         options={academicDropdown}
                         getOptionLabel={(option) => option?.session_year || ''}
@@ -553,11 +492,8 @@ const Assesment = () => {
                         name='branch'
                         className='dropdownIcon'
                         onChange={handleBranch}
-                        // onChange={(e, value) => {
-                        //   formik.setFieldValue('branch', value);
-                        //   initSetFilter('selectedBranch', value);
-                        // }}
-                        value={formik.values.branch || ''}
+                        multiple
+                        value={formik.values.branch || []}
                         options={branchDropdown || []}
                         getOptionLabel={(option) => option?.branch?.branch_name || ''}
                         renderInput={(params) => (
@@ -582,12 +518,8 @@ const Assesment = () => {
                         name='grade'
                         className='dropdownIcon'
                         onChange={handleGrade}
-                        // onChange={(e, value) => {
-                        //   formik.setFieldValue('grade', value);
-                        //   initSetFilter('selectedGrade', value);
-                        // }}
-                        value={formik.values.grade}
-                        options={grades}
+                        value={formik.values.grade || ''}
+                        options={grades || []}
                         getOptionLabel={(option) => option?.grade__grade_name || ''}
                         renderInput={(params) => (
                           <TextField
@@ -610,14 +542,10 @@ const Assesment = () => {
                         id='subject'
                         name='subject'
                         onChange={handleSubject}
-                        // onChange={(e, value) => {
-                        // formik.setFieldValue('subject', value);
-                        // initSetFilter('selectedSubject', value);
-                        // }}
                         multiple
                         className='dropdownIcon'
-                        value={formik.values.subject}
-                        options={subjects}
+                        value={formik.values.subject || ''}
+                        options={subjects || []}
                         getOptionLabel={(option) => option?.subject_name || ''}
                         renderInput={(params) => (
                           <TextField
@@ -634,87 +562,6 @@ const Assesment = () => {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  {/* <Grid item xs={12} md={4}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='grade'
-                        name='grade'
-                        className='dropdownIcon'
-                        onChange={(e, value) => {
-                          formik.setFieldValue('grade', value);
-                        }}
-                        value={formik.values.grade}
-                        options={grades}
-                        getOptionLabel={(option) => option.grade_name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Grade'
-                            placeholder='Grade'
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.grade ? formik.errors.grade : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='subject'
-                        name='subject'
-                        multiple
-                        className='dropdownIcon'
-                        onChange={(e, value) => {
-                          formik.setFieldValue('subject', value);
-                        }}
-                        value={formik.values.subject}
-                        options={subjects}
-                        getOptionLabel={(option) => option.subject?.subject_name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Subject'
-                            placeholder='Subject'
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.subject ? formik.errors.subject : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid> */}
-                  {/* <Grid item xs={12} md={4}>
-                    <FormControl fullWidth variant='outlined'>
-                      <Autocomplete
-                        id='topic'
-                        name='topic'
-                        onChange={(e, value) => {
-                          formik.setFieldValue('topic', value);
-                        }}
-                        value={formik.values.academic_year}
-                        options={topics}
-                        getOptionLabel={(option) => option.session_year || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Topic'
-                            placeholder='Topic'
-                          />
-                        )}
-                        size='small'
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.topic ? formik.errors.topic : ''}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid> */}
                   <Grid item xs={12} md={3}>
                     <FormControl fullWidth variant='outlined'>
                       <Autocomplete
@@ -724,8 +571,8 @@ const Assesment = () => {
                         onChange={(e, value) => {
                           formik.setFieldValue('assesment_type', value);
                         }}
-                        value={formik.values.assesment_type}
-                        options={assesmentTypes}
+                        value={formik.values.assesment_type || ''}
+                        options={assesmentTypes || []}
                         getOptionLabel={(option) => option.exam_name || ''}
                         renderInput={(params) => (
                           <TextField

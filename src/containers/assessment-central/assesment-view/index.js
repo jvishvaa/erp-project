@@ -52,7 +52,6 @@ const AssessmentView = () => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [isFilter, setIsFilter] = useState(false);
-  const [periodColor, setPeriodColor] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [tabValue, setTabValue] = useState(0);
   const [tabAcademic, setTabAcademic] = useState('');
@@ -66,19 +65,49 @@ const AssessmentView = () => {
     setPage(page);
   };
 
+  const handleGetQuestionPapers = (newValue = 0, requestURL) => {
+    setTabValue(newValue);
+    if (newValue == 1) {
+      requestURL += `&is_draft=True`;
+    }
+    if (newValue == 2) {
+      requestURL += `&is_review=True`;
+    }
+    if (newValue == 3) {
+      requestURL += `&is_verified=True`;
+    }
+    axiosInstance
+      .get(requestURL)
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setTotalCount(result?.data?.result?.count);
+          setLoading(false);
+          setPeriodData(result?.data?.result?.results);
+          setViewMore(false);
+          setViewMoreData([]);
+        } else {
+          setLoading(false);
+          setAlert('error', result?.data?.description);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error?.message);
+      });
+  };
+
   const handlePeriodList = (
     academic = '',
-    branch = '',
+    branch = [],
     grade = '',
     subject = '',
     qpValue,
-    newValue
+    newValue = 0
   ) => {
-    if (!academic || !branch || !grade || !subject || !qpValue) {
+    if (!academic || branch?.length === 0 || !grade || !subject || !qpValue) {
       setAlert('error', 'Select all the fields!');
       return;
     }
-    setTabValue(0);
     setLoading(true);
     setPeriodData([]);
     setTabAcademic(academic);
@@ -86,97 +115,9 @@ const AssessmentView = () => {
     setTabGradeId(grade);
     setTabSubjectId(subject);
     setTabQpValue(qpValue);
-
-    if (newValue == 0 || newValue == undefined) {
-      const tabVal = '';
-      setTabValue(0);
-      axiosInstance
-        .get(
-          `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branch?.branch?.id}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue?.id}${tabVal}&page=${page}&page_size=${limit}`
-        )
-        .then((result) => {
-          if (result?.data?.status_code === 200) {
-            setTotalCount(result?.data?.result?.count);
-            setLoading(false);
-            setPeriodData(result?.data?.result?.results);
-            setViewMore(false);
-            setViewMoreData([]);
-          } else {
-            setLoading(false);
-            setAlert('error', result?.data?.description);
-          }
-        })
-        .catch((error) => {
-          setLoading(false);
-          setAlert('error', error?.message);
-        });
-    } else if (newValue == 1) {
-      setTabValue(1);
-      axiosInstance
-        .get(
-          `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branch?.branch?.id}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue?.id}&is_draft=True&page=${page}&page_size=${limit}`
-        )
-        .then((result) => {
-          if (result?.data?.status_code === 200) {
-            setTotalCount(result?.data?.result?.count);
-            setLoading(false);
-            setPeriodData(result?.data?.result?.results);
-            setViewMore(false);
-            setViewMoreData([]);
-          } else {
-            setLoading(false);
-            setAlert('error', result?.data?.description);
-          }
-        })
-        .catch((error) => {
-          setLoading(false);
-          setAlert('error', error?.message);
-        });
-    } else if (newValue == 2) {
-      setTabValue(2);
-      axiosInstance
-        .get(
-          `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branch?.branch?.id}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue.id}&is_review=True&page=${page}&page_size=${limit}`
-        )
-        .then((result) => {
-          if (result?.data?.status_code === 200) {
-            setTotalCount(result?.data?.result?.count);
-            setLoading(false);
-            setPeriodData(result?.data?.result?.results);
-            setViewMore(false);
-            setViewMoreData([]);
-          } else {
-            setLoading(false);
-            setAlert('error', result?.data?.description);
-          }
-        })
-        .catch((error) => {
-          setLoading(false);
-          setAlert('error', error?.message);
-        });
-    } else if (newValue == 3) {
-      setTabValue(3);
-      axiosInstance
-        .get(
-          `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branch?.branch?.id}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue?.id}&is_verified=True&page=${page}&page_size=${limit}`
-        )
-        .then((result) => {
-          if (result?.data?.status_code === 200) {
-            setTotalCount(result?.data?.result?.count);
-            setLoading(false);
-            setPeriodData(result?.data?.result?.results);
-            setViewMore(false);
-            setViewMoreData([]);
-          } else {
-            setLoading(false);
-            setAlert('error', result?.data?.description);
-          }
-        })
-        .catch((error) => {
-          setLoading(false);
-          setAlert('error', error?.message);
-        });
-    }
+    const branchIds = branch.map((element) => element?.branch?.id) || [];
+    let requestURL = `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branchIds}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue?.id}&page=${page}&page_size=${limit}`;
+    handleGetQuestionPapers(newValue, requestURL);
   };
 
   useEffect(() => {
@@ -272,7 +213,6 @@ const AssessmentView = () => {
                         period={period}
                         setSelectedIndex={setSelectedIndex}
                         periodColor={selectedIndex === i ? true : false}
-                        setPeriodColor={setPeriodColor}
                         viewMore={viewMore}
                         setLoading={setLoading}
                         setViewMore={setViewMore}

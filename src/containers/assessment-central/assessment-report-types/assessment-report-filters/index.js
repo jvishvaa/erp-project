@@ -201,7 +201,9 @@ const AssessmentReportFilters = ({
 
   function getSubject(acadMappingId, gradeId) {
     axiosInstance
-      .get(`${endpoints.assessmentErp.subjectList}?session_year=${acadMappingId}&grade=${gradeId}`)
+      .get(
+        `${endpoints.assessmentErp.subjectList}?session_year=${acadMappingId}&grade=${gradeId}`
+      )
       .then((result) => {
         if (result.data.status_code === 200) {
           setDropdownData((prev) => {
@@ -215,9 +217,11 @@ const AssessmentReportFilters = ({
       .catch((error) => {});
   }
 
-  function getTest(subjectId) {
+  function getTest(branchId, gradeId, subjectId) {
     axiosInstance
-      .get(`${endpoints.assessmentErp.testList}?subjects=${subjectId}`)
+      .get(
+        `${endpoints.assessmentErp.testList}?branch=${branchId}&grade=${gradeId}&subjects=${subjectId}`
+      )
       .then((result) => {
         if (result.data.status_code === 200) {
           setDropdownData((prev) => {
@@ -382,7 +386,11 @@ const AssessmentReportFilters = ({
       topic: '',
     });
     if (value) {
-      getTest(value?.subject_id);
+      getTest(
+        filterData.branch?.branch?.id,
+        filterData.grade?.grade_id,
+        value?.subject_id
+      );
       if (selectedReportType.id === 4) getChapter(value?.subject_id);
       setFilterData({ ...filterData, subject: value });
     }
