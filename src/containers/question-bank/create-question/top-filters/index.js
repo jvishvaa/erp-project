@@ -229,7 +229,9 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
     if (value) {
       setFilterData((prev) => ({ ...prev, subject: value, chapter: '', topic: '' }));
       axiosInstance
-        .get(`${endpoints.assessmentErp.chapterList}?subject=${value?.subject_id}`)
+        .get(
+          `${endpoints.assessmentErp.chapterList}?subject_id=${value?.id}&subject=${value?.subject_id}&session_year=${filterData?.branch?.id}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             setDropdownData((prev) => ({
