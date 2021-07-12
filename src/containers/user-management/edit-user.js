@@ -119,6 +119,7 @@ class EditUser extends Component {
       erp_user,
     } = requestObj;
     const {
+      id:parent_id,
       father_first_name,
       father_middle_name,
       father_last_name,
@@ -155,6 +156,7 @@ class EditUser extends Component {
     }
     if(father_first_name||mother_first_name){
       Object.assign(parentDetail,{
+        id:parent_id,
         father_first_name,
         father_middle_name,
         father_last_name,
