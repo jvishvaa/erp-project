@@ -425,7 +425,7 @@ export const AssessmentHandlerContextProvider = ({
       const hasParentId = parentId > 0;
       if (questionType === 9) {
         Object.entries(answer || {}).forEach(
-          ([key, value]) => (answer[key] = value?.trim().toLowerCase() || '')
+          ([key, value]) => (answer[key] = value?.trim() || '')
         );
       }
       const obj = {
