@@ -28,7 +28,7 @@ function QuestionReview() {
           return Object.entries(ansVar)
             .map(([key, val]) => [isNaN(+key) ? key : +key + 1, val])
             .map((keyVal) => keyVal.join(' : '))
-            .join(',/n');
+            .join(',');
         }
         return `${ansVar}`;
       };
@@ -70,7 +70,10 @@ function QuestionReview() {
       </Button>
       <Collapse in={open}>
         <div>{questionsUI(questionsArray)}</div>
-        <Button className={classes.closeBtn} onClick={() => setOpen(false)}>
+        <Button 
+        variant='contained'
+        color='primary'
+        className={classes.closeBtn} onClick={() => setOpen(false)}>
           Close
         </Button>
       </Collapse>
