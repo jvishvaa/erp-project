@@ -89,7 +89,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
   }, []);
 
   function handleClear() {
-    // handleFilter();
+    handleFilter();
     setSelectedAcad('');
     setSelectedVolume('');
     setGradeList([]);

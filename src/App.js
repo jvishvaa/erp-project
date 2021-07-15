@@ -283,7 +283,13 @@ import MultiplayerQuiz from './components/mp-quiz';
 import StudentAttendance from 'containers/online-class/student-attendance/StudentAttendance';
 import HomeWorkReportTeacher from 'containers/homework/homework-report/homework-teacher/HomeWorkReportTeacher';
 import StudentClassWorkReport from 'containers/Classwork/StudentClassWork';
-import ClassWorkTeacherReport from 'containers/Classwork/classwork-report/classwork-report-teacher/ClassWorkTeacherReport';
+import { Helmet } from 'react-helmet';
+import logo from '../src/assets/images/logo_mobile.png';
+//intelligent text book
+import BookView from 'containers/intelligent-textbook/BookView';
+import ChapterView from 'containers/intelligent-textbook/ChapterView';
+import ViewiBook from './containers/intelligent-textbook/ViewiBook';
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -1437,8 +1443,12 @@ function App({ alert }) {
                           <Route exact path='/classwork-report-teacher-view'>
                             {({ match }) => <ClassWorkTeacherReport match={match} />}
                           </Route>
-                          <Route exact path='/orchadio/add-orchadio'>
-                            {({ match }) => <AddNewOrchadio match={match} />}
+                          <Route exact path='/intelligent-book/view'>
+                            {({ match }) => <ViewiBook match={match} />}
+                          </Route>
+
+                          <Route exact path='/intelligent-book/chapter-view'>
+                            {({ match }) => <ChapterView match={match} />}
                           </Route>
                         </Switch>
                       </DailyDairyStore>
