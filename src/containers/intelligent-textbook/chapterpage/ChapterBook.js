@@ -21,11 +21,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../../Layout';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-<<<<<<< HEAD
-// import './ChapterBook.css'
-=======
 import './ChapterBook.css';
->>>>>>> 3ad0c2ac... Pagination done for book and chapter
 import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -244,18 +240,6 @@ const ChapterBook = (props) => {
                 </div>
               </AppBar>
 
-<<<<<<< HEAD
-             {console.log(`https://erp-revamp.s3.ap-south-1.amazonaws.com/media/${bookUrl}${chapterId}?vi=0`,"bookurl")}
-            <iframe
-              // src={`http://35.154.221.179:3000/1606380603_17_2_85/index.html#/reader/chapter/2?vi=0`}
-              // src={`https://plantanatomy.kotobee.com/#/reader`}
-              src={`https://erp-revamp.s3.ap-south-1.amazonaws.com/media/${bookUrl}${chapterId}?vi=0`}
-              id='bookReader'
-              className='bookReader'
-              style={{ width: '100%', height: '625px', margin: 'auto', paddingTop: 50 }}
-              title='Tutorials'
-            ></iframe>
-=======
               {console.log(
                 `https://erp-revamp.s3.ap-south-1.amazonaws.com/media/${bookUrl}${chapterId}?vi=0`,
                 'bookurl'
@@ -281,7 +265,6 @@ const ChapterBook = (props) => {
               page={pageNo}
               style={{ paddingLeft: '45%' }}
             />
->>>>>>> 3ad0c2ac... Pagination done for book and chapter
           </Grid>
         )}
       </Layout>
