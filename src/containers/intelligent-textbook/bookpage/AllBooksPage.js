@@ -1,13 +1,28 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
-import { Grid, useTheme, SvgIcon, Card, IconButton, Popover, MenuList, MenuItem, Button, Typography } from '@material-ui/core';
+import {
+  Grid,
+  useTheme,
+  SvgIcon,
+  Card,
+  IconButton,
+  Popover,
+  MenuList,
+  MenuItem,
+  Button,
+  Typography,
+} from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../../Layout';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
+<<<<<<< HEAD
+=======
+import './AllBooksPage.css';
+>>>>>>> 3ad0c2ac... Pagination done for book and chapter
 import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -26,40 +41,51 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-const AllBooksPage = ()  => {
+const AllBooksPage = () => {
   const history = useHistory();
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const [booksData, setBooksData] = useState([])
+  const [booksData, setBooksData] = useState([]);
+  const [totalPages, setTotalPages] = useState('');
+  const [pageNo, setPageNo] = useState(1);
+  const limit = 8;
 
   useEffect(() => {
     setLoading(true);
     axiosInstance
-    .get(`${endpoints.ibook.studentBook}`)
-    .then((result) => {
-      if (result.data.status_code === 200) {
-        setBooksData(result.data.result.result);
-        setLoading(false);
-      } else {
-        setLoading(false);
-        setAlert('error', result.data.message);
-      }
-    })
-    .catch((error) => {
-      setLoading(false);
-      setAlert('error', error.message);
-    });
-  
-  }, [])
+      .get(`${endpoints.ibook.studentBook}?page=${pageNo}&page_size=${limit} `)
+      .then((result) => {
+        // console.log(result, 'rrrrrrrrreeeeeesssssss');
+        if (result.data.status_code === 200) {
+          setBooksData(result.data.result.result);
+          setTotalPages(Math.ceil(result.data.result.count / limit));
 
-  const handleBookOpen = (item) =>{
-    history.push(`/intelligent-book/${item?.id}/${item?.book_uid}/${item?.local_storage_id}`)
+          console.log(Math.ceil(result.data.result.count / limit), 'pagination');
+          setLoading(false);
+        } else {
+          setLoading(false);
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+  }, [pageNo]);
+  const handlePagination = (event, page) => {
+    setPageNo(page);
+    // console.log(page, 'Page');
+  };
+
+  const handleBookOpen = (item) => {
+    history.push(
+      `/intelligent-book/${item?.id}/${item?.book_uid}/${item?.local_storage_id}`
+    );
     // history.push(`/intelligent-book/91/1602923626_13_13_82/urnuuid4e29c6a7-972b-1929-3b6a-728582b4871f`)
-  }
+  };
 
   return (
     <>
@@ -67,7 +93,10 @@ const AllBooksPage = ()  => {
       <Layout>
         <div>
           <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs componentName='Intellligent Book' childComponentName='Books' />
+            <CommonBreadcrumbs
+              componentName='Intellligent Book'
+              childComponentName='Books'
+            />
           </div>
         </div>
         <Paper className={classes.root}>
@@ -80,9 +109,8 @@ const AllBooksPage = ()  => {
             }
             spacing={5}
           >
-          
-
-              {booksData && booksData.map((item, index) => {
+            {booksData &&
+              booksData.map((item, index) => {
                 return (
                   <Grid item md={3} xs={12} key={item?.id}>
                     <Grid container spacing={2}>
@@ -121,9 +149,7 @@ const AllBooksPage = ()  => {
                                     margin: '0px',
                                     textAlign: 'right',
                                   }}
-                                >
-
-                                </Grid>
+                                ></Grid>
                                 <Grid item md={12} xs={12}>
                                   <Typography
                                     title='wings'
@@ -141,10 +167,13 @@ const AllBooksPage = ()  => {
 
                                 <Grid item md={12} xs={12}>
                                   <Typography
-                                    style={{ fontSize: '10px', color: '#042955',margin: '10px 0', }}
+                                    style={{
+                                      fontSize: '10px',
+                                      color: '#042955',
+                                      margin: '10px 0',
+                                    }}
                                   >
                                     Publication on &nbsp; {item?.Publication_date}
-
                                   </Typography>
                                 </Grid>
                                 <Grid item md={12} xs={12}>
@@ -158,10 +187,10 @@ const AllBooksPage = ()  => {
                                       fontSize: '15px',
                                       borderRadius: '6px',
                                     }}
-                                   onClick={() => handleBookOpen(item)}
+                                    onClick={() => handleBookOpen(item)}
                                   >
                                     Read
-                                </Button>
+                                  </Button>
                                 </Grid>
                               </Grid>
                             </Grid>
@@ -170,12 +199,22 @@ const AllBooksPage = ()  => {
                       </Grid>
                     </Grid>
                   </Grid>
-                )
-                })}
-
-          
+                );
+              })}
           </Grid>
         </Paper>
+
+        {booksData && (
+          <Grid item xs={12} md={12} style={{ textAlign: 'center' }}>
+            <Pagination
+              onChange={handlePagination}
+              count={totalPages}
+              color='primary'
+              page={pageNo}
+              style={{ paddingLeft: '45%' }}
+            />
+          </Grid>
+        )}
       </Layout>
     </>
   );
