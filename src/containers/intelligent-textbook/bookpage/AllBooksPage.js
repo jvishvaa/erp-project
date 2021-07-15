@@ -8,7 +8,6 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../../Layout';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import './AllBooksPage.css'
 import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -58,9 +57,8 @@ const AllBooksPage = ()  => {
   }, [])
 
   const handleBookOpen = (item) =>{
-      console.log({item})
-    // history.push(`/intelligent-book/${item?.id}/${item?.book_uid}/${item?.local_storage_id}`)
-    history.push(`/intelligent-book/91/1602923626_13_13_82/urnuuid4e29c6a7-972b-1929-3b6a-728582b4871f`)
+    history.push(`/intelligent-book/${item?.id}/${item?.book_uid}/${item?.local_storage_id}`)
+    // history.push(`/intelligent-book/91/1602923626_13_13_82/urnuuid4e29c6a7-972b-1929-3b6a-728582b4871f`)
   }
 
   return (
@@ -82,7 +80,7 @@ const AllBooksPage = ()  => {
             }
             spacing={5}
           >
-            <Grid item xs={12} md={12}>
+          
 
               {booksData && booksData.map((item, index) => {
                 return (
@@ -175,7 +173,7 @@ const AllBooksPage = ()  => {
                 )
                 })}
 
-            </Grid>
+          
           </Grid>
         </Paper>
       </Layout>

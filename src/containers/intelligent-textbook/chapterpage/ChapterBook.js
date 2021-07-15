@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useDispatch } from 'react-redux'
 import Paper from '@material-ui/core/Paper';
 import { Grid, useTheme, SvgIcon, Card, IconButton, Popover, MenuList, MenuItem, Button, Typography, Dialog, AppBar } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
@@ -7,7 +8,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../../Layout';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import './ChapterBook.css'
+// import './ChapterBook.css'
 import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const ChapterBook = () => {
+const ChapterBook = (props) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -37,11 +38,16 @@ const ChapterBook = () => {
   const [booksData, setBooksData] = useState([])
   const [open, setOpen] = useState(false);
   const [iframeSrc, setiframeSrc] = useState('')
+  const { match: { params: { bookId,bookUid,localStorageName } } = {} } = props
+  const dispatch = useDispatch()
+  const [chapterId, setChapterId] = useState('')
+  let bookUrl=`${bookUid}/index.html#/reader/chapter/`;
+
 
   useEffect(() => {
     setLoading(true);
     axiosInstance
-    .get(`${endpoints.ibook.studentBook}?book=3`)
+    .get(`${endpoints.ibook.studentBook}?book=${bookId}`)
     .then((result) => {     
       if (result.data.status_code === 200) {
         setBooksData(result.data.result.result);
@@ -63,10 +69,11 @@ const ChapterBook = () => {
     // setSelectedItem('');
   };
 
-  const handleClickOpen = (item) =>{
-      console.log({item})
+  const handleClickOpen = (item) => {
+    setChapterId(item?.chapter_editor_id)
     setOpen(true);
   }
+
 
   return (
     <>
@@ -175,7 +182,6 @@ const ChapterBook = () => {
                 })}
           </Grid>
         </Paper>
-      
      <Dialog
         fullScreen
         open={open}
@@ -210,9 +216,11 @@ const ChapterBook = () => {
               </div>
             </AppBar>
 
+             {console.log(`https://erp-revamp.s3.ap-south-1.amazonaws.com/media/${bookUrl}${chapterId}?vi=0`,"bookurl")}
             <iframe
-              // src={`http://35.154.221.179:3000/index.html#/reader/chapter/11`}
-              src={`https://plantanatomy.kotobee.com/#/reader`}
+              // src={`http://35.154.221.179:3000/1606380603_17_2_85/index.html#/reader/chapter/2?vi=0`}
+              // src={`https://plantanatomy.kotobee.com/#/reader`}
+              src={`https://erp-revamp.s3.ap-south-1.amazonaws.com/media/${bookUrl}${chapterId}?vi=0`}
               id='bookReader'
               className='bookReader'
               style={{ width: '100%', height: '625px', margin: 'auto', paddingTop: 50 }}

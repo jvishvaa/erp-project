@@ -288,6 +288,8 @@ import StudentClassWorkReport from 'containers/Classwork/StudentClassWork';
 import BookView from 'containers/intelligent-textbook/BookView';
 import ViewiChapter from 'containers/intelligent-textbook/ViewiChapter';
 import ViewiBook from './containers/intelligent-textbook/ViewiBook';
+import AllBooksPage from 'containers/intelligent-textbook/bookpage/AllBooksPage';
+import ChapterBook from 'containers/intelligent-textbook/chapterpage/ChapterBook';
 
 const theme = createMuiTheme({
   palette: {
@@ -1436,11 +1438,14 @@ function App({ alert }) {
                           <Route exact path='/homework-report-teacher-view'>
                             {({ match }) => <HomeWorkReportTeacher match={match} />}
                           </Route>
-                          <Route exact path='/classwork/student-report'>
-                            {({ match }) => <StudentClassWorkReport match={match} />}
-                          </Route>
-
+                         
                           <Route exact path='/intelligent-book/view'>
+                            {({ match }) => <AllBooksPage match={match} />}
+                          </Route>
+                          <Route exact path='/intelligent-book/:bookId/:bookUid/:localStorageName'>
+                            {({ match }) => <ChapterBook match={match} />}
+                          </Route>
+                          <Route exact path='/intelligent-book/allbooks'>
                             {({ match }) => <ViewiBook match={match} />}
                           </Route>
 

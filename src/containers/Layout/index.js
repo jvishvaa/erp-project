@@ -448,6 +448,10 @@ const Layout = ({ children, history}) => {
         history.push('/ebook/view');
         break;
       }
+      case 'Ibook View': {
+        history.push('/intelligent-book/view');
+        break;
+      }
       case 'Create User': {
         history.push('/user-management/create-user');
         break;
