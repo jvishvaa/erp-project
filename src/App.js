@@ -283,8 +283,7 @@ import MultiplayerQuiz from './components/mp-quiz';
 import StudentAttendance from 'containers/online-class/student-attendance/StudentAttendance';
 import HomeWorkReportTeacher from 'containers/homework/homework-report/homework-teacher/HomeWorkReportTeacher';
 import StudentClassWorkReport from 'containers/Classwork/StudentClassWork';
-import { Helmet } from 'react-helmet';
-import logo from '../src/assets/images/logo_mobile.png';
+
 //intelligent text book
 import BookView from 'containers/intelligent-textbook/BookView';
 import ViewiChapter from 'containers/intelligent-textbook/ViewiChapter';
@@ -1440,9 +1439,7 @@ function App({ alert }) {
                           <Route exact path='/classwork/student-report'>
                             {({ match }) => <StudentClassWorkReport match={match} />}
                           </Route>
-                          <Route exact path='/classwork-report-teacher-view'>
-                            {({ match }) => <ClassWorkTeacherReport match={match} />}
-                          </Route>
+
                           <Route exact path='/intelligent-book/view'>
                             {({ match }) => <ViewiBook match={match} />}
                           </Route>
