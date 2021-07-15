@@ -1442,7 +1442,10 @@ function App({ alert }) {
                           <Route exact path='/intelligent-book/view'>
                             {({ match }) => <AllBooksPage match={match} />}
                           </Route>
-                          <Route exact path='/intelligent-book/:bookId/:bookUid/:localStorageName'>
+                          <Route
+                            exact
+                            path='/intelligent-book/:bookId/:bookUid/:localStorageName/:environment/:type'
+                          >
                             {({ match }) => <ChapterBook match={match} />}
                           </Route>
                           <Route exact path='/intelligent-book/allbooks'>

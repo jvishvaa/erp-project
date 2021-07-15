@@ -78,10 +78,11 @@ const AllBooksPage = () => {
   };
 
   const handleBookOpen = (item) => {
+
     history.push(
-      `/intelligent-book/${item?.id}/${item?.book_uid}/${item?.local_storage_id}`
+      `/intelligent-book/${item?.id}/${item?.book_uid}/${item?.local_storage_id}/${item?.path}`
     );
-    // history.push(`/intelligent-book/91/1602923626_13_13_82/urnuuid4e29c6a7-972b-1929-3b6a-728582b4871f`)
+    
   };
 
   return (

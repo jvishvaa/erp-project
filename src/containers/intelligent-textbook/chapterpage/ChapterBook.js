@@ -28,6 +28,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import noimg from '../../../assets/images/Chapter-icon.png';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { Close } from '@material-ui/icons';
+import ViewBook from './ViewBook';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,14 +51,14 @@ const ChapterBook = (props) => {
   const [booksData, setBooksData] = useState([]);
   const [open, setOpen] = useState(false);
   const [iframeSrc, setiframeSrc] = useState('');
-  const { match: { params: { bookId, bookUid, localStorageName } } = {} } = props;
+  const { match: { params: { bookId, bookUid, localStorageName, environment, type } } = {} } = props;
   const dispatch = useDispatch();
   const [chapterId, setChapterId] = useState('');
   const [totalPages, setTotalPages] = useState('');
   const [pageNo, setPageNo] = useState(1);
   const limit = 8;
-  let bookUrl = `${bookUid}/index.html#/reader/chapter/`;
-
+  let bookPath = `${environment}/${type}/`;
+  
   const handlePagination = (event, page) => {
     setPageNo(page);
     // console.log(page, 'Page');
@@ -240,19 +241,15 @@ const ChapterBook = (props) => {
                 </div>
               </AppBar>
 
-              {console.log(
-                `https://erp-revamp.s3.ap-south-1.amazonaws.com/media/${bookUrl}${chapterId}?vi=0`,
-                'bookurl'
-              )}
-              <iframe
-                src={`http://35.154.221.179:3000/1606380603_17_2_85/index.html#/reader/chapter/2?vi=0`}
-                // src={`https://plantanatomy.kotobee.com/#/reader`}
-                // src={`https://erp-revamp.s3.ap-south-1.amazonaws.com/media/${bookUrl}${chapterId}?vi=0`}
-                id='bookReader'
-                className='bookReader'
-                style={{ width: '100%', height: '625px', margin: 'auto', paddingTop: 50 }}
-                title='Tutorials'
-              ></iframe>
+              <ViewBook 
+                bookId={bookId}
+                chapterId={chapterId}
+                bookUid={bookUid}
+                localStorageName={localStorageName}
+                bookPath={bookPath}
+              />
+           
+               
             </Grid>
           </Grid>
         </Dialog>
