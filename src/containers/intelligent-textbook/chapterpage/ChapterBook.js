@@ -21,7 +21,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../../Layout';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import './ChapterBook.css';
+// import './ChapterBook.css';
 import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -29,6 +29,7 @@ import noimg from '../../../assets/images/Chapter-icon.png';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { Close } from '@material-ui/icons';
 import ViewBook from './ViewBook';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,7 +58,7 @@ const ChapterBook = (props) => {
   const [totalPages, setTotalPages] = useState('');
   const [pageNo, setPageNo] = useState(1);
   const limit = 8;
-  let bookPath = `${environment}/${type}/`;
+
   
   const handlePagination = (event, page) => {
     setPageNo(page);
@@ -171,16 +172,16 @@ const ChapterBook = (props) => {
                                 {item.chapter_name}
                               </Typography>
                             </Grid>
-
+                            {console.log('Publication on',`${moment(item?.created_at).format('MM-DD-YYYY')}`)}
                             <Grid item md={12} xs={12}>
                               <Typography
                                 style={{
-                                  fontSize: '10px',
+                                  fontSize: '9px',
                                   color: '#042955',
                                   margin: '10px 0',
                                 }}
                               >
-                                Publication on &nbsp; {item?.Publication_date}
+                                Published on: {`${moment(item?.created_at).format('DD-MM-YYYY')}`}
                               </Typography>
                             </Grid>
                             <Grid item md={12} xs={12}>
@@ -246,7 +247,8 @@ const ChapterBook = (props) => {
                 chapterId={chapterId}
                 bookUid={bookUid}
                 localStorageName={localStorageName}
-                bookPath={bookPath}
+                environment={environment}
+                type={type}
               />
            
                

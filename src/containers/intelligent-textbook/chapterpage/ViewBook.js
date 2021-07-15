@@ -49,12 +49,14 @@ const ViewBook = (props) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  const  { bookId,chapterId,bookUid,localStorageName,bookPath }  = props;
+  const  { bookId,chapterId,bookUid,localStorageName,environment, type}  = props;
+  	let bookPath = `${environment}/${type}/`;
     let bookUrl = `${bookUid}/index.html#/reader/chapter/`;
-    let localStoreName = `note_erp-revamp.s3.ap-south-1.amazonaws.commedia${bookUid}index.html${localStorageName}`;
-	let bookmarksLocalStoreName=`bookmark_erp-revamp.s3.ap-south-1.amazonaws.commedia${bookUid}index.html${localStorageName}`;
-	let highlightsLocalstoreName=`hlight_erp-revamp.s3.ap-south-1.amazonaws.commedia${bookUid}index.html${localStorageName}`;
+    let localStoreName = `note_${window.location.host}ibook-static${environment}${type}${bookUid}index.html${localStorageName}`;
+	let bookmarksLocalStoreName=`bookmark_${window.location.host}ibook-static${environment}${type}${bookUid}index.html${localStorageName}`;
+	let highlightsLocalstoreName=`hlight_${window.location.host}ibook-static${environment}${type}${bookUid}index.html${localStorageName}`;
 	
+	console.log(`${window.location.origin}/qbox/${endpoints.ibook.createStudentNotes}`,'checkEndPoint')
 	const dispatch = useDispatch()
 	const [loading, setLoading] = useState(false);
 	let notes = [];
@@ -96,10 +98,10 @@ const ViewBook = (props) => {
 					const { role_details } = new Auth().isAuthenticated() || {}
 					const { id } = role_details || {}
 					const { token } = new Auth().isAuthenticated() || {}
-					console.log({token})
-					const url = 'https://dev.olvorchidnaigaon.letseduvate.com/qbox/academic/create_student_notes/';
+					console.log(`${window.location.origin}/qbox/${endpoints.ibook.createStudentNotes}`,'checkEndPoint')
+					const url = `${window.location.origin}/qbox/${endpoints.ibook.createStudentNotes}`;
 					const formData = new FormData();
-					formData.append('student', id);
+					formData.append('student', role_details.erp_user_id);
 					formData.append('book', bookId);
 					formData.append('localStore_name', localStoreName);
 					formData.append('localStoreData', JSON.stringify(latest_notes));
@@ -140,7 +142,8 @@ const ViewBook = (props) => {
 						try {
 							const { role_details } = new Auth().isAuthenticated() || {}
 							const { token } = new Auth().isAuthenticated() || {}
-							const url = 'https://dev.olvorchidnaigaon.letseduvate.com/qbox/academic/student-bookmarks/';
+							console.log(`${window.location.origin}/qbox/${endpoints.ibook.studentBookmarks}`,'checkEndPoint')
+							const url = `${window.location.origin}/qbox/${endpoints.ibook.studentBookmarks}`;
 							const formData = new FormData();
 							formData.append('student', role_details.erp_user_id);
 							formData.append('book', bookId);
@@ -182,7 +185,8 @@ const ViewBook = (props) => {
 						try {
 							const { role_details } = new Auth().isAuthenticated() || {}
 							const { token } = new Auth().isAuthenticated() || {}
-							const url = 'https://dev.olvorchidnaigaon.letseduvate.com/qbox/academic/delete_bookmark/';
+							console.log(`${window.location.origin}/qbox/${endpoints.ibook.deleteBookmark}`,'checkEndPoint')
+							const url = `${window.location.origin}/qbox/${endpoints.ibook.deleteBookmark}`;
 							const formData = new FormData();
 							formData.append('student', role_details.erp_user_id);
 							formData.append('book', bookId);
@@ -226,7 +230,8 @@ const ViewBook = (props) => {
 						try {
 							const { role_details } = new Auth().isAuthenticated() || {}
 							const { token } = new Auth().isAuthenticated() || {}
-							const url = 'https://dev.olvorchidnaigaon.letseduvate.com/qbox/academic/student-books-highlight/';
+							console.log(`${window.location.origin}/qbox/${endpoints.ibook.studentBooksHighlight}`,'checkEndPoint')
+							const url = `${window.location.origin}/qbox/${endpoints.ibook.studentBooksHighlight}`;
 							const formData = new FormData();
 							formData.append('student', role_details.erp_user_id);
 							formData.append('book', bookId);
@@ -267,7 +272,8 @@ const ViewBook = (props) => {
 						try {
 							const { role_details } = new Auth().isAuthenticated() || {}
 							const { token } = new Auth().isAuthenticated() || {}
-							const url = 'https://dev.olvorchidnaigaon.letseduvate.com/qbox/academic/delete_highlight/';
+							console.log(`${window.location.origin}/qbox/${endpoints.ibook.deleteHighlight}`,'checkEndPoint')
+							const url = `${window.location.origin}/qbox/${endpoints.ibook.deleteHighlight}`;
 							const formData = new FormData();
 							formData.append('student', role_details.erp_user_id);
 							formData.append('book', bookId);
@@ -299,7 +305,8 @@ const ViewBook = (props) => {
 			setLoading(true)
 			const { role_details } = new Auth().isAuthenticated() || {}
 			const { token } = new Auth().isAuthenticated() || {}
-			const url = `https://dev.olvorchidnaigaon.letseduvate.com/qbox/academic/list_student_notes/?book=${bookId}&student=${role_details.erp_user_id}`
+			console.log(`${window.location.origin}/qbox/${endpoints.ibook.listStudentNotes}`,'checkEndPoint')
+			const url = `${window.location.origin}/qbox/${endpoints.ibook.listStudentNotes}?book=${bookId}&student=${role_details.erp_user_id}`
 			const result = await axios.get(url)
 			console.log({result})
 			localStorage.removeItem(localStoreName)
@@ -322,7 +329,8 @@ const ViewBook = (props) => {
 			setLoading(true)
 			const { role_details } = new Auth().isAuthenticated() || {}
 			const { token } = new Auth().isAuthenticated() || {}
-			const url = `https://dev.olvorchidnaigaon.letseduvate.com/qbox/academic/list-books-bookmarks/?book=${bookId}&student=${role_details.erp_user_id}`
+			console.log(`${window.location.origin}/qbox/${endpoints.ibook.listBooksBookmarks}`,'checkEndPoint')
+			const url = `${window.location.origin}/qbox/${endpoints.ibook.listBooksBookmarks}?book=${bookId}&student=${role_details.erp_user_id}`
 			const result = await axios.get(url)
 			localStorage.removeItem(bookmarksLocalStoreName)
 			if (result.status === 200) {
@@ -344,7 +352,8 @@ const ViewBook = (props) => {
 			setLoading(true)
 			const { role_details } = new Auth().isAuthenticated() || {}
 			const { token } = new Auth().isAuthenticated() || {}
-			const url = `https://dev.olvorchidnaigaon.letseduvate.com/qbox/academic/list-books-highlight/?book=${bookId}&student=${role_details.erp_user_id}`
+			console.log(`${window.location.origin}/qbox/${endpoints.ibook.listBooksHighlight}`,'checkEndPoint')
+			const url = `${window.location.origin}/qbox/${endpoints.ibook.listBooksHighlight}?book=${bookId}&student=${role_details.erp_user_id}`
 			const result = await axios.get(url)
 			localStorage.removeItem(highlightsLocalstoreName)
 			if (result.status === 200) {
@@ -374,8 +383,7 @@ const ViewBook = (props) => {
 		
           <iframe
             src={`${window.location.origin}/ibook-static/${bookPath}${bookUrl}${chapterId}?vi=0`}
-            // src={`https://erp-revamp.s3.ap-south-1.amazonaws.com/media/${bookUrl}${chapterId}?vi=0`}
-			// src={`${window.location.origin}/ibook-static/media/${bookUrl}${chapterId}?vi=0`}
+            // src={`https://dev.olvorchidnaigaon.letseduvate.com/ibook-static/${bookPath}${bookUrl}${chapterId}?vi=0`}
             id='bookReader'
             className='bookReader'
             style={{ width: '100%', height: '625px', margin: 'auto', paddingTop: 50 }}

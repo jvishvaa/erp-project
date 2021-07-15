@@ -302,6 +302,14 @@ export default {
   },
   ibook: {
     studentBook: '/academic/student-books-list/',
+    createStudentNotes:'academic/create_student_notes/',
+    studentBookmarks:'academic/student-bookmarks/',
+    deleteBookmark:'academic/delete_bookmark/',
+    studentBooksHighlight:'academic/student-books-highlight/',
+    deleteHighlight:'academic/delete_highlight/',
+    listStudentNotes:'academic/list_student_notes/',
+    listBooksBookmarks:'academic/list-books-bookmarks/',
+    listBooksHighlight:'academic/list-books-highlight/'
   },
   email: {
     email: '/academic/email/',

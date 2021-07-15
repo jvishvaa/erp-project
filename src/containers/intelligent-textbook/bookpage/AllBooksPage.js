@@ -19,12 +19,14 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../../Layout';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import './AllBooksPage.css';
+// import './AllBooksPage.css';
 import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import noimg from '../../../assets/images/book-icon.jpg';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import moment from 'moment';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -166,12 +168,12 @@ const AllBooksPage = () => {
                                 <Grid item md={12} xs={12}>
                                   <Typography
                                     style={{
-                                      fontSize: '10px',
+                                      fontSize: '9px',
                                       color: '#042955',
                                       margin: '10px 0',
                                     }}
                                   >
-                                    Publication on &nbsp; {item?.Publication_date}
+                                    Published on: {`${moment(item?.created_at).format('DD-MM-YYYY')}`}
                                   </Typography>
                                 </Grid>
                                 <Grid item md={12} xs={12}>
