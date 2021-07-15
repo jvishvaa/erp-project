@@ -287,7 +287,7 @@ import { Helmet } from 'react-helmet';
 import logo from '../src/assets/images/logo_mobile.png';
 //intelligent text book
 import BookView from 'containers/intelligent-textbook/BookView';
-import ChapterView from 'containers/intelligent-textbook/ChapterView';
+import ViewiChapter from 'containers/intelligent-textbook/ViewiChapter';
 import ViewiBook from './containers/intelligent-textbook/ViewiBook';
 
 const theme = createMuiTheme({
@@ -1448,7 +1448,7 @@ function App({ alert }) {
                           </Route>
 
                           <Route exact path='/intelligent-book/chapter-view'>
-                            {({ match }) => <ChapterView match={match} />}
+                            {({ match }) => <ViewiChapter match={match} />}
                           </Route>
                         </Switch>
                       </DailyDairyStore>

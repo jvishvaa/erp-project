@@ -443,7 +443,8 @@ function GridList(props) {
             </AppBar>
 
             <iframe
-              src={`http://35.154.221.179:3000/1602923626_13_13_82/index.html#/reader/chapter/11`}
+              // src={`http://35.154.221.179:3000/1602923626_13_13_82/index.html#/reader/chapter/11`}
+              src={`https://photography.kotobee.com/#/reader`}
               id='bookReader'
               className='bookReader'
               style={{ width: '100%', height: '625px', margin: 'auto', paddingTop: 50 }}

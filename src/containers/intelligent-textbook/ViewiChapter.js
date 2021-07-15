@@ -235,7 +235,6 @@ class ViewEbook extends Component {
         endpoints.ebook.ebook
       }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
     }
-
     axios
       .get(urlPath, {
         headers: {
@@ -291,7 +290,7 @@ class ViewEbook extends Component {
                   <Grid item md={12} xs={12} style={{ textAlign: 'left' }}>
                     <CommonBreadcrumbs
                       componentName='Intellligent Book'
-                      childComponentName='View IBook'
+                      childComponentName='View IChapter'
                     />
                   </Grid>
                   <Grid item md={12} xs={12} style={{ margin: '10px 0px' }}>
