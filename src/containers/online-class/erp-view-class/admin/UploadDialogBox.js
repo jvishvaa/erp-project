@@ -40,6 +40,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const options = {
+  settings: {
+    autoplaySpeed: 0,
+  },
+};
+
 const UploadClassWorkDiaogBox = (props) => {
   const {
     isTeacher = false,
@@ -221,7 +227,7 @@ const UploadClassWorkDiaogBox = (props) => {
         </DialogTitle>
         <DialogContent>
           <SimpleReactLightbox>
-            <SRLWrapper>
+            <SRLWrapper options={options}>
               <Grid container spacing={2} className='optionImageContainer1'>
                 {uploadFiles?.map((url, index) => (
                   <Grid
@@ -236,16 +242,26 @@ const UploadClassWorkDiaogBox = (props) => {
                       ref={imageRef}
                       alt='file'
                       onError={(e) => {
+                        console.log('place.e.tag',e.target.src)
                         e.target.src = placeholder;
+                        
+                       
                       }}
                       src={isTeacher ? url : `${endpoints.assessmentErp.s3}/${url}`}
                       className='optionImageAttachment1'
                     />
+                    
                     <div className='optionImageRemoveIcon1'>
+                    
                       <IconButton>
                         <VisibilityIcon
                           onClick={() => {
+                            console.log('imageRef',imageRef)
+                            console.log('imageRef.current.click()',imageRef.current.src= placeholder)
+                            // console.log('imageRef.current.classList.currentSrc',imageRef.current.classList)
+                            
                             imageRef.current.click();
+                            
                           }}
                           style={{ color: '#014b7e' }}
                         />
