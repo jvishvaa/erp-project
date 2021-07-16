@@ -656,30 +656,7 @@ const DetailCardView = ({
     return `${hour}:${min} ${part}`;
   };
 
-  // function handleCancel() {
-  //   setLoading(true);
-  //   const params = {
-  //     zoom_meeting_id: fullData && fullData.id,
-  //     class_date: fullData && fullData?.online_class?.start_time.split('T')[0],
-  //   };
-  //   let url = '';
-  //   if (window.location.pathname === '/erp-online-class-student-view') {
-  //     url = endpoints.studentViewBatchesApi.rejetBatchApi;
-  //   } else {
-  //     url = endpoints.teacherViewBatches.cancelBatchApi;
-  //   }
-  //   axiosInstance
-  //     .put(url, params)
-  //     .then((res) => {
-  //       setLoading(false);
-  //       setAlert('success', res.data.message);
-  //       handleClose('success');
-  //     })
-  //     .catch((error) => {
-  //       setLoading(false);
-  //       setAlert('error', error.message);
-  //     });
-  // }
+
 
   const handleAttendance = () => {
     dispatch(attendanceAction(fullData ? fullData.online_class?.start_time : ''));
@@ -732,10 +709,8 @@ const DetailCardView = ({
   };
 
   const getClassName = () => {
-    let classIndex = '1';
-    if (index % 3 === 0) classIndex = '3';
-    else if (index % 2 === 0) classIndex = '2';
-    else classIndex = '1';
+    let classIndex = `${fullData.class_type}`;
+    
     return [
       `teacherBatchFullViewMainCard${classIndex}`,
       `teacherBatchFullViewHeader${classIndex}`,
@@ -773,13 +748,13 @@ const DetailCardView = ({
               <Grid item xs={12}>
                 <Grid container spacing={2}>
                   <Grid item md={8} xs={8}>
-                    <h4 className='teacherBatchFullCardLable'>
+                    <Typography className='teacherBatchFullCardLable'>
                       {(fullData &&
                         fullData.online_class &&
                         fullData.online_class.title) ||
                         ''}
-                    </h4>
-                    <h4 className='teacherBatchFullCardLable'>
+                    </Typography>
+                    <Typography className='teacherBatchFullCardLable'>
                       {(fullData &&
                         fullData.online_class &&
                         fullData.online_class.subject &&
@@ -791,31 +766,22 @@ const DetailCardView = ({
                           </span>
                         ))) ||
                         ''}
-                    </h4>
+                    </Typography>
                   </Grid>
                   <Grid item md={4} xs={4}>
-                    <h4 className='teacherBatchFullCardLable'>
+                    <Typography className='teacherBatchFullCardLable'>
                       {(fullData &&
                         fullData.join_time &&
                         converTime(fullData.join_time.split(' ')[1])) ||
                         ''}
-                    </h4>
-                    <h4 className='teacherBatchFullCardLable'>
+                    </Typography>
+                    <Typography className='teacherBatchFullCardLable'>
                       {noOfPeriods?.length} &nbsp;
                       {noOfPeriods?.length > 1 ? 'Periods' : 'Period'}
-                    </h4>
+                    </Typography>
                   </Grid>
                 </Grid>
               </Grid>
-              {/* 
-                    <IconButton
-                      size='small'
-                      className='teacherBatchFullViewClose'
-                      onClick={() => handleClose()}
-                    >
-                      <CloseIcon className='teacherBatchFullViewCloseIcon' />
-                    </IconButton>
-                  </Grid> */}
             </Grid>
             <Grid container spacing={2}>
               <Grid item md={12} xs={12}>

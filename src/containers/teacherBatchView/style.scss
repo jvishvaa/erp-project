@@ -1,9 +1,18 @@
-$color1: #fea45f;
-$color2: #678aff;
-$color3: #9b7ad5;
-$borderColor1: #e86400;
-$borderColor2: #4d73ef;
-$borderColor3: #5019b1;
+
+$color0: #9b7ad5;
+$color1: #678aff;
+$color2: #CCCCCC;
+$color3: #fea45f;
+
+
+
+
+$borderColor0: #5019b1;
+$borderColor1: #4d73ef;
+$borderColor2: #636363;
+$borderColor3: #e86400;
+
+
 
 .teacherBatchViewMainDiv {
   padding: 10px !important;
@@ -49,26 +58,21 @@ $borderColor3: #5019b1;
 }
 .teacherbatchsCardMain {
   padding: 1px !important;
+  display: flex;
+  direction:column;
   .teacherBatchCardActive {
     border-radius: 8px !important;
     padding: 10px !important;
-    // border: 1px solid #F9D474;
-    // background-color: #F9D474;
     cursor: pointer;
-    height: 195px;
+    height: 100%;
+    
   }
   .teacherBatchCardInActive {
     border-radius: 8px !important;
     padding: 10px !important;
-    // border: 1px solid #F9D474;
-    // background-color: #FFFADF;
-    height: 195px;
-    cursor: pointer;
-  }
+    height: 100%;
 
-  .teacherBatchCardActive1 {
-    background-color: $color1;
-    border: 2px solid $borderColor1;
+    cursor: pointer;
   }
 
   .teacherBatchCardActive2 {
@@ -81,16 +85,28 @@ $borderColor3: #5019b1;
     border: 2px solid $borderColor3;
   }
 
+  .teacherBatchCardActive1 {
+    background-color: $color1;
+    border: 2px solid $borderColor1;
+  }
+
+  .teacherBatchCardActive0 {
+    background-color: $color0;
+    border: 2px solid $borderColor0;
+  }
+  .teacherBatchCardInActive2 {
+    background-color: $color2 !important;
+  }
+  .teacherBatchCardInActive3 {
+    background-color: $color3 !important;
+  }
+
   .teacherBatchCardInActive1 {
     background-color: $color1 !important;
   }
 
-  .teacherBatchCardInActive2 {
-    background-color: $color2 !important;
-  }
-
-  .teacherBatchCardInActive3 {
-    background-color: $color3 !important;
+  .teacherBatchCardInActive0 {
+    background-color: $color0 !important;
   }
 
   .teacherBatchCardLable {
@@ -104,15 +120,11 @@ $borderColor3: #5019b1;
     font-weight: bold;
   }
   .TeacherBatchCardViewMoreButton {
-    font-size: 14px !important;
+    font-size: 12px !important;
     font-weight: bold;
     background-color: white;
     transform: translateY(2px);
     transition-duration: 0.2s;
-  }
-  .viewMoreButton1 {
-    color: $borderColor1;
-    border: 2px solid $borderColor1;
   }
   .viewMoreButton2 {
     color: $borderColor2;
@@ -121,6 +133,14 @@ $borderColor3: #5019b1;
   .viewMoreButton3 {
     color: $borderColor3;
     border: 2px solid $borderColor3;
+  }
+  .viewMoreButton1 {
+    color: $borderColor1;
+    border: 2px solid $borderColor1;
+  }
+  .viewMoreButton0 {
+    color: $borderColor0;
+    border: 2px solid $borderColor0;
   }
   .TeacherBatchCardViewMoreButton:hover {
     background-color: white;
@@ -136,14 +156,17 @@ $borderColor3: #5019b1;
     border-radius: 10px !important;
     padding: 10px !important;
   }
-  .teacherBatchFullViewMainCard1 {
-    border: 2px solid $borderColor1 !important;
-  }
   .teacherBatchFullViewMainCard2 {
     border: 2px solid $borderColor2 !important;
   }
   .teacherBatchFullViewMainCard3 {
     border: 2px solid $borderColor3 !important;
+  }
+  .teacherBatchFullViewMainCard1 {
+    border: 2px solid $borderColor1 !important;
+  }
+  .teacherBatchFullViewMainCard0 {
+    border: 2px solid $borderColor0 !important;
   }
 
   .teacherBatchFullViewHeader {
@@ -164,14 +187,17 @@ $borderColor3: #5019b1;
       }
     }
   }
-  .teacherBatchFullViewHeader1 {
-    background-color: $color1;
-  }
   .teacherBatchFullViewHeader2 {
     background-color: $color2;
   }
   .teacherBatchFullViewHeader3 {
     background-color: $color3;
+  }
+  .teacherBatchFullViewHeader1 {
+    background-color: $color1;
+  }
+  .teacherBatchFullViewHeader0 {
+    background-color: $color0;
   }
   .teacherFullViewdescreption {
     font-size: 20px !important;
@@ -180,14 +206,18 @@ $borderColor3: #5019b1;
   .teacherFullViewdescreption1 {
     font-size: 18px !important;
   }
-  .addTextColor1 {
-    color: $borderColor1;
-  }
+
   .addTextColor2 {
     color: $borderColor2;
   }
   .addTextColor3 {
     color: $borderColor3;
+  }
+  .addTextColor1 {
+    color: $borderColor1;
+  }
+  .addTextColor0 {
+    color: $borderColor0;
   }
   .teacherFullViewSmallButtons {
     font-size: 15px !important;
@@ -209,14 +239,17 @@ $borderColor3: #5019b1;
       color: #e2e2e2;
     }
   }
-  .darkButtonBackground1 {
-    background-color: $borderColor1 !important;
-  }
   .darkButtonBackground2 {
     background-color: $borderColor2 !important;
   }
   .darkButtonBackground3 {
     background-color: $borderColor3 !important;
+  }
+  .darkButtonBackground1 {
+    background-color: $borderColor1 !important;
+  }
+  .darkButtonBackground0 {
+    background-color: $borderColor0 !important;
   }
   .teacherFullViewFullButtons {
     font-size: 15px !important;

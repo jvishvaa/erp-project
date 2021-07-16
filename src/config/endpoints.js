@@ -77,9 +77,9 @@ export default {
     // createClass: '/erp_user/online_class/',
     createClass: '/erp_user/online-recurring/',
     createSpecialClass: '/erp_user/online-erp-class/',
-    studentOnlineclasses: '/erp_user/student_online_class/v2/',
+    studentOnlineclasses: '/erp_user/student_online_class/v3/',
     acceptOrJoinClass: '/erp_user/onlineclass_accept_join/',
-    managementOnlineClass: '/erp_user/teacher_online_class/v2/',
+    managementOnlineClass: '/erp_user/teacher_online_class/v3/',
     cancelClass: '/erp_user/cancel-online-class/',
     attendeeList: '/erp_user/onlineclass_attendeelist/',
     coHostValidation: '/erp_user/co-host-validation/',
@@ -205,10 +205,11 @@ export default {
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
   aol: {
-    cardData: '/erp_user/teacher_online_class/v2/',
+    cardData: '/erp_user/teacher_online_class/v3/',
     courseList: '/aol/courses/',
     batchLimitList: '/aol/aol-course-batch/',
-    classes: '/erp_user/teacher_online_class/v2/',
+    classes: '/erp_user/teacher_online_class/v3/',
+    classesresources: 'erp_user/teacher_online_class/v3/',
     teacherList: '/erp_user/teacher-list/',
     draftBatch: '/aol/mixed-batch-details/',
     assignTeacher: '/aol/teacher-assign/',
@@ -311,7 +312,7 @@ export default {
   teacherViewBatches: {
     courseListApi: '/aol/courses/',
     batchSizeList: '/aol/aol-course-batch/',
-    getBatchList: '/erp_user/teacher_online_class/v2/',
+    getBatchList: '/erp_user/teacher_online_class/',
     cancelBatchApi: '/erp_user/cancel-online-class/',
     hostApi: '/erp_user/redirection_zoom/',
   },
@@ -324,7 +325,7 @@ export default {
     getGrievenceErpList: '/academic/greivance-reply-list/',
   },
   studentViewBatchesApi: {
-    getBatchesApi: '/erp_user/student_online_class/v2/',
+    getBatchesApi: '/erp_user/student_online_class/v3/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
   questionPaper: {
