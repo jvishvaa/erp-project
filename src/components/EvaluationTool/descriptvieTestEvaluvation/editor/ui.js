@@ -167,7 +167,7 @@ function CorrectionComponent({
 
     let style = {
       width: containerWidth,
-      height: fullscreen ? 'calc(100vh - 46px)' : containerHeight,
+      height: fullscreen ? 'calc(100vh - 46px)' : 'calc(100vh - 46px)',
       overflow: 'auto',
       // transform: `rotate(${angleInDegrees}deg)`,
       margin: margin,
@@ -316,7 +316,7 @@ function CorrectionComponent({
     <div ref={divElement} style={style} id='editor-evaluvation-container'>
       {/* <img src={penTool} /> */}
       <canvas
-        style={{ position: 'absolute', left: 0, top: 0 }}
+        style={{left:0, top: 0,height:'90vh',width:'auto',margin:'auto',display:'block' }}
         ref={canvasElement}
         id='editor-evaluvation-drawing-layer'
       />
