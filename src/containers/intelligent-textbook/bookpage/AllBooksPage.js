@@ -26,6 +26,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import noimg from '../../../assets/images/book-icon.jpg';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import moment from 'moment';
+import Filter from '../filter'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,13 +52,18 @@ const AllBooksPage = () => {
   const [pageNo, setPageNo] = useState(1);
   const limit = 8;
   const bookImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/ibooks/';
+  const [clearFilter, setclearFilter] = useState('')
+  const [acadmicYear, setAcadmicYear] = useState('')
+  const [branch, setBranch] = useState('')
+  const [grade, setGrade] = useState('')
+  const [subject, setSubject] = useState('')
+  const [volume, setVolume] = useState('')
 
   useEffect(() => {
     setLoading(true);
     axiosInstance
       .get(`${endpoints.ibook.studentBook}?page=${pageNo}&page_size=${limit} `)
       .then((result) => {
-        // console.log(result, 'rrrrrrrrreeeeeesssssss');
         if (result.data.status_code === 200) {
           setBooksData(result.data.result.result);
           setTotalPages(Math.ceil(result.data.result.count / limit));
@@ -85,18 +91,69 @@ const AllBooksPage = () => {
     );
   };
 
+
+
+  const handleFilter = (acad, branch, grade, sub, vol) => {
+
+    console.log('datatesting',acad, branch, grade, sub, vol)
+    setAcadmicYear(acad)
+    setBranch(branch)
+    setGrade(grade)
+    setSubject(sub)
+    setVolume(vol)
+    getEbook(acad, branch, grade, sub, vol);
+
+  };
+
+  const getEbook = (acad, branch, grade, subject, vol)=>{
+
+    const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
+    const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
+    const filterGrade = `${grade ? `&grade=[${grade?.central_grade}]` : ''}`;
+    const filterSubject = `${subject ? `&subject=${subject}` : ''}`;
+    const filterVolumes = `${vol ? `&volume=${vol?.id}` : ''}`;
+
+    setLoading(true);
+    axiosInstance
+      .get(`${endpoints.ibook.studentBook}?page=${pageNo}&page_size=${limit}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setBooksData(result.data.result.result);
+          setTotalPages(Math.ceil(result.data.result.count / limit));
+
+          console.log(Math.ceil(result.data.result.count / limit), 'pagination');
+          setLoading(false);
+        } else {
+          setLoading(false);
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+  }
+
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
+       
+        <Grid container spacing={2}>
+          <Grid item md={12} xs={12} style={{ textAlign: 'left' }}>
             <CommonBreadcrumbs
               componentName='Intellligent Book'
               childComponentName='Books'
             />
-          </div>
-        </div>
+          </Grid>
+          <Grid item md={12} xs={12} style={{ margin: '10px 0px' }}>
+            <Filter
+              handleFilter={handleFilter}
+              clearFilter={clearFilter}
+            />
+          </Grid>
+        </Grid>
+
         <Paper className={classes.root}>
           <Grid
             container
