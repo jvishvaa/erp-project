@@ -116,8 +116,8 @@ const ChapterBook = (props) => {
         <div>
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
-              componentName='Intellligent Book'
-              childComponentName='chapter'
+              componentName='Intelligent Book'
+              childComponentName='Chapter'
             />
           </div>
         </div>

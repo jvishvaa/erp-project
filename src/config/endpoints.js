@@ -301,7 +301,8 @@ export default {
     getCentralGrade: '/academic/ebook_grade_wise_filter/',
   },
   ibook: {
-    studentBook: '/academic/student-books-list/',
+    // studentBook: '/academic/student-books-list/',
+    studentBook: '/academic/ibook_school_wise_filter/',
     createStudentNotes:'academic/create_student_notes/',
     studentBookmarks:'academic/student-bookmarks/',
     deleteBookmark:'academic/delete_bookmark/',
@@ -309,7 +310,8 @@ export default {
     deleteHighlight:'academic/delete_highlight/',
     listStudentNotes:'academic/list_student_notes/',
     listBooksBookmarks:'academic/list-books-bookmarks/',
-    listBooksHighlight:'academic/list-books-highlight/'
+    listBooksHighlight:'academic/list-books-highlight/',
+    ibookMappedGrade: '/academic/ibook_mapped_grades/',
   },
   email: {
     email: '/academic/email/',

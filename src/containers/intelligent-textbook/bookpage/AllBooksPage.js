@@ -26,7 +26,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import noimg from '../../../assets/images/book-icon.jpg';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import moment from 'moment';
-import Filter from '../filter'
+import Filter from '../filter';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,18 +51,40 @@ const AllBooksPage = () => {
   const [totalPages, setTotalPages] = useState('');
   const [pageNo, setPageNo] = useState(1);
   const limit = 8;
+  const [clearFilter, setclearFilter] = useState('');
+  const [acadmicYear, setAcadmicYear] = useState('');
+  const [branch, setBranch] = useState('');
+  const [grade, setGrade] = useState('');
+  const [subject, setSubject] = useState('');
+  const [volume, setVolume] = useState('');
   const bookImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/ibooks/';
-  const [clearFilter, setclearFilter] = useState('')
-  const [acadmicYear, setAcadmicYear] = useState('')
-  const [branch, setBranch] = useState('')
-  const [grade, setGrade] = useState('')
-  const [subject, setSubject] = useState('')
-  const [volume, setVolume] = useState('')
+
+  const getDomainName = () => {
+    let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
+    const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
+    const hostSplitArray = host.split('.');
+    const subDomainLevels = hostSplitArray.length - 2;
+    let domain = '';
+    let subDomain = '';
+    let subSubDomain = '';
+    if (hostSplitArray.length > 2) {
+      domain = hostSplitArray.slice(hostSplitArray.length - 2).join('');
+    }
+    if (subDomainLevels === 2) {
+      subSubDomain = hostSplitArray[0];
+      subDomain = hostSplitArray[1];
+    } else if (subDomainLevels === 1) {
+      subDomain = hostSplitArray[0];
+    }
+    return subDomain;
+  };
 
   useEffect(() => {
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.ibook.studentBook}?page=${pageNo}&page_size=${limit} `)
+      .get(
+        `${endpoints.ibook.studentBook}?domain_name=${getDomainName()}&page=${pageNo}&page_size=${limit}`
+      )
       .then((result) => {
         if (result.data.status_code === 200) {
           setBooksData(result.data.result.result);
@@ -91,37 +113,32 @@ const AllBooksPage = () => {
     );
   };
 
-
-
   const handleFilter = (acad, branch, grade, sub, vol) => {
-
-    console.log('datatesting',acad, branch, grade, sub, vol)
-    setAcadmicYear(acad)
-    setBranch(branch)
-    setGrade(grade)
-    setSubject(sub)
-    setVolume(vol)
+    console.log('datatesting', acad, branch, grade, sub, vol);
+    setAcadmicYear(acad);
+    setBranch(branch);
+    setGrade(grade);
+    setSubject(sub);
+    setVolume(vol);
     getEbook(acad, branch, grade, sub, vol);
-
   };
 
-  const getEbook = (acad, branch, grade, subject, vol)=>{
-
+  const getEbook = (acad, branch, grade, subject, vol) => {
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     const filterGrade = `${grade ? `&grade=[${grade?.central_grade}]` : ''}`;
-    const filterSubject = `${subject ? `&subject=${subject}` : ''}`;
+    const filterSubject = `${subject ? `&subject=${subject?.central_subject}` : ''}`;
     const filterVolumes = `${vol ? `&volume=${vol?.id}` : ''}`;
 
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.ibook.studentBook}?page=${pageNo}&page_size=${limit}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`)
+      .get(
+        `${endpoints.ibook.studentBook}?domain_name=${getDomainName()}&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`
+      )
       .then((result) => {
         if (result.data.status_code === 200) {
           setBooksData(result.data.result.result);
           setTotalPages(Math.ceil(result.data.result.count / limit));
-
-          console.log(Math.ceil(result.data.result.count / limit), 'pagination');
           setLoading(false);
         } else {
           setLoading(false);
@@ -132,25 +149,21 @@ const AllBooksPage = () => {
         setLoading(false);
         setAlert('error', error.message);
       });
-  }
+  };
 
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-       
         <Grid container spacing={2}>
           <Grid item md={12} xs={12} style={{ textAlign: 'left' }}>
             <CommonBreadcrumbs
-              componentName='Intellligent Book'
+              componentName='Intelligent Book'
               childComponentName='Books'
             />
           </Grid>
           <Grid item md={12} xs={12} style={{ margin: '10px 0px' }}>
-            <Filter
-              handleFilter={handleFilter}
-              clearFilter={clearFilter}
-            />
+            <Filter handleFilter={handleFilter} clearFilter={clearFilter} />
           </Grid>
         </Grid>
 

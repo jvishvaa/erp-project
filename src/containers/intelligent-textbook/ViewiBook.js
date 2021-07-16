@@ -290,7 +290,7 @@ class ViewEbook extends Component {
                 <Grid container spacing={2}>
                   <Grid item md={12} xs={12} style={{ textAlign: 'left' }}>
                     <CommonBreadcrumbs
-                      componentName='Intellligent Book'
+                      componentName='Intelligent Book'
                       childComponentName='View IBook'
                     />
                   </Grid>

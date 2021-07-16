@@ -114,7 +114,7 @@ function BookView() {
             <Grid item md={12} xs={12} style={{ textAlign: 'left' }}>
               <CommonBreadcrumbs
                 componentName='Intelligent Book'
-                childComponentName='View Ibook'
+                childComponentName='View IBook'
               />
             </Grid>
             <Grid container spacing={2} style={{ padding: '5px 10px' }}>
