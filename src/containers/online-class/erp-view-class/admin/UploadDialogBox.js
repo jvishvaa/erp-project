@@ -253,7 +253,7 @@ const UploadClassWorkDiaogBox = (props) => {
                     
                     <div className='optionImageRemoveIcon1'>
                     
-                      <IconButton>
+                      {/* <IconButton>
                         <VisibilityIcon
                           onClick={() => {
                             console.log('imageRef',imageRef)
@@ -265,7 +265,7 @@ const UploadClassWorkDiaogBox = (props) => {
                           }}
                           style={{ color: '#014b7e' }}
                         />
-                      </IconButton>
+                      </IconButton> */}
                       {!isTeacher && (
                         <IconButton onClick={() => handleDeleteImage(index)}>
                           <DeleteIcon />
