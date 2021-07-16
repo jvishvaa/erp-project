@@ -81,7 +81,7 @@ const ChapterBook = (props) => {
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.ibook.studentBook}?book=${bookId}&page=${pageNo}&page_size=${limit}`
+        `${endpoints.ibook.studentChapterBook}?book=${bookId}&page=${pageNo}&page_size=${limit}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
