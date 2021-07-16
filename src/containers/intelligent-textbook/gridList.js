@@ -82,6 +82,8 @@ function GridList(props) {
   const [openEdit, setOpenEdit] = useState(false);
   const [conFirmDelete, setConFirmDelete] = useState(false);
   const opnePop = Boolean(openPopOver);
+  const chapterImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/ibooks/';
+
   const handleMenuOpen = (event, item) => {
     setOpenPopOver(event.currentTarget);
     setEditData(item);
@@ -221,8 +223,12 @@ function GridList(props) {
                       >
                         <Grid container spacing={2}>
                           <Grid item md={5} xs={6}>
+                            {console.log(
+                              'chapterImage',
+                              `${chapterImage}${item.chapter_image}`
+                            )}
                             <img
-                              src={noimg}
+                              src={`${chapterImage}${item.chapter_image}`}
                               alt='crash'
                               width='100%'
                               height='150px'

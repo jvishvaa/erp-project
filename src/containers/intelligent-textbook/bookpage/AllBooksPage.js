@@ -27,7 +27,6 @@ import noimg from '../../../assets/images/book-icon.jpg';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import moment from 'moment';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -51,6 +50,7 @@ const AllBooksPage = () => {
   const [totalPages, setTotalPages] = useState('');
   const [pageNo, setPageNo] = useState(1);
   const limit = 8;
+  const bookImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/ibooks/';
 
   useEffect(() => {
     setLoading(true);
@@ -80,11 +80,9 @@ const AllBooksPage = () => {
   };
 
   const handleBookOpen = (item) => {
-
     history.push(
       `/intelligent-book/${item?.id}/${item?.book_uid}/${item?.local_storage_id}/${item?.path}`
     );
-    
   };
 
   return (
@@ -128,7 +126,7 @@ const AllBooksPage = () => {
                           <Grid container spacing={2}>
                             <Grid item md={6} xs={6}>
                               <img
-                                src={noimg}
+                                src={`${bookImage}${item.book_image}`}
                                 alt='crash'
                                 width='100%'
                                 height='150px'
@@ -173,7 +171,8 @@ const AllBooksPage = () => {
                                       margin: '10px 0',
                                     }}
                                   >
-                                    Published on: {`${moment(item?.created_at).format('DD-MM-YYYY')}`}
+                                    Publication on:{' '}
+                                    {`${moment(item?.created_at).format('MM-DD-YYYY')}`}
                                   </Typography>
                                 </Grid>
                                 <Grid item md={12} xs={12}>

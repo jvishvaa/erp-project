@@ -30,6 +30,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { Close } from '@material-ui/icons';
 import ViewBook from './ViewBook';
 import moment from 'moment';
+import unfiltered from '../../../assets/images/unfiltered.svg';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,6 +41,18 @@ const useStyles = makeStyles((theme) => ({
   container: {
     maxHeight: '70vh',
     width: '100%',
+  },
+  chapterImage: {
+    // border: '1px solid red',
+    width: '270px',
+    margin: 'auto',
+    // alignItems: 'center',
+  },
+  chapternotfound: {
+    // border: '1px solid red',
+    width: '200px',
+    margin: 'auto',
+    textAlign: 'center',
   },
 }));
 
@@ -58,8 +71,7 @@ const ChapterBook = (props) => {
   const [totalPages, setTotalPages] = useState('');
   const [pageNo, setPageNo] = useState(1);
   const limit = 8;
-
-  
+  const chapterImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/ibooks/';
   const handlePagination = (event, page) => {
     setPageNo(page);
     // console.log(page, 'Page');
@@ -119,94 +131,109 @@ const ChapterBook = (props) => {
             }
             spacing={3}
           >
-            {booksData &&
-              booksData.map((item, index) => {
-                return (
-                  <Grid item md={3} xs={12} key={item?.id}>
-                    <Card
-                      style={{
-                        width: '100%',
-                        height: '160px',
-                        borderRadius: 10,
-                        padding: '5px',
-                        boxShadow: '1px 1px 8px #c3c3c3',
-                        backgroundColor: item?.ebook_type === '2' ? '#fefbe8' : '',
-                      }}
-                    >
-                      <Grid container spacing={2}>
-                        <Grid item md={6} xs={6}>
-                          <img
-                            src={noimg}
-                            alt='crash'
-                            width='100%'
-                            height='150px'
-                            style={{
-                              borderRadius: '8px',
-                              // border: '1px solid lightgray',
-                            }}
-                          />
-                        </Grid>
-                        <Grid item md={6} xs={6} style={{ textAlign: 'left' }}>
-                          <Grid container spacing={1}>
-                            <Grid
-                              item
-                              md={12}
-                              xs={12}
-                              style={{
-                                padding: '0px 10px',
-                                margin: '0px',
-                                textAlign: 'right',
-                              }}
-                            ></Grid>
-                            <Grid item md={12} xs={12}>
-                              <Typography
-                                title='wings'
-                                className={classes.textEffect}
+            {console.log(booksData, 'Bookdata')}
+            {booksData.length === 0 ? (
+              <div></div>
+            ) : (
+              <>
+                {booksData &&
+                  booksData.map((item, index) => {
+                    return (
+                      <Grid item md={3} xs={12} key={item?.id}>
+                        <Card
+                          style={{
+                            width: '100%',
+                            height: '160px',
+                            borderRadius: 10,
+                            padding: '5px',
+                            boxShadow: '1px 1px 8px #c3c3c3',
+                            backgroundColor: item?.ebook_type === '2' ? '#fefbe8' : '',
+                          }}
+                        >
+                          <Grid container spacing={2}>
+                            <Grid item md={6} xs={6}>
+                              {console.log(
+                                'chapterImage',
+                                `${chapterImage}${item.chapter_image}`
+                              )}
+                              <img
+                                src={`${chapterImage}${item.chapter_image}`}
+                                alt='crash'
+                                width='100%'
+                                height='150px'
                                 style={{
-                                  fontSize: '16px',
-                                  fontWeight: 'bold',
-                                  color: '#014B7E',
-                                  marginTop: '15px',
+                                  borderRadius: '8px',
+                                  // border: '1px solid lightgray',
                                 }}
-                              >
-                                {item.chapter_name}
-                              </Typography>
+                              />
                             </Grid>
-                            {console.log('Publication on',`${moment(item?.created_at).format('MM-DD-YYYY')}`)}
-                            <Grid item md={12} xs={12}>
-                              <Typography
-                                style={{
-                                  fontSize: '9px',
-                                  color: '#042955',
-                                  margin: '10px 0',
-                                }}
-                              >
-                                Published on: {`${moment(item?.created_at).format('DD-MM-YYYY')}`}
-                              </Typography>
-                            </Grid>
-                            <Grid item md={12} xs={12}>
-                              <Button
-                                size='small'
-                                color='primary'
-                                variant='contained'
-                                style={{
-                                  width: '100px',
-                                  height: '25px',
-                                  fontSize: '15px',
-                                  borderRadius: '6px',
-                                }}
-                                onClick={() => handleClickOpen(item)}
-                              >
-                                Read
-                              </Button>
+                            <Grid item md={6} xs={6} style={{ textAlign: 'left' }}>
+                              <Grid container spacing={1}>
+                                <Grid
+                                  item
+                                  md={12}
+                                  xs={12}
+                                  style={{
+                                    padding: '0px 10px',
+                                    margin: '0px',
+                                    textAlign: 'right',
+                                  }}
+                                ></Grid>
+                                <Grid item md={12} xs={12}>
+                                  <Typography
+                                    title='wings'
+                                    className={classes.textEffect}
+                                    style={{
+                                      fontSize: '16px',
+                                      fontWeight: 'bold',
+                                      color: '#014B7E',
+                                      marginTop: '15px',
+                                    }}
+                                  >
+                                    {item.chapter_name}
+                                  </Typography>
+                                </Grid>
+                                {console.log(
+                                  'Publication on',
+                                  `${moment(item?.created_at).format('MM-DD-YYYY')}`
+                                )}
+                                <Grid item md={12} xs={12}>
+                                  <Typography
+                                    style={{
+                                      fontSize: '9px',
+                                      color: '#042955',
+                                      margin: '10px 0',
+                                    }}
+                                  >
+                                    Publication on:{' '}
+                                    {`${moment(item?.created_at).format('MM-DD-YYYY')}`}
+                                  </Typography>
+                                </Grid>
+                                <Grid item md={12} xs={12}>
+                                  <Button
+                                    size='small'
+                                    color='primary'
+                                    variant='contained'
+                                    style={{
+                                      width: '100px',
+                                      height: '25px',
+                                      fontSize: '15px',
+                                      borderRadius: '6px',
+                                    }}
+                                    onClick={() => handleClickOpen(item)}
+                                  >
+                                    Read
+                                  </Button>
+                                </Grid>
+                              </Grid>
                             </Grid>
                           </Grid>
-                        </Grid>
+                        </Card>
                       </Grid>
-                    </Card>
-                  </Grid>
-                );
-              })}
+                    );
+                  })}
+              </>
+            )}
           </Grid>
         </Paper>
         <Dialog
@@ -255,6 +282,36 @@ const ChapterBook = (props) => {
             </Grid>
           </Grid>
         </Dialog>
+        {/* {booksData.length === 0 && !loading && (
+          <Grid container spacing={3}>
+            <Grid item md={12} xs={12}>
+              <div className={classes.chapterImage}>
+                <SvgIcon component={() => <img src={unfiltered} alt='crash' />} />
+                <Typography
+                  variant='h6'
+                  color='secondary'
+                  className={classes.chapternotfound}
+                >
+                  NO DATA FOUND
+                </Typography>
+              </div>
+            </Grid>
+          </Grid>
+        )} */}
+        {booksData.length === 0 && !loading && (
+          <Grid container direction='column' spacing={2} alignItems='center'>
+            <Grid>
+              {' '}
+              <img src={unfiltered} alt='crash' />
+            </Grid>
+            <Grid>
+              <Typography variant='h6' color='secondary'>
+                {' '}
+                NO DATA FOUND
+              </Typography>
+            </Grid>
+          </Grid>
+        )}
         {booksData && (
           <Grid item xs={12} md={12} style={{ textAlign: 'center' }}>
             <Pagination
