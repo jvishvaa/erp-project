@@ -89,7 +89,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
   }, []);
 
   function handleClear() {
-    // handleFilter();
+    handleFilter();
     setSelectedAcad('');
     setSelectedVolume('');
     setGradeList([]);
@@ -146,7 +146,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
               setSelectedBranch(value);
               if (value) {
                 withAxiosInstance(
-                  `${endpoints.ebook.EbookMappedGrade}?session_year=${
+                  `${endpoints.ibook.ibookMappedGrade}?session_year=${
                     selectedAcad?.id
                   }&branch_id=${value.branch.id}&module_id=${
                     getModuleInfo('Ebook View').id
@@ -178,7 +178,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
             onChange={(event, value) => {
               if (value) {
                 withAxiosInstance(
-                  `${endpoints.ebook.EbookMappedGrade}?branch_id=${selectedBranch.branch.id}&grade_id=${value.erp_grade}`,
+                  `${endpoints.ibook.ibookMappedGrade}?branch_id=${selectedBranch.branch.id}&grade_id=${value.erp_grade}`,
                   'subject'
                 );
               }

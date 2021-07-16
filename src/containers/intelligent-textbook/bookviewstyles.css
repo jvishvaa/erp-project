@@ -1,0 +1,56 @@
+period_card_menu {
+  cursor: pointer;
+  position: relative;
+}
+.period_card_menu .tooltiptext {
+  visibility: hidden;
+  width: 80px;
+  height: auto;
+  /* display: flex; */
+  flex-direction: column;
+  background-color: #f9f9f9;
+  color: #ff6b6b;
+  text-align: left;
+  border-radius: 10px;
+  border: 1px solid #ff6b6b;
+  padding: 10px 10px;
+  position: absolute;
+  z-index: 1;
+  top: 135%;
+  left: 10%;
+  margin-left: -60px;
+  margin-top: -10px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.period_card_menu .tooltiptext::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: 20px;
+  border-width: 3px;
+  border-style: solid;
+  border-color: transparent transparent #ff6b6b transparent;
+}
+
+.period_card_menu:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltiptext {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  text-align: center !important;
+}
+.tooltiptext > div:hover {
+  background-color: lightpink;
+  border-radius: 5px !important;
+}
+.tooltipContainer {
+  display: flex;
+  flex-direction: column;
+}
