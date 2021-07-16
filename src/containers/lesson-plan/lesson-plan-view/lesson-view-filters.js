@@ -82,8 +82,8 @@ const LessonViewFilters = ({
     setCentralGsMappingId();
     setCentralSubjectName('');
     setCentralGradeName('');
-    if(defaultAcademicYear){
-      handleAcademicYear("",defaultAcademicYear)
+    if (defaultAcademicYear) {
+      handleAcademicYear('', defaultAcademicYear);
     }
   };
 
@@ -279,7 +279,7 @@ const LessonViewFilters = ({
           `${endpoints.lessonPlan.overviewSynopsis}?volume=${filterData.volume.id}&grade_subject_mapping_id=${centralGsMappingId}&academic_year_id=${filterData.year.id}`,
           {
             headers: {
-              Authorization: 'Bearer ' + token
+              Authorization: 'Bearer ' + token,
             },
           }
         )
@@ -291,10 +291,10 @@ const LessonViewFilters = ({
           }
         })
         .catch((error) => {
-          if ( error.message === 'Request failed with status code 402' ){
-            setAlert('error', 'Access Error')
+          if (error.message === 'Request failed with status code 402') {
+            setAlert('error', 'Access Error');
           } else {
-          setAlert('error', error?.message);
+            setAlert('error', error?.message);
           }
         });
     } else {
@@ -318,16 +318,14 @@ const LessonViewFilters = ({
     axiosInstance
       .get(`${endpoints.userManagement.academicYear}?module_id=${getModuleId()}`)
       .then((res) => {
-        if (res?.data?.status_code === 200) 
-        {
+        if (res?.data?.status_code === 200) {
           setAcademicYear(res?.data?.data);
           // setDefaultAcademicYear(res?.data?.current_acad_session_data[0])
           // if(academicYear){
           //   handleAcademicYear("",res?.data?.current_acad_session_data[0])
           // }
         }
-      }
-      )
+      })
       .catch((error) => {
         setAlert('error ', error?.message);
       });
@@ -342,12 +340,12 @@ const LessonViewFilters = ({
         if (result?.data?.status_code === 200) {
           // const defaultValue=result?.data?.result?.results?.[3];
           // handleAcademicYear({},defaultValue);
-         setAcademicYearDropdown(result?.data?.result?.results);
-          setDefaultAcademicYear(result?.data?.current_acad_session_data[0])
-          if(academicYear && academicYearDropdown){
-            handleAcademicYear("",result?.data?.current_acad_session_data[0])
+          setAcademicYearDropdown(result?.data?.result?.results);
+          setDefaultAcademicYear(result?.data?.current_acad_session_data[0]);
+          if (academicYear && academicYearDropdown) {
+            handleAcademicYear('', result?.data?.current_acad_session_data[0]);
           }
-          } else {
+        } else {
           setAlert('error', result?.data?.message);
         }
       })
@@ -406,7 +404,7 @@ const LessonViewFilters = ({
           setAlert('error', error.message);
         });
     }
-  }, [filterData.year,academicYear]);
+  }, [filterData.year, academicYear]);
 
   return (
     <Grid
@@ -602,7 +600,7 @@ const LessonViewFilters = ({
         </Button>
       </Grid>
       {overviewSynopsis?.map((obj) => (
-        <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+        <Grid item xs={6} sm={4} className={isMobile ? '' : 'addButtonPadding'}>
           <a
             className='underlineRemove'
             // href={`${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${centralGradeName}/${centralSubjectName}/pdf/${obj?.media_file[0]}`}
@@ -617,7 +615,9 @@ const LessonViewFilters = ({
                     // name: `${obj.lesson_type === '1'?'Synopsis':'Overview'}`,
                     name: `${
                       obj.lesson_type === '1'
-                        ? 'Portion Document'
+                        ? location.pathname === '/lesson-plan/teacher-view'
+                          ? 'Portion Document'
+                          : ''
                         : 'Yearly Curriculum on the ERP (new)'
                     }`,
                     extension: '.' + fileSrc.split('.')[fileSrc.split('.').length - 1],
@@ -630,21 +630,28 @@ const LessonViewFilters = ({
               {/* <div className="overviewSynopsisTag">{obj.lesson_type === '1' ? 'Synopsis' : 'Overview'}</div> */}
               <div className='overviewSynopsisTag'>
                 {obj.lesson_type === '1'
-                  ? 'Portion Document'
+                  ? location.pathname === '/lesson-plan/teacher-view'
+                    ? 'Portion Document'
+                    : ''
                   : 'Yearly Curriculum on the ERP (new)'}
               </div>
-              <div className='overviewSynopsisIcon'>
-                <SvgIcon
-                  component={() => (
-                    // <img
-                    //     style={{ height: '25px', width: '25px' }}
-                    //     src={download}
-                    //     title={`Download ${obj.lesson_type === '1' ? 'Synopsis' : 'Overview'}`}
-                    // />
-                    <VisibilityIcon color='primary' />
-                  )}
-                />
-              </div>
+              {location.pathname === '/lesson-plan/teacher-view' ||
+              obj.lesson_type === '2' ? (
+                <div className='overviewSynopsisIcon'>
+                  <SvgIcon
+                    component={() => (
+                      // <img
+                      //     style={{ height: '25px', width: '25px' }}
+                      //     src={download}
+                      //     title={`Download ${obj.lesson_type === '1' ? 'Synopsis' : 'Overview'}`}
+                      // />
+                      <VisibilityIcon color='primary' />
+                    )}
+                  />
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           </a>
         </Grid>
