@@ -10,7 +10,6 @@ import {
 } from '@material-ui/core';
 import CountdownTimer from './CountdownTimer';
 import { withRouter } from 'react-router-dom';
-// import './style.scss';
 import { Pagination } from '@material-ui/lab';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
@@ -52,7 +51,7 @@ const ErpAdminViewClass = ({ history }) => {
   const [filterList, setFilterList] = useState([]);
   const [selectedViewMore, setSelectedViewMore] = useState('');
   const viewMoreRef = useRef(null);
-  const limit = 9;
+  const limit = 12;
   const [tabValue, setTabValue] = useState(
     JSON.parse(localStorage.getItem('filterData'))?.tabValue || null
   );
@@ -67,7 +66,6 @@ const ErpAdminViewClass = ({ history }) => {
     { id: 2, type: 'Special Class' },
     { id: 3, type: 'Parent Class' },
   ]);
-  const [index, setIndex] = useState(0);
   const [selectedClassType, setSelectedClassType] = useState('');
   const [moduleId, setModuleId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -140,10 +138,8 @@ const ErpAdminViewClass = ({ history }) => {
           date = [moment().subtract(6, 'days'), moment()],
           page: pageNumber = 1,
           tabValue: tabVal = 0,
-          index: indexVal = 0,
         } = JSON.parse(localStorage.getItem('filterData')) || {};
         setPage(pageNumber);
-        setIndex(indexVal);
         setTabValue(tabVal);
         if (classtype?.id >= 0) {
           setSelectedClassType(classtype);
@@ -263,16 +259,9 @@ const ErpAdminViewClass = ({ history }) => {
             setTotalCount(result?.data?.count);
             let data = JSON.parse(localStorage.getItem('filterData')) || '';
             const response = result?.data?.data || [];
-            const transformedObject = {};
-            Object.entries(response).forEach(([key, array]) => {
-              if (Array.isArray(array)) {
-                transformedObject[key] = [
-                  ...new Map(array.map((item) => [item['id'], item])).values(),
-                ];
-              }
-            });
-            setTotalData(transformedObject);
-            handleTabData(transformedObject);
+
+            setTotalData(response);
+            setFilterList(response);
             setSelectedViewMore('');
             const viewData = JSON.parse(localStorage.getItem('viewMoreData')) || '';
             if (viewData?.id) {
@@ -309,7 +298,7 @@ const ErpAdminViewClass = ({ history }) => {
             studentDetails.role_details.erp_user_id
           }&page_number=${page}&page_size=${limit}&class_type=${
             selectedClassType?.id
-          }&module_id=${moduleId}`,
+          }&class_status=${tabValue + 1}&module_id=${moduleId}`,
           'filter'
         );
       }
@@ -327,7 +316,9 @@ const ErpAdminViewClass = ({ history }) => {
               'YYYY-MM-DD'
             )}&end_date=${endDateTechPer?.format('YYYY-MM-DD')}&course_id=${
               selectedCourse?.id
-            }&page_number=${page}&page_size=${limit}&module_id=${moduleId}`,
+            }&page_number=${page}&page_size=${limit}&class_status=${
+              tabValue + 1
+            }&module_id=${moduleId}`,
             'filter'
           );
         } else {
@@ -342,7 +333,9 @@ const ErpAdminViewClass = ({ history }) => {
               'YYYY-MM-DD'
             )}&end_date=${endDateTechPer?.format(
               'YYYY-MM-DD'
-            )}&page_number=${page}&page_size=${limit}&module_id=${moduleId}`,
+            )}&page_number=${page}&page_size=${limit}&class_status=${
+              tabValue + 1
+            }&module_id=${moduleId}`,
             'filter'
           );
         }
@@ -376,7 +369,9 @@ const ErpAdminViewClass = ({ history }) => {
               'YYYY-MM-DD'
             )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${
               selectedCourse?.id
-            }&page_number=${page}&page_size=${limit}&module_id=${moduleId}`,
+            }&page_number=${page}&page_size=${limit}&class_status=${
+              tabValue + 1
+            }&module_id=${moduleId}`,
             'filter'
           );
         } else if (selectedSubject?.length > 0) {
@@ -391,7 +386,9 @@ const ErpAdminViewClass = ({ history }) => {
               'YYYY-MM-DD'
             )}&end_date=${endDateTechPer.format(
               'YYYY-MM-DD'
-            )}&page_number=${page}&page_size=${limit}&module_id=${moduleId}`,
+            )}&page_number=${page}&page_size=${limit}&class_status=${
+              tabValue + 1
+            }&module_id=${moduleId}`,
             'filter'
           );
         }
@@ -407,12 +404,12 @@ const ErpAdminViewClass = ({ history }) => {
             studentDetails.role_details.erp_user_id
           }&page_number=${page}&page_size=${limit}&class_type=${
             selectedClassType?.id
-          }&module_id=${moduleId}`,
+          }&class_status=${tabValue + 1}&module_id=${moduleId}`,
           'filter'
         );
       }
     }
-  }, [page, selectedClassType]);
+  }, [page, selectedClassType, tabValue]);
 
   function handleClearFilter() {
     localStorage.removeItem('filterData');
@@ -437,17 +434,20 @@ const ErpAdminViewClass = ({ history }) => {
 
   function handleFilter() {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
+    setPage(()=>1);
     setTabValue(0);
+    setSelectedViewMore(()=>'');
+    localStorage.removeItem('viewMoreData');
+    localStorage.removeItem('filterData');
     if (window.location.pathname === '/erp-online-class-student-view') {
-      // setAlert('warning', 'studentView');
       callApi(
         `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
           studentDetails &&
           studentDetails.role_details &&
           studentDetails.role_details.erp_user_id
-        }&page_number=${page}&page_size=${limit}&class_type=${
+        }&page_number=${1}&page_size=${limit}&class_type=${
           selectedClassType?.id
-        }&module_id=${moduleId}`,
+        }&class_status=${1}&module_id=${moduleId}`,
         'filter'
       );
     } else {
@@ -483,9 +483,6 @@ const ErpAdminViewClass = ({ history }) => {
         }
       }
       setLoading(true);
-      setPage(1);
-
-      localStorage.removeItem('viewMoreData');
       localStorage.setItem(
         'filterData',
         JSON.stringify({
@@ -512,7 +509,7 @@ const ErpAdminViewClass = ({ history }) => {
             endDateTechPer
           ).format('YYYY-MM-DD')}&course_id=${
             selectedCourse?.id
-          }&page_number=${page}&page_size=${limit}&module_id=${moduleId}`,
+          }&page_number=${1}&page_size=${limit}&class_status=${1}&module_id=${moduleId}`,
           'filter'
         );
       } else {
@@ -527,20 +524,12 @@ const ErpAdminViewClass = ({ history }) => {
             endDateTechPer
           ).format(
             'YYYY-MM-DD'
-          )}&module_id=${moduleId}&page_number=${page}&page_size=${limit}`,
+          )}&class_status=${1}&module_id=${moduleId}&page_number=${1}&page_size=${limit}`,
           'filter'
         );
       }
     }
   }
-
-  // function handleDate(v1) {
-  // if (v1 && v1.length !== 0) {
-  // setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
-  // setEndDate(moment(new Date(v1[1])).format('YYYY-MM-DD'));
-  // }
-  // setDateRangeTechPer(v1);
-  // }
   const handleDownload = async () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     try {
@@ -727,29 +716,6 @@ const ErpAdminViewClass = ({ history }) => {
     setTabValue(0);
   };
 
-  const handleTabData = (param1 = '') => {
-    const onlineClassData = param1 || totalData;
-    const {
-      today = [],
-      upcoming = [],
-      completed = [],
-      cancelled = [],
-    } = onlineClassData || {};
-    if (tabValue === 0) setFilterList(today);
-    if (tabValue === 1) setFilterList(upcoming);
-    if (tabValue === 2) setFilterList(completed);
-    if (tabValue === 3) setFilterList(cancelled);
-    let data = JSON.parse(localStorage.getItem('filterData')) || '';
-    localStorage.setItem('filterData', JSON.stringify({ ...data, tabValue }));
-  };
-
-  useEffect(() => {
-    if (tabValue >= 0 && totalData) {
-      handleTabData();
-      setSelectedViewMore('');
-    }
-  }, [tabValue]);
-
   return (
     <>
       <Layout>
@@ -758,25 +724,28 @@ const ErpAdminViewClass = ({ history }) => {
           <Grid item md={12} xs={12}>
             <Grid container spacing={2} justify='middle' className='signatureNavDiv'>
               <Grid item md={12} xs={12} style={{ display: 'flex' }}>
-                <CommonBreadcrumbs componentName='Online Class'
-                //    <button
-                //   type='button'
-                //   className='SignatureNavigationLinks'
-                //   onClick={() => history.push('/dashboard')}
-                // >
-                //   Dashboard
-                // </button>
-                // <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                // <span className='SignatureNavigationLinks'>Online Class</span>
-                // <ArrowForwardIosIcon className='SignatureUploadNavArrow' /> 
-                //    <span className='SignatureNavigationLinks'> 
-                  childComponentName={window.location.pathname === '/erp-online-class'
-                    ? 'Online Class View' :
-                    window.location.pathname === '/erp-online-class-teacher-view'
-                    ? 'Teacher Class View' :
-                    window.location.pathname === '/erp-online-class-student-view'
-                    ?  'Student Class View' 
-                    : ''}
+                <CommonBreadcrumbs
+                  componentName='Online Class'
+                  //    <button
+                  //   type='button'
+                  //   className='SignatureNavigationLinks'
+                  //   onClick={() => history.push('/dashboard')}
+                  // >
+                  //   Dashboard
+                  // </button>
+                  // <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
+                  // <span className='SignatureNavigationLinks'>Online Class</span>
+                  // <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
+                  //    <span className='SignatureNavigationLinks'>
+                  childComponentName={
+                    window.location.pathname === '/erp-online-class'
+                      ? 'Online Class View'
+                      : window.location.pathname === '/erp-online-class-teacher-view'
+                      ? 'Teacher Class View'
+                      : window.location.pathname === '/erp-online-class-student-view'
+                      ? 'Student Class View'
+                      : ''
+                  }
                 />
               </Grid>
             </Grid>
@@ -817,7 +786,6 @@ const ErpAdminViewClass = ({ history }) => {
                       value={selectedAcademicYear || ''}
                       options={academicYear || []}
                       getOptionLabel={(option) => option?.session_year || ''}
-                      // filterSelectedOptions
                       getOptionSelected={(option, value) => option?.id == value?.id}
                       renderInput={(params) => (
                         <TextField
@@ -840,7 +808,6 @@ const ErpAdminViewClass = ({ history }) => {
                       value={selectedBranch || []}
                       options={branchList || []}
                       getOptionLabel={(option) => option?.branch?.branch_name || ''}
-                      // filterSelectedOptions
                       getOptionSelected={(option, value) =>
                         option?.branch?.id == value?.branch?.id
                       }
@@ -866,7 +833,6 @@ const ErpAdminViewClass = ({ history }) => {
                       value={selectedGrade || []}
                       options={gradeList || []}
                       getOptionLabel={(option) => option?.grade__grade_name || ''}
-                      // filterSelectedOptions
                       getOptionSelected={(option, value) => option?.id == value?.id}
                       renderInput={(params) => (
                         <TextField
@@ -890,7 +856,6 @@ const ErpAdminViewClass = ({ history }) => {
                       value={selectedSection || []}
                       options={sectionList || []}
                       getOptionLabel={(option) => option?.section__section_name || ''}
-                      // filterSelectedOptions
                       getOptionSelected={(option, value) => option?.id == value?.id}
                       renderInput={(params) => (
                         <TextField
@@ -916,7 +881,6 @@ const ErpAdminViewClass = ({ history }) => {
                         options={subjectList}
                         limitTags={2}
                         getOptionLabel={(option) => option?.subject__subject_name}
-                        // filterSelectedOptions
                         getOptionSelected={(option, value) => option?.id == value?.id}
                         renderInput={(params) => (
                           <TextField
@@ -976,18 +940,15 @@ const ErpAdminViewClass = ({ history }) => {
                                   )}`,
                                   readOnly: true,
                                   endAdornment: (
-                                    // <InputAdornment position="end">
                                     <IconButton>
                                       <DateRangeIcon
                                         style={{ width: '35px' }}
                                         color='primary'
                                       />
                                     </IconButton>
-                                    // </InputAdornment>
                                   ),
                                 }}
                                 size='small'
-                                // style={{ minWidth: '100%' }}
                               />
                             </>
                           );
@@ -1018,7 +979,7 @@ const ErpAdminViewClass = ({ history }) => {
                     style={{ color: 'white' }}
                     color='primary'
                     className='custom_button_master'
-                    onClick={() => handleFilter()}
+                    onClick={() => handleFilter( )}
                   >
                     Get Classes
                   </Button>
@@ -1043,7 +1004,12 @@ const ErpAdminViewClass = ({ history }) => {
             <Grid container spacing={2}>
               {totalData && (
                 <Grid item md={12} xs={12} className='teacherBatchViewLCardList'>
-                  <TabPanel tabValue={tabValue} setTabValue={setTabValue} />
+                  <TabPanel
+                    tabValue={tabValue}
+                    setTabValue={setTabValue}
+                    setPage={setPage}
+                    setSelectedViewMore={setSelectedViewMore}
+                  />
                 </Grid>
               )}
               {window.location.pathname !== '/erp-online-class-student-view' && (
@@ -1098,12 +1064,10 @@ const ErpAdminViewClass = ({ history }) => {
                           {filterList &&
                             filterList.length !== 0 &&
                             filterList.map((item, i) => (
-                              <Grid item md={selectedViewMore ? 6 : 4} xs={12}>
+                              <Grid item md={selectedViewMore ? 4 : 3} xs={12}>
                                 <CardView
                                   tabValue={tabValue}
                                   fullData={item}
-                                  index={i}
-                                  setIndex={setIndex}
                                   handleViewMore={setSelectedViewMore}
                                   selectedViewMore={selectedViewMore || {}}
                                 />
@@ -1115,7 +1079,6 @@ const ErpAdminViewClass = ({ history }) => {
                         <Grid item md={selectedViewMore ? 4 : 0} xs={12}>
                           <DetailCardView
                             tabValue={tabValue}
-                            index={index}
                             loading={loading}
                             setLoading={setLoading}
                             fullData={selectedViewMore}
@@ -1127,15 +1090,22 @@ const ErpAdminViewClass = ({ history }) => {
                         </Grid>
                       )}
                     </Grid>
-                    <div className='paginateData paginateMobileMargin'>
-                      <Pagination
-                        onChange={handlePagination}
-                        style={{ marginTop: 25 }}
-                        count={Math.ceil(totalCount / limit)}
-                        color='primary'
-                        page={page}
-                      />
-                    </div>
+
+                    <Grid
+                      container
+                      spacing={3}
+                      className='paginateData paginateMobileMargin'
+                    >
+                      <Grid item md={12}>
+                        <Pagination
+                          onChange={handlePagination}
+                          style={{ marginTop: 25, marginLeft: 500 }}
+                          count={Math.ceil(totalCount / limit)}
+                          color='primary'
+                          page={page}
+                        />
+                      </Grid>
+                    </Grid>
                   </Grid>
                 </Grid>
               )}

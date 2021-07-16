@@ -415,7 +415,7 @@ function App({ alert }) {
                           <Route path='/homework/student-report'>
                             {({ match }) => <StudentHomeworkReport match={match} />}
                           </Route>
-                          <Route path='/erp-online-class/class-work/:param1/:param2'>
+                          <Route path='/erp-online-class/class-work/:param1/:param2/:param3'>
                             {({ match }) => <ClassWork match={match} />}
                           </Route>
                           {/*

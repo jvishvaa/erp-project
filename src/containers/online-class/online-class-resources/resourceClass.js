@@ -7,7 +7,8 @@ import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { useLocation } from 'react-router-dom';
-
+import '../../teacherBatchView/style.scss';
+import '../erp-view-class/admin/index.css'
 const StyledButton = withStyles({
     root: {
         height: '31px',
@@ -29,11 +30,24 @@ export default function ResourceClassComponent(props) {
     const [ isUpload, setIsUpload ] = React.useState(0);
     const [ hideButton, setHideButton ] = React.useState(false);
     const { setAlert } = useContext(AlertNotificationContext);
-    const location = useLocation();
     
+    const location = useLocation();
+    const getClassName = () => {
+       
+        let classIndex= props.classIndex;
+        
+        
+        return [
+          `teacherBatchFullViewMainCard${classIndex}`,
+          `teacherBatchFullViewHeader${classIndex}`,
+          `addTextColor${classIndex}`,
+          `darkButtonBackground${classIndex}`,
+        ];
+      };
     const handleIsUpload = () => {
         setIsUpload(isUpload + 1);
     }
+    
 
     let uploadModal = null;
     if (isModalOpen) {
@@ -57,25 +71,19 @@ export default function ResourceClassComponent(props) {
     const handleDownload = (e) => {
         e.preventDefault();
         const download = (path) => {
-            //console.log(path);
-             //window.location.href=path;
             window.open(path, '_blank');
         }
         const downloadFilePath = (files) => {
             files.map((file) => download(`${endpoints.discussionForum.s3}/${file}`));
         }
         isDownload && isDownload.map((path) => downloadFilePath(path.files));
-        /** 
-        isDownload && isDownload.map((path,i) => {
-            //path.files && path.files && path.files.map((file, i) => window.location.href=(`${endpoints.s3}/${file}`));
-            path.files && path.files.map((file, i) => download(`${endpoints.s3}/${file}`));
-        })
-        */
+        
     }
 
     React.useEffect(() => {
         const params = {
             online_class_id: props.resourceId,
+            
             class_date: moment(props.date).format('DD-MM-YYYY')
         };
         setHideButton(false);
@@ -88,15 +96,17 @@ export default function ResourceClassComponent(props) {
                     }
                 })
             }
-            //res.data.result.lenght > 0 && 
+           
             setIsDownload(res.data.result);
             setIsDown(res.data.status_code);
+            
         })
         .catch((error) => console.log(error))
     },[props.date, isUpload]);
 
     return (
         <>
+        
             <Grid  container spacing={1} style={{marginTop: '10px'}}>
                 <Grid item xs={hideButton && isDown === 200 ? 4 : 6} >
                     <Typography>
@@ -107,6 +117,7 @@ export default function ResourceClassComponent(props) {
                     <StyledButton
                         onClick={handleClick}
                         color="primary"
+                        className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
                     >
                         Upload
                     </StyledButton>
@@ -114,9 +125,8 @@ export default function ResourceClassComponent(props) {
                 {hideButton && isDown === 200 && (
                     <Grid item xs={4}>
                         <StyledButton
-                            //href={`${endpoints.s3}/${isDownload.length > 0  ? isDownload[0]?.files[0] : ''}`}
-                            //href={isDownload && isDownload.map((path) => (`${endpoints.s3}/${files && files[0]}`))}
                             onClick={handleDownload}
+                            className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
                             color="primary"
                         >
                             Download
