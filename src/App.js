@@ -283,7 +283,7 @@ import MultiplayerQuiz from './components/mp-quiz';
 import StudentAttendance from 'containers/online-class/student-attendance/StudentAttendance';
 import HomeWorkReportTeacher from 'containers/homework/homework-report/homework-teacher/HomeWorkReportTeacher';
 import StudentClassWorkReport from 'containers/Classwork/StudentClassWork';
-
+import Setting from './containers/settings/setting';
 //intelligent text book
 import BookView from 'containers/intelligent-textbook/BookView';
 import ViewiChapter from 'containers/intelligent-textbook/ViewiChapter';
@@ -291,13 +291,44 @@ import ViewiBook from './containers/intelligent-textbook/ViewiBook';
 import AllBooksPage from 'containers/intelligent-textbook/bookpage/AllBooksPage';
 import ChapterBook from 'containers/intelligent-textbook/chapterpage/ChapterBook';
 
+let temp = localStorage.getItem("themeDetails")
+let primarytemp = ""
+let secondrytemp = "";
+
+
+(function () {
+  if (temp === null) {
+
+    primarytemp = '#ff6b6b';
+    secondrytemp = '#014b7e';
+
+  }
+  else {
+    const themeDetails = JSON.parse(temp)
+    themeDetails.forEach((ele) => {
+      if (ele.theme_key === "primary_color") {
+        primarytemp = ele.theme_value
+      }
+      else {
+        secondrytemp = ele.theme_value
+      }
+
+    })
+  }
+
+})();
+
 const theme = createMuiTheme({
   palette: {
     primary: {
       main: '#ff6b6b',
+      // main: '#ff6b6b',
+      main: primarytemp || '#ff6b6b',
     },
     secondary: {
       main: '#014b7e',
+      // main: '#ff6b6b',
+      main: secondrytemp || '#014b7e',
     },
     text: {
       default: '#014b7e',
@@ -1454,6 +1485,9 @@ function App({ alert }) {
 
                           <Route exact path='/intelligent-book/chapter-view'>
                             {({ match }) => <ViewiChapter match={match} />}
+                          </Route>
+                          <Route exact path='/setting'>
+                            {({ match }) => <Setting match={match} />}
                           </Route>
                         </Switch>
                       </DailyDairyStore>
