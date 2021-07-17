@@ -34,6 +34,9 @@ export default {
     markAttendance: '/academic/bulk_create_attendance/',
     students: '/academic/get_student_list/',
   },
+  appBar:{
+    schoolLogo:`${baseURLCentral}/central-admin/school_logo/`
+  },
   profile: {
     userDetails: '/erp_user/user-data/',
   },
@@ -461,6 +464,12 @@ export default {
   },
   attendanceTeacherView: {
     getTeacherAttendanceView: '/academic/teacher-attendance-by-subject/',
+  },
+  central_logoupdateAPI :{
+    school_logo : `${baseURLCentral}/central-admin/update_school_logo/`
+  },
+  themeAPI : {
+    school_theme : `/schools/school_theme/`
   },
   orchadio: {
     audioUpload: '/academic/orchadio-upload/',
