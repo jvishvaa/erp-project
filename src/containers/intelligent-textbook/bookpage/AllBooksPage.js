@@ -26,7 +26,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import noimg from '../../../assets/images/book-icon.jpg';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import moment from 'moment';
-import Filter from '../filter';
+import Filter from '../filter.jsx';
 
 const useStyles = makeStyles((theme) => ({
   root: {
