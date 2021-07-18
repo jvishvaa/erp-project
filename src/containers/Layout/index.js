@@ -76,6 +76,22 @@ import PublishIcon from '@material-ui/icons/Publish';
 import axios from 'axios';
 export const ContainerContext = createContext();
 
+const AppBarProfileIcon = ({ imageSrc = '' }) => {
+  const [isBrokenImg, setIsBrokenImg] = useState(false);
+
+  if (!isBrokenImg && imageSrc) {
+    return (
+      <img
+        src={imageSrc}
+        alt=''
+        className='profile_img'
+        onError={() => setIsBrokenImg(true)}
+      />
+    );
+  } else {
+    return <AccountCircle style={{ fontSize: '35px' }} color='primary' />;
+  }
+};
 const Layout = ({ children, history }) => {
   const containerRef = useRef(null);
   const dispatch = useDispatch();
@@ -1408,15 +1424,7 @@ const Layout = ({ children, history }) => {
                 color='inherit'
                 className={classes.loginAvatar}
               >
-                {roleDetails && roleDetails.user_profile ? (
-                  <img
-                    src={roleDetails.user_profile}
-                    alt='no img'
-                    className='profile_img'
-                  />
-                ) : (
-                  <AccountCircle style={{ fontSize: '35px' }} color='primary' />
-                )}
+                <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
                 {/* {profileOpen ? <ExpandLess /> : <ExpandMore />} */}
               </IconButton>
               {/* <IconButton 
