@@ -17,21 +17,6 @@
   top:0%;
   position: sticky;
 }
-/* 
-.takeQuizButton.MuiButton-root {
-  color: #FFFFFF;
-  background-color: #344ADE;
-  border-radius: 8px;
-  word-wrap: break-word;
-}
-
-.classworkButton.MuiButton-root {
-  color: #FFFFFF;
-  background-color: #344ADE;
-  border-radius: 8px;
-  word-wrap: break-word;
-}
- */
 .countdownTimerWrapper {
   margin-right: 10px;
   text-align: right;

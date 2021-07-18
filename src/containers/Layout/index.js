@@ -64,7 +64,7 @@ import './styles.scss';
 import logoMobile from '../../assets/images/logo_mobile.png';
 import online_classpng from '../../assets/images/Online classes-01.svg';
 import logo from '../../assets/images/logo.png';
-import orchidsPlaceholderLogo from '../../assets/images/orchidsPlaceholderLogo2x.png'
+import orchidsPlaceholderLogo from '../../assets/images/orchidsPlaceholderLogo2x.png';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
@@ -73,10 +73,26 @@ import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserInfo from '../../components/user-info';
 import PublishIcon from '@material-ui/icons/Publish';
-
+import axios from 'axios';
 export const ContainerContext = createContext();
 
-const Layout = ({ children, history}) => {
+const AppBarProfileIcon = ({ imageSrc = '' }) => {
+  const [isBrokenImg, setIsBrokenImg] = useState(false);
+
+  if (!isBrokenImg && imageSrc) {
+    return (
+      <img
+        src={imageSrc}
+        alt=''
+        className='profile_img'
+        onError={() => setIsBrokenImg(true)}
+      />
+    );
+  } else {
+    return <AccountCircle style={{ fontSize: '35px' }} color='primary' />;
+  }
+};
+const Layout = ({ children, history }) => {
   const containerRef = useRef(null);
   const dispatch = useDispatch();
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -103,6 +119,7 @@ const Layout = ({ children, history}) => {
   const [userId, setUserId] = useState();
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const [centralSchoolLogo, setCentralSchoolLogo] = useState('');
   const getGlobalUserRecords = async (text) => {
     try {
       const result = await axiosInstance.get(
@@ -189,13 +206,54 @@ const Layout = ({ children, history}) => {
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
- 
+
+  const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
+  const hostSplitArray = host.split('.');
+  const subDomainLevels = hostSplitArray.length - 2;
+  let domain = '';
+  let subDomain = '';
+  let subSubDomain = '';
+  if (hostSplitArray.length > 2) {
+    domain = hostSplitArray.slice(hostSplitArray.length - 2).join('');
+  }
+  if (subDomainLevels === 2) {
+    subSubDomain = hostSplitArray[0];
+    subDomain = hostSplitArray[1];
+  } else if (subDomainLevels === 1) {
+    subDomain = hostSplitArray[0];
+  }
+
+  const domainTobeSent = subDomain;
+
+  useEffect(() => {
+    const schoolData = localStorage.getItem('schoolDetails');
+    if (schoolData === null) {
+      const headers = {
+        'x-api-key': 'vikash@12345#1231',
+      };
+      axios
+        .get(`${endpoints.appBar.schoolLogo}?school_sub_domain_name=${domainTobeSent}`, {
+          headers,
+        })
+        .then((response) => {
+          const appBarLocalStorage = response.data.data;
+          localStorage.setItem('schoolDetails', JSON.stringify(appBarLocalStorage));
+          setCentralSchoolLogo(response.data.data.school_logo);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      const logo = JSON.parse(schoolData);
+      setCentralSchoolLogo(logo.school_logo);
+    }
+  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
-    if (JSON.parse(localStorage.getItem('rememberDetails'))) {
+    const list = ['rememberDetails'];
+    const isPresent = JSON.parse(localStorage.getItem('rememberDetails'));
+    if (isPresent) {
       Object.keys(localStorage).forEach((key) => {
-        if (key !== 'rememberDetails') localStorage.removeItem(key);
+        if (!list.includes(key)) localStorage.removeItem(key);
       });
     } else localStorage.clear();
     setIsLogout(true);
@@ -287,6 +345,15 @@ const Layout = ({ children, history}) => {
         </IconButton>
         <p style={{ color: '#014B7E' }}>My Profile</p>
       </MenuItem>
+
+      {superUser ? (
+        <MenuItem onClick={(e) => history.push('/setting')}>
+          <IconButton aria-label='settings' color='inherit'>
+            <SettingsIcon color='primary' style={{ fontSize: '2rem' }} />
+          </IconButton>
+          <p style={{ color: '#014B7E' }}>Settings</p>
+        </MenuItem>
+      ) : null}
 
       <MenuItem onClick={handleLogout}>
         <IconButton aria-label='logout button' color='inherit'>
@@ -448,6 +515,10 @@ const Layout = ({ children, history}) => {
         history.push('/ebook/view');
         break;
       }
+      case 'Ibook View': {
+        history.push('/intelligent-book/view');
+        break;
+      }
       case 'Create User': {
         history.push('/user-management/create-user');
         break;
@@ -464,7 +535,7 @@ const Layout = ({ children, history}) => {
         history.push('/user-management/view-users');
         break;
       }
-      
+
       case 'Section Shuffle': {
         history.push('/user-management/section-shuffling');
         break;
@@ -1060,7 +1131,6 @@ const Layout = ({ children, history}) => {
     }
   };
 
-
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
@@ -1096,14 +1166,19 @@ const Layout = ({ children, history}) => {
               <IconButton />
             </Box>
           )}
-          <IconButton
+          {/* <IconButton
             edge='start'
             color='inherit'
             aria-label='open drawer'
             className={clsx(classes.logoBtn, classes.desktopToolbarComponents)}
-          >
-            <img src={logo} alt='logo' style={{ height: '35px' }} />
-          </IconButton>
+          > */}
+          <img
+            src={logo}
+            alt='logo'
+            style={{ height: '35px' }}
+            className={clsx(classes.logoBtn, classes.desktopToolbarComponents)}
+          />
+          {/* </IconButton> */}
           {/* <Divider
             orientation='vertical'
             flexItem
@@ -1130,7 +1205,7 @@ const Layout = ({ children, history}) => {
           {superUser ? (
             <div className={clsx(classes.grow, classes.desktopToolbarComponents)}>
               <Paper component='form' className={classes.searchInputContainer}>
-              <IconButton
+                <IconButton
                   type='submit'
                   className={classes.searchIconButton}
                   aria-label='search'
@@ -1156,7 +1231,6 @@ const Layout = ({ children, history}) => {
                     <CloseIcon />
                   </IconButton>
                 ) : null}
-                
               </Paper>
               <Popper
                 open={searching}
@@ -1315,60 +1389,64 @@ const Layout = ({ children, history}) => {
                   </Fade>
                 )}
               </Popper>
-              </div>
-            
+            </div>
           ) : null}
           <Box display='flex'>
-          {displayUserDetails ? (
-                <UserDetails
-                  close={setDisplayUserDetails}
-                  mobileSearch={setMobileSeach}
-                  userId={userId}
-                  setUserId={setUserId}
-                  setSearching={setSearching}
-                />
-              ) : null}
-              
-              <IconButton className={classes.hideIcon} aria-label='my notifications' color='inherit'>
-              <NotificationsIcon className={classes.notificationsIcon}/>
-              </IconButton>
-            
-          <div
-            className={`${clsx(
-              classes.sectionDesktop,
-              classes.desktopToolbarComponents
-            )} ${superUser ? 'null' : 'layout_user_icon'}`}
-          >
+            {displayUserDetails ? (
+              <UserDetails
+                close={setDisplayUserDetails}
+                mobileSearch={setMobileSeach}
+                userId={userId}
+                setUserId={setUserId}
+                setSearching={setSearching}
+              />
+            ) : null}
+
             <IconButton
-              aria-label='show more'
-              aria-controls={mobileMenuId}
-              aria-haspopup='true'
-              onClick={handleMobileMenuOpen}
+              className={classes.hideIcon}
+              aria-label='my notifications'
               color='inherit'
-              className={classes.loginAvatar}
             >
-              {roleDetails && roleDetails.user_profile ? (
-                <img
-                  src={roleDetails.user_profile}
-                  alt='no img'
-                  className='profile_img'
-                />
-              ) : (
-                <AccountCircle style={{fontSize:'42px'}}/>
-              )}
-              {/* {profileOpen ? <ExpandLess /> : <ExpandMore />} */}
+              <NotificationsIcon className={classes.notificationsIcon} />
             </IconButton>
-            <IconButton 
+
+            <div
+              className={`${clsx(
+                classes.sectionDesktop,
+                classes.desktopToolbarComponents
+              )} ${superUser ? 'null' : 'layout_user_icon'}`}
+            >
+              <IconButton
+                aria-label='show more'
+                aria-controls={mobileMenuId}
+                aria-haspopup='true'
+                onClick={handleMobileMenuOpen}
+                color='inherit'
+                className={classes.loginAvatar}
+              >
+                <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
+                {/* {profileOpen ? <ExpandLess /> : <ExpandMore />} */}
+              </IconButton>
+              {/* <IconButton 
             edge='end'
             //color='inherit'
             aria-label='open drawer'
             className={clsx(classes.schoolLogoBtn, classes.hideIcon, classes.desktopToolbarComponents)}
-          >
-            <img src={orchidsPlaceholderLogo} alt='logo' style={{ height: '35px' }} />
-          </IconButton>
-          </div>
+          > */}
+              <img
+                src={orchidsPlaceholderLogo}
+                alt='logo'
+                style={{ height: '35px' }}
+                className={clsx(
+                  classes.schoolLogoBtn,
+                  classes.hideIcon,
+                  classes.desktopToolbarComponents
+                )}
+              />
+              {/* </IconButton> */}
+            </div>
 
-          {/* <div className={classes.sectionMobile}>
+            {/* <div className={classes.sectionMobile}>
             <IconButton
               aria-label='show more'
               aria-controls={mobileMenuId}
@@ -1465,8 +1543,7 @@ const Layout = ({ children, history}) => {
             onClick={() => setDrawerOpen((prevState) => !prevState)}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-            {drawerOpen ? <CloseIcon /> : <MenuIcon />}
-
+              {drawerOpen ? <CloseIcon /> : <MenuIcon />}
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>

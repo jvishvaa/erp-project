@@ -221,6 +221,8 @@ import { useParams } from 'react-router-dom';
 import './login.css';
 import { login, aolLogin } from '../../redux/actions';
 import Loader from '../../components/loader/loader';
+import axiosInstance from '../../config/axios';
+import endpoints from '../../config/endpoints';
 
 function Copyright() {
   return (
@@ -272,6 +274,51 @@ function SignIn({ onLogin, history, aolOnLogin }) {
   const urlParams = new URLSearchParams(window.location.search);
   const erpSearch = urlParams.get('erp');
 
+  const fetchTheme = () =>{
+    const themeDetails = localStorage.getItem("themeDetails");
+    if (themeDetails===null){
+      axiosInstance
+      .get(`${endpoints.themeAPI.school_theme}`)
+      .then((res) => {
+        if (res.status === 200) {
+
+          const result = res.data.result.data
+          const theme = []
+          result.forEach((item) => {
+            if(item.theme_key === "primary_color")
+            {
+              var primary = {}
+              primary["theme_key"] = item.theme_key
+              primary["theme_value"] = item.theme_value[0]
+              theme.push(primary)
+            }
+            if(item.theme_key === "second_color"){
+              {
+                var second = {}
+                second["theme_key"] = item.theme_key
+                second["theme_value"] = item.theme_value[0]
+                theme.push(second)
+              }
+            }
+          
+          })
+          // var stored = {}
+          localStorage.setItem("themeDetails", JSON.stringify(theme));
+          window.location.href = '/profile';
+        }
+        
+  
+      }).catch((error) => {
+        console.log(error);
+      });
+      
+    }
+    
+
+  
+  }
+
+
   const handleToggler = () => {
     setPasswordFlag((prev) => !prev);
   };
@@ -292,7 +339,8 @@ function SignIn({ onLogin, history, aolOnLogin }) {
       onLogin(params).then((response) => {
         if (response?.isLogin) {
           // history.push('/profile');
-          window.location.href = '/profile';
+          //window.location.href = '/profile';
+          fetchTheme();
         } else {
           setAlert('error', response?.message);
         }

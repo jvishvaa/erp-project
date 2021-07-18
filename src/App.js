@@ -283,14 +283,52 @@ import MultiplayerQuiz from './components/mp-quiz';
 import StudentAttendance from 'containers/online-class/student-attendance/StudentAttendance';
 import HomeWorkReportTeacher from 'containers/homework/homework-report/homework-teacher/HomeWorkReportTeacher';
 import StudentClassWorkReport from 'containers/Classwork/StudentClassWork';
-import ClassWorkTeacherReport from 'containers/Classwork/classwork-report/classwork-report-teacher/ClassWorkTeacherReport';
+import Setting from './containers/settings/setting';
+//intelligent text book
+import BookView from 'containers/intelligent-textbook/BookView';
+import ViewiChapter from 'containers/intelligent-textbook/ViewiChapter';
+import ViewiBook from './containers/intelligent-textbook/ViewiBook';
+import AllBooksPage from 'containers/intelligent-textbook/bookpage/AllBooksPage';
+import ChapterBook from 'containers/intelligent-textbook/chapterpage/ChapterBook';
+
+let temp = localStorage.getItem("themeDetails")
+let primarytemp = ""
+let secondrytemp = "";
+
+
+(function () {
+  if (temp === null) {
+
+    primarytemp = '#ff6b6b';
+    secondrytemp = '#014b7e';
+
+  }
+  else {
+    const themeDetails = JSON.parse(temp)
+    themeDetails.forEach((ele) => {
+      if (ele.theme_key === "primary_color") {
+        primarytemp = ele.theme_value
+      }
+      else {
+        secondrytemp = ele.theme_value
+      }
+
+    })
+  }
+
+})();
+
 const theme = createMuiTheme({
   palette: {
     primary: {
       main: '#ff6b6b',
+      // main: '#ff6b6b',
+      main: primarytemp || '#ff6b6b',
     },
     secondary: {
       main: '#014b7e',
+      // main: '#ff6b6b',
+      main: secondrytemp || '#014b7e',
     },
     text: {
       default: '#014b7e',
@@ -408,7 +446,7 @@ function App({ alert }) {
                           <Route path='/homework/student-report'>
                             {({ match }) => <StudentHomeworkReport match={match} />}
                           </Route>
-                          <Route path='/erp-online-class/class-work/:param1/:param2'>
+                          <Route path='/erp-online-class/class-work/:param1/:param2/:param3'>
                             {({ match }) => <ClassWork match={match} />}
                           </Route>
                           {/*
@@ -1431,14 +1469,25 @@ function App({ alert }) {
                           <Route exact path='/homework-report-teacher-view'>
                             {({ match }) => <HomeWorkReportTeacher match={match} />}
                           </Route>
-                          <Route exact path='/classwork/student-report'>
-                            {({ match }) => <StudentClassWorkReport match={match} />}
+                         
+                          <Route exact path='/intelligent-book/view'>
+                            {({ match }) => <AllBooksPage match={match} />}
                           </Route>
-                          <Route exact path='/classwork-report-teacher-view'>
-                            {({ match }) => <ClassWorkTeacherReport match={match} />}
+                          <Route
+                            exact
+                            path='/intelligent-book/:bookId/:bookUid/:localStorageName/:environment/:type'
+                          >
+                            {({ match }) => <ChapterBook match={match} />}
                           </Route>
-                          <Route exact path='/orchadio/add-orchadio'>
-                            {({ match }) => <AddNewOrchadio match={match} />}
+                          <Route exact path='/intelligent-book/allbooks'>
+                            {({ match }) => <ViewiBook match={match} />}
+                          </Route>
+
+                          <Route exact path='/intelligent-book/chapter-view'>
+                            {({ match }) => <ViewiChapter match={match} />}
+                          </Route>
+                          <Route exact path='/setting'>
+                            {({ match }) => <Setting match={match} />}
                           </Route>
                         </Switch>
                       </DailyDairyStore>
