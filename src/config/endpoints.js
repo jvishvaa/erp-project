@@ -343,7 +343,7 @@ export default {
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
   questionPaper: {
-    FETCHQP: `${baseURLCentral}/assessment/test-list/`,
+    FETCHQP: `/assessment/test-list/`,
     QuestionsInQP: '/mp_quiz/mp_questions_list/',
     AssignQP: '/mp_quiz/',
   },

@@ -101,11 +101,8 @@ const AssignQP = (props) => {
 
       const getQP =  () => {
 
-        axios
+        axiosInstance
       .get(`${endpoints.questionPaper.FETCHQP}`, {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
       })
       .then((result) => {
         if (result.data.status_code === 200) {
