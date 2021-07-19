@@ -10,6 +10,8 @@ import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest'
+import {urls} from '../../../../urls';
+import axios from 'axios';
 // import Select from 'react-select'
 // import { Info } from '@material-ui/icons'
 // import Modal from '../../../../ui/Modal/modal'
@@ -104,6 +106,7 @@ class StudentLedgerTab extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      allowPayment: false,
       value: 'one',
       session: {
         label: '2021-22',
@@ -249,6 +252,7 @@ class StudentLedgerTab extends Component {
       this.state.selectedBranches?.value,
       moduleId,
     )
+
   }
 
   studentErpChangeHandler = (e, selected) => {
@@ -300,8 +304,31 @@ class StudentLedgerTab extends Component {
   //   })
   // }
 
+  CheckPayment = () => {
+    console.log(this.props.studentErp , " student erp ");
+    let user_id = JSON.parse(localStorage.getItem('userDetails')).erp || {};
+    let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
+    axios
+    .get(urls.CheckPayment + '?student=' + this.props.studentErp[0].erp ,{
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }).then((res) => {
+      console.log(res, 'current eventssss');
+    if(res.data.is_allowed === true) {
+      this.showLedgerHandler()
+    }
+    if(res.data.is_allowed === false) {
+      this.props.alert.warning('Student Data is not matching')
+    }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
   showLedgerHandler = () => {
-    if (!this.state.session && !this.state.studentErp) {
+       if (!this.state.session && !this.state.studentErp) {
       this.props.alert.warning('Please Fill All The Fields')
       return
     }
@@ -652,7 +679,7 @@ class StudentLedgerTab extends Component {
               color='primary'
               disabled={!this.state.session}
               // onClick={this.erpHandler}
-              onClick={this.showLedgerHandler}>
+              onClick={this.CheckPayment}>
               GET
             </Button>
           </Grid>
