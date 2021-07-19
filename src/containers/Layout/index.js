@@ -1434,15 +1434,12 @@ const Layout = ({ children, history }) => {
             className={clsx(classes.schoolLogoBtn, classes.hideIcon, classes.desktopToolbarComponents)}
           > */}
               <img
-                src={orchidsPlaceholderLogo}
+                src={centralSchoolLogo}
                 alt='logo'
-                style={{ height: '35px' }}
-                className={clsx(
-                  classes.schoolLogoBtn,
-                  classes.hideIcon,
-                  classes.desktopToolbarComponents
-                )}
+                className={clsx(classes.schoolLogoBtn, classes.desktopToolbarComponents)}
+                style={{ height: '50px', width: '50px', objectFit: 'fill' }}
               />
+
               {/* </IconButton> */}
             </div>
 
