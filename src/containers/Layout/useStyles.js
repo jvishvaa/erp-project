@@ -97,10 +97,17 @@ const useStyles = makeStyles((theme) => ({
     //fontSize:'70px'
   },
   schoolLogoBtn: {
-    height: theme.mixins.toolbar.minHeight,
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
+    //height: theme.mixins.toolbar.minHeight,
     //padding: '5px 45px 0px 0px',
-    fontSize:'45px',
-    height:'70px'
+    // fontSize:'45px',
+    // height:'70px'
+    //float:'left'
+    position: 'relative',
+    top:'8px',
+    right:'25px'
   },
   toolbar: {
     // padding: '10px 15px 0px 60px',
@@ -269,7 +276,8 @@ const useStyles = makeStyles((theme) => ({
     
   },
   loginAvatar:{
-    marginLeft:'-90px'
+    position: 'relative',
+    left:'-40px'
   },
   hideIcon:{
     display:'none'
