@@ -104,8 +104,22 @@ class ManagePayment extends Component {
     let sub = arr[2]
     console.log(arr[2] , "domain");
 
+    if (sub === 'revamp.qa.letseduvate.com') {
+    this.checkPayment()
+    }
+    if (sub === 'dev.olvorchidnaigaon.letseduvate.com') {
+      this.checkPayment()
+    }
+    // if (sub === 'orchids.letseduvate.com') {
+    //   this.checkPayment()
+    // }
+    if (sub === 'aolschool.letseduvate.com') {
+      this.checkPayment()
+    }
+
+
     // console.log(this.state.student , "student state");
-    this.checkPayment(sub)
+    // this.checkPayment()
     // console.log(superUser[0], 'super');
       // if (NavData && NavData.length) {
       //   NavData.forEach((item) => {
@@ -135,29 +149,29 @@ class ManagePayment extends Component {
 }
 
   checkPayment(sub){
-    // let user_id = JSON.parse(localStorage.getItem('userDetails')).erp || {};
-    // let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
-    // axios
-    // .get(urls.CheckPayment + '?student=' + user_id ,{
-    //   headers: {
-    //     Authorization: 'Bearer ' + token
-    //   }
-    // }).then((res) => {
-    //   console.log(res, 'current eventssss');
-    // this.setState({ student: res.data.is_allowed });
-    // })
-    // .catch((error) => {
-    //   console.log(error);
-    // });
+    let user_id = JSON.parse(localStorage.getItem('userDetails')).erp || {};
+    let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
+    axios
+    .get(urls.CheckPayment + '?student=' + user_id ,{
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }).then((res) => {
+      console.log(res, 'current eventssss');
+    this.setState({ student: res.data.is_allowed });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 
     // if ( sub === 'https://dev.olvorchidnaigaon.letseduvate.com'  ) {
-    if ( sub === 'aolschool.letseduvate.com' ) {
+    // if ( sub === 'aolschool.letseduvate.com' ) {
 
-      this.setState({ student: true});
-    } else {
-      this.setState({ student: false});
+    //   this.setState({ student: true});
+    // } else {
+    //   this.setState({ student: false});
 
-    }
+    // }
   }
 
   componentDidUpdate(){
