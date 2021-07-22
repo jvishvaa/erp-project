@@ -12,11 +12,17 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
+import ENVCONFIG from '../../../../config/config';
+
+
 // import axios from 'axios';
 
 import Loading from '../../../../components/loader/loader';
 
-const ajaxBaseURL = axiosInstance.defaults.baseURLMPQ // 'http://127.0.0.1:8000/qbox';
+const {
+  apiGateway: { baseURLMPQ },
+} = ENVCONFIG;
+const ajaxBaseURL = baseURLMPQ // 'http://127.0.0.1:8000/qbox';
 // const ajaxBaseURL= 'https://dev.mpquiz.letseduvate.com';
 
 const genSocketBase = () => {
