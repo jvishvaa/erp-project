@@ -1,9 +1,16 @@
 import axiosInstance from '../../../../config/axios';
 
+import ENVCONFIG from '../../../../config/config';
+
+const {
+  apiGateway: { baseURLMPQ },
+} = ENVCONFIG;
+
+
 const { token: userAuthToken } =
-  JSON.parse(localStorage.getItem('userDetails') || JSON.stringify({})) || {};
+JSON.parse(localStorage.getItem('userDetails') || JSON.stringify({})) || {};
+const ajaxBaseURLmpq = baseURLMPQ // 'http://127.0.0.1:8000/qbox';
   // const ajaxBaseURLmpq= 'https://dev.mpquiz.letseduvate.com';
-  const ajaxBaseURLmpq= axiosInstance.defaults.baseURLMPQ;
 
 const ajaxBaseURL = axiosInstance.defaults.baseURL; // 'http://127.0.0.1:8000/qbox';
 
