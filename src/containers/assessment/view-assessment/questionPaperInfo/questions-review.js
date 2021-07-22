@@ -45,7 +45,7 @@ function QuestionReview() {
             questionsUI(Q?.sub_questions || [])
           ) : (
             <div className={classes.answersContainer}>
-            <b>Your answer: &nbsp; </b><label className='customLabel' dangerouslySetInnerHTML={{__html:handlerAnswerVar(userAnswer)}}></label>
+            <b>Your answer: &nbsp; </b><label dangerouslySetInnerHTML={{__html:handlerAnswerVar(userAnswer)}}></label>
               <br />
               <b>Correct answer: &nbsp;</b>
               <span dangerouslySetInnerHTML={{__html:handlerAnswerVar(correctAnswer)}}></span>
