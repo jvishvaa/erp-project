@@ -6,7 +6,7 @@ import './StudentRankingDetails.css'
 
 class StudentDetails extends Component {
   truncateString = (str, num) => {
-    if (str.length > num) {
+    if ( str !== null && str.length > num) {
       return str.slice(0, num) + '...'
     } else {
       return str
