@@ -12,11 +12,18 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
+import ENVCONFIG from '../../../../config/config';
+
+
 // import axios from 'axios';
 
 import Loading from '../../../../components/loader/loader';
 
-const ajaxBaseURL = axiosInstance.defaults.baseURL; // 'http://127.0.0.1:8000/qbox';
+const {
+  apiGateway: { baseURLMPQ },
+} = ENVCONFIG;
+const ajaxBaseURL = baseURLMPQ // 'http://127.0.0.1:8000/qbox';
+// const ajaxBaseURL= 'https://dev.mpquiz.letseduvate.com';
 
 const genSocketBase = () => {
   const { port: isLocal, host } = new URL(ajaxBaseURL);
@@ -26,8 +33,10 @@ const genSocketBase = () => {
 const socketBase = genSocketBase();
 const socketBaseURL = `${socketBase}/ws`;
 // const socketUrls="ws://localhost:8000/ws/multiplayer-quiz/"
-const quizSocketURLEndpoint = `${socketBaseURL}/multiplayer-quiz/<online_class_id>/<user_auth_token>/`
+const quizSocketURLEndpoint = `${socketBaseURL}/multiplayer-quiz/<domain_name>/<role>/<online_class_id>/<question_paper>/<user_auth_token>/`
 // const eventLabels={"Create Lobby"}
+
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -124,6 +133,13 @@ const PreQuiz = (props) => {
  
 const handleSubmit = () =>{
   const {online_class:onlineClassObj, lobby_info:lobbyInfoObj} = preQuizInfo||{}
+  let role=''
+  if(isOneOfTheHosts){
+    role=0
+  }else{
+    role=1
+  }
+
   // const { id: onlineClassId, quiz_test_paper: questionPaperId } = onlineClassObj || {} 
   const { 
     lobby_uuid : lobbyUuid= 'uuid-mk-default',
@@ -131,7 +147,7 @@ const handleSubmit = () =>{
     question_paper: questionPaperId
   }= lobbyInfoObj||{}
   // const url = `/quiz/:onlineclassId/:questionpaperId/:lobbyUuid`
-  const url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}`
+  const url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}`
   // const url = `/quiz/start/${preQuizInfo.online_class && preQuizInfo.online_class.id}`
   let link = document.createElement('a')
   link.href = url
@@ -141,13 +157,42 @@ const handleSubmit = () =>{
 
 }
 const handleCreateLobby = ()=>{
+
+  const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
+  const hostSplitArray = host.split('.');
+  const subDomainLevels = hostSplitArray.length - 2;
+  let domain = '';
+  let subDomain = '';
+  let subSubDomain = '';
+  if (hostSplitArray.length > 2) {
+    domain = hostSplitArray.slice(hostSplitArray.length - 2).join('');
+  }
+  if (subDomainLevels === 2) {
+    subSubDomain = hostSplitArray[0];
+    subDomain = hostSplitArray[1];
+  } else if (subDomainLevels === 1) {
+    subDomain = hostSplitArray[0];
+  }
+
+  const domainTobeSent = subDomain;
+  let role=''
+  if(isOneOfTheHosts){
+    role=0
+  }else{
+    role=1
+  }
+  const questionPaperId = preQuizInfo?.online_class?.quiz_test_paper
+
   const {online_class: onlineClassObj} = preQuizInfo||{}
   const {id: onlineClassId} = onlineClassObj||{}
 
   // let lobbyUuid =  preQuizInfo && preQuizInfo.lobby_identifier && preQuizInfo.lobby_info.lobby_identifier
   // let { MPQUIZ } = socketUrls
   const url = quizSocketURLEndpoint
+    .replace('<domain_name>', domainTobeSent)
+    .replace('<role>',role)
     .replace('<online_class_id>', onlineClassId)
+    .replace('<question_paper>', questionPaperId)
     .replace('<user_auth_token>', userAuthToken);
 //   const jwtToken = localStorage.getItem('id_token')
 //   const { onlineClassId } = this.state.quizInfo
@@ -162,7 +207,6 @@ const handleCreateLobby = ()=>{
   }
   ws.onmessage = evt => {
 //     // listen to data sent from the websocket server
-debugger
     const messageFromServer = JSON.parse(evt.data)
     const { event } = messageFromServer || {}
     // let { joinLobby } = eventLabels
@@ -180,7 +224,7 @@ debugger
         // this.setState({ creatingLobby: false, creationFailed: false })
         getPreQuizStatus()
         // const url = `/quiz/:onlineClassId/:questionpaperId/:lobbyUuid`
-        const url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}`
+        const url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}`
         // history.push(`/quiz/game/${data}/${lobbyUuid}/${lobbyId}/`)
         history.push(url)
         setCreateLobby(false)

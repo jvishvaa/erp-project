@@ -3,9 +3,10 @@ const local = {
     BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
   },
   apiGateway: {
-    // baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
+    baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
+    baseURLMPQ:'https://dev.mpquiz.letseduvate.com',
     // baseURL: 'http://localhost:8000/qbox',
-    baseURL: `${window.location.origin}/qbox`,
+    // baseURL: `${window.location.origin}/qbox`,
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
   },
@@ -16,22 +17,36 @@ const dev = {
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
+    baseURLMPQ:'https://dev.mpquiz.letseduvate.com',
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
   },
 };
 
-const olv = {
+const qa = {
   s3: {
     BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
   },
   apiGateway: {
-    baseURL: `https://dev.olvorchidnaigaon.letseduvate.com/qbox`,
-    // baseURL: 'http://localhost:8000/qbox',
-    baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
+    baseURL: `${window.location.origin}/qbox`,
+    baseURLMPQ:'https://qa.mpquiz.letseduvate.com',
+    baseURLCentral: 'https://qa.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
   },
 };
+
+const stage = {
+  s3: {
+    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+  },
+  apiGateway: {
+    baseURL: `${window.location.origin}/qbox`,
+    baseURLMPQ:'https://stage.mpquiz.letseduvate.com',
+    baseURLCentral: 'https://stage.mgmt.letseduvate.com/qbox',
+    xAPIKey: 'vikash@12345#1231',
+  },
+};
+
 
 const prod = {
   s3: {
@@ -39,6 +54,7 @@ const prod = {
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
+    baseURLMPQ:'https://mpquiz.letseduvate.com',
     baseURLCentral: 'https://mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
   },
@@ -46,7 +62,9 @@ const prod = {
 
 const PROD = 'PROD';
 const DEV = 'DEV';
-const env = { [PROD]: prod, [DEV]: dev };
+const QA ='QA';
+const STAGE ='STAGE';
+const env = { [PROD]: prod, [DEV]: dev , [QA]:qa, [STAGE]:stage};
 const config = env[process.env.REACT_APP_UI_ENV] || local;
 
 export default {
