@@ -235,7 +235,6 @@ const JoinClass = (props) => {
   const id = open ? 'simple-popover' : undefined;
   const openJoin = Boolean(joinAnchor);
   const ids = open ? 'accept-popover' : undefined;
-
   return (
     <Grid container spacing={2} direction='row' alignItems='center'>
       <Grid item xs={4}>
@@ -244,7 +243,7 @@ const JoinClass = (props) => {
         </span>
       </Grid>
       <Grid item xs={1}>
-        {window.location.pathname === '/erp-online-class-teacher-view' && (
+        {window.location.pathname === '/erp-online-class-teacher-view' && fullData.online_class.question_paper_id===0 ?  (
           <Tooltip title='Attach Question Paper'>
             <IconButton
               onClick={() =>
@@ -257,7 +256,7 @@ const JoinClass = (props) => {
               <AttachFileIcon />
             </IconButton>
           </Tooltip>
-        )}
+        ):''}
       </Grid>
       <Grid item xs={7} />
       {window.location.pathname === '/erp-online-class-student-view' ? (
