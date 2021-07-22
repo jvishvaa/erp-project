@@ -16,8 +16,8 @@ import axiosInstance from '../../../../config/axios';
 
 import Loading from '../../../../components/loader/loader';
 
-// const ajaxBaseURL = axiosInstance.defaults.baseURL; // 'http://127.0.0.1:8000/qbox';
-const ajaxBaseURL= 'https://dev.mpquiz.letseduvate.com';
+const ajaxBaseURL = axiosInstance.defaults.baseURLMPQ // 'http://127.0.0.1:8000/qbox';
+// const ajaxBaseURL= 'https://dev.mpquiz.letseduvate.com';
 
 const genSocketBase = () => {
   const { port: isLocal, host } = new URL(ajaxBaseURL);
