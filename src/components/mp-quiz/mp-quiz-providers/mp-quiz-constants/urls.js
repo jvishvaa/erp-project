@@ -2,7 +2,8 @@ import axiosInstance from '../../../../config/axios';
 
 const { token: userAuthToken } =
   JSON.parse(localStorage.getItem('userDetails') || JSON.stringify({})) || {};
-  const ajaxBaseURLmpq= 'https://dev.mpquiz.letseduvate.com';
+  // const ajaxBaseURLmpq= 'https://dev.mpquiz.letseduvate.com';
+  const ajaxBaseURLmpq= axiosInstance.defaults.baseURLMPQ;
 
 const ajaxBaseURL = axiosInstance.defaults.baseURL; // 'http://127.0.0.1:8000/qbox';
 
