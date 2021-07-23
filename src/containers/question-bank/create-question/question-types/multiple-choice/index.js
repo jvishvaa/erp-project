@@ -348,7 +348,8 @@ const MultipleChoice = ({
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
           setEditData([]);
-          history.push('/question-bank');
+          // history.push('/question-bank'); create-question
+          history.push('/create-question');
         } else {
           setAlert('error', result?.data?.message);
         }
