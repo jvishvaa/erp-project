@@ -242,23 +242,48 @@ const JoinClass = (props) => {
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
       </Grid>
-      <Grid item xs={1}>
-        {window.location.pathname === '/erp-online-class-teacher-view' && fullData.online_class.question_paper_id===0 ?  (
-          <Tooltip title='Attach Question Paper'>
-            <IconButton
-              onClick={() =>
-                history.push({
-                  pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
-                  state: { data: fullData.online_class.id },
-                })
-              }
-            >
-              <AttachFileIcon />
-            </IconButton>
-          </Tooltip>
-        ):''}
-      </Grid>
-      <Grid item xs={7} />
+      {fullData.online_class.question_paper_id==0?
+      <Grid item xs={8}>
+      {window.location.pathname === '/erp-online-class-teacher-view' && (
+        <Tooltip title='Attach Question Paper'>
+          <IconButton
+            onClick={() =>
+              history.push({
+                pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
+                state: { data: fullData.online_class.id },
+              })
+            }
+          >
+            <AttachFileIcon />
+          </IconButton>
+        </Tooltip>
+      )
+    } 
+    </Grid>:
+    <Grid item xs={8}>
+    {window.location.pathname === '/erp-online-class-teacher-view' &&(
+      <Button
+        size='small'
+        color='secondary'
+        fullWidth
+        variant='contained'
+        onClick={() =>
+          history.push({
+            pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
+            state: { data: fullData.online_class.id },
+          })
+        }
+        disabled={props?.data?.is_cancelled}
+        className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
+        // className='teacherFullViewSmallButtons'
+      >
+        Launch Quiz
+      </Button>
+    )
+}
+    </Grid>}
+      
+          
       {window.location.pathname === '/erp-online-class-student-view' ? (
         <>
           <Grid item xs={4}>
@@ -303,30 +328,7 @@ const JoinClass = (props) => {
       ) : (
         ''
       )}
-      {window.location.pathname === '/erp-online-class-teacher-view' &&
-      fullData &&
-      fullData.online_class &&
-      fullData.online_class.question_paper_id ? (
-        <Grid item xs={4}>
-          <Button
-            size='small'
-            color='secondary'
-            fullWidth
-            variant='contained'
-            onClick={() =>
-              history.push({
-                pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
-                state: { data: fullData.online_class.id },
-              })
-            }
-            disabled={props?.data?.is_cancelled}
-            className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
-            // className='teacherFullViewSmallButtons'
-          >
-            Launch Quiz
-          </Button>
-        </Grid>
-      ) : window.location.pathname === '/erp-online-class-teacher-view' ? (
+{window.location.pathname === '/erp-online-class-teacher-view' ? (
         <>
           {/* <Tooltip title='Attach Question Paper'>
             <IconButton
