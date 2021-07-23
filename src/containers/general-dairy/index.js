@@ -134,9 +134,7 @@ const GeneralDairyList = () => {
     const diaryUrl = isTeacher
       ? `${
           endpoints.generalDairy.dairyList
-        }?module_id=${teacherModuleId}&branch=${branchId}&grades=${gradeId}&sections=${
-          sectionIds[0]
-        }&page=${page}&page_size=${limit}&start_date=${startDate.format(
+        }?module_id=${teacherModuleId}&branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&page_size=${limit}&start_date=${startDate.format(
           'YYYY-MM-DD'
         )}&end_date=${endDate.format('YYYY-MM-DD')}${
           activeTab !== 0 ? '&dairy_type=' + activeTab : ''
