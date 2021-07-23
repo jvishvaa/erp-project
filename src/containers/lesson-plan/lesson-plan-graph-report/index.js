@@ -19,6 +19,8 @@ import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { useLocation } from 'react-router-dom';
+import { getModuleInfo } from '../../../utility-functions';
 
 const LessonPlanGraphReport = ({
   handleLessonList,
@@ -31,7 +33,9 @@ const LessonPlanGraphReport = ({
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
-
+  const [academicYear, setAcademicYear] = useState([]);
+  const [erpYear, setErpYear] = useState({});
+  const location = useLocation();
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const [volumeDropdown, setVolumeDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
@@ -126,6 +130,16 @@ const LessonPlanGraphReport = ({
     }
   };
 
+  function getModuleId() {
+    const tempObj = {
+      '/lesson-plan/graph-report/': 'Graphical Report',
+      default: 'Graphical Report',
+    };
+    const moduleName = tempObj[location.pathname] || tempObj['default'];
+    return getModuleInfo(moduleName).id;
+  }
+
+
   const handleDateRangePicker = (e, value) => {
     setDateRangeTechPer(e);
     const startDate = e[0].format('YYYY-MM-DD');
@@ -153,7 +167,7 @@ const LessonPlanGraphReport = ({
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&grade=${value.grade_id}`
+          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&grade=${value.grade_id}&module_id=${getModuleId()}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -170,7 +184,7 @@ const LessonPlanGraphReport = ({
         const {year:{school:schoolSectionYear}={}} = filterData||{}
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&session_year=${schoolSectionYear?.id}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&session_year=${schoolSectionYear?.id}&module_id=${getModuleId()}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -199,6 +213,7 @@ const LessonPlanGraphReport = ({
   };
 
   const handleSubject = (event, value) => {
+
     setSubjectList([]);
     if (value.length > 0) {
       const ids = value.map((el) => el.subject_id);
@@ -224,10 +239,21 @@ const LessonPlanGraphReport = ({
           setTeacherDropdown([]);
         });
     }
+    const ids = value.map((el) => el.subject_id);
+
     axiosInstance
-      .get(
-        `${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value[0].id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&grade_id=${filterData.grade.grade_id}`
-      )
+    .get(
+      `${`/academic/central-chapters-list-v2/`}?subject_id=${
+        ids[0]
+      }&volume=${filterData.volume.id}&academic_year=${
+        filterData.year.id
+      }&grade_id=${filterData.grade.grade_id}`
+    )
+
+    // axiosInstance
+    //   .get(
+    //     `${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value[0].id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&grade_id=${filterData.grade.grade_id}`
+    //   )
       .then((result) => {
         if (result.data.status_code === 200) {
           setMapId(result.data.result.central_gs_mapping_id);
@@ -246,7 +272,7 @@ const LessonPlanGraphReport = ({
     if (value) {
       setFilterData({ ...filterData, branch: value });
       axiosInstance
-        .get(`${endpoints.academics.grades}?branch_id=${value.id}&module_id=8`)
+        .get(`${endpoints.academics.grades}?branch_id=${value.id}&module_id=${getModuleId()}`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setGradeDropdown(result.data.data);
@@ -315,7 +341,6 @@ const LessonPlanGraphReport = ({
         const obj = {...item, school:schoolAcademicYearsObjMap[item.session_year]}
         academicYears.push(obj)
       })
-      console.log(academicYears?.[3],"acadmicyear")
       handleAcademicYear({},academicYears?.[3]);
       setAcademicYearDropdown(academicYears)
     }).catch(e=>{
@@ -355,6 +380,17 @@ const LessonPlanGraphReport = ({
   }
 
   useEffect(() => {
+    axiosInstance
+    .get(`${endpoints.userManagement.academicYear}?module_id=${getModuleId()}`)
+    .then((res) => {
+      if (res?.data?.status_code === 200) {
+        setAcademicYear(res?.data?.data);
+      }
+    })
+    .catch((error) => {
+      setAlert('error ', error?.message);
+    });
+
     fetchCentralAndSchoolsSessions()
     axios
       .get(`${endpoints.baseURLCentral}/lesson_plan/list-volume/`, {
@@ -373,23 +409,60 @@ const LessonPlanGraphReport = ({
       .catch((error) => {
         setAlert('error', error.message);
       });
-
-    axiosInstance
-      .get(`${endpoints.communication.branches}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          // setBranchDropdown(result.data.data);
-          setBranchDropdown(result.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean))
-          // setBranchId(result.data.data[1].id);
-          // a = result.data.data[0].id
-        } else {
-          setAlert('error', result.data.message);
+    },[])
+  //   axiosInstance
+  //     .get(`${endpoints.communication.branches}`)
+  //     .then((result) => {
+  //       if (result.data.status_code === 200) {
+  //         // setBranchDropdown(result.data.data);
+  //         setBranchDropdown(result.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean))
+  //         // setBranchId(result.data.data[1].id);
+  //         // a = result.data.data[0].id
+  //       } else {
+  //         setAlert('error', result.data.message);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setAlert('error', error.message);
+  //     });
+  // }
+  // , []
+  // []);
+  useEffect(() => {
+    if (academicYear.length && filterData.year?.id) {
+      let erp_year;
+      const acad = academicYear.map((year) => {
+        if (year?.session_year === filterData.year?.session_year) {
+          erp_year = year;
+          setErpYear(year);
+          setFilterData({ ...filterData, academic: year });
+          return year;
         }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
+        return {};
       });
-  }, []);
+      axiosInstance
+        .get(
+          `${endpoints.communication.branches}?session_year=${
+            erp_year?.id
+          }&module_id=${getModuleId()}`
+        )
+        .then((response) => {
+          if (response?.data?.status_code === 200) {
+            setBranchDropdown(
+              response?.data?.data?.results
+                .map((item) => (item && item.branch) || false)
+                .filter(Boolean)
+            );
+          } else {
+            setAlert('error', response.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  }, [filterData.year, academicYear]);
+
 
   useEffect(() => {
     // if (branchId) {
