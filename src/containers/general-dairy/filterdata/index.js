@@ -281,7 +281,7 @@ const GeneralDairyFilter = ({
   const handleSection = (event, value) => {
     sectionId = [];
     setFilterData({ ...filterData });
-    if (value.length) {
+    if (value.length > -1) {
       const ids =
         value &&
         value.map((el) => {
