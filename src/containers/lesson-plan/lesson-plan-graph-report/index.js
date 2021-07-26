@@ -271,8 +271,21 @@ const LessonPlanGraphReport = ({
     setFilterData({ ...filterData, branch: '' });
     if (value) {
       setFilterData({ ...filterData, branch: value });
+        let erp_year;
+        const acad = academicYear.map((year) => {
+          if (year?.session_year === filterData.year?.session_year) {
+            erp_year = year;
+            setErpYear(year);
+            setFilterData({ ...filterData, academic: year ,branch:value});
+            return year;
+          }
+          return {};
+        });
+  
       axiosInstance
-        .get(`${endpoints.academics.grades}?branch_id=${value.id}&module_id=${getModuleId()}`)
+        .get(`${endpoints.academics.grades}?branch_id=${value.id}&module_id=${getModuleId()}&session_year=${
+          erp_year?.id
+        }`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setGradeDropdown(result.data.data);
