@@ -237,7 +237,7 @@ import CreateLink from './containers/Finance/src/components/Finance/E-mandate/cr
 import Alert from './containers/Finance/src/ui/alert';
 import alertActions from './containers/Finance/src/_actions/alert.actions';
 import userActions from './containers/Finance/src/_actions/user.actions';
-
+import ApprovePendingReq from './containers/Finance/src/components/Finance/ApprovalRequests/StudentShuffle/Components/approvePendingReq.js';
 import { connect } from 'react-redux';
 import NonRTEFormAcc from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/nonRTEAdmissionForm.js';
 import AssignOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/assignOtherFess.js';
@@ -943,6 +943,11 @@ function App({ alert }) {
                           {/* <Route exact path='/finance/Requestshuffle'>
                   {({ match }) => <RequestShuffle match={match} />}
                 </Route> */}
+                           <Route exact path='/finance/approve_pendingRequest'>
+                            {({ match }) => (
+                              <ApprovePendingReq match={match} alert={alert} />
+                            )}
+                          </Route>
                           <Route exact path='/finance/MiscFeeClass'>
                             {({ match }) => <MiscFeeClass match={match} alert={alert} />}
                           </Route>

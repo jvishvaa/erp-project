@@ -278,8 +278,9 @@ const ApprovePendingReq = ({
     if (totalAmount) {
       if (location.state.nrmlFeeAmt === diffTotalAmtPaidAdjust) {
         reassignReq(data, alert, user)
+        history.push('Approval/Requests/StudentShuffleRequest');
       } else {
-        alert.warning('Please Adjust Paid Amount. Total Amount to be Paid :' + totalAmount - location.state.concessionAmt + ' and Total Amount to be Adjust: ' + location.state.nrmlFeeAmt + ' to adjust the Amount Decrease Total Paid Amount in any Installment')
+        alert.warning('Please Adjust Paid Amount. Total Amount to be Paid :' + ( totalAmount - location.state.concessionAmt ) + ' and Total Amount to be Adjust: ' + location.state.nrmlFeeAmt + ' to adjust the Amount Decrease Total Paid Amount in any Installment')
       }
     }
   }
