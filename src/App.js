@@ -1300,6 +1300,9 @@ function App({ alert }) {
                               <DailyBillingDetails match={match} alert={alert} />
                             )}
                           </Route>
+                          <Route exact path='/finance/student_shuffle'>
+                            {({ match }) => <StudentShuffleReq match={match} alert={alert} />}
+                          </Route>
                           <Route exact path='/finance/Expanse Management/PettyExpense'>
                             {({ match }) => <PettyExpenses match={match} alert={alert} />}
                           </Route>
