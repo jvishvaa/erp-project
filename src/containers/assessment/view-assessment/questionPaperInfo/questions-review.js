@@ -17,8 +17,9 @@ function QuestionReview() {
       const questionId = Q.id;
       const {
         question_type: questionType,
-        question_answer: [{ question, answer: correctAnswer = [] }] = [{}],
-        user_response: { answer: userAnswer = [] } = {},
+        question_answer: [{ question, answer: correctAnswer = [], answer_values: correctAnswerValues = [] }] = [{}],
+        user_response: { answer: userAnswer = [], user_answer_values: differUserResponse } = {},
+        sub_question_answer: subQuestion = [{}],
       } = questionsDataObj[questionId] || {};
       const handlerAnswerVar = (ansVar) => {
         if (Array.isArray(ansVar)) {
@@ -34,22 +35,73 @@ function QuestionReview() {
       };
       return (
         <div className={classes.questionCotainer}>
-          <div className={classes.questionText}>
-            <span>
-              {`Q${index + 1}.`}
-              &nbsp;
-            </span>
-            <span>{ReactHtmlParser(question)}</span>
-          </div>
           {questionType === 7 ? (
-            questionsUI(Q?.sub_questions || [])
+            <>
+              {
+                subQuestion.map((item, index) =>
+                  <>
+                    <div className={classes.questionText}>
+                      <span>
+                        {`Q${index + 1}.`}
+                        &nbsp;
+                      </span>
+                      <span>{ReactHtmlParser(item.question_answer[0]?.question)}</span>
+                    </div>
+                    {item?.user_sub_answer?.question_type === 9 ? (
+                      <div className={classes.answersContainer}>
+                        <b>Your answer : &nbsp; </b>
+                        <label dangerouslySetInnerHTML={{ __html: handlerAnswerVar(item?.user_sub_answer?.user_answer[0]) }}></label>
+                        <br />
+                        <b>Correct answer : &nbsp; </b>
+                        <label dangerouslySetInnerHTML={{ __html: handlerAnswerVar(item?.question_answer[0]?.answer_values) }}></label>
+                      </div>
+
+                    ) : (
+                      <div className={classes.answersContainer}>
+                        <b>Your answer : &nbsp; </b>
+                        <label dangerouslySetInnerHTML={{ __html: handlerAnswerVar(item?.user_sub_answer?.user_answer_values) }}></label>
+                        <br />
+                        <b>Correct answer : &nbsp; </b>
+                        <label dangerouslySetInnerHTML={{ __html: handlerAnswerVar(item?.question_answer[0]?.answer_values) }}></label>
+                      </div>
+
+                    )}
+                  </>
+                )
+              }
+            </>
           ) : (
-            <div className={classes.answersContainer}>
-            <b>Your answer: &nbsp; </b><label dangerouslySetInnerHTML={{__html:handlerAnswerVar(userAnswer)}}></label>
-              <br />
-              <b>Correct answer: &nbsp;</b>
-              <span dangerouslySetInnerHTML={{__html:handlerAnswerVar(correctAnswer)}}></span>
-            </div>
+            <>
+              <div className={classes.questionText}>
+                <span>
+                  {`Q${index + 1}.`}
+                  &nbsp;
+                </span>
+                <span>{ReactHtmlParser(question)}</span>
+              </div>
+              {(questionType === 1 || questionType === 8 || questionType === 2) ? (
+                <div className={classes.answersContainer}>
+                  <b>Your answer: &nbsp; </b><label dangerouslySetInnerHTML={{ __html: handlerAnswerVar(differUserResponse) }}></label>
+                  <br />
+                  <b>Correct answer: &nbsp;</b>
+                  <span dangerouslySetInnerHTML={{ __html: handlerAnswerVar(correctAnswerValues) }}></span>
+                </div>
+
+              ) : (questionType === 9) ? (<div className={classes.answersContainer}>
+                <b>Your answer: &nbsp; </b><label dangerouslySetInnerHTML={{ __html: handlerAnswerVar(userAnswer[0]) }}></label>
+                <br />
+                <b>Correct answer: &nbsp;</b>
+                <span dangerouslySetInnerHTML={{ __html: handlerAnswerVar(correctAnswer) }}></span>
+              </div>
+              ) : (
+                <div className={classes.answersContainer}>
+                  <b>Your answer: &nbsp; </b><label dangerouslySetInnerHTML={{ __html: handlerAnswerVar(userAnswer) }}></label>
+                  <br />
+                  <b>Correct answer: &nbsp;</b>
+                  <span dangerouslySetInnerHTML={{ __html: handlerAnswerVar(correctAnswer) }}></span>
+                </div>
+              )}
+            </>
           )}
         </div>
       );
@@ -66,10 +118,10 @@ function QuestionReview() {
       </Button>
       <Collapse in={open}>
         <div>{questionsUI(questionsArray)}</div>
-        <Button 
-        variant='contained'
-        color='primary'
-        className={classes.closeBtn} onClick={() => setOpen(false)}>
+        <Button
+          variant='contained'
+          color='primary'
+          className={classes.closeBtn} onClick={() => setOpen(false)}>
           Close
         </Button>
       </Collapse>
