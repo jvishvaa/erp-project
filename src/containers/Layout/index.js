@@ -1131,6 +1131,11 @@ const Layout = ({ children, history }) => {
     }
   };
 
+  const handleOpen = (value) => {
+    setDrawerOpen((value) => !value);
+  };
+
+
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
@@ -1234,23 +1239,21 @@ const Layout = ({ children, history }) => {
               </Paper>
               <Popper
                 open={searching}
-                className={`${classes.searchDropdown} ${
-                  isMobile ? classes.searchDropdownMobile : 'null'
-                }`}
+                className={`${classes.searchDropdown} ${isMobile ? classes.searchDropdownMobile : 'null'
+                  }`}
                 placement='bottom'
                 style={{
                   position: 'fixed',
                   top: isMobile
                     ? searchInputRef.current &&
-                      searchInputRef.current.getBoundingClientRect().top + 44
+                    searchInputRef.current.getBoundingClientRect().top + 44
                     : searchInputRef.current &&
-                      searchInputRef.current.getBoundingClientRect().top + 32,
+                    searchInputRef.current.getBoundingClientRect().top + 32,
                   left: '750px',
-                  right: `calc(${isMobile ? '92vw' : '100vw'} - ${
-                    searchInputRef.current &&
+                  right: `calc(${isMobile ? '92vw' : '100vw'} - ${searchInputRef.current &&
                     searchInputRef.current.getBoundingClientRect().left +
-                      searchInputRef.current.getBoundingClientRect().width
-                  }px)`,
+                    searchInputRef.current.getBoundingClientRect().width
+                    }px)`,
                   zIndex: 3000,
                 }}
                 transition
@@ -1461,10 +1464,10 @@ const Layout = ({ children, history }) => {
       <Drawer
         open={drawerOpen}
         variant={isMobile ? '' : 'permanent'}
-        className={clsx(classes.drawer, {
+        className={`${clsx(classes.drawer, {
           [classes.drawerPaper]: drawerOpen,
           [classes.drawerPaperClose]: !drawerOpen,
-        })}
+        })} drawerScrollBar`}
         classes={{
           paper: clsx({
             [classes.drawer]: true,
@@ -1477,13 +1480,13 @@ const Layout = ({ children, history }) => {
         <div className={classes.appBarSpacer} />
         {isMobile && drawerOpen && (
           <>
-            <UserInfo
+            {/* <UserInfo
               user={roleDetails}
               onClick={() => {
                 history.push('/profile');
                 setDrawerOpen((prevState) => !prevState);
               }}
-            />
+            /> */}
             <Box className={classes.sidebarActionButtons}>
               {mobileSeach ? (
                 <div>
@@ -1516,12 +1519,12 @@ const Layout = ({ children, history }) => {
                 </div>
               ) : (
                 <>
-                  <IconButton onClick={handleLogout}>
+                  {/* <IconButton onClick={handleLogout}>
                     <PowerSettingsNewIcon style={{ color: '#ffffff' }} />
                   </IconButton>
                   <IconButton>
                     <SettingsIcon style={{ color: '#ffffff' }} />
-                  </IconButton>
+                  </IconButton> */}
                   <IconButton onClick={() => setMobileSeach(true)}>
                     <SearchIcon style={{ color: '#ffffff' }} />
                   </IconButton>
@@ -1540,18 +1543,42 @@ const Layout = ({ children, history }) => {
             onClick={() => setDrawerOpen((prevState) => !prevState)}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-              {drawerOpen ? <CloseIcon /> : <MenuIcon />}
+              {drawerOpen ? (
+                <>
+                  <CloseIcon />
+                </>
+              ) : (
+                <>
+                  <MenuIcon />
+                </>
+              )}
+
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-          {navigationData && drawerOpen && navigationData?.length > 0 && (
-            <DrawerMenu
-              superUser={superUser}
-              navigationItems={navigationData}
-              onClick={handleRouting}
+          {drawerOpen
+            ? navigationData &&
+            navigationData.length > 0 && (
+              <DrawerMenu
+                superUser={superUser}
+                drawerOpen={drawerOpen}
+                navigationItems={navigationData}
+                onClick={handleRouting}
               // flag={flag}
-            />
-          )}
+              />
+            )
+            : navigationData &&
+            navigationData.length > 0 && (
+              <DrawerMenu
+                superUser={superUser}
+                navigationItems={navigationData}
+                // onClick={()=>setDrawerOpen(true)}
+                onClick={handleOpen}
+                drawerOpen={drawerOpen}
+              // onClick={handleRouting}
+              />
+            )}
+
         </List>
       </Drawer>
       <main className={classes.content}>
