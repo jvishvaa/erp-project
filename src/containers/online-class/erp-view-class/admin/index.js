@@ -459,6 +459,10 @@ const ErpAdminViewClass = ({ history }) => {
         setAlert('warning', 'Select Academic Year');
         return;
       }
+      if (!endDateTechPer) {
+        setAlert('warning', 'Select End Date');
+        return;
+      }
       if (!selectedBranch?.length > 0) {
         setAlert('warning', 'Select Branch');
         return;
