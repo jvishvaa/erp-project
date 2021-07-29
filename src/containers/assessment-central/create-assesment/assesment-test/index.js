@@ -266,6 +266,7 @@ const AssesmentTest = ({
                   apiKey={TINYMCE_API_KEY}
                   init={{
                     height: 300,
+                    placeholder: 'Note==> Word should be less than 500',
                     menubar: false,
                     toolbar:
                       'fontselect fontsizeselect bold italic underline alignleft aligncenter alignright  bullist numlist file image  ', //customInsertButton
