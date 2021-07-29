@@ -294,6 +294,29 @@ import ChapterBook from 'containers/intelligent-textbook/chapterpage/ChapterBook
 let temp = localStorage.getItem("themeDetails")
 let primarytemp = ""
 let secondrytemp = "";
+let lightprimary = "";
+let darkprimary = ""
+
+function ColorLuminance(hex, lum) {
+
+  // validate hex string
+  hex = String(hex).replace(/[^0-9a-f]/gi, '');
+  if (hex.length < 6) {
+    hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  }
+  lum = lum || 0;
+
+  // convert to decimal and change luminosity
+  var rgb = "#", c, i;
+  for (i = 0; i < 3; i++) {
+    c = parseInt(hex.substr(i*2,2), 16);
+    c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+    rgb += ("00"+c).substr(c.length);
+  }
+
+  return rgb;
+}
+
 
 
 (function () {
@@ -315,19 +338,22 @@ let secondrytemp = "";
 
     })
   }
+  darkprimary = ColorLuminance(primarytemp,-0.2)
+  lightprimary = ColorLuminance(primarytemp,-0.4)
+
 
 })();
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#ff6b6b',
       // main: '#ff6b6b',
+      primarylight : lightprimary,
       main: primarytemp || '#ff6b6b',
+      primarydark : darkprimary
     },
     secondary: {
-      main: '#014b7e',
-      // main: '#ff6b6b',
+      // main: '#014b7e',
       main: secondrytemp || '#014b7e',
     },
     text: {
@@ -352,7 +378,7 @@ const theme = createMuiTheme({
         textDecoration: 'none',
         borderRadius: '10px',
         color: '#ffffff',
-        backgroundColor: ' #ff6b6b',
+        backgroundColor: primarytemp,
       },
     },
   },

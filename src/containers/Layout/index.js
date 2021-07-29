@@ -73,23 +73,27 @@ import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserInfo from '../../components/user-info';
 import PublishIcon from '@material-ui/icons/Publish';
+import menuIcon from 'components/drawer-menu/menu-icon';
 import axios from 'axios';
 import Appbar from './Appbar';
+import SearchBar from './SearchBar';
+
+
 
 export const ContainerContext = createContext();
 
-
-const Layout = ({ children, history }) => {
+const Layout = ({ children, history, ...props }) => {
   const containerRef = useRef(null);
   const dispatch = useDispatch();
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { role_details: roleDetails } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { role_details: roleDetailes } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [masterMenuOpen, setMasterMenuOpen] = useState(false);
   const [superUser, setSuperUser] = useState(false);
   const [searchUserDetails, setSearchUserDetails] = useState([]);
   const searchInputRef = useRef();
@@ -104,6 +108,7 @@ const Layout = ({ children, history }) => {
   const [mobileSeach, setMobileSeach] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+
   const getGlobalUserRecords = async (text) => {
     try {
       const result = await axiosInstance.get(
@@ -167,7 +172,8 @@ const Layout = ({ children, history }) => {
 
   useEffect(() => {
     if (isLogout) {
-      history.push('/');
+      // history.push('/');
+      window.location.href = '/';
       setIsLogout(false);
     }
   }, [isLogout]);
@@ -188,15 +194,16 @@ const Layout = ({ children, history }) => {
   //     }
   //   }, [currentPage]);
 
+  
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  
 
   const handleLogout = () => {
     dispatch(logout());
     const list = ['rememberDetails'];
     const isPresent = JSON.parse(localStorage.getItem('rememberDetails'));
+    // JSON.parse(localStorage.getItem('themeDetails'));
     if (isPresent) {
       Object.keys(localStorage).forEach((key) => {
         if (!list.includes(key)) localStorage.removeItem(key);
@@ -300,7 +307,6 @@ const Layout = ({ children, history }) => {
           <p style={{ color: '#014B7E' }}>Settings</p>
         </MenuItem>
       ) : null}
-
       <MenuItem onClick={handleLogout}>
         <IconButton aria-label='logout button' color='inherit'>
           <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
@@ -1077,19 +1083,27 @@ const Layout = ({ children, history }) => {
     }
   };
 
+  const handleOpen = (value) => {
+    setDrawerOpen((value) => !value);
+  };
+
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   return (
     <div className={classes.root}>
-    <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen}/>
-      <Drawer
+      <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen}/>
+       <Drawer
         open={drawerOpen}
         variant={isMobile ? '' : 'permanent'}
-        className={clsx(classes.drawer, {
+        // className={clsx(classes.drawer, {
+        //   [classes.drawerPaper]: drawerOpen,
+        //   [classes.drawerPaperClose]: !drawerOpen,
+        // })}
+        className={`${clsx(classes.drawer, {
           [classes.drawerPaper]: drawerOpen,
           [classes.drawerPaperClose]: !drawerOpen,
-        })}
+        })} drawerScrollBar`}
         classes={{
           paper: clsx({
             [classes.drawer]: true,
@@ -1100,84 +1114,116 @@ const Layout = ({ children, history }) => {
         onClose={() => setDrawerOpen(false)}
       >
         <div className={classes.appBarSpacer} />
-        {isMobile && drawerOpen && (
-          <>
-            <UserInfo
-              user={roleDetails}
-              onClick={() => {
-                history.push('/profile');
-                setDrawerOpen((prevState) => !prevState);
-              }}
-            />
-            <Box className={classes.sidebarActionButtons}>
-              {mobileSeach ? (
-                <div>
-                  <Paper component='form' className={classes.searchInputContainerMobile}>
-                    <IconButton
-                      type='submit'
-                      className={classes.clearIconButtonMobile}
-                      aria-label='close'
-                      onClick={handleTextSearchClearMobile}
-                    >
-                      <CloseIcon />
-                    </IconButton>
-                    <InputBase
-                      value={searchedText}
-                      className={classes.searchInputMobile}
-                      placeholder='Search..'
-                      inputProps={{ 'aria-label': 'search across site' }}
-                      inputRef={searchInputRef}
-                      onChange={changeQuery}
-                      onBlur={handleTextSearchClear}
-                    />
-                    <IconButton
-                      type='submit'
-                      className={classes.searchIconButtonMobile}
-                      aria-label='search'
-                    >
-                      <SearchIcon />
-                    </IconButton>
-                  </Paper>
-                </div>
-              ) : (
-                <>
-                  <IconButton onClick={handleLogout}>
-                    <PowerSettingsNewIcon style={{ color: '#ffffff' }} />
-                  </IconButton>
-                  <IconButton>
-                    <SettingsIcon style={{ color: '#ffffff' }} />
-                  </IconButton>
-                  <IconButton onClick={() => setMobileSeach(true)}>
-                    <SearchIcon style={{ color: '#ffffff' }} />
-                  </IconButton>
-                </>
-              )}
-            </Box>
-            <Box style={{ padding: '0 10px' }}>
-              <Divider style={{ backgroundColor: '#ffffff' }} />
-            </Box>
-          </>
-        )}
+        {isMobile ? <SearchBar /> : null}
 
+        {
+          // isMobile && drawerOpen && (
+          //   <>
+          //     {/* <UserInfo
+          //       user={roleDetails}
+          //       onClick={() => {
+          //         history.push('/profile');
+          //         setDrawerOpen((prevState) => !prevState);
+          //       }}
+          //     /> */}
+
+          //     <Box className={classes.sidebarActionButtons}>
+          //       {mobileSeach ? (
+                 
+          //         <div>
+          //           <Paper component='form' className={classes.searchInputContainerMobile}>
+          //             <IconButton
+          //               type='submit'
+          //               className={classes.clearIconButtonMobile}
+          //               aria-label='close'
+          //               onClick={handleTextSearchClearMobile}
+          //             >
+          //               <CloseIcon />
+          //             </IconButton>
+          //             <InputBase
+          //               value={searchedText}
+          //               className={classes.searchInputMobile}
+          //               placeholder='Search..'
+          //               inputProps={{ 'aria-label': 'search across site' }}
+          //               inputRef={searchInputRef}
+          //               onChange={changeQuery}
+          //               onBlur={handleTextSearchClear}
+          //             />
+          //             <IconButton
+          //               type='submit'
+          //               className={classes.searchIconButtonMobile}
+          //               aria-label='search'
+          //             >
+          //               {/* <SearchIcon /> */}
+          //             </IconButton>
+          //           </Paper>
+          //         </div>
+          //       ) : (
+          //         <>
+          //           {/* <IconButton onClick={handleLogout}>
+          //             <PowerSettingsNewIcon style={{ color: '#ffffff' }} />
+          //           </IconButton>
+          //           <IconButton>
+          //             <SettingsIcon style={{ color: '#ffffff' }} />
+          //           </IconButton> */}
+          //           {/* <IconButton onClick={() => setMobileSeach(true)}> */}
+          //             {/* <SearchIcon style={{ color: '#ffffff' }} /> */}
+
+          //           {/* </IconButton> */}
+          //         </>
+
+          //       )
+          //       }
+          //     </Box>
+          //     <Box style={{ padding: '0 10px' }}>
+          //       <Divider style={{ backgroundColor: '#ffffff' }} />
+          //     </Box>
+
+              
+          //   </>
+          // )
+        }
         <List>
           <ListItem
             className={classes.menuControlContainer}
             onClick={() => setDrawerOpen((prevState) => !prevState)}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-              {drawerOpen ? <CloseIcon /> : <MenuIcon />}
+              {drawerOpen ? (
+                <>
+                  <CloseIcon />
+                </>
+              ) : (
+                <>
+                  <MenuIcon />
+                </>
+              )}
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-          {navigationData && drawerOpen && navigationData?.length > 0 && (
-            <DrawerMenu
-              superUser={superUser}
-              navigationItems={navigationData}
-              onClick={handleRouting}
-              // flag={flag}
-            />
-          )}
-        </List>
+          {drawerOpen
+            ? navigationData &&
+              navigationData.length > 0 && (
+                <DrawerMenu
+                  superUser={superUser}
+                  drawerOpen={drawerOpen}
+                  navigationItems={navigationData}
+                  onClick={handleRouting}
+                  // flag={flag}
+                />
+              )
+            : navigationData &&
+              navigationData.length > 0 && (
+                <DrawerMenu
+                  superUser={superUser}
+                  navigationItems={navigationData}
+                  // onClick={()=>setDrawerOpen(true)}
+                  onClick={handleOpen}
+                  drawerOpen={drawerOpen}
+                  // onClick={handleRouting}
+                />
+              )}
+        </List> 
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />

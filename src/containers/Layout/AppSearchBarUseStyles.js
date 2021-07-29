@@ -22,9 +22,18 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
       display:'flex',
       width:'100%',
       position:'relative',
-      [theme.breakpoints.down('sm')]: {
-        display: 'none',
-      },
+      // [theme.breakpoints.down('sm')]: {
+      //   display: 'none',
+      // },
+    },
+    searchBar1 : {
+      justifyContent:'center',
+      alignItems:'center',
+      top:"8px",
+      display:'flex',
+      // marginLeft : '15px',
+      // width:'100%',
+      position:'relative',
     },
     toolbar: {
       // padding: '10px 15px 0px 60px',
@@ -113,7 +122,7 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
       '&:hover': {
         // backgroundColor: alpha(theme.palette.common.white, 0.25)
       },
-      marginRight: theme.spacing(2),
+      // marginRight: theme.spacing(2),
       marginLeft: 0,
       width: 'auto',
       // border: '0.5px solid #9A9A9A',

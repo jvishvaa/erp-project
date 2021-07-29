@@ -320,7 +320,7 @@ const Appbar = ({ children, history, ...props }) => {
               className={clsx(classes.logoBtn, classes.desktopToolbarComponents)}
             />
           </Box>
-          <SearchBar/>
+          {isMobile ? null : <SearchBar/>}
           
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
