@@ -73,36 +73,27 @@ import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserInfo from '../../components/user-info';
 import PublishIcon from '@material-ui/icons/Publish';
+import menuIcon from 'components/drawer-menu/menu-icon';
 import axios from 'axios';
+import Appbar from './Appbar';
+import SearchBar from './SearchBar';
+
+
+
 export const ContainerContext = createContext();
 
-const AppBarProfileIcon = ({ imageSrc = '' }) => {
-  const [isBrokenImg, setIsBrokenImg] = useState(false);
-
-  if (!isBrokenImg && imageSrc) {
-    return (
-      <img
-        src={imageSrc}
-        alt=''
-        className='profile_img'
-        onError={() => setIsBrokenImg(true)}
-      />
-    );
-  } else {
-    return <AccountCircle style={{ fontSize: '35px' }} color='primary' />;
-  }
-};
-const Layout = ({ children, history }) => {
+const Layout = ({ children, history, ...props }) => {
   const containerRef = useRef(null);
   const dispatch = useDispatch();
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { role_details: roleDetails } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { role_details: roleDetailes } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [masterMenuOpen, setMasterMenuOpen] = useState(false);
   const [superUser, setSuperUser] = useState(false);
   const [searchUserDetails, setSearchUserDetails] = useState([]);
   const searchInputRef = useRef();
@@ -115,11 +106,9 @@ const Layout = ({ children, history }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [scrollDone, setScrollDone] = useState(false);
   const [mobileSeach, setMobileSeach] = useState(false);
-  const [displayUserDetails, setDisplayUserDetails] = useState(false);
-  const [userId, setUserId] = useState();
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-  const [centralSchoolLogo, setCentralSchoolLogo] = useState('');
+
   const getGlobalUserRecords = async (text) => {
     try {
       const result = await axiosInstance.get(
@@ -183,7 +172,8 @@ const Layout = ({ children, history }) => {
 
   useEffect(() => {
     if (isLogout) {
-      history.push('/');
+      // history.push('/');
+      window.location.href = '/';
       setIsLogout(false);
     }
   }, [isLogout]);
@@ -204,53 +194,16 @@ const Layout = ({ children, history }) => {
   //     }
   //   }, [currentPage]);
 
+  
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
-  const hostSplitArray = host.split('.');
-  const subDomainLevels = hostSplitArray.length - 2;
-  let domain = '';
-  let subDomain = '';
-  let subSubDomain = '';
-  if (hostSplitArray.length > 2) {
-    domain = hostSplitArray.slice(hostSplitArray.length - 2).join('');
-  }
-  if (subDomainLevels === 2) {
-    subSubDomain = hostSplitArray[0];
-    subDomain = hostSplitArray[1];
-  } else if (subDomainLevels === 1) {
-    subDomain = hostSplitArray[0];
-  }
-
-  const domainTobeSent = subDomain;
-
-  useEffect(() => {
-    const schoolData = localStorage.getItem('schoolDetails');
-    if (schoolData === null) {
-      const headers = {
-        'x-api-key': 'vikash@12345#1231',
-      };
-      axios
-        .get(`${endpoints.appBar.schoolLogo}?school_sub_domain_name=${domainTobeSent}`, {
-          headers,
-        })
-        .then((response) => {
-          const appBarLocalStorage = response.data.data;
-          localStorage.setItem('schoolDetails', JSON.stringify(appBarLocalStorage));
-          setCentralSchoolLogo(response.data.data.school_logo);
-        })
-        .catch((err) => console.log(err));
-    } else {
-      const logo = JSON.parse(schoolData);
-      setCentralSchoolLogo(logo.school_logo);
-    }
-  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
     const list = ['rememberDetails'];
     const isPresent = JSON.parse(localStorage.getItem('rememberDetails'));
+    // JSON.parse(localStorage.getItem('themeDetails'));
     if (isPresent) {
       Object.keys(localStorage).forEach((key) => {
         if (!list.includes(key)) localStorage.removeItem(key);
@@ -354,7 +307,6 @@ const Layout = ({ children, history }) => {
           <p style={{ color: '#014B7E' }}>Settings</p>
         </MenuItem>
       ) : null}
-
       <MenuItem onClick={handleLogout}>
         <IconButton aria-label='logout button' color='inherit'>
           <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
@@ -1135,335 +1087,19 @@ const Layout = ({ children, history }) => {
     setDrawerOpen((value) => !value);
   };
 
-
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   return (
     <div className={classes.root}>
-      <AppBar position='absolute' className={clsx(classes.appBar)}>
-        <Toolbar className={classes.toolbar}>
-          {isMobile && (
-            <Box
-              className={classes.mobileToolbar}
-              display='flex'
-              justifyContent='space-between'
-            >
-              <IconButton
-                edge='start'
-                color='inherit'
-                aria-label='open drawer'
-                onClick={() => {
-                  setDrawerOpen((prevState) => !prevState);
-                }}
-              >
-                {drawerOpen ? (
-                  <CloseIcon color='primary' />
-                ) : (
-                  <MenuIcon color='primary' />
-                )}
-              </IconButton>
-
-              <IconButton className={classes.logoMobileContainer}>
-                <img className={classes.logoMObile} src={logoMobile} alt='logo-small' />
-              </IconButton>
-
-              <IconButton />
-            </Box>
-          )}
-          {/* <IconButton
-            edge='start'
-            color='inherit'
-            aria-label='open drawer'
-            className={clsx(classes.logoBtn, classes.desktopToolbarComponents)}
-          > */}
-          <img
-            src={logo}
-            alt='logo'
-            style={{ height: '35px' }}
-            className={clsx(classes.logoBtn, classes.desktopToolbarComponents)}
-          />
-          {/* </IconButton> */}
-          {/* <Divider
-            orientation='vertical'
-            flexItem
-            style={{
-              backgroundColor: '#ff6b6b',
-              margin: '5px 10px',
-            }}
-            className={classes.desktopToolbarComponents}
-          /> */}
-
-          <Typography
-            className={classes.desktopToolbarComponents}
-            component='h6'
-            variant='h6'
-            color='inherit'
-            noWrap
-            cursor='default'
-          >
-            {/* <span style={{ cursor: 'default' }}>Welcome!</span>
-            <span style={{ fontSize: '1rem', marginLeft: '1rem', cursor: 'default' }}>
-              Have a great day
-            </span> */}
-          </Typography>
-          {superUser ? (
-            <div className={clsx(classes.grow, classes.desktopToolbarComponents)}>
-              <Paper component='form' className={classes.searchInputContainer}>
-                <IconButton
-                  type='submit'
-                  className={classes.searchIconButton}
-                  aria-label='search'
-                >
-                  <SearchIcon />
-                </IconButton>
-                <InputBase
-                  value={searchedText}
-                  className={classes.searchInput}
-                  placeholder='Search'
-                  inputProps={{ 'aria-label': 'search across site' }}
-                  inputRef={searchInputRef}
-                  onChange={changeQuery}
-                  onBlur={handleTextSearchClear}
-                />
-                {searchedText ? (
-                  <IconButton
-                    type='submit'
-                    className={classes.clearIconButton}
-                    aria-label='close'
-                    onClick={handleTextSearchClear}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                ) : null}
-              </Paper>
-              <Popper
-                open={searching}
-                className={`${classes.searchDropdown} ${isMobile ? classes.searchDropdownMobile : 'null'
-                  }`}
-                placement='bottom'
-                style={{
-                  position: 'fixed',
-                  top: isMobile
-                    ? searchInputRef.current &&
-                    searchInputRef.current.getBoundingClientRect().top + 44
-                    : searchInputRef.current &&
-                    searchInputRef.current.getBoundingClientRect().top + 32,
-                  left: '750px',
-                  right: `calc(${isMobile ? '92vw' : '100vw'} - ${searchInputRef.current &&
-                    searchInputRef.current.getBoundingClientRect().left +
-                    searchInputRef.current.getBoundingClientRect().width
-                    }px)`,
-                  zIndex: 3000,
-                }}
-                transition
-              >
-                {({ TransitionProps }) => (
-                  <Fade {...TransitionProps} timeout={350}>
-                    <Paper>
-                      <Grid
-                        container
-                        className='main_search_container'
-                        style={{ flexDirection: 'column' }}
-                      >
-                        {globalSearchResults && searchUserDetails.length ? (
-                          <>
-                            <Grid item>
-                              <Grid
-                                container
-                                style={{
-                                  flexDirection: 'row',
-                                  paddingBottom: 12,
-                                  paddingTop: 12,
-                                  paddingLeft: 16,
-                                  backgroundColor: 'rgb(224 224 224)',
-                                  paddingRight: 16,
-                                  minWidth: 374,
-                                }}
-                              >
-                                <Grid
-                                  // onScroll={(event) => handleScroll(event)}
-                                  style={{
-                                    paddingRight: 8,
-                                    maxHeight: 385,
-                                    height: 300,
-                                    overflow: 'auto',
-                                  }}
-                                  item
-                                >
-                                  {globalSearchResults && (
-                                    <List
-                                      style={{ minWidth: 61 }}
-                                      subheader={
-                                        <ListSubheader
-                                          style={{
-                                            background: 'rgb(224 224 224)',
-                                            width: '100%',
-                                            color: '#014B7E',
-                                            fontSize: '1rem',
-                                            fontWeight: 600,
-                                          }}
-                                        >
-                                          Users
-                                        </ListSubheader>
-                                      }
-                                    >
-                                      {globalSearchResults &&
-                                        searchUserDetails.length &&
-                                        searchUserDetails.map((result, index) => {
-                                          return (
-                                            <ListItem
-                                              style={{ width: 324 }}
-                                              className='user_rows_details'
-                                              button
-                                              onClick={() => {
-                                                setSearching(false);
-                                                setUserId(result.id);
-                                                setDisplayUserDetails(true);
-                                              }}
-                                            >
-                                              <ListItemText
-                                                primary={result.name}
-                                                secondary={
-                                                  <div>
-                                                    <span>{result.erpId}</span>
-                                                    <span style={{ float: 'right' }}>
-                                                      Mob: {result.contact}
-                                                    </span>
-                                                  </div>
-                                                }
-                                              />
-                                              {/* <ListItemSecondaryAction>
-                                              <IconButton
-                                                aria-label='Delete'
-                                                onClick={() =>
-                                                  handleUserDelete(result.id, index)
-                                                }
-                                                className={classes.margin}
-                                              >
-                                                <DeleteIcon fontSize='small' />
-                                              </IconButton>
-                                            </ListItemSecondaryAction> */}
-                                            </ListItem>
-                                          );
-                                        })}
-                                    </List>
-                                  )}
-                                </Grid>
-                              </Grid>
-                            </Grid>
-                          </>
-                        ) : (
-                          <Grid
-                            container
-                            style={{
-                              flexDirection: 'row',
-                              backgroundColor: '#eee',
-                              minHeight: 324,
-                              minWidth: 374,
-                              flexGrow: 1,
-                            }}
-                          >
-                            <span
-                              style={{
-                                padding: 1,
-                                textAlign: 'center',
-                                margin: 'auto',
-                                color: '#014B7E',
-                              }}
-                            >
-                              No data available.
-                            </span>
-                          </Grid>
-                        )}
-                      </Grid>
-                      <Grid container>
-                        {globalSearchError && (
-                          <Grid
-                            style={{ padding: 8, width: '100%', backgroundColor: '#eee' }}
-                            xs={12}
-                            item
-                          >
-                            Something went wrong.
-                          </Grid>
-                        )}
-                      </Grid>
-                    </Paper>
-                  </Fade>
-                )}
-              </Popper>
-            </div>
-          ) : null}
-          <Box display='flex'>
-            {displayUserDetails ? (
-              <UserDetails
-                close={setDisplayUserDetails}
-                mobileSearch={setMobileSeach}
-                userId={userId}
-                setUserId={setUserId}
-                setSearching={setSearching}
-              />
-            ) : null}
-
-            <IconButton
-              className={classes.hideIcon}
-              aria-label='my notifications'
-              color='inherit'
-            >
-              <NotificationsIcon className={classes.notificationsIcon} />
-            </IconButton>
-
-            <div
-              className={`${clsx(
-                classes.sectionDesktop,
-                classes.desktopToolbarComponents
-              )} ${superUser ? 'null' : 'layout_user_icon'}`}
-            >
-              <IconButton
-                aria-label='show more'
-                aria-controls={mobileMenuId}
-                aria-haspopup='true'
-                onClick={handleMobileMenuOpen}
-                color='inherit'
-                className={classes.loginAvatar}
-              >
-                <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
-                {/* {profileOpen ? <ExpandLess /> : <ExpandMore />} */}
-              </IconButton>
-              {/* <IconButton 
-            edge='end'
-            //color='inherit'
-            aria-label='open drawer'
-            className={clsx(classes.schoolLogoBtn, classes.hideIcon, classes.desktopToolbarComponents)}
-          > */}
-              <img
-                src={centralSchoolLogo}
-                alt='logo'
-                className={clsx(classes.schoolLogoBtn, classes.desktopToolbarComponents)}
-                style={{ height: '50px', width: '50px', objectFit: 'fill' }}
-              />
-
-              {/* </IconButton> */}
-            </div>
-
-            {/* <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label='show more'
-              aria-controls={mobileMenuId}
-              aria-haspopup='true'
-              onClick={handleMobileMenuOpen}
-              color='inherit'
-            >
-              <MoreIcon />
-            </IconButton>
-          </div> */}
-          </Box>
-        </Toolbar>
-      </AppBar>
-      {renderMobileMenu}
-      <Drawer
+      <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen}/>
+       <Drawer
         open={drawerOpen}
         variant={isMobile ? '' : 'permanent'}
+        // className={clsx(classes.drawer, {
+        //   [classes.drawerPaper]: drawerOpen,
+        //   [classes.drawerPaperClose]: !drawerOpen,
+        // })}
         className={`${clsx(classes.drawer, {
           [classes.drawerPaper]: drawerOpen,
           [classes.drawerPaperClose]: !drawerOpen,
@@ -1478,65 +1114,75 @@ const Layout = ({ children, history }) => {
         onClose={() => setDrawerOpen(false)}
       >
         <div className={classes.appBarSpacer} />
-        {isMobile && drawerOpen && (
-          <>
-            {/* <UserInfo
-              user={roleDetails}
-              onClick={() => {
-                history.push('/profile');
-                setDrawerOpen((prevState) => !prevState);
-              }}
-            /> */}
-            <Box className={classes.sidebarActionButtons}>
-              {mobileSeach ? (
-                <div>
-                  <Paper component='form' className={classes.searchInputContainerMobile}>
-                    <IconButton
-                      type='submit'
-                      className={classes.clearIconButtonMobile}
-                      aria-label='close'
-                      onClick={handleTextSearchClearMobile}
-                    >
-                      <CloseIcon />
-                    </IconButton>
-                    <InputBase
-                      value={searchedText}
-                      className={classes.searchInputMobile}
-                      placeholder='Search..'
-                      inputProps={{ 'aria-label': 'search across site' }}
-                      inputRef={searchInputRef}
-                      onChange={changeQuery}
-                      onBlur={handleTextSearchClear}
-                    />
-                    <IconButton
-                      type='submit'
-                      className={classes.searchIconButtonMobile}
-                      aria-label='search'
-                    >
-                      <SearchIcon />
-                    </IconButton>
-                  </Paper>
-                </div>
-              ) : (
-                <>
-                  {/* <IconButton onClick={handleLogout}>
-                    <PowerSettingsNewIcon style={{ color: '#ffffff' }} />
-                  </IconButton>
-                  <IconButton>
-                    <SettingsIcon style={{ color: '#ffffff' }} />
-                  </IconButton> */}
-                  <IconButton onClick={() => setMobileSeach(true)}>
-                    <SearchIcon style={{ color: '#ffffff' }} />
-                  </IconButton>
-                </>
-              )}
-            </Box>
-            <Box style={{ padding: '0 10px' }}>
-              <Divider style={{ backgroundColor: '#ffffff' }} />
-            </Box>
-          </>
-        )}
+        {isMobile ? <SearchBar /> : null}
 
+        {
+          // isMobile && drawerOpen && (
+          //   <>
+          //     {/* <UserInfo
+          //       user={roleDetails}
+          //       onClick={() => {
+          //         history.push('/profile');
+          //         setDrawerOpen((prevState) => !prevState);
+          //       }}
+          //     /> */}
+
+          //     <Box className={classes.sidebarActionButtons}>
+          //       {mobileSeach ? (
+                 
+          //         <div>
+          //           <Paper component='form' className={classes.searchInputContainerMobile}>
+          //             <IconButton
+          //               type='submit'
+          //               className={classes.clearIconButtonMobile}
+          //               aria-label='close'
+          //               onClick={handleTextSearchClearMobile}
+          //             >
+          //               <CloseIcon />
+          //             </IconButton>
+          //             <InputBase
+          //               value={searchedText}
+          //               className={classes.searchInputMobile}
+          //               placeholder='Search..'
+          //               inputProps={{ 'aria-label': 'search across site' }}
+          //               inputRef={searchInputRef}
+          //               onChange={changeQuery}
+          //               onBlur={handleTextSearchClear}
+          //             />
+          //             <IconButton
+          //               type='submit'
+          //               className={classes.searchIconButtonMobile}
+          //               aria-label='search'
+          //             >
+          //               {/* <SearchIcon /> */}
+          //             </IconButton>
+          //           </Paper>
+          //         </div>
+          //       ) : (
+          //         <>
+          //           {/* <IconButton onClick={handleLogout}>
+          //             <PowerSettingsNewIcon style={{ color: '#ffffff' }} />
+          //           </IconButton>
+          //           <IconButton>
+          //             <SettingsIcon style={{ color: '#ffffff' }} />
+          //           </IconButton> */}
+          //           {/* <IconButton onClick={() => setMobileSeach(true)}> */}
+          //             {/* <SearchIcon style={{ color: '#ffffff' }} /> */}
+
+          //           {/* </IconButton> */}
+          //         </>
+
+          //       )
+          //       }
+          //     </Box>
+          //     <Box style={{ padding: '0 10px' }}>
+          //       <Divider style={{ backgroundColor: '#ffffff' }} />
+          //     </Box>
+
+              
+          //   </>
+          // )
+        }
         <List>
           <ListItem
             className={classes.menuControlContainer}
@@ -1552,34 +1198,32 @@ const Layout = ({ children, history }) => {
                   <MenuIcon />
                 </>
               )}
-
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
           {drawerOpen
             ? navigationData &&
-            navigationData.length > 0 && (
-              <DrawerMenu
-                superUser={superUser}
-                drawerOpen={drawerOpen}
-                navigationItems={navigationData}
-                onClick={handleRouting}
-              // flag={flag}
-              />
-            )
+              navigationData.length > 0 && (
+                <DrawerMenu
+                  superUser={superUser}
+                  drawerOpen={drawerOpen}
+                  navigationItems={navigationData}
+                  onClick={handleRouting}
+                  // flag={flag}
+                />
+              )
             : navigationData &&
-            navigationData.length > 0 && (
-              <DrawerMenu
-                superUser={superUser}
-                navigationItems={navigationData}
-                // onClick={()=>setDrawerOpen(true)}
-                onClick={handleOpen}
-                drawerOpen={drawerOpen}
-              // onClick={handleRouting}
-              />
-            )}
-
-        </List>
+              navigationData.length > 0 && (
+                <DrawerMenu
+                  superUser={superUser}
+                  navigationItems={navigationData}
+                  // onClick={()=>setDrawerOpen(true)}
+                  onClick={handleOpen}
+                  drawerOpen={drawerOpen}
+                  // onClick={handleRouting}
+                />
+              )}
+        </List> 
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
