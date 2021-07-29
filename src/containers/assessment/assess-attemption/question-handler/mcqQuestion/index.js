@@ -146,7 +146,6 @@ const McqQuestion = (props) => {
                 ) : null}
               </div>
             </div>
-            {console.log(options[2], 'ki11')}
             {options[2]?.option3? (
               <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
                 <FormControlLabel
