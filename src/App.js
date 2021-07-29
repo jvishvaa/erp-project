@@ -1500,6 +1500,9 @@ function App({ alert }) {
                           <Route exact path='/orchadio/manage-orchadio'>
                             {({ match }) => <ManageOrchadio match={match} />}
                           </Route>
+                          <Route exact path='/orchadio/add-orchadio'>
+                            {({ match }) => <AddNewOrchadio match={match} />}
+                          </Route>
                           <Route exact path='/homework-report-teacher-view'>
                             {({ match }) => <HomeWorkReportTeacher match={match} />}
                           </Route>
