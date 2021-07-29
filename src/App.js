@@ -237,7 +237,7 @@ import CreateLink from './containers/Finance/src/components/Finance/E-mandate/cr
 import Alert from './containers/Finance/src/ui/alert';
 import alertActions from './containers/Finance/src/_actions/alert.actions';
 import userActions from './containers/Finance/src/_actions/user.actions';
-
+import ApprovePendingReq from './containers/Finance/src/components/Finance/ApprovalRequests/StudentShuffle/Components/approvePendingReq.js';
 import { connect } from 'react-redux';
 import NonRTEFormAcc from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/nonRTEAdmissionForm.js';
 import AssignOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/assignOtherFess.js';
@@ -943,6 +943,11 @@ function App({ alert }) {
                           {/* <Route exact path='/finance/Requestshuffle'>
                   {({ match }) => <RequestShuffle match={match} />}
                 </Route> */}
+                           <Route exact path='/finance/approve_pendingRequest'>
+                            {({ match }) => (
+                              <ApprovePendingReq match={match} alert={alert} />
+                            )}
+                          </Route>
                           <Route exact path='/finance/MiscFeeClass'>
                             {({ match }) => <MiscFeeClass match={match} alert={alert} />}
                           </Route>
@@ -1300,6 +1305,9 @@ function App({ alert }) {
                               <DailyBillingDetails match={match} alert={alert} />
                             )}
                           </Route>
+                          <Route exact path='/finance/student_shuffle'>
+                            {({ match }) => <StudentShuffleReq match={match} alert={alert} />}
+                          </Route>
                           <Route exact path='/finance/Expanse Management/PettyExpense'>
                             {({ match }) => <PettyExpenses match={match} alert={alert} />}
                           </Route>
@@ -1465,6 +1473,9 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/orchadio/manage-orchadio'>
                             {({ match }) => <ManageOrchadio match={match} />}
+                          </Route>
+                          <Route exact path='/orchadio/add-orchadio'>
+                            {({ match }) => <AddNewOrchadio match={match} />}
                           </Route>
                           <Route exact path='/homework-report-teacher-view'>
                             {({ match }) => <HomeWorkReportTeacher match={match} />}
