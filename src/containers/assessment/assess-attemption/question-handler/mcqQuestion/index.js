@@ -146,7 +146,8 @@ const McqQuestion = (props) => {
                 ) : null}
               </div>
             </div>
-            {options[2]?.option3?.optionValue ? (
+            {console.log(options[2], 'ki11')}
+            {options[2]?.option3? (
               <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
                 <FormControlLabel
                   // className='mcq-options'
@@ -184,7 +185,7 @@ const McqQuestion = (props) => {
                 </div>
               </div>
             ) : null}
-            {options[3]?.option4?.optionValue ? (
+            {options[3]?.option4? (
               <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
                 <FormControlLabel
                   // className='mcq-options'
