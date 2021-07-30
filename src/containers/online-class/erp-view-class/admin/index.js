@@ -265,8 +265,10 @@ const ErpAdminViewClass = ({ history }) => {
             setFilterList(response);
             setSelectedViewMore('');
             const viewData = JSON.parse(localStorage.getItem('viewMoreData')) || '';
-            if (viewData?.id) {
-              setSelectedViewMore(viewData);
+            if(viewData?.id){
+              let newViewData = response.filter(item => item.id == viewData.id);
+              localStorage.setItem('viewMoreData', JSON.stringify(newViewData[0] || {}));
+              setSelectedViewMore(newViewData[0] || {}) ;
             }
           }
           setLoading(false);
