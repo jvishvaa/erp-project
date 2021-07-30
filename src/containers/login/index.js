@@ -284,6 +284,7 @@ function SignIn({ onLogin, history, aolOnLogin }) {
 
           const result = res.data.result.data
           const theme = []
+          if(result.length > 0 ){
           result.forEach((item) => {
             if(item.theme_key === "primary_color")
             {
@@ -304,9 +305,10 @@ function SignIn({ onLogin, history, aolOnLogin }) {
           })
           // var stored = {}
           localStorage.setItem("themeDetails", JSON.stringify(theme));
+        }
           window.location.href = '/profile';
         }
-        
+
   
       }).catch((error) => {
         console.log(error);

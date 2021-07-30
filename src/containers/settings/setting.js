@@ -193,7 +193,7 @@ const Setting = (props) => {
     //     });
 
     var themeData = JSON.parse(localStorage.getItem("themeDetails"));
-    if (themeData)
+    if (themeData){
       themeData.forEach((items) => {
         if (items.theme_key === "primary_color") {
           setprimarycolor(items.theme_value)
@@ -202,7 +202,11 @@ const Setting = (props) => {
         }
 
       })
-
+    }else{
+      setprimarycolor("#ff6b6b")
+      setsecondarycolor('#014b7e')
+    }
+    
 
 
   }, [])
