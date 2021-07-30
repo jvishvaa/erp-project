@@ -3,7 +3,7 @@ import ErrorBoundary404 from 'components/ErrorBoundaries404/errorBoundaries404';
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null, errorInfo: null };
+    this.state = { hasError: true, error: null, errorInfo: null };
   }
 
   static getDerivedStateFromError(error) {
