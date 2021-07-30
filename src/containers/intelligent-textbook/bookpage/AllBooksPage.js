@@ -57,7 +57,7 @@ const AllBooksPage = () => {
   const [grade, setGrade] = useState('');
   const [subject, setSubject] = useState('');
   const [volume, setVolume] = useState('');
-  const bookImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/ibooks/';
+  const bookImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/';
 
   const getDomainName = () => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
@@ -83,7 +83,9 @@ const AllBooksPage = () => {
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.ibook.studentBook}?domain_name=${getDomainName()}&page=${pageNo}&page_size=${limit}`
+        `${
+          endpoints.ibook.studentBook
+        }?domain_name=${getDomainName()}&page=${pageNo}&page_size=${limit}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -133,7 +135,9 @@ const AllBooksPage = () => {
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.ibook.studentBook}?domain_name=${getDomainName()}&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`
+        `${
+          endpoints.ibook.studentBook
+        }?domain_name=${getDomainName()}&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -196,7 +200,7 @@ const AllBooksPage = () => {
                           <Grid container spacing={2}>
                             <Grid item md={6} xs={6}>
                               <img
-                                src={`${bookImage}${item.book_image}`}
+                                src={`${bookImage}${item.path}${item.book_image}`}
                                 alt='crash'
                                 width='100%'
                                 height='150px'
