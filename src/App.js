@@ -618,7 +618,7 @@ function App({ alert }) {
                           <Route exact path='/erp-online-class/assign/:id/qp'>
                             {({ match }) => <AssignQP match={match} />}
                           </Route>
-                          <Route exact path='/erp-online-class/:id/pre-quiz'>
+                          <Route exact path='/erp-online-class/:id/:qid/pre-quiz'>
                             {({ match }) => <PreQuiz match={match} />}
                           </Route>
                           <Route path='/erp-online-class/:onlineclassId/quiz/:questionpaperId/:lobbyuuid/:role'>
