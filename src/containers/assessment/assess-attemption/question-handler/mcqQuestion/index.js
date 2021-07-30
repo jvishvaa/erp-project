@@ -122,7 +122,6 @@ const McqQuestion = (props) => {
                 label={options[1].option2.optionValue}
               />
               <div>
-                {/* {console.log(options[1]?.option2?.images.length, 'po22')} */}
                 {options[1]?.option2?.images.length !== 0 ? (
 
                   <a
@@ -146,7 +145,7 @@ const McqQuestion = (props) => {
                 ) : null}
               </div>
             </div>
-            {options[2]?.option3?.optionValue ? (
+            {options[2]?.option3? (
               <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
                 <FormControlLabel
                   // className='mcq-options'
@@ -184,7 +183,7 @@ const McqQuestion = (props) => {
                 </div>
               </div>
             ) : null}
-            {options[3]?.option4?.optionValue ? (
+            {options[3]?.option4? (
               <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
                 <FormControlLabel
                   // className='mcq-options'
@@ -220,7 +219,7 @@ const McqQuestion = (props) => {
                 </div>
               </div>
             ) : null}
-            {options[4]?.option5?.optionValue ? (
+            {options[4]?.option5? (
               <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
                 <FormControlLabel
                   //  className='mcq-options'
