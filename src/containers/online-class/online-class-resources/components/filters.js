@@ -8,6 +8,7 @@ import {
   TablePagination,
 } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Loader from '../../../../components/loader/loader';
 import '../../../teacherBatchView/style.scss';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -35,7 +36,10 @@ const Filter = (props) => {
     JSON.parse(window.localStorage.getItem('userDetails'))
   );
   const [academicYear, setAcademicYear] = useState([]);
-  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -98,18 +102,18 @@ const Filter = (props) => {
       .get(api)
       .then((result) => {
         if (result.status === 200) {
-          if (key === 'academicYearList') {
-            setAcademicYear(result?.data?.data || []);
+          // if (key === 'academicYearList') {
+          //   setAcademicYear(result?.data?.data || []);
 
-            const defaultYear = result?.data?.data?.[0];
-            setSelectedAcadmeicYear(defaultYear);
-            if (defaultYear) {
-              callApi(
-                `${endpoints.communication.branches}?session_year=${defaultYear?.id}&module_id=${moduleId}`,
-                'branchList'
-              );
-            }
-          }
+          //   const defaultYear = result?.data?.data?.[0];
+          //   setSelectedAcadmeicYear(defaultYear);
+          //   if (defaultYear) {
+          //     callApi(
+          //       `${endpoints.communication.branches}?session_year=${defaultYear?.id}&module_id=${moduleId}`,
+          //       'branchList'
+          //     );
+          //   }
+          // }
           if (key === 'branchList') {
             setBranchList(result?.data?.data?.results || []);
           }
@@ -168,13 +172,13 @@ const Filter = (props) => {
   }
 
   useEffect(() => {
-    if (moduleId) {
+    if (selectedAcademicYear && moduleId) {
       callApi(
-        `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
-        'academicYearList'
+        `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+        'branchList'
       );
     }
-  }, [moduleId]);
+  }, [selectedAcademicYear, moduleId]);
 
   function handlePagination(e, page) {
     setPage(page);
@@ -208,7 +212,7 @@ const Filter = (props) => {
     setSubjectList([]);
     setSelectedSubject([]);
     setSubSelectedId([]);
-    setSelectedAcadmeicYear('');
+    // setSelectedAcadmeicYear('');
     props.hendleDetails();
     props.getResourceData([]);
   }
@@ -315,7 +319,7 @@ const Filter = (props) => {
     if (selectedBranch.length > 0) {
       handleFilter();
     }
-  }, [props.pages,props?.tabValue]);
+  }, [props.pages, props?.tabValue]);
   // useEffect(() => {
   //   handleFilter();
   // }, [props?.tabValue]);
@@ -329,7 +333,7 @@ const Filter = (props) => {
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
-              limitTags={2} 
+              limitTags={2}
               onChange={(event, value) => {
                 setSelectedClassType(value);
                 setSelectedGrade([]);
@@ -363,11 +367,11 @@ const Filter = (props) => {
             />
           </Grid>
         )}
-        <Grid item md={3} xs={12}>
+        {/* <Grid item md={3} xs={12}>
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
-            limitTags={2} 
+            limitTags={2}
             onChange={(event, value) => {
               setSelectedAcadmeicYear(value);
               if (value) {
@@ -405,13 +409,13 @@ const Filter = (props) => {
               />
             )}
           />
-        </Grid>
+        </Grid> */}
         <Grid item md={3} xs={12}>
           <Autocomplete
             multiple
             style={{ width: '100%' }}
             size='small'
-            limitTags={2} 
+            limitTags={2}
             onChange={(event, value) => {
               setSelectedBranch([]);
               if (value.length) {
@@ -490,7 +494,7 @@ const Filter = (props) => {
             }}
             id='grade_id'
             className='dropdownIcon'
-            limitTags={2} 
+            limitTags={2}
             value={selectedGrade}
             options={gradeList}
             getOptionLabel={(option) => option?.grade__grade_name}
@@ -537,7 +541,7 @@ const Filter = (props) => {
             className='dropdownIcon'
             value={selectedSection}
             options={sectionList}
-            limitTags={2} 
+            limitTags={2}
             getOptionLabel={(option) =>
               option?.section__section_name || option?.section_name
             }
@@ -557,7 +561,7 @@ const Filter = (props) => {
             <Autocomplete
               multiple
               style={{ width: '100%' }}
-              limitTags={2} 
+              limitTags={2}
               size='small'
               onChange={(event, value) => {
                 setSelectedSubject([]);
@@ -592,7 +596,7 @@ const Filter = (props) => {
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
-              limitTags={2} 
+              limitTags={2}
               onChange={(event, value) => {
                 setSelectedCourse(value);
                 if (value) {
@@ -611,7 +615,7 @@ const Filter = (props) => {
               className='dropdownIcon'
               value={selectedCourse}
               options={courseList}
-              limitTags={2} 
+              limitTags={2}
               getOptionLabel={(option) => option?.course_name}
               filterSelectedOptions
               renderInput={(params) => (
@@ -637,7 +641,7 @@ const Filter = (props) => {
               className='dropdownIcon'
               value={selectedBatch}
               options={batchList}
-              limitTags={2} 
+              limitTags={2}
               getOptionLabel={(option) =>
                 option ? `1 : ${JSON.stringify(option.batch_size)}` : ''
               }

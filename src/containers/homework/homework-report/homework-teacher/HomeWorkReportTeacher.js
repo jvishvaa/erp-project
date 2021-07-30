@@ -370,7 +370,6 @@ export default function HomeWorkReportTeacher() {
   const [loading, setLoading] = useState(false);
   const wider = '-10px 0px 20px 8px';
   const widerWidth = '95%';
-  
 
   ///<<<<<<<<<<<<<<<<<<<<<<TABLE STATES>>>>>>>>>>>>>>>>>>>>>>>
   useEffect(() => {
@@ -433,12 +432,11 @@ export default function HomeWorkReportTeacher() {
     <>
       <Layout>
         {loading && <Loader />}
-        <div style={{ width: '95%', margin: '20px auto', marginLeft: '30px' }}>
-          <CommonBreadcrumbs
-            componentName={`Homework`}
-            childComponentName={`Teacher HW Report`}
-          />
-        </div>
+        <CommonBreadcrumbs
+          componentName={`Homework`}
+          childComponentName={`Teacher HW Report`}
+          isAcademicYearVisible={true}
+        />
         <Grid container spacing={5} style={{ width: widerWidth, margin: wider }}>
           <Grid item xs={12} sm={3}>
             <Autocomplete
@@ -469,9 +467,9 @@ export default function HomeWorkReportTeacher() {
                 value={dateRangeTechPer}
                 onChange={(newValue) => {
                   // setDateRangeTechPer(newValue);
-                  setDateRangeTechPer(()=>newValue);
-                  if(selectedSubject){
-                    handleSubject(selectedSubject)
+                  setDateRangeTechPer(() => newValue);
+                  if (selectedSubject) {
+                    handleSubject(selectedSubject);
                   }
                 }}
                 renderInput={({ inputProps, ...startProps }, endProps) => {

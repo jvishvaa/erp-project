@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Grid,
   TextField,
@@ -38,7 +39,9 @@ const ErpAdminViewClass = ({ history }) => {
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
   const [academicYear, setAcademicYear] = useState([]);
-  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
@@ -149,7 +152,7 @@ const ErpAdminViewClass = ({ history }) => {
             setDateRangeTechPer([moment(date?.[0]), moment(date?.[1])]);
           }
           if (academic?.id) {
-            setSelectedAcadmeicYear(academic);
+            // setSelectedAcademicYear(academic);
             const acadId = academic?.id || '';
             callApi(
               `${endpoints.communication.branches}?session_year=${acadId}&module_id=${moduleId}`,
@@ -211,16 +214,14 @@ const ErpAdminViewClass = ({ history }) => {
           if (key === 'academicYearList') {
             setAcademicYear(result?.data?.data || []);
             const viewMoreData = JSON.parse(localStorage.getItem('viewMoreData'));
-            const defaultYear = result?.data?.data?.[0];
             if (
               window.location.pathname !== '/erp-online-class-student-view' &&
               !viewMoreData?.academic
             )
-              setSelectedAcadmeicYear(defaultYear);
-            callApi(
-              `${endpoints.communication.branches}?session_year=${defaultYear?.id}&module_id=${moduleId}`,
-              'branchList'
-            );
+              callApi(
+                `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+                'branchList'
+              );
           }
           if (key === 'branchList') {
             setBranchList(result?.data?.data?.results || []);
@@ -344,13 +345,17 @@ const ErpAdminViewClass = ({ history }) => {
   }
 
   useEffect(() => {
-    if (moduleId && window.location.pathname !== '/erp-online-class-student-view') {
+    if (
+      selectedAcademicYear &&
+      moduleId &&
+      window.location.pathname !== '/erp-online-class-student-view'
+    ) {
       callApi(
-        `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
-        'academicYearList'
+        `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+        'branchList'
       );
     }
-  }, [moduleId]);
+  }, [selectedAcademicYear, moduleId]);
 
   useEffect(() => {
     if (page) {
@@ -426,7 +431,6 @@ const ErpAdminViewClass = ({ history }) => {
     setSelectedSubject([]);
     setSelectedBranch([]);
     setSelectedClassType('');
-    setSelectedAcadmeicYear('');
     setPage(1);
     setTotalData('');
     setTabValue(0);
@@ -434,9 +438,9 @@ const ErpAdminViewClass = ({ history }) => {
 
   function handleFilter() {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-    setPage(()=>1);
+    setPage(() => 1);
     setTabValue(0);
-    setSelectedViewMore(()=>'');
+    setSelectedViewMore(() => '');
     localStorage.removeItem('viewMoreData');
     localStorage.removeItem('filterData');
     if (window.location.pathname === '/erp-online-class-student-view') {
@@ -587,32 +591,6 @@ const ErpAdminViewClass = ({ history }) => {
     localStorage.removeItem('viewMoreData');
   };
 
-  const handleAcademicYear = (event = {}, value = '') => {
-    setSelectedAcadmeicYear('');
-    if (value) {
-      setSelectedAcadmeicYear(value);
-      callApi(
-        `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-        'branchList'
-      );
-    }
-    setTotalCount(0);
-    setBranchList([]);
-    setGradeList([]);
-    setSelectedGrade([]);
-    setCourseList([]);
-    setSelectedCourse('');
-    setSelectedViewMore('');
-    setSectionList([]);
-    setSelectedSection([]);
-    setSubjectList([]);
-    setSelectedSubject([]);
-    setSelectedBranch([]);
-    setFilterList([]);
-    setTabValue(0);
-    setPage(1);
-  };
-
   const handleBranch = (event = {}, value = []) => {
     setSelectedBranch([]);
     setGradeList([]);
@@ -750,6 +728,7 @@ const ErpAdminViewClass = ({ history }) => {
                       ? 'Student Class View'
                       : ''
                   }
+                  isAcademicYearVisible={true}
                 />
               </Grid>
             </Grid>
@@ -780,7 +759,7 @@ const ErpAdminViewClass = ({ history }) => {
               </Grid>
               {window.location.pathname !== '/erp-online-class-student-view' && (
                 <>
-                  <Grid item md={3} xs={12}>
+                  {/* <Grid item md={3} xs={12}>
                     <Autocomplete
                       style={{ width: '100%' }}
                       size='small'
@@ -800,7 +779,7 @@ const ErpAdminViewClass = ({ history }) => {
                         />
                       )}
                     />
-                  </Grid>
+                  </Grid> */}
                   <Grid item md={3} xs={12}>
                     <Autocomplete
                       multiple
@@ -983,7 +962,7 @@ const ErpAdminViewClass = ({ history }) => {
                     style={{ color: 'white' }}
                     color='primary'
                     className='custom_button_master'
-                    onClick={() => handleFilter( )}
+                    onClick={() => handleFilter()}
                   >
                     Get Classes
                   </Button>

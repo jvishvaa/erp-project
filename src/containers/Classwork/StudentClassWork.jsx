@@ -151,10 +151,11 @@ function handleDate(v1) {
           <Grid item md={12} xs={12} style={{marginTop:"10px",marginLeft:'10px',marginBottom:'70px'}}>
             <Grid container spacing={2} justify='middle' className='signatureNavDiv'>
               <Grid item md={12} xs={12} style={{ display: 'flex' }}>         
-               <CommonBreadcrumbs
-            componentName={`Online Class`}
-            childComponentName={`Student Classwork Report`}
-          />
+                <CommonBreadcrumbs
+                  componentName={`Online Class`}
+                  childComponentName={`Student Classwork Report`}
+                  isAcademicYearVisible={true}
+                />
           </Grid>
           </Grid>
           </Grid>

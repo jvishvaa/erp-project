@@ -53,7 +53,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Grow from '@material-ui/core/Grow';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
-import { logout } from '../../redux/actions';
+import { logout, fetchAcademicYearList } from '../../redux/actions';
 import DrawerMenu from '../../components/drawer-menu';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import UserDetails from './userDetails/user-details';
@@ -195,7 +195,11 @@ const Layout = ({ children, history, ...props }) => {
   //   }, [currentPage]);
 
   
-
+  const academicYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
+  useEffect(() => {
+    if (!academicYear) dispatch(fetchAcademicYearList());
+  }, [academicYear]);
+  
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
