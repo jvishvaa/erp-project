@@ -7,24 +7,25 @@ import teacherHomework from './teacherHomeworkReducer';
 import discussionReducer from './discussionForumReducer';
 import attendanceReducer from './onlineClassReducer';
 // /home/rana/ErpRevamp/erp-revamp-frontend/src/containers/Finance/src/_reducers/academicSession.reducer.js
-import commonReducer from '../../../src/containers/Finance/src/components/Finance/store/reducer/common.reducer'
-import { academicSession } from '../../../src/containers/Finance/src/_reducers/academicSession.reducer'
+import commonReducer from '../../../src/containers/Finance/src/components/Finance/store/reducer/common.reducer';
+import { academicSession } from '../../../src/containers/Finance/src/_reducers/academicSession.reducer';
 // /home/rana/ErpRevamp/erp-revamp-frontend/src/containers/Finance/src/components/Finance/store/reducer/common.reducer.js
-import { authentication } from '../../../src/containers/Finance/src/_reducers/authentication.reducer'
+import { authentication } from '../../../src/containers/Finance/src/_reducers/authentication.reducer';
 // /home/rana/ErpRevamp/erp-revamp-frontend/src/containers/Finance/src/_reducers/authentication.reducer.js
-import normalFeeListReducer from '../../../src/containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/store/reducers/normalFeeList.reducer.js'
+import normalFeeListReducer from '../../../src/containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/store/reducers/normalFeeList.reducer.js';
 // /home/rana/ErpRevamp/erp-revamp-frontend/src/containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/store/reducers/normalFeeList.reducer.js
-import finance from '../../../src/containers/Finance/src/components/Finance/store/reducer'
-import { alert } from '../../../src/containers/Finance/src/_reducers/alert.reducer'
-import { branches } from '../../../src/containers/Finance/src/_reducers/branches.reducer.js'
-import expenseMngmtReducer from '../../../src/containers/Finance/src/components/Finance/ExpenseManagement/store/reducer/expenseMngmt.reducer.js'
-import inventory from '../../../src/containers/Finance/src/components/Inventory/store/reducer/inventory.reducer.js'
-import { gradeMap } from '../../../src/containers/Finance/src/_reducers/gradeMap.reducer.js'
-import { sectionMap } from '../../../src/containers/Finance/src/_reducers/sectionMap.reducer.js'
-import { subjects } from '../../../src/containers/Finance/src/_reducers/subject.reducer.js'
+import finance from '../../../src/containers/Finance/src/components/Finance/store/reducer';
+import { alert } from '../../../src/containers/Finance/src/_reducers/alert.reducer';
+import { branches } from '../../../src/containers/Finance/src/_reducers/branches.reducer.js';
+import expenseMngmtReducer from '../../../src/containers/Finance/src/components/Finance/ExpenseManagement/store/reducer/expenseMngmt.reducer.js';
+import inventory from '../../../src/containers/Finance/src/components/Inventory/store/reducer/inventory.reducer.js';
+import { gradeMap } from '../../../src/containers/Finance/src/_reducers/gradeMap.reducer.js';
+import { sectionMap } from '../../../src/containers/Finance/src/_reducers/sectionMap.reducer.js';
+import { subjects } from '../../../src/containers/Finance/src/_reducers/subject.reducer.js';
 import createQuestionPaper from './create-question-paper-reducer';
 import createAssesment from './create-assesment-reducer';
 import assessmentReportReducer from '../reducers/assessmentReportReducer';
+import commonFilterReducer from '../reducers/common-reducer';
 
 export default combineReducers({
   auth,
@@ -39,7 +40,7 @@ export default combineReducers({
   authentication,
   normalFee: normalFeeListReducer,
   finance,
-  alert, 
+  alert,
   branches,
   expenseMngmt: expenseMngmtReducer,
   inventory,
@@ -49,4 +50,5 @@ export default combineReducers({
   createQuestionPaper,
   createAssesment,
   assessmentReportReducer,
+  commonFilterReducer,
 });

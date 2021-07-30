@@ -125,12 +125,9 @@ const StudentHomeWorkReport = () => {
   return (
     <div>
       <Layout className='layout-container'>
-        <div
-          className='message_log_breadcrumb_wrapper'
-          style={{ backgroundColor: '#F9F9F9' }}
-        >
-          <CommonBreadcrumbs componentName='Homework Report' />
-        </div>
+        <CommonBreadcrumbs componentName='Homework Report' 
+          isAcademicYearVisible={true}
+        />
         <div className='create_group_filter_container'>
           <Grid item xs={12} sm={3}>
             <LocalizationProvider dateAdapter={MomentUtils} className='dropdownIcon'>
