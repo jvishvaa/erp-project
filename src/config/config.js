@@ -29,7 +29,7 @@ const qa = {
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
-    baseURLMPQ:'https://qa.mpquiz.letseduvate.com',
+    baseURLMPQ:'https://dev.mpquiz.letseduvate.com',
     baseURLCentral: 'https://qa.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
   },
