@@ -1,5 +1,5 @@
 import React from 'react';
-import ErrorBoundary404 from 'components/ErrorBouderies404/errorBunderies404';
+import ErrorBoundary404 from 'components/ErrorBoundaries404/errorBoundaries404';
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -15,7 +15,6 @@ class ErrorBoundary extends React.Component {
       error: error,
       errorInfo: errorInfo,
     });
-    console.log(error, errorInfo, 'error');
   }
 
   render() {
