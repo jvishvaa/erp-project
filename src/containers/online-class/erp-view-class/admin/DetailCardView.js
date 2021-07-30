@@ -177,7 +177,7 @@ const JoinClass = (props) => {
   const handleTakeQuiz = (fullData) => {
     if (fullData && fullData.online_class && fullData.online_class.question_paper_id) {
       history.push({
-        pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
+        pathname: `/erp-online-class/${fullData.online_class.id}/${fullData.online_class.question_paper_id}/pre-quiz`,
         state: { data: fullData.online_class.id },
       });
     } else {
@@ -269,8 +269,8 @@ const JoinClass = (props) => {
         variant='contained'
         onClick={() =>
           history.push({
-            pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
-            state: { data: fullData.online_class.id },
+            pathname: `/erp-online-class/${fullData.online_class.id}/${fullData.online_class.question_paper_id}/pre-quiz`,
+            state: { data: fullData.online_class.id},
           })
         }
         disabled={props?.data?.is_cancelled}
@@ -283,7 +283,6 @@ const JoinClass = (props) => {
 }
     </Grid>}
       
-          
       {window.location.pathname === '/erp-online-class-student-view' ? (
         <>
           <Grid item xs={4}>
@@ -293,7 +292,7 @@ const JoinClass = (props) => {
               fullWidth
               variant='contained'
               onClick={() => handleTakeQuiz(fullData)}
-              disabled={props?.data?.class_status === 'Cancelled'}
+              disabled={props?.data?.class_status === 'Cancelled' || fullData?.online_class?.question_paper_id===0}
               // className='takeQuizButton'
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >

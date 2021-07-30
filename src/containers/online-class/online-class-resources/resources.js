@@ -218,9 +218,11 @@ const Resources = () => {
   return (
     <>
       {loading && <Loader />}
-      <div className='breadcrumb-container-create' style={{ marginLeft: '15px' }}>
-        <CommonBreadcrumbs componentName='Online Class' childComponentName='Resources' />
-      </div>
+      <CommonBreadcrumbs
+        componentName='Online Class'
+        childComponentName='Resources'
+        isAcademicYearVisible={true}
+      />
       <Grid container spacing={4} className='teacherBatchViewMainDiv'>
         <Grid item xs={12}>
           <Filter

@@ -21,7 +21,7 @@ function MpQuizSocketStatus(props) {
         label={
           <div style={{ minWidth: '40vw', display: 'flex', justifyContent: "space-evenly" }}>
             <Button variant='outlined'
-              onClick={() => { props.history.push('/dashboard') }}>
+              onClick={() => { props.history.push('/erp-online-class-teacher-view') }}>
               Go Home
             </Button>
             <Button variant='outlined'

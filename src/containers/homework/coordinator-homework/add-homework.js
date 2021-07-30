@@ -216,9 +216,11 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
   return (
     <Layout>
       <div className='add-homework-container-coordinator'>
-        <div className='message_log_breadcrumb_wrapper'>
-          <CommonBreadcrumbs componentName='Homework' childComponentName='Add Homework' />
-        </div>
+        <CommonBreadcrumbs
+          componentName='Homework'
+          childComponentName='Add Homework'
+          isAcademicYearVisible={true}
+        />
         <Grid container spacing={2} className='add-homework-inner-container'>
           <Grid item xs={12} className='add-homework-title-container' md={3}>
             <div className='nav-cards-container'>
@@ -241,7 +243,7 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
 
           <Grid item container xs={12} md={9}>
             <Grid container style={{ width: '95%', margin: '0 auto' }}>
-              <Grid item xs={12} sm={4} style={{ marginBottom: '20px'}}>
+              <Grid item xs={12} sm={4} style={{ marginBottom: '20px' }}>
                 <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
@@ -342,19 +344,15 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
                     </StyledOutlinedButton>
                   </div>
                 </Grid>
-                <Grid item xs={12} md={6} >
+                <Grid item xs={12} md={6}>
                   <div className='finish-btn-container'>
-                    <Button
-                      className='btn'
-                      color='primary'
-                      onClick={handleAddHomeWork}
-                    >
+                    <Button className='btn' color='primary' onClick={handleAddHomeWork}>
                       Finish
                     </Button>
                   </div>
                 </Grid>
               </Grid>
-            </Grid>            
+            </Grid>
           </Grid>
         </Grid>
       </div>
