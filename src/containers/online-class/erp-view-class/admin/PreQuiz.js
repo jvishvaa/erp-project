@@ -288,7 +288,7 @@ return (
         <Typography>OnlineClass Name : {preQuizInfo?.online_class_info && preQuizInfo?.online_class_info?.online_class && preQuizInfo?.online_class_info?.online_class?.title}</Typography>
         <Typography>Question Paper : {preQuizInfo?.assessment_details?.test_name}</Typography>
         <Typography>Duration : {preQuizInfo?.assessment_details?.test_duration}</Typography>
-        <Typography>No Of Questions : {preQuizInfo?.total_questions}</Typography>
+        <Typography>No Of Questions : {preQuizInfo?.questions.length}</Typography>
 
 
             <Button
