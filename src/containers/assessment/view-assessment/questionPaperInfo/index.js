@@ -241,11 +241,11 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
             }}
             disabled={!getTestStatus()}
             onClick={() => {
-              Object.entries(localStorage).forEach(([key, value]) => {
-                if (key?.startsWith('assessment-')) {
-                  localStorage.removeItem(key);
-                }
-              });
+              // Object.entries(localStorage).forEach(([key, value]) => {
+              //   if (key?.startsWith('assessment-')) {
+              //     localStorage.removeItem(key);
+              //   }
+              // });
               restProps.history.push(`/assessment/${questionPaperId}/attempt/`);
             }}
           >

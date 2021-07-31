@@ -22,16 +22,18 @@ function QuestionReview() {
         sub_question_answer: subQuestion = [{}],
       } = questionsDataObj[questionId] || {};
       const handlerAnswerVar = (ansVar) => {
+        let answer = '';
         if (Array.isArray(ansVar)) {
-          return ansVar.join(', ');
+          answer = ansVar.join(', ');
         }
         if (typeof ansVar === 'object') {
-          return Object.entries(ansVar)
+          answer = Object.entries(ansVar)
             .map(([key, val]) => [isNaN(+key) ? key : +key + 1, val])
             .map((keyVal) => keyVal.join(' : '))
             .join(',');
         }
-        return `${ansVar}`;
+        answer = answer ?? `${ansVar}`;
+        return answer;
       };
       return (
         <div className={classes.questionCotainer}>
@@ -50,7 +52,7 @@ function QuestionReview() {
                     {item?.user_sub_answer?.question_type === 9 ? (
                       <div className={classes.answersContainer}>
                         <b>Your answer : &nbsp; </b>
-                        <label dangerouslySetInnerHTML={{ __html: handlerAnswerVar(item?.user_sub_answer?.user_answer[0]) }}></label>
+                        <label dangerouslySetInnerHTML={{ __html: handlerAnswerVar(item?.user_sub_answer?.user_answer) }}></label>
                         <br />
                         <b>Correct answer : &nbsp; </b>
                         <label dangerouslySetInnerHTML={{ __html: handlerAnswerVar(item?.question_answer[0]?.answer_values) }}></label>
@@ -88,7 +90,7 @@ function QuestionReview() {
                 </div>
 
               ) : (questionType === 9) ? (<div className={classes.answersContainer}>
-                <b>Your answer: &nbsp; </b><label dangerouslySetInnerHTML={{ __html: handlerAnswerVar(userAnswer[0]) }}></label>
+                <b>Your answer: &nbsp; </b><label dangerouslySetInnerHTML={{ __html: handlerAnswerVar(userAnswer) }}></label>
                 <br />
                 <b>Correct answer: &nbsp;</b>
                 <span dangerouslySetInnerHTML={{ __html: handlerAnswerVar(correctAnswer) }}></span>

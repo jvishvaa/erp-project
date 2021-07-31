@@ -33,15 +33,23 @@
   margin: 0 auto;
 }
 
+.mcq-options label {
+  width: 60%;
+}
+
 .mcq-question-wrapper img {
-  margin-bottom: 20px;
-  /* width: 100% !important; */
-  width: 100%;
-  /* border: 1px solid #055888; */
-  border-radius: 5px;
   height: auto;
-  max-height: 300px;
+  width: 50%;
+  max-width: 20rem;
+  border-radius: 5px;
+  max-height: auto;
   object-fit: contain;
+  float: right;
+}
+
+.imageContainer {
+  width: 50%;
+  height: 50%;
 }
 
 .mcq-options {
@@ -51,6 +59,7 @@
   padding: 10px;
   width: 100%;
   text-align: center;
+  justify-content: space-between;
   /* max-width: 400px; */
   cursor: pointer;
   margin-bottom: 10px;
