@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, useHistory } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
@@ -291,137 +291,87 @@ import ViewiChapter from 'containers/intelligent-textbook/ViewiChapter';
 import ViewiBook from './containers/intelligent-textbook/ViewiBook';
 import AllBooksPage from 'containers/intelligent-textbook/bookpage/AllBooksPage';
 import ChapterBook from 'containers/intelligent-textbook/chapterpage/ChapterBook';
+import { colorLuminance } from '../src/utility-functions';
 
-let temp = localStorage.getItem('themeDetails');
-let primarytemp = '';
-let secondrytemp = '';
-let lightprimary = '';
-let darkprimary = '';
+const getThemeElements = () => {
+  let themeDetails = JSON.parse(localStorage.getItem('themeDetails')) || [];
+  const elements = {
+    colors: {
+      primarytemp: '#ff6b6b',
+      secondrytemp: '#014b7e',
+    },
+  };
 
-function ColorLuminance(hex, lum) {
-  // validate hex string
-  hex = String(hex).replace(/[^0-9a-f]/gi, '');
-  if (hex.length < 6) {
-    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+  if (themeDetails?.length > 0) {
+    {
+      themeDetails.forEach(({ theme_key = 'primary_color', theme_value = '#ff6b6b' }) => {
+        if (theme_key === 'primary_color') {
+          elements['colors']['primarytemp'] = theme_value;
+        } else {
+          elements['colors']['secondrytemp'] = theme_value;
+        }
+      });
+    }
+    elements['colors']['darkprimary'] = colorLuminance(elements.colors.primarytemp, -0.2);
+    elements['colors']['lightprimary'] = colorLuminance(
+      elements.colors.primarytemp,
+      -0.4
+    );
+    return elements;
   }
-  lum = lum || 0;
-
-  // convert to decimal and change luminosity
-  var rgb = '#',
-    c,
-    i;
-  for (i = 0; i < 3; i++) {
-    c = parseInt(hex.substr(i * 2, 2), 16);
-    c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
-    rgb += ('00' + c).substr(c.length);
-  }
-
-  return rgb;
-}
-
-(function () {
-  if (temp === null) {
-    primarytemp = '#ff6b6b';
-    secondrytemp = '#014b7e';
-  } else {
-    const themeDetails = JSON.parse(temp);
-    themeDetails.forEach((ele) => {
-      if (ele.theme_key === 'primary_color') {
-        primarytemp = ele.theme_value;
-      } else {
-        secondrytemp = ele.theme_value;
-      }
-    });
-  }
-  darkprimary = ColorLuminance(primarytemp, -0.2);
-  lightprimary = ColorLuminance(primarytemp, -0.4);
-})();
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      // main: '#ff6b6b',
-      primarylight: lightprimary,
-      main: primarytemp || '#ff6b6b',
-      primarydark: darkprimary,
-    },
-    secondary: {
-      // main: '#014b7e',
-      main: secondrytemp || '#014b7e',
-    },
-    text: {
-      default: '#014b7e',
-    },
-    background: {
-      primary: '#ffffff',
-      secondary: '#f9f9f9',
-    },
-  },
-  typography: {
-    fontSize: 16,
-    color: '#014b7e',
-  },
-
-  overrides: {
-    MuiButton: {
-      // Name of the rule
-      root: {
-        // Some CSS
-        textTransform: 'capitailize',
-        textDecoration: 'none',
-        borderRadius: '10px',
-        color: '#ffffff',
-        backgroundColor: primarytemp,
-      },
-    },
-  },
-});
+};
 
 function App({ alert }) {
-  const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
-  const history = useHistory();
+  
+  const {
+    colors
+  } = getThemeElements() || {};
+  const {
+    primarytemp = '#ff6b6b',
+    secondrytemp = '#014b7e',
+    darkprimary = '',
+    lightprimary = '',
+  } =  colors || {};
+  
+  const theme = createMuiTheme({
+    palette: {
+      primary: {
+        // main: '#ff6b6b',
+        primarylight: lightprimary,
+        main: primarytemp,
+        primarydark: darkprimary,
+      },
+      secondary: {
+        // main: '#014b7e',
+        main: secondrytemp,
+      },
+      text: {
+        default: '#014b7e',
+      },
+      background: {
+        primary: '#ffffff',
+        secondary: '#f9f9f9',
+      },
+    },
+    typography: {
+      fontSize: 16,
+      color: '#014b7e',
+    },
+    overrides: {
+      MuiButton: {
+        // Name of the rule
+        root: {
+          // Some CSS
+          textTransform: 'capitailize',
+          textDecoration: 'none',
+          borderRadius: '10px',
+          color: '#ffffff',
+          backgroundColor: primarytemp,
+        },
+      },
+    },
+  });
 
-  // useEffect(() => {
-  //   let pathName = window.location.pathname;
-  //   let ignorePaths = ['/', '/dashboard', '/profile'];
-
-  //   if (!ignorePaths.includes(pathName)) {
-  //     let compName = '';
-  //     for (let i = 0; i < menuSelectionArray?.length; i++) {
-  //       if (pathName === '/assessment/' && menuSelectionArray[i].Path === '/assessment') {
-  //         compName = menuSelectionArray[i].name;
-  //       } else if (pathName === menuSelectionArray[i].Path) {
-  //         compName = menuSelectionArray[i].name;
-  //       }
-  //     }
-  //     let compArray = [];
-  //     for (let i = 0; i < NavData?.length; i++) {
-  //       const { child_module: childModule = [] } = NavData[i] || [];
-  //       for (let k = 0; k < childModule?.length; k++) {
-  //         const { child_name: childName = '' } = childModule[k] || '';
-  //         compArray.push(childName);
-  //       }
-  //     }
-  //     if (!compArray.includes(compName)) {
-  //       window.alert('Sorry!!! No such page exists.');
-  //       window.location.replace('/profile');
-  //     }
-  //   }
-  // }, [window.location.pathname]);
-
-  React.useEffect(() => {
-    const {
-      repoName = 'Revamp',
-      first_name: firstName,
-      user_id: userId,
-      is_superuser: isSuperuser,
-    } = JSON.parse(localStorage.getItem('userDetails') || '{}') || {};
-    if (window.location.hostname.includes('localhost')) {
-      document.title = [repoName, firstName, userId, isSuperuser ? 'Spr' : 'Nrml'].join(
-        ' - '
-      );
-    }
-  }, []);
   return (
     // <ErrorBoundary404 HomeButton={false}>
     <div className='App'>
