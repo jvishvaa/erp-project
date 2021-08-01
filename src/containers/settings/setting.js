@@ -111,10 +111,10 @@ const Setting = (props) => {
   const hiddenFileInput = React.useRef(null);
   const [image, setImage] = useState();
   const [pickprimarycolor, setpickprimarycolor] = useState(false)
-  const [secondarycolor, setsecondarycolor] = useState("")
+  const [secondarycolor, setsecondarycolor] = useState("#014b7e")
   const [picksecondarycolor, setpicksecondarycolor] = useState(false)
   const [colors, setcolors] = useState([])
-  const [primarycolor, setprimarycolor] = useState("")
+  const [primarycolor, setprimarycolor] = useState("#ff6b6b")
   const [currentpricolor, setcurrentpricolor] = useState(null)
   const [currentseccolor, setcurrentseccolor] = useState(null)
   // const [finalTheme, setFinalTheme] = useState({
@@ -521,7 +521,7 @@ const Setting = (props) => {
               <div style={{ display: "flex" }}>
                 <div>
                   <Button color="primary" variant="contained" onClick={reseteTheme} style={{ marginTop: "-2%" }}>
-                    Set Default
+                    Reset
                   </Button>
                 </div>
                 <div style={{ marginLeft: "15%" }}>
