@@ -9,7 +9,7 @@ import { IconButton, SvgIcon, Button } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { AttachmentPreviewerContext } from '../../../../../components/attachment-previewer/attachment-previewer-contexts';
 // import FormLabel from '@material-ui/core/FormLabel';
-
+import endpoints from '../../../../../config/endpoints';
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
 import '../../assess-attemption.css';
 
@@ -26,11 +26,12 @@ const McqQuestionMultiAnswer = (props) => {
     id: qId,
     question_answer: questionAnswer,
     user_response: { answer: existingAnswer = [] } = {},
+    is_central: isCentral = false,
   } = currentQuestionObj || {};
 
   const [{ options, question }] = questionAnswer || [];
 
-  const s3Image = "https://erp-revamp.s3.ap-south-1.amazonaws.com/"
+  const s3Image = `${isCentral ? endpoints.s3 : endpoints.assessmentErp.s3}/`;
 
   const handleOptionValue = (event) => {
     const { value, checked } = event.target;
@@ -59,7 +60,10 @@ const McqQuestionMultiAnswer = (props) => {
             value={existingAnswer}
             onChange={handleOptionValue}
           >
-            <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
+            <div
+              className='mcq-options'
+              style={{ display: 'flex', alignItems: 'center' }}
+            >
               <FormControlLabel
                 // className='mcq-options'
                 value='option1'
@@ -67,10 +71,11 @@ const McqQuestionMultiAnswer = (props) => {
                 control={<Checkbox />}
                 label={options[0].option1.optionValue}
               />
-              <div>
+              <div className='imageContainer'>
                 {options[0]?.option1?.images.length !== 0 ? (
-                  <a
-                    className='underlineRemove'
+                  <img
+                    // className='underlineRemove'
+                    src={`${s3Image}${options[0]?.option1?.images[0]}`}
                     onClick={() => {
                       const fileSrc = `${s3Image}${options[0]?.option1?.images[0]}`;
                       openPreview({
@@ -84,14 +89,15 @@ const McqQuestionMultiAnswer = (props) => {
                         ],
                       });
                     }}
-                  >
-                    <SvgIcon component={() => <VisibilityIcon />} />
-                  </a>
+                  />
                 ) : null}
               </div>
             </div>
 
-            <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
+            <div
+              className='mcq-options'
+              style={{ display: 'flex', alignItems: 'center' }}
+            >
               <FormControlLabel
                 // className='mcq-options'
                 value='option2'
@@ -99,10 +105,11 @@ const McqQuestionMultiAnswer = (props) => {
                 control={<Checkbox />}
                 label={options[1].option2.optionValue}
               />
-              <div>
+              <div className='imageContainer'>
                 {options[1]?.option2?.images.length !== 0 ? (
-                  <a
-                    className='underlineRemove'
+                  <img
+                    // className='underlineRemove'
+                    src={`${s3Image}${options[1]?.option2?.images[0]}`}
                     onClick={() => {
                       const fileSrc = `${s3Image}${options[1]?.option2?.images[0]}`;
                       openPreview({
@@ -116,14 +123,15 @@ const McqQuestionMultiAnswer = (props) => {
                         ],
                       });
                     }}
-                  >
-                    <SvgIcon component={() => <VisibilityIcon />} />
-                  </a>
+                  />
                 ) : null}
               </div>
             </div>
             {options[2]?.option3 ? (
-              <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
+              <div
+                className='mcq-options'
+                style={{ display: 'flex', alignItems: 'center' }}
+              >
                 <FormControlLabel
                   //  className='mcq-options'
                   value='option3'
@@ -131,14 +139,14 @@ const McqQuestionMultiAnswer = (props) => {
                   control={<Checkbox />}
                   label={options[2].option3.optionValue}
                 />
-                <div>
+                <div className='imageContainer'>
                   {options[2]?.option3?.images.length !== 0 ? (
-                    <a
-                      className='underlineRemove'
+                    <img
+                      // className='underlineRemove'
+                      src={`${s3Image}${options[2]?.option3?.images[0]}`}
                       onClick={() => {
                         // const fileSrc = `${endpoints.assessmentErp.s3}${obj?.media_file[0]}`;
-                        const fileSrc =
-                          `${s3Image}${options[2]?.option3?.images[0]}`;
+                        const fileSrc = `${s3Image}${options[2]?.option3?.images[0]}`;
                         openPreview({
                           currentAttachmentIndex: 0,
                           attachmentsArray: [
@@ -150,17 +158,17 @@ const McqQuestionMultiAnswer = (props) => {
                           ],
                         });
                       }}
-                    >
-                      <SvgIcon component={() => <VisibilityIcon />} />
-                    </a>
+                    />
                   ) : null}
                 </div>
               </div>
             ) : null}
 
             {options[3]?.option4 ? (
-              <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
-
+              <div
+                className='mcq-options'
+                style={{ display: 'flex', alignItems: 'center' }}
+              >
                 <FormControlLabel
                   // className='mcq-options'
                   value='option4'
@@ -168,14 +176,14 @@ const McqQuestionMultiAnswer = (props) => {
                   control={<Checkbox />}
                   label={options[3].option4.optionValue}
                 />
-                <div>
+                <div className='imageContainer'>
                   {options[3]?.option4?.images.length !== 0 ? (
-                    <a
-                      className='underlineRemove'
+                    <img
+                      // className='underlineRemove'
+                      src={`${s3Image}${options[3]?.option4?.images[0]}`}
                       onClick={() => {
                         // const fileSrc = `${endpoints.assessmentErp.s3}${obj?.media_file[0]}`;
-                        const fileSrc =
-                          `${s3Image}${options[3]?.option4?.images[0]}`;
+                        const fileSrc = `${s3Image}${options[3]?.option4?.images[0]}`;
                         openPreview({
                           currentAttachmentIndex: 0,
                           attachmentsArray: [
@@ -187,16 +195,16 @@ const McqQuestionMultiAnswer = (props) => {
                           ],
                         });
                       }}
-                    >
-                      <SvgIcon component={() => <VisibilityIcon />} />
-                    </a>
+                    />
                   ) : null}
                 </div>
               </div>
-
             ) : null}
             {options[4]?.option5 ? (
-              <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
+              <div
+                className='mcq-options'
+                style={{ display: 'flex', alignItems: 'center' }}
+              >
                 <FormControlLabel
                   className='mcq-options'
                   value='option5'
@@ -204,14 +212,14 @@ const McqQuestionMultiAnswer = (props) => {
                   control={<Checkbox />}
                   label={options[4].option5.optionValue}
                 />
-                <div>
+                <div className='imageContainer'>
                   {options[4]?.option5?.images.length !== 0 ? (
-                    <a
-                      className='underlineRemove'
+                    <img
+                      // className='underlineRemove'
+                      src={`${s3Image}${options[4]?.option5?.images[0]}`}
                       onClick={() => {
                         // const fileSrc = `${endpoints.assessmentErp.s3}${obj?.media_file[0]}`;
-                        const fileSrc =
-                          `${s3Image}${options[4]?.option5?.images[0]}`;
+                        const fileSrc = `${s3Image}${options[4]?.option5?.images[0]}`;
                         openPreview({
                           currentAttachmentIndex: 0,
                           attachmentsArray: [
@@ -223,9 +231,7 @@ const McqQuestionMultiAnswer = (props) => {
                           ],
                         });
                       }}
-                    >
-                      <SvgIcon component={() => <VisibilityIcon />} />
-                    </a>
+                    />
                   ) : null}
                 </div>
               </div>
