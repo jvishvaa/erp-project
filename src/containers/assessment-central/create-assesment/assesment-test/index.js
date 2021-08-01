@@ -267,9 +267,11 @@ const AssesmentTest = ({
                   init={{
                     height: 300,
                     placeholder: 'Note==> Word should be less than 500',
+                    selector: 'textarea',
+                    plugin: 'wordcount',
                     menubar: false,
                     toolbar:
-                      'fontselect fontsizeselect bold italic underline alignleft aligncenter alignright  bullist numlist file image  ', //customInsertButton
+                      'fontselect fontsizeselect bold italic underline alignleft aligncenter alignright  bullist numlist file image wordcount  ', //customInsertButton
                     setup(editor) {
                       editor.ui.registry.addButton('customInsertButton', {
                         text: 'Finish',

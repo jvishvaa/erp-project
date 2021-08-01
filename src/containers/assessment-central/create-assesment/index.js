@@ -536,7 +536,7 @@ const CreateAssesment = ({
               const WORDS = value.split(' ');
 
               const MAX_WORDS = WORDS.length;
-              const MAX_LENGTH = 50;
+              const MAX_LENGTH = 500;
               if (MAX_WORDS <= MAX_LENGTH) {
                 setInstructions(value);
                 initChangeTestFormFields('testInstructions', value);
