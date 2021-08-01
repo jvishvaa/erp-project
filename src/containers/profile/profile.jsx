@@ -140,6 +140,7 @@ const Profile = (props) => {
               />
               {userImage ? null : (
                 <Button
+                color = "primary"
                   variant='contained'
                   className='profile_upload_image_button'
                   component='label'
@@ -181,6 +182,7 @@ const Profile = (props) => {
             </form>
           </div>
           <Button
+            color = "primary"
             variant='contained'
             className='profile_change_password_button'
             onClick={() => setPasswordPopUp(true)}

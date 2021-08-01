@@ -206,7 +206,7 @@ const ViewMoreCard = ({
                   {extractContent(p?.question)}
                   <div>
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
-                      .length > 0 && (
+                      ?.length > 0 && (
                       <a
                         onClick={() => {
                           openPreview({
@@ -241,16 +241,16 @@ const ViewMoreCard = ({
 
             <div className='assesmentAnswers'>Answers</div>
             <div className='question-container'>
-              {Data[0]?.answer.map((obj, i) => (
+              {Data[0]?.answer?.map((obj, i) => (
                 <div>{obj}</div>
-              ))}
+              )) || ''}
             </div>
             <div className='resourceBulkDownload'>Options</div>
             <div>
-              {Data[0]?.options.map((obj, i) => (
+              {Data?.[0]?.options?.map((obj, i) => (
                 <div className='question-container'>
-                  {`OPTION${i + 1}:   ${obj[`option${i + 1}`].optionValue}`}
-                  {`${obj[`option${i + 1}`].images}`.length > 0 && (
+                  {`OPTION${i + 1}:   ${obj[`option${i + 1}`]?.optionValue}`}
+                  {`${obj[`option${i + 1}`]?.images}`?.length > 0 && (
                     <div>
                       <a
                         onClick={() => {
@@ -258,7 +258,7 @@ const ViewMoreCard = ({
                             currentAttachmentIndex: 0,
                             attachmentsArray: (() => {
                               const images =
-                                `${obj[`option${i + 1}`].images}`.split(',') || {};
+                                `${obj[`option${i + 1}`]?.images}`.split(',') || {};
                               const attachmentsArray = [];
                               images.forEach((image) => {
                                 const attachmentObj = {
@@ -283,14 +283,14 @@ const ViewMoreCard = ({
           </div>
         )}
 
-        {periodDataForView.question_type === 3 && (
+        {periodDataForView?.question_type === 3 && (
           <div className='ccc'>
             <div className='question-container'>
               {Data?.map((p) => (
                 <div style={{ color: '#014B7E' }}>
                   {extractContent(p.question)}
                   {p?.question?.split('"').filter((str) => str.startsWith('https'))
-                    .length > 0 && (
+                    ?.length > 0 && (
                     <div>
                       <a
                         onClick={() => {
@@ -327,10 +327,10 @@ const ViewMoreCard = ({
             <div className='assesmentAnswers'>Answers</div>
             {/* <Divider className='secondary-divider' /> */}
             <div>
-              {Data[0]?.questionAnswer?.map((obj, index) => (
+              {Data?.[0]?.questionAnswer?.map((obj, index) => (
                 <>
                   <div style={{ display: 'flex' }} className='question-container'>
-                    <div className='option'>{obj.answer}</div>
+                    <div className='option'>{obj?.answer}</div>
                     <div className='option' style={{ marginLeft: '2rem' }}>
                       {obj.question}
                     </div>
@@ -341,9 +341,9 @@ const ViewMoreCard = ({
 
             <div className='resourceBulkDownload'>Options</div>
             <div>
-              {Data[0]?.options?.map((obj, i) => (
+              {Data?.[0]?.options?.map((obj, i) => (
                 <div className='question-container'>
-                  {`OPTION${i + 1}:   ${obj.optionValue}`}
+                  {`OPTION${i + 1}:   ${obj?.optionValue}`}
                   {obj?.images?.length > 0 && (
                     <div>
                       <a
@@ -375,9 +375,9 @@ const ViewMoreCard = ({
               <div style={{ fontSize: '1.25rem', color: '#ff6b6b' }}>
                 Match with the following{' '}
               </div>
-              {Data[0]?.matchingOptions.map((obj, i) => (
+              {Data?.[0]?.matchingOptions?.map((obj, i) => (
                 <div className='question-container'>
-                  {`OPTION${i + 1}:   ${obj.optionValue}`}
+                  {`OPTION${i + 1}:   ${obj?.optionValue}`}
                   {obj?.images?.length > 0 && (
                     <div>
                       <a
@@ -410,13 +410,13 @@ const ViewMoreCard = ({
           </div>
         )}
 
-        {periodDataForView.question_type === 4 && (
+        {periodDataForView?.question_type === 4 && (
           <div>
-            <div className='question-container'>{extractContent(Data[0]?.question)}</div>
+            <div className='question-container'>{extractContent(Data?.[0]?.question)}</div>
             <ReactPlayer
               playing={false}
               controls
-              url={`${endpoints.s3}${Data[0]?.video}`}
+              url={`${endpoints.s3}${Data?.[0]?.video}`}
               style={{ maxWidth: '100%' }}
             />
             {Array.isArray(compData) &&
@@ -465,10 +465,10 @@ const ViewMoreCard = ({
                         </div> */}
                         <div className='assesmentAnswers'>Answers</div>
                         <div>
-                          {childQuestions?.question_answer[0]?.options.map((obj, i) => (
+                          {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
                             <div className='question-container'>
-                              {obj[`option${i + 1}`].optionValue}
-                              {`${obj[`option${i + 1}`].images}`.length > 0 && (
+                              {obj[`option${i + 1}`]?.optionValue}
+                              {`${obj[`option${i + 1}`]?.images}`?.length > 0 && (
                                 <div>
                                   <a
                                     onClick={() => {
@@ -476,7 +476,7 @@ const ViewMoreCard = ({
                                         currentAttachmentIndex: 0,
                                         attachmentsArray: (() => {
                                           const images =
-                                            `${obj[`option${i + 1}`].images}`.split(
+                                            `${obj[`option${i + 1}`]?.images}`.split(
                                               ','
                                             ) || {};
                                           const attachmentsArray = [];
@@ -523,13 +523,13 @@ const ViewMoreCard = ({
                         </div>
                         <div className='assesmentAnswers'>Answers</div>
                         <div className='question-container'>
-                          {childQuestions?.question_answer[0]?.answer.map((obj, i) => (
+                          {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
                             <div>{obj}</div>
                           ))}
                         </div>
                         <div className='resourceBulkDownload'>Options</div>
                         <div className='question-container'>
-                          {childQuestions?.question_answer[0]?.options.map((obj, i) => {
+                          {childQuestions?.question_answer[0]?.options?.map((obj, i) => {
                             return (
                               <div>
                                 {Object.keys(obj)[0] || ''} :{' '}
@@ -575,10 +575,10 @@ const ViewMoreCard = ({
 
                         <div className='resourceBulkDownload'>Options</div>
                         <div>
-                          {childQuestions?.question_answer[0]?.options.map((obj, i) => (
+                          {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
                             <div className='question-container'>
-                              {`OPTION${i + 1}:   ${obj.optionValue}`}
-                              {obj?.images.length > 0 && (
+                              {`OPTION${i + 1}:   ${obj?.optionValue}`}
+                              {obj?.images?.length > 0 && (
                                 <div>
                                   <a
                                     onClick={() => {
@@ -617,7 +617,7 @@ const ViewMoreCard = ({
                           {childQuestions?.question_answer[0]?.matrixOptions.map(
                             (obj, i) => (
                               <div className='question-container'>
-                                {`OPTION${i + 1}:   ${obj.optionValue}`}
+                                {`OPTION${i + 1}:   ${obj?.optionValue}`}
                               </div>
                             )
                           )}
@@ -647,7 +647,7 @@ const ViewMoreCard = ({
                                   style={{ display: 'flex' }}
                                   className='question-container'
                                 >
-                                  <div className='option'>{obj.answer}</div>
+                                  <div className='option'>{obj?.answer}</div>
                                   <div className='option' style={{ marginLeft: '2rem' }}>
                                     {obj.question}
                                   </div>
@@ -658,9 +658,9 @@ const ViewMoreCard = ({
                         </div>
                         <div className='resourceBulkDownload'>Options</div>
                         <div>
-                          {childQuestions?.question_answer[0]?.options.map((obj, i) => (
+                          {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
                             <div className='question-container'>
-                              {`OPTION${i + 1}:   ${obj.optionValue}`}
+                              {`OPTION${i + 1}:   ${obj?.optionValue}`}
                               {obj?.images?.length > 0 && (
                                 <div>
                                   <a
@@ -697,10 +697,10 @@ const ViewMoreCard = ({
                           <div style={{ fontSize: '1.25rem', color: '#ff6b6b' }}>
                             Match with the following{' '}
                           </div>
-                          {childQuestions?.question_answer[0]?.matchingOptions.map(
+                          {childQuestions?.question_answer[0]?.matchingOptions?.map(
                             (obj, i) => (
                               <div className='question-container'>
-                                {`OPTION${i + 1}:   ${obj.optionValue}`}
+                                {`OPTION${i + 1}:   ${obj?.optionValue}`}
                                 {obj?.images?.length > 0 && (
                                   <div>
                                     <a
@@ -762,16 +762,16 @@ const ViewMoreCard = ({
                         </div>
                         <div className='assesmentAnswers'>Answers</div>
                         <div className='question-container'>
-                          {childQuestions?.question_answer[0]?.answer.map((obj, i) => (
+                          {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
                             <div>{obj}</div>
                           ))}
                         </div>
                         <div className='resourceBulkDownload'>Options</div>
                         <div>
-                          {childQuestions?.question_answer[0]?.options.map((obj, i) => (
+                          {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
                             <div className='question-container'>
-                              {`OPTION${i + 1}:   ${obj[`option${i + 1}`].optionValue}`}
-                              {`${obj[`option${i + 1}`].images}`.length > 0 && (
+                              {`OPTION${i + 1}:   ${obj[`option${i + 1}`]?.optionValue}`}
+                              {`${obj[`option${i + 1}`]?.images}`?.length > 0 && (
                                 <div>
                                   <a
                                     onClick={() => {
@@ -779,7 +779,7 @@ const ViewMoreCard = ({
                                         currentAttachmentIndex: 0,
                                         attachmentsArray: (() => {
                                           const images =
-                                            `${obj[`option${i + 1}`].images}`.split(
+                                            `${obj[`option${i + 1}`]?.images}`.split(
                                               ','
                                             ) || {};
                                           const attachmentsArray = [];
@@ -816,7 +816,7 @@ const ViewMoreCard = ({
           </div>
         )}
 
-        {periodDataForView.question_type === 6 && (
+        {periodDataForView?.question_type === 6 && (
           <div className='ccc'>
             <div className='question-container'>
               {Data?.map((p) => (
@@ -860,10 +860,10 @@ const ViewMoreCard = ({
             <div className='assesmentAnswers'>Answers</div>
             {/* <Divider className='secondary-divider' /> */}
             <div>
-              {Data[0]?.questionAnswer?.map((obj, index) => (
+              {Data?.[0]?.questionAnswer?.map((obj, index) => (
                 <>
                   <div style={{ display: 'flex' }} className='question-container'>
-                    <div className='option'>{obj.answer}</div>
+                    <div className='option'>{obj?.answer}</div>
                     <div className='option' style={{ marginLeft: '2rem' }}>
                       {obj.question}
                     </div>
@@ -874,10 +874,10 @@ const ViewMoreCard = ({
 
             <div className='resourceBulkDownload'>Options</div>
             <div>
-              {Data[0]?.options.map((obj, i) => (
+              {Data?.[0]?.options?.map((obj, i) => (
                 <div className='question-container'>
-                  {`OPTION${i + 1}:   ${obj.optionValue}`}
-                  {obj?.images.length > 0 && (
+                  {`OPTION${i + 1}:   ${obj?.optionValue}`}
+                  {obj?.images?.length > 0 && (
                     <div>
                       <a
                         onClick={() => {
@@ -908,23 +908,23 @@ const ViewMoreCard = ({
               <div style={{ fontSize: '1.25rem', color: '#ff6b6b' }}>
                 Match with the following{' '}
               </div>
-              {Data[0]?.matrixOptions.map((obj, i) => (
+              {Data?.[0]?.matrixOptions.map((obj, i) => (
                 <div className='question-container'>
-                  {`OPTION${i + 1}:   ${obj.optionValue}`}
+                  {`OPTION${i + 1}:   ${obj?.optionValue}`}
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {periodDataForView.question_type === 7 && (
+        {periodDataForView?.question_type === 7 && (
           <div className='ccc'>
             <div className='question-container'>
               {Data?.map((p) => (
                 <div style={{ color: '#014B7E' }}>
-                  {extractContent(p.question)}
+                  {extractContent(p?.question)}
                   {p?.question?.split('"').filter((str) => str.startsWith('https'))
-                    .length > 0 && (
+                    ?.length > 0 && (
                     <div>
                       <a
                         onClick={() => {
@@ -1003,10 +1003,10 @@ const ViewMoreCard = ({
                         </div> */}
                         <div className='assesmentAnswers'>Answers</div>
                         <div>
-                          {childQuestions?.question_answer[0]?.options.map((obj, i) => (
+                          {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
                             <div className='question-container'>
-                              {obj[`option${i + 1}`].optionValue}
-                              {`${obj[`option${i + 1}`].images}`.length > 0 && (
+                              {obj[`option${i + 1}`]?.optionValue}
+                              {`${obj[`option${i + 1}`]?.images}`.length > 0 && (
                                 <div>
                                   <a
                                     onClick={() => {
@@ -1014,7 +1014,7 @@ const ViewMoreCard = ({
                                         currentAttachmentIndex: 0,
                                         attachmentsArray: (() => {
                                           const images =
-                                            `${obj[`option${i + 1}`].images}`.split(
+                                            `${obj[`option${i + 1}`]?.images}`.split(
                                               ','
                                             ) || {};
                                           const attachmentsArray = [];
@@ -1061,13 +1061,13 @@ const ViewMoreCard = ({
                         </div>
                         <div className='assesmentAnswers'>Answers</div>
                         <div className='question-container'>
-                          {childQuestions?.question_answer[0]?.answer.map((obj, i) => (
+                          {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
                             <div>{obj}</div>
                           ))}
                         </div>
                         <div className='resourceBulkDownload'>Options</div>
                         <div className='question-container'>
-                          {childQuestions?.question_answer[0]?.options.map((obj, i) => {
+                          {childQuestions?.question_answer[0]?.options?.map((obj, i) => {
                             return (
                               <div>
                                 {Object.keys(obj)[0] || ''} :{' '}
@@ -1113,10 +1113,10 @@ const ViewMoreCard = ({
 
                         <div className='resourceBulkDownload'>Options</div>
                         <div>
-                          {childQuestions?.question_answer[0]?.options.map((obj, i) => (
+                          {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
                             <div className='question-container'>
-                              {`OPTION${i + 1}:   ${obj.optionValue}`}
-                              {obj?.images.length > 0 && (
+                              {`OPTION${i + 1}:   ${obj?.optionValue}`}
+                              {obj?.images?.length > 0 && (
                                 <div>
                                   <a
                                     onClick={() => {
@@ -1155,7 +1155,7 @@ const ViewMoreCard = ({
                           {childQuestions?.question_answer[0]?.matrixOptions.map(
                             (obj, i) => (
                               <div className='question-container'>
-                                {`OPTION${i + 1}:   ${obj.optionValue}`}
+                                {`OPTION${i + 1}:   ${obj?.optionValue}`}
                               </div>
                             )
                           )}
@@ -1185,9 +1185,9 @@ const ViewMoreCard = ({
                                   style={{ display: 'flex' }}
                                   className='question-container'
                                 >
-                                  <div className='option'>{obj.answer}</div>
+                                  <div className='option'>{obj?.answer}</div>
                                   <div className='option' style={{ marginLeft: '2rem' }}>
-                                    {obj.question}
+                                    {obj?.question}
                                   </div>
                                 </div>
                               </>
@@ -1196,9 +1196,9 @@ const ViewMoreCard = ({
                         </div>
                         <div className='resourceBulkDownload'>Options</div>
                         <div>
-                          {childQuestions?.question_answer[0]?.options.map((obj, i) => (
+                          {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
                             <div className='question-container'>
-                              {`OPTION${i + 1}:   ${obj.optionValue}`}
+                              {`OPTION${i + 1}:   ${obj?.optionValue}`}
                               {obj?.images?.length > 0 && (
                                 <div>
                                   <a
@@ -1235,10 +1235,10 @@ const ViewMoreCard = ({
                           <div style={{ fontSize: '1.25rem', color: '#ff6b6b' }}>
                             Match with the following{' '}
                           </div>
-                          {childQuestions?.question_answer[0]?.matchingOptions.map(
+                          {childQuestions?.question_answer[0]?.matchingOptions?.map(
                             (obj, i) => (
                               <div className='question-container'>
-                                {`OPTION${i + 1}:   ${obj.optionValue}`}
+                                {`OPTION${i + 1}:   ${obj?.optionValue}`}
                                 {obj?.images?.length > 0 && (
                                   <div>
                                     <a
@@ -1300,16 +1300,16 @@ const ViewMoreCard = ({
                         </div>
                         <div className='assesmentAnswers'>Answers</div>
                         <div className='question-container'>
-                          {childQuestions?.question_answer[0]?.answer.map((obj, i) => (
+                          {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
                             <div>{obj}</div>
                           ))}
                         </div>
                         <div className='resourceBulkDownload'>Options</div>
                         <div>
-                          {childQuestions?.question_answer[0]?.options.map((obj, i) => (
+                          {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
                             <div className='question-container'>
-                              {`OPTION${i + 1}:   ${obj[`option${i + 1}`].optionValue}`}
-                              {`${obj[`option${i + 1}`].images}`.length > 0 && (
+                              {`OPTION${i + 1}:   ${obj[`option${i + 1}`]?.optionValue}`}
+                              {`${obj[`option${i + 1}`]?.images}`?.length > 0 && (
                                 <div>
                                   <a
                                     onClick={() => {
@@ -1317,7 +1317,7 @@ const ViewMoreCard = ({
                                         currentAttachmentIndex: 0,
                                         attachmentsArray: (() => {
                                           const images =
-                                            `${obj[`option${i + 1}`].images}`.split(
+                                            `${obj[`option${i + 1}`]?.images}`.split(
                                               ','
                                             ) || {};
                                           const attachmentsArray = [];
@@ -1362,7 +1362,7 @@ const ViewMoreCard = ({
                   <div style={{ color: '#014B7E' }}>
                     {extractContent(p.question)}
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
-                      .length > 0 && (
+                      ?.length > 0 && (
                       <div>
                         <a
                           onClick={() => {
@@ -1397,12 +1397,12 @@ const ViewMoreCard = ({
             </div>
             <div className='assesmentAnswers'>Answers</div>
             <div className='question-container'>
-              {Data && Data[0]?.answer.map((obj, i) => <div>{obj}</div>)}
+              {Data && Data?.[0]?.answer.map((obj, i) => <div>{obj}</div>)}
             </div>
             <div className='resourceBulkDownload'>Options</div>
             <div className='question-container'>
               {Data &&
-                Data[0]?.options.map((obj, i) => {
+                Data?.[0]?.options?.map((obj, i) => {
                   return (
                     <div>
                       {Object.keys(obj)[0] || ''} :{' '}
@@ -1422,7 +1422,7 @@ const ViewMoreCard = ({
                   <div style={{ color: '#014B7E' }}>
                     {extractContent(p.question)}
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
-                      .length > 0 && (
+                      ?.length > 0 && (
                       <div>
                         <a
                           onClick={() => {
@@ -1463,10 +1463,10 @@ const ViewMoreCard = ({
             <div className='assesmentAnswers'>Answers</div>
             <div>
               {Data &&
-                Data[0]?.options.map((obj, i) => (
+                Data?.[0]?.options?.map((obj, i) => (
                   <div className='question-container'>
-                    {obj[`option${i + 1}`].optionValue}
-                    {`${obj[`option${i + 1}`].images}`.length > 0 && (
+                    {obj[`option${i + 1}`]?.optionValue}
+                    {`${obj[`option${i + 1}`]?.images}`?.length > 0 && (
                       <div>
                         <a
                           onClick={() => {
@@ -1474,7 +1474,7 @@ const ViewMoreCard = ({
                               currentAttachmentIndex: 0,
                               attachmentsArray: (() => {
                                 const images =
-                                  `${obj[`option${i + 1}`].images}`.split(',') || {};
+                                  `${obj[`option${i + 1}`]?.images}`.split(',') || {};
                                 const attachmentsArray = [];
                                 images.forEach((image) => {
                                   const attachmentObj = {
@@ -1506,7 +1506,7 @@ const ViewMoreCard = ({
                   <div style={{ color: '#014B7E' }}>
                     {extractContent(p.question)}
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
-                      .length > 0 && (
+                      ?.length > 0 && (
                       <div>
                         <a
                           onClick={() => {
@@ -1545,7 +1545,7 @@ const ViewMoreCard = ({
             <div className='question-container'>
               {Data &&
                 Data?.map((p) => (
-                  <div style={{ color: '#014B7E' }}>{extractContent(p.answer)}</div>
+                  <div style={{ color: '#014B7E' }}>{extractContent(p?.answer)}</div>
                 ))}
             </div>
           </div>

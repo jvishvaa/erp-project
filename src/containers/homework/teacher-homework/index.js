@@ -46,7 +46,7 @@ import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import filterImage from '../../../assets/images/unfiltered.svg';
 import moment from 'moment';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
@@ -103,7 +103,7 @@ const StyledClearButton = withStyles({
     borderRadius: '5px',
     '&:hover': {
       backgroundColor: '#FA8072 !important',
-      color:'white'
+      color: 'white',
     },
   },
 })(Button);
@@ -167,7 +167,10 @@ const TeacherHomework = withRouter(
     });
 
     const [academicYear, setAcademicYear] = useState([]);
-    const [selectedAcademicYear, setSelectedAcadmeicYear] = useState(selectedFilters.year);
+    // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState(selectedFilters.year);
+    const selectedAcademicYear = useSelector(
+      (state) => state.commonFilterReducer?.selectedYear
+    );
     const [selectedBranch, setSelectedBranch] = useState(selectedFilters.branch);
     const [selectedGrades, setSelectedGrades] = useState([]);
     //const [branchList, setBranchList] = useState([]);
@@ -255,15 +258,31 @@ const TeacherHomework = withRouter(
       setActiveView('list-homework');
     };
 
-    const navigateToAddScreen = ({ date, sessionYear, branch, grade, subject, subjectId }) => {
-      history.push(`/homework/add/${date}/${sessionYear}/${branch}/${grade}/${subject}/${subjectId}`);
+    const navigateToAddScreen = ({
+      date,
+      sessionYear,
+      branch,
+      grade,
+      subject,
+      subjectId,
+    }) => {
+      history.push(
+        `/homework/add/${date}/${sessionYear}/${branch}/${grade}/${subject}/${subjectId}`
+      );
     };
 
     useEffect(() => {
       const [startDate, endDate] = dateRange;
       if (teacherModuleId) {
         if (activeView === 'list-homework') {
-          if (startDate && endDate && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id, sectionDisplay?.id) {
+          if (
+            (startDate &&
+              endDate &&
+              selectedAcademicYear?.id &&
+              selectedBranch?.id &&
+              gradeDisplay?.id,
+            sectionDisplay?.id)
+          ) {
             //alert(searchSection)
             getTeacherHomeworkDetails(
               teacherModuleId,
@@ -278,7 +297,14 @@ const TeacherHomework = withRouter(
           }
         }
       }
-    }, [getTeacherHomeworkDetails, dateRange, activeView, teacherModuleId, sectionDisplay, gradeDisplay]);
+    }, [
+      getTeacherHomeworkDetails,
+      dateRange,
+      activeView,
+      teacherModuleId,
+      sectionDisplay,
+      gradeDisplay,
+    ]);
 
     useEffect(() => {
       const homeworkModule = NavData?.filter(
@@ -320,17 +346,19 @@ const TeacherHomework = withRouter(
         .get(api)
         .then((result) => {
           if (result.status === 200) {
-            if (key === 'academicYearList') {
-              setAcademicYear(result?.data?.data || []);
-              setLoading(false);
-              if(academicYear){
-                handleYear("",result.data.current_acad_session_data[0])
-              }
-            }
+            // if (key === 'academicYearList') {
+            //   setAcademicYear(result?.data?.data || []);
+            //   setLoading(false);
+            //   if(academicYear){
+            //     handleYear("",result?.data?.current_acad_session_data[0])
+            //   }
+            // }
             if (key === 'branchList') {
               handleGrade();
               //setBranchList(result?.data?.data || []);
-              setBranchList(result?.data?.data?.results.map(obj=>((obj&&obj.branch)||{})) || []);
+              setBranchList(
+                result?.data?.data?.results.map((obj) => (obj && obj.branch) || {}) || []
+              );
               setLoading(false);
             }
             if (key === 'gradeList') {
@@ -348,37 +376,52 @@ const TeacherHomework = withRouter(
         });
     }
 
-    useEffect(() => {
-      if (teacherModuleId) {
-        callApi(
-          `${endpoints.userManagement.academicYear}?module_id=${teacherModuleId}`,
-          'academicYearList'
-        );
-      }
-    }, [teacherModuleId]);
+    // useEffect(() => {
+    //   if (teacherModuleId) {
+    //     callApi(
+    //       `${endpoints.userManagement.academicYear}?module_id=${teacherModuleId}`,
+    //       'academicYearList'
+    //     );
+    //   }
+    // }, [teacherModuleId]);
 
-    const handleYear = (event, value) => {
-      setGradeDisplay([]);
-      setBranchList([]);
-      setGrades([]);
-      setSections([]);
-      //setSearchGrade('');
-      //setSearchSection('');
-      setSelectedBranch([]);
-      setSelectedAcadmeicYear(value);
-      if (value?.id) {
+    useEffect(() => {
+      if (selectedAcademicYear && teacherModuleId) {
         callApi(
-          `${endpoints.mappingStudentGrade.branch}?session_year=${value?.id}&module_id=${teacherModuleId}`,
+          `${endpoints.mappingStudentGrade.branch}?session_year=${selectedAcademicYear?.id}&module_id=${teacherModuleId}`,
           'branchList'
         );
         onSetSelectedFilters({
-          year: value,
+          year: selectedAcademicYear,
           branch: '',
           grade: '',
-          section: ''
+          section: '',
         });
       }
-    };
+    }, [selectedAcademicYear, teacherModuleId]);
+
+    // const handleYear = (event, value) => {
+    //   setGradeDisplay([]);
+    //   setBranchList([]);
+    //   setGrades([]);
+    //   setSections([]);
+    //   //setSearchGrade('');
+    //   //setSearchSection('');
+    //   setSelectedBranch([]);
+    //   setSelectedAcadmeicYear(value);
+    //   if (value?.id) {
+    //     callApi(
+    //       `${endpoints.mappingStudentGrade.branch}?session_year=${value?.id}&module_id=${teacherModuleId}`,
+    //       'branchList'
+    //     );
+    //     onSetSelectedFilters({
+    //       year: value,
+    //       branch: '',
+    //       grade: '',
+    //       section: ''
+    //     });
+    //   }
+    // };
 
     const handleBranch = (event, value) => {
       setGrades([]);
@@ -398,7 +441,7 @@ const TeacherHomework = withRouter(
           year: selectedAcademicYear,
           branch: value,
           grade: '',
-          section: ''
+          section: '',
         });
       }
     };
@@ -416,7 +459,7 @@ const TeacherHomework = withRouter(
           year: selectedAcademicYear,
           branch: selectedBranch,
           grade: value,
-          section: ''
+          section: '',
         });
         setLoading(true);
         axiosInstance
@@ -451,18 +494,18 @@ const TeacherHomework = withRouter(
           year: selectedAcademicYear,
           branch: selectedBranch,
           grade: gradeDisplay,
-          section: value
+          section: value,
         });
       }
     };
 
     const handleCrearFilter = () => {
-      setSelectedAcadmeicYear('');
+      // setSelectedAcadmeicYear('');
       setSelectedBranch([]);
       setGradeDisplay([]);
       setSectionDisplay([]);
       onResetSelectedFilters();
-    }
+    };
 
     //useEffect(() => {console.log(fetchingTeacherHomework,'fetchingTeacherHomework')},[fetchingTeacherHomework])
 
@@ -471,16 +514,14 @@ const TeacherHomework = withRouter(
         {loading ? <Loading message='Loading...' /> : null}
         <Layout>
           <div className=' teacher-homework message_log_wrapper'>
-            <div
-              className='message_log_breadcrumb_wrapper'
-              style={{ backgroundColor: '#F9F9F9' }}
-            >
-              <CommonBreadcrumbs componentName='Homework' />
-            </div>
+            <CommonBreadcrumbs
+              componentName='Homework'
+            isAcademicYearVisible={true}
+            />
             <div className='message_log_white_wrapper'>
               {activeView !== 'view-homework' && activeView !== 'view-received-homework' && (
-                <Grid container spacing={2} style={{padding: '20px'}}>
-                  <Grid item xs={12} sm={3}>
+                <Grid container spacing={2} style={{ padding: '20px' }}>
+                  {/* <Grid item xs={12} sm={3}>
                     <Autocomplete
                       style={{ width: '100%' }}
                       size='small'
@@ -500,7 +541,7 @@ const TeacherHomework = withRouter(
                         />
                       )}
                     />
-                  </Grid>
+                  </Grid> */}
                   <Grid item xs={12} sm={3}>
                     <Autocomplete
                       style={{ width: '100%' }}
@@ -569,69 +610,75 @@ const TeacherHomework = withRouter(
                   </Grid>
                   <Grid item xs={12} sm={3}>
                     {/* <div className='date-container' > */}
-                      <ClickAwayListener onClickAway={(e) => {setDatePopperOpen(false)}}>
-                        <LocalizationProvider
-                          dateAdapter={MomentUtils}
-                          style={{ backgroundColor: '#F9F9F9' }}
-                        >
-                          <DateRangePicker
-                            id='date-range-picker-date'
-                            disableCloseOnSelect={false}
-                            startText='Select-dates'
-                            PopperProps={{ open: datePopperOpen }}
-                            // endText='End-date'
-                            value={dateRange}
-                            // calendars='1'
-                            onChange={(newValue) => {
-                              const [startDate, endDate] = newValue;
-                              const sevenDaysAfter = moment(startDate).add(6, 'days');
-                              setDateRange([startDate, sevenDaysAfter]);
-                              setDatePopperOpen(false);
-                            }}
-                            renderInput={(
-                              { inputProps, ...startProps },
-                              endProps
-                            ) => {
-                              return (
-                                <>
-                                  <TextField
-                                    {...startProps}
-                                    InputProps={{
-                                      ...inputProps,
-                                      value: `${moment(inputProps.value).format(
-                                        'MM-DD-YYYY'
-                                      )} - ${moment(endProps.inputProps.value).format(
-                                        'MM-DD-YYYY'
-                                      )}`,
-                                      readOnly: true,
-                                      endAdornment: (
-                                        <InputAdornment position='start'>
-                                          <DateRangeIcon
-                                            style={{ width: '35px' }}
-                                            color='primary'
-                                          />
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                    size='small'
-                                    style={{ width: '100%' }}
-                                    onClick={() => {
-                                      setDatePopperOpen(true);
-                                    }}
-                                  />
-                                  {/* <TextField {...startProps} size='small' /> */}
-                                  {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
-                                  {/* <TextField {...endProps} size='small' /> */}
-                                </>
-                              );
-                            }}
-                          />
-                        </LocalizationProvider>
-                      </ClickAwayListener>
+                    <ClickAwayListener
+                      onClickAway={(e) => {
+                        setDatePopperOpen(false);
+                      }}
+                    >
+                      <LocalizationProvider
+                        dateAdapter={MomentUtils}
+                        style={{ backgroundColor: '#F9F9F9' }}
+                      >
+                        <DateRangePicker
+                          id='date-range-picker-date'
+                          disableCloseOnSelect={false}
+                          startText='Select-dates'
+                          PopperProps={{ open: datePopperOpen }}
+                          // endText='End-date'
+                          value={dateRange}
+                          // calendars='1'
+                          onChange={(newValue) => {
+                            const [startDate, endDate] = newValue;
+                            const sevenDaysAfter = moment(startDate).add(6, 'days');
+                            setDateRange([startDate, sevenDaysAfter]);
+                            setDatePopperOpen(false);
+                          }}
+                          renderInput={({ inputProps, ...startProps }, endProps) => {
+                            return (
+                              <>
+                                <TextField
+                                  {...startProps}
+                                  InputProps={{
+                                    ...inputProps,
+                                    value: `${moment(inputProps.value).format(
+                                      'MM-DD-YYYY'
+                                    )} - ${moment(endProps.inputProps.value).format(
+                                      'MM-DD-YYYY'
+                                    )}`,
+                                    readOnly: true,
+                                    endAdornment: (
+                                      <InputAdornment position='start'>
+                                        <DateRangeIcon
+                                          style={{ width: '35px' }}
+                                          color='primary'
+                                        />
+                                      </InputAdornment>
+                                    ),
+                                  }}
+                                  size='small'
+                                  style={{ width: '100%' }}
+                                  onClick={() => {
+                                    setDatePopperOpen(true);
+                                  }}
+                                />
+                                {/* <TextField {...startProps} size='small' /> */}
+                                {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
+                                {/* <TextField {...endProps} size='small' /> */}
+                              </>
+                            );
+                          }}
+                        />
+                      </LocalizationProvider>
+                    </ClickAwayListener>
                     {/* </div> */}
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <StyledClearButton onClick={e => handleCrearFilter()} className='classes.chk'>Clear All</StyledClearButton>
+                    <StyledClearButton
+                      onClick={(e) => handleCrearFilter()}
+                      className='classes.chk'
+                    >
+                      Clear All
+                    </StyledClearButton>
                   </Grid>
                 </Grid>
               )}
@@ -820,7 +867,7 @@ const TeacherHomework = withRouter(
                             ))} */}
                                     {homeworkCols.map((col) => {
                                       return typeof col === 'object' ? (
-                                        <TableCell style={{minWidth: '260px'}}>
+                                        <TableCell style={{ minWidth: '260px' }}>
                                           {col.subject_name.split('_').join('/')}
                                         </TableCell>
                                       ) : (
@@ -1048,24 +1095,28 @@ const TeacherHomework = withRouter(
                         })}
                     </Tabs>
                   )}
-                  {activeView === 'list-homework' && homeworkRows.length === 0 && !fetchingTeacherHomework && (
-                    <Grid container spacing={2}>
-                      <Grid
-                        item
-                        md={12}
-                        xs={12}
-                        style={{ textAlign: 'center', marginTop: '10px' }}
-                      >
-                        <img
-                          src={filterImage}
-                          alt='crash'
-                          height='250px'
-                          width='250px'
-                        />
-                        <Typography>Please select the filter to dislpay data</Typography>
+                  {activeView === 'list-homework' &&
+                    homeworkRows.length === 0 &&
+                    !fetchingTeacherHomework && (
+                      <Grid container spacing={2}>
+                        <Grid
+                          item
+                          md={12}
+                          xs={12}
+                          style={{ textAlign: 'center', marginTop: '10px' }}
+                        >
+                          <img
+                            src={filterImage}
+                            alt='crash'
+                            height='250px'
+                            width='250px'
+                          />
+                          <Typography>
+                            Please select the filter to dislpay data
+                          </Typography>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  )}
+                    )}
                 </Grid>
               </div>
             </div>
@@ -1089,8 +1140,28 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getTeacherHomeworkDetails: (moduleId, acadYear, branch, grade, sectionId, section, startDate, endDate) => {
-    dispatch(fetchTeacherHomeworkDetails(moduleId, acadYear, branch, grade, sectionId, section, startDate, endDate));
+  getTeacherHomeworkDetails: (
+    moduleId,
+    acadYear,
+    branch,
+    grade,
+    sectionId,
+    section,
+    startDate,
+    endDate
+  ) => {
+    dispatch(
+      fetchTeacherHomeworkDetails(
+        moduleId,
+        acadYear,
+        branch,
+        grade,
+        sectionId,
+        section,
+        startDate,
+        endDate
+      )
+    );
   },
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
@@ -1098,8 +1169,12 @@ const mapDispatchToProps = (dispatch) => ({
   fetchStudentLists: (id, subjectId, sectionId) => {
     dispatch(fetchStudentsListForTeacherHomework(id, subjectId, sectionId));
   },
-  onSetSelectedFilters: (data) => {dispatch(setSelectedFilters(data))},
-  onResetSelectedFilters: () => { dispatch(resetSelectedFilters())},
+  onSetSelectedFilters: (data) => {
+    dispatch(setSelectedFilters(data));
+  },
+  onResetSelectedFilters: () => {
+    dispatch(resetSelectedFilters());
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TeacherHomework);

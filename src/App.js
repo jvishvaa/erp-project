@@ -184,6 +184,7 @@ import FeeShowList from './containers/Finance/src/components/Finance/BranchAccou
 import AssignDelieveryCharge from './containers/Finance/src/components/Finance/BranchAccountant/AssignDelieveryCharge/assignDelieveryCharge.js';
 import ChangeFeePlanToStudent from './containers/Finance/src/components/Finance/BranchAccountant/ChangeFeePlanToStudent/changeFeePlanToStudent.js';
 import BulkReportUpload from './containers/Finance/src/components/Finance/BulkOperations/bulkReportUpload.js';
+import ErrorBoundary404 from './ErrorBoundary';
 import BulkReportStatus from './containers/Finance/src/components/Finance/BulkOperations/bulkReportStatus.js';
 import OnlinePayment from './containers/Finance/src/components/Finance/UploadOnlinePayments/uploadOnlinePayments.js';
 import BulkActiveInactive from './containers/Finance/src/components/Finance/BulkOperations/BulkActiveInactive/bulkActiveInactive.js';
@@ -291,43 +292,61 @@ import ViewiBook from './containers/intelligent-textbook/ViewiBook';
 import AllBooksPage from 'containers/intelligent-textbook/bookpage/AllBooksPage';
 import ChapterBook from 'containers/intelligent-textbook/chapterpage/ChapterBook';
 
-let temp = localStorage.getItem("themeDetails")
-let primarytemp = ""
-let secondrytemp = "";
+let temp = localStorage.getItem('themeDetails');
+let primarytemp = '';
+let secondrytemp = '';
+let lightprimary = '';
+let darkprimary = '';
 
+function ColorLuminance(hex, lum) {
+  // validate hex string
+  hex = String(hex).replace(/[^0-9a-f]/gi, '');
+  if (hex.length < 6) {
+    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+  }
+  lum = lum || 0;
+
+  // convert to decimal and change luminosity
+  var rgb = '#',
+    c,
+    i;
+  for (i = 0; i < 3; i++) {
+    c = parseInt(hex.substr(i * 2, 2), 16);
+    c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
+    rgb += ('00' + c).substr(c.length);
+  }
+
+  return rgb;
+}
 
 (function () {
   if (temp === null) {
-
     primarytemp = '#ff6b6b';
     secondrytemp = '#014b7e';
-
-  }
-  else {
-    const themeDetails = JSON.parse(temp)
+  } else {
+    const themeDetails = JSON.parse(temp);
     themeDetails.forEach((ele) => {
-      if (ele.theme_key === "primary_color") {
-        primarytemp = ele.theme_value
+      if (ele.theme_key === 'primary_color') {
+        primarytemp = ele.theme_value;
+      } else {
+        secondrytemp = ele.theme_value;
       }
-      else {
-        secondrytemp = ele.theme_value
-      }
-
-    })
+    });
   }
-
+  darkprimary = ColorLuminance(primarytemp, -0.2);
+  lightprimary = ColorLuminance(primarytemp, -0.4);
 })();
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#ff6b6b',
       // main: '#ff6b6b',
+      primarylight: lightprimary,
       main: primarytemp || '#ff6b6b',
+      primarydark: darkprimary,
     },
     secondary: {
-      main: '#014b7e',
-      // main: '#ff6b6b',
+      // main: '#014b7e',
       main: secondrytemp || '#014b7e',
     },
     text: {
@@ -352,7 +371,7 @@ const theme = createMuiTheme({
         textDecoration: 'none',
         borderRadius: '10px',
         color: '#ffffff',
-        backgroundColor: ' #ff6b6b',
+        backgroundColor: primarytemp,
       },
     },
   },
@@ -404,6 +423,7 @@ function App({ alert }) {
     }
   }, []);
   return (
+    // <ErrorBoundary404 HomeButton={false}>
     <div className='App'>
       <Helmet>
         <title>Eduvate</title>
@@ -592,7 +612,7 @@ function App({ alert }) {
                           <Route exact path='/erp-online-class/assign/:id/qp'>
                             {({ match }) => <AssignQP match={match} />}
                           </Route>
-                          <Route exact path='/erp-online-class/:id/pre-quiz'>
+                          <Route exact path='/erp-online-class/:id/:qid/pre-quiz'>
                             {({ match }) => <PreQuiz match={match} />}
                           </Route>
                           <Route path='/erp-online-class/:onlineclassId/quiz/:questionpaperId/:lobbyuuid/:role'>
@@ -943,7 +963,7 @@ function App({ alert }) {
                           {/* <Route exact path='/finance/Requestshuffle'>
                   {({ match }) => <RequestShuffle match={match} />}
                 </Route> */}
-                           <Route exact path='/finance/approve_pendingRequest'>
+                          <Route exact path='/finance/approve_pendingRequest'>
                             {({ match }) => (
                               <ApprovePendingReq match={match} alert={alert} />
                             )}
@@ -1306,7 +1326,9 @@ function App({ alert }) {
                             )}
                           </Route>
                           <Route exact path='/finance/student_shuffle'>
-                            {({ match }) => <StudentShuffleReq match={match} alert={alert} />}
+                            {({ match }) => (
+                              <StudentShuffleReq match={match} alert={alert} />
+                            )}
                           </Route>
                           <Route exact path='/finance/Expanse Management/PettyExpense'>
                             {({ match }) => <PettyExpenses match={match} alert={alert} />}
@@ -1480,7 +1502,7 @@ function App({ alert }) {
                           <Route exact path='/homework-report-teacher-view'>
                             {({ match }) => <HomeWorkReportTeacher match={match} />}
                           </Route>
-                         
+
                           <Route exact path='/intelligent-book/view'>
                             {({ match }) => <AllBooksPage match={match} />}
                           </Route>
@@ -1500,6 +1522,9 @@ function App({ alert }) {
                           <Route exact path='/setting'>
                             {({ match }) => <Setting match={match} />}
                           </Route>
+                          <Route path='*'>
+                            <ErrorBoundary404 HomeButton={true} />
+                          </Route>
                         </Switch>
                       </DailyDairyStore>
                     </ViewStore>
@@ -1512,6 +1537,7 @@ function App({ alert }) {
       </Router>
       <Alert />
     </div>
+    // </ErrorBoundary404>
   );
 }
 

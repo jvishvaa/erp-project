@@ -212,8 +212,10 @@ export const fetchBranchesForCreateUser = (acadId, moduleId) => {
 };
 
 export const fetchAcademicYears = (moduleId) => {
+  let url = '/erp_user/list-academic_year/';
+  if(moduleId) url += `?module_id=${moduleId}`;
   return axios
-    .get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
+    .get(url)
     .then((response) => {
       return response.data.data;
     })

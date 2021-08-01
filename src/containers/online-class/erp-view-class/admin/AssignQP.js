@@ -131,7 +131,7 @@ const AssignQP = (props) => {
     if (result.data.status_code === 200) {
       setLoading(false);
       setAlert('success', result.data.message);
-      history.push('/erp-online-class')
+      history.push('/erp-online-class-teacher-view')
     }
     }).catch((error)=>{
       setLoading(false);        

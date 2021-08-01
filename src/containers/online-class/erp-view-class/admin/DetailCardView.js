@@ -177,7 +177,7 @@ const JoinClass = (props) => {
   const handleTakeQuiz = (fullData) => {
     if (fullData && fullData.online_class && fullData.online_class.question_paper_id) {
       history.push({
-        pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
+        pathname: `/erp-online-class/${fullData.online_class.id}/${fullData.online_class.question_paper_id}/pre-quiz`,
         state: { data: fullData.online_class.id },
       });
     } else {
@@ -269,8 +269,8 @@ const JoinClass = (props) => {
         variant='contained'
         onClick={() =>
           history.push({
-            pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
-            state: { data: fullData.online_class.id },
+            pathname: `/erp-online-class/${fullData.online_class.id}/${fullData.online_class.question_paper_id}/pre-quiz`,
+            state: { data: fullData.online_class.id},
           })
         }
         disabled={props?.data?.is_cancelled}
@@ -283,7 +283,6 @@ const JoinClass = (props) => {
 }
     </Grid>}
       
-          
       {window.location.pathname === '/erp-online-class-student-view' ? (
         <>
           <Grid item xs={4}>
@@ -293,7 +292,7 @@ const JoinClass = (props) => {
               fullWidth
               variant='contained'
               onClick={() => handleTakeQuiz(fullData)}
-              disabled={props?.data?.class_status === 'Cancelled'}
+              disabled={props?.data?.class_status?.toLowerCase() === 'cancelled' || fullData?.online_class?.question_paper_id===0}
               // className='takeQuizButton'
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
@@ -309,7 +308,7 @@ const JoinClass = (props) => {
               onClick={() => {
                 setDialogClassWorkBox(true);
               }}
-              disabled={props?.data?.class_status === 'Cancelled'}
+              disabled={props?.data?.class_status?.toLowerCase() === 'cancelled'}
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
               Class Work
@@ -330,18 +329,6 @@ const JoinClass = (props) => {
       )}
 {window.location.pathname === '/erp-online-class-teacher-view' ? (
         <>
-          {/* <Tooltip title='Attach Question Paper'>
-            <IconButton
-              onClick={() =>
-                history.push({
-                  pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
-                  state: { data: fullData.online_class.id },
-                })
-              }
-            >
-              <AttachFileIcon />
-            </IconButton>
-          </Tooltip> */}
           <Grid item xs={4}>
             <Button
               size='small'
@@ -356,7 +343,6 @@ const JoinClass = (props) => {
                   pathname: `/erp-online-class/class-work/${onlineClassId}/${id}/${startDate}`,
                 });
               }}
-              // className='classworkButton'
               disabled={props?.data?.is_cancelled}
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
@@ -376,7 +362,7 @@ const JoinClass = (props) => {
               color='secondary'
               fullWidth
               variant='contained'
-              disabled={props?.data?.class_status === 'Cancelled'}
+              disabled={props?.data?.class_status?.toLowerCase() === 'cancelled'}
               onClick={() =>
                 handleJoinButton(() => window.open(fullData && fullData.join_url))
               }
@@ -496,7 +482,7 @@ const JoinClass = (props) => {
                       // onClick={handleIsAccept}
                       onClick={(e) => handleClickAccept(e)}
                       disabled={
-                        props?.data?.class_status === 'Cancelled' ||
+                        props?.data?.class_status?.toLowerCase() === 'cancelled' ||
                         (classStartTime === currDate ? false : true)
                       }
                       className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
@@ -553,18 +539,6 @@ const JoinClass = (props) => {
                     </Grid>
                   </Grid>
                 </Popover>
-                {/* <Button
-                  size='small'
-                  fullWidth
-                  variant='contained'
-                  onClick={(e) => handleClick(e)}
-                  className='teacherFullViewSmallButtons1'
-                >
-                  {window.location.pathname === '/erp-online-class-student-view'
-                    ? 'Reject'
-                    : 'Cancel'}
-                  Cancel
-                </Button> */}
                 {window.location.pathname !== '/erp-online-class-student-view' && (
                   <Button
                     size='small'
@@ -609,9 +583,9 @@ const DetailCardView = ({
   }, [fullData?.id]);
 
   const handleSetData = (response) => {
-    const bifuracionArray = ['today', 'upcoming', 'Completed', 'Cancelled'];
+    const bifuracionArray = ['today', 'upcoming', 'completed', 'cancelled'];
     return (
-      response.filter((element) => element?.class_status === bifuracionArray[tabValue]) ||
+      response.filter((element) => element?.class_status?.toLowerCase() === bifuracionArray[tabValue]) ||
       []
     );
   };

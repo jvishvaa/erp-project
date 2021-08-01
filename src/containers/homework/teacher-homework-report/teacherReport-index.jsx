@@ -116,12 +116,9 @@ const TeacherHomeWorkReport = () => {
   return (
     <div>
       <Layout className='layout-container'>
-        <div
-          className='message_log_breadcrumb_wrapper'
-          style={{ backgroundColor: '#F9F9F9' }}
-        >
-          <CommonBreadcrumbs componentName='Homework Report' />
-        </div>
+        <CommonBreadcrumbs componentName='Homework Report' 
+          isAcademicYearVisible={true}
+        />
         <div className='create_group_filter_container'>
           <Grid container spacing={5} className='message_log_container'>
             <div className='mobile-date-picker'>

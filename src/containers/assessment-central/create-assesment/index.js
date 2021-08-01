@@ -533,8 +533,19 @@ const CreateAssesment = ({
               initChangeTestFormFields('testId', value);
             }}
             onInstructionsChange={(value) => {
-              setInstructions(value);
-              initChangeTestFormFields('testInstructions', value);
+              const WORDS = value.split(' ');
+
+              const MAX_WORDS = WORDS.length;
+              const MAX_LENGTH = 500;
+              if (MAX_WORDS <= MAX_LENGTH) {
+                setInstructions(value);
+                initChangeTestFormFields('testInstructions', value);
+              } else {
+                // editor.setContent(value);
+                setInstructions(instructions);
+                setAlert('error', 'Maximum word limit reached!');
+              }
+              // setInstructions(value);
             }}
             onTestDateChange={(value) => {
               setTestDate(value);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Layout from '../../Layout';
+import { useSelector } from 'react-redux';
 import './homework-admin.css';
 import {
   Checkbox,
@@ -150,8 +151,11 @@ const HomeworkAdmin = () => {
   const [otherSubjects, setOtherSubjects] = useState([]);
   const [required, setRequired] = useState({ lower: '', upper: '', star: '', index: '' });
 
-  const [academicYear, setAcademicYear] = useState([]);
-  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  // const [academicYear, setAcademicYear] = useState([]);
+  // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
 
@@ -182,14 +186,16 @@ const HomeworkAdmin = () => {
       .get(api)
       .then((result) => {
         if (result.status === 200) {
-          if (key === 'academicYearList') {
-            setAcademicYear(result?.data?.data || []);
-            setLoading(false);
-          }
+          // if (key === 'academicYearList') {
+          //   setAcademicYear(result?.data?.data || []);
+          //   setLoading(false);
+          // }
           if (key === 'branchList') {
             handleGrade();
             //setBranchList(result?.data?.data || []);
-            setBranchList(result?.data?.data?.results.map(obj=>((obj&&obj.branch)||{})) || []);
+            setBranchList(
+              result?.data?.data?.results.map((obj) => (obj && obj.branch) || {}) || []
+            );
             setLoading(false);
           }
           if (key === 'gradeList') {
@@ -207,14 +213,23 @@ const HomeworkAdmin = () => {
       });
   }
 
+  // useEffect(() => {
+  //   if (moduleId) {
+  //     callApi(
+  //       `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
+  //       'academicYearList'
+  //     );
+  //   }
+  // }, [moduleId]);
+
   useEffect(() => {
-    if (moduleId) {
+    if (selectedAcademicYear && moduleId) {
       callApi(
-        `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
-        'academicYearList'
+        `${endpoints.mappingStudentGrade.branch}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+        'branchList'
       );
     }
-  }, [moduleId]);
+  }, [selectedAcademicYear, moduleId]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -294,7 +309,7 @@ const HomeworkAdmin = () => {
       setLoading(true);
       axiosInstance
         .post(endpoints.homework.createConfig, {
-          branch: selectedBranch.id||'',
+          branch: selectedBranch.id || '',
           grade: searchGrade,
           section: searchSection,
           subject_config: {
@@ -435,29 +450,29 @@ const HomeworkAdmin = () => {
     setRowData({ ...rowData, hw_ration: list });
   };
 
-  const handleYear = (event, value) => {
-    setSectionDisplay([]);
-    setOtherSubjects([]);
-    setMandatorySubjects([]);
-    setOptionalSubjects([]);
-    setPrior('');
-    setPost('');
-    setRatingData([]);
-    setGradeDisplay([]);
-    setBranchList([]);
-    setGrades([]);
-    setSections([]);
-    setSearchGrade('');
-    setSearchSection('');
-    setSelectedBranch([]);
-    setSelectedAcadmeicYear(value);
-    if (value) {
-      callApi(
-        `${endpoints.mappingStudentGrade.branch}?session_year=${value?.id}&module_id=${moduleId}`,
-        'branchList'
-      );
-    }
-  };
+  // const handleYear = (event, value) => {
+  //   setSectionDisplay([]);
+  //   setOtherSubjects([]);
+  //   setMandatorySubjects([]);
+  //   setOptionalSubjects([]);
+  //   setPrior('');
+  //   setPost('');
+  //   setRatingData([]);
+  //   setGradeDisplay([]);
+  //   setBranchList([]);
+  //   setGrades([]);
+  //   setSections([]);
+  //   setSearchGrade('');
+  //   setSearchSection('');
+  //   setSelectedBranch([]);
+  //   setSelectedAcadmeicYear(value);
+  //   if (value) {
+  //     callApi(
+  //       `${endpoints.mappingStudentGrade.branch}?session_year=${value?.id}&module_id=${moduleId}`,
+  //       'branchList'
+  //     );
+  //   }
+  // };
 
   const handleBranch = (event, value) => {
     setSectionDisplay([]);
@@ -500,18 +515,18 @@ const HomeworkAdmin = () => {
       setGradeDisplay(value);
       axiosInstance
         .get(
-          `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.id}&grade_id=${value.grade_id}&module_id=${moduleId}`
+          `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.id}&grade_id=${value?.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
-          if (result.data.status_code === 200) {
-            setSections(result.data?.data);
+          if (result?.data?.status_code === 200) {
+            setSections(result?.data?.data);
           } else {
-            setAlert('error', result.data.message);
+            setAlert('error', result?.data?.message);
             setRowData({ hw_ration: [], subject_data: [], prior_data: [] });
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
           setRowData({ hw_ration: [], subject_data: [], prior_data: [] });
         });
     } else {
@@ -611,12 +626,17 @@ const HomeworkAdmin = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
+        <CommonBreadcrumbs
+          componentName='Homework'
+          childComponentName='Configuration'
+          isAcademicYearVisible={true}
+        />
         <Grid
           container
           spacing={isMobile ? 3 : 4}
           style={{ width: widerWidth, margin: wider }}
         >
-          <Grid item xs={12} sm={3}>
+          {/* <Grid item xs={12} sm={3}>
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
@@ -636,7 +656,7 @@ const HomeworkAdmin = () => {
                 />
               )}
             />
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} sm={3}>
             <Autocomplete
               style={{ width: '100%' }}

@@ -110,7 +110,7 @@ deploy_prod:
       - export CI=false
       - export NODE_OPTIONS=--max_old_space_size=8196
       - export REACT_APP_UI_ENV=PROD
-      - sudo -E bash -c "set \"CI=false\" &&  npm run build" || true
+      - sudo -E bash -c "set \"CI=false\" &&  npm run build"
       - sudo rm -rf /home/ubuntu/build/
       - sudo cp -r build/ /home/ubuntu/
       - forever stopall

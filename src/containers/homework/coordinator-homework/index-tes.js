@@ -186,9 +186,9 @@ const CoordinatorTeacherHomework = withRouter(
         {loading ? <Loading message='Loading...' /> : null}
         <Layout>
           <div className='message_log_wrapper'>
-            <div className='message_log_breadcrumb_wrapper'>
-              <CommonBreadcrumbs componentName='Homework' />
-            </div>
+            <CommonBreadcrumbs componentName='Homework' 
+            isAcademicYearVisible={true}
+          />
             <div className='message_log_white_wrapper'>
               <div className='homework_block_wrapper'>
                 <div className='homework_block'>Weekly Time table</div>
@@ -598,9 +598,7 @@ const CoordinatorTeacherHomework = withRouter(
         {loading ? <Loading message='Loading...' /> : null}
         <Layout>
           <div className='message_log_wrapper'>
-            <div className='message_log_breadcrumb_wrapper'>
-              <CommonBreadcrumbs componentName='Homework' />
-            </div>
+            <CommonBreadcrumbs componentName='Homework' />
             <div className='message_log_white_wrapper'>
               <div className='homework_block_wrapper '>
                 <div className='add-homework-container'>

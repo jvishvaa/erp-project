@@ -165,46 +165,50 @@ const Setting = (props) => {
 
   useEffect(() => {
     const schooldata = JSON.parse(localStorage.getItem("schoolDetails")) || {}
-    if(schooldata){
-    setscholData(schooldata)
-    setImage(schooldata.school_logo)
+    if (schooldata) {
+      setscholData(schooldata)
+      setImage(schooldata.school_logo)
     }
   }, [])
   useEffect(() => {
 
 
-  //   axiosInstance
-  //     .get(`${endpoints.themeAPI.school_theme}`)
-  //     .then((res) => {
-  //       if (res.status === 200) {
-  //         const result = res.data.result
-  //         result.data.map((items) => {
-  //           if (items.theme_key === "primary_color") {
-  //             setprimarycolor(items.theme_value[0])
-  //           } else if (items.theme_key === "second_color") {
-  //             setsecondarycolor(items.theme_value[0])
-  //           }
+    //   axiosInstance
+    //     .get(`${endpoints.themeAPI.school_theme}`)
+    //     .then((res) => {
+    //       if (res.status === 200) {
+    //         const result = res.data.result
+    //         result.data.map((items) => {
+    //           if (items.theme_key === "primary_color") {
+    //             setprimarycolor(items.theme_value[0])
+    //           } else if (items.theme_key === "second_color") {
+    //             setsecondarycolor(items.theme_value[0])
+    //           }
 
-  //         })
-  //       }
+    //         })
+    //       }
 
-  //     }).catch((error) => {
-  //       console.log(error);
-  //     });
+    //     }).catch((error) => {
+    //       console.log(error);
+    //     });
 
-  var themeData = JSON.parse(localStorage.getItem("themeDetails"));
-  if(themeData)
-  themeData.forEach((items) => {
-              if (items.theme_key === "primary_color") {
-                setprimarycolor(items.theme_value)
-              } else if (items.theme_key === "second_color") {
-                setsecondarycolor(items.theme_value)
-              }
-  
-            })
+    var themeData = JSON.parse(localStorage.getItem("themeDetails"));
+    if (themeData){
+      themeData.forEach((items) => {
+        if (items.theme_key === "primary_color") {
+          setprimarycolor(items.theme_value)
+        } else if (items.theme_key === "second_color") {
+          setsecondarycolor(items.theme_value)
+        }
+
+      })
+    }else{
+      setprimarycolor("#ff6b6b")
+      setsecondarycolor('#014b7e')
+    }
+    
 
 
-  
   }, [])
 
 
@@ -411,121 +415,130 @@ const Setting = (props) => {
   });
   return (
     <Layout>
-      <Card className={classes.root}>
+      {/* <Card className={classes.root}>
         <CardContent style={{ display: "flex", position: "absolute" }}>
-          <div style={{ marginTop: "-11%" }}>
-            <CardHeader title="Logo"></CardHeader>
-            <Card className={classes.logoupdate}>
-              {/* <img src={image} className={classes.imgpreview} /> */}
-              <img src={image} className={classes.imgpreview} />
+          <div style={{ marginTop: "-11%" }}> */}
+      <Grid
+        container
+        justifyContent="center"
+        alignItems="center" style={{ justifyContent: "center", marginTop: "8%" }}>
 
-              <form onSubmit={formik1.handleSubmit} className={classes.choosefile}>
-                <input type="file"
-                  id="imgurl"
-                  name='imgurl'
-                  ref={hiddenFileInput}
+        <div>
 
-                  style={{ display: 'none' }}
-                  accept="image/*"
-                  value={formik1.values.imgurl}
-                  ref={hiddenFileInput}
-                  onChange={(e) => {
-                    formik1.handleChange(e)
-                    if (e.target.files[0]) {
-                      setImage(URL.createObjectURL(e.target.files[0]))
-                    }
-                    setimgupdate(true)
+          <CardHeader title="Logo"></CardHeader>
+          <Card className={classes.logoupdate}>
+            {/* <img src={image} className={classes.imgpreview} /> */}
+            <img src={image} className={classes.imgpreview} />
 
-                    setimgdetail(e.target.files[0])
+            <form onSubmit={formik1.handleSubmit} className={classes.choosefile}>
+              <input type="file"
+                id="imgurl"
+                name='imgurl'
+                ref={hiddenFileInput}
+
+                style={{ display: 'none' }}
+                accept="image/*"
+                value={formik1.values.imgurl}
+                ref={hiddenFileInput}
+                onChange={(e) => {
+                  formik1.handleChange(e)
+                  if (e.target.files[0]) {
+                    setImage(URL.createObjectURL(e.target.files[0]))
                   }
-                  } />
+                  setimgupdate(true)
+
+                  setimgdetail(e.target.files[0])
+                }
+                } />
 
 
-{/* <CardActions>
+              {/* <CardActions>
         
       </CardActions> */}
-                {imgupdate ? <div style={{ marginLeft: "25%", marginTop: "4%" }}>
-                  <Button color="primary" variant="contained" type="submit">
-                    Save
-                  </Button>
-                  <Button color="primary" variant="contained" onClick={cancelClick} style={{ marginLeft: "2%" }}>
-                    Cancel
-                  </Button>
-                </div>
-                  : <Button color="primary" variant="contained" onClick={handleClick} style={{ marginLeft: "35%", marginTop: "6%" }}>
-                    Update
-                  </Button>}
+              {imgupdate ? <div style={{ marginLeft: "25%", marginTop: "4%" }}>
+                <Button color="primary" variant="contained" type="submit">
+                  Save
+                </Button>
+                <Button color="primary" variant="contained" onClick={cancelClick} style={{ marginLeft: "2%" }}>
+                  Cancel
+                </Button>
+              </div>
+                : <Button color="primary" variant="contained" onClick={handleClick} style={{ marginLeft: "35%", marginTop: "6%" }}>
+                  Update
+                </Button>}
 
-              </form>
-              {/* <CardActions>
+            </form>
+            {/* <CardActions>
               <Button size="small" type="submit">Update</Button>
             </CardActions> */}
-            </Card>
-          </div>
+          </Card>
+        </div>
 
 
-          <div style={{ marginTop: "-11%" }}>
-            <CardHeader title="Theme"></CardHeader>
-            <Card className={classes.colors}>
-              <form onSubmit={formik2.handleSubmit} className={classes.choosetheme} >
+        <div>
+        
+          <CardHeader title="Theme"></CardHeader>
+          <Card className={classes.colors}>
+            <form onSubmit={formik2.handleSubmit} className={classes.choosetheme} >
 
-                <div className={classes.primarycolor}>
-                  <span>Primary Color</span>
-                  <div style={{ backgroundColor: currentpricolor ? currentpricolor : primarycolor, height: "50px", width: "50px", border: "1px solid black", marginLeft: "15%", marginTop: "5%" }}
-                    onClick={() => setpickprimarycolor(pickprimarycolor => !pickprimarycolor)} >
+              <div className={classes.primarycolor}>
+                <span>Primary Color</span>
+                <div style={{ backgroundColor: currentpricolor ? currentpricolor : primarycolor, height: "50px", width: "50px", border: "1px solid black", marginLeft: "15%", marginTop: "5%" }}
+                  onClick={() => setpickprimarycolor(pickprimarycolor => !pickprimarycolor)} >
 
-                    {pickprimarycolor ? <ClickAwayListener
-                      mouseEvent="onMouseDown"
-                      touchEvent="onTouchStart"
-                      onClickAway={handleClickAway}
-                    ><SketchPicker
-                        color={currentpricolor ? currentpricolor : primarycolor}
-                        // onChangeComplete={(color) => { setthemecolor(color.hex) }}
-                        onChangeComplete={(color) => { onprimarythemeselect(color) }}
+                  {pickprimarycolor ? <ClickAwayListener
+                    mouseEvent="onMouseDown"
+                    touchEvent="onTouchStart"
+                    onClickAway={handleClickAway}
+                  ><SketchPicker
+                      color={currentpricolor ? currentpricolor : primarycolor}
+                      // onChangeComplete={(color) => { setthemecolor(color.hex) }}
+                      onChangeComplete={(color) => { onprimarythemeselect(color) }}
 
-                      /></ClickAwayListener> : null}
+                    /></ClickAwayListener> : null}
 
-                  </div>
-
-
-                </div><br />
-                <div className={classes.secondrycolor}>
-                  <span>Secondary Color</span>
-                  <div style={{ backgroundColor: currentseccolor ? currentseccolor : secondarycolor, height: "50px", width: "50px", border: "1px solid black", marginLeft: "9%" }}
-                    onClick={() => setpicksecondarycolor(picksecondarycolor => !picksecondarycolor)}>
-                    {picksecondarycolor ? <ClickAwayListener
-                      mouseEvent="onMouseDown"
-                      touchEvent="onTouchStart"
-                      onClickAway={handleClickAway}
-                    ><SketchPicker
-                        color={currentseccolor ? currentseccolor : secondarycolor}
-                        // onChangeComplete={(color) => { setthemecolor(color.hex) }}
-                        onChangeComplete={(color) => { onsecondarythemeselect(color) }}
-
-                      /></ClickAwayListener> : null}
-
-                  </div>
-                </div><br />
-                <div style={{ display: "flex" }}>
-                <div>
-                    <Button color="primary" variant="contained" onClick={reseteTheme} style={{ marginTop: "-2%"}}>
-                      Set Default
-                    </Button>
-                  </div>
-                  <div style={{ marginLeft : "15%" }}>
-                    {colorupdate ? <Button color="primary" variant="contained" type="submit" style={{ marginTop: "-2%" , display: (pickprimarycolor || picksecondarycolor) ? "none" : "inherit" }}>
-                      Save
-                    </Button> : null}
-                  </div>
-                  
                 </div>
-              </form>
-            </Card>
-          </div>
-        </CardContent>
 
-      </Card>
-    </Layout>
+
+              </div><br />
+              <div className={classes.secondrycolor}>
+                <span>Secondary Color</span>
+                <div style={{ backgroundColor: currentseccolor ? currentseccolor : secondarycolor, height: "50px", width: "50px", border: "1px solid black", marginLeft: "9%" }}
+                  onClick={() => setpicksecondarycolor(picksecondarycolor => !picksecondarycolor)}>
+                  {picksecondarycolor ? <ClickAwayListener
+                    mouseEvent="onMouseDown"
+                    touchEvent="onTouchStart"
+                    onClickAway={handleClickAway}
+                  ><SketchPicker
+                      color={currentseccolor ? currentseccolor : secondarycolor}
+                      // onChangeComplete={(color) => { setthemecolor(color.hex) }}
+                      onChangeComplete={(color) => { onsecondarythemeselect(color) }}
+
+                    /></ClickAwayListener> : null}
+
+                </div>
+              </div><br />
+              <div style={{ display: "flex" }}>
+                <div>
+                  <Button color="primary" variant="contained" onClick={reseteTheme} style={{ marginTop: "-2%" }}>
+                    Set Default
+                  </Button>
+                </div>
+                <div style={{ marginLeft: "15%" }}>
+                  {colorupdate ? <Button color="primary" variant="contained" type="submit" style={{ marginTop: "-2%", display: (pickprimarycolor || picksecondarycolor) ? "none" : "inherit" }}>
+                    Save
+                  </Button> : null}
+                </div>
+
+              </div>
+            </form>
+          </Card>
+        </div>
+        {/* </CardContent> */}
+
+      {/* </Card> */}
+      </Grid>
+    </Layout >
   );
 };
 // const mapDispatchToProps = (dispatch) => {

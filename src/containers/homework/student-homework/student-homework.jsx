@@ -303,12 +303,9 @@ const StudentHomework = withRouter(({ history, ...props }) => {
       {loading ? <Loading message='Loading...' /> : null}
       <Layout className='layout-container'>
         <div className='message_log_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
-          <div
-            className='message_log_breadcrumb_wrapper'
-            style={{ backgroundColor: '#F9F9F9' }}
-          >
-            <CommonBreadcrumbs componentName='Homework' />
-          </div>
+          <CommonBreadcrumbs componentName='Homework'
+            isAcademicYearVisible={true}
+          />
           <div
             className={clsx(
               'create_group_filter_container',
