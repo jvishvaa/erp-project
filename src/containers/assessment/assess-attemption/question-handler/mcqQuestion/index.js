@@ -8,7 +8,7 @@ import FormControl from '@material-ui/core/FormControl';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { IconButton, SvgIcon, Button } from '@material-ui/core';
 import { AttachmentPreviewerContext } from '../../../../../components/attachment-previewer/attachment-previewer-contexts';
-
+import endpoints from '../../../../../config/endpoints';
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
 import '../../assess-attemption.css';
 
@@ -23,6 +23,7 @@ const McqQuestion = (props) => {
     id: qId,
     question_answer: questionAnswer,
     user_response: { answer: existingAnswerArray } = {},
+    is_central: isCentral = false,
   } = currentQuestionObj || {};
 
   const { openPreview, closePreview } =
@@ -32,7 +33,7 @@ const McqQuestion = (props) => {
 
   const [{ options, question }] = questionAnswer || [];
 
-  const s3Image = "https://erp-revamp.s3.ap-south-1.amazonaws.com/"
+  const s3Image = `${isCentral ? endpoints.s3 : endpoints.assessmentErp.s3}/`;
 
   const handleOptionValue = (event) => {
     attemptQuestion(qId, { attemption_status: true, answer: [event.target.value] });
@@ -84,17 +85,21 @@ const McqQuestion = (props) => {
             value={existingAnswer}
             onChange={handleOptionValue}
           >
-            <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
+            <div
+              className='mcq-options'
+              style={{ display: 'flex', alignItems: 'center' }}
+            >
               <FormControlLabel
                 // className='mcq-options'
                 value='option1'
                 control={<Radio checked={existingAnswer === 'option1'} />}
                 label={options[0].option1.optionValue}
               />
-              <div>
+              <div className='imageContainer'>
                 {options[0]?.option1?.images.length !== 0 ? (
-                  <a
-                    className='underlineRemove'
+                  <img
+                    src={`${s3Image}${options[0]?.option1?.images[0]}`}
+                    // className='underlineRemove'
                     onClick={() => {
                       const fileSrc = `${s3Image}${options[0]?.option1?.images[0]}`;
                       openPreview({
@@ -108,25 +113,25 @@ const McqQuestion = (props) => {
                         ],
                       });
                     }}
-                  >
-                    <SvgIcon component={() => <VisibilityIcon />} />
-                  </a>
+                  />
                 ) : null}
               </div>
             </div>
-            <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
+            <div
+              className='mcq-options'
+              style={{ display: 'flex', alignItems: 'center' }}
+            >
               <FormControlLabel
                 // className='mcq-options'
                 value='option2'
                 control={<Radio checked={existingAnswer === 'option2'} />}
                 label={options[1].option2.optionValue}
               />
-              <div>
-                {/* {console.log(options[1]?.option2?.images.length, 'po22')} */}
+              <div className='imageContainer'>
                 {options[1]?.option2?.images.length !== 0 ? (
-
-                  <a
-                    className='underlineRemove'
+                  <img
+                    src={`${s3Image}${options[1]?.option2?.images[0]}`}
+                    // className='underlineRemove'
                     onClick={() => {
                       const fileSrc = `${s3Image}${options[1]?.option2?.images[0]}`;
                       openPreview({
@@ -140,14 +145,15 @@ const McqQuestion = (props) => {
                         ],
                       });
                     }}
-                  >
-                    <SvgIcon component={() => <VisibilityIcon />} />
-                  </a>
+                  />
                 ) : null}
               </div>
             </div>
-            {options[2]?.option3?.optionValue ? (
-              <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
+            {options[2]?.option3 ? (
+              <div
+                className='mcq-options'
+                style={{ display: 'flex', alignItems: 'center' }}
+              >
                 <FormControlLabel
                   // className='mcq-options'
                   value='option3'
@@ -156,14 +162,14 @@ const McqQuestion = (props) => {
                   label={options[2].option3.optionValue}
                 />
 
-                <div>
+                <div className='imageContainer'>
                   {options[2]?.option3?.images.length !== 0 ? (
-                    <a
-                      className='underlineRemove'
+                    <img
+                      src={`${s3Image}${options[2]?.option3?.images[0]}`}
+                      // className='underlineRemove'
                       onClick={() => {
                         // const fileSrc = `${endpoints.assessmentErp.s3}${obj?.media_file[0]}`;
-                        const fileSrc =
-                          `${s3Image}${options[2]?.option3?.images[0]}`;
+                        const fileSrc = `${s3Image}${options[2]?.option3?.images[0]}`;
                         openPreview({
                           currentAttachmentIndex: 0,
                           attachmentsArray: [
@@ -175,17 +181,16 @@ const McqQuestion = (props) => {
                           ],
                         });
                       }}
-                    >
-                      <SvgIcon component={() => <VisibilityIcon />} />
-                    </a>
-
+                    />
                   ) : null}
-
                 </div>
               </div>
             ) : null}
-            {options[3]?.option4?.optionValue ? (
-              <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
+            {options[3]?.option4 ? (
+              <div
+                className='mcq-options'
+                style={{ display: 'flex', alignItems: 'center' }}
+              >
                 <FormControlLabel
                   // className='mcq-options'
                   value='option4'
@@ -193,14 +198,14 @@ const McqQuestion = (props) => {
                   control={<Radio checked={existingAnswer === 'option4'} />}
                   label={options[3].option4.optionValue}
                 />
-                <div>
+                <div className='imageContainer'>
                   {options[3]?.option4?.images.length !== 0 ? (
-                    <a
-                      className='underlineRemove'
+                    <img
+                      // className='underlineRemove'
+                      src={`${s3Image}${options[3]?.option4?.images[0]}`}
                       onClick={() => {
                         // const fileSrc = `${endpoints.assessmentErp.s3}${obj?.media_file[0]}`;
-                        const fileSrc =
-                          `${s3Image}${options[3]?.option4?.images[0]}`;
+                        const fileSrc = `${s3Image}${options[3]?.option4?.images[0]}`;
                         openPreview({
                           currentAttachmentIndex: 0,
                           attachmentsArray: [
@@ -212,16 +217,16 @@ const McqQuestion = (props) => {
                           ],
                         });
                       }}
-                    >
-                      <SvgIcon component={() => <VisibilityIcon />} />
-                    </a>
+                    />
                   ) : null}
-
                 </div>
               </div>
             ) : null}
-            {options[4]?.option5?.optionValue ? (
-              <div className='mcq-options' style={{ display: 'flex', alignItems: 'center' }}>
+            {options[4]?.option5 ? (
+              <div
+                className='mcq-options'
+                style={{ display: 'flex', alignItems: 'center' }}
+              >
                 <FormControlLabel
                   //  className='mcq-options'
                   value='option5'
@@ -229,15 +234,14 @@ const McqQuestion = (props) => {
                   control={<Radio checked={existingAnswer === 'option5'} />}
                   label={options[4].option5.optionValue}
                 />
-                <div>
+                <div className='imageContainer'>
                   {options[4]?.option5?.images.length !== 0 ? (
-
-                    <a
-                      className='underlineRemove'
+                    <img
+                      // className='underlineRemove'
+                      src={`${s3Image}${options[4]?.option5?.images[0]}`}
                       onClick={() => {
                         // const fileSrc = `${endpoints.assessmentErp.s3}${obj?.media_file[0]}`;
-                        const fileSrc =
-                          `${s3Image}${options[4]?.option5?.images[0]}`;
+                        const fileSrc = `${s3Image}${options[4]?.option5?.images[0]}`;
                         openPreview({
                           currentAttachmentIndex: 0,
                           attachmentsArray: [
@@ -249,9 +253,7 @@ const McqQuestion = (props) => {
                           ],
                         });
                       }}
-                    >
-                      <SvgIcon component={() => <VisibilityIcon />} />
-                    </a>
+                    />
                   ) : null}
                 </div>
               </div>

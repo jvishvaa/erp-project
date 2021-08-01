@@ -42,8 +42,8 @@ const useStyles = makeStyles((theme) => ({
     marginLeft:'370px',
   },
   searchInputMobile: {
-    color: 'white',
-    background: '#ff6b6b',
+    // color: 'white',
+    // background: '#ff6b6b',
     height: '40px',
     marginBottom: '1%',
     width: '100%',
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   searchInput: {
     padding: '2px 10px',
     flex: 1,
-    color:'#FFCDCD'
+    // color:'#FFCDCD'
   },
   searchIconButton: {
     "&:hover": {
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 'inherit',
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
-    color: '#FF9898',
+    // color: '#FF9898',
     height: '40px',
   },
   clearIconButtonMobile: {
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '0%',
     height: '40px',
     marginLeft: '-1%',
-    marginRight: '-1%',
+    // marginRight: '-1%',
     marginBottom: '1%',
   },
   clearIconButton: {

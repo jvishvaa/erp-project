@@ -438,6 +438,7 @@ export default function ClassWorkTeacherReport() {
           <CommonBreadcrumbs
             componentName={`Online Class`}
             childComponentName={`Teacher Classwork Report`}
+            isAcademicYearVisible={true}
           />
         </div>
         <Grid container spacing={5} style={{ width: widerWidth, margin: wider }}>

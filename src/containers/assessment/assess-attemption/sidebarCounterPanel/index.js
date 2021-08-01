@@ -44,7 +44,7 @@ const SidebarCounterPanel = (props) => {
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
-
+  const [toBeSubmitted, setToBeSubmitted] = useState(false);
   const handleOpen = () => {
     setOpen(true);
   };
@@ -96,35 +96,16 @@ const SidebarCounterPanel = (props) => {
     submit({ onResolve: onSubmitSuccess, onReject: onSubmitFailure });
   };
 
-  const submitRef = React.useRef(null);
-  
-  // React.useEffect(() => {
-  //   const duratonPassedAlreadyInMilliSec = new Date() - new Date(startedAt);
-  //   const testDur = testDuration
-  //   const testDurationInMilliSec = testDur * 60 * 1000;
-  //   const durationLeft = testDurationInMilliSec - duratonPassedAlreadyInMilliSec;
-
-  //   let continuosCall = '';
-  //   if (+durationLeft > 0) {
-  //     continuosCall = setTimeout(() => {
-  //       localStorage.removeItem(`testDuration`);
-  //       localStorage.removeItem(`assessment-${assessmentId}`);
-  //       submitRef.current.click();
-  //       // window.alert('Time ran out!');
-  //     }, durationLeft);
-  //   } else {
-  //     // localStorage.removeItem(`testDuration`);
-  //     // Object.entries(localStorage).forEach(([key, value]) => {
-  //     //   if (key?.startsWith('assessment-')) {
-  //     //     localStorage.removeItem(key);
-  //     //   }
-  //     // });
-  //     // props.history.push(`/assessment/`);
-  //   }
-  //   return () => {
-  //     clearTimeout(continuosCall);
-  //   };
-  // }, []);
+  React.useEffect(() => {
+    if (toBeSubmitted) {
+      submitTheResult();
+      Object.entries(localStorage).forEach(([key, value]) => {
+        if (key?.startsWith('assessment-')) {
+          localStorage.removeItem(key);
+        }
+      });
+    }
+  }, [toBeSubmitted]);
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
@@ -150,6 +131,7 @@ const SidebarCounterPanel = (props) => {
           <TimerComponent
             startedAt={startedAt}
             submit={submitTheResult}
+            setToBeSubmitted={setToBeSubmitted}
             duration={testDuration}
           />
         ) : null}
@@ -213,7 +195,6 @@ const SidebarCounterPanel = (props) => {
           variant='contained'
           color='primary'
           // disabled={!isReadyToSubmit}
-          ref={submitRef}
           onClick={submitTheResult}
         >
           Submit

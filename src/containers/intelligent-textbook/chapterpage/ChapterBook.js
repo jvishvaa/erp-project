@@ -65,13 +65,15 @@ const ChapterBook = (props) => {
   const [booksData, setBooksData] = useState([]);
   const [open, setOpen] = useState(false);
   const [iframeSrc, setiframeSrc] = useState('');
-  const { match: { params: { bookId, bookUid, localStorageName, environment, type } } = {} } = props;
+  const {
+    match: { params: { bookId, bookUid, localStorageName, environment, type } } = {},
+  } = props;
   const dispatch = useDispatch();
   const [chapterId, setChapterId] = useState('');
   const [totalPages, setTotalPages] = useState('');
   const [pageNo, setPageNo] = useState(1);
   const limit = 8;
-  const chapterImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/ibooks/';
+  const chapterImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/';
   const handlePagination = (event, page) => {
     setPageNo(page);
     // console.log(page, 'Page');
@@ -154,7 +156,7 @@ const ChapterBook = (props) => {
                             <Grid item md={6} xs={6}>
                               {console.log(
                                 'chapterImage',
-                                `${chapterImage}${item.chapter_image}`
+                                `${chapterImage}${item.path}${item.chapter_image}`
                               )}
                               <img
                                 src={`${chapterImage}${item.chapter_image}`}
@@ -269,7 +271,7 @@ const ChapterBook = (props) => {
                 </div>
               </AppBar>
 
-              <ViewBook 
+              <ViewBook
                 bookId={bookId}
                 chapterId={chapterId}
                 bookUid={bookUid}
@@ -277,8 +279,6 @@ const ChapterBook = (props) => {
                 environment={environment}
                 type={type}
               />
-           
-               
             </Grid>
           </Grid>
         </Dialog>

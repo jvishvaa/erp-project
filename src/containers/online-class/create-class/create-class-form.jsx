@@ -1,16 +1,12 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
 import {
   Grid,
   TextField,
   Button,
   SwipeableDrawer,
   CircularProgress,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Switch,
   FormControlLabel,
 } from '@material-ui/core';
@@ -22,15 +18,11 @@ import {
 } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import moment from 'moment';
 
 import { CreateclassContext } from './create-class-context/create-class-state';
 import FilterStudents from './filter-students';
 import {
-  emailRegExp,
   getPopup,
   getFormatedTime,
   initialFormStructure,
@@ -39,9 +31,8 @@ import {
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './create-class.scss';
 import axiosInstance from '../../../config/axios';
-import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import { fetchAcademicYears, fetchBranchesForCreateUser } from '../../../redux/actions';
+import { fetchBranchesForCreateUser } from '../../../redux/actions';
 import ReminderDialog from './reminderDialog';
 
 const CreateClassForm = (props) => {
@@ -52,15 +43,14 @@ const CreateClassForm = (props) => {
   const [sectionSelectorKey, setSectionSelectorKey] = useState(new Date());
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [moduleId, setModuleId] = useState();
+  const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState('');
-  const [selectedYear, setSelectedYear] = useState('');
   const [selectedBranches, setSelectedBranches] = useState([]);
   const [tutorNotAvailableMsg, setTutorNotAvailableMessage] = useState(null);
   const [selectedClassType, setSelectedClassType] = useState('');
-  const [yearList, setYearList] = useState([]);
   const [branches, setBranches] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const {
@@ -117,18 +107,6 @@ const CreateClassForm = (props) => {
     });
   };
 
-  const fetchYears = () => {
-    fetchAcademicYears(moduleId).then((data) => {
-      const transformedData = data?.map((obj) => ({
-        id: obj.id,
-        session_year: obj.session_year,
-      }));
-      setYearList(transformedData);
-      const defaultYear = transformedData?.[0];
-      handleYear({}, defaultYear);
-    });
-  };
-
   const [daysList, setDays] = useState([
     { id: 0, day: 'Sunday', send: 'S' },
     { id: 1, day: 'Monday', send: 'M' },
@@ -165,12 +143,10 @@ const CreateClassForm = (props) => {
   }, []);
 
   useEffect(() => {
-    if (moduleId) fetchYears();
-  }, [moduleId]);
-
-  useEffect(() => {
-    if (selectedYear) fetchBranches(selectedYear?.id);
-  }, [selectedYear]);
+    if (selectedYear && moduleId) {
+      fetchBranches(selectedYear?.id);
+    }
+  }, [selectedYear, moduleId]);
 
   useEffect(() => {
     const filteredSelectedSections = sections.filter(
@@ -187,7 +163,7 @@ const CreateClassForm = (props) => {
       setSelectedSections([]);
       setSelectedSubject([]);
       setSelectedClassType('');
-      setSelectedYear('');
+      // setSelectedYear('');
       setSelectedBranches([]);
       setSelectedCourse('');
       setTutorNotAvailableMessage(null);
@@ -220,24 +196,6 @@ const CreateClassForm = (props) => {
     }
   };
 
-  const handleYear = (event = {}, value = '') => {
-    setSelectedYear('');
-    setBranches([]);
-    setSelectedBranches([]);
-    setSelectedGrades([]);
-    setSelectedSections([]);
-    setSelectedSubject([]);
-    dispatch(clearSections());
-    dispatch(clearSubjects());
-    dispatch(clearCourses());
-    if (value) {
-      setSelectedYear(value);
-      setOnlineClass((prevState) => ({ ...prevState, acadId: value?.id }));
-    } else {
-      dispatch(clearGrades());
-    }
-  };
-
   const handleBranches = (event, value) => {
     setSelectedBranches([]);
     setSelectedGrades([]);
@@ -250,7 +208,7 @@ const CreateClassForm = (props) => {
       const ids = value.map((obj) => obj.id);
       setSelectedBranches(value);
       dispatch(listGradesCreateClass(ids, moduleId, selectedYear.id));
-      setOnlineClass((prevState) => ({ ...prevState, branchIds: ids }));
+      setOnlineClass((prevState) => ({ ...prevState, branchIds: ids, acadId: selectedYear?.id }));
     } else {
       dispatch(clearGrades());
     }
@@ -519,11 +477,10 @@ const CreateClassForm = (props) => {
       courseId,
     } = onlineClass;
 
-    const startTime = `${
-      selectedDate.toString().includes(' ')
-        ? selectedDate.toISOString().split('T')[0]
-        : moment(selectedDate).format('YYYY-MM-DD')
-    } ${getFormatedTime(selectedTime)}`;
+    const startTime = `${selectedDate.toString().includes(' ')
+      ? selectedDate.toISOString().split('T')[0]
+      : moment(selectedDate).format('YYYY-MM-DD')
+      } ${getFormatedTime(selectedTime)}`;
     const coHostEmails = coHosts.map((coHost) => coHost?.email);
     const tutorEmails = [tutorEmail.email, ...coHostEmails];
     let request = {};
@@ -589,44 +546,13 @@ const CreateClassForm = (props) => {
     }
   };
 
-  const handleCoHostBlur = async (index) => {
-    if (onlineClass.coHosts[index].email) {
-      try {
-        const acadinfo = {
-          branchId: onlineClass.branchIds.join(','),
-          gradeId: onlineClass.gradeIds.join(','),
-          sectionIds: onlineClass.sectionIds.join(','),
-          subjectId: onlineClass.subject,
-        };
-        const info = {
-          email: [onlineClass.coHosts[index].email],
-          // erp_user_id: erpUser,
-        };
-        if (acadinfo.branchId) info.branch_id = acadinfo.branchId;
-        if (acadinfo.gradeId) info.grade_id = acadinfo.gradeId;
-        if (acadinfo.sectionIds) info.section_id = acadinfo.sectionIds;
-        if (acadinfo.subjectId) info.subject_id = acadinfo.subjectId.toString();
-        const { data } = await axiosInstance.post(
-          endpoints.onlineClass.coHostValidation,
-          info
-        );
-        const stateCopy = onlineClass;
-        const hosts = stateCopy.coHosts;
-        hosts[index].isValid = data.data[0].status;
-        setOnlineClass((prevState) => ({ ...prevState, coHosts: hosts }));
-      } catch (error) {
-        setAlert('error', 'Something went wrong');
-      }
-    }
-  };
-
   const handleClear = () => {
     setFormKey(new Date());
     setSelectedGrades([]);
     setSelectedSections([]);
     setSelectedSubject([]);
-    setSelectedYear('');
-    setBranches([]);
+    // setSelectedYear('');
+    // setBranches([]);
     setSelectedClassType('');
     setSelectedBranches([]);
     setSelectedCourse('');
@@ -703,19 +629,19 @@ const CreateClassForm = (props) => {
 
   const checkTutorFlag = toggle
     ? onlineClass.duration &&
-      onlineClass.subject &&
-      onlineClass.gradeIds?.length &&
-      onlineClass.selectedDate &&
-      onlineClass.selectedTime &&
-      onlineClass.tutorEmail &&
-      onlineClass.weeks &&
-      daysLength
+    onlineClass.subject &&
+    onlineClass.gradeIds?.length &&
+    onlineClass.selectedDate &&
+    onlineClass.selectedTime &&
+    onlineClass.tutorEmail &&
+    onlineClass.weeks &&
+    daysLength
     : onlineClass.duration &&
-      onlineClass.subject &&
-      onlineClass.gradeIds?.length &&
-      onlineClass.selectedDate &&
-      onlineClass.selectedTime &&
-      onlineClass.tutorEmail;
+    onlineClass.subject &&
+    onlineClass.gradeIds?.length &&
+    onlineClass.selectedDate &&
+    onlineClass.selectedTime &&
+    onlineClass.tutorEmail;
 
   useEffect(() => {
     if (checkTutorFlag) {
@@ -769,10 +695,9 @@ const CreateClassForm = (props) => {
         <CommonBreadcrumbs
           componentName='Online Class'
           childComponentName='Create Class'
+          isAcademicYearVisible={true}
         />
       </div>
-      {console.log(toggleZoom, 'zoom-options')}
-      {/* {console.log(toggle, 'reocuing')} */}
       <div className='create-class-form-container'>
         <form
           autoComplete='off'
@@ -821,27 +746,6 @@ const CreateClassForm = (props) => {
                 name='title'
                 onChange={handleChange}
                 required
-              />
-            </Grid>
-            <Grid item xs={12} sm={2}>
-              <Autocomplete
-                size='small'
-                onChange={handleYear}
-                className='dropdownIcon'
-                id='create__class-grade'
-                options={yearList || []}
-                getOptionLabel={(option) => option?.session_year || ''}
-                filterSelectedOptions
-                value={selectedYear || ''}
-                renderInput={(params) => (
-                  <TextField
-                    className='create__class-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='Academic Year'
-                    placeholder='Academic Year'
-                  />
-                )}
               />
             </Grid>
             <Grid item xs={12} sm={2}>
@@ -949,7 +853,7 @@ const CreateClassForm = (props) => {
             ) : (
               ''
             )}
-            {onlineClass.tutorEmail && onlineClass.sectionIds?.length> 0 ? (
+            {onlineClass.tutorEmail && onlineClass.sectionIds?.length > 0 ? (
               <>
                 {selectedClassType?.id === 0 && (
                   <Grid item xs={12} sm={2}>

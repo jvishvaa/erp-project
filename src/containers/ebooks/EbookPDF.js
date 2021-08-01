@@ -270,7 +270,7 @@ const EbookPdf = (props) => {
     input.addEventListener('keyup', function (event) {
       if (event.keyCode === 13) {
         event.preventDefault();
-        getSplittedImages();
+        // getSplittedImages();
       }
     });
   };
@@ -435,13 +435,13 @@ const EbookPdf = (props) => {
                 Page &nbsp;
                 <input
                   id='dpage'
-                  type='text'
+                  type='Number'
                   value={page}
                   onChange={(event) => {
                     const { value } = event.target;
-                    setPage(Number(value) > totalPages ? page : value);
+                    setPage(Number(value) > totalPages ? page : Number(value.replace(/[^\w\s]/gi, "")));
                     if (value) {
-                      setPage(Number(value) > totalPages ? page : Number(value));
+                      setPage(Number(value) > totalPages ? page : Number(value.replace(/[^\w\s]/gi, "")));
                     }
                   }}
                   onKeyPress={dynamicPageNumber}

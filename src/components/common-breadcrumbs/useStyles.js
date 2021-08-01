@@ -3,6 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    flexDirection: 'column',
+    width: '98%',
+    margin: '0 1%'
   },
   navigationIcon: {
     marginLeft: theme.spacing(-1),
@@ -11,15 +14,20 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '30px',
   },
   button: {
-    "&:hover": {
-      backgroundColor: "transparent"
+    '&:hover': {
+      cursor: 'pointer',
+      backgroundColor: 'transparent',
     },
-    backgroundColor: 'transparent',
-    color: '#014B7E !important',
-    fontWeight:'bold',
-    fontSize:'18px',
-    fontFamily:'Raleway SemiBold',
-    alignItems:'left'
+    color: '#014B7E',
+    fontWeight: 'bold',
+    fontSize: '18px',
+    fontFamily: 'Raleway SemiBold',
+    padding: '6px 8px'
+  },
+  flexItem: {
+    margin: '0 1%',
+    width: '100%',
+    height: '1px',
   },
 }));
 

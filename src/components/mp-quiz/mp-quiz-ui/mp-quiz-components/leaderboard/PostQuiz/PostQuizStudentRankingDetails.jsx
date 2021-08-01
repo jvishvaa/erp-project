@@ -13,6 +13,7 @@ class PostQuizStudentRankingDetails extends Component {
   }
 
   render () {
+    const { first_name: loginUser } = JSON.parse(localStorage.getItem('userDetails') || {});
     const { first_name: firstName, total_score: totalScore, rank, possibleScore, totalQuestions = 0, attempted_ques_count: totalAttemptedQuestions = 0, isHost, avatar = '', visibility } = this.props
     const percentage = Math.floor((totalScore / possibleScore) * 100)
     return (
@@ -22,7 +23,7 @@ class PostQuizStudentRankingDetails extends Component {
           <img style={{ borderRadius: '50%' }} src={avatar || Emoji} alt='Smiley' />
         </div>
         <div className='postquiz__user--name'>
-          { firstName ? this.truncateString(firstName, 10) : 'Unknown' }</div>
+          { firstName ? this.truncateString(firstName, 10) : loginUser }</div>
         <div className={`${isHost ? 'postquiz__progress--holder--host' : 'postquiz__progress--holder--student'}`}>
           <div className='postquiz__progress--parent'>
             <div className='postquiz__progress--child' style={{ width: `${percentage<=100?percentage:100}%` }} />
@@ -37,7 +38,6 @@ class PostQuizStudentRankingDetails extends Component {
             </Tooltip>
             : ''
         }
-
         <div className='postquiz__user--points'>{totalScore || 0} pts</div>
       </div>
     )
