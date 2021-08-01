@@ -29,7 +29,7 @@ function QuestionReview() {
       const {
         question_type: questionType,
         question_answer: [{ question, answer: correctAnswer = [], answer_values: correctAnswerValues = [], answer_images: answerImages = [] }] = [{}],
-        user_response: { answer: userAnswer = [], user_answer_values: differUserResponse } = {},
+        user_response: { answer: userAnswer = [], user_answer_values: differUserResponse, user_answer_images: userResposeImages } = {},
         sub_question_answer: subQuestion = [{}],
         is_central: isCentral = false,
       } = questionsDataObj[questionId] || {};
@@ -111,7 +111,7 @@ function QuestionReview() {
                       <div className={classes.answersContainer}>
                         <b>Your answer: &nbsp; </b>
                         <label dangerouslySetInnerHTML={{ __html: handlerAnswerVar(differUserResponse) }}></label>
-                        {answerImages?.map(
+                        {userResposeImages?.map(
                           (image) => (
                             <a
                               className='underlineRemove'
