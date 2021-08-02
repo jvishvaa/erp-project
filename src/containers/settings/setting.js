@@ -41,12 +41,12 @@ const useStyles = makeStyles({
   logoupdate: {
     width: "300px",
     // border: "1px solid",
-    borderRadius: "5px",
+    borderRadius: "10px",
     height: "200px"
   },
   colors: {
     width: "300px",
-    borderRadius: "5px",
+    borderRadius: "10px",
     marginLeft: "1%",
     overflow: "initial",
     // border: "1px solid",

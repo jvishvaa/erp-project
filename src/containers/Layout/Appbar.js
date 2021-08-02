@@ -29,8 +29,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import logo from '../../assets/images/logo.png';
 import logoMobile from '../../assets/images/logo_mobile.png';
 import SearchBar from './SearchBar';
-import AppSearchBarUseStyles from './AppSearchBarUseStyles'
-
+import AppSearchBarUseStyles from './AppSearchBarUseStyles';
 
 const Appbar = ({ children, history, ...props }) => {
   const classes = AppSearchBarUseStyles();
@@ -127,23 +126,14 @@ const Appbar = ({ children, history, ...props }) => {
     }
   }, []);
 
-  
   const handleLogout = () => {
     dispatch(logout());
-    const list = ['rememberDetails'];
-    const isPresent = JSON.parse(localStorage.getItem('rememberDetails'));
-    // JSON.parse(localStorage.getItem('themeDetails'));
-    if (isPresent) {
+    const list = ['rememberDetails', 'themeDetails'];
       Object.keys(localStorage).forEach((key) => {
         if (!list.includes(key)) localStorage.removeItem(key);
       });
-    } else localStorage.clear();
     setIsLogout(true);
   };
-
-  // const handleProfileMenuOpen = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -163,10 +153,8 @@ const Appbar = ({ children, history, ...props }) => {
     setProfileOpen(!profileOpen);
   };
 
-  
   useEffect(() => {
     if (isLogout) {
-      // history.push('/');
       window.location.href = '/';
       setIsLogout(false);
     }
@@ -292,24 +280,29 @@ const Appbar = ({ children, history, ...props }) => {
 
               <IconButton className={classes.logoMobileContainer}>
                 <img className={classes.logoMObile} src={logoMobile} alt='logo-small' />
-                <Divider variant="middle" className={classes.verticalLine} orientation="vertical" flexItem />
+                <Divider
+                  variant='middle'
+                  className={classes.verticalLine}
+                  orientation='vertical'
+                  flexItem
+                />
                 <img
-                src={centralSchoolLogo}
-                alt='logo'
-                style={{ maxHeight: '50px', maxWidth: '50px', objectFit: 'fill' }}
-              />              
+                  src={centralSchoolLogo}
+                  alt='logo'
+                  style={{ maxHeight: '50px', maxWidth: '50px', objectFit: 'fill' }}
+                />
               </IconButton>
               <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </div>
+                <IconButton
+                  aria-label='show more'
+                  aria-controls={mobileMenuId}
+                  aria-haspopup='true'
+                  onClick={handleMobileMenuOpen}
+                  color='inherit'
+                >
+                  <MoreIcon />
+                </IconButton>
+              </div>
             </Box>
           )}
           <Box px={7}>
@@ -351,22 +344,22 @@ const Appbar = ({ children, history, ...props }) => {
             </IconButton>
           </div>
           {!isMobile && (
-          <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </div>
+            <div className={classes.sectionMobile}>
+              <IconButton
+                aria-label='show more'
+                aria-controls={mobileMenuId}
+                aria-haspopup='true'
+                onClick={handleMobileMenuOpen}
+                color='inherit'
+              >
+                <MoreIcon />
+              </IconButton>
+            </div>
           )}
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
-      </>
+    </>
   );
 };
 
