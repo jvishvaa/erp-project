@@ -153,7 +153,7 @@ const Setting = (props) => {
       themeData.forEach((items) => {
         if (items.theme_key === "primary_color") {
           setprimarycolor(items.theme_value)
-        } else if (items?.theme_key === "second_color") {
+        } else if (items.theme_key === "second_color") {
           setsecondarycolor(items.theme_value)
         }
 
