@@ -151,10 +151,10 @@ const Setting = (props) => {
     // var themeData = JSON.parse(localStorage.getItem("themeDetails"));
     if (themeData?.length > 0) {
       themeData.forEach((items) => {
-        if (items.theme_key === "primary_color") {
-          setprimarycolor(items.theme_value)
+        if (items?.theme_key === "primary_color") {
+          setprimarycolor(items?.theme_value)
         } else if (items?.theme_key === "second_color") {
-          setsecondarycolor(items.theme_value)
+          setsecondarycolor(items?.theme_value)
         }
 
       })
