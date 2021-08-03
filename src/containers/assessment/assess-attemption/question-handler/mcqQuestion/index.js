@@ -5,7 +5,10 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 // import FormLabel from '@material-ui/core/FormLabel';
-
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import { IconButton, SvgIcon, Button } from '@material-ui/core';
+import { AttachmentPreviewerContext } from '../../../../../components/attachment-previewer/attachment-previewer-contexts';
+import endpoints from '../../../../../config/endpoints';
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
 import '../../assess-attemption.css';
 
@@ -20,11 +23,17 @@ const McqQuestion = (props) => {
     id: qId,
     question_answer: questionAnswer,
     user_response: { answer: existingAnswerArray } = {},
+    is_central: isCentral = false,
   } = currentQuestionObj || {};
+
+  const { openPreview, closePreview } =
+    React.useContext(AttachmentPreviewerContext) || {};
 
   const [existingAnswer] = existingAnswerArray || [];
 
   const [{ options, question }] = questionAnswer || [];
+
+  const s3Image = `${isCentral ? endpoints.s3 : endpoints.assessmentErp.s3}/`;
 
   const handleOptionValue = (event) => {
     attemptQuestion(qId, { attemption_status: true, answer: [event.target.value] });
@@ -76,46 +85,178 @@ const McqQuestion = (props) => {
             value={existingAnswer}
             onChange={handleOptionValue}
           >
-            <FormControlLabel
+            <div
               className='mcq-options'
-              value='option1'
-              control={<Radio checked={existingAnswer === 'option1'} />}
-              label={options[0].option1.optionValue}
-            />
-            <FormControlLabel
+              style={{ display: 'flex', alignItems: 'center' }}
+            >
+              <FormControlLabel
+                // className='mcq-options'
+                value='option1'
+                control={<Radio checked={existingAnswer === 'option1'} />}
+                label={options[0].option1.optionValue}
+              />
+              <div className='imageContainer'>
+                {options[0]?.option1?.images.length !== 0 ? (
+                  <img
+                    src={`${s3Image}${options[0]?.option1?.images[0]}`}
+                    // className='underlineRemove'
+                    onClick={() => {
+                      const fileSrc = `${s3Image}${options[0]?.option1?.images[0]}`;
+                      openPreview({
+                        currentAttachmentIndex: 0,
+                        attachmentsArray: [
+                          {
+                            src: fileSrc,
+                            name: `demo`,
+                            extension: '.png',
+                          },
+                        ],
+                      });
+                    }}
+                  />
+                ) : null}
+              </div>
+            </div>
+            <div
               className='mcq-options'
-              value='option2'
-              control={<Radio checked={existingAnswer === 'option2'} />}
-              label={options[1].option2.optionValue}
-            />
-            {options[2]?.option3?.optionValue ? (
+              style={{ display: 'flex', alignItems: 'center' }}
+            >
               <FormControlLabel
-                className='mcq-options'
-                value='option3'
-                // control={<Radio />}
-                control={<Radio checked={existingAnswer === 'option3'} />}
-                label={options[2].option3.optionValue}
+                // className='mcq-options'
+                value='option2'
+                control={<Radio checked={existingAnswer === 'option2'} />}
+                label={options[1].option2.optionValue}
               />
-            ) : null}
+              <div className='imageContainer'>
+                {options[1]?.option2?.images.length !== 0 ? (
+                  <img
+                    src={`${s3Image}${options[1]?.option2?.images[0]}`}
+                    // className='underlineRemove'
+                    onClick={() => {
+                      const fileSrc = `${s3Image}${options[1]?.option2?.images[0]}`;
+                      openPreview({
+                        currentAttachmentIndex: 0,
+                        attachmentsArray: [
+                          {
+                            src: fileSrc,
+                            name: `demo`,
+                            extension: '.png',
+                          },
+                        ],
+                      });
+                    }}
+                  />
+                ) : null}
+              </div>
+            </div>
+            {options[2]?.option3 ? (
+              <div
+                className='mcq-options'
+                style={{ display: 'flex', alignItems: 'center' }}
+              >
+                <FormControlLabel
+                  // className='mcq-options'
+                  value='option3'
+                  // control={<Radio />}
+                  control={<Radio checked={existingAnswer === 'option3'} />}
+                  label={options[2].option3.optionValue}
+                />
 
-            {options[3]?.option4?.optionValue ? (
-              <FormControlLabel
-                className='mcq-options'
-                value='option4'
-                // control={<Radio />}
-                control={<Radio checked={existingAnswer === 'option4'} />}
-                label={options[3].option4.optionValue}
-              />
+                <div className='imageContainer'>
+                  {options[2]?.option3?.images.length !== 0 ? (
+                    <img
+                      src={`${s3Image}${options[2]?.option3?.images[0]}`}
+                      // className='underlineRemove'
+                      onClick={() => {
+                        // const fileSrc = `${endpoints.assessmentErp.s3}${obj?.media_file[0]}`;
+                        const fileSrc = `${s3Image}${options[2]?.option3?.images[0]}`;
+                        openPreview({
+                          currentAttachmentIndex: 0,
+                          attachmentsArray: [
+                            {
+                              src: fileSrc,
+                              name: `demo`,
+                              extension: '.png',
+                            },
+                          ],
+                        });
+                      }}
+                    />
+                  ) : null}
+                </div>
+              </div>
             ) : null}
-
-            {options[4]?.option5?.optionValue ? (
-              <FormControlLabel
+            {options[3]?.option4 ? (
+              <div
                 className='mcq-options'
-                value='option5'
-                // control={<Radio />}
-                control={<Radio checked={existingAnswer === 'option5'} />}
-                label={options[4].option5.optionValue}
-              />
+                style={{ display: 'flex', alignItems: 'center' }}
+              >
+                <FormControlLabel
+                  // className='mcq-options'
+                  value='option4'
+                  // control={<Radio />}
+                  control={<Radio checked={existingAnswer === 'option4'} />}
+                  label={options[3].option4.optionValue}
+                />
+                <div className='imageContainer'>
+                  {options[3]?.option4?.images.length !== 0 ? (
+                    <img
+                      // className='underlineRemove'
+                      src={`${s3Image}${options[3]?.option4?.images[0]}`}
+                      onClick={() => {
+                        // const fileSrc = `${endpoints.assessmentErp.s3}${obj?.media_file[0]}`;
+                        const fileSrc = `${s3Image}${options[3]?.option4?.images[0]}`;
+                        openPreview({
+                          currentAttachmentIndex: 0,
+                          attachmentsArray: [
+                            {
+                              src: fileSrc,
+                              name: `demo`,
+                              extension: '.png',
+                            },
+                          ],
+                        });
+                      }}
+                    />
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+            {options[4]?.option5 ? (
+              <div
+                className='mcq-options'
+                style={{ display: 'flex', alignItems: 'center' }}
+              >
+                <FormControlLabel
+                  //  className='mcq-options'
+                  value='option5'
+                  // control={<Radio />}
+                  control={<Radio checked={existingAnswer === 'option5'} />}
+                  label={options[4].option5.optionValue}
+                />
+                <div className='imageContainer'>
+                  {options[4]?.option5?.images.length !== 0 ? (
+                    <img
+                      // className='underlineRemove'
+                      src={`${s3Image}${options[4]?.option5?.images[0]}`}
+                      onClick={() => {
+                        // const fileSrc = `${endpoints.assessmentErp.s3}${obj?.media_file[0]}`;
+                        const fileSrc = `${s3Image}${options[4]?.option5?.images[0]}`;
+                        openPreview({
+                          currentAttachmentIndex: 0,
+                          attachmentsArray: [
+                            {
+                              src: fileSrc,
+                              name: `demo`,
+                              extension: '.png',
+                            },
+                          ],
+                        });
+                      }}
+                    />
+                  ) : null}
+                </div>
+              </div>
             ) : null}
           </RadioGroup>
         </FormControl>

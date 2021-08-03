@@ -6,7 +6,6 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { AttachmentPreviewerContext } from '../../../components/attachment-previewer/attachment-previewer-contexts';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-// import download from '../../../assets/images/downloadAll.svg';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import axios from 'axios';
@@ -24,12 +23,9 @@ const LessonViewFilters = ({
   setLoading,
   setCentralGradeName,
   setCentralSubjectName,
-  centralGradeName,
-  centralSubjectName,
 }) => {
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
-
   const { setAlert } = useContext(AlertNotificationContext);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [studentModuleId, setStudentModuleId] = useState();
@@ -82,8 +78,8 @@ const LessonViewFilters = ({
     setCentralGsMappingId();
     setCentralSubjectName('');
     setCentralGradeName('');
-    if(defaultAcademicYear){
-      handleAcademicYear("",defaultAcademicYear)
+    if (defaultAcademicYear) {
+      handleAcademicYear('', defaultAcademicYear);
     }
   };
 
@@ -104,7 +100,6 @@ const LessonViewFilters = ({
     setFilterData({ ...filterData, volume: '' });
     if (value) {
       setFilterData({ ...filterData, volume: value });
-      //handleSubject(filterData.subject);
     }
   };
 
@@ -225,6 +220,7 @@ const LessonViewFilters = ({
   };
 
   const handleSubject = (event, value) => {
+    console.log(value, 'subject value');
     setFilterData({ ...filterData, subject: '', chapter: '' });
     setOverviewSynopsis([]);
     if (filterData.grade && filterData.year && filterData.volume && value) {
@@ -238,7 +234,11 @@ const LessonViewFilters = ({
       ) {
         axiosInstance
           .get(
-            `${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value.id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&grade_id=${filterData.grade.grade_id}`
+            `${`/academic/central-chapters-list-v2/`}?subject_id=${
+              value.subject_id
+            }&volume=${filterData.volume.id}&academic_year=${
+              filterData.year.id
+            }&grade_id=${filterData.grade.grade_id}`
           )
           .then((result) => {
             if (result?.data?.status_code === 200) {
@@ -279,7 +279,7 @@ const LessonViewFilters = ({
           `${endpoints.lessonPlan.overviewSynopsis}?volume=${filterData.volume.id}&grade_subject_mapping_id=${centralGsMappingId}&academic_year_id=${filterData.year.id}`,
           {
             headers: {
-              Authorization: 'Bearer ' + token
+              Authorization: 'Bearer ' + token,
             },
           }
         )
@@ -291,10 +291,10 @@ const LessonViewFilters = ({
           }
         })
         .catch((error) => {
-          if ( error.message === 'Request failed with status code 402' ){
-            setAlert('error', 'Access Error')
+          if (error.message === 'Request failed with status code 402') {
+            setAlert('error', 'Access Error');
           } else {
-          setAlert('error', error?.message);
+            setAlert('error', error?.message);
           }
         });
     } else {
@@ -304,34 +304,16 @@ const LessonViewFilters = ({
   };
 
   useEffect(() => {
-    // axiosInstance.get(`${endpoints.communication.branches}?academic_year=${filterData.year.id}&module_id=${getModuleId()}`)
-    //     .then(response => {
-    //         if (response.data.status_code === 200) {
-    //             setBranchDropdown(response.data.data.results.map(item=>((item&&item.branch)||false)).filter(Boolean));
-    //         } else {
-    //             setAlert('error', response.data.message);
-    //         }
-    //     }).catch(error => {
-    //         setAlert('error', error.message);
-    //     })
-
     axiosInstance
       .get(`${endpoints.userManagement.academicYear}?module_id=${getModuleId()}`)
       .then((res) => {
-        if (res?.data?.status_code === 200) 
-        {
+        if (res?.data?.status_code === 200) {
           setAcademicYear(res?.data?.data);
-          // setDefaultAcademicYear(res?.data?.current_acad_session_data[0])
-          // if(academicYear){
-          //   handleAcademicYear("",res?.data?.current_acad_session_data[0])
-          // }
         }
-      }
-      )
+      })
       .catch((error) => {
         setAlert('error ', error?.message);
       });
-    //setAcademicYear
     axios
       .get(`${endpoints.lessonPlan.academicYearList}`, {
         headers: {
@@ -340,14 +322,12 @@ const LessonViewFilters = ({
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          // const defaultValue=result?.data?.result?.results?.[3];
-          // handleAcademicYear({},defaultValue);
-         setAcademicYearDropdown(result?.data?.result?.results);
-          setDefaultAcademicYear(result?.data?.current_acad_session_data[0])
-          if(academicYear && academicYearDropdown){
-            handleAcademicYear("",result?.data?.current_acad_session_data[0])
+          setAcademicYearDropdown(result?.data?.result?.results);
+          setDefaultAcademicYear(result?.data?.current_acad_session_data[0]);
+          if (academicYear && academicYearDropdown) {
+            handleAcademicYear('', result?.data?.current_acad_session_data[0]);
           }
-          } else {
+        } else {
           setAlert('error', result?.data?.message);
         }
       })
@@ -406,7 +386,7 @@ const LessonViewFilters = ({
           setAlert('error', error.message);
         });
     }
-  }, [filterData.year,academicYear]);
+  }, [filterData.year, academicYear]);
 
   return (
     <Grid
@@ -602,22 +582,21 @@ const LessonViewFilters = ({
         </Button>
       </Grid>
       {overviewSynopsis?.map((obj) => (
-        <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+        <Grid item xs={6} sm={4} className={isMobile ? '' : 'addButtonPadding'}>
           <a
             className='underlineRemove'
-            // href={`${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${centralGradeName}/${centralSubjectName}/pdf/${obj?.media_file[0]}`}
             onClick={() => {
-              // const fileSrc = `${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${centralGradeName}/${centralSubjectName}/pdf/${obj?.media_file[0]}`
               const fileSrc = `${endpoints.lessonPlan.s3}${obj?.media_file[0]}`;
               openPreview({
                 currentAttachmentIndex: 0,
                 attachmentsArray: [
                   {
                     src: fileSrc,
-                    // name: `${obj.lesson_type === '1'?'Synopsis':'Overview'}`,
                     name: `${
                       obj.lesson_type === '1'
-                        ? 'Portion Document'
+                        ? location.pathname === '/lesson-plan/teacher-view'
+                          ? 'Portion Document'
+                          : ''
                         : 'Yearly Curriculum on the ERP (new)'
                     }`,
                     extension: '.' + fileSrc.split('.')[fileSrc.split('.').length - 1],
@@ -627,29 +606,25 @@ const LessonViewFilters = ({
             }}
           >
             <div className='overviewSynopsisContainer'>
-              {/* <div className="overviewSynopsisTag">{obj.lesson_type === '1' ? 'Synopsis' : 'Overview'}</div> */}
               <div className='overviewSynopsisTag'>
                 {obj.lesson_type === '1'
-                  ? 'Portion Document'
+                  ? location.pathname === '/lesson-plan/teacher-view'
+                    ? 'Portion Document'
+                    : ''
                   : 'Yearly Curriculum on the ERP (new)'}
               </div>
-              <div className='overviewSynopsisIcon'>
-                <SvgIcon
-                  component={() => (
-                    // <img
-                    //     style={{ height: '25px', width: '25px' }}
-                    //     src={download}
-                    //     title={`Download ${obj.lesson_type === '1' ? 'Synopsis' : 'Overview'}`}
-                    // />
-                    <VisibilityIcon color='primary' />
-                  )}
-                />
-              </div>
+              {location.pathname === '/lesson-plan/teacher-view' ||
+              obj.lesson_type === '2' ? (
+                <div className='overviewSynopsisIcon'>
+                  <SvgIcon component={() => <VisibilityIcon color='primary' />} />
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           </a>
         </Grid>
       ))}
-      {/* {isMobile && <Grid item xs={3} sm={0} />} */}
     </Grid>
   );
 };

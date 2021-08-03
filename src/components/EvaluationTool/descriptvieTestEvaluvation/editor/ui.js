@@ -167,7 +167,7 @@ function CorrectionComponent({
 
     let style = {
       width: containerWidth,
-      height: fullscreen ? 'calc(100vh - 46px)' : containerHeight,
+      height: fullscreen ? 'calc(100vh - 46px)' : 'calc(100vh - 46px)',
       overflow: 'auto',
       // transform: `rotate(${angleInDegrees}deg)`,
       margin: margin,

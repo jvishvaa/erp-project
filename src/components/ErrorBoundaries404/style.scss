@@ -1,0 +1,92 @@
+// .outer-container-404-error {
+//   min-width: calc(100vh - 100px);
+//   height: 100%;
+//   display: flex;
+//   justify-content: center;
+//   margin-top: 10%;
+//   align-items: center;
+//   .inner-container-404 {
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: center;
+//     align-items: center;
+//   }
+// }
+.outer-container-404-error {
+  // min-width: calc(100vh - 100px);
+  height: 100%;
+  width: 100%;
+  margin-top: 3%;
+
+  .error-404-dextop-image {
+    width: 75%;
+  }
+  .error-404-dextop-image-mobile {
+    margin-top: 18%;
+  }
+  .inner-container-dextop {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    .text-and-button-container {
+      position: relative;
+      bottom: 154px;
+      z-index: 5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .MuiTypography-colorSecondary {
+      text-align: center;
+    }
+    .add-new-period-button {
+      background: #ff6b6b;
+      width: 120px;
+      height: 36px;
+      border-radius: 8px;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      // margin: 16px 23px;
+      // margin-left: 84%;
+      cursor: pointer;
+    }
+  }
+  .inner-container-mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    .MuiTypography-colorSecondary {
+      text-align: center;
+    }
+    .text-and-button-container {
+      position: relative;
+      bottom: 0px;
+      z-index: 5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .add-new-period-button {
+      background: #ff6b6b;
+      width: 120px;
+      height: 36px;
+      border-radius: 8px;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      // margin: 16px 23px;
+      // margin-left: 84%;
+      cursor: pointer;
+    }
+  }
+}

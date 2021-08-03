@@ -1,7 +1,16 @@
 import axiosInstance from '../../../../config/axios';
 
+import ENVCONFIG from '../../../../config/config';
+
+const {
+  apiGateway: { baseURLMPQ },
+} = ENVCONFIG;
+
+
 const { token: userAuthToken } =
-  JSON.parse(localStorage.getItem('userDetails') || JSON.stringify({})) || {};
+JSON.parse(localStorage.getItem('userDetails') || JSON.stringify({})) || {};
+const ajaxBaseURLmpq = baseURLMPQ // 'http://127.0.0.1:8000/qbox';
+  // const ajaxBaseURLmpq= 'https://dev.mpquiz.letseduvate.com';
 
 const ajaxBaseURL = axiosInstance.defaults.baseURL; // 'http://127.0.0.1:8000/qbox';
 
@@ -9,7 +18,7 @@ const ajaxHeaders = { headers: { Authorization: `Bearer ${userAuthToken}` } };
 const ajaxHeadersForCentral = { headers: { 'x-api-key': 'vikash@12345#1231' } };
 
 const genSocketBase = () => {
-  const { port: isLocal, host } = new URL(ajaxBaseURL);
+  const { port: isLocal, host } = new URL(ajaxBaseURLmpq);
   const protocol = isLocal ? 'ws' : 'wss';
   return `${protocol}://${host}`;
 };
@@ -22,7 +31,7 @@ const urls = {
   quizSocketURL: {
     baseURL: socketBaseURL,
     headers: {},
-    endpoint: `${socketBaseURL}/multiplayer-quiz/<online_class_id>/<user_auth_token>/`,
+    endpoint: `${socketBaseURL}/multiplayer-quiz/<domain_name>/<role>/<online_class_id>/<question_paper>/<user_auth_token>/`,
   },
   fetchQuizBgms: {
     baseURL: ajaxBaseURL,

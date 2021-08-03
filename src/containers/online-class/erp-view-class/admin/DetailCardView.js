@@ -177,7 +177,7 @@ const JoinClass = (props) => {
   const handleTakeQuiz = (fullData) => {
     if (fullData && fullData.online_class && fullData.online_class.question_paper_id) {
       history.push({
-        pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
+        pathname: `/erp-online-class/${fullData.online_class.id}/${fullData.online_class.question_paper_id}/pre-quiz`,
         state: { data: fullData.online_class.id },
       });
     } else {
@@ -235,7 +235,6 @@ const JoinClass = (props) => {
   const id = open ? 'simple-popover' : undefined;
   const openJoin = Boolean(joinAnchor);
   const ids = open ? 'accept-popover' : undefined;
-
   return (
     <Grid container spacing={2} direction='row' alignItems='center'>
       <Grid item xs={4}>
@@ -243,23 +242,47 @@ const JoinClass = (props) => {
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
       </Grid>
-      <Grid item xs={1}>
-        {window.location.pathname === '/erp-online-class-teacher-view' && (
-          <Tooltip title='Attach Question Paper'>
-            <IconButton
-              onClick={() =>
-                history.push({
-                  pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
-                  state: { data: fullData.online_class.id },
-                })
-              }
-            >
-              <AttachFileIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-      </Grid>
-      <Grid item xs={7} />
+      {fullData.online_class.question_paper_id==0?
+      <Grid item xs={8}>
+      {window.location.pathname === '/erp-online-class-teacher-view' && (
+        <Tooltip title='Attach Question Paper'>
+          <IconButton
+            onClick={() =>
+              history.push({
+                pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
+                state: { data: fullData.online_class.id },
+              })
+            }
+          >
+            <AttachFileIcon />
+          </IconButton>
+        </Tooltip>
+      )
+    } 
+    </Grid>:
+    <Grid item xs={8}>
+    {window.location.pathname === '/erp-online-class-teacher-view' &&(
+      <Button
+        size='small'
+        color='secondary'
+        fullWidth
+        variant='contained'
+        onClick={() =>
+          history.push({
+            pathname: `/erp-online-class/${fullData.online_class.id}/${fullData.online_class.question_paper_id}/pre-quiz`,
+            state: { data: fullData.online_class.id},
+          })
+        }
+        disabled={props?.data?.is_cancelled}
+        className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
+        // className='teacherFullViewSmallButtons'
+      >
+        Launch Quiz
+      </Button>
+    )
+}
+    </Grid>}
+      
       {window.location.pathname === '/erp-online-class-student-view' ? (
         <>
           <Grid item xs={4}>
@@ -269,7 +292,7 @@ const JoinClass = (props) => {
               fullWidth
               variant='contained'
               onClick={() => handleTakeQuiz(fullData)}
-              disabled={props?.data?.class_status === 'Cancelled'}
+              disabled={props?.data?.class_status?.toLowerCase() === 'cancelled' || fullData?.online_class?.question_paper_id===0}
               // className='takeQuizButton'
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
@@ -285,7 +308,7 @@ const JoinClass = (props) => {
               onClick={() => {
                 setDialogClassWorkBox(true);
               }}
-              disabled={props?.data?.class_status === 'Cancelled'}
+              disabled={props?.data?.class_status?.toLowerCase() === 'cancelled'}
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
               Class Work
@@ -304,43 +327,8 @@ const JoinClass = (props) => {
       ) : (
         ''
       )}
-      {window.location.pathname === '/erp-online-class-teacher-view' &&
-      fullData &&
-      fullData.online_class &&
-      fullData.online_class.question_paper_id ? (
-        <Grid item xs={4}>
-          <Button
-            size='small'
-            color='secondary'
-            fullWidth
-            variant='contained'
-            onClick={() =>
-              history.push({
-                pathname: `/erp-online-class/${fullData.online_class.id}/pre-quiz`,
-                state: { data: fullData.online_class.id },
-              })
-            }
-            disabled={props?.data?.is_cancelled}
-            className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
-            // className='teacherFullViewSmallButtons'
-          >
-            Launch Quiz
-          </Button>
-        </Grid>
-      ) : window.location.pathname === '/erp-online-class-teacher-view' ? (
+{window.location.pathname === '/erp-online-class-teacher-view' ? (
         <>
-          {/* <Tooltip title='Attach Question Paper'>
-            <IconButton
-              onClick={() =>
-                history.push({
-                  pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
-                  state: { data: fullData.online_class.id },
-                })
-              }
-            >
-              <AttachFileIcon />
-            </IconButton>
-          </Tooltip> */}
           <Grid item xs={4}>
             <Button
               size='small'
@@ -355,7 +343,6 @@ const JoinClass = (props) => {
                   pathname: `/erp-online-class/class-work/${onlineClassId}/${id}/${startDate}`,
                 });
               }}
-              // className='classworkButton'
               disabled={props?.data?.is_cancelled}
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
@@ -375,7 +362,7 @@ const JoinClass = (props) => {
               color='secondary'
               fullWidth
               variant='contained'
-              disabled={props?.data?.class_status === 'Cancelled'}
+              disabled={props?.data?.class_status?.toLowerCase() === 'cancelled'}
               onClick={() =>
                 handleJoinButton(() => window.open(fullData && fullData.join_url))
               }
@@ -495,7 +482,7 @@ const JoinClass = (props) => {
                       // onClick={handleIsAccept}
                       onClick={(e) => handleClickAccept(e)}
                       disabled={
-                        props?.data?.class_status === 'Cancelled' ||
+                        props?.data?.class_status?.toLowerCase() === 'cancelled' ||
                         (classStartTime === currDate ? false : true)
                       }
                       className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
@@ -552,18 +539,6 @@ const JoinClass = (props) => {
                     </Grid>
                   </Grid>
                 </Popover>
-                {/* <Button
-                  size='small'
-                  fullWidth
-                  variant='contained'
-                  onClick={(e) => handleClick(e)}
-                  className='teacherFullViewSmallButtons1'
-                >
-                  {window.location.pathname === '/erp-online-class-student-view'
-                    ? 'Reject'
-                    : 'Cancel'}
-                  Cancel
-                </Button> */}
                 {window.location.pathname !== '/erp-online-class-student-view' && (
                   <Button
                     size='small'
@@ -608,9 +583,9 @@ const DetailCardView = ({
   }, [fullData?.id]);
 
   const handleSetData = (response) => {
-    const bifuracionArray = ['today', 'upcoming', 'Completed', 'Cancelled'];
+    const bifuracionArray = ['today', 'upcoming', 'completed', 'cancelled'];
     return (
-      response.filter((element) => element?.class_status === bifuracionArray[tabValue]) ||
+      response.filter((element) => element?.class_status?.toLowerCase() === bifuracionArray[tabValue]) ||
       []
     );
   };
@@ -656,30 +631,7 @@ const DetailCardView = ({
     return `${hour}:${min} ${part}`;
   };
 
-  // function handleCancel() {
-  //   setLoading(true);
-  //   const params = {
-  //     zoom_meeting_id: fullData && fullData.id,
-  //     class_date: fullData && fullData?.online_class?.start_time.split('T')[0],
-  //   };
-  //   let url = '';
-  //   if (window.location.pathname === '/erp-online-class-student-view') {
-  //     url = endpoints.studentViewBatchesApi.rejetBatchApi;
-  //   } else {
-  //     url = endpoints.teacherViewBatches.cancelBatchApi;
-  //   }
-  //   axiosInstance
-  //     .put(url, params)
-  //     .then((res) => {
-  //       setLoading(false);
-  //       setAlert('success', res.data.message);
-  //       handleClose('success');
-  //     })
-  //     .catch((error) => {
-  //       setLoading(false);
-  //       setAlert('error', error.message);
-  //     });
-  // }
+
 
   const handleAttendance = () => {
     dispatch(attendanceAction(fullData ? fullData.online_class?.start_time : ''));
@@ -732,10 +684,8 @@ const DetailCardView = ({
   };
 
   const getClassName = () => {
-    let classIndex = '1';
-    if (index % 3 === 0) classIndex = '3';
-    else if (index % 2 === 0) classIndex = '2';
-    else classIndex = '1';
+    let classIndex = `${fullData.class_type}`;
+    
     return [
       `teacherBatchFullViewMainCard${classIndex}`,
       `teacherBatchFullViewHeader${classIndex}`,
@@ -773,13 +723,13 @@ const DetailCardView = ({
               <Grid item xs={12}>
                 <Grid container spacing={2}>
                   <Grid item md={8} xs={8}>
-                    <h4 className='teacherBatchFullCardLable'>
+                    <Typography className='teacherBatchFullCardLable'>
                       {(fullData &&
                         fullData.online_class &&
                         fullData.online_class.title) ||
                         ''}
-                    </h4>
-                    <h4 className='teacherBatchFullCardLable'>
+                    </Typography>
+                    <Typography className='teacherBatchFullCardLable'>
                       {(fullData &&
                         fullData.online_class &&
                         fullData.online_class.subject &&
@@ -791,31 +741,22 @@ const DetailCardView = ({
                           </span>
                         ))) ||
                         ''}
-                    </h4>
+                    </Typography>
                   </Grid>
                   <Grid item md={4} xs={4}>
-                    <h4 className='teacherBatchFullCardLable'>
+                    <Typography className='teacherBatchFullCardLable'>
                       {(fullData &&
                         fullData.join_time &&
                         converTime(fullData.join_time.split(' ')[1])) ||
                         ''}
-                    </h4>
-                    <h4 className='teacherBatchFullCardLable'>
+                    </Typography>
+                    <Typography className='teacherBatchFullCardLable'>
                       {noOfPeriods?.length} &nbsp;
                       {noOfPeriods?.length > 1 ? 'Periods' : 'Period'}
-                    </h4>
+                    </Typography>
                   </Grid>
                 </Grid>
               </Grid>
-              {/* 
-                    <IconButton
-                      size='small'
-                      className='teacherBatchFullViewClose'
-                      onClick={() => handleClose()}
-                    >
-                      <CloseIcon className='teacherBatchFullViewCloseIcon' />
-                    </IconButton>
-                  </Grid> */}
             </Grid>
             <Grid container spacing={2}>
               <Grid item md={12} xs={12}>

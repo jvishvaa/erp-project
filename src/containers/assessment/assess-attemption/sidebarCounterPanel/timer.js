@@ -10,16 +10,18 @@ m:
 <Timer.Seconds />
 s */
 const TimerComponent = (props) => {
-  const { submit, startedAt, duration: durationInMin } = props || {};
+  const { submit, startedAt, duration: durationInMin, setToBeSubmitted } = props || {};
   let duratonPassedAlreadyInMilliSec = new Date() - new Date(startedAt);
   let testDurationInMilliSec = durationInMin * 60 * 1000;
   let durationLeft = testDurationInMilliSec - duratonPassedAlreadyInMilliSec;
 
   React.useEffect(() => {
     let checkDuration = setInterval(() => {
-      durationLeft = durationInMin * 60 * 1000 - new Date().getTime() + new Date(startedAt).getTime();
-      if (durationLeft<=0) {
-        submit();
+      durationLeft =
+        durationInMin * 60 * 1000 - new Date().getTime() + new Date(startedAt).getTime();
+      if (durationLeft <= 0) {
+        // submit();
+        setToBeSubmitted(prev=>!prev);
       }
     },1000);
     return () => {

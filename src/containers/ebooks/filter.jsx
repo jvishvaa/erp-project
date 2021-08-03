@@ -8,7 +8,7 @@ import ClearIcon from '../../components/icon/ClearIcon';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Loading from '../../components/loader/loader';
-import { getModuleInfo }from '../../utility-functions'
+import { getModuleInfo } from '../../utility-functions';
 
 const Filter = ({ handleFilter, clearFilter }) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -33,59 +33,66 @@ const Filter = ({ handleFilter, clearFilter }) => {
     setSelectedBranch('');
     setSelectedGrade('');
     setSelectedSubject('');
-  },[clearFilter])
+  }, [clearFilter]);
 
   function ApiCal() {
     axios
-    .get(`${endpoints.lessonPlan.volumeList}`, {
-      headers: {
-        'x-api-key': 'vikash@12345#1231',
-      },
-    })
-    .then((result) => {
-      if (result.data.status_code === 200) {
-        setVolumeList(result.data.result.results);
-      } else {
-        setAlert('error', result.data.message);
-      }
-    })
-    .catch((error) => {
-      setAlert('error', error.message);
-    });
+      .get(`${endpoints.lessonPlan.volumeList}`, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setVolumeList(result.data.result.results);
+        } else {
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
   }
 
   function withAxiosInstance(url, key) {
     setLoading(true);
     axiosInstance
-     .get(url)
-     .then(response => {
-      setLoading(false);
-      if (response.data.status_code === 200) {
-        if (key === 'acad') {
-        const defaultYear = response?.data?.current_acad_session_data?.[0];
-          setSelectedAcad(defaultYear)
-          setAcadList(response.data.data);
-          withAxiosInstance(
-            `${endpoints.communication.branches}?session_year=${defaultYear?.id}&module_id=${getModuleInfo('Ebook View').id}`,
-            'branch'
-          );
-
-        } else if(key === 'branch') {
-          setBranchList(response.data.data.results);
-        } else if (key === 'grade') {
-          setGradeList(response.data.result);
-        } else if (key === 'subject') {
-          setSubjectList(response.data.result);
+      .get(url)
+      .then((response) => {
+        setLoading(false);
+        if (response.data.status_code === 200) {
+          if (key === 'acad') {
+            const defaultYear = response?.data?.current_acad_session_data?.[0];
+            setSelectedAcad(defaultYear);
+            setAcadList(response.data.data);
+            withAxiosInstance(
+              `${endpoints.communication.branches}?session_year=${
+                defaultYear?.id
+              }&module_id=${getModuleInfo('Ebook View').id}`,
+              'branch'
+            );
+          } else if (key === 'branch') {
+            setBranchList(response.data.data.results);
+          } else if (key === 'grade') {
+            setGradeList(response.data.result);
+          } else if (key === 'subject') {
+            setSubjectList(response.data.result);
+          }
         }
-      }
-      }).catch(error => {
-          setLoading(false);
-          setAlert('error', error.message);
-    })
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
   }
 
   useEffect(() => {
-    withAxiosInstance(`${endpoints.userManagement.academicYear}?module_id=${getModuleInfo('Ebook View').id}`, 'acad');
+    withAxiosInstance(
+      `${endpoints.userManagement.academicYear}?module_id=${
+        getModuleInfo('Ebook View').id
+      }`,
+      'acad'
+    );
     ApiCal();
   }, []);
 
@@ -109,8 +116,13 @@ const Filter = ({ handleFilter, clearFilter }) => {
             size='small'
             className='dropdownIcon'
             onChange={(event, value) => {
-              if(value){
-                withAxiosInstance(`${endpoints.communication.branches}?session_year=${value?.id}&module_id=${getModuleInfo('Ebook View').id}`, 'branch');
+              if (value) {
+                withAxiosInstance(
+                  `${endpoints.communication.branches}?session_year=${
+                    value?.id
+                  }&module_id=${getModuleInfo('Ebook View').id}`,
+                  'branch'
+                );
               }
               setSelectedAcad(value);
               setSelectedGrade('');
@@ -130,7 +142,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                 //
                 placeholder='Academic Year'
               />
-            )}  
+            )}
           />
         </Grid>
         <Grid item md={3} xs={12}>
@@ -140,8 +152,15 @@ const Filter = ({ handleFilter, clearFilter }) => {
             className='dropdownIcon'
             onChange={(event, value) => {
               setSelectedBranch(value);
-              if(value) {
-                withAxiosInstance(`${endpoints.ebook.EbookMappedGrade}?session_year=${selectedAcad?.id}&branch_id=${value.branch.id}&module_id=${getModuleInfo('Ebook View').id}`, 'grade');
+              if (value) {
+                withAxiosInstance(
+                  `${endpoints.ebook.EbookMappedGrade}?session_year=${
+                    selectedAcad?.id
+                  }&branch_id=${value.branch.id}&module_id=${
+                    getModuleInfo('Ebook View').id
+                  }`,
+                  'grade'
+                );
               }
               setSelectedGrade('');
               setSelectedSubject('');
@@ -165,7 +184,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
           <Autocomplete
             size='small'
             onChange={(event, value) => {
-              if(value) {
+              if (value) {
                 withAxiosInstance(
                   `${endpoints.ebook.EbookMappedGrade}?branch_id=${selectedBranch.branch.id}&grade_id=${value.erp_grade}`,
                   'subject'
@@ -179,7 +198,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
             id='grade'
             options={gradeList}
             value={selectedGrade}
-            getOptionLabel={(option) => option?.erp_grade_name||''}
+            getOptionLabel={(option) => option?.erp_grade_name || ''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -202,7 +221,13 @@ const Filter = ({ handleFilter, clearFilter }) => {
             style={{ width: '100%' }}
             id='subject'
             options={subjectList}
-            getOptionLabel={(option) => option && option.subject_id_name&& option.subject_id_name[0] &&option.subject_id_name[0].erp_sub_name||''}
+            getOptionLabel={(option) =>
+              (option &&
+                option.subject_id_name &&
+                option.subject_id_name[0] &&
+                option.subject_id_name[0].erp_sub_name) ||
+              ''
+            }
             value={selectedSubject}
             // getOptionLabel={(option) => option?.erp_sub_name||''}
             filterSelectedOptions
@@ -250,7 +275,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                 onClick={() => handleClear()}
                 variant='contained'
               >
-               Clear All
+                Clear All
               </Button>
             </Grid>
             <Grid item md={6} xs={6}>
@@ -261,7 +286,15 @@ const Filter = ({ handleFilter, clearFilter }) => {
                 variant='contained'
                 color='primary'
                 fullWidth
-                onClick={()=> handleFilter(selectedAcad, selectedBranch?.branch?.id, selectedGrade, selectedSubject, selectedVolume)}
+                onClick={() =>
+                  handleFilter(
+                    selectedAcad,
+                    selectedBranch?.branch?.id,
+                    selectedGrade,
+                    selectedSubject,
+                    selectedVolume
+                  )
+                }
               >
                 Filter
               </Button>

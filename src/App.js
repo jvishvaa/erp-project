@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, useHistory } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
@@ -184,6 +184,7 @@ import FeeShowList from './containers/Finance/src/components/Finance/BranchAccou
 import AssignDelieveryCharge from './containers/Finance/src/components/Finance/BranchAccountant/AssignDelieveryCharge/assignDelieveryCharge.js';
 import ChangeFeePlanToStudent from './containers/Finance/src/components/Finance/BranchAccountant/ChangeFeePlanToStudent/changeFeePlanToStudent.js';
 import BulkReportUpload from './containers/Finance/src/components/Finance/BulkOperations/bulkReportUpload.js';
+import ErrorBoundary404 from './ErrorBoundary';
 import BulkReportStatus from './containers/Finance/src/components/Finance/BulkOperations/bulkReportStatus.js';
 import OnlinePayment from './containers/Finance/src/components/Finance/UploadOnlinePayments/uploadOnlinePayments.js';
 import BulkActiveInactive from './containers/Finance/src/components/Finance/BulkOperations/BulkActiveInactive/bulkActiveInactive.js';
@@ -237,7 +238,7 @@ import CreateLink from './containers/Finance/src/components/Finance/E-mandate/cr
 import Alert from './containers/Finance/src/ui/alert';
 import alertActions from './containers/Finance/src/_actions/alert.actions';
 import userActions from './containers/Finance/src/_actions/user.actions';
-
+import ApprovePendingReq from './containers/Finance/src/components/Finance/ApprovalRequests/StudentShuffle/Components/approvePendingReq.js';
 import { connect } from 'react-redux';
 import NonRTEFormAcc from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/nonRTEAdmissionForm.js';
 import AssignOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/assignOtherFess.js';
@@ -283,89 +284,20 @@ import MultiplayerQuiz from './components/mp-quiz';
 import StudentAttendance from 'containers/online-class/student-attendance/StudentAttendance';
 import HomeWorkReportTeacher from 'containers/homework/homework-report/homework-teacher/HomeWorkReportTeacher';
 import StudentClassWorkReport from 'containers/Classwork/StudentClassWork';
-import ClassWorkTeacherReport from 'containers/Classwork/classwork-report/classwork-report-teacher/ClassWorkTeacherReport';
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#ff6b6b',
-    },
-    secondary: {
-      main: '#014b7e',
-    },
-    text: {
-      default: '#014b7e',
-    },
-    background: {
-      primary: '#ffffff',
-      secondary: '#f9f9f9',
-    },
-  },
-  typography: {
-    fontSize: 16,
-    color: '#014b7e',
-  },
-
-  overrides: {
-    MuiButton: {
-      // Name of the rule
-      root: {
-        // Some CSS
-        textTransform: 'capitailize',
-        textDecoration: 'none',
-        borderRadius: '10px',
-        color: '#ffffff',
-        backgroundColor: ' #ff6b6b',
-      },
-    },
-  },
-});
+import Setting from './containers/settings/setting';
+//intelligent text book
+import BookView from 'containers/intelligent-textbook/BookView';
+import ViewiChapter from 'containers/intelligent-textbook/ViewiChapter';
+import ViewiBook from './containers/intelligent-textbook/ViewiBook';
+import AllBooksPage from 'containers/intelligent-textbook/bookpage/AllBooksPage';
+import ChapterBook from 'containers/intelligent-textbook/chapterpage/ChapterBook';
+import { themeGenerator } from '../src/utility-functions/themeGenerator';
 
 function App({ alert }) {
-  const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
-  const history = useHistory();
 
-  // useEffect(() => {
-  //   let pathName = window.location.pathname;
-  //   let ignorePaths = ['/', '/dashboard', '/profile'];
-
-  //   if (!ignorePaths.includes(pathName)) {
-  //     let compName = '';
-  //     for (let i = 0; i < menuSelectionArray?.length; i++) {
-  //       if (pathName === '/assessment/' && menuSelectionArray[i].Path === '/assessment') {
-  //         compName = menuSelectionArray[i].name;
-  //       } else if (pathName === menuSelectionArray[i].Path) {
-  //         compName = menuSelectionArray[i].name;
-  //       }
-  //     }
-  //     let compArray = [];
-  //     for (let i = 0; i < NavData?.length; i++) {
-  //       const { child_module: childModule = [] } = NavData[i] || [];
-  //       for (let k = 0; k < childModule?.length; k++) {
-  //         const { child_name: childName = '' } = childModule[k] || '';
-  //         compArray.push(childName);
-  //       }
-  //     }
-  //     if (!compArray.includes(compName)) {
-  //       window.alert('Sorry!!! No such page exists.');
-  //       window.location.replace('/profile');
-  //     }
-  //   }
-  // }, [window.location.pathname]);
-
-  React.useEffect(() => {
-    const {
-      repoName = 'Revamp',
-      first_name: firstName,
-      user_id: userId,
-      is_superuser: isSuperuser,
-    } = JSON.parse(localStorage.getItem('userDetails') || '{}') || {};
-    if (window.location.hostname.includes('localhost')) {
-      document.title = [repoName, firstName, userId, isSuperuser ? 'Spr' : 'Nrml'].join(
-        ' - '
-      );
-    }
-  }, []);
+  const [theme, setTheme] = useState(()=>themeGenerator());
   return (
+    // <ErrorBoundary404 HomeButton={false}>
     <div className='App'>
       <Helmet>
         <title>Eduvate</title>
@@ -408,7 +340,7 @@ function App({ alert }) {
                           <Route path='/homework/student-report'>
                             {({ match }) => <StudentHomeworkReport match={match} />}
                           </Route>
-                          <Route path='/erp-online-class/class-work/:param1/:param2'>
+                          <Route path='/erp-online-class/class-work/:param1/:param2/:param3'>
                             {({ match }) => <ClassWork match={match} />}
                           </Route>
                           {/*
@@ -416,13 +348,23 @@ function App({ alert }) {
                             {({ match }) => <ViewUsers match={match} />}
                         </Route>
                         */}
-                          <Route path='/communication/messagelog'>
-                            {({ match }) => <MessageLog match={match} />}
-                          </Route>
-                          <Route path='/dashboard'>
-                            {({ match }) => <Dashboard match={match} />}
-                          </Route>
-                          <Route exact path='/'>
+                            <Route path='/communication/messagelog'>
+                              {({ match }) => <MessageLog match={match} />}
+                            </Route>
+                            <Route path='/dashboard'>
+                              {({ match }) => <Dashboard match={match} />}
+                            </Route>
+                            <Route exact path='/'>
+                              {({ match, history }) => (
+                                <Login match={match} history={history} setTheme={setTheme} />
+                              )}
+                            </Route>
+                            <Route exact path='/forgot'>
+                              {({ match, history }) => (
+                                <Forgot match={match} history={history} />
+                              )}
+                            </Route>
+                            {/* <Route exact path='/error'>
                             {({ match, history }) => (
                               <Login match={match} history={history} />
                             )}
@@ -554,10 +496,10 @@ function App({ alert }) {
                           <Route exact path='/erp-online-class/assign/:id/qp'>
                             {({ match }) => <AssignQP match={match} />}
                           </Route>
-                          <Route exact path='/erp-online-class/:id/pre-quiz'>
+                          <Route exact path='/erp-online-class/:id/:qid/pre-quiz'>
                             {({ match }) => <PreQuiz match={match} />}
                           </Route>
-                          <Route path='/erp-online-class/:onlineclassId/quiz/:questionpaperId/:lobbyuuid'>
+                          <Route path='/erp-online-class/:onlineclassId/quiz/:questionpaperId/:lobbyuuid/:role'>
                             {({ match }) => <MultiplayerQuiz match={match} />}
                           </Route>
                           {/* <Route exact path='/online-class/view-class'>
@@ -905,6 +847,11 @@ function App({ alert }) {
                           {/* <Route exact path='/finance/Requestshuffle'>
                   {({ match }) => <RequestShuffle match={match} />}
                 </Route> */}
+                          <Route exact path='/finance/approve_pendingRequest'>
+                            {({ match }) => (
+                              <ApprovePendingReq match={match} alert={alert} />
+                            )}
+                          </Route>
                           <Route exact path='/finance/MiscFeeClass'>
                             {({ match }) => <MiscFeeClass match={match} alert={alert} />}
                           </Route>
@@ -1262,6 +1209,11 @@ function App({ alert }) {
                               <DailyBillingDetails match={match} alert={alert} />
                             )}
                           </Route>
+                          <Route exact path='/finance/student_shuffle'>
+                            {({ match }) => (
+                              <StudentShuffleReq match={match} alert={alert} />
+                            )}
+                          </Route>
                           <Route exact path='/finance/Expanse Management/PettyExpense'>
                             {({ match }) => <PettyExpenses match={match} alert={alert} />}
                           </Route>
@@ -1428,17 +1380,34 @@ function App({ alert }) {
                           <Route exact path='/orchadio/manage-orchadio'>
                             {({ match }) => <ManageOrchadio match={match} />}
                           </Route>
+                          <Route exact path='/orchadio/add-orchadio'>
+                            {({ match }) => <AddNewOrchadio match={match} />}
+                          </Route>
                           <Route exact path='/homework-report-teacher-view'>
                             {({ match }) => <HomeWorkReportTeacher match={match} />}
                           </Route>
-                          <Route exact path='/classwork/student-report'>
-                            {({ match }) => <StudentClassWorkReport match={match} />}
+
+                          <Route exact path='/intelligent-book/view'>
+                            {({ match }) => <AllBooksPage match={match} />}
                           </Route>
-                          <Route exact path='/classwork-report-teacher-view'>
-                            {({ match }) => <ClassWorkTeacherReport match={match} />}
+                          <Route
+                            exact
+                            path='/intelligent-book/:bookId/:bookUid/:localStorageName/:environment/:type'
+                          >
+                            {({ match }) => <ChapterBook match={match} />}
                           </Route>
-                          <Route exact path='/orchadio/add-orchadio'>
-                            {({ match }) => <AddNewOrchadio match={match} />}
+                          <Route exact path='/intelligent-book/allbooks'>
+                            {({ match }) => <ViewiBook match={match} />}
+                          </Route>
+
+                          <Route exact path='/intelligent-book/chapter-view'>
+                            {({ match }) => <ViewiChapter match={match} />}
+                          </Route>
+                          <Route exact path='/setting'>
+                            {({ match }) => <Setting match={match} />}
+                          </Route>
+                          <Route path='*'>
+                            <ErrorBoundary404 HomeButton={true} />
                           </Route>
                         </Switch>
                       </DailyDairyStore>
@@ -1452,6 +1421,7 @@ function App({ alert }) {
       </Router>
       <Alert />
     </div>
+    // </ErrorBoundary404>
   );
 }
 

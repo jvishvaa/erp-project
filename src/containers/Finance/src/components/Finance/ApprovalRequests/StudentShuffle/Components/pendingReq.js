@@ -105,11 +105,11 @@ const PendingReq = ({
           <TableCell align='left'>{val.erp ? val.erp : ''}</TableCell>
           <TableCell align='left'>{val.student_name ? val.student_name : ''}</TableCell>
           <TableCell align='left'>
-            {val.branch_from && val.branch_from.branch_name ? val.branch_from.branch_name : ''}&nbsp;>>
+            {val.branch_from && val.branch_from.branch_name ? val.branch_from.branch_name : ''}
             {val.grade_from && val.grade_from.grade ? val.grade_from.grade : ''}
           </TableCell>
           <TableCell align='left'>
-            {val.branch_to && val.branch_to.branch_name ? val.branch_to.branch_name : ''}&nbsp;>>
+            {val.branch_to && val.branch_to.branch_name ? val.branch_to.branch_name : ''}
             {val.grade_to && val.grade_to.grade ? val.grade_to.grade : ''}
           </TableCell>
           <TableCell align='left'>{val.reason ? val.reason : ''}</TableCell>

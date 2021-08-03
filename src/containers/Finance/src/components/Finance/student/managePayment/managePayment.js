@@ -97,6 +97,9 @@ class ManagePayment extends Component {
     let superUser = JSON.parse(localStorage.getItem('rememberDetails')) || {};
     let NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
     let user_id = JSON.parse(localStorage.getItem('userDetails')).erp || {};
+    let branch_name = JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0].branch_name || {};
+    console.log(branch_name , "branch");
+
 
 
     let domain = window.location.href;
@@ -104,8 +107,43 @@ class ManagePayment extends Component {
     let sub = arr[2]
     console.log(arr[2] , "domain");
 
+    if (sub === 'revamp.qa.letseduvate.com') {
+    if(branch_name === 'BLR'){
+      this.checkPayment()
+      console.log("match");
+      }
+      if(branch_name === 'BTM'){
+        this.checkPayment()
+        console.log("match");
+        }
+    }
+    if (sub === 'dev.olvorchidnaigaon.letseduvate.com') {
+      if(branch_name === 'BTM'){
+      this.checkPayment()
+      console.log("match");
+      }
+      if(branch_name === 'BLR'){
+        this.checkPayment()
+        console.log("match");
+        }
+    }
+    if (sub === 'orchids.letseduvate.com') {
+      if(branch_name === 'OIS Kurla'){
+        this.checkPayment()
+        console.log("match");
+        }
+        if(branch_name === 'OIS Mysore rd'){
+          this.checkPayment()
+          console.log("match");
+          }
+    }
+    if (sub === 'aolschool.letseduvate.com') {
+      this.checkPayment()
+    }
+
+
     // console.log(this.state.student , "student state");
-    this.checkPayment(sub)
+    // this.checkPayment()
     // console.log(superUser[0], 'super');
       // if (NavData && NavData.length) {
       //   NavData.forEach((item) => {
@@ -135,29 +173,29 @@ class ManagePayment extends Component {
 }
 
   checkPayment(sub){
-    // let user_id = JSON.parse(localStorage.getItem('userDetails')).erp || {};
-    // let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
-    // axios
-    // .get(urls.CheckPayment + '?student=' + user_id ,{
-    //   headers: {
-    //     Authorization: 'Bearer ' + token
-    //   }
-    // }).then((res) => {
-    //   console.log(res, 'current eventssss');
-    // this.setState({ student: res.data.is_allowed });
-    // })
-    // .catch((error) => {
-    //   console.log(error);
-    // });
+    let user_id = JSON.parse(localStorage.getItem('userDetails')).erp || {};
+    let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
+    axios
+    .get(urls.CheckPayment + '?student=' + user_id ,{
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }).then((res) => {
+      console.log(res, 'current eventssss');
+    this.setState({ student: res.data.is_allowed });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 
     // if ( sub === 'https://dev.olvorchidnaigaon.letseduvate.com'  ) {
-    if ( sub === 'aolschool.letseduvate.com' ) {
+    // if ( sub === 'aolschool.letseduvate.com' ) {
 
-      this.setState({ student: true});
-    } else {
-      this.setState({ student: false});
+    //   this.setState({ student: true});
+    // } else {
+    //   this.setState({ student: false});
 
-    }
+    // }
   }
 
   componentDidUpdate(){

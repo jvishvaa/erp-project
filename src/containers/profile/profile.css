@@ -12,7 +12,7 @@
   width: 100%;
 }
 .profile_upload_image_button {
-  background-color: #ff6b6b !important;
+  /* background-color: #ff6b6b !important; */
   color: white !important;
   text-align: center;
 }
@@ -36,7 +36,7 @@
   cursor: pointer;
   outline: none !important;
   color: white;
-  background-color: #ff6b6b;
+  /* background-color: #ff6b6b; */
 }
 .cancel_button_profile {
   color: grey;
@@ -52,7 +52,7 @@
   cursor: pointer;
   color: white !important;
   margin-right: 10%;
-  background-color: #ff6b6b !important;
+  /* background-color: #ff6b6b !important; */
 }
 
 .profile_change_password_button:hover {

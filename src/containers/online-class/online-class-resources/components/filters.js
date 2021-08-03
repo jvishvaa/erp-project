@@ -8,34 +8,18 @@ import {
   TablePagination,
 } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import Loader from '../../../../components/loader/loader';
 import '../../../teacherBatchView/style.scss';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import moment from 'moment';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
-//import Loader from '../../components/loader/loader';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
-//import filterImage from '../../assets/images/unfiltered.svg';
-//import TeacherBatchViewCard from './teacherbatchViewCard';
-//import TeacherBatchFullView from './teacherBatchFullView';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
-//import Layout from '../Layout';
 
 const Filter = (props) => {
-  /** 
-    const {
-        resourceView: { currentPage },
-        listOnlineClassesResourceView,
-        dispatch,
-        listGrades,
-        listSections,
-        grades,
-        sections,
-        setCurrentResourceTab,
-    } = useContext(OnlineclassViewContext);
-    */
-
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
     moment().subtract(6, 'days'),
     moment(),
@@ -45,20 +29,17 @@ const Filter = (props) => {
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  // const [branchList] = useState([
-  //     {
-  //         id: `${window.location.host === endpoints?.aolConfirmURL ? 1 : 1}`,
-  //         branch_name: `${window.location.host === endpoints?.aolConfirmURL ? 'AOL' : 'Bangalore'}`,
-  //     },
-  // ]);
+
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const [studentDetails] = useState(
     JSON.parse(window.localStorage.getItem('userDetails'))
   );
-  // const [selectedBranch, setSelectedBranch] = useState(branchList[0]);
   const [academicYear, setAcademicYear] = useState([]);
-  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -88,6 +69,7 @@ const Filter = (props) => {
   const [selectedClassType, setSelectedClassType] = useState('');
   const [moduleId, setModuleId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [tabValue, setTabValue] = useState(0);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -120,18 +102,18 @@ const Filter = (props) => {
       .get(api)
       .then((result) => {
         if (result.status === 200) {
-          if (key === 'academicYearList') {
-            setAcademicYear(result?.data?.data || []);
+          // if (key === 'academicYearList') {
+          //   setAcademicYear(result?.data?.data || []);
 
-            const defaultYear = result?.data?.data?.[0];
-            setSelectedAcadmeicYear(defaultYear);
-            if (defaultYear) {
-              callApi(
-                `${endpoints.communication.branches}?session_year=${defaultYear?.id}&module_id=${moduleId}`,
-                'branchList'
-              );
-            }
-          }
+          //   const defaultYear = result?.data?.data?.[0];
+          //   setSelectedAcadmeicYear(defaultYear);
+          //   if (defaultYear) {
+          //     callApi(
+          //       `${endpoints.communication.branches}?session_year=${defaultYear?.id}&module_id=${moduleId}`,
+          //       'branchList'
+          //     );
+          //   }
+          // }
           if (key === 'branchList') {
             setBranchList(result?.data?.data?.results || []);
           }
@@ -156,6 +138,7 @@ const Filter = (props) => {
             setSelectedViewMore('');
             props.getResourceData(result.data.data);
             props.totalCount(result.data.count);
+            setTabValue(0);
           }
           setLoading(false);
         } else {
@@ -189,18 +172,13 @@ const Filter = (props) => {
   }
 
   useEffect(() => {
-    if (moduleId) {
+    if (selectedAcademicYear && moduleId) {
       callApi(
-        `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
-        'academicYearList'
+        `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+        'branchList'
       );
     }
-    // callApi(`${endpoints.academics.branches}`,'branchList');
-    //   callApi(
-    //       `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=15`,
-    //       'gradeList'
-    //   );
-  }, [moduleId]);
+  }, [selectedAcademicYear, moduleId]);
 
   function handlePagination(e, page) {
     setPage(page);
@@ -234,7 +212,7 @@ const Filter = (props) => {
     setSubjectList([]);
     setSelectedSubject([]);
     setSubSelectedId([]);
-    setSelectedAcadmeicYear('');
+    // setSelectedAcadmeicYear('');
     props.hendleDetails();
     props.getResourceData([]);
   }
@@ -248,6 +226,10 @@ const Filter = (props) => {
     }
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
+      return;
+    }
+    if (!endDateTechPer) {
+      setAlert('warning', 'Select End Date');
       return;
     }
     if (!selectedBranch.length > 0) {
@@ -273,19 +255,9 @@ const Filter = (props) => {
         return;
       }
     }
-    // if (!selectedCourse) {
-    //     setAlert('warning', 'Select Course');
-    //     return;
-    // }
-    // if (!selectedBatch) {
-    //     setAlert('warning', 'Select Batch Size');
-    //     return;
-    // }
-    // if (!startDate) {
-    //     setAlert('warning', 'Select Start Date');
-    //     return;
-    // }
+
     setLoading(true);
+    setTabValue(0);
     setPage(1);
     if (window.location.host === endpoints?.aolConfirmURL) {
       callApi(
@@ -302,7 +274,9 @@ const Filter = (props) => {
       );
     } else if (selectedCourse.id) {
       callApi(
-        `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.map(
+        `${
+          endpoints.aol.classesresources
+        }?is_aol=0&section_mapping_ids=${selectedSection.map(
           (el) => el.id
         )}&session_year=${selectedAcademicYear.id}&class_type=${
           selectedClassType.id
@@ -310,12 +284,16 @@ const Filter = (props) => {
           'YYYY-MM-DD'
         )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${
           selectedCourse.id
-        }&page_number=${props.pages}&page_size=12&module_id=${moduleId}`,
+        }&page_number=${props.pages}&page_size=12&class_status=${
+          props.tabValue + 1
+        }&module_id=${moduleId}`,
         'filter'
       );
     } else {
       callApi(
-        `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.map(
+        `${
+          endpoints.aol.classesresources
+        }?is_aol=0&section_mapping_ids=${selectedSection.map(
           (el) => el.id
         )}&session_year=${
           selectedAcademicYear.id
@@ -325,7 +303,7 @@ const Filter = (props) => {
           'YYYY-MM-DD'
         )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=${
           props.pages
-        }&page_size=12&module_id=${moduleId}`,
+        }&page_size=12&class_status=${props.tabValue + 1}&module_id=${moduleId}`,
         'filter'
       );
     }
@@ -337,21 +315,25 @@ const Filter = (props) => {
     }
     setDateRangeTechPer(v1);
   }
-
   useEffect(() => {
     if (selectedBranch.length > 0) {
       handleFilter();
     }
-  }, [props.pages]);
+  }, [props.pages, props?.tabValue]);
+  // useEffect(() => {
+  //   handleFilter();
+  // }, [props?.tabValue]);
 
   return (
     <>
+      {loading && <Loader />}
       <Grid container spacing={2} style={{ marginTop: '10px' }}>
         {window.location.host !== endpoints?.aolConfirmURL && (
           <Grid item md={3} xs={12}>
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
+              limitTags={2}
               onChange={(event, value) => {
                 setSelectedClassType(value);
                 setSelectedGrade([]);
@@ -385,10 +367,11 @@ const Filter = (props) => {
             />
           </Grid>
         )}
-        <Grid item md={3} xs={12}>
+        {/* <Grid item md={3} xs={12}>
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
+            limitTags={2}
             onChange={(event, value) => {
               setSelectedAcadmeicYear(value);
               if (value) {
@@ -426,12 +409,13 @@ const Filter = (props) => {
               />
             )}
           />
-        </Grid>
+        </Grid> */}
         <Grid item md={3} xs={12}>
           <Autocomplete
             multiple
             style={{ width: '100%' }}
             size='small'
+            limitTags={2}
             onChange={(event, value) => {
               setSelectedBranch([]);
               if (value.length) {
@@ -510,6 +494,7 @@ const Filter = (props) => {
             }}
             id='grade_id'
             className='dropdownIcon'
+            limitTags={2}
             value={selectedGrade}
             options={gradeList}
             getOptionLabel={(option) => option?.grade__grade_name}
@@ -556,6 +541,7 @@ const Filter = (props) => {
             className='dropdownIcon'
             value={selectedSection}
             options={sectionList}
+            limitTags={2}
             getOptionLabel={(option) =>
               option?.section__section_name || option?.section_name
             }
@@ -575,6 +561,7 @@ const Filter = (props) => {
             <Autocomplete
               multiple
               style={{ width: '100%' }}
+              limitTags={2}
               size='small'
               onChange={(event, value) => {
                 setSelectedSubject([]);
@@ -609,6 +596,7 @@ const Filter = (props) => {
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
+              limitTags={2}
               onChange={(event, value) => {
                 setSelectedCourse(value);
                 if (value) {
@@ -627,6 +615,7 @@ const Filter = (props) => {
               className='dropdownIcon'
               value={selectedCourse}
               options={courseList}
+              limitTags={2}
               getOptionLabel={(option) => option?.course_name}
               filterSelectedOptions
               renderInput={(params) => (
@@ -652,6 +641,7 @@ const Filter = (props) => {
               className='dropdownIcon'
               value={selectedBatch}
               options={batchList}
+              limitTags={2}
               getOptionLabel={(option) =>
                 option ? `1 : ${JSON.stringify(option.batch_size)}` : ''
               }
@@ -695,7 +685,7 @@ const Filter = (props) => {
           </LocalizationProvider>
         </Grid>
         <Grid item xs={12}>
-          <Grid container spacing={2} style={{ marginTop: '5px' }}>
+          <Grid container spacing={2}>
             <Grid item md={2} xs={12}>
               <Button
                 variant='contained'
@@ -713,7 +703,7 @@ const Filter = (props) => {
                 color='primary'
                 onClick={() => handleFilter()}
               >
-                Get Classes
+                Get Resources
               </Button>
             </Grid>
           </Grid>

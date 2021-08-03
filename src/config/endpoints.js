@@ -34,6 +34,9 @@ export default {
     markAttendance: '/academic/bulk_create_attendance/',
     students: '/academic/get_student_list/',
   },
+  appBar:{
+    schoolLogo:`${baseURLCentral}/central-admin/school_logo/`
+  },
   profile: {
     userDetails: '/erp_user/user-data/',
   },
@@ -77,9 +80,9 @@ export default {
     // createClass: '/erp_user/online_class/',
     createClass: '/erp_user/online-recurring/',
     createSpecialClass: '/erp_user/online-erp-class/',
-    studentOnlineclasses: '/erp_user/student_online_class/v2/',
+    studentOnlineclasses: '/erp_user/student_online_class/v3/',
     acceptOrJoinClass: '/erp_user/onlineclass_accept_join/',
-    managementOnlineClass: '/erp_user/teacher_online_class/v2/',
+    managementOnlineClass: '/erp_user/teacher_online_class/v3/',
     cancelClass: '/erp_user/cancel-online-class/',
     attendeeList: '/erp_user/onlineclass_attendeelist/',
     coHostValidation: '/erp_user/co-host-validation/',
@@ -205,10 +208,11 @@ export default {
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
   aol: {
-    cardData: '/erp_user/teacher_online_class/v2/',
+    cardData: '/erp_user/teacher_online_class/v3/',
     courseList: '/aol/courses/',
     batchLimitList: '/aol/aol-course-batch/',
-    classes: '/erp_user/teacher_online_class/v2/',
+    classes: '/erp_user/teacher_online_class/v3/',
+    classesresources: 'erp_user/teacher_online_class/v3/',
     teacherList: '/erp_user/teacher-list/',
     draftBatch: '/aol/mixed-batch-details/',
     assignTeacher: '/aol/teacher-assign/',
@@ -301,7 +305,18 @@ export default {
     getCentralGrade: '/academic/ebook_grade_wise_filter/',
   },
   ibook: {
-    studentBook: '/academic/student-books-list/',
+    // studentBook: '/academic/student-books-list/',
+    studentChapterBook: '/academic/student-books-list/',
+    studentBook: '/academic/ibook_school_wise_filter/',
+    createStudentNotes:'academic/create_student_notes/',
+    studentBookmarks:'academic/student-bookmarks/',
+    deleteBookmark:'academic/delete_bookmark/',
+    studentBooksHighlight:'academic/student-books-highlight/',
+    deleteHighlight:'academic/delete_highlight/',
+    listStudentNotes:'academic/list_student_notes/',
+    listBooksBookmarks:'academic/list-books-bookmarks/',
+    listBooksHighlight:'academic/list-books-highlight/',
+    ibookMappedGrade: '/academic/ibook_mapped_grades/',
   },
   email: {
     email: '/academic/email/',
@@ -311,7 +326,7 @@ export default {
   teacherViewBatches: {
     courseListApi: '/aol/courses/',
     batchSizeList: '/aol/aol-course-batch/',
-    getBatchList: '/erp_user/teacher_online_class/v2/',
+    getBatchList: '/erp_user/teacher_online_class/',
     cancelBatchApi: '/erp_user/cancel-online-class/',
     hostApi: '/erp_user/redirection_zoom/',
   },
@@ -324,11 +339,11 @@ export default {
     getGrievenceErpList: '/academic/greivance-reply-list/',
   },
   studentViewBatchesApi: {
-    getBatchesApi: '/erp_user/student_online_class/v2/',
+    getBatchesApi: '/erp_user/student_online_class/v3/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
   questionPaper: {
-    FETCHQP: `${baseURLCentral}/assessment/test-list/`,
+    FETCHQP: `/assessment/test-list/`,
     QuestionsInQP: '/mp_quiz/mp_questions_list/',
     AssignQP: '/mp_quiz/',
   },
@@ -449,6 +464,13 @@ export default {
   },
   attendanceTeacherView: {
     getTeacherAttendanceView: '/academic/teacher-attendance-by-subject/',
+  },
+  central_logoupdateAPI :{
+    school_logo : `${baseURLCentral}/central-admin/update_school_logo/`
+  },
+  themeAPI : {
+    school_theme : `/schools/school_theme/`,
+    school_theme_fetch : `/schools/school_theme_fetch/`
   },
   orchadio: {
     audioUpload: '/academic/orchadio-upload/',

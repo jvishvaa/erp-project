@@ -20,12 +20,11 @@ deploy_dev:
       - whoami
       - pwd
       - sudo systemctl restart nginx
-      - echo "Deploy to development server"
-      - sleep 10 
+      - echo "Deploy to development server" 
       - sudo npm install
       - grep home package.json || true
       - export CI=false
-      - export NODE_OPTIONS=--max_old_space_size=4096
+      - export NODE_OPTIONS=--max_old_space_size=8196
       - export REACT_APP_UI_ENV=DEV
       - sudo -E bash -c "set \"CI=false\" &&  npm run build"
       - sudo rm -rf /home/ubuntu/build/
@@ -63,12 +62,11 @@ deploy_qa:
       - sudo systemctl restart nginx
      # - sudo service uwsgi stop
       - echo "Deploy to QA server"
-      - sleep 10 
       - sudo npm ci
-      - export REACT_APP_UI_ENV=DEV
+      - export REACT_APP_UI_ENV=QA
       - grep home package.json || true
       - export CI=false
-      - export NODE_OPTIONS=--max_old_space_size=5000
+      - export NODE_OPTIONS=--max_old_space_size=8196
       - sudo -E bash -c "set \"CI=false\" &&  npm run build"
       - sudo rm -rf /home/ubuntu/build_qa/
       - sudo cp -r build/ /home/ubuntu/build_qa
@@ -107,13 +105,12 @@ deploy_prod:
       - pwd
       - sudo systemctl restart nginx
       - echo "Deploy to development server"
-      - sleep 10 
       - sudo npm install
       - grep home package.json || true
       - export CI=false
-      - export NODE_OPTIONS=--max_old_space_size=4096
+      - export NODE_OPTIONS=--max_old_space_size=8196
       - export REACT_APP_UI_ENV=PROD
-      - sudo -E bash -c "set \"CI=false\" &&  npm run build" || true
+      - sudo -E bash -c "set \"CI=false\" &&  npm run build"
       - sudo rm -rf /home/ubuntu/build/
       - sudo cp -r build/ /home/ubuntu/
       - forever stopall

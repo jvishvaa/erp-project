@@ -5,145 +5,36 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useState, useEffect, useRef, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams, withRouter } from 'react-router-dom';
-import { throttle, debounce } from 'throttle-debounce';
+import { withRouter } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import MenuIcon from '@material-ui/icons/Menu';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import TodayIcon from '@material-ui/icons/Today';
-import MoreIcon from '@material-ui/icons/More';
-import Collapse from '@material-ui/core/Collapse';
-import Divider from '@material-ui/core/Divider';
-import ContactPhoneRoundedIcon from '@material-ui/icons/ContactPhoneRounded';
-// import TodayIcon from '@material-ui/icons/Today';
-import AssessmentSharpIcon from '@material-ui/icons/AssessmentSharp';
-import {
-  Popper,
-  Fade,
-  Paper,
-  Grid,
-  ListItemSecondaryAction,
-  ListItemIcon,
-} from '@material-ui/core';
-import EditIcon from '@material-ui/icons/EditOutlined';
-import { fade } from '@material-ui/core/styles/colorManipulator';
+import { ListItemIcon } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItem from '@material-ui/core/ListItem';
-import PermIdentityIcon from '@material-ui/icons/PermIdentity';
-import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import clsx from 'clsx';
-import EventAvailableIcon from '@material-ui/icons/EventAvailable';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import EventNoteIcon from '@material-ui/icons/EventNote';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Grow from '@material-ui/core/Grow';
-import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
-import { logout } from '../../redux/actions';
+import { fetchAcademicYearList } from '../../redux/actions';
 import DrawerMenu from '../../components/drawer-menu';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import UserDetails from './userDetails/user-details';
-import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
-import logoMobile from '../../assets/images/logo_mobile.png';
-import online_classpng from '../../assets/images/Online classes-01.svg';
-import logo from '../../assets/images/logo.png';
-import orchidsPlaceholderLogo from '../../assets/images/orchidsPlaceholderLogo2x.png'
-
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
-import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
-import SettingsIcon from '@material-ui/icons/Settings';
-import UserInfo from '../../components/user-info';
-import PublishIcon from '@material-ui/icons/Publish';
+import Appbar from './Appbar';
+import SearchBar from './SearchBar';
+import { fetchThemeApi } from '../../utility-functions/themeGenerator';
+
 
 export const ContainerContext = createContext();
 
-const Layout = ({ children, history}) => {
+const Layout = ({ children, history }) => {
   const containerRef = useRef(null);
   const dispatch = useDispatch();
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const { role_details: roleDetails } =
-    JSON.parse(localStorage.getItem('userDetails')) || {};
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [masterMenuOpen, setMasterMenuOpen] = useState(false);
   const [superUser, setSuperUser] = useState(false);
-  const [searchUserDetails, setSearchUserDetails] = useState([]);
-  const searchInputRef = useRef();
-  const { setAlert } = useContext(AlertNotificationContext);
-  const [searching, setSearching] = useState(false);
-  const [globalSearchResults, setGlobalSearchResults] = useState(false);
-  const [globalSearchError, setGlobalSearchError] = useState(false);
-  const [searchedText, setSearchedText] = useState('');
-  const [totalPage, setTotalPage] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [scrollDone, setScrollDone] = useState(false);
-  const [mobileSeach, setMobileSeach] = useState(false);
-  const [displayUserDetails, setDisplayUserDetails] = useState(false);
-  const [userId, setUserId] = useState();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-  const getGlobalUserRecords = async (text) => {
-    try {
-      const result = await axiosInstance.get(
-        `${endpoints.gloabSearch.getUsers}?search=${text}&page=${currentPage}&page_size=100`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (result.data.status_code === 200) {
-        const tempData = [];
-        result.data.data.results.map((items) =>
-          tempData.push({
-            id: items.id,
-            name: items.name,
-            erpId: items.erp_id,
-            contact: items.contact,
-          })
-        );
-        setTotalPage(result.data.data.total_pages);
-        setSearchUserDetails(tempData);
-      } else {
-        setAlert('error', result.data.message);
-        setGlobalSearchError(false);
-      }
-    } catch (error) {
-      setAlert('error', error.message);
-      setGlobalSearchError(false);
-    }
-  };
-  const autocompleteSearch = (q, pageId, isDelete) => {
-    if (q !== '') {
-      setSearching(true);
-      setGlobalSearchResults(true);
-      getGlobalUserRecords(q);
-    }
-  };
-  const autocompleteSearchDebounced = debounce(500, autocompleteSearch);
-  const autocompleteSearchThrottled = throttle(500, autocompleteSearch);
-  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
@@ -166,136 +57,29 @@ const Layout = ({ children, history}) => {
 
   useEffect(() => {
     if (isLogout) {
-      history.push('/');
+      window.location.href = '/';
       setIsLogout(false);
     }
   }, [isLogout]);
 
+  const academicYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   useEffect(() => {
-    if (searchedText !== '') {
-      setGlobalSearchResults(false);
-      setSearching(false);
-      setSearchUserDetails([]);
-      setTotalPage(0);
-      setCurrentPage(1);
+    if (!academicYear) dispatch(fetchAcademicYearList());
+  }, [academicYear]);
+
+  useEffect(() => {
+    let themeDetails = null;
+    try {
+      themeDetails = JSON.parse(localStorage.getItem('themeDetails')) || [];
+    } catch (e) {
+      themeDetails = [];
     }
-  }, [history.location.pathname]);
-
-  //   useEffect(() => {
-  //     if (searchedText !== '') {
-  //       getGlobalUserRecords();
-  //     }
-  //   }, [currentPage]);
-
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
- 
-
-  const handleLogout = () => {
-    dispatch(logout());
-    if (JSON.parse(localStorage.getItem('rememberDetails'))) {
-      Object.keys(localStorage).forEach((key) => {
-        if (key !== 'rememberDetails') localStorage.removeItem(key);
-      });
-    } else localStorage.clear();
-    setIsLogout(true);
-  };
-
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-    setProfileOpen(false);
-  };
-
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-    setProfileOpen(!profileOpen);
-  };
-
-  const changeQuery = (event) => {
-    setSearchedText(event.target.value);
-    if (event.target.value === '') {
-      setGlobalSearchResults(false);
-      setSearching(false);
-      setSearchUserDetails([]);
-      setTotalPage(0);
-      setCurrentPage(1);
-      return;
+    if (themeDetails?.length === 0) {
+      fetchThemeApi();
     }
-    const q = event.target.value;
-    if (q.length < 5) {
-      setCurrentPage(1);
-      autocompleteSearchThrottled(event.target.value);
-    } else {
-      setCurrentPage(1);
-      autocompleteSearchDebounced(event.target.value);
-    }
-  };
-
-  const handleTextSearchClear = (e) => {
-    e.preventDefault();
-    setTimeout(() => {
-      setSearchedText('');
-      setGlobalSearchResults(false);
-      setSearching(false);
-      setSearchUserDetails([]);
-      setTotalPage(0);
-      setCurrentPage(1);
-    }, 500);
-  };
-  const handleTextSearchClearMobile = (e) => {
-    e.preventDefault();
-    setMobileSeach(false);
-    setTimeout(() => {
-      setSearchedText('');
-      setGlobalSearchResults(false);
-      setSearching(false);
-      setSearchUserDetails([]);
-      setTotalPage(0);
-      setCurrentPage(1);
-    }, 500);
-  };
-
-  //   const handleScroll = (event) => {
-
-  //     if (
-  //       target.scrollTop + target.clientHeight === target.scrollHeight &&
-  //       currentPage < totalPage
-  //     ) {
-  //       setScrollDone(true);
-  //       setCurrentPage(currentPage + 1);
-  //     }
-  //   };
+  }, []);
 
   const classes = useStyles();
-
-  const mobileMenuId = 'primary-search-account-menu-mobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      getContentAnchorEl={null}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      id={mobileMenuId}
-      TransitionComponent={Grow}
-      transitionDuration={500}
-      transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-      open={profileOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem onClick={(e) => history.push('/profile')}>
-        <IconButton aria-label='my profile' color='inherit'>
-          <PermIdentityIcon color='primary' style={{ fontSize: '2rem' }} />
-        </IconButton>
-        <p style={{ color: '#014B7E' }}>My Profile</p>
-      </MenuItem>
-
-      <MenuItem onClick={handleLogout}>
-        <IconButton aria-label='logout button' color='inherit'>
-          <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
-        </IconButton>
-        <p style={{ color: '#014B7E' }}>Logout</p>
-      </MenuItem>
-    </Menu>
-  );
 
   const handleRouting = (name) => {
     switch (name) {
@@ -448,6 +232,10 @@ const Layout = ({ children, history}) => {
         history.push('/ebook/view');
         break;
       }
+      case 'Ibook View': {
+        history.push('/intelligent-book/view');
+        break;
+      }
       case 'Create User': {
         history.push('/user-management/create-user');
         break;
@@ -464,7 +252,7 @@ const Layout = ({ children, history}) => {
         history.push('/user-management/view-users');
         break;
       }
-      
+
       case 'Section Shuffle': {
         history.push('/user-management/section-shuffling');
         break;
@@ -1060,336 +848,27 @@ const Layout = ({ children, history}) => {
     }
   };
 
+  const handleOpen = (value) => {
+    setDrawerOpen((value) => !value);
+  };
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   return (
     <div className={classes.root}>
-      <AppBar position='absolute' className={clsx(classes.appBar)}>
-        <Toolbar className={classes.toolbar}>
-          {isMobile && (
-            <Box
-              className={classes.mobileToolbar}
-              display='flex'
-              justifyContent='space-between'
-            >
-              <IconButton
-                edge='start'
-                color='inherit'
-                aria-label='open drawer'
-                onClick={() => {
-                  setDrawerOpen((prevState) => !prevState);
-                }}
-              >
-                {drawerOpen ? (
-                  <CloseIcon color='primary' />
-                ) : (
-                  <MenuIcon color='primary' />
-                )}
-              </IconButton>
-
-              <IconButton className={classes.logoMobileContainer}>
-                <img className={classes.logoMObile} src={logoMobile} alt='logo-small' />
-              </IconButton>
-
-              <IconButton />
-            </Box>
-          )}
-          <IconButton
-            edge='start'
-            color='inherit'
-            aria-label='open drawer'
-            className={clsx(classes.logoBtn, classes.desktopToolbarComponents)}
-          >
-            <img src={logo} alt='logo' style={{ height: '35px' }} />
-          </IconButton>
-          {/* <Divider
-            orientation='vertical'
-            flexItem
-            style={{
-              backgroundColor: '#ff6b6b',
-              margin: '5px 10px',
-            }}
-            className={classes.desktopToolbarComponents}
-          /> */}
-
-          <Typography
-            className={classes.desktopToolbarComponents}
-            component='h6'
-            variant='h6'
-            color='inherit'
-            noWrap
-            cursor='default'
-          >
-            {/* <span style={{ cursor: 'default' }}>Welcome!</span>
-            <span style={{ fontSize: '1rem', marginLeft: '1rem', cursor: 'default' }}>
-              Have a great day
-            </span> */}
-          </Typography>
-          {superUser ? (
-            <div className={clsx(classes.grow, classes.desktopToolbarComponents)}>
-              <Paper component='form' className={classes.searchInputContainer}>
-              <IconButton
-                  type='submit'
-                  className={classes.searchIconButton}
-                  aria-label='search'
-                >
-                  <SearchIcon />
-                </IconButton>
-                <InputBase
-                  value={searchedText}
-                  className={classes.searchInput}
-                  placeholder='Search'
-                  inputProps={{ 'aria-label': 'search across site' }}
-                  inputRef={searchInputRef}
-                  onChange={changeQuery}
-                  onBlur={handleTextSearchClear}
-                />
-                {searchedText ? (
-                  <IconButton
-                    type='submit'
-                    className={classes.clearIconButton}
-                    aria-label='close'
-                    onClick={handleTextSearchClear}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                ) : null}
-                
-              </Paper>
-              <Popper
-                open={searching}
-                className={`${classes.searchDropdown} ${
-                  isMobile ? classes.searchDropdownMobile : 'null'
-                }`}
-                placement='bottom'
-                style={{
-                  position: 'fixed',
-                  top: isMobile
-                    ? searchInputRef.current &&
-                      searchInputRef.current.getBoundingClientRect().top + 44
-                    : searchInputRef.current &&
-                      searchInputRef.current.getBoundingClientRect().top + 32,
-                  left: '750px',
-                  right: `calc(${isMobile ? '92vw' : '100vw'} - ${
-                    searchInputRef.current &&
-                    searchInputRef.current.getBoundingClientRect().left +
-                      searchInputRef.current.getBoundingClientRect().width
-                  }px)`,
-                  zIndex: 3000,
-                }}
-                transition
-              >
-                {({ TransitionProps }) => (
-                  <Fade {...TransitionProps} timeout={350}>
-                    <Paper>
-                      <Grid
-                        container
-                        className='main_search_container'
-                        style={{ flexDirection: 'column' }}
-                      >
-                        {globalSearchResults && searchUserDetails.length ? (
-                          <>
-                            <Grid item>
-                              <Grid
-                                container
-                                style={{
-                                  flexDirection: 'row',
-                                  paddingBottom: 12,
-                                  paddingTop: 12,
-                                  paddingLeft: 16,
-                                  backgroundColor: 'rgb(224 224 224)',
-                                  paddingRight: 16,
-                                  minWidth: 374,
-                                }}
-                              >
-                                <Grid
-                                  // onScroll={(event) => handleScroll(event)}
-                                  style={{
-                                    paddingRight: 8,
-                                    maxHeight: 385,
-                                    height: 300,
-                                    overflow: 'auto',
-                                  }}
-                                  item
-                                >
-                                  {globalSearchResults && (
-                                    <List
-                                      style={{ minWidth: 61 }}
-                                      subheader={
-                                        <ListSubheader
-                                          style={{
-                                            background: 'rgb(224 224 224)',
-                                            width: '100%',
-                                            color: '#014B7E',
-                                            fontSize: '1rem',
-                                            fontWeight: 600,
-                                          }}
-                                        >
-                                          Users
-                                        </ListSubheader>
-                                      }
-                                    >
-                                      {globalSearchResults &&
-                                        searchUserDetails.length &&
-                                        searchUserDetails.map((result, index) => {
-                                          return (
-                                            <ListItem
-                                              style={{ width: 324 }}
-                                              className='user_rows_details'
-                                              button
-                                              onClick={() => {
-                                                setSearching(false);
-                                                setUserId(result.id);
-                                                setDisplayUserDetails(true);
-                                              }}
-                                            >
-                                              <ListItemText
-                                                primary={result.name}
-                                                secondary={
-                                                  <div>
-                                                    <span>{result.erpId}</span>
-                                                    <span style={{ float: 'right' }}>
-                                                      Mob: {result.contact}
-                                                    </span>
-                                                  </div>
-                                                }
-                                              />
-                                              {/* <ListItemSecondaryAction>
-                                              <IconButton
-                                                aria-label='Delete'
-                                                onClick={() =>
-                                                  handleUserDelete(result.id, index)
-                                                }
-                                                className={classes.margin}
-                                              >
-                                                <DeleteIcon fontSize='small' />
-                                              </IconButton>
-                                            </ListItemSecondaryAction> */}
-                                            </ListItem>
-                                          );
-                                        })}
-                                    </List>
-                                  )}
-                                </Grid>
-                              </Grid>
-                            </Grid>
-                          </>
-                        ) : (
-                          <Grid
-                            container
-                            style={{
-                              flexDirection: 'row',
-                              backgroundColor: '#eee',
-                              minHeight: 324,
-                              minWidth: 374,
-                              flexGrow: 1,
-                            }}
-                          >
-                            <span
-                              style={{
-                                padding: 1,
-                                textAlign: 'center',
-                                margin: 'auto',
-                                color: '#014B7E',
-                              }}
-                            >
-                              No data available.
-                            </span>
-                          </Grid>
-                        )}
-                      </Grid>
-                      <Grid container>
-                        {globalSearchError && (
-                          <Grid
-                            style={{ padding: 8, width: '100%', backgroundColor: '#eee' }}
-                            xs={12}
-                            item
-                          >
-                            Something went wrong.
-                          </Grid>
-                        )}
-                      </Grid>
-                    </Paper>
-                  </Fade>
-                )}
-              </Popper>
-              </div>
-            
-          ) : null}
-          <Box display='flex'>
-          {displayUserDetails ? (
-                <UserDetails
-                  close={setDisplayUserDetails}
-                  mobileSearch={setMobileSeach}
-                  userId={userId}
-                  setUserId={setUserId}
-                  setSearching={setSearching}
-                />
-              ) : null}
-              
-              <IconButton className={classes.hideIcon} aria-label='my notifications' color='inherit'>
-              <NotificationsIcon className={classes.notificationsIcon}/>
-              </IconButton>
-            
-          <div
-            className={`${clsx(
-              classes.sectionDesktop,
-              classes.desktopToolbarComponents
-            )} ${superUser ? 'null' : 'layout_user_icon'}`}
-          >
-            <IconButton
-              aria-label='show more'
-              aria-controls={mobileMenuId}
-              aria-haspopup='true'
-              onClick={handleMobileMenuOpen}
-              color='inherit'
-              className={classes.loginAvatar}
-            >
-              {roleDetails && roleDetails.user_profile ? (
-                <img
-                  src={roleDetails.user_profile}
-                  alt='no img'
-                  className='profile_img'
-                />
-              ) : (
-                <AccountCircle style={{fontSize:'42px'}}/>
-              )}
-              {/* {profileOpen ? <ExpandLess /> : <ExpandMore />} */}
-            </IconButton>
-            <IconButton 
-            edge='end'
-            //color='inherit'
-            aria-label='open drawer'
-            className={clsx(classes.schoolLogoBtn, classes.hideIcon, classes.desktopToolbarComponents)}
-          >
-            <img src={orchidsPlaceholderLogo} alt='logo' style={{ height: '35px' }} />
-          </IconButton>
-          </div>
-
-          {/* <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label='show more'
-              aria-controls={mobileMenuId}
-              aria-haspopup='true'
-              onClick={handleMobileMenuOpen}
-              color='inherit'
-            >
-              <MoreIcon />
-            </IconButton>
-          </div> */}
-          </Box>
-        </Toolbar>
-      </AppBar>
-      {renderMobileMenu}
-      <Drawer
+      <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen}/>
+       <Drawer
         open={drawerOpen}
         variant={isMobile ? '' : 'permanent'}
-        className={clsx(classes.drawer, {
+        // className={clsx(classes.drawer, {
+        //   [classes.drawerPaper]: drawerOpen,
+        //   [classes.drawerPaperClose]: !drawerOpen,
+        // })}
+        className={`${clsx(classes.drawer, {
           [classes.drawerPaper]: drawerOpen,
           [classes.drawerPaperClose]: !drawerOpen,
-        })}
+        })} drawerScrollBar`}
         classes={{
           paper: clsx({
             [classes.drawer]: true,
@@ -1400,84 +879,45 @@ const Layout = ({ children, history}) => {
         onClose={() => setDrawerOpen(false)}
       >
         <div className={classes.appBarSpacer} />
-        {isMobile && drawerOpen && (
-          <>
-            <UserInfo
-              user={roleDetails}
-              onClick={() => {
-                history.push('/profile');
-                setDrawerOpen((prevState) => !prevState);
-              }}
-            />
-            <Box className={classes.sidebarActionButtons}>
-              {mobileSeach ? (
-                <div>
-                  <Paper component='form' className={classes.searchInputContainerMobile}>
-                    <IconButton
-                      type='submit'
-                      className={classes.clearIconButtonMobile}
-                      aria-label='close'
-                      onClick={handleTextSearchClearMobile}
-                    >
-                      <CloseIcon />
-                    </IconButton>
-                    <InputBase
-                      value={searchedText}
-                      className={classes.searchInputMobile}
-                      placeholder='Search..'
-                      inputProps={{ 'aria-label': 'search across site' }}
-                      inputRef={searchInputRef}
-                      onChange={changeQuery}
-                      onBlur={handleTextSearchClear}
-                    />
-                    <IconButton
-                      type='submit'
-                      className={classes.searchIconButtonMobile}
-                      aria-label='search'
-                    >
-                      <SearchIcon />
-                    </IconButton>
-                  </Paper>
-                </div>
-              ) : (
-                <>
-                  <IconButton onClick={handleLogout}>
-                    <PowerSettingsNewIcon style={{ color: '#ffffff' }} />
-                  </IconButton>
-                  <IconButton>
-                    <SettingsIcon style={{ color: '#ffffff' }} />
-                  </IconButton>
-                  <IconButton onClick={() => setMobileSeach(true)}>
-                    <SearchIcon style={{ color: '#ffffff' }} />
-                  </IconButton>
-                </>
-              )}
-            </Box>
-            <Box style={{ padding: '0 10px' }}>
-              <Divider style={{ backgroundColor: '#ffffff' }} />
-            </Box>
-          </>
-        )}
-
+        {isMobile ? <SearchBar /> : null}
         <List>
           <ListItem
             className={classes.menuControlContainer}
             onClick={() => setDrawerOpen((prevState) => !prevState)}
           >
             <ListItemIcon className={classes.menuItemIcon}>
-            {drawerOpen ? <CloseIcon /> : <MenuIcon />}
-
+              {drawerOpen ? (
+                <>
+                  <CloseIcon />
+                </>
+              ) : (
+                <>
+                  <MenuIcon />
+                </>
+              )}
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-          {navigationData && drawerOpen && navigationData?.length > 0 && (
-            <DrawerMenu
-              superUser={superUser}
-              navigationItems={navigationData}
-              onClick={handleRouting}
-              // flag={flag}
-            />
-          )}
+          {drawerOpen
+            ? navigationData &&
+              navigationData.length > 0 && (
+                <DrawerMenu
+                  superUser={superUser}
+                  drawerOpen={drawerOpen}
+                  navigationItems={navigationData}
+                  onClick={handleRouting}
+                  // flag={flag}
+                />
+              )
+            : navigationData &&
+              navigationData.length > 0 && (
+                <DrawerMenu
+                  superUser={superUser}
+                  navigationItems={navigationData}
+                  onClick={handleOpen}
+                  drawerOpen={drawerOpen}
+                />
+              )}
         </List>
       </Drawer>
       <main className={classes.content}>

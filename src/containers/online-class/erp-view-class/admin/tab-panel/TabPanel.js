@@ -14,11 +14,21 @@ const useStyles = makeStyles({
 });
 const tabValues = ['Today', 'Upcoming', 'Completed', 'Cancelled'];
 
-export default function TabPanel({ tabValue, setTabValue }) {
+export default function TabPanel({
+  tabValue,
+  setTabValue,
+  setPage,
+  setSelectedViewMore,
+}) {
   const classes = useStyles();
 
   const handleChange = (event, newValue) => {
+    setPage(1);
     setTabValue(newValue);
+    setSelectedViewMore('');
+    localStorage.removeItem('viewMoreData');
+    let data = JSON.parse(localStorage.getItem('filterData')) || '';
+    localStorage.setItem('filterData', JSON.stringify({ ...data, tabValue: newValue }));
   };
 
   return (

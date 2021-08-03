@@ -163,7 +163,6 @@ export function getDurationCounter(props) {
     getCurrentPlayerInfo,
     timeToRender: timeToRenderFromQuesContext,
   } = props;
-
   const {
     duration: durationInMin = 0,
     started_at: startedAt,
@@ -308,7 +307,7 @@ export function RenderUtilityContent({ showUtilities }) {
             />
           </span>
           <span className='quiz__topbar--participantcount'>
-            <ParticipantCount participantsCount={participants.length} />
+            <ParticipantCount participantsCount={leaderboardData.length} />
           </span>
           <span className='quiz__topbar--currentrank'>
             {isHost ? (
@@ -368,7 +367,7 @@ export function LobbyParticipantsContainer() {
     isHost,
     getCurrentPlayerInfo,
     [fetchParticipantsLabel]: { data: { data: participants = [] } = {} } = {},
-    // [fetchLeaderboardLabel]: { data: { data: leaderboardData = [] } = {} } = {},
+    [fetchLeaderboardLabel]: { data: { data: leaderboardData = [] } = {} } = {},
   } = useQuizContext() || {};
   const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();
   const { firstName = 'mp-quiz-lobby-utilities.js line:217' } = currentPlayerObj || {};

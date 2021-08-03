@@ -15,7 +15,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Divider from '@material-ui/core/Divider/Divider';
 import Paper from '@material-ui/core/Paper';
-import GetAppIcon from '@material-ui/icons/GetApp';
 import {
   Grid,
   TextField,
@@ -27,23 +26,15 @@ import {
   withStyles,
   List,
   ListItem,
-  ListItemIcon,
-  ListItemText,
 } from '@material-ui/core';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import {
   LocalizationProvider,
   DateRangePicker,
-  DateRange,
-  DateRangeDelimiter,
 } from '@material-ui/pickers-4.2';
-// import MomentUtils as  from '@material-ui/pickers-4.2/adapter/moment';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
-
-// import MomentUtils from '@date-io/moment';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import moment from 'moment';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -168,8 +159,10 @@ const CoordinatorTeacherHomework = withRouter(
     const [selectedCoTeacherOptValue, setselectedCoTeacherOptValue] = useState([]);
     const [selectedCoTeacherOpt, setSelectedCoTeacherOpt] = useState([]);
     const [selectedTeacherUser_id, setSelectedTeacherUser_id] = useState();
-    const [academicYear, setAcademicYear] = useState([]);
-    const [selectedAcademicYear, setSelectedAcadmeicYear] = useState(selectedFilters.year);
+    // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState(selectedFilters.year);
+    const selectedAcademicYear = useSelector(
+      (state) => state.commonFilterReducer?.selectedYear
+    );
     const [branchList, setBranchList] = useState([]);
     const [selectedBranch, setSelectedBranch] = useState(selectedFilters.branch);
     const [grades, setGrades] = useState([]);
@@ -381,20 +374,18 @@ const CoordinatorTeacherHomework = withRouter(
 
     const downloadGetTeacherPerformanceListApi = async () => {
       const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-      if(selectedBranch?.branch?.id && selectedTeacherByCoordinatorToCreateHw) {
+      if (selectedBranch?.branch?.id && selectedTeacherByCoordinatorToCreateHw) {
         try {
           setLoading(true);
           if (startDateTechPer && startDateTechPer) {
-            const dwURL = `${
-              endpoints.coordinatorTeacherHomeworkApi.getTecherPerformance
-            }?start_date=${startDateTechPer.format(
-              'YYYY-MM-DD'
-            )}&end_date=${endDateTechPer.format(
-              'YYYY-MM-DD'
-            )}&user_id=${
-              selectedTeacherByCoordinatorToCreateHw
-            }&branch_mp_id=${selectedBranch.id}`;
-  
+            const dwURL = `${endpoints.coordinatorTeacherHomeworkApi.getTecherPerformance
+              }?start_date=${startDateTechPer.format(
+                'YYYY-MM-DD'
+              )}&end_date=${endDateTechPer.format(
+                'YYYY-MM-DD'
+              )}&user_id=${selectedTeacherByCoordinatorToCreateHw
+              }&branch_mp_id=${selectedBranch.id}`;
+
             const result = await axiosInstance.get(dwURL, {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -409,10 +400,10 @@ const CoordinatorTeacherHomework = withRouter(
               link.setAttribute(
                 'download',
                 'Teacher_performance_' +
-                  startDateTechPer.format('YYYY-MM-DD') +
-                  '_' +
-                  endDateTechPer.format('YYYY-MM-DD') +
-                  '.xls'
+                startDateTechPer.format('YYYY-MM-DD') +
+                '_' +
+                endDateTechPer.format('YYYY-MM-DD') +
+                '.xls'
               ); //any other extension
               document.body.appendChild(link);
               link.click();
@@ -436,59 +427,90 @@ const CoordinatorTeacherHomework = withRouter(
 
     const tableContainer = useRef(null);
 
-    useEffect(() => {
-      if (teacherModuleId) {
-        setLoading(true);
-        axiosInstance.get(`${endpoints.userManagement.academicYear}?module_id=${teacherModuleId}`)
-        .then((result) => {
-          if (result.status === 200) {
-            setAcademicYear(result?.data?.data || []);
-            setLoading(false);
-          } else {
-            setAlert('error', 'Something Wrong');
-            setLoading(false);
-          }
-        })
-        .catch((error) => setAlert('error', 'Something wrong'))
-      }
-    }, [teacherModuleId]);
+    // useEffect(() => {
+    //   if (teacherModuleId) {
+    //     setLoading(true);
+    //     axiosInstance.get(`${endpoints.userManagement.academicYear}?module_id=${teacherModuleId}`)
+    //       .then((result) => {
+    //         if (result.status === 200) {
+    //           setAcademicYear(result?.data?.data || []);
+    //           setLoading(false);
+    //         } else {
+    //           setAlert('error', 'Something Wrong');
+    //           setLoading(false);
+    //         }
+    //       })
+    //       .catch((error) => setAlert('error', 'Something wrong'))
+    //   }
+    // }, [teacherModuleId]);
 
-    const handleYear = (event, value) => {
-      setGradeDisplay([]);
-      setBranchList([]);
-      setGrades([]);
-      setSections([]);
-      //setSearchGrade('');
-      //setSearchSection('');
-      setSelectedBranch([]);
-      setSelectedAcadmeicYear(value);
-      if (value) {
+    useEffect(() => {
+      if (selectedAcademicYear && teacherModuleId) {
         setLoading(true);
+
         onSetSelectedFilters({
-          year: value,
+          year: selectedAcademicYear,
           branch: '',
           grade: '',
           section: '',
         });
-        axiosInstance.get(`${endpoints.mappingStudentGrade.branch}?session_year=${value?.id}&module_id=${teacherModuleId}`)
-        .then((result) => {
-          if (result.status === 200) {
-            handleGrade();
-            //setBranchList(result?.data?.data || []);
-            //setBranchList(result?.data?.data?.results.map(obj=>((obj&&obj.branch)||{})) || []);
-            setBranchList(result?.data?.data?.results || []);
-            setLoading(false);
-          } else {
+        axiosInstance
+          .get(
+            `${endpoints.mappingStudentGrade.branch}?session_year=${selectedAcademicYear?.id}&module_id=${teacherModuleId}`
+          )
+          .then((result) => {
+            if (result.status === 200) {
+              handleGrade();
+              setBranchList(result?.data?.data?.results || []);
+              setLoading(false);
+            } else {
+              setAlert('error', 'Something Wrong');
+              setLoading(false);
+            }
+          })
+          .catch((error) => {
             setAlert('error', 'Something Wrong');
             setLoading(false);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', 'Something Wrong');
-          setLoading(false);
-        })
+          });
       }
-    };
+    }, [selectedAcademicYear, teacherModuleId]);
+
+    // const handleYear = (event, value) => {
+    //   setGradeDisplay([]);
+    //   setBranchList([]);
+    //   setGrades([]);
+    //   setSections([]);
+    //   //setSearchGrade('');
+    //   //setSearchSection('');
+    //   setSelectedBranch([]);
+    //   setSelectedAcadmeicYear(value);
+    //   if (value) {
+    //     setLoading(true);
+    //     onSetSelectedFilters({
+    //       year: value,
+    //       branch: '',
+    //       grade: '',
+    //       section: '',
+    //     });
+    //     axiosInstance.get(`${endpoints.mappingStudentGrade.branch}?session_year=${value?.id}&module_id=${teacherModuleId}`)
+    //       .then((result) => {
+    //         if (result.status === 200) {
+    //           handleGrade();
+    //           //setBranchList(result?.data?.data || []);
+    //           //setBranchList(result?.data?.data?.results.map(obj=>((obj&&obj.branch)||{})) || []);
+    //           setBranchList(result?.data?.data?.results || []);
+    //           setLoading(false);
+    //         } else {
+    //           setAlert('error', 'Something Wrong');
+    //           setLoading(false);
+    //         }
+    //       })
+    //       .catch((error) => {
+    //         setAlert('error', 'Something Wrong');
+    //         setLoading(false);
+    //       })
+    //   }
+    // };
 
     const handleBranch = (event, value) => {
       setGrades([]);
@@ -508,19 +530,19 @@ const CoordinatorTeacherHomework = withRouter(
         });
         // endpoints.masterManagement.gradesDrop
         axiosInstance.get(`${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${value.branch.id}&module_id=${teacherModuleId}`)
-        .then((result) => {
-          if (result.status === 200) {
-            setGrades(result.data.data || []);
+          .then((result) => {
+            if (result.status === 200) {
+              setGrades(result.data.data || []);
+              setLoading(false);
+            } else {
+              setAlert('error', 'Something Wrong');
+              setLoading(false);
+            }
+          })
+          .catch((error) => {
+            setAlert('error', 'Something wrong');
             setLoading(false);
-          } else {
-            setAlert('error', 'Something Wrong');
-            setLoading(false);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', 'Something wrong');
-          setLoading(false);
-        })
+          })
       }
     };
 
@@ -585,7 +607,7 @@ const CoordinatorTeacherHomework = withRouter(
     };
 
     const handleCrearFilter = () => {
-      setSelectedAcadmeicYear('');
+      // setSelectedAcadmeicYear('');
       setSelectedBranch([]);
       setGradeDisplay([]);
       setSectionDisplay([]);
@@ -600,15 +622,13 @@ const CoordinatorTeacherHomework = withRouter(
         {loading ? <Loading message='Loading...' /> : null}
         <Layout>
           <div className=' teacher-homework-coordinator message_log_wrapper-coordinator'>
-            <div className='message_log_breadcrumb_wrapper'>
-              <CommonBreadcrumbs componentName='Homework' />
-            </div>
+            <CommonBreadcrumbs componentName='Homework' isAcademicYearVisible={true} />
             <div className='message_log_white_wrapper'>
               {activeView !== 'view-homework' && activeView !== 'view-received-homework' && (
                 <Grid container className='date-container'>
                   <Grid item xs={12} sm={8}>
                     <Grid container spacing={1}>
-                      <Grid item xs={12} sm={4}>
+                      {/* <Grid item xs={12} sm={4}>
                         <Autocomplete
                           style={{ width: '100%' }}
                           size='small'
@@ -620,163 +640,169 @@ const CoordinatorTeacherHomework = withRouter(
                           getOptionLabel={(option) => option?.session_year || ''}
                           filterSelectedOptions
                           renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Academic Year'
-                            placeholder='Academic Year'
-                          />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <Autocomplete
-                        style={{ width: '100%' }}
-                        size='small'
-                        onChange={handleBranch}
-                        id='branch_id'
-                        className='dropdownIcon'
-                        value={selectedBranch}
-                        options={branchList || []}
-                        getOptionLabel={(option) => option?.branch?.branch_name || ''}
-                        filterSelectedOptions
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Branch'
-                            placeholder='Branch'
-                          />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <Autocomplete
-                        style={{ width: '100%' }}
-                        size='small'
-                        onChange={handleGrade}
-                        id='grade'
-                        required
-                        value={gradeDisplay}
-                        options={grades || []}
-                        getOptionLabel={(option) => option?.grade__grade_name || ''}
-                        filterSelectedOptions
-                        className='dropdownIcon'
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Grades'
-                            placeholder='Grades'
-                          />
-                        )}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} sm={4}>
-                      <Autocomplete
-                        style={{ width: '100%' }}
-                        size='small'
-                        onChange={handleSection}
-                        id='section'
-                        required
-                        //multiple
-                        value={sectionDisplay}
-                        options={sections || []}
-                        getOptionLabel={(option) => option?.section__section_name || ''}
-                        filterSelectedOptions
-                        className='dropdownIcon'
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            label='Sections'
-                            placeholder='Sections'
-                          />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={4} className='date-container2'>
-                      <Grid className={classes.paper}>
-                        <Autocomplete
-                          size='small'
-                          id='Teacher'
-                          options={selectedCoTeacherOpt}
-                          getOptionLabel={(option) => option?.name}
-                          onChange={handleCoordinateTeacher}
-                          // filterSelectedOptions
-                          value={selectedCoTeacherOptValue}
-                          renderInput={(params) => (
                             <TextField
-                              className=''
                               {...params}
                               variant='outlined'
-                              label='Teacher'
-                              placeholder='Teacher'
+                              label='Academic Year'
+                              placeholder='Academic Year'
+                            />
+                          )}
+                        />
+                      </Grid> */}
+                      <Grid item xs={12} sm={4}>
+                        <Autocomplete
+                          style={{ width: '100%' }}
+                          size='small'
+                          onChange={handleBranch}
+                          id='branch_id'
+                          className='dropdownIcon'
+                          value={selectedBranch}
+                          options={branchList || []}
+                          getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                          filterSelectedOptions
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Branch'
+                              placeholder='Branch'
                             />
                           )}
                         />
                       </Grid>
-                    </Grid>
-                    <Grid item xs={12} sm={4} className='date-container3'>
-                      <Grid className={classes.paper}>
-                        <LocalizationProvider dateAdapter={MomentUtils}>
-                          <DateRangePicker
-                            disableCloseOnSelect={false}
-                            startText='Select-dates'
-                            PopperProps={{ open: datePopperOpen }}
-                            // endText='End-date'
-                            value={dateRange}
-                            // calendars='1'
-                            onChange={(newValue) => {
-                              const [startDate, endDate] = newValue;
-                              const sevenDaysAfter = moment(startDate).add(6, 'days');
-                              setDateRange([startDate, sevenDaysAfter]);
-                              setDatePopperOpen(false);
-                            }}
-                            renderInput={(
-                              // {
-                              //   inputProps: { value: startValue, ...restStartInputProps },
-                              //   ...startProps
-                              // },
-                              // {
-                              //   inputProps: { value: endValue, ...restEndInputProps },
-                              //   ...endProps
-                              // }
-                              { inputProps, ...startProps },
-                              // startProps,
-                              endProps
-                            ) => {
-                              return (
-                                <>
-                                  <TextField
-                                    {...startProps}
-                                    inputProps={{
-                                      ...inputProps,
-                                      value: `${inputProps.value} - ${endProps.inputProps.value}`,
-                                      readOnly: true,
-                                    }}
-                                    size='small'
-                                    style={{ minWidth: '100%' }}
-                                    onClick={() => {
-                                      setDatePopperOpen(true);
-                                    }}
-                                  />
-                                  {/* <TextField {...startProps} size='small' /> */}
-                                  {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
-                                  {/* <TextField {...endProps} size='small' /> */}
-                                </>
-                              );
-                            }}
-                          />
-                        </LocalizationProvider>
+                      <Grid item xs={12} sm={4}>
+                        <Autocomplete
+                          style={{ width: '100%' }}
+                          size='small'
+                          onChange={handleGrade}
+                          id='grade'
+                          required
+                          value={gradeDisplay}
+                          options={grades || []}
+                          getOptionLabel={(option) => option?.grade__grade_name || ''}
+                          filterSelectedOptions
+                          className='dropdownIcon'
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Grades'
+                              placeholder='Grades'
+                            />
+                          )}
+                        />
                       </Grid>
-                    </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <Autocomplete
+                          style={{ width: '100%' }}
+                          size='small'
+                          onChange={handleSection}
+                          id='section'
+                          required
+                          //multiple
+                          value={sectionDisplay}
+                          options={sections || []}
+                          getOptionLabel={(option) => option?.section__section_name || ''}
+                          filterSelectedOptions
+                          className='dropdownIcon'
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Sections'
+                              placeholder='Sections'
+                            />
+                          )}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={4} className='date-container2'>
+                        <Grid className={classes.paper}>
+                          <Autocomplete
+                            size='small'
+                            id='Teacher'
+                            options={selectedCoTeacherOpt}
+                            getOptionLabel={(option) => option?.name}
+                            onChange={handleCoordinateTeacher}
+                            // filterSelectedOptions
+                            className='dropdownIcon'
+                            value={selectedCoTeacherOptValue}
+                            renderInput={(params) => (
+                              <TextField
+                                className=''
+                                {...params}
+                                variant='outlined'
+                                label='Teacher'
+                                placeholder='Teacher'
+                              />
+                            )}
+                          />
+                        </Grid>
+                      </Grid>
+                      <Grid item xs={12} sm={4} className='date-container3'>
+                        <Grid className={classes.paper}>
+                          <LocalizationProvider dateAdapter={MomentUtils}>
+                            <DateRangePicker
+                              disableCloseOnSelect={false}
+                              startText='Select-dates'
+                              PopperProps={{ open: datePopperOpen }}
+                              // endText='End-date'
+                              value={dateRange}
+                              // calendars='1'
+                              onChange={(newValue) => {
+                                const [startDate, endDate] = newValue;
+                                const sevenDaysAfter = moment(startDate).add(6, 'days');
+                                setDateRange([startDate, sevenDaysAfter]);
+                                setDatePopperOpen(false);
+                              }}
+                              renderInput={(
+                                // {
+                                //   inputProps: { value: startValue, ...restStartInputProps },
+                                //   ...startProps
+                                // },
+                                // {
+                                //   inputProps: { value: endValue, ...restEndInputProps },
+                                //   ...endProps
+                                // }
+                                { inputProps, ...startProps },
+                                // startProps,
+                                endProps
+                              ) => {
+                                return (
+                                  <>
+                                    <TextField
+                                      {...startProps}
+                                      inputProps={{
+                                        ...inputProps,
+                                        value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                                        readOnly: true,
+                                      }}
+                                      size='small'
+                                      style={{ minWidth: '100%' }}
+                                      onClick={() => {
+                                        setDatePopperOpen(true);
+                                      }}
+                                    />
+                                    {/* <TextField {...startProps} size='small' /> */}
+                                    {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
+                                    {/* <TextField {...endProps} size='small' /> */}
+                                  </>
+                                );
+                              }}
+                            />
+                          </LocalizationProvider>
+                        </Grid>
+                      </Grid>
                     </Grid>
                   </Grid>
                   {isMobile ? (
                     <Grid item xs={12} className='date-container4'>
-                      <Divider style={{ backgroundColor: '#ff6b6b', marginTop: '15px', marginBottom: '15px', }}/>
+                      <Divider
+                        style={{
+                          backgroundColor: '#ff6b6b',
+                          marginTop: '15px',
+                          marginBottom: '15px',
+                        }}
+                      />
                     </Grid>
                   ) : (
                     <div className='vertical_divider'></div>
@@ -825,7 +851,9 @@ const CoordinatorTeacherHomework = withRouter(
                       </Grid>
                       <Grid item xs={12} sm={6}>
                         <div className='download_button'>
-                          <StyledClearButton onClick={e => handleCrearFilter()}>Clear Filters</StyledClearButton>
+                          <StyledClearButton onClick={(e) => handleCrearFilter()}>
+                            Clear Filters
+                          </StyledClearButton>
                         </div>
                       </Grid>
                       {/* <Grid item xs={12} sm={6} className='bulk_container'>
@@ -841,7 +869,7 @@ const CoordinatorTeacherHomework = withRouter(
                               width: '100%',
                             }}
                             onClick={downloadGetTeacherPerformanceListApi}
-                            endIcon={<GetAppIcon style={{color: '#ff6b6b',}} />}
+                            endIcon={<GetAppIcon style={{ color: '#ff6b6b', }} />}
                           >
                             Download
                           </Button>
@@ -987,7 +1015,9 @@ const CoordinatorTeacherHomework = withRouter(
                             ))} */}
                                     {homeworkCols.map((col) => {
                                       return typeof col === 'object' ? (
-                                        <TableCell style={{minWidth: '260px'}}>{col.subject_name}</TableCell>
+                                        <TableCell style={{ minWidth: '260px' }}>
+                                          {col.subject_name}
+                                        </TableCell>
                                       ) : (
                                         <TableCell>{col}</TableCell>
                                       );
@@ -1053,9 +1083,10 @@ const CoordinatorTeacherHomework = withRouter(
                                                   subject: col.subject_name,
                                                   subjectId: col.id,
                                                   sectionId: sectionDisplay?.id,
-                                                  selectedTeacherByCoordinatorToCreateHw: selectedTeacherByCoordinatorToCreateHw
-                                                    ? selectedTeacherByCoordinatorToCreateHw
-                                                    : selectedCoTeacherOptValue,
+                                                  selectedTeacherByCoordinatorToCreateHw:
+                                                    selectedTeacherByCoordinatorToCreateHw
+                                                      ? selectedTeacherByCoordinatorToCreateHw
+                                                      : selectedCoTeacherOptValue,
                                                 });
                                               }}
                                             >
@@ -1070,7 +1101,8 @@ const CoordinatorTeacherHomework = withRouter(
                                                     subject: col.subject_name,
                                                     subjectId: col.subject_id,
                                                     homeworkId: data.hw_id,
-                                                    coord_selected_teacher_id: selectedTeacherUser_id,
+                                                    coord_selected_teacher_id:
+                                                      selectedTeacherUser_id,
                                                   });
                                                 }}
                                               >
@@ -1099,7 +1131,8 @@ const CoordinatorTeacherHomework = withRouter(
                                                       sectionId: sectionDisplay?.id,
                                                       homeworkId: data.hw_id,
                                                       view: 'submissionStats',
-                                                      coord_selected_teacher_id: selectedTeacherUser_id,
+                                                      coord_selected_teacher_id:
+                                                        selectedTeacherUser_id,
                                                     });
                                                   }}
                                                 >
@@ -1136,7 +1169,8 @@ const CoordinatorTeacherHomework = withRouter(
                                                       sectionId: sectionDisplay?.id,
                                                       homeworkId: data.hw_id,
                                                       view: 'evaluationStats',
-                                                      coord_selected_teacher_id: selectedTeacherUser_id,
+                                                      coord_selected_teacher_id:
+                                                        selectedTeacherUser_id,
                                                     });
                                                   }}
                                                 >
@@ -1255,8 +1289,8 @@ const mapDispatchToProps = (dispatch) => ({
   setFirstTeacherUserIdOnloadCordinatorHomewok: (selectedTeacherUser_id) => {
     return dispatch(setTeacherUserIDCoord(selectedTeacherUser_id));
   },
-  onSetSelectedFilters: (data) => {dispatch(setSelectedCoFilters(data))},
-  onResetSelectedFilters: () => { dispatch(resetSelectedCoFilters())},
+  onSetSelectedFilters: (data) => { dispatch(setSelectedCoFilters(data)) },
+  onResetSelectedFilters: () => { dispatch(resetSelectedCoFilters()) },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CoordinatorTeacherHomework);
