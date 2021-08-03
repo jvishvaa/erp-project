@@ -16,15 +16,11 @@ import { login, aolLogin } from '../../redux/actions';
 import Loader from '../../components/loader/loader';
 import axiosInstance from '../../config/axios';
 
-
-
 function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
-      {'Copyright © '}  
-      {new Date().getFullYear()}
-      
-      , K12 Techno Services Pvt. Ltd.
+      {'Copyright © '}
+      {new Date().getFullYear()}, K12 Techno Services Pvt. Ltd.
     </Typography>
   );
 }
@@ -64,27 +60,24 @@ function Forgot({ onLogin, history, aolOnLogin }) {
   const erpSearch = urlParams.get('erp');
 
   const handleSubmit = () => {
-
-  axiosInstance.get(`/erp_user/forgot-password/?erp_id=${erpid}`)
-  .then((response) => {
-        if (response.data.status_code==200) {
-          setAlert('success', response.data.message);
-        } else if(response.data.status_code==404){
-          setAlert('error', response.data.message);
-        }else{
-          setAlert('error', "Something went wrong, try again.");
-        }
-  })
-  .catch((err) => {
-    setAlert('error', err.message);
-  });
-
+    if (!erpid) return;
+    axiosInstance
+      .get(`/erp_user/forgot-password/?erp_id=${erpid}`)
+      .then((response) => {
+        const { data = {} } = response || {};
+        const {
+          status_code = 400,
+          message = 'Something went wrong! Please try again later.',
+        } = data || {};
+        setAlert(status_code === 200 ? 'success' : 'error', message);
+      })
+      .catch((error) => {
+        setAlert('error', error?.response?.data?.message);
+      });
   };
 
   const handleLogin = () => {
- 
     history.push('/');
-
   };
 
   useEffect(() => {
@@ -144,12 +137,14 @@ function Forgot({ onLogin, history, aolOnLogin }) {
                 Submit
               </Button>
 
-              <div 
-                onClick={() =>{
+              <div
+                onClick={() => {
                   handleLogin();
                 }}
                 className='forgot'
-              >Sign in</div>
+              >
+                Sign in
+              </div>
             </form>
           </div>
           <Box mt={8}>
