@@ -134,35 +134,6 @@ const Setting = (props) => {
     hiddenFileInput.current.click();
   };
 
-  // useEffect(()=>{
-
-  //   props.applyTheme(currentpricolor?currentpricolor:primarycolor,currentseccolor?currentseccolor:secondarycolor)
-
-  // },[])
-  // useEffect(() => {
-  //   props.applyTheme(finalTheme.primary, finalTheme.secondary)
-  // }, [finalTheme])
-
-  // useEffect(() => {
-  //   let temp = JSON.parse(localStorage.getItem("schoolDetails")) || {}
-  //   let primarytemp = ""
-  //   let secondrytemp = ""
-  //   temp.themeDetails.map(ele => {
-  //     if (ele.theme_key === "primary_color") {
-  //       primarytemp = ele.theme_value
-  //     }
-  //     else {
-  //       secondrytemp = ele.theme_value
-  //     }
-
-  //   })
-  //   setFinalTheme({
-  //     primary: primarytemp,
-  //     secondary: secondrytemp
-  //   })
-  // }, [])
-
-
   useEffect(() => {
     const schooldata = JSON.parse(localStorage.getItem("schoolDetails")) || {}
     if (schooldata) {
@@ -171,44 +142,23 @@ const Setting = (props) => {
     }
   }, [])
   useEffect(() => {
-
-
-    //   axiosInstance
-    //     .get(`${endpoints.themeAPI.school_theme}`)
-    //     .then((res) => {
-    //       if (res.status === 200) {
-    //         const result = res.data.result
-    //         result.data.map((items) => {
-    //           if (items.theme_key === "primary_color") {
-    //             setprimarycolor(items.theme_value[0])
-    //           } else if (items.theme_key === "second_color") {
-    //             setsecondarycolor(items.theme_value[0])
-    //           }
-
-    //         })
-    //       }
-
-    //     }).catch((error) => {
-    //       console.log(error);
-    //     });
-
-    var themeData = JSON.parse(localStorage.getItem("themeDetails"));
-    if (themeData){
+    let themeData = null;
+    try {
+      themeData = JSON.parse(localStorage.getItem('themeDetails')) || [];
+    } catch (e) {
+      themeData = [];
+    }
+    // var themeData = JSON.parse(localStorage.getItem("themeDetails"));
+    if (themeData?.length > 0) {
       themeData.forEach((items) => {
-        if (items.theme_key === "primary_color") {
-          setprimarycolor(items.theme_value)
-        } else if (items.theme_key === "second_color") {
-          setsecondarycolor(items.theme_value)
+        if (items?.theme_key === "primary_color") {
+          setprimarycolor(items?.theme_value)
+        } else if (items?.theme_key === "second_color") {
+          setsecondarycolor(items?.theme_value)
         }
 
       })
-    }else{
-      setprimarycolor("#ff6b6b")
-      setsecondarycolor('#014b7e')
     }
-    
-
-
   }, [])
 
 
@@ -313,16 +263,6 @@ const Setting = (props) => {
           }
 
         ]
-      // setFinalTheme({
-      //   primary: currentpricolor ? currentpricolor : primarycolor,
-      //   secondary: currentseccolor ? currentseccolor : secondarycolor
-      // })
-
-      // dispatch(props.applyTheme(currentpricolor?currentpricolor:primarycolor,currentseccolor?currentseccolor:secondarycolor))
-
-      // var stored = {}
-      // stored = JSON.parse(localStorage.getItem("schoolDetails"));
-      // stored["themeDetails"] = params
       localStorage.setItem("themeDetails", JSON.stringify(params));
       //set color in database
 
@@ -385,21 +325,7 @@ const Setting = (props) => {
             };
             axios.get(`${endpoints.appBar.schoolLogo}?school_sub_domain_name=${school_sub_domain_name}`, { headers })
               .then(response => {
-                // var appBarLocalStorage = {}
-                // const themecolor = [
-                //   {
-                //     theme_key: "primary_color",
-                //     theme_value: primarycolor,
-                //   },
-                //   {
-                //     theme_key: "second_color",
-                //     theme_value: secondarycolor,
-                //   }
-
-                // ]
                 const appBarLocalStorage = response.data.data;
-                // appBarLocalStorage["themeDetails"] = themecolor
-
                 localStorage.setItem('schoolDetails', JSON.stringify(appBarLocalStorage))
               })
               .catch(err => console.log(err))
@@ -415,9 +341,6 @@ const Setting = (props) => {
   });
   return (
     <Layout>
-      {/* <Card className={classes.root}>
-        <CardContent style={{ display: "flex", position: "absolute" }}>
-          <div style={{ marginTop: "-11%" }}> */}
       <Grid
         container
         justifyContent="center"
@@ -476,7 +399,7 @@ const Setting = (props) => {
 
 
         <div>
-        
+
           <CardHeader title="Theme"></CardHeader>
           <Card className={classes.colors}>
             <form onSubmit={formik2.handleSubmit} className={classes.choosetheme} >
@@ -536,7 +459,7 @@ const Setting = (props) => {
         </div>
         {/* </CardContent> */}
 
-      {/* </Card> */}
+        {/* </Card> */}
       </Grid>
     </Layout >
   );
