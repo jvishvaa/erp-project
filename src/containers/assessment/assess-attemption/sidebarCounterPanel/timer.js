@@ -10,7 +10,7 @@ m:
 <Timer.Seconds />
 s */
 const TimerComponent = (props) => {
-  const { submit, startedAt, duration: durationInMin, setToBeSubmitted } = props || {};
+  const { submit, startedAt, duration: durationInMin, setIsAutoSubmit } = props || {};
   let duratonPassedAlreadyInMilliSec = new Date() - new Date(startedAt);
   let testDurationInMilliSec = durationInMin * 60 * 1000;
   let durationLeft = testDurationInMilliSec - duratonPassedAlreadyInMilliSec;
@@ -21,7 +21,7 @@ const TimerComponent = (props) => {
         durationInMin * 60 * 1000 - new Date().getTime() + new Date(startedAt).getTime();
       if (durationLeft <= 0) {
         // submit();
-        setToBeSubmitted(prev=>!prev);
+        setIsAutoSubmit(prev=>!prev);
       }
     },1000);
     return () => {
