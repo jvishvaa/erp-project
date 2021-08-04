@@ -294,8 +294,7 @@ import ChapterBook from 'containers/intelligent-textbook/chapterpage/ChapterBook
 import { themeGenerator } from '../src/utility-functions/themeGenerator';
 
 function App({ alert }) {
-
-  const [theme, setTheme] = useState(()=>themeGenerator());
+  const [theme, setTheme] = useState(() => themeGenerator());
   return (
     // <ErrorBoundary404 HomeButton={false}>
     <div className='App'>
@@ -343,30 +342,19 @@ function App({ alert }) {
                           <Route path='/erp-online-class/class-work/:param1/:param2/:param3'>
                             {({ match }) => <ClassWork match={match} />}
                           </Route>
-                          {/*
-                        <Route exact path='/view-users'>
-                            {({ match }) => <ViewUsers match={match} />}
-                        </Route>
-                        */}
-                            <Route path='/communication/messagelog'>
-                              {({ match }) => <MessageLog match={match} />}
-                            </Route>
-                            <Route path='/dashboard'>
-                              {({ match }) => <Dashboard match={match} />}
-                            </Route>
-                            <Route exact path='/'>
-                              {({ match, history }) => (
-                                <Login match={match} history={history} setTheme={setTheme} />
-                              )}
-                            </Route>
-                            <Route exact path='/forgot'>
-                              {({ match, history }) => (
-                                <Forgot match={match} history={history} />
-                              )}
-                            </Route>
-                            {/* <Route exact path='/error'>
+                          <Route path='/communication/messagelog'>
+                            {({ match }) => <MessageLog match={match} />}
+                          </Route>
+                          <Route path='/dashboard'>
+                            {({ match }) => <Dashboard match={match} />}
+                          </Route>
+                          <Route exact path='/'>
                             {({ match, history }) => (
-                              <Login match={match} history={history} />
+                              <Login
+                                match={match}
+                                history={history}
+                                setTheme={setTheme}
+                              />
                             )}
                           </Route>
                           <Route exact path='/forgot'>
@@ -377,11 +365,6 @@ function App({ alert }) {
                           <Route path='/assesment'>
                             {({ match }) => <Assesment match={match} />}
                           </Route>
-                          {/*
-                        <Route exact path='/assignrole'>
-                          {({ match }) => <AssignRole match={match} />}
-                        </Route>
-                        */}
                           <Route exact path='/question-bank'>
                             {({ match }) => <QuestionBankList match={match} />}
                           </Route>
@@ -1164,9 +1147,6 @@ function App({ alert }) {
                               <PostDateCheque match={match} alert={alert} />
                             )}
                           </Route>
-                          {/* <Route exact path= '/finance/Approval/Requests/PostDateCheque'>
-                  {({ match }) => <PostDateCheque match={match} />}
-                </Route> */}
                           <Route exact path='/finance/student/studentInfo'>
                             {({ match }) => (
                               <StudentInfoAdm match={match} alert={alert} />
@@ -1399,7 +1379,6 @@ function App({ alert }) {
                           <Route exact path='/intelligent-book/allbooks'>
                             {({ match }) => <ViewiBook match={match} />}
                           </Route>
-
                           <Route exact path='/intelligent-book/chapter-view'>
                             {({ match }) => <ViewiChapter match={match} />}
                           </Route>
