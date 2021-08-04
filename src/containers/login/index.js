@@ -20,7 +20,11 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import './login.css';
 import { login, aolLogin } from '../../redux/actions';
 import Loader from '../../components/loader/loader';
-import { fetchThemeApi, themeGenerator } from '../../utility-functions/themeGenerator';
+import {
+  fetchThemeApi,
+  isFetchThemeRequired,
+  themeGenerator,
+} from '../../utility-functions/themeGenerator';
 function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
@@ -111,13 +115,7 @@ function SignIn({ onLogin, history, aolOnLogin, setTheme }) {
   };
 
   useEffect(() => {
-    let themeDetails = null;
-    try {
-      themeDetails = JSON.parse(localStorage.getItem('themeDetails')) || [];
-    } catch (e) {
-      themeDetails = [];
-    }
-    if (themeDetails?.length === 0)
+    if (isFetchThemeRequired())
       fetchThemeApi()
         .then(() => {
           const response = themeGenerator();

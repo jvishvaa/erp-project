@@ -23,7 +23,10 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 import Appbar from './Appbar';
 import SearchBar from './SearchBar';
-import { fetchThemeApi } from '../../utility-functions/themeGenerator';
+import {
+  fetchThemeApi,
+  isFetchThemeRequired,
+} from '../../utility-functions/themeGenerator';
 
 
 export const ContainerContext = createContext();
@@ -68,13 +71,7 @@ const Layout = ({ children, history }) => {
   }, [academicYear]);
 
   useEffect(() => {
-    let themeDetails = null;
-    try {
-      themeDetails = JSON.parse(localStorage.getItem('themeDetails')) || [];
-    } catch (e) {
-      themeDetails = [];
-    }
-    if (themeDetails?.length === 0) {
+    if (isFetchThemeRequired()) {
       fetchThemeApi();
     }
   }, []);
