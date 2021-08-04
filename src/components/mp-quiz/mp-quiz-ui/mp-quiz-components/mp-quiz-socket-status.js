@@ -5,6 +5,7 @@ import { useSocket } from '../../mp-quiz-providers';
 import { InternalPageStatus } from '../../mp-quiz-utils';
 
 function MpQuizSocketStatus(props) {
+  const { params: { role: roleId } = {} } = props || {}
   const ws = useSocket() || {};
   const { readyState, connect } = ws || {};
   console.log(ws, 'ws')
@@ -14,6 +15,13 @@ function MpQuizSocketStatus(props) {
     [window.WebSocket.CONNECTING]: 'connecting',
   };
 
+  const handleGoHomeRedirection=()=>{
+    {roleId==0?
+      props.history.push('/erp-online-class-teacher-view') :
+      props.history.push('/erp-online-class-student-view') 
+    }
+  }
+
   return (
     statusObj[readyState] === 'open' ? null :
       statusObj[readyState] === 'closed' ? <InternalPageStatus
@@ -21,7 +29,7 @@ function MpQuizSocketStatus(props) {
         label={
           <div style={{ minWidth: '40vw', display: 'flex', justifyContent: "space-evenly" }}>
             <Button variant='outlined'
-              onClick={() => { props.history.push('/erp-online-class-teacher-view') }}>
+              onClick={handleGoHomeRedirection}>
               Go Home
             </Button>
             <Button variant='outlined'

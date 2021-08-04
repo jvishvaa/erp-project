@@ -469,7 +469,8 @@ export default {
     school_logo : `${baseURLCentral}/central-admin/update_school_logo/`
   },
   themeAPI : {
-    school_theme : `/schools/school_theme/`
+    school_theme : `/schools/school_theme/`,
+    school_theme_fetch : `/schools/school_theme_fetch/`
   },
   orchadio: {
     audioUpload: '/academic/orchadio-upload/',

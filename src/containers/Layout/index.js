@@ -5,151 +5,39 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useState, useEffect, useRef, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams, withRouter } from 'react-router-dom';
-import { throttle, debounce } from 'throttle-debounce';
+import { withRouter } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import MenuIcon from '@material-ui/icons/Menu';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import TodayIcon from '@material-ui/icons/Today';
-import MoreIcon from '@material-ui/icons/More';
-import Collapse from '@material-ui/core/Collapse';
-import Divider from '@material-ui/core/Divider';
-import ContactPhoneRoundedIcon from '@material-ui/icons/ContactPhoneRounded';
-// import TodayIcon from '@material-ui/icons/Today';
-import AssessmentSharpIcon from '@material-ui/icons/AssessmentSharp';
-import {
-  Popper,
-  Fade,
-  Paper,
-  Grid,
-  ListItemSecondaryAction,
-  ListItemIcon,
-} from '@material-ui/core';
-import EditIcon from '@material-ui/icons/EditOutlined';
-import { fade } from '@material-ui/core/styles/colorManipulator';
+import { ListItemIcon } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItem from '@material-ui/core/ListItem';
-import PermIdentityIcon from '@material-ui/icons/PermIdentity';
-import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import clsx from 'clsx';
-import EventAvailableIcon from '@material-ui/icons/EventAvailable';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import EventNoteIcon from '@material-ui/icons/EventNote';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Grow from '@material-ui/core/Grow';
-import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
-import { logout, fetchAcademicYearList } from '../../redux/actions';
+import { fetchAcademicYearList } from '../../redux/actions';
 import DrawerMenu from '../../components/drawer-menu';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import UserDetails from './userDetails/user-details';
-import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
-import logoMobile from '../../assets/images/logo_mobile.png';
-import online_classpng from '../../assets/images/Online classes-01.svg';
-import logo from '../../assets/images/logo.png';
-import orchidsPlaceholderLogo from '../../assets/images/orchidsPlaceholderLogo2x.png';
-
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
-import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
-import SettingsIcon from '@material-ui/icons/Settings';
-import UserInfo from '../../components/user-info';
-import PublishIcon from '@material-ui/icons/Publish';
-import menuIcon from 'components/drawer-menu/menu-icon';
-import axios from 'axios';
 import Appbar from './Appbar';
 import SearchBar from './SearchBar';
-
+import {
+  fetchThemeApi,
+  isFetchThemeRequired,
+} from '../../utility-functions/themeGenerator';
 
 
 export const ContainerContext = createContext();
 
-const Layout = ({ children, history, ...props }) => {
+const Layout = ({ children, history }) => {
   const containerRef = useRef(null);
   const dispatch = useDispatch();
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const { role_details: roleDetails } =
-    JSON.parse(localStorage.getItem('userDetails')) || {};
-  const { role_details: roleDetailes } =
-    JSON.parse(localStorage.getItem('userDetails')) || {};
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [superUser, setSuperUser] = useState(false);
-  const [searchUserDetails, setSearchUserDetails] = useState([]);
-  const searchInputRef = useRef();
-  const { setAlert } = useContext(AlertNotificationContext);
-  const [searching, setSearching] = useState(false);
-  const [globalSearchResults, setGlobalSearchResults] = useState(false);
-  const [globalSearchError, setGlobalSearchError] = useState(false);
-  const [searchedText, setSearchedText] = useState('');
-  const [totalPage, setTotalPage] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [scrollDone, setScrollDone] = useState(false);
-  const [mobileSeach, setMobileSeach] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-
-  const getGlobalUserRecords = async (text) => {
-    try {
-      const result = await axiosInstance.get(
-        `${endpoints.gloabSearch.getUsers}?search=${text}&page=${currentPage}&page_size=100`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (result.data.status_code === 200) {
-        const tempData = [];
-        result.data.data.results.map((items) =>
-          tempData.push({
-            id: items.id,
-            name: items.name,
-            erpId: items.erp_id,
-            contact: items.contact,
-          })
-        );
-        setTotalPage(result.data.data.total_pages);
-        setSearchUserDetails(tempData);
-      } else {
-        setAlert('error', result.data.message);
-        setGlobalSearchError(false);
-      }
-    } catch (error) {
-      setAlert('error', error.message);
-      setGlobalSearchError(false);
-    }
-  };
-  const autocompleteSearch = (q, pageId, isDelete) => {
-    if (q !== '') {
-      setSearching(true);
-      setGlobalSearchResults(true);
-      getGlobalUserRecords(q);
-    }
-  };
-  const autocompleteSearchDebounced = debounce(500, autocompleteSearch);
-  const autocompleteSearchThrottled = throttle(500, autocompleteSearch);
-  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
@@ -172,153 +60,23 @@ const Layout = ({ children, history, ...props }) => {
 
   useEffect(() => {
     if (isLogout) {
-      // history.push('/');
       window.location.href = '/';
       setIsLogout(false);
     }
   }, [isLogout]);
 
-  useEffect(() => {
-    if (searchedText !== '') {
-      setGlobalSearchResults(false);
-      setSearching(false);
-      setSearchUserDetails([]);
-      setTotalPage(0);
-      setCurrentPage(1);
-    }
-  }, [history.location.pathname]);
-
-  //   useEffect(() => {
-  //     if (searchedText !== '') {
-  //       getGlobalUserRecords();
-  //     }
-  //   }, [currentPage]);
-
-  
   const academicYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   useEffect(() => {
     if (!academicYear) dispatch(fetchAcademicYearList());
   }, [academicYear]);
-  
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    const list = ['rememberDetails'];
-    const isPresent = JSON.parse(localStorage.getItem('rememberDetails'));
-    // JSON.parse(localStorage.getItem('themeDetails'));
-    if (isPresent) {
-      Object.keys(localStorage).forEach((key) => {
-        if (!list.includes(key)) localStorage.removeItem(key);
-      });
-    } else localStorage.clear();
-    setIsLogout(true);
-  };
-
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-    setProfileOpen(false);
-  };
-
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-    setProfileOpen(!profileOpen);
-  };
-
-  const changeQuery = (event) => {
-    setSearchedText(event.target.value);
-    if (event.target.value === '') {
-      setGlobalSearchResults(false);
-      setSearching(false);
-      setSearchUserDetails([]);
-      setTotalPage(0);
-      setCurrentPage(1);
-      return;
+  useEffect(() => {
+    if (isFetchThemeRequired()) {
+      fetchThemeApi();
     }
-    const q = event.target.value;
-    if (q.length < 5) {
-      setCurrentPage(1);
-      autocompleteSearchThrottled(event.target.value);
-    } else {
-      setCurrentPage(1);
-      autocompleteSearchDebounced(event.target.value);
-    }
-  };
-
-  const handleTextSearchClear = (e) => {
-    e.preventDefault();
-    setTimeout(() => {
-      setSearchedText('');
-      setGlobalSearchResults(false);
-      setSearching(false);
-      setSearchUserDetails([]);
-      setTotalPage(0);
-      setCurrentPage(1);
-    }, 500);
-  };
-  const handleTextSearchClearMobile = (e) => {
-    e.preventDefault();
-    setMobileSeach(false);
-    setTimeout(() => {
-      setSearchedText('');
-      setGlobalSearchResults(false);
-      setSearching(false);
-      setSearchUserDetails([]);
-      setTotalPage(0);
-      setCurrentPage(1);
-    }, 500);
-  };
-
-  //   const handleScroll = (event) => {
-
-  //     if (
-  //       target.scrollTop + target.clientHeight === target.scrollHeight &&
-  //       currentPage < totalPage
-  //     ) {
-  //       setScrollDone(true);
-  //       setCurrentPage(currentPage + 1);
-  //     }
-  //   };
+  }, []);
 
   const classes = useStyles();
-
-  const mobileMenuId = 'primary-search-account-menu-mobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      getContentAnchorEl={null}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      id={mobileMenuId}
-      TransitionComponent={Grow}
-      transitionDuration={500}
-      transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-      open={profileOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem onClick={(e) => history.push('/profile')}>
-        <IconButton aria-label='my profile' color='inherit'>
-          <PermIdentityIcon color='primary' style={{ fontSize: '2rem' }} />
-        </IconButton>
-        <p style={{ color: '#014B7E' }}>My Profile</p>
-      </MenuItem>
-
-      {superUser ? (
-        <MenuItem onClick={(e) => history.push('/setting')}>
-          <IconButton aria-label='settings' color='inherit'>
-            <SettingsIcon color='primary' style={{ fontSize: '2rem' }} />
-          </IconButton>
-          <p style={{ color: '#014B7E' }}>Settings</p>
-        </MenuItem>
-      ) : null}
-      <MenuItem onClick={handleLogout}>
-        <IconButton aria-label='logout button' color='inherit'>
-          <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
-        </IconButton>
-        <p style={{ color: '#014B7E' }}>Logout</p>
-      </MenuItem>
-    </Menu>
-  );
 
   const handleRouting = (name) => {
     switch (name) {
@@ -1119,74 +877,6 @@ const Layout = ({ children, history, ...props }) => {
       >
         <div className={classes.appBarSpacer} />
         {isMobile ? <SearchBar /> : null}
-
-        {
-          // isMobile && drawerOpen && (
-          //   <>
-          //     {/* <UserInfo
-          //       user={roleDetails}
-          //       onClick={() => {
-          //         history.push('/profile');
-          //         setDrawerOpen((prevState) => !prevState);
-          //       }}
-          //     /> */}
-
-          //     <Box className={classes.sidebarActionButtons}>
-          //       {mobileSeach ? (
-                 
-          //         <div>
-          //           <Paper component='form' className={classes.searchInputContainerMobile}>
-          //             <IconButton
-          //               type='submit'
-          //               className={classes.clearIconButtonMobile}
-          //               aria-label='close'
-          //               onClick={handleTextSearchClearMobile}
-          //             >
-          //               <CloseIcon />
-          //             </IconButton>
-          //             <InputBase
-          //               value={searchedText}
-          //               className={classes.searchInputMobile}
-          //               placeholder='Search..'
-          //               inputProps={{ 'aria-label': 'search across site' }}
-          //               inputRef={searchInputRef}
-          //               onChange={changeQuery}
-          //               onBlur={handleTextSearchClear}
-          //             />
-          //             <IconButton
-          //               type='submit'
-          //               className={classes.searchIconButtonMobile}
-          //               aria-label='search'
-          //             >
-          //               {/* <SearchIcon /> */}
-          //             </IconButton>
-          //           </Paper>
-          //         </div>
-          //       ) : (
-          //         <>
-          //           {/* <IconButton onClick={handleLogout}>
-          //             <PowerSettingsNewIcon style={{ color: '#ffffff' }} />
-          //           </IconButton>
-          //           <IconButton>
-          //             <SettingsIcon style={{ color: '#ffffff' }} />
-          //           </IconButton> */}
-          //           {/* <IconButton onClick={() => setMobileSeach(true)}> */}
-          //             {/* <SearchIcon style={{ color: '#ffffff' }} /> */}
-
-          //           {/* </IconButton> */}
-          //         </>
-
-          //       )
-          //       }
-          //     </Box>
-          //     <Box style={{ padding: '0 10px' }}>
-          //       <Divider style={{ backgroundColor: '#ffffff' }} />
-          //     </Box>
-
-              
-          //   </>
-          // )
-        }
         <List>
           <ListItem
             className={classes.menuControlContainer}
@@ -1221,13 +911,11 @@ const Layout = ({ children, history, ...props }) => {
                 <DrawerMenu
                   superUser={superUser}
                   navigationItems={navigationData}
-                  // onClick={()=>setDrawerOpen(true)}
                   onClick={handleOpen}
                   drawerOpen={drawerOpen}
-                  // onClick={handleRouting}
                 />
               )}
-        </List> 
+        </List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />

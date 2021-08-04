@@ -291,87 +291,10 @@ import ViewiChapter from 'containers/intelligent-textbook/ViewiChapter';
 import ViewiBook from './containers/intelligent-textbook/ViewiBook';
 import AllBooksPage from 'containers/intelligent-textbook/bookpage/AllBooksPage';
 import ChapterBook from 'containers/intelligent-textbook/chapterpage/ChapterBook';
-import { colorLuminance } from '../src/utility-functions';
-
-const getThemeElements = () => {
-  let themeDetails = JSON.parse(localStorage.getItem('themeDetails')) || [];
-  const elements = {
-    colors: {
-      primarytemp: '#ff6b6b',
-      secondrytemp: '#014b7e',
-    },
-  };
-
-  if (themeDetails?.length > 0) {
-    {
-      themeDetails.forEach(({ theme_key = 'primary_color', theme_value = '#ff6b6b' }) => {
-        if (theme_key === 'primary_color') {
-          elements['colors']['primarytemp'] = theme_value;
-        } else {
-          elements['colors']['secondrytemp'] = theme_value;
-        }
-      });
-    }
-    elements['colors']['darkprimary'] = colorLuminance(elements.colors.primarytemp, -0.2);
-    elements['colors']['lightprimary'] = colorLuminance(
-      elements.colors.primarytemp,
-      -0.4
-    );
-    return elements;
-  }
-};
+import { themeGenerator } from '../src/utility-functions/themeGenerator';
 
 function App({ alert }) {
-  
-  const {
-    colors
-  } = getThemeElements() || {};
-  const {
-    primarytemp = '#ff6b6b',
-    secondrytemp = '#014b7e',
-    darkprimary = '',
-    lightprimary = '',
-  } =  colors || {};
-  
-  const theme = createMuiTheme({
-    palette: {
-      primary: {
-        // main: '#ff6b6b',
-        primarylight: lightprimary,
-        main: primarytemp,
-        primarydark: darkprimary,
-      },
-      secondary: {
-        // main: '#014b7e',
-        main: secondrytemp,
-      },
-      text: {
-        default: '#014b7e',
-      },
-      background: {
-        primary: '#ffffff',
-        secondary: '#f9f9f9',
-      },
-    },
-    typography: {
-      fontSize: 16,
-      color: '#014b7e',
-    },
-    overrides: {
-      MuiButton: {
-        // Name of the rule
-        root: {
-          // Some CSS
-          textTransform: 'capitailize',
-          textDecoration: 'none',
-          borderRadius: '10px',
-          color: '#ffffff',
-          backgroundColor: primarytemp,
-        },
-      },
-    },
-  });
-
+  const [theme, setTheme] = useState(() => themeGenerator());
   return (
     // <ErrorBoundary404 HomeButton={false}>
     <div className='App'>
@@ -419,11 +342,6 @@ function App({ alert }) {
                           <Route path='/erp-online-class/class-work/:param1/:param2/:param3'>
                             {({ match }) => <ClassWork match={match} />}
                           </Route>
-                          {/*
-                        <Route exact path='/view-users'>
-                            {({ match }) => <ViewUsers match={match} />}
-                        </Route>
-                        */}
                           <Route path='/communication/messagelog'>
                             {({ match }) => <MessageLog match={match} />}
                           </Route>
@@ -432,7 +350,11 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/'>
                             {({ match, history }) => (
-                              <Login match={match} history={history} />
+                              <Login
+                                match={match}
+                                history={history}
+                                setTheme={setTheme}
+                              />
                             )}
                           </Route>
                           <Route exact path='/forgot'>
@@ -443,11 +365,6 @@ function App({ alert }) {
                           <Route path='/assesment'>
                             {({ match }) => <Assesment match={match} />}
                           </Route>
-                          {/*
-                        <Route exact path='/assignrole'>
-                          {({ match }) => <AssignRole match={match} />}
-                        </Route>
-                        */}
                           <Route exact path='/question-bank'>
                             {({ match }) => <QuestionBankList match={match} />}
                           </Route>
@@ -1230,9 +1147,6 @@ function App({ alert }) {
                               <PostDateCheque match={match} alert={alert} />
                             )}
                           </Route>
-                          {/* <Route exact path= '/finance/Approval/Requests/PostDateCheque'>
-                  {({ match }) => <PostDateCheque match={match} />}
-                </Route> */}
                           <Route exact path='/finance/student/studentInfo'>
                             {({ match }) => (
                               <StudentInfoAdm match={match} alert={alert} />
@@ -1465,7 +1379,6 @@ function App({ alert }) {
                           <Route exact path='/intelligent-book/allbooks'>
                             {({ match }) => <ViewiBook match={match} />}
                           </Route>
-
                           <Route exact path='/intelligent-book/chapter-view'>
                             {({ match }) => <ViewiChapter match={match} />}
                           </Route>
