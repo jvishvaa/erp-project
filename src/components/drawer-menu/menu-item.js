@@ -15,10 +15,19 @@ import Layout from 'containers/Layout';
 import { makeStyles } from '@material-ui/core/styles';
 import { theme } from 'highcharts';
 import { ClassSharp } from '@material-ui/icons';
-
+import './styles.scss';
 
 const MenuItem = withRouter(({ history, ...props }) => {
-  const { item, onClick, onChangeMenuState, menuOpen, openParent, openMenu, drawerOpen, navigationItems } = props || {};
+  const {
+    item,
+    onClick,
+    onChangeMenuState,
+    menuOpen,
+    openParent,
+    openMenu,
+    drawerOpen,
+    navigationItems,
+  } = props || {};
   const [selectedIndex, setSelectedIndex] = useState(null);
 
   const [parentModule, setParentModule] = useState(false);
@@ -29,8 +38,6 @@ const MenuItem = withRouter(({ history, ...props }) => {
   const useStyles = makeStyles((theme) => ({
 
     menuItemhover: {
-
-
       '&:hover': {
         '& span': {
           backgroundColor: theme.palette.primary.primarylight,
@@ -49,26 +56,25 @@ const MenuItem = withRouter(({ history, ...props }) => {
       backgroundColor: theme.palette.primary.primarydark,
       whiteSpace: 'break-spaces',
       // textOverflow: "ellipsis"
-
     },
 
     menuSelectionText: {
       '& span': {
         color: theme.palette.primary.main,
-        fontWeight: "bolder",
-        marginBottom: "2%",
-        marginTop: "2%",
-        backgroundColor: "white",
-        borderBottomLeftRadius: "26px",
-        borderTopLeftRadius: "26px",
-        left: "15%",
-        width: "85%",
-        // whiteSpace:'break-spaces'
-      }
+        fontWeight: 'bolder',
+        marginBottom: '2%',
+        marginTop: '2%',
+        backgroundColor: 'white',
+        borderBottomLeftRadius: '26px',
+        borderTopLeftRadius: '26px',
+        left: '15%',
+        width: '85%',
+      },
     },
     menuItemIcon: {
-      color: '#ffffff',
-      // zIndex:1,
+      '& .MuiSvgIcon-root': {
+        color: '#fff',
+      },
     },
     menuItemIconSelected: {
       // backgroundColor:'#ffffff',
@@ -79,8 +85,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
       marginLeft: '2rem',
       color: '#ffffff',
     },
-  }))
-
+  }));
 
   const menuSelectionArray = [
     { name: 'Take Class', Path: '/take-class' },
@@ -156,11 +161,11 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Teacher Diary', Path: '/diary/teacher' },
     {
       name: 'Assign Transport Fees',
-      Path: '/feeType/assign_other_fees'
+      Path: '/feeType/assign_other_fees',
     },
     {
       name: 'Add Transport Fees',
-      Path: '/feeType/OtherFeeType'
+      Path: '/feeType/OtherFeeType',
     },
     { name: 'Ledger Tab', Path: '/student/LegerTab' },
     { name: 'Word Count Configuration', Path: '/blog/wordcount-config' },
@@ -228,288 +233,284 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/finance/ReceiptBook',
     },
     {
-      name: "Total Paid and Due Report",
-      Path: '/finance/TotalPaidReport'
+      name: 'Total Paid and Due Report',
+      Path: '/finance/TotalPaidReport',
     },
     {
-      name: "Other Fee Total Paid and Due",
-      Path: '/finance/OtherFeeTotalPaidReport'
+      name: 'Other Fee Total Paid and Due',
+      Path: '/finance/OtherFeeTotalPaidReport',
     },
     {
-      name: "Bounce Report",
-      Path: '/finance/ChequeBounceReport'
+      name: 'Bounce Report',
+      Path: '/finance/ChequeBounceReport',
     },
     {
-      name: "Application/registration Rece",
-      Path: '/finance/Application/registration/ReceiptBook'
+      name: 'Application/registration Rece',
+      Path: '/finance/Application/registration/ReceiptBook',
     },
     {
-      name: "Store Report",
-      Path: '/finance/StoreReport'
+      name: 'Store Report',
+      Path: '/finance/StoreReport',
     },
     {
-      name: "Total Forms & Report",
-      Path: '/finance/TotalFormReport'
+      name: 'Total Forms & Report',
+      Path: '/finance/TotalFormReport',
     },
     {
-      name: "Transaction Status",
-      Path: '/finance/TransactionStatus'
+      name: 'Transaction Status',
+      Path: '/finance/TransactionStatus',
     },
     {
-      name: "View School Strength",
-      Path: '/student-strength'
+      name: 'View School Strength',
+      Path: '/student-strength',
     },
     {
-      name: "Concession Settings",
-      Path: "finance/ConcessionSetting"
+      name: 'Concession Settings',
+      Path: 'finance/ConcessionSetting',
     },
     {
       name: 'Fee Pay Request',
       Path: '/finance/Approval/Requests/FeePaymentRequests',
     },
     {
-      name: "Store Pay Request",
-      Path: '/finance/Approval/Requests/StorePaymentRequests'
+      name: 'Store Pay Request',
+      Path: '/finance/Approval/Requests/StorePaymentRequests',
     },
     {
-      name: "Post Dated cheque",
-      Path: '/finance/Approval/Requests/PostDateCheque'
+      name: 'Post Dated cheque',
+      Path: '/finance/Approval/Requests/PostDateCheque',
     },
     {
-      name: "Accept and Reject payments",
-      Path: '/finance/Approval/Requests/AcceptRejectPayment'
+      name: 'Accept and Reject payments',
+      Path: '/finance/Approval/Requests/AcceptRejectPayment',
     },
     {
-      name: "Student Active/Inactive",
-      Path: '/finance/Student/ActiveInactive/Admin'
+      name: 'Student Active/Inactive',
+      Path: '/finance/Student/ActiveInactive/Admin',
     },
     {
-      name: "Unassign Fee Requests",
-      Path: '/finance/UnassignFeeRequests'
+      name: 'Unassign Fee Requests',
+      Path: '/finance/UnassignFeeRequests',
     },
     {
-      name: "Student Shuffle Requests",
-      Path: '/finance/Approval/Requests/StudentShuffleRequest'
+      name: 'Student Shuffle Requests',
+      Path: '/finance/Approval/Requests/StudentShuffleRequest',
     },
     {
-      name: "Tally Report",
-      Path: '/finance/TallyReport'
+      name: 'Tally Report',
+      Path: '/finance/TallyReport',
     },
     {
-      name: "Other Fee Total Paid and Due Report",
-      Path: "/finance/OtherFeeTotalPaidReport"
+      name: 'Other Fee Total Paid and Due Report',
+      Path: '/finance/OtherFeeTotalPaidReport',
     },
     {
-      name: "Transaction Status",
-      Path: "/finance/TransactionStatus"
+      name: 'Transaction Status',
+      Path: '/finance/TransactionStatus',
     },
     {
-      name: "Active/Inactive",
-      Path: '/finance/Student/ActiveInactive'
+      name: 'Active/Inactive',
+      Path: '/finance/Student/ActiveInactive',
     },
     {
-      name: "Assign Delivery charge kit books & uniform",
-      Path: '/finance/student/AssignDeliveryCharge'
+      name: 'Assign Delivery charge kit books & uniform',
+      Path: '/finance/student/AssignDeliveryCharge',
     },
     {
-      name: "Fee Collection",
-      Path: '/finance/student/FeeCollection'
+      name: 'Fee Collection',
+      Path: '/finance/student/FeeCollection',
     },
     {
-      name: "Student Shuffle",
-      Path: '/finance/StudentShuffleRequest'
+      name: 'Student Shuffle',
+      Path: '/finance/StudentShuffleRequest',
     },
     {
-      name: "Assign/Change fee plan",
-      Path: '/finance/Student/ChnageFeePlanToStudent '
+      name: 'Assign/Change fee plan',
+      Path: '/finance/Student/ChnageFeePlanToStudent ',
     },
     {
-      name: "Student Info",
-      Path: '/finance/student/studentInfo'
+      name: 'Student Info',
+      Path: '/finance/student/studentInfo',
     },
     {
-      name: "Student Promotion",
-      Path: '/finance/Student/StudentPromotion'
+      name: 'Student Promotion',
+      Path: '/finance/Student/StudentPromotion',
     },
     {
-      name: "QR code",
-      Path: '/finance/Student/OqCodeGenerate'
+      name: 'QR code',
+      Path: '/finance/Student/OqCodeGenerate',
     },
     {
-      name: "Communications",
-      Path: '/finance/student/Communication'
+      name: 'Communications',
+      Path: '/finance/student/Communication',
     },
     {
-      name: "Application Form",
-      Path: '/finance/accountant/applicationFrom'
+      name: 'Application Form',
+      Path: '/finance/accountant/applicationFrom',
     },
     {
-      name: "Registration Form",
-      Path: '/admissions/registrationForm/'
+      name: 'Registration Form',
+      Path: '/admissions/registrationForm/',
     },
     {
-      name: "Admission Form",
-      Path: '/finance/accountant/admissionForm'
+      name: 'Admission Form',
+      Path: '/finance/accountant/admissionForm',
     },
     {
-      name: "Online Admissions",
-      Path: '/finance/admissions/OnlineAdmission'
+      name: 'Online Admissions',
+      Path: '/finance/admissions/OnlineAdmission',
     },
     {
-      name: "Account Login",
-      Path: '/finance/BulkOperation/AccountantLogin'
+      name: 'Account Login',
+      Path: '/finance/BulkOperation/AccountantLogin',
     },
     {
-      name: "Permanent Active/Inactive",
-      Path: '/finance/BulkOperation/BulkActiveInactive'
+      name: 'Permanent Active/Inactive',
+      Path: '/finance/BulkOperation/BulkActiveInactive',
     },
     {
-      name: "Temporary Active/Inactive",
-      Path: '/finance/BulkOperation/BulkActiveInactiveParent'
+      name: 'Temporary Active/Inactive',
+      Path: '/finance/BulkOperation/BulkActiveInactiveParent',
     },
     {
-      name: "Fee Structure Upload",
-      Path: '/finance/BulkOperation/Feestructure'
+      name: 'Fee Structure Upload',
+      Path: '/finance/BulkOperation/Feestructure',
     },
     {
-      name: "Bulk Report Upload",
-      Path: '/finance/BulkOperation/BulkReportUpload'
+      name: 'Bulk Report Upload',
+      Path: '/finance/BulkOperation/BulkReportUpload',
     },
     {
-      name: "Upload Online Payments",
-      Path: '/finance/BulkOperation/UploadOnlinePayment'
+      name: 'Upload Online Payments',
+      Path: '/finance/BulkOperation/UploadOnlinePayment',
     },
     {
-      name: "Bulk Status Upload",
-      Path: '/finance/BulkOperation/BulkUploadStatus'
+      name: 'Bulk Status Upload',
+      Path: '/finance/BulkOperation/BulkUploadStatus',
     },
     {
-      name: "Report Settings",
-      Path: '/finance/Setting/ReceiptSettings'
+      name: 'Report Settings',
+      Path: '/finance/Setting/ReceiptSettings',
     },
     {
-      name: "Last Date Settings",
-      Path: '/finance/Setting/LastDateSetting'
+      name: 'Last Date Settings',
+      Path: '/finance/Setting/LastDateSetting',
     },
     {
-      name: "Income Tax Certificate",
-      Path: '/finance/Student/IncomeTaxCertificate'
+      name: 'Income Tax Certificate',
+      Path: '/finance/Student/IncomeTaxCertificate',
     },
     {
-      name: "Create Receipt Ranges",
-      Path: '/finance/ReceiptRange'
+      name: 'Create Receipt Ranges',
+      Path: '/finance/ReceiptRange',
     },
     {
-      name: "Petty Cash Expense",
-      Path: '/finance/Expanse%20Management/PettyExpense'
+      name: 'Petty Cash Expense',
+      Path: '/finance/Expanse%20Management/PettyExpense',
     },
     {
-      name: "Party List",
-      Path: '/finance/Expanse%20Management/PartyList'
+      name: 'Party List',
+      Path: '/finance/Expanse%20Management/PartyList',
     },
     {
-      name: "View Publication",
-      Path: '/publications'
+      name: 'View Publication',
+      Path: '/publications',
     },
     {
-      name: "Ebook View",
-      Path: '/ebook/view'
+      name: 'Ebook View',
+      Path: '/ebook/view',
     },
     {
-      name: "Appointment Responder",
-      Path: '/responder-view'
+      name: 'Appointment Responder',
+      Path: '/responder-view',
     },
     {
-      name: "Contact Us",
-      Path: '/contact-us'
+      name: 'Contact Us',
+      Path: '/contact-us',
     },
     {
-      name: "Normal Fee Type",
-      Path: '/feeType/normalFeeType'
+      name: 'Normal Fee Type',
+      Path: '/feeType/normalFeeType',
     },
     {
-      name: "Misc. Fee Type",
-      Path: '/feeType/miscFeeType'
+      name: 'Misc. Fee Type',
+      Path: '/feeType/miscFeeType',
     },
     {
-      name: "Curricular Fee Type",
-      Path: '/feeType/CurricularFeeType'
+      name: 'Curricular Fee Type',
+      Path: '/feeType/CurricularFeeType',
     },
     {
-      name: "App/Reg Fee Type",
-      Path: '/feeType/RegistrationFee'
+      name: 'App/Reg Fee Type',
+      Path: '/feeType/RegistrationFee',
     },
     {
-      name: "View Fee Plan",
-      Path: '/feePlan/ViewFeePlan'
+      name: 'View Fee Plan',
+      Path: '/feePlan/ViewFeePlan',
     },
     {
-      name: "Misc. Fee Class",
-      Path: '/finance/MiscFeeClass'
+      name: 'Misc. Fee Class',
+      Path: '/finance/MiscFeeClass',
     },
     {
-      name: "Order Details",
-      Path: '/finance/E-Mandate/OrderDetails'
+      name: 'Order Details',
+      Path: '/finance/E-Mandate/OrderDetails',
     },
     {
-      name: "Customer Details",
-      Path: '/finance/E-Mandate/CustomerDetails'
+      name: 'Customer Details',
+      Path: '/finance/E-Mandate/CustomerDetails',
     },
     {
-      name: "Billing Details",
-      Path: '/finance/E-Mandate/BillingDetails'
+      name: 'Billing Details',
+      Path: '/finance/E-Mandate/BillingDetails',
     },
     {
-      name: "Total Billing Details",
-      Path: '/finance/E-Mandate/TotalBillingDetails'
+      name: 'Total Billing Details',
+      Path: '/finance/E-Mandate/TotalBillingDetails',
     },
     {
-      name: "Manage Payments",
-      Path: '/finance/ManagePayments'
+      name: 'Manage Payments',
+      Path: '/finance/ManagePayments',
     },
     {
-      name: "Fee Structure",
-      Path: '/finance/FeeStructure'
+      name: 'Fee Structure',
+      Path: '/finance/FeeStructure',
     },
     {
-      name: "Books & Uniform",
-      Path: '/finance/BooksAndUniform'
+      name: 'Books & Uniform',
+      Path: '/finance/BooksAndUniform',
     },
     {
-      name: "Shipping Payment",
-      Path: '/finance/ShippingPayment'
+      name: 'Shipping Payment',
+      Path: '/finance/ShippingPayment',
     },
     {
-      name: "sub Category allow",
-      Path: '/finance/ShippingPayment'
+      name: 'sub Category allow',
+      Path: '/finance/ShippingPayment',
     },
     {
-      name: "School store",
-      Path: '/Store/AddItems'
+      name: 'School store',
+      Path: '/Store/AddItems',
     },
     {
-      name: "Kit",
-      Path: '/Store/CreateKit'
+      name: 'Kit',
+      Path: '/Store/CreateKit',
     },
     {
-      name: "Store Report",
-      Path: '/finance/StoreReport'
+      name: 'Store Report',
+      Path: '/finance/StoreReport',
     },
     {
-      name: "Add Gst",
-      Path: '/Store/AddGst'
+      name: 'Add Gst',
+      Path: '/Store/AddGst',
     },
     {
-      name: "Order Status Upload",
-      Path: '/Store/OrderStatusUpload'
+      name: 'Order Status Upload',
+      Path: '/Store/OrderStatusUpload',
     },
-
-
-
-
   ];
 
-
+  // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
     // console.log("array:",menuSelectionArray)
     menuSelectionArray.forEach((items, index) => {
@@ -539,20 +540,50 @@ const MenuItem = withRouter(({ history, ...props }) => {
             }
             if (stateval && count != 0) {
               setChildValue(true);
-            }
-            else {
+            } else {
               setChildValue(false);
             }
-          })
+          });
         }
-
       }
-    }
-    )
+    });
 
     //  else{setChildValue(false);}
   }, [child, openMenu]);
+  //  console.log("childvalue:",childValue);
+  // useEffect(() => { setChildValue(true) }, [childValue])
+  // const handleParent=()=>
+  // {
+  //   setDrawerOpen((prevState) => !prevState);
+  // }
 
+  // const handleChild=(value)=>{
+  //   setChildValue(true);
+  //   onClick(value);
+  // };
+  // function handleChild(value){
+  //   setChildValue(true);
+  //   // onClick(value);
+  // }
+
+  // const handleValue=(value)=>{
+  //     onClick(value);
+  // };
+
+  // useEffect(() => {
+  //   console.log("childValue1:",childValue,openParent);
+  //   if(openParent){
+  //     setChildValue(!flag);
+  //     console.log("childValue2:",childValue,openParent);
+
+  //   }
+  //   else{
+  //     setChildValue(flag);
+  //     console.log("childValue3:",childValue,openParent);
+
+  //   }
+
+  // },[openParent]);
 
   const classes = useStyles();
   return (
@@ -567,11 +598,22 @@ const MenuItem = withRouter(({ history, ...props }) => {
             onClick(item.parent_modules);
           }
         }}
-
-        className={menuOpen && childValue && drawerOpen === false ? `menu-item-parent-selection` : ''}
+        className={
+          menuOpen && childValue && drawerOpen === false
+            ? `menu-item-parent-selection`
+            : ''
+        }
       >
-
-        <ListItemIcon className={menuOpen && childValue && drawerOpen === false ? classes.menuItemIconSelected : classes.menuItemIcon} onClick={() => { onClick(true) }}>
+        <ListItemIcon
+          className={
+            menuOpen && childValue && drawerOpen === false
+              ? classes.menuItemIconSelected
+              : classes.menuItemIcon
+          }
+          onClick={() => {
+            onClick(true);
+          }}
+        >
           {/* <MenuIcon name={item.parent_modules} /> */}
           {menuIcon(item.parent_modules)}
         </ListItemIcon>
@@ -583,39 +625,41 @@ const MenuItem = withRouter(({ history, ...props }) => {
 
             <ExpandMore className={classes.expandIcons} />
           )
-        ) : ''}
+        ) : (
+          ''
+        )}
       </ListItem>
       {item.child_module && item.child_module.length > 0 && drawerOpen && (
-        <Collapse in={menuOpen} className={classes.menuSelectionExpand} >
+        <Collapse in={menuOpen} className={classes.menuSelectionExpand}>
           {/* <Divider /> */}
-          <List >
+          <List>
             {item.child_module.map((child) => (
               <ListItem
                 button
                 style={{ background: 'none' }}
                 className={
                   selectedIndex &&
-                    child.child_name === menuSelectionArray[selectedIndex].name
+                  child.child_name === menuSelectionArray[selectedIndex].name
                     ? classes.menuSelectionText
                     : classes.menuItemhover
                 }
                 onClick={() => {
                   onClick(child.child_name);
-                }
-                }
+                }}
               >
                 <ListItemIcon className={classes.menuItemIcon}>
                   {/* <MenuIcon name={child.child_name} /> */}
                   {/* {menuIcon(child.child_name)} */}
                 </ListItemIcon>
-                <ListItemText primary={child.child_name} className='menu-item-text-expand' />
+                <ListItemText
+                  primary={child.child_name}
+                  className='menu-item-text-expand'
+                />
               </ListItem>
             ))}
           </List>
         </Collapse>
-      )
-      }
-
+      )}
     </>
   );
 });

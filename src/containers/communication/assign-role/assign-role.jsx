@@ -526,19 +526,6 @@ const AssignRole = (props) => {
               childComponentName='Assign role'
             />
           </div>
-          {/* <Grid container className='message_log_container' spacing={10}>
-          <Grid lg={10} item>
-            <div className='user_search_wrapper'>
-              <TextField
-                id='user_search'
-                label='Search'
-                value={searchText}
-                onChange={handleTextSearch}
-              />
-            </div>
-          </Grid>
-
-        </Grid> */}
           <Grid container spacing={2} className={classes.spacer}>
             <Grid item xs={12} md={3}>
               <FormControl

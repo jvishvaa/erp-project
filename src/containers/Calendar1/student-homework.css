@@ -39,11 +39,6 @@
   .message_log_white_wrapper .for-mobile table thead tr .MuiTableCell-stickyHeader .MuiInput-underline .MuiInput-input{
 	color: #FF6B6B;
   }
-.MuiSelect-icon{
-	color: #FF6B6B !important;
-
-  }
-
   .message_log_breadcrumb_wrapper{
 	  margin: 0px !important;
   }

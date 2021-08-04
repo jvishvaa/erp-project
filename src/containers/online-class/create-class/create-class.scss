@@ -20,9 +20,9 @@
     margin: 20px auto 30px auto;
   }
 
-  button {
-    color: white;
-  }
+  // button {
+  //   color: white;
+  // }
 
   .create-class-form-container {
     // background-color: #fff;
@@ -40,11 +40,7 @@
       width: 100%;
     }
   }
-
-  svg {
-    fill: $primary-color;
-  }
-
+  
   .alert__email {
     display: inline-block;
     color: red;
