@@ -928,6 +928,7 @@ const CreateClassForm = (props) => {
                   // disableToolbar
                   variant='dialog'
                   format='MM/DD/YYYY'
+                  InputProps={{ readOnly: true }}
                   margin='none'
                   id='date-picker'
                   label='Start date'
@@ -944,6 +945,7 @@ const CreateClassForm = (props) => {
                   size='small'
                   margin='none'
                   id='time-picker'
+                  InputProps={{ readOnly: true }}
                   label='Start time'
                   format='hh:mm A'
                   value={onlineClass.selectedTime}
