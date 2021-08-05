@@ -258,8 +258,6 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                 className='view_group_delete_modal'
               >
                 <DialogTitle
-                  className='view_group_delete_modal_title'
-                  style={{ cursor: 'move' }}
                   id='draggable-dialog-title'
                 >
                   Delete Group
@@ -273,13 +271,14 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                   <Button
                     autoFocus
                     onClick={handleDeleteCancel}
-                    className='view_group_delete_alert_button_cancel'
-                    color='secondary'
+                    className='labelColor cancelButton'
                   >
                     Cancel
                   </Button>
                   <Button
-                    className='view_group_delete_alert_button'
+                    color='primary'
+                    variant='contained'
+                    style={{ color: 'white' }}
                     onClick={handleDeleteConfirm}
                   >
                     Confirm
@@ -340,39 +339,37 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                           <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
                             {items.roleType.length
                               ? items.roleType.map((roles, index) => {
-                                  if (index + 1 === items.roleType.length) {
-                                    return roles.role_name;
-                                  }
-                                  return `${roles.role_name}, `;
-                                })
+                                if (index + 1 === items.roleType.length) {
+                                  return roles.role_name;
+                                }
+                                return `${roles.role_name}, `;
+                              })
                               : null}
                           </TableCell>
                           <TableCell
-                            className={`view_group_table_sections ${
-                              isHidden ? 'hide' : 'show'
-                            }`}
+                            className={`view_group_table_sections ${isHidden ? 'hide' : 'show'
+                              }`}
                           >
                             {items.grades.length
                               ? items.grades.map((grades, index) => {
-                                  if (index + 1 === items.grades.length) {
-                                    return grades.grade_name;
-                                  }
-                                  return `${grades.grade_name}, `;
-                                })
+                                if (index + 1 === items.grades.length) {
+                                  return grades.grade_name;
+                                }
+                                return `${grades.grade_name}, `;
+                              })
                               : null}
                           </TableCell>
                           <TableCell
-                            className={`view_group_table_sections ${
-                              isHidden ? 'hide' : 'show'
-                            }`}
+                            className={`view_group_table_sections ${isHidden ? 'hide' : 'show'
+                              }`}
                           >
                             {items.sections && items.sections.length
                               ? items.sections.map((sections, index) => {
-                                  if (index + 1 === items.sections.length) {
-                                    return sections.section__section_name;
-                                  }
-                                  return `${sections.section__section_name}, `;
-                                })
+                                if (index + 1 === items.sections.length) {
+                                  return sections.section__section_name;
+                                }
+                                return `${sections.section__section_name}, `;
+                              })
                               : null}
                           </TableCell>
                           <TableCell>
@@ -419,7 +416,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                               title='Edit'
                               style={{ padding: '5px' }}
                               onClick={() => handleUpdate(items)}
-                              // onClick={() => handleEdit(items.groupId, i)}
+                            // onClick={() => handleEdit(items.groupId, i)}
                             >
                               <EditOutlinedIcon style={{ color: '#ff6b6b' }} />
                             </IconButton>

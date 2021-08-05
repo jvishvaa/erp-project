@@ -240,12 +240,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
               </MenuItem>
             ))}
             <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
-              <DialogTitle
-                style={{ cursor: 'move', color: '#014b7e' }}
-                id='draggable-dialog-title'
-              >
-                Delete Question
-              </DialogTitle>
+              <DialogTitle id='draggable-dialog-title'>Delete Question</DialogTitle>
               <DialogContent>
                 <DialogContentText>
                   Are you sure you want to remove this section ?
@@ -255,7 +250,12 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
                 <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
                   Cancel
                 </Button>
-                <Button color='primary' onClick={handleDeleteConfirm}>
+                <Button
+                  color='primary'
+                  variant='contained'
+                  style={{ color: 'white' }}
+                  onClick={handleDeleteConfirm}
+                >
                   Confirm
                 </Button>
               </DialogActions>

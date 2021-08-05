@@ -61,7 +61,10 @@ const CourseView = () => {
     setLoading(true);
     setSendGrade(gradeIds);
     setCourseData([]);
-    if (gradeIds.length !== 0 && (tabMenuval === 0 || tabMenuval === undefined || tabMenuval === null)) {
+    if (
+      gradeIds.length !== 0 &&
+      (tabMenuval === 0 || tabMenuval === undefined || tabMenuval === null)
+    ) {
       axiosInstance
         .get(
           `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}`
@@ -124,7 +127,7 @@ const CourseView = () => {
     if (gradeIds.length === 0) {
       setAlert('warning', 'Select Grade');
     }
-  }
+  };
 
   const handleClearFilter = () => {
     setSendGrade([]);
@@ -153,12 +156,10 @@ const CourseView = () => {
 
       <Layout>
         <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Master Management'
-              childComponentName='Course List'
-            />
-          </div>
+          <CommonBreadcrumbs
+            componentName='Master Management'
+            childComponentName='Course List'
+          />
         </div>
         <div>
           <CourseFilter

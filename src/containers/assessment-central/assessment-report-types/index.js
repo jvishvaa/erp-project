@@ -24,37 +24,7 @@ import { connect } from 'react-redux';
 import { setClearFilters } from 'redux/actions';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
-import './assessment-report-types.css';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    boxShadow: 'none',
-  },
-  container: {
-    maxHeight: '70vh',
-  },
-  buttonContainer: {
-    background: theme.palette.background.secondary,
-    paddingBottom: theme.spacing(2),
-  },
-  centerInMobile: {
-    width: '100%',
-    display: 'flex',
-    [theme.breakpoints.down('sm')]: {
-      justifyContent: 'center',
-    },
-  },
-  columnHeader: {
-    color: `${theme.palette.secondary.main} !important`,
-    fontWeight: 600,
-    fontSize: '1rem',
-    backgroundColor: `#ffffff !important`,
-  },
-  tableCell: {
-    color: theme.palette.secondary.main,
-  },
-}));
+import useStyles from './useStyles';
 
 const AssessmentReportTypes = ({
   setClearFilters,
@@ -269,9 +239,11 @@ const AssessmentReportTypes = ({
                         )}
                         {selectedReportType?.id === 1 && (
                           <TableCell className={classes.tableCell}>
-                            <div className='teacherNameParent'>
+                            <div className={classes.teacherNameParent}>
                               {rowData?.teacher_name?.map((obj) => {
-                                return <div className='teacherNameChild'>{obj}</div>;
+                                return (
+                                  <div className={classes.teacherNameChild}>{obj}</div>
+                                );
                               })}
                             </div>
                           </TableCell>

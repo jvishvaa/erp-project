@@ -37,7 +37,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import './access.scss';
 
 const useStyles = makeStyles((theme) => ({
-  parentDiv: {},
+  root: theme.commonTableRoot,
   paperStyled: {
     minHeight: '80vh',
     height: '100%',
@@ -605,12 +605,10 @@ const AccessBlocker = () => {
   return (
     <Layout className='accessBlockerContainer'>
       <div className={classes.parentDiv}>
-        <div style={{ width: '95%', margin: '20px auto' }}>
           <CommonBreadcrumbs
             componentName='User Management'
             childComponentName='Access Blocker'
           />
-        </div>
         <Grid item md={3} xs={12} style={{ margin: '20px 20px' }}>
           {bulkUpload ? (
             <StyledButton onClick={checkUpload}>View List</StyledButton>

@@ -23,10 +23,7 @@ import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    boxShadow: 'none',
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '70vh',
   },
@@ -172,14 +169,10 @@ const BulkUpload = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='User Management'
-              childComponentName='Bulk Upload Status'
-            />
-          </div>
-        </div>
+        <CommonBreadcrumbs
+          componentName='User Management'
+          childComponentName='Bulk Upload Status'
+        />
 
         <Grid
           container

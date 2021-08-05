@@ -1,6 +1,6 @@
 const styles = (theme) => ({
   root: {
-    color: theme.palette.secondary.main,
+    ...theme.commonTableRoot,
     width: 'calc(100% - 40px)',
     margin: '20px',
   },

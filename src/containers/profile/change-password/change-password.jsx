@@ -136,12 +136,15 @@ const ChangePassword = (props) => {
         <Button
           autoFocus
           onClick={handleCancel}
-          className='view_group_delete_alert_button_cancel'
-          color='secondary'
+          className='labelColor cancelButton'
         >
           Cancel
         </Button>
-        <Button className='view_group_delete_alert_button' onClick={handleChangePassword}>
+        <Button 
+          color='primary'
+          variant='contained'
+          style={{ color: 'white' }}
+          onClick={handleChangePassword}>
           Confirm
         </Button>
       </DialogActions>

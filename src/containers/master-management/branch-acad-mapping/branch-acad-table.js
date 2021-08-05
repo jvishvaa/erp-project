@@ -8,7 +8,6 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
@@ -27,17 +26,12 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import CreateBranchAcad from './create-branch-acad';
-import EditBranchAcad from './edit-branch-acad';
 import Loading from '../../../components/loader/loader';
 import '../master-management.css';
 import BranchAcadCard from './branch-acad-card';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    margin: '0 auto',
-    boxShadow: 'none',
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '70vh',
     width: '100%',
@@ -50,12 +44,6 @@ const useStyles = makeStyles((theme) => ({
   },
   tableCell: {
     color: theme.palette.secondary.main,
-  },
-  buttonContainer: {
-    width: '95%',
-    margin: '0 auto',
-    background: theme.palette.background.secondary,
-    paddingBottom: theme.spacing(2),
   },
 }));
 
@@ -113,7 +101,6 @@ const BranchAcadTable = () => {
   const [branchId, setBranchId] = useState();
   const [branchName, setBranchName] = useState('');
   const [addFlag, setAddFlag] = useState(false);
-  const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
   const [desc, setDesc] = useState('');
   const [delFlag, setDelFlag] = useState(false);
@@ -168,23 +155,12 @@ const BranchAcadTable = () => {
   const handleAddBranchMapping = () => {
     setTableFlag(false);
     setAddFlag(true);
-    setEditFlag(false);
-  };
-
-  const handleEditBranchMapping = (id, name, desc) => {
-    setTableFlag(false);
-    setAddFlag(false);
-    setEditFlag(true);
-    setBranchId(id);
-    setBranchName(name);
-    setDesc(desc);
   };
 
   const handleGoBack = () => {
     setPage(1);
     setTableFlag(true);
     setAddFlag(false);
-    setEditFlag(false);
     setBranchName('');
     setSearchYear('');
     setSearchBranch('');
@@ -268,29 +244,21 @@ const BranchAcadTable = () => {
           setAlert('error', error.response.data.message || error.response.data.msg);
         });
     }
-  }, [moduleId,goBackFlag, delFlag, searchYear, searchBranch, page]);
+  }, [moduleId, goBackFlag, delFlag, searchYear, searchBranch, page]);
 
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Master Management'
-              childComponentName='Branch Acad Mapping List'
-              childComponentNameNext={
-                addFlag && !tableFlag
-                  ? 'Add Mapping'
-                  : editFlag && !tableFlag
-                  ? 'Edit Mapping'
-                  : null
-              }
-            />
-          </div>
-        </div>
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Branch Acad Mapping List'
+          childComponentNameNext={
+            addFlag && !tableFlag ? 'Add Mapping' : !tableFlag ? 'Edit Mapping' : null
+          }
+        />
 
-        {!tableFlag && addFlag && !editFlag && (
+        {!tableFlag && addFlag && (
           <CreateBranchAcad
             moduleId={moduleId}
             academicYearList={academicYearList}
@@ -298,17 +266,7 @@ const BranchAcadTable = () => {
             handleGoBack={handleGoBack}
           />
         )}
-        {!tableFlag && !addFlag && editFlag && (
-          <EditBranchAcad
-            id={branchId}
-            desc={desc}
-            name={branchName}
-            setLoading={setLoading}
-            handleGoBack={handleGoBack}
-          />
-        )}
-
-        {tableFlag && !addFlag && !editFlag && (
+        {tableFlag && !addFlag && (
           <>
             <Grid
               container
@@ -371,7 +329,7 @@ const BranchAcadTable = () => {
         <>
           {/* {!isMobile ? ( */}
           <>
-            {tableFlag && !addFlag && !editFlag && (
+            {tableFlag && !addFlag && (
               <Paper className={`${classes.root} common-table`}>
                 <TableContainer className={classes.container}>
                   <Table stickyHeader aria-label='sticky table'>
@@ -405,7 +363,10 @@ const BranchAcadTable = () => {
                             <TableCell className={classes.tableCell}>
                               {branch?.branch?.branch_code}
                             </TableCell>
-                            <TableCell className={classes.tableCell} style={{maxWidth: '250px'}}>
+                            <TableCell
+                              className={classes.tableCell}
+                              style={{ maxWidth: '250px' }}
+                            >
                               {branch?.branch?.address}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
@@ -415,15 +376,8 @@ const BranchAcadTable = () => {
                                 }}
                                 title='Delete Branch'
                               >
-                                <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
+                                <DeleteOutlinedIcon />
                               </IconButton>
-
-                              {/* <IconButton
-                                  // onClick={e=>handleEditBranchMapping(subject.subject.id,subject.subject.subject_name,subject.subject.subject_description,subject.subject.is_optional)}
-                                  title='Edit Branch'
-                                >
-                                  <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
-                                </IconButton> */}
                             </TableCell>
                           </TableRow>
                         );
@@ -479,12 +433,7 @@ const BranchAcadTable = () => {
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle
-            style={{ cursor: 'move', color: '#014b7e' }}
-            id='draggable-dialog-title'
-          >
-            Delete Branch
-          </DialogTitle>
+          <DialogTitle id='draggable-dialog-title'>Delete Branch</DialogTitle>
           <DialogContent>
             <DialogContentText>
               {`Confirm Delete Branch Acad Mapping ${branchName}`}
@@ -494,7 +443,12 @@ const BranchAcadTable = () => {
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color='primary' onClick={handleDeleteBranch}>
+            <Button
+              variant='contained'
+              style={{ color: 'white' }}
+              color='primary'
+              onClick={handleDeleteBranch}
+            >
               Confirm
             </Button>
           </DialogActions>

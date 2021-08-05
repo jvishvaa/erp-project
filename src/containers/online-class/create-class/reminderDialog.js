@@ -33,10 +33,7 @@ const ReminderDialog = ({ createClass, onlineClass, openModal, setOpenModal }) =
       onClose={handleCloseModal}
       aria-labelledby='draggable-dialog-title'
     >
-      <DialogTitle
-        style={{ cursor: 'move', color: '#014b7e' }}
-        id='draggable-dialog-title'
-      >
+      <DialogTitle id='draggable-dialog-title'>
         <div>You are scheduling class for</div>
         <div>
           {date?.[0]}, {date?.[2]} {date?.[1]}, {formatAMPM(selectedTime)}
@@ -51,6 +48,8 @@ const ReminderDialog = ({ createClass, onlineClass, openModal, setOpenModal }) =
         </Button>
         <Button
           color='primary'
+          variant='contained'
+          style={{ color: 'white' }}
           onClick={() => {
             createClass();
             handleCloseModal();

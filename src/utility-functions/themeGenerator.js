@@ -107,6 +107,17 @@ export function themeGenerator() {
         color: primarytemp,
       },
     },
+    commonTableRoot: {
+      width: '100%',
+      boxShadow: 'none',
+      '& th': {
+        '&:not(:last-child)': {
+          '&:after': {
+            backgroundColor: primarytemp,
+          },
+        },
+      },
+    },
     overrides: {
       MuiButton: {
         // Name of the rule
@@ -157,6 +168,9 @@ export function themeGenerator() {
         root: {
           borderRadius: '10px',
         },
+        '&.Mui-focused.MuiOutlinedInput-notchedOutline': {
+          borderColor: secondarytemp,
+        },
       },
       MuiInputLabel: {
         outlined: {
@@ -168,6 +182,11 @@ export function themeGenerator() {
       MuiTablePagination: {
         caption: {
           fontWeight: 600,
+          color: secondarytemp,
+        },
+      },
+      MuiDialogTitle: {
+        root: {
           color: secondarytemp,
         },
       },

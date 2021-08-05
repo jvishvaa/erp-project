@@ -54,6 +54,7 @@ import FileSaver from 'file-saver';
 import './styles.scss';
 
 const useStyles = makeStyles((theme) => ({
+  root: theme.commonTableRoot,
   container: {
     maxHeight: 440,
   },
@@ -91,9 +92,6 @@ const useStyles = makeStyles((theme) => ({
   cardsContainer: {
     width: '95%',
     margin: '0 auto',
-  },
-  tablePaginationCaption: {
-    fontWeight: '600 !important',
   },
   downloadExcel: {
     float: 'right',
@@ -661,7 +659,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         </div>
         <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
           <DialogTitle
-            style={{ cursor: 'move', color: '#014b7e' }}
             id='draggable-dialog-title'
           >
             Delete User
@@ -675,7 +672,11 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color='primary' onClick={handleDeleteConfirm}>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleDeleteConfirm}>
               Confirm
             </Button>
           </DialogActions>

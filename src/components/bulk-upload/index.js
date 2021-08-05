@@ -23,9 +23,7 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '40vh',
   },
