@@ -11,19 +11,11 @@ export function fetchThemeApi() {
         const result = res?.data?.result?.data || [];
         const theme = [];
         if (result?.length > 0) {
-          result.forEach((item) => {
-            if (item.theme_key === 'primary_color') {
-              let primary = {};
-              primary['theme_key'] = item.theme_key;
-              primary['theme_value'] = item.theme_value[0];
-              theme.push(primary);
-            }
-            if (item.theme_key === 'second_color') {
-              let second = {};
-              second['theme_key'] = item.theme_key;
-              second['theme_value'] = item.theme_value[0];
-              theme.push(second);
-            }
+          result.forEach(({ theme_key = 'primary_color', theme_value = ['#ff6b6b'] }) => {
+            theme.push({
+              theme_key: theme_key,
+              theme_value: theme_value[0],
+            });
           });
           localStorage.setItem('themeDetails', JSON.stringify(theme));
         }
@@ -48,7 +40,7 @@ const getThemeElements = () => {
 
   if (themeDetails?.length > 0) {
     themeDetails.forEach(({ theme_key, theme_value }) => {
-      elements['colors'][theme_key] = theme_value;
+      elements['colors'][theme_key || 'primary_color'] = theme_value || '#ff6b6b';
     });
     elements['colors']['darkprimary'] = colorLuminance(
       elements.colors.primary_color,
@@ -67,8 +59,8 @@ export function themeGenerator() {
   const {
     primary_color: primarytemp = '#ff6b6b',
     second_color: secondrytemp = '#014b7e',
-    darkprimary = '#ff6b6b',
-    lightprimary = '#014b7e',
+    darkprimary = '#cc5656',
+    lightprimary = '#994040',
   } = colors || {};
 
   return createMuiTheme({
@@ -110,3 +102,17 @@ export function themeGenerator() {
     },
   });
 }
+
+export const isFetchThemeRequired = () => {
+  let themeDetails = null;
+  try {
+    themeDetails = JSON.parse(localStorage.getItem('themeDetails')) || [];
+  } catch (e) {
+    themeDetails = [];
+  }
+  return (
+    !themeDetails.every(({ theme_key, theme_value }) =>
+      Boolean(theme_key && theme_value)
+    ) || themeDetails?.length === 0
+  );
+};

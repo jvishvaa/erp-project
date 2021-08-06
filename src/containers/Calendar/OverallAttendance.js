@@ -41,6 +41,7 @@ import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
 import { setLocale } from 'yup';
+import { connect, useSelector } from 'react-redux';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
@@ -64,7 +65,10 @@ const Attend = () => {
   const [dateString, setDateString] = useState('');
   const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
   const [academicYear, setAcademicYear] = useState([]);
-  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -113,6 +117,16 @@ const Attend = () => {
     }
   }, []);
   console.log(moduleId, 'MODULE_ID');
+  useEffect(()=>{
+    if(moduleId){
+  //   callApi(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`, 'academicYearList');
+  
+  callApi(
+    `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+    'branchList'
+  );
+  }
+  },[moduleId])
 
   useEffect(() => {
     setLoading(true);
@@ -120,7 +134,7 @@ const Attend = () => {
 
     if (history?.location?.state?.payload) {
       console.log(history?.location?.state?.payload?.academic_year_id?.session_year);
-      setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id);
+      // setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id);
       setSelectedBranch(history?.location?.state?.payload?.branch_id);
       setSelectedGrade(history?.location?.state?.payload?.grade_id);
       setSelectedSection(history?.location?.state?.payload?.section_id);
@@ -129,7 +143,7 @@ const Attend = () => {
       // setResult(history?.location?.state?.data);
       axiosInstance
         .get(
-          `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&page=${pageNumber}&page_size=${limit}`
+          `${endpoints.academics.multipleStudentsAttendacne}?academic_year=${selectedAcademicYear?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&page=${pageNumber}&page_size=${limit}`
         )
         .then((res) => {
           setResult(res.data.results);
@@ -151,7 +165,11 @@ const Attend = () => {
           date
         )
       );
-      callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
+      // callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
+      callApi(
+        `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+        'branchList'
+      );
     }
   }, []);
 
@@ -293,7 +311,7 @@ const Attend = () => {
   };
 
   const handleClearAll = () => {
-    setSelectedAcadmeicYear('');
+    // setSelectedAcadmeicYear('');
     setSelectedBranch([]);
     setSelectedBranch([]);
     setSelectedGrade([]);
@@ -381,7 +399,9 @@ const Attend = () => {
   return (
     <Layout>
       <div className='profile_breadcrumb_wrapper'>
-        <CommonBreadcrumbs componentName='Overall Attendance' />
+        <CommonBreadcrumbs componentName='Overall Attendance' 
+            isAcademicYearVisible={true}
+        />
       </div>
       <Grid
         container
@@ -441,7 +461,7 @@ const Attend = () => {
             />
           </MuiPickersUtilsProvider>
         </Grid>
-        <Grid item md={3} xs={12}>
+        {/* <Grid item md={3} xs={12}>
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
@@ -474,7 +494,7 @@ const Attend = () => {
               />
             )}
           />
-        </Grid>
+        </Grid> */}
         <Grid item md={3} xs={12}>
           <Autocomplete
             // multiple

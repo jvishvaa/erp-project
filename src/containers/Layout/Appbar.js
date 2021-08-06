@@ -128,7 +128,7 @@ const Appbar = ({ children, history, ...props }) => {
 
   const handleLogout = () => {
     dispatch(logout());
-    const list = ['rememberDetails', 'themeDetails'];
+    const list = ['rememberDetails'];
       Object.keys(localStorage).forEach((key) => {
         if (!list.includes(key)) localStorage.removeItem(key);
       });

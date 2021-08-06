@@ -424,7 +424,9 @@ const EbookPdf = (props) => {
                     page === 1
                       ? ''
                       : () => {
+                        if (page > 1){
                           setPage(page - 1);
+                        }
                         }
                   }
                 >
@@ -435,7 +437,7 @@ const EbookPdf = (props) => {
                 Page &nbsp;
                 <input
                   id='dpage'
-                  type='Number'
+                  type='text'
                   value={page}
                   onChange={(event) => {
                     const { value } = event.target;

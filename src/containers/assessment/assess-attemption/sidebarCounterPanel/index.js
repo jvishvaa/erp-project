@@ -10,7 +10,7 @@ import GeneralGuide from '../generalGuide';
 import TimerComponent from './timer';
 import { AssessmentHandlerContext } from '../assess-attemption-context';
 import './sidebarPanel.css';
-import { duration } from 'moment';
+import ConfirmModal from './confirm-modal';
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -44,7 +44,8 @@ const SidebarCounterPanel = (props) => {
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
-  const [toBeSubmitted, setToBeSubmitted] = useState(false);
+  const [isAutoSubmit, setIsAutoSubmit] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const handleOpen = () => {
     setOpen(true);
   };
@@ -79,7 +80,10 @@ const SidebarCounterPanel = (props) => {
       const { message, status_code: statusCodeResponse } = res.data || {};
       const statusCode = Number(statusCodeResponse);
       if (statusCode > 199 && statusCode < 300) {
-        setAlert('Success', `${message}`);
+        setAlert(
+          'success',
+          isAutoSubmit ? 'Test timed out! Thanks for taking the test.' : `${message}`
+        );
         props.history.push(`/assessment/?info=${assessmentId}`);
         // 'Result Submitted Successfully!'
       } else {
@@ -97,15 +101,15 @@ const SidebarCounterPanel = (props) => {
   };
 
   React.useEffect(() => {
-    if (toBeSubmitted) {
-      submitTheResult();
+    if (isAutoSubmit) {
+      submitTheResult(true);
       Object.entries(localStorage).forEach(([key, value]) => {
         if (key?.startsWith('assessment-')) {
           localStorage.removeItem(key);
         }
       });
     }
-  }, [toBeSubmitted]);
+  }, [isAutoSubmit]);
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
@@ -125,13 +129,13 @@ const SidebarCounterPanel = (props) => {
               ', '
             ) || 'NA'}
           </h4>
-          <h5>{description || 'NA'}</h5>
+          <h5>{description || ''}</h5>
         </div>
         {testDuration ? (
           <TimerComponent
             startedAt={startedAt}
             submit={submitTheResult}
-            setToBeSubmitted={setToBeSubmitted}
+            setIsAutoSubmit={setIsAutoSubmit}
             duration={testDuration}
           />
         ) : null}
@@ -195,7 +199,9 @@ const SidebarCounterPanel = (props) => {
           variant='contained'
           color='primary'
           // disabled={!isReadyToSubmit}
-          onClick={submitTheResult}
+          onClick={() => {
+            setOpenModal(true);
+          }}
         >
           Submit
         </Button>
@@ -208,6 +214,14 @@ const SidebarCounterPanel = (props) => {
       >
         {body}
       </Modal>
+
+      {openModal && (
+        <ConfirmModal
+          submit={() => submitTheResult()}
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+        />
+      )}
     </div>
   );
 };
