@@ -5,8 +5,9 @@ import Modal from '@material-ui/core/Modal';
 // import DescriptiveTestCorrection from './descriptiveTestCorrection'
 import { makeStyles } from '@material-ui/core/styles';
 import DescriptvieTestEvaluvation from './descriptvieTestEvaluvation/components/descriptiveTestEvaluvation';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import './descriptvieTestEvaluvation/editor/correction_styles.css';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -38,12 +39,13 @@ const DescriptiveTestCorrectionModule = ({
       <Card
         style={{
           width: '100%',
-          height: '100%',
+          // height: '100%',
           overflow: 'auto',
           background: 'grey',
           margin:'auto',
-          border:'solid red'
-          // padding: '40px'
+          // border:'solid red',
+          height:'115vh',
+          marginTop:'7%'
         }}
       >
         <React.Fragment>
@@ -58,11 +60,11 @@ const DescriptiveTestCorrectionModule = ({
             handleSaveFile={handleSaveFile}
           />
         </React.Fragment>
-        <div className='prev-btn' style={{position:'absolute',left:"95%",top:'50%'}}>
-            <ArrowForwardIosIcon onClick={()=>setImage(index+1)}></ArrowForwardIosIcon>
+        <div className='fwd-btn' >
+            <ArrowDropDownIcon className='arrow-middle' style={{fontSize:"2.5rem"}} onClick={()=>setImage(index+1)}></ArrowDropDownIcon>
         </div>
-        <div className='prev-btn' style={{position:'absolute',left:"2%",top:'50%'}}>
-            <ArrowBackIosIcon onClick={()=>setImage(index-1)}></ArrowBackIosIcon>
+        <div className='previous-btn' >
+            <ArrowDropUpIcon className='arrow-middle' style={{fontSize:"2.5rem"}} onClick={()=>setImage(index-1)}></ArrowDropUpIcon>
         </div>
       </Card>
     </Modal>
