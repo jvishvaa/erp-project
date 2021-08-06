@@ -881,7 +881,7 @@ const MarkAttedance = () => {
             <Typography variant='h5'>{dateValueShow}</Typography>
             <ArrowForwardIosIcon />
           </Grid>
-          <Grid>
+          {/* <Grid>
             <Typography style={{ textAlign: 'center' }}>
               <span style={{ color: 'green' }}>Total Present</span>: {totalPresent}
             </Typography>
@@ -890,7 +890,7 @@ const MarkAttedance = () => {
             <Typography style={{ textAlign: 'center' }}>
               <span style={{ color: 'red' }}>Total Absent</span>: {totalAbsent}
             </Typography>
-          </Grid>
+          </Grid> */}
           <Grid>
             <Typography style={{ textAlign: 'center' }}>
               Number of Students: {totalGenre && totalGenre}
