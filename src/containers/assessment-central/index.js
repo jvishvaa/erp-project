@@ -52,7 +52,7 @@ import selectfilter from '../../assets/images/selectfilter.svg';
 
 const useStyles = makeStyles({
   tabsFlexContainer: {
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     width: '100%',
     overflow: 'auto',
   },
@@ -370,7 +370,7 @@ const Assesment = () => {
           className='lesson-plan-breadcrumb-wrapper'
           style={{ display: 'flex', justifyContent: 'space-between' }}
         >
-          <CommonBreadcrumbs componentName='Assessment' />
+          <CommonBreadcrumbs componentName='create Test' isAcademicYearVisible={true} />
           <div>
             {!expandFilter ? (
               <IconButton
@@ -670,11 +670,11 @@ const Assesment = () => {
                 justify='space-between'
                 style={{ backgroundColor: '#fafafa' }}
               >
-                <Grid item md={1} xs={12}>
+                {/* <Grid item md={1} xs={12}>
                   <Typography component='h4' className='tab-header' color='secondary'>
                     List
                   </Typography>
-                </Grid>
+                </Grid> */}
                 <Grid item md={11} xs={12} style={{ alignItems: 'right' }}>
                   <Tabs
                     indicatorColor='primary'

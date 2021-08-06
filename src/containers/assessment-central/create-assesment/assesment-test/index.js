@@ -78,10 +78,11 @@ const AssesmentTest = ({
     let fieldName = event.target.name;
     if (fieldName === 'duration') {
       value = Math.round(+event.target.value);
-      if (value <= 1440) {
+      if (value <= 240) {
         onTestDurationChange(+value);
       } else {
-        setAlert('error', "Duration can't be more than 1440 minutes / 24 hours / 1 day!");
+        // setAlert('error', "Duration can't be more than 1440 minutes / 24 hours / 1 day!");
+        setAlert('error', "Duration can't be more than 4 hours");
       }
     }
     if (fieldName === 'testid') {
@@ -210,7 +211,7 @@ const AssesmentTest = ({
                         <TextField
                           variant='outlined'
                           inputProps={{
-                            maxLength: 4,
+                            maxLength: 3,
                           }}
                           size='small'
                           className='bg-white'

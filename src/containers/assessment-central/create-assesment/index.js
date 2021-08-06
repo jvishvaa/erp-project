@@ -397,7 +397,8 @@ const CreateAssesment = ({
         <div>
           <CommonBreadcrumbs
             componentName='Assessment'
-            childComponentName='Create Test'
+            childComponentName='create Test'
+            isAcademicYearVisible={true}
           />
         </div>
         <div className='content-container'>
