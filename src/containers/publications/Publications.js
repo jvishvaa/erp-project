@@ -5,7 +5,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 
 import FilterImage from '../../assets/images/Filter_Icon.svg';
 import LineImage from '../../assets/images/line.svg';
-
+import { connect, useSelector } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import Layout from '../Layout/index';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
@@ -192,11 +192,15 @@ const Publications = (props) => {
 
   // extra
   const [dataMap, setDataMap] = useState([]);
-  const [acadamicYearID, setAcadamicYear] = useState(1);
+  const [acadamicYearID, setAcadamicYear] = useState(
+    useSelector((state) => state.commonFilterReducer?.selectedYear)
+  );
 
   const [subjectID, setSubjectID] = useState('Select Subject');
   const [counter, setCounter] = useState(2);
-  const [academicYear, setAcadamicYearName] = useState('Select Academic Year');
+  const [academicYear, setAcadamicYearName] = useState(
+    useSelector((state) => state.commonFilterReducer?.selectedYear?.session_year)
+  );
   const [id, setId] = useState();
 
   const [individualData, setIndividualData] = useState();
@@ -275,12 +279,10 @@ const Publications = (props) => {
     setFilterPage(false);
     setMainsubject('');
     setPage(1);
-    setAcadamicYear('');
     setReviewData('');
     setIndividualData('');
     setDataDraft('');
     handleAlldata(newPage);
-    setAcadamicYearName('Select Academic Year');
     setSubjectID('Select Subject');
   };
 
@@ -306,13 +308,10 @@ const Publications = (props) => {
     setEditFlag(false);
     setPage(1);
     setGoBackFlag(!goBackFlag);
-    setMainsubject('');
-    setAcadamicYear('');
     setReviewData('');
     setIndividualData('');
     setDataDraft('');
     handleAlldata(page);
-    setAcadamicYearName('Select Academic Year');
     setSubjectID('Select Subject');
   };
   const handleGoBackPre1 = () => {
@@ -335,10 +334,6 @@ const Publications = (props) => {
   }, [goBackFlag]);
 
   const filterForAllData = (theSubjectId, page) => {
-    if (!acadamicYearID) {
-      setAlert('error', 'Select Acadminc year');
-      return;
-    }
     if (!mainsubject) {
       setAlert('error', 'Select Subject');
       return;
@@ -517,9 +512,9 @@ const Publications = (props) => {
         value.push(options[noOfOption].value);
       }
     }
-    if (counter === 1) {
-      setAcadamicYear(value);
-    }
+    // if (counter === 1) {
+    //   setAcadamicYear(value);
+    // }
 
     if (counter === 2) {
       setSubjectID(value);
@@ -530,9 +525,9 @@ const Publications = (props) => {
     callingAPI();
   }, [counter]);
   const callingAPI = () => {
-    if (counter === 1) {
-      callingAcadamicAPI();
-    }
+    // if (counter === 1) {
+    //   callingAcadamicAPI();
+    // }
 
     if (counter === 2) {
       callingSubjectAPI(id);
@@ -543,10 +538,12 @@ const Publications = (props) => {
     // console.log('The subject id:', id);
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.userManagement.subjectName}?academic_year_id=${id}`)
+      .get(
+        `${endpoints.userManagement.subjectName}?academic_year_id=${acadamicYearID?.id}`
+      )
       .then((res) => {
         // console.log('data Api:', res.data.data);
-        if (id) {
+        if (acadamicYearID?.id) {
           setMainsubject(res.data.data);
           setLoading(false);
         } else {
@@ -558,18 +555,18 @@ const Publications = (props) => {
         setLoading(false);
       });
   };
-  const callingAcadamicAPI = () => {
-    setLoading(true);
-    axiosInstance
-      .get(endpoints.userManagement.academicYear)
-      .then((res) => {
-        setDataMap(res.data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-      });
-  };
+  // const callingAcadamicAPI = () => {
+  //   setLoading(true);
+  //   //   axiosInstance
+  //   //     .get(endpoints.userManagement.academicYear)
+  //   //     .then((res) => {
+  //   //       setDataMap(res.data.data);
+  //   //       setLoading(false);
+  //   //     })
+  //   //     .catch((error) => {
+  //   //       setLoading(false);
+  //   //     });
+  // };
 
   const handleCounter = (value) => {
     if (value === 'back' && counter > 1) {
@@ -2213,6 +2210,7 @@ const Publications = (props) => {
                 ? 'Add Publication'
                 : null
             }
+            isAcademicYearVisible={true}
           />
         </div>
 
@@ -2232,60 +2230,6 @@ const Publications = (props) => {
                   <div className={classes.root}>
                     <div className='upper-table-container'>
                       <Grid className='all-box-container'>
-                        <div
-                          className={
-                            counter === 1
-                              ? 'grade-container'
-                              : counter === 2
-                              ? 'box-right-2'
-                              : 'acadamic-year-box'
-                          }
-                        >
-                          {counter === 1 ? (
-                            <>
-                              <div className='text-fixed'>Academic Year</div>
-                              <div className='inner-grade-container'>
-                                <div className='change-grade-options'>
-                                  <Select
-                                    multiple
-                                    fullWidth
-                                    native
-                                    value={acadamicYearID}
-                                    onChange={handleChangeMultiple}
-                                  >
-                                    {dataMap &&
-                                      dataMap.map((name) => (
-                                        <option
-                                          key={name.id}
-                                          value={name.id}
-                                          onClick={() => {
-                                            setAcadamicYearName(name.session_year);
-
-                                            setId(name.id);
-                                          }}
-                                        >
-                                          {name.session_year}
-                                        </option>
-                                      ))}
-                                  </Select>
-                                </div>
-                                <div className='text-fixed-last'>
-                                  Expand
-                                  <IconButton
-                                    aria-label='delete'
-                                    onClick={() => setCounter(counter + 1)}
-                                    size='small'
-                                  >
-                                    <ArrowForwardIcon className='arrow-button' />
-                                  </IconButton>
-                                </div>
-                              </div>
-                            </>
-                          ) : (
-                            <Grid className='text-rotate'>AcademicYear</Grid>
-                          )}
-                        </div>
-
                         <div
                           className={
                             counter === 2
@@ -2321,7 +2265,7 @@ const Publications = (props) => {
                                       ))}
                                   </Select>
                                 </div>
-                                <div className='text-fixed-last'>
+                                {/* <div className='text-fixed-last'>
                                   Expand
                                   <IconButton
                                     aria-label='delete'
@@ -2331,7 +2275,7 @@ const Publications = (props) => {
                                     <ArrowBackIcon className='arrow-button' />
                                     <ArrowForwardIcon className='arrow-button' />
                                   </IconButton>
-                                </div>
+                                </div> */}
                               </div>
                             </>
                           ) : (
@@ -2413,58 +2357,6 @@ const Publications = (props) => {
                       <Grid className='all-box-container1'>
                         <div
                           className={
-                            counter === 1
-                              ? 'grade-container1'
-                              : counter === 2
-                              ? 'box-right-2'
-                              : 'acadamic-year-box1'
-                          }
-                        >
-                          {counter === 1 ? (
-                            <>
-                              <div className='text-fixed1'>Academic Year</div>
-                              <div className='inner-grade-container1'>
-                                <div className='change-grade-options1'>
-                                  <Select
-                                    multiple
-                                    fullWidth
-                                    native
-                                    value={acadamicYearID}
-                                    onChange={handleChangeMultiple}
-                                  >
-                                    {dataMap &&
-                                      dataMap.map((name) => (
-                                        <option
-                                          key={name.id}
-                                          value={name.id}
-                                          onClick={() =>
-                                            setAcadamicYearName(name.session_year)
-                                          }
-                                        >
-                                          {name.session_year}
-                                        </option>
-                                      ))}
-                                  </Select>
-                                </div>
-                                <div className='text-fixed-last1'>
-                                  Expand
-                                  <IconButton
-                                    aria-label='delete'
-                                    onClick={() => setCounter(counter + 1)}
-                                    size='small'
-                                  >
-                                    <ArrowForwardIcon className='arrow-button1' />
-                                  </IconButton>
-                                </div>
-                              </div>
-                            </>
-                          ) : (
-                            <Grid className='text-rotate1'>AcademicYear</Grid>
-                          )}
-                        </div>
-
-                        <div
-                          className={
                             counter === 2
                               ? 'grade-container1'
                               : counter === 1
@@ -2498,7 +2390,7 @@ const Publications = (props) => {
                                       ))}
                                   </Select>
                                 </div>
-                                <div className='text-fixed-last1'>
+                                {/* <div className='text-fixed-last1'>
                                   Expand
                                   <IconButton
                                     aria-label='delete'
@@ -2508,7 +2400,7 @@ const Publications = (props) => {
                                     <ArrowBackIcon className='arrow-button1' />
                                     <ArrowForwardIcon className='arrow-button1' />
                                   </IconButton>
-                                </div>
+                                </div> */}
                               </div>
                             </>
                           ) : (

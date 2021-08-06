@@ -4,6 +4,7 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import EmojiObjectsSharpIcon from '@material-ui/icons/EmojiObjectsSharp';
+import { connect, useSelector } from 'react-redux';
 import Select from '@material-ui/core/Select';
 import LayersClearIcon from '@material-ui/icons/LayersClear';
 import WbIncandescentSharpIcon from '@material-ui/icons/WbIncandescentSharp';
@@ -22,8 +23,10 @@ const UpperGrade = (props) => {
   const [gradeID, setGradeID] = useState(null);
   const [sectionID, setSectionID] = useState(null);
   const [branchID, setBranchID] = useState(null);
-  const [counter, setCounter] = useState(1);
-  const [academicYear, setAcadamicYearName] = useState(null);
+  const [counter, setCounter] = useState(2);
+  const [academicYear, setAcadamicYearName] = useState(
+    useSelector((state) => state.commonFilterReducer?.selectedYear)
+  );
   const [gradeName, setGradeName] = useState();
   const [branchName, setBranchName] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -42,9 +45,9 @@ const UpperGrade = (props) => {
         value.push(options[noOfOption].value);
       }
     }
-    if (counter === 1) {
-      setAcadamicYear(value);
-    }
+    // if (counter === 1) {
+    //   setAcadamicYear(value);
+    // }
     if (counter === 2) {
       setBranchID(value);
     }
@@ -59,13 +62,10 @@ const UpperGrade = (props) => {
   useEffect(() => {
     callingAPI();
   }, [counter]);
-  const handleOpenNewPeriod = () =>{
+  const handleOpenNewPeriod = () => {
     props.handlePassOpenNewPeriod();
-  }
+  };
   const callingAPI = () => {
-    if (counter === 1) {
-      callingAcadamicAPI();
-    }
     if (counter === 2) {
       callingBranchAPI();
     }
@@ -79,20 +79,19 @@ const UpperGrade = (props) => {
   const callingGradeAPI = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.grades}?session_year=${acadamicYearID}&branch_id=${branchID}&module_id=${props.moduleId}`
+        `${endpoints.academics.grades}?session_year=${academicYear?.id}&branch_id=${branchID}&module_id=${props.moduleId}`
       )
       .then((res) => {
         setDataMap(res.data.data);
       })
       .catch((error) => {
-        
-        setAlert('error', "can't fetch grade list")
+        setAlert('error', "can't fetch grade list");
       });
   };
   const callingBranchAPI = () => {
     axiosInstance
       .get(
-        `${endpoints.communication.branches}?session_year=${acadamicYearID}&module_id=${props.moduleId}`
+        `${endpoints.communication.branches}?session_year=${academicYear?.id}&module_id=${props.moduleId}`
       )
       .then((res) => {
         if (res.status === 200) {
@@ -101,25 +100,13 @@ const UpperGrade = (props) => {
       })
       .catch((error) => {
         setDataMap(null);
-        setAlert('error', "can't fetch branch list")
-      });
-  };
-  const callingAcadamicAPI = () => {
-    axiosInstance
-      .get(`${endpoints.userManagement.academicYear}?module_id=${props.moduleId}`, {})
-      .then((res) => {
-        console.log(res, 'Academic');
-        setDataMapAcademicYear(res.data.data);
-      })
-      .catch((error) => {
-        setDataMapAcademicYear(null)
-        setAlert('error', "can't fetch academic year list")
+        setAlert('error', "can't fetch branch list");
       });
   };
   const callingSectionAPI = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.sections}?session_year=${acadamicYearID}&branch_id=${branchID}&grade_id=${gradeID}&module_id=${props.moduleId}`
+        `${endpoints.academics.sections}?session_year=${academicYear?.id}&branch_id=${branchID}&grade_id=${gradeID}&module_id=${props.moduleId}`
       )
       .then((res) => {
         if (res.status === 200) {
@@ -128,7 +115,7 @@ const UpperGrade = (props) => {
       })
       .catch((error) => {
         setDataMap(null);
-        setAlert('error', "can't fetch section list")
+        setAlert('error', "can't fetch section list");
       });
   };
   const clearButtonColor = {
@@ -144,17 +131,16 @@ const UpperGrade = (props) => {
     }
   };
   const handleGenerateData = () => {
-    
-    if (academicYear === null || branchID === null || gradeID === null || sectionID === null) {
-      setAlert('warning', "please select all filters")
+    if (branchID === null || gradeID === null || sectionID === null) {
+      setAlert('warning', 'please select all filters');
     } else {
       setShowAddPeriodButton(true);
       props.handlePassData(
-        acadamicYearID,
+        academicYear?.id,
         gradeID,
         sectionID,
         branchID,
-        academicYear,
+        academicYear?.session_year,
         gradeName,
         branchName,
         sectinName
@@ -168,7 +154,6 @@ const UpperGrade = (props) => {
       setShowAddPeriodButton(false);
       props.handleCloseTable(false);
       setCounter(1);
-      setAcadamicYear(null);
       setBranchID(null);
       setGradeID(null);
       setSectionID(null);
@@ -181,7 +166,7 @@ const UpperGrade = (props) => {
     <>
       <div className='upper-table-container'>
         <div className='all-box-container'>
-          <div
+          {/* <div
             className={
               counter === 1
                 ? 'grade-container'
@@ -233,7 +218,7 @@ const UpperGrade = (props) => {
             ) : (
               <div className='text-rotate'>Academic&nbsp;Year</div>
             )}
-          </div>
+          </div> */}
           <div
             className={
               counter === 2
@@ -433,12 +418,12 @@ const UpperGrade = (props) => {
             </Button>
           </div>
           {props.teacherView && addPeriodButton ? (
-        <div className='add-new-period-button' onClick={() => handleOpenNewPeriod()}>
-          Add Period
-        </div>
-      ) : (
-        <></>
-      )}
+            <div className='add-new-period-button' onClick={() => handleOpenNewPeriod()}>
+              Add Period
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </>

@@ -502,7 +502,10 @@ const TimeTable = (props) => {
             </Dialog>
             <div className='time-table-container'>
               <div className='time-table-breadcrums-container'>
-                <CommonBreadcrumbs componentName='Time Table' />
+                <CommonBreadcrumbs
+                  componentName='Time Table'
+                  isAcademicYearVisible={true}
+                />
                 <div
                   className={Filter ? 'filter-container-hidden' : 'filter-container-show'}
                   onClick={() => {
