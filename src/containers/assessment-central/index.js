@@ -370,7 +370,7 @@ const Assesment = () => {
           className='lesson-plan-breadcrumb-wrapper'
           style={{ display: 'flex', justifyContent: 'space-between' }}
         >
-          <CommonBreadcrumbs componentName='Assessment' />
+          <CommonBreadcrumbs componentName='Create Test' />
           <div>
             {!expandFilter ? (
               <IconButton
@@ -631,7 +631,7 @@ const Assesment = () => {
                   </div>
                 </div>
               </Grid>
-              <Grid item md={2} xs={6}>
+              {/* <Grid item md={2} xs={6}>
                 <div className='btn-container'>
                   <Button
                     variant='contained'
@@ -642,7 +642,7 @@ const Assesment = () => {
                     REPORTS
                   </Button>
                 </div>
-              </Grid>
+              </Grid> */}
               <Grid item md={2} xs={6}>
                 <div className='btn-container'>
                   <Button
@@ -670,11 +670,11 @@ const Assesment = () => {
                 justify='space-between'
                 style={{ backgroundColor: '#fafafa' }}
               >
-                <Grid item md={1} xs={12}>
+                {/* <Grid item md={1} xs={12}>
                   <Typography component='h4' className='tab-header' color='secondary'>
                     List
                   </Typography>
-                </Grid>
+                </Grid> */}
                 <Grid item md={11} xs={12} style={{ alignItems: 'right' }}>
                   <Tabs
                     indicatorColor='primary'
@@ -692,13 +692,15 @@ const Assesment = () => {
                   >
                     <Tab label='All' value='all' className='right-border' />
                     <Tab
-                      label='Physical Test'
+                      // label='Physical Test'
+                      label='Offline Test'
                       value='physical-test'
                       className='right-border'
                       icon={<img className='info-icon' src={infoIcon} alt='info' />}
                     />
                     <Tab
-                      label='Online Pattern'
+                      // label='Online Pattern'
+                      label='Online Test'
                       value='online-pattern'
                       icon={<img className='info-icon' src={infoIcon} alt='info' />}
                     />
