@@ -28,6 +28,7 @@ import { useHistory, Route, withRouter } from 'react-router-dom';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { AttachFile as AttachFileIcon } from '@material-ui/icons';
 import edxtag from '../../../../assets/images/edxtag.jpeg';
+import APIREQUEST from "../../../../config/apiRequest";
 
 const JoinClass = (props) => {
   const { setLoading, index, cardIndex, getClassName } = props;
@@ -208,9 +209,29 @@ const JoinClass = (props) => {
     }
   }, [new Date().getSeconds()]);
 
+  const msApihandleHost = (data)=> {
+    APIREQUEST("get", `/oncls/v1/zoom-redirect/?id=${data.id}`)
+    .then((res) => {
+      setLoading(false);
+      if (res?.data?.url) {
+        window.open(res?.data?.url, '_blank');
+      } else {
+        setAlert('error', res?.data?.message);
+      }
+    })
+    .catch((error) => {
+      setLoading(false);
+      setAlert('error', error.message);
+    });
+  }
+
   function handleHost(data) {
     if (!handleHostDisable()) {
       setLoading(true);
+      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+        msApihandleHost(data);
+        return;
+      }
       axiosInstance
         .get(`${endpoints.teacherViewBatches.hostApi}?id=${data.id}`)
         .then((res) => {
@@ -590,7 +611,38 @@ const DetailCardView = ({
     );
   };
 
+  const msCallData = ()=>{
+    let detailsURL =  window.location.pathname === '/erp-online-class-student-view'
+    ? `/oncls/v1/${fullData?.id}/student-oncls-details/`
+    : `/oncls/v1/${fullData?.id}/oncls-details/`;
+    APIREQUEST("get", detailsURL)
+    .then((res)=>{
+      handleMscallResponse(res);
+    })
+    .catch((error) => setAlert('error', error.message));
+  }
+
+  const handleMscallResponse = (res)=>{
+    if (res?.data?.status_code === 200) {
+      const response = res?.data?.data;
+      let result = [];
+      if (response?.length === 1) {
+        result = response;
+      }
+      if (response?.length > 1) {
+        result = handleSetData(response);
+      }
+      setNoOfPeriods(result);
+    } else {
+      setAlert('error', res?.data?.message);
+    }
+  }
+
   const handleCallaData = () => {
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      msCallData()
+      return;
+    }
     let detailsURL =
       window.location.pathname === '/erp-online-class-student-view'
         ? `erp_user/${fullData && fullData.id}/student-oc-details/`
@@ -600,19 +652,7 @@ const DetailCardView = ({
       axiosInstance
         .get(detailsURL)
         .then((res) => {
-          if (res?.data?.status_code === 200) {
-            const response = res?.data?.data;
-            let result = [];
-            if (response?.length === 1) {
-              result = response;
-            }
-            if (response?.length > 1) {
-              result = handleSetData(response);
-            }
-            setNoOfPeriods(result);
-          } else {
-            setAlert('error', res?.data?.message);
-          }
+          handleMscallResponse(res);
         })
         .catch((error) => setAlert('error', error.message));
     }

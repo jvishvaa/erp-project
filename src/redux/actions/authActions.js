@@ -22,6 +22,16 @@ const {
   FETCH_LOGGED_IN_USER_INFO_FAILURE,
 } = authActions;
 
+function isMsAPI(){
+  const user = localStorage.getItem('userDetails');
+  axios.get(`/erp_user/oncls-ms-config/`, {
+    headers: { Authorization: `Bearer ${JSON.parse(user).token}` }
+  }).then((response)=>{
+    localStorage.setItem('isMsAPI', false );
+    // localStorage.setItem('isMsAPI', response?.data?.result[0] || false );
+  });
+}
+
 export const login = (params) => (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
   return axios
@@ -41,6 +51,7 @@ export const login = (params) => (dispatch) => {
           'navigationData',
           JSON.stringify(response.data.result.navigation_data)
         );
+        isMsAPI();
         const result = { isLogin: true, message: response.data.message };
         return result;
       }
@@ -82,6 +93,7 @@ export const aolLogin = (token) => (dispatch) => {
           'navigationData',
           JSON.stringify(response.data.result.navigation_data)
         );
+        isMsAPI();
         const result = { isLogin: true, message: response.data.message };
         return result;
       }
