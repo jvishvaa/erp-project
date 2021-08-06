@@ -27,8 +27,7 @@ function isMsAPI(){
   axios.get(`/erp_user/oncls-ms-config/`, {
     headers: { Authorization: `Bearer ${JSON.parse(user).token}` }
   }).then((response)=>{
-    localStorage.setItem('isMsAPI', false );
-    // localStorage.setItem('isMsAPI', response?.data?.result[0] || false );
+    localStorage.setItem('isMsAPI', response?.data?.result[0] || false );
   });
 }
 
