@@ -37,7 +37,7 @@ const Attachment = (props) => {
     isAudioVideo = true;
     isVideoFile = true;
   }
-  console.log(props, 'teachers data');
+  // console.log(props, 'teachers data');
 
   let markup = null;
 
@@ -77,7 +77,7 @@ const Attachment = (props) => {
                   {actions?.includes('pentool') && (
                     <IconButton
                       size='small'
-                      onClick={() => onOpenInPenTool(`${urlPrefix}/${fileUrl}`, fileUrl)}
+                      onClick={() => onOpenInPenTool(`${urlPrefix}/${fileUrl}`, fileUrl, index)}
                     >
                       <CreateIcon style={{ color: '#ffffff' }} />
                     </IconButton>

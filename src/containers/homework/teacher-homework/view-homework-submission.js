@@ -41,6 +41,7 @@ import {
 import SubmittedQuestion from './submitted-question';
 import DescriptiveTestcorrectionModule from '../../../components/EvaluationTool';
 import placeholder from '../../../assets/images/placeholder_small.jpg';
+import { LaptopWindows } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -68,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: 0,
   },
 }));
-
+let savedFiles =[]
 const ViewHomework = withRouter(
   ({
     history,
@@ -99,6 +100,9 @@ const ViewHomework = withRouter(
     const [score, setScore] = useState(null);
     const [homeworkId, setHomeworkId] = useState(null);
     const [currentEvaluatedFileName, setcurrentEvaluatedFileName] = useState(null);
+    const [imageIndex, setImageIndex] = useState();
+    const [mediaContained, setMediaContained] = useState()
+    // const [imageIndex, setimageIndex] = useState(index);
 
     const scrollableContainer = useRef(null);
     const scrollableContainerEvaluated = useRef(null);
@@ -121,10 +125,10 @@ const ViewHomework = withRouter(
       }
     };
 
-    const openInPenTool = (url, fileName) => {
+    const openInPenTool = (url, fileName, i) => {
       setPenToolUrl(url);
       setcurrentEvaluatedFileName(fileName);
-      // setPenToolOpen(true);
+      setImageIndex(i);
     };
 
     const handleFinalEvaluationForHomework = async () => {
@@ -231,8 +235,79 @@ const ViewHomework = withRouter(
 
         setCollatedQuestionState(modifiedQuestion);
       }
+      console.log("fileInfo",file)
       setPenToolUrl(null);
       setcurrentEvaluatedFileName(null);
+      savedFiles[imageIndex]=0;
+      
+      let length= savedFiles.length;
+      let flag=1;
+      let i;
+      for(i=1;i<length;i++){
+        let idx=(imageIndex+i)%length
+        if(savedFiles[idx]===1){
+          let fileUrl
+          if(!isQuestionwise)
+            fileUrl=collatedSubmissionFiles
+          else  
+            fileUrl=submittedHomeworkDetails && submittedHomeworkDetails[0].submitted_files
+
+          let file_content = `${endpoints.discussionForum.s3}/homework/${fileUrl[idx]}`
+          // let fileName=`Attachment-${idx}`
+          let fileName=`${fileUrl[idx]}`
+          openInPenTool(file_content,fileName,idx);
+          flag=0;
+          break;
+        }
+      }
+      if(flag){
+        handleCloseCorrectionModal(); 
+        return;
+      }
+    };
+
+    const setImage = (idx) => {
+      let length= savedFiles.length;
+      let flag=1;
+      if(idx>imageIndex){
+        for(let i=idx;i<length;i++){
+          if(savedFiles[i]===1){
+            idx=i;
+            flag=0;
+            break;
+          }
+        }
+        if(flag){
+          console.log("warning last image")
+          return;
+        }
+      }else{
+        for(let i=idx;i>=0;i--){
+          if(savedFiles[i]===1){
+            idx=i;
+            flag=0;
+            break;
+          }
+        }
+        if(flag){
+          console.log("warning first image")
+          return;
+        }
+      }
+      let fileUrl;
+      if(!isQuestionwise)
+        fileUrl=collatedSubmissionFiles
+      else  
+        fileUrl=submittedHomeworkDetails && submittedHomeworkDetails[0]?.submitted_files
+      let ab = {
+        // file_content : "https://erp-revamp.s3.ap-south-1.amazonaws.com/homework/0/None/2021-07-05 17:50:34.041304/dummy.png",
+        file_content : `${endpoints.discussionForum.s3}/homework/${fileUrl[idx]}`,
+        id : 1,
+        splitted_media: null
+      }
+      openInPenTool(ab.file_content,fileUrl[idx],idx)
+      setMediaContained(ab)
+      // console.log("hello212",mediaContained)
     };
 
     const handleCloseCorrectionModal = () => {
@@ -277,11 +352,28 @@ const ViewHomework = withRouter(
     const handleCollatedQuestionState = (field, value) => {
       setCollatedQuestionState((prev) => ({ ...prev, [field]: value }));
     };
+    // let savedFiles =[]
+    const trackSavedFile = (length) =>{
+      for(let i=0;i<length;i++){
+        console.log("hi")
+        savedFiles[i]=1;
+      }
+    }
+
+    useEffect(() => {
+      if(collatedSubmissionFiles && !isQuestionwise){
+          console.log("hi1",collatedSubmissionFiles.length)
+          trackSavedFile(collatedSubmissionFiles.length)
+      }else if(submittedHomeworkDetails && isQuestionwise){
+          trackSavedFile(submittedHomeworkDetails[0]?.submitted_files?.length)
+      }
+    }, [collatedSubmissionFiles,submittedHomeworkDetails]);
 
     useEffect(() => {
       fetchHomeworkDetails();
     }, []);
-
+    
+    console.log("savedfiles",savedFiles);
     useEffect(() => {
       if (penToolUrl) {
         setPenToolOpen(true);
@@ -300,7 +392,7 @@ const ViewHomework = withRouter(
       splitted_media: null,
     };
     const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }];
-   
+
     return (
       <div className='view-homework-container create_group_filter_container'>
         <Grid container spacing={2} className='message_log_container'>
@@ -658,6 +750,10 @@ const ViewHomework = withRouter(
         </Grid>
         {penToolOpen && (
           <DescriptiveTestcorrectionModule
+            index={imageIndex}
+            urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+            fileUrl={(!isQuestionwise && collatedSubmissionFiles )}
+            savedFiles={savedFiles}
             desTestDetails={desTestDetails}
             mediaContent={mediaContent}
             handleClose={handleCloseCorrectionModal}
@@ -665,6 +761,7 @@ const ViewHomework = withRouter(
             open={penToolOpen}
             callBackOnPageChange={() => {}}
             handleSaveFile={handleSaveEvaluatedFile}
+            setImage={setImage}
           />
         )}
       </div>

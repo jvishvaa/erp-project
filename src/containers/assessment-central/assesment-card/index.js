@@ -6,6 +6,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import './styles.scss';
 import { deleteAssessmentTest, fetchAssesmentTests } from '../../../redux/actions';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import ConfirmModal from './confirm-modal';
 
 const menuOptions = ['Delete'];
 
@@ -24,6 +25,12 @@ const AssesmentCard = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
   const { setAlert } = useContext(AlertNotificationContext);
+  const [openModal, setOpenModal] = useState(false);
+  const [open, setOpen] = useState(false);
+  
+  const handleOpen = () => {
+    setOpen(true);
+  }
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -33,7 +40,6 @@ const AssesmentCard = ({
   };
   const handleDelete = async (testId) => {
     const { results } = await deleteAssessmentTest(testId);
-    debugger;
     if (results.status_code === 200) {
       setAlert('success', results?.message);
       filterResults(1); // 1 is the current page no.
@@ -45,7 +51,7 @@ const AssesmentCard = ({
   return (
     <div className={`assesment-card ${isSelected ? 'selected' : ''}`}>
       <div className='card-header'>
-        <p className='header'>{value.test_type__exam_name}</p>
+        <p className={`${isSelected ? 'selected' : 'header'}`}>{value.test_type__exam_name}</p>
         <div className='menu'>
           <IconButton
             aria-label='more'
@@ -97,7 +103,10 @@ const AssesmentCard = ({
                 className='assesment-card-popup-menu-item'
                 key={option}
                 selected={option === 'Pyxis'}
-                onClick={(e) => handleDelete(value?.id)}
+                // onClick={(e) => handleDelete(value?.id)}
+                onClick = {(e) => {
+                  setOpenModal(true);
+                }}
                 style={{
                   color: themeContext.palette.primary.main,
                 }}
@@ -105,6 +114,13 @@ const AssesmentCard = ({
                 {option}
               </MenuItem>
             ))}
+            {openModal && (
+              <ConfirmModal
+                submit={(e) => handleDelete(value?.id)}
+                openModal={openModal}
+                setOpenModal = {setOpenModal}
+                />
+            )}
           </Popover>
         </div>
       </div>

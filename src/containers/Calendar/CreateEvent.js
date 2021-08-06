@@ -33,6 +33,7 @@ import { KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { dateFormat } from 'highcharts';
 import { useHistory } from 'react-router';
+import { connect, useSelector } from 'react-redux';
 import { size } from 'lodash';
 function getDaysAfter(date, amount) {
   return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
@@ -192,12 +193,8 @@ const CreateEvent = () => {
       })
       .then((result) => {
         setAlert('success', result.data.message);
-
-        // history.push({
-        //   pathname: '/attendance-calendar/teacher-view',
-        // });
-
         handleBackButtonClick()
+        
       })
       .catch((error) => {
         setLoading(false);
@@ -235,7 +232,10 @@ const CreateEvent = () => {
 
   const classes = useStyles();
   const [academicYear, setAcademicYear] = useState([]);
-  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -302,9 +302,13 @@ const CreateEvent = () => {
   console.log(moduleId, 'MODULE_ID');
 
   useEffect(() => {
+    // callApi(
+    //   `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
+    //   'academicYearList'
+    // );
     callApi(
-      `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
-      'academicYearList'
+      `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+      'branchList'
     );
 
     console.log('iuhiuhi');
@@ -314,7 +318,7 @@ const CreateEvent = () => {
       setEventcategoryType(res?.data);
     });
     console.log('iuhiuhisfsdfdsfsafsdfsdfdf');
-  }, [counter]);
+  }, [ moduleId]);
 
   const handleEventTypeChange = (e, value) => {
     e.preventDefault();
@@ -363,10 +367,10 @@ const CreateEvent = () => {
   const handleAcademicYear=(event,value)=>{
     
       console.log('moduleIdDDD', moduleId);
-      setSelectedAcadmeicYear(value);
+      // setSelectedAcadmeicYear(value);
       if (value) {
         callApi(
-          `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+          `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
           'branchList'
         );
       }
@@ -389,7 +393,9 @@ const CreateEvent = () => {
     <>
       <Layout>
         <div className='profile_breadcrumb_wrapper'>
-          <CommonBreadcrumbs componentName='Create Event' />
+          <CommonBreadcrumbs componentName='Create Event' 
+            isAcademicYearVisible={true}
+          />
         </div>
         <form>
           <MediaQuery minWidth={785}>
@@ -433,7 +439,7 @@ const CreateEvent = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' spacing={2} className={classes.root}>
-              <Grid item md={2} xs={12}>
+              {/* <Grid item md={2} xs={12}>
                 <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
@@ -456,7 +462,7 @@ const CreateEvent = () => {
                     />
                   )}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item md={2} xs={12}>
                 <Autocomplete
                   // multiple
@@ -815,10 +821,10 @@ const CreateEvent = () => {
                   style={{ width: '100%' }}
                   size='small'
                   onChange={(event, value) => {
-                    setSelectedAcadmeicYear(value);
+                    // setSelectedAcadmeicYear(value);
                     if (value) {
                       callApi(
-                        `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                        `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
                         'branchList'
                       );
                     }

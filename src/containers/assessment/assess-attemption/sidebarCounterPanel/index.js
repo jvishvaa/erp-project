@@ -129,7 +129,7 @@ const SidebarCounterPanel = (props) => {
               ', '
             ) || 'NA'}
           </h4>
-          <h5>{description || 'NA'}</h5>
+          <h5>{description || ''}</h5>
         </div>
         {testDuration ? (
           <TimerComponent

@@ -164,6 +164,7 @@ const AllBooksPage = () => {
             <CommonBreadcrumbs
               componentName='Intelligent Book'
               childComponentName='Books'
+              isAcademicYearVisible={true}
             />
           </Grid>
           <Grid item md={12} xs={12} style={{ margin: '10px 0px' }}>

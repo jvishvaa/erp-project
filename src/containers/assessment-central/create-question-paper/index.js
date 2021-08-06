@@ -157,7 +157,7 @@ const CreateQuestionPaper = ({
     try {
       const data = await fetchAcademicYears(moduleId);
       setAcademicDropdown(data);
-      // handleAcademicYear({}, data[0]);
+      handleAcademicYear({}, data[0]);
     } catch (e) {
       setAlert('error', 'Failed to fetch academic');
     }
