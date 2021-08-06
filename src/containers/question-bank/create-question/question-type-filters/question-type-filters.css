@@ -127,6 +127,8 @@
 .createManuallyButton.MuiButtonBase-root {
   border: 1px solid #ff6b6b;
   background: white;
+  justify-content: center;
+  padding: 10px;
 }
 
 .createManuallyButton .MuiButton-label {
