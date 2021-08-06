@@ -2,7 +2,7 @@ import ENVCONFIG from './config';
 
 const {
   apiGateway: { baseURLCentral },
-  s3: { BUCKET: s3BUCKET },
+  s3: { BUCKET: s3BUCKET, ERP_BUCKET },
 } = ENVCONFIG;
 
 // const baseURLCentral = 'http://13.232.30.169/qbox';
@@ -205,7 +205,8 @@ export default {
     periodCompletedStatus: '/academic/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
     overviewSynopsis: `/academic/list-lesson-overview/`,
-    s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+    // s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+    s3: ERP_BUCKET,
   },
   aol: {
     cardData: '/erp_user/teacher_online_class/v3/',
