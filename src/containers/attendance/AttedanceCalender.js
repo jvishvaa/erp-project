@@ -34,6 +34,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import flag from '../../assets/images/flag.svg';
 import AcademicYear from 'components/icon/AcademicYear';
 import moment from 'moment';
+import { connect, useSelector } from 'react-redux';
 import './AttendanceCalender.scss';
 import { student } from 'containers/Finance/src/_reducers/student.reducer';
 // import { StaticDateRangePicker, LocalizationProvider } from '@material-ui/lab';
@@ -92,8 +93,12 @@ const AttedanceCalender = () => {
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
+
   const [academicYear, setAcademicYear] = useState([]);
-  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -113,7 +118,7 @@ const AttedanceCalender = () => {
   const [backButton, setBackButton] = useState(false);
   const [updatedDays, setUpdatedDays] = useState();
   const [updatedEventDays, setUpdatedEventDays] = useState();
-  console.log("year",academicYear)
+  console.log("year", academicYear)
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
@@ -122,6 +127,8 @@ const AttedanceCalender = () => {
 
   let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
   console.log(userName[0], 'userName');
+
+
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -135,10 +142,12 @@ const AttedanceCalender = () => {
             if (item.child_name === 'Teacher Calendar') {
               setModuleId(item.child_id);
               localStorage.setItem('moduleId', item.child_id);
+
             }
             if (item.child_name === 'Student Calendar') {
               setModuleId(item.child_id);
               localStorage.setItem('moduleId', item.child_id);
+
             }
           });
         }
@@ -157,7 +166,7 @@ const AttedanceCalender = () => {
       console.log(path, 'path');
       console.log(history, 'checking counter');
       if (history?.location?.state?.backButtonStatus) {
-        setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id);
+        // setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id);
         setSelectedBranch(history?.location?.state?.payload?.branch_id);
         setSelectedGrade(history?.location?.state?.payload?.grade_id);
         setSelectedSection(history?.location?.state?.payload?.section_id);
@@ -245,7 +254,7 @@ const AttedanceCalender = () => {
         }
       } else {
         setTeacherView(true);
-        setSelectedAcadmeicYear('');
+        // setSelectedAcadmeicYear('');
         setSelectedBranch([]);
         setSelectedGrade([]);
         setSelectedSection([]);
@@ -379,14 +388,24 @@ const AttedanceCalender = () => {
     }
   }, [path]);
 
+  // useEffect(() => {
+  //   if (moduleId) {
+  //     callApi(
+  //       `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
+  //       'academicYearList'
+  //     );
+  //   }
+  // }, [moduleId]);
+
   useEffect(() => {
     if (moduleId) {
       callApi(
-        `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
-        'academicYearList'
+        `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+        'branchList'
       );
     }
   }, [moduleId]);
+
 
   useEffect(() => {
     let modId = +JSON.parse(localStorage.getItem('moduleId'));
@@ -403,10 +422,10 @@ const AttedanceCalender = () => {
         } = JSON.parse(localStorage.getItem('teacherFilters')) || {};
         if (window.location.pathname === '/attendance-calendar/teacher-view') {
           if (academic?.id) {
-            setSelectedAcadmeicYear(academic);
+            // setSelectedAcadmeicYear(academic);
             const acadId = academic?.id || '';
             callApi(
-              `${endpoints.communication.branches}?session_year=${acadId}&module_id=${moduleId}`,
+              `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
               'branchList'
             );
             if (Object.keys(branch).length !== 0) {
@@ -434,9 +453,11 @@ const AttedanceCalender = () => {
     }
   }, [moduleId, window.location.pathname])
 
+
+
   const handleClearAll = () => {
     console.log('clear all');
-    setSelectedAcadmeicYear('');
+    // setSelectedAcadmeicYear('');
     setSelectedBranch([]);
     setSelectedGrade([]);
     setSelectedSection([]);
@@ -455,8 +476,8 @@ const AttedanceCalender = () => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
             console.log(result?.data?.data || []);
-            const defaultValue=result?.data?.data?.[0];
-            handleAcademicYear({},defaultValue);
+            const defaultValue = result?.data?.data?.[0];
+            handleAcademicYear({}, defaultValue);
             setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
@@ -597,6 +618,7 @@ const AttedanceCalender = () => {
     };
     console.log(payload, 'attendance calendar');
 
+
     localStorage.setItem(
       'teacherFilters',
       JSON.stringify({
@@ -668,7 +690,7 @@ const AttedanceCalender = () => {
               month: 'long',
               day: 'numeric',
             };
-            let date = new Date(res?.data?.last_update_attendance);
+            let date = new Date(res?.data?.last_update_events);
             // let datedata = moment(date).format('25 Mar 2015');
             setUpdatedEventDays(date.toLocaleDateString('en-US', options));
             // setUpdatedDays(datedata);
@@ -726,7 +748,7 @@ const AttedanceCalender = () => {
               month: 'long',
               day: 'numeric',
             };
-            let date = new Date(res?.data?.last_update_attendance);
+            let date = new Date(res?.data?.last_update_events);
             // let datedata = moment(date).format('25 Mar 2015');
             setUpdatedEventDays(date.toLocaleDateString('en-US', options));
             // setUpdatedDays(datedata);
@@ -777,7 +799,7 @@ const AttedanceCalender = () => {
             month: 'long',
             day: 'numeric',
           };
-          let date = new Date(res?.data?.last_update_attendance);
+          let date = new Date(res?.data?.last_update_events);
           // let datedata = moment(date).format('25 Mar 2015');
           setUpdatedEventDays(date.toLocaleDateString('en-US', options));
           // setUpdatedDays(datedata);
@@ -831,7 +853,7 @@ const AttedanceCalender = () => {
               month: 'long',
               day: 'numeric',
             };
-            let date = new Date(res?.data?.last_update_attendance);
+            let date = new Date(res?.data?.last_update_events);
             // let datedata = moment(date).format('25 Mar 2015');
             setUpdatedEventDays(date.toLocaleDateString('en-US', options));
             // setUpdatedDays(datedata);
@@ -883,7 +905,7 @@ const AttedanceCalender = () => {
               month: 'long',
               day: 'numeric',
             };
-            let date = new Date(res?.data?.last_update_attendance);
+            let date = new Date(res?.data?.last_update_events);
             // let datedata = moment(date).format('25 Mar 2015');
             setUpdatedEventDays(date.toLocaleDateString('en-US', options));
             // setUpdatedDays(datedata);
@@ -983,6 +1005,19 @@ const AttedanceCalender = () => {
       },
     });
   };
+  const handleYear = (event, value) => {
+      setSelectedGrade([]);
+      setSectionList([]);
+      setSelectedSection([]);
+      setSelectedBranch([]);
+      // setSelectedAcadmeicYear(value);
+      if (value?.id) {
+        callApi(
+          `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+          'branchList'
+        );
+      }
+    };
 
   const StyledFilterButton = withStyles({
     root: {
@@ -1006,33 +1041,40 @@ const AttedanceCalender = () => {
   const [value, setValue] = React.useState([null, null]);
 
   const handleAcademicYear = (event, value) => {   
-    const teacherfilterdata = JSON.parse(localStorage.getItem('teacherFilters'))
-    
-    if (JSON.stringify(teacherfilterdata && teacherfilterdata.academic) === JSON.stringify(value)) {
+      const teacherfilterdata = JSON.parse(localStorage.getItem('teacherFilters'))
+      
+      if (JSON.stringify(teacherfilterdata && teacherfilterdata.academic) === JSON.stringify(value)) {
 
-      console.log("data will be same")
-    } else {
-      setSelectedAcadmeicYear(value);
-      console.log(value, 'test');
-      if (value) {
-        callApi(
-          `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-          'branchList'
-        );
+        console.log("data will be same")
+      } else {
+        // setSelectedAcadmeicYear(value);
+        console.log(value, 'test');
+        if (value) {
+          callApi(
+            `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+            'branchList'
+          );
+        }
+        setSelectedGrade([]);
+        setSectionList([]);
+        setSelectedSection([]);
+        setSelectedBranch([]);
+        localStorage.removeItem('teacherFilters')
       }
-      setSelectedGrade([]);
-      setSectionList([]);
-      setSelectedSection([]);
-      setSelectedBranch([]);
-      localStorage.removeItem('teacherFilters')
-    }
+    
+
+
   }
-  
+
+
+
 
   return (
     <Layout>
       <div className='profile_breadcrumb_wrapper'>
-        <CommonBreadcrumbs componentName='Attendance & Calendar' />
+        <CommonBreadcrumbs componentName='Attendance & Calendar' 
+            isAcademicYearVisible={true}
+        />
       </div>
       {teacherView === true ? (
         <Grid
@@ -1042,11 +1084,11 @@ const AttedanceCalender = () => {
           spacing={3}
           id='selectionContainer'
         >
-          <Grid item md={3} xs={12}>
+          {/* <Grid item md={3} xs={12}>
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
-              onChange={handleAcademicYear}
+              onChange={handleYear}
               id='branch_id'
               className='dropdownIcon'
               value={selectedAcademicYear || ''}
@@ -1063,7 +1105,7 @@ const AttedanceCalender = () => {
                 />
               )}
             />
-          </Grid>
+          </Grid> */}
           <Grid item md={3} xs={12}>
             <Autocomplete
               // multiple
@@ -1077,8 +1119,7 @@ const AttedanceCalender = () => {
                   setSelectedBranch(value);
                   console.log(value);
                   callApi(
-                    `${endpoints.academics.grades}?session_year=${
-                      selectedAcademicYear.id
+                    `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id
                     }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
                     'gradeList'
                   );
@@ -1111,9 +1152,7 @@ const AttedanceCalender = () => {
               onChange={(event, value) => {
                 setSelectedGrade([]);
                 if (value) {
-                  // const ids = value.map((el)=>el)
                   const selectedId = value.grade_id;
-                  // console.log(selectedBranch.branch)
                   const branchId = selectedBranch.branch.id;
                   setSelectedGrade(value);
                   callApi(
