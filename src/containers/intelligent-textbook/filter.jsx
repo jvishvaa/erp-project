@@ -5,6 +5,7 @@ import endpoints from '../../config/endpoints';
 import axios from 'axios';
 import axiosInstance from '../../config/axios';
 import ClearIcon from '../../components/icon/ClearIcon';
+import { connect, useSelector } from 'react-redux';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Loading from '../../components/loader/loader';
@@ -16,7 +17,9 @@ const Filter = ({ handleFilter, clearFilter }) => {
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [subjectList, setSubjectList] = useState([]);
-  const [selectedAcad, setSelectedAcad] = useState('');
+  const [selectedAcad, setSelectedAcad] = useState(
+    useSelector((state) => state.commonFilterReducer?.selectedYear)
+  );
   const [selectedBranch, setSelectedBranch] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
@@ -25,7 +28,6 @@ const Filter = ({ handleFilter, clearFilter }) => {
   const [selectedVolume, setSelectedVolume] = useState('');
 
   useEffect(() => {
-    setSelectedAcad('');
     setSelectedVolume('');
     setBranchList([]);
     setGradeList([]);
@@ -79,18 +81,23 @@ const Filter = ({ handleFilter, clearFilter }) => {
   }
 
   useEffect(() => {
+    // withAxiosInstance(
+    //   `${endpoints.userManagement.academicYear}?module_id=${
+    //     getModuleInfo('Ebook View').id
+    //   }`,
+    //   'acad'
+    // );
     withAxiosInstance(
-      `${endpoints.userManagement.academicYear}?module_id=${
+      `${endpoints.communication.branches}?session_year=${selectedAcad?.id}&module_id=${
         getModuleInfo('Ebook View').id
       }`,
-      'acad'
+      'branch'
     );
     ApiCal();
   }, []);
 
   function handleClear() {
     handleFilter();
-    setSelectedAcad('');
     setSelectedVolume('');
     setGradeList([]);
     setSubjectList([]);
@@ -102,41 +109,6 @@ const Filter = ({ handleFilter, clearFilter }) => {
   return (
     <>
       <Grid container spacing={2} style={{ padding: '0px 10px' }}>
-        <Grid item md={3} xs={12}>
-          <Autocomplete
-            style={{ width: '100%' }}
-            size='small'
-            className='dropdownIcon'
-            onChange={(event, value) => {
-              if (value) {
-                withAxiosInstance(
-                  `${endpoints.communication.branches}?session_year=${
-                    value?.id
-                  }&module_id=${getModuleInfo('Ebook View').id}`,
-                  'branch'
-                );
-              }
-              setSelectedAcad(value);
-              setSelectedGrade('');
-              setSelectedSubject('');
-              setSelectedBranch('');
-            }}
-            id='Acad_id'
-            options={acadList}
-            value={selectedAcad}
-            getOptionLabel={(option) => option.session_year}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Academic Year'
-                //
-                placeholder='Academic Year'
-              />
-            )}
-          />
-        </Grid>
         <Grid item md={3} xs={12}>
           <Autocomplete
             style={{ width: '100%' }}
