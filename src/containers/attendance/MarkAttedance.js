@@ -34,6 +34,7 @@ import moment from 'moment';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Axios from 'axios';
 import { useHistory } from 'react-router';
+import { connect, useSelector } from 'react-redux';
 import axios from 'axios';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
@@ -94,7 +95,10 @@ const MarkAttedance = () => {
   const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
   const [dateValueShow, setDateValueShow] = useState(moment(date).format('DD MMMM YYYY'));
   const [academicYear, setAcademicYear] = useState([]);
-  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -118,6 +122,8 @@ const MarkAttedance = () => {
 
   const [totalGenre, setTotalGenre] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
+  const [totalAbsent, setTotalAbsent] = useState(0);
+  const [totalPresent, setTotalPresent] = useState(0);
   const limit = 8;
 
   useEffect(() => {
@@ -149,14 +155,18 @@ const MarkAttedance = () => {
 
   useEffect(()=>{
     if(moduleId){
-    callApi(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`, 'academicYearList');
+  //   callApi(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`, 'academicYearList');
+  
+  callApi(
+    `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+    'branchList'
+  );
   }
-
   },[moduleId])
   useEffect(() => {
     if (selectedSection.section_id && counterDataFilter < 3) {
       handleFilter();
-      setCounterDataFilter(counterDataFilter+1);
+      setCounterDataFilter(counterDataFilter + 1);
     }
   }, [selectedSection.section_id]);
   console.log(moduleId, 'MODULE_ID');
@@ -173,7 +183,7 @@ const MarkAttedance = () => {
 
     if (history?.location?.state?.payload) {
       console.log(history?.location?.state?.payload?.academic_year_id?.session_year);
-      setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id);
+      // setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id);
       setSelectedBranch(history?.location?.state?.payload?.branch_id);
       setSelectedGrade(history?.location?.state?.payload?.grade_id);
       setSelectedSection(history?.location?.state?.payload?.section_id);
@@ -184,12 +194,14 @@ const MarkAttedance = () => {
 
       axiosInstance
         .get(
-          `${endpoints.academics.studentList}?academic_year_id=${history?.location?.state?.payload?.academic_year_id?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&page_num=${pageNumber}&page_size=${limit}&attendance_for_date=${history?.location?.state?.payload?.startDate}`
+          `${endpoints.academics.studentList}?academic_year_id=${selectedAcademicYear?.id}&branch_id=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade_id=${history?.location?.state?.payload?.grade_id?.grade_id}&section_id=${history?.location?.state?.payload?.section_id?.section_id}&page_num=${pageNumber}&page_size=${limit}&attendance_for_date=${history?.location?.state?.payload?.startDate}`
         )
         .then((res) => {
           console.log(res, 'checking mark attendance list in useEffect');
           setNewData(res.data.results);
           setTotalGenre(res.data.count);
+          setTotalPresent(res.data.present);
+          setTotalAbsent(res.data.absent);
           console.log(res.data.count, 'checking count');
           var result = res.data.results.map((item) => ({
             name:
@@ -236,7 +248,11 @@ const MarkAttedance = () => {
           date
         )
       );
-      callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
+      // callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
+      callApi(
+        `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+        'branchList'
+      );
     }
   }, []);
 
@@ -290,6 +306,8 @@ const MarkAttedance = () => {
         console.log(res.data);
         setNewData(res.data.results);
         setTotalGenre(res.data.count);
+        setTotalPresent(res?.data?.present);
+        setTotalAbsent(res?.data?.absent);
         // console.log(selectedSection.id, 'vinod');
         let sec = selectedSection.id;
         var result = res.data.results.map((item) => ({
@@ -423,7 +441,7 @@ const MarkAttedance = () => {
     });
   };
   const handleClearAll = () => {
-    setSelectedAcadmeicYear('');
+    // setSelectedAcadmeicYear('');
     setSelectedBranch([]);
     setSelectedBranch([]);
     setSelectedGrade([]);
@@ -533,6 +551,7 @@ const MarkAttedance = () => {
       .then((res) => {
         setLoading(false);
         console.log(res);
+        handleFilter()
         setAlert('success', 'Attendance posted successfully');
       })
       .catch((err) => {
@@ -625,10 +644,10 @@ const MarkAttedance = () => {
 
   const handleAcademicYear=(event, value)=>{
     
-      setSelectedAcadmeicYear(value);
+      // setSelectedAcadmeicYear(value);
       if (value) {
         callApi(
-          `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+          `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
           'branchList'
         );
       }
@@ -642,7 +661,9 @@ const MarkAttedance = () => {
   return (
     <Layout>
       <div className='profile_breadcrumb_wrapper'>
-        <CommonBreadcrumbs componentName='Mark Attendance' />
+        <CommonBreadcrumbs componentName='Mark Attendance'
+            isAcademicYearVisible={true}
+        />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
         <Grid item md={12} xs={12}>
@@ -672,7 +693,7 @@ const MarkAttedance = () => {
             />
           </MuiPickersUtilsProvider>
         </Grid>
-        <Grid item md={3} xs={12}>
+        {/* <Grid item md={3} xs={12}>
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
@@ -693,7 +714,7 @@ const MarkAttedance = () => {
               />
             )}
           />
-        </Grid>
+        </Grid> */}
         <Grid item md={3} xs={12}>
           <Autocomplete
             // multiple
@@ -859,6 +880,16 @@ const MarkAttedance = () => {
             <ArrowBackIosIcon />
             <Typography variant='h5'>{dateValueShow}</Typography>
             <ArrowForwardIosIcon />
+          </Grid>
+          <Grid>
+            <Typography style={{ textAlign: 'center' }}>
+              <span style={{ color: 'green' }}>Total Present</span>: {totalPresent}
+            </Typography>
+          </Grid>
+          <Grid>
+            <Typography style={{ textAlign: 'center' }}>
+              <span style={{ color: 'red' }}>Total Absent</span>: {totalAbsent}
+            </Typography>
           </Grid>
           <Grid>
             <Typography style={{ textAlign: 'center' }}>
