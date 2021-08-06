@@ -116,6 +116,10 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 20,
     marginBottom: 20,
     // marginLeft: '50px',
+    display: 'flex'
+  },
+  commenter: {
+    marginRight: '5px'
   },
   commentInput: {
     height: 50,
@@ -138,6 +142,10 @@ const ViewOrchadioMobile = () => {
   const limit = 5;
   const [totalPages, setTotalPages] = React.useState('')
   const [pageNumber, setPageNumber] = React.useState(1)
+  var letterNumber = /^.*[a-zA-Z0-9][^a-zA-Z0-9]*$/
+
+  let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
+  console.log(userName[0], 'userName');
 
   const handleExpandClick = (index) => {
     setCollapseId(index);
@@ -219,6 +227,15 @@ const ViewOrchadioMobile = () => {
         setAlert('error', 'Something went wrong.. Try again later');
       });
   };
+
+  const commentValidate = (item) => {
+    if (!letterNumber.test(comment)) {
+      console.log("not match");
+      setAlert('warning', "Please enter comment");
+    } else {
+      postComment(item);
+    }
+  }
   const postComment = (item) => {
     axios
       .put(`${endpoints.orchadio.PostCommentandLike}${item.id}/create-orchido-comment/`, {
@@ -227,11 +244,18 @@ const ViewOrchadioMobile = () => {
       .then((result) => {
         if (result.data.status_code === 200) {
           setLoading(false);
+          setComment('')
           setAlert('success', result.data.message);
           const dat = data.map((it) => {
+            // if (it.id === item.id) {
+            //   // it.total_program_likes += 1
+            //   it.comments_list.unshift(comment);
+            // }
             if (it.id === item.id) {
+              const commentArray = [{'comment' : comment, 'user__first_name' : name ,'user__username' : userName[0] }]
               // it.total_program_likes += 1
-              it.comments_list.unshift(comment);
+              it.comments_list.unshift(commentArray[0]);
+              console.log(commentArray , "its");
             }
             return it;
           });
@@ -549,16 +573,27 @@ const ViewOrchadioMobile = () => {
                                       <Button
                                         style={{ margin: 10 }}
                                         size='small'
-                                        onClick={() => postComment(item)}
+                                        onClick={() => commentValidate(item)}
                                       >
                                         Post
                                       </Button>
                                       {/* </Grid> */}
                                       {/* <Grid item xs={12}> */}
                                       {item.comments_list.map((c) => (
-                                        <Card className={classes.comment}>
-                                          <Typography>{c}</Typography>
+                                        // <Card className={classes.comment}>
+                                        //   <Typography>{c}</Typography>
+                                        // </Card>
+                                        <div className="commentArea" >
+                                 
+                                        <Card className={classes.comment}  >
+                                        <Chip
+                                              avatar={<Avatar>{c?.user__first_name?.charAt(0)}</Avatar>}
+                                              label={c.user__first_name}
+                                              className={classes.commenter}
+                                            />
+                                          <Typography>{c.comment}</Typography>
                                         </Card>
+                                        </div>
                                       ))}
                                     </Grid>
                                   </CardContent>
