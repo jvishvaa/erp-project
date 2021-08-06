@@ -27,6 +27,7 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import APIREQUEST from "../../../config/apiRequest";
 
 const allowedExtensions = [
   'ogg',
@@ -267,7 +268,28 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
 
   const classes = useStyles();
 
+  const msApionclsResources = () =>{
+    APIREQUEST("get", `/oncls/v1/oncls-resources/?online_class_id=${id}&class_date=${classDate}`)
+    .then((res)=>{
+      let fileAr;
+      setIsDownload(res.data.result);
+      if(res.data.result) {
+        fileAr = res.data.result;
+        fileAr?.length > 0 && fileAr.map((file) => {
+          file.files && file.files.map(path => {      
+            setFilePath(filePath => [ ...filePath,path]);   
+          })
+        })
+      }
+    })
+    .catch((error) => console.log(error))
+  }
+
   React.useEffect(() => {
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      msApionclsResources();
+      return;
+    }
 
     axiosInstance.get(`${endpoints.onlineClass.resourceFile}?online_class_id=${id}&class_date=${classDate}`)
     .then((res) => {
@@ -285,23 +307,58 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
     .catch((error) => console.log(error))
   },[]);
 
+  const msApionclsResLink = ()=>{
+    APIREQUEST("get", `/oncls/v1/resource-link/?online_class_id=${id}`)
+    .then((res)=>{
+      if (res.data && res.data.data.length > 0) {
+        setExistingLinks(res.data.data);
+      }
+    })
+    .catch((err) => console.error(err));
+  }
+
+  const msApiOnclsRes = ()=>{
+    APIREQUEST("get", `/oncls/v1/oncls-resources/?online_class_id=${id}&class_date=${classDate}`)
+    .then((res)=>{
+      if (res.data && res.data.data) {
+        if (type === 'homework') {
+          setExistingUpload(res.data.data.homework[0].homeworkfile || []);
+          setDescription(res.data.data.homework[0].description);
+        } else {
+          setExistingUpload(res.data.data);
+        }
+      }
+    })
+    .catch((err) => console.error(err));
+  }
 
   useEffect(() => {
     let url;
     if (type === 'resource') {
       url = endpoints.onlineClass.resourceFile;
 
-      axiosInstance
-        .get(`${endpoints.onlineClass.resourceLink}?online_class_id=${id}`)
-        .then((res) => {
-          if (res.data && res.data.data.length > 0) {
-            setExistingLinks(res.data.data);
-          }
-        })
-        .catch((err) => console.error(err));
+      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+        msApionclsResLink();
+      }
+      else{
+        axiosInstance
+          .get(`${endpoints.onlineClass.resourceLink}?online_class_id=${id}`)
+          .then((res) => {
+            if (res.data && res.data.data.length > 0) {
+              setExistingLinks(res.data.data);
+            }
+          })
+          .catch((err) => console.error(err));
+      }
     } else {
       url = endpoints.onlineClass.resourceFile;
     }
+
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      msApiOnclsRes();
+      return;
+    }
+
     axiosInstance
       .get(`${url}?online_class_id=${id}&class_date=${classDate}`)
       .then((res) => {
@@ -415,6 +472,21 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
   //     setDescriptionError(true)
   //   }
   // }
+  const msApihandlerUpload = (data1) =>{
+    APIREQUEST("post", `/oncls/v1/oncls-resources/`, data1)
+    .then((res)=>{
+      if (res.data.status_code === 200) {
+        setAlert('success', 'Work Submitted Successfully');
+        setDisableButton(false);
+        handleIsUpload();
+        setTimeout(() => {
+          onClose();
+        }, 500);
+      }
+    })
+    .catch((error) => console.log(error));
+  }
+
   const handlerUpload = () => {
     if(filePath.length > 0) {
       const formData = new FormData();
@@ -428,6 +500,11 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
         online_class_id : id,
         class_date : classDate,
         description : 'description123'
+      }
+
+      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+        msApihandlerUpload(data1)
+        return;
       }
 
       axiosInstance.post(endpoints.onlineClass.resourceFile, data1)

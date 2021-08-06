@@ -8,6 +8,8 @@ import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CloseIcon from '@material-ui/icons/Close';
 import CardContent from '@material-ui/core/CardContent';
+import APIREQUEST from "../../../config/apiRequest";
+
 const useStyles = makeStyles({
   root: {
     top: '50px',
@@ -59,8 +61,28 @@ const Resource = (props) => {
   const [isDown, setIsDown] = React.useState(0);
   const [hideButton, setHideButton] = React.useState(false);
 
+  const msApiOnclsResource = ()=>{
+    APIREQUEST("get", `/oncls/v1/oncls-resources/?online_class_id=${props.onlineClassId}&class_date=${moment(props.date).format('DD-MM-YYYY')}`)
+    .then((res)=>{
+      if (res.data.result.length > 0) {
+        res.data.result.map((path) => {
+          if (path.files !== null) {
+            setHideButton(true);
+          }
+        });
+      }
+      setIsDownload(res.data.result);
+      setIsDown(res.data.status_code);
+    })
+    .catch((error) => console.log(error));
+  }
+
   React.useEffect(() => {
     setHideButton(false);
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      msApiOnclsResource();
+      return;
+    }
     axiosInstance
       .get(
         `${endpoints.onlineClass.resourceFile}?online_class_id=${
@@ -142,7 +164,20 @@ export default function ResourceDialogComponent(props) {
   const handleClose = () => {
     onClose(selectedValue);
   };
+  
+  const msApiStudentOnclsDetails = ()=>{
+    APIREQUEST("get", `/oncls/v1/${props.resourceId}/student-oncls-details/`)
+    .then((res)=>{
+      setPeriodsData(res.data.data);
+    })
+    .catch((error) => console.log(error));
+  }
+
   React.useEffect(() => {
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      msApiStudentOnclsDetails();
+      return;
+    }
     axiosInstance
       .get(`erp_user/${props.resourceId}/student-oc-details/`)
       .then((res) => {

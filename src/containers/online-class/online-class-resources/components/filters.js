@@ -18,6 +18,7 @@ import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
+import APIREQUEST from "../../../../config/apiRequest";
 
 const Filter = (props) => {
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
@@ -96,7 +97,31 @@ const Filter = (props) => {
     return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
   }
 
+  const msAPiCallFilterApi = (api) =>{
+    var url  = api.split("?");
+    url.shift();
+    var path = url.join("?")
+    APIREQUEST("get", `/oncls/v1/retrieve-online-class/?${path}`)
+    .then((result)=>{
+      setFilterFullData(result.data || {});
+      setFilterList(result.data.data || {});
+      setSelectedViewMore('');
+      props.getResourceData(result.data.data);
+      props.totalCount(result.data.count);
+      setTabValue(0);
+      setLoading(false);
+    })
+    .catch((error) => {
+      setAlert('error', error.message);
+      setLoading(false);
+    });
+  }
+
   function callApi(api, key) {
+    if(key === "filter" && JSON.parse(localStorage.getItem('isMsAPI'))){
+      msAPiCallFilterApi(api);
+      return;
+    }
     setLoading(true);
     axiosInstance
       .get(api)
