@@ -316,7 +316,7 @@ function CorrectionComponent({
     <div ref={divElement} style={style} id='editor-evaluvation-container'>
       {/* <img src={penTool} /> */}
       <canvas
-        style={{left:0, top: 0,height:'90vh',width:'auto',margin:'auto',display:'block' }}
+        style={{left:0, top: 0,height:'66vh',width:'auto',margin:'auto',display:'block' }}
         ref={canvasElement}
         id='editor-evaluvation-drawing-layer'
       />

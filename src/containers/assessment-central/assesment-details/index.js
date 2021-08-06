@@ -52,7 +52,7 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
       </div>
       <div className='parameters-container'>
         <div className='parameters-header'>
-          <span className='header-text font-lg'>Test Parameters</span>
+          <span className='header-text font-lg font-center'>Test Parameters</span>
           {/* <span className='primary-text font-sm'>Edit details</span> */}
         </div>
         <div className='parameters-content'>
@@ -73,9 +73,9 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
                 <p className='cell-header left-align'>{testType}</p>
               </div>
             </Grid>
-            <Grid item md={4} className='parameter-cell-grid'>
+            <Grid item md={4} className='parameter-cell-grid' style={{backgroundColor:'#f6f6f6'}}>
               <div className='parameter-cell'>
-                <p className='cell-header' style={{ color: '#ff6b6b' }}>
+                <p className='cell-header' style={{ color: '#ff6b6b'}}>
                   Test ID
                 </p>
                 <p className='cell-header left-align'>{id}</p>
@@ -98,9 +98,9 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
                 <p className='cell-header left-align'>{totalMark}</p>
               </div>
             </Grid>
-            <Grid item md={4} className='parameter-cell-grid'>
+            <Grid item md={4} className='parameter-cell-grid' style={{backgroundColor:'#f6f6f6'}}>
               <div className='parameter-cell'>
-                <p className='cell-header' style={{ color: '#ff6b6b' }}>
+                <p className='cell-header' style={{ color: '#ff6b6b'}}>
                   Created
                 </p>
                 <p className='cell-header left-align'>

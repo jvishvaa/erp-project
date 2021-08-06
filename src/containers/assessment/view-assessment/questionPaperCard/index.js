@@ -8,7 +8,10 @@ import useStyles from './useStyles';
 const QuestionPaperCard = ({
   // testTitle,
   descriptions: testDescription,
-  is_test_completed: { is_completed: isTestAttempted, completed_date: testAttemptedDate } = {},
+  is_test_completed: {
+    is_completed: isTestAttempted,
+    completed_date: testAttemptedDate,
+  } = {},
   handleViewMore,
   test_date: testDate,
   test_name: testTitle,
@@ -24,7 +27,7 @@ const QuestionPaperCard = ({
     id: questionPaperId,
     grade_name: gradeName,
     subject_name: subjects = [],
-  } = questionPaperObj || {}
+  } = questionPaperObj || {};
 
   return (
     <Paper elevation={2} className={classes.paper}>
@@ -42,9 +45,9 @@ const QuestionPaperCard = ({
               {[gradeName, ...(subjects || [])].join(', ')}
             </div>
             <div className={classes.cardAttemptedTextRed}>
-                Start Time - &nbsp;
-                {testDate.slice(11,16)}
-              </div>
+              Start Time - &nbsp;
+              {testDate.slice(11, 16)}
+            </div>
             {isTestAttempted ? (
               <div className={classes.cardAttemptedTextGreen}>
                 Completed at - &nbsp;
