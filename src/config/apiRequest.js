@@ -13,7 +13,7 @@ const APIREQUEST =  async (method, path, payload)=>{
             method: method,
             url: `${msOriginUrl}/api${path}`,
             headers: { 
-              'X-DTS-SCHEMA': window.location.origin,
+              'X-DTS-SCHEMA': window.location.host,
               'Authorization': `Bearer ${JSON.parse(user).token}`,
             },
             data : payload ? payload : null
