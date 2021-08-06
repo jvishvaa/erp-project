@@ -283,6 +283,7 @@ import logo from '../src/assets/images/logo_mobile.png';
 import MultiplayerQuiz from './components/mp-quiz';
 import StudentAttendance from 'containers/online-class/student-attendance/StudentAttendance';
 import HomeWorkReportTeacher from 'containers/homework/homework-report/homework-teacher/HomeWorkReportTeacher';
+import ClassWorkTeacherReport from 'containers/Classwork/classwork-report/classwork-report-teacher/ClassWorkTeacherReport';
 import StudentClassWorkReport from 'containers/Classwork/StudentClassWork';
 import Setting from './containers/settings/setting';
 //intelligent text book
@@ -561,6 +562,9 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/homework/teacher'>
                             {({ match }) => <TeacherHomework match={match} />}
+                          </Route>
+                          <Route exact path='/classwork/student-report'>
+                            {({ match }) => <StudentClassWorkReport match={match} />}
                           </Route>
                           <Route
                             exact
@@ -1366,7 +1370,9 @@ function App({ alert }) {
                           <Route exact path='/homework-report-teacher-view'>
                             {({ match }) => <HomeWorkReportTeacher match={match} />}
                           </Route>
-
+                          <Route exact path='/classwork-report-teacher-view'>
+                            {({ match }) => <ClassWorkTeacherReport match={match} />}
+                          </Route>
                           <Route exact path='/intelligent-book/view'>
                             {({ match }) => <AllBooksPage match={match} />}
                           </Route>
