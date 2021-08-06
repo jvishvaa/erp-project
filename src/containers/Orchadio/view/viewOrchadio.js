@@ -2,6 +2,7 @@ import React, { Component, useEffect, useContext, useCallback, useState } from '
 import { withRouter, useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Chip from '@material-ui/core/Chip';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -34,7 +35,6 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Avatar from '@material-ui/core/Avatar';
-import Chip from '@material-ui/core/Chip';
 import MobileDatepicker from './datePicker';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
@@ -123,6 +123,10 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 20,
     marginBottom: 20,
     marginLeft: '50px',
+    display: 'flex',
+  },
+  commenter: {
+    marginRight: '5px'
   },
   commentInput: {
     height: 50,
@@ -175,6 +179,7 @@ function ViewOrchadio() {
   // const [loading, setLoading] = React.useState(false);
   const [branchName, setBranchName] = React.useState([]);
   const [comment, setComment] = React.useState('');
+  const [ commentError , setCommentError ] = React.useState('');
   const [pageNumber, setPageNumber] = React.useState(1)
   const limit = 5;
   const [totalPages, setTotalPages] = React.useState('')
@@ -187,6 +192,8 @@ function ViewOrchadio() {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState();
   const location = useLocation();
+
+  var letterNumber = /^.*[a-zA-Z0-9][^a-zA-Z0-9]*$/
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -287,6 +294,15 @@ function ViewOrchadio() {
     setComment(event.target.value);
   };
 
+  const commentValidate = (item) => {
+    if (!letterNumber.test(comment)) {
+      console.log("not match");
+      setAlert('warning', "Please enter comment");
+    } else {
+      postComment(item);
+    }
+  }
+
   const postComment = (item) => {
     if(!comment){
       setAlert('warning', "Please enter comment");
@@ -303,9 +319,13 @@ function ViewOrchadio() {
           setAlert('success', result.data.message);
           setLoading(false);
           const dat = data.map((it) => {
+            console.log(it , "it");
+            console.log(item , "item");
             if (it.id === item.id) {
+              const commentArray = [{'comment' : comment, 'user__first_name' : name ,'user__username' : userName[0] }]
               // it.total_program_likes += 1
-              it.comments_list.unshift(comment);
+              it.comments_list.unshift(commentArray[0]);
+              console.log(commentArray , "its");
             }
             return it;
           });
@@ -860,16 +880,25 @@ function ViewOrchadio() {
                               <Button
                                 style={{ margin: 10 }}
                                 size='small'
-                                onClick={() => postComment(item)}
+                                // onClick={() => postComment(item)}
+                                onClick={() => commentValidate(item)}
                               >
                                 Post
                               </Button>
                               {/* </Grid> */}
                               {/* <Grid item xs={12}> */}
                               {item.comments_list.map((c) => (
-                                <Card className={classes.comment}>
-                                  <Typography>{c}</Typography>
+                                <div className="commentArea" >
+                                 
+                                <Card className={classes.comment}  >
+                                <Chip
+                                      avatar={<Avatar>{c?.user__first_name?.charAt(0)}</Avatar>}
+                                      label={c.user__first_name}
+                                      className={classes.commenter}
+                                    />
+                                  <Typography>{c.comment}</Typography>
                                 </Card>
+                                </div>
                               ))}
                             </Grid>
                           </ExpansionPanelDetails>
