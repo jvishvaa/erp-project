@@ -9,12 +9,11 @@ import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import Dialog from '@material-ui/core/Dialog';
 import { Slide } from '@material-ui/core';
-
 import PdfjsPreview from '../pdf-js';
-
 import { AttachmentPreviewerContext } from '../attachment-previewer-contexts';
 import './attachment-previewer-ui-styles.css';
 import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/umd/Page/AnnotationLayer.css';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />;
@@ -28,7 +27,7 @@ function AttachmentPreviewerUI() {
     currentAttachmentIndex,
     scaleValue,
     setScaleValue,
-    numPages, 
+    numPages,
     setNumPages,
     pageNumber,
     setPageNumber,
@@ -41,7 +40,6 @@ function AttachmentPreviewerUI() {
   }
 
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-
 
   const pptFileSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${src}`;
   const isPPt = String(src.split('.')[src.split('.').length - 1])
@@ -112,7 +110,8 @@ function AttachmentPreviewerUI() {
                       src={src}
                     />
                   </div>
-                ) : src.toLowerCase().endsWith('.mp4') || src.toLowerCase().endsWith('.mp3') ? (
+                ) : src.toLowerCase().endsWith('.mp4') ||
+                  src.toLowerCase().endsWith('.mp3') ? (
                   <video
                     id='attachment-iframe'
                     style={{
@@ -148,6 +147,7 @@ function AttachmentPreviewerUI() {
                     <Document
                       file={src}
                       className='pdf-document'
+                      externalLinkTarget='_blank'
                       onLoadError={(error) =>
                         alert('Error while loading document! ' + error.message)
                       }
@@ -157,6 +157,7 @@ function AttachmentPreviewerUI() {
                         height={550}
                         scale={scaleValue || 1}
                         width={500}
+                        renderAnnotationLayer={true}
                         className='pdf-page'
                         pageNumber={pageNumber}
                       />
@@ -192,26 +193,26 @@ function AttachmentPreviewerUI() {
           </div>
           </div>
         </div> */}
-        {src.toLowerCase().endsWith('.pdf') &&
-          <IconButton
-            // style={{ opacity: isNextAvailable ? 1 : 0 }}
-            // style={{ color: isNextAvailable ? 'white' : 'black' }}
-            // disabled={!isNextAvailable}
-            disabled={pageNumber === numPages}
-            onClick={() => {
-              // next();
-              setPageNumber((prev) => prev + 1);
-            }}
-            aria-label='right'
-            className='attachment-viewer-next-frame-btn'
-            size='small'
-          >
-            <ArrowForwardIcon
-              style={{ color: pageNumber !== numPages ? 'white' : 'black' }}
-              fontSize='inherit'
-            />
-          </IconButton>
-          }
+          {src.toLowerCase().endsWith('.pdf') && (
+            <IconButton
+              // style={{ opacity: isNextAvailable ? 1 : 0 }}
+              // style={{ color: isNextAvailable ? 'white' : 'black' }}
+              // disabled={!isNextAvailable}
+              disabled={pageNumber === numPages}
+              onClick={() => {
+                // next();
+                setPageNumber((prev) => prev + 1);
+              }}
+              aria-label='right'
+              className='attachment-viewer-next-frame-btn'
+              size='small'
+            >
+              <ArrowForwardIcon
+                style={{ color: pageNumber !== numPages ? 'white' : 'black' }}
+                fontSize='inherit'
+              />
+            </IconButton>
+          )}
           {numPages && (
             <div className='attachment-viewer-buttons'>
               <Tooltip title='Zoom Out' placement='left'>
@@ -251,24 +252,25 @@ function AttachmentPreviewerUI() {
               </Tooltip>
             </div>
           )}
-          {src.toLowerCase().endsWith('.pdf') &&
-          <IconButton
-            // style={{ color: isPrevAvailable ? 'white' : 'black' }}
-            // disabled={!isPrevAvailable}
-            disabled={pageNumber === 1}
-            onClick={() => {
-              prev();
-              setPageNumber((prev) => prev - 1);
-            }}
-            aria-label='left'
-            className='attachment-viewer-prev-frame-btn'
-            size='small'
-          >
-            <ArrowBackIcon
-              style={{ color: pageNumber !== 1 ? 'white' : 'black' }}
-              fontSize='inherit'
-            />
-          </IconButton>}
+          {src.toLowerCase().endsWith('.pdf') && (
+            <IconButton
+              // style={{ color: isPrevAvailable ? 'white' : 'black' }}
+              // disabled={!isPrevAvailable}
+              disabled={pageNumber === 1}
+              onClick={() => {
+                prev();
+                setPageNumber((prev) => prev - 1);
+              }}
+              aria-label='left'
+              className='attachment-viewer-prev-frame-btn'
+              size='small'
+            >
+              <ArrowBackIcon
+                style={{ color: pageNumber !== 1 ? 'white' : 'black' }}
+                fontSize='inherit'
+              />
+            </IconButton>
+          )}
         </div>
       </Dialog>
     </>
