@@ -1,5 +1,6 @@
 
 import axios from '../../config/axios';
+import { isMsAPI } from "../../utility-functions/index"
 
 export const authActions = {
   LOGIN_REQUEST: 'LOGIN_REQUEST',
@@ -22,14 +23,6 @@ const {
   FETCH_LOGGED_IN_USER_INFO_FAILURE,
 } = authActions;
 
-function isMsAPI(){
-  const user = localStorage.getItem('userDetails');
-  axios.get(`/erp_user/oncls-ms-config/`, {
-    headers: { Authorization: `Bearer ${JSON.parse(user).token}` }
-  }).then((response)=>{
-    localStorage.setItem('isMsAPI', response?.data?.result[0] || false );
-  });
-}
 
 export const login = (params) => (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
