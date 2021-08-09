@@ -50,6 +50,10 @@ const getThemeElements = () => {
       elements.colors.primary_color,
       -0.4
     );
+    elements['colors']['lightestprimary'] = colorLuminance(
+      elements.colors.primary_color,
+      0.9
+    );
   }
   return elements;
 };
@@ -116,6 +120,114 @@ export function themeGenerator() {
             backgroundColor: primarytemp,
           },
         },
+      },
+    },
+
+    //Css for view more card
+    rootViewMore: {
+      border: `1px solid ${primarytemp}`,
+      borderRadius: '10px !important',
+      height: '80vh',
+      width: '100%',
+      margin: '0 auto',
+      boxShadow: 'none',
+      overflowY: 'scroll',
+      position: 'sticky',
+      top: '10%',
+      animationDuration: '500ms',
+      animationName: 'slidein',
+
+      /* width */
+      '&::-webkit-scrollbar': {
+        width: '10px',
+      },
+
+      /* Track */
+      '&::-webkit-scrollbar-track': {
+        background: '#f9f9f9',
+        borderRadius: '10px',
+      },
+
+      /* Handle */
+      '&::-webkit-scrollbar-thumb': {
+        background: '#949090',
+        borderRadius: '10px',
+      },
+
+      /* Handle on hover */
+      '&::-webkit-scrollbar-thumb:hover': {
+        background: '#949090',
+      },
+
+      '& .bodyTitle': {
+        fontSize: '1rem',
+        fontWeight: 600,
+        color: secondarytemp,
+        display: 'flex',
+        justifyContent: 'space-between',
+        margin: '0 auto',
+        paddingLeft: '10px',
+      },
+      '& .bodyContent': {
+        fontSize: '1rem',
+        color: secondarytemp,
+        margin: '15px auto',
+        display: 'flex',
+        justifyContent: 'space-between',
+        wordBreak: 'break-all',
+        paddingLeft: '10px',
+      },
+      '& .viewMoreBody': {
+        margin: '15px',
+        paddingBottom: '10px',
+        borderBottom: '1px solid #e2e2e2',
+      },
+      '& .viewMoreHeader': {
+        backgroundColor: '#fceeee',
+        display: 'flex',
+        justifyContent: 'space-between',
+        borderRadius: '10px 0px 0px 0px',
+        position: 'sticky',
+        top: 0,
+        zIndex: 1,
+        '& .headerContent': {
+          fontSize: '1.1rem',
+          color: secondarytemp,
+          display: 'flex',
+          flexDirection: 'column',
+          cursor: 'pointer',
+        },
+        '& .headerTitle': {
+          fontSize: '1.1rem',
+          color: primarytemp,
+          marginBottom: '7px',
+        },
+        '& .leftHeader': {
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '15px',
+        },
+        '& .rightHeader': {
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '15px',
+          '& .closeIcon': {
+            alignSelf: 'flex-end',
+            '& .MuiIconButton-root': {
+              padding: '0px',
+            },
+          },
+          '& .viewUpdatedDate': {
+            alignSelf: 'flex-end',
+          },
+        },
+      },
+      '@media screen and (max-width:768px)': {
+        zIndex: '1',
+        width: '90%',
+        margin: '20px 0 0 -12px',
+        position: 'absolute',
+        boxShadow: '0px 0px 100px 100px rgba(192, 192, 192, 0.5) !important',
       },
     },
     overrides: {

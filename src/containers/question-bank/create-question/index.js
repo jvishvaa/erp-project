@@ -185,12 +185,11 @@ const CreateQuestion = () => {
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         <div className='breadCrumbFilterRow'>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Question Bank'
-              childComponentName='Create Question'
-            />
-          </div>
+          <CommonBreadcrumbs
+            componentName='Question Bank'
+            childComponentName='Create Question'
+            isAcademicYearVisible={true}
+          />
           {!qId && (
             <div className='hideShowFilterIcon'>
               <div>

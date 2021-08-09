@@ -140,14 +140,13 @@ const AssessmentView = () => {
       <Layout>
         <div
           className={isMobile ? 'breadCrumbFilterRow' : null}
-          style={{ display: 'flex', marginLeft: '2.25rem' }}
+          style={{ display: 'flex' }}
         >
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Assessment'
-              childComponentName='Question Paper'
-            />
-          </div>
+          <CommonBreadcrumbs
+            componentName='Assessment'
+            childComponentName='Question Paper'
+            isAcademicYearVisible={true}
+          />
 
           <div className='hideShowFilterIcon'>
             <IconButton onClick={() => setIsFilter(!isFilter)}>

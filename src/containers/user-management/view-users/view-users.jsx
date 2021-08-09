@@ -499,12 +499,10 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     <Layout>
       <div className='view-users-page'>
         <div className='inner-container'>
-          <div className='bread-crumbs-container'>
-            <CommonBreadcrumbs
-              componentName='User Management'
-              childComponentName='View Users'
-            />
-          </div>
+          <CommonBreadcrumbs
+            componentName='User Management'
+            childComponentName='View Users'
+          />
           <Grid container spacing={4} className='form-container spacer'>
             <Grid item xs={12} md={3}>
               <FormControl

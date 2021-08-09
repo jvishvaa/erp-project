@@ -165,8 +165,6 @@ const Setting = (props) => {
   const handlevibrant = (img) => {
 
     Vibrant.from(img).getPalette().then((palette) => {
-      let colors = []
-      console.log("palette", palette)
       if (palette.hasOwnProperty("DarkVibrant") && palette["DarkVibrant"])
         setprimarycolor(palette["DarkVibrant"].getHex())
 

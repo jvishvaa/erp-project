@@ -173,11 +173,11 @@ const AssessmentReportTypes = ({
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs componentName='Assessment' childComponentName='Reports' />
-          </div>
-        </div>
+        <CommonBreadcrumbs
+          componentName='Assessment'
+          childComponentName='Reports'
+          isAcademicYearVisible={true}
+        />
         <ReportTypeFilter
           setIsFilter={setIsFilter}
           selectedReportType={selectedReportType}

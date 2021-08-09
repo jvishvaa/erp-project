@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import Paper from '@material-ui/core/Paper';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme, IconButton, SvgIcon, Button } from '@material-ui/core';
+import { IconButton, SvgIcon, Button, makeStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import './view-more.css';
 import endpoints from '../../../../config/endpoints';
@@ -13,6 +12,10 @@ import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { AttachmentPreviewerContext } from '../../../../components/attachment-previewer/attachment-previewer-contexts';
+
+const useStyles = makeStyles((theme) => ({
+  rootViewMore: theme.rootViewMore,
+}));
 
 const ViewMoreCard = ({
   viewMoreData,
@@ -26,10 +29,8 @@ const ViewMoreCard = ({
   centralSubjectName,
   setCompletedStatus,
 }) => {
-  const themeContext = useTheme();
-  const { openPreview, closePreview } =
-    React.useContext(AttachmentPreviewerContext) || {};
-  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const classes = useStyles();
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const { setAlert } = useContext(AlertNotificationContext);
   const [onComplete, setOnComplete] = useState(false);
   const location = useLocation();
@@ -122,7 +123,7 @@ const ViewMoreCard = ({
   // }
 
   return (
-    <Paper className='rootViewMore'>
+    <Paper className={classes.rootViewMore}>
       <div className='viewMoreHeader'>
         <div className='leftHeader'>
           <div className='headerTitle'>{periodDataForView?.period_name}</div>

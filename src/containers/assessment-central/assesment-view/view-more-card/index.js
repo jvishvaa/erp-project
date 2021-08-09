@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '94%',
   },
+  rootViewMore: theme.rootViewMore,
   heading: {
     fontSize: theme.typography.pxToRem(15),
     flexBasis: 'auto',
@@ -76,7 +77,7 @@ const ViewMoreCard = ({
   };
 
   return (
-    <Paper className='rootViewMore'>
+    <Paper className={classes.rootViewMore}>
       <div className='viewMoreHeader'>
         <div className='leftHeader'>
           <div className='headerTitle'>{periodDataForView?.paper_name}</div>
@@ -126,8 +127,6 @@ const ViewMoreCard = ({
                       {`SECTION ${section?.name}`}
                     </Typography>
                   </AccordionSummary>
-
-                  {/* <AccordionDetails> */}
                   <div className='section-content'>
                     {section.questions?.map((q) => (
                       <div
@@ -138,7 +137,6 @@ const ViewMoreCard = ({
                       </div>
                     ))}
                   </div>
-                  {/* </AccordionDetails> */}
                 </Accordion>
               ))}
             </div>

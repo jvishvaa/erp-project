@@ -1,37 +1,30 @@
-import React,{useState} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-
+import React from 'react';
+import { makeStyles, Paper, Tabs, Tab } from '@material-ui/core';
 
 const useStyles = makeStyles({
-    root: {
-        padding: '0.9rem',
-        borderRadius: '10px',
-        boxShadow: 'none',
-        color:'#014e7b'
-      },
-
+  root: {
+    padding: '0.9rem',
+    boxShadow: 'none',
+  },
 });
-
-export default function CenteredTabs({handleCourseList,sendGrade,setTabValue,tabValue}) {
+export default function CenteredTabs({
+  handleCourseList,
+  sendGrade,
+  setTabValue,
+  tabValue,
+}) {
   const classes = useStyles();
-  const [value, setValue] = useState(tabValue);
-  const handleChange =  (event, newValue) => {
-    //alert(tabValue + "--------"+newValue);
-    setTabValue(newValue)
-    handleCourseList(sendGrade,newValue)
-    setValue(newValue);
+  const handleChange = (event, newValue) => {
+    setTabValue(newValue);
+    handleCourseList(sendGrade, newValue);
   };
-  
+  const tabList = ['All', 'Active', 'Inactive'];
   return (
     <Paper className={classes.root}>
-      <Tabs value={tabValue} onChange={handleChange} indicatorColor={classes.indicatorColor} textColor={classes.indicatorColor} >
-        <Tab  label="ALL" />
-        <Tab  label="Active" />
-        <Tab  label="Inactive" />
-        {/* <Tab  label="Deleted" /> */}
+      <Tabs value={tabValue} onChange={handleChange}>
+        {tabList.map((tab) => (
+          <Tab label={tab} />
+        ))}
       </Tabs>
     </Paper>
   );

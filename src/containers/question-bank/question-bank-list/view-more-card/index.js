@@ -2,26 +2,28 @@ import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 // import { browserHistory } from 'react-router-dom'
 import ReactPlayer from 'react-player';
-import Paper from '@material-ui/core/Paper';
-import { IconButton, SvgIcon, Button } from '@material-ui/core';
+import { IconButton, SvgIcon, Button, Paper, makeStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import axiosInstance from '../../../../config/axios';
 import './view-more.css';
-// import './styles.scss';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import endpoints from '../../../../config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { AttachmentPreviewerContext } from '../../../../components/attachment-previewer/attachment-previewer-contexts';
 import axios from 'axios';
 
+const useStyles = makeStyles((theme) => ({
+  rootViewMore: theme.rootViewMore,
+}));
+
 const ViewMoreCard = ({
   viewMoreData,
   setViewMore,
-  filterDataDown,
   periodDataForView,
   setSelectedIndex,
   setCallFlag,
 }) => {
+  const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
@@ -55,7 +57,6 @@ const ViewMoreCard = ({
         return 'Fill In The Blanks';
       case 10:
         return 'Descriptive';
-
       default:
         return '--';
     }
@@ -156,7 +157,7 @@ const ViewMoreCard = ({
   };
 
   return (
-    <Paper className='rootViewMore'>
+    <Paper className={classes.rootViewMore}>
       <div className='viewMoreHeader'>
         <div className='leftHeader'>
           <div className='headerTitle'>
@@ -241,9 +242,7 @@ const ViewMoreCard = ({
 
             <div className='assesmentAnswers'>Answers</div>
             <div className='question-container'>
-              {Data[0]?.answer?.map((obj, i) => (
-                <div>{obj}</div>
-              )) || ''}
+              {Data[0]?.answer?.map((obj, i) => <div>{obj}</div>) || ''}
             </div>
             <div className='resourceBulkDownload'>Options</div>
             <div>
@@ -412,7 +411,9 @@ const ViewMoreCard = ({
 
         {periodDataForView?.question_type === 4 && (
           <div>
-            <div className='question-container'>{extractContent(Data?.[0]?.question)}</div>
+            <div className='question-container'>
+              {extractContent(Data?.[0]?.question)}
+            </div>
             <ReactPlayer
               playing={false}
               controls
