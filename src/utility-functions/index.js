@@ -146,3 +146,9 @@ export function colorLuminance (hex, lum) {
   }
   return rgb;
 };
+
+export function isMsAPI() {
+  axiosInstance.get(`/erp_user/oncls-ms-config/`).then((response)=>{
+    localStorage.setItem('isMsAPI', response?.data?.result[0] || false );
+  });
+}

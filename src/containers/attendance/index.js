@@ -192,7 +192,8 @@ const AttendeeListRemake = (props) => {
   const handleExcelDownload = async () => {
     const { match } = props;
     try {
-      const { data } = await axiosInstance.get(
+      const { data } = JSON.parse(localStorage.getItem('isMsAPI')) ? await APIREQUEST('get',`/oncls/v1/oncls-attendeelist/?zoom_meeting_id=${id}&class_date=${excelDate}&type=excel&page_number=1&page_size=10`, null, "arraybuffer" ) : 
+      await axiosInstance.get(
         `${endpoints.attendanceList.list}?zoom_meeting_id=${id}&class_date=${excelDate}&type=excel&page_number=1&page_size=10`,
         {
           responseType: 'arraybuffer',

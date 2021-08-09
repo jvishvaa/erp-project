@@ -6,7 +6,7 @@ const {
     apiGateway : { msOriginUrl },
 } = ENVCONFIG;
 
-const APIREQUEST =  async (method, path, payload)=>{
+const APIREQUEST =  async (method, path, payload, responseType )=>{
     return new Promise( async (resolve, reject)=>{
         const user = await localStorage.getItem('userDetails');
         axios({
@@ -16,12 +16,15 @@ const APIREQUEST =  async (method, path, payload)=>{
               'X-DTS-SCHEMA': window.location.host,
               'Authorization': `Bearer ${JSON.parse(user).token}`,
             },
-            data : payload ? payload : null
+            data : payload ? payload : null,
+            responseType: responseType || 'json',
         })
         .then((response)=>{
             resolve(response);
         })
-        .catch(error => console.log('error', error));
+        .catch(error => {
+            reject(error);
+        });
    })
 }
 
