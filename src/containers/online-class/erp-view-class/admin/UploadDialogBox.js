@@ -19,6 +19,7 @@ import placeholder from '../../../../assets/images/placeholder_small.jpg';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Attachment from '../../../homework/teacher-homework/attachment';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import APIREQUEST from "../../../../config/apiRequest";
 
 const useStyles = makeStyles((theme) => ({
   box: {
@@ -76,8 +77,30 @@ const UploadClassWorkDiaogBox = (props) => {
     if (periodDate !== '' && !isTeacher) getPeriodDetails();
   }, [periodDate]);
 
+  const msapigetPeriodDetails =()=>{
+    APIREQUEST("get",`/oncls/v1/oncls-classwork/?online_class_id=${onlineClassId}&date=${periodDate}`)
+    .then((result)=>{
+      if (result.data.status_code === 200) {
+        const exstingFiles = result.data?.data || [];
+        if (exstingFiles?.length) {
+          setOriginalFiles([...exstingFiles]);
+          setUploadFiles([...exstingFiles]);
+        }
+      }
+      setLoading(false);
+    })
+    .catch((error) => {
+      setAlert('error', error?.message);
+      setLoading(false);
+    });
+  }
+
   function getPeriodDetails() {
     setLoading(true);
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      msapigetPeriodDetails();
+      return;
+    }
     axiosInstance
       .get(
         `${endpoints.onlineClass.periodDetails}?online_class_id=${onlineClassId}&date=${periodDate}`
@@ -185,6 +208,18 @@ const UploadClassWorkDiaogBox = (props) => {
     return canUpload;
   };
 
+  const msApisubmitClassWorkAPI = (obj)=>{
+    APIREQUEST("post",'/oncls/v1/submit-classwork/', obj)
+    .then(()=>{
+      handleClose();
+      setAlert('success', 'Uploaded classwork');
+    })
+    .catch((error) => {
+      setAlert('error', error.message);
+    });
+
+  }
+
   const submitClassWorkAPI = () => {
     if (uploadFiles?.length <= 0) {
       setAlert('error', 'Please select atleast 1 file to upload!');
@@ -200,6 +235,10 @@ const UploadClassWorkDiaogBox = (props) => {
       online_class_id: onlineClassId,
       submitted_files: [...uploadFiles],
     };
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      msApisubmitClassWorkAPI(obj)
+      return;
+    }
     axiosInstance
       .post('/erp_user/student-classwork-upload/', obj)
       .then((res) => {
@@ -244,6 +283,8 @@ const UploadClassWorkDiaogBox = (props) => {
                       onError={(e) => {
                         console.log('place.e.tag', e.target.src);
                         e.target.src = placeholder;
+
+
                       }}
                       src={isTeacher ? url : `${endpoints.assessmentErp.s3}/${url}`}
                       className='optionImageAttachment1'

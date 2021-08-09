@@ -16,6 +16,8 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import APIREQUEST from "../../../config/apiRequest";
+
 const useStyles = makeStyles({
   
   classHeaderText: {
@@ -99,9 +101,21 @@ export default function ResourceDetailsCardComponent(props) {
     ];
   };
 
+  const msApiOnclsDetails = () =>{
+    APIREQUEST("get", `/oncls/v1/${props?.resourceData?.id}/oncls-details/`)
+    .then((res)=>{
+      setNoOfPeriods(res.data.data);
+    })
+    .catch((error) => setAlert('error', error.message));
+  }
+
   React.useEffect(() => {
     if (props.resourceData) {
       setNoOfPeriods([]);
+      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+        msApiOnclsDetails();
+        return;
+      }
       axiosInstance
         .get(
           `erp_user/${props.resourceData && props.resourceData.id}/online-class-details/`

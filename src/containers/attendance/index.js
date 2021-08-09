@@ -42,7 +42,8 @@ import ShuffleModal from './shuffle-modal';
 import { result } from 'lodash';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
-import './attendance.scss' 
+import './attendance.scss'
+import APIREQUEST from "../../config/apiRequest";
 
 const AttendeeListRemake = (props) => {
   const history = useHistory();
@@ -65,15 +66,34 @@ const AttendeeListRemake = (props) => {
   const [excelDate, setExcelDate] = useState('')
   const { setAlert } = useContext(AlertNotificationContext);
 
-  const getAttendeeList = async (date) => {
+  const handleAttendList =(result)=>{
+    setTotalPages(result.data.total_pages);
+    setAttendeeList(result.data.data);
+    setTotalAttended(result.data.attended_count);
+    setTotalAbsent(result.data.notattended_count);
+    setLoading(false);
+  }
+
+  const msApigetAttendeeList = (date)=>{
+    APIREQUEST("get", `/oncls/v1/oncls-attendeelist/?zoom_meeting_id=${id}&class_date=${date}&type=json`)
+    .then((result)=>{
+      handleAttendList(result);
+    })
+    .catch(error => {
+      setLoading(false);
+      setAlert('error', 'Failed to load attendee list');
+    })
+  }
+
+  const getAttendeeList = (date) => {
     setExcelDate(date)
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      msApigetAttendeeList(date);
+      return
+    }
     axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=${id}&class_date=${date}&type=json&page_number=${currentPage}&page_size=10`)
       .then((result) => {
-        setTotalPages(result.data.total_pages);
-        setAttendeeList(result.data.data);
-        setTotalAttended(result.data.attended_count);
-        setTotalAbsent(result.data.notattended_count);
-        setLoading(false);
+        handleAttendList(result);
       }).catch(error => {
         setLoading(false);
         setAlert('error', 'Failed to load attendee list');
@@ -96,21 +116,44 @@ const AttendeeListRemake = (props) => {
     setIsEdit(checked);
   };
 
+  const msApihandleCheck = (checked, student)=>{
+    APIREQUEST("put", "/oncls/v1/mark-attendance/", {
+      'zoom_meeting_id': student.id,
+      'class_date': dateValue,
+      'is_attended': checked
+    })
+    .then((result)=>{
+      if (result.data.status_code === 200) {
+        getAttendeeList(dateValue);
+        setAlert('success', result.data.message)
+      }
+    })
+    .catch((error)=>{
+      setIsUpdating(false);
+      setAlert('error', 'Failed to mark attendance');
+    }) 
+  }
+
   const handleCheck = (index, checked, student) => {
     setIsUpdating(true);
     // checked= !checked
     const { match } = props;
     try {
-      axiosInstance.put(`${endpoints.attendanceList.updateAttendance}`, {
-        'zoom_meeting_id': student.id,
-        'class_date': dateValue,
-        'is_attended': checked
-      }).then(result => {
-        if (result.data.status_code === 200) {
-          getAttendeeList(dateValue);
-          setAlert('success', result.data.message)
-        }
-      })
+      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+        msApihandleCheck(checked, student);
+      }
+      else{
+        axiosInstance.put(`${endpoints.attendanceList.updateAttendance}`, {
+          'zoom_meeting_id': student.id,
+          'class_date': dateValue,
+          'is_attended': checked
+        }).then(result => {
+          if (result.data.status_code === 200) {
+            getAttendeeList(dateValue);
+            setAlert('success', result.data.message)
+          }
+        })
+      }
       const stateCopy = attendeeList;
       const copy = stateCopy.map((el, ind) => {
         if (ind === index) {

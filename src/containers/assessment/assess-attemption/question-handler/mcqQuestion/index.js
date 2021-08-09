@@ -93,10 +93,10 @@ const McqQuestion = (props) => {
                 // className='mcq-options'
                 value='option1'
                 control={<Radio checked={existingAnswer === 'option1'} />}
-                label={options[0].option1.optionValue}
-              />
+                label={options[0]?.option1?.optionValue}
+                />
               <div className='imageContainer'>
-                {options[0]?.option1?.images.length !== 0 ? (
+                {options[0]?.option1?.images?.length !== 0 ? (
                   <img
                     src={`${s3Image}${options[0]?.option1?.images[0]}`}
                     // className='underlineRemove'
@@ -125,10 +125,10 @@ const McqQuestion = (props) => {
                 // className='mcq-options'
                 value='option2'
                 control={<Radio checked={existingAnswer === 'option2'} />}
-                label={options[1].option2.optionValue}
+                label={options[1]?.option2?.optionValue}
               />
               <div className='imageContainer'>
-                {options[1]?.option2?.images.length !== 0 ? (
+                {options[1]?.option2?.images?.length !== 0 ? (
                   <img
                     src={`${s3Image}${options[1]?.option2?.images[0]}`}
                     // className='underlineRemove'
@@ -159,11 +159,11 @@ const McqQuestion = (props) => {
                   value='option3'
                   // control={<Radio />}
                   control={<Radio checked={existingAnswer === 'option3'} />}
-                  label={options[2].option3.optionValue}
+                  label={options[2]?.option3?.optionValue}
                 />
 
                 <div className='imageContainer'>
-                  {options[2]?.option3?.images.length !== 0 ? (
+                  {options[2]?.option3?.images?.length !== 0 ? (
                     <img
                       src={`${s3Image}${options[2]?.option3?.images[0]}`}
                       // className='underlineRemove'
@@ -196,10 +196,10 @@ const McqQuestion = (props) => {
                   value='option4'
                   // control={<Radio />}
                   control={<Radio checked={existingAnswer === 'option4'} />}
-                  label={options[3].option4.optionValue}
+                  label={options[3]?.option4?.optionValue}
                 />
                 <div className='imageContainer'>
-                  {options[3]?.option4?.images.length !== 0 ? (
+                  {options[3]?.option4?.images?.length !== 0 ? (
                     <img
                       // className='underlineRemove'
                       src={`${s3Image}${options[3]?.option4?.images[0]}`}
@@ -232,10 +232,10 @@ const McqQuestion = (props) => {
                   value='option5'
                   // control={<Radio />}
                   control={<Radio checked={existingAnswer === 'option5'} />}
-                  label={options[4].option5.optionValue}
+                  label={options[4]?.option5?.optionValue}
                 />
                 <div className='imageContainer'>
-                  {options[4]?.option5?.images.length !== 0 ? (
+                  {options[4]?.option5?.images?.length !== 0 ? (
                     <img
                       // className='underlineRemove'
                       src={`${s3Image}${options[4]?.option5?.images[0]}`}

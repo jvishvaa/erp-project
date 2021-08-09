@@ -38,6 +38,8 @@ import MediaQuery from 'react-responsive';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
 import { id } from 'date-fns/locale';
+import { connect, useSelector } from 'react-redux';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
@@ -62,7 +64,10 @@ const Attendance = () => {
   const [dateString, setDateString] = useState('');
   const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
   const [academicYear, setAcademicYear] = useState([]);
-  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -123,7 +128,7 @@ const Attendance = () => {
     if (history?.location?.pathname === '/teacher-view/attendance') {
       if (history?.location?.state?.payload) {
         console.log(history?.location?.state?.payload?.academic_year_id?.session_year);
-        setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id);
+        // setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id);
         setSelectedBranch(history?.location?.state?.payload?.branch_id);
         setSelectedGrade(history?.location?.state?.payload?.grade_id);
         setSelectedSection(history?.location?.state?.payload?.section_id);
@@ -141,7 +146,11 @@ const Attendance = () => {
             timeStyle: 'long',
           }).format(date)
         );
-        callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
+        // callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
+        callApi(
+          `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+          'branchList'
+        );
       }
     }
     if (history?.location?.pathname === '/student-view/attendance') {
@@ -149,6 +158,17 @@ const Attendance = () => {
       getAllStudentsData();
     }
   }, []);
+
+  useEffect(()=>{
+    if(moduleId){
+  //   callApi(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`, 'academicYearList');
+  
+  callApi(
+    `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+    'branchList'
+  );
+  }
+  },[moduleId])
 
   const getAllData = () => {
     axiosInstance
@@ -407,7 +427,7 @@ const Attendance = () => {
     }
   };
   const handleClearAll = () => {
-    setSelectedAcadmeicYear('');
+    // setSelectedAcadmeicYear('');
     setSelectedBranch([]);
     setSelectedBranch([]);
     setSelectedGrade([]);
@@ -533,7 +553,7 @@ const Attendance = () => {
         </Grid>
         {!studentView && (
           <>
-            <Grid item md={3} xs={12}>
+            {/* <Grid item md={3} xs={12}>
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
@@ -566,7 +586,7 @@ const Attendance = () => {
                   />
                 )}
               />
-            </Grid>
+            </Grid> */}
             <Grid item md={3} xs={12}>
               <Autocomplete
                 // multiple

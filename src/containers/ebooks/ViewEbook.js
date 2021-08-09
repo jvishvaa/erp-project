@@ -337,6 +337,7 @@ class ViewEbook extends Component {
                     <CommonBreadcrumbs
                       componentName='Ebook'
                       childComponentName='View Ebook'
+                      isAcademicYearVisible={true}
                     />
                   </Grid>
                   <Grid item md={12} xs={12} style={{ margin: '10px 0px' }}>

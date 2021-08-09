@@ -7,6 +7,7 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import './style.scss';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import UploadDialogBox from '../online-class/erp-view-class/admin/UploadDialogBox';
+import APIREQUEST from "../../config/apiRequest";
 const ClassWork = (props) => {
   const [responseData, setResponseData] = useState([]);
   const [classWorkDialog, setDialogClassWorkBox] = useState(false);
@@ -16,11 +17,26 @@ const ClassWork = (props) => {
     callingClassWorkAPI();
   }, []);
 
+  const msApicallingClassWorkAPI = (paramOne, paramTwo, paramThree)=>{
+    APIREQUEST("get", `/oncls/v1/classwork-submitted-list/?zoom_id=${paramTwo}&date=${paramThree}&online_class_id=${paramOne}`)
+    .then((res) => {
+      setResponseData(res.data);
+      console.log(res.data, 'show responce');
+    })
+    .catch((error) => {
+      console.log(error, 'error responce');
+    });
+  }
+
   const callingClassWorkAPI = () => {
     let paramOne = props.match.params.param1;
     let paramTwo = props.match.params.param2;
     let paramThree = props.match.params.param3;
     // let dateString = moment().format('YYYY-MM-DD');
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      msApicallingClassWorkAPI(paramOne, paramTwo, paramThree);
+      return;
+    }
     axiosInstance
       .get(
         `/academic/classwork-submitted-list/?zoom_id=${paramTwo}&date=${paramThree}&online_class_id=${paramOne}`,
@@ -29,12 +45,9 @@ const ClassWork = (props) => {
       .then((res) => {
         setResponseData(res.data);
         console.log(res.data, 'show responce');
-        console.log(paramThree, 'showe123');
       })
       .catch((error) => {
         console.log(error, 'error responce');
-        console.log(paramThree, 'showe123');
-        console.log(props,'propsprops')
       });
   };
 
