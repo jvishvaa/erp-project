@@ -86,12 +86,28 @@ const JoinClass = (props) => {
     }
   };
 
+  const msApiMarkAttandance = (params)=>{
+    APIREQUEST("put", "/oncls/v1/mark-attendance/", params)
+    .then((res) => {
+      setLoading(false);
+      setIsAccept(true);
+    })
+    .catch((error) => {
+      setLoading(false);
+      setAlert('error', error.message);
+    });
+  }
+
   const handleIsAccept = () => {
     const params = {
       zoom_meeting_id: fullData && fullData.id,
       class_date: props.data && props.data.date,
       is_accepted: true,
     };
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      msApiMarkAttandance(params);
+      return;
+    }
     axiosInstance
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
       .then((res) => {
@@ -110,6 +126,10 @@ const JoinClass = (props) => {
       class_date: props.data && props.data.date,
       is_attended: true,
     };
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      msApiMarkAttandance(params);
+      return;
+    }
     axiosInstance
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
       .then((res) => {
@@ -132,6 +152,19 @@ const JoinClass = (props) => {
       setClassOver(true);
       setAlert('error', 'Class has ended!');
     }
+  };
+
+  const msAPIhandleCancel = (url, params)=>{
+    APIREQUEST("put", url, params)
+    .then((res) => {
+      setLoading(false);
+      setAlert('success', res.data.message);
+      handleClose('success');
+    })
+    .catch((error) => {
+      setLoading(false);
+      setAlert('error', error.message);
+    });
   };
 
   function handleCancel() {
@@ -162,6 +195,10 @@ const JoinClass = (props) => {
         });
     } else {
       //url = endpoints.teacherViewBatches.cancelBatchApi;
+      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+        msAPIhandleCancel("/oncls/v1/class-cancel/",params1);
+        return;
+      }
       axiosInstance
         .put(endpoints.teacherViewBatches.cancelBatchApi, params1)
         .then((res) => {
