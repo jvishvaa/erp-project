@@ -505,6 +505,7 @@ const TeacherHomework = withRouter(
       setGradeDisplay([]);
       setSectionDisplay([]);
       onResetSelectedFilters();
+      setSelectedCol({});
     };
 
     //useEffect(() => {console.log(fetchingTeacherHomework,'fetchingTeacherHomework')},[fetchingTeacherHomework])
