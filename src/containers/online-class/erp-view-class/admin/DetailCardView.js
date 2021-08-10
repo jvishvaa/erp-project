@@ -289,6 +289,10 @@ const JoinClass = (props) => {
     }
   }
 
+  const isAcceptDisabled = ()=>{
+    return props?.data?.class_status?.toLowerCase() === 'cancelled' || (classStartTime === currDate ? false : true)
+  }
+
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   const openJoin = Boolean(joinAnchor);
@@ -539,10 +543,7 @@ const JoinClass = (props) => {
                       variant='contained'
                       // onClick={handleIsAccept}
                       onClick={(e) => handleClickAccept(e)}
-                      disabled={
-                        props?.data?.class_status?.toLowerCase() === 'cancelled' ||
-                        (classStartTime === currDate ? false : true)
-                      }
+                      disabled={ isAcceptDisabled() }
                       className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
                     >
                       Accept
