@@ -5,15 +5,6 @@
 .questionTypeFilter .MuiInputBase-root {
   background-color: #f9f9f9;
 }
-
-.questionTypeFilter .MuiAutocomplete-input {
-  /* color: #ff6b6b; */
-}
-
-.modifyDesign.MuiButton-root {
-  border-radius: 10px;
-}
-
 .typeFilterContainers {
   border: 1px solid #dbdbdb;
   border-radius: 10px;

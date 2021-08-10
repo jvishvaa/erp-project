@@ -497,9 +497,8 @@ const getGenreInActiveList = () => {
           <Grid item xs={6} sm={2}>
             <Button
               variant='contained'
-              style={{ color: 'white' }}
-              color="primary"
-              className="custom_button_master"
+              style={{color:'white', width: '100%' }}
+              color='primary'
               size='medium'
               type='submit'
               onClick={handleFilter}
@@ -513,9 +512,8 @@ const getGenreInActiveList = () => {
           <Grid item xs={6} sm={2}>
             <Button
               variant='contained'
-              style={{ color: 'white' }}
-              color="primary"
-              className="custom_button_master"
+              style={{color:'white', width: '100%' }}
+              color='primary'
               size='medium'
               type='submit'
               onClick={handleSubmit}

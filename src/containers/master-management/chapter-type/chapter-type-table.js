@@ -571,7 +571,8 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    className='labelColor buttonModifiedDesign'
+                    className='labelColor cancelButton'
+                    style={{ width: '100%' }}
                     size='medium'
                     onClick={handleClear}
                   >
@@ -581,9 +582,8 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', width: '100%' }}
                     color='primary'
-                    className='buttonModifiedDesign'
                     size='medium'
                     onClick={handleFilter}
                   >
@@ -613,8 +613,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                     variant='contained'
                     color='primary'
                     size='medium'
-                    className='buttonModifiedDesign'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', width: '100%' }}
                     title='Add Chapter'
                     onClick={handleAddChapterType}
                   >

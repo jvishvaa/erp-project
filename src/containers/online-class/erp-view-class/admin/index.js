@@ -28,7 +28,7 @@ import Layout from '../../../Layout';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import DetailCardView from './DetailCardView';
 import TabPanel from './tab-panel/TabPanel';
-import APIREQUEST from "../../../../config/apiRequest";
+import APIREQUEST from '../../../../config/apiRequest';
 
 const ErpAdminViewClass = ({ history }) => {
   const [branchList, setBranchList] = useState([]);
@@ -204,7 +204,7 @@ const ErpAdminViewClass = ({ history }) => {
     }
   }, [moduleId, window.location.pathname]);
 
-  const handleApiRes = (result) =>{
+  const handleApiRes = (result) => {
     setTotalCount(result?.data?.count);
     const response = result?.data?.data || [];
     setFilterList(response);
@@ -216,18 +216,18 @@ const ErpAdminViewClass = ({ history }) => {
       setSelectedViewMore(newViewData[0] || {});
     }
     setLoading(false);
-  }
+  };
 
-  function msCallFilterApi(api){
-    var url  = api.split("?");
-      url.shift();
-      var path = url.join("?");
-      let endpoint1 =  `/oncls/v1/retrieve-online-class/`
-      if (window.location.pathname === '/erp-online-class-student-view') {
-        endpoint1 = "/oncls/v1/student-oncls/"
-      }
-      APIREQUEST("get", `${endpoint1}?${path}`)
-      .then((result)=>{
+  function msCallFilterApi(api) {
+    var url = api.split('?');
+    url.shift();
+    var path = url.join('?');
+    let endpoint1 = `/oncls/v1/retrieve-online-class/`;
+    if (window.location.pathname === '/erp-online-class-student-view') {
+      endpoint1 = '/oncls/v1/student-oncls/';
+    }
+    APIREQUEST('get', `${endpoint1}?${path}`)
+      .then((result) => {
         handleApiRes(result);
       })
       .catch((error) => {
@@ -239,7 +239,7 @@ const ErpAdminViewClass = ({ history }) => {
 
   function callApi(api, key) {
     setLoading(true);
-    if(key === "filter" && JSON.parse(localStorage.getItem('isMsAPI'))){
+    if (key === 'filter' && JSON.parse(localStorage.getItem('isMsAPI'))) {
       msCallFilterApi(api);
       return;
     }
@@ -972,7 +972,8 @@ const ErpAdminViewClass = ({ history }) => {
                   <Button
                     variant='contained'
                     size='medium'
-                    className='custom_button_master labelColor'
+                    style={{ width: '100%' }}
+                    className='cancelButton labelColor'
                     onClick={() => handleClearFilter()}
                   >
                     Clear All
@@ -982,9 +983,8 @@ const ErpAdminViewClass = ({ history }) => {
                   <Button
                     variant='contained'
                     size='medium'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', width: '100%' }}
                     color='primary'
-                    className='custom_button_master'
                     onClick={() => handleFilter()}
                   >
                     Get Classes
@@ -995,8 +995,7 @@ const ErpAdminViewClass = ({ history }) => {
                     variant='contained'
                     size='medium'
                     color='primary'
-                    style={{ color: 'white' }}
-                    className='custom_button_master'
+                    style={{ color: 'white', width: '100%' }}
                     onClick={handleDownload}
                   >
                     Download Class Data

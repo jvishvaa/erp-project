@@ -200,65 +200,73 @@ class CreateRole extends Component {
       return 'No modules';
     };
     return (
-      <div className={classes.root}>
-        {/* <div className='bread-crumbs-container'> */}
-          <CommonBreadcrumbs
-            componentName='Role Management'
-            childComponentName='Create Role'
-          />
-          <div className='back-btn-container' style={{ marginTop: '1rem' }}>
+      <>
+        <CommonBreadcrumbs
+          componentName='Role Management'
+          childComponentName='Create Role'
+        />
+        <div className={classes.root}>
+          {/* <div className='bread-crumbs-container'> */}
+          <div className='back-btn-container'>
             <Button
               variant='contained'
-              startIcon={<ArrowBackIcon />}
-              size='medium' 
+              startIcon={<ArrowBackIcon style={{ color: 'rgb(140, 140, 140)' }} />}
+              size='medium'
+              className='cancelButton labelColor'
               onClick={() => history.push('/role-management')}
             >
               Back
             </Button>
           </div>
-        {/* </div> */}
+          {/* </div> */}
 
-        <Grid container alignItems='center' spacing={2} className={classes.formContainer}>
-          <Grid item>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ color: 'red' }}>{roleNameError}</span>
-              <TextField
-                id='outlined-helperText'
-                label='Role name'
-                defaultValue=''
-                variant='outlined'
-                inputProps={{ maxLength: 100 }}
-                onChange={this.handleRoleNameChange}
-                color='secondary'
-                size='small'
-              />
-            </div>
+          <Grid
+            container
+            alignItems='center'
+            spacing={2}
+            className={classes.formContainer}
+          >
+            <Grid item>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ color: 'red' }}>{roleNameError}</span>
+                <TextField
+                  id='outlined-helperText'
+                  label='Role name'
+                  defaultValue=''
+                  variant='outlined'
+                  inputProps={{ maxLength: 100 }}
+                  onChange={this.handleRoleNameChange}
+                  color='secondary'
+                  size='small'
+                />
+              </div>
+            </Grid>
+            <Grid item>
+              <Button
+                variant='contained'
+                color='primary'
+                size='medium'
+                style={{ color: 'white' }}
+                onClick={this.handleCreateRole}
+              >
+                Add Role
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item>
-            <Button
-              variant='contained'
-              color='primary'
-              size='medium'
-              style={{ color: 'white' }}
-              onClick={this.handleCreateRole}
-            >
-              Add Role
-            </Button>
+          <Grid container spacing={2} className={classes.spacer}>
+            <Grid item>
+              <Typography className={classes.sectionHeader}>Number of modules</Typography>
+            </Grid>
           </Grid>
-        </Grid>
-        <Grid container spacing={2} className={classes.spacer}>
-          <Grid item>
-            <Typography className={classes.sectionHeader}>Number of modules</Typography>
-          </Grid>
-        </Grid>
 
-        <Divider className={classes.divider} />
+          <Divider className={classes.divider} />
 
-        <span style={{ color: 'red' }}>{selectionError}</span>
-        <Grid container spacing={2} className={classes.modulesContainer}>
-          {modulesListing()}
-        </Grid>
-      </div>
+          <span style={{ color: 'red' }}>{selectionError}</span>
+          <Grid container spacing={2} className={classes.modulesContainer}>
+            {modulesListing()}
+          </Grid>
+        </div>
+      </>
     );
   }
 }

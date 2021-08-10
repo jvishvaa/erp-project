@@ -4,8 +4,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    width: '98%',
-    margin: '0 1%'
+    width: '96%',
+    margin: '1% auto',
   },
   navigationIcon: {
     marginLeft: theme.spacing(-1),

@@ -7,6 +7,7 @@ import {
   useTheme,
   SvgIcon,
   IconButton,
+  Typography,
 } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
@@ -745,7 +746,6 @@ const MultipleChoice = ({
                         margin: '0px 0px 0px 15px',
                       }}
                       color='primary'
-                      className='modifyDesign'
                       size='small'
                       onClick={() => setOpenEditor(true)}
                     >
@@ -824,19 +824,21 @@ const MultipleChoice = ({
               {!showQuestionType?.TrueFalse && optionsList?.length < 6 && (
                 <div>
                   <Button
-                    className='modifyDesign addAnotherButton'
+                    className='addAnotherButton'
                     title='Add another option'
                     variant='contained'
                     size='medium'
-                    startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                    startIcon={
+                      <AddOutlinedIcon color='primary' style={{ fontSize: '30px' }} />
+                    }
                     disableRipple
                     disableElevation
                     disableFocusRipple
                     disableTouchRipple
-                    style={{ textTransform: 'none' }}
+                    style={{ width: '100%' }}
                     onClick={handleAddOption}
                   >
-                    Add another option
+                    <Typography color='primary'>Add another option</Typography>
                   </Button>
                 </div>
               )}
@@ -872,18 +874,20 @@ const MultipleChoice = ({
                     <Button
                       className={
                         showQuestionType?.MatchTheFollowing
-                          ? 'modifyDesign addAnotherMatchButton'
-                          : 'modifyDesign addAnotherMatrixButton'
+                          ? 'addAnotherMatchButton'
+                          : 'addAnotherMatrixButton'
                       }
                       title='Add New'
                       variant='contained'
                       size='medium'
-                      startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                      startIcon={
+                        <AddOutlinedIcon color='primary' style={{ fontSize: '30px' }} />
+                      }
                       disableRipple
                       disableElevation
                       disableFocusRipple
                       disableTouchRipple
-                      style={{ textTransform: 'none' }}
+                      style={{ width: '100%' }}
                       onClick={handleAddMatchingOption}
                     >
                       Add New
@@ -902,8 +906,8 @@ const MultipleChoice = ({
                   <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                     <Button
                       variant='contained'
-                      style={{ textTransform: 'none' }}
-                      className='custom_button_master modifyDesign cancelButtonLabel'
+                      style={{ width: '100%' }}
+                      className=' cancelButton labelColor'
                       size='medium'
                       onClick={handleCancel}
                     >
@@ -916,9 +920,12 @@ const MultipleChoice = ({
                     <Button
                       variant='contained'
                       color='primary'
-                      className='custom_button_master modifyDesign saveAsDraftButton'
                       size='medium'
-                      style={{ textTransform: 'none' }}
+                      style={{
+                        width: '100%',
+                        border: '1px solid #ff6b6b',
+                        background: 'white',
+                      }}
                       onClick={handleSave}
                     >
                       Save as Draft
@@ -929,9 +936,8 @@ const MultipleChoice = ({
                   <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                     <Button
                       variant='contained'
-                      style={{ color: 'white', textTransform: 'none' }}
+                      style={{ color: 'white', width: '100%' }}
                       color='primary'
-                      className='custom_button_master modifyDesign'
                       size='medium'
                       onClick={handleSubmit}
                     >

@@ -481,7 +481,8 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          className='custom_button_master labelColor modifyDesign'
+          style={{ width: '100%' }}
+          className='labelColor cancelButton'
           size='medium'
           onClick={handleBack}
         >
@@ -492,7 +493,8 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          className='custom_button_master labelColor modifyDesign'
+          style={{ width: '100%' }}
+          className='labelColor cancelButton'
           size='medium'
           onClick={handleClear}
         >
@@ -504,9 +506,8 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          style={{ color: 'white' }}
+          style={{ color: 'white', width: '100%' }}
           color='primary'
-          className='custom_button_master modifyDesign'
           size='medium'
           onClick={handleFilter}
         >

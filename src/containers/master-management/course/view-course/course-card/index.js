@@ -21,7 +21,7 @@ const StyledButton = withStyles({
     '&:hover': {
       backgroundColor: '#FF6B6B',
     },
-  }
+  },
 })(Button);
 
 const CancelButton = withStyles({
@@ -31,7 +31,7 @@ const CancelButton = withStyles({
     '&:hover': {
       backgroundColor: '#e0e0e0',
     },
-  }
+  },
 })(Button);
 
 const CourseCard = ({
@@ -49,7 +49,7 @@ const CourseCard = ({
   handleCourseList,
   sendGrade,
   selectedIndex,
-  tabVal
+  tabVal,
 }) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -130,36 +130,37 @@ const CourseCard = ({
   //   history.push(`/create/course/${sendGrade}`);
   //   sessionStora ge.setItem('selectedIndex', selectedIndex);
   // };
-  const handleStatus = (e,index)=>{
-    if(tabVal === 1){
-      axiosInstance.put(`${endpoints.onlineCourses.updateCourse}${e.id}/update-course/`,{
-        "is_active":0
-      }).then(result=>{
-        if(result.data.status_code === 200){
-          setAlert('success','Course successfully Inactivated')
-          handleCourseList(sendGrade,tabVal);
-        }
-        else{
-          setAlert('error','Not Updated, Try After Few Mins.')
-        }
-      })
+  const handleStatus = (e, index) => {
+    if (tabVal === 1) {
+      axiosInstance
+        .put(`${endpoints.onlineCourses.updateCourse}${e.id}/update-course/`, {
+          is_active: 0,
+        })
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setAlert('success', 'Course successfully Inactivated');
+            handleCourseList(sendGrade, tabVal);
+          } else {
+            setAlert('error', 'Not Updated, Try After Few Mins.');
+          }
+        });
     }
-    if(tabVal === 2){
-      axiosInstance.put(`${endpoints.onlineCourses.updateCourse}${e.id}/update-course/`,{
-        "is_active":1
-      }).then(result=>{
-        if(result.data.status_code === 200){
-          setAlert('success','Course successfully Activated')
-          handleCourseList(sendGrade,tabVal);
-        }
-        else{
-          setAlert('error','Not Updated, Try After Few Mins.')
-        }
-      })
+    if (tabVal === 2) {
+      axiosInstance
+        .put(`${endpoints.onlineCourses.updateCourse}${e.id}/update-course/`, {
+          is_active: 1,
+        })
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setAlert('success', 'Course successfully Activated');
+            handleCourseList(sendGrade, tabVal);
+          } else {
+            setAlert('error', 'Not Updated, Try After Few Mins.');
+          }
+        });
     }
-    
-  }
-  // Confirm Popover 
+  };
+  // Confirm Popover
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -222,10 +223,13 @@ const CourseCard = ({
                     <div className='tooltip' onClick={(e) => handleClick(e)}>
                       Delete
                     </div>
-                    <div onClick={() => handleStatus(period)} style={{marginTop: '5px'}}>
-                     {/* {tabVal ==0 || tabVal == undefined ? 'Active' : '' } */}
-                     {tabVal == 1  ? 'Inactive' : '' }
-                     {tabVal == 2  ? 'Active' : '' }
+                    <div
+                      onClick={() => handleStatus(period)}
+                      style={{ marginTop: '5px' }}
+                    >
+                      {/* {tabVal ==0 || tabVal == undefined ? 'Active' : '' } */}
+                      {tabVal == 1 ? 'Inactive' : ''}
+                      {tabVal == 2 ? 'Active' : ''}
                     </div>
                   </span>
                   <Popover
@@ -242,11 +246,18 @@ const CourseCard = ({
                       horizontal: 'center',
                     }}
                   >
-                    <div style={{ padding: '20px 30px'}}>
-                      <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure you want to delete?</Typography>
+                    <div style={{ padding: '20px 30px' }}>
+                      <Typography style={{ fontSize: '20px', marginBottom: '15px' }}>
+                        Are you sure you want to delete?
+                      </Typography>
                       <div>
                         <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
-                        <StyledButton onClick={() => handleDelete(period)} style={{float: 'right'}}>Confirm</StyledButton>
+                        <StyledButton
+                          onClick={() => handleDelete(period)}
+                          style={{ float: 'right' }}
+                        >
+                          Confirm
+                        </StyledButton>
                       </div>
                     </div>
                   </Popover>
@@ -273,9 +284,8 @@ const CourseCard = ({
           {!periodColor && (
             <Button
               variant='contained'
-              style={{ color: 'white' }}
+              style={{ color: 'white', width: '100%' }}
               color='primary'
-              className='custom_button_master buttonModifiedDesign'
               size='small'
               onClick={handleViewMore}
             >

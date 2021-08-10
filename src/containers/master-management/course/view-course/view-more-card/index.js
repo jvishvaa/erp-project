@@ -172,6 +172,7 @@ const ViewMoreCard = ({
               className='courseButton'
               variant='contained'
               color='primary'
+              style={{color: 'white'}}
               onClick={handleViewCard}
             >
               View Period Details

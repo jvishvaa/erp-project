@@ -129,9 +129,9 @@ const Appbar = ({ children, history, ...props }) => {
   const handleLogout = () => {
     dispatch(logout());
     const list = ['rememberDetails'];
-      Object.keys(localStorage).forEach((key) => {
-        if (!list.includes(key)) localStorage.removeItem(key);
-      });
+    Object.keys(localStorage).forEach((key) => {
+      if (!list.includes(key)) localStorage.removeItem(key);
+    });
     setIsLogout(true);
   };
 
@@ -326,22 +326,26 @@ const Appbar = ({ children, history, ...props }) => {
             >
               <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
             </IconButton>
-            <IconButton
-              className={classes.inputButton}
-              disableRipple={true}
-              aria-controls={mobileMenuId}
-              aria-label='show school logo'
-              color='inherit'
-              aria-haspopup='true'
-              size='small'
-            >
-              <img
-                src={centralSchoolLogo}
-                alt='logo'
-                className={clsx(classes.schoolLogoBtn, classes.desktopToolbarComponents)}
-                style={{ height: '50px', width: '50px', objectFit: 'fill' }}
-              />
-            </IconButton>
+            {centralSchoolLogo && (
+              <IconButton
+                className={classes.inputButton}
+                disableRipple={true}
+                aria-controls={mobileMenuId}
+                aria-label='show school logo'
+                color='inherit'
+                aria-haspopup='true'
+                size='small'
+              >
+                <img
+                  src={centralSchoolLogo}
+                  alt='logo'
+                  className={clsx(
+                    classes.schoolLogoBtn,
+                    classes.desktopToolbarComponents
+                  )}
+                />
+              </IconButton>
+            )}
           </div>
           {!isMobile && (
             <div className={classes.sectionMobile}>

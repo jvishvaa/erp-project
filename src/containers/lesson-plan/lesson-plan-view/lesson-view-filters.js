@@ -560,7 +560,8 @@ const LessonViewFilters = ({
       >
         <Button
           variant='contained'
-          className='custom_button_master labelColor modifyDesign'
+          className='labelColor cancelButton'
+          style={{ width: '100%' }}
           size='medium'
           onClick={handleClear}
         >
@@ -572,9 +573,8 @@ const LessonViewFilters = ({
       <Grid item xs={12} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          style={{ color: 'white' }}
+          style={{ color: 'white', width: '100%' }}
           color='primary'
-          className='custom_button_master modifyDesign'
           size='medium'
           onClick={handleFilter}
         >

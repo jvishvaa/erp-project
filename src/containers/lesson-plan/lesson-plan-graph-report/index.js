@@ -110,10 +110,7 @@ const LessonPlanGraphReport = ({
       section: '',
       teacher: '',
     });
-    setDateRangeTechPer([
-      moment().subtract(6, 'days'),
-      moment(),
-    ]);
+    setDateRangeTechPer([moment().subtract(6, 'days'), moment()]);
   };
 
   const handleAcademicYear = (event, value) => {
@@ -138,7 +135,6 @@ const LessonPlanGraphReport = ({
     const moduleName = tempObj[location.pathname] || tempObj['default'];
     return getModuleInfo(moduleName).id;
   }
-
 
   const handleDateRangePicker = (e, value) => {
     setDateRangeTechPer(e);
@@ -167,7 +163,9 @@ const LessonPlanGraphReport = ({
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&grade=${value.grade_id}&module_id=${getModuleId()}`
+          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&grade=${
+            value.grade_id
+          }&module_id=${getModuleId()}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -181,10 +179,14 @@ const LessonPlanGraphReport = ({
           setAlert('error', error.message);
           setSubjectDropdown([]);
         });
-        const {year:{school:schoolSectionYear}={}} = filterData||{}
+      const { year: { school: schoolSectionYear } = {} } = filterData || {};
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&session_year=${schoolSectionYear?.id}&module_id=${getModuleId()}`
+          `${endpoints.masterManagement.sections}?branch_id=${
+            filterData.branch.id
+          }&grade_id=${value.grade_id}&session_year=${
+            schoolSectionYear?.id
+          }&module_id=${getModuleId()}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -213,7 +215,6 @@ const LessonPlanGraphReport = ({
   };
 
   const handleSubject = (event, value) => {
-
     setSubjectList([]);
     if (value.length > 0) {
       const ids = value.map((el) => el.subject_id);
@@ -221,7 +222,7 @@ const LessonPlanGraphReport = ({
       const sIds = value.map((el) => el.id);
       setSubjId(sIds);
       setSubjectList(value);
-      const {year:{school:{id:schoolAcademicId}}={}}=filterData||{}
+      const { year: { school: { id: schoolAcademicId } } = {} } = filterData || {};
       axiosInstance
         .get(
           `${endpoints.lessonReport.teacherList}?branch=${filterData?.branch?.id}&grade=${filterData?.grade?.grade_id}&section=${filterData.section?.section_id}&subject=${ids}&academic_year=${schoolAcademicId}`
@@ -242,18 +243,16 @@ const LessonPlanGraphReport = ({
     const ids = value.map((el) => el.subject_id);
 
     axiosInstance
-    .get(
-      `${`/academic/central-chapters-list-v2/`}?subject_id=${
-        ids[0]
-      }&volume=${filterData.volume.id}&academic_year=${
-        filterData.year.id
-      }&grade_id=${filterData.grade.grade_id}`
-    )
+      .get(
+        `${`/academic/central-chapters-list-v2/`}?subject_id=${ids[0]}&volume=${
+          filterData.volume.id
+        }&academic_year=${filterData.year.id}&grade_id=${filterData.grade.grade_id}`
+      )
 
-    // axiosInstance
-    //   .get(
-    //     `${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value[0].id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&grade_id=${filterData.grade.grade_id}`
-    //   )
+      // axiosInstance
+      //   .get(
+      //     `${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value[0].id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&grade_id=${filterData.grade.grade_id}`
+      //   )
       .then((result) => {
         if (result.data.status_code === 200) {
           setMapId(result.data.result.central_gs_mapping_id);
@@ -271,21 +270,23 @@ const LessonPlanGraphReport = ({
     setFilterData({ ...filterData, branch: '' });
     if (value) {
       setFilterData({ ...filterData, branch: value });
-        let erp_year;
-        const acad = academicYear.map((year) => {
-          if (year?.session_year === filterData.year?.session_year) {
-            erp_year = year;
-            setErpYear(year);
-            setFilterData({ ...filterData, academic: year ,branch:value});
-            return year;
-          }
-          return {};
-        });
-  
+      let erp_year;
+      const acad = academicYear.map((year) => {
+        if (year?.session_year === filterData.year?.session_year) {
+          erp_year = year;
+          setErpYear(year);
+          setFilterData({ ...filterData, academic: year, branch: value });
+          return year;
+        }
+        return {};
+      });
+
       axiosInstance
-        .get(`${endpoints.academics.grades}?branch_id=${value.id}&module_id=${getModuleId()}&session_year=${
-          erp_year?.id
-        }`)
+        .get(
+          `${endpoints.academics.grades}?branch_id=${
+            value.id
+          }&module_id=${getModuleId()}&session_year=${erp_year?.id}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             setGradeDropdown(result.data.data);
@@ -311,9 +312,12 @@ const LessonPlanGraphReport = ({
     setNoFilterLogo(false);
     axiosInstance
       .get(
-        `${endpoints.lessonReport.lessonViewMoreData
-        }?central_gs_mapping_id=${mapId}&volume_id=${filterData.volume.id
-        }&academic_year_id=${filterData.year.id}&completed_by=${filterData.teacher.user_id
+        `${
+          endpoints.lessonReport.lessonViewMoreData
+        }?central_gs_mapping_id=${mapId}&volume_id=${
+          filterData.volume.id
+        }&academic_year_id=${filterData.year.id}&completed_by=${
+          filterData.teacher.user_id
         }&start_date=${startDateTechPer.format(
           'YYYY-MM-DD'
         )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`
@@ -332,79 +336,83 @@ const LessonPlanGraphReport = ({
         setAlert('error', error.message);
       });
   };
-  const fetchCentralAndSchoolsSessions = ()=>{
-    const headers= {headers: {'x-api-key': 'vikash@12345#1231'}}
-    const schoolSessionApiURL = endpoints.masterManagement.academicYear
-    const schoolSessionProm = axiosInstance.get(schoolSessionApiURL)
+  const fetchCentralAndSchoolsSessions = () => {
+    const headers = { headers: { 'x-api-key': 'vikash@12345#1231' } };
+    const schoolSessionApiURL = endpoints.masterManagement.academicYear;
+    const schoolSessionProm = axiosInstance.get(schoolSessionApiURL);
 
-    const centralSessionsApiURL = `${endpoints.baseURLCentral}/lesson_plan/list-session/`
-    const centralSessionProm = axios.get(centralSessionsApiURL, headers)
-    const promises = [schoolSessionProm,centralSessionProm]
-    Promise.all(promises).then(res=>{
-      const academicYears= []
-      const [schoolAcademicYearsObj, centralAcademicYearsObj]= res
+    const centralSessionsApiURL = `${endpoints.baseURLCentral}/lesson_plan/list-session/`;
+    const centralSessionProm = axios.get(centralSessionsApiURL, headers);
+    const promises = [schoolSessionProm, centralSessionProm];
+    Promise.all(promises)
+      .then((res) => {
+        const academicYears = [];
+        const [schoolAcademicYearsObj, centralAcademicYearsObj] = res;
 
-      const {data:{result:{results:schoolAcademicYears}={}}={}}=schoolAcademicYearsObj||{}
-      let {data:{result:{results:centralAcademicYears}={}}={}}=centralAcademicYearsObj||{}
-      let schoolAcademicYearsObjMap = {}
-      schoolAcademicYears.forEach(item=>{
-        schoolAcademicYearsObjMap[item.session_year] = item
+        const { data: { result: { results: schoolAcademicYears } = {} } = {} } =
+          schoolAcademicYearsObj || {};
+        let { data: { result: { results: centralAcademicYears } = {} } = {} } =
+          centralAcademicYearsObj || {};
+        let schoolAcademicYearsObjMap = {};
+        schoolAcademicYears.forEach((item) => {
+          schoolAcademicYearsObjMap[item.session_year] = item;
+        });
+        centralAcademicYears.forEach((item) => {
+          const obj = { ...item, school: schoolAcademicYearsObjMap[item.session_year] };
+          academicYears.push(obj);
+        });
+        handleAcademicYear({}, academicYears?.[3]);
+        setAcademicYearDropdown(academicYears);
       })
-      centralAcademicYears.forEach(item=>{
-        const obj = {...item, school:schoolAcademicYearsObjMap[item.session_year]}
-        academicYears.push(obj)
-      })
-      handleAcademicYear({},academicYears?.[3]);
-      setAcademicYearDropdown(academicYears)
-    }).catch(e=>{
+      .catch((e) => {
         setAlert('error', 'Failed to fetch academic sessions.');
-    })
-//     axios
-//       .get(`${endpoints.baseURLCentral}/lesson_plan/list-session/`, {
-//         headers: {
-//           'x-api-key': 'vikash@12345#1231',
-//         },
-//       })
-//       .then((result) => {
-//         if (result.data.status_code === 200) {
-//           setAcademicYearDropdown(result.data.result.results);
-//         } else {
-//           setAlert('error', result.data.message);
-//         }
-//       })
-//       .catch((error) => {
-//         setAlert('error', error.message);
-//       });
-// // fetch erp academic years
-      
-//       axiosInstance
-//       .get(apiURL)
-//       .then((result) => {
-//         if (result.data.status_code === 200) {
-//           setAcademicYearDropdown(result.data.result.results);
-//         } else {
-//           setAlert('error', result.data.message);
-//         }
-//       })
-//       .catch((error) => {
-//         setAlert('error', error.message);
-//       });
-// 
-  }
+      });
+    //     axios
+    //       .get(`${endpoints.baseURLCentral}/lesson_plan/list-session/`, {
+    //         headers: {
+    //           'x-api-key': 'vikash@12345#1231',
+    //         },
+    //       })
+    //       .then((result) => {
+    //         if (result.data.status_code === 200) {
+    //           setAcademicYearDropdown(result.data.result.results);
+    //         } else {
+    //           setAlert('error', result.data.message);
+    //         }
+    //       })
+    //       .catch((error) => {
+    //         setAlert('error', error.message);
+    //       });
+    // // fetch erp academic years
+
+    //       axiosInstance
+    //       .get(apiURL)
+    //       .then((result) => {
+    //         if (result.data.status_code === 200) {
+    //           setAcademicYearDropdown(result.data.result.results);
+    //         } else {
+    //           setAlert('error', result.data.message);
+    //         }
+    //       })
+    //       .catch((error) => {
+    //         setAlert('error', error.message);
+    //       });
+    //
+  };
 
   useEffect(() => {
     axiosInstance
-    .get(`${endpoints.userManagement.academicYear}?module_id=${getModuleId()}`)
-    .then((res) => {
-      if (res?.data?.status_code === 200) {
-        setAcademicYear(res?.data?.data);
-      }
-    })
-    .catch((error) => {
-      setAlert('error ', error?.message);
-    });
+      .get(`${endpoints.userManagement.academicYear}?module_id=${getModuleId()}`)
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setAcademicYear(res?.data?.data);
+        }
+      })
+      .catch((error) => {
+        setAlert('error ', error?.message);
+      });
 
-    fetchCentralAndSchoolsSessions()
+    fetchCentralAndSchoolsSessions();
     axios
       .get(`${endpoints.baseURLCentral}/lesson_plan/list-volume/`, {
         headers: {
@@ -413,7 +421,6 @@ const LessonPlanGraphReport = ({
       })
       .then((result) => {
         if (result.data.status_code === 200) {
-          
           setVolumeDropdown(result.data.result.results);
         } else {
           setAlert('error', result.data.message);
@@ -422,7 +429,7 @@ const LessonPlanGraphReport = ({
       .catch((error) => {
         setAlert('error', error.message);
       });
-    },[])
+  }, []);
   //   axiosInstance
   //     .get(`${endpoints.communication.branches}`)
   //     .then((result) => {
@@ -475,7 +482,6 @@ const LessonPlanGraphReport = ({
         });
     }
   }, [filterData.year, academicYear]);
-
 
   useEffect(() => {
     // if (branchId) {
@@ -566,27 +572,32 @@ const LessonPlanGraphReport = ({
   const canFilter = () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     const {
-      volume:{id:volumeId}={}, 
-      year:{id:yeadId}={}, 
-      teacher:{user_id: teacherId }={},
+      volume: { id: volumeId } = {},
+      year: { id: yeadId } = {},
+      teacher: { user_id: teacherId } = {},
       startDateTechPer: startDateTechPerTempVar,
-      endDateTechPer: endDateTechPerPerTempVar
-    }={...(filterData||{}),startDateTechPer,endDateTechPer}
-    return ![mapId, volumeId, yeadId, teacherId, startDateTechPerTempVar, endDateTechPerPerTempVar].map(Boolean).includes(false)
-  }
+      endDateTechPer: endDateTechPerPerTempVar,
+    } = { ...(filterData || {}), startDateTechPer, endDateTechPer };
+    return ![
+      mapId,
+      volumeId,
+      yeadId,
+      teacherId,
+      startDateTechPerTempVar,
+      endDateTechPerPerTempVar,
+    ]
+      .map(Boolean)
+      .includes(false);
+  };
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         {loading ? <Loading message='Loading...' /> : null}
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Lesson Plan'
-              childComponentName='Graphical Report'
-            />
-          </div>
-        </div>
+        <CommonBreadcrumbs
+          componentName='Lesson Plan'
+          childComponentName='Graphical Report'
+        />
         <Grid
           container
           spacing={isMobile ? 3 : 5}
@@ -775,7 +786,8 @@ const LessonPlanGraphReport = ({
           <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
             <Button
               variant='contained'
-              className='custom_button_master labelColor'
+              style={{ width: '100%' }}
+              className='cancelButton labelColor'
               size='medium'
               onClick={handleClear}
             >
@@ -785,9 +797,8 @@ const LessonPlanGraphReport = ({
           <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
             <Button
               variant='contained'
-              style={{ color: 'white' }}
+              style={{ color: 'white', width: '100%' }}
               color='primary'
-              className='custom_button_master'
               size='medium'
               type='submit'
               disabled={!canFilter()}
@@ -825,8 +836,8 @@ const LessonPlanGraphReport = ({
             />
           </div>
         ) : (
-            <HighchartsReact highcharts={Highcharts} options={configObj} />
-          )}
+          <HighchartsReact highcharts={Highcharts} options={configObj} />
+        )}
       </Layout>
     </>
   );

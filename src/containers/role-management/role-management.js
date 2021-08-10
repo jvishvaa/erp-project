@@ -93,127 +93,129 @@ class RoleManagement extends Component {
     const { openDeleteModal, selectedRole, searchInput } = this.state;
 
     return (
-      <div className={`${classes.root} common-table`}>
+      <>
         <CommonBreadcrumbs componentName='Role Management' />
-
-        <Grid container spacing={1} className={classes.spacer}>
-          <Grid item xs={12} md={4}>
-            <Box className={classes.searchContainer}>
-              <FormControl size='small' fullWidth>
-                <OutlinedInput
-                  endAdornment={<SearchOutlined color='primary' />}
-                  value={searchInput}
-                  onChange={this.handleSearchInputChange}
-                  placeholder='Search roles ...'
-                />
-              </FormControl>
-            </Box>
+        <div className={`${classes.root} common-table`}>
+          <Grid container spacing={1} className={classes.spacer}>
+            <Grid item xs={12} md={4}>
+              <Box className={classes.searchContainer}>
+                <FormControl size='small' fullWidth>
+                  <OutlinedInput
+                    endAdornment={<SearchOutlined color='primary' />}
+                    value={searchInput}
+                    onChange={this.handleSearchInputChange}
+                    placeholder='Search roles ...'
+                  />
+                </FormControl>
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
-        <Grid
-          container
-          spacing={1}
-          className={classes.spacer}
-          style={{ marginBottom: '25px' }}
-        >
-          <Grid item xs={12} className={classes.buttonContainer}>
-            <Button
-              variant='contained'
-              startIcon={<AddOutlinedIcon />}
-              href={`${match.url}/create-role`}
-              color='primary'
-              style={{ color: 'white' }}
-            >
-              Add Role
-            </Button>
+          <Grid
+            container
+            spacing={1}
+            className={classes.spacer}
+            style={{ marginBottom: '25px' }}
+          >
+            <Grid item xs={12} className={classes.buttonContainer}>
+              <Button
+                variant='contained'
+                startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                href={`${match.url}/create-role`}
+                color='primary'
+                size='medium'
+                style={{ color: 'white' }}
+              >
+                Add Role
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
 
-        <div className={classes.rolesTableContainer}>
-          {fetchingRoles ? (
-            <Loading message='fetching roles ..' />
-          ) : (
-            <RolesTable
-              roles={roles}
-              loading={fetchingRoles}
-              onEdit={this.editRole}
-              onDelete={this.handleOpenDeleteModal}
-              page={page}
-              limit={limit}
-              count={count}
-              onChangePage={this.handlePageChange}
-            />
-          )}
-        </div>
-        <div className={classes.roleCardsContainer}>
-          {fetchingRoles ? (
-            <Loading message='fetching roles ..' />
-          ) : (
-            roles &&
-            roles.map((role) => (
-              <RoleCard
-                role={role}
+          <div className={classes.rolesTableContainer}>
+            {fetchingRoles ? (
+              <Loading message='fetching roles ..' />
+            ) : (
+              <RolesTable
+                roles={roles}
+                loading={fetchingRoles}
                 onEdit={this.editRole}
                 onDelete={this.handleOpenDeleteModal}
+                page={page}
+                limit={limit}
+                count={count}
+                onChangePage={this.handlePageChange}
               />
-            ))
-          )}
-        </div>
-        <div className={classes.roleCardsPagination}>
-          {/* <Pagination
+            )}
+          </div>
+          <div className={classes.roleCardsContainer}>
+            {fetchingRoles ? (
+              <Loading message='fetching roles ..' />
+            ) : (
+              roles &&
+              roles.map((role) => (
+                <RoleCard
+                  role={role}
+                  onEdit={this.editRole}
+                  onDelete={this.handleOpenDeleteModal}
+                />
+              ))
+            )}
+          </div>
+          <div className={classes.roleCardsPagination}>
+            {/* <Pagination
             page={page}
             count={Math.ceil(count / limit)}
             onChange={(e, page) => this.handlePageChange(page)}
             color='primary'
             className='pagination-white'
           /> */}
-          <TablePagination
-            component='div'
-            count={count}
-            rowsPerPage={limit}
-            page={page - 1}
-            onChangePage={(e, pageNo) => {
-              this.handlePageChange(pageNo + 1);
-            }}
-            rowsPerPageOptions={false}
-            className='table-pagination'
-            classes={{
-              spacer: classes.tablePaginationSpacer,
-              toolbar: classes.tablePaginationToolbar,
-              caption: classes.tablePaginationCaption,
-            }}
-          />
+            <TablePagination
+              component='div'
+              count={count}
+              rowsPerPage={limit}
+              page={page - 1}
+              onChangePage={(e, pageNo) => {
+                this.handlePageChange(pageNo + 1);
+              }}
+              rowsPerPageOptions={false}
+              className='table-pagination'
+              classes={{
+                spacer: classes.tablePaginationSpacer,
+                toolbar: classes.tablePaginationToolbar,
+                caption: classes.tablePaginationCaption,
+              }}
+            />
+          </div>
+          <Dialog
+            open={openDeleteModal}
+            onClose={this.handleCloseDeleteModal}
+            aria-labelledby='draggable-dialog-title'
+          >
+            <DialogTitle id='draggable-dialog-title'>Delete Role</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                {`Confirm delete role ${selectedRole?.role_name}`}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                autoFocus
+                className='labelColor cancelButton'
+                onClick={this.handleCloseDeleteModal}
+              >
+                Cancel
+              </Button>
+              <Button
+                color='primary'
+                variant='contained'
+                style={{ color: 'white' }}
+                onClick={this.handleDeleteRole}
+              >
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
-        <Dialog
-          open={openDeleteModal}
-          onClose={this.handleCloseDeleteModal}
-          aria-labelledby='draggable-dialog-title'
-        >
-          <DialogTitle id='draggable-dialog-title'>Delete Role</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              {`Confirm delete role ${selectedRole?.role_name}`}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              autoFocus
-              className='labelColor cancelButton'
-              onClick={this.handleCloseDeleteModal}
-            >
-              Cancel
-            </Button>
-            <Button
-              color='primary'
-              variant='contained'
-              style={{ color: 'white' }}
-              onClick={this.handleDeleteRole}
-            >
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
+      </>
     );
   }
 }

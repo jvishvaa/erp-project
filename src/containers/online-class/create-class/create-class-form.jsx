@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Switch,
   FormControlLabel,
+  Typography
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
@@ -19,7 +20,6 @@ import {
 import MomentUtils from '@date-io/moment';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import moment from 'moment';
-
 import { CreateclassContext } from './create-class-context/create-class-state';
 import FilterStudents from './filter-students';
 import {
@@ -599,7 +599,7 @@ const CreateClassForm = (props) => {
           .map((obj) => obj.send)
           .join(',')}`
         : `?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}&is_zoom=${onlineClass.is_zoom}`;
-      const { data } = JSON.parse(localStorage.getItem('isMsAPI')) ? await APIREQUEST("get", `/oncls/v1/tutor-availability/${url}`) : await axiosInstance.get('/erp_user/check-tutor-time/'+ url);
+      const { data } = JSON.parse(localStorage.getItem('isMsAPI')) ? await APIREQUEST("get", `/oncls/v1/tutor-availability/${url}`) : await axiosInstance.get('/erp_user/check-tutor-time/' + url);
       if (data.status_code === 200) {
         if (data.status === 'success') {
           setTutorNotAvailableMessage('');
@@ -688,13 +688,11 @@ const CreateClassForm = (props) => {
   }, []);
   return (
     <div className='create__class' key={formKey}>
-      <div className='breadcrumb-container-create'>
-        <CommonBreadcrumbs
-          componentName='Online Class'
-          childComponentName='Create Class'
-          isAcademicYearVisible={true}
-        />
-      </div>
+      <CommonBreadcrumbs
+        componentName='Online Class'
+        childComponentName='Create Class'
+        isAcademicYearVisible={true}
+      />
       <div className='create-class-form-container'>
         <form
           autoComplete='off'
@@ -1009,7 +1007,10 @@ const CreateClassForm = (props) => {
                     color='primary'
                   />
                 }
-                label={toggle ? 'Recurring' : 'Normal'}
+                label={
+                  <Typography color='secondary'>
+                    {toggle ? 'Recurring' : 'Normal'}
+                  </Typography>}
               />
             </Grid>
             {/* <Grid item md={1} xs={12} sm={2}>
@@ -1023,7 +1024,10 @@ const CreateClassForm = (props) => {
                     color='primary'
                   />
                 }
-                label={toggleZoom ? 'edXstream' : 'zoom'}
+                label={
+                  <Typography color='secondary'>
+                    {toggleZoom ? 'edXstream' : 'Zoom'}
+                  </Typography>}
               />
             </Grid> */}
           </Grid>

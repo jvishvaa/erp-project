@@ -5,7 +5,6 @@ import { Grid, TextField, Button, useTheme, SvgIcon } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import download from '../../../assets/images/downloadAll.svg';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
@@ -714,8 +713,8 @@ const QuestionBankFilters = ({
           <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
             <Button
               variant='contained'
-              style={{ color: 'white', borderRadius: '10px' }}
-              className='custom_button_master labelColor'
+              className='cancelButton labelColor'
+              style={{ width: '100%' }}
               size='medium'
               onClick={() =>
                 history.push(`/create-question-paper?show-question-paper=true`)
@@ -729,8 +728,8 @@ const QuestionBankFilters = ({
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
-            style={{ color: 'white', borderRadius: '10px' }}
-            className='custom_button_master labelColor'
+            style={{ width: '100%' }}
+            className='cancelButton labelColor'
             size='medium'
             onClick={handleClear}
           >
@@ -742,9 +741,8 @@ const QuestionBankFilters = ({
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
-            style={{ color: 'white', borderRadius: '10px' }}
+            style={{ color: 'white', width: '100%' }}
             color='primary'
-            className='custom_button_master'
             size='medium'
             onClick={handleFilter}
           >
@@ -763,9 +761,8 @@ const QuestionBankFilters = ({
             <Button
               startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
               variant='contained'
-              style={{ color: 'white', borderRadius: '10px' }}
+              style={{ color: 'white', width: '100%' }}
               color='primary'
-              className='custom_button_master'
               onClick={() => history.push('/create-question')}
               size='medium'
             >

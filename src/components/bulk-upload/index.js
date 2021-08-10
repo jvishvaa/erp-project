@@ -486,7 +486,8 @@ const BulkUpload = ({ onUploadSuccess }) => {
         <Grid item md={2} xs={6}>
           <Button
             variant='contained'
-            className='custom_button_master labelColor'
+            className='canceButton labelColor'
+            style={{ width: '100%' }}
             size='medium'
             onClick={handleClearAll}
           >
@@ -505,9 +506,8 @@ const BulkUpload = ({ onUploadSuccess }) => {
           ) : (
             <Button
               variant='contained'
-              style={{ color: 'white' }}
+              style={{color:'white', width: '100%' }}
               color='primary'
-              className='custom_button_master'
               size='medium'
               onClick={handleFileUpload}
             >

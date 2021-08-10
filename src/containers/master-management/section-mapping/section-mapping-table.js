@@ -495,7 +495,8 @@ const SectionTable = () => {
                 <Button
                   variant='contained'
                   size='medium'
-                  className='labelColor buttonModifiedDesign'
+                  style={{ width: '100%' }}
+                  className='labelColor cancelButton'
                   onClick={handleClearAll}
                 >
                   CLEAR ALL
@@ -504,10 +505,9 @@ const SectionTable = () => {
               <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                 <Button
                   variant='contained'
-                  style={{ color: 'white' }}
+                  style={{ color: 'white', width: '100%' }}
                   color='primary'
                   size='medium'
-                  className='buttonModifiedDesign'
                   onClick={handleFilterCheck}
                 >
                   FILTER
@@ -531,7 +531,7 @@ const SectionTable = () => {
                   variant='contained'
                   color='primary'
                   size='medium'
-                  style={{ color: 'white' }}
+                  style={{ color: 'white', width: '100%' }}
                   title='Add Section Mapping'
                   onClick={handleAddSection}
                 >

@@ -75,7 +75,7 @@ const CircularList = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   const { role_details } = JSON.parse(localStorage.getItem('userDetails') || {});
-  const userId= JSON.parse(localStorage.getItem('userDetails') || {});
+  const userId = JSON.parse(localStorage.getItem('userDetails') || {});
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -85,10 +85,16 @@ const CircularList = () => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher Circular' && window.location.pathname === '/teacher-circular') {
+            if (
+              item.child_name === 'Teacher Circular' &&
+              window.location.pathname === '/teacher-circular'
+            ) {
               setModuleId(item.child_id);
             }
-            if (item.child_name === 'Student Circular' && window.location.pathname === '/student-circular') {
+            if (
+              item.child_name === 'Student Circular' &&
+              window.location.pathname === '/student-circular'
+            ) {
               setModuleId(item.child_id);
             }
           });
@@ -141,11 +147,13 @@ const CircularList = () => {
       setFilterDataDown(grade, branch);
       axiosInstance
         .get(
-          `${endpoints.circular.circularList}?user_id=${userId?.user_id}&start_date=${grade.format(
+          `${endpoints.circular.circularList}?user_id=${
+            userId?.user_id
+          }&start_date=${grade.format('YYYY-MM-DD')}&end_date=${branch.format(
             'YYYY-MM-DD'
-          )}&end_date=${branch.format(
-            'YYYY-MM-DD'
-          )}&page=${page}&page_size=${limit}&role_id=${role_details?.role_id}&module_id=${moduleId}&module_name=Student Circular`
+          )}&page=${page}&page_size=${limit}&role_id=${
+            role_details?.role_id
+          }&module_id=${moduleId}&module_name=Student Circular`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -195,21 +203,25 @@ const CircularList = () => {
         );
     }
   }, [page, deleteFlag]);
-  useEffect(()=>{
-    if(window.location.pathname === '/student-circular'){
-      if(startDateFilter && endDateFilter)
-    handlePeriodList(startDateFilter,endDateFilter)
-  }
-  },[page])
+  useEffect(() => {
+    if (window.location.pathname === '/student-circular') {
+      if (startDateFilter && endDateFilter)
+        handlePeriodList(startDateFilter, endDateFilter);
+    }
+  }, [page]);
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div
-          className={isMobile ? 'breadCrumbFilterRow' : null}
-          style={{ display: 'flex' }}
-        >
-          <div style={{ width: '95%', margin: '20px auto', marginLeft: '30px' }}>
+        <div className={isMobile ? 'breadCrumbFilterRow' : null}>
+          <div
+            style={{
+              width: '96%',
+              margin: '20px auto',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <CommonBreadcrumbs
               componentName={
                 window.location.pathname === '/teacher-circular'
@@ -217,25 +229,34 @@ const CircularList = () => {
                   : 'Student Circular'
               }
             />
-          </div>
-          {/* {isMobile ? ( */}
-          <div className='hideShowFilterIcon'>
-            <IconButton
-              onClick={() => setIsFilter(!isFilter)}
-              style={{ marginRight: '36px' }}
-            >
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={{ height: '20px', width: '25px' }}
-                    src={isFilter ? hidefilter : showfilter}
-                  />
+            <div className='hideShowFilterIcon'>
+              <IconButton onClick={() => setIsFilter(!isFilter)}>
+                {!isMobile && (
+                  <div
+                    style={{
+                      color: '#014b7e',
+                      fontSize: '16px',
+                      marginRight: '10px',
+                      fontWeight: '600',
+                      alignSelf: 'center',
+                    }}
+                  >
+                    {isFilter ? 'Close Filter' : 'Expand Filter'}
+                  </div>
                 )}
-              />
-            </IconButton>
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={{ height: '20px', width: '25px' }}
+                      src={isFilter ? hidefilter : showfilter}
+                    />
+                  )}
+                />
+              </IconButton>
+            </div>
           </div>
-          {/* ) : null} */}
         </div>
+
         <div className={isFilter ? 'showFilters' : 'hideFilters'}>
           <CircularFilters
             handlePeriodList={handlePeriodList}

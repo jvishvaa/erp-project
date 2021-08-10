@@ -7,7 +7,7 @@ import Box from '@material-ui/core/Box';
 // import { makeStyles } from '@material-ui/core/styles';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Viewmore from './viewmore';
-import useStyles from './useStyles'
+import useStyles from './useStyles';
 import unfiltered from '../../assets/images/unfiltered.svg';
 // import EditIcon from '@material-ui/icons/Edit';
 // import DeleteIcon from '@material-ui/icons/Delete';
@@ -17,146 +17,149 @@ import endpoints from '../../config/endpoints';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import './subjectgrademapping.scss';
 
-
 const StyledButton = withStyles({
-    root: {
-        color: '#FFFFFF',
-        backgroundColor: '#FF6B6B',
-        '&:hover': {
-            backgroundColor: '#FF6B6B',
-        },
-    }
+  root: {
+    color: '#FFFFFF',
+    backgroundColor: '#FF6B6B',
+    '&:hover': {
+      backgroundColor: '#FF6B6B',
+    },
+  },
 })(Button);
-    
+
 const CancelButton = withStyles({
-    root: {
-        color: '#8C8C8C',
-        backgroundColor: '#e0e0e0',
-        '&:hover': {
-            backgroundColor: '#e0e0e0',
-        },
-    }
+  root: {
+    color: '#8C8C8C',
+    backgroundColor: '#e0e0e0',
+    '&:hover': {
+      backgroundColor: '#e0e0e0',
+    },
+  },
 })(Button);
 
 const Subjectcard = (props) => {
-    const classes = useStyles();
-    const [isSubjectOpen, setIsSubjectOpen] = React.useState(false);
-    const [viewMoreList, setViewMoreList] = React.useState([]);
-    const { setAlert } = useContext(AlertNotificationContext);
+  const classes = useStyles();
+  const [isSubjectOpen, setIsSubjectOpen] = React.useState(false);
+  const [viewMoreList, setViewMoreList] = React.useState([]);
+  const { setAlert } = useContext(AlertNotificationContext);
 
-    const { schoolGsMapping, updateDeletData, setFilters } = props;
+  const { schoolGsMapping, updateDeletData, setFilters } = props;
 
-    const handleViewMore = (view) => {
-        setIsSubjectOpen(true);
-        setViewMoreList(view)
+  const handleViewMore = (view) => {
+    setIsSubjectOpen(true);
+    setViewMoreList(view);
+  };
 
-    }
+  const callDelete = (id, index) => {
+    axiosInstance
+      .delete(`${endpoints.mappingStudentGrade.delete}/${id}/delete-mapping-details/`)
+      .then((res) => {
+        updateDeletData(schoolGsMapping, index);
+        setAlert('success', 'Successfully Deleted');
+        handleClose();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
+  // Confirm Popover
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [showMenu, setShowMenu] = React.useState(false);
+  const [showPeriodIndex, setShowPeriodIndex] = React.useState();
 
-    const callDelete = (id, index) => {
-        axiosInstance.delete(`${endpoints.mappingStudentGrade.delete}/${id}/delete-mapping-details/`)
-        .then(res => {
-            updateDeletData(schoolGsMapping, index)
-            setAlert('success', 'Successfully Deleted');
-            handleClose();
-        }).catch(err => {
-            console.log(err)
-        })
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-    }
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
-    // Confirm Popover 
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [showMenu, setShowMenu] = React.useState(false);
-    const [showPeriodIndex, setShowPeriodIndex] = React.useState();
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
 
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+  const handlePeriodMenuOpen = (index, id) => {
+    setShowMenu(true);
+    setShowPeriodIndex(index);
+  };
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+  const handlePeriodMenuClose = (index) => {
+    setShowMenu(false);
+    setShowPeriodIndex();
+  };
 
-    const open = Boolean(anchorEl);
-    const id = open ? 'simple-popover' : undefined;
-
-    const handlePeriodMenuOpen = (index, id) => {
-        setShowMenu(true);
-        setShowPeriodIndex(index);
-    };
-    
-    const handlePeriodMenuClose = (index) => {
-        setShowMenu(false);
-        setShowPeriodIndex();
-    };
-
-    return (
-        <>
-            <Grid item md={12} xs={10} style={{ display: 'flex', flexWrap: 'wrap', marginTop: 20 }}>
-                {setFilters && schoolGsMapping.length === 0 && (
-                  <Grid container spacing={2} style={{ textAlign: 'center', marginTop: '20px' }}>
-                    <Grid item md={12} xs={12}>
-                        <div className={classes.periodDataUnavailable}>
-                        <SvgIcon component={() => <img src={unfiltered} alt='crash' />} />
-                        <Typography variant='h6' color='secondary'>
-                            NO DATA FOUND
-                        </Typography>
-                        </div>
-                    </Grid>
+  return (
+    <>
+      <Grid
+        item
+        md={12}
+        xs={10}
+        style={{ display: 'flex', flexWrap: 'wrap', marginTop: 20 }}
+      >
+        {setFilters && schoolGsMapping.length === 0 && (
+          <Grid container spacing={2} style={{ textAlign: 'center', marginTop: '20px' }}>
+            <Grid item md={12} xs={12}>
+              <div className={classes.periodDataUnavailable}>
+                <SvgIcon component={() => <img src={unfiltered} alt='crash' />} />
+                <Typography variant='h6' color='secondary'>
+                  NO DATA FOUND
+                </Typography>
+              </div>
+            </Grid>
+          </Grid>
+        )}
+        {schoolGsMapping &&
+          schoolGsMapping.length > 0 &&
+          schoolGsMapping.map((list, index) => {
+            return (
+              <Paper className={classes.root}>
+                <Grid container spacing={2} style={{ width: 310 }}>
+                  <Grid item xs={8}>
+                    <Box>
+                      <Typography
+                        className={classes.title}
+                        variant='p'
+                        component='p'
+                        color='primary'
+                      >
+                        {list.branch.branch_name}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography
+                        className={classes.content}
+                        variant='p'
+                        component='p'
+                        color='secondary'
+                        noWrap
+                      >
+                        {list.erp_grade.grade_name}: {list.central_subject_name}
+                      </Typography>
+                    </Box>
                   </Grid>
-                )}
-                {
-                    schoolGsMapping && schoolGsMapping.length > 0 && schoolGsMapping.map((list, index) => {
-                        return (
-                            <Paper className={classes.root}>
-                                <Grid container spacing={2} style={{ width: 310 }}>
-                                    <Grid item xs={8}>
-                                        <Box>
-                                            <Typography
-                                                className={classes.title}
-                                                variant='p'
-                                                component='p'
-                                                color='primary'
-                                            >
-                                                {list.branch.branch_name}
-                                            </Typography>
-                                        </Box>
-                                        <Box>
-                                            <Typography
-                                                className={classes.content}
-                                                variant='p'
-                                                component='p'
-                                                color='secondary'
-                                                noWrap
-                                            >
-                                                {list.erp_grade.grade_name}: {list.central_subject_name}
-                                            </Typography>
-                                        </Box>
-                                    </Grid>
 
-
-                                    <Grid item xs={4} className={classes.textRight}>
-                                        <Box>
-                                            <span
-                                                className='period_card_menu'
-                                                onClick={() => handlePeriodMenuOpen(index)}
-                                                onMouseLeave={handlePeriodMenuClose}
-                                            >
-                                                <IconButton
-                                                    className="moreHorizIcon"
-                                                    disableRipple
-                                                    color='primary'
-                                                >
-                                                    <MoreHorizIcon />
-                                                </IconButton>
-                                                {showPeriodIndex === index && showMenu ? (
-                                                    <div
-                                                        className='tooltip'
-                                                        style={{ display: 'flex', justifyContent: 'space-between' }}
-                                                    >
-                                                        <span className='tooltiptext'>
-                                                            {/* <div  >
+                  <Grid item xs={4} className={classes.textRight}>
+                    <Box>
+                      <span
+                        className='period_card_menu'
+                        onClick={() => handlePeriodMenuOpen(index)}
+                        onMouseLeave={handlePeriodMenuClose}
+                      >
+                        <IconButton
+                          className='moreHorizIcon'
+                          disableRipple
+                          color='primary'
+                        >
+                          <MoreHorizIcon />
+                        </IconButton>
+                        {showPeriodIndex === index && showMenu ? (
+                          <div
+                            className='tooltip'
+                            style={{ display: 'flex', justifyContent: 'space-between' }}
+                          >
+                            <span className='tooltiptext'>
+                              {/* <div  >
                                                                 <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }}
                                                                     activeClassName="active"
                                                                     className="link-grade"
@@ -166,46 +169,61 @@ const Subjectcard = (props) => {
                                                                     </p>
                                                                 </Link>
                                                             </div> */}
-                                                            <div className='tooltip' title='Delete' onClick={(e) => handleClick(e)}>
-                                                                Delete
-                                                            </div>
-                                                        </span>
-                                                        <Popover
-                                                            id={id}
-                                                            open={open}
-                                                            anchorEl={anchorEl}
-                                                            onClose={handleClose}
-                                                            anchorOrigin={{
-                                                            vertical: 'bottom',
-                                                            horizontal: 'center',
-                                                            }}
-                                                            transformOrigin={{
-                                                            vertical: 'top',
-                                                            horizontal: 'center',
-                                                            }}
-                                                        >
-                                                            <div style={{ padding: '20px 30px'}}>
-                                                            <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure you want to delete?</Typography>
-                                                            <div>
-                                                                <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
-                                                                <StyledButton onClick={() => callDelete(list.id, index)} style={{float: 'right'}}>Confirm</StyledButton>
-                                                            </div>
-                                                            </div>
-                                                        </Popover>
-                                                    </div>
-                                                ) : null}
-                                            </span>
-                                        </Box>
-                                    </Grid>
-                                    {/* <Grid item xs={12} className={classes.textRight} >
+                              <div
+                                className='tooltip'
+                                title='Delete'
+                                onClick={(e) => handleClick(e)}
+                              >
+                                Delete
+                              </div>
+                            </span>
+                            <Popover
+                              id={id}
+                              open={open}
+                              anchorEl={anchorEl}
+                              onClose={handleClose}
+                              anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'center',
+                              }}
+                              transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                              }}
+                            >
+                              <div style={{ padding: '20px 30px' }}>
+                                <Typography
+                                  style={{ fontSize: '20px', marginBottom: '15px' }}
+                                >
+                                  Are you sure you want to delete?
+                                </Typography>
+                                <div>
+                                  <CancelButton onClick={(e) => handleClose()}>
+                                    Cancel
+                                  </CancelButton>
+                                  <StyledButton
+                                    onClick={() => callDelete(list.id, index)}
+                                    style={{ float: 'right' }}
+                                  >
+                                    Confirm
+                                  </StyledButton>
+                                </div>
+                              </div>
+                            </Popover>
+                          </div>
+                        ) : null}
+                      </span>
+                    </Box>
+                  </Grid>
+                  {/* <Grid item xs={12} className={classes.textRight} >
                                         <div className="navigate-link" style={{ display: 'flex' }}>
                                             // <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }} activeClassName="active" className="link-grade"><p> Edit <EditIcon style={{ fontSize: '16px' }} /></p></Link>
                                             <p onClick={() => callDelete(list.id, index)} style={{ marginLeft: 5, color: '#014B7E' }}> Delete <DeleteIcon style={{ fontSize: '16px', color: '#014B7E' }} /></p>
                                         </div>
                                     </Grid> */}
-                                    <Grid item xs={12} sm={12} />
-                                    <Grid item xs={6}>
-                                        {/*
+                  <Grid item xs={12} sm={12} />
+                  <Grid item xs={6}>
+                    {/*
                                             <Box style={{ display: 'flex' }}>
                                             <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }} activeClassName="active" className="link-grade">
                                                 <p> Edit <EditIcon style={{ fontSize: '16px' }} /></p>
@@ -239,7 +257,7 @@ const Subjectcard = (props) => {
                                         </Popover>
                                         
                                         */}
-                                        {/* <Box>
+                    {/* <Box>
                                             <Typography
                                                 className={classes.content}
                                                 variant='p'
@@ -249,36 +267,16 @@ const Subjectcard = (props) => {
                                                 {list.erp_grade.grade_name}: {list.central_subject_name}
                                             </Typography>
                                         </Box> */}
-                                    </Grid>
+                  </Grid>
+                </Grid>
+              </Paper>
+            );
+          })}
+      </Grid>
 
-                                    {/*
-                                    <Grid item xs={6} className={classes.textRight}>
-                                        <Button
-                                            variant='contained'
-                                            style={{ color: 'white' }}
-                                            color="primary"
-                                            className="custom_button_master"
-                                            size='small'
-                                        // onClick={() => handleViewMore(list)}
-                                        >
-                                            VIEW MORE
-                                     </Button>
-                                    </Grid>
-                                    */}
-                                </Grid>
-                            </Paper>
-                        )
-                    })
+      {isSubjectOpen && <Viewmore viewMoreList={viewMoreList} />}
+    </>
+  );
+};
 
-                }
-            </Grid>
-
-            {
-                isSubjectOpen && <Viewmore viewMoreList={viewMoreList} />
-            }
-
-        </>
-    )
-}
-
-export default withRouter(Subjectcard)
+export default withRouter(Subjectcard);

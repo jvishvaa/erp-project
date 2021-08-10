@@ -367,7 +367,8 @@ const AssessmentFilters = ({
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          className='custom_button_master labelColor modifyDesign'
+          style={{ width: '100%' }}
+          className='cancelButton labelColor'
           size='medium'
           onClick={handleClear}
         >
@@ -380,9 +381,8 @@ const AssessmentFilters = ({
         <Button
           variant='contained'
           color='primary'
-          className='custom_button_master modifyDesign'
+          style={{color:'white', width: '100%' }}
           size='medium'
-          style={{ color: 'white'}}
           onClick={handleFilter}
         >
           FILTER
@@ -399,9 +399,8 @@ const AssessmentFilters = ({
         <Button
           startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
           variant='contained'
-          style={{ color: 'white' }}
+          style={{color:'white', width: '100%' }}
           color='primary'
-          className='custom_button_master modifyDesign'
           onClick={() =>
             history.push({
               pathname: '/create-question-paper',

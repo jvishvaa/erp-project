@@ -29,16 +29,16 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
           setBranchCode('');
           setAddress('');
           setLoading(false);
-          setAlert('success', result.data.msg||result.data.message);
+          setAlert('success', result.data.msg || result.data.message);
           handleGoBack();
         } else {
           setLoading(false);
-          setAlert('error', result.data.msg||result.data.message);
+          setAlert('error', result.data.msg || result.data.message);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.response.data.message||error.response.data.msg);
+        setAlert('error', error.response.data.message || error.response.data.msg);
       });
   };
 
@@ -101,7 +101,8 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            className='custom_button_master labelColor'
+            className='labelColor'
+            style={{ width: '100%' }}
             size='medium'
             onClick={handleGoBack}
           >
@@ -111,9 +112,8 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            style={{ color: 'white' }}
+            style={{ color: 'white', width: '100%' }}
             color='primary'
-            className='custom_button_master'
             size='medium'
             type='submit'
           >

@@ -534,35 +534,11 @@ const Cal1 = () => {
             </Grid>
           </Grid>
           <Grid container spacing={2} direction='row'>
-            {/* <Grid item xs={12} sm={4} md={2} lg={1}>
-              <Button
-                variant='contained'
-                className='custom_button_master '
-                size='medium'
-                onClick={handleClear}
-              >
-                Clear
-              </Button>
-            </Grid> */}
-            {/* <Grid item xs={12} sm={4} md={2} lg={1}>
-              <Button
-                variant='contained'
-                className='custom_button_master '
-                // size='medium'
-                color='primary'
-                onClick={(e) =>
-                  handleFilter(filterData.selectedEventType.event_category_name)
-                }
-              >
-                Filter
-              </Button>
-            </Grid> */}
             <Grid item xs={12} sm={4} md={2} lg={2}>
               <Button
                 variant='contained'
                 color='primary'
-                style={{ color: 'white' }}
-                className='custom_button_master '
+                style={{color:'white', width: '100%' }}
                 // className={classes.buttonCol}
                 onClick={handleClickOpen}
               >

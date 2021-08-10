@@ -466,11 +466,9 @@ const QuestionTypeFilters = ({
                   <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                     <Button
                       variant='contained'
-                      style={{ color: 'white', textTransform: 'none' }}
+                      style={{ color: 'white', width: '100%' }}
                       color='primary'
-                      className='custom_button_master modifyDesign'
                       size='medium'
-                      // onClick={()=>{setUploadInBulk(true)}}
                       onClick={() => {
                         handleCreateManually('bulk_creation');
                       }}
@@ -484,9 +482,9 @@ const QuestionTypeFilters = ({
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    className='custom_button_master modifyDesign createManuallyButton'
+                    className='createManuallyButton'
                     size='medium'
-                    style={{ textTransform: 'none' }}
+                    style={{ width: '100%' }}
                     onClick={handleCreateManually}
                   >
                     Create Manually
@@ -579,7 +577,7 @@ const QuestionTypeFilters = ({
                     )}
                   />
                 }
-                className='modifyDesign removeVideoButton'
+                className='removeVideoButton'
                 title='Remove Uploaded Video'
                 variant='contained'
                 size='medium'
@@ -587,7 +585,7 @@ const QuestionTypeFilters = ({
                 disableElevation
                 disableFocusRipple
                 disableTouchRipple
-                style={{ textTransform: 'none' }}
+                style={{ width: '100%' }}
                 onClick={handleRemoveVideo}
               >
                 Remove Uploaded Video
@@ -610,7 +608,7 @@ const QuestionTypeFilters = ({
       {isCreateManuallyOpen && showQuestionType.VideoQuestion && videoURL === '' && (
         <div className='addPassageQuestionButtonContainer'>
           <Button
-            className='modifyDesign addPassageQuestionButton'
+            className='addPassageQuestionButton'
             title='Add a video for the above question'
             variant='contained'
             size='medium'
@@ -618,7 +616,7 @@ const QuestionTypeFilters = ({
             disableElevation
             disableFocusRipple
             disableTouchRipple
-            style={{ textTransform: 'none' }}
+            style={{ width: '100%' }}
             startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
             component='label'
           >
@@ -674,7 +672,7 @@ const QuestionTypeFilters = ({
           [...comprehensionQuestions]?.filter((obj) => !obj.is_delete)?.length < 10 && (
             <div className='addPassageQuestionButtonContainer'>
               <Button
-                className='modifyDesign addPassageQuestionButton'
+                className='addPassageQuestionButton'
                 title='Add a question for the above passage'
                 variant='contained'
                 size='medium'
@@ -682,7 +680,7 @@ const QuestionTypeFilters = ({
                 disableElevation
                 disableFocusRipple
                 disableTouchRipple
-                style={{ textTransform: 'none' }}
+                style={{ width: '100%' }}
                 startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
                 onClick={handleOpenModal}
               >
@@ -701,8 +699,8 @@ const QuestionTypeFilters = ({
               <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                 <Button
                   variant='contained'
-                  style={{ textTransform: 'none' }}
-                  className='custom_button_master modifyDesign cancelButtonLabel'
+                  style={{ width: '100%' }}
+                  className='cancelButton labelColor'
                   size='medium'
                   onClick={handleCancel}
                 >
@@ -715,9 +713,12 @@ const QuestionTypeFilters = ({
                 <Button
                   variant='contained'
                   color='primary'
-                  className='custom_button_master modifyDesign saveAsDraftButton'
                   size='medium'
-                  style={{ textTransform: 'none' }}
+                  style={{
+                    width: '100%',
+                    border: '1px solid #ff6b6b',
+                    background: 'white',
+                  }}
                   onClick={handleSave}
                 >
                   Save as Draft
@@ -728,9 +729,8 @@ const QuestionTypeFilters = ({
               <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                 <Button
                   variant='contained'
-                  style={{ color: 'white', textTransform: 'none' }}
+                  style={{ color: 'white', width: '100%' }}
                   color='primary'
-                  className='custom_button_master modifyDesign'
                   size='medium'
                   onClick={handleSubmit}
                 >

@@ -123,6 +123,11 @@ export function themeGenerator() {
       },
     },
 
+    switchLabel: {
+      fontWeight: '600 !important',
+      color: `${primarytemp} !important`,
+    },
+
     //Css for view more card
     rootViewMore: {
       border: `1px solid ${primarytemp}`,

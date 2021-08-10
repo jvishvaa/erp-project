@@ -37,8 +37,6 @@ const CourseView = () => {
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();
-  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
-  const widerWidth = isMobile ? '98%' : '95%';
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [periodColor, setPeriodColor] = useState(false);

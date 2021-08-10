@@ -174,8 +174,9 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
         </div>
         <div className='right'>
           <Button
-            style={{ borderRadius: '10px' }}
+            style={{ color: 'white' }}
             color='primary'
+            size='medium'
             variant='contained'
             onClick={() => {
               history.push(
@@ -183,7 +184,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
               );
             }}
           >
-            Add question
+            Add Question
           </Button>
           <IconButton onClick={handleMenuOpen}>
             <MoreVertIcon color='primary' />

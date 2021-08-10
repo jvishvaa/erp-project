@@ -170,7 +170,7 @@ const ViewHomework = withRouter(
               <div className='homework_submit_button_wrapper'>
                 <Button
                   variant='contained'
-                  className='custom_button_master labelColor homework_submit_button_cancel'
+                  className='labelColor homework_submit_button_cancel'
                   size='medium'
                   onClick={onClose}
                   style={{ borderRadius: '10px' }}

@@ -376,7 +376,8 @@ const MessageCredit = withRouter(({ history, ...props }) => {
                                   type='submit'
                                   variant='contained'
                                   onClick={() => handleCancel(index)}
-                                  className='custom_button_master labelColor'
+                                  className='cancelButton labelColor'
+                                  style={{ width: '100%' }}
                                   size='small'
                                 >
                                   CANCEL
@@ -386,9 +387,8 @@ const MessageCredit = withRouter(({ history, ...props }) => {
                                   type='submit'
                                   variant='contained'
                                   color='primary'
-                                  style={{ color: 'white', marginLeft: '10%' }}
+                                  style={{ color: 'white', marginLeft: '10%', width: '100%' }}
                                   onClick={() => handleSubmit(index)}
-                                  className='custom_button_master'
                                   size='small'
                                 >
                                   SAVE

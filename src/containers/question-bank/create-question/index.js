@@ -184,41 +184,49 @@ const CreateQuestion = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className='breadCrumbFilterRow'>
-          <CommonBreadcrumbs
-            componentName='Question Bank'
-            childComponentName='Create Question'
-            isAcademicYearVisible={true}
-          />
-          {!qId && (
+        <div className={isMobile ? 'breadCrumbFilterRow' : null}>
+          <div
+            style={{
+              width: '96%',
+              margin: '20px auto',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <CommonBreadcrumbs
+              componentName='Question Bank'
+              childComponentName='Create Question'
+              isAcademicYearVisible={true}
+            />
+
             <div className='hideShowFilterIcon'>
-              <div>
-                <IconButton
-                  disableRipple
-                  onClick={() => setIsTopFilterOpen(!isTopFilterOpen)}
-                >
-                  <div>
-                    {!isMobile && (
-                      <div className='hideShowFilterText'>
-                        {isTopFilterOpen ? 'Close Filter' : 'Expand Filter'}
-                      </div>
-                    )}
+              <IconButton onClick={() => setIsTopFilterOpen(!isTopFilterOpen)}>
+                {!isMobile && (
+                  <div
+                    style={{
+                      color: '#014b7e',
+                      fontSize: '16px',
+                      marginRight: '10px',
+                      fontWeight: '600',
+                      alignSelf: 'center',
+                    }}
+                  >
+                    {isTopFilterOpen ? 'Close Filter' : 'Expand Filter'}
                   </div>
-                  <div>
-                    <SvgIcon
-                      component={() => (
-                        <img
-                          style={{ height: '20px', width: '25px' }}
-                          src={isTopFilterOpen ? hidefilter : showfilter}
-                        />
-                      )}
+                )}
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={{ height: '20px', width: '25px' }}
+                      src={isTopFilterOpen ? hidefilter : showfilter}
                     />
-                  </div>
-                </IconButton>
-              </div>
+                  )}
+                />
+              </IconButton>
             </div>
-          )}
+          </div>
         </div>
+
         <div className={isTopFilterOpen ? 'showFiltersCreate' : 'hideFiltersCreate'}>
           <TopFilters
             editData={editData}
@@ -229,30 +237,28 @@ const CreateQuestion = () => {
         </div>
         {!isTopFilterOpen && <Divider style={{ width: '100%' }} />}
         {isFilter ? (
-          <div>
-            <Paper className={classes.root}>
-              <div className='filterDataHeader'>
-                <div className='divfilterData'>
-                  {filterDataDisplay?.grade?.grade__grade_name}
-                </div>
-                <div className='divfilterData'>
-                  {filterDataDisplay?.subject?.subject_name}
-                </div>
-                <div className='divfilterData'>
-                  {filterDataDisplay?.chapter?.chapter_name}
-                </div>
-                <div className='divfilterData'>{filterDataDisplay?.topic?.topic_name}</div>
+          <Paper className={classes.root}>
+            <div className='filterDataHeader'>
+              <div className='divfilterData'>
+                {filterDataDisplay?.grade?.grade__grade_name}
               </div>
-              <QuestionTypeFilters
-                editData={editData}
-                setEditData={setEditData}
-                setLoading={setLoading}
-                attributes={filterDataDisplay || {}}
-                setIsTopFilterOpen={setIsTopFilterOpen}
-                filterDataDisplay={filterDataDisplay}
-              />
-            </Paper>
-          </div>
+              <div className='divfilterData'>
+                {filterDataDisplay?.subject?.subject_name}
+              </div>
+              <div className='divfilterData'>
+                {filterDataDisplay?.chapter?.chapter_name}
+              </div>
+              <div className='divfilterData'>{filterDataDisplay?.topic?.topic_name}</div>
+            </div>
+            <QuestionTypeFilters
+              editData={editData}
+              setEditData={setEditData}
+              setLoading={setLoading}
+              attributes={filterDataDisplay || {}}
+              setIsTopFilterOpen={setIsTopFilterOpen}
+              filterDataDisplay={filterDataDisplay}
+            />
+          </Paper>
         ) : (
           <div className='periodDataUnavailable'>
             <SvgIcon

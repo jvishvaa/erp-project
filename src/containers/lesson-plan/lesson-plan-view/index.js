@@ -112,10 +112,29 @@ const LessonPlan = () => {
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         <div className={isMobile ? 'breadCrumbFilterRow' : null}>
-          <CommonBreadcrumbs componentName='Lesson Plan' childComponentName='View' />
-          {isMobile ? (
+          <div
+            style={{
+              width: '96%',
+              margin: '20px auto',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <CommonBreadcrumbs componentName='Lesson Plan' childComponentName='View' />
             <div className='hideShowFilterIcon'>
-              <IconButton onClick={() => setIsFilter(!isFilter)}>
+              <IconButton onClick={() => setIsFilter((prev) => !prev)}>
+                {!isMobile && (
+                  <div
+                    style={{
+                      color: '#014b7e',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      alignSelf: 'center',
+                    }}
+                  >
+                    {isFilter ? 'Close Filter' : 'Expand Filter'}
+                  </div>
+                )}
                 <SvgIcon
                   component={() => (
                     <img
@@ -126,11 +145,10 @@ const LessonPlan = () => {
                 />
               </IconButton>
             </div>
-          ) : null}
+          </div>
         </div>
-        <div
-          className={!isMobile ? 'showFilters' : isFilter ? 'showFilters' : 'hideFilters'}
-        >
+
+        <div className={isFilter ? 'showFilters' : 'hideFilters'}>
           <LessonViewFilters
             handlePeriodList={handlePeriodList}
             setPeriodData={setPeriodData}

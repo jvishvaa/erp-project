@@ -851,7 +851,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       <Layout>
         <div style={{ overflow: 'hidden' }}>
           <div className={isMobile ? 'breadCrumbFilterRow' : null}>
-            <div style={{ width: '95%', margin: '20px auto' }}>
+            <div style={{ width: '96%', margin: '20px auto' }}>
               <CommonBreadcrumbs
                 componentName='General Diary'
                 childComponentName='Create New'
@@ -968,9 +968,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
             <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
               <Button
                 variant='contained'
-                style={{ color: 'white' }}
+                style={{color:'white', width: '100%' }}
                 color='primary'
-                className='custom_button_master'
                 size='medium'
                 type='submit'
                 disabled={!filterData?.section[0]}

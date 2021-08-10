@@ -138,29 +138,48 @@ const AssessmentView = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div
-          className={isMobile ? 'breadCrumbFilterRow' : null}
-          style={{ display: 'flex' }}
-        >
-          <CommonBreadcrumbs
-            componentName='Assessment'
-            childComponentName='Question Paper'
-            isAcademicYearVisible={true}
-          />
-
-          <div className='hideShowFilterIcon'>
-            <IconButton onClick={() => setIsFilter(!isFilter)}>
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={{ height: '20px', width: '25px' }}
-                    src={isFilter ? hidefilter : showfilter}
-                  />
+        <div className={isMobile ? 'breadCrumbFilterRow' : null}>
+          <div
+            style={{
+              width: '96%',
+              margin: '20px auto',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <CommonBreadcrumbs
+              componentName='Assessment'
+              childComponentName='Question Paper'
+              isAcademicYearVisible={true}
+            />
+            <div className='hideShowFilterIcon'>
+              <IconButton onClick={() => setIsFilter(!isFilter)}>
+                {!isMobile && (
+                  <div
+                    style={{
+                      color: '#014b7e',
+                      fontSize: '16px',
+                      marginRight: '10px',
+                      fontWeight: '600',
+                      alignSelf: 'center',
+                    }}
+                  >
+                    {isFilter ? 'Close Filter' : 'Expand Filter'}
+                  </div>
                 )}
-              />
-            </IconButton>
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={{ height: '20px', width: '25px' }}
+                      src={isFilter ? hidefilter : showfilter}
+                    />
+                  )}
+                />
+              </IconButton>
+            </div>
           </div>
         </div>
+
         <div className={!isFilter ? 'showFilters' : 'hideFilters'}>
           <AssessmentFilters
             handlePeriodList={handlePeriodList}

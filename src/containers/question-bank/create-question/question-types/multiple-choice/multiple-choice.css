@@ -31,7 +31,6 @@
 }
 
 .questionHeaderIcon .MuiIconButton-root {
-  color: #ff6b6b;
   padding: 0;
 }
 
@@ -102,7 +101,6 @@
 }
 
 .questionContainer .MuiInputBase-input {
-  color: #014b7e;
   padding: 14px;
 }
 
@@ -114,17 +112,6 @@
 .attachTag {
   color: #014b7e;
   font-size: 16px;
-}
-
-.attachmentButton.MuiButtonBase-root {
-  /* border: 1px solid #dbdbdb; */
-  /* background: white; */
-  /* box-shadow: none; */
-  /* padding: 10px; */
-}
-
-.attachmentButton .MuiButton-label {
-  /* color: #014b7e; */
 }
 
 .optionsContainer {
@@ -183,21 +170,6 @@
   width: 24%;
 }
 
-.addAnotherButton .MuiButton-label,
-.addAnotherMatchButton .MuiButton-label,
-.addAnotherMatrixButton .MuiButton-label {
-  color: #014b7e;
-}
-
-.saveAsDraftButton.MuiButtonBase-root {
-  border: 1px solid #ff6b6b;
-  background: white;
-}
-
-.saveAsDraftButton .MuiButton-label {
-  color: #ff6b6b;
-}
-
 .buttonsAtBottomMCQ {
   border: 1px solid #dbdbdb;
   border-radius: 10px;
@@ -230,7 +202,6 @@
 }
 
 .questionImageRemoveIcon .MuiIconButton-root {
-  color: #ff6b6b;
   opacity: 0.5;
 }
 
@@ -387,10 +358,6 @@
   font-weight: 600;
   color: #014b7e;
   margin-top: 1.5%;
-}
-
-.cancelButtonLabel .MuiButton-label {
-  color: rgb(140, 140, 140);
 }
 
 @media screen and (max-width: 768px) {

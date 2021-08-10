@@ -525,7 +525,8 @@ const MessageLog = withRouter(({ history, ...props }) => {
                 <Button
                   variant='contained'
                   onClick={handleClearAll}
-                  className='custom_button_master labelColor'
+                  style={{ width: '100%' }}
+                  className='cancelButton labelColor'
                   size='medium'
                 >
                   Clear All
@@ -535,9 +536,8 @@ const MessageLog = withRouter(({ history, ...props }) => {
                 <Button
                   onClick={handleFilterCheck}
                   variant='contained'
-                  style={{ color: 'white' }}
+                  style={{color:'white', width: '100%' }}
                   color='primary'
-                  className='custom_button_master'
                   size='medium'
                 >
                   FILTER
