@@ -400,7 +400,7 @@ const MessageCredit = withRouter(({ history, ...props }) => {
                                 size='small'
                               >
                                 CANCEL
-                            </Button>
+                             </Button>
 
                               <Button
                                 type='submit'
@@ -411,7 +411,7 @@ const MessageCredit = withRouter(({ history, ...props }) => {
                                 size='small'
                               >
                                 SAVE
-                            </Button>
+                             </Button>
                             </div>
                           ) : (
                             <AddCircleIcon

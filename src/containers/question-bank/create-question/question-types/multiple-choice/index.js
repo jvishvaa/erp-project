@@ -825,7 +825,7 @@ const MultipleChoice = ({
                 <div>
                   <Button
                     className='addAnotherButton'
-                    title='Add another option'
+                    title='Add Another Option'
                     variant='contained'
                     size='medium'
                     startIcon={

@@ -53,6 +53,10 @@ const StyledOutlinedButton = withStyles((theme)=>({
     color: theme.palette.primary.main,
     border: `1px solid ${theme.palette.primary.main}`,
     backgroundColor: 'transparent',
+    '& .MuiSvgIcon-root': {
+      color: theme.palette.primary.main,
+      fontSize:'20px'
+    },
     '@media (min-width: 600px)': {
       marginRight: '10px',
     },
@@ -339,13 +343,17 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
                       }}
                       fullWidth
                     >
-                      Add another question
+                      Add Another Question
                     </StyledOutlinedButton>
                   </div>
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <div className='finish-btn-container'>
-                    <Button  color='primary'variant = "contained" onClick={handleAddHomeWork}>
+                    <Button
+                    style={{color: 'white', width: '100%' }}  
+                    color='primary' 
+                    variant = "contained" 
+                    onClick={handleAddHomeWork}>
                       Finish
                     </Button>
                   </div>

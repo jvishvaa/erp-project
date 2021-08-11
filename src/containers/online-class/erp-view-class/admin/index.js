@@ -726,39 +726,22 @@ const ErpAdminViewClass = ({ history }) => {
     <>
       <Layout>
         {loading && <Loader />}
+        <CommonBreadcrumbs
+          componentName='Online Class'
+          childComponentName={
+            window.location.pathname === '/erp-online-class'
+              ? 'Online Class View'
+              : window.location.pathname === '/erp-online-class-teacher-view'
+              ? 'Teacher Class View'
+              : window.location.pathname === '/erp-online-class-student-view'
+              ? 'Student Class View'
+              : ''
+          }
+          isAcademicYearVisible={true}
+        />
         <Grid container spacing={2} className='teacherBatchViewMainDiv'>
-          <Grid item md={12} xs={12}>
-            <Grid container spacing={2} justify='middle' className='signatureNavDiv'>
-              <Grid item md={12} xs={12} style={{ display: 'flex' }}>
-                <CommonBreadcrumbs
-                  componentName='Online Class'
-                  //    <button
-                  //   type='button'
-                  //   className='SignatureNavigationLinks'
-                  //   onClick={() => history.push('/dashboard')}
-                  // >
-                  //   Dashboard
-                  // </button>
-                  // <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                  // <span className='SignatureNavigationLinks'>Online Class</span>
-                  // <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                  //    <span className='SignatureNavigationLinks'>
-                  childComponentName={
-                    window.location.pathname === '/erp-online-class'
-                      ? 'Online Class View'
-                      : window.location.pathname === '/erp-online-class-teacher-view'
-                      ? 'Teacher Class View'
-                      : window.location.pathname === '/erp-online-class-student-view'
-                      ? 'Student Class View'
-                      : ''
-                  }
-                  isAcademicYearVisible={true}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
           <Grid item md={12} xs={12} className='teacherBatchViewFilter'>
-            <Grid container spacing={2} style={{ marginTop: '10px' }}>
+            <Grid container spacing={2}>
               <Grid item md={3} xs={12}>
                 <Autocomplete
                   style={{ width: '100%' }}
@@ -783,27 +766,6 @@ const ErpAdminViewClass = ({ history }) => {
               </Grid>
               {window.location.pathname !== '/erp-online-class-student-view' && (
                 <>
-                  {/* <Grid item md={3} xs={12}>
-                    <Autocomplete
-                      style={{ width: '100%' }}
-                      size='small'
-                      onChange={handleAcademicYear}
-                      id='branch_id'
-                      className='dropdownIcon'
-                      value={selectedAcademicYear || ''}
-                      options={academicYear || []}
-                      getOptionLabel={(option) => option?.session_year || ''}
-                      getOptionSelected={(option, value) => option?.id == value?.id}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant='outlined'
-                          label='Academic Year'
-                          placeholder='Academic Year'
-                        />
-                      )}
-                    />
-                  </Grid> */}
                   <Grid item md={3} xs={12}>
                     <Autocomplete
                       multiple

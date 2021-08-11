@@ -680,8 +680,6 @@ const AssignRole = (props) => {
                 variant='contained'
                 onClick={handleFilterCheck}
                 color='primary'
-                style={{ color: "white" }}
-                fullWidth
                 size='medium'
                 style={{ color: 'white', width: '100%' }}
               >
