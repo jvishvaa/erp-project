@@ -160,7 +160,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
           container
           spacing={2}
           direction={isMobile ? 'column-reverse' : 'row'}
-          style={{ marginTop: '20px', marginBottom: '20px' }}
+          style={{ marginTop: '20px', marginBottom: '20px', width:'99%' }}
         >
           <Grid item md={showInfo ? 6 : 12} xs={12}>
             <Grid container spacing={2}>
