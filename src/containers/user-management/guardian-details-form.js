@@ -361,8 +361,8 @@ const GuardianDetailsForm = ({
                     ? formik.errors.mother_country_code
                     : ''}
                 </FormHelperText>
-                </Grid>
-                <Grid item md={2} xs={4}>
+              </Grid>
+              <Grid item md={2} xs={4}>
                 <FormControl required variant='outlined' size='small'>
                   <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
                   <OutlinedInput
@@ -513,8 +513,8 @@ const GuardianDetailsForm = ({
                     ? formik.errors.guardian_country_code
                     : ''}
                 </FormHelperText>
-                </Grid>
-                <Grid item md={2} xs={4}>
+              </Grid>
+              <Grid item md={2} xs={4}>
                 <FormControl required variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
                   <OutlinedInput
@@ -531,45 +531,6 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              {/* <Grid item md={4}>
-                <FormControl variant='outlined' fullWidth disabled>
-                  <InputLabel htmlFor='component-outlined'>
-                    Alternate mobile no.
-                  </InputLabel>
-                  <OutlinedInput
-                    id='component-outlined'
-                    value=''
-                    onChange={() => {}}
-                    label='Name'
-                  />
-                </FormControl>
-              </Grid> */}
-              {/* <Grid item md={4}>
-                <FormControl variant='outlined' fullWidth disabled>
-                  <InputLabel htmlFor='component-outlined'>Address line 1</InputLabel>
-                  <OutlinedInput
-                    id='component-outlined'
-                    value=''
-                    onChange={() => {}}
-                    label='Name'
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item md={4}>
-                <FormControl variant='outlined' fullWidth disabled>
-                  <InputLabel htmlFor='component-outlined'>Address line 2</InputLabel>
-                  <OutlinedInput
-                    id='component-outlined'
-                    value=''
-                    onChange={() => {}}
-                    label='Name'
-                  />
-                </FormControl>
-              </Grid> */}
-
-              {/* <Grid item md={4}>
-                <Button startIcon={<AttachFileIcon />}>Attach Image</Button>
-              </Grid> */}
             </Grid>
           </div>
         </>
@@ -587,9 +548,10 @@ const GuardianDetailsForm = ({
         <Grid item md='1'>
           <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
             <Button
-              className={`${classes.formActionButton} disabled-btn`}
+              className='cancelButton labelColor'
               variant='contained'
               color='primary'
+              size='medium'
               onClick={handleBack}
             >
               Back
@@ -599,9 +561,10 @@ const GuardianDetailsForm = ({
         <Grid item md='1'>
           <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
             <Button
-              className={classes.formActionButton}
               variant='contained'
               color='primary'
+              size='medium'
+              style={{ color: 'white', width: '100%' }}
               onClick={() => {
                 formik.handleSubmit();
               }}

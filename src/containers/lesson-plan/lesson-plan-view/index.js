@@ -18,8 +18,7 @@ import LessonViewFilters from './lesson-view-filters';
 import ViewMoreCard from './view-more-card';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
-import hidefilter from '../../../assets/images/hidefilter.svg';
-import showfilter from '../../../assets/images/showfilter.svg';
+import BreadcrumbToggler from '../../../components/breadcrumb-toggler';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -111,42 +110,9 @@ const LessonPlan = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className={isMobile ? 'breadCrumbFilterRow' : null}>
-          <div
-            style={{
-              width: '96%',
-              margin: '20px auto',
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <CommonBreadcrumbs componentName='Lesson Plan' childComponentName='View' />
-            <div className='hideShowFilterIcon'>
-              <IconButton onClick={() => setIsFilter((prev) => !prev)}>
-                {!isMobile && (
-                  <div
-                    style={{
-                      color: '#014b7e',
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      alignSelf: 'center',
-                    }}
-                  >
-                    {isFilter ? 'Close Filter' : 'Expand Filter'}
-                  </div>
-                )}
-                <SvgIcon
-                  component={() => (
-                    <img
-                      style={{ height: '20px', width: '25px' }}
-                      src={isFilter ? hidefilter : showfilter}
-                    />
-                  )}
-                />
-              </IconButton>
-            </div>
-          </div>
-        </div>
+        <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
+          <CommonBreadcrumbs componentName='Lesson Plan' childComponentName='View' />
+        </BreadcrumbToggler>
 
         <div className={isFilter ? 'showFilters' : 'hideFilters'}>
           <LessonViewFilters

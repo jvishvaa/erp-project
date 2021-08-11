@@ -186,11 +186,7 @@ const GeneralDairyList = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs componentName='Diary' childComponentName={path} />
-          </div>
-        </div>
+        <CommonBreadcrumbs componentName='Diary' childComponentName={path} />
         <GeneralDairyFilter
           handleDairyList={handleDairyList}
           setPeriodData={setPeriodData}

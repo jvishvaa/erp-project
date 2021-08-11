@@ -641,14 +641,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       {loading ? <Loading message='Loading...' /> : null}
 
       <Layout>
-        <div className={isMobile ? 'breadCrumbFilterRow' : null}>
-          <div style={{ width: '96%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Daily Diary'
-              childComponentName='Create New'
-            />
-          </div>
-        </div>
+        <CommonBreadcrumbs componentName='Daily Diary' childComponentName='Create New' />
         <Grid
           container
           spacing={isMobile ? 3 : 5}

@@ -1456,11 +1456,6 @@ const ViewMoreCard = ({
                   </div>
                 ))}
             </div>
-
-            {/* <div className='resourceBulkDownload'>Answers</div>
-            <div className='question-container'>
-              {Data && Data[0]?.answer.map((obj, i) => <div>{obj}</div>)}
-            </div> */}
             <div className='assesmentAnswers'>Answers</div>
             <div>
               {Data &&
@@ -1552,36 +1547,33 @@ const ViewMoreCard = ({
           </div>
         )}
       </div>
-      {/* {viewMoreData?.parent?.question_status === 1 ||
-      viewMoreData?.parent?.question_status === 3 ? ( */}
       {viewMoreData?.parent?.is_central ? null : (
         <div style={{ margin: '5px 15px 15px 15px' }}>
-          {viewMoreData?.parent?.question_status == 3 ? (
-            <Button
-              style={{ marginRight: '1rem', borderRadius: '10px' }}
-              onClick={(e) => handlePublish(viewMoreData)}
-              color='primary'
-              variant='contained'
-              size='small'
-            >
-              PUBLISH
-            </Button>
-          ) : null}
           {viewMoreData?.parent?.question_status == 2 ||
           viewMoreData?.parent?.question_status == 3 ? (
             <Button
-              style={{ marginRight: '1rem', borderRadius: '10px' }}
+              style={{ margin: '0.5rem', color: 'white', width: '100%' }}
               onClick={(e) => handleDelete(viewMoreData)}
               color='secondary'
               variant='contained'
-              size='small'
+              size='medium'
             >
               REJECT
             </Button>
           ) : null}
+          {viewMoreData?.parent?.question_status == 3 ? (
+            <Button
+              style={{ margin: '0.5rem', color: 'white', width: '100%' }}
+              onClick={(e) => handlePublish(viewMoreData)}
+              color='primary'
+              variant='contained'
+              size='medium'
+            >
+              PUBLISH
+            </Button>
+          ) : null}
         </div>
       )}
-      {/* ) : null} */}
     </Paper>
   );
 };

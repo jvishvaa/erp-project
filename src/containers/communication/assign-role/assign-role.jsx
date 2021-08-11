@@ -657,18 +657,17 @@ const AssignRole = (props) => {
                 />
               </Grid>
             )}
-            {/* <Grid xs={4}></Grid> */}
           </Grid>
           <Divider className={classes.spacer} />
           <Grid container spacing={4} className={classes.spacer}>
             <Grid item md={2} xs={12}>
               <Button
                 variant='contained'
-                className='disabled-btn'
+                className='cancelButton labelColor'
                 onClick={handleClearAll}
                 fullWidth
               >
-                CLEAR ALL
+                Clear All
               </Button>
 
               {/* <input

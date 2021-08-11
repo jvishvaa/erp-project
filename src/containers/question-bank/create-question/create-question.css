@@ -1,12 +1,3 @@
-.breadCrumbFilterRow {
-  display: flex;
-  justify-content: space-between;
-}
-
-.hideShowFilterIcon {
-  align-self: center;
-}
-
 .hideShowFilterText {
   color: #014b7e;
   font-size: 16px;

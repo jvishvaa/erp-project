@@ -15,19 +15,12 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Layout from '../../Layout';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import hidefilter from '../../../assets/images/hidefilter.svg';
-import showfilter from '../../../assets/images/showfilter.svg';
+import BreadcrumbToggler from '../../../components/breadcrumb-toggler';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import attachmenticon from '../../../assets/images/attachmenticon.svg';
 import deleteIcon from '../../../assets/images/delete.svg';
-import axios from 'axios';
-import moment from 'moment';
-import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
-import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import { Context } from '../context/CircularStore';
-import { filter, result } from 'lodash';
 import Loading from '../../../components/loader/loader';
 
 const CraeteCircular = () => {
@@ -46,11 +39,8 @@ const CraeteCircular = () => {
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [sectionDropdown, setSectionDropdown] = useState([]);
 
-  // alert(circularKey,'k')
-  //context
-  const [state, setState] = useContext(Context);
-  const { isEdit, editData } = state;
-  const { setIsEdit, setEditData } = setState;
+  const [state] = useContext(Context);
+  const { editData } = state;
 
   const [title, setTitle] = useState(editData.circular_name || '');
   const [description, setDescription] = useState(editData.description || '');
@@ -504,47 +494,9 @@ const CraeteCircular = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className={isMobile ? 'breadCrumbFilterRow' : null}>
-          <div
-            style={{
-              width: '96%',
-              margin: '20px auto',
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <CommonBreadcrumbs
-              componentName='Circulars'
-              childComponentName='Create New'
-            />
-            <div className='hideShowFilterIcon'>
-              <IconButton onClick={() => setIsFilter(!isFilter)}>
-                {!isMobile && (
-                  <div
-                    style={{
-                      color: '#014b7e',
-                      fontSize: '16px',
-                      marginRight: '10px',
-                      fontWeight: '600',
-                      alignSelf: 'center',
-                    }}
-                  >
-                    {isFilter ? 'Close Filter' : 'Expand Filter'}
-                  </div>
-                )}
-                <SvgIcon
-                  component={() => (
-                    <img
-                      style={{ height: '20px', width: '25px' }}
-                      src={isFilter ? hidefilter : showfilter}
-                    />
-                  )}
-                />
-              </IconButton>
-            </div>
-          </div>
-        </div>
-
+        <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
+          <CommonBreadcrumbs componentName='Circulars' childComponentName='Create New' />
+        </BreadcrumbToggler>
         {isFilter ? (
           <Grid
             container

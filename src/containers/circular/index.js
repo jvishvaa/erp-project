@@ -10,18 +10,15 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
-import axios from 'axios';
-// import './lesson.css';
 import Loading from '../../components/loader/loader';
 import CircularCard from './circular-card';
 import CircularFilters from './circular-filterdata';
 import ViewMoreCard from './view-more-card';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
-import hidefilter from '../../assets/images/hidefilter.svg';
-import showfilter from '../../assets/images/showfilter.svg';
-
+import BreadcrumbToggler from '../../components/breadcrumb-toggler';
 import { Context } from './context/CircularStore';
+import { Breadcrumb } from 'semantic-ui-react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -213,50 +210,15 @@ const CircularList = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className={isMobile ? 'breadCrumbFilterRow' : null}>
-          <div
-            style={{
-              width: '96%',
-              margin: '20px auto',
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <CommonBreadcrumbs
-              componentName={
-                window.location.pathname === '/teacher-circular'
-                  ? 'Teacher Circular'
-                  : 'Student Circular'
-              }
-            />
-            <div className='hideShowFilterIcon'>
-              <IconButton onClick={() => setIsFilter(!isFilter)}>
-                {!isMobile && (
-                  <div
-                    style={{
-                      color: '#014b7e',
-                      fontSize: '16px',
-                      marginRight: '10px',
-                      fontWeight: '600',
-                      alignSelf: 'center',
-                    }}
-                  >
-                    {isFilter ? 'Close Filter' : 'Expand Filter'}
-                  </div>
-                )}
-                <SvgIcon
-                  component={() => (
-                    <img
-                      style={{ height: '20px', width: '25px' }}
-                      src={isFilter ? hidefilter : showfilter}
-                    />
-                  )}
-                />
-              </IconButton>
-            </div>
-          </div>
-        </div>
-
+        <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
+          <CommonBreadcrumbs
+            componentName={
+              window.location.pathname === '/teacher-circular'
+                ? 'Teacher Circular'
+                : 'Student Circular'
+            }
+          />
+        </BreadcrumbToggler>
         <div className={isFilter ? 'showFilters' : 'hideFilters'}>
           <CircularFilters
             handlePeriodList={handlePeriodList}

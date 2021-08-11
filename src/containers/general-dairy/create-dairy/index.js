@@ -849,15 +849,11 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
+        <CommonBreadcrumbs
+          componentName='General Diary'
+          childComponentName='Create New'
+        />
         <div style={{ overflow: 'hidden' }}>
-          <div className={isMobile ? 'breadCrumbFilterRow' : null}>
-            <div style={{ width: '96%', margin: '20px auto' }}>
-              <CommonBreadcrumbs
-                componentName='General Diary'
-                childComponentName='Create New'
-              />
-            </div>
-          </div>
           <Grid
             container
             spacing={isMobile ? 3 : 5}
@@ -968,7 +964,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
             <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
               <Button
                 variant='contained'
-                style={{color:'white', width: '100%' }}
+                style={{ color: 'white', width: '100%' }}
                 color='primary'
                 size='medium'
                 type='submit'
