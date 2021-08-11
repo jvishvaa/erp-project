@@ -495,6 +495,7 @@ const CreateClassForm = (props) => {
       request['course'] = courseId;
     }
     request['tutor_id'] = tutorEmail.tutor_id;
+    request['auth_user_id'] = tutorEmail.user__id;
     request['tutor_emails'] = tutorEmails.join(',');
     request['role'] = 'Student';
     request['start_time'] = startTime;
