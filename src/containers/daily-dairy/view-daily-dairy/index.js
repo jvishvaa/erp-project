@@ -278,7 +278,7 @@ const history=useHistory()
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
@@ -290,7 +290,7 @@ const history=useHistory()
           type='submit'
           onClick={handleFilter}
         >
-          FILTER
+          Filter
         </Button>
       </Grid>
       <Grid item xs={6} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
@@ -302,7 +302,7 @@ const history=useHistory()
           type='submit'
           onClick={()=>history.push("/create/daily-diary")}
         >
-          CREATE DAILY DIARY
+          Create Daily Diary
         </Button>
       </Grid>
     </Grid>

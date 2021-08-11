@@ -638,7 +638,7 @@ const CraeteCircular = () => {
                     size='medium'
                     onClick={handleClear}
                   >
-                    CLEAR ALL
+                    Clear All
                   </Button>
                 </Grid>
                 {isMobile && <Grid item xs={3} sm={0} />}
@@ -651,7 +651,7 @@ const CraeteCircular = () => {
                     size='medium'
                     onClick={handleFilter}
                   >
-                    NEXT
+                    Next
                   </Button>
                 </Grid>
               </>

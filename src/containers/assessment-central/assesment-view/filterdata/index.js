@@ -372,7 +372,7 @@ const AssessmentFilters = ({
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       {isMobile && <Grid item xs={3} sm={0} />}
@@ -385,7 +385,7 @@ const AssessmentFilters = ({
           size='medium'
           onClick={handleFilter}
         >
-          FILTER
+          Filter
         </Button>
       </Grid>
       {isMobile && <Grid item xs={3} sm={0} />}
@@ -410,7 +410,7 @@ const AssessmentFilters = ({
           }
           size='medium'
         >
-          CREATE
+          Create
         </Button>
       </Grid>
       {isMobile && <Grid item xs={3} sm={0} />}

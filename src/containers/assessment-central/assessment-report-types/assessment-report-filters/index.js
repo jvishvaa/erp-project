@@ -661,7 +661,7 @@ const AssessmentReportFilters = ({
             style={{ width: '100%' }}
             onClick={handleClear}
           >
-            CLEAR ALL
+            Clear All
           </Button>
         </Grid>
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
@@ -672,7 +672,7 @@ const AssessmentReportFilters = ({
             style={{ color: 'white', width: '100%' }}
             onClick={handleFilter}
           >
-            FILTER
+            Filter
           </Button>
         </Grid>
       </Grid>

@@ -68,7 +68,7 @@ const CreateUpdateSignatureModel = ({
     const { children, onClose, ...other } = props;
     return (
       <MuiDialogTitle disableTypography {...other}>
-        <Typography variant='h6'>{children}</Typography>
+        <Typography color='secondary' variant='h6'>{children}</Typography>
         {onClose ? (
           <IconButton
             aria-label='close'
@@ -223,7 +223,7 @@ const CreateUpdateSignatureModel = ({
                     />
                   </Grid>
                   <Grid item md={12} xs={12}>
-                    <Typography variant='h6' className='uploadSignaturefileLable'>
+                    <Typography color='secondary' variant='h6' className='uploadSignaturefileLable'>
                       Upload Image &nbsp;
                       <b style={{ color: 'red' }}>*</b>
                     </Typography>
@@ -237,11 +237,10 @@ const CreateUpdateSignatureModel = ({
                       />
                       <Button
                         variant='contained'
-                        component='span'
-                        size='small'
-                        fullWidth
+                        size='medium'
+                        style={{ color: 'white', width: '100%' }}
                         color='primary'
-                        startIcon={<CloudUploadIcon />}
+                        startIcon={<CloudUploadIcon style={{ fontSize: '20px' }} />}
                       >
                         Browse
                       </Button>
@@ -287,7 +286,7 @@ const CreateUpdateSignatureModel = ({
             <DialogActions style={{ backgroundColor: '#FCEEEE' }}>
               <Grid container spacing={2}>
                 <Grid item md={12} xs={12} style={{ textAlign: 'center' }}>
-                  <Button color='primary' onClick={() => handleSubmit()}>
+                  <Button color='primary' variant='contained' style={{ color: 'white' }} onClick={() => handleSubmit()}>
                     Submit
                   </Button>
                 </Grid>

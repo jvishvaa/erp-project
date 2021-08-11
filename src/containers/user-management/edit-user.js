@@ -229,11 +229,11 @@ class EditUser extends Component {
 
     return (
       <Layout>
+        <CommonBreadcrumbs
+          componentName='User Management'
+          childComponentName='Edit User'
+        />
         <div className='edit-user-container'>
-          <CommonBreadcrumbs
-            componentName='User Management'
-            childComponentName='Edit User'
-          />
           {user ? (
             <>
               <Stepper

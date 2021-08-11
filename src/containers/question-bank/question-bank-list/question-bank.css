@@ -6,13 +6,8 @@
   display: flex;
 }
 
-.MuiSvgIcon-root .dropdownIcon {
-  /* color: #ff6b6b; */
-}
-
 .MuiIconButton-root.moreHorizIcon {
   padding: 0px;
-  /* color: #ff6b6b; */
 }
 
 .periodDataUnavailable {

@@ -471,7 +471,7 @@ const LessonViewFilters = ({
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       <Grid item xs={12} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
@@ -483,7 +483,7 @@ const LessonViewFilters = ({
           type='submit'
           onClick={handleFilter}
         >
-          FILTER
+          Filter
         </Button>
       </Grid>
     </Grid>

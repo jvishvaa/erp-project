@@ -171,7 +171,7 @@ const CourseFilter = ({ handleCourseList, setPageFlag, handleClearFilter, tabVal
             size='medium'
             onClick={handleClear}
           >
-            CLEAR ALL
+            Clear All
           </Button>
         </Grid>
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
@@ -182,7 +182,7 @@ const CourseFilter = ({ handleCourseList, setPageFlag, handleClearFilter, tabVal
             size='medium'
             onClick={handleFilter}
           >
-            FILTER
+            Filter
           </Button>
         </Grid>
         <div>
@@ -218,7 +218,7 @@ const CourseFilter = ({ handleCourseList, setPageFlag, handleClearFilter, tabVal
               history.push({ pathname: '/create/course' });
             }}
           >
-            CREATE
+            Create
           </Button>
         </Grid>
       </Grid>

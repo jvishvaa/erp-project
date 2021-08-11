@@ -58,7 +58,7 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
                   <Button
                     size='small'
                     variant='contained'
-                    fullWidth
+                    style={{ color: 'white', width: '100%' }}
                     color='primary'
                     onClick={() => {
                       handleSelectCard((fullData && fullData) || '');
@@ -174,8 +174,8 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
                   <Button
                     size='small'
                     variant='contained'
-                    fullWidth
                     color='primary'
+                    style={{ color: 'white', width: '100%' }}
                     onClick={() => {
                       handleSelectCard((fullData && fullData) || '');
                     }}
@@ -229,8 +229,8 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
                   <Button
                     size='small'
                     variant='contained'
-                    fullWidth
                     color='primary'
+                    style={{ color: 'white', width: '100%' }}
                     onClick={() => {
                       handleSelectCard((fullData && fullData) || '');
                     }}

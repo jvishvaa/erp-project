@@ -281,7 +281,7 @@ const GeneralDairyStudentView = ({
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
@@ -293,7 +293,7 @@ const GeneralDairyStudentView = ({
           type='submit'
           onClick={handleFilter}
         >
-          FILTER
+          Filter
         </Button>
       </Grid>
     </Grid>

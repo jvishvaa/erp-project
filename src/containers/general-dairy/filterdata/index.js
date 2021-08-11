@@ -575,7 +575,7 @@ const GeneralDairyFilter = ({
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
@@ -588,7 +588,7 @@ const GeneralDairyFilter = ({
           // disabled={!filterData?.grade}
           onClick={(event) => handleFilter(event)}
         >
-          FILTER
+          Filter
         </Button>
       </Grid>
       {isTeacher && (
@@ -601,7 +601,7 @@ const GeneralDairyFilter = ({
             type='submit'
             onClick={() => history.push('/create/general-diary')}
           >
-            CREATE GENERAL DIARY
+            Create General Diary
           </Button>
         </Grid>
       )}
@@ -615,7 +615,7 @@ const GeneralDairyFilter = ({
             type='submit'
             onClick={() => history.push('/create/daily-diary')}
           >
-            CREATE DAILY DIARY
+            Create Daily Diary
           </Button>
         </Grid>
       )}

@@ -791,7 +791,7 @@ const LessonPlanGraphReport = ({
               size='medium'
               onClick={handleClear}
             >
-              CLEAR ALL
+              Clear All
             </Button>
           </Grid>
           <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
@@ -804,7 +804,7 @@ const LessonPlanGraphReport = ({
               disabled={!canFilter()}
               onClick={handleFilter}
             >
-              FILTER
+              Filter
             </Button>
           </Grid>
         </Grid>

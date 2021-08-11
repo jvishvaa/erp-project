@@ -257,11 +257,11 @@ class CreateUser extends Component {
     const { classes, creatingUser } = this.props;
     return (
       <Layout>
+        <CommonBreadcrumbs
+          componentName='User Management'
+          childComponentName='Create User'
+        />
         <div className='create-user-container'>
-          <CommonBreadcrumbs
-            componentName='User Management'
-            childComponentName='Create User'
-          />
           <div className='bulk-upload-check-box-container'>
             <FormControlLabel
               control={

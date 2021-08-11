@@ -620,7 +620,7 @@ const CreateQuestionPaper = ({
                   formik.handleReset();
                 }}
               >
-                CLEAR ALL
+                Clear All
               </Button>
             </div>
           </div>

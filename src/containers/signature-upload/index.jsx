@@ -49,8 +49,7 @@ const SignatureUpload = ({ history }) => {
       setLoading(true);
       axiosInstance
         .get(
-          `${endpoints.signature.getSignatureList}?branch_id=${
-            selectedBranch && selectedBranch.id
+          `${endpoints.signature.getSignatureList}?branch_id=${selectedBranch && selectedBranch.id
           }&is_delete=False`
         )
         .then((result) => {
@@ -76,13 +75,13 @@ const SignatureUpload = ({ history }) => {
   useEffect(() => {
     getBranchList('');
   }, []);
-/*
-  useEffect(() => {
-    if(selectedBranch === ''){
-      setsignatureList([]);
-    }
-  }, [selectedBranch]);
-*/
+  /*
+    useEffect(() => {
+      if(selectedBranch === ''){
+        setsignatureList([]);
+      }
+    }, [selectedBranch]);
+  */
   function handleEdit(data) {
     setUpdateData(data);
     setEdit(true);
@@ -138,28 +137,28 @@ const SignatureUpload = ({ history }) => {
                     )}
                   />
                 </Grid>
-                <Grid item md={1} xs={12}>
+                <Grid md={8} />
+                <Grid item md={3} xs={12}>
                   <Button
                     size='medium'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', width: '100%' }}
                     variant='contained'
                     color='primary'
-                    fullWidth
                     onClick={() => getSignatures(selectedBranch)}
                   >
                     Filter
                   </Button>
                 </Grid>
-                <Grid item md={12} xs={12}>
+                <Grid item md={3} xs={12}>
                   <Button
-                     size='medium'
-                     style={{ color: 'white' }}
-                     variant='contained'
-                     color='primary'
+                    size='medium'
+                    startIcon={<AddIcon style={{ fontSize: '30px' }} />}
+                    style={{ color: 'white', width: '100%' }}
+                    variant='contained'
+                    color='primary'
                     onClick={() => handleOpen()}
                   >
-                    <AddIcon />
-                    &nbsp; Create Signature
+                    Create Signature
                   </Button>
                 </Grid>
               </Grid>

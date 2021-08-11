@@ -435,9 +435,10 @@ const CustomScopeModal = ({
               variant='contained'
               size='medium'
               className='labelColor cancelButton'
+              style={{ width: '100%' }}
               onClick={onResetInputs}
             >
-              CLEAR ALL
+              Clear All
             </Button>
           </Box>
         </Grid>

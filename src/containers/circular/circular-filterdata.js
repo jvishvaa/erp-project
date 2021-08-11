@@ -435,7 +435,7 @@ const CircularFilters = ({
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       {isMobile && <Grid item xs={3} sm={0} />}
@@ -448,7 +448,7 @@ const CircularFilters = ({
           size='medium'
           onClick={handleFilter}
         >
-          FILTER
+          Filter
         </Button>
       </Grid>
       {window.location.pathname === '/teacher-circular' && (
