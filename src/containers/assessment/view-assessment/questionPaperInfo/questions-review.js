@@ -61,29 +61,16 @@ function QuestionReview() {
         <div className={classes.questionCotainer}>
           {questionType === 7 ? (
             <>
-              <div className={classes.questionText}>
-                <span>
-                  <b>
-                    {`Q${index + 1}.`}
-                  </b>
-                  &nbsp;
-                </span>
-                <span>
-                  <b>
-                    {ReactHtmlParser(question)}
-                  </b>
-                </span>
-              </div>
               {subQuestion.map((item, index) => (
                 <>
-                  <div className={classes.questionSubText}>
+                  <div className={classes.questionText}>
                     <span>
-                      {`Sub Q${index + 1}.`}
+                      {`Q${index + 1}.`}
                       &nbsp;
                     </span>
-                    <span>{ReactHtmlParser(item?.question_answer[0]?.question)}</span>
+                    <span>{ReactHtmlParser(item.question_answer[0]?.question)}</span>
                   </div>
-                  {(item?.user_sub_answer?.question_type === 9) ? (
+                  {item?.user_sub_answer?.question_type === 9 ? (
                     <div className={classes.answersContainer}>
                       <b>Your answer : &nbsp; </b>
                       <label
@@ -115,16 +102,15 @@ function QuestionReview() {
                       <b>Correct answer : &nbsp; </b>
                       <label
                         dangerouslySetInnerHTML={{
-                          __html:
+                          __html: handlerAnswerVar(
                             item?.question_answer[0]?.answer_values
-
+                          ),
                         }}
                       ></label>
                     </div>
                   )}
                 </>
-              ))
-              }
+              ))}
             </>
           ) : (
             <>

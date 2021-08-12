@@ -9,7 +9,7 @@ const QuestionHandler = () => {
   const {
     questionsDataObj,
     questionsArray,
-    controls: { nextQues, currentQuesionId, prevQues },
+    controls: { nextQues, currentQuesionId },
   } = useContext(AssessmentHandlerContext);
 
   const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
@@ -25,14 +25,6 @@ const QuestionHandler = () => {
       <QuestionHeader {...propsObj} />
       <QuestionBody {...propsObj} />
       <div style={{ display: 'flex', margin: 5 }}>
-        <div
-          key='question-submit-btn'
-          className='question-submit-btn'
-          style={{ margin: 'auto' }}
-          onClick={() => prevQues()}
-        >
-          Prev
-        </div>
         <div
           key='question-submit-btn'
           className='question-submit-btn'
