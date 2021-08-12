@@ -143,10 +143,10 @@ const ViewHomework = withRouter(
         setAlert('error', 'Please provide a remark');
         return;
       }
-      // if (!score) {
-      //   setAlert('error', 'Please provide a score');
-      //   return;
-      // }
+      if (!score) {
+        setAlert('error', 'Please provide a score');
+        return;
+      }
       /*
       else if (reqData.score && reqData.score.trim() === '') {
         setAlert('error', 'Please provide a score');
@@ -686,7 +686,7 @@ const ViewHomework = withRouter(
               <div className='input-container'>
                 <div className='remark'>
                   <FormControl variant='outlined' fullWidth size='small'>
-                    <InputLabel htmlFor='component-outlined'>Overall remarks*</InputLabel>
+                    <InputLabel htmlFor='component-outlined'>Overall remarks</InputLabel>
                     <OutlinedInput
                       id='remarks'
                       name='remarks'

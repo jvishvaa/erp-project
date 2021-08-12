@@ -20,8 +20,6 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
-import { connect, useSelector } from 'react-redux';
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,10 +53,7 @@ const BulkUpload = () => {
   const [page, setPage] = React.useState(1);
   const [academicYear, setAcademicYear] = useState([]);
   const [branches, setBranches] = useState([]);
-  // const [searchAcademicYear, setSearchAcademicYear] = useState('');
-  const searchAcademicYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
-  );
+  const [searchAcademicYear, setSearchAcademicYear] = useState('');
   const [searchBranch, setSearchBranch] = useState('');
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
@@ -99,15 +94,14 @@ const BulkUpload = () => {
   }, [page]);
 
   useEffect(() => {
-    if (moduleId && searchAcademicYear) {
+    if (moduleId) {
       axiosInstance
-        .get(`${endpoints.masterManagement.branchList}?session_year=${searchAcademicYear?.id}&module_id=${moduleId}`)
+        .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
         .then((result) => {
           if (result.data.status_code === 200) {
-            // setAcademicYear(result.data?.data);
-            setBranches(result.data?.data);
-            // const defaultYear = result.data?.data[0];
-            // handleAcademicYear({}, defaultYear);
+            setAcademicYear(result.data?.data);
+            const defaultYear = result.data?.data[0];
+            handleAcademicYear({}, defaultYear);
           } else {
             setAlert('error', result.data.message);
           }
@@ -116,7 +110,7 @@ const BulkUpload = () => {
           setAlert('error', error.message);
         });
     }
-  }, [moduleId , searchAcademicYear]);
+  }, [moduleId]);
 
   useEffect(() => {
     let request = `${endpoints.userManagement.bulkUpload}?page=${page}&page_size=${limit}`;
@@ -151,12 +145,12 @@ const BulkUpload = () => {
   };
 
   const handleAcademicYear = (event = {}, value = '') => {
-    // setSearchAcademicYear('');
+    setSearchAcademicYear('');
     setSearchBranch('');
     setBranches([]);
     if (value) {
       setPage(1);
-      // setSearchAcademicYear(value);
+      setSearchAcademicYear(value);
       axiosInstance
         .get(
           `${endpoints.masterManagement.branchList}?session_year=${value?.id}&module_id=${moduleId}`
@@ -183,7 +177,6 @@ const BulkUpload = () => {
             <CommonBreadcrumbs
               componentName='User Management'
               childComponentName='Bulk Upload Status'
-            isAcademicYearVisible={true}
             />
           </div>
         </div>
@@ -193,7 +186,7 @@ const BulkUpload = () => {
           spacing={isMobile ? 3 : 5}
           style={{ width: widerWidth, margin: wider }}
         >
-          {/* <Grid item xs={12} sm={3} style={isMobile ? { margin: '0 0 20px 0' } : {}}>
+          <Grid item xs={12} sm={3} style={isMobile ? { margin: '0 0 20px 0' } : {}}>
             <Box className={classes.centerInMobile}>
               <Autocomplete
                 size='small'
@@ -215,7 +208,7 @@ const BulkUpload = () => {
                 )}
               />
             </Box>
-          </Grid> */}
+          </Grid>
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
             <Box className={classes.centerInMobile}>
               <Autocomplete

@@ -18,12 +18,13 @@ import {
 import { useHistory } from 'react-router-dom';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import cuid from 'cuid';
 import { useLocation } from 'react-router-dom';
 import Layout from '../../Layout';
+import { connect, useSelector } from 'react-redux';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import {
   fetchAcademicYears,
@@ -73,6 +74,9 @@ const CreateQuestionPaper = ({
   const [showQuestionPaper, setShowQuestionPaper] = useState(
     query.get('show-question-paper') || true
   );
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [expandFilter, setExpandFilter] = useState(true);
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -107,7 +111,7 @@ const CreateQuestionPaper = ({
   }, []);
 
   useEffect(() => {
-    if (moduleId) {
+    if ((moduleId, selectedAcademicYear)) {
       getAcademic();
       if (formik.values.academic && moduleId) {
         getBranch(formik.values.academic?.id);
@@ -129,7 +133,7 @@ const CreateQuestionPaper = ({
         setBranchDropdown([]);
       }
     }
-  }, [moduleId]);
+  }, [moduleId, selectedAcademicYear]);
 
   const validationSchema = Yup.object({
     academic: Yup.object('').required('Required').nullable(),
@@ -153,14 +157,14 @@ const CreateQuestionPaper = ({
     validateOnBlur: false,
   });
 
-  const getAcademic = async () => {
-    try {
-      const data = await fetchAcademicYears(moduleId);
-      setAcademicDropdown(data);
-      handleAcademicYear({}, data[0]);
-    } catch (e) {
-      setAlert('error', 'Failed to fetch academic');
-    }
+  const getAcademic = () => {
+    // try {
+    //   const data = await fetchAcademicYears(moduleId);
+    //   setAcademicDropdown(data);
+    handleAcademicYear({}, selectedAcademicYear);
+    // } catch (e) {
+    //   setAlert('error', 'Failed to fetch academic');
+    // }
   };
 
   const getBranch = async (acadId) => {
@@ -411,6 +415,7 @@ const CreateQuestionPaper = ({
             componentName='Assesment'
             childComponentName='Question paper'
             childComponentNameNext='Create new'
+            isAcademicYearVisible={true}
           />
         </div>
         <div className='content-container'>
@@ -462,7 +467,7 @@ const CreateQuestionPaper = ({
             <AccordionDetails>
               {/* <div className='form-grid-container mv-20'> */}
               <Grid container spacing={2}>
-                <Grid item xs={12} md={3}>
+                {/* <Grid item xs={12} md={3}>
                   <FormControl fullWidth variant='outlined'>
                     <Autocomplete
                       id='academic'
@@ -490,7 +495,7 @@ const CreateQuestionPaper = ({
                       {formik.errors.academic ? formik.errors.academic : ''}
                     </FormHelperText>
                   </FormControl>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12} md={3}>
                   <FormControl fullWidth variant='outlined'>
                     <Autocomplete

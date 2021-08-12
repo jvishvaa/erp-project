@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  /* width: 40px !important; */
+  width: 57px !important;
   align-self: flex-end;
   background: whitesmoke;
   position: absolute;
@@ -10,10 +10,9 @@
   z-index: 1000;
   /* height: 46px; */
   /* height: 65px !important; */
-  margin-top: 12vh;
+  margin-top: 10vh;
   margin-right: 5vh;
-  width:min-content;
-  align-items: center;
+  /* width:max-content; */
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.07),
     0 4px 8px rgba(0, 0, 0, 0.07), 0 8px 16px rgba(0, 0, 0, 0.07),
     0 16px 32px rgba(0, 0, 0, 0.07), 0 32px 64px rgba(0, 0, 0, 0.07);
@@ -74,8 +73,4 @@
 .arrow-middle {
   margin-left: 50%;
 }
-.MuiToggleButton-root{
-  min-height: 5vh;
-  height: 6vh;
-  /* width:40px; */
-}
+/* style={{position:'absolute',left:"2%",top:'50%'}} */
