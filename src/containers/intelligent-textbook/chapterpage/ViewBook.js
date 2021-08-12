@@ -444,15 +444,32 @@ const ViewBook = (props) => {
         'hard coded for dev',
         `https://d3ka3pry54wyko.cloudfront.net/${bookPath}${bookUrl}${chapterId}?vi=0`
       )}
-
-      <iframe
-        src={`https://d3ka3pry54wyko.cloudfront.net/${bookPath}${bookUrl}${chapterId}?vi=0`}
-        // src={`https://dev.olvorchidnaigaon.letseduvate.com/ibook-static/${bookPath}${bookUrl}${chapterId}?vi=0`}
-        id='bookReader'
-        className='bookReader'
-        style={{ width: '100%', height: '625px', margin: 'auto', paddingTop: 50 }}
-        title='Tutorials'
-      ></iframe>
+      <div
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          width: '100%',
+          paddingTop: '56.25%',
+        }}
+      >
+        <iframe
+          src={`https://d3ka3pry54wyko.cloudfront.net/${bookPath}${bookUrl}${chapterId}?vi=0`}
+          // src={`https://dev.olvorchidnaigaon.letseduvate.com/ibook-static/${bookPath}${bookUrl}${chapterId}?vi=0`}
+          id='bookReader'
+          className='bookReader'
+          style={{
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            bottom: '0',
+            right: '0',
+            width: '100%',
+            height: '100%',
+            border: 'none',
+          }}
+          title='Tutorials'
+        ></iframe>
+      </div>
     </>
   );
 };
