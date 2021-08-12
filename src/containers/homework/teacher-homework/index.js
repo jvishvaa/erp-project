@@ -137,7 +137,7 @@ const TeacherHomework = withRouter(
     ...props
   }) => {
     const [dateRange, setDateRange] = useState([
-      moment().startOf('isoWeek'),
+      moment().startOf('isoWeek').subtract(1,'days'),
       moment().endOf('week'),
     ]);
     const [activeView, setActiveView] = useState('list-homework');
