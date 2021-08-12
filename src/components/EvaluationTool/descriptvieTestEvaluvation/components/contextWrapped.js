@@ -339,7 +339,8 @@ function Evaluvation(props) {
             variant="contained"
             style={{
               display: open ? '' : 'none',
-              width:'50%'
+              width:'50%',
+              color:'white'
             },borderStyle}
             disabled={!open}
           >
@@ -365,7 +366,7 @@ function Evaluvation(props) {
               onClick={(e) => onChange(drawedChanges)}
               aria-label='close'
               disabled={isSaved}
-              style={{marginTop:'1px',width:'40%'},borderStyle}
+              style={{marginTop:'1px',width:'40%',color:'white'},borderStyle}
             >
               <Tooltip title='save' arrow>
                 <SaveIcon/>
