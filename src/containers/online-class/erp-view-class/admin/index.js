@@ -28,6 +28,7 @@ import Layout from '../../../Layout';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import DetailCardView from './DetailCardView';
 import TabPanel from './tab-panel/TabPanel';
+import APIREQUEST from "../../../../config/apiRequest";
 
 const ErpAdminViewClass = ({ history }) => {
   const [branchList, setBranchList] = useState([]);
@@ -203,8 +204,45 @@ const ErpAdminViewClass = ({ history }) => {
     }
   }, [moduleId, window.location.pathname]);
 
+  const handleApiRes = (result) =>{
+    setTotalCount(result?.data?.count);
+    const response = result?.data?.data || [];
+    setFilterList(response);
+    setSelectedViewMore('');
+    const viewData = JSON.parse(localStorage.getItem('viewMoreData')) || '';
+    if (viewData?.id) {
+      let newViewData = response.filter((item) => item.id == viewData.id);
+      localStorage.setItem('viewMoreData', JSON.stringify(newViewData[0] || {}));
+      setSelectedViewMore(newViewData[0] || {});
+    }
+    setLoading(false);
+  }
+
+  function msCallFilterApi(api){
+    var url  = api.split("?");
+      url.shift();
+      var path = url.join("?");
+      let endpoint1 =  `/oncls/v1/retrieve-online-class/`
+      if (window.location.pathname === '/erp-online-class-student-view') {
+        endpoint1 = "/oncls/v1/student-oncls/"
+      }
+      APIREQUEST("get", `${endpoint1}?${path}`)
+      .then((result)=>{
+        handleApiRes(result);
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+        setLoading(false);
+        setFilterList([]);
+      });
+  }
+
   function callApi(api, key) {
     setLoading(true);
+    if(key === "filter" && JSON.parse(localStorage.getItem('isMsAPI'))){
+      msCallFilterApi(api);
+      return;
+    }
     axiosInstance
       .get(api)
       .then((result) => {
@@ -255,16 +293,7 @@ const ErpAdminViewClass = ({ history }) => {
             setSubjectList(transformedData);
           }
           if (key === 'filter') {
-            setTotalCount(result?.data?.count);
-            const response = result?.data?.data || [];
-            setFilterList(response);
-            setSelectedViewMore('');
-            const viewData = JSON.parse(localStorage.getItem('viewMoreData')) || '';
-            if (viewData?.id) {
-              let newViewData = response.filter((item) => item.id == viewData.id);
-              localStorage.setItem('viewMoreData', JSON.stringify(newViewData[0] || {}));
-              setSelectedViewMore(newViewData[0] || {});
-            }
+            handleApiRes(result);
           }
           setLoading(false);
         } else {

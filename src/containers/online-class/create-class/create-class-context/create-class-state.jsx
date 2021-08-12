@@ -41,6 +41,7 @@ import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import { getFormatedTime } from '../utils';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
+import APIREQUEST from "../../../../config/apiRequest"
 
 export const CreateclassContext = createContext();
 
@@ -251,49 +252,46 @@ const CreateclassProvider = (props) => {
     }
   };
 
-  const createNewOnlineClass = async (formdata) => {
-    dispatch(request(CREATE_NEW_CLASS_REQUEST));
-    try {
-      const { data } = await axiosInstance.post(
-        `${endpoints.onlineClass.createClass}`,
-        formdata
-      );
-      if (data.status === 'success')
-        dispatch(success(initalState, CREATE_NEW_CLASS_SUCCESS));
-      else {
-        dispatch(success(initalState, CREATE_NEW_CLASS_FAILURE));
-        setAlert('error', data.message || data.description);
-      }
-    } catch (error) {
-      const { response } = error || {};
-      if (response?.data)
-        setAlert('error', response.data.message || response.data.description);
-      else setAlert('error', response.data.message || response.data.description);
-      dispatch(failure(error, CREATE_NEW_CLASS_FAILURE));
+  const handleOnlineClassResult = (data) => {
+    if (data.status === 'success')
+      dispatch(success(initalState, CREATE_NEW_CLASS_SUCCESS));
+    else {
+      dispatch(success(initalState, CREATE_NEW_CLASS_FAILURE));
+      setAlert('error', data.message || data.description);
     }
-  };
+  }
+  
+const createNewOnlineClass = async (formdata) => {
+  dispatch(request(CREATE_NEW_CLASS_REQUEST));
+  try  {
+    const { data } = JSON.parse(localStorage.getItem('isMsAPI')) ? await APIREQUEST("post", "/oncls/v1/create-online-class/", formdata) :
+      await axiosInstance.post(`${endpoints.onlineClass.createClass}`, formdata);
+    handleOnlineClassResult(data)
+  } catch (error)  {
+    const { response } = error || {};
+    if (response?.data)
+      setAlert('error', response.data.message || response.data.description);
+    else setAlert('error', response.data.message || response.data.description);
+    dispatch(failure(error, CREATE_NEW_CLASS_FAILURE));
+  }
+};
 
-  const createSpecialOnlineClass = async (formdata) => {
-    dispatch(request(CREATE_NEW_CLASS_REQUEST));
-    try {
-      const { data } = await axiosInstance.post(
-        `${endpoints.onlineClass.createSpecialClass}`,
-        formdata
-      );
-      if (data.status_code === 200)
-        dispatch(success(initalState, CREATE_NEW_CLASS_SUCCESS));
-      else {
-        dispatch(success(initalState, CREATE_NEW_CLASS_FAILURE));
-        setAlert('error', data.message || data.description);
-      }
-    } catch (error) {
-      const { response } = error || {};
-      if (response?.data)
-        setAlert('error', response.data.message || response.data.description);
-      else setAlert('error', response.data.message || response.data.description);
-      dispatch(failure(error, CREATE_NEW_CLASS_FAILURE));
-    }
-  };
+const createSpecialOnlineClass = async (formdata) => {
+  dispatch(request(CREATE_NEW_CLASS_REQUEST));
+  try {
+    const { data } = await axiosInstance.post(
+      `${endpoints.onlineClass.createSpecialClass}`,
+      formdata
+    );
+    handleOnlineClassResult(data);
+  } catch (error) {
+    const { response } = error || {};
+    if (response?.data)
+      setAlert('error', response.data.message || response.data.description);
+    else setAlert('error', response.data.message || response.data.description);
+    dispatch(failure(error, CREATE_NEW_CLASS_FAILURE));
+  }
+};
 
   const setClassTypeId = (classtype) => {
     return { type: UPDATE_CLASS_TYPE, payload: classtype };

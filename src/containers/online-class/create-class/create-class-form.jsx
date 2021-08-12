@@ -34,6 +34,7 @@ import axiosInstance from '../../../config/axios';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { fetchBranchesForCreateUser } from '../../../redux/actions';
 import ReminderDialog from './reminderDialog';
+import APIREQUEST from "../../../config/apiRequest";
 
 const CreateClassForm = (props) => {
   const tutorEmailRef = useRef(null);
@@ -494,6 +495,7 @@ const CreateClassForm = (props) => {
       request['course'] = courseId;
     }
     request['tutor_id'] = tutorEmail.tutor_id;
+    request['auth_user_id'] = tutorEmail.user__id;
     request['tutor_emails'] = tutorEmails.join(',');
     request['role'] = 'Student';
     request['start_time'] = startTime;
@@ -586,23 +588,19 @@ const CreateClassForm = (props) => {
   const checkTutorAvailability = async () => {
     const { selectedDate, selectedTime, duration } = onlineClass;
 
-    const startTime = `${
-      selectedDate.toString().includes(' ')
-        ? selectedDate.toISOString().split('T')[0]
-        : moment(selectedDate).format('YYYY-MM-DD')
-    } ${getFormatedTime(selectedTime)}`;
+    const startTime = `${selectedDate.toString().includes(' ')
+      ? selectedDate.toISOString().split('T')[0]
+      : moment(selectedDate).format('YYYY-MM-DD')
+      } ${getFormatedTime(selectedTime)}`;
     try {
       let url = toggle
-        ? `/erp_user/check-tutor-time/?tutor_email=${
-            onlineClass.tutorEmail.email
-          }&start_time=${startTime}&duration=${duration}&no_of_week=${
-            onlineClass.weeks
-          }&is_recurring=1&week_days=${[...selectedDays]
-            .map((obj) => obj.send)
-            .join(',')}`
-        : `/erp_user/check-tutor-time/?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}`;
-
-      const { data } = await axiosInstance.get(url);
+        ? `?tutor_email=${onlineClass.tutorEmail.email
+        }&start_time=${startTime}&duration=${duration}&no_of_week=${onlineClass.weeks
+        }&is_recurring=1&week_days=${[...selectedDays]
+          .map((obj) => obj.send)
+          .join(',')}`
+        : `?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}&is_zoom=${onlineClass.is_zoom}`;
+      const { data } = JSON.parse(localStorage.getItem('isMsAPI')) ? await APIREQUEST("get", `/oncls/v1/tutor-availability/${url}`) : await axiosInstance.get('/erp_user/check-tutor-time/'+ url);
       if (data.status_code === 200) {
         if (data.status === 'success') {
           setTutorNotAvailableMessage('');
@@ -928,8 +926,8 @@ const CreateClassForm = (props) => {
                   // disableToolbar
                   variant='dialog'
                   format='MM/DD/YYYY'
-                  InputProps={{ readOnly: true }}
                   margin='none'
+                  InputProps={{ readOnly: true }}
                   id='date-picker'
                   label='Start date'
                   value={onlineClass?.selectedDate}
@@ -945,8 +943,8 @@ const CreateClassForm = (props) => {
                   size='small'
                   margin='none'
                   id='time-picker'
-                  InputProps={{ readOnly: true }}
                   label='Start time'
+                  InputProps={{ readOnly: true }}
                   format='hh:mm A'
                   value={onlineClass.selectedTime}
                   onChange={handleTimeChange}

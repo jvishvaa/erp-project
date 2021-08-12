@@ -10,6 +10,7 @@ const local = {
     // baseURL: `${window.location.origin}/qbox`,
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
+    msOriginUrl : 'https://dev.classes.letseduvate.com'
   },
 };
 const dev = {
@@ -22,6 +23,7 @@ const dev = {
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
+    msOriginUrl : 'https://dev.classes.letseduvate.com'
   },
 };
 
@@ -36,6 +38,7 @@ const qa = {
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseURLCentral: 'https://qa.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
+    msOriginUrl : 'https://qa.classes.letseduvate.com'
   },
 };
 
@@ -62,6 +65,7 @@ const prod = {
     baseURLMPQ: 'https://mpquiz.letseduvate.com',
     baseURLCentral: 'https://mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
+    msOriginUrl : 'https://classes.letseduvate.com'
   },
 };
 

@@ -14,6 +14,7 @@ import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
 
 import Loading from '../../../../components/loader/loader';
+import APIREQUEST from "../../../../config/apiRequest";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -116,7 +117,25 @@ const AssignQP = (props) => {
         setAlert('error', error.message);
       });
       };
- 
+
+  const msApihandleSubmit = (requestData) => {
+    APIREQUEST("put", `/oncls/v1/${params.id}/assign-qp/`, requestData)
+    .then((result) => {
+      if(result.data.status_code === 200) {
+        setLoading(false);
+        setAlert('success', result.data.message);
+        history.push('/erp-online-class-teacher-view')
+      }
+      else{
+        setLoading(false);        
+        setAlert('error', "Cant Assign Question Paper");
+      }
+    })
+    .catch((error)=>{
+      setLoading(false);        
+      setAlert('error', "Cant Assign Question Paper");
+    }) 
+  }
       const handleSubmit = (e) => {
 
     setLoading(true);
@@ -125,7 +144,10 @@ const AssignQP = (props) => {
       requestData = {
       "quiz_test_paper": selectedQp
       }
-
+      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+        msApihandleSubmit(requestData);
+        return;
+      }
     axiosInstance.put(`${endpoints.questionPaper.AssignQP}${params.id}/assign-quiz/`, requestData)
     .then(result => {
     if (result.data.status_code === 200) {
@@ -147,8 +169,9 @@ const handleQPSelect = (event,value) =>{
   if (value){
     setSelectedQp(value.question_paper)
   }
+  const QuestionsInQP = JSON.parse(localStorage.getItem('isMsAPI')) ?  "/mp_quiz/mpq_questions/" : endpoints.questionPaper.QuestionsInQP; 
   axiosInstance
-  .get(`${endpoints.questionPaper.QuestionsInQP}?question_paper=${
+  .get(`${QuestionsInQP}?question_paper=${
     value.question_paper
   }&lobby_identifier=${params.id}`, {
     headers: {

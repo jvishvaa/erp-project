@@ -44,6 +44,7 @@ import endpoints from '../../../config/endpoints';
 import RadioPlayer from './radioPlayer';
 import Loading from '../../../components/loader/loader';
 import orchidsRadioLogo from './orchidsRadioLogo.png';
+import Nodata from '../../../assets/images/not-found.png';
 import AudioPlayerWrapper from './audioPlayerWrapper';
 import { useLocation } from 'react-router-dom';
 import {
@@ -52,6 +53,7 @@ import {
 } from '../../../components/utils/timeFunctions';
 import ViewOrchadioMobile from './viewOrchadioMobile';
 import './viewplayer.scss';
+import { display } from '@material-ui/system';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -718,7 +720,7 @@ function ViewOrchadio() {
                     ) : (
                       ''
                     )}
-                    {data.length ? getRadioList() : ''}
+                    {data.length ? getRadioList() : <div  style={{display:'flex' , justifyContent:'center',width:'100%'}}> <img src={Nodata}  /> </div>}
                     {/* <RadioPlayer data={branchName} /> */}
                     {data.map((item, index) => (
                       <Grid item xs={12} className='audioArea'>
