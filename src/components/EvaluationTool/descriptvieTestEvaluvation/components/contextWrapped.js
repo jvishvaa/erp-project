@@ -23,7 +23,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import CorrectionComponent from '../editor/index';
 import { useDescriptvieContex } from '../context/index';
-
+import SaveIcon from '@material-ui/icons/Save';
 // import { InternalPageStatus } from '../../../ui'
 
 import '../editor/correction_styles.css';
@@ -149,6 +149,10 @@ function Evaluvation(props) {
     background: fullscreen ? 'white' : 'none',
     overflow: fullscreen ? 'auto' : 'none',
   };
+  
+  const borderStyle={
+    borderTop:'none',borderLeft:'none',borderRight:'none'
+  }
   return (
     <React.Fragment>
       <div
@@ -243,7 +247,7 @@ function Evaluvation(props) {
             <ToggleButton
               value='paint'
               aria-label='paint'
-              style={{ display: !open ? 'none' : '' }}
+              style={{ display: !open ? 'none' : '' },borderStyle}
             >
               <Tooltip title='Pencil' arrow>
                 <Brush />
@@ -253,8 +257,8 @@ function Evaluvation(props) {
               value='eraser'
               aria-label='eraser'
               style={{
-                display: !open ? 'none' : '',
-              }}
+                display: !open ? 'none' : ''
+              },borderStyle}
             >
               <Tooltip title='Eraser' arrow>
                 <svg style={{ width: '24', height: '24' }} viewBox='0 0 24 24'>
@@ -278,7 +282,7 @@ function Evaluvation(props) {
               aria-label='paint'
               style={{
                 display: !open ? 'none' : '',
-              }}
+              },borderStyle}
             >
               <Tooltip title='zoom in' arrow>
                 <ZoomInIcon />
@@ -289,7 +293,7 @@ function Evaluvation(props) {
               aria-label='paint'
               style={{
                 display: !open ? 'none' : '',
-              }}
+              },borderStyle}
             >
               <Tooltip title='zoom out' arrow>
                 <ZoomOutIcon />
@@ -308,18 +312,19 @@ function Evaluvation(props) {
               aria-label='paint'
               style={{
                 display: !open ? 'none' : '',
-              }}
+              },borderStyle}
             >
               <Tooltip title='rotate left' arrow>
                 <RotateLeftIcon />
               </Tooltip>
             </ToggleButton>
             <ToggleButton
+              color="primary"
               value='rRight'
               aria-label='paint'
               style={{
                 display: !open ? 'none' : '',
-              }}
+              },borderStyle}
             >
               <Tooltip title='rotate right' arrow>
                 <RotateRightIcon />
@@ -329,11 +334,14 @@ function Evaluvation(props) {
           {/* </div> */}
           <Button
             onClick={onClickFullscreen}
-            aria-label='next'
+            aria-label='paint'
+            color="primary"
+            variant="contained"
             style={{
-              border: 'none',
               display: open ? '' : 'none',
-            }}
+              width:'50%',
+              color:'white'
+            },borderStyle}
             disabled={!open}
           >
             <Tooltip title='Full Screen' arrow>
@@ -351,7 +359,6 @@ function Evaluvation(props) {
               reset
             </Button>
           </Tooltip> */}
-          <Tooltip title='save' arrow>
             <Button
               edge='start'
               color='primary'
@@ -359,11 +366,13 @@ function Evaluvation(props) {
               onClick={(e) => onChange(drawedChanges)}
               aria-label='close'
               disabled={isSaved}
-              style={{ borderRadius: 'inherit' }}
+              style={{marginTop:'1px',width:'40%',color:'white'},borderStyle}
             >
-              {isSaved ? 'SAVING...' : 'SAVE'}
+              <Tooltip title='save' arrow>
+                <SaveIcon/>
+              </Tooltip>
+              {/* {isSaved ? 'SAVING...' : 'SAVE'} */}
             </Button>
-          </Tooltip>
           &nbsp;&nbsp;
           <Tooltip title='close' arrow>
             <IconButton
@@ -371,7 +380,7 @@ function Evaluvation(props) {
               color='inherit'
               onClick={handleClose}
               aria-label='close'
-              style={{ margin: '0px 10px' }}
+              style={{ margin: '-5px 10px'}}
             >
               <CloseIcon />
             </IconButton>
