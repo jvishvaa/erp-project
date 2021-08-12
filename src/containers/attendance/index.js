@@ -75,7 +75,7 @@ const AttendeeListRemake = (props) => {
   }
 
   const msApigetAttendeeList = (date)=>{
-    APIREQUEST("get", `/oncls/v1/oncls-attendeelist/?zoom_meeting_id=${id}&class_date=${date}&type=json`)
+    APIREQUEST("get", `/oncls/v1/oncls-attendeelist/?zoom_meeting_id=${id}&class_date=${date}&type=json&page_number=${currentPage}&page_size=10`)
     .then((result)=>{
       handleAttendList(result);
     })
