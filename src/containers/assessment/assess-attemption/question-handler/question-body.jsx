@@ -10,7 +10,6 @@ import MatchFollowingQuestion from './matchFollowingQuestion';
 import MatrixQuestion from './matrixQuestion';
 import '../assess-attemption.css';
 
-
 const QuestionBody = ({ children, ...restProps }) => {
   const decideQuestion = {
     1: (propObj) => <McqQuestion {...propObj} />,
@@ -35,11 +34,17 @@ const QuestionBody = ({ children, ...restProps }) => {
             const { id: subQuesId } = subQuesItem || {};
             const { [subQuesId]: subQuesObj } = restProps.questionsDataObj || {};
             return (
-              <QuestionBody
-                key={subQuesId}
-                qIndex={index}
-                questionObj={subQuesObj || subQuesItem}
-              />
+              <>
+                <span>
+                  {`Q${index + 1}.`}
+                  &nbsp;
+                </span>
+                <QuestionBody
+                  key={subQuesId}
+                  qIndex={index}
+                  questionObj={subQuesObj || subQuesItem}
+                />
+              </>
             );
           })}
         </>
