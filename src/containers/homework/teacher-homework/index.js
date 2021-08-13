@@ -137,7 +137,7 @@ const TeacherHomework = withRouter(
     ...props
   }) => {
     const [dateRange, setDateRange] = useState([
-      moment().startOf('isoWeek'),
+      moment().startOf('isoWeek').subtract(1, 'days'),
       moment().endOf('week'),
     ]);
     const [activeView, setActiveView] = useState('list-homework');
@@ -180,6 +180,7 @@ const TeacherHomework = withRouter(
     const [sections, setSections] = useState([]);
     const [searchGrade, setSearchGrade] = useState('');
     const [searchSection, setSearchSection] = useState('');
+
     const [sectionDisplay, setSectionDisplay] = useState(selectedFilters.section);
     const [gradeDisplay, setGradeDisplay] = useState(selectedFilters.grade);
 
@@ -270,7 +271,31 @@ const TeacherHomework = withRouter(
         `/homework/add/${date}/${sessionYear}/${branch}/${grade}/${subject}/${subjectId}`
       );
     };
-
+    console.log(
+      // selectedBranch,
+      'show all==============',
+      selectedFilters.section,
+      'wfawfafw',
+      sectionDisplay,
+      'awfawfafafwaf',
+      gradeDisplay
+    );
+    useEffect(() => {
+      if (teacherModuleId) {
+        if (selectedFilters.branch !== '') {
+          setSelectedBranch(selectedFilters.branch);
+          handleBranch('', selectedFilters.branch);
+        }
+        if (selectedFilters.section !== '') {
+          setSectionDisplay(selectedFilters.section);
+          handleSection('', selectedFilters.section);
+        }
+        if (selectedFilters.grade !== '') {
+          setGradeDisplay(selectedFilters.grade);
+          handleGrade('', selectedFilters.grade);
+        }
+      }
+    }, [teacherModuleId]);
     useEffect(() => {
       const [startDate, endDate] = dateRange;
       if (teacherModuleId) {
@@ -391,12 +416,12 @@ const TeacherHomework = withRouter(
           `${endpoints.mappingStudentGrade.branch}?session_year=${selectedAcademicYear?.id}&module_id=${teacherModuleId}`,
           'branchList'
         );
-        onSetSelectedFilters({
-          year: selectedAcademicYear,
-          branch: '',
-          grade: '',
-          section: '',
-        });
+        // onSetSelectedFilters({
+        //   year: selectedAcademicYear,
+        //   branch: '',
+        //   grade: '',
+        //   section: '',
+        // });
       }
     }, [selectedAcademicYear, teacherModuleId]);
 
@@ -426,7 +451,7 @@ const TeacherHomework = withRouter(
     const handleBranch = (event, value) => {
       setGrades([]);
       setSections([]);
-      setGradeDisplay([]);
+      // setGradeDisplay([]);
       setSearchGrade('');
       setSearchSection([]);
       setSelectedBranch([]);
@@ -447,9 +472,9 @@ const TeacherHomework = withRouter(
     };
 
     const handleGrade = (event, value) => {
-      setSectionDisplay([]);
+      // setSectionDisplay([]);
       setSections([]);
-      setGradeDisplay([]);
+      // setGradeDisplay([]);
       setSearchGrade('');
       setSearchSection([]);
       if (value) {
@@ -484,7 +509,7 @@ const TeacherHomework = withRouter(
 
     const handleSection = (event, value) => {
       //setSearchSection([]);
-      setSectionDisplay([]);
+      // setSectionDisplay([]);
       //let sec_id = [];
       if (value) {
         //let id = value.map(({ id }) => sec_id.push(id));
@@ -515,10 +540,7 @@ const TeacherHomework = withRouter(
         {loading ? <Loading message='Loading...' /> : null}
         <Layout>
           <div className=' teacher-homework message_log_wrapper'>
-            <CommonBreadcrumbs
-              componentName='Homework'
-            isAcademicYearVisible={true}
-            />
+            <CommonBreadcrumbs componentName='Homework' isAcademicYearVisible={true} />
             <div className='message_log_white_wrapper'>
               {activeView !== 'view-homework' && activeView !== 'view-received-homework' && (
                 <Grid container spacing={2} style={{ padding: '20px' }}>
