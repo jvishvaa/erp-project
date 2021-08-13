@@ -159,8 +159,8 @@ const ViewAssessments = ({ history, ...restProps }) => {
         <Grid
           container
           spacing={2}
-          direction={isMobile ? 'column-reverse' : 'row'}
-          style={{ marginTop: '20px', marginBottom: '20px' }}
+          direction={isMobile ? 'column' : 'row'}
+          style={{ marginTop: '20px', marginBottom: '20px', width:'99%' }}
         >
           <Grid item md={showInfo ? 6 : 12} xs={12}>
             <Grid container spacing={2}>
@@ -178,7 +178,18 @@ const ViewAssessments = ({ history, ...restProps }) => {
                   />
                 </Grid>
               ))}
-
+            </Grid>
+          </Grid>
+          {showInfo && (
+            <Grid item xs={12} md={6}>
+              <QuestionPaperInfo
+                assessmentId={showInfo}
+                key={showInfo}
+                loading={loading}
+                handleCloseInfo={handleCloseInfo}
+              />
+            </Grid>
+          )}
               <Grid item xs={12}>
                 {questionPaperList?.length > 0 && (
                   <div className='paginateData paginateMobileMargin'>
@@ -192,18 +203,6 @@ const ViewAssessments = ({ history, ...restProps }) => {
                   </div>
                 )}
               </Grid>
-            </Grid>
-          </Grid>
-          {showInfo && (
-            <Grid item xs={12} md={6}>
-              <QuestionPaperInfo
-                assessmentId={showInfo}
-                key={showInfo}
-                loading={loading}
-                handleCloseInfo={handleCloseInfo}
-              />
-            </Grid>
-          )}
         </Grid>
       </Layout>
     </>
