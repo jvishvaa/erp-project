@@ -951,11 +951,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                       <div className="overallContainer">
                         {questionwiseComment &&
                           <div className="scoreBox1">
-                            Comments : {questionwiseComment}
+                            Overall Score : {questionwiseComment}
                           </div>}
                         {questionwiseRemark &&
                           <div className="remarkBox1">
-                            Remarks : {questionwiseRemark}
+                            Overall Remark : {questionwiseRemark}
                           </div>}
                       </div>
                       : null}
@@ -984,45 +984,45 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     {desc}
                   </div>
                 }
-              </div>: null
-            }
+              </div>
+              : null}
 
-            <div className="overallContainer1">
+            <div>
               {homeworkSubmission.status === 3 ?
-              <>
-              {overallScore &&
-                <div className="scoreBox">
-                  Overall Score  : {overallScore}
-                </div>}
-              {overallRemark &&
-                <div className="remarkBox">
-                  Overall Remark : {overallRemark}
-                </div>}
-              </>:null}
-              <div>    
+                <div className="overallContainer">
+                  {overallScore &&
+                    <div className="scoreBox">
+                      Overall Score : {overallScore}
+                    </div>}
+                  {overallRemark &&
+                    <div className="remarkBox">
+                      Overall Remark : {overallRemark}
+                    </div>}
+                </div>
+                : null}
+
+              <div className='homework_submit_button_wrapper'>
                 <Button
                   variant='contained'
-                  // className='custom_button_master labelColor homework_submit_button_cancel'
-                  className='buttonStyle'
+                  className='custom_button_master labelColor homework_submit_button_cancel'
+                  size='medium'
                   onClick={handleHomeworkCancel}
                 >
                   {homeworkSubmission.status === 1 ? 'CANCEL' : 'BACK'}
                 </Button>
-              </div>
-              {homeworkSubmission.status === 1 &&
-                <div>
+                {homeworkSubmission.status === 1 &&
                   <Button
                     variant='contained'
                     style={{ color: 'white' }}
                     onClick={handleHomeworkSubmit}
                     color='primary'
-                    className='buttonStyle'
-                    // className='custom_button_master'
+                    className='custom_button_master'
+                    size='medium'
                   >
                     Submit
-                  </Button>
-                </div>
-              }
+              </Button>
+                }
+              </div>
             </div>
           </div>
         </Grid>
