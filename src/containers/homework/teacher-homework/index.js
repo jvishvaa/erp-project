@@ -520,7 +520,7 @@ const TeacherHomework = withRouter(
             />
             <div className='message_log_white_wrapper'>
               {activeView !== 'view-homework' && activeView !== 'view-received-homework' && (
-                <Grid container spacing={2} style={{ padding: '20px' }}>
+                <Grid container spacing={2} className="small-container" style={{ padding: '20px' }}>
                   {/* <Grid item xs={12} sm={3}>
                     <Autocomplete
                       style={{ width: '100%' }}
