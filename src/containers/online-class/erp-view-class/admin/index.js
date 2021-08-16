@@ -564,7 +564,8 @@ const ErpAdminViewClass = ({ history }) => {
   const handleDownload = async () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     try {
-      const { data } = await axiosInstance.get(
+      const { data } = JSON.parse(localStorage.getItem('isMsAPI')) ? await APIREQUEST("get", `/oncls/v1/oncls-report/?start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`)
+      : await axiosInstance.get(
         `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
           startDateTechPer
         ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
