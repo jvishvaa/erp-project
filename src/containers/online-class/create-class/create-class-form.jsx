@@ -104,6 +104,10 @@ const CreateClassForm = (props) => {
         id: obj.id,
         branch_name: obj.branch_name,
       }));
+      transformedData.unshift({
+        branch_name: 'Select All',
+        id: 'all',
+      });
       setBranches(transformedData);
     });
   };
@@ -206,11 +210,13 @@ const CreateClassForm = (props) => {
     dispatch(clearSubjects());
     dispatch(clearCourses());
     if (value?.length > 0) {
+      value = value.filter(({ id }) => id === 'all').length === 1 ? [...branches].filter(({ id }) => id !== 'all') : value;
       const ids = value.map((obj) => obj.id);
       setSelectedBranches(value);
       dispatch(listGradesCreateClass(ids, moduleId, selectedYear.id));
       setOnlineClass((prevState) => ({ ...prevState, branchIds: ids, acadId: selectedYear?.id }));
     } else {
+      setOnlineClass((prevState) => ({ ...prevState, branchIds: [], gradeIds: [], sectionIds:[], subject: [] }));
       dispatch(clearGrades());
     }
   };
@@ -224,7 +230,7 @@ const CreateClassForm = (props) => {
       dispatch(clearTutorEmailValidation());
       if (selectedClassType?.id > 0) dispatch(listCoursesCreateClass(ids));
     } else {
-      setOnlineClass((prevState) => ({ ...prevState, gradeIds: [] }));
+      setOnlineClass((prevState) => ({ ...prevState, gradeIds: [], sectionIds:[], subject: [] }));
       dispatch(clearTutorEmailValidation());
     }
     setSectionSelectorKey(new Date());
@@ -241,12 +247,13 @@ const CreateClassForm = (props) => {
 
   const handleSection = (event, value) => {
     setSelectedSections(value);
+    setSelectedSubject([]);
     if (value?.length) {
       const ids = value.map((el) => el.id);
       const sectionIds = value.map((el) => el.section_id);
       setOnlineClass((prevState) => ({ ...prevState, sectionIds: ids }));
     } else {
-      setOnlineClass((prevState) => ({ ...prevState, sectionIds: [] }));
+      setOnlineClass((prevState) => ({ ...prevState, sectionIds:[], subject: [] }));
     }
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({
@@ -675,9 +682,11 @@ const CreateClassForm = (props) => {
   }, [onlineClass.tutorEmail]);
 
   const createBtnDisabled =
+    onlineClass.title.trim() === "" ||
     !onlineClass.duration ||
-    !onlineClass.subject ||
     !onlineClass.gradeIds?.length ||
+    !onlineClass.sectionIds?.length ||
+    !onlineClass.subject?.length ||
     !onlineClass.selectedDate ||
     !onlineClass.selectedTime ||
     !onlineClass.tutorEmail ||
