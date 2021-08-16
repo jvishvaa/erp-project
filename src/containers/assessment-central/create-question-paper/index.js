@@ -177,7 +177,7 @@ const CreateQuestionPaper = ({
       });
       setBranchDropdown(data);
     } catch (e) {
-      setAlert('error', 'Failed to fetch branch');
+      // setAlert('error', 'Failed to fetch branch');
     }
   };
 
