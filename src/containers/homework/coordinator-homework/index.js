@@ -615,6 +615,7 @@ const CoordinatorTeacherHomework = withRouter(
       setselectedCoTeacherOptValue([]);
       setSelectedTeacherUser_id('');
       onResetSelectedFilters();
+      setSelectedCol({});
     }
 
     return (

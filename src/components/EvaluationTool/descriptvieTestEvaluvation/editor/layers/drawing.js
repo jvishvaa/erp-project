@@ -203,7 +203,7 @@ const DrawingLayer = ({
       context.lineTo(offsetX, offsetY);
       // Visualize the line using the strokeStyle
       context.stroke();
-      context.lineWidth = 5;
+      context.lineWidth = 2;
     } else {
       context.globalCompositeOperation = 'destination-out';
       context.arc(offsetX, offsetY, 8, 0, Math.PI * 2, false);

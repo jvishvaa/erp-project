@@ -6,6 +6,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import endpoints from '../../../../config/endpoints';
+import { connect, useSelector } from 'react-redux';
 import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
 import './top-filters.css';
@@ -15,6 +16,9 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const history = useHistory();
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
@@ -59,26 +63,27 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
   }, []);
 
   useEffect(() => {
-    if (moduleId) {
-      axiosInstance
-        .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setDropdownData((prev) => ({
-              ...prev,
-              academic: result?.data?.data,
-            }));
-            const defaultValue = result?.data?.data?.[0];
-            handleAcademicYear({}, defaultValue);
-          } else {
-            setAlert('error', result?.data?.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error?.message);
-        });
+    if (moduleId && selectedAcademicYear) {
+      handleAcademicYear();
+      // axiosInstance
+      //   .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
+      //   .then((result) => {
+      //     if (result.data.status_code === 200) {
+      //       setDropdownData((prev) => ({
+      //         ...prev,
+      //         academic: result?.data?.data,
+      //       }));
+      //       const defaultValue = result?.data?.data?.[0];
+      //       handleAcademicYear({}, defaultValue);
+      //     } else {
+      //       setAlert('error', result?.data?.message);
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     setAlert('error', error?.message);
+      //   });
     }
-  }, [moduleId]);
+  }, [moduleId, selectedAcademicYear]);
 
   const handleAcademicYear = (event = {}, value = '') => {
     setFilterData(() => ({
@@ -97,34 +102,34 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       chapters: [],
       topics: [],
     }));
-    if (value) {
-      setFilterData((prev) => ({
-        ...prev,
-        academic: value,
-        branch: '',
-        grade: '',
-        subject: '',
-        chapter: '',
-        topic: '',
-      }));
-      axiosInstance
-        .get(
-          `${endpoints.academics.branches}?session_year=${value?.id}&module_id=${moduleId}`
-        )
-        .then((result) => {
-          if (result?.data?.status_code === 200) {
-            setDropdownData((prev) => ({
-              ...prev,
-              branch: result?.data?.data?.results,
-            }));
-          } else {
-            setAlert('error', result?.data?.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error?.message);
-        });
-    }
+    // if (value) {
+    setFilterData((prev) => ({
+      ...prev,
+      academic: selectedAcademicYear,
+      branch: '',
+      grade: '',
+      subject: '',
+      chapter: '',
+      topic: '',
+    }));
+    axiosInstance
+      .get(
+        `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
+      )
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setDropdownData((prev) => ({
+            ...prev,
+            branch: result?.data?.data?.results,
+          }));
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+      });
+    // }
   };
 
   const handleBranch = (event, value) => {
@@ -356,7 +361,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       spacing={isMobile ? 3 : 5}
       style={{ width: widerWidth, margin: wider }}
     >
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+      {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
@@ -376,7 +381,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
             />
           )}
         />
-      </Grid>
+      </Grid> */}
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
