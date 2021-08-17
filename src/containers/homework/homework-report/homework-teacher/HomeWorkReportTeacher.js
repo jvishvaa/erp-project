@@ -398,7 +398,7 @@ export default function HomeWorkReportTeacher() {
 
   const handleSubject = (event, value) => {
     //api call for subject dropdown
-    setSelectedSubject('');
+    // setSelectedSubject('');
     setBranchWiseData([]);
     if (value) {
       setLoading(true);
@@ -469,7 +469,7 @@ export default function HomeWorkReportTeacher() {
                   // setDateRangeTechPer(newValue);
                   setDateRangeTechPer(() => newValue);
                   if (selectedSubject) {
-                    handleSubject(selectedSubject);
+                    handleSubject('', selectedSubject);
                   }
                 }}
                 renderInput={({ inputProps, ...startProps }, endProps) => {

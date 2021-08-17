@@ -9,6 +9,8 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import { useLocation } from 'react-router-dom';
 import '../../teacherBatchView/style.scss';
 import '../erp-view-class/admin/index.css'
+import APIREQUEST from "../../../config/apiRequest";
+
 const StyledButton = withStyles({
     root: {
         height: '31px',
@@ -80,6 +82,22 @@ export default function ResourceClassComponent(props) {
         
     }
 
+    const msApiOnclsResource = ()=>{
+        APIREQUEST("get", `/oncls/v1/oncls-resources/?online_class_id=${props.resourceId}&class_date=${moment(props.date).format('DD-MM-YYYY')}`)
+        .then((res)=>{
+            if(res.data.result.length > 0) {
+                res.data.result.map((path) => {
+                    if(path.files !== null && path.files.length > 0) {
+                        setHideButton(true);
+                    }
+                })
+            }
+            setIsDownload(res.data.result);
+            setIsDown(res.data.status_code);
+        })
+        .catch((error) => console.log(error))
+    }
+
     React.useEffect(() => {
         const params = {
             online_class_id: props.resourceId,
@@ -87,6 +105,12 @@ export default function ResourceClassComponent(props) {
             class_date: moment(props.date).format('DD-MM-YYYY')
         };
         setHideButton(false);
+
+        if(JSON.parse(localStorage.getItem('isMsAPI'))){
+            msApiOnclsResource()
+            return;
+        }
+
         axiosInstance.get(`${endpoints.onlineClass.resourceFile}?online_class_id=${props.resourceId}&class_date=${moment(props.date).format('DD-MM-YYYY')}`)
         .then((res) => {
             if(res.data.result.length > 0) {

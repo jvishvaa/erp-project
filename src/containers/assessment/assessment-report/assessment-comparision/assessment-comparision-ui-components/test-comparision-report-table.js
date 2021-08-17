@@ -36,7 +36,7 @@ const useStyles = makeStyles(() => ({
 const columns = [
   {
     id: 'test_id',
-    label: 'Test Id',
+    label: 'Test Name',
     // minWidth: 100,
     align: 'center',
     labelAlign: 'center',

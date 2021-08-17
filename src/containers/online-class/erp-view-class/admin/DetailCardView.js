@@ -28,6 +28,7 @@ import { useHistory, Route, withRouter } from 'react-router-dom';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { AttachFile as AttachFileIcon } from '@material-ui/icons';
 import edxtag from '../../../../assets/images/edxtag.jpeg';
+import APIREQUEST from "../../../../config/apiRequest";
 
 const JoinClass = (props) => {
   const { setLoading, index, cardIndex, getClassName } = props;
@@ -85,12 +86,28 @@ const JoinClass = (props) => {
     }
   };
 
+  const msApiMarkAttandance = (params)=>{
+    APIREQUEST("put", "/oncls/v1/mark-attendance/", params)
+    .then((res) => {
+      setLoading(false);
+      setIsAccept(true);
+    })
+    .catch((error) => {
+      setLoading(false);
+      setAlert('error', error.message);
+    });
+  }
+
   const handleIsAccept = () => {
     const params = {
       zoom_meeting_id: fullData && fullData.id,
       class_date: props.data && props.data.date,
       is_accepted: true,
     };
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      msApiMarkAttandance(params);
+      return;
+    }
     axiosInstance
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
       .then((res) => {
@@ -109,6 +126,10 @@ const JoinClass = (props) => {
       class_date: props.data && props.data.date,
       is_attended: true,
     };
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      msApiMarkAttandance(params);
+      return;
+    }
     axiosInstance
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
       .then((res) => {
@@ -131,6 +152,19 @@ const JoinClass = (props) => {
       setClassOver(true);
       setAlert('error', 'Class has ended!');
     }
+  };
+
+  const msAPIhandleCancel = (url, params)=>{
+    APIREQUEST("put", url, params)
+    .then((res) => {
+      setLoading(false);
+      setAlert('success', res.data.message);
+      handleClose('success');
+    })
+    .catch((error) => {
+      setLoading(false);
+      setAlert('error', error.message);
+    });
   };
 
   function handleCancel() {
@@ -161,6 +195,10 @@ const JoinClass = (props) => {
         });
     } else {
       //url = endpoints.teacherViewBatches.cancelBatchApi;
+      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+        msAPIhandleCancel("/oncls/v1/class-cancel/",params1);
+        return;
+      }
       axiosInstance
         .put(endpoints.teacherViewBatches.cancelBatchApi, params1)
         .then((res) => {
@@ -203,14 +241,34 @@ const JoinClass = (props) => {
   };
 
   useEffect(() => {
-    if (window.location.pathname === '/erp-online-class-teacher-view') {
+    if (window.location.pathname === '/erp-online-class-teacher-view' || window.location.pathname === '/erp-online-class') {
       handleHostDisable();
     }
   }, [new Date().getSeconds()]);
 
+  const msApihandleHost = (data)=> {
+    APIREQUEST("get", `/oncls/v1/zoom-redirect/?id=${data.id}`)
+    .then((res) => {
+      setLoading(false);
+      if (res?.data?.url) {
+        window.open(res?.data?.url, '_blank');
+      } else {
+        setAlert('error', res?.data?.message);
+      }
+    })
+    .catch((error) => {
+      setLoading(false);
+      setAlert('error', error.message);
+    });
+  }
+
   function handleHost(data) {
     if (!handleHostDisable()) {
       setLoading(true);
+      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+        msApihandleHost(data);
+        return;
+      }
       axiosInstance
         .get(`${endpoints.teacherViewBatches.hostApi}?id=${data.id}`)
         .then((res) => {
@@ -229,6 +287,20 @@ const JoinClass = (props) => {
       setDisableHost(true);
       setAlert('error', "Class can't be started now");
     }
+  }
+
+  const isAcceptDisabled = ()=>{
+    return props?.data?.class_status?.toLowerCase() === 'cancelled' || (classStartTime === currDate ? false : true)
+  }
+
+  const isClassStartted = () =>{
+      let disableFlag = false;
+      if (new Date().getTime() >= startTime) {
+        disableFlag = false;
+      } else {
+        disableFlag = true;
+      }
+      return disableFlag;
   }
 
   const open = Boolean(anchorEl);
@@ -308,7 +380,7 @@ const JoinClass = (props) => {
               onClick={() => {
                 setDialogClassWorkBox(true);
               }}
-              disabled={props?.data?.class_status?.toLowerCase() === 'cancelled'}
+              disabled={ isClassStartted() || props?.data?.class_status?.toLowerCase() === 'cancelled'}
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
               Class Work
@@ -343,7 +415,7 @@ const JoinClass = (props) => {
                   pathname: `/erp-online-class/class-work/${onlineClassId}/${id}/${startDate}`,
                 });
               }}
-              disabled={props?.data?.is_cancelled}
+              disabled={ isClassStartted() || props?.data?.is_cancelled}
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
               Class Work
@@ -404,7 +476,7 @@ const JoinClass = (props) => {
                     size='small'
                     color='secondary'
                     fullWidth
-                    disabled={props?.data?.is_cancelled}
+                    disabled={disableHost || props?.data?.is_cancelled}
                     variant='contained'
                     onClick={() => {
                       if (email !== props?.fullData?.online_class?.teacher?.email) {
@@ -481,10 +553,7 @@ const JoinClass = (props) => {
                       variant='contained'
                       // onClick={handleIsAccept}
                       onClick={(e) => handleClickAccept(e)}
-                      disabled={
-                        props?.data?.class_status?.toLowerCase() === 'cancelled' ||
-                        (classStartTime === currDate ? false : true)
-                      }
+                      disabled={ isAcceptDisabled() }
                       className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
                     >
                       Accept
@@ -590,7 +659,38 @@ const DetailCardView = ({
     );
   };
 
+  const msCallData = ()=>{
+    let detailsURL =  window.location.pathname === '/erp-online-class-student-view'
+    ? `/oncls/v1/${fullData?.id}/student-oncls-details/`
+    : `/oncls/v1/${fullData?.id}/oncls-details/`;
+    APIREQUEST("get", detailsURL)
+    .then((res)=>{
+      handleMscallResponse(res);
+    })
+    .catch((error) => setAlert('error', error.message));
+  }
+
+  const handleMscallResponse = (res)=>{
+    if (res?.data?.status_code === 200) {
+      const response = res?.data?.data;
+      let result = [];
+      if (response?.length === 1) {
+        result = response;
+      }
+      if (response?.length > 1) {
+        result = handleSetData(response);
+      }
+      setNoOfPeriods(result);
+    } else {
+      setAlert('error', res?.data?.message);
+    }
+  }
+
   const handleCallaData = () => {
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      msCallData()
+      return;
+    }
     let detailsURL =
       window.location.pathname === '/erp-online-class-student-view'
         ? `erp_user/${fullData && fullData.id}/student-oc-details/`
@@ -600,19 +700,7 @@ const DetailCardView = ({
       axiosInstance
         .get(detailsURL)
         .then((res) => {
-          if (res?.data?.status_code === 200) {
-            const response = res?.data?.data;
-            let result = [];
-            if (response?.length === 1) {
-              result = response;
-            }
-            if (response?.length > 1) {
-              result = handleSetData(response);
-            }
-            setNoOfPeriods(result);
-          } else {
-            setAlert('error', res?.data?.message);
-          }
+          handleMscallResponse(res);
         })
         .catch((error) => setAlert('error', error.message));
     }

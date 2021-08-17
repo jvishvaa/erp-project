@@ -1,5 +1,6 @@
 
 import axios from '../../config/axios';
+import { isMsAPI } from "../../utility-functions/index"
 
 export const authActions = {
   LOGIN_REQUEST: 'LOGIN_REQUEST',
@@ -22,6 +23,7 @@ const {
   FETCH_LOGGED_IN_USER_INFO_FAILURE,
 } = authActions;
 
+
 export const login = (params) => (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
   return axios
@@ -41,6 +43,7 @@ export const login = (params) => (dispatch) => {
           'navigationData',
           JSON.stringify(response.data.result.navigation_data)
         );
+        isMsAPI();
         const result = { isLogin: true, message: response.data.message };
         return result;
       }
@@ -82,6 +85,7 @@ export const aolLogin = (token) => (dispatch) => {
           'navigationData',
           JSON.stringify(response.data.result.navigation_data)
         );
+        isMsAPI();
         const result = { isLogin: true, message: response.data.message };
         return result;
       }

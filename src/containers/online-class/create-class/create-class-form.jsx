@@ -34,6 +34,7 @@ import axiosInstance from '../../../config/axios';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { fetchBranchesForCreateUser } from '../../../redux/actions';
 import ReminderDialog from './reminderDialog';
+import APIREQUEST from "../../../config/apiRequest";
 
 const CreateClassForm = (props) => {
   const tutorEmailRef = useRef(null);
@@ -103,6 +104,10 @@ const CreateClassForm = (props) => {
         id: obj.id,
         branch_name: obj.branch_name,
       }));
+      transformedData.unshift({
+        branch_name: 'Select All',
+        id: 'all',
+      });
       setBranches(transformedData);
     });
   };
@@ -205,11 +210,13 @@ const CreateClassForm = (props) => {
     dispatch(clearSubjects());
     dispatch(clearCourses());
     if (value?.length > 0) {
+      value = value.filter(({ id }) => id === 'all').length === 1 ? [...branches].filter(({ id }) => id !== 'all') : value;
       const ids = value.map((obj) => obj.id);
       setSelectedBranches(value);
       dispatch(listGradesCreateClass(ids, moduleId, selectedYear.id));
       setOnlineClass((prevState) => ({ ...prevState, branchIds: ids, acadId: selectedYear?.id }));
     } else {
+      setOnlineClass((prevState) => ({ ...prevState, branchIds: [], gradeIds: [], sectionIds:[], subject: [] }));
       dispatch(clearGrades());
     }
   };
@@ -223,7 +230,7 @@ const CreateClassForm = (props) => {
       dispatch(clearTutorEmailValidation());
       if (selectedClassType?.id > 0) dispatch(listCoursesCreateClass(ids));
     } else {
-      setOnlineClass((prevState) => ({ ...prevState, gradeIds: [] }));
+      setOnlineClass((prevState) => ({ ...prevState, gradeIds: [], sectionIds:[], subject: [] }));
       dispatch(clearTutorEmailValidation());
     }
     setSectionSelectorKey(new Date());
@@ -240,12 +247,13 @@ const CreateClassForm = (props) => {
 
   const handleSection = (event, value) => {
     setSelectedSections(value);
+    setSelectedSubject([]);
     if (value?.length) {
       const ids = value.map((el) => el.id);
       const sectionIds = value.map((el) => el.section_id);
       setOnlineClass((prevState) => ({ ...prevState, sectionIds: ids }));
     } else {
-      setOnlineClass((prevState) => ({ ...prevState, sectionIds: [] }));
+      setOnlineClass((prevState) => ({ ...prevState, sectionIds:[], subject: [] }));
     }
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({
@@ -494,6 +502,7 @@ const CreateClassForm = (props) => {
       request['course'] = courseId;
     }
     request['tutor_id'] = tutorEmail.tutor_id;
+    request['auth_user_id'] = tutorEmail.user__id;
     request['tutor_emails'] = tutorEmails.join(',');
     request['role'] = 'Student';
     request['start_time'] = startTime;
@@ -586,23 +595,19 @@ const CreateClassForm = (props) => {
   const checkTutorAvailability = async () => {
     const { selectedDate, selectedTime, duration } = onlineClass;
 
-    const startTime = `${
-      selectedDate.toString().includes(' ')
-        ? selectedDate.toISOString().split('T')[0]
-        : moment(selectedDate).format('YYYY-MM-DD')
-    } ${getFormatedTime(selectedTime)}`;
+    const startTime = `${selectedDate.toString().includes(' ')
+      ? selectedDate.toISOString().split('T')[0]
+      : moment(selectedDate).format('YYYY-MM-DD')
+      } ${getFormatedTime(selectedTime)}`;
     try {
       let url = toggle
-        ? `/erp_user/check-tutor-time/?tutor_email=${
-            onlineClass.tutorEmail.email
-          }&start_time=${startTime}&duration=${duration}&no_of_week=${
-            onlineClass.weeks
-          }&is_recurring=1&week_days=${[...selectedDays]
-            .map((obj) => obj.send)
-            .join(',')}`
-        : `/erp_user/check-tutor-time/?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}`;
-
-      const { data } = await axiosInstance.get(url);
+        ? `?tutor_email=${onlineClass.tutorEmail.email
+        }&start_time=${startTime}&duration=${duration}&no_of_week=${onlineClass.weeks
+        }&is_recurring=1&week_days=${[...selectedDays]
+          .map((obj) => obj.send)
+          .join(',')}`
+        : `?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}&is_zoom=${onlineClass.is_zoom}`;
+      const { data } = JSON.parse(localStorage.getItem('isMsAPI')) ? await APIREQUEST("get", `/oncls/v1/tutor-availability/${url}`) : await axiosInstance.get('/erp_user/check-tutor-time/'+ url);
       if (data.status_code === 200) {
         if (data.status === 'success') {
           setTutorNotAvailableMessage('');
@@ -677,9 +682,11 @@ const CreateClassForm = (props) => {
   }, [onlineClass.tutorEmail]);
 
   const createBtnDisabled =
+    onlineClass.title.trim() === "" ||
     !onlineClass.duration ||
-    !onlineClass.subject ||
     !onlineClass.gradeIds?.length ||
+    !onlineClass.sectionIds?.length ||
+    !onlineClass.subject?.length ||
     !onlineClass.selectedDate ||
     !onlineClass.selectedTime ||
     !onlineClass.tutorEmail ||
@@ -928,8 +935,8 @@ const CreateClassForm = (props) => {
                   // disableToolbar
                   variant='dialog'
                   format='MM/DD/YYYY'
-                  InputProps={{ readOnly: true }}
                   margin='none'
+                  InputProps={{ readOnly: true }}
                   id='date-picker'
                   label='Start date'
                   value={onlineClass?.selectedDate}
@@ -945,8 +952,8 @@ const CreateClassForm = (props) => {
                   size='small'
                   margin='none'
                   id='time-picker'
-                  InputProps={{ readOnly: true }}
                   label='Start time'
+                  InputProps={{ readOnly: true }}
                   format='hh:mm A'
                   value={onlineClass.selectedTime}
                   onChange={handleTimeChange}
