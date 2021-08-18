@@ -225,6 +225,11 @@
 
 .no-wrap-col {
   white-space: nowrap;
+  // min-width: 188px;
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background-color: white;
   div {
     display: flex;
     align-items: center;
