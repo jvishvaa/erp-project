@@ -193,7 +193,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
   }, [page, tabValue, callFlag]);
 
   useEffect(() => {
-    setTabMapId('')
+    setTabMapId('');
     setTabQueLevel('');
     setTabQueTypeId('');
     setTabQueCatId('');
@@ -221,6 +221,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
               <CommonBreadcrumbs
                 componentName='Assessment'
                 childComponentName='Question Bank'
+                isAcademicYearVisible={true}
               />
             </div>
 

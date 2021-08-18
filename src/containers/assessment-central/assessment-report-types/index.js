@@ -205,7 +205,11 @@ const AssessmentReportTypes = ({
       <Layout>
         <div>
           <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs componentName='Assessment' childComponentName='Reports' />
+            <CommonBreadcrumbs
+              componentName='Assessment'
+              childComponentName='Reports'
+              isAcademicYearVisible={true}
+            />
           </div>
         </div>
         <ReportTypeFilter
