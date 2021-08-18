@@ -146,6 +146,7 @@ const AssessmentView = () => {
             <CommonBreadcrumbs
               componentName='Assessment'
               childComponentName='Question Paper'
+              isAcademicYearVisible={true}
             />
           </div>
 
