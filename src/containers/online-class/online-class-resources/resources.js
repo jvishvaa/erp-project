@@ -162,7 +162,7 @@ const Resources = () => {
   const [totalCount, setTotalCount] = React.useState(0);
   const [page, setPage] = React.useState(1);
   const [tabValue, setTabValue] = React.useState(
-    JSON.parse(localStorage.getItem('filterData'))?.tabValue || null
+    JSON.parse(localStorage.getItem('filterData'))?.tabValue || 0
   );
   const limit = 12;
 
@@ -278,6 +278,7 @@ const Resources = () => {
         {resourceData && resourceOnlineClasses.length !== 0 && (
           <Grid item sm={4} xs={12}>
             <ResourceDetailsCard
+              tabValue={tabValue} 
               resourceData={resourceData}
               loading={loading}
               setLoading={setLoading}

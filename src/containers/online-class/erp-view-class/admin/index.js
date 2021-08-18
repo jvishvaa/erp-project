@@ -57,7 +57,7 @@ const ErpAdminViewClass = ({ history }) => {
   const viewMoreRef = useRef(null);
   const limit = 12;
   const [tabValue, setTabValue] = useState(
-    JSON.parse(localStorage.getItem('filterData'))?.tabValue || null
+    JSON.parse(localStorage.getItem('filterData'))?.tabValue || 0
   );
 
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
