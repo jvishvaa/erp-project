@@ -470,6 +470,7 @@ class AdminBlog extends Component {
                       color: 'white',
                       margin: '20px',
                       marginTop: '30px',
+
                     }}
                     color='primary'
                     size='medium'

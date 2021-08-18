@@ -229,7 +229,7 @@ class PrincipalPublishBlogView extends Component {
                       <li style={{ listStyleType: 'none' }}>
                         <Typography
                           align='right'
-                          color = "secondary"
+                          color='secondary'
                           className={classes.dividerInset}
                           style={{ fontWeight: 600 }}
                           display='block'

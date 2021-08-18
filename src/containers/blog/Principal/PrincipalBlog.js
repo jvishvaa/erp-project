@@ -491,6 +491,7 @@ class PrincipalBlog extends Component {
                     style={{
                       margin: '20px',
                       marginTop: '30px',
+
                     }}
                     onClick={this.clearSelection}
                     variant='contained'

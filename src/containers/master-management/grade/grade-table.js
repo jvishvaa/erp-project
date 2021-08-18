@@ -278,6 +278,7 @@ const GradeTable = () => {
                               handleOpenDeleteModal(grade.id);
                             }}
                             title='Delete Grade'
+
                           >
                             <DeleteOutlinedIcon />
                           </IconButton>

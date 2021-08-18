@@ -457,7 +457,6 @@ class TeacherBlog extends Component {
                         )}
                       />
                     </div>
-                    {/* ) : null} */}
                   </Grid>
                   <Grid item xs={12} sm={4}>
                     <div className='mobile-date-picker'>
@@ -468,7 +467,6 @@ class TeacherBlog extends Component {
                       />
                     </div>
                   </Grid>
-                  {/* <Grid item xs={12} sm={3}> */}
                   <Button
                     style={{ color: 'white', margin: '20px', marginTop: '30px' }}
                     color='primary'
@@ -478,7 +476,6 @@ class TeacherBlog extends Component {
                   >
                     Clear
                   </Button>
-                  {/* <Grid> */}
                   <Button
                     style={{ margin: '20px', marginTop: '30px' }}
                     onClick={this.clearSelection}
@@ -488,9 +485,6 @@ class TeacherBlog extends Component {
                   >
                     Clear
                   </Button>
-                  {/* </Grid> */}
-                  {/* </Grid> */}
-                  {/* <Grid item xs={12} sm={3}> */}
                   <Button
                     color='primary'
                     style={{ color: 'white', margin: '20px', marginTop: '30px' }}
@@ -500,7 +494,6 @@ class TeacherBlog extends Component {
                   >
                     Published Blogs
                   </Button>
-                  {/* </Grid> */}
                 </Grid>
                 <div style={{ margin: '20px' }}>
                   <Grid container spacing={2}>

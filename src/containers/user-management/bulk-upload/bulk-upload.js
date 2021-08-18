@@ -32,14 +32,14 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
     fontSize: '1rem',
     backgroundColor: `#ffffff !important`,
-    color : theme.palette.secondary.main
+    color: theme.palette.secondary.main,
   },
   hyphenColor: {
     color: theme.palette.primary.main,
   },
-  tableCell:{
-    color : theme.palette.secondary.main
-  }
+  tableCell: {
+    color: theme.palette.secondary.main,
+  },
 }));
 
 const columns = [

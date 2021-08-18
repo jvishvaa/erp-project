@@ -18,17 +18,17 @@ import './change-password.css';
 import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
-  profilePasswordWrapper :{
+  profilePasswordWrapper: {
     display: "flex",
-  flexDirection: "column",
-  color: theme.palette.secondary.main,
-  textAlign: "left",
+    flexDirection: "column",
+    color: theme.palette.secondary.main,
+    textAlign: "left",
   },
-  dialogTitle:{
-    cursor : "move",
-    color : theme.palette.secondary.main
+  dialogTitle: {
+    cursor: "move",
+    color: theme.palette.secondary.main
   }
-  
+
 }));
 const ChangePassword = (props) => {
   const { close, id } = props || {};
@@ -102,7 +102,7 @@ const ChangePassword = (props) => {
     >
       <DialogTitle
         style={{ cursor: 'move' }}
-        className = {classes.dialogTitle}
+        className={classes.dialogTitle}
         id='draggable-dialog-title'
       >
         Change Password
@@ -156,7 +156,7 @@ const ChangePassword = (props) => {
         >
           Cancel
         </Button>
-        <Button 
+        <Button
           color='primary'
           variant='contained'
           style={{ color: 'white' }}

@@ -21,9 +21,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
-import { connect, useSelector } from 'react-redux';
-
 import {Typography} from '@material-ui/core';
+import { connect, useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
