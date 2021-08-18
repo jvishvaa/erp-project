@@ -92,6 +92,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   console.log('details:', details);
+  console.log("filterdata checking",filterData)
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -190,9 +191,9 @@ const CreateDailyDairy = (details, onSubmit) => {
       fetchBranchesForCreateUser(value.id, moduleId).then((data) => {
         const transformedData = data
           ? data?.map((obj) => ({
-              id: obj.id,
-              branch_name: obj.branch_name,
-            }))
+            id: obj.id,
+            branch_name: obj.branch_name,
+          }))
           : [];
         setBranches(transformedData);
       });
@@ -228,9 +229,9 @@ const CreateDailyDairy = (details, onSubmit) => {
     fetchGrades(searchAcademicYear?.id, values, moduleId).then((data) => {
       const transformedData = data
         ? data.map((grade) => ({
-            id: grade.grade_id,
-            grade_name: grade.grade__grade_name,
-          }))
+          id: grade.grade_id,
+          grade_name: grade.grade__grade_name,
+        }))
         : [];
       setGrades(transformedData);
     });
@@ -241,10 +242,10 @@ const CreateDailyDairy = (details, onSubmit) => {
       fetchSections(searchAcademicYear?.id, branch, [values], moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
-              id: section.section_id,
-              section_name: `${section.section__section_name}`,
-              section_mapping_id: section.id,
-            }))
+            id: section.section_id,
+            section_name: `${section.section__section_name}`,
+            section_mapping_id: section.id,
+          }))
           : [];
         const filteredSelectedSections =
           formik.values.section &&
@@ -288,6 +289,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       getSubjects(searchAcademicYear?.id, branch, grade, section, moduleId).then(
         (data) => {
           const transformedData = data.map((obj) => ({
+            ids:obj.id,
             id: obj.subject__id,
             subject_name: obj.subject__subject_name,
           }));
@@ -318,6 +320,31 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
   };
 
+  // const handleSubject = (event, value) => {
+  //   formik.setFieldValue('chapters', '' || []);
+  //   formik.setFieldValue('subjects', '' || []);
+  //   setFilterData({ ...filterData, subject: '', chapter: '' });
+  //   if (value) {
+  //     setFilterData({ ...filterData, subject: value, chapter: '' });
+  //     formik.setFieldValue('subjects', value);
+  //     formik.setFieldValue('chapters', '' || []);
+  //     setSubjectIds(value?.id);
+  //     axiosInstance
+  //       .get(
+  //         `${endpoints.dailyDairy.branches}?session_year=${searchAcademicYear?.id}&subject=${value?.id}&module_id=${moduleId}`
+  //       )
+  //       .then((result) => {
+  //         if (result.data.status_code === 200) {
+  //           setChapterDropdown(result.data.result);
+  //         } else {
+  //           setAlert('error');
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         setAlert('error');
+  //       });
+  //   }
+  // };
   const handleSubject = (event, value) => {
     formik.setFieldValue('chapters', '' || []);
     formik.setFieldValue('subjects', '' || []);
@@ -327,9 +354,13 @@ const CreateDailyDairy = (details, onSubmit) => {
       formik.setFieldValue('subjects', value);
       formik.setFieldValue('chapters', '' || []);
       setSubjectIds(value?.id);
+      // axiosInstance
+      // .get(
+      // `${endpoints.dailyDairy.branches}?session_year=${searchAcademicYear?.id}&subject=${value?.id}&module_id=${moduleId}`
+      // )
       axiosInstance
         .get(
-          `${endpoints.dailyDairy.branches}?session_year=${searchAcademicYear?.id}&subject=${value?.id}&module_id=${moduleId}`
+          `${endpoints.questionBank.chapterList}?subject_id=${value?.ids}&subject=${value?.id}&session_year=${filterData?.branch?.id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -347,6 +378,9 @@ const CreateDailyDairy = (details, onSubmit) => {
   const validateFileSize = (size) => {
     return size / 1024 / 1024 > 25 ? false : true;
   };
+
+
+
 
   const handleImageChange = (event) => {
     let fileType = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
@@ -429,42 +463,42 @@ const CreateDailyDairy = (details, onSubmit) => {
         createDairyEntry,
         filePath && filePath.length > 0
           ? {
-              academic_year: searchAcademicYear?.id,
-              module_id: moduleId,
-              branch: formik.values?.branch?.id,
-              grade,
-              section,
-              section_mapping: [mapId],
-              subject: subjectIds,
-              chapter: formik.values.chapters?.id,
-              documents: filePath,
-              teacher_report: {
-                previous_class: recap,
-                summary,
-                class_work: detail,
-                tools_used: tools,
-                homework,
-              },
-              dairy_type: 2,
-            }
-          : {
-              academic_year: searchAcademicYear?.id,
-              branch: formik.values?.branch?.id,
-              module_id: moduleId,
-              grade,
-              section,
-              section_mapping: [mapId],
-              subject: subjectIds,
-              chapter: formik.values?.chapters?.id,
-              teacher_report: {
-                previous_class: recap,
-                summary,
-                class_work: detail,
-                tools_used: tools,
-                homework,
-              },
-              dairy_type: 2,
+            academic_year: searchAcademicYear?.id,
+            module_id: moduleId,
+            branch: formik.values?.branch?.id,
+            grade,
+            section,
+            section_mapping: [mapId],
+            subject: subjectIds,
+            chapter: formik.values.chapters?.id,
+            documents: filePath,
+            teacher_report: {
+              previous_class: recap,
+              summary,
+              class_work: detail,
+              tools_used: tools,
+              homework,
             },
+            dairy_type: 2,
+          }
+          : {
+            academic_year: searchAcademicYear?.id,
+            branch: formik.values?.branch?.id,
+            module_id: moduleId,
+            grade,
+            section,
+            section_mapping: [mapId],
+            subject: subjectIds,
+            chapter: formik.values?.chapters?.id,
+            teacher_report: {
+              previous_class: recap,
+              summary,
+              class_work: detail,
+              tools_used: tools,
+              homework,
+            },
+            dairy_type: 2,
+          },
         {
           headers: {
             // 'application/json' is the modern content-type for JSON, but some
@@ -494,60 +528,60 @@ const CreateDailyDairy = (details, onSubmit) => {
         `${endpoints.dailyDairy.updateDelete}${editData.id}/update-delete-dairy/`,
         filePath && filePath.length > 0
           ? {
-              academic_year: editData.academic_year.id,
-              branch: editData.branch.id,
-              grade: editData.grade.id,
-              section: [editData.section.id],
-              subject: editData.subject.id,
-              chapter: editData.chapter.id,
-              documents: filePath,
-              teacher_report: {
-                previous_class:
-                  recap && recap.length > 0 ? recap : editData.teacher_report.recap,
-                summary:
-                  summary && summary.length > 0
-                    ? summary
-                    : editData.teacher_report.summary,
-                class_work:
-                  detail && detail.length > 0
-                    ? detail
-                    : editData.teacher_report.class_work,
-                tools_used:
-                  tools && tools.length > 0 ? tools : editData.teacher_report.tools_used,
-                homework:
-                  homework && homework.length > 0
-                    ? homework
-                    : editData.teacher_report.homework,
-              },
-              dairy_type: 2,
-            }
+            academic_year: editData.academic_year.id,
+            branch: editData.branch.id,
+            grade: editData.grade.id,
+            section: [editData.section.id],
+            subject: editData.subject.id,
+            chapter: editData.chapter.id,
+            documents: filePath,
+            teacher_report: {
+              previous_class:
+                recap && recap.length > 0 ? recap : editData.teacher_report.recap,
+              summary:
+                summary && summary.length > 0
+                  ? summary
+                  : editData.teacher_report.summary,
+              class_work:
+                detail && detail.length > 0
+                  ? detail
+                  : editData.teacher_report.class_work,
+              tools_used:
+                tools && tools.length > 0 ? tools : editData.teacher_report.tools_used,
+              homework:
+                homework && homework.length > 0
+                  ? homework
+                  : editData.teacher_report.homework,
+            },
+            dairy_type: 2,
+          }
           : {
-              academic_year: editData.academic_year.id,
-              branch: editData.branch.id,
-              grade: editData.grade.id,
-              section: [editData.section[0].id],
-              subject: editData.subject.id,
-              chapter: editData.chapter.id,
-              teacher_report: {
-                previous_class:
-                  recap && recap.length > 0 ? recap : editData.teacher_report.recap,
-                summary:
-                  summary && summary.length > 0
-                    ? summary
-                    : editData.teacher_report.summary,
-                class_work:
-                  detail && detail.length > 0
-                    ? detail
-                    : editData.teacher_report.class_work,
-                tools_used:
-                  tools && tools.length > 0 ? tools : editData.teacher_report.tools_used,
-                homework:
-                  homework && homework.length > 0
-                    ? homework
-                    : editData.teacher_report.homework,
-              },
-              dairy_type: 2,
-            }
+            academic_year: editData.academic_year.id,
+            branch: editData.branch.id,
+            grade: editData.grade.id,
+            section: [editData.section[0].id],
+            subject: editData.subject.id,
+            chapter: editData.chapter.id,
+            teacher_report: {
+              previous_class:
+                recap && recap.length > 0 ? recap : editData.teacher_report.recap,
+              summary:
+                summary && summary.length > 0
+                  ? summary
+                  : editData.teacher_report.summary,
+              class_work:
+                detail && detail.length > 0
+                  ? detail
+                  : editData.teacher_report.class_work,
+              tools_used:
+                tools && tools.length > 0 ? tools : editData.teacher_report.tools_used,
+              homework:
+                homework && homework.length > 0
+                  ? homework
+                  : editData.teacher_report.homework,
+            },
+            dairy_type: 2,
+          }
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -579,18 +613,18 @@ const CreateDailyDairy = (details, onSubmit) => {
                   style={
                     isMobile
                       ? {
-                          marginLeft: '',
-                          width: '20px',
-                          height: '20px',
-                          // padding: '5px',
-                          cursor: 'pointer',
-                        }
+                        marginLeft: '',
+                        width: '20px',
+                        height: '20px',
+                        // padding: '5px',
+                        cursor: 'pointer',
+                      }
                       : {
-                          width: '20px',
-                          height: '20px',
-                          // padding: '5px',
-                          cursor: 'pointer',
-                        }
+                        width: '20px',
+                        height: '20px',
+                        // padding: '5px',
+                        cursor: 'pointer',
+                      }
                   }
                   src={deleteIcon}
                   alt='given'
@@ -970,15 +1004,15 @@ const CreateDailyDairy = (details, onSubmit) => {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                   {state.isEdit
                     ? editData.documents.map((file, i) => (
-                        <FileRow
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(i)}
-                        />
-                      ))
+                      <FileRow
+                        key={`homework_student_question_attachment_${i}`}
+                        file={file}
+                        index={i}
+                        onClose={() => removeFileHandler(i)}
+                      />
+                    ))
                     : filePath?.length > 0
-                    ? filePath?.map((file, i) => (
+                      ? filePath?.map((file, i) => (
                         <FileRow
                           key={`homework_student_question_attachment_${i}`}
                           file={file}
@@ -986,7 +1020,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                           onClose={() => removeFileHandler(i)}
                         />
                       ))
-                    : null}
+                      : null}
                 </div>
                 <div style={isMobile ? { marginTop: '1%' } : { marginTop: '10%' }}>
                   <Button
@@ -1017,8 +1051,8 @@ const CreateDailyDairy = (details, onSubmit) => {
                       id='raised-button-file'
                       accept='image/*, .pdf'
                       onChange={handleImageChange}
-                      // defaultValue={state.isEdit?editData.documents : []}
-                      // value={state.isEdit?editData.documents : []}
+                    // defaultValue={state.isEdit?editData.documents : []}
+                    // value={state.isEdit?editData.documents : []}
                     />
                     Add Document
                   </Button>
