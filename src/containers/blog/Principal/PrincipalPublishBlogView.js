@@ -209,6 +209,7 @@ class PrincipalPublishBlogView extends Component {
                     </Button>
                   </Grid>
                 </Grid>
+
                 <Grid container spacing={2}></Grid>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>

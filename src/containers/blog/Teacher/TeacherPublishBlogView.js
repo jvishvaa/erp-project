@@ -231,6 +231,7 @@ class TeacherPublishBlogView extends Component {
                           display='block'
                           color='secondary'
                           variant='caption'
+                          color='secondary'
                         >
                           Number of Blogs {totalBlogs}
                         </Typography>

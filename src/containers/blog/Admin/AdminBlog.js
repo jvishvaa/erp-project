@@ -492,6 +492,19 @@ class AdminBlog extends Component {
                   >
                     Clear
                   </Button>
+                  {/* <Grid> */}
+                  <Button
+                    style={{
+                      margin: '20px',
+                      marginTop: '30px',
+                    }}
+                    onClick={this.clearSelection}
+                    variant='contained'
+                    className='cancelButton labelColor'
+                    size='medium'
+                  >
+                    Clear
+                  </Button>
                   {/* </Grid> */}
                   {/* <Grid item> */}
                   <Button
@@ -525,49 +538,6 @@ class AdminBlog extends Component {
                         <Typography
                           align='right'
                           color='secondary'
-                          style={{ fontWeight: 600 }}
-                          display='block'
-                          variant='caption'
-                        >
-                          Number of Blogs {totalBlogs}
-                        </Typography>
-                      </li>
-                      <TabPanel value={tabValue} index={0}>
-                        <GridList
-                          data={data}
-                          tabValue={tabValue}
-                          totalBlogs={totalBlogs}
-                        />
-                      </TabPanel>
-                      <TabPanel value={tabValue} index={1}>
-                        <GridList
-                          data={data}
-                          tabValue={tabValue}
-                          totalBlogs={totalBlogs}
-                        />
-                      </TabPanel>
-                    </div>
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <div className={classes.tabRoot}>
-                      <Tabs
-                        indicatorColor='primary'
-                        textColor='primary'
-                        value={tabValue}
-                        onChange={this.handleTabChange}
-                        aria-label='simple tabs example'
-                      >
-                        <Tab label='Pending Review' {...a11yProps(0)} />
-                        <Tab label='Reviewed' {...a11yProps(1)} />
-                      </Tabs>{' '}
-                      <Divider variant='middle' />
-                      <li style={{ listStyleType: 'none' }}>
-                        <Typography
-                          align='right'
-                          className={classes.dividerInset}
                           style={{ fontWeight: 600 }}
                           display='block'
                           variant='caption'

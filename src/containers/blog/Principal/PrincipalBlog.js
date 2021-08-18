@@ -357,7 +357,7 @@ class PrincipalBlog extends Component {
             >
               <CommonBreadcrumbs componentName='Blog' />
               <div className='create_group_filter_container'>
-                <Grid container>
+                <Grid container spacing={3}>
                   <Grid xs={12} sm={3} item>
                     <div className='blog_input'>
                       <Autocomplete
@@ -477,6 +477,7 @@ class PrincipalBlog extends Component {
                       color: 'white',
                       margin: '20px',
                       marginTop: '30px',
+
                     }}
                     color='primary'
                     size='medium'
@@ -499,13 +500,14 @@ class PrincipalBlog extends Component {
                     Clear
                   </Button>
                   <Button
-                    color='primary'
                     style={{
                       color: 'white',
                       margin: '20px',
                       marginTop: '30px',
+
                     }}
                     size='medium'
+                    color='primary'
                     variant='contained'
                     onClick={this.PublishBlogNav}
                   >
