@@ -244,7 +244,7 @@ const JoinClass = (props) => {
     if (window.location.pathname === '/erp-online-class-teacher-view' || window.location.pathname === '/erp-online-class') {
       handleHostDisable();
     }
-  }, [new Date().getSeconds()]);
+  }, [new Date().getSeconds(), props]);
 
   const msApihandleHost = (data)=> {
     APIREQUEST("get", `/oncls/v1/zoom-redirect/?id=${data.id}`)
