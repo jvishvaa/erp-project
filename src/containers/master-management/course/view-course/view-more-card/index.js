@@ -154,7 +154,8 @@ const ViewMoreCard = ({
                   {periodDataForView?.files?.length > 0 ? (
                     <IconButton>
                       <a
-                        href={`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${periodDataForView?.files[0]}`}
+                        // href={`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${periodDataForView?.files[0]}`}
+                        href={`https://d3ka3pry54wyko.cloudfront.net/dev/aol_file/course/${periodDataForView?.files[0]}`}
                       >
                         <SvgIcon
                           component={() => (
@@ -176,7 +177,8 @@ const ViewMoreCard = ({
                   {periodDataForView?.thumbnail?.length > 0 ? (
                     <IconButton>
                       <a
-                        href={`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${periodDataForView?.thumbnail[0]}`}
+                        // href={`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${periodDataForView?.thumbnail[0]}`}
+                        href={`https://d3ka3pry54wyko.cloudfront.net/dev/aol_file/course/${periodDataForView?.thumbnail[0]}`}
                       >
                         <SvgIcon
                           component={() => (

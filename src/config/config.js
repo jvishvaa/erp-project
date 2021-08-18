@@ -1,7 +1,9 @@
 const local = {
   s3: {
-    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
-    ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+    // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   apiGateway: {
     baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
@@ -15,8 +17,10 @@ const local = {
 };
 const dev = {
   s3: {
-    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
-    ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+    // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
@@ -29,8 +33,10 @@ const dev = {
 
 const qa = {
   s3: {
-    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
-    ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+    // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   apiGateway: {
     // baseURL: `${window.location.origin}/qbox`,
@@ -44,8 +50,10 @@ const qa = {
 
 const stage = {
   s3: {
-    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
-    ERP_BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+    // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+    // ERP_BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+    BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
@@ -57,8 +65,10 @@ const stage = {
 
 const prod = {
   s3: {
-    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
-    ERP_BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+    // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+    // ERP_BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+    BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,

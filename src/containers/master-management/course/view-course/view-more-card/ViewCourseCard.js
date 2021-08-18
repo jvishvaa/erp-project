@@ -62,7 +62,8 @@ const ViewCourseCard = ({ index, cData, setData }) => {
 
   const handleDownload = (e,data) => {
     for(let i=0;i<e.files.length;i++){
-      window.open(`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${e.files[i]}`)
+      // window.open(`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${e.files[i]}`)
+      window.open(`https://d3ka3pry54wyko.cloudfront.net/dev/aol_file/course/${e.files[i]}`)
     }
   }
   if (id) {

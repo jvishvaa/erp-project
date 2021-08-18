@@ -73,7 +73,9 @@ const ChapterBook = (props) => {
   const [totalPages, setTotalPages] = useState('');
   const [pageNo, setPageNo] = useState(1);
   const limit = 8;
-  const chapterImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/';
+  // const chapterImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/';
+  const chapterImage = 'https://d3ka3pry54wyko.cloudfront.net/';
+
   const handlePagination = (event, page) => {
     setPageNo(page);
     // console.log(page, 'Page');
