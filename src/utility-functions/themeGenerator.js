@@ -313,7 +313,7 @@ export function themeGenerator() {
       MuiInputBase: {
         root: {
           borderRadius: '10px',
-          color: secondarytemp,
+          // color: secondarytemp,
         },
       },
       MuiButtonBase: {
@@ -335,7 +335,7 @@ export function themeGenerator() {
         root: {
           borderRadius: '10px',
         },
-        '&.Mui-focused.MuiOutlinedInput-notchedOutline': {
+        '& .Mui-focused.MuiOutlinedInput-notchedOutline': {
           borderColor: secondarytemp,
         },
       },

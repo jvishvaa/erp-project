@@ -13,12 +13,12 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import Box from '@material-ui/core/Box';
 import CloseIcon from '@material-ui/icons/Close';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme } from '@material-ui/core/styles';
+import { useTheme, Typography } from '@material-ui/core';
 import Grow from '@material-ui/core/Grow';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { useParams, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
@@ -140,14 +140,6 @@ const Appbar = ({ children, history, ...props }) => {
     setProfileOpen(false);
   };
 
-  // const handleMenuClose = () => {
-  //   setAnchorEl(null);
-  //   handleMobileMenuClose();
-  // };
-
-  //   const handleMobileMenuOpen = (event) => {
-  //     setMobileMoreAnchorEl(event.currentTarget);
-  //   };
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
     setProfileOpen(!profileOpen);
@@ -177,7 +169,7 @@ const Appbar = ({ children, history, ...props }) => {
         <IconButton aria-label='my profile' color='inherit'>
           <PermIdentityIcon color='primary' style={{ fontSize: '2rem' }} />
         </IconButton>
-        <p style={{ color: '#014B7E' }}>My Profile</p>
+        <Typography color='secondary'>My Profile</Typography>
       </MenuItem>
 
       {superUser ? (
@@ -185,14 +177,14 @@ const Appbar = ({ children, history, ...props }) => {
           <IconButton aria-label='settings' color='inherit'>
             <SettingsIcon color='primary' style={{ fontSize: '2rem' }} />
           </IconButton>
-          <p style={{ color: '#014B7E' }}>Settings</p>
+          <Typography color='secondary'>Settings</Typography>
         </MenuItem>
       ) : null}
       <MenuItem onClick={handleLogout}>
         <IconButton aria-label='logout button' color='inherit'>
           <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
         </IconButton>
-        <p style={{ color: '#014B7E' }}>Logout</p>
+        <Typography color='secondary'>Logout</Typography>
       </MenuItem>
     </Menu>
   );
