@@ -409,13 +409,13 @@ const CreateQuestionPaper = ({
 
   return (
     <Layout>
+      <CommonBreadcrumbs
+        componentName='Assessment'
+        childComponentName='Question Paper'
+        childComponentNameNext='Create New'
+        isAcademicYearVisible={true}
+      />
       <div className='create-question-paper-container'>
-        <CommonBreadcrumbs
-          componentName='Assessment'
-          childComponentName='Question Paper'
-          childComponentNameNext='Create New'
-          isAcademicYearVisible={true}
-        />
         <div className='content-container'>
           <Accordion
             className='collapsible-section'

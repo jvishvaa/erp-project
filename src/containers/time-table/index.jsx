@@ -171,7 +171,7 @@ const TimeTable = (props) => {
           lengthTue = response?.data?.result?.Tuesday?.length;
           lengthWed = response?.data?.result?.Wednesday?.length;
           lengthThurs = response?.data?.result?.Thursday?.length;
-          lengthfri = response?.data?.result?.Friday?.length ;
+          lengthfri = response?.data?.result?.Friday?.length;
           lengthSat = response?.data?.result?.Saturday?.length;
           lengthSun = response?.data?.result?.Sunday?.length;
           calculateLength();
@@ -229,7 +229,7 @@ const TimeTable = (props) => {
     let sortedArray = arrayLength.sort();
     console.log(sortedArray, 'sorted array');
     let mappingArray = Array.from(Array(sortedArray[6]).keys());
-      setLoopMax(mappingArray);
+    setLoopMax(mappingArray);
 
   };
   const handleDateEndTimeChange = (time) => {
@@ -406,7 +406,7 @@ const TimeTable = (props) => {
                   id='select-day'
                   className={classes.formTextFields}
                 >
-                 
+
 
                   {/* <Select
                     labelId='demo-mutiple-chip-label'
@@ -582,7 +582,7 @@ const TimeTable = (props) => {
                 {openCloseTable ? (
                   <UserProvider value={ids}>
                     <DateAndCalander
-                    loopMax={loopMax}
+                      loopMax={loopMax}
                       handleCloseNewPeriod={handleCloseNewPeriod}
                       openNewPeriod={openNewPeriod}
                       section_ID={sectionID}

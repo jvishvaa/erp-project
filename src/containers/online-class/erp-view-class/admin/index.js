@@ -564,15 +564,25 @@ const ErpAdminViewClass = ({ history }) => {
   const handleDownload = async () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     try {
-      const { data } = JSON.parse(localStorage.getItem('isMsAPI')) ? await APIREQUEST("get", `/oncls/v1/oncls-report/?start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`, null, "arraybuffer")
-      : await axiosInstance.get(
-        `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
-          startDateTechPer
-        ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
-        {
-          responseType: 'arraybuffer',
-        }
-      );
+      const { data } = JSON.parse(localStorage.getItem('isMsAPI'))
+        ? await APIREQUEST(
+            'get',
+            `/oncls/v1/oncls-report/?start_date=${moment(startDateTechPer).format(
+              'YYYY-MM-DD'
+            )}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
+            null,
+            'arraybuffer'
+          )
+        : await axiosInstance.get(
+            `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
+              startDateTechPer
+            ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format(
+              'YYYY-MM-DD'
+            )}`,
+            {
+              responseType: 'arraybuffer',
+            }
+          );
       const blob = new Blob([data], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
@@ -725,6 +735,19 @@ const ErpAdminViewClass = ({ history }) => {
   return (
     <>
       <Layout>
+        <CommonBreadcrumbs
+          componentName='Online Class'
+          childComponentName={
+            window.location.pathname === '/erp-online-class'
+              ? 'Online Class View'
+              : window.location.pathname === '/erp-online-class-teacher-view'
+              ? 'Teacher Class View'
+              : window.location.pathname === '/erp-online-class-student-view'
+              ? 'Student Class View'
+              : ''
+          }
+          isAcademicYearVisible={true}
+        />
         {loading && <Loader />}
         <CommonBreadcrumbs
           componentName='Online Class'

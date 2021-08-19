@@ -4,13 +4,10 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { Button, IconButton, withStyles, Popover, SvgIcon } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
-// import { makeStyles } from '@material-ui/core/styles';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Viewmore from './viewmore';
 import useStyles from './useStyles';
 import unfiltered from '../../assets/images/unfiltered.svg';
-// import EditIcon from '@material-ui/icons/Edit';
-// import DeleteIcon from '@material-ui/icons/Delete';
 import { withRouter, Link } from 'react-router-dom';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
@@ -139,16 +136,6 @@ const Subjectcard = (props) => {
                             style={{ display: 'flex', justifyContent: 'space-between' }}
                           >
                             <span className={` ${classes.tooltiptext} tooltiptext`}>
-                              {/* <div  >
-                                                                <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }}
-                                                                    activeClassName="active"
-                                                                    className="link-grade"
-                                                                >
-                                                                    <p style={{color: '#ff6b6b', marginBottom: '5px'}} title='Edit'>
-                                                                        Edit
-                                                                    </p>
-                                                                </Link>
-                                                            </div> */}
                               <div
                                 className='tooltip'
                                 title='Delete'
@@ -178,14 +165,18 @@ const Subjectcard = (props) => {
                                   Are you sure you want to delete?
                                 </Typography>
                                 <div>
-                                  <Button variant = "contained" className= "labelColor cancelButton" onClick={(e) => handleClose()}>
+                                  <Button
+                                    variant='contained'
+                                    className='labelColor cancelButton'
+                                    onClick={(e) => handleClose()}
+                                  >
                                     Cancel
                                   </Button>
                                   <Button
-                                  variant = "contained"
-                                  color = "primary"
+                                    variant='contained'
+                                    color='primary'
                                     onClick={() => callDelete(list.id, index)}
-                                    style={{ float: 'right',color : "white" }}
+                                    style={{ float: 'right', color: 'white' }}
                                   >
                                     Confirm
                                   </Button>
@@ -197,59 +188,8 @@ const Subjectcard = (props) => {
                       </span>
                     </Box>
                   </Grid>
-                  {/* <Grid item xs={12} className={classes.textRight} >
-                                        <div className="navigate-link" style={{ display: 'flex' }}>
-                                            // <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }} activeClassName="active" className="link-grade"><p> Edit <EditIcon style={{ fontSize: '16px' }} /></p></Link>
-                                            <p onClick={() => callDelete(list.id, index)} style={{ marginLeft: 5, color: '#014B7E' }}> Delete <DeleteIcon style={{ fontSize: '16px', color: '#014B7E' }} /></p>
-                                        </div>
-                                    </Grid> */}
                   <Grid item xs={12} sm={12} />
-                  <Grid item xs={6}>
-                    {/*
-                                            <Box style={{ display: 'flex' }}>
-                                            <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }} activeClassName="active" className="link-grade">
-                                                <p> Edit <EditIcon style={{ fontSize: '16px' }} /></p>
-                                            </Link>
-                                            <p onClick={(e) => handleClick(e)} style={{ marginLeft: 5, color: '#014B7E' }}>
-                                                Delete
-                                                <DeleteIcon style={{ fontSize: '16px', color: '#014B7E' }} />
-                                            </p>
-                                        </Box>
-                                        <Popover
-                                            id={id}
-                                            open={open}
-                                            anchorEl={anchorEl}
-                                            onClose={handleClose}
-                                            anchorOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'center',
-                                            }}
-                                            transformOrigin={{
-                                            vertical: 'top',
-                                            horizontal: 'center',
-                                            }}
-                                        >
-                                            <div style={{ padding: '20px 30px'}}>
-                                            <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure you want to delete?</Typography>
-                                            <div>
-                                                <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
-                                                <StyledButton onClick={() => callDelete(list.id, index)} style={{float: 'right'}}>Confirm</StyledButton>
-                                            </div>
-                                            </div>
-                                        </Popover>
-                                        
-                                        */}
-                    {/* <Box>
-                                            <Typography
-                                                className={classes.content}
-                                                variant='p'
-                                                component='p'
-                                                color='secondary'
-                                            >
-                                                {list.erp_grade.grade_name}: {list.central_subject_name}
-                                            </Typography>
-                                        </Box> */}
-                  </Grid>
+                  <Grid item xs={6}></Grid>
                 </Grid>
               </Paper>
             );

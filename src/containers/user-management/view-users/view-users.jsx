@@ -509,6 +509,10 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   return (
     <Layout>
+      <CommonBreadcrumbs
+        componentName='User Management'
+        childComponentName='View Users'
+      />
       <div className='view-users-page'>
         <CommonBreadcrumbs
           componentName='User Management'

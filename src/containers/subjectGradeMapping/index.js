@@ -706,7 +706,7 @@ const Subjectgrade = (props) => {
               <Button
                 variant='contained'
                 color='primary'
-                style = {{color : "white"}}
+                style={{ color: 'white' }}
                 className='filter-btn'
                 onClick={submit}
               >

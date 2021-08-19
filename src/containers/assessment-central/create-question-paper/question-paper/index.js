@@ -1,26 +1,32 @@
 import React, { useState, useRef } from 'react';
-import { IconButton, Divider, TextField, Button, SvgIcon ,makeStyles} from '@material-ui/core';
+import {
+  IconButton,
+  Divider,
+  TextField,
+  Button,
+  SvgIcon,
+  makeStyles,
+} from '@material-ui/core';
 import minimizeIcon from '../../../../assets/images/minimize.svg';
 import maximizeIcon from '../../../../assets/images/maximize.svg';
 import Question from '../question';
 import './styles.scss';
 
-
-const useStyles = makeStyles((theme) =>({
-  questionsheader : {
+const useStyles = makeStyles((theme) => ({
+  questionsheader: {
     color: theme.palette.primary.main,
-    fontSize: "1.2rem"
+    fontSize: '1.2rem',
   },
-  draftbtn:{
+  draftbtn: {
     color: theme.palette.primary.main,
     border: `1px solid ${theme.palette.primary.main}`,
     background: 'white',
   },
-  addSectionInfo:{
+  addSectionInfo: {
     color: theme.palette.secondary.main,
-    fontSize: "1.1rem",
-  }
-}))
+    fontSize: '1.1rem',
+  },
+}));
 
 const QuestionPaper = ({
   grade,
@@ -34,7 +40,7 @@ const QuestionPaper = ({
   onDeleteSection,
   onDeleteQuestion,
 }) => {
-  const classes = useStyles()
+  const classes = useStyles();
   const [minimize, setMinimize] = useState(false);
   const [noOfSections, setNoOfSections] = useState(1);
   const [showPopup, setShowPopup] = useState(false);
@@ -134,7 +140,7 @@ const QuestionPaper = ({
                       </div>
                       <div>
                         <Button
-                        className = {classes.draftbtn}
+                          className={classes.draftbtn}
                           onClick={() => {
                             handleAddQuestion(noOfSections);
                             setShowPopup(false);
@@ -145,7 +151,9 @@ const QuestionPaper = ({
                       </div>
                     </div>
                   )}
-                  <div className={classes.addSectionInfo}>Add Sections For This Question Paper</div>
+                  <div className={classes.addSectionInfo}>
+                    Add Sections For This Question Paper
+                  </div>
                   <div
                     className='add-new-btn-container'
                     style={{ display: 'flex', alignItems: 'center' }}

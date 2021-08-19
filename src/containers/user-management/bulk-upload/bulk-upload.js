@@ -37,8 +37,8 @@ const useStyles = makeStyles((theme) => ({
   hyphenColor: {
     color: theme.palette.primary.main,
   },
-  tableCell: {
-    color: theme.palette.secondary.main,
+  hyphenColor: {
+    color: theme.palette.primary.main,
   },
 }));
 

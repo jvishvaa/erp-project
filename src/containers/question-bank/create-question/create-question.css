@@ -6,8 +6,6 @@
   align-self: center;
 }
 
-
-
 .divfilterData:not(:last-of-type):after {
   content: '';
   height: 6px;

@@ -72,8 +72,6 @@ export const isFetchThemeRequired = () => {
   );
 };
 
-
-
 export function themeGenerator() {
   const { colors = {} } = getThemeElements() || {};
   const {
@@ -287,7 +285,7 @@ export function themeGenerator() {
         },
       },
     },
-    toolTipText : {
+    toolTipText: {
       color: primarytemp,
       border: `1px solid ${primarytemp}`,
     },

@@ -281,7 +281,7 @@ const UploadClassWorkDiaogBox = (props) => {
                       ref={imageRef}
                       alt='file'
                       onError={(e) => {
-                        console.log('place.e.tag',e.target.src)
+                        console.log('place.e.tag', e.target.src);
                         e.target.src = placeholder;
 
 
@@ -291,7 +291,6 @@ const UploadClassWorkDiaogBox = (props) => {
                     />
 
                     <div className='optionImageRemoveIcon1'>
-
                       {/* <IconButton>
                         <VisibilityIcon
                           onClick={() => {
