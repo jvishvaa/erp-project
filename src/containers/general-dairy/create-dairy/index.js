@@ -100,6 +100,27 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.secondary,
     paddingBottom: theme.spacing(2),
   },
+  acceptedfiles: {
+    color: theme.palette.secondary.main,
+    fontSize: '16px',
+    marginLeft: '28px',
+    marginTop: '8px',
+  },
+  descriptionBorder: {
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    marginLeft: "2.3125rem",
+    marginRight: "2.3125rem",
+    opacity: 1,
+  },
+  attchmentbutton: {
+    textTransform: "none",
+    background: "white",
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    marginLeft: "1.75rem",
+  }
+
 }));
 
 const CreateGeneralDairy = withRouter(({ history, ...props }) => {
@@ -249,10 +270,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       });
       axiosInstance
         .get(
-          `${endpoints.communication.grades}?session_year=${
-            searchAcademicYear?.id
-          }&branch_id=${value?.branch?.id}&module_id=${
-            location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+          `${endpoints.communication.grades}?session_year=${searchAcademicYear?.id
+          }&branch_id=${value?.branch?.id}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
           }`
         )
         // axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${location.pathname === "/diary/student"?studentModuleId:teacherModuleId}`)
@@ -298,14 +317,11 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?session_year=${
-            searchAcademicYear?.id
-          }&branch_id=${filterData?.branch[0]?.branch?.id}&grade_id=${
-            value.grade_id
-          }&module_id=${
-            location.pathname === '/lesson-plan/student-view'
-              ? studentModuleId
-              : teacherModuleId
+          `${endpoints.masterManagement.sections}?session_year=${searchAcademicYear?.id
+          }&branch_id=${filterData?.branch[0]?.branch?.id}&grade_id=${value.grade_id
+          }&module_id=${location.pathname === '/lesson-plan/student-view'
+            ? studentModuleId
+            : teacherModuleId
           }`
         )
         .then((result) => {
@@ -396,10 +412,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       setFilterData({ ...filterData, branch: '', grade: '', section: '' });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.branchMappingTable}?session_year=${
-            value.id
-          }&module_id=${
-            location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+          `${endpoints.masterManagement.branchMappingTable}?session_year=${value.id
+          }&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
           }`
         )
         .then((result) => {
@@ -450,8 +464,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     if (teacherModuleId || studentModuleId) {
       axiosInstance
         .get(
-          `${endpoints.userManagement.academicYear}?module_id=${
-            location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+          `${endpoints.userManagement.academicYear}?module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
           }`
         )
         .then((result) => {
@@ -489,15 +502,12 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       return;
     }
     let getUserListUrl;
-    getUserListUrl = `${endpoints.generalDairy.studentList}?academic_year=${
-      searchAcademicYear?.id
-    }&active=${
-      !isEmail ? '0' : '1'
-    }&page=${pageno}&page_size=15&bgs_mapping=${filterData?.section?.map(
-      (s) => s.id
-    )}&module_id=${
-      location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
-    }`;
+    getUserListUrl = `${endpoints.generalDairy.studentList}?academic_year=${searchAcademicYear?.id
+      }&active=${!isEmail ? '0' : '1'
+      }&page=${pageno}&page_size=15&bgs_mapping=${filterData?.section?.map(
+        (s) => s.id
+      )}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+      }`;
 
     if (selectedSections.length && !selectedSections.includes('All')) {
       sectionList
@@ -543,8 +553,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
               selected: selectAll
                 ? true
                 : selectedUsers.length
-                ? selectedUsers[pageno - 1].selected.includes(items.id)
-                : false,
+                  ? selectedUsers[pageno - 1].selected.includes(items.id)
+                  : false,
             });
           });
         setUsersRow(rows);
@@ -606,10 +616,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     try {
       setLoading(true);
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${
-          searchAcademicYear?.id
-        }&branch_id=${selectedBranch.id}&module_id=${
-          location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+        `${endpoints.communication.grades}?session_year=${searchAcademicYear?.id
+        }&branch_id=${selectedBranch.id}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
         }`,
         {
           headers: {
@@ -645,10 +653,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
           gradesId.push(items.grade_id);
         });
       const result = await axiosInstance.get(
-        `${endpoints.communication.sections}?branch_id=${
-          selectedBranch.id
-        }&grade_id=${gradesId.toString()}&module_id=${
-          location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+        `${endpoints.communication.sections}?branch_id=${selectedBranch.id
+        }&grade_id=${gradesId.toString()}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
         }`,
         {
           headers: {
@@ -722,32 +728,32 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         assignRoleApi,
         filePath && filePath.length > 0
           ? {
-              title,
-              message: description,
-              // module_name:filterData.role.value,
-              documents: filePath,
-              // branch:filterData.branch.map(function (b) {
-              //     return b.id
-              //   }),
+            title,
+            message: description,
+            // module_name:filterData.role.value,
+            documents: filePath,
+            // branch:filterData.branch.map(function (b) {
+            //     return b.id
+            //   }),
 
-              branch: filterData?.branch[0]?.branch?.id,
-              // grades:[54],
-              grade: filterData.grade.map((g) => g.grade_id),
-              section_mapping: filterData.section.map((s) => s.id),
-              section: filterData.section.map((g) => g.section_id),
-              user_id: selectionArray,
-              dairy_type: 1,
-            }
+            branch: filterData?.branch[0]?.branch?.id,
+            // grades:[54],
+            grade: filterData.grade.map((g) => g.grade_id),
+            section_mapping: filterData.section.map((s) => s.id),
+            section: filterData.section.map((g) => g.section_id),
+            user_id: selectionArray,
+            dairy_type: 1,
+          }
           : {
-              title,
-              message: description,
-              branch: filterData?.branch[0]?.branch?.id,
-              grade: filterData.grade.map((g) => g.grade_id),
-              section_mapping: filterData.section.map((s) => s.id),
-              section: filterData.section.map((g) => g.section_id),
-              user_id: selectionArray,
-              dairy_type: 1,
-            },
+            title,
+            message: description,
+            branch: filterData?.branch[0]?.branch?.id,
+            grade: filterData.grade.map((g) => g.grade_id),
+            section_mapping: filterData.section.map((s) => s.id),
+            section: filterData.section.map((g) => g.section_id),
+            user_id: selectionArray,
+            dairy_type: 1,
+          },
         {
           headers: {
             'content-type': 'application/json',
@@ -784,18 +790,18 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                   style={
                     isMobile
                       ? {
-                          marginLeft: '',
-                          width: '20px',
-                          height: '20px',
-                          // padding: '5px',
-                          cursor: 'pointer',
-                        }
+                        marginLeft: '',
+                        width: '20px',
+                        height: '20px',
+                        // padding: '5px',
+                        cursor: 'pointer',
+                      }
                       : {
-                          width: '20px',
-                          height: '20px',
-                          // padding: '5px',
-                          cursor: 'pointer',
-                        }
+                        width: '20px',
+                        height: '20px',
+                        // padding: '5px',
+                        cursor: 'pointer',
+                      }
                   }
                   src={deleteIcon}
                   alt='given'
@@ -1084,7 +1090,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
 
           {/* <<<<<<<<<< EDITOR PART  >>>>>>>>>> */}
           <div>
-            <div className='descriptionBorder'>
+            <div className={classes.descriptionBorder}>
               <Grid
                 container
                 spacing={isMobile ? 3 : 5}
@@ -1096,7 +1102,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                     label='Title'
                     multiline
                     rows='1'
-                    color='secondary'
+                    color='primary'
                     style={{ width: '100%', marginTop: '1.25rem' }}
                     defaultValue={state.isEdit ? editData.title : []}
                     // value={title}
@@ -1110,7 +1116,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                     label='Description'
                     multiline
                     rows='6'
-                    color='secondary'
+                    color='primary'
                     style={{ width: '100%' }}
                     defaultValue={state.isEdit ? editData.description : []}
                     // value={description}
@@ -1131,13 +1137,13 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                 >
                   {filePath?.length > 0
                     ? filePath?.map((file, i) => (
-                        <FileRow
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(i)}
-                        />
-                      ))
+                      <FileRow
+                        key={`homework_student_question_attachment_${i}`}
+                        file={file}
+                        index={i}
+                        onClose={() => removeFileHandler(i)}
+                      />
+                    ))
                     : null}
                 </div>
 
@@ -1156,7 +1162,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                         )}
                       />
                     }
-                    className='attchment_button'
+                    className={classes.attchmentbutton}
                     title='Attach Supporting File'
                     variant='contained'
                     size='medium'
@@ -1182,12 +1188,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                     {'Add Document'}
                   </Button>
                   <small
-                    style={{
-                      color: '#014b7e',
-                      fontSize: '16px',
-                      marginLeft: '28px',
-                      marginTop: '8px',
-                    }}
+                    className={classes.acceptedfiles}
                   >
                     {' '}
                     Accepted files: [jpeg,jpg,png,pdf]
@@ -1197,16 +1198,19 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
             </div>
             <div>
               <Button
-                style={{ marginLeft: '37px' }}
+                variant="contained"
+                style={{ marginLeft: '37px' , marginTop: "20px"}}
                 onClick={() => history.goBack()}
-                className='submit_button'
+                className='labelColor cancelButton'
               >
                 BACK
               </Button>
               <Button
-                style={{ marginLeft: '20px' }}
+              variant="contained"
+              color = "primary"
+                style={{ marginLeft: '20px', marginTop: "20px",color : "white" }}
                 onClick={state.isEdit ? handleEdited : handleSubmit}
-                className='submit_button'
+              
               >
                 SUBMIT
               </Button>

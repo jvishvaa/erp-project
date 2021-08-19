@@ -244,12 +244,12 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
 
   return (
     <Layout>
-      <div className='add-homework-container'>
-        <CommonBreadcrumbs
+      <CommonBreadcrumbs
           componentName='Homework'
           childComponentName='Add Homework'
           isAcademicYearVisible={true}
         />
+      <div className='add-homework-container'>
         <Grid container className='add-homework-inner-container' spacing={2}>
           <Grid item xs={12} className='add-homework-title-container' md={3}>
             <div className='nav-cards-container'>

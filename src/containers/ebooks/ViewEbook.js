@@ -361,8 +361,6 @@ class ViewEbook extends Component {
                         >
                           <Tab label='General' {...a11yProps(0)} />
                           <Tab label='Curriculum' {...a11yProps(1)} />
-
-                          {/* <Tab label='Deleted' {...a11yProps(2)} /> */}
                         </Tabs>
                         <TabPanel value={tabValue} index={0}>
                           {data && (

@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
   dgsize: {
     width: '100%',
   },
+  tooltiptext : theme.toolTipText
 }));
 
 export default useStyles;

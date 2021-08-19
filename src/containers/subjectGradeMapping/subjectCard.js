@@ -17,26 +17,6 @@ import endpoints from '../../config/endpoints';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import './subjectgrademapping.scss';
 
-const StyledButton = withStyles({
-  root: {
-    color: '#FFFFFF',
-    backgroundColor: '#FF6B6B',
-    '&:hover': {
-      backgroundColor: '#FF6B6B',
-    },
-  },
-})(Button);
-
-const CancelButton = withStyles({
-  root: {
-    color: '#8C8C8C',
-    backgroundColor: '#e0e0e0',
-    '&:hover': {
-      backgroundColor: '#e0e0e0',
-    },
-  },
-})(Button);
-
 const Subjectcard = (props) => {
   const classes = useStyles();
   const [isSubjectOpen, setIsSubjectOpen] = React.useState(false);
@@ -158,7 +138,7 @@ const Subjectcard = (props) => {
                             className='tooltip'
                             style={{ display: 'flex', justifyContent: 'space-between' }}
                           >
-                            <span className='tooltiptext'>
+                            <span className={` ${classes.tooltiptext} tooltiptext`}>
                               {/* <div  >
                                                                 <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }}
                                                                     activeClassName="active"
@@ -198,15 +178,17 @@ const Subjectcard = (props) => {
                                   Are you sure you want to delete?
                                 </Typography>
                                 <div>
-                                  <CancelButton onClick={(e) => handleClose()}>
+                                  <Button variant = "contained" className= "labelColor cancelButton" onClick={(e) => handleClose()}>
                                     Cancel
-                                  </CancelButton>
-                                  <StyledButton
+                                  </Button>
+                                  <Button
+                                  variant = "contained"
+                                  color = "primary"
                                     onClick={() => callDelete(list.id, index)}
-                                    style={{ float: 'right' }}
+                                    style={{ float: 'right',color : "white" }}
                                   >
                                     Confirm
-                                  </StyledButton>
+                                  </Button>
                                 </div>
                               </div>
                             </Popover>

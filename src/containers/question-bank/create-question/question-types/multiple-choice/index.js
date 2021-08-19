@@ -43,7 +43,8 @@ const useStyles = makeStyles((theme)=> ({
   paddingBottom: "7px",
   borderBottom: `1px solid ${theme.palette.secondary.main}`,
   marginBottom: "10px",
-  }
+  },
+  tooltiptext : theme.toolTipText
 }))
 
 const MultipleChoice = ({
@@ -699,7 +700,7 @@ const MultipleChoice = ({
             </IconButton>
             {showMenu ? (
               <div className='tooltipContainer'>
-                <div className='tooltiptext'>
+                <div className = {` ${classes.tooltiptext} tooltiptext `}>
                   <div onClick={() => handleDeleteComprehensionQuestion(index)}>
                     Delete
                   </div>
@@ -776,7 +777,7 @@ const MultipleChoice = ({
                     >
                       {isMobile ? 'Format' : 'Format Text'}
                     </Button>
-                    <IconButton>
+                    {/* <IconButton>
                       <div>
                         <SvgIcon
                           component={() => (
@@ -787,7 +788,7 @@ const MultipleChoice = ({
                           )}
                         />
                       </div>
-                    </IconButton>
+                    </IconButton> */}
                   </>
                 ),
               }}

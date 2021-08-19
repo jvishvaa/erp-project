@@ -4,7 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Button, useTheme, IconButton, Popover, withStyles } from '@material-ui/core';
+import { Button, useTheme, IconButton, Popover, withStyles} from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Box from '@material-ui/core/Box';
 import useStyles from './useStyles';
@@ -14,25 +14,6 @@ import axiosInstance from '../../../../../config/axios';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import { Context } from '../context/ViewStore';
 
-const StyledButton = withStyles({
-  root: {
-    color: '#FFFFFF',
-    backgroundColor: '#FF6B6B',
-    '&:hover': {
-      backgroundColor: '#FF6B6B',
-    },
-  },
-})(Button);
-
-const CancelButton = withStyles({
-  root: {
-    color: '#8C8C8C',
-    backgroundColor: '#e0e0e0',
-    '&:hover': {
-      backgroundColor: '#e0e0e0',
-    },
-  },
-})(Button);
 
 const CourseCard = ({
   period,
@@ -219,7 +200,7 @@ const CourseCard = ({
                   className='tooltip'
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                  <span className='tooltiptext'>
+                  <span className={` ${classes.tooltiptext} tooltiptext `}>
                     <div className='tooltip' onClick={(e) => handleClick(e)}>
                       Delete
                     </div>
@@ -251,13 +232,15 @@ const CourseCard = ({
                         Are you sure you want to delete?
                       </Typography>
                       <div>
-                        <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
-                        <StyledButton
+                        <Button variant="contained" className = "cancelButton labelColor" onClick={(e) => handleClose()}>Cancel</Button>
+                        <Button
+                          color="primary"
+                          variant="contained"
                           onClick={() => handleDelete(period)}
-                          style={{ float: 'right' }}
+                          style={{ float: 'right' ,color: "white"}}
                         >
                           Confirm
-                        </StyledButton>
+                        </Button>
                       </div>
                     </div>
                   </Popover>

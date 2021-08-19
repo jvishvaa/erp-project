@@ -154,9 +154,22 @@ const useStyles = makeStyles((theme) => ({
   },
   tableHeadedata:{
     fontSize: "19px",
-    color: theme.palette.secondarymain,
+    color: theme.palette.secondary.main,
     fontWeight: 600,
     // fontFamily: $font-roboto,
+  },
+  filter :{
+    color: theme.palette.secondary.main,
+    fontSize: "11px",
+    fontWeight: 600,
+    marginRight: "4px",
+    cursor: "pointer",
+  },
+  textFixed:{
+    color: theme.palette.secondary.main,
+    fontSize: "20px",
+    padding: "13px",
+    fontFamily: "roboto"
   }
 
 }));
@@ -2272,7 +2285,7 @@ const Publications = (props) => {
                         >
                           {counter === 2 ? (
                             <>
-                              <div className='text-fixed'>Subject</div>
+                              <div className={classes.textFixed}>Subject</div>
                               <div className='inner-grade-container'>
                                 <div className='change-grade-options'>
                                   <Select
@@ -2296,17 +2309,6 @@ const Publications = (props) => {
                                       ))}
                                   </Select>
                                 </div>
-                                {/* <div className='text-fixed-last'>
-                                  Expand
-                                  <IconButton
-                                    aria-label='delete'
-                                    onClick={() => setCounter(counter - 1)}
-                                    size='small'
-                                  >
-                                    <ArrowBackIcon className='arrow-button' />
-                                    <ArrowForwardIcon className='arrow-button' />
-                                  </IconButton>
-                                </div> */}
                               </div>
                             </>
                           ) : (
@@ -2355,7 +2357,7 @@ const Publications = (props) => {
                           handleFilter(false);
                         }}
                       >
-                        <div className='filter'>HIDE FILTER</div>
+                        <div className={classes.filter}>HIDE FILTER</div>
                         <img src={FilterImage} />
                       </div>
                     </span>
@@ -2396,7 +2398,7 @@ const Publications = (props) => {
                         >
                           {counter === 2 ? (
                             <>
-                              <div className='text-fixed1'>Subject</div>
+                              <div className={classes.textFixed}>Subject</div>
                               <div className='inner-grade-container1'>
                                 <div className='change-grade-options1'>
                                   <Select
@@ -2474,7 +2476,7 @@ const Publications = (props) => {
                             handleFilter(false);
                           }}
                         >
-                          <div className='filter'>HIDE FILTER</div>
+                          <div className={classes.filter}>HIDE FILTER</div>
                           <img src={FilterImage} />
                         </div>
                       </div>

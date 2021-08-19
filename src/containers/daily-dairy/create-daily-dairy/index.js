@@ -906,7 +906,7 @@ const CreateDailyDairy = (details, onSubmit) => {
 
         {/* <<<<<<<<<< EDITOR PART  >>>>>>>>>> */}
         <div>
-          <div className='descriptionBorder'>
+          <div className={classes.descriptionBorder}>
             <Grid
               container
               spacing={isMobile ? 3 : 5}
@@ -918,7 +918,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                   label='Recap of previous class'
                   multiline
                   rows='3'
-                  color='secondary'
+                  color='primary'
                   style={{ width: '100%', marginTop: '1.25rem' }}
                   // defaultValue="Default Value"
                   defaultValue={
@@ -934,7 +934,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                   label='Details of classwork'
                   multiline
                   rows='3'
-                  color='secondary'
+                  color='primary'
                   style={{ width: '100%', marginTop: '1.25rem' }}
                   // defaultValue="Default Value"
                   defaultValue={state.isEdit ? editData.teacher_report.class_work : []}
@@ -948,7 +948,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                   label='Summary'
                   multiline
                   rows='3'
-                  color='secondary'
+                  color='primary'
                   style={{ width: '100%', marginTop: '1.25rem' }}
                   // defaultValue="Default Value"
                   defaultValue={state.isEdit ? editData.teacher_report.summary : []}
@@ -968,7 +968,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                   label='Tools Used'
                   multiline
                   rows='3'
-                  color='secondary'
+                  color='primary'
                   style={{ width: '100%', marginTop: '1.25rem' }}
                   // defaultValue="Default Value"
                   defaultValue={state.isEdit ? editData.teacher_report.tools_used : []}
@@ -982,7 +982,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                   label='Homework'
                   multiline
                   rows='3'
-                  color='secondary'
+                  color='primary'
                   style={{ width: '100%', marginTop: '1.25rem' }}
                   // defaultValue="Default Value"
                   defaultValue={state.isEdit ? editData.teacher_report.homework : []}
@@ -1025,7 +1025,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                         )}
                       />
                     }
-                    className='attchment_button'
+                    className={classes.attchmentbutton}
                     title='Attach Supporting File'
                     variant='contained'
                     size='medium'
@@ -1049,12 +1049,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                   </Button>
                   <br />
                   <small
-                    style={{
-                      color: '#014b7e',
-                      fontSize: '16px',
-                      marginLeft: '28px',
-                      marginTop: '8px',
-                    }}
+                  className = {classes.acceptedfiles}
                   >
                     {' '}
                     Accepted files: [ jpeg,jpg,png,pdf ]
@@ -1064,20 +1059,23 @@ const CreateDailyDairy = (details, onSubmit) => {
             </Grid>
           </div>
           <div>
-            <Button
-              style={{ marginLeft: '37px' }}
-              onClick={() => history.goBack()}
-              className='submit_button'
-            >
-              BACK
-            </Button>
-            <Button
-              style={{ marginLeft: '20px' }}
-              onClick={state.isEdit ? handleEdited : handleSubmit}
-              className='submit_button'
-            >
-              SUBMIT
-            </Button>
+          <Button
+                variant="contained"
+                style={{ marginLeft: '37px' , marginTop: "20px"}}
+                onClick={() => history.goBack()}
+                className='labelColor cancelButton'
+              >
+                BACK
+              </Button>
+              <Button
+              variant="contained"
+              color = "primary"
+                style={{ marginLeft: '20px', marginTop: "20px",color : "white" }}
+                onClick={state.isEdit ? handleEdited : handleSubmit}
+              
+              >
+                SUBMIT
+              </Button>
           </div>
         </div>
       </Layout>

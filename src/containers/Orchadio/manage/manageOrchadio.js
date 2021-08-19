@@ -704,7 +704,8 @@ function ManageOrchadio() {
                                           >
                                             <Grid item xs>
                                               <Typography
-                                                style={{ marginTop: 7, color: '#014B7E' }}
+                                              color = "secondary"
+                                                style={{ marginTop: 7 }}
                                                 gutterBottom
                                                 variant='subtitle1'
                                               >
@@ -716,8 +717,8 @@ function ManageOrchadio() {
                                           </Grid>
                                           <Grid item xs align='right'>
                                             <Typography
-                                              style={{ color: '#014B7E' }}
                                               variant='body2'
+                                              color = "secondary"
                                             >
                                               {item.program_schedule
                                                 ? JSON.parse(item.program_schedule)[0]
@@ -740,7 +741,8 @@ function ManageOrchadio() {
                                       </IconButton>
                                       <Typography
                                         variant='body2'
-                                        style={{ marginTop: '-10px', color: '#014B7E' }}
+                                        color = "secondary"
+                                        style={{ marginTop: '-10px'}}
                                       >
                                         {item.duration}
                                       </Typography>
@@ -751,7 +753,8 @@ function ManageOrchadio() {
                                       </IconButton>
                                       <Typography
                                         variant='body2'
-                                        style={{ marginTop: '-10px', color: '#014B7E' }}
+                                        color = "secondary"
+                                        style={{ marginTop: '-10px' }}
                                       >
                                         {item.likes && item.likes} likes
                                       </Typography>
@@ -769,7 +772,8 @@ function ManageOrchadio() {
                                       </IconButton>
                                       <Typography
                                         variant='body2'
-                                        style={{ marginTop: '-10px', color: '#014B7E' }}
+                                        color = "secondary"
+                                        style={{ marginTop: '-10px'}}
                                       >
                                         {item.views && item.views} views
                                       </Typography>
@@ -910,7 +914,7 @@ function ManageOrchadio() {
                                                   <ListItemText
                                                     primary={(
                                                       <Typography
-                                                        style={{ color: '#014b7e' }}
+                                                      color = "secondary"
                                                         variant='body1'
                                                       >
                                                         Participants List
@@ -992,7 +996,7 @@ function ManageOrchadio() {
                                         </Grid>
                                         {isMobile ? '' : <Grid item xs align='right'>
                                           <Typography
-                                            style={{ color: '#014b7e' }}
+                                            style={{ }}
                                             variant='body1'
                                           >
                                             {item.program_schedule &&
@@ -1024,8 +1028,9 @@ function ManageOrchadio() {
                                           <UpdateIcon />
                                         </IconButton>
                                         <Typography
+                                        color = "secondary"
                                           variant='body2'
-                                          style={{ marginTop: '-10px', color: '#014B7E' }}
+                                          style={{ marginTop: '-10px'}}
                                         >
                                           {item.duration && item.duration} min
                                         </Typography>
@@ -1045,8 +1050,9 @@ function ManageOrchadio() {
                                           <UnlikeIcon style={{ color: 'red' }} />
                                         </IconButton>
                                         <Typography
+                                        color = "secondary"
                                           variant='body2'
-                                          style={{ marginTop: '-10px', color: '#014B7E' }}
+                                          style={{ marginTop: '-10px'}}
                                         >
                                           {item.likes && item.likes} likes
                                         </Typography>

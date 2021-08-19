@@ -92,12 +92,12 @@
   color: #014b7e;
 }
 
-.attachment_button_doc.MuiButtonBase-root {
+/* .attachment_button_doc.MuiButtonBase-root {
   border-radius: 10px;
   background: none;
   border: 1px solid #ff6b6b;
   color: #014b7e;
-}
+} */
 
 .periodDescBox .MuiInputBase-root {
   border-radius: 10px;

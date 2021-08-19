@@ -9,6 +9,7 @@ import {
   SvgIcon,
   IconButton,
   TextareaAutosize,
+  makeStyles
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -22,8 +23,28 @@ import attachmenticon from '../../../assets/images/attachmenticon.svg';
 import deleteIcon from '../../../assets/images/delete.svg';
 import { Context } from '../context/CircularStore';
 import Loading from '../../../components/loader/loader';
+import classWiseSms from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/classWiseSms';
 
+
+const useStyles = makeStyles((theme)=>({
+  attchmentbutton:{
+    textTransform: "none",
+    background: "white",
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    marginLeft: "1.75rem",
+  },
+  descriptionBorder:{
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    marginLeft: "2.3125rem",
+    marginRight: "2.3125rem",
+    opacity: 1,
+  }
+ 
+}))
 const CraeteCircular = () => {
+  const classes = useStyles
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const { circularKey } = useParams();
@@ -666,7 +687,7 @@ const CraeteCircular = () => {
 
         {filterEvent ? (
           <div>
-            <div className='descriptionBorder'>
+            <div className={classes.descriptionBorder}>
               <Grid
                 container
                 spacing={isMobile ? 3 : 5}
@@ -726,7 +747,7 @@ const CraeteCircular = () => {
                         )}
                       />
                     }
-                    className='attchment_button'
+                    className={classes.attchmentbutton}
                     title='Attach Supporting File'
                     variant='contained'
                     size='medium'

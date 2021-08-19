@@ -45,7 +45,27 @@ const styles = (theme) => ({
   },
   phoneNumber:{
     backgroundColor:'transparent',
-  }
+  },
+  descriptionBorder:{
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    marginLeft: "2.3125rem",
+    marginRight: "2.3125rem",
+    opacity:1,
+},  
+acceptedfiles:{
+  color: theme.palette.secondary.main,
+  fontSize: '16px',
+  marginLeft: '28px',
+  marginTop: '8px',
+},
+attchmentbutton:{
+  textTransform: "none",
+  background: "white",
+  border: `1px solid ${theme.palette.primary.main}`,
+  borderRadius: "10px",
+  marginLeft: "1.75rem",
+}
 });
 
 const useStyles = makeStyles(styles);

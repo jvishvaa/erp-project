@@ -233,12 +233,12 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
 
   return (
     <Layout>
-      <div className={ `${classes.ahcc} add-homework-container-coordinator`}>
-        <CommonBreadcrumbs
+      <CommonBreadcrumbs
           componentName='Homework'
           childComponentName='Add Homework'
           isAcademicYearVisible={true}
         />
+      <div className={ `${classes.ahcc} add-homework-container-coordinator`}>
         <Grid container spacing={2} className='add-homework-inner-container'>
           <Grid item xs={12} className='add-homework-title-container' md={3}>
             <div className='nav-cards-container'>

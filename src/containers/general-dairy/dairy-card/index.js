@@ -139,8 +139,8 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               {(showPeriodIndex === index &&
                 showMenu) ? (
                   <div className="tooltip" style={{display:'flex',justifyContent:'space-between'}}>
-                  <span className='tooltiptext' >
-                        <Button className='tooltip' onClick={e=> handleDelete(lesson)}>Delete</Button>
+                  <span className={` ${classes.tooltiptext} tooltiptext`} >
+                        <Button className={classes.tooltip} onClick={e=> handleDelete(lesson)}>Delete</Button>
                         {/* <Button className='tooltip' onClick={e=> handleEdit(lesson)}> Edit</Button> */}
                     </span>
                   </div>

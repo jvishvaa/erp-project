@@ -45,13 +45,6 @@
   width: 13px;
   height: 14px;
 }
-.filter {
-  color: $text-color;
-  font-size: 11px;
-  font-weight: 600;
-  margin-right: 4px;
-  cursor: pointer;
-}
 .all-box-container1 {
   .text-rotate1 {
     width: 100%;
@@ -99,9 +92,6 @@
     margin-bottom: 10px;
     background: white;
     border-radius: 10px;
-  }
-  option {
-    color: $text-color;
   }
   .box-last-1 {
     @include box-right();
@@ -177,9 +167,6 @@
       font-family: $font-roboto;
       padding-left: 16px;
     }
-  }
-  option {
-    color: $text-color;
   }
   .box-last-1 {
     @include box-right();

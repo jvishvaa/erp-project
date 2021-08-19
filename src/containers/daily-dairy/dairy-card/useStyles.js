@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: '1.1rem',
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
   },
   content: {
     fontSize: '0.9rem',
@@ -26,6 +26,15 @@ const useStyles = makeStyles((theme) => ({
   textRight: {
     textAlign: 'right',
   },
+    toolTipText : theme.toolTipText,
+  tooltip: {
+    display: "flex",
+    backgroundColor: "#F9F9F9",
+    color: theme.palette.primary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    marginBottom: "10%",
+  }
 }));
 
 export default useStyles;

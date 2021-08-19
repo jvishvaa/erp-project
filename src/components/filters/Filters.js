@@ -164,6 +164,7 @@ const useStyles = makeStyles((theme)=>({
   rightArrow: {
     marginTop: 'auto',
     marginBottom: '5px',
+    color:theme.palette.secondary.main
   },
 }));
 
@@ -475,7 +476,7 @@ const Filters = (props) => {
               </Accordion>
               <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
                 <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                  <Typography>Branch</Typography>
+                  <Typography color = "secondary">Branch</Typography>
                 </AccordionSummary>
                 <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
                   <div className={classes.contentDiv}>
@@ -506,7 +507,7 @@ const Filters = (props) => {
               </Accordion>
               <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
                 <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-                  <Typography>Grade</Typography>
+                  <Typography color = "secondary">Grade</Typography>
                 </AccordionSummary>
                 <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
                   <div className={classes.contentDiv}>
@@ -537,7 +538,7 @@ const Filters = (props) => {
             </Accordion>
             <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
               <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-                <Typography>Section</Typography>
+                <Typography color = "secondary">Section</Typography>
               </AccordionSummary>
               <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
                 <div className={classes.contentDiv}>

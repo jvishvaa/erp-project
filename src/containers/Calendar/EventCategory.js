@@ -591,14 +591,16 @@ const Cal1 = () => {
               {/* </Grid> */}
             </DialogContent>
             <DialogActions>
-              <Button autoFocus onClick={handleClose} color='primary'>
+              <Button autoFocus variant="contained" onClick={handleClose} className = "labelColor cancelButton">
                 Close
               </Button>
               <Button
+               variant="contained"
                 autoFocus
                 onClick={editFlag ? handleUpdate : handleSave}
                 // onClick={handleSave}
                 color='primary'
+                style={{color : "white"}}
               >
                 {editFlag ? 'UPDATE' : 'Save'}
               </Button>

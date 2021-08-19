@@ -256,7 +256,7 @@ const QuestionBankCard = ({
                 </IconButton>
                 {showPeriodIndex === index && showMenu ? (
                   <div className='tooltipContainer'>
-                    <span className='tooltiptext'>
+                    <span className={` ${classes.tooltiptext} tooltiptext`}>
                       <div onClick={handleDelete}>Delete</div>
                       <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
                         <DialogTitle id='draggable-dialog-title'>

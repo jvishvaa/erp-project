@@ -623,7 +623,7 @@ const QuestionTypeFilters = ({
                 disableElevation
                 disableFocusRipple
                 disableTouchRipple
-                style={{ width: '100%' }}
+                // style={{ width: '100%' }}
                 onClick={handleRemoveVideo}
               >
                 Remove Uploaded Video

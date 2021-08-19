@@ -1,10 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Button } from '@material-ui/core';
+import { Grid, Button ,makeStyles} from '@material-ui/core';
 import './style.scss';
 import MediaQuery from 'react-responsive';
 
+const useStyles = makeStyles((theme)=>({
+  totalStudentStrenghtCardLabel :{
+    color: theme.palette.secondary.main,
+    fontSize: "13px",
+    fontWeight: "bold !important",
+    fontFamily: "Raleway",
+  }
+}))
+
 const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) => {
+  const classes = useStyles()
   return (
     <>
       <Grid
@@ -17,7 +27,7 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
       >
         <MediaQuery minWidth={1598}>
           <Grid item md={6} xs={6} style={{ textAlign: 'left', padding: '0px' }}>
-            <span className='totalStudentStrenghtCardLabel'>
+            <span className={classes.totalStudentStrenghtCardLabel}>
               {(fullData && fullData.grade_name) || ''}
             </span>
           </Grid>
@@ -74,7 +84,7 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
 
         <MediaQuery minWidth={1101} maxWidth={1597}>
           <Grid item md={4} style={{ textAlign: 'left', padding: '0px' }}>
-            <span className='totalStudentStrenghtCardLabel'>
+            <span className={classes.totalStudentStrenghtCardLabel}>
               {(fullData && fullData.grade_name) || ''}
             </span>
           </Grid>
@@ -135,7 +145,7 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
         </MediaQuery>
         <MediaQuery minWidth={600} maxWidth={1100}>
           <Grid item md={6} xs={6} style={{ textAlign: 'left', padding: '0px' }}>
-            <span className='totalStudentStrenghtCardLabel'>
+            <span className={classes.totalStudentStrenghtCardLabel}>
               {(fullData && fullData.grade_name) || ''}
             </span>
           </Grid>
@@ -190,7 +200,7 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
         </MediaQuery>
         <MediaQuery maxWidth={599}>
           <Grid item md={6} xs={6} style={{ textAlign: 'left', padding: '0px' }}>
-            <span className='totalStudentStrenghtCardLabel'>
+            <span className={classes.totalStudentStrenghtCardLabel}>
               {(fullData && fullData.grade_name) || ''}
             </span>
           </Grid>

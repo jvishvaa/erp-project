@@ -24,10 +24,17 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import TimeTableMobile from './time-table-mobile-view/time-table-mobile';
 import FilterMobile from './filterMobile/filterMobile';
 import './timetable.scss';
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   formTextFields: {
     margin: '8px',
   },
+  filter:{
+    color: theme.palette.secondary.main,
+    fontSize: "11px",
+    fontWeight: 600,
+    marginRight: "4px",
+    cursor: "pointer",
+  }
 }));
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -551,7 +558,7 @@ const TimeTable = (props) => {
                       handleFilter(false);
                     }}
                   >
-                    <div className='filter'>HIDE FILTER</div>
+                    <div className={classes.filter}>HIDE FILTER</div>
                     <img src={FilterImage} />
                   </div>
                   <div className='devider-top'>

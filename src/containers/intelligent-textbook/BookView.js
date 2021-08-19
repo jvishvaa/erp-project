@@ -73,6 +73,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'pre-wrap',
     wordWrap: 'break-word',
   },
+  tooltiptext:theme.toolTipText,
 }));
 
 function BookView() {
@@ -381,7 +382,7 @@ function BookView() {
                               </IconButton>
                               {showMenu ? (
                                 <div className='tooltipContainer'>
-                                  <span className='tooltiptext'>
+                                  <span className={` ${classes.tooltiptext} tooltiptext`}>
                                     {/* <div onClick={(e) => handleDelete(period)}>Delete</div> */}
                                     <div>Edit</div> <div></div>
                                     <div>Delete</div>

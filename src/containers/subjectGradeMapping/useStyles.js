@@ -29,6 +29,8 @@ const useStyles = makeStyles((theme) => ({
   gridLayout: {
     display: 'flex',
   },
+  tooltiptext : theme.toolTipText
+
 }));
 
 export default useStyles;

@@ -31,10 +31,10 @@
   visibility: hidden;
   width: 150px;
   background-color: #f9f9f9;
-  color: #ff6b6b;
+  /* color: #ff6b6b; */
   text-align: left;
   border-radius: 10px;
-  border: 1px solid #ff6b6b;
+  /* border: 1px solid #ff6b6b; */
   padding: 14px 10px;
   position: absolute;
   z-index: 1;

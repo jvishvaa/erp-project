@@ -1,14 +1,15 @@
 import React from 'react';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import { makeStyles } from '@material-ui/core';
+import { theme } from 'highcharts';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme)=>({
   a: {
-    fill: '#014b7e',
-    stroke: '#014b7e',
+    fill: theme.palette.secondary.main,
+    stroke: theme.palette.secondary.main,
     strokeWidth: '2px',
   },
-});
+}));
 
 const RightArrow = () => {
   const classes = useStyles({});
@@ -21,7 +22,6 @@ const RightArrow = () => {
               className={classes.a}
               d='M22.737.82,21.918,0,1.168,20.75V8.133H.007v14.6l14.6,0V21.571H1.988Z'
               transform='translate(-0.007)'
-            />
             />
           </g>
         </g>

@@ -150,9 +150,9 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
               {(showPeriodIndex === index &&
                 showMenu) ? (
                   <div className="tooltip" style={{display:'flex',justifyContent:'space-between'}}>
-                    <span className='tooltiptext' >
-                        <Button className='tooltip' onClick={e=> handleDelete(lesson)}>Delete</Button>
-                        <Button className='tooltip' onClick={e=> handleEdit(lesson)}> Edit</Button>
+                    <span className={` ${classes.toolTipText} tooltiptext`} >
+                        <Button className={classes.tooltip} onClick={e=> handleDelete(lesson)}>Delete</Button>
+                        <Button className={classes.tooltip} onClick={e=> handleEdit(lesson)}> Edit</Button>
                     </span>
                   </div>
                 ) : null}

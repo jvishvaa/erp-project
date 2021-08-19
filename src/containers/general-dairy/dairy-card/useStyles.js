@@ -31,6 +31,15 @@ const useStyles = makeStyles((theme) => ({
   createdby: {
     color: theme.palette.secondary.main,
   },
+  tooltiptext: theme.toolTipText,
+  tooltip: {
+    display: "flex",
+    backgroundColor: "#F9F9F9",
+    color: theme.palette.primary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    marginBottom: "10%",
+  }
 }));
 
 export default useStyles;

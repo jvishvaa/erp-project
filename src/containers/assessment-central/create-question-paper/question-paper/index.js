@@ -1,9 +1,26 @@
 import React, { useState, useRef } from 'react';
-import { IconButton, Divider, TextField, Button, SvgIcon } from '@material-ui/core';
+import { IconButton, Divider, TextField, Button, SvgIcon ,makeStyles} from '@material-ui/core';
 import minimizeIcon from '../../../../assets/images/minimize.svg';
 import maximizeIcon from '../../../../assets/images/maximize.svg';
 import Question from '../question';
 import './styles.scss';
+
+
+const useStyles = makeStyles((theme) =>({
+  questionsheader : {
+    color: theme.palette.primary.main,
+    fontSize: "1.2rem"
+  },
+  draftbtn:{
+    color: theme.palette.primary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
+    background: 'white',
+  },
+  addSectionInfo:{
+    color: theme.palette.secondary.main,
+    fontSize: "1.1rem",
+  }
+}))
 
 const QuestionPaper = ({
   grade,
@@ -17,6 +34,7 @@ const QuestionPaper = ({
   onDeleteSection,
   onDeleteQuestion,
 }) => {
+  const classes = useStyles()
   const [minimize, setMinimize] = useState(false);
   const [noOfSections, setNoOfSections] = useState(1);
   const [showPopup, setShowPopup] = useState(false);
@@ -79,7 +97,7 @@ const QuestionPaper = ({
               />
             </div>
             <div className='questions-container'>
-              <div className='questions-header'>Questions</div>
+              <div className={classes.questionsheader}>Questions</div>
               <div className='divider-container'>
                 <Divider color='secondary' />
               </div>
@@ -116,11 +134,7 @@ const QuestionPaper = ({
                       </div>
                       <div>
                         <Button
-                          style={{
-                            color: '#ff6b6b',
-                            border: '1px solid #ff6b6b',
-                            background: 'white',
-                          }}
+                        className = {classes.draftbtn}
                           onClick={() => {
                             handleAddQuestion(noOfSections);
                             setShowPopup(false);
@@ -131,7 +145,7 @@ const QuestionPaper = ({
                       </div>
                     </div>
                   )}
-                  <div className='info'>Add Sections For This Question Paper</div>
+                  <div className={classes.addSectionInfo}>Add Sections For This Question Paper</div>
                   <div
                     className='add-new-btn-container'
                     style={{ display: 'flex', alignItems: 'center' }}
@@ -154,9 +168,8 @@ const QuestionPaper = ({
         <div className='submit-btn-conntainer mv-20'>
           <Button
             variant='contained'
-            color='primary'
             size='medium'
-            style={{ color: '#ff6b6b', border: '1px solid #ff6b6b', background: 'white' }}
+            className={classes.draftbtn}
             onClick={() => {
               onCreateQuestionPaper(true);
             }}

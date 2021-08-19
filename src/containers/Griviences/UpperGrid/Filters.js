@@ -27,7 +27,7 @@ import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { useHistory } from 'react-router-dom';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme)=>({
   root: {
     backgroundColor: '#F9F9F9',
     padding: '15px 60px 15px 15px',
@@ -178,8 +178,10 @@ const useStyles = makeStyles({
   rightArrow: {
     marginTop: 'auto',
     marginBottom: '5px',
+    color:theme.palette.secondary.main
+
   },
-});
+}));
 
 const StyledClearButton = withStyles({
   root: {
@@ -729,7 +731,7 @@ const Filters = (props) => {
                                               <LeftArrow />
                                           </StyledIconButton> */}
                                           <StyledIconButton onClick={handleChange('panel2')}>
-                                              <RightArrow />
+                                              <RightArrow color="secondary"/>
                                           </StyledIconButton>
                                       </span>
                                   </Grid>

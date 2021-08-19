@@ -26,15 +26,15 @@ const useStyles = makeStyles((theme) => ({
     width: 60,
     height: 60,
   },
-  pagercoustom:{
+  pagercoustom: {
     display: "flex",
-margin: "0px",
-padding: "10px",
-backgroundColor : theme.palette.primary.main,
-color: "#fff",
-position: "fixed",
-width: "100%",
-bottom: 0,
+    margin: "0px",
+    padding: "10px",
+    backgroundColor: theme.palette.primary.main,
+    color: "#fff",
+    position: "fixed",
+    width: "100%",
+    bottom: 0,
   }
 }));
 const EbookPdf = (props) => {

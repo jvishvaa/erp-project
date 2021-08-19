@@ -83,13 +83,6 @@ export function themeGenerator() {
     lightprimary = '#994040',
   } = colors || {};
 
-  var lightest = ""
-lightest = colorLuminance(
-  "#9f17e3",
-  1
-
-);
-console.log("=========", lightest)
   return createMuiTheme({
     palette: {
       primary: {
@@ -293,6 +286,10 @@ console.log("=========", lightest)
           color: secondarytemp,
         },
       },
+    },
+    toolTipText : {
+      color: primarytemp,
+      border: `1px solid ${primarytemp}`,
     },
     overrides: {
       MuiButton: {
