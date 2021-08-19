@@ -101,7 +101,8 @@ export function QuizUtilityContextProvider({ children }) {
         toggleMute,
         bgms,
         defaultBgmUrl:
-          'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/media/multiplayer_quiz/music/entire_game_tune_2_speed_up_a_little_game.mp3',
+          // 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/media/multiplayer_quiz/music/entire_game_tune_2_speed_up_a_little_game.mp3',
+          'https://d3ka3pry54wyko.cloudfront.net/dev/media/multiplayer_quiz/music/entire_game_tune_2_speed_up_a_little_game.mp3',
         fetchBgms,
         pickRandomBgm,
         getBgmAudioTag,

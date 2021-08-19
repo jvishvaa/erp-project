@@ -170,7 +170,8 @@ export default {
     updateSignatureApi: '/erp_user/update-destroy-signature/',
     deleteSignatureApi: '/erp_user/update-destroy-signature/',
     getSignatureList: '/erp_user/principle-signature/',
-    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    s3: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
 
   coordinatorTeacherHomeworkApi: {
@@ -251,7 +252,8 @@ export default {
     GiveAwardAPI: '/academic/create-award/',
     commentList: '/academic/comments-list/',
     replyToAnswer: '/academic/create-answer-replay/',
-    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+    // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+    s3: 'https://d3ka3pry54wyko.cloudfront.net',
     deletePost: '/academic/',
   },
   circular: {
@@ -387,7 +389,8 @@ export default {
     createQuestionPaper: `/assessment/question-paper/`,
     createAssessment: '/assessment/test/',
     deleteAssessmentTest: '/assessment/',
-    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+    // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+    s3: 'https://d3ka3pry54wyko.cloudfront.net',
     examTypeList: '/assessment/exam-type-list/',
   },
 
@@ -403,7 +406,8 @@ export default {
     userAssessmentSubmission: `${baseURLCentral}/assessment/user_response/`,
     userAssessmentTestSubmission: `assessment/submit-test/`,
     fetchAssessmentQuestionPapersQuestions: `/assessment/<question-paper-id>/qp-questions-list/`,
-    s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+    // s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+    s3: 'https://d2r9gkgplfhsr2.cloudfront.net/',
   },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,
@@ -414,7 +418,8 @@ export default {
   publish: {
     ebook: `erp_user/publication/`,
     update_delete: `erp_user/update-destroy-publication/`,
-    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+    // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+    s3: 'https://d3ka3pry54wyko.cloudfront.net',
   },
   assessmentApis: {
     gradesList: `/academic/sm-grades-list/`,
@@ -482,7 +487,8 @@ export default {
     PostCommentandLike: '/academic/',
     ListenedPercentage: '/academic/',
     AddParticipants: '/academic/branch_students/',
-    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+    // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+    s3: 'https://d3ka3pry54wyko.cloudfront.net',
   },
   homeworkReport: {
     branchWiseData: '/academic/teacher_homework_report/',

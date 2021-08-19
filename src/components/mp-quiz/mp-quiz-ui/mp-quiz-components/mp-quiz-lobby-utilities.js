@@ -230,7 +230,8 @@ export function getDurationCounter(props) {
 function GetAvatar({ url = '', firstName = '' }) {
   const { openSettingsModal } = useQuizUitilityContext || {};
   url =
-    'https://omrsheet.s3.ap-south-1.amazonaws.com/media/user_profile/download_wchd7Wo.png'; // Please handle
+    // 'https://omrsheet.s3.ap-south-1.amazonaws.com/media/user_profile/download_wchd7Wo.png'; // Please handle
+    'https://d2r9gkgplfhsr2.cloudfront.net/media/user_profile/download_wchd7Wo.png'; // Please handle
   if (url) {
     return (
       <Avatar
