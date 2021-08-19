@@ -38,6 +38,12 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '70vh',
     width: '100%',
   },
+  textEffect : {
+    fontSize: '16px',
+    fontWeight: 'bold',
+    color: theme.palette.secondary.main,
+    marginTop: '15px',
+  }
 }));
 
 const AllBooksPage = () => {
@@ -227,12 +233,6 @@ const AllBooksPage = () => {
                                   <Typography
                                     title='wings'
                                     className={classes.textEffect}
-                                    style={{
-                                      fontSize: '16px',
-                                      fontWeight: 'bold',
-                                      color: '#014B7E',
-                                      marginTop: '15px',
-                                    }}
                                   >
                                     {item.book_name}
                                   </Typography>
@@ -240,9 +240,9 @@ const AllBooksPage = () => {
 
                                 <Grid item md={12} xs={12}>
                                   <Typography
+                                  color="secondary"
                                     style={{
                                       fontSize: '9px',
-                                      color: '#042955',
                                       margin: '10px 0',
                                     }}
                                   >
@@ -260,6 +260,7 @@ const AllBooksPage = () => {
                                       height: '25px',
                                       fontSize: '15px',
                                       borderRadius: '6px',
+                                      color : "white"
                                     }}
                                     onClick={() => handleBookOpen(item)}
                                   >

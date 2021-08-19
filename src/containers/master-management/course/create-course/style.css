@@ -108,7 +108,7 @@
 }
 
 .nextPageButton.MuiButtonBase-root:hover {
-  background: #ff6b6b;
+  /* background: #ff6b6b; */
 }
 
 .periodSubmitButton.MuiButtonBase-root {
@@ -117,7 +117,7 @@
 }
 
 .periodSubmitButton.MuiButtonBase-root:hover {
-  background: #ff6b6b;
+  /* background: #ff6b6b; */
 }
 
 .periodAddButton.MuiButtonBase-root {

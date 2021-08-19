@@ -1,5 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Avatar, Button, Divider, Grid, makeStyles, Paper, withStyles } from '@material-ui/core';
+import {
+  Avatar,
+  Button,
+  Divider,
+  Grid,
+  makeStyles,
+  Paper,
+  withStyles,
+  Typography
+} from '@material-ui/core';
 import Layout from '../Layout';
 import GriviencesDetailContainer from './GriviencesDetailContainer/GriviencesDetailContainer';
 import Axios from 'axios';
@@ -53,9 +62,9 @@ const useStyles = makeStyles({
   },
 })
 
-const StyledFilterButton = withStyles({
+const StyledFilterButton = withStyles((theme) => ({
   root: {
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     marginBottom: '5px',
     fontSize: '16px',
     fontFamily: 'Raleway',
@@ -66,7 +75,7 @@ const StyledFilterButton = withStyles({
     },
   },
   iconSize: {},
-})(Button);
+}))(Button);
 
 const GravienceHome = () => {
   const classes = useStyles({});
@@ -336,9 +345,8 @@ const GravienceHome = () => {
             className={classes.buttonContainer}
           >
             <Grid item xs={12} sm={8}>
-              <span style={{ color: '#014B7E' }}>
-                <strong>All</strong>
-              </span>
+              <Typography color="secondary">All</Typography>
+              
             </Grid>
             <Grid item xs={12} sm={4}>
               <Grid container>

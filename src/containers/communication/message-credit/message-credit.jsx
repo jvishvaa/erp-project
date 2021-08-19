@@ -51,6 +51,9 @@ const useStyles = makeStyles((theme) => ({
   container: {
     maxHeight: 440,
   },
+  headertable:{
+    color : theme.palette.secondary.main
+  }
 }));
 
 // eslint-disable-next-line no-unused-vars
@@ -337,8 +340,8 @@ const MessageCredit = withRouter(({ history, ...props }) => {
                   className={`table table-shadow sms_credit_table ${classes.container}`}
                 >
                   <Table stickyHeader aria-label='sticky table'>
-                    <TableHead className='view_groups_header'>
-                      <TableRow>
+                    <TableHead className={classes.headertable}>
+                      <TableRow color = "secondary">
                         <TableCell>Branch</TableCell>
                         <TableCell>Available SMS Credit</TableCell>
                         <TableCell>Used SMS Credit</TableCell>
@@ -396,7 +399,6 @@ const MessageCredit = withRouter(({ history, ...props }) => {
                               </div>
                             ) : (
                               <AddCircleIcon
-                                style={{ color: '#005c99' }}
                                 variant='contained'
                                 onClick={() => handleStatusChange(index)}
                               />

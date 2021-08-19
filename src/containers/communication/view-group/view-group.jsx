@@ -71,8 +71,12 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: `#ffffff !important`,
   },
   tableCell: {
-    color: theme.palette.secondary.main,
+    color: `${theme.palette.secondary.main} !important`,
   },
+  tablebody : {
+    color : `${theme.palette.secondary.main} !important`
+  }
+
 }));
 
 // eslint-disable-next-line no-unused-vars
@@ -327,7 +331,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                         </TableCell>
                       </TableRow>
                     </TableHead>
-                    <TableBody className='view_groups_body'>
+                    <TableBody className = {classes.tablebody}>
                       {groupsData?.map((items, i) => (
                         <TableRow
                           hover
@@ -386,7 +390,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                                 onClick={() => handleStatusChange(items.groupId, i)}
                                 title='Deactivate'
                               >
-                                <BlockIcon style={{ color: '#ff6b6b' }} />
+                                <BlockIcon  />
                               </IconButton>
                             ) : (
                               <button
@@ -410,7 +414,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                               title='Delete'
                               onClick={() => handleDelete(items.groupId, i)}
                             >
-                              <DeleteOutlinedIcon style={{ color: '#ff6b6b' }} />
+                              <DeleteOutlinedIcon color="primary" />
                             </IconButton>
                             <IconButton
                               title='Edit'
@@ -418,7 +422,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                               onClick={() => handleUpdate(items)}
                             // onClick={() => handleEdit(items.groupId, i)}
                             >
-                              <EditOutlinedIcon style={{ color: '#ff6b6b' }} />
+                              <EditOutlinedIcon color="primary" />
                             </IconButton>
                           </TableCell>
                         </TableRow>

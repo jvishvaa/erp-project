@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
     textAlign: 'center',
-    color: theme.palette.text.secondary,
+    color: theme.palette.secondary.main,
   },
   tabRoot: {
     width: '100%',
@@ -131,7 +131,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#F9F9F9',
     width: 200,
     alignContent: 'center',
-    border: '1px solid #ff6b6b',
+    border: `1px solid ${theme.palette.primary.main}`,
   },
   modal: {
     display: 'flex',
@@ -555,7 +555,7 @@ function ManageOrchadio() {
                     </Grid> */}
                       <Grid item xs={12}>
                         <Button
-                          style={{ fontSize: 'small', margin: '20px', width: 150 }}
+                          style={{ fontSize: 'small', margin: '20px', width: 150,color:"white" }}
                           color='primary'
                           size='small'
                           variant='contained'
@@ -565,16 +565,17 @@ function ManageOrchadio() {
                           Clear All
                         </Button>
                         <Button
-                          style={{ fontSize: 'small', margin: '20px', width: 150 }}
+                          style={{ fontSize: 'small', margin: '20px', width: 150 ,color:"white"}}
                           onClick={handleFilter}
                           color='primary'
                           size='small'
                           variant='contained'
+                          s
                         >
                           Filter
                         </Button>
                         <Button
-                          style={{ fontSize: 'small', margin: '20px', width: 150 }}
+                          style={{ fontSize: 'small', margin: '20px', width: 150 ,color:"white"}}
                           onClick={() => history.push('/orchadio/add-orchadio')}
                           color='primary'
                           size='small'

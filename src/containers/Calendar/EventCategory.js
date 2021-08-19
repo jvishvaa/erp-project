@@ -534,29 +534,6 @@ const Cal1 = () => {
             </Grid>
           </Grid>
           <Grid container spacing={2} direction='row'>
-            {/* <Grid item xs={12} sm={4} md={2} lg={1}>
-              <Button
-                variant='contained'
-                className='custom_button_master '
-                size='medium'
-                onClick={handleClear}
-              >
-                Clear
-              </Button>
-            </Grid> */}
-            {/* <Grid item xs={12} sm={4} md={2} lg={1}>
-              <Button
-                variant='contained'
-                className='custom_button_master '
-                // size='medium'
-                color='primary'
-                onClick={(e) =>
-                  handleFilter(filterData.selectedEventType.event_category_name)
-                }
-              >
-                Filter
-              </Button>
-            </Grid> */}
             <Grid item xs={12} sm={4} md={2} lg={2}>
               <Button
                 variant='contained'
@@ -569,17 +546,6 @@ const Cal1 = () => {
                 ADD EVENT
               </Button>
             </Grid>
-            {/* <Grid item xs={12} sm={4} md={2} lg={4}>
-            
-            </Grid>
-            <Grid item xs={12} sm={4} md={2} lg={5}>
-            <SearchBar 
-              
-              value={this.state.value}
-              onChange={(newValue) => this.setState({ value: newValue })}
-              onRequestSearch={() => doSomethingWith(this.state.value)}
-            />
-            </Grid> */}
           </Grid>
           <br />
           <Divider />
@@ -595,6 +561,7 @@ const Cal1 = () => {
             <DialogContent>
               <TextField
                 autoFocus
+                color="secondary"
                 fullWidth
                 size='small'
                 id='role'
@@ -671,9 +638,9 @@ const Cal1 = () => {
                             <Grid item xs={6}>
                               <Typography
                                 variant='subtitle1'
+                                color = "secondary"
                                 style={{
                                   marginTop: 8,
-                                  color: '#01014a',
                                   textAlign: 'center',
                                   fontSize: '20px',
                                   fontweight: 'Bold',
@@ -689,7 +656,7 @@ const Cal1 = () => {
                                 aria-haspopup='true'
                                 onClick={(event) => handleClicknew(event, item.id)}
                               >
-                                <MoreHorizIcon style={{ color: '#F7324D' }} />
+                                <MoreHorizIcon />
                               </IconButton>
                               <Menu
                                 anchorEl={anchorEl}

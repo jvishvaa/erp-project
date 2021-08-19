@@ -9,27 +9,12 @@
 .send_message_header_icon_wrapper {
   display: inline-block;
 }
-.send_message_header_title {
-  color: #ff6b6b;
-  text-align: center;
-}
+
 .step_completed {
   color: #ffffff !important;
   background-color: #ff6b6b !important;
 }
-.send_message_header_circle {
-  width: 40px;
-  height: 40px;
-  margin: auto;
-  border-radius: 50%;
-  background-color: #ffffff;
-  color: #ff6b6b;
-  padding: 9% 1.5%;
-  text-align: center;
-}
-.send_message_header_border_circle {
-  border: 1px solid #ff6b6b;
-}
+
 .send_message_header_bar {
   display: inline-block;
   vertical-align: top;
@@ -64,8 +49,5 @@
   }
   .send_message_header_icon_wrapper{
 	padding: 0% 4%;
-  }
-  .send_message_header_title{
-	  font-size: 0.8rem;
   }
 }

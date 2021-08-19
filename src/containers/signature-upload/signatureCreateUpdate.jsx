@@ -169,7 +169,8 @@ const CreateUpdateSignatureModel = ({
             <DialogTitle
               id='alert-dialog-title'
               onClose={close}
-              style={{ color: '#014B7E', backgroundColor: '#FCEEEE' }}
+              color = "secondary"
+              style={{ backgroundColor: '#FCEEEE' }}
             >
               {edit ? 'Update' : 'Create'}
               &nbsp;Signature
@@ -223,7 +224,7 @@ const CreateUpdateSignatureModel = ({
                     />
                   </Grid>
                   <Grid item md={12} xs={12}>
-                    <Typography variant='h6' className='uploadSignaturefileLable'>
+                    <Typography color = "primary" variant='h6' className='uploadSignaturefileLable'>
                       Upload Image &nbsp;
                       <b style={{ color: 'red' }}>*</b>
                     </Typography>

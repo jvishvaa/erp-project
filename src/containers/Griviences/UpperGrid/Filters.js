@@ -110,7 +110,7 @@ const useStyles = makeStyles({
   title: {
     display: 'inline-block',
     width: '183px',
-    color: '#014B7E',
+    // color: '#014B7E',
     fontSize: '20px',
     fontWeight: 300,
     fontFamily: 'Raleway',
@@ -120,7 +120,7 @@ const useStyles = makeStyles({
     marginBottom: '10px',
   },
   contentTitle: {
-    color: '#014B7E',
+    // color: '#014B7E',
     fontSize: '20px',
     fontWeight: 400,
     fontFamily: 'Raleway',
@@ -195,13 +195,13 @@ const StyledClearButton = withStyles({
 
 const StyledFilterButton = withStyles({
   root: {
-    backgroundColor: '#FF6B6B',
+    // backgroundColor: '#FF6B6B',
     color: '#FFFFFF',
     height: '42px',
     borderRadius: '10px',
     padding: '12px 40px',
     '&:hover': {
-      backgroundColor: '#FF6B6B',
+      // backgroundColor: '#FF6B6B',
     },
   },
   startIcon: {
@@ -213,7 +213,7 @@ const StyledFilterButton = withStyles({
 const StyledButton = withStyles({
   root: {
     marginTop: 'auto',
-    color: '#014B7E',
+    // color: '#014B7E',
     fontSize: '18px',
     padding: '5px 12px',
     textTransform: 'capitalize',
@@ -510,7 +510,7 @@ const Filters = (props) => {
             <Grid item xs={12}>
               <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
                 <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                  <Typography>Academic Year</Typography>
+                  <Typography color = "secondary">Academic Year</Typography>
                 </AccordionSummary>
                 <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
                   <div className={classes.contentDiv}>
@@ -532,7 +532,7 @@ const Filters = (props) => {
               </Accordion>
               <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
                 <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                  <Typography>Branch</Typography>
+                  <Typography color = "secondary">Branch</Typography>
                 </AccordionSummary>
                 <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
                   <div className={classes.contentDiv}>
@@ -563,7 +563,7 @@ const Filters = (props) => {
               </Accordion>
               <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
                 <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-                  <Typography>Grade</Typography>
+                  <Typography color = "secondary">Grade</Typography>
                 </AccordionSummary>
                 <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
                   <div className={classes.contentDiv}>
@@ -594,7 +594,7 @@ const Filters = (props) => {
             </Accordion>
             <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
               <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-                <Typography>Section</Typography>
+                <Typography color = "secondary">Section</Typography>
               </AccordionSummary>
               <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
                 <div className={classes.contentDiv}>
@@ -625,7 +625,7 @@ const Filters = (props) => {
             </Accordion>
             <Accordion expanded={expanded === 'panel5'} onChange={handleChange('panel5')}>
               <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-                <Typography>Type</Typography>
+                <Typography color = "secondary">Type</Typography>
               </AccordionSummary>
               <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
                 <div className={classes.contentDiv}>
@@ -669,10 +669,10 @@ const Filters = (props) => {
             <Grid item sm={4} xs={6}>
               <StyledFilterButton
                 variant='contained'
-                color='secondary'
+                color='primary'
                 fullwidth
                 startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-                className={classes.filterButton}
+                // className={classes.filterButton}
                 onClick={handleFilters}
               >
                 filter
@@ -703,7 +703,7 @@ const Filters = (props) => {
                           <div className={`${expanded === 'panel1' ? classes.contentShow : classes.content}`}>
                               <Grid container>
                                   <Grid item xs={12}>
-                                      <Typography className={classes.contentTitle}>Academic Year</Typography>
+                                      <Typography color = "secondary" className={classes.contentTitle}>Academic Year</Typography>
                                     </Grid>
                                   <Grid item xs={8}>
                                       <div className={classes.contentDiv}>
@@ -754,7 +754,7 @@ const Filters = (props) => {
                           <div className={`${expanded !== 'panel2' ? classes.content : classes.contentShow}`}>    
                               <Grid container>
                                   <Grid item xs={12}>
-                                      <Typography className={classes.contentTitle}>Branch</Typography>
+                                      <Typography color = "secondary" className={classes.contentTitle}>Branch</Typography>
                                   </Grid>
                                   <Grid item xs={8}>
                                       <div className={classes.contentDiv}>
@@ -815,7 +815,7 @@ const Filters = (props) => {
                           <div className={`${expanded !== 'panel3' ? classes.content : classes.contentShow}`}>
                               <Grid container>
                                   <Grid item xs={12}>
-                                      <Typography className={classes.contentTitle}>Grade</Typography>
+                                      <Typography color = "secondary" className={classes.contentTitle}>Grade</Typography>
                                   </Grid>
                                   <Grid item xs={8}>
                                       <div className={classes.contentDiv}>
@@ -876,7 +876,7 @@ const Filters = (props) => {
                           <div className={`${expanded !== 'panel4' ? classes.content : classes.contentShow}`}>
                               <Grid container>
                                   <Grid item xs={12}>
-                                      <Typography className={classes.contentTitle}>Section</Typography>
+                                      <Typography color = "secondary" className={classes.contentTitle}>Section</Typography>
                                   </Grid>
                                   <Grid item xs={8}>
                                       <div className={classes.contentDiv}>
@@ -936,7 +936,7 @@ const Filters = (props) => {
                             <div className={`${expanded !== 'panel5' ? classes.content : classes.contentShow}`}>
                               <Grid container>
                                   <Grid item xs={12}>
-                                      <Typography className={classes.contentTitle}>Type</Typography>
+                                      <Typography color = "secondary" className={classes.contentTitle}>Type</Typography>
                                   </Grid>
                                   <Grid item xs={8}>
                                       <div className={classes.contentDiv}>

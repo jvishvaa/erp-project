@@ -1068,8 +1068,10 @@ const CreateCourse = () => {
                 </Button>
                 <Button
                   className='nextPageButton'
+                  variant = "contained"
+                  color = "primary"
                   onClick={handleNext}
-                  style={{ float: 'right' }}
+                  style={{ float: 'right',color:"white" }}
                 >
                   NEXT
                 </Button>

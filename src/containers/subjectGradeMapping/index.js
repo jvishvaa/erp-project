@@ -717,7 +717,7 @@ const Subjectgrade = (props) => {
                     <div className="btn-container">
                         <div className="btn">
                             <Button variant="contained" className="clear-all" onClick={clearAll}>Cancel</Button>
-                            <Button variant="contained" color="primary" className="filter-btn" onClick={submit}>
+                            <Button variant="contained" color="primary" className="filter-btn" style ={{color: "white"}} onClick={submit}>
                                 {props.location.edit === true ? "Update Assign" : 'Assign'}  </Button>
                         </div>
                     </div>

@@ -29,9 +29,11 @@ import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import './message-log.css';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    border : ` 1px solid ${theme.palette.primary.main}`,
     '& > *': {
       marginTop: theme.spacing(2),
     },
@@ -52,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     padding: '5%',
     marginLeft: '30px'
+  },
+  tableheader:{
+    color : theme.palette.secondary.main
   }
 }));
 
@@ -574,57 +579,57 @@ const MessageLog = withRouter(({ history, ...props }) => {
             <div className='create_group_filter_container'>
               <Grid container className='message_log_container' spacing={2}>
                 <Grid xs={12} lg={9} item>
-                  <Paper className={`message_log_table_wrapper ${classes.root}`}>
+                  <Paper className={classes.root}>
                     <TableContainer
                       className={`table table-shadow message_log_table ${classes.container}`}
                     >
                       <Table stickyHeader aria-label='sticky table'>
                         <TableHead className='view_groups_header'>
                           <TableRow>
-                            <TableCell>Message</TableCell>
-                            <TableCell className='message_log_send_by'>Sent by</TableCell>
-                            <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
+                            <TableCell className = {classes.tableheader}>Message</TableCell>
+                            <TableCell className={classes.tableheader}>Sent by</TableCell>
+                            <TableCell className={clsx(`${isHidden ? 'hide' : 'show'}`,classes.tableheader)}>
                               Type
                             </TableCell>
-                            <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
+                            <TableCell className={clsx(`${isHidden ? 'hide' : 'show'}`,classes.tableheader)}>
                               Sent on
                             </TableCell>
-                            <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
+                            <TableCell className={clsx(`${isHidden ? 'hide' : 'show'}`,classes.tableheader)}>
                               Count
                             </TableCell>
-                            <TableCell>Sent</TableCell>
+                            <TableCell className = {classes.tableheader}>Sent</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody className='table_body'>
                           {messageRows.map((row, i) => (
                             <TableRow
-                              className={
-                                selectedRow === row.id ? 'selectedRow' : 'notSelected'
-                              }
+                              className={clsx(
+                                selectedRow === row.id ? 'selectedRow' : 'notSelected',classes.tableheader
+                              )}
                               onClick={() => handleUserDetails(row.id)}
                               key={`message_log_details${i}`}
                             >
-                              <TableCell align='right'>{row.message}</TableCell>
-                              <TableCell align='right'>{row.sendBy}</TableCell>
+                              <TableCell className = {classes.tableheader} align='right'>{row.message}</TableCell>
+                              <TableCell className = {classes.tableheader} align='right'>{row.sendBy}</TableCell>
                               <TableCell
                                 align='right'
-                                className={`${isHidden ? 'hide' : 'show'}`}
+                                className={clsx(`${isHidden ? 'hide' : 'show'}`,classes.tableheader)}
                               >
                                 {row.type}
                               </TableCell>
                               <TableCell
                                 align='right'
-                                className={`${isHidden ? 'hide' : 'show'}`}
+                                className={clsx(`${isHidden ? 'hide' : 'show'}`,classes.tableheader)}
                               >
                                 {row.sendOn}
                               </TableCell>
                               <TableCell
                                 align='right'
-                                className={`${isHidden ? 'hide' : 'show'}`}
+                                className={clsx(`${isHidden ? 'hide' : 'show'}`,classes.tableheader)}
                               >
                                 {row.totalCount}
                               </TableCell>
-                              <TableCell align='right'>
+                              <TableCell className = {classes.tableheader} align='right'>
                                 {row.sent ? (
                                   <CheckCircleIcon
                                     style={{ color: 'green', marginLeft: '15px' }}
@@ -673,7 +678,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                               <CloseIcon />
                             </span>
                           ) : null}
-                          <Paper className={`message_log_table_wrapper ${classes.root}`}>
+                          <Paper className={classes.root}>
                             <TableContainer
                               className={`table table-shadow message_log_table ${classes.container}`}
                             >
