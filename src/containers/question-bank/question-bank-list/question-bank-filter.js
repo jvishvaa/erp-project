@@ -740,7 +740,7 @@ const QuestionBankFilters = ({
             size='medium'
             onClick={handleClear}
           >
-            CLEAR ALL
+            Clear All
           </Button>
         </Grid>
         {isMobile && <Grid item xs={3} sm={0} />}
@@ -753,7 +753,7 @@ const QuestionBankFilters = ({
             size='medium'
             onClick={handleFilter}
           >
-            FILTER
+            Filter
           </Button>
         </Grid>
         {isMobile && <Grid item xs={3} sm={0} />}
@@ -773,7 +773,7 @@ const QuestionBankFilters = ({
               onClick={() => history.push('/create-question')}
               size='medium'
             >
-              CREATE
+              Create
             </Button>
           </Grid>
         )}

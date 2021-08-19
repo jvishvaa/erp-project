@@ -254,11 +254,11 @@ const CreateEvent = () => {
           </Grid>
           <Grid container direction='row' className={classes.root}>
             <Grid item md={2} xs={12}>
-              <Button variant='contained'>CLEAR ALL</Button>
+              <Button variant='contained'>Clear All</Button>
             </Grid>
             <Grid item md={2} xs={12}>
               <Button variant='contained' color='primary' onClick={handleSubmit}>
-                SAVE EVENT
+                Save Event
               </Button>
             </Grid>
           </Grid>

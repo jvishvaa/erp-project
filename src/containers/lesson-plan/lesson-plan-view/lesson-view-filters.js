@@ -576,7 +576,7 @@ const LessonViewFilters = ({
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       {isMobile && <Grid item xs={3} />}
@@ -589,7 +589,7 @@ const LessonViewFilters = ({
           size='medium'
           onClick={handleFilter}
         >
-          FILTER
+          Filter
         </Button>
       </Grid>
       {overviewSynopsis?.map((obj) => (

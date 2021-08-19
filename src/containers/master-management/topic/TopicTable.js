@@ -611,7 +611,7 @@ const TopicTable = () => {
                     title='Clear All'
                     onClick={handleClearFilter}
                   >
-                    CLEAR ALL
+                    Clear All
                   </Button>
                 </Grid>
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
@@ -622,7 +622,7 @@ const TopicTable = () => {
                     size='medium'
                     onClick={handleFilter}
                   >
-                    FILTER
+                    Filter
                   </Button>
                 </Grid>
                 <div>

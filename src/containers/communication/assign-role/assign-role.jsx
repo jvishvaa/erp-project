@@ -522,12 +522,12 @@ const AssignRole = (props) => {
 
   return (
     <Layout>
+      <CommonBreadcrumbs
+        componentName='User Management'
+        childComponentName='Assign role'
+      />
       <div className='assign-role-container'>
         <div className={classes.filtersContainer}>
-          <CommonBreadcrumbs
-            componentName='User Management'
-            childComponentName='Assign role'
-          />
           <Grid container spacing={2} className={classes.spacer}>
             <Grid item xs={12} md={3}>
               <FormControl
@@ -669,7 +669,8 @@ const AssignRole = (props) => {
                 variant='contained'
                 className='cancelButton labelColor'
                 onClick={handleClearAll}
-                fullWidth
+                size='medium'
+                style={{ width: '100%' }}
               >
                 Clear All
               </Button>
@@ -681,8 +682,10 @@ const AssignRole = (props) => {
                 color='primary'
                 style={{ color: "white" }}
                 fullWidth
+                size='medium'
+                style={{ color: 'white', width: '100%' }}
               >
-                FILTER
+                Filter
               </Button>
             </Grid>
           </Grid>
@@ -696,7 +699,6 @@ const AssignRole = (props) => {
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
-                //onChange={(e) => setSelectedBranch(e.target.value)}
                 onChange={(event, value) => {
                   setSelectedRole(value);
                 }}
@@ -735,9 +737,11 @@ const AssignRole = (props) => {
                 onClick={assignRole}
                 variant='contained'
                 color='primary'
+                size='medium'
+                style={{ width: '100%', color: 'white' }}
                 disabled={!selectedRole}
               >
-                ASSIGN ROLE
+                Assign Role
               </Button>
             </Grid>
             {isMobile && (
@@ -788,7 +792,7 @@ const AssignRole = (props) => {
           </>
         )}
       </div>
-    </Layout>
+    </Layout >
   );
 };
 

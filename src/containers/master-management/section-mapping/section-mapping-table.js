@@ -499,7 +499,7 @@ const SectionTable = () => {
                   className='labelColor cancelButton'
                   onClick={handleClearAll}
                 >
-                  CLEAR ALL
+                  Clear All
                 </Button>
               </Grid>
               <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
@@ -510,7 +510,7 @@ const SectionTable = () => {
                   size='medium'
                   onClick={handleFilterCheck}
                 >
-                  FILTER
+                  Filter
                 </Button>
               </Grid>
               <div>

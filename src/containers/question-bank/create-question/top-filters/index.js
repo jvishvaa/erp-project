@@ -9,8 +9,6 @@ import endpoints from '../../../../config/endpoints';
 import { connect, useSelector } from 'react-redux';
 import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
-import './top-filters.css';
-import { headerRefreshed } from '@syncfusion/ej2-grids';
 
 const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -503,7 +501,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       {isMobile && <Grid item xs={3} sm={0} />}
@@ -516,7 +514,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           size='medium'
           onClick={handleFilter}
         >
-          NEXT
+          Next
         </Button>
       </Grid>
       {isMobile && <Grid item xs={3} sm={0} />}
