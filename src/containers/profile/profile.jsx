@@ -126,9 +126,7 @@ const Profile = (props) => {
   return (
     <>
       <Layout>
-        <div className='profile_breadcrumb_wrapper'>
-          <CommonBreadcrumbs componentName='Profile' />
-        </div>
+        <CommonBreadcrumbs componentName='Profile' />
         <div className='dashboard_profile'>
           {passwordPopUp ? <ChangePassword close={setPasswordPopUp} id={userId} /> : null}
           <div className='profile_wrapper'>
@@ -140,7 +138,7 @@ const Profile = (props) => {
               />
               {userImage ? null : (
                 <Button
-                color = "primary"
+                  color="primary"
                   variant='contained'
                   className='profile_upload_image_button'
                   component='label'
@@ -182,7 +180,7 @@ const Profile = (props) => {
             </form>
           </div>
           <Button
-            color = "primary"
+            color="primary"
             variant='contained'
             className='profile_change_password_button'
             onClick={() => setPasswordPopUp(true)}

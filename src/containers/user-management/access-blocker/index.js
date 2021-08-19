@@ -28,7 +28,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import SearchOutlined from '@material-ui/icons/SearchOutlined';
-
+import { connect, useSelector } from 'react-redux';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 //import exportFromJSON from 'export-from-json';
@@ -167,7 +167,10 @@ const AccessBlocker = () => {
   const [excelData] = useState([]);
   const [academicYear, setAcademicYear] = useState();
   const [moduleId, setModuleId] = useState('');
-  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -399,26 +402,27 @@ const AccessBlocker = () => {
   ];
 
   useEffect(() => {
-    if (moduleId) {
+    if (moduleId && selectedAcademicYear) {
       axiosInstance
-        .get(`erp_user/list-academic_year/?module_id=${moduleId}`)
+        .get(`erp_user/branch/?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`)
         .then((res) => {
-          setAcademicYear(res?.data?.data);
+          // setAcademicYear(res?.data?.data);
+          setBranchList(res?.data?.data?.results);
           console.log(res.data.data, 'academic');
-          const defaultValue = res?.data?.data?.[0];
-          handleAcademicYear(defaultValue);
+          // const defaultValue = res?.data?.data?.[0];
+          // handleAcademicYear(defaultValue);
         })
         .catch((error) => {
           setAlert('error', 'Something Wrong!');
         });
     }
-  }, [moduleId]);
+  }, [moduleId , selectedAcademicYear]);
 
   const handleYear = (event, value) => {
     setSelectedBranch([]);
     setSelectedGrade([]);
     setSelectedSection([]);
-    setSelectedAcadmeicYear(value);
+    // setSelectedAcadmeicYear(value);
     setCheckFilter(false);
     if (value?.id) {
       axiosInstance
@@ -474,7 +478,7 @@ const AccessBlocker = () => {
   };
 
   const handleAcademicYear = (value) => {
-    setSelectedAcadmeicYear(value);
+    // setSelectedAcadmeicYear(value);
     console.log(selectedAcademicYear, 'test');
     if (value?.id) {
       axiosInstance
@@ -506,12 +510,12 @@ const AccessBlocker = () => {
 
   const handleClearAll = () => {
     fileRef.current.value = null;
-    setSelectedAcadmeicYear();
+    // setSelectedAcadmeicYear();
     setSelectedBranch();
   };
 
   const handleClearAllList = () => {
-    setSelectedAcadmeicYear();
+    // setSelectedAcadmeicYear();
     setSelectedBranch();
     setSelectedGrade();
     setSelectedSection();
@@ -520,6 +524,7 @@ const AccessBlocker = () => {
   };
 
   const checkUpload = () => {
+    setSelectedBranch();
     console.log(bulkUpload, 'bulk');
     if (bulkUpload === true) {
       setBulkUpload(false);
@@ -582,7 +587,7 @@ const AccessBlocker = () => {
             setUploadFlag(false);
             fileRef.current.value = null;
             setSelectedBranch([]);
-            setSelectedAcadmeicYear([]);
+            // setSelectedAcadmeicYear([]);
           })
           .catch((error) => {
             setAlert('error', 'Something Wrong!');
@@ -608,6 +613,7 @@ const AccessBlocker = () => {
           <CommonBreadcrumbs
             componentName='User Management'
             childComponentName='Access Blocker'
+            isAcademicYearVisible={true}
           />
         <Grid item md={3} xs={12} style={{ margin: '20px 20px' }}>
           {bulkUpload ? (
@@ -618,7 +624,7 @@ const AccessBlocker = () => {
         </Grid>
         {bulkUpload ? (
           <Grid container>
-            <Grid item md={3} xs={12} style={{ margin: '0 20px' }}>
+            {/* <Grid item md={3} xs={12} style={{ margin: '0 20px' }}>
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
@@ -638,9 +644,9 @@ const AccessBlocker = () => {
                   />
                 )}
               />
-            </Grid>
+            </Grid> */}
 
-            <Grid item md={3} xs={12} className="bulkBranch" >
+            <Grid item md={3} xs={12} className="bulkBranch" style={{ margin: '0 20px' }}>
               <Autocomplete
                 // multiple
                 style={{ width: '100%' }}
@@ -755,7 +761,7 @@ const AccessBlocker = () => {
         ) : (
           <div className="listcontainer">
             <div className='filterStudent'>
-              <Grid item md={3} xs={12} style={{ margin: '0 20px' }}>
+              {/* <Grid item md={3} xs={12} style={{ margin: '0 20px' }}>
                 <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
@@ -775,7 +781,7 @@ const AccessBlocker = () => {
                     />
                   )}
                 />
-              </Grid>
+              </Grid> */}
 
               <Grid item md={3} xs={12} style={{ margin: '0 20px' }}>
                 <Autocomplete

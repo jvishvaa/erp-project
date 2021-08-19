@@ -57,7 +57,7 @@ const ErpAdminViewClass = ({ history }) => {
   const viewMoreRef = useRef(null);
   const limit = 12;
   const [tabValue, setTabValue] = useState(
-    JSON.parse(localStorage.getItem('filterData'))?.tabValue || null
+    JSON.parse(localStorage.getItem('filterData'))?.tabValue || 0
   );
 
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
@@ -564,14 +564,25 @@ const ErpAdminViewClass = ({ history }) => {
   const handleDownload = async () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     try {
-      const { data } = await axiosInstance.get(
-        `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
-          startDateTechPer
-        ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
-        {
-          responseType: 'arraybuffer',
-        }
-      );
+      const { data } = JSON.parse(localStorage.getItem('isMsAPI'))
+        ? await APIREQUEST(
+            'get',
+            `/oncls/v1/oncls-report/?start_date=${moment(startDateTechPer).format(
+              'YYYY-MM-DD'
+            )}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
+            null,
+            'arraybuffer'
+          )
+        : await axiosInstance.get(
+            `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
+              startDateTechPer
+            ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format(
+              'YYYY-MM-DD'
+            )}`,
+            {
+              responseType: 'arraybuffer',
+            }
+          );
       const blob = new Blob([data], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
@@ -724,38 +735,21 @@ const ErpAdminViewClass = ({ history }) => {
   return (
     <>
       <Layout>
+        <CommonBreadcrumbs
+          componentName='Online Class'
+          childComponentName={
+            window.location.pathname === '/erp-online-class'
+              ? 'Online Class View'
+              : window.location.pathname === '/erp-online-class-teacher-view'
+              ? 'Teacher Class View'
+              : window.location.pathname === '/erp-online-class-student-view'
+              ? 'Student Class View'
+              : ''
+          }
+          isAcademicYearVisible={true}
+        />
         {loading && <Loader />}
         <Grid container spacing={2} className='teacherBatchViewMainDiv'>
-          <Grid item md={12} xs={12}>
-            <Grid container spacing={2} justify='middle' className='signatureNavDiv'>
-              <Grid item md={12} xs={12} style={{ display: 'flex' }}>
-                <CommonBreadcrumbs
-                  componentName='Online Class'
-                  //    <button
-                  //   type='button'
-                  //   className='SignatureNavigationLinks'
-                  //   onClick={() => history.push('/dashboard')}
-                  // >
-                  //   Dashboard
-                  // </button>
-                  // <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                  // <span className='SignatureNavigationLinks'>Online Class</span>
-                  // <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                  //    <span className='SignatureNavigationLinks'>
-                  childComponentName={
-                    window.location.pathname === '/erp-online-class'
-                      ? 'Online Class View'
-                      : window.location.pathname === '/erp-online-class-teacher-view'
-                      ? 'Teacher Class View'
-                      : window.location.pathname === '/erp-online-class-student-view'
-                      ? 'Student Class View'
-                      : ''
-                  }
-                  isAcademicYearVisible={true}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
           <Grid item md={12} xs={12} className='teacherBatchViewFilter'>
             <Grid container spacing={2} style={{ marginTop: '10px' }}>
               <Grid item md={3} xs={12}>
@@ -782,27 +776,6 @@ const ErpAdminViewClass = ({ history }) => {
               </Grid>
               {window.location.pathname !== '/erp-online-class-student-view' && (
                 <>
-                  {/* <Grid item md={3} xs={12}>
-                    <Autocomplete
-                      style={{ width: '100%' }}
-                      size='small'
-                      onChange={handleAcademicYear}
-                      id='branch_id'
-                      className='dropdownIcon'
-                      value={selectedAcademicYear || ''}
-                      options={academicYear || []}
-                      getOptionLabel={(option) => option?.session_year || ''}
-                      getOptionSelected={(option, value) => option?.id == value?.id}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant='outlined'
-                          label='Academic Year'
-                          placeholder='Academic Year'
-                        />
-                      )}
-                    />
-                  </Grid> */}
                   <Grid item md={3} xs={12}>
                     <Autocomplete
                       multiple

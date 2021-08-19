@@ -75,9 +75,8 @@ const Layout = ({ children, history }) => {
     if (isFetchThemeRequired()) {
       fetchThemeApi();
     }
-    if(!localStorage.hasOwnProperty("isMsAPI")){
-      isMsAPI();
-    }
+    // if(!localStorage.hasOwnProperty("isMsAPI")){}
+    isMsAPI();
   }, []);
 
   const classes = useStyles();

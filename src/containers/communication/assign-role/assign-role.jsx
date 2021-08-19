@@ -20,6 +20,7 @@ import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { connect, useSelector } from 'react-redux';
 import useStyles from './useStyles';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import './styles.scss';
@@ -46,7 +47,10 @@ const AssignRole = (props) => {
   const [gradeList, setGradeList] = useState([]);
   const [sectionList, setSectionList] = useState([]);
   const [selectedMultipleRoles, setSelectedMultipleRoles] = useState([]);
-  const [selectedYear, setSelectedYear] = useState('');
+  // const [selectedYear, setSelectedYear] = useState('');
+  const selectedYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [selectedBranch, setSelectedBranch] = useState();
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
@@ -90,14 +94,14 @@ const AssignRole = (props) => {
   }, []);
 
   useEffect(() => {
-    if (moduleId) getYearApi();
-  }, [moduleId]);
+    if (moduleId && selectedYear ) getBranchApi();
+  }, [moduleId , selectedYear]);
 
-  useEffect(() => {
-    if (selectedYear) {
-      getBranchApi();
-    }
-  }, [selectedYear]);
+  // useEffect(() => {
+  //   if (selectedYear) {
+  //     getBranchApi();
+  //   }
+  // }, [selectedYear]);
 
   useEffect(() => {
     if (selectedBranch) {
@@ -161,20 +165,20 @@ const AssignRole = (props) => {
     }
   };
 
-  const getYearApi = async () => {
-    try {
-      const result = await axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`);
-      if (result.data?.status_code === 200) {
-        setAcademicYearList(result.data.data);
-        const defaultYear = result.data?.data?.[0];
-        setSelectedYear(defaultYear);
-      } else {
-        setAlert('error', result.data.message);
-      }
-    } catch (error) {
-      setAlert('error', error.message);
-    }
-  };
+  // const getYearApi = async () => {
+  //   try {
+  //     const result = await axiosInstance.get(`erp_user/branch/?session_year=${selectedYear?.id}&module_id=${moduleId}`);
+  //     if (result.data?.status_code === 200) {
+  //       setAcademicYearList(result.data.data);
+  //       const defaultYear = result.data?.data?.[0];
+  //       // setSelectedYear(defaultYear);
+  //     } else {
+  //       setAlert('error', result.data.message);
+  //     }
+  //   } catch (error) {
+  //     setAlert('error', error.message);
+  //   }
+  // };
 
   const getBranchApi = async () => {
     try {
@@ -350,7 +354,7 @@ const AssignRole = (props) => {
       setSelectedMultipleRoles([]);
       setSelectedSections([]);
       setSelectedBranch('');
-      setSelectedYear('');
+      // setSelectedYear('');
       setSelectedGrades([]);
       setSelectAllObj([]);
       setTotalPage(0);
@@ -377,12 +381,12 @@ const AssignRole = (props) => {
   };
 
   const handleYear = (event = {}, value = '') => {
-    setSelectedYear('');
+    // setSelectedYear('');
     setSelectedBranch('');
     setSelectedGrades([]);
     setSelectedSections([]);
     if (value) {
-      setSelectedYear(value);
+      // setSelectedYear(value);
     }
   };
 
@@ -564,7 +568,7 @@ const AssignRole = (props) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} md={3}>
+            {/* <Grid item xs={12} md={3}>
               <Autocomplete
                 size='small'
                 onChange={handleYear}
@@ -585,7 +589,7 @@ const AssignRole = (props) => {
                   />
                 )}
               />
-            </Grid>
+            </Grid> */}
             {selectedYear && (
               <Grid item xs={12} md={3}>
                 <Autocomplete

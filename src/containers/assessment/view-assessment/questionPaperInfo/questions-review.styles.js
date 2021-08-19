@@ -22,6 +22,14 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'top',
   },
+  questionSubText: {
+    background: '#ECECEC',
+    padding: 4,
+    display: 'flex',
+    alignItems: 'top',
+    marginTop:'5px',
+
+  },
   answersContainer: {
     padding: 2,
     width: '90%',

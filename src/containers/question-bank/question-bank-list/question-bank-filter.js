@@ -6,11 +6,12 @@ import { useHistory } from 'react-router-dom';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { connect, useSelector } from 'react-redux';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
 import axios from 'axios';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 import './question-bank.css';
 
 const QuestionBankFilters = ({
@@ -35,6 +36,9 @@ const QuestionBankFilters = ({
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [subjectDropdown, setSubjectDropdown] = useState([]);
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [topicDropdown, setTopicDropdown] = useState([]);
@@ -100,24 +104,27 @@ const QuestionBankFilters = ({
   }, [questionList?.length]);
 
   useEffect(() => {
-    if (moduleId) {
-      axiosInstance
-        .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
-        .then((result) => {
-          if (result?.data?.status_code === 200) {
-            setAcademicYearDropdown(result?.data?.data);
-            const defaultValue = result?.data?.data?.[0];
-            handleAcademicYear({}, defaultValue);
-            setLoading(false);
-          } else {
-            setAlert('error', result?.data?.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error?.message);
-        });
+    if (moduleId && selectedAcademicYear) {
+      handleAcademicYear();
     }
-  }, [moduleId]);
+    //   if (moduleId) {
+    //     axiosInstance
+    //       .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
+    //       .then((result) => {
+    //         if (result?.data?.status_code === 200) {
+    //           setAcademicYearDropdown(result?.data?.data);
+    //           const defaultValue = result?.data?.data?.[0];
+    //           handleAcademicYear({}, defaultValue);
+    //           setLoading(false);
+    //         } else {
+    //           setAlert('error', result?.data?.message);
+    //         }
+    //       })
+    //       .catch((error) => {
+    //         setAlert('error', error?.message);
+    //       });
+    //   }
+  }, [moduleId, selectedAcademicYear]);
 
   useEffect(() => {
     setLoading(true);
@@ -176,27 +183,27 @@ const QuestionBankFilters = ({
       topicId: '',
     });
     setPeriodData([]);
-    setLoading(true);
-    if (value) {
-      setFilterData({ ...filterData, year: value });
-      axiosInstance
-        .get(
-          `${endpoints.academics.branches}?session_year=${value?.id}&module_id=${moduleId}`
-        )
-        .then((result) => {
-          if (result?.data?.status_code === 200) {
-            setBranchDropdown(result?.data?.data?.results);
-            setLoading(false);
-          } else {
-            setAlert('error', result?.data?.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error?.message);
-        });
-    } else {
-      setLoading(false);
-    }
+    // setLoading(true);
+    // if (value) {
+    setFilterData({ ...filterData, year: selectedAcademicYear });
+    axiosInstance
+      .get(
+        `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
+      )
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setBranchDropdown(result?.data?.data?.results);
+          setLoading(false);
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+      });
+    // } else {
+    // setLoading(false);
+    // }
   }
 
   function handleBranch(event, value) {
@@ -493,7 +500,7 @@ const QuestionBankFilters = ({
         spacing={isMobile ? 3 : 5}
         style={{ width: widerWidth, margin: wider }}
       >
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
@@ -513,7 +520,7 @@ const QuestionBankFilters = ({
               />
             )}
           />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}

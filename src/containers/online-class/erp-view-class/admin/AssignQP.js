@@ -13,6 +13,7 @@ import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
 
 import Loading from '../../../../components/loader/loader';
+import APIREQUEST from '../../../../config/apiRequest';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -95,6 +96,9 @@ const AssignQP = (props) => {
   const getQP = () => {
     axiosInstance
       .get(`${endpoints.questionPaper.FETCHQP}`, {
+        // headers: {
+        //   'x-api-key': 'vikash@12345#1231',
+        // },
       })
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -108,6 +112,24 @@ const AssignQP = (props) => {
       });
   };
 
+  const msApihandleSubmit = (requestData) => {
+    APIREQUEST('put', `/oncls/v1/${params.id}/assign-qp/`, requestData)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setLoading(false);
+          setAlert('success', result.data.message);
+          history.push('/erp-online-class-teacher-view');
+        } else {
+          setLoading(false);
+          setAlert('error', 'Cant Assign Question Paper');
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', 'Cant Assign Question Paper');
+      });
+  };
+
   const handleSubmit = (e) => {
     setLoading(true);
     let requestData = {};
@@ -115,7 +137,10 @@ const AssignQP = (props) => {
     requestData = {
       quiz_test_paper: selectedQp,
     };
-
+    if (JSON.parse(localStorage.getItem('isMsAPI'))) {
+      msApihandleSubmit(requestData);
+      return;
+    }
     axiosInstance
       .put(`${endpoints.questionPaper.AssignQP}${params.id}/assign-quiz/`, requestData)
       .then((result) => {
@@ -135,9 +160,12 @@ const AssignQP = (props) => {
     if (value) {
       setSelectedQp(value.question_paper);
     }
+    const QuestionsInQP = JSON.parse(localStorage.getItem('isMsAPI'))
+      ? '/mp_quiz/mpq_questions/'
+      : endpoints.questionPaper.QuestionsInQP;
     axiosInstance
       .get(
-        `${endpoints.questionPaper.QuestionsInQP}?question_paper=${value.question_paper}&lobby_identifier=${params.id}`,
+        `${QuestionsInQP}?question_paper=${value.question_paper}&lobby_identifier=${params.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -150,11 +178,28 @@ const AssignQP = (props) => {
         } else {
           setAlert('error', result.data.message);
         }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
+        axiosInstance
+          .get(
+            `${endpoints.questionPaper.QuestionsInQP}?question_paper=${value.question_paper}&lobby_identifier=${params.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then((result) => {
+            if (result.data.status_code === 200) {
+              setQuestionData(result.data.result);
+            } else {
+              setAlert('error', result.data.message);
+            }
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
+          });
       });
   };
+
   const questionCard = (data, index) => {
     try {
       const filteredOptions = Object.entries(data.options).filter(
@@ -285,7 +330,7 @@ const AssignQP = (props) => {
           <Grid item xs={6} sm={2}>
             <Button
               variant='contained'
-              style={{ color: 'white', marginTop: '30px', width: '100%'  }}
+              style={{ color: 'white', marginTop: '30px', width: '100%' }}
               color='primary'
               size='medium'
               type='submit'

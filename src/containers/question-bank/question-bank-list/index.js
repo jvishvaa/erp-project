@@ -193,7 +193,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
   }, [page, tabValue, callFlag]);
 
   useEffect(() => {
-    setTabMapId('')
+    setTabMapId('');
     setTabQueLevel('');
     setTabQueTypeId('');
     setTabQueCatId('');

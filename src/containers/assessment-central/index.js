@@ -19,6 +19,7 @@ import {
   CircularProgress,
   SvgIcon,
 } from '@material-ui/core';
+import { connect, useSelector } from 'react-redux';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Pagination from '@material-ui/lab/Pagination';
 import AddIcon from '@material-ui/icons/Add';
@@ -89,7 +90,9 @@ const Assesment = () => {
   const [selectedAssesmentTest, setSelectedAssesmentTest] = useState();
   const [fetchingTests, setFetchingTests] = useState(false);
   const [minDate, setMinDate] = useState(null);
-
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
@@ -116,7 +119,7 @@ const Assesment = () => {
       status: '',
       date: [moment().startOf('isoWeek'), moment().endOf('week')],
       branch: [],
-      academic: '',
+      academic: selectedAcademicYear,
       grade: '',
       subject: [],
       assesment_type: '',
@@ -129,17 +132,17 @@ const Assesment = () => {
   });
 
   const getAcademic = async () => {
-    try {
-      setAcademicDropdown([]);
-      setBranchDropdown([]);
-      setGrades([]);
-      setSubjects([]);
-      const data = await fetchAcademicYears(moduleId);
-      handleAcademicYear({}, data[0]);
-      setAcademicDropdown(data);
-    } catch (e) {
-      setAlert('error', 'Failed to fetch academic');
-    }
+    // try {
+    //   setAcademicDropdown([]);
+    //   setBranchDropdown([]);
+    //   setGrades([]);
+    //   setSubjects([]);
+    //   const data = await fetchAcademicYears(moduleId);
+    handleAcademicYear({}, selectedAcademicYear);
+    //   setAcademicDropdown(data);
+    // } catch (e) {
+    //   setAlert('error', 'Failed to fetch academic');
+    // }
   };
 
   const getBranch = async (acadId) => {
@@ -263,11 +266,11 @@ const Assesment = () => {
   }, []);
 
   useEffect(() => {
-    if (moduleId) {
+    if (moduleId && selectedAcademicYear) {
       getAcademic();
     }
     getAssesmentTypes();
-  }, [moduleId]);
+  }, [moduleId, selectedAcademicYear]);
 
   const clearResults = () => {
     formik.handleReset();
@@ -460,7 +463,7 @@ const Assesment = () => {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} md={3}>
+                  {/* <Grid item xs={12} md={3}>
                     <FormControl fullWidth variant='outlined'>
                       <Autocomplete
                         id='academic'
@@ -484,7 +487,7 @@ const Assesment = () => {
                         {formik.errors.academic ? formik.errors.academic : ''}
                       </FormHelperText>
                     </FormControl>
-                  </Grid>
+                  </Grid> */}
                   <Grid item xs={12} md={3}>
                     <FormControl fullWidth variant='outlined'>
                       <Autocomplete

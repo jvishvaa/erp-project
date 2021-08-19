@@ -189,6 +189,7 @@ export function themeGenerator() {
       },
       '& .viewMoreHeader': {
         backgroundColor: '#fceeee',
+        backdropFilter: 'blur(10px)',
         display: 'flex',
         justifyContent: 'space-between',
         borderRadius: '10px 0px 0px 0px',
