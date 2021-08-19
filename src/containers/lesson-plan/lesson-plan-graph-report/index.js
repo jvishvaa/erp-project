@@ -506,7 +506,6 @@ const LessonPlanGraphReport = ({
       text: 'Chapter Wise Details  ',
       style: {
         fontSize: '1.1rem',
-        color: '#ff6b6b',
         display: 'flex',
         justifyContent: 'space-between',
         margin: '15px 15px 10px 15px',

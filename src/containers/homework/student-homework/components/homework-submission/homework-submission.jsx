@@ -73,6 +73,20 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto',
     bottom: 0,
   },
+  homeworkblock:{
+    color : theme.palette.secondary.main,
+    fontWeight: 600
+  },
+  homeworkSubmitwrapper:{
+    border: `1px solid ${theme.palette.primary.main}`,  
+    borderRadius: "10px",
+    padding: "20px",
+    ['@media screen(min-width:780px)']: {
+      margin: "10px",
+      width: "90% !important",
+      height: "auto !important",
+    }
+  }
 }));
 
 const HomeworkSubmission = withRouter(({ history, ...props }) => {
@@ -485,9 +499,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
           </div>
         </Grid>
         <Grid item lg={10}>
-          <div className='homework_submit_wrapper'>
+          <div className={classes.homeworkSubmitwrapper}>
             <div className='homework_block_wrapper_submit'>
-              <div className='homework_block homework_submit_tag'>
+              <div className={` ${classes.homeworkblock} homework_submit_tag`}>
                 Homework - {subjectName} : {homeworkTitle}
               </div>
               {homeworkSubmission.status === 1 &&

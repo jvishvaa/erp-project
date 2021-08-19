@@ -619,7 +619,7 @@ const Assesment = () => {
               <Grid item md={2} xs={6}>
                 <div className='btn-container with-border'>
                   <Button
-                    style={{ borderRadius: '10px' }}
+                    style={{ borderRadius: '10px' ,color : "white"}}
                     variant='contained'
                     className=''
                     color='primary'
@@ -649,7 +649,7 @@ const Assesment = () => {
               <Grid item md={2} xs={6}>
                 <div className='btn-container'>
                   <Button
-                    style={{ borderRadius: '10px' }}
+                    style={{ borderRadius: '10px' ,color : "white"}}
                     variant='contained'
                     className=''
                     startIcon={<AddIcon />}

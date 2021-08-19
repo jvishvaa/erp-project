@@ -230,6 +230,56 @@ export function themeGenerator() {
         boxShadow: '0px 0px 100px 100px rgba(192, 192, 192, 0.5) !important',
       },
     },
+    dayIcon: {
+      width: '40px',
+      height: '40px',
+      borderRadius: '25px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: '1rem',
+      fontWeight: 600,
+      border: `1px solid ${primarytemp} !important`,
+      ['@media screen(min-width:768px)']: {
+        width: '30px',
+        height: '30px',
+        borderRadius: '25px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: '1rem',
+        fontWeight: 600,
+        color: secondarytemp,
+        fontSize: '12px',
+        border: `1px solid ${primarytemp}`,
+      },
+    },
+    homeworkTableWrapper: {
+      border: `1px solid ${primarytemp}`,
+      boxShadow: 'none',
+      borderRadius: '10px',
+      '& .MuiTableCell-root': {
+        '&:not(:last-child)': {
+          borderRight: `1px solid ${primarytemp}`,
+        },
+      },
+      '& .MuiTableHead-root': {
+        '& .MuiTableCell-root': {
+          borderBottom: `1px solid ${primarytemp}`,
+          color: secondarytemp,
+        },
+      },
+      '& .MuiTableRow-root': {
+        '&:not(:last-child)': {
+          '& .MuiTableCell-root': {
+            borderBottom: `1px solid ${primarytemp}`,
+          },
+        },
+        '& .MuiTableCell-root': {
+          color: secondarytemp,
+        },
+      },
+    },
     overrides: {
       MuiButton: {
         // Name of the rule

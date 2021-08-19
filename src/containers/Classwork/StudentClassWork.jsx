@@ -25,6 +25,7 @@ import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 // import '../student-homework/student-homework.css';
 const useStyles = makeStyles((theme) => ({
   root: {
+    ...theme.homeworkTableWrapper,
     '& > *': {
       marginTop: theme.spacing(1),
     },
@@ -210,7 +211,7 @@ function handleDate(v1) {
         </form>
         <div className={classes.table}>
           {' '}
-          <Paper className={`homework_table_wrapper ${classes.root}`}>
+          <Paper className={classes.root}>
             {tableDisplay ? (
               <>
                 <TableContainer

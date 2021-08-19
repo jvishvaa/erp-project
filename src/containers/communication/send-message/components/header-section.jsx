@@ -28,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
   },
   borderCircle:{
     border : `1px solid ${theme.palette.primary.main}`
+  },
+  stepComplete:{
+    color: '#ffffff !important',
+    backgroundColor: theme.palette.primary.main
   }
 }));
 
@@ -48,7 +52,7 @@ const HeaderSection = withRouter(({ history, ...props }) => {
           <div
             className={`${classes.headerCircle} ${
               firstStep ? `${classes.borderCircle}` : null
-            } ${currentStep > 1 ? 'step_completed' : null}`}
+            } ${currentStep > 1 ? `${classes.stepComplete}` : null}`}
           >
             1
           </div>
@@ -59,7 +63,7 @@ const HeaderSection = withRouter(({ history, ...props }) => {
           <div
             className={`${classes.headerCircle} ${
               secondStep ? `${classes.borderCircle}` : null
-            } ${currentStep > 2 ? 'step_completed' : null}`}
+            } ${currentStep > 2 ? `${classes.stepComplete}` : null}`}
           >
             2
           </div>
@@ -70,7 +74,7 @@ const HeaderSection = withRouter(({ history, ...props }) => {
           <div
             className={`${classes.headerCircle} ${
               thirdStep ? `${classes.borderCircle}` : null
-            } ${currentStep > 3 ? 'step_completed' : null}`}
+            } ${currentStep > 3 ? `${classes.stepComplete}` : null}`}
           >
             3
           </div>

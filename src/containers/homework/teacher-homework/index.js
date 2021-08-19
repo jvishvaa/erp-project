@@ -78,6 +78,7 @@ import axiosInstance from '../../../config/axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    ...theme.homeworkTableWrapper,
     '& > *': {
       marginTop: theme.spacing(2),
     },
@@ -92,21 +93,15 @@ const useStyles = makeStyles((theme) => ({
   container: {
     maxHeight: 440,
   },
+  homeworkTableMobileView:{
+    color : theme.palette.secondary.main
+  }, homeworkblock:{
+    color : theme.palette.secondary.main,
+    fontWeight: 600
+  },
+  dayicon : theme.dayIcon
 }));
 
-const StyledClearButton = withStyles({
-  root: {
-    backgroundColor: '#E2E2E2',
-    color: '#8C8C8C',
-    height: '42px',
-    width: '150px',
-    borderRadius: '5px',
-    '&:hover': {
-      backgroundColor: '#FA8072 !important',
-      color: 'white',
-    },
-  },
-})(Button);
 
 function getDaysAfter(date, amount) {
   // TODO: replace with implementation for your date library
@@ -696,12 +691,12 @@ const TeacherHomework = withRouter(
                     {/* </div> */}
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <StyledClearButton
+                    <Button
                       onClick={(e) => handleCrearFilter()}
-                      className='classes.chk'
+                      className='labelColor cancelButton'
                     >
                       Clear All
-                    </StyledClearButton>
+                    </Button>
                   </Grid>
                 </Grid>
               )}
@@ -709,7 +704,7 @@ const TeacherHomework = withRouter(
                 activeView !== 'view-received-homework' &&
                 isMobile && (
                   <div className='homework_block_wrapper'>
-                    <div className='homework_block'>Weekly Time table</div>
+                    <div className={classes.homeworkblock}>Weekly Time table</div>
                     <div className='icon-desc-container'>
                       <SvgIcon
                         component={() => (
@@ -720,7 +715,7 @@ const TeacherHomework = withRouter(
                           />
                         )}
                       />
-                      <span>Assigned</span>
+                      <Typography color = "secondary">Assigned</Typography>
                     </div>
                     <div className='icon-desc-container'>
                       <SvgIcon
@@ -732,7 +727,7 @@ const TeacherHomework = withRouter(
                           />
                         )}
                       />
-                      <span>Submitted</span>
+                      <Typography color = "secondary">Submitted</Typography>
                     </div>
                     <div className='icon-desc-container'>
                       <SvgIcon
@@ -744,7 +739,7 @@ const TeacherHomework = withRouter(
                           />
                         )}
                       />
-                      <span>Evaluated</span>
+                      <Typography color = "secondary">Evaluated</Typography>
                     </div>
                     <div className='icon-desc-container'>
                       <SvgIcon
@@ -756,7 +751,7 @@ const TeacherHomework = withRouter(
                           />
                         )}
                       />
-                      <span>Expired</span>
+                      <Typography color = "secondary">Expired</Typography>
                     </div>
                   </div>
                 )}
@@ -792,7 +787,7 @@ const TeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <span style={{ fontSize: '16px' }}>Add Homework</span>
+                              <Typography color = "secondary" style={{ fontSize: '16px' }}>Add Homework</Typography>
                             </div>
                             <div className='icon-desc-container'>
                               <SvgIcon
@@ -804,7 +799,7 @@ const TeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <span style={{ fontSize: '16px' }}>HW Evaluated</span>
+                              <Typography color = "secondary"style={{ fontSize: '16px' }}>HW Evaluated</Typography>
                             </div>
                             <div className='icon-desc-container'>
                               <SvgIcon
@@ -816,7 +811,7 @@ const TeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <span style={{ fontSize: '16px' }}>HW Assigned</span>
+                              <Typography color = "secondary" style={{ fontSize: '16px' }}>HW Assigned</Typography>
                             </div>
                             <div className='icon-desc-container'>
                               <SvgIcon
@@ -828,7 +823,7 @@ const TeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <span style={{ fontSize: '16px' }}>Students Submitted</span>
+                              <Typography color = "secondary" style={{ fontSize: '16px' }}>Students Submitted</Typography>
                             </div>
                             {/* <div className='icon-desc-container'>
                               <SvgIcon
@@ -840,7 +835,7 @@ const TeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <span>Evaluated</span>
+                              <Typography>Evaluated</span>
                             </div> */}
                             <div className='icon-desc-container'>
                               <SvgIcon
@@ -852,7 +847,7 @@ const TeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <span style={{ fontSize: '16px' }}>Expired</span>
+                              <Typography color = "secondary" style={{ fontSize: '16px' }}>Expired</Typography>
                             </div>
                           </Grid>
                         )}
@@ -876,7 +871,7 @@ const TeacherHomework = withRouter(
                           className='table-cont'
                         >
                           <Paper
-                            className={`homework_table_wrapper ${classes.root}`}
+                            className={classes.root}
                             ref={tableContainer}
                           >
                             <TableContainer
@@ -955,8 +950,8 @@ const TeacherHomework = withRouter(
                                   {homeworkRows.map((row) => {
                                     const data = row[col.subject_name];
                                     return (
-                                      <ListItem className='homework-table-mobile-view'>
-                                        <div className='day-icon'>
+                                      <ListItem className={` ${classes.homeworkTableMobileView} homework-table-mobile-view`}>
+                                        <div className={classes.dayicon}>
                                           {moment(row.date).format('dddd').split('')[0]}
                                         </div>
                                         <div className='date'>{row.date}</div>

@@ -10,11 +10,6 @@
   display: inline-block;
 }
 
-.step_completed {
-  color: #ffffff !important;
-  background-color: #ff6b6b !important;
-}
-
 .send_message_header_bar {
   display: inline-block;
   vertical-align: top;

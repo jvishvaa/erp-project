@@ -58,6 +58,10 @@ const useStyles = makeStyles((theme) => ({
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
+  questionCard : {
+    border : `2px solid ${theme.palette.primary.main}`,
+    borderRadius : "25px"
+  }
 }));
 const CancelButton = withStyles({
   root: {
@@ -217,7 +221,7 @@ const QuestionCard = ({
         </DialogActions>
       </Dialog>
       <Grid item xs={12}>
-        <Card className='question-card'>
+        <Card className={classes.questionCard}>
           <CardContent>
             <Grid container>
               <Grid item container>

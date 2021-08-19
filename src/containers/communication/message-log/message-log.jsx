@@ -57,6 +57,17 @@ const useStyles = makeStyles((theme) => ({
   },
   tableheader:{
     color : theme.palette.secondary.main
+  },
+  msgTypeBlock:{
+    width: "10%",
+    height: "30px",
+    textAlign: "center",
+    color: theme.palette.secondary.main,
+    cursor: "pointer",
+  },
+  msgTypeBlockSelected:  {
+    borderBottom: `3px solid ${theme.palette.primary.main}`,
+    fontWeight: 600,
   }
 }));
 
@@ -553,14 +564,14 @@ const MessageLog = withRouter(({ history, ...props }) => {
           <div className='message_log_white_wrapper'>
             <div className='message_type_block_wrapper'>
               <div
-                className={`message_type_block ${isEmail ? null : 'message_type_block_selected'
+                className={` ${classes.msgTypeBlock} ${isEmail ? null : `${classes.msgTypeBlockSelected}`
                   }`}
                 onClick={handleTypeChange}
               >
                 SMS Logs
               </div>
               <div
-                className={`message_type_block ${isEmail ? 'message_type_block_selected' : null
+                className={`${classes.msgTypeBlock} ${isEmail ? `${classes.msgTypeBlockSelected}` : null
                   }`}
                 onClick={handleTypeChange}
               >

@@ -10,18 +10,9 @@
   letter-spacing: 0.00938em;
   vertical-align: middle;
   margin-right: 1%;
-  /* color: #014b7e; */
 }
-.MuiTypography-body1 {
-  /* color: #014b7e; */
-}
-.send_message_button_wrapper {
-  margin: 2%;
-  display: flex;
-  justify-content: space-between;
-  width: 35%;
-  margin-left: 5%;
-}
+
+
 .textFields_message {
   display: block;
   padding: 0%;
@@ -43,10 +34,7 @@
   width: 100%;
   background-color: white;
 }
-.message_sending_screen_wrapper {
-	width: 92%;
-    margin: 20px auto;
-}
+
 .message_sending_white_wrapper{
 	margin: 20px 0px 0px;
 	padding: 20px 0px 0px;
@@ -86,46 +74,10 @@
 .email_subject_wrapper .MuiFormControl-root {
   width: 70%;
 }
-.message_type_wrapper .MuiFormControl-root {
-  border: 1px solid #d4cbcb !important;
-  border-radius: 10px;
-}
-.message_type_wrapper .MuiInput-underline:before {
-  border: none !important;
-}
-.message_type_wrapper .MuiInput-underline:after {
-  border: none !important;
-}
-.message_type_wrapper .MuiSelect-select:focus {
-  background-color: #f9f9f9 !important;
-  border-radius: 10px !important;
-}
-.message_type_wrapper .MuiSelect-select {
-  border-radius: 5px !important;
-}
-.message_type_wrapper label + .MuiInput-formControl {
-  margin-top: 3px !important;
-}
-.message_type_wrapper .MuiInputLabel-outlined {
-  transform: translate(14px, 10px) scale(1) !important;
-}
-.message_type_wrapper .MuiInputLabel-outlined.MuiInputLabel-shrink {
-  transform: translate(14px, -6px) scale(0.75) !important;
-}
-.message_type_wrapper .MuiPaper-elevation8 {
-  margin-top: 6%;
-}
 .send_message_type .MuiFormLabel-root {
   /* color: #014b7e !important; */
   font-size: 1rem !important;
   font-weight: 600 !important;
-}
-.send_message_select_all_wrapper {
-  color: #014b7e;
-  font-size: 1rem;
-  font-weight: 600;
-  width: 100%;
-  margin: 1px auto 1%;
 }
 .send_message_select_all_checkbox {
   transform: scale(1.5);
@@ -135,28 +87,7 @@
 	margin: 20px auto;
 	width: 95%;
 }
-.create_group_message_type_wrapper .MuiOutlinedInput-root {
-  border-radius: 10px;
-}
-.create_group_message_type_wrapper .MuiOutlinedInput-input {
-  padding: 9.5px 14px;
-  width: 250px;
-  color: #014b7e;
-}
-.create_group_message_type_wrapper .MuiInputLabel-outlined {
-  transform: translate(14px, 14px) scale(1);
-}
-.create_group_message_type_wrapper .MuiInputLabel-outlined {
-  color: #014b7e !important;
-  font-size: 1rem !important;
-  font-weight: 600 !important;
-}
-.create_group_message_type_wrapper .MuiSvgIcon-root {
-  color: #ff6b6b;
-}
-.create_group_message_type_wrapper .makeStyles-formControl-1 {
-  margin-left: 0%;
-}
+
 .file_name_container{
 	font-size: 1rem;
 	color: #014b7e;
@@ -180,32 +111,14 @@
     margin-top: 2%;
     margin-left: 4%;
   }
-  .send_message_button_wrapper {
-    width: 90%;
-    margin: auto;
-    margin-top: 5%;
-  }
   .message_type_block {
     width: 50%;
   }
   .email_subject_wrapper .MuiFormControl-root {
     width: 100%;
   }
-  .deactive_clearAll {
-    width: 80%;
-  }
   .profile_update_button {
     width: 80%;
-  }
-  .message_sending_screen_wrapper {
-    margin: auto;
-    margin-top: 5%;
-    padding: 5%;
-    background-color: white;
-  }
-  .create_group_message_type_wrapper .MuiOutlinedInput-input {
-    padding: 9.5px 14px;
-    width: 270px;
   }
   .creategroup_firstrow {
     margin: auto;

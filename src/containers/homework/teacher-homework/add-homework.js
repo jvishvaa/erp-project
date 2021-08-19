@@ -10,6 +10,7 @@ import {
   Grid,
   withStyles,
   useMediaQuery,
+  makeStyles
 } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import cuid from 'cuid';
@@ -35,16 +36,30 @@ const validateQuestions = (obj) => {
   return { error, errorObj };
 };
 
-const StyledOutlinedButton = withStyles({
+const useStyles = makeStyles((theme) =>({
+  navCard:{
+    border : `1px solid ${theme.palette.primary.main}`
+  }, headerText: {
+    color: theme.palette.secondary.main,
+    fontWeight: 600,
+    fontSize: "1rem",
+    ['@media screen(min-width:780px)']: {
+      fontSize: "0.85rem",
+    }
+  }
+}))
+
+const StyledOutlinedButton = withStyles((theme)=>({
   root: {
     height: '42px',
-    color: '#FE6B6B',
-    border: '1px solid #FF6B6B',
+    color: theme.palette.primary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
     backgroundColor: 'transparent',
   },
-})(Button);
+}))(Button);
 
 const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
+  const classes = useStyles()
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [sections, setSections] = useState([]);
@@ -225,17 +240,16 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
         <Grid container className='add-homework-inner-container' spacing={2}>
           <Grid item xs={12} className='add-homework-title-container' md={3}>
             <div className='nav-cards-container'>
-              <div
-                className='nav-card'
+            <div className={` ${classes.navCard} nav-card`}
                 onClick={() => {
                   window.history.back('/homework/teacher');
                 }}
               >
-                <div className='header-text text-center' style={{cursor:'pointer'}}>All Homeworks</div>
+                <div className={` ${classes.headerText} text-center`} style={{cursor:'pointer'}}>All Homeworks</div>
               </div>
-              <div className='nav-card'>
-                <div className='header-text text-center' style={{cursor:'pointer'}}>{params.date}</div>
-                <div className='header-text text-center' style={{cursor:'pointer'}}>{params.subject}</div>
+              <div className={` ${classes.navCard} nav-card`}>
+                <div className={` ${classes.headerText} text-center`} style={{cursor:'pointer'}}>{params.date}</div>
+                <div className={` ${classes.headerText} text-center`} style={{cursor:'pointer'}}>{params.subject}</div>
               </div>
             </div>
           </Grid>

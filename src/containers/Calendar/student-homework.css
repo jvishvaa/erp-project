@@ -72,17 +72,6 @@
 .create_group_filter_container .tb-header tr th {
   background-color: #f3f3f3 !important;
 }
-.day-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 1rem;
-  font-weight: 600;
-  border: 1px solid #014b7e;
-}
 .message_log_breadcrumb_wrapper {
   background: #f9f9f9;
 }
@@ -93,25 +82,6 @@
 
 .create_group_filter_container fieldset {
   border-radius: 10px;
-}
-.create_group_filter_container label {
-  /* color: #014b7e; */
-}
-.create_group_filter_container label:focus {
-  /* color: #014b7e !important; */
-}
-.homework_table_wrapper {
-  border: 1px solid #ff6b6b;
-  box-shadow: none;
-}
-.homework_table_wrapper .MuiTableCell-root:not(:last-child) {
-  border-right: 1px solid #ff6b6b;
-}
-.homework_table_wrapper .MuiTableRow-root:not(:last-child) .MuiTableCell-root {
-  border-bottom: 1px solid #ff6b6b !important;
-}
-.homework_table_wrapper .MuiTableHead-root .MuiTableCell-root {
-  border-bottom: 1px solid #ff6b6b !important;
 }
 .selected {
   background-color: #ffecec;
@@ -131,10 +101,6 @@
   border-radius: 10px !important;
   overflow-y: auto;
   max-height: 10000px !important;
-}
-.homework_table_wrapper {
-  border-radius: 10px !important;
-  box-shadow: none !important;
 }
 .homework_header {
   text-transform: capitalize;
@@ -426,23 +392,6 @@
   }
   .date-ranger p {
     display: none !important;
-  }
-
-  /* .MuiOutlinedInput-notchedOutline{
-		border-color: 1px #DBDBDB !important;
-	} */
-  .day-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 1rem;
-    font-weight: 600;
-    color: #014b7e;
-    font-size: 12px;
-    border: 1px solid #014b7e;
   }
 
   .dates span {

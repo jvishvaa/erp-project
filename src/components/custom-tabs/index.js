@@ -2,6 +2,27 @@
 import React, { useState, useContext, useEffect } from 'react';
 
 import './styles.scss';
+import { makeStyles} from '@material-ui/core';
+
+
+const useStyles = makeStyles((theme) =>({
+  tabListItem:{
+      padding: "10px 15px",
+      cursor: "pointer",
+      color : theme.palette.secondary.main,
+      border: `1px solid ${theme.palette.primary.main}`,
+      borderRadius: "5px",
+      margin: "0.5rem",
+      minWidth: "max-content",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      '&.active' : {
+        color: "#ffffff",
+        backgroundColor: theme.palette.primary.main,
+      }
+    }
+}))
 
 const ClapContext = React.createContext();
 const { Provider } = ClapContext;
@@ -60,6 +81,7 @@ const buttonUnderlineVariants = {
 
 const TabButton = ({ activeTab, label, onClick }) => {
   let isActive = false;
+  const classes = useStyles()
 
   if (activeTab === label) {
     isActive = true;
@@ -71,12 +93,11 @@ const TabButton = ({ activeTab, label, onClick }) => {
   return (
     <>
       <li
-        className={`tab-list-item ${isActive && 'active'}`}
+        className={` ${classes.tabListItem} ${isActive && 'active'}`}
         onClick={handleClick}
         onKeyDown={() => {}}
       >
         <div>{label}</div>
-        {/* {isActive && <div className={'tab-header-underline']}`}></div>} */}
       </li>
     </>
   );

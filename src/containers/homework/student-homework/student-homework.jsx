@@ -43,6 +43,7 @@ import MobileDatepicker from './student-homework-mobile-datepicker';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    ...theme.homeworkTableWrapper,
     '& > *': {
       marginTop: theme.spacing(2),
     },
@@ -60,6 +61,12 @@ const useStyles = makeStyles((theme) => ({
   homeworkSubmissionIsOpen: {
     display: 'none',
   },
+  homeworkblock:{
+    color : theme.palette.secondary.main,
+    fontWeight: 600
+  }, 
+   dayicon : theme.dayIcon
+
 }));
 
 const StudentHomework = withRouter(({ history, ...props }) => {
@@ -330,12 +337,12 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             ) : (
               !homeworkSubmission.isOpen && (
                 <div className='homework_block_wrapper'>
-                  <div
-                    className='homework_block icon-desc-container-desk'
-                    style={{ fontSize: '16px', color: '#014b7e', marginLeft: '15px' }}
+                  <Typography color = "secondary"
+                    className={` ${classes.homeworkblock}  icon-desc-container-desk`}
+                    style={{ fontSize: '16px', marginLeft: '15px' }}
                   >
                     Homeworks{' '}
-                  </div>
+                  </Typography>
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
@@ -346,7 +353,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <span style={{ fontSize: '16px', color: '#014b7e' }}>Unopened</span>
+                    <Typography color = "secondary" style={{ fontSize: '16px' }}>Unopened</Typography>
                   </div>
 
                   <div className='icon-desc-container-desk'>
@@ -359,9 +366,9 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <span style={{ fontSize: '16px', color: '#014b7e' }}>
+                    <Typography color = "secondary" style={{ fontSize: '16px' }}>
                       File Opened
-                    </span>
+                    </Typography>
                   </div>
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
@@ -373,7 +380,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <span style={{ fontSize: '16px', color: '#014b7e' }}>Submitted</span>
+                    <Typography color = "secondary" style={{ fontSize: '16px' }}>Submitted</Typography>
                   </div>
 
                   <div className='icon-desc-container-desk'>
@@ -386,7 +393,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <span style={{ fontSize: '16px', color: '#014b7e' }}>Evaluated</span>
+                    <Typography  color = "secondary" style={{ fontSize: '16px' }}>Evaluated</Typography>
                   </div>
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
@@ -401,9 +408,9 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <span style={{ fontSize: '16px', color: '#014b7e' }}>
+                    <Typography color = "secondary" style={{ fontSize: '16px' }}>
                       Not Submitted
-                    </span>
+                    </Typography>
                   </div>
                 </div>
               )
@@ -441,7 +448,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                       }
                       item
                     >
-                      <Paper className={`homework_table_wrapper ${classes.root}`}>
+                      <Paper className={classes.root}>
                         <TableContainer
                           className={`table table-shadow homework_table ${classes.container}`}
                         >
@@ -538,7 +545,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                       <TableCell>
                                         <div className='table-date'>
                                           <div
-                                            className='day-icon'
+                                            className={classes.dayicon}
                                             style={{ marginRight: '5px' }}
                                           >
                                             {moment(row.date).format('dddd').split('')[0]}

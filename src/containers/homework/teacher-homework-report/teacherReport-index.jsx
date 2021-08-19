@@ -19,6 +19,7 @@ import MobileDatepicker from '../student-homework/student-homework-mobile-datepi
 import '../student-homework/student-homework.css';
 const useStyles = makeStyles((theme) => ({
   root: {
+    ...theme.homeworkTableWrapper,
     '& > *': {
       marginTop: theme.spacing(2),
     },
@@ -132,7 +133,7 @@ const TeacherHomeWorkReport = () => {
         </div>
         <div className={classes.table}>
           {' '}
-          <Paper className={`homework_table_wrapper ${classes.root}`}>
+          <Paper className={classes.root}>
             {tableDisplay ? (
               <>
                 <TableContainer

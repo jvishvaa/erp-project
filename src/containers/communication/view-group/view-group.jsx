@@ -73,8 +73,8 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     color: `${theme.palette.secondary.main} !important`,
   },
-  tablebody : {
-    color : `${theme.palette.secondary.main} !important`
+  tablebody: {
+    color: `${theme.palette.secondary.main} !important`
   }
 
 }));
@@ -331,7 +331,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                         </TableCell>
                       </TableRow>
                     </TableHead>
-                    <TableBody className = {classes.tablebody}>
+                    <TableBody className={classes.tablebody}>
                       {groupsData?.map((items, i) => (
                         <TableRow
                           hover
@@ -339,8 +339,8 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                           tabIndex={-1}
                           key={`group_table_index${i}`}
                         >
-                          <TableCell>{items.groupName}</TableCell>
-                          <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
+                          <TableCell className={classes.tableCell}>{items.groupName}</TableCell>
+                          <TableCell className={`${isHidden ? 'hide' : 'show'} ${classes.tableCell}`}>
                             {items.roleType.length
                               ? items.roleType.map((roles, index) => {
                                 if (index + 1 === items.roleType.length) {
@@ -352,7 +352,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                           </TableCell>
                           <TableCell
                             className={`view_group_table_sections ${isHidden ? 'hide' : 'show'
-                              }`}
+                              }${classes.tableCell}`}
                           >
                             {items.grades.length
                               ? items.grades.map((grades, index) => {
@@ -365,7 +365,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                           </TableCell>
                           <TableCell
                             className={`view_group_table_sections ${isHidden ? 'hide' : 'show'
-                              }`}
+                              }${classes.tableCell}`}
                           >
                             {items.sections && items.sections.length
                               ? items.sections.map((sections, index) => {
@@ -390,7 +390,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                                 onClick={() => handleStatusChange(items.groupId, i)}
                                 title='Deactivate'
                               >
-                                <BlockIcon  />
+                                <BlockIcon />
                               </IconButton>
                             ) : (
                               <button

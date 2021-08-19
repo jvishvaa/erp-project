@@ -37,8 +37,6 @@ import {
   fetchSubjects as getSubjects,
 } from '../../../redux/actions/index';
 import { Context } from '../context/context';
-import communicationStyles from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.styles';
-import './Styles.css';
 const CreateDailyDairy = (details, onSubmit) => {
   const [academicYears, setAcademicYears] = useState([]);
   const [branches, setBranches] = useState([]);

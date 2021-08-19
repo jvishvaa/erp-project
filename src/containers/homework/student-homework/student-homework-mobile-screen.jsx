@@ -34,6 +34,8 @@ const useStyles = makeStyles((theme) => ({
   title: {
     margin: theme.spacing(4, 0, 2),
   },
+ dayicon : theme.dayIcon
+
 }));
 /*
 function generate(element) {
@@ -164,7 +166,7 @@ const StudenthomeworkMobileScreen = (props) => {
                   <div key={index}>
                     <ListItem className='mobile-screen-list-item'>
                       <ListItemAvatar>
-                        <div className='day-icon'>
+                        <div className={classes.dayicon}>
                           {moment(name.date).format('dddd').split('')[0]}
                         </div>
                       </ListItemAvatar>

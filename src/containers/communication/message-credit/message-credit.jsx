@@ -38,21 +38,40 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
   root: {
+    ...theme.commonTableRoot,
     '& > *': {
       marginTop: theme.spacing(2),
     },
-    width: '95%',
+    width: '100%',
     margin: 'auto',
     [theme.breakpoints.down('xs')]: {
       width: '85vw',
       margin: 'auto',
     },
+
   },
   container: {
     maxHeight: 440,
   },
-  headertable:{
+  headertable: {
+    color: theme.palette.secondary.main
+  },
+  columnHeader: {
+    color: `${theme.palette.secondary.main} !important`,
+    fontWeight: 600,
+    fontSize: '1rem',
+    backgroundColor: `#ffffff !important`,
+  },
+  tablecell:{
     color : theme.palette.secondary.main
+  },
+  addsmsCreditBox:{
+    width: "50px",
+    height: "25px",
+    textAlign: "center",
+    outline: "none",
+    border: "none",
+     color: theme.palette.secondary.main
   }
 }));
 
@@ -290,12 +309,10 @@ const MessageCredit = withRouter(({ history, ...props }) => {
       ) : null}
       <Layout>
         <div className='message_credit__page'>
-          <div className='bread_crumb_container'>
             <CommonBreadcrumbs
               componentName='Communication'
               childComponentName='Add SMS credit'
             />
-          </div>
           <div className='create_group_filter_container'>
             <Grid container className='message_log_container' spacing={5}>
               <Grid xs={12} lg={3} item>
@@ -334,83 +351,81 @@ const MessageCredit = withRouter(({ history, ...props }) => {
               ))}
             </>
           ) : (
-            <div className='sms_credit_white_space_wrapper'>
-              <Paper className={`sms_credit_table_wrapper ${classes.root}`}>
-                <TableContainer
-                  className={`table table-shadow sms_credit_table ${classes.container}`}
-                >
-                  <Table stickyHeader aria-label='sticky table'>
-                    <TableHead className={classes.headertable}>
-                      <TableRow color = "secondary">
-                        <TableCell>Branch</TableCell>
-                        <TableCell>Available SMS Credit</TableCell>
-                        <TableCell>Used SMS Credit</TableCell>
-                        <TableCell>Amount to be Added</TableCell>
-                        <TableCell>Add SMS Credit</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody className='table_body'>
-                      {testData.map((items, index) => (
-                        <TableRow key={`message_credit_table_${index}`}>
-                          <TableCell align='right'>{items.BranchName}</TableCell>
-                          <TableCell align='right'>{items.AvailableSMS}</TableCell>
-                          <TableCell align='right'>{items.useSMS}</TableCell>
-                          <TableCell align='right'>
-                            {items.Adding ? (
-                              <input
-                                type='number'
-                                className='add_sms_credit_box change_sms_credit_box'
-                                value={Number(items.AmountAdded).toString()}
-                                onChange={(e) => handleAddingSms(e, index)}
-                              />
-                            ) : (
-                              <input
-                                type='number'
-                                className='add_sms_credit_box'
-                                value={items.AmountAdded}
-                                readOnly
-                              />
-                            )}
-                          </TableCell>
-                          <TableCell align='right'>
-                            {items.Adding ? (
-                              <div className='addcredit_button_wrapper'>
-                                <Button
-                                  type='submit'
-                                  variant='contained'
-                                  onClick={() => handleCancel(index)}
-                                  className='custom_button_master labelColor'
-                                  size='small'
-                                >
-                                  CANCEL
-                                </Button>
-
-                                <Button
-                                  type='submit'
-                                  variant='contained'
-                                  color='primary'
-                                  style={{ color: 'white', marginLeft: '10%' }}
-                                  onClick={() => handleSubmit(index)}
-                                  className='custom_button_master'
-                                  size='small'
-                                >
-                                  SAVE
-                                </Button>
-                              </div>
-                            ) : (
-                              <AddCircleIcon
+              <Paper className={`common-table ${classes.root}`}>
+              <TableContainer
+                className={classes.container}
+              >
+                <Table stickyHeader aria-label='sticky table'>
+                  <TableHead className='table-header-row'>
+                    <TableRow color="secondary">
+                      <TableCell className = {classes.columnHeader}>Branch</TableCell>
+                      <TableCell className = {classes.columnHeader}>Available SMS Credit</TableCell>
+                      <TableCell className = {classes.columnHeader}>Used SMS Credit</TableCell>
+                      <TableCell className = {classes.columnHeader}>Amount to be Added</TableCell>
+                      <TableCell className = {classes.columnHeader}>Add SMS Credit</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody className='table_body'>
+                    {testData.map((items, index) => (
+                      <TableRow key={`message_credit_table_${index}`}>
+                        <TableCell className = {classes.tablecell} align='right'>{items.BranchName}</TableCell>
+                        <TableCell className = {classes.tablecell} align='right'>{items.AvailableSMS}</TableCell>
+                        <TableCell className = {classes.tablecell} align='right'>{items.useSMS}</TableCell>
+                        <TableCell className = {classes.tablecell} align='right'>
+                          {items.Adding ? (
+                            <input
+                              type='number'
+                              className={ `${classes.addsmsCreditBox} change_sms_credit_box`}
+                              value={Number(items.AmountAdded).toString()}
+                              onChange={(e) => handleAddingSms(e, index)}
+                            />
+                          ) : (
+                            <input
+                              type='number'
+                              className={classes.addsmsCreditBox}
+                              value={items.AmountAdded}
+                              readOnly
+                            />
+                          )}
+                        </TableCell>
+                        <TableCell className = {classes.tablecell} align='right'>
+                          {items.Adding ? (
+                            <div className='addcredit_button_wrapper'>
+                              <Button
+                                type='submit'
                                 variant='contained'
-                                onClick={() => handleStatusChange(index)}
-                              />
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Paper>
-            </div>
+                                onClick={() => handleCancel(index)}
+                                className='custom_button_master labelColor'
+                                size='small'
+                              >
+                                CANCEL
+                              </Button>
+
+                              <Button
+                                type='submit'
+                                variant='contained'
+                                color='primary'
+                                style={{ color: 'white', marginLeft: '10%' }}
+                                onClick={() => handleSubmit(index)}
+                                className='custom_button_master'
+                                size='small'
+                              >
+                                SAVE
+                              </Button>
+                            </div>
+                          ) : (
+                            <AddCircleIcon
+                              variant='contained'
+                              onClick={() => handleStatusChange(index)}
+                            />
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
           )}
         </div>
       </Layout>
