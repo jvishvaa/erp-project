@@ -73,6 +73,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
     color: "white",
     width: "20px",
+   },
+   dateweb:{
+color:theme.palette.secondary.main,
+marginTop : "10px"
    }
 
 }));
@@ -513,7 +517,6 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                         {otherSubjects.length}
                                       </span>
                                       <Autocomplete
-                                        style={{ color: '#FF6B6B' }}
                                         size='small'
                                         onChange={handleOtherSubject}
                                         value={selectedOtherSubjects}
@@ -558,7 +561,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                           >
                                             {moment(row.date).format('dddd').split('')[0]}
                                           </div>
-                                          <div className='date-web'>
+                                          <div className={classes.dateweb}>
                                             {moment(row.date).format('DD-MM-YYYY')}
                                           </div>
                                         </div>

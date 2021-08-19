@@ -245,7 +245,7 @@ export function themeGenerator() {
       marginRight: '1rem',
       fontWeight: 600,
       border: `1px solid ${primarytemp} !important`,
-      ['@media screen(min-width:768px)']: {
+      '@media screen and(max-width:768px)': {
         width: '30px',
         height: '30px',
         borderRadius: '25px',

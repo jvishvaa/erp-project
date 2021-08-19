@@ -522,6 +522,7 @@ const Cal1 = () => {
                 )}
               /> */}
               <SearchBar
+              style = {{borderRadius : "10px"}}
                 // value={filterData?.selectedEventType || ''}
                 onCancelSearch={(e) => { handleClears(e) }}
                 value={searchData}

@@ -21,22 +21,8 @@
   /* background-image: linear-gradient(45deg, #f6d2ff, #ffd9d9); */
 }
 
-.questionHeaderContainer {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding-bottom: 7px;
-  border-bottom: 1px solid #014b7e;
-}
-
 .questionHeaderIcon .MuiIconButton-root {
   padding: 0;
-}
-
-.questionTag {
-  color: #014b7e;
-  font-size: 16px;
-  font-weight: 600;
 }
 
 .questionHeaderIcon {
@@ -261,9 +247,6 @@
 }
 
 @media screen and (max-width: 768px) {
-  .questionTag {
-    width: 100%;
-  }
 
   .addAnotherMatchingButtonWrapper,
   .addAnotherMatrixButtonWrapper {

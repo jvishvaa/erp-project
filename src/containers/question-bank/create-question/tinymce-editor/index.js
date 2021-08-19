@@ -35,7 +35,7 @@ const MyTinyEditor = ({
             id?.startsWith('studentAnswerEditor') || id?.startsWith('descriptioneditor')
               ? ['lists link file paste wordcount']
               : ['lists link file image paste wordcount'],
-          content_style: 'body { color: #014b7e; font-size: 14pt; font-family: Arial; }',
+          content_style: 'body { font-size: 14pt; font-family: Arial; }',
           toolbar:
             'fontselect fontsizeselect bold italic alignleft aligncenter alignright underline bullist numlist file image customInsertButton',
           setup:

@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: '10px',
     borderRadius: '10px',
     height: '110px',
-    border: '1px #ff6b6b solid',
+    border: `1px #ff6b6b ${theme.palette.primary.main}`,
   },
   container: {
     maxHeight: '70vh',
@@ -180,10 +180,11 @@ const CreateGenre = (props) => {
                       subheader={
                         <Typography
                           gutterBottom
+                          color='secondary'
                           variant='body2'
                           align='left'
                           component='p'
-                          style={{ color: '#014b7e', pagging: '0px' }}
+                          style={{ pagging: '0px' }}
                         >
                           Created At :{' '}
                           {item && moment(item.created_at).format('MMM DD YYYY')}
@@ -191,13 +192,13 @@ const CreateGenre = (props) => {
                       }
                     />
                     <CardContent style={{ pagging: '1px' }}>
-                      <Typography className={classes.typoStyle}>
+                      <Typography color='secondary' className={classes.typoStyle}>
                         Grade : {item.grade && item.grade.grade_name}{' '}
                       </Typography>
-                      <Typography className={classes.typoStyle}>
+                      <Typography color='secondary' className={classes.typoStyle}>
                         Genre Name: {item.genre}{' '}
                       </Typography>
-                      <Typography className={classes.typoStyle}>
+                      <Typography color='secondary' className={classes.typoStyle}>
                         Created By : {item.created_by.first_name}
                       </Typography>
                     </CardContent>
@@ -539,9 +540,9 @@ const CreateGenre = (props) => {
           </Grid>
           <Grid item xs={6} sm={2}>
             <Button
+              color='primary'
               variant='contained'
               style={{ color: 'white', width: '100%' }}
-              color='primary'
               size='medium'
               type='submit'
               onClick={handleFilter}
@@ -558,9 +559,9 @@ const CreateGenre = (props) => {
         >
           <Grid item xs={6} sm={2}>
             <Button
+              color='primary'
               variant='contained'
               style={{ color: 'white', width: '100%' }}
-              color='primary'
               size='medium'
               type='submit'
               onClick={handleSubmit}
@@ -585,8 +586,8 @@ const CreateGenre = (props) => {
             <li style={{ listStyleType: 'none' }}>
               <Typography
                 align='right'
-                className={classes.dividerInset}
-                style={{ font: '#014b7e', fontWeight: 600, paddingRight: '80px' }}
+                color='secondary'
+                style={{ fontWeight: 600, paddingRight: '80px' }}
                 display='block'
                 variant='caption'
               >

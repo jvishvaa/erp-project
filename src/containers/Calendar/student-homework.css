@@ -62,7 +62,6 @@
 }
 
 .mobile-date-picker input {
-  color: #014b7e;
   font-size: 15px;
 }
 .mobile-date-picker label {
@@ -352,22 +351,13 @@
     display: flex;
     justify-content: space-around;
   }
-  .icon-text {
-    color: #014b7e;
-    font-size: 14px;
-  }
-  /* .MuiDivider-inset {
-		margin-left: 72px !important;
-		margin-right: 30px  !important;
-	}
-	 */
+
   .mobile-screen-subject-button {
     overflow: auto;
     white-space: nowrap;
   }
 
   .mobile-date-picker .date-ranger label {
-    color: #014b7e !important;
     font-size: 20px !important;
   }
   .mobile-date-picker .date-ranger fieldset {
@@ -380,7 +370,6 @@
     margin-right: 40px;
   }
   .date-ranger input {
-    color: #014b7e !important;
     font-size: 14px !important;
   }
   .date-ranger p {

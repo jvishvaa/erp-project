@@ -8,6 +8,7 @@ import {
   SvgIcon,
   IconButton,
   Typography,
+  makeStyles
 } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
@@ -20,7 +21,30 @@ import SingleOption from './single-option';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import './multiple-choice.css';
 import MyTinyEditor from '../../tinymce-editor';
-import axios from 'axios';
+
+const useStyles = makeStyles((theme)=> ({
+  questionTag:{
+    color: theme.palette.secondary.main,
+    fontSize: "16px",
+    fontWeight: 600,
+  },
+  questionHeaderContainer:{
+    display: "flex",
+  justifyContent: "space-between",
+  width: "100%",
+  paddingBottom: "7px",
+  borderBottom: `1px solid ${theme.palette.secondary.main}`,
+  },
+  answerTag:{
+    color:theme.palette.secondary.main,
+  fontSize: "16px",
+  fontWeight: 600,
+  width: "100%",
+  paddingBottom: "7px",
+  borderBottom: `1px solid ${theme.palette.secondary.main}`,
+  marginBottom: "10px",
+  }
+}))
 
 const MultipleChoice = ({
   editData,
@@ -41,6 +65,7 @@ const MultipleChoice = ({
   setLoading,
 }) => {
   const themeContext = useTheme();
+  const classes = useStyles()
   const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -633,8 +658,8 @@ const MultipleChoice = ({
           : 'multipleChoiceContainer'
       }
     >
-      <div className='questionHeaderContainer'>
-        <div className='questionTag'>
+      <div className={classes.questionHeaderContainer}>
+        <div className={classes.questionTag}>
           {parentQuestionType?.ComprehensionQuestions || parentQuestionType?.VideoQuestion
             ? `Question ${[...comprehensionQuestions][index]['count']}`
             : 'Question'}
@@ -774,7 +799,7 @@ const MultipleChoice = ({
       )}
       {!isMinimized && (
         <>
-          <div className='answerTag'>
+          <div className={classes.answerTag}>
             {showQuestionType?.Descriptive || showQuestionType?.TrueFalse
               ? 'Answer'
               : 'Answers'}
@@ -846,7 +871,7 @@ const MultipleChoice = ({
           )}
           {(showQuestionType?.MatchTheFollowing || showQuestionType?.MatrixQuestion) && (
             <div className='matchingOptionsWrapper'>
-              <div className='matchingAnswerTag'>
+              <div className={classes.answerTag}>
                 {showQuestionType.MatrixQuestion ? 'Matrix Options' : 'Matching Options'}
               </div>
               <div className='matchingOptionsContainer'>

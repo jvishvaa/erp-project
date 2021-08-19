@@ -50,7 +50,6 @@
 
 
 .mobile-date-picker input{
-	color: #014B7E;
 	font-size: 15px;
 }
 .mobile-date-picker label{
@@ -269,17 +268,13 @@ font-weight: 600;
 		display: flex;
 		justify-content: space-around;
 	  }
-	  .icon-text{
-		color: #014B7E;
-		font-size: 14px;
-	  }
+
 	.mobile-screen-subject-button{
 		overflow: auto;
    		 white-space: nowrap;
 	}
 	
 	.mobile-date-picker .date-ranger label{
-		color: #014B7E !important;
     	font-size: 20px !important;
 	}
 	.mobile-date-picker .date-ranger fieldset{
@@ -292,7 +287,6 @@ font-weight: 600;
 		margin-right: 40px;
 	}
 	.date-ranger input{
-		color: #014B7E !important;
     	font-size: 14px !important;
 	}
 	.date-ranger  p{

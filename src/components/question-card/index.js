@@ -41,6 +41,8 @@ import FileValidators from '../../components/file-validation/FileValidators';
 import InputLabel from '@material-ui/core/InputLabel';
 import './styles.scss';
 import { makeStyles } from '@material-ui/core/styles';
+
+
 const StyledButton = withStyles({
   root: {
     color: '#FFFFFF',
@@ -58,9 +60,13 @@ const useStyles = makeStyles((theme) => ({
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
-  questionCard : {
+  questionCard:{
     border : `2px solid ${theme.palette.primary.main}`,
-    borderRadius : "25px"
+    borderRadius : "10px"
+  },
+  acceptedfiles :{
+    color : theme.palette.secondary.main,
+    width : "100%"
   }
 }));
 const CancelButton = withStyles({
@@ -210,18 +216,13 @@ const QuestionCard = ({
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button
-            autoFocus
-            className='labelColor cancelButton'
-            size='medium'
-            onClick={closeAttachmentsModal}
-          >
+          <Button autoFocus onClick={closeAttachmentsModal}>
             Close
           </Button>
         </DialogActions>
       </Dialog>
       <Grid item xs={12}>
-        <Card className={classes.questionCard}>
+        <Card className={` ${classes.questionCard} question-card`}>
           <CardContent>
             <Grid container>
               <Grid item container>
@@ -266,22 +267,22 @@ const QuestionCard = ({
                         />
                       </div>
                     ) : (
-                      <>
-                        <IconButton
-                          onClick={() => fileUploadInput.current.click()}
-                          title='Attach files'
-                        >
-                          <Badge badgeContent={attachmentPreviews.length} color='primary'>
-                            <AttachFileIcon color='primary' />
-                          </Badge>
-                        </IconButton>
-                        <small style={{ width: '100%', color: '#014b7e' }}>
-                          {' '}
+                        <>
+                          <IconButton
+                            onClick={() => fileUploadInput.current.click()}
+                            title='Attach files'
+                          >
+                            <Badge badgeContent={attachmentPreviews.length} color='primary'>
+                              <AttachFileIcon color='primary' />
+                            </Badge>
+                          </IconButton>
+                          <small className = {classes.acceptedfiles} >
+                            {' '}
                           Accepted files: jpeg,jpg,mp3,mp4,pdf,png
                           {/*sizeValied ? 'Accepted files: jpeg,jpg,mp3,mp4,pdf,png' : 'Document size should be less than 5MB !'*/}
-                        </small>
-                      </>
-                    )}
+                          </small>
+                        </>
+                      )}
                   </div>
                   <div>
                     {/* {attachmentPreviews.slice(0, 2).map((url) => (
@@ -433,7 +434,21 @@ const QuestionCard = ({
         </Card>
       </Grid>
       <Grid item xs={12}>
-        <Grid item xs={12} className='question-btn-container'/>
+        <Grid item xs={12} className='question-btn-container'>
+          <div className='question-btn-inner-container '>
+            {/* <Button
+              color='primary'
+              startIcon={<AddCircleOutlineIcon />}
+              onClick={() => {
+                addNewQuestion(index + 1);
+              }}
+              title='Add Question'
+              className='btn add-quesiton-btn outlined-btn'
+            >
+              Add another question
+            </Button> */}
+          </div>
+        </Grid>
         {index > 0 && (
           <Grid item xs={12} className='question-btn-container'>
             <div className='question-btn-inner-container '>

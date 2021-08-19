@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 // import { connect } from 'react-redux';
-import ReactHtmlParser from 'react-html-parser'
+import ReactHtmlParser from 'react-html-parser';
 import MyTinyEditor from '../../question-bank/create-question/tinymce-editor';
 import {
   Grid,
@@ -20,8 +20,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import { Rating, Autocomplete } from '@material-ui/lab';
-import { HighlightOff} from '@material-ui/icons'
-
+import { HighlightOff } from '@material-ui/icons';
 
 import Avatar from '@material-ui/core/Avatar';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
@@ -72,34 +71,44 @@ const styles = (theme) => ({
     marginBottom: 20,
     textAlign: 'center',
   },
+  dropbox: {
+    width: '320px',
+    height: '150px',
+    border: `1px solid ${theme.palette.primary.main}`,
+  },
 });
-
 
 class WriteBlog extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      parsedTextEditorContentLen:this.props.location.state.parsedTextEditorContentLen ? this.props.location.state.parsedTextEditorContentLen : 0,
-      image :'',
+      parsedTextEditorContentLen: this.props.location.state.parsedTextEditorContentLen
+        ? this.props.location.state.parsedTextEditorContentLen
+        : 0,
+      image: '',
       // files:[],
       relatedBlog: true,
       starsRating: 0,
       feedBack: false,
-      isDelete:false,
+      isDelete: false,
       key: 0,
       title:
         this.props.location.state.title && this.props.location.state.title.length !== 0
           ? this.props.location.state.title
           : '',
       genreId:
-          this.props.location.state.genreId && this.props.location.state.genreId.length !== 0
-            ? this.props.location.state.genreId
-            : '',
-      genreName :this.props.location.state.genreName && this.props.location.state.genreName.length !== 0
-      ? this.props.location.state.genreName
-      :'',
-      image: 
-      this.props.location.state.thumbnail && this.props.location.state.thumbnail.length !== 0
+        this.props.location.state.genreId &&
+        this.props.location.state.genreId.length !== 0
+          ? this.props.location.state.genreId
+          : '',
+      genreName:
+        this.props.location.state.genreName &&
+        this.props.location.state.genreName.length !== 0
+          ? this.props.location.state.genreName
+          : '',
+      image:
+        this.props.location.state.thumbnail &&
+        this.props.location.state.thumbnail.length !== 0
           ? this.props.location.state.thumbnail
           : '',
       TITLE_CHARACTER_LIMIT: 100,
@@ -118,13 +127,14 @@ class WriteBlog extends Component {
           ? this.props.location.state.files
           : [],
       wordCountLimit: 50,
-      genreObj : this.props.location.state.genreObj && this.props.location.state.genreObj.length !== 0
-      ? this.props.location.state.genreObj
-      :'',
-
+      genreObj:
+        this.props.location.state.genreObj &&
+        this.props.location.state.genreObj.length !== 0
+          ? this.props.location.state.genreObj
+          : '',
     };
   }
-  static contextType = AlertNotificationContext
+  static contextType = AlertNotificationContext;
   componentDidMount() {
     this.wordCountFetch();
     this.listGenre();
@@ -135,21 +145,20 @@ class WriteBlog extends Component {
     this.setState({
       studentName,
       creationDate: date,
-      genreName :this.props.location.state.genreName && this.props.location.state.genreName.length !== 0
-      ? this.props.location.state.genreName
-      :'',
+      genreName:
+        this.props.location.state.genreName &&
+        this.props.location.state.genreName.length !== 0
+          ? this.props.location.state.genreName
+          : '',
       // textEditorContent: localStorage.getItem('blogContent'),
     });
   }
- 
 
   listGenre = () => {
     let { roleDetails } = this.state;
     const erpUserId = roleDetails.role_details.erp_user_id;
     axios
-      .get(`${endpoints.blog.genreList}?erp_user_id=${
-        erpUserId
-      }`)
+      .get(`${endpoints.blog.genreList}?erp_user_id=${erpUserId}`)
       .then((res) => {
         this.setState({ genreList: res.data.result });
       })
@@ -160,45 +169,46 @@ class WriteBlog extends Component {
     let { roleDetails } = this.state;
     const erpUserId = roleDetails.role_details.erp_user_id;
     axios
-      .get(`${endpoints.blog.WordCountConfig}?erp_user_id=${
-        erpUserId
-      }`)
+      .get(`${endpoints.blog.WordCountConfig}?erp_user_id=${erpUserId}`)
       .then((res) => {
-        this.setState({wordCountLimit: res.data && res.data.result && res.data.result[0].word_count})
+        this.setState({
+          wordCountLimit: res.data && res.data.result && res.data.result[0].word_count,
+        });
       })
       .catch((error) => {});
   };
 
   isWordCountSubceeded = () => {
-    let { textEditorContent, wordCountLimit } = this.state
+    let { textEditorContent, wordCountLimit } = this.state;
     // const parsedTextEditorContent=textEditorContent.split(' ')
-    const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, ' ').split(' ')
-    let count =0
-    parsedTextEditorContent.map((item)=>{
-      if(item.length){
-        count=count+1
+    const parsedTextEditorContent = textEditorContent
+      .replace(/(<([^>]+)>)/gi, ' ')
+      .split(' ');
+    let count = 0;
+    parsedTextEditorContent.map((item) => {
+      if (item.length) {
+        count = count + 1;
       }
-    })
+    });
 
     // const textWordCount = parsedTextEditorContent.length
-    const textWordCount=count
-    this.setState({ parsedTextEditorContentLen: textWordCount })
+    const textWordCount = count;
+    this.setState({ parsedTextEditorContentLen: textWordCount });
     if (parsedTextEditorContent && parsedTextEditorContent.length < wordCountLimit) {
-      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${textWordCount} words have been written`
-      return errorMsg
+      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${textWordCount} words have been written`;
+      return errorMsg;
     }
-    this.setState({ parsedTextEditorContentLen: textWordCount})
+    this.setState({ parsedTextEditorContentLen: textWordCount });
 
-    return false
-  }
-  
- 
+    return false;
+  };
+
   handleTextEditor = (content) => {
     // remove  begining and end white space
     // eslint-disable-next-line no-param-reassign
     content = content.replace(/&nbsp;/g, '');
     this.setState({ textEditorContent: content, fadeIn: false });
-    const subceededWordCount = this.isWordCountSubceeded()
+    const subceededWordCount = this.isWordCountSubceeded();
 
     // localStorage.setItem('blogContent', content);
   };
@@ -206,7 +216,7 @@ class WriteBlog extends Component {
     content = content.replace(/&nbsp;/g, '');
 
     this.setState({ textEditorContent: content, fadeIn: false });
-    const subceededWordCount = this.isWordCountSubceeded()
+    const subceededWordCount = this.isWordCountSubceeded();
   };
 
   handleTitle = (event) => {
@@ -214,67 +224,75 @@ class WriteBlog extends Component {
   };
   isImage = (files) => {
     if (files[0].name.match(/.(jpg|jpeg|png)$/i)) {
-      return true
+      return true;
     }
-    return false
-  }
-  
-  onDrop = (files=[]) => {
+    return false;
+  };
+
+  onDrop = (files = []) => {
     if (!this.isImage(files)) {
-      this.context.setAlert('error',"Please select only image file format")
+      this.context.setAlert('error', 'Please select only image file format');
 
       // this.props.alert.warning('Please select only image file format')
-      return
+      return;
     } else if (files.length > 1) {
-      this.context.setAlert('error',"You can select only a single image at once")
+      this.context.setAlert('error', 'You can select only a single image at once');
 
       // this.props.alert.warning('You can select only a single image at once')
-      return
+      return;
     }
-  
-    this.setState({ files,image: URL.createObjectURL(files[0]) });
+
+    this.setState({ files, image: URL.createObjectURL(files[0]) });
   };
 
   getFileNameAndSize = (files) => {
     if (files.length) {
-      const fileName = this.state.files && this.state.files.map(file => (
-        <li key={file.name}>
-          {file.name} - {file.size} bytes
-        </li>
-      ))
-      return fileName
+      const fileName =
+        this.state.files &&
+        this.state.files.map((file) => (
+          <li key={file.name}>
+            {file.name} - {file.size} bytes
+          </li>
+        ));
+      return fileName;
     }
-    return null
-  }
+    return null;
+  };
 
   handleGenre = (data) => {
-    this.setState({ genreId: data.id,genreName:data.genre,genreObj:data });
+    this.setState({ genreId: data.id, genreName: data.genre, genreObj: data });
   };
 
   PreviewBlogNav = () => {
-    let{genreId ,files, title ,textEditorContent,genreObj,parsedTextEditorContentLen}=this.state
+    let {
+      genreId,
+      files,
+      title,
+      textEditorContent,
+      genreObj,
+      parsedTextEditorContentLen,
+    } = this.state;
 
-    
-    if(!genreId ){
-      this.context.setAlert('error',"please select genre")
-      return
+    if (!genreId) {
+      this.context.setAlert('error', 'please select genre');
+      return;
     }
-    if(!files.length> 0 ){
-      this.context.setAlert('error',"please upload image")
-      return
+    if (!files.length > 0) {
+      this.context.setAlert('error', 'please upload image');
+      return;
     }
-    if(!title){
-      this.context.setAlert('error',"please enter title to the blog ")
-      return
+    if (!title) {
+      this.context.setAlert('error', 'please enter title to the blog ');
+      return;
     }
-    if(!textEditorContent){
-      this.context.setAlert('error',"please enter description to the blog")
-      return
+    if (!textEditorContent) {
+      this.context.setAlert('error', 'please enter description to the blog');
+      return;
     }
-    const subceededWordCount = this.isWordCountSubceeded()
+    const subceededWordCount = this.isWordCountSubceeded();
     if (subceededWordCount) {
-      this.context.setAlert('error',subceededWordCount)
-      return
+      this.context.setAlert('error', subceededWordCount);
+      return;
     }
 
     const {
@@ -288,7 +306,17 @@ class WriteBlog extends Component {
     } = this.state;
     this.props.history.push({
       pathname: '/blog/student/preview-blog',
-      state: { studentName, creationDate, genreId, textEditorContent, title, files ,genreName,genreObj,parsedTextEditorContentLen},
+      state: {
+        studentName,
+        creationDate,
+        genreId,
+        textEditorContent,
+        title,
+        files,
+        genreName,
+        genreObj,
+        parsedTextEditorContentLen,
+      },
     });
   };
 
@@ -310,7 +338,8 @@ class WriteBlog extends Component {
       genreList,
       genreId,
       studentName,
-      creationDate,wordCountLimit
+      creationDate,
+      wordCountLimit,
     } = this.state;
     return Preview ? (
       <PreviewBlog
@@ -355,9 +384,9 @@ class WriteBlog extends Component {
                       onChange={(e, data) => this.handleGenre(data)}
                       renderInput={(params) => (
                         <TextField {...params} label='Genre' variant='outlined' />
-                        )}
+                      )}
                       // getOptionSelected={(option, value) => value && option.id == value.id}
-                        />
+                    />
                   </Grid>
                 </Grid>
               </div>
@@ -381,39 +410,26 @@ class WriteBlog extends Component {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography style={{ margin: 10 }} variant='body1'>
+                    <Typography color='secondary' style={{ margin: 10 }} variant='body1'>
                       Write the blog with atleast {wordCountLimit} words
                     </Typography>
-                    
-                    {/* <TinyMce
-                      key={key}
-                      id={key}
-                      get={this.handleTextEditor}
+                    <MyTinyEditor
+                      color='secondary'
+                      id='blog'
                       content={textEditorContent}
-                      
-                    /> */}
-                     <MyTinyEditor
-            id="blog"
-            content={textEditorContent}
-            handleEditorChange={this.handleEditorChange}
-            // setOpenEditor={setOpenEditor}
-            placeholder='Description...'
-            // filterDataTop={filterDataTop}
-            // filterDataBottom={filterDataBottom}
-          />
-                    
-
+                      handleEditorChange={this.handleEditorChange}
+                      placeholder='Description...'
+                    />
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography style={{ margin: 10 }} variant='body1'>
-                      Add Thumbnail 
+                    <Typography color='secondary' style={{ margin: 10 }} variant='body1'>
+                      Add Thumbnail
                     </Typography>
                     <Typography
                       color='textPrimary'
                       style={{ margin: 10 }}
                       variant='caption'
-                    >
-                    </Typography>
+                    ></Typography>
                     <Card className={classes.Card}>
                       <Dropzone onDrop={this.onDrop}>
                         {({
@@ -425,13 +441,8 @@ class WriteBlog extends Component {
                         }) => (
                           <Card
                             elevation={0}
-                            style={{
-                              width: '320px',
-                              height: '150px',
-                              border: '1px solid #ff6b6b',
-                            }}
                             {...getRootProps()}
-                            className='dropzone'
+                            className={` ${classes.dropbox} dropzone`}
                           >
                             <CardContent>
                               <input {...getInputProps()} />
@@ -439,14 +450,19 @@ class WriteBlog extends Component {
                                 {isDragAccept && 'All files will be accepted'}
                                 {isDragReject && 'Some files will be rejected'}
                                 {!isDragActive && (
-                                  <> 
+                                  <>
                                     <CloudUploadIcon
                                       color='primary'
                                       style={{ marginLeft: '45%', marginTop: '15%' }}
-                                    />drop file
+                                    />
+                                    <Typography
+                                      color='secondary'
+                                      style={{ marginLeft: '38%' }}
+                                    >
+                                      drop file
+                                    </Typography>
                                   </>
                                 )}
-                                
                               </div>
                               {this.getFileNameAndSize(files)}
                               {/* {files} */}
@@ -454,7 +470,6 @@ class WriteBlog extends Component {
                           </Card>
                         )}
                       </Dropzone>
-                      
 
                       <Divider variant='middle' style={{ margin: 10 }} />
 

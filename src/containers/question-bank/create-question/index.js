@@ -25,6 +25,30 @@ const useStyles = makeStyles((theme) => ({
     margin: '0px auto',
     boxShadow: 'none',
   },
+  filterDataHeader:{
+    color: theme.palette.secondary.main,
+  fontSize: "16px",
+  width: "95%",
+  display: "flex",
+  margin: "0 auto",
+  textTransform: "capitalize",
+  padding: "30px 0 15px 5px",
+  },
+  // divfilterData:{
+  //   '& :not':{
+  //     '&::after':{
+  //       content: " ",
+  //       height: "6px",
+  //       width: "6px",
+  //       backgroundColor:theme.palette.secondary.main,
+  //       borderRadius: "50%",
+  //       display: "inline-block",
+  //       margin: "0 10px",
+  //       verticalAlign: "baseline",
+  //     }
+     
+  //   }
+  // }
 }));
 
 const CreateQuestion = () => {
@@ -202,7 +226,7 @@ const CreateQuestion = () => {
         {!isTopFilterOpen && <Divider style={{ width: '100%' }} />}
         {isFilter ? (
           <Paper className={classes.root}>
-            <div className='filterDataHeader'>
+            <div className={classes.filterDataHeader}>
               <div className='divfilterData'>
                 {filterDataDisplay?.grade?.grade__grade_name}
               </div>

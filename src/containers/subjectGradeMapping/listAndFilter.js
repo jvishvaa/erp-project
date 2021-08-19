@@ -345,7 +345,7 @@ const ListandFilter = (props) => {
             variant='contained'
             color='primary'
             className='filter-btn'
-            style={{ marginLeft: 15 }}
+            style={{ color : "white", marginLeft: 15 }}
             onClick={handleFilter}
           >
             Filter

@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
 
-.homework_submit_wrapper .homework-question {
+ .homework-question {
   border-bottom: 1px solid #ff6b6b;
 }
 .homework_submit_wrapper {
@@ -9,7 +9,7 @@
   overflow: hidden;
 }
 .homework_block_questionwise_check {
-  color: #014b7e;
+display: flex;
   font-size: 1rem;
 }
 .homework_submit_questions_wrapper {
@@ -97,10 +97,7 @@
   display: flex;
   flex-wrap: wrap;
 }
-.descBox::before {
-  content: 'Instruction : ';
-  font-weight: 600;
-}
+
 
 .commentBoxStyle > .MuiOutlinedInput-root {
   // border: 1px solid #ff6b6b;
@@ -220,7 +217,7 @@
     .homework-question {
       // border-bottom: 1px solid #ff6b6b;
       width: 100%;
-      color: #014b7e;
+      // color: #014b7e;
       position: relative;
       padding-bottom: 8px;
       font-size: 18px;
@@ -382,15 +379,13 @@
   .homework-question .questionWiseAttachmentsContainer {
     display: block !important;
   }
-
-  // .questionWiseAttachmentsContainer {
-  //   float: right !important;
-  // }
-  .homework-question-container.student-view .homework-question {
-    top: 42px;
-  }
   .homework-question-container.student-view .homework-question {
     width: 92%;
+    top: 42px;
+    @media screen and (max-width: 768px) {
+     top: 0;
+    }
+
   }
   .attachments-container {
     margin-top: 60px !important;

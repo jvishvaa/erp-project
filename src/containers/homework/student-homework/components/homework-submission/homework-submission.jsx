@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1rem",
     fontWeight: 600,
     textTransform: "capitalize",
-    ['@media screen(min-width:768px)'] : {
+    '@media screen and (max-width:768px)' : {
       padding: "10px 15px !important",
       width: "100%",
     }
@@ -111,6 +111,17 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "16px",
     width: "70%",
     padding: "11px 18px",
+    '@media screen and (max-width:768px)' : {
+      width: "100%",
+    },
+    '&::before': {
+      content: "Instruction : ",
+      fontWeight: 600,
+    }
+  },
+  acceptedfiles:{
+    color : theme.palette.secondary.main,
+    width:"100%"
   }
 }));
 
@@ -545,7 +556,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                       color='primary'
                       checked={isQuestionWise}
                     />
-                    <span>Upload Question Wise</span>
+                    <Typography color = "secondary" style={{marginTop : "10px"}}>Upload Question Wise</Typography>
                   </div>
                 </div>
               }
@@ -573,7 +584,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   </Button>
 
                 </div>
-                <small style={{ width: '100%', color: '#014b7e' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>
+                <small className={classes.acceptedfiles} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>
                 <div className="bulk_upload_attachments">
                   {bulkDataDisplay.map((file, i) => (
                     <FileRow
