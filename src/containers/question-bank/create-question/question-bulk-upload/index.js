@@ -60,8 +60,7 @@ const trueOrFQuesTypeId = 8;
 const templateFiles = {
   [singleChoiceQuesTypeId]: {
     templateFile:
-      // 'https://omrsheet.s3.ap-south-1.amazonaws.com/prod/assessment_config_files/assessment_single_choice.xlsx',
-      'https://d2r9gkgplfhsr2.cloudfront.net/prod/assessment_config_files/assessment_single_choice.xlsx',
+      'https://omrsheet.s3.ap-south-1.amazonaws.com/prod/assessment_config_files/assessment_single_choice.xlsx',
     url: endpoints.createQuestionBulk.BulkUploadSingleChoiceQuestion,
     label: 'Single choice questions',
     fileConf: {
@@ -81,8 +80,7 @@ const templateFiles = {
   },
   [fillBlankQuesTypeId]: {
     templateFile:
-      // 'https://omrsheet.s3.ap-south-1.amazonaws.com/prod/assessment_config_files/assessment_fill_in_the_blanks.xlsx',
-      'https://d2r9gkgplfhsr2.cloudfront.net/prod/assessment_config_files/assessment_fill_in_the_blanks.xlsx',
+      'https://omrsheet.s3.ap-south-1.amazonaws.com/prod/assessment_config_files/assessment_fill_in_the_blanks.xlsx',
     url: endpoints.createQuestionBulk.FillBlankUploadQuestion,
     label: 'Fill in the blank questions',
     fileConf: {
@@ -94,7 +92,7 @@ const templateFiles = {
   },
   [trueOrFQuesTypeId]: {
     templateFile:
-      'https://d2r9gkgplfhsr2.cloudfront.net/prod/assessment_config_files/assessment_true_or_false.xlsx',
+      'https://omrsheet.s3.ap-south-1.amazonaws.com/prod/assessment_config_files/assessment_true_or_false.xlsx',
     url: endpoints.createQuestionBulk.BulkUploadTrueOrFalse,
     label: 'True or false questions',
     fileConf: {

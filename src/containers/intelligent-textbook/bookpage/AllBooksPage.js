@@ -57,8 +57,7 @@ const AllBooksPage = () => {
   const [grade, setGrade] = useState('');
   const [subject, setSubject] = useState('');
   const [volume, setVolume] = useState('');
-  // const bookImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/';
-  const bookImage = 'https://d3ka3pry54wyko.cloudfront.net/';
+  const bookImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/';
 
 
   const getDomainName = () => {
