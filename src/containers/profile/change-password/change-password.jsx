@@ -152,12 +152,15 @@ const ChangePassword = (props) => {
       <DialogActions>
         <Button
           onClick={handleCancel}
-          className='labelColor cancelButton'>
+          className='labelColor cancelButton'
+        >
           Cancel
         </Button>
-        <Button color='primary'
+        <Button 
+          color='primary'
           variant='contained'
-          style={{ color: 'white' }} onClick={handleChangePassword}>
+          style={{ color: 'white' }}
+          onClick={handleChangePassword}>
           Confirm
         </Button>
       </DialogActions>

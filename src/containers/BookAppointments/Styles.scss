@@ -10,7 +10,7 @@
           &:after {
             content: '';
             width: 2px;
-            background-color: $primary-color;
+            // background-color: $primary-color;
             height: 60%;
             position: absolute;
             border-radius: 5px;
@@ -22,7 +22,7 @@
     }
   }
   .table-pagination {
-    color: $secondary-color;
+    // color: $secondary-color;
     text-align: center;
     font-weight: 600;
   }
@@ -41,17 +41,17 @@
   opacity: 1;
 }
 .arrow .MuiSvgIcon-root {
-  color: #ff6b6b;
+  // color: #ff6b6b;
 }
 .button .MuiSvgIcon-root {
-  color: #ff6b6b;
+  // color: #ff6b6b;
 }
 
 .cardsStyles h5:hover {
-  color: #ff6b6b !important;
+  // color: #ff6b6b !important;
 }
 .cardsStyles h6:hover {
-  color: #ff6b6b !important;
+  // color: #ff6b6b !important;
 }
 .cardsStyles h5 {
   text-align: center;
@@ -62,7 +62,7 @@
   font-size: medium;
 }
 .hove:hover {
-  color: #ff6b6b !important;
+  // color: #ff6b6b !important;
 }
 .responderV div.MuiGrid-root {
   width: 100%;

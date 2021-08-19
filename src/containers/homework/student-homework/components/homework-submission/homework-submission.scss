@@ -102,7 +102,6 @@
   margin-top: 1%;
   display: flex;
   flex-wrap: wrap;
-  
 }
 .questionWiseAttachmentsContainer {
   margin-top: 1%;
@@ -137,7 +136,8 @@
   border-radius: 10px;
   font-size: 18px;
 }
-.file_row_hw,.file_row {
+.file_row_hw,
+.file_row {
   border: 1px solid #dfdfdf;
   display: flex;
   flex-direction: row;
@@ -150,7 +150,8 @@
   font: normal normal normal 16px/18px Raleway;
 }
 
-.file_name_container_hw,.file_name_container {
+.file_name_container_hw,
+.file_name_container {
   color: #014b7e;
   font-weight: 600;
   align-self: center;
@@ -168,7 +169,8 @@
   border-radius: 10px;
   padding: 5px;
 }
-.file_close_hw,.file_close {
+.file_close_hw,
+.file_close {
   align-self: end;
 }
 .overallContainer {
@@ -321,12 +323,13 @@
   }
 }
 @media only screen and (max-width: 768px) {
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
     width: 100% !important;
   }
   body {
-    position: relative
+    position: relative;
   }
 
   .homework_type {
@@ -354,7 +357,8 @@
       margin-left: 0;
     }
   }
-  .file_row_hw,.file_row {
+  .file_row_hw,
+  .file_row {
     border: 1px solid #dfdfdf;
     display: flex;
     flex-direction: row;
@@ -375,7 +379,8 @@
   .file_close span img {
     margin-left: 50px;
   }
-  .file_name_container_hw,.file_name_container {
+  .file_name_container_hw,
+  .file_name_container {
     font-size: 14px;
   }
   .commentBoxStyle {
@@ -396,12 +401,6 @@
       width: 100% !important;
       height: 100% !important;
     }
-  }
-  .makeStyles-content-22{
-    // max-width: 100%;
-    // flex-basis: 100%;
-    // overflow: hidden;
-    // height: 100vh;
   }
   .custom_button_master {
     margin-top: 10px !important;

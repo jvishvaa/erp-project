@@ -33,9 +33,7 @@ import Loading from '../../../components/loader/loader';
 import GradeCard from './grade-card';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '70vh',
   },
@@ -126,17 +124,17 @@ const GradeTable = () => {
       .delete(`${endpoints.masterManagement.updateGrade}${gradeId}`)
       .then((result) => {
         if (result.data.status_code > 199 && result.data.status_code < 300) {
-            setDelFlag(!delFlag);
-            setLoading(false);
-            setAlert('success', `Grade ${result.data.message||result.data.msg}`);
+          setDelFlag(!delFlag);
+          setLoading(false);
+          setAlert('success', `Grade ${result.data.message || result.data.msg}`);
         } else {
           setLoading(false);
-          setAlert('error', result.data.message||result.data.msg);
+          setAlert('error', result.data.message || result.data.msg);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error',error.response.data.message||error.response.data.msg);
+        setAlert('error', error.response.data.message || error.response.data.msg);
       });
     setOpenDeleteModal(false);
   };
@@ -158,7 +156,6 @@ const GradeTable = () => {
   }, [page, delFlag, goBackFlag]);
 
   useEffect(() => {
-
     let url = `${endpoints.masterManagement.grades}?page=${page}&page_size=${limit}`;
     if (searchGrade) url += `&grade_name=${searchGrade}`;
 
@@ -169,11 +166,11 @@ const GradeTable = () => {
           setTotalCount(result.data.result.count);
           setGrades(result.data.result.results);
         } else {
-          setAlert('error', result?.data?.msg||result?.data?.message);
+          setAlert('error', result?.data?.msg || result?.data?.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error?.response?.data.message||error?.response?.data.msg);
+        setAlert('error', error?.response?.data.message || error?.response?.data.msg);
       });
   }, [delFlag, goBackFlag, page, searchGrade]);
 
@@ -181,22 +178,17 @@ const GradeTable = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Master Management'
-              childComponentName='Grade List'
-              childComponentNameNext={
-                addFlag && !tableFlag
-                  ? 'Add Grade'
-                  : editFlag && !tableFlag
-                  ? 'Edit Grade'
-                  : null
-              }
-            />
-          </div>
-        </div>
-
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Grade List'
+          childComponentNameNext={
+            addFlag && !tableFlag
+              ? 'Add Grade'
+              : editFlag && !tableFlag
+              ? 'Edit Grade'
+              : null
+          }
+        />
         {!tableFlag && addFlag && !editFlag && (
           <CreateGrade setLoading={setLoading} handleGoBack={handleGoBack} />
         )}
@@ -277,7 +269,7 @@ const GradeTable = () => {
                           {grade?.grade_type}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          {grade?.created_by||''}
+                          {grade?.created_by || ''}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
                           <IconButton
@@ -286,9 +278,8 @@ const GradeTable = () => {
                               handleOpenDeleteModal(grade.id);
                             }}
                             title='Delete Grade'
-
                           >
-                            <DeleteOutlinedIcon color="primary"/>
+                            <DeleteOutlinedIcon />
                           </IconButton>
 
                           <IconButton
@@ -301,7 +292,7 @@ const GradeTable = () => {
                             }
                             title='Edit Grade'
                           >
-                            <EditOutlinedIcon color="primary" />
+                            <EditOutlinedIcon />
                           </IconButton>
                         </TableCell>
                       </TableRow>
@@ -355,12 +346,7 @@ const GradeTable = () => {
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle
-            style={{ cursor: 'move', color: '#014b7e' }}
-            id='draggable-dialog-title'
-          >
-            Delete Grade
-          </DialogTitle>
+          <DialogTitle id='draggable-dialog-title'>Delete Grade</DialogTitle>
           <DialogContent>
             <DialogContentText>{`Confirm Delete Grade ${gradeName}`}</DialogContentText>
           </DialogContent>
@@ -368,7 +354,12 @@ const GradeTable = () => {
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color='primary' onClick={handleDeleteGrade}>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleDeleteGrade}
+            >
               Confirm
             </Button>
           </DialogActions>

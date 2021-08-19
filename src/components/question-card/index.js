@@ -206,7 +206,11 @@ const QuestionCard = ({
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={closeAttachmentsModal}>
+          <Button
+            autoFocus
+            className='labelColor cancelButton'
+            onClick={closeAttachmentsModal}
+          >
             Close
           </Button>
         </DialogActions>
@@ -257,22 +261,22 @@ const QuestionCard = ({
                         />
                       </div>
                     ) : (
-                        <>
-                          <IconButton
-                            onClick={() => fileUploadInput.current.click()}
-                            title='Attach files'
-                          >
-                            <Badge badgeContent={attachmentPreviews.length} color='primary'>
-                              <AttachFileIcon color='primary' />
-                            </Badge>
-                          </IconButton>
-                          <small style={{ width: '100%', color: '#014b7e' }}>
-                            {' '}
+                      <>
+                        <IconButton
+                          onClick={() => fileUploadInput.current.click()}
+                          title='Attach files'
+                        >
+                          <Badge badgeContent={attachmentPreviews.length} color='primary'>
+                            <AttachFileIcon color='primary' />
+                          </Badge>
+                        </IconButton>
+                        <small style={{ width: '100%', color: '#014b7e' }}>
+                          {' '}
                           Accepted files: jpeg,jpg,mp3,mp4,pdf,png
                           {/*sizeValied ? 'Accepted files: jpeg,jpg,mp3,mp4,pdf,png' : 'Document size should be less than 5MB !'*/}
-                          </small>
-                        </>
-                      )}
+                        </small>
+                      </>
+                    )}
                   </div>
                   <div>
                     {/* {attachmentPreviews.slice(0, 2).map((url) => (

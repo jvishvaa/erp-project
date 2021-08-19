@@ -374,7 +374,6 @@ const AssessmentFilters = ({
           variant='contained'
           className='custom_button_master labelColor modifyDesign'
           size='medium'
-          style={{ borderRadius: '10px' }}
           onClick={handleClear}
         >
           CLEAR ALL
@@ -388,7 +387,7 @@ const AssessmentFilters = ({
           color='primary'
           className='custom_button_master modifyDesign'
           size='medium'
-          style={{ color: 'white', borderRadius: '10px' }}
+          style={{ color: 'white'}}
           onClick={handleFilter}
         >
           FILTER

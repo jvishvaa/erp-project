@@ -32,10 +32,7 @@ import Loading from '../../../components/loader/loader';
 import MessageTypeCard from './message-type-card';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    boxShadow:'none'
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '70vh',
   },
@@ -79,7 +76,7 @@ const MessageTypeTable = () => {
   const [messageType, setMessageType] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [messageTypeId, setMessageTypeId] = useState();
-  const [categoryName,setCategoryName] = useState('');
+  const [categoryName, setCategoryName] = useState('');
   const [addFlag, setAddFlag] = useState(false);
   const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
@@ -87,16 +84,16 @@ const MessageTypeTable = () => {
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const limit = 15;
-  const [goBackFlag,setGoBackFlag]=useState(false)
-  
+  const [goBackFlag, setGoBackFlag] = useState(false);
+
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const wider= isMobile?'-10px 0px':'-10px 0px 20px 8px'
-  const widerWidth=isMobile?'98%':'95%'
+  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
+  const widerWidth = isMobile ? '98%' : '95%';
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage+1)
-  }
+    setPage(newPage + 1);
+  };
 
   const handleAddMessageType = () => {
     setTableFlag(false);
@@ -113,25 +110,26 @@ const MessageTypeTable = () => {
   };
 
   const handleGoBack = () => {
-    setPage(1)
+    setPage(1);
     setTableFlag(true);
     setAddFlag(false);
     setEditFlag(false);
-    setGoBackFlag(!goBackFlag)
+    setGoBackFlag(!goBackFlag);
   };
 
   const handleDeleteMessageType = (e) => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .delete(`${endpoints.masterManagement.updateMessageType}${messageTypeId}/communicate-type/`)
+      .delete(
+        `${endpoints.masterManagement.updateMessageType}${messageTypeId}/communicate-type/`
+      )
       .then((result) => {
         if (result.data.status_code === 200) {
-            setDelFlag(!delFlag);
-            setLoading(false);
-            setAlert('success', result.data.message);
-        }
-        else {
+          setDelFlag(!delFlag);
+          setLoading(false);
+          setAlert('success', result.data.message);
+        } else {
           setLoading(false);
           setAlert('error', result.data.message);
         }
@@ -146,7 +144,7 @@ const MessageTypeTable = () => {
   const handleDelete = (msgtype) => {
     setCategoryName(msgtype.category_name);
     handleOpenDeleteModal(msgtype.id);
-  }
+  };
 
   const handleOpenDeleteModal = (id) => {
     setMessageTypeId(id);
@@ -171,8 +169,8 @@ const MessageTypeTable = () => {
       )
       .then((result) => {
         if (result.data.status_code === 200) {
-            setTotalCount(result.data.data.count);
-            setMessageType(result.data.data.results);
+          setTotalCount(result.data.data.count);
+          setMessageType(result.data.data.results);
         } else {
           setAlert('error', result.data.error_msg);
         }
@@ -186,21 +184,20 @@ const MessageTypeTable = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Master Management'
-              childComponentName='Message Type List'
-              childComponentNameNext={(addFlag&&!tableFlag)?'Add Message Type':(editFlag&&!tableFlag)?'Edit Message Type':null}
-            />
-          </div>
-        </div>
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Message Type List'
+          childComponentNameNext={
+            addFlag && !tableFlag
+              ? 'Add Message Type'
+              : editFlag && !tableFlag
+              ? 'Edit Message Type'
+              : null
+          }
+        />
 
         {!tableFlag && addFlag && !editFlag && (
-        <CreateMessageType 
-        setLoading={setLoading} 
-        handleGoBack={handleGoBack}
-        />
+          <CreateMessageType setLoading={setLoading} handleGoBack={handleGoBack} />
         )}
         {!tableFlag && !addFlag && editFlag && (
           <EditMessageType
@@ -212,16 +209,21 @@ const MessageTypeTable = () => {
         )}
 
         {tableFlag && !addFlag && !editFlag && (
-          <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
+          <Grid
+            container
+            spacing={isMobile ? 3 : 5}
+            style={{ width: widerWidth, margin: wider }}
+          >
             <Grid item xs={12} sm={4} className='addButtonPadding'>
-              <Button 
-              startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
-              variant='contained' 
-              color='primary' 
-              size="small" 
-              style={{color:'white'}} 
-              title="Add Message Type" 
-              onClick={handleAddMessageType}>
+              <Button
+                startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                variant='contained'
+                color='primary'
+                size='small'
+                style={{ color: 'white' }}
+                title='Add Message Type'
+                onClick={handleAddMessageType}
+              >
                 Add Message Type
               </Button>
             </Grid>
@@ -255,23 +257,22 @@ const MessageTypeTable = () => {
                         </TableCell>
                         <TableCell className={classes.tableCell}>
                           <IconButton
-                            onClick={e=>{ handleDelete(msgtype) }}
+                            onClick={(e) => {
+                              handleDelete(msgtype);
+                            }}
                             title='Delete Message Type'
                           >
-                            <DeleteOutlinedIcon color="primary" />
+                            <DeleteOutlinedIcon />
                           </IconButton>
 
                           <IconButton
                             onClick={(e) =>
-                              handleEditMessageType(
-                                msgtype.id,
-                                msgtype.category_name,
-                              )
+                              handleEditMessageType(msgtype.id, msgtype.category_name)
                             }
                             title='Edit Message Type'
                           >
-                            <EditOutlinedIcon color="primary" />
-                          </IconButton>      
+                            <EditOutlinedIcon />
+                          </IconButton>
                         </TableCell>
                       </TableRow>
                     );
@@ -279,15 +280,15 @@ const MessageTypeTable = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <div className="paginateData">
-            <TablePagination
-              component='div'
-              count={totalCount}
-              rowsPerPage={limit}
-              page={page - 1}
-              onChangePage={handleChangePage}
-              rowsPerPageOptions={false}
-            />
+            <div className='paginateData'>
+              <TablePagination
+                component='div'
+                count={totalCount}
+                rowsPerPage={limit}
+                page={page - 1}
+                onChangePage={handleChangePage}
+                rowsPerPageOptions={false}
+              />
             </div>
           </Paper>
         )}
@@ -318,17 +319,22 @@ const MessageTypeTable = () => {
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle style={{ cursor: 'move',color: '#014b7e' }} id='draggable-dialog-title'>
-            Delete Message Type
-          </DialogTitle>
+          <DialogTitle id='draggable-dialog-title'>Delete Message Type</DialogTitle>
           <DialogContent>
             <DialogContentText>{`Confirm Delete Message Type ${categoryName}`}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button  onClick={handleCloseDeleteModal} className="labelColor cancelButton">
+            <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color="primary" onClick={handleDeleteMessageType}>Confirm</Button>
+            <Button
+              variant='contained'
+              style={{ color: 'white' }}
+              color='primary'
+              onClick={handleDeleteMessageType}
+            >
+              Confirm
+            </Button>
           </DialogActions>
         </Dialog>
       </Layout>

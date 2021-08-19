@@ -30,7 +30,6 @@ const QuestionBankCard = ({
   showAddToQuestionPaper,
   periodColor,
 }) => {
-
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -258,13 +257,9 @@ const QuestionBankCard = ({
                 {showPeriodIndex === index && showMenu ? (
                   <div className='tooltipContainer'>
                     <span className='tooltiptext'>
-                      {/* <div onClick={(e) => handleDelete(period)}>Delete</div> */}
                       <div onClick={handleDelete}>Delete</div>
                       <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
-                        <DialogTitle
-                          style={{ cursor: 'move', color: '#014b7e' }}
-                          id='draggable-dialog-title'
-                        >
+                        <DialogTitle id='draggable-dialog-title'>
                           Delete Question
                         </DialogTitle>
                         <DialogContent>
@@ -281,6 +276,8 @@ const QuestionBankCard = ({
                           </Button>
                           <Button
                             color='primary'
+                            variant='contained'
+                            style={{ color: 'white' }}
                             onClick={(e) => handleDeleteConfirm(period)}
                           >
                             Confirm

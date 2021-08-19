@@ -26,9 +26,7 @@ import { connect, useSelector } from 'react-redux';
 import {Typography} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '40vh',
   },

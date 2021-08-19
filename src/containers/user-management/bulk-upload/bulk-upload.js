@@ -23,12 +23,8 @@ import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
 import { connect, useSelector } from 'react-redux';
 
-
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    boxShadow: 'none',
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '70vh',
   },
@@ -101,7 +97,9 @@ const BulkUpload = () => {
   useEffect(() => {
     if (moduleId && searchAcademicYear) {
       axiosInstance
-        .get(`${endpoints.masterManagement.branchList}?session_year=${searchAcademicYear?.id}&module_id=${moduleId}`)
+        .get(
+          `${endpoints.masterManagement.branchList}?session_year=${searchAcademicYear?.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             // setAcademicYear(result.data?.data);
@@ -116,7 +114,7 @@ const BulkUpload = () => {
           setAlert('error', error.message);
         });
     }
-  }, [moduleId , searchAcademicYear]);
+  }, [moduleId, searchAcademicYear]);
 
   useEffect(() => {
     let request = `${endpoints.userManagement.bulkUpload}?page=${page}&page_size=${limit}`;
@@ -178,16 +176,10 @@ const BulkUpload = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='User Management'
-              childComponentName='Bulk Upload Status'
-            isAcademicYearVisible={true}
-            />
-          </div>
-        </div>
-
+        <CommonBreadcrumbs
+          componentName='User Management'
+          childComponentName='Bulk Upload Status'
+        />
         <Grid
           container
           spacing={isMobile ? 3 : 5}

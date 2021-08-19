@@ -33,11 +33,7 @@ import '../master-management.css';
 import SubjectCard from './subjects-card';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    margin: '0 auto',
-    boxShadow: 'none',
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '70vh',
     width: '100%',
@@ -167,7 +163,7 @@ const SubjectTable = () => {
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.response.data.message||error.response.data.msg);
+        setAlert('error', error.response.data.message || error.response.data.msg);
       });
     setOpenDeleteModal(false);
   };
@@ -203,7 +199,7 @@ const SubjectTable = () => {
         }
       })
       .catch((error) => {
-        setAlert('error', error?.response?.data?.message||error?.response?.data?.msg);
+        setAlert('error', error?.response?.data?.message || error?.response?.data?.msg);
       });
   }, [goBackFlag, delFlag, page, searchSubject]);
 
@@ -280,77 +276,77 @@ const SubjectTable = () => {
 
         <>
           {/* {!isMobile ? ( */}
-            <>
-              {tableFlag && !addFlag && !editFlag && (
-                <Paper className={`${classes.root} common-table`}>
-                  <TableContainer className={classes.container}>
-                    <Table stickyHeader aria-label='sticky table'>
-                      <TableHead className='table-header-row'>
-                        <TableRow>
-                          {columns.map((column) => (
-                            <TableCell
-                              key={column.id}
-                              align={column.align}
-                              style={{ minWidth: column.minWidth }}
-                              className={classes.columnHeader}
-                            >
-                              {column.label}
+          <>
+            {tableFlag && !addFlag && !editFlag && (
+              <Paper className={`${classes.root} common-table`}>
+                <TableContainer className={classes.container}>
+                  <Table stickyHeader aria-label='sticky table'>
+                    <TableHead className='table-header-row'>
+                      <TableRow>
+                        {columns.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{ minWidth: column.minWidth }}
+                            className={classes.columnHeader}
+                          >
+                            {column.label}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {subjects.map((subject, index) => {
+                        return (
+                          <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
+                            <TableCell className={classes.tableCell}>
+                              {subject?.subject_name}
                             </TableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {subjects.map((subject, index) => {
-                          return (
-                            <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
-                              <TableCell className={classes.tableCell}>
-                                {subject?.subject_name}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {subject?.created_by}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {subject?.subject_description}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {subject?.is_optional ? 'Yes' : 'No'}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                <IconButton
-                                  onClick={(e) => {
-                                    handleOpenDeleteModal(subject);
-                                  }}
-                                  title='Delete Subject'
-                                >
-                                  <DeleteOutlinedIcon  color = "primary" />
-                                </IconButton>
-                                <IconButton
-                                  onClick={(e) => handleEditSubject(subject)}
-                                  title='Edit Subject'
-                                >
-                                  <EditOutlinedIcon color = "primary" />
-                                </IconButton>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <div className='paginateData'>
-                    <TablePagination
-                      component='div'
-                      count={totalCount}
-                      className='customPagination'
-                      rowsPerPage={limit}
-                      page={page - 1}
-                      onChangePage={handleChangePage}
-                      rowsPerPageOptions={false}
-                    />
-                  </div>
-                </Paper>
-              )}
-            </>
+                            <TableCell className={classes.tableCell}>
+                              {subject?.created_by}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {subject?.subject_description}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {subject?.is_optional ? 'Yes' : 'No'}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              <IconButton
+                                onClick={(e) => {
+                                  handleOpenDeleteModal(subject);
+                                }}
+                                title='Delete Subject'
+                              >
+                                <DeleteOutlinedIcon />
+                              </IconButton>
+                              <IconButton
+                                onClick={(e) => handleEditSubject(subject)}
+                                title='Edit Subject'
+                              >
+                                <EditOutlinedIcon />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <div className='paginateData'>
+                  <TablePagination
+                    component='div'
+                    count={totalCount}
+                    className='customPagination'
+                    rowsPerPage={limit}
+                    page={page - 1}
+                    onChangePage={handleChangePage}
+                    rowsPerPageOptions={false}
+                  />
+                </div>
+              </Paper>
+            )}
+          </>
           {/* ) : (
             <>
               <>
@@ -385,12 +381,7 @@ const SubjectTable = () => {
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle
-            style={{ cursor: 'move', color: '#014b7e' }}
-            id='draggable-dialog-title'
-          >
-            Delete Subject
-          </DialogTitle>
+          <DialogTitle id='draggable-dialog-title'>Delete Subject</DialogTitle>
           <DialogContent>
             <DialogContentText>
               {`Confirm Delete Subject ${subjectName}`}
@@ -400,7 +391,12 @@ const SubjectTable = () => {
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color='primary' onClick={handleDeleteSubject}>
+            <Button
+              variant='contained'
+              style={{ color: 'white' }}
+              color='primary'
+              onClick={handleDeleteSubject}
+            >
               Confirm
             </Button>
           </DialogActions>

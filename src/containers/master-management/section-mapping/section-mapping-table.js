@@ -7,7 +7,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import { Grid, TextField, Button } from '@material-ui/core';
@@ -29,34 +28,15 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import CreateSectionMapping from './create-section-mapping';
-import EditSectionMapping from './edit-section-mapping';
 import Loading from '../../../components/loader/loader';
 import '../master-management.css';
 import SectionMappingCard from './section-mapping-card';
-import {  Divider } from '@material-ui/core';
-const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+import { Divider } from '@material-ui/core';
+
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    boxShadow: 'none',
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '70vh',
-  },
-  buttonContainer: {
-    background: theme.palette.background.secondary,
-    paddingBottom: theme.spacing(2),
-  },
-  cardsPagination: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    padding: '1rem',
-    backgroundColor: '#ffffff',
-    zIndex: 100,
   },
   centerInMobile: {
     width: '100%',
@@ -98,9 +78,7 @@ const SectionTable = () => {
   const [sections, setSections] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [sectionId, setSectionId] = useState();
-  const [sectionName, setSectionName] = useState('');
   const [addFlag, setAddFlag] = useState(false);
-  const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
   const [delFlag, setDelFlag] = useState(false);
   const [searchSection, setSearchSection] = useState('');
@@ -130,7 +108,7 @@ const SectionTable = () => {
   const [searchBranch, setSearchBranch] = useState();
   const [searchGrades, setSearchGrades] = useState([]);
   const [searchSections, setSearchSections] = useState([]);
-    const [sectionList, setSectionList] = useState([]);
+  const [sectionList, setSectionList] = useState([]);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -156,8 +134,6 @@ const SectionTable = () => {
     }
   }, [searchBranch]);
 
-  
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
   };
@@ -175,48 +151,14 @@ const SectionTable = () => {
     }
     if (searchSection) {
       getUserListUrl += `&section_name=${searchSection}`;
-
-     }
-    // if (searchSections) {
-    //   const selectedSectionId = searchSections.map((el) => el.section_name);
-    //   getUserListUrl += `&section_name=${selectedSectionId.toString()}`;
-    // }
-    // if (searchText) {
-    //   getUserListUrl += `&search=${searchText}`;
-    // }
+    }
     try {
-      const result = await axiosInstance.get(getUserListUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const result = await axiosInstance.get(getUserListUrl);
       if (result.status === 200) {
         setTotalCount(result.data?.data?.count);
         setSections(result.data?.data?.results);
       } else {
         setAlert('error', result.data?.msg || result.data?.message);
-      }
-    } catch (error) {
-      setAlert('error', error.message);
-    }
-  };
-
-  const getSectionApi = async () => {
-    try {
-      const selectedGradeId = searchGrades.map((el) => el.id);
-      const result = await axiosInstance.get(
-        `${endpoints.communication.sections
-        }?session_year=${selectedYear.id}&branch_id=${searchBranch?.branch.id}&grade_id=${selectedGradeId.toString()}&module_id=${moduleId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (result.status === 200) {
-        setSectionList(result.data.data);
-      } else {
-        setAlert('error', result.data.message);
       }
     } catch (error) {
       setAlert('error', error.message);
@@ -234,58 +176,44 @@ const SectionTable = () => {
     }
   };
 
-
   const handleClearAll = () => {
-    setYearDisplay([])
-    setAcademicYearList([])
+    setYearDisplay([]);
+    setAcademicYearList([]);
     setSearchSection('');
     // setSelectedSection([]);
-    setSelectedYear('')
-    setBranchList([])
-    setGradeList([])
-    setGradeList([])
+    setSelectedYear('');
+    setBranchList([]);
+    setGradeList([]);
+    setGradeList([]);
     setSearchBranch('');
     setSelectedYear('');
     setSearchGrades([]);
     if (clearAllActive) {
       setSearchSection('');
       // setSelectedSection([]);
-      setSelectedYear('')
-      setBranchList([])
-      setGradeList([])
-      setGradeList([])
+      setSelectedYear('');
+      setBranchList([]);
+      setGradeList([]);
+      setGradeList([]);
       setSearchBranch('');
       setSelectedYear('');
       setSearchGrades([]);
       setClearAll(true);
       setClearAllActive(false);
     }
-    AcademicYearApi()
+    AcademicYearApi();
   };
 
   const handleFilterCheck = () => {
-    if (
-      selectedYear ||
-      searchBranch ||
-      searchGrades.length ||
-      searchSections
-    ) {
-      // setSelectedUsers([]);
-      // setSelectAllObj([]);
-      // setPageno(1);
-      // setTotalPage(0);
+    if (selectedYear || searchBranch || searchGrades.length || searchSections) {
       setFilterCheck(true);
       displayUsersList();
     }
   };
 
-
-
   const handleBranch = (event, value) => {
     setSearchBranch('');
     setSearchGrades([]);
-
-    // setSearchSections([]);
     if (value) {
       setSearchBranch(value);
     }
@@ -293,34 +221,22 @@ const SectionTable = () => {
 
   const handleGrades = (event, value) => {
     setSearchGrades([]);
-    // setSearchSections([]);
     if (value.length) {
       const ids = value.map((el) => el);
       setSearchGrades(ids);
     }
   };
 
-
-
   const handleAddSection = () => {
     setTableFlag(false);
     setAddFlag(true);
-    setEditFlag(false);
     setSearchSection('');
-  };
-
-  const handleEditSection = (sec) => {
-    setTableFlag(false);
-    setAddFlag(false);
-    setEditFlag(true);
-    setSectionData(sec);
   };
 
   const handleGoBack = () => {
     setPage(1);
     setTableFlag(true);
     setAddFlag(false);
-    setEditFlag(false);
     setGoBackFlag(!goBackFlag);
     setSearchSection('');
     setSelectedYear('');
@@ -336,7 +252,10 @@ const SectionTable = () => {
         if (result.data.status_code === 200) {
           setDelFlag(!delFlag);
           setLoading(false);
-          setAlert('success', `Mapped Section ${result.data?.message || result.data?.msg}`);
+          setAlert(
+            'success',
+            `Mapped Section ${result.data?.message || result.data?.msg}`
+          );
         } else {
           setLoading(false);
           setAlert('error', result.data?.message || result.data?.msg);
@@ -351,7 +270,6 @@ const SectionTable = () => {
 
   const handleOpenDeleteModal = (id, sec) => {
     setSectionId(id);
-    setSectionName(sec?.section_name);
     setOpenDeleteModal(true);
   };
 
@@ -367,7 +285,6 @@ const SectionTable = () => {
   }, [page, delFlag, goBackFlag]);
 
   useEffect(() => {
-  
     if (clearAll) {
       setClearAll(false);
     }
@@ -377,14 +294,10 @@ const SectionTable = () => {
   }, [clearAll, filterCheck]);
 
   useEffect(() => {
-    if (
-      // selectedGrades.length ||
-      // selectedSections.length ||
-      searchSection
-    ) {
+    if (searchSection) {
       setClearAllActive(true);
     }
-  }, [  searchSection]);
+  }, [searchSection]);
 
   useEffect(() => {
     if (selectedYear) {
@@ -392,36 +305,33 @@ const SectionTable = () => {
     }
   }, [selectedYear]);
 
-
-const AcademicYearApi = ()=>{
-  axiosInstance
-        .get(`${endpoints.masterManagement.academicYear}?module_id=${moduleId}`)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setAcademicYearList(result.data?.result?.results);
-          } else {
-            setAlert('error', result?.data?.message || result?.data?.msg);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error?.response?.data?.message || error?.response?.data?.msg);
-        });
-}
+  const AcademicYearApi = () => {
+    axiosInstance
+      .get(`${endpoints.masterManagement.academicYear}?module_id=${moduleId}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setAcademicYearList(result.data?.result?.results);
+        } else {
+          setAlert('error', result?.data?.message || result?.data?.msg);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error?.response?.data?.message || error?.response?.data?.msg);
+      });
+  };
 
   useEffect(() => {
     if (moduleId) {
-      AcademicYearApi()
+      AcademicYearApi();
     }
   }, [moduleId]);
-
-  
 
   useEffect(() => {
     let url = `${endpoints.masterManagement.sectionMappingTable}?page=${page}&page_size=${limit}`;
     if (searchSection) url += `&section_name=${searchSection.toLowerCase()}`;
     if (selectedYear) url += `&session_year=${selectedYear}`;
-    if(searchGrades)url += `&grade_name=${searchGrades}`;
-    if(searchBranch)url += `&branch_name=${searchBranch}`;
+    if (searchGrades) url += `&grade_name=${searchGrades}`;
+    if (searchBranch) url += `&branch_name=${searchBranch}`;
 
     axiosInstance
       .get(url)
@@ -454,7 +364,8 @@ const AcademicYearApi = ()=>{
   const getGradeApi = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${selectedYear}&branch_id=${searchBranch?.branch.id}&module_id=${moduleId}`);
+        `${endpoints.communication.grades}?session_year=${selectedYear}&branch_id=${searchBranch?.branch.id}&module_id=${moduleId}`
+      );
       if (result.data.status_code === 200) {
         setGradeList(result.data.data);
       } else {
@@ -465,7 +376,6 @@ const AcademicYearApi = ()=>{
     }
   };
 
-  
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -476,9 +386,9 @@ const AcademicYearApi = ()=>{
               componentName='Master Management'
               childComponentName='Section Mapping List'
               childComponentNameNext={
-                addFlag && !tableFlag && !editFlag
+                addFlag && !tableFlag
                   ? 'Add Section Mapping'
-                  : editFlag && !tableFlag
+                  : !tableFlag
                   ? 'Edit Section Mapping'
                   : null
               }
@@ -486,7 +396,7 @@ const AcademicYearApi = ()=>{
           </div>
         </div>
 
-        {!tableFlag && addFlag && !editFlag && (
+        {!tableFlag && addFlag && (
           <CreateSectionMapping
             moduleId={moduleId}
             setLoading={setLoading}
@@ -494,15 +404,7 @@ const AcademicYearApi = ()=>{
           />
         )}
 
-        {!tableFlag && !addFlag && editFlag && (
-          <EditSectionMapping
-            sectionData={sectionData}
-            handleGoBack={handleGoBack}
-            setLoading={setLoading}
-          />
-        )}
-
-        {tableFlag && !addFlag && !editFlag && (
+        {tableFlag && !addFlag && (
           <Grid
             container
             spacing={isMobile ? 3 : 5}
@@ -565,7 +467,7 @@ const AcademicYearApi = ()=>{
                 />
               </Grid>
             )}
-          {searchBranch && (
+            {searchBranch && (
               <Grid item xs={12} md={3}>
                 <Autocomplete
                   multiple
@@ -588,83 +490,64 @@ const AcademicYearApi = ()=>{
                 />
               </Grid>
             )}
-            {/* <Grid item xs sm={6} className={isMobile ? 'hideGridItem' : ''} /> */}
-            {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
-              <Button
-                startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-                variant='contained'
-                color='primary'
-                size='small'
-                style={{ color: 'white' }}
-                title='Add Section Mapping'
-                onClick={handleAddSection}
-              >
-                Add Section Mapping
-              </Button>
-              
-            </Grid> */}
-          {/* </Grid>
-        )} */}
-          <Grid item xs sm={6} className={isMobile ? 'hideGridItem' : ''} />
-          <Grid
-                container
-                spacing={isMobile ? 3 : 5}
-                style={{ width: widerWidth, margin: wider }}
-              >
-                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-                  <Button
-                    variant='contained'
-                    className='labelColor buttonModifiedDesign'
-                    size='medium'
-                    onClick={handleClearAll}
-                  >
-                    CLEAR ALL
-                  </Button>
-                </Grid>
-                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-                  <Button
-                    variant='contained'
-                    style={{ color: 'white' }}
-                    color='primary'
-                    className='buttonModifiedDesign'
-                    size='medium'
+            <Grid item xs sm={6} className={isMobile ? 'hideGridItem' : ''} />
+            <Grid
+              container
+              spacing={isMobile ? 3 : 5}
+              style={{ width: widerWidth, margin: wider }}
+            >
+              <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                <Button
+                  variant='contained'
+                  size='medium'
+                  className='labelColor buttonModifiedDesign'
+                  onClick={handleClearAll}
+                >
+                  CLEAR ALL
+                </Button>
+              </Grid>
+              <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                <Button
+                  variant='contained'
+                  style={{ color: 'white' }}
+                  color='primary'
+                  size='medium'
+                  className='buttonModifiedDesign'
                   onClick={handleFilterCheck}
-                  >
-                    FILTER
-                  </Button>
-                </Grid>
-                <div>
-                  <Divider
-                    orientation='vertical'
-                    style={{
-                      backgroundColor: '#014e7b',
-                      height: '40px',
-                      marginTop: '1rem',
-                      marginLeft: '2rem',
-                      marginRight: '1.25rem',
-                    }}
-                  />
-                </div>
-                <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
-                  <Button
-                    startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-                    variant='contained'
-                    color='primary'
-                    size='small'
-                    style={{ color: 'white' }}
-                    title='Add Section Mapping'
-                    onClick={handleAddSection}
-                  >
-                    Add Section Mapping
-                  </Button>
-                </Grid>
+                >
+                  FILTER
+                </Button>
               </Grid>
+              <div>
+                <Divider
+                  orientation='vertical'
+                  style={{
+                    backgroundColor: '#014e7b',
+                    height: '40px',
+                    marginTop: '1rem',
+                    marginLeft: '2rem',
+                    marginRight: '1.25rem',
+                  }}
+                />
+              </div>
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
+                <Button
+                  startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                  variant='contained'
+                  color='primary'
+                  size='small'
+                  style={{ color: 'white' }}
+                  title='Add Section Mapping'
+                  onClick={handleAddSection}
+                >
+                  Add Section Mapping
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        )}
 
-              </Grid>
-             )} 
-              
-           
-        {tableFlag && !addFlag && !editFlag && (
+        {tableFlag && !addFlag && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
@@ -690,11 +573,11 @@ const AcademicYearApi = ()=>{
                       grade: { grade_name },
                       acad_session: {
                         branch: branchObj = {},
-                        session_year: sessionObj ={},
+                        session_year: sessionObj = {},
                       },
                     } = sect;
-                    const  { branch_name = 'Branch not found' }  = branchObj || {}
-                    const { session_year = 'Session not found'} = sessionObj || {}
+                    const { branch_name = 'Branch not found' } = branchObj || {};
+                    const { session_year = 'Session not found' } = sessionObj || {};
                     return (
                       <TableRow hover section='checkbox' tabIndex={-1} key={index}>
                         <TableCell className={classes.tableCell}>
@@ -713,9 +596,8 @@ const AcademicYearApi = ()=>{
                             onClick={() => handleOpenDeleteModal(id, section)}
                             title='Delete Section Mapping'
                           >
-                            <DeleteOutlinedIcon  />
+                            <DeleteOutlinedIcon />
                           </IconButton>
-
                         </TableCell>
                       </TableRow>
                     );
@@ -735,7 +617,7 @@ const AcademicYearApi = ()=>{
             </div>
           </Paper>
         )}
-        {/* {isMobile && tableFlag && !addFlag && !editFlag && (
+        {/* {isMobile && tableFlag && !addFlag && (
           <>
             <Container className={classes.cardsContainer}>
               {sections.map((section, i) => (
@@ -745,7 +627,6 @@ const AcademicYearApi = ()=>{
                     handleEditSection(section.id, section.section_name);
                   }}
                   onDelete={(section) => {
-                    setSectionName(section.section_name);
                     handleOpenDeleteModal(section.id);
                   }}
                 />
@@ -768,12 +649,7 @@ const AcademicYearApi = ()=>{
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle
-            style={{ cursor: 'move', color: '#014b7e' }}
-            id='draggable-dialog-title'
-          >
-            Delete Section
-          </DialogTitle>
+          <DialogTitle id='draggable-dialog-title'>Delete Section</DialogTitle>
           <DialogContent>
             <DialogContentText>{`Confirm Delete Section Mapping`}</DialogContentText>
           </DialogContent>
@@ -781,7 +657,12 @@ const AcademicYearApi = ()=>{
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color='primary' onClick={handleDeleteSection}>
+            <Button
+              variant='contained'
+              style={{ color: 'white' }}
+              color='primary'
+              onClick={handleDeleteSection}
+            >
               Confirm
             </Button>
           </DialogActions>

@@ -33,11 +33,7 @@ import '../master-management.css';
 import BranchCard from './branch-card';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    margin: '0 auto',
-    boxShadow: 'none',
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '70vh',
     width: '100%',
@@ -50,12 +46,6 @@ const useStyles = makeStyles((theme) => ({
   },
   tableCell: {
     color: theme.palette.secondary.main,
-  },
-  buttonContainer: {
-    width: '95%',
-    margin: '0 auto',
-    background: theme.palette.background.secondary,
-    paddingBottom: theme.spacing(2),
   },
 }));
 
@@ -212,22 +202,17 @@ const BranchTable = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Master Management'
-              childComponentName='Branch List'
-              childComponentNameNext={
-                addFlag && !tableFlag
-                  ? 'Add Branch'
-                  : editFlag && !tableFlag
-                  ? 'Edit Branch'
-                  : null
-              }
-            />
-          </div>
-        </div>
-
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Branch List'
+          childComponentNameNext={
+            addFlag && !tableFlag
+              ? 'Add Branch'
+              : editFlag && !tableFlag
+              ? 'Edit Branch'
+              : null
+          }
+        />
         {!tableFlag && addFlag && !editFlag && (
           <CreateBranch setLoading={setLoading} handleGoBack={handleGoBack} />
         )}
@@ -313,7 +298,10 @@ const BranchTable = () => {
                             <TableCell className={classes.tableCell}>
                               {branch?.branch_code}
                             </TableCell>
-                            <TableCell className={classes.tableCell} style={{maxWidth: '250px'}}>
+                            <TableCell
+                              className={classes.tableCell}
+                              style={{ maxWidth: '250px' }}
+                            >
                               {branch?.address}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
@@ -387,20 +375,20 @@ const BranchTable = () => {
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle
-            style={{ cursor: 'move', color: '#014b7e' }}
-            id='draggable-dialog-title'
-          >
-            Delete Branch
-          </DialogTitle>
+          <DialogTitle id='draggable-dialog-title'>Delete Branch</DialogTitle>
           <DialogContent>
             <DialogContentText>{`Confirm Delete Branch ${branchName}`}</DialogContentText>
           </DialogContent>
-          <DialogActions style={{display:'flex',justifyContent:'space-around'}}>
+          <DialogActions style={{ display: 'flex', justifyContent: 'space-around' }}>
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color='primary' onClick={handleDeleteBranch}>
+            <Button
+              variant='contained'
+              style={{ color: 'white' }}
+              color='primary'
+              onClick={handleDeleteBranch}
+            >
               Confirm
             </Button>
           </DialogActions>

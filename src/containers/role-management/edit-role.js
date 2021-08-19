@@ -30,7 +30,7 @@ class EditRole extends Component {
     this.state = {
       moduleId: '',
       academicYearList: [],
-      NavData : JSON.parse(localStorage.getItem('navigationData')),
+      NavData: JSON.parse(localStorage.getItem('navigationData')),
     };
   }
 
@@ -48,7 +48,6 @@ class EditRole extends Component {
     }
     // fetchBranches();
 
-
     if (this.state.NavData && this.state.NavData.length) {
       this.state.NavData.forEach((item) => {
         if (
@@ -58,15 +57,15 @@ class EditRole extends Component {
         ) {
           item.child_module.forEach((item) => {
             if (item.child_name === 'View Role') {
-              this.setState({moduleId:item.child_id});
-                fetchAcademicYears(item.child_id).then((data) => {
-                  let transformedData = '';
-                  transformedData = data?.map((obj) => ({
-                    id: obj.id,
-                    session_year: obj.session_year,
-                  }));
-                  this.setState({ academicYearList: transformedData });
-                });
+              this.setState({ moduleId: item.child_id });
+              fetchAcademicYears(item.child_id).then((data) => {
+                let transformedData = '';
+                transformedData = data?.map((obj) => ({
+                  id: obj.id,
+                  session_year: obj.session_year,
+                }));
+                this.setState({ academicYearList: transformedData });
+              });
             }
           });
         }
@@ -92,14 +91,8 @@ class EditRole extends Component {
   };
 
   handleEditRole = () => {
-    const {
-      modulePermissionsRequestData,
-      editRole,
-      history,
-      roleId,
-      roleName,
-      modules,
-    } = this.props;
+    const { modulePermissionsRequestData, editRole, history, roleId, roleName, modules } =
+      this.props;
     const requestData = [];
 
     modules.forEach((module) => {
@@ -197,22 +190,20 @@ class EditRole extends Component {
     const { roleName } = this.props;
     return (
       <div className={classes.root}>
-        <div className='bread-crumbs-container'>
-          <CommonBreadcrumbs
-            componentName='Role Management'
-            childComponentName='Edit Role'
-          />
-          <div className='back-btn-container' style={{ marginTop: '1rem' }}>
-            <Button
-              variant='contained'
-              startIcon={<ArrowBackIcon />}
-              color='primary'
-              size='small'
-              onClick={() => history.push('/role-management')}
-            >
-              Back
-            </Button>
-          </div>
+        <CommonBreadcrumbs
+          componentName='Role Management'
+          childComponentName='Edit Role'
+        />
+        <div className='back-btn-container' style={{ marginTop: '1rem' }}>
+          <Button
+            variant='contained'
+            startIcon={<ArrowBackIcon />}
+            size='medium'
+            className='labelColor cancelButton'
+            onClick={() => history.push('/role-management')}
+          >
+            Back
+          </Button>
         </div>
         <Grid container spacing={2} alignItems='center' className={classes.formContainer}>
           <Grid item>
@@ -232,7 +223,15 @@ class EditRole extends Component {
             )}
           </Grid>
           <Grid item>
-            <Button onClick={this.handleEditRole}>Update Role</Button>
+            <Button
+              variant='contained'
+              color='primary'
+              size='medium'
+              style={{ color: 'white' }}
+              onClick={this.handleEditRole}
+            >
+              Update Role
+            </Button>
           </Grid>
         </Grid>
         <Grid container spacing={2} className={classes.spacer}>

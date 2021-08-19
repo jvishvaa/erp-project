@@ -93,10 +93,8 @@ class RoleManagement extends Component {
     const { openDeleteModal, selectedRole, searchInput } = this.state;
 
     return (
-      <div className={`role-management-container ${classes.root}`}>
-        <div className='bread-crumbs-container'>
-          <CommonBreadcrumbs componentName='Role Management' />
-        </div>
+      <div className={`${classes.root} common-table`}>
+        <CommonBreadcrumbs componentName='Role Management' />
 
         <Grid container spacing={1} className={classes.spacer}>
           <Grid item xs={12} md={4}>
@@ -124,7 +122,7 @@ class RoleManagement extends Component {
               startIcon={<AddOutlinedIcon />}
               href={`${match.url}/create-role`}
               color='primary'
-              style={{background:'#FF6B6B'}}
+              style={{ color: 'white' }}
             >
               Add Role
             </Button>
@@ -191,19 +189,28 @@ class RoleManagement extends Component {
           onClose={this.handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle style={{ cursor: 'move' }} id='draggable-dialog-title'>
-            Delete Role
-          </DialogTitle>
+          <DialogTitle id='draggable-dialog-title'>Delete Role</DialogTitle>
           <DialogContent>
             <DialogContentText>
               {`Confirm delete role ${selectedRole?.role_name}`}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button autoFocus onClick={this.handleCloseDeleteModal} color='primary' style={{background:'#ff6b6b'}}>
+            <Button
+              autoFocus
+              className='labelColor cancelButton'
+              onClick={this.handleCloseDeleteModal}
+            >
               Cancel
             </Button>
-            <Button onClick={this.handleDeleteRole} style={{background:'#ff6b6b'}}>Confirm</Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={this.handleDeleteRole}
+            >
+              Confirm
+            </Button>
           </DialogActions>
         </Dialog>
       </div>

@@ -337,20 +337,22 @@ const UploadClassWorkDiaogBox = (props) => {
                   variant='contained'
                   color='primary'
                   component='span'
+                  style={{ color: 'white' }}
                 >
                   Upload
                 </Button>
               </label>
             </div>
           )}
-          <Button className={classes.cancelButton} onClick={handleClose}>
+          <Button className='cancelButton labelColor' onClick={handleClose}>
             {isTeacher ? 'Close' : 'Cancel'}
           </Button>
           {!isTeacher && (
             <Button
-              className={classes.submitButton}
               onClick={submitClassWorkAPI}
               color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
             >
               Submit
             </Button>

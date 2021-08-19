@@ -32,17 +32,10 @@ import Loading from '../../../components/loader/loader';
 import AcademicYearCard from './academic-year-card';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    boxShadow:'none'
-  },
   container: {
     maxHeight: '70vh',
   },
-  buttonContainer: {
-    background: theme.palette.background.secondary,
-    paddingBottom: theme.spacing(2),
-  },
+  root: theme.commonTableRoot,
   centerInMobile: {
     width: '100%',
     display: 'flex',
@@ -87,12 +80,12 @@ const AcademicYearTable = () => {
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const limit = 15;
-  const [goBackFlag,setGoBackFlag]=useState(false)
-  
+  const [goBackFlag, setGoBackFlag] = useState(false);
+
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const wider= isMobile?'-10px 0px':'-10px 0px 20px 8px';
-  const widerWidth=isMobile?'98%':'95%';
+  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
+  const widerWidth = isMobile ? '98%' : '95%';
 
   const [moduleId, setModuleId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -116,8 +109,8 @@ const AcademicYearTable = () => {
   }, []);
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage+1)
-  }
+    setPage(newPage + 1);
+  };
 
   const handleAddYear = () => {
     setTableFlag(false);
@@ -134,11 +127,11 @@ const AcademicYearTable = () => {
   };
 
   const handleGoBack = () => {
-    setPage(1)
+    setPage(1);
     setTableFlag(true);
     setAddFlag(false);
     setEditFlag(false);
-    setGoBackFlag(!goBackFlag)
+    setGoBackFlag(!goBackFlag);
   };
 
   const handleDeleteYear = (e) => {
@@ -148,15 +141,17 @@ const AcademicYearTable = () => {
       .delete(`${endpoints.masterManagement.updateAcademicYear}${yearId}`)
       .then((result) => {
         if (result.data.status_code > 199 && result.data.status_code < 300) {
-            setDelFlag(!delFlag);
-            setLoading(false);
-            setAlert('success', `Academic Year ${result.data?.message||result.data?.msg}`);
-
-            // setAlert('success', `${sessionYear} ${result.data?.message||result.data?.msg}`);
-        }
-        else {
+          setDelFlag(!delFlag);
           setLoading(false);
-          setAlert('error', result.data?.message||result.data?.msg);
+          setAlert(
+            'success',
+            `Academic Year ${result.data?.message || result.data?.msg}`
+          );
+
+          // setAlert('success', `${sessionYear} ${result.data?.message||result.data?.msg}`);
+        } else {
+          setLoading(false);
+          setAlert('error', result.data?.message || result.data?.msg);
         }
       })
       .catch((error) => {
@@ -169,7 +164,7 @@ const AcademicYearTable = () => {
   const handleDelete = (year) => {
     setSessionYear(year.session_year);
     handleOpenDeleteModal(year.id);
-  }
+  };
 
   const handleOpenDeleteModal = (id) => {
     setYearId(id);
@@ -189,9 +184,7 @@ const AcademicYearTable = () => {
 
   useEffect(() => {
     axiosInstance
-      .get(
-        `${endpoints.masterManagement.academicYear}?page=${page}&page_size=${limit}`
-      )
+      .get(`${endpoints.masterManagement.academicYear}?page=${page}&page_size=${limit}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           {
@@ -199,7 +192,7 @@ const AcademicYearTable = () => {
             setAcademicYear(result.data.result.results);
           }
         } else {
-          setAlert('error', result?.data?.message||result?.data?.msg);
+          setAlert('error', result?.data?.message || result?.data?.msg);
         }
       })
       .catch((error) => {
@@ -211,17 +204,20 @@ const AcademicYearTable = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Master Management'
-              childComponentName='Academic Year List'
-              childComponentNameNext={(addFlag&&!tableFlag)?'Add Academic Year':(editFlag&&!tableFlag)?'Edit Academic Year':null}
-            />
-          </div>
-        </div>
-
-        {!tableFlag && addFlag && !editFlag && <CreateAcademicYear setLoading={setLoading} handleGoBack={handleGoBack}/>}
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Academic Year List'
+          childComponentNameNext={
+            addFlag && !tableFlag
+              ? 'Add Academic Year'
+              : editFlag && !tableFlag
+              ? 'Edit Academic Year'
+              : null
+          }
+        />
+        {!tableFlag && addFlag && !editFlag && (
+          <CreateAcademicYear setLoading={setLoading} handleGoBack={handleGoBack} />
+        )}
         {!tableFlag && !addFlag && editFlag && (
           <EditAcademicYear
             id={yearId}
@@ -232,16 +228,21 @@ const AcademicYearTable = () => {
         )}
 
         {tableFlag && !addFlag && !editFlag && (
-          <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
+          <Grid
+            container
+            spacing={isMobile ? 3 : 5}
+            style={{ width: widerWidth, margin: wider }}
+          >
             <Grid item xs={12} sm={4} className='addButtonPadding'>
-              <Button 
-              startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
-              variant='contained' 
-              color='primary' 
-              size="small" 
-              style={{color:'white'}} 
-              title="Add Academic Year" 
-              onClick={handleAddYear}>
+              <Button
+                startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                variant='contained'
+                color='primary'
+                size='small'
+                style={{ color: 'white' }}
+                title='Add Academic Year'
+                onClick={handleAddYear}
+              >
                 Add Academic Year
               </Button>
             </Grid>
@@ -275,23 +276,20 @@ const AcademicYearTable = () => {
                         </TableCell>
                         <TableCell className={classes.tableCell}>
                           <IconButton
-                            onClick={e=>{ handleDelete(year) }}
+                            onClick={(e) => {
+                              handleDelete(year);
+                            }}
                             title='Delete Academic Year'
                           >
-                            <DeleteOutlinedIcon color = "primary" />
+                            <DeleteOutlinedIcon />
                           </IconButton>
 
                           <IconButton
-                            onClick={(e) =>
-                              handleEditYear(
-                                year.id,
-                                year.session_year,
-                              )
-                            }
+                            onClick={(e) => handleEditYear(year.id, year.session_year)}
                             title='Edit Academic Year'
                           >
-                            <EditOutlinedIcon color = "primary" />
-                          </IconButton>      
+                            <EditOutlinedIcon />
+                          </IconButton>
                         </TableCell>
                       </TableRow>
                     );
@@ -299,15 +297,15 @@ const AcademicYearTable = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <div className="paginateData">
-            <TablePagination
-              component='div'
-              count={totalCount}
-              rowsPerPage={limit}
-              page={page - 1}
-              onChangePage={handleChangePage}
-              rowsPerPageOptions={false}
-            />
+            <div className='paginateData'>
+              <TablePagination
+                component='div'
+                count={totalCount}
+                rowsPerPage={limit}
+                page={page - 1}
+                onChangePage={handleChangePage}
+                rowsPerPageOptions={false}
+              />
             </div>
           </Paper>
         )}
@@ -338,17 +336,22 @@ const AcademicYearTable = () => {
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle style={{ cursor: 'move',color: '#014b7e' }} id='draggable-dialog-title'>
-            Delete Academic Year
-          </DialogTitle>
+          <DialogTitle id='draggable-dialog-title'>Delete Academic Year</DialogTitle>
           <DialogContent>
             <DialogContentText>{`Confirm Delete Academic Year ${sessionYear}`}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button  onClick={handleCloseDeleteModal} className="labelColor cancelButton">
+            <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color="primary" onClick={handleDeleteYear}>Confirm</Button>
+            <Button
+              variant='contained'
+              style={{ color: 'white' }}
+              color='primary'
+              onClick={handleDeleteYear}
+            >
+              Confirm
+            </Button>
           </DialogActions>
         </Dialog>
       </Layout>

@@ -492,10 +492,18 @@ const TimeTable = (props) => {
                 </div>
               </div>
               <DialogActions>
-                <Button onClick={handleCloseNewPeriod} color='primary'>
+                <Button 
+                className='cancelButton labelColor'
+                onClick={handleCloseNewPeriod} 
+                color='primary'>
                   Close
                 </Button>
-                <Button onClick={createPeriodAPI} color='primary' autoFocus>
+                <Button 
+                  onClick={createPeriodAPI}
+                  color='primary'
+                  variant='contained'
+                  style={{ color: 'white' }}
+                  autoFocus>
                   Create
                 </Button>
               </DialogActions>
