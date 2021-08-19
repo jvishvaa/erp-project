@@ -492,13 +492,13 @@ const TimeTable = (props) => {
                 </div>
               </div>
               <DialogActions>
-                <Button 
-                className='cancelButton labelColor'
-                onClick={handleCloseNewPeriod} 
-                color='primary'>
+                <Button
+                  className='cancelButton labelColor'
+                  onClick={handleCloseNewPeriod}
+                  color='primary'>
                   Close
                 </Button>
-                <Button 
+                <Button
                   onClick={createPeriodAPI}
                   color='primary'
                   variant='contained'
@@ -596,9 +596,7 @@ const TimeTable = (props) => {
           </>
         ) : (
           <div className='mobile-table-view'>
-            <div className='time-table-breadcrums-container'>
-              <CommonBreadcrumbs componentName='Time Table' />
-            </div>
+            <CommonBreadcrumbs componentName='Time Table' />
             {/* <FilterMobile
               moduleId={moduleId}
               handleCloseTable={handleCloseTable}

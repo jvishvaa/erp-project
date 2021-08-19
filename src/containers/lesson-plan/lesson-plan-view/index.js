@@ -27,10 +27,6 @@ const useStyles = makeStyles((theme) => ({
     margin: '-10px auto',
     boxShadow: 'none',
   },
-  container: {
-    maxHeight: '70vh',
-    width: '100%',
-  },
 }));
 
 const LessonPlan = () => {
@@ -116,9 +112,7 @@ const LessonPlan = () => {
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         <div className={isMobile ? 'breadCrumbFilterRow' : null}>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs componentName='Lesson Plan' childComponentName='View' />
-          </div>
+          <CommonBreadcrumbs componentName='Lesson Plan' childComponentName='View' />
           {isMobile ? (
             <div className='hideShowFilterIcon'>
               <IconButton onClick={() => setIsFilter(!isFilter)}>
@@ -158,8 +152,8 @@ const LessonPlan = () => {
               container
               style={
                 isMobile
-                  ? { width: '95%', margin: '20px auto' }
-                  : { width: '100%', margin: '20px auto' }
+                  ? { width: '95%', margin: '0 auto 20px auto' }
+                  : { width: '100%', margin: '0 auto 20px auto' }
               }
               spacing={5}
             >

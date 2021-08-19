@@ -155,37 +155,31 @@ const CourseView = () => {
       {sendGrade.length !== 0 && loading ? <Loading message='Loading...' /> : null}
 
       <Layout>
-        <div>
-          <CommonBreadcrumbs
-            componentName='Master Management'
-            childComponentName='Course List'
-          />
-        </div>
-        <div>
-          <CourseFilter
-            handleCourseList={handleCourseList}
-            handleClearFilter={handleClearFilter}
-            setCourseData={setCourseData}
-            setPageFlag={setPageFlag}
-            tabValue={tabValue}
-          />
-        </div>
-        <div>
-          <TabPanel
-            handleCourseList={handleCourseList}
-            sendGrade={sendGrade}
-            setTabValue={setTabValue}
-            tabValue={tabValue}
-          />
-        </div>
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Course List'
+        />
+        <CourseFilter
+          handleCourseList={handleCourseList}
+          handleClearFilter={handleClearFilter}
+          setCourseData={setCourseData}
+          setPageFlag={setPageFlag}
+          tabValue={tabValue}
+        />
+        <TabPanel
+          handleCourseList={handleCourseList}
+          sendGrade={sendGrade}
+          setTabValue={setTabValue}
+          tabValue={tabValue}
+        />
         <Paper className={classes.root}>
           {courseData && courseData.length > 0 ? (
             <Grid
               container
               style={
                 isMobile
-                  ? { width: '95%', margin: '20px auto' }
-                  : { width: '100%', margin: '20px auto' }
+                  ? { width: '95%', margin: '0 auto 20px auto' }
+                  : { width: '100%', margin: '0 auto 20px auto' }
               }
               spacing={5}
             >

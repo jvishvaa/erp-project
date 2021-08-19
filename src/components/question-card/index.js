@@ -209,6 +209,7 @@ const QuestionCard = ({
           <Button
             autoFocus
             className='labelColor cancelButton'
+            size='medium'
             onClick={closeAttachmentsModal}
           >
             Close

@@ -373,7 +373,7 @@ const Assesment = () => {
           className='lesson-plan-breadcrumb-wrapper'
           style={{ display: 'flex', justifyContent: 'space-between' }}
         >
-          <CommonBreadcrumbs componentName='create Test' isAcademicYearVisible={true} />
+          <CommonBreadcrumbs componentName='Create Test' isAcademicYearVisible={true} />
           <div>
             {!expandFilter ? (
               <IconButton
@@ -612,7 +612,7 @@ const Assesment = () => {
                       formik.handleReset();
                     }}
                   >
-                    CLEAR ALL
+                    Clear All
                   </Button>
                 </div>
               </Grid>

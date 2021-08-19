@@ -217,13 +217,11 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
               justifyContent: 'space-between',
             }}
           >
-            <div style={{ width: '100%' }}>
-              <CommonBreadcrumbs
-                componentName='Assessment'
-                childComponentName='Question Bank'
-                isAcademicYearVisible={true}
-              />
-            </div>
+            <CommonBreadcrumbs
+              componentName='Assessment'
+              childComponentName='Question Bank'
+              isAcademicYearVisible={true}
+            />
 
             <div className='hideShowFilterIcon'>
               <IconButton onClick={() => setIsFilter(!isFilter)}>

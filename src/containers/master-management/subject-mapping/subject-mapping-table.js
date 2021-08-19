@@ -430,21 +430,17 @@ const SubjectMappingTable = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Master Management'
-              childComponentName='Subject Mapping List'
-              childComponentNameNext={
-                addFlag && !tableFlag
-                  ? 'Add Subject Mapping'
-                  : !tableFlag
-                  ? 'Edit Mapping Subject'
-                  : null
-              }
-            />
-          </div>
-        </div>
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Subject Mapping List'
+          childComponentNameNext={
+            addFlag && !tableFlag
+              ? 'Add Subject Mapping'
+              : !tableFlag
+              ? 'Edit Mapping Subject'
+              : null
+          }
+        />
 
         {!tableFlag && addFlag && (
           <CreateSubjectMapping
@@ -595,8 +591,8 @@ const SubjectMappingTable = () => {
                     startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
                     variant='contained'
                     color='primary'
-                    size='small'
                     style={{ color: 'white' }}
+                    size='medium'
                     title='Add Subject Mapping'
                     onClick={handleAddSubjectMapping}
                   >

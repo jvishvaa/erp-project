@@ -524,13 +524,10 @@ const AssignRole = (props) => {
     <Layout>
       <div className='assign-role-container'>
         <div className={classes.filtersContainer}>
-          <div className={`bread-crumbs-container ${classes.spacer}`}>
-            <CommonBreadcrumbs
-              componentName='User Management'
-              childComponentName='Assign role'
-            isAcademicYearVisible={true}
-            />
-          </div>
+          <CommonBreadcrumbs
+            componentName='User Management'
+            childComponentName='Assign role'
+          />
           <Grid container spacing={2} className={classes.spacer}>
             <Grid item xs={12} md={3}>
               <FormControl

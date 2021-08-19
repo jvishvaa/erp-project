@@ -380,22 +380,17 @@ const SectionTable = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Master Management'
-              childComponentName='Section Mapping List'
-              childComponentNameNext={
-                addFlag && !tableFlag
-                  ? 'Add Section Mapping'
-                  : !tableFlag
-                  ? 'Edit Section Mapping'
-                  : null
-              }
-            />
-          </div>
-        </div>
-
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Section Mapping List'
+          childComponentNameNext={
+            addFlag && !tableFlag
+              ? 'Add Section Mapping'
+              : !tableFlag
+              ? 'Edit Section Mapping'
+              : null
+          }
+        />
         {!tableFlag && addFlag && (
           <CreateSectionMapping
             moduleId={moduleId}
@@ -535,7 +530,7 @@ const SectionTable = () => {
                   startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
                   variant='contained'
                   color='primary'
-                  size='small'
+                  size='medium'
                   style={{ color: 'white' }}
                   title='Add Section Mapping'
                   onClick={handleAddSection}

@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { withRouter } from 'react-router-dom';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../Layout';
 import Loader from '../../components/loader/loader';
 import axiosInstance from '../../config/axios';
@@ -210,22 +210,8 @@ const StudentIdCard = ({ history }) => {
     <>
       <Layout>
         <div style={{ width: '100%', overflow: 'hidden' }}>
+        <CommonBreadcrumbs componentName='ID Card'/>
           <Grid container spacing={2} className='studentIdcardFilterDiv'>
-            <Grid item md={12} xs={12}>
-              <Grid container spacing={5} justify='middle'>
-                <Grid item md={12} xs={12} style={{ display: 'flex' }}>
-                  <button
-                    type='button'
-                    className='studentIdCardNavigationLinks'
-                    onClick={() => history.push('/dashboard')}
-                  >
-                    Dashboard
-                  </button>
-                  <ArrowForwardIosIcon className='studentIdCardNavArrow' />
-                  <span className='studentIdCardNavigationLinks'>ID Cards</span>
-                </Grid>
-              </Grid>
-            </Grid>
             <Grid item md={12} xs={12}>
               <Grid container spacing={2} className='studentIdCardFilterSelectionDiv'>
                 <Grid item md={3} xs={12}>
@@ -351,27 +337,25 @@ const StudentIdCard = ({ history }) => {
               </Grid>
               <Divider className='studdentIdCardDivider' />
               <Grid container spacing={2} className='studentIdCardFilterSelectionDiv'>
-                <Grid item md={1} xs={12}>
+                <Grid item md={2} xs={12}>
                   <Button
                     variant='contained'
-                    size='small'
                     fullWidth
-                    className='studentIdCardFilterButton'
+                    className='labelColor cancelButton'
                     onClick={() => handleClearFilter()}
                   >
-                    CLEAR ALL
+                    Clear All
                   </Button>
                 </Grid>
-                <Grid item md={1} xs={12}>
+                <Grid item md={2} xs={12}>
                   <Button
                     variant='contained'
-                    size='small'
                     color='primary'
                     fullWidth
+                    style={{color: 'white'}}
                     onClick={() => handleFilter()}
-                    className='studentIdCardFilterButton'
                   >
-                    FILTER
+                    Filter
                   </Button>
                 </Grid>
                 <span
