@@ -31,10 +31,6 @@ const useStyles = makeStyles((theme) => ({
   container: {
     maxHeight: '40vh',
   },
-  buttonContainer: {
-    background: theme.palette.background.secondary,
-    paddingBottom: theme.spacing(2),
-  },
   columnHeader: {
     color: `${theme.palette.secondary.main} !important`,
     fontWeight: 600,
@@ -560,6 +556,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 style={{ width: '100%' }}
                 id='grade'
                 options={grades || []}
+                className='dropdownIcon'
                 getOptionLabel={(option) => option?.grade__grade_name || ''}
                 filterSelectedOptions
                 renderInput={(params) => (
@@ -619,6 +616,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                   size='small'
                   onChange={handleSection}
                   id='section'
+                  className='dropdownIcon'
                   options={sections || []}
                   value={sectionDisp || ''}
                   getOptionLabel={(option) => option?.section__section_name || ''}

@@ -106,9 +106,6 @@
 .message_type_wrapper label + .MuiInput-formControl {
   margin-top: 3px !important;
 }
-.message_type_wrapper .MuiSelect-icon {
-  color: #ff6b6b !important;
-}
 .message_type_wrapper .MuiInputLabel-outlined {
   transform: translate(14px, 10px) scale(1) !important;
 }
@@ -119,7 +116,7 @@
   margin-top: 6%;
 }
 .send_message_type .MuiFormLabel-root {
-  color: #014b7e !important;
+  /* color: #014b7e !important; */
   font-size: 1rem !important;
   font-weight: 600 !important;
 }

@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
   navigationIcon: {
     marginLeft: theme.spacing(-1),
     marginRight: theme.spacing(-1),
-    color: '#FF6B6B',
+    color: theme.palette.primary.main,
     fontSize: '30px',
   },
   button: {
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
       cursor: 'pointer',
       backgroundColor: 'transparent',
     },
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     fontWeight: 'bold',
     fontSize: '18px',
     fontFamily: 'Raleway SemiBold',

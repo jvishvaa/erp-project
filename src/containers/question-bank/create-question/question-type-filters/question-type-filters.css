@@ -2,33 +2,12 @@
   padding-bottom: 10px;
 }
 
-.dropdownIcon .MuiInputBase-root {
-  border-radius: 10px;
-}
-
 .questionTypeFilter .MuiInputBase-root {
   background-color: #f9f9f9;
 }
 
-.dropdownIcon .MuiFormLabel-root {
-  color: #014b7e;
-}
-
-.dropdownIcon .MuiInputLabel-outlined.MuiInputLabel-shrink {
-  font-weight: 600;
-}
-
 .questionTypeFilter .MuiAutocomplete-input {
-  color: #ff6b6b;
-}
-
-.dropdownIcon .MuiFormLabel-root.Mui-focused {
-  color: #014b7e;
-  font-weight: 600;
-}
-
-.dropdownIcon .MuiButtonBase-root {
-  color: #ff6b6b;
+  /* color: #ff6b6b; */
 }
 
 .modifyDesign.MuiButton-root {

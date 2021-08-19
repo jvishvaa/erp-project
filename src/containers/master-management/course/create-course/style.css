@@ -182,7 +182,7 @@
 }
 
 .multiRowTextfield .MuiInputLabel-outlined {
-  color: #014b7e;
+  /* color: #014b7e; */
 }
 
 .multiRowTextfield .MuiFormLabel-root.Mui-focused {

@@ -746,14 +746,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                             />
                           </IconButton>
                         ) : (
-                          // <button
-                          //   type='submit'
-                          //   className='group_view_deactivate_button group_view_button'
-                          //   title='Deactivate'
-                          //   onClick={() => handleStatusChange(items.userId, i, '2')}
-                          // >
-                          //   D
-                          // </button>
                           <button
                             type='submit'
                             title='Activate'
@@ -794,16 +786,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 </TableBody>
               </Table>
             </TableContainer>
-
-            {/* <div className={`${classes.root} pagenation_view_groups`}>
-              <Pagination
-                page={Number(currentPage)}
-                size='large'
-                className='books__pagination'
-                onChange={handlePagination}
-                count={totalPages}
-              />
-            </div> */}
             <TablePagination
               component='div'
               count={totalCount}

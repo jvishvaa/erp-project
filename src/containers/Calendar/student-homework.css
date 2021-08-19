@@ -1,32 +1,3 @@
-/* .homework_table_wrapper .message_log_table tr th:not(:last-child):after {
-	content: '';
-	height: 100%;
-	width: 1px;
-	position: absolute;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
-	background-color: #ff6b6b;
-  }
-  .homework_table_wrapper .message_log_table tr td:not(:last-child):after {
-	content: '';
-	height: 100%;
-	width: 1px;
-	position: absolute;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
-	background-color: #ff6b6b;
-  } */
-/* .message_log_breadcrumb_wrapper  .create_group_filter_container{
-	background: #F9F9F9;
-  } */
-/* #menu .MuiPaper-rounded{
-	top: 231px !important;
-	left: 751px !important;
-	min-width: 147px !important;
-    
-  } */
 .message_log_white_wrapper {
   margin-top: 40px;
   height: 100vh;
@@ -51,10 +22,6 @@
   .MuiInput-input {
   color: #ff6b6b;
 }
-.MuiSelect-icon {
-  color: #ff6b6b !important;
-}
-
 .message_log_breadcrumb_wrapper {
   margin: 0px !important;
 }
@@ -67,9 +34,6 @@
 .starContainer {
   width: 35%;
 }
-/* .message_log_white_wrapper{
-	  margin-top: 45px
-  } */
 .for-mobile .subject-homework-details-wrapper {
   margin-top: 3px;
 }
@@ -96,9 +60,6 @@
   input {
   color: #ff6b6b !important;
 }
-/* .makeStyles-content-22 .message_log_breadcrumb_wrapper .create_group_filter_container{
-	background-color: #F3F3F3 !important;	
-} */
 
 .mobile-date-picker input {
   color: #014b7e;
