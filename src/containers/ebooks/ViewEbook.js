@@ -382,15 +382,6 @@ class ViewEbook extends Component {
                             />
                           )}
                         </TabPanel>
-                        {/* <TabPanel value={tabValue} index={2}>
-                          {data && (
-                            <GridList
-                              data={data}
-                              tabValue={tabValue}
-                              totalEbooks={totalEbooks}
-                            />
-                          )}
-                        </TabPanel> */}
                       </div>
                     </Grid>
                     <Grid item xs={12} md={12} style={{ textAlign: 'center' }}>

@@ -120,6 +120,7 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
                   <Button
                     size='small'
                     variant='contained'
+                    style={{ color: 'white' }}
                     color='primary'
                     onClick={() => {
                       handleSelectCard((fullData && fullData) || '');

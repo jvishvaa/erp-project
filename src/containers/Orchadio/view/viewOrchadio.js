@@ -681,12 +681,11 @@ function ViewOrchadio() {
                                 <Grid item xs={12}>
                                   <Button
                                     style={{
-                                      fontSize: 'small',
                                       margin: '20px',
                                       width: 150,
                                     }}
-                                    color='primary'
-                                    size='small'
+                                    className = "labelColor cancelButton"
+                                    size='medium'
                                     variant='contained'
                                     // onClick={handleFilter}
                                     disabled
@@ -695,13 +694,12 @@ function ViewOrchadio() {
                                   </Button>
                                   <Button
                                     style={{
-                                      fontSize: 'small',
                                       margin: '20px',
                                       width: 150,
                                     }}
                                     onClick={handleFilter}
                                     color='primary'
-                                    size='small'
+                                    size='medium'
                                     variant='contained'
                                   >
                                     Filter

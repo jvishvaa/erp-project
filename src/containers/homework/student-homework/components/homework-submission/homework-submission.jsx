@@ -9,7 +9,6 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 
 import {
   Grid,
@@ -43,10 +42,7 @@ import Attachment from '../../../teacher-homework/attachment';
 import {
   uploadFile,
 } from '../../../../../redux/actions';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { set } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import { theme } from 'highcharts';
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -115,13 +111,22 @@ const useStyles = makeStyles((theme) => ({
       width: "100%",
     },
     '&::before': {
-      content: "Instruction : ",
+      content: '"Instruction : "',
       fontWeight: 600,
     }
   },
   acceptedfiles:{
     color : theme.palette.secondary.main,
     width:"100%"
+  },
+  homeworkQuestion:{
+    width: "100%",
+    color:theme.palette.secondary.main,
+    position: "relative",
+    paddingBottom: "8px",
+    fontSize: "18px",
+    borderBottom: `1px solid ${theme.palette.primary.main}`
+
   }
 }));
 
@@ -672,7 +677,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   className={`homework-question-container student-view ${calssNameWise}`}
                   key={`homework_student_question_${index}`}
                 >
-                  <div className={`homework-question ${calssNameWise}`} >
+                  <div className={` ${classes.homeworkQuestion} ${calssNameWise}`} >
                     <span className='question'>Q{index + 1}: {question.question}</span>
                   </div>
                   {isQuestionWise &&

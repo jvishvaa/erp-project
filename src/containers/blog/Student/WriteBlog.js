@@ -414,7 +414,6 @@ class WriteBlog extends Component {
                       Write the blog with atleast {wordCountLimit} words
                     </Typography>
                     <MyTinyEditor
-                      color='secondary'
                       id='blog'
                       content={textEditorContent}
                       handleEditorChange={this.handleEditorChange}
