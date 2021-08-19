@@ -233,15 +233,15 @@ const ListandFilter = (props) => {
 
   return (
     <Layout>
+      <CommonBreadcrumbs
+        componentName='Master Management'
+        childComponentName='Content Mapping'
+      />
       <Grid
         container
         spacing={2}
-        style={{ width: '100%', overflow: 'hidden', padding: '10px 20px' }}
+        style={{ width: '95%', overflow: 'hidden', margin: '20px auto' }}
       >
-        <CommonBreadcrumbs
-          componentName='Master Management'
-          childComponentName='Content Mapping'
-        />
         <Grid container spacing={2} style={{ marginTop: '10px' }}>
           <Grid item md={3} xs={12} sm={6}>
             <FormControl style={{ width: '100%' }} className={`select-form`}>
@@ -338,7 +338,11 @@ const ListandFilter = (props) => {
           </Grid>
         </Grid>
         <div className='btn-list'>
-          <Button variant='contained' className='clear-all' onClick={handleClearAll}>
+          <Button
+            variant='contained'
+            className='cancelButton labelColor'
+            onClick={handleClearAll}
+          >
             Clear All
           </Button>
           <Button
@@ -370,6 +374,7 @@ const ListandFilter = (props) => {
             Assign Mapping
           </StyledButton>
         </div>
+    </Grid>
         <Grid container spacing={2} className='mapping-sub-grade-container'>
           <Grid item md={12} xs={12} className='mapping-grade-subject-container'>
             <Subjectcard
@@ -379,7 +384,6 @@ const ListandFilter = (props) => {
             />
           </Grid>
         </Grid>
-      </Grid>
     </Layout>
   );
 };

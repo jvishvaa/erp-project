@@ -249,7 +249,7 @@ const LessonViewFilters = ({
               value.subject_id
             }&volume=${filterData.volume.id}&academic_year=${
               filterData.year.id
-            }&grade_id=${filterData.grade.grade_id}`
+            }&grade_id=${filterData.grade.grade_id}&branch_id=${filterData.branch.id}`
           )
           .then((result) => {
             if (result?.data?.status_code === 200) {

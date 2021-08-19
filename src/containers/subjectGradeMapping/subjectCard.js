@@ -10,6 +10,7 @@ import useStyles from './useStyles';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import { withRouter, Link } from 'react-router-dom';
 import axiosInstance from '../../config/axios';
+import Chip from '@material-ui/core/Chip';
 import endpoints from '../../config/endpoints';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import './subjectgrademapping.scss';
@@ -90,28 +91,47 @@ const Subjectcard = (props) => {
           schoolGsMapping.length > 0 &&
           schoolGsMapping.map((list, index) => {
             return (
-              <Paper className={classes.root}>
+              <Paper className={classes.root} id='cardPaper'>
                 <Grid container spacing={2} style={{ width: 310 }}>
                   <Grid item xs={8}>
                     <Box>
                       <Typography
+                        // className={classes.content}
+                        // variant='p'
+                        // component='p'
+                        // color='secondary'
+                        // noWrap
+                        // style={{marginTop: '0px' , fontSize: '13px'}}
                         className={classes.title}
                         variant='p'
                         component='p'
                         color='primary'
                       >
-                        {list.branch.branch_name}
+                        {list.erp_gs_mapping[0].subject_name}
                       </Typography>
                     </Box>
-                    <Box>
+                    <Box className='centralSubBox'>
+                      <Typography
+                        className={classes.content}
+                        id='centralPara'
+                        variant='p'
+                        component='p'
+                        color='black'
+                        noWrap
+                        style={{ fontSize: '13px' }}
+                      >
+                        Central Subject :
+                      </Typography>
                       <Typography
                         className={classes.content}
                         variant='p'
                         component='p'
+                        id='centralValue'
                         color='secondary'
                         noWrap
+                        style={{ fontSize: '13px' }}
                       >
-                        {list.erp_grade.grade_name}: {list.central_subject_name}
+                        {list.central_subject_name}
                       </Typography>
                     </Box>
                   </Grid>
@@ -189,7 +209,18 @@ const Subjectcard = (props) => {
                     </Box>
                   </Grid>
                   <Grid item xs={12} sm={12} />
-                  <Grid item xs={6}></Grid>
+                  <Grid item xs={6}>
+                    {list.is_duplicate ? (
+                      <Chip
+                        size='small'
+                        label='Duplicate'
+                        className='duplicate'
+                        id='duplicateChip'
+                      />
+                    ) : (
+                      <div className='noDuplicate'></div>
+                    )}
+                  </Grid>
                 </Grid>
               </Paper>
             );

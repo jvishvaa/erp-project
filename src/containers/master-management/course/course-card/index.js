@@ -73,7 +73,8 @@ const CourseCard = ({ index, cData, setData, setNoPeriods, gradeKey }) => {
       //   a.remove();
       // }
       window.open(
-        `https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${periodData?.files[i]}`
+        // `https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${periodData?.files[i]}`
+        `https://d3ka3pry54wyko.cloudfront.net/dev/aol_file/course/${periodData?.files[i]}`
       );
     }
     // anchors.forEach((anchor) => anchor.click());
