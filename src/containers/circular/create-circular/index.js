@@ -504,26 +504,47 @@ const CraeteCircular = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className={isMobile ? 'breadCrumbFilterRow' : null} className='isFilter'>
-          <div style={{ width: '95%', margin: '20px auto' }}>
+        <div className={isMobile ? 'breadCrumbFilterRow' : null}>
+          <div
+            style={{
+              width: '96%',
+              margin: '20px auto',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <CommonBreadcrumbs
               componentName='Circulars'
               childComponentName='Create New'
             />
-          </div>
-          <div className='hideShowFilterIcon'>
-            <IconButton onClick={() => setIsFilter(!isFilter)}>
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={{ height: '20px', width: '25px' }}
-                    src={isFilter ? hidefilter : showfilter}
-                  />
+            <div className='hideShowFilterIcon'>
+              <IconButton onClick={() => setIsFilter(!isFilter)}>
+                {!isMobile && (
+                  <div
+                    style={{
+                      color: '#014b7e',
+                      fontSize: '16px',
+                      marginRight: '10px',
+                      fontWeight: '600',
+                      alignSelf: 'center',
+                    }}
+                  >
+                    {isFilter ? 'Close Filter' : 'Expand Filter'}
+                  </div>
                 )}
-              />
-            </IconButton>
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={{ height: '20px', width: '25px' }}
+                      src={isFilter ? hidefilter : showfilter}
+                    />
+                  )}
+                />
+              </IconButton>
+            </div>
           </div>
         </div>
+
         {isFilter ? (
           <Grid
             container
@@ -660,7 +681,8 @@ const CraeteCircular = () => {
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    className='custom_button_master labelColor'
+                    style={{ width: '100%' }}
+                    className='cancelButton labelColor'
                     size='medium'
                     onClick={handleClear}
                   >
@@ -672,9 +694,8 @@ const CraeteCircular = () => {
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', width: '100%' }}
                     color='primary'
-                    className='custom_button_master'
                     size='medium'
                     onClick={handleFilter}
                   >

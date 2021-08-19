@@ -602,7 +602,10 @@ const UpcomingClasses = () => {
                                 name="optional"
                                 color="primary"
                             />}
-                        label={toggle ? 'Yet To Start' : 'Started'}
+                        label={
+                            <Typography color="secondary">
+                            {toggle ? 'Yet To Start' : 'Started'}
+                            </Typography>}
                     />
                 </Grid>
                 <Grid item xs={12} sm={4}>

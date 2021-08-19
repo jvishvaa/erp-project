@@ -285,9 +285,8 @@ const AssignQP = (props) => {
           <Grid item xs={6} sm={2}>
             <Button
               variant='contained'
-              style={{ color: 'white', marginTop: '30px' }}
+              style={{ color: 'white', marginTop: '30px', width: '100%'  }}
               color='primary'
-              className='custom_button_master'
               size='medium'
               type='submit'
               onClick={handleSubmit}

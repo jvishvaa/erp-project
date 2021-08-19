@@ -331,21 +331,6 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
               <Grid container item xs={12}>
                 <Grid item xs={12} md={6} className='form-field'>
                   <div className='finish-btn-container'>
-                    {/**
-                     * <Button
-                      startIcon={<AddCircleOutlineIcon />}
-                      onClick={() => {
-                        setQueIndexCounter(queIndexCounter + 1);
-                        addNewQuestion(queIndexCounter + 1);
-                      }}
-                      title='Add Question'
-                      className='btn add-quesiton-btn outlined-btn'
-                      color='primary'
-                      variant='outlined'
-                    >
-                      Add another question
-                    </Button>
-                    */}
                     <StyledOutlinedButton
                       startIcon={<AddCircleOutlineIcon color="primary"/>}
                       onClick={() => {

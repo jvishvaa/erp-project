@@ -570,7 +570,8 @@ const GeneralDairyFilter = ({
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          className='custom_button_master labelColor'
+          className='cancelButton labelColor'
+          style={{ width: '100%' }}
           size='medium'
           onClick={handleClear}
         >
@@ -580,9 +581,8 @@ const GeneralDairyFilter = ({
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          style={{ color: 'white' }}
+          style={{ color: 'white', width: '100%' }}
           color='primary'
-          className='custom_button_master'
           size='medium'
           type='submit'
           // disabled={!filterData?.grade}
@@ -595,9 +595,8 @@ const GeneralDairyFilter = ({
         <Grid item xs={6} sm={4} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
-            style={{ color: 'white' }}
+            style={{ color: 'white', width: '100%' }}
             color='primary'
-            className='custom_button_master'
             size='medium'
             type='submit'
             onClick={() => history.push('/create/general-diary')}
@@ -610,9 +609,8 @@ const GeneralDairyFilter = ({
         <Grid item xs={6} sm={4} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
-            style={{ color: 'white' }}
+            style={{ color: 'white', width: '100%' }}
             color='primary'
-            className='custom_button_master'
             size='medium'
             type='submit'
             onClick={() => history.push('/create/daily-diary')}

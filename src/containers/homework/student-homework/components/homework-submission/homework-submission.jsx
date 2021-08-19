@@ -1018,8 +1018,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               <div className='homework_submit_button_wrapper'>
                 <Button
                   variant='contained'
-                  className='custom_button_master labelColor homework_submit_button_cancel'
+                  className='cancelButton labelColor homework_submit_button_cancel'
                   size='medium'
+                  style={{ width: '100%' }}
                   onClick={handleHomeworkCancel}
                 >
                   {homeworkSubmission.status === 1 ? 'CANCEL' : 'BACK'}
@@ -1027,10 +1028,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 {homeworkSubmission.status === 1 &&
                   <Button
                     variant='contained'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', width: '100%' }}
                     onClick={handleHomeworkSubmit}
                     color='primary'
-                    className='custom_button_master'
                     size='medium'
                   >
                     Submit

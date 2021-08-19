@@ -606,7 +606,7 @@ const TopicTable = () => {
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    className='labelColor buttonModifiedDesign'
+                    className='labelColor cancelButton'
                     size='medium'
                     title='Clear All'
                     onClick={handleClearFilter}
@@ -617,9 +617,8 @@ const TopicTable = () => {
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', width: '100%' }}
                     color='primary'
-                    className='buttonModifiedDesign'
                     size='medium'
                     onClick={handleFilter}
                   >
@@ -649,8 +648,7 @@ const TopicTable = () => {
                     variant='contained'
                     color='primary'
                     size='small'
-                    style={{ color: 'white' }}
-                    className='buttonModifiedDesign'
+                    style={{ color: 'white', width: '100%' }}
                     title='Add Topic'
                     onClick={handleAddSubject}
                   >

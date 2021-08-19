@@ -1257,8 +1257,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   <Button
                     variant='contained'
                     onClick={handleback}
-                    className='custom_button_master labelColor'
+                    className='cancelButton labelColor'
                     size='medium'
+                    style={{ width: '100%' }}
                     type='submit'
                   >
                     BACK
@@ -1270,9 +1271,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   <Button
                     variant='contained'
                     onClick={handleSendMessage}
-                    style={{ color: 'white' }}
                     color='primary'
-                    className='custom_button_master'
+                    style={{color:'white', width: '100%' }}
                     size='medium'
                   >
                     {messageSending ? 'Sending Message' : 'Send Message'}
@@ -1283,9 +1283,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   <Button
                     variant='contained'
                     onClick={handlenext}
-                    style={{ color: 'white' }}
+                    style={{color:'white', width: '100%' }}
                     color='primary'
-                    className='custom_button_master'
                     size='medium'
                   >
                     NEXT

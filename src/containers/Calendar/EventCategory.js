@@ -538,8 +538,7 @@ const Cal1 = () => {
               <Button
                 variant='contained'
                 color='primary'
-                style={{ color: 'white' }}
-                className='custom_button_master '
+                style={{color:'white', width: '100%' }}
                 // className={classes.buttonCol}
                 onClick={handleClickOpen}
               >

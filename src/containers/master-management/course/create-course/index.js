@@ -27,6 +27,12 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 auto',
     boxShadow: 'none',
   },
+  attachmentbuttondoc: {
+    borderRadius: '10px',
+    background: 'none',
+    border: `1px solid ${theme.palette.primary.main}`,
+    color: theme.palette.secondary.main,
+  },
 }));
 
 const CreateCourse = () => {
@@ -977,7 +983,7 @@ const CreateCourse = () => {
                             )}
                           />
                         }
-                        className='attachment_button_doc'
+                        className={classes.attachmentbuttondoc}
                         title='Attach Supporting File'
                         variant='contained'
                         size='small'
@@ -1029,7 +1035,7 @@ const CreateCourse = () => {
                             )}
                           />
                         }
-                        className='attachment_button_doc'
+                        className={classes.attachmentbuttondoc}
                         title='Attach Supporting File'
                         variant='contained'
                         size='small'
@@ -1062,16 +1068,22 @@ const CreateCourse = () => {
               <Grid item xs={12} sm={12}>
                 <Divider />
               </Grid>
-              <Grid item xs={12} sm={12} className={isMobile ? '' : 'filterPadding'}>
-                <Button onClick={handleBackToCourseList} className='periodBackButton1'>
+              <Grid item xs={4} sm={12} className={isMobile ? '' : 'filterPadding'}>
+                <Button
+                  onClick={handleBackToCourseList}
+                  variant='contained'
+                  size='medium'
+                  className='cancelButton labelColor'
+                  style={{ width: '15%' }}
+                >
                   Back
                 </Button>
                 <Button
-                  className='nextPageButton'
-                  variant = "contained"
-                  color = "primary"
+                  size='medium'
                   onClick={handleNext}
-                  style={{ float: 'right',color:"white" }}
+                  variant='contained'
+                  color='primary'
+                  style={{ float: 'right', width: '15%', color: 'white' }}
                 >
                   NEXT
                 </Button>
@@ -1108,13 +1120,22 @@ const CreateCourse = () => {
             <div className='submitContainer'>
               <Grid item xs={12} sm={12}>
                 <div className='buttonContainer'>
-                  <Button onClick={handleBack} className='periodBackButton'>
+                  <Button
+                    size='medium'
+                    variant='contained'
+                    onClick={handleBack}
+                    style={{ width: '100%', marginRight: '5%' }}
+                    className='cancelButton labelColor'
+                  >
                     Back
                   </Button>
                   {!gradeKey && (
                     <Button
+                      variant='contained'
+                      color='primary'
+                      size='medium'
+                      style={{ color: 'white', width: '100%' }}
                       onClick={editFlag ? handleEdit : handleSubmit}
-                      className='periodSubmitButton'
                     >
                       Submit
                     </Button>

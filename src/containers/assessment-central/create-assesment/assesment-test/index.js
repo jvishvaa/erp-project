@@ -306,12 +306,12 @@ const AssesmentTest = ({
                           variant='contained'
                           style={{
                             color: 'white',
+                            width: '100%',
                             textTransform: 'none',
                             width: '12%',
                             margin: '0px 0px 0px 15px',
                           }}
                           color='primary'
-                          className='modifyDesign'
                           size='small'
                           onClick={() => {
                             setOpenEditor(true);

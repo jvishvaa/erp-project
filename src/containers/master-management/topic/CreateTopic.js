@@ -41,7 +41,7 @@ const CreateTopic = ({ grades, setLoading, handleGoBack }) => {
     grade: '',
     subject: '',
     chapter: '',
-    branch: ''
+    branch: '',
   });
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -65,30 +65,30 @@ const CreateTopic = ({ grades, setLoading, handleGoBack }) => {
   }, []);
 
   useEffect(() => {
-    if(moduleId) {
-    axiosInstance
-      .get(`${endpoints.masterManagement.academicYear}?module_id=${moduleId}`)
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          setAcademicYearDropdown(result?.data?.result?.results);
-        } else {
-          setAlert('error', result?.data?.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error?.message);
-      });
+    if (moduleId) {
+      axiosInstance
+        .get(`${endpoints.masterManagement.academicYear}?module_id=${moduleId}`)
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            setAcademicYearDropdown(result?.data?.result?.results);
+          } else {
+            setAlert('error', result?.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error?.message);
+        });
 
-    // axiosInstance.get(`${endpoints.masterManagement.volumes}`)
-    //     .then(result => {
-    //         if (result.data.status_code === 200) {
-    //             setVolumeDropdown(result.data.result.results);
-    //         } else {
-    //             setAlert('error', result.data.message);
-    //         }
-    //     }).catch(error => {
-    //         setAlert('error', error.message);
-    //     })
+      // axiosInstance.get(`${endpoints.masterManagement.volumes}`)
+      //     .then(result => {
+      //         if (result.data.status_code === 200) {
+      //             setVolumeDropdown(result.data.result.results);
+      //         } else {
+      //             setAlert('error', result.data.message);
+      //         }
+      //     }).catch(error => {
+      //         setAlert('error', error.message);
+      //     })
     }
   }, [moduleId]);
 
@@ -402,7 +402,8 @@ const CreateTopic = ({ grades, setLoading, handleGoBack }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            className='custom_button_master labelColor'
+            style={{ width: '100%' }}
+            className='cancelButton labelColor'
             size='medium'
             onClick={handleGoBack}
           >
@@ -412,9 +413,8 @@ const CreateTopic = ({ grades, setLoading, handleGoBack }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            style={{ color: 'white' }}
             color='primary'
-            className='custom_button_master'
+            style={{ color: 'white', width: '100%' }}
             size='medium'
             type='submit'
           >

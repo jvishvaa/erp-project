@@ -646,9 +646,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
               <Box style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
                 <Button
                   variant='contained'
-                  style={{ color: 'white' }}
+                  style={{ color: 'white', width: '100%' }}
                   color='primary'
-                  className='custom_button_master'
                   size='medium'
                   onClick={handleExcel}
                 >

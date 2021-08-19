@@ -433,21 +433,7 @@ const QuestionCard = ({
         </Card>
       </Grid>
       <Grid item xs={12}>
-        <Grid item xs={12} className='question-btn-container'>
-          <div className='question-btn-inner-container '>
-            {/* <Button
-              color='primary'
-              startIcon={<AddCircleOutlineIcon />}
-              onClick={() => {
-                addNewQuestion(index + 1);
-              }}
-              title='Add Question'
-              className='btn add-quesiton-btn outlined-btn'
-            >
-              Add another question
-            </Button> */}
-          </div>
-        </Grid>
+        <Grid item xs={12} className='question-btn-container'/>
         {index > 0 && (
           <Grid item xs={12} className='question-btn-container'>
             <div className='question-btn-inner-container '>

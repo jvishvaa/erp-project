@@ -189,74 +189,81 @@ class EditRole extends Component {
 
     const { roleName } = this.props;
     return (
-      <div className={classes.root}>
+      <>
         <CommonBreadcrumbs
           componentName='Role Management'
           childComponentName='Edit Role'
         />
-        <div className='back-btn-container' style={{ marginTop: '1rem' }}>
-          <Button
-            variant='contained'
-            startIcon={<ArrowBackIcon />}
-            size='medium'
-            className='labelColor cancelButton'
-            onClick={() => history.push('/role-management')}
-          >
-            Back
-          </Button>
-        </div>
-        <Grid container spacing={2} alignItems='center' className={classes.formContainer}>
-          <Grid item>
-            {fetchingRoleDataById ? (
-              <Skeleton />
-            ) : (
-              <TextField
-                id='outlined-helperText'
-                label='Role name'
-                defaultValue=''
-                inputProps={{ maxLength: 20 }}
-                variant='outlined'
-                value={roleName}
-                onChange={this.onChangeRoleName}
-                size='small'
-              />
-            )}
-          </Grid>
-          <Grid item>
+        <div className={classes.root}>
+          <div className='back-btn-container'>
             <Button
               variant='contained'
-              color='primary'
+              startIcon={<ArrowBackIcon style={{ color: 'rgb(140, 140, 140)' }} />}
               size='medium'
-              style={{ color: 'white' }}
-              onClick={this.handleEditRole}
+              className='cancelButton labelColor'
+              onClick={() => history.push('/role-management')}
             >
-              Update Role
+              Back
             </Button>
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} className={classes.spacer}>
-          <Grid item>
-            <Typography className={classes.sectionHeader}>Number of modules</Typography>
-          </Grid>
-        </Grid>
-        <Divider className={classes.divider} />
-        <Grid container spacing={4} className={classes.modulesContainer}>
-          {fetchingRoleDataById && <Loading message='loading modules ...' />}
-          {modules &&
-            modules.map((module) => (
-              <Grid item xs={12} sm={6} lg={12}>
-                <ModuleCard
-                  module={module}
-                  alterCreateRolePermissions={this.alterEditRolePermissions}
-                  branches={branches}
-                  academicYear={this.state.academicYearList}
-                  modulePermissionsRequestData={modulePermissionsRequestData}
-                  setModulePermissionsRequestData={setModulePermissionsRequestData}
+          </div>
+          <Grid
+            container
+            spacing={2}
+            alignItems='center'
+            className={classes.formContainer}
+          >
+            <Grid item>
+              {fetchingRoleDataById ? (
+                <Skeleton />
+              ) : (
+                <TextField
+                  id='outlined-helperText'
+                  label='Role name'
+                  defaultValue=''
+                  inputProps={{ maxLength: 20 }}
+                  variant='outlined'
+                  value={roleName}
+                  onChange={this.onChangeRoleName}
+                  size='small'
                 />
-              </Grid>
-            ))}
-        </Grid>
-      </div>
+              )}
+            </Grid>
+            <Grid item>
+              <Button
+                variant='contained'
+                color='primary'
+                size='medium'
+                style={{ color: 'white' }}
+                onClick={this.handleEditRole}
+              >
+                Update Role
+              </Button>
+            </Grid>
+          </Grid>
+          <Grid container spacing={2} className={classes.spacer}>
+            <Grid item>
+              <Typography className={classes.sectionHeader}>Number of modules</Typography>
+            </Grid>
+          </Grid>
+          <Divider className={classes.divider} />
+          <Grid container spacing={4} className={classes.modulesContainer}>
+            {fetchingRoleDataById && <Loading message='loading modules ...' />}
+            {modules &&
+              modules.map((module) => (
+                <Grid item xs={12} sm={6} lg={12}>
+                  <ModuleCard
+                    module={module}
+                    alterCreateRolePermissions={this.alterEditRolePermissions}
+                    branches={branches}
+                    academicYear={this.state.academicYearList}
+                    modulePermissionsRequestData={modulePermissionsRequestData}
+                    setModulePermissionsRequestData={setModulePermissionsRequestData}
+                  />
+                </Grid>
+              ))}
+          </Grid>
+        </div>
+      </>
     );
   }
 }

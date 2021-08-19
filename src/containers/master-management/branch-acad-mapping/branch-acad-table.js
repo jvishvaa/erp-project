@@ -314,7 +314,7 @@ const BranchAcadTable = () => {
                   startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
                   variant='contained'
                   color='primary'
-                  size='small'
+                  size='medium'
                   style={{ color: 'white' }}
                   title='Add Branch Mapping'
                   onClick={handleAddBranchMapping}

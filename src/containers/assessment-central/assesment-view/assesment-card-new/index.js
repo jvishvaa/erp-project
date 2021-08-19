@@ -251,9 +251,8 @@ const AssessmentCard = ({
           {!periodColor && (
             <Button
               variant='contained'
-              style={{ color: 'white' }}
+              style={{color:'white', width: '100%' }}
               color='primary'
-              className='custom_button_master modifyDesign'
               size='small'
               onClick={handleViewMore}
             >

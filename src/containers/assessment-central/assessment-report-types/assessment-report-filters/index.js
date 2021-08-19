@@ -659,9 +659,9 @@ const AssessmentReportFilters = ({
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
-            className='custom_button_master labelColor modifyDesign'
+            className='canceButton labelColor'
             size='medium'
-            style={{ borderRadius: '10px' }}
+            style={{ width: '100%' }}
             onClick={handleClear}
           >
             CLEAR ALL
@@ -670,10 +670,9 @@ const AssessmentReportFilters = ({
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
-            className='custom_button_master modifyDesign'
             size='medium'
             color='primary'
-            style={{ borderRadius: '10px', color: 'white' }}
+            style={{ color: 'white', width: '100%' }}
             onClick={handleFilter}
           >
             FILTER

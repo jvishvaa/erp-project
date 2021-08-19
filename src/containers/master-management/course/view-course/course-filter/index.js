@@ -10,12 +10,7 @@ import { AlertNotificationContext } from '../../../../../context-api/alert-conte
 import Divider from '@material-ui/core/Divider';
 import '../../create-course/style.css';
 
-const CourseFilter = ({
-  handleCourseList,
-  setPageFlag,
-  handleClearFilter,
-  tabValue,
-}) => {
+const CourseFilter = ({ handleCourseList, setPageFlag, handleClearFilter, tabValue }) => {
   const themeContext = useTheme();
   const { gradeKey } = useParams();
   const history = useHistory();
@@ -171,7 +166,8 @@ const CourseFilter = ({
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
-            className='labelColor buttonModifiedDesign'
+            style={{ width: '100%' }}
+            className='labelColor cancelButton'
             size='medium'
             onClick={handleClear}
           >
@@ -181,9 +177,8 @@ const CourseFilter = ({
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
-            style={{ color: 'white' }}
+            style={{ color: 'white', width: '100%' }}
             color='primary'
-            className='buttonModifiedDesign'
             size='medium'
             onClick={handleFilter}
           >
@@ -211,9 +206,9 @@ const CourseFilter = ({
           <Button
             startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
             variant='contained'
-            style={{ color: 'white' }}
+            style={{ color: 'white', width: '100%' }}
+            size='medium'
             color='primary'
-            className='buttonModifiedDesign'
             onClick={() => {
               sessionStorage.removeItem('isAol');
               sessionStorage.removeItem('gradeKey');
@@ -222,7 +217,6 @@ const CourseFilter = ({
               sessionStorage.removeItem('isErpClass');
               history.push({ pathname: '/create/course' });
             }}
-            size='medium'
           >
             CREATE
           </Button>

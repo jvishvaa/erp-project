@@ -225,17 +225,19 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
 
             <div className='hideShowFilterIcon'>
               <IconButton onClick={() => setIsFilter(!isFilter)}>
-                <div
-                  style={{
-                    color: '#014b7e',
-                    fontSize: '16px',
-                    marginRight: '10px',
-                    fontWeight: '600',
-                    alignSelf: 'center',
-                  }}
-                >
-                  {isFilter ? 'Close Filter' : 'Expand Filter'}
-                </div>
+                {!isMobile && (
+                  <div
+                    style={{
+                      color: '#014b7e',
+                      fontSize: '16px',
+                      marginRight: '10px',
+                      fontWeight: '600',
+                      alignSelf: 'center',
+                    }}
+                  >
+                    {isFilter ? 'Close Filter' : 'Expand Filter'}
+                  </div>
+                )}
                 <SvgIcon
                   component={() => (
                     <img

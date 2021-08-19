@@ -716,9 +716,8 @@ const CreateDiscussionForum = () => {
           <Grid item xs={6} sm={2}>
             <Button
               variant='contained'
-              style={{ color: 'white' }}
+              style={{color:'white', width: '100%' }}
               color="primary"
-              className="custom_button_master"
               size='medium'
               type='submit'
               onClick={(location.pathname === `/student-forum/edit/${postsId.id}` || location.pathname === `/teacher-forum/edit/${postsId.id}`) ? handleUpdatePost : handleSubmit}

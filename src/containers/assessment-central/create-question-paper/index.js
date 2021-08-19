@@ -412,9 +412,9 @@ const CreateQuestionPaper = ({
       <div className='create-question-paper-container'>
         <div>
           <CommonBreadcrumbs
-            componentName='Assesment'
-            childComponentName='Question paper'
-            childComponentNameNext='Create new'
+            componentName='Assessment'
+            childComponentName='Question Paper'
+            childComponentNameNext='Create New'
             isAcademicYearVisible={true}
           />
         </div>
@@ -619,8 +619,8 @@ const CreateQuestionPaper = ({
             <div className='btn-container'>
               <Button
                 variant='contained'
-                className='disabled-btn'
-                style={{ borderRadius: '10px' }}
+                className='cancelButton labelColor'
+                style={{ width: '100%' }}
                 onClick={() => {
                   handleClearAll();
                   formik.handleReset();
@@ -629,19 +629,6 @@ const CreateQuestionPaper = ({
                 CLEAR ALL
               </Button>
             </div>
-
-            {/* <div className='btn-container '>
-              <Button
-                variant='contained'
-                className=''
-                color='primary'
-                onClick={() => {
-                  formik.handleSubmit();
-                }}
-              >
-                FILTER
-              </Button>
-            </div> */}
           </div>
           {showQuestionPaper && (
             <QuestionPaper

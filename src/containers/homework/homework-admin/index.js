@@ -12,7 +12,14 @@ import {
   Divider,
   Switch,
   FormControlLabel,
-  Typography, Paper, Table, TableCell, TableBody, TableContainer, TableHead, TableRow
+  Typography,
+  Paper,
+  Table,
+  TableCell,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
@@ -45,47 +52,46 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     color: theme.palette.secondary.main,
   },
-  labelTag:{
-    fontSize: "1.25rem",
-    borderRadius: ".5rem 0 0 .5rem",
+  labelTag: {
+    fontSize: '1.25rem',
+    borderRadius: '.5rem 0 0 .5rem',
     fontWeight: 500,
-    background: "white",
-    padding: ".625rem",
+    background: 'white',
+    padding: '.625rem',
     boxShadow: `0px 0px 10px -2px ${theme.palette.primary.main}`,
-    borderRight:"none" ,
+    borderRight: 'none',
     color: theme.palette.secondary.main,
-    width: "85%"
+    width: '85%',
   },
-  inputText : {
+  inputText: {
     boxShadow: `0px 0px 10px -2px ${theme.palette.primary.main}`,
-    backgroundColor : theme.palette.primary.main,
-    border: "none",
-    borderLeft: "none",
-    borderRadius: "0 .5rem .5rem 0",
-    outline: "none",
-    fontSize: "1.15rem",
-    fontWeight: "500",
-    color: "white",
-    width: "10%",
-    padding: ".625rem",
+    backgroundColor: theme.palette.primary.main,
+    border: 'none',
+    borderLeft: 'none',
+    borderRadius: '0 .5rem .5rem 0',
+    outline: 'none',
+    fontSize: '1.15rem',
+    fontWeight: '500',
+    color: 'white',
+    width: '10%',
+    padding: '.625rem',
 
     '&::-webkit-input-placeholder': {
-      color:"white",
-      fontSize: "0.875rem"
+      color: 'white',
+      fontSize: '0.875rem',
+    },
+    '&::-moz-placeholder': {
+      color: 'white',
+      fontSize: '0.875rem',
+    },
   },
-  '&::-moz-placeholder' :{
-      color: "white",
-      fontSize: "0.875rem"
-  }
-
-  }, 
-  noDataTag :{
+  noDataTag: {
     display: 'flex',
     justifyContent: 'center',
     fontSize: '16px',
     width: '100%',
-    color : theme.palette.primary.main
-  }
+    color: theme.palette.primary.main,
+  },
 }));
 
 const sscolumns = [
@@ -808,7 +814,7 @@ const HomeworkAdmin = () => {
                   color='primary'
                 />
               }
-              label={<Typography color="primary">Star Conversion</Typography>}
+              label={<Typography color='secondary'>Star Conversion</Typography>}
             />
           </Grid>
 
@@ -823,7 +829,7 @@ const HomeworkAdmin = () => {
                   color='primary'
                 />
               }
-              label={<Typography color="primary">Top-Performers</Typography>}
+              label={<Typography color='secondary'>Top-Performers</Typography>}
             />
           </Grid>
         </Grid>
@@ -928,12 +934,11 @@ const HomeworkAdmin = () => {
                 </TableBody>
               ) : (
                 <TableBody
-                className = {classes.noDataTag}
-                style={{
-                  margin: '25% 120%',
-                }}
+                  className={classes.noDataTag}
+                  style={{
+                    margin: '25% 120%',
+                  }}
                 >
-
                   Sorry! No Data Available.
                 </TableBody>
               )}
@@ -1002,7 +1007,7 @@ const HomeworkAdmin = () => {
               ) : (
                 <TableBody>
                   <div
-                   className = {classes.noDataTag}
+                    className={classes.noDataTag}
                     style={{
                       margin: '25% 80%',
                     }}
@@ -1023,9 +1028,8 @@ const HomeworkAdmin = () => {
           <Grid item xs={6} sm={2}>
             <Button
               variant='contained'
-              style={{ color: 'white' }}
+              style={{ color: 'white', width: '100%' }}
               color='primary'
-              className='custom_button_master'
               size='medium'
               type='submit'
               onClick={handleSubmit}

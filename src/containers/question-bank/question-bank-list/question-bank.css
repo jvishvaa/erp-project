@@ -96,18 +96,12 @@
 
 .breadCrumbFilterRow {
   display: flex;
-  margin-left: 10px;
-  margin-right: 10px;
   justify-content: space-between;
 }
 
 .hideShowFilterIcon.MuiIconButton-label {
-  /* align-self:flex-end; */
-  /* align-items: flex-end; */
-  /* right: 16px; */
   display: flex;
   justify-content: space-between;
-  /* margin-right: 10px; */
 }
 
 .underlineRemove {
