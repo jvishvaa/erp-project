@@ -30,6 +30,13 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   tooltiptext: theme.toolTipText,
+  duplicate: {
+    minWidth: "90px",
+    fontWeight: 600,
+    background: theme.palette.primary.main,
+    color: "white"
+  }
+
 }));
 
 export default useStyles;
