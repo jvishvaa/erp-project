@@ -74,12 +74,23 @@ const useStyles = makeStyles((theme) => ({
   homeworkblock:{
     color : theme.palette.secondary.main,
     fontWeight: 600
-  }, headerText: {
+  },
+   headerText: {
     color: theme.palette.secondary.main,
     fontWeight: 600,
     fontSize: "1rem",
-    ['@media screen(min-width:780px)']: {
+    ['@media screen(min-width:768px)']: {
       fontSize: "0.85rem",
+    }
+  },
+  homeworkSubmitwrapper:{
+    border: `1px solid ${theme.palette.primary.main}`,  
+    borderRadius: "10px",
+    padding: "20px",
+    ['@media screen(min-width:768px)']: {
+      margin: "10px",
+      width: "90% !important",
+      height: "auto !important",
     }
   }
 }));
@@ -322,7 +333,7 @@ const ViewHomework = withRouter(
             </div>
           </Grid>
           <Grid item xs={12} md={10}>
-            <div className='homework_submit_wrapper'>
+            <div className={classes.homeworkSubmitwrapper}>
               <div className='homework_block_wrapper'>
                 <div className={`${classes.homeworkblock} homework_submit_tag`}>
                   Homework - {subject?.split('_')[2]}, {date}

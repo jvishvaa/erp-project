@@ -83,10 +83,6 @@
   transform: scale(1.5);
   margin-right: 1%;
 }
-.send_message_type_wrapper {
-	margin: 20px auto;
-	width: 95%;
-}
 
 .file_name_container{
 	font-size: 1rem;
@@ -99,10 +95,6 @@
   }
   .send_message_group_select_lebel {
     margin-right: 4%;
-  }
-  .send_message_type_wrapper {
-    margin-left: 10%;
-    margin-top: 5%;
   }
   .message_type_block_wrapper {
     margin: 20px auto;

@@ -65,7 +65,15 @@ const useStyles = makeStyles((theme) => ({
     color : theme.palette.secondary.main,
     fontWeight: 600
   }, 
-   dayicon : theme.dayIcon
+   dayicon : theme.dayIcon,
+   homeworkstudentheadercount:{
+    position: "absolute",
+    right: 0,
+    top: 0,
+    backgroundColor: theme.palette.primary.main,
+    color: "white",
+    width: "20px",
+   }
 
 }));
 
@@ -458,7 +466,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                 {messageRows.header?.map((headers, i) =>
                                   headers.isOptional ? (
                                     <TableCell className='homework_header homework_header_dropdown_wrapper'>
-                                      <span className='homework_student_header_count'>
+                                      <span className={classes.homeworkstudentheadercount}>
                                         {optionalSubjects.length}
                                       </span>
                                       {/* <Select
@@ -501,7 +509,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                     </TableCell>
                                   ) : headers.isOthers ? (
                                     <TableCell className='homework_header homework_header_dropdown_wrapper'>
-                                      <span className='homework_student_header_count'>
+                                      <span className={classes.homeworkstudentheadercount}>
                                         {otherSubjects.length}
                                       </span>
                                       <Autocomplete

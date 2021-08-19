@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.main,
     fontWeight: 600,
     fontSize: "1rem",
-    ['@media screen(min-width:780px)']: {
+    ['@media screen(min-width:768px)']: {
       fontSize: "0.85rem",
     }
   },
@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.primary.main}`,  
     borderRadius: "10px",
     padding: "20px",
-    ['@media screen(min-width:780px)']: {
+    ['@media screen(min-width:768px)']: {
       margin: "10px",
       width: "90% !important",
       height: "auto !important",

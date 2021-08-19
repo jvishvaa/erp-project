@@ -98,6 +98,17 @@ const useStyles = makeStyles((theme) => ({
   msgTypeBlockSelected:  {
     borderBottom: `3px solid ${theme.palette.primary.main}`,
     fontWeight: 600,
+  },
+  sendmsgType:{
+    margin: "20px auto",
+    width: "95%",
+    color:theme.palette.secondary.main,
+    ['@media screen(min-width:768px)']:{
+      marginLeft: "10%",
+      marginTop: "5%",  
+      color:theme.palette.secondary.main
+
+    }
   }
 }));
 
@@ -958,7 +969,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           />
           {firstStep ? (
             <>
-              <div className='send_message_type_wrapper'>
+              <div className={classes.sendmsgType}>
                 <div className='send_message_group_select_lebel'>Group Select</div>
                 <FormControlLabel
                   control={

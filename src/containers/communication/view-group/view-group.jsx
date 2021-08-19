@@ -351,8 +351,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                               : null}
                           </TableCell>
                           <TableCell
-                            className={`view_group_table_sections ${isHidden ? 'hide' : 'show'
-                              }${classes.tableCell}`}
+                            className={`view_group_table_sections ${isHidden ? 'hide' : 'show'} ${classes.tableCell}`}
                           >
                             {items.grades.length
                               ? items.grades.map((grades, index) => {
@@ -364,8 +363,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                               : null}
                           </TableCell>
                           <TableCell
-                            className={`view_group_table_sections ${isHidden ? 'hide' : 'show'
-                              }${classes.tableCell}`}
+                            className={`view_group_table_sections ${isHidden ? 'hide' : 'show'} ${classes.tableCell}`}
                           >
                             {items.sections && items.sections.length
                               ? items.sections.map((sections, index) => {

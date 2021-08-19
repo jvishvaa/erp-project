@@ -25,20 +25,10 @@ import axiosInstance from '../../config/axios';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme)=>({
   root: {
     backgroundColor: '#F9F9F9',
     padding: '15px 60px 15px 15px',
-  },
-  dashboardText: {
-    color: '#014B7E',
-    fontSize: '18px',
-    fontWeight: 'lighter',
-    fontFamily: '',
-    lineHeight: '21px',
-  },
-  filterCategorySpan: {
-    marginLeft: '37px',
   },
   categoryFilterContainer: {
     marginBottom: '10px',
@@ -107,7 +97,7 @@ const useStyles = makeStyles({
   title: {
     display: 'inline-block',
     width: '183px',
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontWeight: 300,
     fontFamily: 'Raleway',
@@ -117,7 +107,7 @@ const useStyles = makeStyles({
     marginBottom: '10px',
   },
   contentTitle: {
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontWeight: 400,
     fontFamily: 'Raleway',
@@ -175,7 +165,7 @@ const useStyles = makeStyles({
     marginTop: 'auto',
     marginBottom: '5px',
   },
-});
+}));
 
 const StyledClearButton = withStyles({
   root: {
@@ -189,9 +179,9 @@ const StyledClearButton = withStyles({
   },
 })(Button);
 
-const StyledFilterButton = withStyles({
+const StyledFilterButton = withStyles((theme) => ({
   root: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: theme.palette.primary.main,
     color: '#FFFFFF',
     height: '42px',
     borderRadius: '10px',
@@ -199,25 +189,25 @@ const StyledFilterButton = withStyles({
     marginLeft: '20px',
     marginTop: 'auto',
     '&:hover': {
-      backgroundColor: '#FF6B6B',
+      backgroundColor: theme.palette.primary.main,
     },
   },
   startIcon: {
     fill: '#FFFFFF',
     stroke: '#FFFFFF',
   },
-})(Button);
+}))(Button);
 
-const StyledButton = withStyles({
+const StyledButton = withStyles((theme) => ({
   root: {
     marginTop: 'auto',
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     fontSize: '18px',
     padding: '5px 12px',
     textTransform: 'capitalize',
     backgroundColor: 'transparent',
   },
-})(Button);
+}))(Button);
 
 const StyledIconButton = withStyles({
   root: {
@@ -463,7 +453,7 @@ const Filters = (props) => {
             <Grid item xs={12}>
               <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
                 <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                  <Typography>Academic Year</Typography>
+                  <Typography color = "secondary">Academic Year</Typography>
                 </AccordionSummary>
                 <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
                   <div className={classes.contentDiv}>

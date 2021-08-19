@@ -39,11 +39,11 @@ const useStyles = makeStyles((theme) => ({
   },
   cardTitleHeading: {
     margin: 2,
-    color: '#FF6B6B',
+    color: theme.palette.primary.main,
   },
   cardDescription: {
     margin: 2,
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
   },
   cardQuestionNumber: {
     fontWeight: 'bold',
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '5px',
   },
   cardAttemptedTextRed: {
-    color: '#FE6B6B',
+    color: theme.palette.primary.main,
   },
   cardAttemptedTextGreen: {
     color: '#168D00',

@@ -4,20 +4,9 @@
 .homework_submit_wrapper .homework-question {
   border-bottom: 1px solid #ff6b6b;
 }
-.homework_type_item {
-  border: 1px solid #ff6b6b;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  text-align: center;
-  padding: 10% 15%;
-  color: #014b7e;
-  font-size: 1rem;
-  font-weight: 600;
-  text-transform: capitalize;
-  @media screen and (max-width: 768px) {
-    padding: 10px 15px !important;
-    width: 100%;
-  }
+.homework_submit_wrapper {
+  position: relative;
+  overflow: hidden;
 }
 .homework_block_questionwise_check {
   color: #014b7e;
@@ -108,18 +97,6 @@
   display: flex;
   flex-wrap: wrap;
 }
-
-.descBox {
-  margin-top: 15px;
-  background-color: #bcf1ff;
-  color: #014b7e;
-  border: 1px solid #ff6b6b;
-  border-radius: 10px;
-  font-size: 16px;
-  width: 70%;
-  padding: 11px 18px;
-}
-
 .descBox::before {
   content: 'Instruction : ';
   font-weight: 600;
@@ -340,22 +317,6 @@
   }
   .homework_block_wrapper_submit {
     display: block;
-  }
-  .homework_type_item {
-    width: 100%;
-    border: 1px solid #ff6b6b;
-    // height: 100%;
-    // padding: 0.5rem 1.25rem;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    // height: 55px;
-    margin-left: 20px;
-    @media only screen and (max-width: 768px) {
-      margin-left: 0;
-    }
   }
   .file_row_hw,
   .file_row {

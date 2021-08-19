@@ -165,14 +165,6 @@ font-weight: 600;
 	border: none !important;
 	outline: none !important;
 }
-.homework_student_header_count{
-	position: absolute;
-	right: 0;
-	top: 0;
-	background-color: #ff6b6b;
-	color: white;
-	width: 20px;
-}
 .homework_right_wrapper{
 	padding: 0%;
 	/* margin-top: -110px; */

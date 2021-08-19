@@ -46,6 +46,7 @@ import {
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { set } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import { theme } from 'highcharts';
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -81,11 +82,35 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.primary.main}`,  
     borderRadius: "10px",
     padding: "20px",
-    ['@media screen(min-width:780px)']: {
+    ['@media screen(min-width:768px)']: {
       margin: "10px",
       width: "90% !important",
       height: "auto !important",
     }
+  },
+  homeworkTypeItem:{
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    marginBottom: "20px",
+    textAlign: "center",
+    padding: "10% 15%",
+    color: theme.palette.secondary.main,
+    fontSize: "1rem",
+    fontWeight: 600,
+    textTransform: "capitalize",
+    ['@media screen(min-width:768px)'] : {
+      padding: "10px 15px !important",
+      width: "100%",
+    }
+  },descBox:{
+    marginTop: "15px",
+    backgroundColor: "#bcf1ff",
+    color: theme.palette.secondary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    fontSize: "16px",
+    width: "70%",
+    padding: "11px 18px",
   }
 }));
 
@@ -485,12 +510,12 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         <Grid item className='homework_type_wrapper'>
           <div className='homework_type'>
             <div
-              className='homework_type_item non_selected_homework_type_item all-homeWorks'
+              className={`${classes.homeworkTypeItem} non_selected_homework_type_item all-homeWorks`}
               onClick={handleHomeworkCancel}
             >
               All Homeworks
             </div>
-            <div className='homework_type_item selected all-homeWorks home-sub'>
+            <div className={`${classes.homeworkTypeItem} selected all-homeWorks home-sub`}>
               <div className="date-sub-home">
                 <div>{date}</div>
                 <div>{subjectName}</div>
@@ -994,7 +1019,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   style={{ width: '70%' }}
                 />
                 {desc &&
-                  <div className='descBox'>
+                  <div className={classes.descBox}>
                     {desc}
                   </div>
                 }

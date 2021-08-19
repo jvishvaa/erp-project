@@ -50,33 +50,25 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '15px',
   },
   filterCategoryText: {
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     fontSize: '18px',
     fontFamily: 'Raleway',
     lineHeight: '21px',
     marginLeft: '5px',
   },
   dotSeparator: {
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     fontSize: '6px',
     verticalAlign: 'middle',
     marginLeft: '5px',
   },
   CategoriesTitleText: {
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     fontSize: '16px',
     fontWeight: 'bold',
     fontFamily: 'Raleway',
     marginBottom: '15px',
   },
-  // root: {
-  //   height: '42px',
-  //   width: '166px',
-  //   backgroundColor: '#FE6B6B',
-  //   color: '#FFFFFF',
-  //   borderRadius: '10px',
-  //   marginLeft: '40px',
-  // },
   label: {
     textTransform: 'capitalize',
   },
@@ -97,39 +89,39 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StyledButton = withStyles({
+const StyledButton = withStyles((theme) => ({
   root: {
-    backgroundColor: '#FF6B6B !important',
+    backgroundColor: theme.palette.primary.main,
     color: '#FFFFFF',
     height: '42px',
     borderRadius: '10px',
     marginTop: 'auto',
     '&:hover': {
-      backgroundColor: '#FF6B6B !important',
+      backgroundColor: theme.palette.primary.main,
     },
   },
   startIcon: {
     fill: '#FFFFFF',
     stroke: '#FFFFFF',
   },
-})(Button);
+}))(Button);
 
-const StyledOutlinedButton = withStyles({
+const StyledOutlinedButton = withStyles((theme) => ({
   root: {
     height: '42px',
-    color: '#FE6B6B',
-    border: '1px solid #FF6B6B',
+    color: theme.palette.primary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: '10px',
     backgroundColor: 'transparent',
     '&:hover': {
       backgroundColor: 'transparent !important',
     },
   },
-})(Button);
+}))(Button);
 
-const StyledFilterButton = withStyles({
+const StyledFilterButton = withStyles((theme) => ({
   root: {
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     marginLeft: '50px',
     marginBottom: '6px',
     fontSize: '16px',
@@ -142,17 +134,17 @@ const StyledFilterButton = withStyles({
     },
   },
   iconSize: {},
-})(Button);
+}))(Button);
 
-const StyledTabs = withStyles({
+const StyledTabs = withStyles((theme) =>({
   root: {
     borderBottom: '1px solid #e8e8e8',
   },
   indicator: {
-    backgroundColor: '#014B7E',
+    backgroundColor: theme.palette.secondary.main,
     height: '3px',
   },
-})(Tabs);
+}))(Tabs);
 
 const StyledTab = withStyles((theme) => ({
   root: {
@@ -164,7 +156,7 @@ const StyledTab = withStyles((theme) => ({
     marginRight: '11px',
     backgroundColor: '#ff6a6a',
     borderRadius: '10px',
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     '&:hover': {
       color: '##ffffff',
       opacity: 1,
@@ -172,7 +164,7 @@ const StyledTab = withStyles((theme) => ({
     '&$selected': {
       color: '##ffffff',
       fontWeight: 600,
-      border: '1px solid #014B7E',
+      border: `1px solid ${theme.palette.secondary.main}`,
     },
     '&:focus': {
       color: '##ffffff',
