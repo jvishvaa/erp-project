@@ -16,7 +16,18 @@ import TotalStudentWiseDetails from './totalStudentWiseDetails';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import filterImage from '../../assets/images/unfiltered.svg';
 import Layout from '../Layout';
+import { makeStyles } from '@material-ui/core';
 
+const useStyles = makeStyles((theme) => ({
+  studentStrenghtDownloadButton: {
+    borderRadius: "8x !important",
+    color: theme.palette.secondary.main,
+    borderColor: theme.palette.primary.main,
+  border: `1px solid ${theme.palette.primary.main} !important`,
+  backgroundColor: "white !important",
+}
+  
+}));
 const StudentStrength = ({ history }) => {
   const [acadminYearList, setAcadminYearList] = useState([]);
   const [branchList, setBranchList] = useState([]);
@@ -30,6 +41,7 @@ const StudentStrength = ({ history }) => {
   const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const classes = useStyles();
 
   const handlePagination = (event, page) => {
     setPage(page);
@@ -248,7 +260,7 @@ const StudentStrength = ({ history }) => {
                   <Button
                     size='small'
                     href={hRef && hRef[0] && hRef[0].csv}
-                    className='studentStrenghtDownloadButton'
+                    className= {classes.studentStrenghtDownloadButton}
                   >
                     Download all Branch excel
                   </Button>
@@ -299,7 +311,7 @@ const StudentStrength = ({ history }) => {
                   <Button
                     size='small'
                     href={hRef && hRef[0] && hRef[0].csv}
-                    className='studentStrenghtDownloadButton'
+                    className={classes.studentStrenghtDownloadButton}
                   >
                     <span style={{ fontSize: '13px' }}> Download all Branch excel</span>
                   </Button>
@@ -348,7 +360,7 @@ const StudentStrength = ({ history }) => {
                   <Button
                     size='small'
                     href={hRef && hRef[0] && hRef[0].csv}
-                    className='studentStrenghtDownloadButton'
+                    className={classes.studentStrenghtDownloadButton}
                   >
                     Download all Branch excel
                   </Button>
@@ -400,7 +412,7 @@ const StudentStrength = ({ history }) => {
                   <Button
                     size='small'
                     href={hRef && hRef[0] && hRef[0].csv}
-                    className='studentStrenghtDownloadButton'
+                    className={classes.studentStrenghtDownloadButton}
                     fullWidth
                   >
                     Download all Branch excel

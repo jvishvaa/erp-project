@@ -23,6 +23,7 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { connect, useSelector } from 'react-redux';
 
+import {Typography} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,6 +41,20 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     color: theme.palette.secondary.main,
   },
+   guidelineval : {
+    color: theme.palette.primary.main,
+     fontWeight: '600'
+},
+guideline:{
+    color: theme.palette.secondary.main,
+     fontSize: '16px',
+      padding: '10px'
+},
+guidelinesText: {
+  fontSize: '20px',
+  fontWeight: 'bold',
+  color : theme.palette.secondary.main
+},
 }));
 
 const columnsGrade = [
@@ -529,17 +544,17 @@ const BulkUpload = ({ onUploadSuccess }) => {
           <hr style={{ backgroundColor: '#e2e2e2', border: 'none', height: '1px' }} />
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <h2 style={{ color: '#014B7e' }}>Guidelines:</h2>
+            <Typography className={classes.guidelinesText}>Guidelines:</Typography>
             </Grid>
             <Grid item xs={12}>
               <Paper className={classes.root}>
                 {guidelines.map((val, i) => {
                   return (
-                    <div style={{ color: '#014b7e', fontSize: '16px', padding: '10px' }}>
-                      {i + 1}. 
-                      <span style={{ color: '#fe6b6b', fontWeight: '600' }}>
-                        {val.name}
-                      </span>
+                    <div className={classes.guideline}>
+                                        {i + 1}. 
+                                        <span className = {classes.guidelineval}>
+                                            {val.name}
+                                        </span>
                       <span>{val.field}</span>
                     </div>
                   );
@@ -547,7 +562,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
               </Paper>
             </Grid>
             <Grid item xs={12}>
-              <h2 style={{ color: '#014B7e' }}>Suggestions:</h2>
+            <Typography className={classes.guidelinesText}>Suggestions:</Typography>
             </Grid>
             <Grid item xs={12} sm={4}>
               <Autocomplete

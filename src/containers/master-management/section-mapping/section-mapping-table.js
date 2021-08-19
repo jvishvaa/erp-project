@@ -713,17 +713,9 @@ const AcademicYearApi = ()=>{
                             onClick={() => handleOpenDeleteModal(id, section)}
                             title='Delete Section Mapping'
                           >
-                            <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
+                            <DeleteOutlinedIcon  />
                           </IconButton>
 
-                          {/* <IconButton
-                            onClick={() =>
-                              handleEditSection(section)
-                            }
-                            title='Edit Section'
-                          >
-                            <EditOutlinedIcon style={{color:'#fe6b6b'}} />
-                          </IconButton> */}
                         </TableCell>
                       </TableRow>
                     );

@@ -122,10 +122,10 @@
 	
  } 
 .create_group_filter_container label{
-	color: #014B7E;
+	/* color: #014B7E; */
 }
 .create_group_filter_container label:focus{
-	color: #014B7E !important;
+	/* color: #014B7E !important; */
 }
 .homework_table_wrapper {
   border: 1px solid #ff6b6b;

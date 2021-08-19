@@ -11,11 +11,32 @@ import Button from '@material-ui/core/Button';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import CustomInput from './custom-input/customInput';
+import { makeStyles } from '@material-ui/core';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import ChangePassword from './change-password/change-password';
 import Layout from '../Layout';
 import './profile.css';
+const useStyles = makeStyles((theme) => ({
+  textfields :{
+    display: "block",
+    padding: "0% 1%",
+    border: "none",
+    borderBottom: `1px solid ${theme.palette.primary.main}`,
+    color: theme.palette.secondary.main,
+    paddingLeft: "0",
+    width: "85%",
+    outline: "none",
+    color: theme.palette.secondary.main,
+    margin: "0% 5%",
+  },
+  profileLabelTag:{
+    textTransform: "capitalize",
+    paddingLeft:"5%",
+    color: theme.palette.secondary.main,
+    fontWeight: "600",
+  }
+}));
 
 const Profile = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -29,6 +50,7 @@ const Profile = (props) => {
   const [userImageData, setUserImageData] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
   const [inputFields, setInputFields] = useState([]);
+  const classes = useStyles();
 
   const getUserDetails = async () => {
     try {
@@ -159,7 +181,7 @@ const Profile = (props) => {
               {inputFields.map((items, index) => (
                 <Fragment key={`profileInput_${index}`}>
                   <div className='profile_tags' />
-                  <span className='profile_label_tag'>{items.name}</span>
+                  <span className={classes.profileLabelTag}>{items.name}</span>
                   <div
                     className={
                       items.name === 'password' ? 'password' : 'textFieldsContainer'
@@ -168,8 +190,8 @@ const Profile = (props) => {
                     <CustomInput
                       className={
                         items.type === 'text'
-                          ? 'textFields'
-                          : `${'textFields'} ${'passwordWidth'}`
+                          ? `${classes.textfields}`
+                          : `${classes.textfields} ${'passwordWidth'}`
                       }
                       id={items.name}
                       name={items.name}

@@ -14,7 +14,7 @@ import TableRow from '@material-ui/core/TableRow';
 //import exportFromJSON from 'export-from-json';
 import { CSVLink } from "react-csv";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme)=>({
     parentDiv: {
 
     },
@@ -26,7 +26,8 @@ const useStyles = makeStyles({
     },
     guidelinesText: {
         fontSize: '20px',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        color : theme.palette.secondary.main
     },
     errorText: {
         fontSize: '20px',
@@ -44,8 +45,17 @@ const useStyles = makeStyles({
         // textDecoration: 'none',
         // backgroundColor: '#fe6b6b',
         // color: '#ffffff',
+    },
+    guidelineval : {
+        color: theme.palette.primary.main,
+         fontWeight: '600'
+    },
+    guideline:{
+        color: theme.palette.secondary.main,
+         fontSize: '16px',
+          padding: '10px'
     }
-});
+}));
 
 const guidelines = [
     {
@@ -60,16 +70,16 @@ const guidelines = [
     { name: 'Change Subject', field: ' is a required field, Example: [6,9]' },
   ];
 
-const StyledButton = withStyles({
+const StyledButton = withStyles((theme)=>({
     root: {
-        backgroundColor: '#FF6B6B',
+        backgroundColor: theme.palette.primary.main,
         color: '#FFFFFF',
         padding: '8px 15px',
         '&:hover': {
-            backgroundColor: '#FF6B6B !important',
+            backgroundColor: theme.palette.primary.main,
           },
     }
-})(Button);
+}))(Button);
 
 const StyledClearButton = withStyles({
     root: {
@@ -238,9 +248,9 @@ const SectionShuffling = () => {
                             <Typography className={classes.guidelinesText}>Guidelines:</Typography>
                             {guidelines.map((val, i) => {
                                 return (
-                                    <div style={{ color: '#014b7e', fontSize: '16px', padding: '10px' }}>
+                                    <div className={classes.guideline}>
                                         {i + 1}. 
-                                        <span style={{ color: '#fe6b6b', fontWeight: '600' }}>
+                                        <span className = {classes.guidelineval}>
                                             {val.name}
                                         </span>
                                         <span>{val.field}</span>

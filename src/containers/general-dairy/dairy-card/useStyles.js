@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
   selectedRoot: {
     border: '1px solid',
-    borderColor:'#ff6b6b',
+    borderColor:theme.palette.primary.main,
     background: '#FCEEEE',
     padding: '0.9rem',
     borderRadius: '10px',
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: '1.1rem',
-    color: '#014B7E',
+    // color: '#014B7E',
   },
   content: {
     fontSize: '0.9rem',
@@ -27,6 +27,12 @@ const useStyles = makeStyles((theme) => ({
   textRight: {
     textAlign: 'right',
   },
+  topictitle:{
+    color : theme.palette.primary.main
+  },
+  createdby:{
+    color : theme.palette.secondary.main
+  }
 }));
 
 export default useStyles;

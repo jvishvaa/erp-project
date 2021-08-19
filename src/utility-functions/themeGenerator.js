@@ -171,6 +171,11 @@ export function themeGenerator() {
           color: secondarytemp,
         },
       },
+      // MuiTypography : {
+      //   root:{
+      //     color : primarytemp,
+      //   }
+      // }
     },
   });
 }

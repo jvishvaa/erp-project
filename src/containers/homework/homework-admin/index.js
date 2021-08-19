@@ -12,16 +12,10 @@ import {
   Divider,
   Switch,
   FormControlLabel,
+  Typography, Paper, Table, TableCell, TableBody, TableContainer, TableHead, TableRow
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import { HighlightOffOutlined, AddCircleOutline } from '@material-ui/icons';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -51,6 +45,47 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     color: theme.palette.secondary.main,
   },
+  labelTag:{
+    fontSize: "1.25rem",
+    borderRadius: ".5rem 0 0 .5rem",
+    fontWeight: 500,
+    background: "white",
+    padding: ".625rem",
+    boxShadow: `0px 0px 10px -2px ${theme.palette.primary.main}`,
+    borderRight:"none" ,
+    color: theme.palette.secondary.main,
+    width: "85%"
+  },
+  inputText : {
+    boxShadow: `0px 0px 10px -2px ${theme.palette.primary.main}`,
+    backgroundColor : theme.palette.primary.main,
+    border: "none",
+    borderLeft: "none",
+    borderRadius: "0 .5rem .5rem 0",
+    outline: "none",
+    fontSize: "1.15rem",
+    fontWeight: "500",
+    color: "white",
+    width: "10%",
+    padding: ".625rem",
+
+    '&::-webkit-input-placeholder': {
+      color:"white",
+      fontSize: "0.875rem"
+  },
+  '&::-moz-placeholder' :{
+      color: "white",
+      fontSize: "0.875rem"
+  }
+
+  }, 
+  noDataTag :{
+    display: 'flex',
+    justifyContent: 'center',
+    fontSize: '16px',
+    width: '100%',
+    color : theme.palette.primary.main
+  }
 }));
 
 const sscolumns = [
@@ -725,12 +760,12 @@ const HomeworkAdmin = () => {
         </Grid>
 
         <div className='containerClass'>
-          <div className='labelTag'>
+          <div className={classes.labelTag}>
             No. of days prior to class date when Homework can be uploaded by teacher
           </div>
           <input
             type='text'
-            className='inputText'
+            className={classes.inputText}
             value={prior}
             required
             placeholder='No. of Days'
@@ -741,12 +776,12 @@ const HomeworkAdmin = () => {
         </div>
 
         <div className='containerClass' style={{ marginBottom: '-1.25rem' }}>
-          <div className='labelTag'>
+          <div className={classes.labelTag}>
             No. of days post class date when Homework can be uploaded by teacher
           </div>
           <input
             type='text'
-            className='inputText'
+            className={classes.inputText}
             value={post}
             required
             placeholder='No. of Days'
@@ -773,7 +808,7 @@ const HomeworkAdmin = () => {
                   color='primary'
                 />
               }
-              label={'Star Conversion'}
+              label={<Typography color="primary">Star Conversion</Typography>}
             />
           </Grid>
 
@@ -788,7 +823,7 @@ const HomeworkAdmin = () => {
                   color='primary'
                 />
               }
-              label={'Top-Performers'}
+              label={<Typography color="primary">Top-Performers</Typography>}
             />
           </Grid>
         </Grid>
@@ -893,15 +928,12 @@ const HomeworkAdmin = () => {
                 </TableBody>
               ) : (
                 <TableBody
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    margin: '25% 120%',
-                    fontSize: '16px',
-                    color: '#fe6b6b',
-                    width: '100%',
-                  }}
+                className = {classes.noDataTag}
+                style={{
+                  margin: '25% 120%',
+                }}
                 >
+
                   Sorry! No Data Available.
                 </TableBody>
               )}
@@ -970,13 +1002,9 @@ const HomeworkAdmin = () => {
               ) : (
                 <TableBody>
                   <div
+                   className = {classes.noDataTag}
                     style={{
-                      display: 'flex',
-                      justifyContent: 'center',
                       margin: '25% 80%',
-                      fontSize: '16px',
-                      color: '#fe6b6b',
-                      width: '100%',
                     }}
                   >
                     Sorry! No Data Available

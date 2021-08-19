@@ -323,14 +323,14 @@ const BranchTable = () => {
                                 }}
                                 title='Delete Branch'
                               >
-                                <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
+                                <DeleteOutlinedIcon color = "primary" />
                               </IconButton>
 
                               <IconButton
                                 onClick={(e) => handleEditBranch(branch)}
                                 title='Edit Branch'
                               >
-                                <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
+                                <EditOutlinedIcon color = "primary" />
                               </IconButton>
                             </TableCell>
                           </TableRow>

@@ -666,7 +666,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                             }}
                             title='Delete Chapter'
                           >
-                            <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
+                            <DeleteOutlinedIcon color = "primary" />
                           </IconButton>
 
                           <IconButton
@@ -675,7 +675,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                             }
                             title='Edit Chapter'
                           >
-                            <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
+                            <EditOutlinedIcon color = "primary" />
                           </IconButton>
                         </TableCell>
                       </TableRow>

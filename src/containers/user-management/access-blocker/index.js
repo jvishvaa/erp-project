@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
   guidelinesText: {
     fontSize: '20px',
     fontWeight: 'bold',
+    color : theme.palette.secondary.main
   },
   errorText: {
     fontSize: '20px',
@@ -93,6 +94,15 @@ const useStyles = makeStyles((theme) => ({
   tablePaginationToolbar: {
     justifyContent: 'center',
   },
+  guidelineval : {
+    color: theme.palette.primary.main,
+     fontWeight: '600'
+},
+guideline:{
+    color: theme.palette.secondary.main,
+     fontSize: '16px',
+      padding: '10px'
+}
 }));
 
 const guidelines = [
@@ -109,16 +119,16 @@ const guidelines = [
   { field: ' If access has to remove mention as “1”' },
 ];
 
-const StyledButton = withStyles({
+const StyledButton = withStyles((theme) => ({
   root: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: theme.palette.primary.main,
     color: '#FFFFFF',
     padding: '8px 15px',
     '&:hover': {
-      backgroundColor: '#FF6B6B !important',
+      backgroundColor: theme.palette.primary.main,
     },
   },
-})(Button);
+}))(Button);
 
 const StyledButtonUnblock = withStyles({
   root: {
@@ -144,7 +154,7 @@ const StyledButtonBlock = withStyles({
   },
 })(Button);
 
-const StyledClearButton = withStyles({
+const StyledClearButton = withStyles((theme)=>({
   root: {
     backgroundColor: '#E2E2E2',
     color: '#8C8C8C',
@@ -154,7 +164,7 @@ const StyledClearButton = withStyles({
       backgroundColor: '#E2E2E2 !important',
     },
   },
-})(Button);
+}))(Button);
 
 const AccessBlocker = () => {
   const classes = useStyles({});
@@ -748,11 +758,11 @@ const AccessBlocker = () => {
                 <Typography className={classes.guidelinesText}>Guidelines:</Typography>
                 {guidelines.map((val, i) => {
                   return (
-                    <div style={{ color: '#014b7e', fontSize: '16px', padding: '10px' }}>
-                      {i + 1}. 
-                      <span style={{ color: '#fe6b6b', fontWeight: '600' }}>
-                        {val.name}
-                      </span>
+                    <div className={classes.guideline}>
+                                        {i + 1}. 
+                                        <span className = {classes.guidelineval}>
+                                            {val.name}
+                                        </span>
                       <span>{val.field}</span>
                     </div>
                   );

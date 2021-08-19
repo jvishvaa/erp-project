@@ -258,7 +258,7 @@ const MessageTypeTable = () => {
                             onClick={e=>{ handleDelete(msgtype) }}
                             title='Delete Message Type'
                           >
-                            <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
+                            <DeleteOutlinedIcon color="primary" />
                           </IconButton>
 
                           <IconButton
@@ -270,7 +270,7 @@ const MessageTypeTable = () => {
                             }
                             title='Edit Message Type'
                           >
-                            <EditOutlinedIcon style={{color:'#fe6b6b'}} />
+                            <EditOutlinedIcon color="primary" />
                           </IconButton>      
                         </TableCell>
                       </TableRow>

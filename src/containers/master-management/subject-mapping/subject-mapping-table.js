@@ -738,7 +738,7 @@ const SubjectMappingTable = () => {
                                 }}
                                 title='Delete Subject Mapping'
                               >
-                                <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
+                                <DeleteOutlinedIcon color = "primary" />
                               </IconButton>
 
                               {/* <IconButton

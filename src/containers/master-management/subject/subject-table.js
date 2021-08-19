@@ -322,13 +322,13 @@ const SubjectTable = () => {
                                   }}
                                   title='Delete Subject'
                                 >
-                                  <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
+                                  <DeleteOutlinedIcon  color = "primary" />
                                 </IconButton>
                                 <IconButton
                                   onClick={(e) => handleEditSubject(subject)}
                                   title='Edit Subject'
                                 >
-                                  <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
+                                  <EditOutlinedIcon color = "primary" />
                                 </IconButton>
                               </TableCell>
                             </TableRow>

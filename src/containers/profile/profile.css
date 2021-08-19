@@ -147,7 +147,7 @@
 .textFieldsContainer .MuiInput-underline:hover:not(.Mui-disabled):before {
   border-bottom: none;
 }
-.textFields {
+/* .textFields {
   display: block;
   padding: 0% 1%;
   border: none;
@@ -158,14 +158,14 @@
   outline: none;
   color: var(--secondary-blue);
   margin: 0% 5%;
-}
+} */
 
-.profile_label_tag {
+/* .profile_label_tag {
   text-transform: capitalize;
   padding-left: 5%;
   color: #014b7e;
   font-weight: 600;
-}
+} */
 .password {
   display: inline-flex;
   position: relative;

@@ -63,7 +63,7 @@
   color: white !important;
 }
 .MuiButton-textPrimary:hover {
-  background-color: #ff6b6b !important;
+  /* background-color: #ff6b6b !important; */
 }
 .message_log_table_wrapper .message_log_table tr th:not(:last-child):after {
   content: '';

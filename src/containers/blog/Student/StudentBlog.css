@@ -122,23 +122,23 @@
 	
  } 
 .create_group_filter_container label{
-	color: #014B7E;
+	/* color: #014B7E; */
 }
 .create_group_filter_container label:focus{
-	color: #014B7E !important;
+	/* color: #014B7E !important; */
 }
 .homework_table_wrapper {
-  border: 1px solid #ff6b6b;
+  /* border: 1px solid #ff6b6b; */
   box-shadow: none;
 }
 .homework_table_wrapper .MuiTableCell-root:not(:last-child) {
-  border-right: 1px solid #ff6b6b;
+  /* border-right: 1px solid #ff6b6b; */
 }
 .homework_table_wrapper .MuiTableRow-root:not(:last-child) .MuiTableCell-root {
-  border-bottom: 1px solid #ff6b6b !important;
+  /* border-bottom: 1px solid #ff6b6b !important; */
 }
 .homework_table_wrapper .MuiTableHead-root .MuiTableCell-root {
-  border-bottom: 1px solid #ff6b6b !important;
+  /* border-bottom: 1px solid #ff6b6b !important; */
 }
 .selected {
   background-color: #FFECEC;

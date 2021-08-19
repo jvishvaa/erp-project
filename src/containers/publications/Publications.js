@@ -161,9 +161,9 @@ const StyledButton = withStyles({
   iconSize: {},
 })(Button);
 
-const StyledFilterButton = withStyles({
+const StyledFilterButton = withStyles((theme)=>({
   root: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: theme.palette.primary.main,
     color: '#FFFFFF',
     height: '42px',
     borderRadius: '10px',
@@ -171,14 +171,14 @@ const StyledFilterButton = withStyles({
     marginLeft: '20px',
     marginTop: 'auto',
     '&:hover': {
-      backgroundColor: '#FF6B6B',
+      backgroundColor: theme.palette.primary.main,
     },
   },
   startIcon: {
     fill: '#FFFFFF',
     stroke: '#FFFFFF',
   },
-})(Button);
+}))(Button);
 
 const Publications = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -691,7 +691,7 @@ const Publications = (props) => {
                                 </DialogTitle>
 
                                 <DialogActions>
-                                  <Button onClick={handleClose1} color='primary'>
+                                  <Button variant='contained' onClick={handleClose1} color='primary'>
                                     cancel
                                   </Button>
                                   <Button
@@ -700,7 +700,7 @@ const Publications = (props) => {
                                       handleClose1();
                                     }}
                                     color='primary'
-                                    autoFocus
+                                    variant='contained'
                                   >
                                     Delete
                                   </Button>
@@ -2309,7 +2309,6 @@ const Publications = (props) => {
                       </StyledFilterButton>
                       <StyledFilterButton
                         variant='contained'
-                        color='secondary'
                         className={classes.filterButton}
                         style={{ fontSize: '13px' }}
                         onClick={(e) => {

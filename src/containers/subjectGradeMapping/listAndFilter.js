@@ -14,16 +14,16 @@ import './subjectgrademapping.scss';
 import { generateQueryParamSting } from '../../utility-functions';
 import moment from 'moment';
 
-const StyledButton = withStyles({
+const StyledButton = withStyles((theme)=>({
     root: {
       color: '#FFFFFF',
-      backgroundColor: '#FF6B6B',
+      backgroundColor:  theme.palette.primary.main,
       '&:hover': {
-        backgroundColor: '#FF6B6B',
+        backgroundColor: theme.palette.primary.main,
       },
     },
     startIcon: {},
-  })(Button);
+  }))(Button);
 
 const ListandFilter = (props) => {
     const { setAlert } = useContext(AlertNotificationContext);
@@ -327,9 +327,9 @@ const ListandFilter = (props) => {
                     <Button variant="contained" className="clear-all" onClick={handleClearAll}>Clear All</Button>
                     <Button
                         variant="contained"
-                        color="secondary"
+                        color="primary"
                         className="filter-btn"
-                        style={{ background: '#FF6B6B', marginLeft: 15 }}
+                        style={{ marginLeft: 15 }}
                         onClick={handleFilter}
                     >
                         Filter

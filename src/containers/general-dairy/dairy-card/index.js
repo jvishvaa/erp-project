@@ -104,10 +104,10 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               color='primary'
               noWrap
             >
-              Topic: <span style={{ color: 'red'}}>{lesson.title}</span>
+              Topic: <span className= {classes.topictitle}>{lesson.title}</span>
             </Typography>
           </Box>
-          <Typography style={{fontSize: '15px',marginTop: '10px'}}> General Diary</Typography>
+          <Typography color = "secondary" style={{fontSize: '15px',marginTop: '10px'}}> General Diary</Typography>
           <Divider className='divider'/>
           <Box mt={2}>
             <Typography

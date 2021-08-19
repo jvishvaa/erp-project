@@ -95,10 +95,10 @@
   border-radius: 10px;
 }
 .create_group_filter_container label {
-  color: #014b7e;
+  /* color: #014b7e; */
 }
 .create_group_filter_container label:focus {
-  color: #014b7e !important;
+  /* color: #014b7e !important; */
 }
 .homework_table_wrapper {
   border: 1px solid #ff6b6b;

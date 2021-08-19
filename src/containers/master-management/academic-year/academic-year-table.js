@@ -278,7 +278,7 @@ const AcademicYearTable = () => {
                             onClick={e=>{ handleDelete(year) }}
                             title='Delete Academic Year'
                           >
-                            <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
+                            <DeleteOutlinedIcon color = "primary" />
                           </IconButton>
 
                           <IconButton
@@ -290,7 +290,7 @@ const AcademicYearTable = () => {
                             }
                             title='Edit Academic Year'
                           >
-                            <EditOutlinedIcon style={{color:'#fe6b6b'}} />
+                            <EditOutlinedIcon color = "primary" />
                           </IconButton>      
                         </TableCell>
                       </TableRow>

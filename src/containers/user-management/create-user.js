@@ -19,6 +19,7 @@ import CustomStepperIcon from '../../components/custom-stepper-icon';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../Layout';
 import BulkUpload from '../../components/bulk-upload';
+import {Typography} from '@material-ui/core'
 
 class CreateUser extends Component {
   constructor(props) {
@@ -260,14 +261,12 @@ class CreateUser extends Component {
     const { classes, creatingUser } = this.props;
     return (
       <Layout>
-        <div className='create-user-container'>
-          <div className='bread-crumbs-container'>
+        <div className='create-user-container'>  
             <CommonBreadcrumbs
               componentName='User Management'
               childComponentName='Create User'
             isAcademicYearVisible={true}
             />
-          </div>
           <div className='bulk-upload-check-box-container'>
             <FormControlLabel
               control={
@@ -278,7 +277,7 @@ class CreateUser extends Component {
                   color='primary'
                 />
               }
-              label='Upload Excel'
+              label={<Typography color="secondary">Upload Excel</Typography>}
             />
           </div>
           {bulkUpload ? (

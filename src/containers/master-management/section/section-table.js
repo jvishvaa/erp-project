@@ -291,7 +291,7 @@ const SectionTable = () => {
                             onClick={() => handleOpenDeleteModal(section)}
                             title='Delete Section'
                           >
-                            <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
+                            <DeleteOutlinedIcon color = "primary" />
                           </IconButton>
 
                           <IconButton
@@ -300,7 +300,7 @@ const SectionTable = () => {
                             }
                             title='Edit Section'
                           >
-                            <EditOutlinedIcon style={{color:'#fe6b6b'}} />
+                            <EditOutlinedIcon  color = "primary"/>
                           </IconButton>
                         </TableCell>
                       </TableRow>

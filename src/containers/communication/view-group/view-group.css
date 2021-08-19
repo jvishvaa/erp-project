@@ -41,7 +41,7 @@
 .view_group_table_wrapper .view_groups_header tr th:not(:last-child):after {
     content: '';
     width: 2px;
-    background-color: #ff6b6b;
+    /* background-color: #ff6b6b; */
     height: 60%;
     position: absolute;
     border-radius: 5px;
@@ -94,7 +94,7 @@
   cursor: pointer;
   outline: none !important;
   color: white;
-  background-color: #ff6b6b;
+  /* background-color: #ff6b6b; */
 }
 .view_group_table_sections{
 	width: 20%;
@@ -105,7 +105,7 @@
   }
   
   .view_group_delete_alert_button {
-	background-color: #ff6b6b !important;
+	/* background-color: #ff6b6b !important; */
   }
 @media screen and (max-width: 700px) {
 	.view_group_table_wrapper{

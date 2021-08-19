@@ -415,16 +415,10 @@ const BranchAcadTable = () => {
                                 }}
                                 title='Delete Branch'
                               >
-                                <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
+                                <DeleteOutlinedIcon  />
                               </IconButton>
 
-                              {/* <IconButton
-                                  // onClick={e=>handleEditBranchMapping(subject.subject.id,subject.subject.subject_name,subject.subject.subject_description,subject.subject.is_optional)}
-                                  title='Edit Branch'
-                                >
-                                  <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
-                                </IconButton> */}
-                            </TableCell>
+                               </TableCell>
                           </TableRow>
                         );
                       })}
