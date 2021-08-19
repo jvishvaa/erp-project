@@ -8,8 +8,7 @@ import ImportScript from '../../../utility-functions/custom-hooks/import-script'
 
 export default function PdfjsPreview({ url }) {
 
-    // url = url || 'https://omrsheet.s3.ap-south-1.amazonaws.com/dev/lesson_plan_file/2021-22/Volume 1/Grade 3/English/CS_ Ch 1_Sequencing_Rev/Period-1/Student_Reading_Material/2021-03-23 07:43:40.672606_Grade 3_Vol 1_English_CS_Ch 1_Sequencing_Rev_Pd 14_Student Reading Material.pdf'
-    url = url || 'https://d2r9gkgplfhsr2.cloudfront.net/dev/lesson_plan_file/2021-22/Volume 1/Grade 3/English/CS_ Ch 1_Sequencing_Rev/Period-1/Student_Reading_Material/2021-03-23 07:43:40.672606_Grade 3_Vol 1_English_CS_Ch 1_Sequencing_Rev_Pd 14_Student Reading Material.pdf'
+    url = url || 'https://omrsheet.s3.ap-south-1.amazonaws.com/dev/lesson_plan_file/2021-22/Volume 1/Grade 3/English/CS_ Ch 1_Sequencing_Rev/Period-1/Student_Reading_Material/2021-03-23 07:43:40.672606_Grade 3_Vol 1_English_CS_Ch 1_Sequencing_Rev_Pd 14_Student Reading Material.pdf'
 
     // url = url || 'https://pdfviewerk12.s3.ap-south-1.amazonaws.com/sample.pdf'
 
