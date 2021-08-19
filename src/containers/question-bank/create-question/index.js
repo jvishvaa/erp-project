@@ -11,8 +11,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
-import hidefilter from '../../../assets/images/hidefilter.svg';
-import showfilter from '../../../assets/images/showfilter.svg';
+import BreadcrumbToggler from '../../../components/breadcrumb-toggler';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 import TopFilters from './top-filters';
@@ -184,48 +183,13 @@ const CreateQuestion = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className={isMobile ? 'breadCrumbFilterRow' : null}>
-          <div
-            style={{
-              width: '96%',
-              margin: '20px auto',
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <CommonBreadcrumbs
-              componentName='Question Bank'
-              childComponentName='Create Question'
-              isAcademicYearVisible={true}
-            />
-
-            <div className='hideShowFilterIcon'>
-              <IconButton onClick={() => setIsTopFilterOpen(!isTopFilterOpen)}>
-                {!isMobile && (
-                  <div
-                    style={{
-                      color: '#014b7e',
-                      fontSize: '16px',
-                      marginRight: '10px',
-                      fontWeight: '600',
-                      alignSelf: 'center',
-                    }}
-                  >
-                    {isTopFilterOpen ? 'Close Filter' : 'Expand Filter'}
-                  </div>
-                )}
-                <SvgIcon
-                  component={() => (
-                    <img
-                      style={{ height: '20px', width: '25px' }}
-                      src={isTopFilterOpen ? hidefilter : showfilter}
-                    />
-                  )}
-                />
-              </IconButton>
-            </div>
-          </div>
-        </div>
+        <BreadcrumbToggler isFilter={isTopFilterOpen} setIsFilter={setIsTopFilterOpen}>
+          <CommonBreadcrumbs
+            componentName='Question Bank'
+            childComponentName='Create Question'
+            isAcademicYearVisible={true}
+          />
+        </BreadcrumbToggler>
 
         <div className={isTopFilterOpen ? 'showFiltersCreate' : 'hideFiltersCreate'}>
           <TopFilters

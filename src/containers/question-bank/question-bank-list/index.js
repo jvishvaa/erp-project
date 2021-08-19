@@ -12,7 +12,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import axios from 'axios';
+import BreadcrumbToggler from '../../../components/breadcrumb-toggler';
 import './question-bank.css';
 import Loading from '../../../components/loader/loader';
 import QuestionBankCard from './question-bank-card';
@@ -208,48 +208,13 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className={isMobile ? 'breadCrumbFilterRow' : null}>
-          <div
-            style={{
-              width: '95%',
-              margin: '20px auto',
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <CommonBreadcrumbs
-              componentName='Assessment'
-              childComponentName='Question Bank'
-              isAcademicYearVisible={true}
-            />
-
-            <div className='hideShowFilterIcon'>
-              <IconButton onClick={() => setIsFilter(!isFilter)}>
-                {!isMobile && (
-                  <div
-                    style={{
-                      color: '#014b7e',
-                      fontSize: '16px',
-                      marginRight: '10px',
-                      fontWeight: '600',
-                      alignSelf: 'center',
-                    }}
-                  >
-                    {isFilter ? 'Close Filter' : 'Expand Filter'}
-                  </div>
-                )}
-                <SvgIcon
-                  component={() => (
-                    <img
-                      style={{ height: '20px', width: '25px' }}
-                      src={isFilter ? hidefilter : showfilter}
-                    />
-                  )}
-                />
-              </IconButton>
-            </div>
-          </div>
-        </div>
+        <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
+          <CommonBreadcrumbs
+            componentName='Assessment'
+            childComponentName='Question Bank'
+            isAcademicYearVisible={true}
+          />
+        </BreadcrumbToggler>
 
         <div className={isFilter ? 'showFilters' : 'hideFilters'} ref={filterRef}>
           <QuestionBankFilters

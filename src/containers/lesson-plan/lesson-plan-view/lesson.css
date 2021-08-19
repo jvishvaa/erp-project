@@ -72,15 +72,6 @@
   flex-direction: column;
 }
 
-.breadCrumbFilterRow {
-  display: flex;
-  justify-content: space-between;
-}
-
-.hideShowFilterIcon {
-  align-self: center;
-}
-
 .underlineRemove {
   text-decoration: none;
 }

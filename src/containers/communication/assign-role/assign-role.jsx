@@ -9,7 +9,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Divider, Grid, TextField, Button, OutlinedInput,Typography } from '@material-ui/core';
+import { Divider, Grid, TextField, Button, OutlinedInput, Typography } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -94,8 +94,8 @@ const AssignRole = (props) => {
   }, []);
 
   useEffect(() => {
-    if (moduleId && selectedYear ) getBranchApi();
-  }, [moduleId , selectedYear]);
+    if (moduleId && selectedYear) getBranchApi();
+  }, [moduleId, selectedYear]);
 
   // useEffect(() => {
   //   if (selectedYear) {
@@ -661,18 +661,17 @@ const AssignRole = (props) => {
                 />
               </Grid>
             )}
-            {/* <Grid xs={4}></Grid> */}
           </Grid>
           <Divider className={classes.spacer} />
           <Grid container spacing={4} className={classes.spacer}>
             <Grid item md={2} xs={12}>
               <Button
                 variant='contained'
-                className='labelColor cancelButton'
+                className='cancelButton labelColor'
                 onClick={handleClearAll}
                 fullWidth
               >
-                CLEAR ALL
+                Clear All
               </Button>
             </Grid>
             <Grid item md={2} xs={12}>
@@ -680,7 +679,7 @@ const AssignRole = (props) => {
                 variant='contained'
                 onClick={handleFilterCheck}
                 color='primary'
-                style = {{color : "white"}}
+                style={{ color: "white" }}
                 fullWidth
               >
                 FILTER
@@ -719,16 +718,16 @@ const AssignRole = (props) => {
             </Grid>
             <Grid item md={2} xs={4}>
               <Typography color="secondary">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={!!checkAll}
-                    onChange={(e) => handleSelectAll(e)}
-                    color='primary'
-                  />
-                }
-                label='Select all'
-              />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!!checkAll}
+                      onChange={(e) => handleSelectAll(e)}
+                      color='primary'
+                    />
+                  }
+                  label='Select all'
+                />
               </Typography>
             </Grid>
             <Grid item md={2} xs={4}>

@@ -634,8 +634,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 <Button
                   variant='contained'
                   onClick={handleResetFilters}
-                  className='disabled-btn'
-                  fullWidth
+                  className='cancelButton labelColor'
+                  style={{ width: '100%' }}
+                  size='medium'
                 >
                   CLEAR ALL
                 </Button>
