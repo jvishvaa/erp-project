@@ -894,7 +894,7 @@ const TeacherHomework = withRouter(
                                           {col.subject_name.split('_').join('/')}
                                         </TableCell>
                                       ) : (
-                                        <TableCell>{col}</TableCell>
+                                        <TableCell style={{zIndex:'20'}}>{col}</TableCell>
                                       );
                                     })}
                                   </TableRow>

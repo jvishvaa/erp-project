@@ -24,7 +24,7 @@
 
 .btn-container .filter-btn{
     margin-left: 20px;
-    background: #FF6B6B;
+    // background: #FF6B6B;
    
 }
 
@@ -34,7 +34,6 @@
 }
 
 .btn-list{
-    margin-left: 25px;
     margin-top: 25px;
 }
 
@@ -67,4 +66,58 @@
     :hover {
         box-shadow: 0px 2px blanchedalmond;
     } 
+}
+
+#filterChip{
+    width: 100%;
+    margin: 3% 2% 0 2%;
+    .eachChip{
+        width: 50%;
+    display: flex;
+    justify-content: space-around;
+    margin-left: 1%;
+    }
+    .chip-display{
+        min-width: 120px;
+    }
+    .blankArea{
+        min-width: 120px;
+    }
+}
+
+#cardPaper{
+    border-radius: 10px;
+    margin-bottom: 1%;
+    border-color: #E2E2E2;
+}
+
+// .duplicate{
+//     min-width: 90px;
+//     border-radius: 20px;
+//     font-size: 15px;
+//     font-weight: 600;
+//     background: #f96a6a;
+//     color: white;
+// }
+
+#duplicateChip{
+    min-width: 90px;
+    // border-radius: 20px;
+    // font-size: 15px;
+    font-weight: 600;
+    background: #f96a6a;
+    color: white;
+}
+.centralSubBox{
+    display: flex;
+    min-width: 150%;
+}
+#centralPara{
+    width: 50%;
+}
+#centralValue{
+    width: 100%;
+}
+.noDuplicate{
+    min-height: 20px;
 }

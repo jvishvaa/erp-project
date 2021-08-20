@@ -131,7 +131,7 @@ const EbookPdf = (props) => {
         type_of_activity: 0,
       };
       const AnnotateURL = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}`;
-      axios
+      axiosInstance
         .post(AnnotateURL, data1,
         //    {
         //   headers: {

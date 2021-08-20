@@ -21,6 +21,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
+import { connect, useSelector } from 'react-redux';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -103,6 +105,9 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const [yearDisplay, setYearDisplay] = useState({});
   const [academicYearVal, setAcademicYearVal] = useState('');
   const [year, setYear] = useState(null);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [yearList, setYearList] = useState([]);
   const [file, setFile] = useState(null);
   const [grades, setGrades] = useState([]);
@@ -194,29 +199,30 @@ const BulkUpload = ({ onUploadSuccess }) => {
     // 'parent_address'
   ];
 
-  const getYears = async () => {
-    try {
-      const data = await axios.get(`erp_user/list-academic_year/?module_id=${moduleId}`);
-      if (data.data?.status_code === 200) {
-        const {
-          data: { data: acadYearData = [] },
-        } = data || {};
-        setYearList(acadYearData);
-        const defaultYear = acadYearData?.[0];
-        if (defaultYear) {
-          handleYearChange({}, defaultYear);
-        }
+  // const getYears = async () => {
+  //   try {
+  //     const data = await axios.get(`erp_user/list-academic_year/?module_id=${moduleId}`);
+  //     if (data.data?.status_code === 200) {
+  //       const {
+  //         data: { data: acadYearData = [] },
+  //       } = data || {};
+  //       setYearList(acadYearData);
+  //       const defaultYear = acadYearData?.[0];
+  //       if (defaultYear) {
+  //         handleYearChange({}, defaultYear);
+  //       }
 
-        getBranches(acadYearData?.[0]?.id);
-      } else setYearList([]);
-    } catch (error) {
-      console.log('failed to load years');
-    }
-  };
+  //       getBranches(acadYearData?.[0]?.id);
+  //     } else setYearList([]);
+  //   } catch (error) {
+  //     console.log('failed to load years');
+  //   }
+  // };
 
   useEffect(() => {
-    if (moduleId) getYears();
-  }, [moduleId]);
+    if (moduleId && selectedAcademicYear) getBranches();
+    console.log(selectedAcademicYear , "yesr");
+  }, [moduleId , selectedAcademicYear]);
 
   const handleFileChange = (event) => {
     const { files } = event.target;
@@ -247,10 +253,10 @@ const BulkUpload = ({ onUploadSuccess }) => {
     const formData = new FormData();
     formData.append('branch', branch);
     formData.append('branch_code', branchCode);
-    formData.append('academic_year_value', academicYearVal);
-    formData.append('academic_year', year);
+    formData.append('academic_year_value', selectedAcademicYear?.session_year);
+    formData.append('academic_year', selectedAcademicYear?.id);
     formData.append('file', file);
-    if (branch && year && file) {
+    if (branch && selectedAcademicYear && file) {
       setUploadFlag(true);
       axios
         .post('/erp_user/upload_bulk_user/', formData)
@@ -275,7 +281,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
     } else {
       if (!branch) {
         setAlert('error', 'Branch is required!');
-      } else if (!year) {
+      } else if (!selectedAcademicYear) {
         setAlert('error', 'Year is required!');
       } else if (!file) {
         setAlert('error', 'File is required!');
@@ -285,7 +291,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   const getBranches = (acadId) => {
     axiosInstance
-      .get(`erp_user/branch/?session_year=${acadId}&module_id=${moduleId}`)
+      .get(`erp_user/branch/?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           const modifiedResponse = result?.data?.data?.results.map(
@@ -299,17 +305,17 @@ const BulkUpload = ({ onUploadSuccess }) => {
       });
   };
 
-  const handleYearChange = (event = {}, data = '') => {
-    setYear(data?.id);
-    setAcademicYearVal(data?.session_year);
-    setYearDisplay(data);
-    setBranchList([]);
-    setBranchDisplay('');
-    setBranch(null);
-    if (data) {
-      getBranches(data?.id);
-    }
-  };
+  // const handleYearChange = (event = {}, data = '') => {
+  //   setYear(data?.id);
+  //   setAcademicYearVal(data?.session_year);
+  //   setYearDisplay(data);
+  //   setBranchList([]);
+  //   setBranchDisplay('');
+  //   setBranch(null);
+  //   if (data) {
+  //     getBranches(data?.id);
+  //   }
+  // };
 
   const handleBranchChange = (event, data) => {
     setSearchGrade([]);
@@ -413,7 +419,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
   return (
     <>
       <Grid container spacing={4} style={{ marginBottom: 20 }}>
-        <Grid item md={3} xs={12}>
+        {/* <Grid item md={3} xs={12}>
           <Autocomplete
             size='small'
             id='create__class-subject'
@@ -436,7 +442,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
               />
             )}
           />
-        </Grid>
+        </Grid> */}
         <Grid item md={3} xs={12}>
           <Autocomplete
             size='small'
