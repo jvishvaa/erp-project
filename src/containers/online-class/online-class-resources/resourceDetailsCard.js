@@ -101,10 +101,19 @@ export default function ResourceDetailsCardComponent(props) {
     ];
   };
 
+  const handleSetData = (response) => {
+    const bifuracionArray = ['today', 'upcoming', 'completed', 'cancelled'];
+    return (
+      response.filter((element) => element?.class_status?.toLowerCase() === bifuracionArray[props.tabValue]) ||
+      []
+    );
+  };
+
   const msApiOnclsDetails = () =>{
     APIREQUEST("get", `/oncls/v1/${props?.resourceData?.id}/oncls-details/`)
     .then((res)=>{
-      setNoOfPeriods(res.data.data);
+      const result = handleSetData(res.data.data)
+      setNoOfPeriods(result);
     })
     .catch((error) => setAlert('error', error.message));
   }
@@ -121,7 +130,8 @@ export default function ResourceDetailsCardComponent(props) {
           `erp_user/${props.resourceData && props.resourceData.id}/online-class-details/`
         )
         .then((res) => {
-          setNoOfPeriods(res.data.data);
+          const result = handleSetData(res.data.data)
+          setNoOfPeriods(result);
         })
         .catch((error) => setAlert('error', error.message));
     }

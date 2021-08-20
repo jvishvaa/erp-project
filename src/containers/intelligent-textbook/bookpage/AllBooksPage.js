@@ -59,6 +59,7 @@ const AllBooksPage = () => {
   const [volume, setVolume] = useState('');
   const bookImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/';
 
+
   const getDomainName = () => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"

@@ -3,8 +3,15 @@ import Layout from '../Layout/index';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { withRouter } from 'react-router-dom';
-import { SvgIcon, Button, Grid, FormControl, TextField, withStyles } from '@material-ui/core';
-import Addicon from '../../assets/images/Add.svg'
+import {
+  SvgIcon,
+  Button,
+  Grid,
+  FormControl,
+  TextField,
+  withStyles,
+} from '@material-ui/core';
+import Addicon from '../../assets/images/Add.svg';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
@@ -14,349 +21,371 @@ import './subjectgrademapping.scss';
 import { generateQueryParamSting } from '../../utility-functions';
 import moment from 'moment';
 
-const StyledButton = withStyles({
-    root: {
-      color: '#FFFFFF',
-      backgroundColor: '#FF6B6B',
-      '&:hover': {
-        backgroundColor: '#FF6B6B',
-      },
+const StyledButton = withStyles((theme) => ({
+  root: {
+    color: '#FFFFFF',
+    backgroundColor: theme.palette.primary.main,
+    '&:hover': {
+      backgroundColor: theme.palette.primary.main,
     },
-    startIcon: {},
-  })(Button);
+  },
+  startIcon: {},
+}))(Button);
 
 const ListandFilter = (props) => {
-    const { setAlert } = useContext(AlertNotificationContext);
-    const [academicYear, setAcademicYear] = useState([]);
-    const [branch, setBranchRes] = useState([])
-    const [gradeRes, setGradeRes] = useState([]);
-    const [selectedYear, setSelectedYear] = useState(null);
-    const [branchValue, setBranchValue] = useState(null);
-    const [gradeValue, setGradeValue] = useState(null);
-    const [schoolGsMapping, setSchoolGsMapping] = useState([]);
-    const [error, setError] = useState(null);
-    const [filter, setFilter] = useState(false);
-    const [selectedModule, setSelectedModule] = useState('');
-    const moduleList = [
-        { id: 'lesson-plan', label: 'Lesson plan', key: 'is_lesson_plan', value: true },
-        { id: 'assessment', label: 'Assessment', key: 'is_assessment', value: true },
-        { id: 'ebook', label: 'Ebook', key: 'is_ebook', value: true },
-        { id: 'ibook', label: 'Ibook', key: 'is_ibook', value: true },
-    ];
+  const { setAlert } = useContext(AlertNotificationContext);
+  const [academicYear, setAcademicYear] = useState([]);
+  const [branch, setBranchRes] = useState([]);
+  const [gradeRes, setGradeRes] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(null);
+  const [branchValue, setBranchValue] = useState(null);
+  const [gradeValue, setGradeValue] = useState(null);
+  const [schoolGsMapping, setSchoolGsMapping] = useState([]);
+  const [error, setError] = useState(null);
+  const [filter, setFilter] = useState(false);
+  const [selectedModule, setSelectedModule] = useState('');
+  const moduleList = [
+    { id: 'lesson-plan', label: 'Lesson plan', key: 'is_lesson_plan', value: true },
+    { id: 'assessment', label: 'Assessment', key: 'is_assessment', value: true },
+    { id: 'ebook', label: 'Ebook', key: 'is_ebook', value: true },
+    { id: 'ibook', label: 'Ibook', key: 'is_ibook', value: true },
+  ];
 
-    const navigateToCreatePage = () => {
-        props.history.push('/master-management/subject/grade/mapping')
-    }
+  const navigateToCreatePage = () => {
+    props.history.push('/master-management/subject/grade/mapping');
+  };
 
-    const handleClearAll = () => {
-        setFilter(false);
-        setSchoolGsMapping([]);
-        setGradeRes([]);
-        setBranchValue(null);
-        setGradeValue(null);
-    }
+  const handleClearAll = () => {
+    setFilter(false);
+    setSchoolGsMapping([]);
+    setGradeRes([]);
+    setBranchValue(null);
+    setGradeValue(null);
+  };
 
-    const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-    const [moduleId, setModuleId] = useState('');
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
 
-    useEffect(() => {
-        if (NavData && NavData.length) {
-          NavData.forEach((item) => {
-            if (
-              item.parent_modules === 'Master Management' &&
-              item.child_module &&
-              item.child_module.length > 0
-            ) {
-              item.child_module.forEach((item) => {
-                if (item.child_name === 'Content Mapping') {
-                  setModuleId(item.child_id);
-                }
-              });
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Master Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Content Mapping') {
+              setModuleId(item.child_id);
             }
           });
         }
-      }, []);
+      });
+    }
+  }, []);
 
-    useEffect(() => {
-        axiosInstance.get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`).then(res => {
-            if (res.data.data) {
-                console.log(res.data.data);
-                setAcademicYear(res.data.data);
-            }
-        }).catch(err => {
-            console.log(err)
+  useEffect(() => {
+    axiosInstance
+      .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
+      .then((res) => {
+        if (res.data.data) {
+          console.log(res.data.data);
+          setAcademicYear(res.data.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    const getBranch = () => {
+      //axiosInstance.get(endpoints.masterManagement.branchList).then(res => {
+      axiosInstance
+        .get(
+          `${endpoints.mappingStudentGrade.branch}?session_year=${selectedYear?.id}&module_id=${moduleId}`
+        )
+        .then((res) => {
+          if (res.data.data) {
+            setBranchRes(res.data.data.results);
+          }
         })
-    }, []);
-
-    useEffect(() => {
-        const getBranch = () => {
-            //axiosInstance.get(endpoints.masterManagement.branchList).then(res => {
-            axiosInstance.get(`${endpoints.mappingStudentGrade.branch}?session_year=${selectedYear?.id}&module_id=${moduleId}`).then(res => {
-                if (res.data.data) {
-                    setBranchRes(res.data.data.results)
-                }
-            }).catch(err => {
-                console.log(err)
-            })
-
-        }
-        if(selectedYear?.id){
-            getBranch();
-        }
-    }, [selectedYear]);
-
-    const handleChangeYear = (vaule) => {
-        if(vaule) {
-            setSelectedYear(vaule);
-        }
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    if (selectedYear?.id) {
+      getBranch();
     }
+  }, [selectedYear]);
 
-    useEffect(() => {
-        if(academicYear.length > 0) {
-            const currentAcademicYear = moment().month() < 3
-                ? `${Number(moment().year())-1}-${moment().format('YY')}`
-                : `${moment().year()}-${Number(moment().format('YY'))+1}`
-            academicYear.map((option) => {
-                if(option.session_year === currentAcademicYear) {
-                    handleChangeYear(option);
-                }
-            })
-        }
-    },[academicYear])
-
-    const handleChangeBranch = (value) => {
-        if (value) {
-            setBranchValue(value);
-            axiosInstance.get(`${endpoints.mappingStudentGrade.grade}?session_year=${selectedYear?.id}&branch_id=${value?.branch.id}&module_id=${moduleId}`).then(res => {
-                if (res.data.data) {
-                    setGradeRes(res.data.data)
-                }
-            }).catch(err => {
-                console.log(err)
-            })
-        } else {
-            setBranchValue(null)
-        }
+  const handleChangeYear = (vaule) => {
+    if (vaule) {
+      setSelectedYear(vaule);
     }
+  };
 
-    const handleGradeChange = (value) => {
-        //setGradeValue(value);
-        if (value) {
-            setGradeValue(value);
-        } else {
-            setGradeValue(null);
+  useEffect(() => {
+    if (academicYear.length > 0) {
+      const currentAcademicYear =
+        moment().month() < 3
+          ? `${Number(moment().year()) - 1}-${moment().format('YY')}`
+          : `${moment().year()}-${Number(moment().format('YY')) + 1}`;
+      academicYear.map((option) => {
+        if (option.session_year === currentAcademicYear) {
+          handleChangeYear(option);
         }
+      });
     }
+  }, [academicYear]);
 
-    const handleFilter = () => {
-        if(!selectedModule) {
-            setAlert('warning', 'Select Module');
-            return false
-        }
-        if(branchValue === null && gradeValue === null){
-            setAlert('warning', 'Select Grade');
-            return false
-        } else{
-            const { key, value } = selectedModule || {};
-            let body = {
-                branch: branchValue && branchValue.branch.id,
-                erp_grade: gradeValue && gradeValue.grade_id,
-            }
-            const queryString = generateQueryParamSting({ [key]: value });
-            const valid = Validation(body);
-            if(valid.isValid === true){
-                setFilter(true);
-                axiosInstance.get(`${endpoints.mappingStudentGrade.schoolGsMapping}?branch=${body.branch}&erp_grade=${body.erp_grade}&${queryString}`).then(res => {
-                    setSchoolGsMapping(res.data.data.results)
-                }).catch(err => {
-                    console.log(err)
-                })
-            } else{
-                setError(valid)
-            }
-            
-        }
-      
+  const handleChangeBranch = (value) => {
+    if (value) {
+      setBranchValue(value);
+      axiosInstance
+        .get(
+          `${endpoints.mappingStudentGrade.grade}?session_year=${selectedYear?.id}&branch_id=${value?.branch.id}&module_id=${moduleId}`
+        )
+        .then((res) => {
+          if (res.data.data) {
+            setGradeRes(res.data.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setBranchValue(null);
     }
+  };
 
-    const updateDeletData = (value, index) => {
-        const newData = value;
-        value.splice(index,1);;
-        setSchoolGsMapping(newData)
+  const handleGradeChange = (value) => {
+    //setGradeValue(value);
+    if (value) {
+      setGradeValue(value);
+    } else {
+      setGradeValue(null);
     }
+  };
 
-    const Validation = (formData) => {
-        let input = formData;
-        let error = {}
-        let errors = false
-        let isValid = true;
-        if (!input['branch']) {
-            isValid = false
-            errors = true
-            error['branchError'] = 'Please select valid branch'
-        }
-        if (!input['erp_grade']) {
-            isValid = false
-            errors = true
-            error['erp_gradeError'] = 'Please select valid Grade';
-
-        }
-        const validInfo = {
-            errorMessage: error,
-            isValid,
-            errors
-        }
-        return validInfo;
+  const handleFilter = () => {
+    if (!selectedModule) {
+      setAlert('warning', 'Select Module');
+      return false;
     }
+    if (branchValue === null && gradeValue === null) {
+      setAlert('warning', 'Select Grade');
+      return false;
+    } else {
+      const { key, value } = selectedModule || {};
+      let body = {
+        branch: branchValue && branchValue.branch.id,
+        erp_grade: gradeValue && gradeValue.grade_id,
+      };
+      const queryString = generateQueryParamSting({ [key]: value });
+      const valid = Validation(body);
+      if (valid.isValid === true) {
+        setFilter(true);
+        axiosInstance
+          .get(
+            `${endpoints.mappingStudentGrade.schoolGsMapping}?branch=${body.branch}&erp_grade=${body.erp_grade}&${queryString}`
+          )
+          .then((res) => {
+            setSchoolGsMapping(res.data.data.results);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        setError(valid);
+      }
+    }
+  };
 
-   
-    return (
-            <Layout>
-                <Grid container spacing={2} style={{ width: '100%', overflow: 'hidden', padding: '10px 20px' }}>
-                <Grid item md={12} xs={12} style={{ backgroundColor: '#F9F9F9' }}>
-                    <CommonBreadcrumbs componentName='Master Management' childComponentName='Content Mapping'/>
-                </Grid>
-                    <Grid container spacing={2}  style={{ marginTop: '10px' }}>
-                        <Grid item md={3} xs={12} sm={6}>
-                            <FormControl style={{ width: '100%' }} className={`select-form`}> 
-                                <Autocomplete
-                                    style={{ width: '100%' }}
-                                    value={selectedYear}
-                                    id="tags-outlined"
-                                    className='dropdownIcon'
-                                    options={academicYear}
-                                    getOptionLabel={(option) => option?.session_year}
-                                    filterSelectedOptions
-                                    size="small"
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            variant="outlined"
-                                            label="Academic Year"
+  const updateDeletData = (value, index) => {
+    const newData = value;
+    value.splice(index, 1);
+    setSchoolGsMapping(newData);
+  };
 
-                                        />
-                                    )}
-                                    onChange={(e, value) => {
-                                        handleChangeYear(value);
-                                    }}
-                                    getOptionSelected={(option, value) => value && option.id == value.id}
-                                />
-                                <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.branchError}</FormHelperText>
-                            </FormControl>
-                        </Grid> 
-                        <Grid item md={3} xs={12} sm={6}>
-                            <FormControl style={{ width: '100%' }} className={`select-form`}>
-                                <Autocomplete
-                                    style={{ width: '100%' }}
-                                    value={branchValue}
-                                    id="tags-outlined"
-                                    options={branch}
-                                    className='dropdownIcon'
-                                    getOptionLabel={(option) => option?.branch.branch_name}
-                                    filterSelectedOptions
-                                    size="small"
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            variant="outlined"
-                                            label="Branch"
+  const Validation = (formData) => {
+    let input = formData;
+    let error = {};
+    let errors = false;
+    let isValid = true;
+    if (!input['branch']) {
+      isValid = false;
+      errors = true;
+      error['branchError'] = 'Please select valid branch';
+    }
+    if (!input['erp_grade']) {
+      isValid = false;
+      errors = true;
+      error['erp_gradeError'] = 'Please select valid Grade';
+    }
+    const validInfo = {
+      errorMessage: error,
+      isValid,
+      errors,
+    };
+    return validInfo;
+  };
 
-                                        />
-                                    )}
-                                    onChange={(e, value) => {
-                                        handleChangeBranch(value);
-                                    }}
-                                    getOptionSelected={(option, value) => value && option.id == value.id}
-                                />
-                                <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.branchError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                        <Grid item md={3} xs={12} sm={6}>
-                            <FormControl style={{ width: '100%' }} className={`subject-form`}>
-                                <Autocomplete
-                                    style={{ width: '100%' }}
-                                    required={true}
-                                    value={gradeValue}
-                                    id="tags-outlined"
-                                    options={gradeRes}
-                                    className='dropdownIcon'
-                                    getOptionLabel={(option) => option.grade__grade_name}
-                                    filterSelectedOptions
-                                    size="small"
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            variant="outlined"
-                                            label="Grade"
-                                        />
-                                    )}
-                                    onChange={(e, value) => {
-                                        handleGradeChange(value);
-                                    }}
-                                    getOptionSelected={(option, value) => value && option.id == value.id}
-                                />
-                                <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.erp_gradeError}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                        <Grid item md={3} xs={12} sm={6}>
-                                <Autocomplete
-                                    style={{ width: '100%' }}
-                                    required={true}
-                                    value={selectedModule}
-                                    id="tags-outlined"
-                                    options={moduleList}
-                                    className='dropdownIcon'
-                                    getOptionLabel={(option) => option.label}
-                                    filterSelectedOptions
-                                    size="small"
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            variant="outlined"
-                                            label="Module"
-                                        />
-                                    )}
-                                    onChange={(e, value) => {
-                                        setSelectedModule(value);
-                                    }}
-                                    getOptionSelected={(option, value) => value && option.id == value.id}
-                                />
-                        </Grid>
-                    </Grid>
-                <div className="btn-list">
-                    <Button variant="contained" className="clear-all" onClick={handleClearAll}>Clear All</Button>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        className="filter-btn"
-                        style={{ background: '#FF6B6B', marginLeft: 15 }}
-                        onClick={handleFilter}
-                    >
-                        Filter
-                    </Button>
-                </div>
-                <div className="button-container-map">
-                    <StyledButton variant="outlined" color="primary" style={{ color: 'white', marginTop: '4px' }} onClick={navigateToCreatePage}>
-                        <SvgIcon
-                            component={() => (
-                                <img
-                                    style={{ width: '12px', marginRight: '5px' }}
-                                    src={Addicon}
-                                    alt='given'
-                                />
-                            )}
-                        />
-                        Assign Mapping
-                    </StyledButton>
-                </div>
-                <Grid container spacing={2} className="mapping-sub-grade-container">
-                    <Grid item md={12} xs={12} className="mapping-grade-subject-container">
-                        <Subjectcard schoolGsMapping={schoolGsMapping} updateDeletData={updateDeletData} setFilters={filter}/>
-                    </Grid>
-                </Grid>
+  return (
+    <Layout>
+      <CommonBreadcrumbs
+        componentName='Master Management'
+        childComponentName='Content Mapping'
+      />
+      <Grid
+        container
+        spacing={2}
+        style={{ width: '95%', overflow: 'hidden', margin: '20px auto' }}
+      >
+        <Grid container spacing={2} style={{ marginTop: '10px' }}>
+          <Grid item md={3} xs={12} sm={6}>
+            <FormControl style={{ width: '100%' }} className={`select-form`}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                value={selectedYear}
+                id='tags-outlined'
+                className='dropdownIcon'
+                options={academicYear}
+                getOptionLabel={(option) => option?.session_year}
+                filterSelectedOptions
+                size='small'
+                renderInput={(params) => (
+                  <TextField {...params} variant='outlined' label='Academic Year' />
+                )}
+                onChange={(e, value) => {
+                  handleChangeYear(value);
+                }}
+                getOptionSelected={(option, value) => value && option.id == value.id}
+              />
+              <FormHelperText style={{ marginLeft: '20px', color: 'red' }}>
+                {error && error.errorMessage && error.errorMessage.branchError}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item md={3} xs={12} sm={6}>
+            <FormControl style={{ width: '100%' }} className={`select-form`}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                value={branchValue}
+                id='tags-outlined'
+                options={branch}
+                className='dropdownIcon'
+                getOptionLabel={(option) => option?.branch.branch_name}
+                filterSelectedOptions
+                size='small'
+                renderInput={(params) => (
+                  <TextField {...params} variant='outlined' label='Branch' />
+                )}
+                onChange={(e, value) => {
+                  handleChangeBranch(value);
+                }}
+                getOptionSelected={(option, value) => value && option.id == value.id}
+              />
+              <FormHelperText style={{ marginLeft: '20px', color: 'red' }}>
+                {error && error.errorMessage && error.errorMessage.branchError}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item md={3} xs={12} sm={6}>
+            <FormControl style={{ width: '100%' }} className={`subject-form`}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                required={true}
+                value={gradeValue}
+                id='tags-outlined'
+                options={gradeRes}
+                className='dropdownIcon'
+                getOptionLabel={(option) => option.grade__grade_name}
+                filterSelectedOptions
+                size='small'
+                renderInput={(params) => (
+                  <TextField {...params} variant='outlined' label='Grade' />
+                )}
+                onChange={(e, value) => {
+                  handleGradeChange(value);
+                }}
+                getOptionSelected={(option, value) => value && option.id == value.id}
+              />
+              <FormHelperText style={{ marginLeft: '20px', color: 'red' }}>
+                {error && error.errorMessage && error.errorMessage.erp_gradeError}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item md={3} xs={12} sm={6}>
+            <Autocomplete
+              style={{ width: '100%' }}
+              required={true}
+              value={selectedModule}
+              id='tags-outlined'
+              options={moduleList}
+              className='dropdownIcon'
+              getOptionLabel={(option) => option.label}
+              filterSelectedOptions
+              size='small'
+              renderInput={(params) => (
+                <TextField {...params} variant='outlined' label='Module' />
+              )}
+              onChange={(e, value) => {
+                setSelectedModule(value);
+              }}
+              getOptionSelected={(option, value) => value && option.id == value.id}
+            />
+          </Grid>
         </Grid>
-     </Layout>
-    );
-}
+        <div className='btn-list'>
+          <Button
+            variant='contained'
+            className='cancelButton labelColor'
+            onClick={handleClearAll}
+          >
+            Clear All
+          </Button>
+          <Button
+            variant='contained'
+            color='primary'
+            className='filter-btn'
+            style={{ color: 'white', marginLeft: 15 }}
+            onClick={handleFilter}
+          >
+            Filter
+          </Button>
+        </div>
+        <div className='button-container-map'>
+          <StyledButton
+            variant='outlined'
+            color='primary'
+            style={{ color: 'white', marginTop: '4px' }}
+            onClick={navigateToCreatePage}
+          >
+            <SvgIcon
+              component={() => (
+                <img
+                  style={{ width: '12px', marginRight: '5px' }}
+                  src={Addicon}
+                  alt='given'
+                />
+              )}
+            />
+            Assign Mapping
+          </StyledButton>
+        </div>
+    </Grid>
+        <Grid container spacing={2} className='mapping-sub-grade-container'>
+          <Grid item md={12} xs={12} className='mapping-grade-subject-container'>
+            <Subjectcard
+              schoolGsMapping={schoolGsMapping}
+              updateDeletData={updateDeletData}
+              setFilters={filter}
+            />
+          </Grid>
+        </Grid>
+    </Layout>
+  );
+};
 
 export default withRouter(ListandFilter);

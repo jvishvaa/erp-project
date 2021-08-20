@@ -17,6 +17,7 @@ import {
   fetchAcademicYears as getAcademicYears,
   fetchSubjects as getSubjects,
 } from '../../redux/actions';
+import { connect, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 const BackButton = withStyles({
@@ -38,6 +39,9 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+  const selectedYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -59,7 +63,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   const formik = useFormik({
     initialValues: {
-      academic_year: details.academic_year,
+      academic_year: selectedYear,
       branch: details.branch,
       grade: details.grade,
       section: details.section,
@@ -73,25 +77,32 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     validateOnBlur: false,
   });
 
-  const fetchAcademicYears = () => {
-    getAcademicYears(moduleId).then((data) => {
-      let transformedData = '';
-      transformedData = data?.map((obj) => ({
-        id: obj.id,
-        session_year: obj.session_year,
-      }));
-      setAcademicYears(transformedData);
-      if (!details.academic_year) {
-        const defaultYear = transformedData?.[0];
-        formik.setFieldValue('academic_year', defaultYear);
-        fetchBranches(defaultYear?.id);
-      }
-    });
-  };
 
-  const fetchBranches = (acadId) => {
-    if (acadId) {
-      fetchBranchesForCreateUser(acadId, moduleId).then((data) => {
+
+  // const fetchAcademicYears = () => {
+  //   getAcademicYears(moduleId).then((data) => {
+  //     let transformedData = '';
+  //     transformedData = data?.map((obj) => ({
+  //       id: obj.id,
+  //       session_year: obj.session_year,
+  //     }));
+  //     setAcademicYears(transformedData);
+  //     if (!details.academic_year) {
+  //       const defaultYear = transformedData?.[0];
+  //       formik.setFieldValue('academic_year', defaultYear);
+  //       fetchBranches(defaultYear?.id);
+  //     }
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   fetchBranches();
+  // }, [selectedYear , moduleId]);
+
+  const fetchBranches = () => {
+    console.log(selectedYear , "selected year");
+    if (selectedYear) {
+      fetchBranchesForCreateUser(selectedYear?.id, moduleId).then((data) => {
         const transformedData = data?.map((obj) => ({
           id: obj.id,
           branch_name: obj.branch_name,
@@ -136,6 +147,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   const handleChangeBranch = (values, acadId) => {
     setGrades([]);
+    console.log(selectedYear?.id , "acad");
     setSections([]);
     setSubjects([]);
     values =
@@ -144,7 +156,8 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
         : values;
     formik.setFieldValue('branch', values);
     if (values?.length > 0) {
-      fetchGrades(acadId, values, moduleId).then((data) => {
+      fetchGrades(selectedYear?.id, values, moduleId).then((data) => {
+        console.log(selectedYear?.id , "acad id");
         const transformedData = data
           ? data.map((grade) => ({
               item_id: grade?.id,
@@ -176,7 +189,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     formik.setFieldValue('grade', values);
     if (values?.length > 0) {
       const branchList = values.map((element) => ({ id: element?.branch_id })) || branch; // Added
-      fetchSections(acadId, branchList, values, moduleId).then((data) => {
+      fetchSections(selectedYear?.id, branchList, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               item_id: section.id,
@@ -207,6 +220,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   const handleChangeSection = (values, acadId, branch, grade) => {
     setSubjects([]);
+    console.log(formik , "formik");
     formik.setFieldValue('subjects', []);
     formik.setFieldValue('section', []);
     values =
@@ -217,7 +231,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     if (values?.length > 0) {
       const branchList = values.map((element) => ({ id: element?.branch_id })) || branch; // Added
       const gradeList = values.map((element) => ({ id: element?.grade_id })) || grade; // Added
-      getSubjects(acadId, branchList, gradeList, values, moduleId).then((data) => {
+      getSubjects(selectedYear?.id, branchList, gradeList, values, moduleId).then((data) => {
         const transformedData =
           data &&
           data.map((obj) => ({
@@ -233,6 +247,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
           });
         }
         setSubjects(transformedData);
+    console.log(formik , "formik");
         // const filteredSelectedSections = formik.values.section.filter(
         //   (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1
         // );
@@ -265,18 +280,16 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   // };
 
   useEffect(() => {
-    if (moduleId) {
-      fetchAcademicYears(moduleId);
-      if (details.academic_year) {
-        fetchBranches(details.academic_year.id);
+    if (moduleId && selectedYear) {
+        fetchBranches(selectedYear?.id);
         if (details.branch) {
-          handleChangeBranch(details.branch, details.academic_year.id);
+          handleChangeBranch(details.branch, selectedYear?.id);
           if (details.grade && details.grade.length > 0) {
-            handleChangeGrade(details.grade, details.academic_year.id, details.branch);
+            handleChangeGrade(details.grade, selectedYear?.id, details.branch);
             if (details.section && details.section.length > 0) {
               handleChangeSection(
                 details.section,
-                details.academic_year.id,
+                selectedYear?.id,
                 details.branch,
                 details.grade
               );
@@ -287,8 +300,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
           }
         }
       }
-    }
-  }, [moduleId]);
+  }, [moduleId , selectedYear]);
 
   const classes = useStyles();
 
@@ -296,7 +308,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     <Grid container spacing={4} className='school-details-form-container'>
       {/* <Grid container item xs={12}> */}
       <Grid item md={4} xs={12}>
-        <FormControl fullWidth className={classes.margin} variant='outlined'>
+        {/* <FormControl fullWidth className={classes.margin} variant='outlined'>
           <Autocomplete
             id='academic_year'
             name='academic_year'
@@ -329,7 +341,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
           <FormHelperText style={{ color: 'red' }}>
             {formik.errors.academic_year ? formik.errors.academic_year : ''}
           </FormHelperText>
-        </FormControl>
+        </FormControl> */}
       </Grid>
       {/* </Grid> */}
       <Grid item xs={12}>
@@ -383,7 +395,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
               formik.setFieldValue('subjects', []);
               handleChangeGrade(
                 value,
-                formik.values.academic_year?.id,
+                selectedYear?.id,
                 formik.values.branch
               );
             }}
@@ -438,7 +450,9 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
                 placeholder='Section'
               />
             )}
-            getOptionSelected={(option, value) => option.section_name == value.section_name}
+            getOptionSelected={(option, value) =>
+              option.section_name == value.section_name
+            }
             size='small'
           />
           <FormHelperText style={{ color: 'red' }}>
@@ -504,6 +518,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
             color='primary'
             onClick={() => {
               formik.handleSubmit();
+              console.log(formik , "formik")
             }}
             style={{ float: 'right' }}
           >

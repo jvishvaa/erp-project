@@ -265,6 +265,7 @@ class CreateUser extends Component {
             <CommonBreadcrumbs
               componentName='User Management'
               childComponentName='Create User'
+            isAcademicYearVisible={true}
             />
           </div>
           <div className='bulk-upload-check-box-container'>
