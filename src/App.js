@@ -293,8 +293,6 @@ import ViewiBook from './containers/intelligent-textbook/ViewiBook';
 import AllBooksPage from 'containers/intelligent-textbook/bookpage/AllBooksPage';
 import ChapterBook from 'containers/intelligent-textbook/chapterpage/ChapterBook';
 import { themeGenerator } from '../src/utility-functions/themeGenerator';
-import StoreAtStudent from 'containers/Finance/src/components/Inventory/Student/storeAtStudent';
-import  EditStoreTransactionDetails from 'containers/Finance/src/components/Finance/StorePaymentRequests/editStoreTransactionDetails';
 import { isMsAPI } from "./utility-functions/index";
 
 function App({ alert }) {
