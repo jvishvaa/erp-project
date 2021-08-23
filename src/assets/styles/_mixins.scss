@@ -4,7 +4,7 @@
   .styled__table-head {
     th {
       font-weight: bold;
-      color: $secondary-color;
+      // color: $secondary-color;
     }
 
     th:not(:last-child) {
@@ -19,13 +19,13 @@
       right: 0;
       top: 50%;
       transform: translateY(-50%);
-      background-color: $primary-color;
+      // background-color: $primary-color;
     }
   }
 
   .styled__table-body {
     td {
-      color: $secondary-color;
+      // color: $secondary-color;
     }
   }
 }

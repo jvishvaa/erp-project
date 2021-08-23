@@ -23,7 +23,7 @@ import { red } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
   text_color: {
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
   },
   titleText: {
     display: 'block',
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     height: '20px',
   },
   reply_button: {
-    color: '#FF6B6B',
+    color: theme.palette.primary.main,
     cursor: 'pointer',
   },
 }));

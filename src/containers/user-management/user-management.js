@@ -38,10 +38,8 @@ class UserManagement extends Component {
   getBranches = async () => {
     try {
       const data = await axiosInstance.get('erp_user/list-all-branch/');
-      if(data.data.status_code===200)
-      this.setState({ branches: data.data.data });
-      else
-      console.log('');
+      if (data.data.status_code === 200) this.setState({ branches: data.data.data });
+      else console.log('');
     } catch (error) {
       console.log('failed to load branches');
     }
@@ -95,7 +93,13 @@ class UserManagement extends Component {
       <Layout>
         <Container>
           <div>
-            <Button startIcon={<AddOutlinedIcon />} href={`${match.url}/create-user`}>
+            <Button
+              startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+              href={`${match.url}/create-user`}
+              color='primary'
+              size='medium'
+              variant='contained'
+            >
               Add user
             </Button>
             <span style={{ margin: '0px 20px' }}>or</span>

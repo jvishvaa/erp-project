@@ -16,7 +16,8 @@ import {
   FormControlLabel,
   Checkbox,
   Switch,
-  SvgIcon
+  SvgIcon,
+  makeStyles
 } from '@material-ui/core';
 import moment from 'moment';
 import {
@@ -45,7 +46,14 @@ import selectfilter from '../../assets/images/selectfilter.svg';
 import './attendance.scss'
 import APIREQUEST from "../../config/apiRequest";
 
+const useStyles = makeStyles((theme) => ({
+ 
+}));
+
+
 const AttendeeListRemake = (props) => {
+  const classes = useStyles();
+
   const history = useHistory();
   const location = useLocation();
   //const { attendDate } = history.location.state
@@ -263,7 +271,7 @@ const AttendeeListRemake = (props) => {
             </MuiPickersUtilsProvider>
           </Grid>
           <Grid item xs={12} sm={2}>
-            <Button onClick={handleExcelDownload} style={{backgroundColor:'#ff6b6b'}}>Download Excel</Button>
+            <Button onClick={handleExcelDownload} color = "primary" variant = "contained" style ={{color : "white"}}>Download Excel</Button>
           </Grid>
           <Grid item xs={12} sm={3}>
             <Typography variant='h5' style={{ color: 'green' }}>
@@ -292,7 +300,7 @@ const AttendeeListRemake = (props) => {
                   name='Edit attendance'
                 />
               }
-              label={<Typography variant='h6'>Edit Attendance</Typography>}
+              label={<Typography color = "primary" variant='h6'>Edit Attendance</Typography>}
             />
           </Grid>
           <Grid item xs={12} sm={2}>

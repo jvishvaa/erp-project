@@ -1,24 +1,4 @@
 @import '../../../assets/styles/variables';
-/* .homework_table_wrapper .message_log_table tr th:not(:last-child):after {
-	content: '';
-	height: 100%;
-	width: 1px;
-	position: absolute;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
-	background-color: #ff6b6b;
-  }
-  .homework_table_wrapper .message_log_table tr td:not(:last-child):after {
-	content: '';
-	height: 100%;
-	width: 1px;
-	position: absolute;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
-	background-color: #ff6b6b;
-  } */
 
   .loading_container{
     
@@ -39,21 +19,6 @@
       width: 95%;
       margin: 20px auto;
     }
-    .homework_table_wrapper {
-      border: 1px solid #ff6b6b;
-      box-shadow: none;
-    }
-    .homework_table_wrapper .MuiTableCell-root:not(:last-child) {
-      border-right: 1px solid #ff6b6b;
-    }
-    .homework_table_wrapper .MuiTableRow-root:not(:last-child) .MuiTableCell-root {
-      border-bottom: 1px solid #ff6b6b !important;
-      width: 250px;
-    }
-    .homework_table_wrapper .MuiTableHead-root .MuiTableCell-root {
-      border-bottom: 1px solid #ff6b6b !important;
-      width: 250px;
-    }
     .selected {
       background-color: antiquewhite;
     }
@@ -62,10 +27,6 @@
       border-radius: 10px !important;
       overflow-y: auto;
       max-height: 10000px !important;
-    }
-    .homework_table_wrapper {
-      border-radius: 10px !important;
-      box-shadow: none !important;
     }
     .homework_header {
       text-transform: capitalize;
@@ -173,7 +134,7 @@
 
         .nav-card {
           width: 42%;
-          border: 1px solid $primary-color;
+          // border: 1px solid $primary-color;
           height: 100%;
           padding: 0.5rem 1.25rem;
           border-radius: 10px;
@@ -255,22 +216,6 @@
 
     @media screen and (max-width: 768px) {
       justify-content: center;
-    }
-  }
-  .homework_type_item {
-    border: 1px solid #ff6b6b;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    text-align: center;
-    padding: 0.25rem 0.5rem;
-    color: #014b7e;
-    font-size: 1rem;
-    font-weight: 600;
-    text-transform: capitalize;
-    div {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
   }
   .homework_block_questionwise_check {
@@ -546,7 +491,7 @@
 
   .nav-card {
     width: 50%;
-    border: 1px solid $primary-color;
+    // border: 1px solid $primary-color;
     height: 100%;
     padding: 0.5rem 1.25rem;
     border-radius: 10px;
@@ -581,7 +526,7 @@
 //homework list mobile view
 
 .homework-table-mobile-view {
-  color: $secondary-color;
+  // color: $secondary-color;
   .day-icon {
     width: 40px;
     height: 40px;

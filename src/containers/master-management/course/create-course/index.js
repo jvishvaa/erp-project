@@ -27,24 +27,11 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 auto',
     boxShadow: 'none',
   },
-  container: {
-    maxHeight: '70vh',
-    width: '100%',
-  },
-  columnHeader: {
-    color: `${theme.palette.secondary.main} !important`,
-    fontWeight: 600,
-    fontSize: '1rem',
-    backgroundColor: `#ffffff !important`,
-  },
-  tableCell: {
+  attachmentbuttondoc: {
+    borderRadius: '10px',
+    background: 'none',
+    border: `1px solid ${theme.palette.primary.main}`,
     color: theme.palette.secondary.main,
-  },
-  buttonContainer: {
-    width: '95%',
-    margin: '0 auto',
-    background: theme.palette.background.secondary,
-    paddingBottom: theme.spacing(2),
   },
 }));
 
@@ -59,7 +46,6 @@ const CreateCourse = () => {
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
   const { courseKey, gradeKey } = useParams();
-  //context
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [categoryDropdown, setCategoryDropdown] = useState([]);
@@ -732,23 +718,19 @@ const CreateCourse = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName={
-                history.location?.state?.isOnline ? 'Online Class' : 'Master Management'
-              }
-              childComponentName={
-                Boolean(gradeKey)
-                  ? 'Period Details'
-                  : Boolean(courseKey)
-                  ? 'Edit Course'
-                  : 'Create Course'
-              }
-              childComponentNameNext={!Boolean(gradeKey) && nextToggle && 'Periods'}
-            />
-          </div>
-        </div>
+        <CommonBreadcrumbs
+          componentName={
+            history.location?.state?.isOnline ? 'Online Class' : 'Master Management'
+          }
+          childComponentName={
+            Boolean(gradeKey)
+              ? 'Period Details'
+              : Boolean(courseKey)
+              ? 'Edit Course'
+              : 'Create Course'
+          }
+          childComponentNameNext={!Boolean(gradeKey) && nextToggle && 'Periods'}
+        />
         {!nextToggle ? (
           !gradeKey && (
             <Grid
@@ -923,7 +905,6 @@ const CreateCourse = () => {
                   placeholder='Course Title'
                   multiline
                   rows='1'
-                  color='secondary'
                   style={{ width: '100%' }}
                   value={title}
                   variant='outlined'
@@ -938,7 +919,6 @@ const CreateCourse = () => {
                   placeholder='Course Prerequisites'
                   multiline
                   rows='6'
-                  color='secondary'
                   style={{ width: '100%' }}
                   value={coursePre}
                   variant='outlined'
@@ -953,7 +933,6 @@ const CreateCourse = () => {
                   placeholder='What Will You Learn From This Course'
                   multiline
                   rows='6'
-                  color='secondary'
                   style={{ width: '100%' }}
                   value={learn}
                   variant='outlined'
@@ -968,7 +947,6 @@ const CreateCourse = () => {
                   placeholder='Course Overview'
                   multiline
                   rows='6'
-                  color='secondary'
                   style={{ width: '100%' }}
                   value={overview}
                   variant='outlined'
@@ -1005,7 +983,7 @@ const CreateCourse = () => {
                             )}
                           />
                         }
-                        className='attachment_button_doc'
+                        className={classes.attachmentbuttondoc}
                         title='Attach Supporting File'
                         variant='contained'
                         size='small'
@@ -1057,7 +1035,7 @@ const CreateCourse = () => {
                             )}
                           />
                         }
-                        className='attachment_button_doc'
+                        className={classes.attachmentbuttondoc}
                         title='Attach Supporting File'
                         variant='contained'
                         size='small'
@@ -1090,14 +1068,22 @@ const CreateCourse = () => {
               <Grid item xs={12} sm={12}>
                 <Divider />
               </Grid>
-              <Grid item xs={12} sm={12} className={isMobile ? '' : 'filterPadding'}>
-                <Button onClick={handleBackToCourseList} className='periodBackButton1'>
+              <Grid item xs={4} sm={12} className={isMobile ? '' : 'filterPadding'}>
+                <Button
+                  onClick={handleBackToCourseList}
+                  variant='contained'
+                  size='medium'
+                  className='cancelButton labelColor'
+                  style={{ width: '15%' }}
+                >
                   Back
                 </Button>
                 <Button
-                  className='nextPageButton'
+                  size='medium'
                   onClick={handleNext}
-                  style={{ float: 'right' }}
+                  variant='contained'
+                  color='primary'
+                  style={{ float: 'right', width: '15%', color: 'white' }}
                 >
                   NEXT
                 </Button>
@@ -1134,13 +1120,22 @@ const CreateCourse = () => {
             <div className='submitContainer'>
               <Grid item xs={12} sm={12}>
                 <div className='buttonContainer'>
-                  <Button onClick={handleBack} className='periodBackButton'>
+                  <Button
+                    size='medium'
+                    variant='contained'
+                    onClick={handleBack}
+                    style={{ width: '100%', marginRight: '5%' }}
+                    className='cancelButton labelColor'
+                  >
                     Back
                   </Button>
                   {!gradeKey && (
                     <Button
+                      variant='contained'
+                      color='primary'
+                      size='medium'
+                      style={{ color: 'white', width: '100%' }}
                       onClick={editFlag ? handleEdit : handleSubmit}
-                      className='periodSubmitButton'
                     >
                       Submit
                     </Button>

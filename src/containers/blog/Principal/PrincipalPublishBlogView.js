@@ -1,4 +1,3 @@
-
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/no-unused-state */
@@ -75,39 +74,43 @@ class PrincipalPublishBlogView extends Component {
       tabValue: 0,
       pageNo: 1,
       pageSize: 6,
-      status :[4],
-      moduleId:115,
-      endDate :moment().format('YYYY-MM-DD'),
-      startDate: this.getDaysBefore(moment(), 6)
+      status: [4],
+      moduleId: 115,
+      endDate: moment().format('YYYY-MM-DD'),
+      startDate: this.getDaysBefore(moment(), 6),
     };
   }
   componentDidMount() {
-    let {status} = this.state
+    let { status } = this.state;
     this.getBlog(status);
   }
   getBlog = (status) => {
     // const { pageNo, pageSize ,tabValue,moduleId} = this.state;
-    const { pageNo, pageSize ,tabValue,startDate,endDate,moduleId} = this.state;
+    const { pageNo, pageSize, tabValue, startDate, endDate, moduleId } = this.state;
     axios
       .get(
-        `${endpoints.blog.Blog}?page_number=${
-          pageNo 
-        }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&published_level=${tabValue+1}&start_date=${startDate}&end_date=${endDate}`
+        `${
+          endpoints.blog.Blog
+        }?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&published_level=${
+          tabValue + 1
+        }&start_date=${startDate}&end_date=${endDate}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
-          this.setState({ data: result.data.result.data ,totalBlogs:result.data.result.total_blogs});
+          this.setState({
+            data: result.data.result.data,
+            totalBlogs: result.data.result.total_blogs,
+          });
         } else {
           console.log(result.data.message);
         }
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   getDaysAfter = (date, amount) => {
     return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
   };
-  
+
   getDaysBefore = (date, amount) => {
     return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
   };
@@ -125,42 +128,45 @@ class PrincipalPublishBlogView extends Component {
   };
 
   handleTabChange = (event, newValue) => {
-    let {status} =this.state
-    this.setState({ tabValue: newValue ,data:[]},()=>{
+    let { status } = this.state;
+    this.setState({ tabValue: newValue, data: [] }, () => {
       this.getBlog(status);
-
     });
   };
   handlePagination = (event, page) => {
-    let {tabValue,status} = this.state
-    this.setState({pageNo:page},()=>{
-      this.getBlog(status)
-    })
-};
-handleFilter = () => {
-  const { pageNo, pageSize ,tabValue,startDate,endDate,status,moduleId} = this.state;
-  axios
-  .get(
-    `${endpoints.blog.Blog}?page_number=${
-      pageNo 
-    }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&published_level=${tabValue+1}&start_date=${startDate}&end_date=${endDate}`
-  )
-    .then((result) => {
-      if (result.data.status_code === 200) {
-        this.setState({ data: result.data.result.data ,totalBlogs:result.data.result.total_blogs});
-      } else {
-        console.log(result.data.message);
-      }
-    })
-    .catch((error) => {
+    let { tabValue, status } = this.state;
+    this.setState({ pageNo: page }, () => {
+      this.getBlog(status);
     });
-
-}
-
+  };
+  handleFilter = () => {
+    const { pageNo, pageSize, tabValue, startDate, endDate, status, moduleId } =
+      this.state;
+    axios
+      .get(
+        `${
+          endpoints.blog.Blog
+        }?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&published_level=${
+          tabValue + 1
+        }&start_date=${startDate}&end_date=${endDate}`
+      )
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          this.setState({
+            data: result.data.result.data,
+            totalBlogs: result.data.result.total_blogs,
+          });
+        } else {
+          console.log(result.data.message);
+        }
+      })
+      .catch((error) => {});
+  };
 
   render() {
     const { classes } = this.props;
-    const { tabValue ,data,pageSize,pageNo,totalBlogs,startDate,endDate} = this.state;
+    const { tabValue, data, pageSize, pageNo, totalBlogs, startDate, endDate } =
+      this.state;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -181,85 +187,97 @@ handleFilter = () => {
                       />
                     </div>
                   </Grid>
-                 
-                  
-                    <Grid item>
-                      <Button
-                        style={{ fontSize: 'small', margin: '20px' }}
-                        color='primary'
-                        size='small'
-                        variant='contained'
-                        disabled={!startDate||!endDate}
-                        onClick={this.handleFilter}
-                        
-                        >
-                        Filter
-                      </Button>
-                      <Button
-                        style={{ fontSize: 'small', margin: '20px' }}
-                        onClick={() => window.history.back()}
-                        color='primary'
-                        size='small'
-                        variant='contained'
-                        >
-                        <i>Back</i>
-                      </Button>
-                   
+                  <Grid item>
+                    <Button
+                      style={{ color: 'white', margin: '20px' }}
+                      color='primary'
+                      size='medium'
+                      variant='contained'
+                      disabled={!startDate || !endDate}
+                      onClick={this.handleFilter}
+                    >
+                      Filter
+                    </Button>
+                    <Button
+                      style={{ margin: '20px' }}
+                      onClick={() => window.history.back()}
+                      className='labelColor cancelButton'
+                      size='medium'
+                      variant='contained'
+                    >
+                      Back
+                    </Button>
                   </Grid>
-                        </Grid>
-                  <Grid container spacing={2}>
-                  </Grid>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <div className={classes.tabRoot}>
-                        <Tabs
-                          indicatorColor='primary'
-                          textColor='primary'
-                          value={tabValue}
-                          onChange={this.handleTabChange}
-                          aria-label='simple tabs example'
-                        >
-                          <Tab label='Orchids' {...a11yProps(0)} />
-                          <Tab label='Branch' {...a11yProps(1)} />
-                          <Tab label='Grade' {...a11yProps(2)} />
-                          <Tab label='Section' {...a11yProps(3)} />
+                </Grid>
 
-                        </Tabs>
-                        <li style={{ listStyleType: 'none' }}>
-                          <Typography
-                            align='right'
-                            className={classes.dividerInset}
-                            style={{ font: '#014b7e', fontWeight: 600 }}
-                            display='block'
-                            variant='caption'
-                          >
-                            Number of Blogs {totalBlogs}
-                          </Typography>
-                        </li>
-                        <TabPanel value={tabValue} index={0}>
-                          <GridListPublish data={data} tabValue={tabValue}  totalBlogs={totalBlogs}/>
-                        </TabPanel>
-                        <TabPanel value={tabValue} index={1}>
-                        <GridListPublish data={data} tabValue={tabValue} totalBlogs={totalBlogs} />
-                        </TabPanel>
-                        <TabPanel value={tabValue} index={2}>
-                          <GridListPublish data={data} tabValue={tabValue} totalBlogs={totalBlogs}/>
-                        </TabPanel>
-                        <TabPanel value={tabValue} index={3}>
-                          <GridListPublish data={data} tabValue={tabValue} totalBlogs={totalBlogs}/>
-                        </TabPanel>
-                      </div>
-                    </Grid>
-                    <Grid item xs={6}>
-                    <Pagination
-                    onChange={this.handlePagination}
-                    style={{ paddingLeft:'500px' }}
-                    count={Math.ceil(totalBlogs / pageSize)}
-                    color='primary'
-                    page={pageNo}
-                            />
-            </Grid>
+                <Grid container spacing={2}></Grid>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <div className={classes.tabRoot}>
+                      <Tabs
+                        indicatorColor='primary'
+                        textColor='primary'
+                        value={tabValue}
+                        onChange={this.handleTabChange}
+                        aria-label='simple tabs example'
+                      >
+                        <Tab label='Orchids' {...a11yProps(0)} />
+                        <Tab label='Branch' {...a11yProps(1)} />
+                        <Tab label='Grade' {...a11yProps(2)} />
+                        <Tab label='Section' {...a11yProps(3)} />
+                      </Tabs>
+                      <li style={{ listStyleType: 'none' }}>
+                        <Typography
+                          align='right'
+                          color='secondary'
+                          className={classes.dividerInset}
+                          style={{ fontWeight: 600 }}
+                          display='block'
+                          variant='caption'
+                        >
+                          Number of Blogs {totalBlogs}
+                        </Typography>
+                      </li>
+                      <TabPanel value={tabValue} index={0}>
+                        <GridListPublish
+                          data={data}
+                          tabValue={tabValue}
+                          totalBlogs={totalBlogs}
+                        />
+                      </TabPanel>
+                      <TabPanel value={tabValue} index={1}>
+                        <GridListPublish
+                          data={data}
+                          tabValue={tabValue}
+                          totalBlogs={totalBlogs}
+                        />
+                      </TabPanel>
+                      <TabPanel value={tabValue} index={2}>
+                        <GridListPublish
+                          data={data}
+                          tabValue={tabValue}
+                          totalBlogs={totalBlogs}
+                        />
+                      </TabPanel>
+                      <TabPanel value={tabValue} index={3}>
+                        <GridListPublish
+                          data={data}
+                          tabValue={tabValue}
+                          totalBlogs={totalBlogs}
+                        />
+                      </TabPanel>
+                    </div>
                   </Grid>
+                  <Grid item xs={6}>
+                    <Pagination
+                      onChange={this.handlePagination}
+                      style={{ paddingLeft: '500px' }}
+                      count={Math.ceil(totalBlogs / pageSize)}
+                      color='primary'
+                      page={pageNo}
+                    />
+                  </Grid>
+                </Grid>
               </div>
             </div>
           </div>

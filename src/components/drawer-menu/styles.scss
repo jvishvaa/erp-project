@@ -1,3 +1,12 @@
+// .menu-selection-parent span {
+//   background-color: beige !important;
+//   color:black !important;
+//   border-bottom-left-radius: 26px;
+//   border-top-left-radius: 26px;
+//  }
+.menuItemIcon .MuiSvgIcon-root {
+  color: #fff !important;
+}
 .menu-item-text {
   span {
     color: #ffffff;
@@ -5,23 +14,23 @@
   z-index: 1 !important;
 }
 
-.menu-item-text-expand{
+.menu-item-text-expand {
   span {
     color: #ffffff;
     // white-space:'break-spaces'
-
   }
   z-index: 1;
 }
-.menu-item-parent-selection{ span{
-  background-color: white !important;
-  // color: #FF6B6B !important;
-  border-bottom-left-radius: 26px !important;
-  border-top-left-radius: 26px !important;
-  width: 90%;
-  left: 10%;
-  height: 90%;
-  top: 5%;
-}
-z-index: 1;
+.menu-item-parent-selection {
+  span {
+    background-color: white !important;
+    // color: #FF6B6B !important;
+    border-bottom-left-radius: 26px !important;
+    border-top-left-radius: 26px !important;
+    width: 90%;
+    left: 10%;
+    height: 90%;
+    top: 5%;
+  }
+  z-index: 1;
 }

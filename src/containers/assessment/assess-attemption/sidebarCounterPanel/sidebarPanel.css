@@ -9,12 +9,7 @@
   justify-content: space-between;
   /* align-items: center; */
 }
-.cardTitleHeading {
-  margin-top: 0px;
-  margin-bottom: 0px;
-  color: #ff6b6b;
-  font-size: 15px;
-}
+
 .sidebar-content h5 {
   margin-top: 0px;
   color: #014b7e;

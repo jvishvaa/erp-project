@@ -1,32 +1,4 @@
-/* .homework_table_wrapper .message_log_table tr th:not(:last-child):after {
-	content: '';
-	height: 100%;
-	width: 1px;
-	position: absolute;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
-	background-color: #ff6b6b;
-  }
-  .homework_table_wrapper .message_log_table tr td:not(:last-child):after {
-	content: '';
-	height: 100%;
-	width: 1px;
-	position: absolute;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
-	background-color: #ff6b6b;
-  } */
-  /* .message_log_breadcrumb_wrapper  .create_group_filter_container{
-	background: #F9F9F9;
-  } */
-  /* #menu .MuiPaper-rounded{
-	top: 231px !important;
-	left: 751px !important;
-	min-width: 147px !important;
-    
-  } */
+
   .message_log_white_wrapper{
 	margin-top: 40px;
 	height: 100vh;
@@ -39,11 +11,6 @@
   .message_log_white_wrapper .for-mobile table thead tr .MuiTableCell-stickyHeader .MuiInput-underline .MuiInput-input{
 	color: #FF6B6B;
   }
-.MuiSelect-icon{
-	color: #FF6B6B !important;
-
-  }
-
   .message_log_breadcrumb_wrapper{
 	  margin: 0px !important;
   }
@@ -56,9 +23,7 @@
   .starContainer{
 	width: 35%;
 }
-  /* .message_log_white_wrapper{
-	  margin-top: 45px
-  } */
+
   .for-mobile .subject-homework-details-wrapper{
 	margin-top: 3px;
   }
@@ -82,12 +47,9 @@
 	color: #FF6B6B !important;
 	
 }
-/* .makeStyles-content-22 .message_log_breadcrumb_wrapper .create_group_filter_container{
-	background-color: #F3F3F3 !important;	
-} */
+
 
 .mobile-date-picker input{
-	color: #014B7E;
 	font-size: 15px;
 }
 .mobile-date-picker label{
@@ -97,17 +59,6 @@
 .create_group_filter_container .tb-header tr th{
 	background-color: #F3F3F3 !important;
 }
-  .day-icon {
-	width: 40px;
-	height: 40px;
-	border-radius: 25px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-right: 1rem;
-	font-weight: 600;
-	border: 1px solid #014B7E;
-  }
   .message_log_breadcrumb_wrapper{
 	background: #F9F9F9;
   }
@@ -120,25 +71,7 @@
 	border-radius: 10px;
 	
  } 
-.create_group_filter_container label{
-	color: #014B7E;
-}
-.create_group_filter_container label:focus{
-	color: #014B7E !important;
-}
-.homework_table_wrapper {
-  border: 1px solid #ff6b6b;
-  box-shadow: none;
-}
-.homework_table_wrapper .MuiTableCell-root:not(:last-child) {
-  border-right: 1px solid #ff6b6b;
-}
-.homework_table_wrapper .MuiTableRow-root:not(:last-child) .MuiTableCell-root {
-  border-bottom: 1px solid #ff6b6b !important;
-}
-.homework_table_wrapper .MuiTableHead-root .MuiTableCell-root {
-  border-bottom: 1px solid #ff6b6b !important;
-}
+
 .selected {
   background-color: #FFECEC;
   position: relative;
@@ -157,10 +90,6 @@
   border-radius: 10px !important;
   overflow-y: auto;
   max-height: 10000px !important;
-}
-.homework_table_wrapper {
-  border-radius: 10px !important;
-  box-shadow: none !important;
 }
 .homework_header {
   text-transform: capitalize;
@@ -225,14 +154,6 @@ font-weight: 600;
 	border: none !important;
 	outline: none !important;
 }
-.homework_student_header_count{
-	position: absolute;
-	right: 0;
-	top: 0;
-	background-color: #ff6b6b;
-	color: white;
-	width: 20px;
-}
 .homework_right_wrapper{
 	padding: 0%;
 	/* margin-top: -110px; */
@@ -250,10 +171,6 @@ font-weight: 600;
 	display: none;
 }
 @media only screen and (max-width: 768px) {
-	/* For mobile phones: */
-	/* .makeStyles-root-3 .makeStyles-container-35 .message_log_wrapper{
-		overflow-x: hidden !important;
-	} */
 	
 	.makeStyles-container-35 {
 		padding-top: 0px !important;
@@ -288,9 +205,6 @@ font-weight: 600;
 	.hide-mob-icon{
 		display: none;
 	}
-	/* .message_log_white_wrapper {
-		margin-top: 1px;
-	} */
 	.group-a{
 		background: #F9F9F9 !important; 
 
@@ -302,33 +216,7 @@ font-weight: 600;
 		background: #F9F9F9 !important;
 	}
 	
-	/* .MuiFormControl-root{
-		right: 0px;
-		width: 100%;
-	} */
-		
-	/* .MuiPaper-rounded{
-		width:100%
-	} */
-	/* .message_log_wrapper .homework_block_wrapper {
-		display: block;
-	} */
-	/* .message_log_wrapper .homework_block_wrapper {
-		width: 90% !important;
-		border-bottom: 1px solid #cfcfcf;
-		align-items: center !important;
-		display: grid !important;
-		grid-template-columns: auto auto !important;
-		font-size: 13px !important;
-		line-height: 30px !important;
-		text-align: center;
-		
-
-	} */
-	/* .MuiGrid-spacing-xs-5{
-		padding: 20px;
-		margin: 0px !important;
-	} */
+	
 	.create_group_filter_container  .date-ranger{
 		margin-bottom: 20px;
 		margin-top: 30px;
@@ -341,23 +229,7 @@ font-weight: 600;
 	.page_title{
 		padding: 20px;
 	}
-	/* .create_group_filter_container {
-		padding: 0px 2.5%; 
-		margin: 0 auto;
-	} */
-	/* .subject-homework-tag {
-		text-align: left;
-	} */
-		/* .homework_right_wrapper_items{
-			padding:10px;
-		} */
-	/* .homework_block{
-		text-align: left;
-	    margin-left: 18px;
-	} */
-	/* .homework_details_timeline-card{
-		border-radius: 15px  !important;
-	} */
+	
 	.mobile-screen-subject-button button{
 		background: white;
 		color: #FF6B6B;
@@ -391,51 +263,18 @@ font-weight: 600;
 	  .create_group_filter_container{
 		  padding: 0px;
 	  }
-	  /* pre {
-		margin: 20px 0;
-		padding: 20px;
-		
-	  } */
-	  /* .MuiListItemAvatar-root .avatar-day{
-		  font-size: 15px;
-		  color: #014B7E;
-	  } */
-	  /* .round { border-radius: 50%; } */
-	  
-
-	  /* .MuiListItemText-primary{
-		margin-bottom: 13px;
-	
-	  } */
-	  /* .MuiTypography-body1{
-		  font-size: 14px !important;
-	  } */
-	  /* .avatar-day{
-		width: 28px !important;
-		height: 28px !important;
-		
-	  } */
 
 	  .mobile-icon-container{
 		display: flex;
 		justify-content: space-around;
 	  }
-	  .icon-text{
-		color: #014B7E;
-		font-size: 14px;
-	  }
-	  /* .MuiDivider-inset {
-		margin-left: 72px !important;
-		margin-right: 30px  !important;
-	}
-	 */
+
 	.mobile-screen-subject-button{
 		overflow: auto;
    		 white-space: nowrap;
 	}
 	
 	.mobile-date-picker .date-ranger label{
-		color: #014B7E !important;
     	font-size: 20px !important;
 	}
 	.mobile-date-picker .date-ranger fieldset{
@@ -448,29 +287,11 @@ font-weight: 600;
 		margin-right: 40px;
 	}
 	.date-ranger input{
-		color: #014B7E !important;
     	font-size: 14px !important;
 	}
 	.date-ranger  p{
 		display: none !important;
 	}
-
-	/* .MuiOutlinedInput-notchedOutline{
-		border-color: 1px #DBDBDB !important;
-	} */
-	.day-icon {
-		width: 30px;
-		height: 30px;
-		border-radius: 25px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		margin-right: 1rem;
-		font-weight: 600;
-		color: #014B7E;
-		font-size: 12px;
-		border: 1px solid #014B7E;
-	  }
 
 	  .dates span{
 		  font-size: 16px;

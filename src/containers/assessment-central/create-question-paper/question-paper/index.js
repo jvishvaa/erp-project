@@ -1,15 +1,32 @@
 import React, { useState, useRef } from 'react';
-import { IconButton, Divider, TextField, Button, SvgIcon } from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import infoicon from '../../../../assets/images/infoicon.svg';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import {
+  IconButton,
+  Divider,
+  TextField,
+  Button,
+  SvgIcon,
+  makeStyles,
+} from '@material-ui/core';
 import minimizeIcon from '../../../../assets/images/minimize.svg';
 import maximizeIcon from '../../../../assets/images/maximize.svg';
-import productIcon from '../../../../assets/images/product-icons.svg';
 import Question from '../question';
 import './styles.scss';
+
+const useStyles = makeStyles((theme) => ({
+  questionsheader: {
+    color: theme.palette.primary.main,
+    fontSize: '1.2rem',
+  },
+  draftbtn: {
+    color: theme.palette.primary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
+    background: 'white',
+  },
+  addSectionInfo: {
+    color: theme.palette.secondary.main,
+    fontSize: '1.1rem',
+  },
+}));
 
 const QuestionPaper = ({
   grade,
@@ -23,6 +40,7 @@ const QuestionPaper = ({
   onDeleteSection,
   onDeleteQuestion,
 }) => {
+  const classes = useStyles();
   const [minimize, setMinimize] = useState(false);
   const [noOfSections, setNoOfSections] = useState(1);
   const [showPopup, setShowPopup] = useState(false);
@@ -42,9 +60,6 @@ const QuestionPaper = ({
           {subject && <span className='dot'>.</span>}
           <div className='filter'>{level}</div>
         </div>
-        {/* <div className='icon'>
-          <img src={productIcon} alt='product' />
-        </div> */}
       </div>
       <div className='questions-paper-container'>
         <div className='minimize-container'>
@@ -85,85 +100,10 @@ const QuestionPaper = ({
                   autoComplete: 'off',
                   maxLength: 100,
                 }}
-                // InputProps={{
-                //   endAdornment: (
-                //     <>
-                //       <div className='dividerVertical'></div>
-                //       <Button
-                //         onClick={() => { }}
-                //         style={{
-                //           color: '#014b7e',
-                //           background: 'none',
-                //           fontSize: '1rem',
-                //           textTransform: 'none',
-                //         }}
-                //       >
-                //         Edit
-                //       </Button>
-                //       <Button
-                //         onClick={() => { }}
-                //         style={{
-                //           color: 'rgb(140, 140, 140)',
-                //           background: 'none',
-                //           fontSize: '1rem',
-                //           textTransform: 'none',
-                //         }}
-                //       >
-                //         Save
-                //       </Button>
-                //     </>
-                //   ),
-                // }}
               />
             </div>
-            {/* <div className='form-field'>
-              <TextField
-                id='outlined-search'
-                label='Instructions'
-                variant='outlined'
-                size='small'
-                fullWidth
-                InputProps={{
-                  endAdornment: (
-                    <>
-                      <div className='dividerVertical'></div>
-                      <Button
-                        variant='contained'
-                        style={{
-                          color: 'white',
-                          textTransform: 'none',
-                          width: '12%',
-                          margin: '0px 0px 0px 15px',
-                        }}
-                        color='primary'
-                        className='modifyDesign'
-                        size='small'
-                        onClick={() => {}}
-                      >
-                        Format Text
-                      </Button>
-                      <IconButton
-                      // onClick={() => setIsTopFilterOpen(!isTopFilterOpen)}
-                      >
-                        <div>
-                          <SvgIcon
-                            component={() => (
-                              <img
-                                style={{ height: '24px', width: '25px' }}
-                                src={infoicon}
-                                alt='info'
-                              />
-                            )}
-                          />
-                        </div>
-                      </IconButton>
-                    </>
-                  ),
-                }}
-              />
-            </div> */}
             <div className='questions-container'>
-              <div className='questions-header'>Questions</div>
+              <div className={classes.questionsheader}>Questions</div>
               <div className='divider-container'>
                 <Divider color='secondary' />
               </div>
@@ -200,7 +140,7 @@ const QuestionPaper = ({
                       </div>
                       <div>
                         <Button
-                          className='outlined-btn'
+                          className={classes.draftbtn}
                           onClick={() => {
                             handleAddQuestion(noOfSections);
                             setShowPopup(false);
@@ -211,63 +151,22 @@ const QuestionPaper = ({
                       </div>
                     </div>
                   )}
-                  <div className='info'>Add Sections For This Question Paper</div>
+                  <div className={classes.addSectionInfo}>
+                    Add Sections For This Question Paper
+                  </div>
                   <div
                     className='add-new-btn-container'
                     style={{ display: 'flex', alignItems: 'center' }}
                   >
-                    {/* <TextField
-                      id='outlined-search'
-                      label='No of sections'
-                      variant='outlined'
-                      size='small'
-                      fullWidth
-                      value={noOfSections}
-                      type='number'
-                      onChange={(e) => {
-                        setNoOfSections(e.target.value < 1 ? 1 : e.target.value);
-                      }}
-                    /> */}
-                    {/* <div className='caret-icon' style={{ margin: '0 5px' }}>
-                      {!showPopup ? (
-                        <ArrowDropDownIcon
-                          color='secondary'
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => {
-                            setShowPopup(true);
-                          }}
-                        />
-                      ) : (
-                        <ArrowDropUpIcon
-                          color='secondary'
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => {
-                            setShowPopup(false);
-                          }}
-                        />
-                      )}
-                    </div> */}
-
                     <Button
-                      className='action'
+                      size='medium'
                       variant='contained'
                       color='primary'
-                      style={{ cursor: 'pointer' }}
+                      style={{ color: 'white', width: '100%' }}
                       onClick={handleAddSection}
                     >
-                      ADD NEW
+                      Add New
                     </Button>
-
-                    {/* <div
-                      className='action'
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => {
-                        // handleAddQuestion(noOfSections);
-                        setShowPopup((prev) => !prev);
-                      }}
-                    >
-                      ADD NEW
-                    </div> */}
                   </div>
                 </div>
               </div>
@@ -276,10 +175,9 @@ const QuestionPaper = ({
         )}
         <div className='submit-btn-conntainer mv-20'>
           <Button
-           variant='contained'
-           color='primary'
-            style={{ borderRadius: '10px' }}
-            className='outlined-btn'
+            variant='contained'
+            size='medium'
+            className={classes.draftbtn}
             onClick={() => {
               onCreateQuestionPaper(true);
             }}
@@ -289,7 +187,8 @@ const QuestionPaper = ({
 
           <Button
             variant='contained'
-            style={{ borderRadius: '10px' }}
+            style={{ color: 'white' }}
+            size='medium'
             color='primary'
             onClick={() => {
               onCreateQuestionPaper(false);

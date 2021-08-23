@@ -9,8 +9,6 @@ import endpoints from '../../../../config/endpoints';
 import { connect, useSelector } from 'react-redux';
 import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
-import './top-filters.css';
-import { headerRefreshed } from '@syncfusion/ej2-grids';
 
 const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -486,7 +484,8 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          className='custom_button_master labelColor modifyDesign'
+          style={{ width: '100%' }}
+          className='labelColor cancelButton'
           size='medium'
           onClick={handleBack}
         >
@@ -497,11 +496,12 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          className='custom_button_master labelColor modifyDesign'
+          style={{ width: '100%' }}
+          className='labelColor cancelButton'
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       {isMobile && <Grid item xs={3} sm={0} />}
@@ -509,13 +509,12 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          style={{ color: 'white' }}
+          style={{ color: 'white', width: '100%' }}
           color='primary'
-          className='custom_button_master modifyDesign'
           size='medium'
           onClick={handleFilter}
         >
-          NEXT
+          Next
         </Button>
       </Grid>
       {isMobile && <Grid item xs={3} sm={0} />}

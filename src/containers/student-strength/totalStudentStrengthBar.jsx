@@ -1,16 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid } from '@material-ui/core';
+import { Grid ,makeStyles} from '@material-ui/core';
 import PeopleIcon from '@material-ui/icons/People';
 import './style.scss';
 import MediaQuery from 'react-responsive';
 
+const useStyles = makeStyles((theme)=>({
+  totalStudentStrenghtSubDiv1:{
+      padding: "2px 5px !important",
+      color: "white !important",
+      borderRadius: "8px 0px 0px 8px !important",
+      backgroundColor: theme.palette.secondary.main,
+  },
+  totalStudentStrenghtLabel1:{
+    color: theme.palette.secondary.main,
+    fontSize: "13px !important",
+    fontFamily: "Raleway",
+    fontWeight: "bold !important",
+  }
+}))
 const TotalStudentBar = ({ fullData }) => {
+  const classes = useStyles()
   return (
     <>
       <MediaQuery minWidth={1598}>
         <Grid container spacing={2} className='totalStudentStrenghtMainDiv2'>
-          <Grid item md={6} xs={12} className='totalStudentStrenghtSubDiv1'>
+          <Grid item md={6} xs={12} className={classes.totalStudentStrenghtSubDiv1}>
             <Grid container spacing={1} direction='row' alignItems='center'>
               <Grid item md={1} xs={12} className='totalStudentStrenghtLabel'>
                 <PeopleIcon style={{ paddingTop: '4px' }} />
@@ -50,7 +65,7 @@ const TotalStudentBar = ({ fullData }) => {
               <Grid item md={1} xs={2} className='totalStudentStrenghtLabel'>
                 <PeopleIcon style={{ color: 'gray', paddingTop: '4px' }} />
               </Grid>
-              <Grid item md={4} xs={8} className='totalStudentStrenghtLabel1'>
+              <Grid item md={4} xs={8} className={classes.totalStudentStrenghtLabel1}>
                 <span>Temporary Inactive - </span>
                 <span className='totalbold2 '>
                   {(fullData && fullData.total_temporary_inactive) || '0'}
@@ -77,7 +92,7 @@ const TotalStudentBar = ({ fullData }) => {
       </MediaQuery>
       <MediaQuery minWidth={900} maxWidth={1597}>
         <Grid container spacing={2} className='totalStudentStrenghtMainDivcopy'>
-          <Grid item md={6} xs={12} className='totalStudentStrenghtSubDiv1'>
+          <Grid item md={6} xs={12} className={classes.totalStudentStrenghtSubDiv1}>
             <Grid container spacing={1} direction='row' alignItems='center'>
               <Grid item md={1} xs={12} className='totalStudentStrenghtLabel'>
                 <PeopleIcon style={{ paddingTop: '4px' }} />
@@ -122,7 +137,7 @@ const TotalStudentBar = ({ fullData }) => {
               <Grid item md={1} xs={2} className='totalStudentStrenghtLabel'>
                 <PeopleIcon style={{ color: 'gray', paddingTop: '4px' }} />
               </Grid>
-              <Grid item md={4} xs={8} className='totalStudentStrenghtLabel1'>
+              <Grid item md={4} xs={8} className={classes.totalStudentStrenghtLabel1}>
                 <span>Temporary Inactive - </span>
                 <span className='totalbold2 '>
                   {(fullData && fullData.total_temporary_inactive) || '0'}
@@ -149,7 +164,7 @@ const TotalStudentBar = ({ fullData }) => {
       </MediaQuery>
       <MediaQuery maxWidth={899}>
         <Grid container spacing={2} className='totalStudentStrenghtMainDivcopy'>
-          <Grid item md={6} xs={12} className='totalStudentStrenghtSubDiv1'>
+          <Grid item md={6} xs={12} className={classes.totalStudentStrenghtSubDiv1}>
             <Grid container spacing={1} direction='row' alignItems='center'>
               <Grid item md={1} xs={12} className='totalStudentStrenghtLabel'>
                 <PeopleIcon style={{ paddingTop: '4px' }} />
@@ -189,7 +204,7 @@ const TotalStudentBar = ({ fullData }) => {
               <Grid item md={1} xs={2} className='totalStudentStrenghtLabel'>
                 <PeopleIcon style={{ color: 'gray', paddingTop: '4px' }} />
               </Grid>
-              <Grid item md={4} xs={8} className='totalStudentStrenghtLabel1'>
+              <Grid item md={4} xs={8} className={classes.totalStudentStrenghtLabel1}>
                 <span>Temporary Inactive - </span>
                 <span className='totalbold2 '>
                   {(fullData && fullData.total_temporary_inactive) || '0'}

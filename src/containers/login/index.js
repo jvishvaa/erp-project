@@ -141,7 +141,7 @@ function SignIn({ onLogin, history, aolOnLogin, setTheme }) {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component='h1' variant='h5'>
-              Sign in
+              Sign In
             </Typography>
             <form
               className={classes.form}
@@ -207,6 +207,7 @@ function SignIn({ onLogin, history, aolOnLogin, setTheme }) {
                 type='submit'
                 variant='contained'
                 color='primary'
+                style={{ color: 'white' }}
                 ref={loginButton}
                 className={classes.submit}
                 onClick={() => {
@@ -222,7 +223,7 @@ function SignIn({ onLogin, history, aolOnLogin, setTheme }) {
                 }}
                 className='forgot'
               >
-                Forgot Password ?
+                <Typography color='secondary'>Forgot Password ?</Typography>
               </div>
             </form>
           </div>

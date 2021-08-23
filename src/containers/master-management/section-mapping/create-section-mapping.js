@@ -40,7 +40,10 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
         if (result.data?.status_code > 199 && result.data?.status_code < 300) {
           setLoading(false);
           handleGoBack();
-          setAlert('success', `Mapped Section ${result.data?.message || result.data?.msg}`);
+          setAlert(
+            'success',
+            `Mapped Section ${result.data?.message || result.data?.msg}`
+          );
         } else {
           setLoading(false);
           setAlert('error', result.data?.message || result.data?.msg);
@@ -234,10 +237,10 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   placeholder='Session Year'
                   inputProps={{
                     ...params.inputProps,
-                  
-                    required: filterData?.session.length === 0
-                    }} 
-                    required={true}
+
+                    required: filterData?.session.length === 0,
+                  }}
+                  required={true}
                 />
               )}
             />
@@ -264,10 +267,10 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   placeholder='Branch'
                   inputProps={{
                     ...params.inputProps,
-                  
-                    required: filterData?.branch.length === 0
-                    }} 
-                    required={true}
+
+                    required: filterData?.branch.length === 0,
+                  }}
+                  required={true}
                 />
               )}
             />
@@ -294,10 +297,10 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   placeholder='Grade'
                   inputProps={{
                     ...params.inputProps,
-                  
-                    required: filterData?.grade.length === 0
-                    }} 
-                    required={true}
+
+                    required: filterData?.grade.length === 0,
+                  }}
+                  required={true}
                 />
               )}
             />
@@ -324,10 +327,10 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
                   placeholder='Section'
                   inputProps={{
                     ...params.inputProps,
-                  
-                    required: filterData?.section.length === 0
-                    }} 
-                    required={true}
+
+                    required: filterData?.section.length === 0,
+                  }}
+                  required={true}
                 />
               )}
             />
@@ -338,7 +341,8 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            className='custom_button_master labelColor'
+            style={{ width: '100%' }}
+            className='cancelButton labelColor'
             size='medium'
             onClick={handleGoBack}
           >
@@ -348,9 +352,8 @@ const CreateSectionMapping = ({ moduleId, setLoading, handleGoBack }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            style={{ color: 'white' }}
+            style={{ color: 'white', width: '100%' }}
             color='primary'
-            className='custom_button_master'
             size='medium'
             type='submit'
           >

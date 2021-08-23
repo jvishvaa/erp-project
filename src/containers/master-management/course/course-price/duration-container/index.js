@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { TextField, Switch, FormControlLabel, Button, SvgIcon } from '@material-ui/core';
-import './duration.css';
+import {
+  TextField,
+  Switch,
+  FormControlLabel,
+  Button,
+  SvgIcon,
+  Typography,
+} from '@material-ui/core';
+import useStyles from './useStyles';
 import { Add, Remove } from '@material-ui/icons';
 import RupeeIcon from '../../../../../assets/images/rupee-indian.svg';
 import axiosInstance from '../../../../../config/axios';
@@ -27,6 +34,7 @@ const DurationContainer = (props) => {
     setSelectedCourse,
   } = props;
 
+  const classes = useStyles();
   const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
   const [noOfWeeks, setNoOfWeeks] = useState(
@@ -168,12 +176,12 @@ const DurationContainer = (props) => {
       if (isEdit) {
         if (list[i]['toggle']) {
           for (let k = 0; k < list[i]['data'].length; k++) {
-            if(list[i]['data'][k]['weeks'])
-            coursePriceArray.push({
-              no_of_week: parseInt(list[i]['data'][k]['weeks']),
-              price: parseFloat(list[i]['data'][k]['price']),
-              id: Number(list[i]['data'][k]['id']),
-            });
+            if (list[i]['data'][k]['weeks'])
+              coursePriceArray.push({
+                no_of_week: parseInt(list[i]['data'][k]['weeks']),
+                price: parseFloat(list[i]['data'][k]['price']),
+                id: Number(list[i]['data'][k]['id']),
+              });
           }
         } else {
           coursePriceArray.push({
@@ -280,7 +288,7 @@ const DurationContainer = (props) => {
   };
 
   return (
-    <div className='durationWrapper'>
+    <div className={classes.durationWrapper}>
       <div className='durationTag'>Duration</div>
       <div className='durationContainer'>
         <div className='weeksContainer'>
@@ -308,7 +316,11 @@ const DurationContainer = (props) => {
                 color='primary'
               />
             }
-            label={toggle ? 'Recurring' : 'Non-Recurring'}
+            label={
+              <Typography color='secondary'>
+                {toggle ? 'Recurring' : 'Non-Recurring'}
+              </Typography>
+            }
           />
         </div>
         {toggle ? (
@@ -318,12 +330,13 @@ const DurationContainer = (props) => {
                 <div className='addRemoveIconContainer'>
                   {recursiveContent?.length !== 1 && (
                     <Remove
+                      color='secondary'
                       className='removeRecIcon'
                       onClick={() => handleRemove(index)}
                     />
                   )}
                   {index === recursiveContent?.length - 1 && (
-                    <Add className='addRecIcon' onClick={handleAdd} />
+                    <Add color='primary' onClick={handleAdd} />
                   )}
                 </div>
                 <div className='weekContainer'>
@@ -442,11 +455,22 @@ const DurationContainer = (props) => {
         }
       >
         {courseKey && gradeKey && (
-          <Button onClick={handleBack} className='backCoursePriceButton'>
+          <Button
+            onClick={handleBack}
+            variant='contained'
+            style={{ marginRight: '10%', width: '100%' }}
+            className='labelColor cancelButton '
+          >
             Back
           </Button>
         )}
-        <Button onClick={handleSubmit} className='submitCoursePriceButton'>
+        <Button
+          variant='contained'
+          style={{ color: 'white', width: '100%' }}
+          onClick={handleSubmit}
+          color='primary'
+          className='submitCoursePriceButton'
+        >
           Submit
         </Button>
       </div>

@@ -4,39 +4,16 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { Button, IconButton, withStyles, Popover, SvgIcon } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
-// import { makeStyles } from '@material-ui/core/styles';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Viewmore from './viewmore';
 import useStyles from './useStyles';
 import unfiltered from '../../assets/images/unfiltered.svg';
-// import EditIcon from '@material-ui/icons/Edit';
-// import DeleteIcon from '@material-ui/icons/Delete';
 import { withRouter, Link } from 'react-router-dom';
 import axiosInstance from '../../config/axios';
 import Chip from '@material-ui/core/Chip';
 import endpoints from '../../config/endpoints';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import './subjectgrademapping.scss';
-
-const StyledButton = withStyles({
-  root: {
-    color: '#FFFFFF',
-    backgroundColor: '#FF6B6B',
-    '&:hover': {
-      backgroundColor: '#FF6B6B',
-    },
-  },
-})(Button);
-
-const CancelButton = withStyles({
-  root: {
-    color: '#8C8C8C',
-    backgroundColor: '#e0e0e0',
-    '&:hover': {
-      backgroundColor: '#e0e0e0',
-    },
-  },
-})(Button);
 
 const Subjectcard = (props) => {
   const classes = useStyles();
@@ -178,17 +155,7 @@ const Subjectcard = (props) => {
                             className='tooltip'
                             style={{ display: 'flex', justifyContent: 'space-between' }}
                           >
-                            <span className='tooltiptext'>
-                              {/* <div  >
-                                                                <Link to={{ pathname: `/master-management/subject/grade/mapping`, query: { list }, edit: true }}
-                                                                    activeClassName="active"
-                                                                    className="link-grade"
-                                                                >
-                                                                    <p style={{color: '#ff6b6b', marginBottom: '5px'}} title='Edit'>
-                                                                        Edit
-                                                                    </p>
-                                                                </Link>
-                                                            </div> */}
+                            <span className={` ${classes.tooltiptext} tooltiptext`}>
                               <div
                                 className='tooltip'
                                 title='Delete'
@@ -218,15 +185,20 @@ const Subjectcard = (props) => {
                                   Are you sure you want to delete?
                                 </Typography>
                                 <div>
-                                  <CancelButton onClick={(e) => handleClose()}>
+                                  <Button
+                                    variant="contained"
+                                    className="labelColor cancelButton"
+                                    onClick={(e) => handleClose()}>
                                     Cancel
-                                  </CancelButton>
-                                  <StyledButton
+                                  </Button>
+                                  <Button
+                                    variant="contained"
+                                    color="primary"
                                     onClick={() => callDelete(list.id, index)}
-                                    style={{ float: 'right' }}
+                                    style={{ float: 'right', color: "white" }}
                                   >
                                     Confirm
-                                  </StyledButton>
+                                  </Button>
                                 </div>
                               </div>
                             </Popover>
@@ -241,7 +213,7 @@ const Subjectcard = (props) => {
                       <Chip
                         size='small'
                         label='Duplicate'
-                        className='duplicate'
+                        className={classes.duplicate}
                         id='duplicateChip'
                       />
                     ) : (

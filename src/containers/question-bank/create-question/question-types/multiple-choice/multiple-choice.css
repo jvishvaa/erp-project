@@ -19,26 +19,10 @@
     rgba(255, 107, 107, 0.2)
   );
   /* background-image: linear-gradient(45deg, #f6d2ff, #ffd9d9); */
-  /* background-image: linear-gradient(45deg,rgba(246,210,255,0.3),rgba(255, 217, 217,0.5)); */
-}
-
-.questionHeaderContainer {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding-bottom: 7px;
-  border-bottom: 1px solid #014b7e;
 }
 
 .questionHeaderIcon .MuiIconButton-root {
-  color: #ff6b6b;
   padding: 0;
-}
-
-.questionTag {
-  color: #014b7e;
-  font-size: 16px;
-  font-weight: 600;
 }
 
 .questionHeaderIcon {
@@ -102,7 +86,6 @@
 }
 
 .questionContainer .MuiInputBase-input {
-  color: #014b7e;
   padding: 14px;
 }
 
@@ -114,17 +97,6 @@
 .attachTag {
   color: #014b7e;
   font-size: 16px;
-}
-
-.attachmentButton.MuiButtonBase-root {
-  /* border: 1px solid #dbdbdb; */
-  /* background: white; */
-  /* box-shadow: none; */
-  /* padding: 10px; */
-}
-
-.attachmentButton .MuiButton-label {
-  /* color: #014b7e; */
 }
 
 .optionsContainer {
@@ -183,21 +155,6 @@
   width: 24%;
 }
 
-.addAnotherButton .MuiButton-label,
-.addAnotherMatchButton .MuiButton-label,
-.addAnotherMatrixButton .MuiButton-label {
-  color: #014b7e;
-}
-
-.saveAsDraftButton.MuiButtonBase-root {
-  border: 1px solid #ff6b6b;
-  background: white;
-}
-
-.saveAsDraftButton .MuiButton-label {
-  color: #ff6b6b;
-}
-
 .buttonsAtBottomMCQ {
   border: 1px solid #dbdbdb;
   border-radius: 10px;
@@ -230,125 +187,12 @@
 }
 
 .questionImageRemoveIcon .MuiIconButton-root {
-  color: #ff6b6b;
   opacity: 0.5;
 }
 
 .questionImageRemoveIcon .MuiIconButton-root:hover {
   opacity: 0.9;
   transform: scale(1.1);
-}
-
-.tox-tinymce {
-  border: 1px solid #dbdbdb !important;
-  border-radius: 10px !important;
-}
-
-.tox-tbtn__select-label {
-  color: #014b7e !important;
-}
-
-.tox-collection__item-label {
-  color: #014b7e !important;
-}
-
-.tox-statusbar__branding,
-.tox-statusbar__path-item {
-  display: none !important;
-}
-
-.tox-editor-header {
-  background: white !important;
-}
-
-.tox-statusbar__wordcount {
-  color: #014b7e !important;
-  font-size: 14px !important;
-  text-transform: capitalize !important;
-  margin: 10px !important;
-  font-weight: 600 !important ;
-}
-
-.tox-statusbar {
-  padding: 10px !important;
-}
-
-.tox-tbtn__select-chevron svg {
-  fill: #014b7e !important;
-}
-
-.tox-tbtn__icon-wrap svg {
-  fill: #014b73 !important;
-}
-
-.tox-toolbar__primary {
-  background: none !important;
-  margin: 1% 0 -2% 37% !important;
-  margin-bottom: 1px !important;
-}
-
-.descriptiveAnswerEditor .tox-toolbar__primary {
-  background: none !important;
-  margin: 1% 0 -2% 48% !important;
-  margin-bottom: 1px !important;
-}
-
-.tox-tbtn--bespoke {
-  border: 1px solid #ff6b6b !important;
-  border-radius: 5px !important;
-  width: 15% !important;
-  margin-right: 10px !important ;
-  padding-right: 10px !important;
-}
-
-.tox-tbtn--bespoke:nth-child(2) {
-  width: 10% !important;
-  font-weight: 600 !important;
-}
-
-.tox-tbtn {
-  border: 1px solid #ff6b6b !important;
-  border-radius: 5px !important;
-  margin-right: 10px !important;
-}
-
-.tox-tbtn--enabled {
-  background: #ff6b6b !important;
-}
-
-.tox-tbtn--enabled svg {
-  fill: white !important;
-}
-
-.tox-tbtn--select {
-  border-radius: 10px;
-}
-
-.tox-tbtn:nth-last-child(1) {
-  background: #ff6b6b !important;
-  padding: 10px 20px !important;
-  border-radius: 10px !important;
-  cursor: pointer !important;
-}
-
-.descriptiveAnswerEditor .tox-tbtn:nth-last-child(1) {
-  background: white !important;
-  padding: 0px !important;
-  border-radius: 5px !important;
-  cursor: pointer !important;
-}
-
-.tox-tbtn__select-label:nth-last-child(1) {
-  color: white !important;
-  cursor: pointer !important;
-}
-
-.tox-statusbar__path-divider {
-  display: none !important;
-}
-
-._2fxoL ._2wk9O-gbutton {
-  display: none !important;
 }
 
 .questionDisplay input {
@@ -372,6 +216,19 @@
   margin-top: 20px;
 }
 
+.descriptiveAnswerEditor .tox-tbtn:nth-last-child(1) {
+  background: white !important;
+  padding: 0px !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+}
+
+.descriptiveAnswerEditor .tox-toolbar__primary {
+  background: none !important;
+  margin: 1% 0 -2% 48% !important;
+  margin-bottom: 1px !important;
+}
+
 .questionCreationTime {
   display: flex;
   flex-basis: 10%;
@@ -389,22 +246,7 @@
   margin-top: 1.5%;
 }
 
-.cancelButtonLabel .MuiButton-label {
-  color: rgb(140, 140, 140);
-}
-
 @media screen and (max-width: 768px) {
-  .questionTag {
-    width: 100%;
-  }
-
-  .tox-toolbar__primary {
-    margin-left: 83% !important;
-  }
-
-  .tox-tbtn:nth-last-child(1) {
-    padding: 1px 10px !important;
-  }
 
   .addAnotherMatchingButtonWrapper,
   .addAnotherMatrixButtonWrapper {

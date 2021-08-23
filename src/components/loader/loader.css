@@ -1,19 +1,18 @@
 .erp_loader_wrapper {
-    width: 100vw;
-    height: 80vw;
-    z-index: 100;
-    background-color: #cbdcef87;
-    position: fixed;
+  width: 100vw;
+  height: 80vw;
+  z-index: 100;
+  background-color: #cbdcef87;
+  position: fixed;
 }
-.erp_loader-container{
-	left: 50%;
-	top: 50%;
-	transform: translate(-50%,-50%);
-	position: fixed;
+.erp_loader-container {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  position: fixed;
 }
 .erp_loader--title {
   text-align: center;
-  color: #014b7e;
   text-transform: uppercase;
   font-size: 1.5rem;
   position: relative;
@@ -48,7 +47,6 @@
   display: block;
   width: 25%;
   height: 25%;
-  background-color: rgb(245, 58, 58);
   border-radius: 100%;
   animation: erp_loader-dot-before 2s infinite ease-in-out both;
 }

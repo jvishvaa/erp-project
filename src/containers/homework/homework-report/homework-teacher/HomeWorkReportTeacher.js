@@ -28,20 +28,23 @@ import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import Loader from '../../../../components/loader/loader';
 
-const useRowStyles = makeStyles({
+const useRowStyles = makeStyles((theme)=>({
   root: {
     '& > *': {
       borderBottom: 'unset',
     },
     head: {
-      backgroundColor: '#ff6b6b',
+      backgroundColor: theme.palette.primary.main,
       color: '#ffffff',
     },
     '&:nth-of-type(odd)': {
       backgroundColor: '#d9d9d9',
     },
+    tablehead: {
+      color: theme.palette.secondary.main
+    }
   },
-});
+}));
 
 function BranchTable(props) {
   const {
@@ -113,18 +116,18 @@ function BranchTable(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout='auto' unmountOnExit>
             <Box margin={1}>
-              <Typography variant='h6' gutterBottom component='div'>
+              <Typography color = "secondary" variant='h6' gutterBottom component='div'>
                 Grade Wise Data
               </Typography>
               <Table size='small' aria-label='purchases'>
                 <TableHead>
                   <TableRow>
                     <TableCell align='right'></TableCell>
-                    <TableCell align='right'>S NO.</TableCell>
-                    <TableCell>Grade</TableCell>
-                    <TableCell>Total Homework Given</TableCell>
-                    <TableCell>Total Homework Submitted</TableCell>
-                    <TableCell align='right'>Total Homework Evaluated</TableCell>
+                    <TableCell className = {classes.tablehead} align='right'>S NO.</TableCell>
+                    <TableCell className = {classes.tablehead}>Grade</TableCell>
+                    <TableCell className = {classes.tablehead}>Total Homework Given</TableCell>
+                    <TableCell className = {classes.tablehead}>Total Homework Submitted</TableCell>
+                    <TableCell className = {classes.tablehead} align='right'>Total Homework Evaluated</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -215,18 +218,18 @@ function GradeTable(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout='auto' unmountOnExit>
             <Box margin={1}>
-              <Typography variant='h6' gutterBottom component='div'>
+              <Typography color = "secondary" variant='h6' gutterBottom component='div'>
                 Section Wise Data
               </Typography>
               <Table size='small' aria-label='purchases'>
                 <TableHead>
                   <TableRow>
                     <TableCell></TableCell>
-                    <TableCell>S No.</TableCell>
-                    <TableCell>Section</TableCell>
-                    <TableCell>Total Homework Given</TableCell>
-                    <TableCell align='right'>Total Homework Submitted</TableCell>
-                    <TableCell align='right'>Total Homework Evaluated</TableCell>
+                    <TableCell className = {classes.tablehead}>S No.</TableCell>
+                    <TableCell className = {classes.tablehead}>Section</TableCell>
+                    <TableCell className = {classes.tablehead}>Total Homework Given</TableCell>
+                    <TableCell className = {classes.tablehead} align='right'>Total Homework Submitted</TableCell>
+                    <TableCell className = {classes.tablehead} align='right'>Total Homework Evaluated</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -319,17 +322,17 @@ function SecTable(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout='auto' unmountOnExit>
             <Box margin={1}>
-              <Typography variant='h6' gutterBottom component='div'>
+              <Typography color = "secondary" variant='h6' gutterBottom component='div'>
                 Student Wise Data
               </Typography>
               <Table size='small' aria-label='purchases'>
                 <TableHead>
                   <TableRow>
-                    <TableCell>S NO.</TableCell>
-                    <TableCell>Student Name</TableCell>
-                    <TableCell>Total Homework Given</TableCell>
-                    <TableCell align='right'>Total Homework Submitted</TableCell>
-                    <TableCell align='right'>Total Homework Evaluated</TableCell>
+                    <TableCell className = {classes.tablehead}>S NO.</TableCell>
+                    <TableCell className = {classes.tablehead}>Student Name</TableCell>
+                    <TableCell className = {classes.tablehead}>Total Homework Given</TableCell>
+                    <TableCell className = {classes.tablehead} align='right'>Total Homework Submitted</TableCell>
+                    <TableCell className = {classes.tablehead} align='right'>Total Homework Evaluated</TableCell>
                   </TableRow>
                 </TableHead>
                 {studentWiseData?.length > 0 ? (
@@ -501,11 +504,11 @@ export default function HomeWorkReportTeacher() {
               <TableHead>
                 <TableRow className={classes.head}>
                   <TableCell />
-                  <TableCell>S No</TableCell>
-                  <TableCell align='right'>Branch</TableCell>
-                  <TableCell align='right'>Total Homework Given</TableCell>
-                  <TableCell align='right'>Total Homework Submitted</TableCell>
-                  <TableCell align='right'>Total Homework Evaluated</TableCell>
+                  <TableCell className = {classes.tablehead}>S No</TableCell>
+                  <TableCell className = {classes.tablehead} align='right'>Branch</TableCell>
+                  <TableCell className = {classes.tablehead} align='right'>Total Homework Given</TableCell>
+                  <TableCell className = {classes.tablehead} align='right'>Total Homework Submitted</TableCell>
+                  <TableCell className = {classes.tablehead} align='right'>Total Homework Evaluated</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

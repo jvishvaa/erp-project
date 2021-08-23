@@ -209,12 +209,10 @@ const CoursePrice = () => {
 
   return (
     <Layout>
-      <div style={{ width: '95%', margin: '20px auto' }}>
-        <CommonBreadcrumbs
-          componentName='Master Management'
-          childComponentName='Course Price'
-        />
-      </div>
+      <CommonBreadcrumbs
+        componentName='Master Management'
+        childComponentName='Course Price'
+      />
       <CoursePriceFilters
         setTimeSlotDisplay={setTimeSlotDisplay}
         timeSlotDisplay={timeSlotDisplay}

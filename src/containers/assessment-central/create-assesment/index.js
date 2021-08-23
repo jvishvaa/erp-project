@@ -394,13 +394,11 @@ const CreateAssesment = ({
   return (
     <Layout>
       <div className='create-assesment-container'>
-        <div>
-          <CommonBreadcrumbs
-            componentName='Assessment'
-            childComponentName='create Test'
-            isAcademicYearVisible={true}
-          />
-        </div>
+        <CommonBreadcrumbs
+          componentName='Assessment'
+          childComponentName='Create Test'
+          isAcademicYearVisible={true}
+        />
         <div className='content-container'>
           <Accordion
             className='collapsible-section'

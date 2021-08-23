@@ -1,50 +1,3 @@
-.rootViewMore {
-  border: 1px solid #ff6b6b;
-  border-radius: 10px !important;
-  height: 80vh;
-  width: 100%;
-  /* margin:20px auto; */
-  box-shadow: none;
-  overflow-y: auto;
-  position: sticky;
-  position: -webkit-sticky;
-  top: 12%; /* required */
-  animation-duration: 500ms;
-  animation-name: slidein;
-}
-
-/* width */
-.rootViewMore::-webkit-scrollbar {
-  width: 10px;
-}
-
-/* Track */
-.rootViewMore::-webkit-scrollbar-track {
-  background: #f9f9f9;
-  border-radius: 10px;
-}
-
-/* Handle */
-.rootViewMore::-webkit-scrollbar-thumb {
-  background: #949090;
-  border-radius: 10px;
-}
-
-/* Handle on hover */
-.rootViewMore::-webkit-scrollbar-thumb:hover {
-  background: #949090;
-}
-
-@keyframes slidein {
-  from {
-    margin-left: 100%;
-  }
-  to {
-    margin-left: 10%;
-    width: 100%;
-  }
-}
-
 .downloadAllContainer {
   display: flex;
 }
@@ -54,47 +7,6 @@
 
 .MuiIconButton-root.bulkDownloadIconViewMore {
   padding: 0;
-}
-
-.viewMoreHeader {
-  background-color: #fceeee;
-  display: flex;
-  justify-content: space-between;
-  border-radius: 10px 0px 0px 0px;
-  position: sticky;
-  position: -webkit-sticky;
-  top: 0; /* required */
-  z-index: 1;
-}
-
-.leftHeader,
-.rightHeader {
-  display: flex;
-  flex-direction: column;
-  padding: 15px;
-}
-
-.closeIcon > .MuiIconButton-root {
-  padding: 0px;
-}
-
-.closeIcon,
-.viewUpdatedDate {
-  align-self: flex-end;
-}
-
-.headerTitle {
-  font-size: 1.1rem;
-  color: #ff6b6b;
-  margin-bottom: 7px;
-}
-
-.headerContent {
-  font-size: 1.1rem;
-  color: #014b7e;
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
 }
 
 .resourceBulkDownload {
@@ -139,36 +51,7 @@
   background-color: rgba(0, 0, 0, 0.12);
 }
 
-.viewMoreBody {
-  margin: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #e2e2e2;
-}
-
-.bodyTitle {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #014b7e;
-  margin: 0 auto;
-}
-
-.bodyContent {
-  font-size: 1rem;
-  color: #014b7e;
-  margin: 15px auto;
-  display: flex;
-  justify-content: space-between;
-}
-
 @media screen and (max-width: 768px) {
-  .rootViewMore {
-    z-index: 1;
-    width: 90%;
-    margin: 20px 0 0 -12px;
-    position: absolute;
-    box-shadow: 0px 0px 100px 100px rgba(192, 192, 192, 0.5) !important;
-  }
-
   .downloadAllContainer {
     margin-left: 20px;
     margin-bottom: 10px;

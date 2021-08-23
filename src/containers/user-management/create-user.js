@@ -19,6 +19,7 @@ import CustomStepperIcon from '../../components/custom-stepper-icon';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../Layout';
 import BulkUpload from '../../components/bulk-upload';
+import { Typography } from '@material-ui/core';
 
 class CreateUser extends Component {
   constructor(props) {
@@ -170,19 +171,19 @@ class CreateUser extends Component {
     } = parent;
 
     //console.log(student_country_code, 'student, 444');
-    const parentDetail={};
-    if(guardian_first_name){
-      Object.assign(parentDetail,{
+    const parentDetail = {};
+    if (guardian_first_name) {
+      Object.assign(parentDetail, {
         guardian_first_name,
-      guardian_middle_name,
-      guardian_last_name,
-      guardian_email,
-      address: parent_address,
-      guardian_mobile: guardian_country_code + '-' + guardian_mobile,
-      })
+        guardian_middle_name,
+        guardian_last_name,
+        guardian_email,
+        address: parent_address,
+        guardian_mobile: guardian_country_code + '-' + guardian_mobile,
+      });
     }
-    if(father_first_name||mother_first_name){
-      Object.assign(parentDetail,{
+    if (father_first_name || mother_first_name) {
+      Object.assign(parentDetail, {
         father_first_name,
         father_middle_name,
         father_last_name,
@@ -194,7 +195,7 @@ class CreateUser extends Component {
         mother_last_name,
         mother_email,
         mother_mobile: mother_country_code + '-' + mother_mobile,
-      })
+      });
     }
     requestObj = {
       academic_year: academic_year.id,
@@ -219,7 +220,7 @@ class CreateUser extends Component {
       father_photo,
       mother_photo,
       guardian_photo,
-      parent:parentDetail
+      parent: parentDetail,
     };
 
     if (!requestWithParentorGuradianDetails) {
@@ -237,10 +238,6 @@ class CreateUser extends Component {
         setAlert('success', 'User created Successfully');
       })
       .catch(() => {
-        // setAlert(
-        //   'warning',
-        //   'Error in username, Please provide the correct format for username. Ex: 2021000001_OIS'
-        // );
         setAlert('error', 'User Creation Failed');
       });
   };
@@ -260,14 +257,11 @@ class CreateUser extends Component {
     const { classes, creatingUser } = this.props;
     return (
       <Layout>
+        <CommonBreadcrumbs
+          componentName='User Management'
+          childComponentName='Create User'
+        />
         <div className='create-user-container'>
-          <div className='bread-crumbs-container'>
-            <CommonBreadcrumbs
-              componentName='User Management'
-              childComponentName='Create User'
-            isAcademicYearVisible={true}
-            />
-          </div>
           <div className='bulk-upload-check-box-container'>
             <FormControlLabel
               control={
@@ -278,7 +272,7 @@ class CreateUser extends Component {
                   color='primary'
                 />
               }
-              label='Upload Excel'
+              label={<Typography color='secondary'>Upload Excel</Typography>}
             />
           </div>
           {bulkUpload ? (

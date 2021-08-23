@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '94%',
   },
+  rootViewMore: theme.rootViewMore,
   heading: {
     fontSize: theme.typography.pxToRem(15),
     flexBasis: 'auto',
@@ -76,7 +77,7 @@ const ViewMoreCard = ({
   };
 
   return (
-    <Paper className='rootViewMore'>
+    <Paper className={classes.rootViewMore}>
       <div className='viewMoreHeader'>
         <div className='leftHeader'>
           <div className='headerTitle'>{periodDataForView?.paper_name}</div>
@@ -126,8 +127,6 @@ const ViewMoreCard = ({
                       {`SECTION ${section?.name}`}
                     </Typography>
                   </AccordionSummary>
-
-                  {/* <AccordionDetails> */}
                   <div className='section-content'>
                     {section.questions?.map((q) => (
                       <div
@@ -138,31 +137,30 @@ const ViewMoreCard = ({
                       </div>
                     ))}
                   </div>
-                  {/* </AccordionDetails> */}
                 </Accordion>
               ))}
             </div>
             <div style={{ margin: '5px 15px 15px 5px' }}>
-              {periodDataForView?.is_review && (
-                <Button
-                  style={{ marginRight: '1rem' }}
-                  onClick={() => handlePublish(true)}
-                  color='primary'
-                  variant='contained'
-                  size='small'
-                >
-                  PUBLISH
-                </Button>
-              )}
               {(periodDataForView?.is_verified || periodDataForView?.is_review) && (
                 <Button
-                  style={{ marginRight: '1rem' }}
+                  style={{ margin: '0.5rem', color: 'white', width: '100%' }}
                   onClick={() => handlePublish(false)}
                   color='secondary'
                   variant='contained'
-                  size='small'
+                  size='medium'
                 >
                   REJECT
+                </Button>
+              )}
+              {periodDataForView?.is_review && (
+                <Button
+                  style={{ margin: '0.5rem', color: 'white', width: '100%' }}
+                  onClick={() => handlePublish(true)}
+                  color='primary'
+                  variant='contained'
+                  size='medium'
+                >
+                  PUBLISH
                 </Button>
               )}
             </div>

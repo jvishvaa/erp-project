@@ -18,12 +18,7 @@ import ViewMoreCard from './view-more-card';
 import TabPanel from './tab-panel';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
-import hidefilter from '../../../assets/images/hidefilter.svg';
-import showfilter from '../../../assets/images/showfilter.svg';
-import axios from 'axios';
-import { getSubDomainName } from '../../../utility-functions';
-
-const subDomainName = getSubDomainName();
+import BreadcrumbToggler from '../../../components/breadcrumb-toggler';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -138,31 +133,13 @@ const AssessmentView = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div
-          className={isMobile ? 'breadCrumbFilterRow' : null}
-          style={{ display: 'flex', marginLeft: '2.25rem' }}
-        >
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Assessment'
-              childComponentName='Question Paper'
-              isAcademicYearVisible={true}
-            />
-          </div>
-
-          <div className='hideShowFilterIcon'>
-            <IconButton onClick={() => setIsFilter(!isFilter)}>
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={{ height: '20px', width: '25px' }}
-                    src={isFilter ? hidefilter : showfilter}
-                  />
-                )}
-              />
-            </IconButton>
-          </div>
-        </div>
+        <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
+          <CommonBreadcrumbs
+            componentName='Assessment'
+            childComponentName='Question Paper'
+            isAcademicYearVisible={true}
+          />
+        </BreadcrumbToggler>
         <div className={!isFilter ? 'showFilters' : 'hideFilters'}>
           <AssessmentFilters
             handlePeriodList={handlePeriodList}

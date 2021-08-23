@@ -409,15 +409,13 @@ const CreateQuestionPaper = ({
 
   return (
     <Layout>
+      <CommonBreadcrumbs
+        componentName='Assessment'
+        childComponentName='Question Paper'
+        childComponentNameNext='Create New'
+        isAcademicYearVisible={true}
+      />
       <div className='create-question-paper-container'>
-        <div>
-          <CommonBreadcrumbs
-            componentName='Assesment'
-            childComponentName='Question paper'
-            childComponentNameNext='Create new'
-            isAcademicYearVisible={true}
-          />
-        </div>
         <div className='content-container'>
           <Accordion
             className='collapsible-section'
@@ -619,29 +617,16 @@ const CreateQuestionPaper = ({
             <div className='btn-container'>
               <Button
                 variant='contained'
-                className='disabled-btn'
-                style={{ borderRadius: '10px' }}
+                className='cancelButton labelColor'
+                style={{ width: '100%' }}
                 onClick={() => {
                   handleClearAll();
                   formik.handleReset();
                 }}
               >
-                CLEAR ALL
+                Clear All
               </Button>
             </div>
-
-            {/* <div className='btn-container '>
-              <Button
-                variant='contained'
-                className=''
-                color='primary'
-                onClick={() => {
-                  formik.handleSubmit();
-                }}
-              >
-                FILTER
-              </Button>
-            </div> */}
           </div>
           {showQuestionPaper && (
             <QuestionPaper

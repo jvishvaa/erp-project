@@ -10,6 +10,7 @@ import {
   Grid,
   withStyles,
   useMediaQuery,
+  makeStyles,
 } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import cuid from 'cuid';
@@ -35,16 +36,35 @@ const validateQuestions = (obj) => {
   return { error, errorObj };
 };
 
-const StyledOutlinedButton = withStyles({
+const useStyles = makeStyles((theme) => ({
+  navCard: {
+    border: `1px solid ${theme.palette.primary.main}`,
+  },
+  headerText: {
+    color: theme.palette.secondary.main,
+    fontWeight: 600,
+    fontSize: '1rem',
+    ['@media screen(min-width:768px)']: {
+      fontSize: '0.85rem',
+    },
+  },
+}));
+
+const StyledOutlinedButton = withStyles((theme) => ({
   root: {
     height: '42px',
-    color: '#FE6B6B',
-    border: '1px solid #FF6B6B',
+    color: theme.palette.primary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
     backgroundColor: 'transparent',
+    '& .MuiSvgIcon-root': {
+      color: theme.palette.primary.main,
+      fontSize:'20px'
+    },
   },
-})(Button);
+}))(Button);
 
 const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
+  const classes = useStyles();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [sections, setSections] = useState([]);
@@ -73,9 +93,9 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
 
   const validateHomework = () => {
     let isFormValid = true;
-    if(sectionDisplay.length === 0){
+    if (sectionDisplay.length === 0) {
       isFormValid = false;
-      setAlert('warning', 'Please Select Section')
+      setAlert('warning', 'Please Select Section');
     }
     if (!name.trim()) {
       isFormValid = false;
@@ -85,7 +105,10 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
     }
     if (!description.trim()) {
       isFormValid = false;
-      setErrors((prevState) => ({ ...prevState, description: '*Description is required...' }));
+      setErrors((prevState) => ({
+        ...prevState,
+        description: '*Description is required...',
+      }));
     } else {
       setErrors((prevState) => ({ ...prevState, description: '' }));
     }
@@ -109,7 +132,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
       const reqObj = {
         name,
         description,
-        section_mapping: sectionDisplay.map(data => parseInt(data.id, 10)),
+        section_mapping: sectionDisplay.map((data) => parseInt(data.id, 10)),
         subject: params.id,
         date: params.date,
         questions: questions.map((q) => {
@@ -169,7 +192,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
 
   const handleBackButton = () => {
     history.push('/homework/teacher');
-  }
+  };
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -190,20 +213,23 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   }, []);
 
   useEffect(() => {
-    if(teacherModuleId && sessionYear && branch && grade) {
-      axiosInstance.get(`${endpoints.academics.sections}?session_year=${sessionYear}&branch_id=${branch}&grade_id=${grade}&module_id=${teacherModuleId}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setSections(result.data?.data);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
+    if (teacherModuleId && sessionYear && branch && grade) {
+      axiosInstance
+        .get(
+          `${endpoints.academics.sections}?session_year=${sessionYear}&branch_id=${branch}&grade_id=${grade}&module_id=${teacherModuleId}`
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setSections(result.data?.data);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
     }
-  },[teacherModuleId, sessionYear, branch, grade])
+  }, [teacherModuleId, sessionYear, branch, grade]);
 
   const handleSection = (event, value) => {
     //setSearchSection([]);
@@ -218,24 +244,41 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
 
   return (
     <Layout>
-      <div className='add-homework-container'>
-        <CommonBreadcrumbs componentName='Homework' childComponentName='Add Homework' 
-          isAcademicYearVisible={true} 
+      <CommonBreadcrumbs
+          componentName='Homework'
+          childComponentName='Add Homework'
+          isAcademicYearVisible={true}
         />
+      <div className='add-homework-container'>
         <Grid container className='add-homework-inner-container' spacing={2}>
           <Grid item xs={12} className='add-homework-title-container' md={3}>
             <div className='nav-cards-container'>
               <div
-                className='nav-card'
+                className={` ${classes.navCard} nav-card`}
                 onClick={() => {
                   window.history.back('/homework/teacher');
                 }}
               >
-                <div className='header-text text-center' style={{cursor:'pointer'}}>All Homeworks</div>
+                <div
+                  className={` ${classes.headerText} text-center`}
+                  style={{ cursor: 'pointer' }}
+                >
+                  All Homeworks
+                </div>
               </div>
-              <div className='nav-card'>
-                <div className='header-text text-center' style={{cursor:'pointer'}}>{params.date}</div>
-                <div className='header-text text-center' style={{cursor:'pointer'}}>{params.subject}</div>
+              <div className={` ${classes.navCard} nav-card`}>
+                <div
+                  className={` ${classes.headerText} text-center`}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {params.date}
+                </div>
+                <div
+                  className={` ${classes.headerText} text-center`}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {params.subject}
+                </div>
               </div>
             </div>
           </Grid>
@@ -248,7 +291,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
             md={9}
           >
             <Grid container style={{ width: '95%', margin: '0 auto' }}>
-              <Grid item xs={12} sm={4} style={{ marginBottom: '20px'}}>
+              <Grid item xs={12} sm={4} style={{ marginBottom: '20px' }}>
                 <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
@@ -338,21 +381,6 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                 */}
                 <Grid item xs={12} md={6} className='form-field'>
                   <div className='finish-btn-container'>
-                    {/*
-                    <Button
-                      startIcon={<AddCircleOutlineIcon />}
-                      onClick={() => {
-                        setQueIndexCounter(queIndexCounter + 1);
-                        addNewQuestion(queIndexCounter + 1);
-                      }}
-                      title='Add Question'
-                      className='btn add-quesiton-btn outlined-btn'
-                      color='primary'
-                      variant='outlined'
-                    >
-                      Add another question
-                    </Button>
-                    */}
                     <StyledOutlinedButton
                       startIcon={<AddCircleOutlineIcon />}
                       onClick={() => {
@@ -362,25 +390,23 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                       title='Add Question'
                       fullWidth
                     >
-                      Add another question
+                      Add Another Question
                     </StyledOutlinedButton>
                   </div>
                 </Grid>
                 <Grid item xs={12} md={6} className='form-field'>
                   <div className='finish-btn-container'>
-                    <Button className='btn' color='primary' onClick={handleAddHomeWork}>
+                    <Button
+                      variant='contained'
+                      style={{ color: 'white', width: '100%' }}
+                      color='primary'
+                      onClick={handleAddHomeWork}
+                    >
                       Finish
                     </Button>
                   </div>
                 </Grid>
               </Grid>
-              {/* <Grid item xs={12}>
-              <div className='finish-btn-container'>
-                <Button className='btn' color='primary' onClick={handleAddHomeWork}>
-                  Finish
-                </Button>
-              </div>
-            </Grid> */}
             </Grid>
           </Grid>
         </Grid>
