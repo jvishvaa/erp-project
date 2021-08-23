@@ -749,19 +749,6 @@ const ErpAdminViewClass = ({ history }) => {
           isAcademicYearVisible={true}
         />
         {loading && <Loader />}
-        <CommonBreadcrumbs
-          componentName='Online Class'
-          childComponentName={
-            window.location.pathname === '/erp-online-class'
-              ? 'Online Class View'
-              : window.location.pathname === '/erp-online-class-teacher-view'
-              ? 'Teacher Class View'
-              : window.location.pathname === '/erp-online-class-student-view'
-              ? 'Student Class View'
-              : ''
-          }
-          isAcademicYearVisible={true}
-        />
         <Grid container spacing={2} className='teacherBatchViewMainDiv'>
           <Grid item md={12} xs={12} className='teacherBatchViewFilter'>
             <Grid container spacing={2}>
