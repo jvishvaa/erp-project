@@ -293,8 +293,10 @@ import ViewiBook from './containers/intelligent-textbook/ViewiBook';
 import AllBooksPage from 'containers/intelligent-textbook/bookpage/AllBooksPage';
 import ChapterBook from 'containers/intelligent-textbook/chapterpage/ChapterBook';
 import { themeGenerator } from '../src/utility-functions/themeGenerator';
+import { isMsAPI } from "./utility-functions/index";
 
 function App({ alert }) {
+  isMsAPI();
   const [theme, setTheme] = useState(() => themeGenerator());
   return (
     // <ErrorBoundary404 HomeButton={false}>

@@ -27,7 +27,7 @@ import {
   fetchThemeApi,
   isFetchThemeRequired,
 } from '../../utility-functions/themeGenerator';
-import { isMsAPI } from "../../utility-functions/index";
+// import { isMsAPI } from "../../utility-functions/index";
 
 
 export const ContainerContext = createContext();
@@ -75,8 +75,8 @@ const Layout = ({ children, history }) => {
     if (isFetchThemeRequired()) {
       fetchThemeApi();
     }
-    // if(!localStorage.hasOwnProperty("isMsAPI")){}
-    isMsAPI();
+    // if(!localStorage.hasOwnProperty("isMsAPI")){ }
+    // isMsAPI();
   }, []);
 
   const classes = useStyles();

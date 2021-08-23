@@ -59,11 +59,9 @@ const ViewCourseCard = ({ index, cData, setData }) => {
       });
   }, [id]);
 
-  const handleDownload = (e, data) => {
-    for (let i = 0; i < e.files.length; i++) {
-      window.open(
-        `https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${e.files[i]}`
-      );
+  const handleDownload = (e,data) => {
+    for(let i=0;i<e.files.length;i++){
+      window.open(`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${e.files[i]}`)
     }
   };
   if (id) {

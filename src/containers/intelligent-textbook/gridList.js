@@ -82,8 +82,7 @@ function GridList(props) {
   const [openEdit, setOpenEdit] = useState(false);
   const [conFirmDelete, setConFirmDelete] = useState(false);
   const opnePop = Boolean(openPopOver);
-  // const chapterImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/';
-  const chapterImage = 'https://d3ka3pry54wyko.cloudfront.net/';
+  const chapterImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/';
 
   const handleMenuOpen = (event, item) => {
     setOpenPopOver(event.currentTarget);
