@@ -209,66 +209,74 @@ const MultipleChoice = ({
     }
   };
 
-  const handleOptionData = (e, index) => {
-    let name = e.target?.name;
-    let value;
+  const updateOptionCheckBox = (name, value, index) => {
     const list = [...optionsList];
-
-    if (name === 'isChecked') {
-      value = e.target?.checked;
-      list[index][name] = value;
-      if (showQuestionType?.MultipleChoiceSingleSelect || showQuestionType?.TrueFalse) {
-        for (let i = 0; i < list?.length; i++) {
-          if (i != index) {
-            list[i][name] = false;
-          }
+    list[index][name] = value;
+    if (showQuestionType?.MultipleChoiceSingleSelect || showQuestionType?.TrueFalse) {
+      for (let i = 0; i < list?.length; i++) {
+        if (i != index) {
+          list[i][name] = false;
         }
-        let answerList = [];
-        if (value) {
-          answerList.push(`option${index + 1}`);
-        } else {
-          answerList.splice(answerList.indexOf(`option${index + 1}`), 1);
-        }
-        setAnswers(answerList);
-      } else if (showQuestionType?.MultipleChoiceMultipleSelect) {
-        let answerList = [...answers];
-        if (value) {
-          answerList.push(`option${index + 1}`);
-        } else {
-          answerList.splice(answerList.indexOf(`option${index + 1}`), 1);
-        }
-        setAnswers([...new Set(answerList)]);
       }
-    } else if (name === 'optionValue') {
-      value = e.target?.value;
-      list[index][name] = value;
-    } else if (name === 'images' && !showQuestionType?.TrueFalse) {
-      if (list[index][name]?.length < 2) {
-        const file = e.target?.files;
-        handleFileUpload([...optionsList], file, name, index);
+      let answerList = [];
+      if (value) {
+        answerList.push(`option${index + 1}`);
       } else {
-        setAlert('error', "Can't upload more than 2 images for one option");
+        answerList.splice(answerList.indexOf(`option${index + 1}`), 1);
       }
+      setAnswers(answerList);
+    }  
+    if (showQuestionType?.MultipleChoiceMultipleSelect) {
+      let answerList = [...answers];
+      if (value) {
+        answerList.push(`option${index + 1}`);
+      } else {
+        answerList.splice(answerList.indexOf(`option${index + 1}`), 1);
+      }
+      setAnswers([...new Set(answerList)]);
     }
     setOptionsList(list);
   };
 
+  const updateOptionValue = (name, value, index, isMatching = false) => {
+    const list = isMatching ? [...matchingOptionsList] : [...optionsList];
+    list[index][name] = value;
+    if (isMatching) setMatchingOptionsList(list);
+    else setOptionsList(list);
+  };
+
+  const updateOptionImage = (name, file, index, isMatching = false) => {
+    const list = isMatching ? [...matchingOptionsList] : [...optionsList];
+    if (list[index][name]?.length < 1) {
+      handleFileUpload(list, file, name, index);
+    } else {
+      setAlert('error', "Can't upload more than 1 image for one option");
+    }
+    if (isMatching) setMatchingOptionsList(list);
+    else setOptionsList(list);
+  };
+
+  const handleOptionData = (e, index) => {
+    let name = e.target?.name;
+    if (name === 'isChecked') {
+      updateOptionCheckBox(name, e?.target?.checked, index);
+    }
+    if (name === 'optionValue') {
+      updateOptionValue(name, e?.target?.value, index);
+    }
+    if (name === 'images' && !showQuestionType?.TrueFalse) {
+      updateOptionImage(name, e?.target?.files, index);
+    }
+  };
+
   const handleMatchingOptionData = (e, index) => {
     let name = e.target?.name;
-    let value;
-    let list = [...matchingOptionsList];
     if (name === 'optionValue') {
-      value = e.target?.value;
-      list[index][name] = value;
-    } else if (name === 'images') {
-      if (list[index][name]?.length < 1) {
-        const file = e.target?.files;
-        handleFileUpload([...matchingOptionsList], file, name, index);
-      } else {
-        setAlert('error', "Can't upload more than 1 image for matching option");
-      }
+      updateOptionValue(name, e?.target?.value, index, true);
     }
-    setMatchingOptionsList(list);
+    if (name === 'images') {
+      updateOptionImage(name, e?.target?.files, index, true);
+    }
   };
 
   const handleDeleteImage = (rowIndex, imageIndex, isMatching) => {
@@ -334,35 +342,54 @@ const MultipleChoice = ({
     }
   };
 
+  const deleteFromOptionsList = (index) => {
+    const list = [...optionsList];
+    list.splice(index, 1);
+    setOptionsList(list);
+  };
+
+  const deleteFromMatchingOptionsList = (index) => {
+    const matchingList = [...matchingOptionsList];
+    matchingList.splice(index, 1);
+    setMatchingOptionsList(matchingList);
+  };
+
+  //On matching-option delete it's corresponding option should be deleted & vice versa
+  const deleteMatchingOption = (index) => {
+    deleteFromMatchingOptionsList(index);
+    if (showQuestionType?.MatchTheFollowing) {
+      deleteFromOptionsList(index);
+    }
+  };
+
+  //On matching option delete it's corresponding option should be deleted & vice versa
+  const deleteOption = (index) => {
+    deleteFromOptionsList(index);
+    if (showQuestionType?.MatchTheFollowing) {
+      deleteFromMatchingOptionsList(index);
+    }
+    deleteFromAnswerList(index);
+  };
+
+  //deleting from answer-list which is used in creating request
+  const deleteFromAnswerList = (index) => {
+    const answerList = [...answers];
+    if (answerList?.length > 0) {
+      for (let k = 0; k < answerList?.length; k++) {
+        if (answerList[k] === `option${index + 1}`) {
+          answerList.splice(k, 1);
+          break;
+        }
+      }
+      setAnswers(answerList);
+    }
+  };
+
   const handleDeleteOption = (index, isMatching) => {
     if (isMatching) {
-      const matchingList = [...matchingOptionsList];
-      matchingList.splice(index, 1);
-      setMatchingOptionsList(matchingList);
-      if (showQuestionType?.MatchTheFollowing) {
-        const list = [...optionsList];
-        list.splice(index, 1);
-        setOptionsList(list);
-      }
+      deleteMatchingOption(index);
     } else {
-      const list = [...optionsList];
-      list.splice(index, 1);
-      setOptionsList(list);
-      if (showQuestionType?.MatchTheFollowing) {
-        const matchingList = [...matchingOptionsList];
-        matchingList.splice(index, 1);
-        setMatchingOptionsList(matchingList);
-      }
-      const answerList = [...answers];
-      if (answerList?.length > 0) {
-        for (let k = 0; k < answerList?.length; k++) {
-          if (answerList[k] === `option${index + 1}`) {
-            answerList.splice(k, 1);
-            break;
-          }
-        }
-        setAnswers(answerList);
-      }
+      deleteOption(index);
     }
   };
 
