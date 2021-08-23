@@ -206,7 +206,7 @@ const AssessmentCard = ({
               {showPeriodIndex === index && showMenu ? (
                 <div className='tooltipContainer'>
                   {period.is_verified && (
-                    <span className='tooltiptext' style={{width:'105px'}}>
+                    <span className={` ${classes.tooltiptext} tooltiptext`} style={{width:'105px'}}>
                       <span onClick={handleAssign}>Assign Test</span>
                       <Divider/>
                       <span onClick={handleDelete}>Delete</span>

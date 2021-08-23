@@ -883,6 +883,8 @@ const DetailCardView = ({
                   <Button
                     fullWidth
                     size='small'
+                    variant = "contained"
+                    color="primary"
                     className='teacherFullViewFullButtons'
                     onClick={handleAttendance}
                   >

@@ -22,29 +22,65 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import './multiple-choice.css';
 import MyTinyEditor from '../../tinymce-editor';
 
-const useStyles = makeStyles((theme)=> ({
-  questionTag:{
+const useStyles = makeStyles((theme) => ({
+  questionTag: {
     color: theme.palette.secondary.main,
     fontSize: "16px",
     fontWeight: 600,
   },
-  questionHeaderContainer:{
+  questionHeaderContainer: {
     display: "flex",
-  justifyContent: "space-between",
-  width: "100%",
-  paddingBottom: "7px",
-  borderBottom: `1px solid ${theme.palette.secondary.main}`,
+    justifyContent: "space-between",
+    width: "100%",
+    paddingBottom: "7px",
+    borderBottom: `1px solid ${theme.palette.secondary.main}`,
   },
-  answerTag:{
-    color:theme.palette.secondary.main,
-  fontSize: "16px",
-  fontWeight: 600,
-  width: "100%",
-  paddingBottom: "7px",
-  borderBottom: `1px solid ${theme.palette.secondary.main}`,
-  marginBottom: "10px",
+  answerTag: {
+    color: theme.palette.secondary.main,
+    fontSize: "16px",
+    fontWeight: 600,
+    width: "100%",
+    paddingBottom: "7px",
+    borderBottom: `1px solid ${theme.palette.secondary.main}`,
+    marginBottom: "10px",
   },
-  tooltiptext : theme.toolTipText
+  tooltiptext: theme.toolTipText,
+  multipleChoiceContainer: {
+    width: "95%",
+    margin: '20px auto 0 auto',
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: '10px',
+    padding: '20px',
+  },
+  draftbtn: {
+    width: '100%',
+    border: `1px solid ${theme.palette.primary.main}`,
+    background: 'white',
+    color: theme.palette.secondary.main
+  },
+  addOutlinedIcon: {
+    color: `${theme.palette.primary.main} !important`,
+    fontSize: '30px'
+  },
+  addnewOutlinedIcon: {
+    color: `${theme.palette.secondary.main} !important`,
+    fontSize: '30px'
+  },
+  matchingOptionsWrapper: {
+    border: `1px solid ${theme.palette.secondary.main}`,
+    borderRadius: "10px",
+    padding: "20px",
+    marginTop: "20px",
+  },
+  addAnotherMatrixButton: {
+    border: `1px solid ${theme.palette.secondary.main}`,
+    color: theme.palette.secondary.main,
+    background: "#def2ff",
+    boxShadow: "none",
+    padding: '0.5rem',
+    width: '100%',
+    marginTop: '10px',
+  }
 }))
 
 const MultipleChoice = ({
@@ -81,33 +117,33 @@ const MultipleChoice = ({
     showQuestionType?.FillInTheBlanks
       ? [{ optionValue: '', images: [] }]
       : showQuestionType?.MatrixQuestion || showQuestionType?.MatchTheFollowing
-      ? [
+        ? [
           { optionValue: '', images: [] },
           { optionValue: '', images: [] },
           { optionValue: '', images: [] },
         ]
-      : showQuestionType?.MultipleChoiceMultipleSelect ||
-        showQuestionType?.MultipleChoiceSingleSelect
-      ? [
-          { isChecked: false, optionValue: '', images: [] },
-          { isChecked: false, optionValue: '', images: [] },
-          { isChecked: false, optionValue: '', images: [] },
-        ]
-      : showQuestionType?.TrueFalse
-      ? [{ isChecked: false }, { isChecked: false }]
-      : []
+        : showQuestionType?.MultipleChoiceMultipleSelect ||
+          showQuestionType?.MultipleChoiceSingleSelect
+          ? [
+            { isChecked: false, optionValue: '', images: [] },
+            { isChecked: false, optionValue: '', images: [] },
+            { isChecked: false, optionValue: '', images: [] },
+          ]
+          : showQuestionType?.TrueFalse
+            ? [{ isChecked: false }, { isChecked: false }]
+            : []
   );
 
   const [matchingOptionsList, setMatchingOptionsList] = useState(
     showQuestionType?.MatchTheFollowing
       ? [
-          { optionValue: '', images: [] },
-          { optionValue: '', images: [] },
-          { optionValue: '', images: [] },
-        ]
+        { optionValue: '', images: [] },
+        { optionValue: '', images: [] },
+        { optionValue: '', images: [] },
+      ]
       : showQuestionType?.MatrixQuestion
-      ? [{ optionValue: '' }, { optionValue: '' }, { optionValue: '' }]
-      : []
+        ? [{ optionValue: '' }, { optionValue: '' }, { optionValue: '' }]
+        : []
   );
 
   useEffect(() => {
@@ -548,9 +584,8 @@ const MultipleChoice = ({
       ? showQuestionType?.MatrixQuestion
         ? `Value is required for Matrix Option ${String.fromCharCode(i + 65)}`
         : `Value or Image is required for Matching Option ${String.fromCharCode(i + 65)}`
-      : `Value or Image is required for ${
-          showQuestionType?.FillInTheBlanks ? 'Blank' : 'Option'
-        } ${String.fromCharCode(i + 65)}`;
+      : `Value or Image is required for ${showQuestionType?.FillInTheBlanks ? 'Blank' : 'Option'
+      } ${String.fromCharCode(i + 65)}`;
   };
 
   const handleValidateOptions = (list, isMatchingOption) => {
@@ -656,7 +691,7 @@ const MultipleChoice = ({
       className={
         parentQuestionType?.ComprehensionQuestions || parentQuestionType?.VideoQuestion
           ? 'compMultipleChoiceContainer'
-          : 'multipleChoiceContainer'
+          : `${classes.multipleChoiceContainer}`
       }
     >
       <div className={classes.questionHeaderContainer}>
@@ -690,32 +725,32 @@ const MultipleChoice = ({
         )}
         {(parentQuestionType?.ComprehensionQuestions ||
           parentQuestionType?.VideoQuestion) && (
-          <div
-            className='questionHeaderIcon'
-            onClick={handleMenuOpen}
-            onMouseLeave={handleMenuClose}
-          >
-            <IconButton>
-              <MoreVertIcon />
-            </IconButton>
-            {showMenu ? (
-              <div className='tooltipContainer'>
-                <div className = {` ${classes.tooltiptext} tooltiptext `}>
-                  <div onClick={() => handleDeleteComprehensionQuestion(index)}>
-                    Delete
-                  </div>
-                  <div
-                    onClick={() => {
-                      setIsMinimized((prev) => !prev);
-                    }}
-                  >
-                    {isMinimized ? 'Maximize' : 'Minimize'}
+            <div
+              className='questionHeaderIcon'
+              onClick={handleMenuOpen}
+              onMouseLeave={handleMenuClose}
+            >
+              <IconButton>
+                <MoreVertIcon />
+              </IconButton>
+              {showMenu ? (
+                <div className='tooltipContainer'>
+                  <div className={` ${classes.tooltiptext} tooltiptext `}>
+                    <div onClick={() => handleDeleteComprehensionQuestion(index)}>
+                      Delete
+                    </div>
+                    <div
+                      onClick={() => {
+                        setIsMinimized((prev) => !prev);
+                      }}
+                    >
+                      {isMinimized ? 'Maximize' : 'Minimize'}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : null}
-          </div>
-        )}
+              ) : null}
+            </div>
+          )}
       </div>
       {toggle ? (
         <div className='questionContainer'>
@@ -723,7 +758,7 @@ const MultipleChoice = ({
             <MyTinyEditor
               id={
                 parentQuestionType?.ComprehensionQuestions ||
-                parentQuestionType?.VideoQuestion
+                  parentQuestionType?.VideoQuestion
                   ? `questionEditor${index}`
                   : 'questionEditor'
               }
@@ -740,7 +775,7 @@ const MultipleChoice = ({
               style={{ width: '100%' }}
               id={
                 parentQuestionType?.ComprehensionQuestions ||
-                parentQuestionType?.VideoQuestion
+                  parentQuestionType?.VideoQuestion
                   ? `questionDisplay${index}`
                   : 'questionDisplay'
               }
@@ -751,7 +786,7 @@ const MultipleChoice = ({
               value={questionDisplay}
               name={
                 parentQuestionType?.ComprehensionQuestions ||
-                parentQuestionType?.VideoQuestion
+                  parentQuestionType?.VideoQuestion
                   ? `questionDisplay${index}`
                   : 'questionDisplay'
               }
@@ -811,7 +846,7 @@ const MultipleChoice = ({
                 <MyTinyEditor
                   id={
                     parentQuestionType?.ComprehensionQuestions ||
-                    parentQuestionType?.VideoQuestion
+                      parentQuestionType?.VideoQuestion
                       ? `answerEditor${index}`
                       : 'answerEditor'
                   }
@@ -855,7 +890,7 @@ const MultipleChoice = ({
                     variant='contained'
                     size='medium'
                     startIcon={
-                      <AddOutlinedIcon color='primary' style={{ fontSize: '30px' }} />
+                      <AddOutlinedIcon className={classes.addOutlinedIcon} />
                     }
                     disableRipple
                     disableElevation
@@ -871,7 +906,7 @@ const MultipleChoice = ({
             </div>
           )}
           {(showQuestionType?.MatchTheFollowing || showQuestionType?.MatrixQuestion) && (
-            <div className='matchingOptionsWrapper'>
+            <div className={classes.matchingOptionsWrapper}>
               <div className={classes.answerTag}>
                 {showQuestionType.MatrixQuestion ? 'Matrix Options' : 'Matching Options'}
               </div>
@@ -901,13 +936,13 @@ const MultipleChoice = ({
                       className={
                         showQuestionType?.MatchTheFollowing
                           ? 'addAnotherMatchButton'
-                          : 'addAnotherMatrixButton'
+                          : `${classes.addAnotherMatrixButton}`
                       }
                       title='Add New'
                       variant='contained'
                       size='medium'
                       startIcon={
-                        <AddOutlinedIcon color='primary' style={{ fontSize: '30px' }} />
+                        <AddOutlinedIcon className={classes.addnewOutlinedIcon} />
                       }
                       disableRipple
                       disableElevation
@@ -947,10 +982,9 @@ const MultipleChoice = ({
                       variant='contained'
                       color='primary'
                       size='medium'
+                      className={classes.draftbtn}
                       style={{
-                        width: '100%',
-                        border: '1px solid #ff6b6b',
-                        background: 'white',
+
                       }}
                       onClick={handleSave}
                     >

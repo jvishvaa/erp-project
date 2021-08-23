@@ -54,7 +54,19 @@ const useStyles = makeStyles((theme)=>({
       marginLeft: 0,
       height: "100px",
     }
-  }
+  },
+  addOutlinedIcon:{
+    color : `${theme.palette.primary.main} !important`,
+  },
+  addpasagequebtn:{
+    color : theme.palette.primary.main
+  },
+  draftbtn: {
+    width: '100%',
+    border: `1px solid ${theme.palette.primary.main}`,
+    background: 'white',
+    color : theme.palette.secondary.main
+  },
 }))
 const levels = [
   { id: '1', level: 'Easy' },
@@ -646,7 +658,7 @@ const QuestionTypeFilters = ({
       {isCreateManuallyOpen && showQuestionType.VideoQuestion && videoURL === '' && (
         <div className='addPassageQuestionButtonContainer'>
           <Button
-            className='addPassageQuestionButton'
+            className={` ${classes.addpasagequebtn}  addPassageQuestionButton`}
             title='Add a video for the above question'
             variant='contained'
             size='medium'
@@ -655,7 +667,7 @@ const QuestionTypeFilters = ({
             disableFocusRipple
             disableTouchRipple
             style={{ width: '100%' }}
-            startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+            startIcon={<AddOutlinedIcon className = {classes.addOutlinedIcon} />}
             component='label'
           >
             <input
@@ -752,11 +764,7 @@ const QuestionTypeFilters = ({
                   variant='contained'
                   color='primary'
                   size='medium'
-                  style={{
-                    width: '100%',
-                    border: '1px solid #ff6b6b',
-                    background: 'white',
-                  }}
+                  className={classes.draftbtn}
                   onClick={handleSave}
                 >
                   Save as Draft
