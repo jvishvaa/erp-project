@@ -24,10 +24,17 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import TimeTableMobile from './time-table-mobile-view/time-table-mobile';
 import FilterMobile from './filterMobile/filterMobile';
 import './timetable.scss';
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   formTextFields: {
     margin: '8px',
   },
+  filter:{
+    color: theme.palette.secondary.main,
+    fontSize: "11px",
+    fontWeight: 600,
+    marginRight: "4px",
+    cursor: "pointer",
+  }
 }));
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -164,7 +171,7 @@ const TimeTable = (props) => {
           lengthTue = response?.data?.result?.Tuesday?.length;
           lengthWed = response?.data?.result?.Wednesday?.length;
           lengthThurs = response?.data?.result?.Thursday?.length;
-          lengthfri = response?.data?.result?.Friday?.length ;
+          lengthfri = response?.data?.result?.Friday?.length;
           lengthSat = response?.data?.result?.Saturday?.length;
           lengthSun = response?.data?.result?.Sunday?.length;
           calculateLength();
@@ -222,7 +229,7 @@ const TimeTable = (props) => {
     let sortedArray = arrayLength.sort();
     console.log(sortedArray, 'sorted array');
     let mappingArray = Array.from(Array(sortedArray[6]).keys());
-      setLoopMax(mappingArray);
+    setLoopMax(mappingArray);
 
   };
   const handleDateEndTimeChange = (time) => {
@@ -399,7 +406,7 @@ const TimeTable = (props) => {
                   id='select-day'
                   className={classes.formTextFields}
                 >
-                 
+
 
                   {/* <Select
                     labelId='demo-mutiple-chip-label'
@@ -492,10 +499,18 @@ const TimeTable = (props) => {
                 </div>
               </div>
               <DialogActions>
-                <Button onClick={handleCloseNewPeriod} color='primary'>
+                <Button
+                  className='cancelButton labelColor'
+                  onClick={handleCloseNewPeriod}
+                  color='primary'>
                   Close
                 </Button>
-                <Button onClick={createPeriodAPI} color='primary' autoFocus>
+                <Button
+                  onClick={createPeriodAPI}
+                  color='primary'
+                  variant='contained'
+                  style={{ color: 'white' }}
+                  autoFocus>
                   Create
                 </Button>
               </DialogActions>
@@ -543,7 +558,7 @@ const TimeTable = (props) => {
                       handleFilter(false);
                     }}
                   >
-                    <div className='filter'>HIDE FILTER</div>
+                    <div className={classes.filter}>HIDE FILTER</div>
                     <img src={FilterImage} />
                   </div>
                   <div className='devider-top'>
@@ -567,7 +582,7 @@ const TimeTable = (props) => {
                 {openCloseTable ? (
                   <UserProvider value={ids}>
                     <DateAndCalander
-                    loopMax={loopMax}
+                      loopMax={loopMax}
                       handleCloseNewPeriod={handleCloseNewPeriod}
                       openNewPeriod={openNewPeriod}
                       section_ID={sectionID}
@@ -588,9 +603,7 @@ const TimeTable = (props) => {
           </>
         ) : (
           <div className='mobile-table-view'>
-            <div className='time-table-breadcrums-container'>
-              <CommonBreadcrumbs componentName='Time Table' />
-            </div>
+            <CommonBreadcrumbs componentName='Time Table' />
             {/* <FilterMobile
               moduleId={moduleId}
               handleCloseTable={handleCloseTable}

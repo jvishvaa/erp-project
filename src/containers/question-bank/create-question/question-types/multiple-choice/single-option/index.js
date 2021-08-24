@@ -180,13 +180,10 @@ const SingleOption = ({
                 <>
                   {!isMatching && (
                     <Button
-                      className='modifyDesign attachmentButton'
+                      className='attachmentButton'
                       variant='contained'
                       style={{
                         color: 'white',
-                        textTransform: 'none',
-                        // width: '100%',
-                        // margin: '15px 5px 0px 0px',
                       }}
                       color='primary'
                       title='Attach Image'

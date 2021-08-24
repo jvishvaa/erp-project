@@ -281,7 +281,7 @@ const UploadClassWorkDiaogBox = (props) => {
                       ref={imageRef}
                       alt='file'
                       onError={(e) => {
-                        console.log('place.e.tag',e.target.src)
+                        console.log('place.e.tag', e.target.src);
                         e.target.src = placeholder;
 
 
@@ -291,7 +291,6 @@ const UploadClassWorkDiaogBox = (props) => {
                     />
 
                     <div className='optionImageRemoveIcon1'>
-
                       {/* <IconButton>
                         <VisibilityIcon
                           onClick={() => {
@@ -337,20 +336,22 @@ const UploadClassWorkDiaogBox = (props) => {
                   variant='contained'
                   color='primary'
                   component='span'
+                  style={{ color: 'white' }}
                 >
                   Upload
                 </Button>
               </label>
             </div>
           )}
-          <Button className={classes.cancelButton} onClick={handleClose}>
+          <Button className='cancelButton labelColor' onClick={handleClose}>
             {isTeacher ? 'Close' : 'Cancel'}
           </Button>
           {!isTeacher && (
             <Button
-              className={classes.submitButton}
               onClick={submitClassWorkAPI}
               color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
             >
               Submit
             </Button>

@@ -11,13 +11,13 @@ var relativeTime = require('dayjs/plugin/relativeTime');
 // import Avatar from '@material-ui/core/Avatar';
 // import OutlinedButton from '../../core_themes/buttons/OutlinedButton';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) =>({
   replyCommentBox: {
     padding: '15px',
     borderLeft: '1px solid #FE6B6B',
   },
   replyByText: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '18px',
     fontWeight: 'lighter',
     fontFamily: 'Open Sans',
@@ -26,7 +26,7 @@ const useStyles = makeStyles({
     // marginLeft: '10px',
   },
   replyUsername: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontFamily: 'Open Sans',
     fontWeight: 'normal',
@@ -44,7 +44,7 @@ const useStyles = makeStyles({
   },
   replyComment: {
     fontSize: '18px',
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontFamily: 'Open Sans',
     fontWeight: 'normal',
     lineHeight: '24px',
@@ -52,7 +52,7 @@ const useStyles = makeStyles({
     overflow: 'hidden',
   },
   commentsCount: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     float: 'right',
     fontSize: '18px',
     fontWeight: 'bold',
@@ -60,7 +60,7 @@ const useStyles = makeStyles({
     lineHeight: '24px',
   },
   commntLikes: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '25px',
     fontFamily: 'Open Sans',
     marginLeft: '8.47px',
@@ -72,7 +72,7 @@ const useStyles = makeStyles({
     fontWeight: 'lighter',
     lineHeight: '20px',
   },
-});
+}));
 
 const StyledOutlinedButton = withStyles({
   root: {

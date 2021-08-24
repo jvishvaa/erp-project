@@ -119,7 +119,7 @@ class EditUser extends Component {
       erp_user,
     } = requestObj;
     const {
-      id:parent_id,
+      id: parent_id,
       father_first_name,
       father_middle_name,
       father_last_name,
@@ -143,20 +143,20 @@ class EditUser extends Component {
       guardian_mobile,
     } = parent;
 
-    const parentDetail={};
-    if(guardian_first_name){
-      Object.assign(parentDetail,{
+    const parentDetail = {};
+    if (guardian_first_name) {
+      Object.assign(parentDetail, {
         guardian_first_name,
-      guardian_middle_name,
-      guardian_last_name,
-      guardian_email,
-      address: parent_address || '',
-      guardian_mobile: guardian_country_code + '-' + guardian_mobile,
-      })
+        guardian_middle_name,
+        guardian_last_name,
+        guardian_email,
+        address: parent_address || '',
+        guardian_mobile: guardian_country_code + '-' + guardian_mobile,
+      });
     }
-    if(father_first_name||mother_first_name){
-      Object.assign(parentDetail,{
-        id:parent_id,
+    if (father_first_name || mother_first_name) {
+      Object.assign(parentDetail, {
+        id: parent_id,
         father_first_name,
         father_middle_name,
         father_last_name,
@@ -168,7 +168,7 @@ class EditUser extends Component {
         mother_last_name,
         mother_email,
         mother_mobile: mother_country_code + '-' + mother_mobile,
-      })
+      });
     }
 
     requestObj = {
@@ -229,22 +229,13 @@ class EditUser extends Component {
 
     return (
       <Layout>
+        <CommonBreadcrumbs
+          componentName='User Management'
+          childComponentName='Edit User'
+        />
         <div className='edit-user-container'>
-          <div className='bread-crumbs-container'>
-            <CommonBreadcrumbs
-              componentName='User Management'
-              childComponentName='Edit User'
-            />
-          </div>
           {user ? (
             <>
-              {/* <Stepper activeStep={activeStep} alternativeLabel className={classes.stepper}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper> */}
               <Stepper
                 activeStep={activeStep}
                 alternativeLabel

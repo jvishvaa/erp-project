@@ -20,11 +20,11 @@ const useStyles = makeStyles((theme) => ({
   cardTitleHeading: {
     margin: 0,
     marginTop: 2,
-    color: '#FF6B6B',
+    color: theme.palette.primary.main,
   },
   cardDescription: {
     margin: 0,
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
   },
   cardDate: {
     color: '#168D00',
@@ -33,16 +33,6 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'right',
     marginTop: 20,
   },
-  // cardWrapper: {
-  //   display: 'flex',
-  //   padding: '15px',
-  //   flexDirection: 'column',
-  //   justifyContent: 'space-between',
-  //   '&:hover': {
-  //     background: '#FCEEEE',
-  //     cursor: 'pointer',
-  //   },
-  // },
   analysisWrapper: {
     padding: 5,
     [theme.breakpoints.up('md')]: {

@@ -33,17 +33,6 @@ const columns = [
 
 const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage }) => {
   const classes = useStyles();
-  // const [page, setPage] = React.useState(0);
-  // const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
-  // const handleChangePage = (event, newPage) => {
-  //   setPage(newPage);
-  // };
-
-  // const handleChangeRowsPerPage = (event) => {
-  //   setRowsPerPage(+event.target.value);
-  //   setPage(0);
-  // };
   return (
     <Paper className={`${classes.root} roles-table`}>
       <TableContainer className={classes.container}>

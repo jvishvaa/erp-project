@@ -1,30 +1,4 @@
 @import '../../../assets/styles/variables';
-/* .homework_table_wrapper .message_log_table tr th:not(:last-child):after {
-	content: '';
-	height: 100%;
-	width: 1px;
-	position: absolute;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
-	background-color: #ff6b6b;
-  }
-  .homework_table_wrapper .message_log_table tr td:not(:last-child):after {
-	content: '';
-	height: 100%;
-	width: 1px;
-	position: absolute;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
-	background-color: #ff6b6b;
-  } */
-  // .message_log_wrapper-coordinator.teacher-homework-coordinator .homework_block_wrapper{
-  //   width: 95% !important;
-  // }
-  // .homework_block_wrapper{
-  //   margin: 30px !important;
-  // }
   .homework_block_wrapper{
     border: 1px solid #DBDBDB !important;
     border-radius: 15px !important;
@@ -40,11 +14,9 @@
   }
   .message_log_white_wrapper .date-container input {
     font-size: 15px;
-    color: #014B7E !important;
 
   }
   .date-container label{
-    color: #014B7E !important;
     font-weight: 600;
   }
   .date-container .MuiPickersDateRangePickerInput-root   .MuiFormHelperText-marginDense{
@@ -56,19 +28,7 @@
       width: 95%;
       margin: 20px auto;
     }
-    .homework_table_wrapper {
-      border: 1px solid #ff6b6b;
-      box-shadow: none;
-    }
-    .homework_table_wrapper .MuiTableCell-root:not(:last-child) {
-      border-right: 1px solid #ff6b6b;
-    }
-    .homework_table_wrapper .MuiTableRow-root:not(:last-child) .MuiTableCell-root {
-      border-bottom: 1px solid #ff6b6b !important;
-    }
-    .homework_table_wrapper .MuiTableHead-root .MuiTableCell-root {
-      border-bottom: 1px solid #ff6b6b !important;
-    }
+
     .selected {
       background-color: antiquewhite;
     }
@@ -77,10 +37,6 @@
       border-radius: 10px !important;
       overflow-y: auto;
       max-height: 10000px !important;
-    }
-    .homework_table_wrapper {
-      border-radius: 10px !important;
-      box-shadow: none !important;
     }
     .homework_header {
       text-transform: capitalize;
@@ -150,14 +106,6 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  .header-text {
-    color: $secondary-color;
-    font-weight: 600;
-    font-size: 1rem;
-    @media screen and (max-width: 768px) {
-      font-size: 0.85rem;
-    }
-  }
 
   .add-homework-inner-container {
     width: 100%;
@@ -172,7 +120,7 @@
 
         .nav-card {
           width: 50%;
-          border: 1px solid $primary-color;
+          // border: 1px solid $primary-color;
           height: 100%;
           padding: 0.5rem 1.25rem;
           border-radius: 10px;
@@ -247,22 +195,6 @@
 
     @media screen and (max-width: 768px) {
       justify-content: center;
-    }
-  }
-  .homework_type_item {
-    border: 1px solid #ff6b6b;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    text-align: center;
-    padding: 0.25rem 0.5rem;
-    color: #014b7e;
-    font-size: 1rem;
-    font-weight: 600;
-    text-transform: capitalize;
-    div {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
   }
   .homework_block_questionwise_check {
@@ -341,7 +273,7 @@
   //   width: 185px;
   // }
   .homework_submit_wrapper {
-    border: 1px solid #ff6b6b;
+    border: 1px solid #ff6b6b;  
     border-radius: 10px;
     padding: 20px;
     @media screen and (max-width: 768px) {
@@ -493,7 +425,7 @@
 
   .nav-card {
     width: 50%;
-    border: 1px solid $primary-color;
+    // border: 1px solid $primary-color;
     height: 100%;
     padding: 0.5rem 1.25rem;
     border-radius: 10px;
@@ -531,28 +463,12 @@
     flex-direction: column-reverse;
   }  
 }
-
-.bulk_container {
-  //display: flex;
-}
-
 .download_button {
-  //margin-left: 25px;
   margin-top: 10px;
   align-self: flex-start;
 }
-
-.vertical_divider {
-  height: 80px;
-  width: 1px;
-  margin: 5px 20px;
-  background-color: #ff6b6b;
-}
-
-//homework list mobile view
-
 .homework-table-mobile-view {
-  color: $secondary-color;
+  // color: $secondary-color;
   .day-icon {
     width: 40px;
     height: 40px;
@@ -574,8 +490,3 @@
 .message_log_wrapper-coordinator .create_group_filter_container .homework_block_wrapper .MuiGrid-grid-xs-12{
   display: flex !important;
 }
-
-// .block-wrapper{
-//     margin: 0 auto !important;
-//     margin-top: 30px !important;
-// }

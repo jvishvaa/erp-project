@@ -913,7 +913,8 @@ const CreateGroup =({ history, ...props }) => {
                 <Grid xs={12} lg={3} className='create_group_custom_button' item>
                   <Button
                     variant='contained'
-                    className='custom_button_master labelColor'
+                    style={{color:'white', width: '100%' }}
+                    className='cancelButton labelColor'
                     size='medium'
                     onClick={handleEditCancel}
                   >
@@ -925,8 +926,9 @@ const CreateGroup =({ history, ...props }) => {
                 <Grid xs={12} lg={3} className='create_group_custom_button' item>
                   <Button
                     variant='contained'
-                    className='custom_button_master labelColor'
+                    className='cancelButton labelColor'
                     size='medium'
+                    style={{ width: '100%' }}
                     onClick={handleback}
                   >
                     BACK
@@ -938,8 +940,8 @@ const CreateGroup =({ history, ...props }) => {
                   <Grid xs={12} lg={3} className='create_group_custom_button' item>
                     <Button
                       variant='contained'
-                      style={{ color: 'white' }}
-                      className='custom_button_master'
+                      style={{color:'white', width: '100%' }}
+                      color='primary'
                       size='medium'
                       onClick={editGroup}
                     >
@@ -950,10 +952,9 @@ const CreateGroup =({ history, ...props }) => {
                   <Grid xs={12} lg={3} className='create_group_custom_button' item>
                     <Button
                       variant='contained'
-                      style={{ color: 'white' }}
+                      style={{color:'white', width: '100%' }}
                       onClick={createGroup}
                       color='primary'
-                      className='custom_button_master'
                       size='medium'
                     >
                       CREATE GROUP
@@ -964,10 +965,9 @@ const CreateGroup =({ history, ...props }) => {
                 <Grid xs={12} lg={3} className='create_group_custom_button' item>
                   <Button
                     variant='contained'
-                    style={{ color: 'white' }}
+                    style={{color:'white', width: '100%' }}
                     onClick={handlenext}
                     color='primary'
-                    className='custom_button_master'
                     size='medium'
                   >
                     NEXT

@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-} from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
 
 const ConfirmModal = ({ openModal, setOpenModal, submit }) => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
- 
+
   return (
     <Dialog
       className='reminderDialog'
@@ -30,6 +25,8 @@ const ConfirmModal = ({ openModal, setOpenModal, submit }) => {
         </Button>
         <Button
           color='primary'
+          variant='contained'
+          style={{ color: 'white' }}
           onClick={() => {
             submit();
             handleCloseModal();

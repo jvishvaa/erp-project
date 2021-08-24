@@ -267,12 +267,7 @@ const UserDetailsForm = ({
       </Grid>
 
       <Grid item md={2} xs={4}>
-        <FormControl
-          required
-          fullWidth
-          variant='outlined'
-          size='small'
-        >
+        <FormControl required fullWidth variant='outlined' size='small'>
           <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
           <OutlinedInput
             id='contact'
@@ -397,9 +392,10 @@ const UserDetailsForm = ({
         <Grid item md='1'>
           <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
             <Button
-              className={`${classes.formActionButton} disabled-btn`}
+              size='medium'
+              style={{ width: '100%' }}
               variant='contained'
-              color='primary'
+              className='cancelButton labelColor'
               onClick={handleBack}
             >
               Back
@@ -411,7 +407,9 @@ const UserDetailsForm = ({
             <Button
               className={classes.formActionButton}
               variant='contained'
+              style={{ color: 'white', width: '100%' }}
               color='primary'
+              size='medium'
               onClick={() => {
                 formik.handleSubmit();
               }}

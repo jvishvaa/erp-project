@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import Paper from '@material-ui/core/Paper';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme, IconButton, SvgIcon, Button } from '@material-ui/core';
+import { IconButton, SvgIcon, Button, makeStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import './view-more.css';
 import endpoints from '../../../../config/endpoints';
@@ -13,6 +12,10 @@ import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { AttachmentPreviewerContext } from '../../../../components/attachment-previewer/attachment-previewer-contexts';
+
+const useStyles = makeStyles((theme) => ({
+  rootViewMore: theme.rootViewMore,
+}));
 
 const ViewMoreCard = ({
   viewMoreData,
@@ -26,10 +29,8 @@ const ViewMoreCard = ({
   centralSubjectName,
   setCompletedStatus,
 }) => {
-  const themeContext = useTheme();
-  const { openPreview, closePreview } =
-    React.useContext(AttachmentPreviewerContext) || {};
-  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const classes = useStyles();
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const { setAlert } = useContext(AlertNotificationContext);
   const [onComplete, setOnComplete] = useState(false);
   const location = useLocation();
@@ -83,46 +84,8 @@ const ViewMoreCard = ({
       });
   };
 
-  // const handleBulkDownload = () => {
-  //   const formData = new FormData();
-  //   formData.append('academic_year', session_year);
-  //   formData.append('volume', volume_name);
-  //   formData.append('grade', centralGradeName);
-  //   formData.append('subject', centralSubjectName);
-  //   formData.append('chapter', chapter_name);
-  //   formData.append('period', periodDataForView?.period_name);
-  //   axios
-  //     .post(`${endpoints.lessonPlan.bulkDownload}`, formData, {
-  //       headers: {
-  //         'x-api-key': 'vikash@12345#1231',
-  //       },
-  //     })
-  //     .then((result) => {
-  //       if (result.data.status_code === 200) {
-  //         let a = document.createElement('a');
-  //         if (result.data.result) {
-  //           a.href = result.data.result;
-  //           a.click();
-  //           a.remove();
-  //         } else {
-  //           setAlert('error', 'Nothing to download!');
-  //         }
-  //       } else {
-  //         setAlert('error', result.data.description);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       setAlert('error', error.message);
-  //     });
-  // };
-
-  // const getS3DomainURL = (file, p)=>{
-  //     `${endpoints.lessonPlan.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${centralGradeName}/${centralSubjectName}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}`
-  //     return `${endpoints.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${grade_name}/${subject_name}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${fileSrc}`
-  // }
-
   return (
-    <Paper className='rootViewMore'>
+    <Paper className={classes.rootViewMore}>
       <div className='viewMoreHeader'>
         <div className='leftHeader'>
           <div className='headerTitle'>{periodDataForView?.period_name}</div>
@@ -221,9 +184,8 @@ const ViewMoreCard = ({
               <Button
                 key={`btn-${periodDataForView?.id}`}
                 variant='contained'
-                style={{ color: 'white' }}
+                style={{color:'white', width: '100%' }}
                 color='primary'
-                className='custom_button_master modifyDesign'
                 size='small'
                 onClick={handleComplete}
               >

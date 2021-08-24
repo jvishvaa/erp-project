@@ -2,7 +2,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import CloseIcon from '@material-ui/icons/Close';
-import { Grid, TextField, IconButton, Button } from '@material-ui/core';
+import { Grid, TextField, IconButton, Button ,makeStyles} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Loader from '../../components/loader/loader';
 import './style.scss';
@@ -11,7 +11,18 @@ import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import StudentTableList from './studentTableList';
 
+
+const useStyles = makeStyles((theme)=>({
+  totalStudentStrenghtCardLabel :{
+    color: theme.palette.secondary.main,
+    fontSize: "13px",
+    fontWeight: "bold !important",
+    fontFamily: "Raleway",
+  }
+}))
+
 const TotalStudentWiseDetails = ({ year, branch, grade, hadleClearGrade }) => {
+  const classes = useStyles()
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectedSection, setSelectedSection] = useState('');
   const [selectedGradeData, setSelecteGradeData] = useState('');
@@ -74,7 +85,7 @@ const TotalStudentWiseDetails = ({ year, branch, grade, hadleClearGrade }) => {
                 <Grid item md={7} xs={12} style={{ textAlign: 'left', padding: '0px' }}>
                   <Grid container spacing={1} direction='row' alignItems='center'>
                     <Grid item md={12} xs={12}>
-                      <span className='totalStudentStrenghtCardLabel'>
+                      <span className={classes.totalStudentStrenghtCardLabel}>
                         {(grade && grade.grade_name) || ''}
                       </span>
                     </Grid>

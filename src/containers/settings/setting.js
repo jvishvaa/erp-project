@@ -165,8 +165,6 @@ const Setting = (props) => {
   const handlevibrant = (img) => {
 
     Vibrant.from(img).getPalette().then((palette) => {
-      let colors = []
-      console.log("palette", palette)
       if (palette.hasOwnProperty("DarkVibrant") && palette["DarkVibrant"])
         setprimarycolor(palette["DarkVibrant"].getHex())
 
@@ -379,14 +377,14 @@ const Setting = (props) => {
         
       </CardActions> */}
               {imgupdate ? <div style={{ marginLeft: "25%", marginTop: "4%" }}>
-                <Button color="primary" variant="contained" type="submit">
+                <Button color="primary" style={{color : "white"}} variant="contained" type="submit">
                   Save
                 </Button>
-                <Button color="primary" variant="contained" onClick={cancelClick} style={{ marginLeft: "2%" }}>
+                <Button className = "cancelButton labelColor" variant="contained" onClick={cancelClick} style={{ marginLeft: "2%" }}>
                   Cancel
                 </Button>
               </div>
-                : <Button color="primary" variant="contained" onClick={handleClick} style={{ marginLeft: "35%", marginTop: "6%" }}>
+                : <Button color="primary" variant="contained" onClick={handleClick} style={{ marginLeft: "35%", marginTop: "6%",color : "white" }}>
                   Update
                 </Button>}
 
@@ -443,12 +441,12 @@ const Setting = (props) => {
               </div><br />
               <div style={{ display: "flex" }}>
                 <div>
-                  <Button color="primary" variant="contained" onClick={reseteTheme} style={{ marginTop: "-2%" }}>
+                  <Button color="primary" variant="contained" onClick={reseteTheme} style={{ marginTop: "-2%" ,color : "white"}}>
                     Reset
                   </Button>
                 </div>
                 <div style={{ marginLeft: "15%" }}>
-                  {colorupdate ? <Button color="primary" variant="contained" type="submit" style={{ marginTop: "-2%", display: (pickprimarycolor || picksecondarycolor) ? "none" : "inherit" }}>
+                  {colorupdate ? <Button color="primary" variant="contained" type="submit" style={{ marginTop: "-2%",color : "white", display: (pickprimarycolor || picksecondarycolor) ? "none" : "inherit" }}>
                     Save
                   </Button> : null}
                 </div>

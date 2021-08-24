@@ -6,27 +6,14 @@
     margin-bottom: 20px;
   }
 
-  .bread-crumbs-container {
-    width: 100% !important;
-    .page_title {
-      margin: 0;
-    }
-  }
   .inner-container {
     width: calc(100% - 40px);
     margin: 0 20px;
-    .form-container {
-      .MuiFormControl-root {
-        .MuiSvgIcon-root {
-          color: #ff6b6b;
-        }
-      }
-    }
   }
   .MuiDataGrid-footer {
     .MuiTablePagination-root {
       width: 100% !important;
-      color: $secondary-color !important;
+      // color: $secondary-color !important;
       .MuiTablePagination-toolbar {
         justify-content: center;
         .MuiTablePagination-spacer {

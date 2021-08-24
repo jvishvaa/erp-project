@@ -674,7 +674,7 @@ class StudentLedgerTab extends Component {
           </Grid>
           <Grid item xs={2} className={classes.item}>
             <Button
-              style={{ marginLeft: '10px', marginTop: '20px' }}
+              style={{ marginLeft: '10px', marginTop: '20px', color : "white" }}
               variant='contained'
               color='primary'
               disabled={!this.state.session}

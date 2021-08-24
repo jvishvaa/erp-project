@@ -1,11 +1,11 @@
 .custom_selection_table_wrapper  .MuiDataGrid-root{
-	color: #014B7E !important;
+	/* color: #014B7E !important; */
 }
 .custom_selection_table_wrapper  .MuiDataGrid-colCellTitle{
 	font-weight: 600 !important;
 }
 .custom_selection_table_wrapper  .MuiDataGrid-iconSeparator {
-	color: #FF6B6B !important;
+	/* color: #FF6B6B !important; */
 }
 .custom_selection_table_wrapper  .MuiDataGrid-cell{
 	text-align: center;
@@ -37,7 +37,7 @@
     font-weight: 500;
 }
 .custom_selection_table_wrapper .MuiTablePagination-toolbar{
-	color: #014B7E;
+	/* color: #014B7E; */
 }
 .custom_selection_table_wrapper .MuiTablePagination-root{
 	margin: auto;

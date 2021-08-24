@@ -293,9 +293,8 @@ return (
 
             <Button
               variant='contained'
-              style={{ color: 'white'}}
+              style={{ color: 'white', width: '100%'}}
               color="primary"
-              className="custom_button_master"
               size='medium'
               type='submit'
               onClick={handleSubmit}
@@ -310,9 +309,8 @@ return (
 
         <Button
         variant='contained'
-        style={{ color: 'white'}}
+        style={{ color: 'white', width: '100%' }}
         color="primary"
-        className="custom_button_master"
         size='medium'
         type='submit'
         onClick={handleCreateLobby}

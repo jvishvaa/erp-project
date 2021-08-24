@@ -76,11 +76,7 @@
           }
         }
       }
-      .questions-container {
-        .questions-header {
-          color: $primary-color;
-          font-size: 1.2rem;
-        }
+      .questions-container {      
         .questions-content {
           .question-header-row {
             display: flex;
@@ -100,7 +96,7 @@
                 display: flex;
                 flex-direction: row;
                 .MuiFormLabel-root {
-                  color: $secondary-color;
+                  // color: $secondary-color;
                   margin: 0 1rem;
                 }
                 .MuiFormControlLabel-root {

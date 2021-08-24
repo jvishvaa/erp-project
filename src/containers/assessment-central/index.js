@@ -373,7 +373,7 @@ const Assesment = () => {
           className='lesson-plan-breadcrumb-wrapper'
           style={{ display: 'flex', justifyContent: 'space-between' }}
         >
-          <CommonBreadcrumbs componentName='create Test' isAcademicYearVisible={true} />
+          <CommonBreadcrumbs componentName='Create Test' isAcademicYearVisible={true} />
           <div>
             {!expandFilter ? (
               <IconButton
@@ -605,60 +605,45 @@ const Assesment = () => {
               <Grid item md={2} xs={6}>
                 <div className='btn-container'>
                   <Button
-                    style={{ borderRadius: '10px' }}
+                    style={{ width: '100%' }}
                     variant='contained'
-                    className='disabled-btn'
+                    className='cancelButton labelColor'
                     onClick={() => {
                       formik.handleReset();
                     }}
                   >
-                    CLEAR ALL
+                    Clear All
                   </Button>
                 </div>
               </Grid>
               <Grid item md={2} xs={6}>
                 <div className='btn-container with-border'>
                   <Button
-                    style={{ borderRadius: '10px' }}
+                    style={{ width: '100%', color: 'white' }}
                     variant='contained'
-                    className=''
                     color='primary'
+                    size='medium'
                     onClick={() => {
                       handleFilterAssessment();
                     }}
                   >
-                    FILTER
+                    Filter
                   </Button>
-                  <div className='border-line-container'>
-                    <div className='line' />
-                  </div>
                 </div>
               </Grid>
-              {/* <Grid item md={2} xs={6}>
-                <div className='btn-container'>
-                  <Button
-                    variant='contained'
-                    style={{ borderRadius: '10px' }}
-                    className='disabled-btn'
-                    onClick={() => history.push('/assessment-reports')}
-                  >
-                    REPORTS
-                  </Button>
-                </div>
-              </Grid> */}
               <Grid item md={2} xs={6}>
                 <div className='btn-container'>
                   <Button
-                    style={{ borderRadius: '10px' }}
+                    style={{ width: '100%', color: 'white' }}
                     variant='contained'
-                    className=''
-                    startIcon={<AddIcon />}
+                    startIcon={<AddIcon style={{ fontSize: '30px' }} />}
                     color='primary'
+                    size='medium'
                     onClick={() => {
                       history.push('/create-assesment?clear=true');
                     }}
                   >
-                    CREATE NEW
+                    Create New
                   </Button>
                 </div>
               </Grid>
@@ -673,11 +658,6 @@ const Assesment = () => {
                 justify='space-between'
                 style={{ backgroundColor: '#fafafa' }}
               >
-                {/* <Grid item md={1} xs={12}>
-                  <Typography component='h4' className='tab-header' color='secondary'>
-                    List
-                  </Typography>
-                </Grid> */}
                 <Grid item md={11} xs={12} style={{ alignItems: 'right' }}>
                   <Tabs
                     indicatorColor='primary'

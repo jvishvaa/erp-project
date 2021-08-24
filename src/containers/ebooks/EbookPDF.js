@@ -26,6 +26,16 @@ const useStyles = makeStyles((theme) => ({
     width: 60,
     height: 60,
   },
+  pagercoustom: {
+    display: "flex",
+    margin: "0px",
+    padding: "10px",
+    backgroundColor: theme.palette.primary.main,
+    color: "#fff",
+    position: "fixed",
+    width: "100%",
+    bottom: 0,
+  }
 }));
 const EbookPdf = (props) => {
   const [page, setPage] = useState(1);
@@ -41,23 +51,23 @@ const EbookPdf = (props) => {
   const modeRef = useRef('pen');
   const [domineName, setDomineName] = useState('');
 
-  useEffect(()=> {
-    const {host}= new URL(axiosInstance.defaults.baseURL) // "dev.olvorchidnaigaon.letseduvate.com"
+  useEffect(() => {
+    const { host } = new URL(axiosInstance.defaults.baseURL) // "dev.olvorchidnaigaon.letseduvate.com"
     const hostSplitArray = host.split('.')
     const subDomainLevels = hostSplitArray.length - 2
     let domain = ''
     let subDomain = ''
     let subSubDomain = ''
-    if(hostSplitArray.length > 2){
-        domain = hostSplitArray.slice(hostSplitArray.length-2).join('')
+    if (hostSplitArray.length > 2) {
+      domain = hostSplitArray.slice(hostSplitArray.length - 2).join('')
     }
-    if(subDomainLevels===2){
-        subSubDomain = hostSplitArray[0]
-        subDomain = hostSplitArray[1]
-    }else if(subDomainLevels===1){
-        subDomain = hostSplitArray[0]
+    if (subDomainLevels === 2) {
+      subSubDomain = hostSplitArray[0]
+      subDomain = hostSplitArray[1]
+    } else if (subDomainLevels === 1) {
+      subDomain = hostSplitArray[0]
     }
-    const domainTobeSent =subDomain 
+    const domainTobeSent = subDomain
     setDomineName(domainTobeSent);
   })
 
@@ -138,8 +148,8 @@ const EbookPdf = (props) => {
         //     'x-api-key': 'vikash@12345#1231',
         //   },
         // }
-        )
-        .then((res) => {})
+      )
+        .then((res) => { })
         .catch((error) => {
           console.log(error);
         });
@@ -172,7 +182,7 @@ const EbookPdf = (props) => {
         //     'x-api-key': 'vikash@12345#1231',
         //   },
         // }
-        )
+      )
         .then((res) => {
           setLoading(false);
           setBookPage(res.data.ebook_image);
@@ -226,12 +236,12 @@ const EbookPdf = (props) => {
         user_id:
           localStorage.getItem('userDetails') &&
           JSON.parse(localStorage.getItem('userDetails'))?.user_id,
-      }, 
-      // {
-      //   headers: {
-      //     'x-api-key': 'vikash@12345#1231',
-      //   },
-      // }
+      },
+        // {
+        //   headers: {
+        //     'x-api-key': 'vikash@12345#1231',
+        //   },
+        // }
       )
       .then((res) => {
         props.goBackFunction();
@@ -252,14 +262,14 @@ const EbookPdf = (props) => {
     });
     const deleteAnnotateURL = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}&page_number=${page}`;
     axiosInstance
-      .delete(deleteAnnotateURL, 
+      .delete(deleteAnnotateURL,
       //   {
       //   headers: {
       //     'x-api-key': 'vikash@12345#1231',
       //   },
       // }
-      )
-      .then((res) => {})
+    )
+      .then((res) => { })
       .catch((error) => {
         console.log(error);
       });
@@ -296,7 +306,7 @@ const EbookPdf = (props) => {
                     aria-label='Close'
                     style={{ color: 'white' }}
                   >
-                    <Close onClick={handleClose} />
+                    <Close onClick={handleClose} style = {{color : "white"}} />
                     &nbsp;&nbsp;
                     <span onClick={handleClose} style={{ fontSize: '17px' }}>
                       Close
@@ -314,25 +324,25 @@ const EbookPdf = (props) => {
                       <IconButton
                         size='small'
                         style={{
-                          color: mode === 'pen' ? '#ef6869' : 'white',
+                          // color: mode === 'pen' ? '#ef6869' : 'white',
                           background: mode === 'pen' ? 'white' : '',
                         }}
                         onClick={() => setMode('pen')}
                         title='pen'
                       >
-                        <CreateIcon style={{ fontSize: '25px' }} />
+                        <CreateIcon style={{ fontSize: '25px', color: mode === 'pen' ? '' : 'white', }} />
                       </IconButton>
                     </li>
                     <li>
                       <IconButton
                         size='small'
                         style={{
-                          color: mode !== 'pen' ? '#ef6869' : 'white',
-                          background: mode !== 'pen' ? 'white' : '',
+                          background: mode === 'eraser' ? 'white' : '',
                         }}
                         onClick={() => setMode('eraser')}
+                        title='eraser'
                       >
-                        <ClearIcon size='small' style={{ fontSize: '20px' }} />
+                        <ClearIcon color={mode === 'pen' ? 'white' : ''} style={{ fontSize: '20px' }} />
                       </IconButton>
                     </li>
                     &nbsp; &nbsp;
@@ -414,20 +424,21 @@ const EbookPdf = (props) => {
         {hover ? (
           ''
         ) : (
-          <div className='pager-coustom'>
+          <div className={classes.pagercoustom}>
             <Grid container spacing={2}>
               <Grid item xs={4} sm={4} md={4}>
                 <ArrowBack
+                  style={{ color: "white" }}
                   className='next-prev left-icon'
                   disabled={page === 1}
                   onClick={
                     page === 1
                       ? ''
                       : () => {
-                        if (page > 1){
+                        if (page > 1) {
                           setPage(page - 1);
                         }
-                        }
+                      }
                   }
                 >
                   previous
@@ -453,14 +464,15 @@ const EbookPdf = (props) => {
               </Grid>
               <Grid item xs={4} sm={4} md={4}>
                 <ArrowForward
+                  style={{ color: "white" }}
                   className='next-prev right-icon'
                   fontFamily='large'
                   onClick={
                     page === totalPages
                       ? ''
                       : () => {
-                          setPage(page + 1);
-                        }
+                        setPage(page + 1);
+                      }
                   }
                 >
                   Next

@@ -28,9 +28,7 @@ const ProfileIcon = ({ firstname, lastname, bgColor }) => {
   return (
     <span className={classes.root}>
       <Avatar
-        className={classes.profileIcon}
-        style={{ backgroundColor: bgColor || '#CECECE' }}
-      >
+        className={classes.profileIcon}>
         {userText}
       </Avatar>
     </span>

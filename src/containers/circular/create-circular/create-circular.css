@@ -35,23 +35,6 @@ padding: 5px;
     justify-content: space-between;
 }
 
-.attchment_button.MuiButton-root{
-    text-transform: none;
-    background: white;
-    border: 1px solid #ff6b6b;
-    border-radius: 10px;
-    margin-left: 1.75rem;
-}
-
-.submit_button.MuiButton-root{
-    margin-top: 20px;
-    border:1px solid #FF6B6B;
-    border-radius: 10px;
-    margin-left:4.125rem;
-    width: 210px;
-
-}
-
 .divider_color.MuiDivider-root {
     background-color: #014e7b;
     margin-left: 5px;
@@ -68,25 +51,4 @@ padding: 5px;
   border-radius: 10px;
   margin-left: 28px; */
 }
-
-  @media screen and (min-width: 600px) {
-    .descriptionBorder {
-        border: 1px solid #FF6B6B;
-        border-radius: 10px;
-        margin-left: 2.3125rem;
-        margin-right: 2.3125rem;
-        opacity:1;
-    }
-  }
-  
-  @media screen and (max-width: 600px) {
-    .descriptionBorder{
-        border: 1px solid #FF6B6B;
-        border-radius: 10px;
-        margin-left: 2.3125rem;
-        margin-right: 2.3125rem;
-        opacity:1;
-
-    }
-  }
 

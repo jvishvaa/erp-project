@@ -374,6 +374,7 @@ const ResponderView = () => {
                 variant='contained'
                 type='submit'
                 color='primary'
+                style = {{color : "white"}}
                 className={classes.fbutton}
                 onClick={handleFilter}
               >
@@ -420,7 +421,7 @@ const ResponderView = () => {
                       >
                         Student ERP:
                       </Box>{' '}
-                      <Typography className={classes.display}>
+                      <Typography color = "secondary" className={classes.display}>
                         {item.student?.username}
                       </Typography>
                     </Typography>
@@ -433,7 +434,7 @@ const ResponderView = () => {
                       >
                         Student Name:
                       </Box>
-                      <Typography className={classes.display}>
+                      <Typography color = "secondary" className={classes.display}>
                         {item.student?.first_name}
                       </Typography>
                     </Typography>
@@ -447,7 +448,7 @@ const ResponderView = () => {
                       >
                         Requested Date:
                       </Box>{' '}
-                      <Typography className={classes.display}>
+                      <Typography color = "secondary" className={classes.display}>
                         {item.appointment_date}
                       </Typography>
                     </Typography>
@@ -460,7 +461,7 @@ const ResponderView = () => {
                       >
                         Requested Time:
                       </Box>
-                      <Typography className={classes.display}>
+                      <Typography color = "secondary" className={classes.display}>
                         {item.appointment_time ? item.appointment_time.slice(0, 5) : ''}
                       </Typography>
                     </Typography>
@@ -481,7 +482,7 @@ const ResponderView = () => {
                         {item.schedule_date ||
                         item.appointment_status === 'Accepted' ||
                         item.appointment_status === 'Declined' ? (
-                          <Typography className={classes.display}>
+                          <Typography color = "secondary" className={classes.display}>
                             {item.schedule_date
                               ? item.schedule_date
                               : item.appointment_date}
@@ -510,7 +511,7 @@ const ResponderView = () => {
                         {item.schedule_time ||
                         item.appointment_status === 'Accepted' ||
                         item.appointment_status === 'Declined' ? (
-                          <Typography className={classes.display}>
+                          <Typography color = "secondary" className={classes.display}>
                             {item.schedule_time
                               ? item.schedule_time
                               : item.appointment_time}
@@ -534,7 +535,7 @@ const ResponderView = () => {
                         >
                           Status:
                         </Box>{' '}
-                        <Typography className={classes.display}>
+                        <Typography color = "secondary" className={classes.display}>
                           {item.appointment_status}
                         </Typography>
                       </Typography>
@@ -594,7 +595,7 @@ const ResponderView = () => {
                       <Box fontWeight='fontWeightBold' m={1} className={classes.display}>
                         Appointment Mode:{' '}
                       </Box>
-                      <Typography className={classes.display}>
+                      <Typography color = "secondary" className={classes.display}>
                         {item.booking_mode}
                       </Typography>
                     </Typography>
@@ -602,7 +603,7 @@ const ResponderView = () => {
                       <Box fontWeight='fontWeightBold' m={1} className={classes.display}>
                         Appointment Host:
                       </Box>{' '}
-                      <Typography className={classes.display}>
+                      <Typography color = "secondary" className={classes.display}>
                         {item.role?.role_name}
                       </Typography>
                     </Typography>
@@ -610,7 +611,7 @@ const ResponderView = () => {
                       <Box fontWeight='fontWeightBold' m={1} className={classes.display}>
                         Concern:{' '}
                       </Box>
-                      <Typography className={classes.display}>{item.message}</Typography>
+                      <Typography color = "secondary" className={classes.display}>{item.message}</Typography>
                     </Typography>
 
                     {(item.response && item.appointment_status === 'Accepted') ||
@@ -639,7 +640,7 @@ const ResponderView = () => {
                             >
                               response:{' '}
                             </Box>
-                            <Typography className={classes.display}>
+                            <Typography color = "secondary" className={classes.display}>
                               {' '}
                               {item.response}
                             </Typography>
@@ -654,6 +655,7 @@ const ResponderView = () => {
                                 // className={classes.button}
                                 value='2'
                                 type='submit'
+                                style={{color : "white"}}
                                 disabled
                               >
                                 Accept
@@ -668,6 +670,7 @@ const ResponderView = () => {
                                 // style={{ height: 40, top: 75 }}
                                 type='submit'
                                 disabled
+                                style = {{color : "white"}}
                               >
                                 Decline
                               </Button>
@@ -702,7 +705,7 @@ const ResponderView = () => {
                                   // e.preventDefault();
                                   handleSubmit(e, item.id);
                                 }}
-                                style={{ display: 'inline' }}
+                                style={{ display: 'inline' ,color : "white"}}
                               >
                                 Accept
                               </Button>
@@ -714,7 +717,7 @@ const ResponderView = () => {
                                 name='appointment_status'
                                 // className={classes.button}
                                 // style={{ height: 40, top: 75 }}
-                                style={{ display: 'inline' }}
+                                style={{ display: 'inline' ,color : "white"}}
                                 type='submit'
                                 onClick={(e) => {
                                   // e.preventDefault();

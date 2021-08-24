@@ -114,8 +114,8 @@ const useStyles = makeStyles((theme) => ({
   secondaryHeading: {
     marginTop: 10,
     fontSize: theme.typography.pxToRem(15),
-    // color: theme.palette.text.secondary,
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
+    // color: '#014B7E',
   },
   comment: {
     // border: '1px solid red',
@@ -240,12 +240,7 @@ function ViewOrchadio() {
     const b = moment('2016-05-06T20:03:55');
     console.log(a.diff(b, 'minutes'));
   };
-  const arraymove = (arr, fromIndex, toIndex) => {
-    const element = arr[fromIndex];
-    arr.splice(fromIndex, 1);
-    arr.splice(toIndex, 0, element);
-    return arr;
-  };
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -686,12 +681,11 @@ function ViewOrchadio() {
                                 <Grid item xs={12}>
                                   <Button
                                     style={{
-                                      fontSize: 'small',
                                       margin: '20px',
                                       width: 150,
                                     }}
-                                    color='primary'
-                                    size='small'
+                                    className = "labelColor cancelButton"
+                                    size='medium'
                                     variant='contained'
                                     // onClick={handleFilter}
                                     disabled
@@ -700,13 +694,12 @@ function ViewOrchadio() {
                                   </Button>
                                   <Button
                                     style={{
-                                      fontSize: 'small',
                                       margin: '20px',
                                       width: 150,
                                     }}
                                     onClick={handleFilter}
                                     color='primary'
-                                    size='small'
+                                    size='medium'
                                     variant='contained'
                                   >
                                     Filter

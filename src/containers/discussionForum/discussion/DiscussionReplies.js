@@ -4,13 +4,13 @@ import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import ProfileIcon from '../../../components/icon/ProfileIcon';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   replyCommentBox: {
     marginTop: '8px',
     marginBottom: '8px',
   },
   replyByText: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '18px',
     fontWeight: 'lighter',
     fontFamily: 'Open Sans',
@@ -29,7 +29,7 @@ const useStyles = makeStyles({
     marginLeft: '5px',
   },
   replyUsername: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontFamily: 'Open Sans',
     fontWeight: 'normal',
@@ -57,7 +57,7 @@ const useStyles = makeStyles({
     width: '80%',
     height: '24px',
     fontSize: '18px',
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontFamily: 'Open Sans',
     fontWeight: 'normal',
     lineHeight: '24px',
@@ -66,14 +66,14 @@ const useStyles = makeStyles({
   commentsCount: {
     display: 'inline-block',
     width: '20%',
-    color: '#042955',
+    color: theme.palette.secondary.main,
     float: 'right',
     fontSize: '18px',
     fontWeight: 'bold',
     fontFamily: 'Open Sans',
     lineHeight: '24px',
   },
-});
+}));
 
 export default function DiscussionRepliesComponent(props) {
   const classes = useStyles({});

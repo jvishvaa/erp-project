@@ -25,7 +25,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import { Edit } from '@material-ui/icons';
 import { editPostDataAction } from '../../../redux/actions/discussionForumActions';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme)=>({
   discussionContainer: {
     width: '100%',
     marginTop: '10px',
@@ -39,7 +39,7 @@ const useStyles = makeStyles({
     borderRadius: '10px 10px 0px 0px',
   },
   discussionCategoryTitle: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontFamily: 'Open Sans',
     lineHeight: '27px',
@@ -48,7 +48,7 @@ const useStyles = makeStyles({
     padding: '7px 22px 19px',
   },
   discussionTitle: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '24px',
     fontWeight: 'bold',
     fontFamily: 'Open Sans',
@@ -63,24 +63,24 @@ const useStyles = makeStyles({
   dotSeparator: {
     height: '12px',
     width: '12px',
-    fill: '#FF6B6B',
+    fill: theme.palette.primary.main,
     marginRight: '10px',
   },
   postByText: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '18px',
     fontWeight: 'lighter',
     fontFamily: 'Open Sans',
   },
   username: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontFamily: 'Open Sans',
     lineHeight: '27px',
   },
   discussionTime: {
     marginLeft: '6px',
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontWeight: 'bold',
     fontFamily: 'Open Sans',
@@ -95,7 +95,7 @@ const useStyles = makeStyles({
     },
   },
   discussionIcon: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontWeight: 300,
     fontFamily: 'Open Sans',
@@ -104,7 +104,7 @@ const useStyles = makeStyles({
     verticalAlign: 'super',
   },
   noAwardsText: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     lineHeight: '24px',
   },
@@ -112,7 +112,7 @@ const useStyles = makeStyles({
     fill: '#FF6B6B',
   },
   discussionParagraph: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '18px',
     fontFamily: 'Open Sans',
     lineHeight: '24px',
@@ -120,7 +120,7 @@ const useStyles = makeStyles({
     overflow: 'hidden',
   },
   answersText: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '16px',
     fontFamily: 'Open Sans',
     fontWeight: 'bold',
@@ -128,7 +128,7 @@ const useStyles = makeStyles({
     marginTop: '9px',
   },
   commentReplyBox: {
-    borderLeft: '1px solid #FE6B6B',
+    borderLeft: `1px solid ${theme.palette.primary.main}`,
     minHeight: '60px',
   },
   popover: {
@@ -158,13 +158,13 @@ const useStyles = makeStyles({
     fontSize: '36px',
     fontWeight: 'bold',
   }
-});
+}));
 
-const StyledOutlinedButton = withStyles({
+const StyledOutlinedButton = withStyles((theme) => ({
   root: {
     height: '45px',
-    color: '#FE6B6B',
-    border: '1px solid #FF6B6B',
+    color: theme.palette.primary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: '10px',
     backgroundColor: 'transparent',
     position: 'absolute',
@@ -177,7 +177,7 @@ const StyledOutlinedButton = withStyles({
       width: '170px',
     },
   },
-})(Button);
+}))(Button);
 
 const OutlinedButton = withStyles({
   root: {
@@ -195,15 +195,15 @@ const OutlinedButton = withStyles({
   },
 })(Button);
 
-const StyledButton = withStyles({
+const StyledButton = withStyles((theme) => ({
   root: {
     color: '#FFFFFF',
     height: '42px',
     borderRadius: '10px',
     marginTop: '10px',
-    backgroundColor: '#FF6B6B',
+    backgroundColor: theme.palette.primary.main,
     '&:hover': {
-      backgroundColor: '#FF6B6B',
+      backgroundColor: theme.palette.primary.main,
     },
     '@media (min-width: 600px)': {
       marginTop: '0px!important',
@@ -213,7 +213,7 @@ const StyledButton = withStyles({
     fill: '#FFFFFF',
     stroke: '#FFFFFF',
   },
-})(Button);
+}))(Button);
 
 const StyledInput = withStyles({
   root: {
@@ -577,7 +577,7 @@ export default function DiscussionComponent(props) {
               <Grid container spacing={2}>
                 <Grid item sm={12} xs={6}>
                   <StyledButton
-                    color="secondary"
+                    color="primary"
                     variant="contained"
                     fullWidth
                     onClick={handleReadPost}

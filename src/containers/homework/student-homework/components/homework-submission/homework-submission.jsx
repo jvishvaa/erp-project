@@ -9,7 +9,6 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 
 import {
   Grid,
@@ -43,8 +42,6 @@ import Attachment from '../../../teacher-homework/attachment';
 import {
   uploadFile,
 } from '../../../../../redux/actions';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { set } from 'lodash';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const useStyles = makeStyles((theme) => ({
@@ -73,6 +70,64 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto',
     bottom: 0,
   },
+  homeworkblock:{
+    color : theme.palette.secondary.main,
+    fontWeight: 600
+  },
+  homeworkSubmitwrapper:{
+    border: `1px solid ${theme.palette.primary.main}`,  
+    borderRadius: "10px",
+    padding: "20px",
+    ['@media screen(min-width:768px)']: {
+      margin: "10px",
+      width: "90% !important",
+      height: "auto !important",
+    }
+  },
+  homeworkTypeItem:{
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    marginBottom: "20px",
+    textAlign: "center",
+    padding: "10% 15%",
+    color: theme.palette.secondary.main,
+    fontSize: "1rem",
+    fontWeight: 600,
+    textTransform: "capitalize",
+    '@media screen and (max-width:768px)' : {
+      padding: "10px 15px !important",
+      width: "100%",
+    }
+  },descBox:{
+    marginTop: "15px",
+    backgroundColor: "#bcf1ff",
+    color: theme.palette.secondary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    fontSize: "16px",
+    width: "70%",
+    padding: "11px 18px",
+    '@media screen and (max-width:768px)' : {
+      width: "100%",
+    },
+    '&::before': {
+      content: '"Instruction : "',
+      fontWeight: 600,
+    }
+  },
+  acceptedfiles:{
+    color : theme.palette.secondary.main,
+    width:"100%"
+  },
+  homeworkQuestion:{
+    width: "100%",
+    color:theme.palette.secondary.main,
+    position: "relative",
+    paddingBottom: "8px",
+    fontSize: "18px",
+    borderBottom: `1px solid ${theme.palette.primary.main}`
+
+  }
 }));
 
 const HomeworkSubmission = withRouter(({ history, ...props }) => {
@@ -471,12 +526,12 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         <Grid item className='homework_type_wrapper'>
           <div className='homework_type'>
             <div
-              className='homework_type_item non_selected_homework_type_item all-homeWorks'
+              className={`${classes.homeworkTypeItem} non_selected_homework_type_item all-homeWorks`}
               onClick={handleHomeworkCancel}
             >
               All Homeworks
             </div>
-            <div className='homework_type_item selected all-homeWorks home-sub'>
+            <div className={`${classes.homeworkTypeItem} selected all-homeWorks home-sub`}>
               <div className="date-sub-home">
                 <div>{date}</div>
                 <div>{subjectName}</div>
@@ -485,9 +540,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
           </div>
         </Grid>
         <Grid item lg={10}>
-          <div className='homework_submit_wrapper'>
+          <div className={classes.homeworkSubmitwrapper}>
             <div className='homework_block_wrapper_submit'>
-              <div className='homework_block homework_submit_tag'>
+              <div className={` ${classes.homeworkblock} homework_submit_tag`}>
                 Homework - {subjectName} : {homeworkTitle}
               </div>
               {homeworkSubmission.status === 1 &&
@@ -506,7 +561,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                       color='primary'
                       checked={isQuestionWise}
                     />
-                    <span>Upload Question Wise</span>
+                    <Typography color = "secondary" style={{marginTop : "10px"}}>Upload Question Wise</Typography>
                   </div>
                 </div>
               }
@@ -534,7 +589,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   </Button>
 
                 </div>
-                <small style={{ width: '100%', color: '#014b7e' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>
+                <small className={classes.acceptedfiles} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>
                 <div className="bulk_upload_attachments">
                   {bulkDataDisplay.map((file, i) => (
                     <FileRow
@@ -622,7 +677,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   className={`homework-question-container student-view ${calssNameWise}`}
                   key={`homework_student_question_${index}`}
                 >
-                  <div className={`homework-question ${calssNameWise}`} >
+                  <div className={` ${classes.homeworkQuestion} ${calssNameWise}`} >
                     <span className='question'>Q{index + 1}: {question.question}</span>
                   </div>
                   {isQuestionWise &&
@@ -980,7 +1035,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   style={{ width: '70%' }}
                 />
                 {desc &&
-                  <div className='descBox'>
+                  <div className={classes.descBox}>
                     {desc}
                   </div>
                 }
@@ -1004,8 +1059,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               <div className='homework_submit_button_wrapper'>
                 <Button
                   variant='contained'
-                  className='custom_button_master labelColor homework_submit_button_cancel'
+                  className='cancelButton labelColor homework_submit_button_cancel'
                   size='medium'
+                  style={{ width: '100%' }}
                   onClick={handleHomeworkCancel}
                 >
                   {homeworkSubmission.status === 1 ? 'CANCEL' : 'BACK'}
@@ -1013,10 +1069,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 {homeworkSubmission.status === 1 &&
                   <Button
                     variant='contained'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', width: '100%' }}
                     onClick={handleHomeworkSubmit}
                     color='primary'
-                    className='custom_button_master'
                     size='medium'
                   >
                     Submit

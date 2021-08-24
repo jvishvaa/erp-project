@@ -1,32 +1,3 @@
-/* .homework_table_wrapper .message_log_table tr th:not(:last-child):after {
-	content: '';
-	height: 100%;
-	width: 1px;
-	position: absolute;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
-	background-color: #ff6b6b;
-  }
-  .homework_table_wrapper .message_log_table tr td:not(:last-child):after {
-	content: '';
-	height: 100%;
-	width: 1px;
-	position: absolute;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
-	background-color: #ff6b6b;
-  } */
-/* .message_log_breadcrumb_wrapper  .create_group_filter_container{
-	background: #F9F9F9;
-  } */
-/* #menu .MuiPaper-rounded{
-	top: 231px !important;
-	left: 751px !important;
-	min-width: 147px !important;
-    
-  } */
 .message_log_white_wrapper {
   margin-top: 40px;
   height: 100vh;
@@ -51,10 +22,6 @@
   .MuiInput-input {
   color: #ff6b6b;
 }
-.MuiSelect-icon {
-  color: #ff6b6b !important;
-}
-
 .message_log_breadcrumb_wrapper {
   margin: 0px !important;
 }
@@ -67,9 +34,6 @@
 .starContainer {
   width: 35%;
 }
-/* .message_log_white_wrapper{
-	  margin-top: 45px
-  } */
 .for-mobile .subject-homework-details-wrapper {
   margin-top: 3px;
 }
@@ -96,12 +60,8 @@
   input {
   color: #ff6b6b !important;
 }
-/* .makeStyles-content-22 .message_log_breadcrumb_wrapper .create_group_filter_container{
-	background-color: #F3F3F3 !important;	
-} */
 
 .mobile-date-picker input {
-  color: #014b7e;
   font-size: 15px;
 }
 .mobile-date-picker label {
@@ -110,17 +70,6 @@
 }
 .create_group_filter_container .tb-header tr th {
   background-color: #f3f3f3 !important;
-}
-.day-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 1rem;
-  font-weight: 600;
-  border: 1px solid #014b7e;
 }
 .message_log_breadcrumb_wrapper {
   background: #f9f9f9;
@@ -132,25 +81,6 @@
 
 .create_group_filter_container fieldset {
   border-radius: 10px;
-}
-.create_group_filter_container label {
-  color: #014b7e;
-}
-.create_group_filter_container label:focus {
-  color: #014b7e !important;
-}
-.homework_table_wrapper {
-  border: 1px solid #ff6b6b;
-  box-shadow: none;
-}
-.homework_table_wrapper .MuiTableCell-root:not(:last-child) {
-  border-right: 1px solid #ff6b6b;
-}
-.homework_table_wrapper .MuiTableRow-root:not(:last-child) .MuiTableCell-root {
-  border-bottom: 1px solid #ff6b6b !important;
-}
-.homework_table_wrapper .MuiTableHead-root .MuiTableCell-root {
-  border-bottom: 1px solid #ff6b6b !important;
 }
 .selected {
   background-color: #ffecec;
@@ -170,10 +100,6 @@
   border-radius: 10px !important;
   overflow-y: auto;
   max-height: 10000px !important;
-}
-.homework_table_wrapper {
-  border-radius: 10px !important;
-  box-shadow: none !important;
 }
 .homework_header {
   text-transform: capitalize;
@@ -238,14 +164,7 @@
   border: none !important;
   outline: none !important;
 }
-.homework_student_header_count {
-  position: absolute;
-  right: 0;
-  top: 0;
-  background-color: #ff6b6b;
-  color: white;
-  width: 20px;
-}
+
 .homework_right_wrapper {
   padding: 0%;
   /* margin-top: -110px; */
@@ -432,22 +351,13 @@
     display: flex;
     justify-content: space-around;
   }
-  .icon-text {
-    color: #014b7e;
-    font-size: 14px;
-  }
-  /* .MuiDivider-inset {
-		margin-left: 72px !important;
-		margin-right: 30px  !important;
-	}
-	 */
+
   .mobile-screen-subject-button {
     overflow: auto;
     white-space: nowrap;
   }
 
   .mobile-date-picker .date-ranger label {
-    color: #014b7e !important;
     font-size: 20px !important;
   }
   .mobile-date-picker .date-ranger fieldset {
@@ -460,28 +370,10 @@
     margin-right: 40px;
   }
   .date-ranger input {
-    color: #014b7e !important;
     font-size: 14px !important;
   }
   .date-ranger p {
     display: none !important;
-  }
-
-  /* .MuiOutlinedInput-notchedOutline{
-		border-color: 1px #DBDBDB !important;
-	} */
-  .day-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 1rem;
-    font-weight: 600;
-    color: #014b7e;
-    font-size: 12px;
-    border: 1px solid #014b7e;
   }
 
   .dates span {

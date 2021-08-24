@@ -10,6 +10,7 @@ import {
   Checkbox,
   Grid,
   useTheme,
+  makeStyles,
   Typography,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
@@ -23,15 +24,24 @@ import './styles.scss';
 import QuestionDetailCard from '../question-detail-card.js';
 import ENVCONFIG from '../../../../config/config';
 
-const menuOptions = [
-  'Assign marks',
-  // 'Without marks',
-  'Negative marking',
-  // 'Grades only',
-  // 'Relative marking',
-];
+const useStyles = makeStyles((theme) =>({
+  questionsheader : {
+    color: theme.palette.primary.main,
+    fontSize: "1.2rem"
+  },
+  formfieldheader:{
+    color: theme.palette.primary.main,
+    fontSize: "1.2rem",
+    margin: "1rem 0",
+  },
+  label: {
+    color: theme.palette.secondary.main,
+    marginLeft: "1rem",
+    fontSize: "1.1rem",
+    width: "50%",
+  }
+}))
 
-const ITEM_HEIGHT = 60;
 
 function extractContent(s) {
   const span = document.createElement('span');
@@ -61,6 +71,7 @@ const AssesmentTest = ({
   paperchecked,
   setChecked,
 }) => {
+  const classes = useStyles()
   const [minimize, setMinimize] = useState(false);
   const [openEditor, setOpenEditor] = useState(true);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -132,12 +143,12 @@ const AssesmentTest = ({
         {!minimize && (
           <>
             <div className='test-detail-container'>
-              <div className='form-field-header'>TEST DETAILS</div>
+              <div className={classes.formfieldheader}>TEST DETAILS</div>
               <div className='test-details'>
                 <Grid container spacing={5}>
                   <Grid xs={12} sm={6}>
                     <div className='detail'>
-                      <div className='label'>Test Name</div>
+                      <div className={classes.label}>Test Name</div>
                       <div className='input-container'>
                         <TextField
                           variant='outlined'
@@ -160,7 +171,7 @@ const AssesmentTest = ({
                   {/* <div className='dividerVertical' /> */}
                   <Grid xs={12} sm={6}>
                     <div className='detail'>
-                      <div className='label'>Test ID</div>
+                      <div className={classes.label}>Test ID</div>
                       <div className='input-container'>
                         <TextField
                           variant='outlined'
@@ -184,7 +195,7 @@ const AssesmentTest = ({
                   {/* <div className='dividerVertical' /> */}
                   <Grid xs={12} sm={6}>
                     <div className='detail'>
-                      <div className='label' style={{ marginRight: isMobile && '1rem' }}>
+                      <div className={classes.label} style={{ marginRight: isMobile && '1rem' }}>
                         Test Date
                       </div>
                       <div className='input-container'>
@@ -206,7 +217,7 @@ const AssesmentTest = ({
                   </Grid>
                   <Grid xs={12} sm={6}>
                     <div className='detail'>
-                      <div className='label'>Test Duration</div>
+                      <div className={classes.label}>Test Duration</div>
                       <div className='input-container duration'>
                         <TextField
                           variant='outlined'
@@ -226,7 +237,7 @@ const AssesmentTest = ({
                   </Grid>
                   <Grid xs={12} sm={6} style={{ padding: '15px 25px' }}>
                     <Typography>
-                      <Grid component='label' container alignItems='center' spacing={1}>
+                      <Grid component={classes.label} container alignItems='center' spacing={1}>
                         <Grid item>Ques. Wise Marks</Grid>
                         <Switch checked={paperchecked} onChange={toggleChecked} />
                         <Grid item>Ques. Paper Wise Marks</Grid>
@@ -236,7 +247,7 @@ const AssesmentTest = ({
                   {paperchecked && (
                     <Grid xs={12} sm={6}>
                       <div className='detail'>
-                        <div className='label'>Test Marks</div>
+                        <div className={classes.label}>Test Marks</div>
                         <div className='input-container duration'>
                           <TextField
                             variant='outlined'
@@ -261,7 +272,7 @@ const AssesmentTest = ({
             </div>
 
             <div className='form-field'>
-              <div className='form-field-header'>GENERAL INSTRUCTIONS</div>
+              <div className={classes.formfieldheader}>GENERAL INSTRUCTIONS</div>
               {openEditor && (
                 <Editor
                   apiKey={TINYMCE_API_KEY}
@@ -306,12 +317,12 @@ const AssesmentTest = ({
                           variant='contained'
                           style={{
                             color: 'white',
+                            width: '100%',
                             textTransform: 'none',
                             width: '12%',
                             margin: '0px 0px 0px 15px',
                           }}
                           color='primary'
-                          className='modifyDesign'
                           size='small'
                           onClick={() => {
                             setOpenEditor(true);
@@ -319,7 +330,7 @@ const AssesmentTest = ({
                         >
                           Format Text
                         </Button>
-                        <IconButton>
+                        {/* <IconButton>
                           <div>
                             <SvgIcon
                               component={() => (
@@ -331,7 +342,7 @@ const AssesmentTest = ({
                               )}
                             />
                           </div>
-                        </IconButton>
+                        </IconButton> */}
                       </>
                     ),
                   }}
@@ -347,7 +358,7 @@ const AssesmentTest = ({
                 }}
                 className='questions-header-container'
               >
-                <div className='questions-header'>QUESTIONS </div>
+                <div className={classes.questionsheader}>QUESTIONS </div>
                 <Button
                   variant='contained'
                   onClick={() => {

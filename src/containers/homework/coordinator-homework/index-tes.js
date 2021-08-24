@@ -41,6 +41,7 @@ import teacherHomework from '../teacher-homework';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    ...theme.homeworkTableWrapper,
     '& > *': {
       marginTop: theme.spacing(2),
     },
@@ -55,6 +56,14 @@ const useStyles = makeStyles((theme) => ({
   container: {
     maxHeight: 440,
   },
+  viewGroupHeader:{
+    color : theme.palette.secondary.main,
+  },
+  homeworkblock:{
+    color : theme.palette.secondary.main,
+    fontWeight: 600
+
+  }
 }));
 
 function getDaysAfter(date, amount) {
@@ -191,7 +200,7 @@ const CoordinatorTeacherHomework = withRouter(
           />
             <div className='message_log_white_wrapper'>
               <div className='homework_block_wrapper'>
-                <div className='homework_block'>Weekly Time table</div>
+                <div className={classes.homeworkblock}>Weekly Time table</div>
                 <div className='icon-desc-container'>
                   <SvgIcon
                     component={() => (
@@ -284,14 +293,14 @@ const CoordinatorTeacherHomework = withRouter(
                         </div>
                       ) : (
                         <Paper
-                          className={`homework_table_wrapper ${classes.root}`}
+                          className={classes.root}
                           ref={tableContainer}
                         >
                           <TableContainer
                             className={`table table-shadow homework_table ${classes.container}`}
                           >
                             <Table stickyHeader aria-label='sticky table'>
-                              <TableHead className='view_groups_header'>
+                              <TableHead >
                                 <TableRow>
                                   {/* {messageRows.header.map((headers, i) => (
                               <TableCell className='homework_header'>{headers}</TableCell>
@@ -648,7 +657,7 @@ const CoordinatorTeacherHomework = withRouter(
                 </div>
               </div>
               <div className='homework_block_wrapper'>
-                <div className='homework_block'>Weekly Time table</div>
+                <div className={classes.homeworkblock}>Weekly Time table</div>
                 <div className='icon-desc-container'>
                   <SvgIcon
                     component={() => (
@@ -718,18 +727,15 @@ const CoordinatorTeacherHomework = withRouter(
                         </div>
                       ) : (
                         <Paper
-                          className={`homework_table_wrapper ${classes.root}`}
+                          className={classes.root}
                           ref={tableContainer}
                         >
                           <TableContainer
                             className={`table table-shadow homework_table ${classes.container}`}
                           >
                             <Table stickyHeader aria-label='sticky table'>
-                              <TableHead className='view_groups_header'>
+                              <TableHead className={classes.viewGroupHeader}>
                                 <TableRow>
-                                  {/* {messageRows.header.map((headers, i) => (
-                              <TableCell className='homework_header'>{headers}</TableCell>
-                            ))} */}
                                   {homeworkCols.map((col) => {
                                     return typeof col === 'object' ? (
                                       <TableCell>{col.subject_name}</TableCell>

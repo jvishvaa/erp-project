@@ -9,28 +9,42 @@ import {
   SvgIcon,
   IconButton,
   TextareaAutosize,
+  makeStyles
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Layout from '../../Layout';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import hidefilter from '../../../assets/images/hidefilter.svg';
-import showfilter from '../../../assets/images/showfilter.svg';
+import BreadcrumbToggler from '../../../components/breadcrumb-toggler';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import attachmenticon from '../../../assets/images/attachmenticon.svg';
 import deleteIcon from '../../../assets/images/delete.svg';
-import axios from 'axios';
-import moment from 'moment';
-import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
-import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import { Context } from '../context/CircularStore';
-import { filter, result } from 'lodash';
 import Loading from '../../../components/loader/loader';
+import classWiseSms from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/classWiseSms';
 
+
+const useStyles = makeStyles((theme)=>({
+  attchmentbutton:{
+    textTransform: "none",
+    background: "white",
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    marginLeft: "1.75rem",
+  },
+  descriptionBorder:{
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    marginLeft: "2.3125rem",
+    marginRight: "2.3125rem",
+    opacity: 1,
+  }
+ 
+}))
 const CraeteCircular = () => {
+  const classes = useStyles
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const { circularKey } = useParams();
@@ -46,11 +60,8 @@ const CraeteCircular = () => {
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [sectionDropdown, setSectionDropdown] = useState([]);
 
-  // alert(circularKey,'k')
-  //context
-  const [state, setState] = useContext(Context);
-  const { isEdit, editData } = state;
-  const { setIsEdit, setEditData } = setState;
+  const [state] = useContext(Context);
+  const { editData } = state;
 
   const [title, setTitle] = useState(editData.circular_name || '');
   const [description, setDescription] = useState(editData.description || '');
@@ -504,26 +515,9 @@ const CraeteCircular = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className={isMobile ? 'breadCrumbFilterRow' : null} className='isFilter'>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Circulars'
-              childComponentName='Create New'
-            />
-          </div>
-          <div className='hideShowFilterIcon'>
-            <IconButton onClick={() => setIsFilter(!isFilter)}>
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={{ height: '20px', width: '25px' }}
-                    src={isFilter ? hidefilter : showfilter}
-                  />
-                )}
-              />
-            </IconButton>
-          </div>
-        </div>
+        <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
+          <CommonBreadcrumbs componentName='Circulars' childComponentName='Create New' />
+        </BreadcrumbToggler>
         {isFilter ? (
           <Grid
             container
@@ -660,11 +654,12 @@ const CraeteCircular = () => {
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    className='custom_button_master labelColor'
+                    style={{ width: '100%' }}
+                    className='cancelButton labelColor'
                     size='medium'
                     onClick={handleClear}
                   >
-                    CLEAR ALL
+                    Clear All
                   </Button>
                 </Grid>
                 {isMobile && <Grid item xs={3} sm={0} />}
@@ -672,13 +667,12 @@ const CraeteCircular = () => {
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', width: '100%' }}
                     color='primary'
-                    className='custom_button_master'
                     size='medium'
                     onClick={handleFilter}
                   >
-                    NEXT
+                    Next
                   </Button>
                 </Grid>
               </>
@@ -693,7 +687,7 @@ const CraeteCircular = () => {
 
         {filterEvent ? (
           <div>
-            <div className='descriptionBorder'>
+            <div className={classes.descriptionBorder}>
               <Grid
                 container
                 spacing={isMobile ? 3 : 5}
@@ -753,7 +747,7 @@ const CraeteCircular = () => {
                         )}
                       />
                     }
-                    className='attchment_button'
+                    className={classes.attchmentbutton}
                     title='Attach Supporting File'
                     variant='contained'
                     size='medium'

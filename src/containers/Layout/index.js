@@ -885,15 +885,11 @@ const Layout = ({ children, history }) => {
             className={classes.menuControlContainer}
             onClick={() => setDrawerOpen((prevState) => !prevState)}
           >
-            <ListItemIcon className={classes.menuItemIcon}>
+            <ListItemIcon>
               {drawerOpen ? (
-                <>
-                  <CloseIcon />
-                </>
+                <CloseIcon className={classes.menuItemIcon} />
               ) : (
-                <>
-                  <MenuIcon />
-                </>
+                <MenuIcon className={classes.menuItemIcon} />
               )}
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>

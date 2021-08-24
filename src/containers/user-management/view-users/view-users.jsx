@@ -55,6 +55,7 @@ import { connect, useSelector } from 'react-redux';
 import './styles.scss';
 
 const useStyles = makeStyles((theme) => ({
+  root: theme.commonTableRoot,
   container: {
     maxHeight: 440,
   },
@@ -92,9 +93,6 @@ const useStyles = makeStyles((theme) => ({
   cardsContainer: {
     width: '95%',
     margin: '0 auto',
-  },
-  tablePaginationCaption: {
-    fontWeight: '600 !important',
   },
   downloadExcel: {
     float: 'right',
@@ -448,7 +446,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   useEffect(() => {
     if (moduleId && selectedYear) getBranchApi();
-  }, [moduleId , selectedYear]);
+  }, [moduleId, selectedYear]);
 
   useEffect(() => {
     if (moduleId) {
@@ -511,15 +509,16 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   return (
     <Layout>
+      <CommonBreadcrumbs
+        componentName='User Management'
+        childComponentName='View Users'
+      />
       <div className='view-users-page'>
+        <CommonBreadcrumbs
+          componentName='User Management'
+          childComponentName='View Users'
+        />
         <div className='inner-container'>
-          <div className='bread-crumbs-container'>
-            <CommonBreadcrumbs
-              componentName='User Management'
-              childComponentName='View Users'
-            isAcademicYearVisible={true}
-            />
-          </div>
           <Grid container spacing={4} className='form-container spacer'>
             <Grid item xs={12} md={3}>
               <FormControl
@@ -638,8 +637,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 <Button
                   variant='contained'
                   onClick={handleResetFilters}
-                  className='disabled-btn'
-                  fullWidth
+                  className='cancelButton labelColor'
+                  style={{ width: '100%' }}
+                  size='medium'
                 >
                   CLEAR ALL
                 </Button>
@@ -650,9 +650,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
               <Box style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
                 <Button
                   variant='contained'
-                  style={{ color: 'white' }}
+                  style={{ color: 'white', width: '100%' }}
                   color='primary'
-                  className='custom_button_master'
                   size='medium'
                   onClick={handleExcel}
                 >
@@ -672,7 +671,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         </div>
         <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
           <DialogTitle
-            style={{ cursor: 'move', color: '#014b7e' }}
             id='draggable-dialog-title'
           >
             Delete User
@@ -686,7 +684,11 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color='primary' onClick={handleDeleteConfirm}>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleDeleteConfirm}>
               Confirm
             </Button>
           </DialogActions>
@@ -746,14 +748,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                             />
                           </IconButton>
                         ) : (
-                          // <button
-                          //   type='submit'
-                          //   className='group_view_deactivate_button group_view_button'
-                          //   title='Deactivate'
-                          //   onClick={() => handleStatusChange(items.userId, i, '2')}
-                          // >
-                          //   D
-                          // </button>
                           <button
                             type='submit'
                             title='Activate'
@@ -794,16 +788,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 </TableBody>
               </Table>
             </TableContainer>
-
-            {/* <div className={`${classes.root} pagenation_view_groups`}>
-              <Pagination
-                page={Number(currentPage)}
-                size='large'
-                className='books__pagination'
-                onChange={handlePagination}
-                count={totalPages}
-              />
-            </div> */}
             <TablePagination
               component='div'
               count={totalCount}
