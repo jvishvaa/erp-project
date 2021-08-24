@@ -1,10 +1,3 @@
-.multipleChoiceContainer {
-  width: 95%;
-  margin: 20px auto 0 auto;
-  border: 1px solid #ff6b6b;
-  border-radius: 10px;
-  padding: 20px;
-}
 
 .compMultipleChoiceContainer {
   width: 95%;
@@ -103,12 +96,6 @@
   display: flex;
   flex-direction: column;
 }
-.matchingOptionsWrapper {
-  border: 1px solid #1f628f;
-  border-radius: 10px;
-  padding: 20px;
-  margin-top: 20px;
-}
 
 .matchingOptionsContainer {
   display: flex;
@@ -142,14 +129,6 @@
   width: 49%;
 }
 
-.addAnotherMatrixButton.MuiButtonBase-root {
-  border: 1px solid #1f628f;
-  background: #def2ff;
-  box-shadow: none;
-  padding: 0.5rem;
-  width: 100%;
-  margin-top: 10px;
-}
 
 .addAnotherMatrixButtonWrapper {
   width: 24%;

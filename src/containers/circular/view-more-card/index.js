@@ -8,6 +8,13 @@ import endpoints from '../../../config/endpoints';
 
 const useStyles = makeStyles((theme) => ({
   rootViewMore: theme.rootViewMore,
+  bodyContentCircular:{
+    fontSize: "1rem",
+    color: theme.palette.primary.main,
+    margin: "5px 10px 0px 20px",
+    display: "flex",
+    justifyContent: "space-between",
+  }
 }));
 const ViewMoreCard = ({ viewMoreData, setViewMore, setSelectedIndex, branch }) => {
   const classes = useStyles();
@@ -73,9 +80,9 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, setSelectedIndex, branch }) =
           </div>
         </div>
         <div className='headerTitle_circular'>
-          <Typography>Description</Typography>
+          <Typography color = "primary">Description</Typography>
         </div>
-        <div className='bodyContent_circular'>
+        <div className={classes.bodyContentCircular}>
           <div>{viewMoreData?.description}</div>
         </div>
       </Paper>

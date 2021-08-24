@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Button, SvgIcon, IconButton, Checkbox } from '@material-ui/core';
+import { TextField, Button, SvgIcon, IconButton, Checkbox,makeStyles } from '@material-ui/core';
 import endpoints from '../../../../../../config/endpoints';
 import CancelIcon from '@material-ui/icons/Cancel';
 import checkedicon from '../../../../../../assets/images/checkedicon.svg';
@@ -11,6 +11,27 @@ import './single-option.css';
 import axios from 'axios';
 import placeholder from '../../../../../../assets/images/placeholder_small.jpg';
 
+const useStyles = makeStyles((theme)=>({
+  optionTag : {
+    color: theme.palette.secondary.main,
+  fontSize: "16px",
+  alignSelf: 'center',
+  flexBasis: '12%',
+  margin: '0 1% 0 0.5%',
+  display: "flex",
+  flexDirection: 'column',
+  },
+  trueFalseOptionTag:{
+    color: theme.palette.secondary.main,
+    fontSize: "16px",
+    fontWeight: 600,
+    alignSelf: "center",
+    margin: "0 1% 0 2%",
+    display: "flex",
+    flexDirection: 'column',
+  }
+}))
+
 const SingleOption = ({
   option,
   index,
@@ -21,6 +42,7 @@ const SingleOption = ({
   handleMatchingOptionData,
   handleDeleteImage,
 }) => {
+  const classes = useStyles()
   return (
     <>
       <div
@@ -73,7 +95,7 @@ const SingleOption = ({
           <div className='matchTheFollowingIndex'>{String.fromCharCode(index + 65)}</div>
         ) : (
           <div
-            className={showQuestionType?.TrueFalse ? 'trueFalseOptionTag' : 'optionTag'}
+            className={showQuestionType?.TrueFalse ? `${classes.trueFalseOptionTag}`: `${classes.optionTag}`}
           >
             {showQuestionType?.TrueFalse ? (
               <div>{index === 0 ? 'True' : 'False'}</div>
