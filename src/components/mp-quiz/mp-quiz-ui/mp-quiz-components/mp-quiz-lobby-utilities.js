@@ -279,8 +279,6 @@ export function RenderUtilityContent({ showUtilities }) {
     controls: { currentQuesionIndex = 0 } = {},
   } = useQuizQuesContext();
   const { total_no_of_questions: totQestionCount = 0 } = quizDetails || {};
-  const [leaderBoardDetails = {}] = leaderboardData || [];
-  const { total_score: leaderBoardScore = 0 } = leaderBoardDetails || {};
   return (
     <div className='quiz__topbar--container'>
       <ClearOrPauseBtn />
@@ -323,7 +321,7 @@ export function RenderUtilityContent({ showUtilities }) {
             )}
           </span>
           <span className='quiz__topbar--currentscore'>
-            {!isHost ? <CurrentScore score={leaderBoardScore} /> : ''}
+            {!isHost ? <CurrentScore score={totalScore} /> : ''}
           </span>
         </>
       ) : null}
