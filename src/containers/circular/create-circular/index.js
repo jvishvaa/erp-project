@@ -43,6 +43,8 @@ const useStyles = makeStyles((theme)=>({
   }
  
 }))
+let gradeIds= [];
+let sectionIds= [];
 const CraeteCircular = () => {
   const classes = useStyles
   const { setAlert } = useContext(AlertNotificationContext);
@@ -154,8 +156,15 @@ const CraeteCircular = () => {
 
   const handleSection = (event, value) => {
     setFilterData({ ...filterData, section: '' });
-    if (value) {
-      setFilterData({ ...filterData, section: value });
+    if (value?.length) {
+      value =
+        value.filter(({ section_id }) => section_id === 'all').length === 1
+          ? [...sectionDropdown].filter(({ section_id }) => section_id !== 'all')
+          : value;
+      sectionIds = value.map((el) => el?.section_id) || [];
+      const ids = value.map((el) => el);
+      setFilterData({ ...filterData, section: ids });
+
     }
   };
 
@@ -187,7 +196,13 @@ const CraeteCircular = () => {
         )
         .then((result) => {
           if (result.data.status_code === 200) {
-            setGradeDropdown(result?.data?.data);
+            const gradeData = result?.data?.data || [];
+            gradeData.unshift({
+              grade__grade_name: 'Select All',
+              grade_id: 'all',
+              // id: 'all',
+            });
+            setGradeDropdown(gradeData);
           } else {
             setAlert('error', result?.data?.message);
             setGradeDropdown([]);
@@ -206,20 +221,33 @@ const CraeteCircular = () => {
     setSectionDropdown([]);
     setFilterData({ ...filterData, grade: '', subject: '', chapter: '', section: '' });
     if (value && filterData?.branch) {
+      value =
+        value.filter(({ grade_id }) => grade_id === 'all').length === 1
+          ? [...gradeDropdown].filter(({ grade_id }) => grade_id !== 'all')
+          : value;
+      const ids = value.map((el) => el) || [];
+      gradeIds = value.map((el) => el?.grade_id) || [];
+      console.log("ids",ids)
+
       setFilterData({
         ...filterData,
-        grade: value,
+        grade: ids,
         subject: '',
         chapter: '',
         section: '',
       });
+      
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.branch?.id}&session_year=${filterData.year.id}&grade_id=${value?.grade_id}&module_id=${moduleId}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.branch?.id}&session_year=${filterData.year.id}&grade_id=${gradeIds}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
-            setSectionDropdown(result.data.data);
+            const gradeData = result?.data?.data || [];
+              gradeData.unshift({
+              section__section_name: "Select All",section_id: "all"
+            });
+            setSectionDropdown(gradeData);
           } else {
             setAlert('error', result.data.message);
             setSectionDropdown([]);
@@ -375,8 +403,8 @@ const CraeteCircular = () => {
         module_name: filterData.role.value,
         media: filePath,
         Branch: [filterData?.branch?.branch.id],
-        grades: [filterData?.grade?.grade_id],
-        sections: [filterData?.section?.section_id],
+        grades: gradeIds,
+        sections: sectionIds,
         academic_year: filterData?.year?.id,
       })
       .then((result) => {
@@ -598,6 +626,8 @@ const CraeteCircular = () => {
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
+                multiple
+                limitTags={1}
                 onChange={handleGrade}
                 id='grade'
                 className='dropdownIcon'
@@ -606,6 +636,7 @@ const CraeteCircular = () => {
                 getOptionLabel={(option) =>
                   option?.grade__grade_name || option?.grade_name
                 }
+                getOptionSelected={(option, value) => option?.grade_id == value?.grade_id}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -621,6 +652,8 @@ const CraeteCircular = () => {
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
+                multiple
+                limitTags={1}
                 onChange={handleSection}
                 id='grade'
                 className='dropdownIcon'
@@ -629,6 +662,7 @@ const CraeteCircular = () => {
                 getOptionLabel={(option) =>
                   option?.section__section_name || option?.section_name
                 }
+                getOptionSelected={(option, value) => option?.section_id == value?.section_id}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
