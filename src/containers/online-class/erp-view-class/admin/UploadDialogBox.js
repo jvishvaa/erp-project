@@ -221,7 +221,7 @@ const UploadClassWorkDiaogBox = (props) => {
   }
 
   const submitClassWorkAPI = () => {
-    if (uploadFiles?.length <= 0) {
+    if (uploadFiles?.length <= 0 && !handleValidateFileChange()) {
       setAlert('error', 'Please select atleast 1 file to upload!');
       return;
     }
