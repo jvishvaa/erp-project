@@ -390,6 +390,7 @@ const CraeteCircular = () => {
   }, [moduleId]);
 
   const handleSubmit = () => {
+    const gradesId = [];
     if (!title) {
       return setAlert('warning', 'Title Cannot Be Empty');
     }
@@ -631,7 +632,7 @@ const CraeteCircular = () => {
                 onChange={handleGrade}
                 id='grade'
                 className='dropdownIcon'
-                value={filterData?.grade || ''}
+                value={filterData?.grade || []}
                 options={gradeDropdown}
                 getOptionLabel={(option) =>
                   option?.grade__grade_name || option?.grade_name
@@ -657,7 +658,7 @@ const CraeteCircular = () => {
                 onChange={handleSection}
                 id='grade'
                 className='dropdownIcon'
-                value={filterData?.section || ''}
+                value={filterData?.section || []}
                 options={sectionDropdown}
                 getOptionLabel={(option) =>
                   option?.section__section_name || option?.section_name
