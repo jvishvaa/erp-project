@@ -43,6 +43,8 @@ const useStyles = makeStyles((theme)=>({
   }
  
 }))
+let gradeIds= [];
+let sectionIds= [];
 const CraeteCircular = () => {
   const classes = useStyles
   const { setAlert } = useContext(AlertNotificationContext);
@@ -154,6 +156,10 @@ const CraeteCircular = () => {
 
   const handleSection = (event, value) => {
     setFilterData({ ...filterData, section: '' });
+    sectionIds= [];
+    for(let i=0;i<value.length;i++){
+      sectionIds.push(value[i].section_id);
+    }
     if (value) {
       setFilterData({ ...filterData, section: value });
     }
@@ -187,7 +193,17 @@ const CraeteCircular = () => {
         )
         .then((result) => {
           if (result.data.status_code === 200) {
-            setGradeDropdown(result?.data?.data);
+            let resData = [] ;
+            resData.push(
+              {
+                grade__grade_name: "Select All",
+                grade_id: 0,
+              }
+            )
+            for(let i=0;i<result?.data?.data.length;i++)
+              resData.push(result?.data?.data[i])
+
+            setGradeDropdown(resData);
           } else {
             setAlert('error', result?.data?.message);
             setGradeDropdown([]);
@@ -213,13 +229,25 @@ const CraeteCircular = () => {
         chapter: '',
         section: '',
       });
+      gradeIds= [];
+      for(let i=0;i<value.length;i++){
+        gradeIds.push(value[i].grade_id);
+      }
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.branch?.id}&session_year=${filterData.year.id}&grade_id=${value?.grade_id}&module_id=${moduleId}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.branch?.id}&session_year=${filterData.year.id}&grade_id=${gradeIds}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
-            setSectionDropdown(result.data.data);
+            let resData = [];
+            if(result?.data?.data.length)
+              resData.push({section__section_name: "Select All",section_id: 0});
+            console.log("resData1",resData)
+            for(let i=0;i<result?.data?.data.length;i++)
+              resData.push(result?.data?.data[i])
+
+            console.log("resData2",resData)
+            setSectionDropdown(resData);
           } else {
             setAlert('error', result.data.message);
             setSectionDropdown([]);
@@ -375,8 +403,8 @@ const CraeteCircular = () => {
         module_name: filterData.role.value,
         media: filePath,
         Branch: [filterData?.branch?.branch.id],
-        grades: [filterData?.grade?.grade_id],
-        sections: [filterData?.section?.section_id],
+        grades: gradeIds,
+        sections: sectionIds,
         academic_year: filterData?.year?.id,
       })
       .then((result) => {
