@@ -24,6 +24,11 @@ import GiveAwardDialog from './GiveAwardDialog';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { Edit } from '@material-ui/icons';
 import { editPostDataAction } from '../../../redux/actions/discussionForumActions';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 
 const useStyles = makeStyles((theme)=>({
   discussionContainer: {
@@ -244,6 +249,68 @@ export default function DiscussionComponent(props) {
   const [reply, setReply] = React.useState('');
   const [ addComment, setAddComment] = React.useState(props.rowData.comment_count? props.rowData.comment_count: 0);
   const [commentList, setCommentList] = React.useState([]);
+  const [deleteId, setDeleteId] = React.useState(null);
+  const [deleteIndex, setDeleteIndex] = React.useState(null);
+  const [deleteAlert, setDeleteAlert] = React.useState(false);
+
+
+  const handleDelete = async (id) => {
+    setDeleteId(id);
+    setDeleteIndex(id);
+    setDeleteAlert(true);
+  };
+  const handleDeleteCancel = () => {
+    setDeleteId(null);
+    setDeleteIndex(null);
+    setDeleteAlert(false);
+  };
+  const handleDeleteConfirm = async () => {
+    try {
+ 
+      const statusChange = await axiosInstance
+      .delete(`${endpoints.discussionForum.deletePost}${deleteId}/update-post/`)
+      
+        if(statusChange.status === 200){
+          setAlert('success', statusChange.data.message);
+          props.deleteEdit();
+          setDeleteId(null);
+        setDeleteIndex(null);
+        setDeleteAlert(false);
+        handlePopoverActionClose();
+        }
+        else {
+          console.log('error', statusChange.data.message);
+        }
+      }
+      
+      catch (error) {
+        console.log('error', error.message);
+      }
+    }
+    
+  //     const statusChange = await axiosInstance.delete(
+  //       `${endpoints.communication.userStatusChange}${deleteId}/delete-user/`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     if (statusChange.status === 200) {
+  //       setAlert('success', statusChange.data.message);
+  //       const tempGroupData = usersData.slice();
+  //       tempGroupData.splice(deleteIndex, 1);
+  //       setUsersData(tempGroupData);
+  //       setDeleteId(null);
+  //       setDeleteIndex(null);
+  //       setDeleteAlert(false);
+  //     } else {
+  //       setAlert('error', statusChange.data.message);
+  //     }
+  //   } catch (error) {
+  //     setAlert('error', error.message);
+  //   }
+  // };
 
   const handleChange = (e) => {
     setReply(e.target.value);
@@ -379,19 +446,19 @@ export default function DiscussionComponent(props) {
   const open2 = Boolean(anchorE2);
   const id2 = open2 ? 'simple-popover1' : undefined;
 
-  const handleDelete = (id) => {
-    console.log(id,"id of user");
-    axiosInstance
-      .delete(`${endpoints.discussionForum.deletePost}${id}/update-post/`)
-      .then((res) => {
-        if(res.data.status_code === 200){
-          setAlert('success', res.data.message);
-          props.deleteEdit();
-          handlePopoverActionClose();
-        }
-      })
-      .catch((error) => console.log(error));
-  }
+  // const handleDelete = (id) => {
+  //   console.log(id,"id of user");
+  //   axiosInstance
+  //     .delete(`${endpoints.discussionForum.deletePost}${id}/update-post/`)
+  //     .then((res) => {
+  //       if(res.data.status_code === 200){
+  //         setAlert('success', res.data.message);
+  //         props.deleteEdit();
+  //         handlePopoverActionClose();
+  //       }
+  //     })
+  //     .catch((error) => console.log(error));
+  // }
 
   const handleEditPost = () => {
     //dispatch(editPostDataAction(props.rowData));
@@ -524,6 +591,30 @@ export default function DiscussionComponent(props) {
             </IconButton>
             : '' }
             {/* <ClickAwayListener onClickAway={handlePopoverActionClose}> */}
+            <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
+          <DialogTitle
+            id='draggable-dialog-title'
+          >
+            Delete User
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete this post ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleDeleteConfirm}>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
               <Popover
                 id={id2}
                 open={open2}
@@ -541,6 +632,7 @@ export default function DiscussionComponent(props) {
                 <div style={{padding: '10px', borderRadius: '5px'}}>
                   <Typography onClick={handleEditPost}>Edit</Typography>
                   <Divider style={{marginBottom:'10px', marginTop: '10px'}}/>
+                  
                   <Typography onClick={() => handleDelete(props.rowData.id)}>Delete</Typography>
                 </div>
               </Popover>
