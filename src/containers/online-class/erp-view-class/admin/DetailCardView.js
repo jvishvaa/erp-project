@@ -410,9 +410,8 @@ const JoinClass = (props) => {
               onClick={() => {
                 const { id = '', online_class = {} } = fullData || {};
                 const { id: onlineClassId = '', start_time = '' } = online_class || {};
-                const startDate = start_time.split('T')[0] || '';
                 history.push({
-                  pathname: `/erp-online-class/class-work/${onlineClassId}/${id}/${startDate}`,
+                  pathname: `/erp-online-class/class-work/${onlineClassId}/${id}/${props.data.date}`,
                 });
               }}
               disabled={ isClassStartted() || props?.data?.is_cancelled}
