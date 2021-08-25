@@ -87,7 +87,7 @@ export function QuizContextProvider({ children }) {
       prev: { ...(data || {}) },
     };
     setData(variableData);
-
+    console.log({variableData})
     const { quiz_details: quizDetailsData = {} } = eventMessageData || {};
     // const { is_started: isQuizStarted, is_ended: isQuizEnded } = quizDetailsData;
     // quizDetailsData.started_at = new Date(new Date().getTime() - 1000);

@@ -28,6 +28,7 @@ function MultiplayerQuiz(props) {
     lobbyuuif: lobbyUuid,
     role:role
   }
+  console.log({params})
   return <MpQuizHome params={params} />;
 }
 export default withRouter(MultiplayerQuiz)
