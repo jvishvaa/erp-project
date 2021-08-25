@@ -156,13 +156,31 @@ const CraeteCircular = () => {
 
   const handleSection = (event, value) => {
     setFilterData({ ...filterData, section: '' });
-    sectionIds= [];
-    for(let i=0;i<value.length;i++){
-      sectionIds.push(value[i].section_id);
+    if (value?.length) {
+      value =
+        value.filter(({ section_id }) => section_id === 'all').length === 1
+          ? [...sectionDropdown].filter(({ section_id }) => section_id !== 'all')
+          : value;
+      sectionIds = value.map((el) => el?.section_id) || [];
+      const ids = value.map((el) => el);
+      setFilterData({ ...filterData, section: ids });
+
     }
-    if (value) {
-      setFilterData({ ...filterData, section: value });
-    }
+    // sectionIds= [];
+    // for(let i=0;i<value.length;i++){
+    //   sectionIds.push(value[i].section_id);
+    // }
+    // if(sectionIds.includes(0)){
+    //   sectionIds = [];
+    //   for(let i=0;i<sectionDropdown.length;i++){
+    //     if(sectionDropdown[i].section_id!=0)
+    //       sectionIds.push(sectionDropdown[i].section_id);
+    //   }
+    // }
+
+    // if (value) {
+    //   setFilterData({ ...filterData, section: value });
+    // }
   };
 
   const handleBranch = (event, value) => {
@@ -193,17 +211,22 @@ const CraeteCircular = () => {
         )
         .then((result) => {
           if (result.data.status_code === 200) {
-            let resData = [] ;
-            resData.push(
-              {
-                grade__grade_name: "Select All",
-                grade_id: 0,
-              }
-            )
-            for(let i=0;i<result?.data?.data.length;i++)
-              resData.push(result?.data?.data[i])
-
-            setGradeDropdown(resData);
+            // let resData = [] ;
+            // resData.push(
+            //   {
+            //     grade__grade_name: "Select All",
+            //     grade_id: 0,
+            //   }
+            // )
+            // for(let i=0;i<result?.data?.data.length;i++)
+            //   resData.push(result?.data?.data[i])
+            const gradeData = result?.data?.data || [];
+            gradeData.unshift({
+              grade__grade_name: 'Select All',
+              grade_id: 'all',
+              // id: 'all',
+            });
+            setGradeDropdown(gradeData);
           } else {
             setAlert('error', result?.data?.message);
             setGradeDropdown([]);
@@ -222,32 +245,41 @@ const CraeteCircular = () => {
     setSectionDropdown([]);
     setFilterData({ ...filterData, grade: '', subject: '', chapter: '', section: '' });
     if (value && filterData?.branch) {
+      value =
+        value.filter(({ grade_id }) => grade_id === 'all').length === 1
+          ? [...gradeDropdown].filter(({ grade_id }) => grade_id !== 'all')
+          : value;
+      const ids = value.map((el) => el) || [];
+      gradeIds = value.map((el) => el?.grade_id) || [];
+      console.log("ids",ids)
+
       setFilterData({
         ...filterData,
-        grade: value,
+        grade: ids,
         subject: '',
         chapter: '',
         section: '',
       });
-      gradeIds= [];
-      for(let i=0;i<value.length;i++){
-        gradeIds.push(value[i].grade_id);
-      }
+      
       axiosInstance
         .get(
           `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.branch?.id}&session_year=${filterData.year.id}&grade_id=${gradeIds}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
-            let resData = [];
-            if(result?.data?.data.length)
-              resData.push({section__section_name: "Select All",section_id: 0});
-            console.log("resData1",resData)
-            for(let i=0;i<result?.data?.data.length;i++)
-              resData.push(result?.data?.data[i])
+            // let resData = [];
+            // if(result?.data?.data.length)
+            //   resData.push({section__section_name: "Select All",section_id: 0});
+            // console.log("resData1",resData)
+            // for(let i=0;i<result?.data?.data.length;i++)
+            //   resData.push(result?.data?.data[i])
+            const gradeData = result?.data?.data || [];
+              gradeData.unshift({
+              section__section_name: "Select All",section_id: "all"
+            });
 
-            console.log("resData2",resData)
-            setSectionDropdown(resData);
+            // console.log("resData2",resData)
+            setSectionDropdown(gradeData);
           } else {
             setAlert('error', result.data.message);
             setSectionDropdown([]);
@@ -626,6 +658,8 @@ const CraeteCircular = () => {
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
+                multiple
+                limitTags={1}
                 onChange={handleGrade}
                 id='grade'
                 className='dropdownIcon'
@@ -634,6 +668,7 @@ const CraeteCircular = () => {
                 getOptionLabel={(option) =>
                   option?.grade__grade_name || option?.grade_name
                 }
+                getOptionSelected={(option, value) => option?.grade_id == value?.grade_id}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -649,6 +684,8 @@ const CraeteCircular = () => {
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
+                multiple
+                limitTags={1}
                 onChange={handleSection}
                 id='grade'
                 className='dropdownIcon'
@@ -657,6 +694,7 @@ const CraeteCircular = () => {
                 getOptionLabel={(option) =>
                   option?.section__section_name || option?.section_name
                 }
+                getOptionSelected={(option, value) => option?.section_id == value?.section_id}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
