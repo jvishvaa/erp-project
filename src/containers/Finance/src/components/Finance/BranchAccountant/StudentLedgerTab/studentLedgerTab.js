@@ -1,70 +1,74 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { withStyles, Typography, Grid, Button
-// TextField, Table, TableHead, TableRow, TableCell, TableBody
-} from '@material-ui/core/'
-import { withRouter } from 'react-router-dom'
-import Select from 'react-select'
-import { connect } from 'react-redux'
-import AppBar from '@material-ui/core/AppBar'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
-import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest'
-import {urls} from '../../../../urls';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import {
+  withStyles,
+  Typography,
+  Grid,
+  Button,
+  // TextField, Table, TableHead, TableRow, TableCell, TableBody
+} from '@material-ui/core/';
+import { withRouter } from 'react-router-dom';
+import Select from 'react-select';
+import { connect } from 'react-redux';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest';
+import { urls } from '../../../../urls';
 import axios from 'axios';
 // import Select from 'react-select'
 // import { Info } from '@material-ui/icons'
 // import Modal from '../../../../ui/Modal/modal'
 // import { OmsSelect } from '../../../../ui'
-import '../../../css/staff.css'
-import * as actionTypes from '../../store/actions'
-import { apiActions } from '../../../../_actions'
-import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import '../../../css/staff.css';
+import * as actionTypes from '../../store/actions';
+import { apiActions } from '../../../../_actions';
+import CircularProgress from '../../../../ui/CircularProgress/circularProgress';
 // import classes from './pdc.module.css'
-import Student from '../../Profiles/studentProfile'
-import MakePayment from '../../MakePaymentAccountant/makePayment'
-import FeeStructureAtAcc from '../FeeStructureAtAcc/feeStructureAcc'
-import Payments from '../TransactionStatus/Payments/payments'
-import ChequePayments from '../TransactionStatus/ChequePayments/chequePayment'
-import Certificate from '../ITCertificate/certificate'
-import ConcessionDetails from '../ConcessionDetails/concessionDetails'
+import Student from '../../Profiles/studentProfile';
+import MakePayment from '../../MakePaymentAccountant/makePayment';
+import FeeStructureAtAcc from '../FeeStructureAtAcc/feeStructureAcc';
+import Payments from '../TransactionStatus/Payments/payments';
+import ChequePayments from '../TransactionStatus/ChequePayments/chequePayment';
+import Certificate from '../ITCertificate/certificate';
+import ConcessionDetails from '../ConcessionDetails/concessionDetails';
 // import FeeMangement from '../FeeManagement/feeManagement'
-import CurrFeeTypeAcc from '../CurrFeeTypeAcc/currFeeTypeAcc'
-import StoreAtAcc from '../../../Inventory/BranchAccountant/StoreAtAcc/storeAtAcc'
-import ShippingAmount from '../../../Inventory/BranchAccountant/shippingAmount/ShippingAmount'
-import StoreItemStatus from '../StoreItemStatus/storeItemStatus'
-import Layout from '../../../../../../Layout'
+import CurrFeeTypeAcc from '../CurrFeeTypeAcc/currFeeTypeAcc';
+import StoreAtAcc from '../../../Inventory/BranchAccountant/StoreAtAcc/storeAtAcc';
+import ShippingAmount from '../../../Inventory/BranchAccountant/shippingAmount/ShippingAmount';
+import StoreItemStatus from '../StoreItemStatus/storeItemStatus';
+import Layout from '../../../../../../Layout';
 // import { debounce } from '../../../../utils'
 // import OtherFeesAccountant from '../OtherFees/otherFees'
 
-function TabContainer ({ children, dir }) {
+function TabContainer({ children, dir }) {
   return (
     <Typography component='div' dir={dir} style={{ padding: 8 * 3 }}>
       {children}
     </Typography>
-  )
+  );
 }
 
 TabContainer.propTypes = {
-  children: PropTypes.node.isRequired
-}
+  children: PropTypes.node.isRequired,
+};
 
-const styles = theme => ({
+const styles = (theme) => ({
   container: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: '90%'
+    width: '90%',
   },
   item: {
     // margin: '10px'
   },
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120
+    minWidth: 120,
   },
   root: {
     backgroundColor: theme.palette.background.paper,
@@ -72,11 +76,11 @@ const styles = theme => ({
     marginTop: '72px',
     marginLeft: '40px',
     paddingTop: '20px',
-    minHeight: '75vh'
-  }
-})
+    minHeight: '75vh',
+  },
+});
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-let moduleId
+let moduleId;
 if (NavData && NavData.length) {
   NavData.forEach((item) => {
     if (
@@ -88,7 +92,7 @@ if (NavData && NavData.length) {
         if (item.child_name === 'Ledger Tab') {
           // setModuleId(item.child_id);
           // setModulePermision(true);
-            moduleId = item.child_id
+          moduleId = item.child_id;
         } else {
           // setModulePermision(false);
         }
@@ -101,16 +105,15 @@ if (NavData && NavData.length) {
   // setModulePermision(false);
 }
 
-
 class StudentLedgerTab extends Component {
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       allowPayment: false,
       value: 'one',
       session: {
         label: '2021-22',
-        value: '2021-22'
+        value: '2021-22',
       },
       sessionData: null,
       selectedBranches: null,
@@ -120,18 +123,18 @@ class StudentLedgerTab extends Component {
       gradeId: 'all',
       gradeData: {
         label: 'All Grades',
-        id: 'all'
+        id: 'all',
       },
       sectionId: null,
       sectionData: null,
       studentTypeData: {
         label: 'Active',
-        value: 1
+        value: 1,
       },
       // studentTypeId: null,
       searchTypeData: {
         label: 'Student Name',
-        value: 2
+        value: 2,
       },
       searchTypeId: 2,
       student: '',
@@ -139,43 +142,56 @@ class StudentLedgerTab extends Component {
       studentName: '',
       selectedNameStatus: false,
       studentErp: '',
-      allSections: true
-    }
+      allSections: true,
+    };
   }
 
   componentDidMount() {
     if (this.state.session && moduleId) {
-      this.props.fetchBranches(this.state.session.value, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(
+        this.state.session.value,
+        this.props.alert,
+        this.props.user,
+        moduleId
+      );
       // this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
     }
- 
   }
 
   handleChange = (event, value) => {
-    this.setState({ value })
-  }
+    this.setState({ value });
+  };
 
-  handleChangeIndex = index => {
-    this.setState({ value: index })
-  }
+  handleChangeIndex = (index) => {
+    this.setState({ value: index });
+  };
 
   handleAcademicyear = (e) => {
-    this.setState({
-      session: e,
-      getData: false,
-      student: null,
-      showTabs: false
-    }, () => {
-      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
-      // this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
-    })
-  }
+    this.setState(
+      {
+        session: e,
+        getData: false,
+        student: null,
+        showTabs: false,
+      },
+      () => {
+        this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId);
+        // this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
+      }
+    );
+  };
 
   changehandlerbranch = (e) => {
-    this.props.fetchGrades(this.state.session.value, e.value, this.props.alert, this.props.user, moduleId)
+    this.props.fetchGrades(
+      this.state.session.value,
+      e.value,
+      this.props.alert,
+      this.props.user,
+      moduleId
+    );
     // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session && this.state.session.value)
-    this.setState({ selectedBranches: e})
-  }
+    this.setState({ selectedBranches: e });
+  };
 
   gradeHandler = (e) => {
     this.setState({ gradeId: e.value, gradeData: e, sectionData: [] }, () => {
@@ -183,61 +199,86 @@ class StudentLedgerTab extends Component {
         this.setState({
           allSections: true,
           sectionId: 'all',
-          getData: false
-        })
+          getData: false,
+        });
       } else {
-        this.props.fetchAllSections(this.state.session.value, this.state.gradeId, this.state.selectedBranches && this.state.selectedBranches.value, this.props.alert, this.props.user, moduleId)
+        this.props.fetchAllSections(
+          this.state.session.value,
+          this.state.gradeId,
+          this.state.selectedBranches && this.state.selectedBranches.value,
+          this.props.alert,
+          this.props.user,
+          moduleId
+        );
         this.setState({
           allSections: false,
-          getData: false
-        })
+          getData: false,
+        });
       }
-    })
-  }
+    });
+  };
 
   sectionHandler = (e) => {
-    let sectionIds = []
-    e && e.forEach(section => {
-      sectionIds.push(section.value)
-    })
-    this.setState({ sectionId: sectionIds, sectionData: e, getData: false })
-  }
+    let sectionIds = [];
+    e &&
+      e.forEach((section) => {
+        sectionIds.push(section.value);
+      });
+    this.setState({ sectionId: sectionIds, sectionData: e, getData: false });
+  };
 
   allSectionHandler = (e) => {
-    this.setState({ sectionId: e.target.value, sectionData: e, getData: false })
-  }
+    this.setState({ sectionId: e.target.value, sectionData: e, getData: false });
+  };
 
   activeHandler = (e) => {
     this.setState({
       // studentTypeId: e.value,
       studentTypeData: e,
-      getData: false
-    })
-  }
+      getData: false,
+    });
+  };
 
   searchTypeHandler = (e) => {
-    this.setState({
-      searchTypeData: e,
-      searchTypeId: e.value,
-      getData: false,
-      showTabs: false,
-      studentName: ''
-    }, () => {
-      this.props.clearAllProps()
-    })
-  }
+    this.setState(
+      {
+        searchTypeData: e,
+        searchTypeId: e.value,
+        getData: false,
+        showTabs: false,
+        studentName: '',
+      },
+      () => {
+        this.props.clearAllProps();
+      }
+    );
+  };
 
   erpHandler = () => {
     // const erp = document.querySelectorAll('[name=searchBox]')
     if (this.state.searchTypeData.value === 1 && this.state.selectedErpStatus) {
-      this.props.fetchAllPayment(this.state.session.value, this.state.studentLabel, this.props.user, this.props.alert, this.state.selectedBranches?.value, moduleId)
+      this.props.fetchAllPayment(
+        this.state.session.value,
+        this.state.studentLabel,
+        this.props.user,
+        this.props.alert,
+        this.state.selectedBranches?.value,
+        moduleId
+      );
     } else if (this.state.searchTypeData.value === 2 && this.state.selectedNameStatus) {
-      this.props.fetchAllPayment(this.state.session.value, this.state.studentErp, this.props.user, this.props.alert, this.state.selectedBranches?.value, moduleId)
+      this.props.fetchAllPayment(
+        this.state.session.value,
+        this.state.studentErp,
+        this.props.user,
+        this.props.alert,
+        this.state.selectedBranches?.value,
+        moduleId
+      );
     } else {
-      this.props.alert.warning('Select Valid Erp')
+      this.props.alert.warning('Select Valid Erp');
     }
     // makePayState = this.state
-  }
+  };
 
   myErpFunc = () => {
     this.props.studentErpSearch(
@@ -250,29 +291,47 @@ class StudentLedgerTab extends Component {
       this.props.alert,
       this.props.user,
       this.state.selectedBranches?.value,
-      moduleId,
-    )
-
-  }
+      moduleId
+    );
+  };
 
   studentErpChangeHandler = (e, selected) => {
-    this.setState({ student: e.target.value, studentLabel: e.target.label, selectedErpStatus: selected, showTabs: false, getData: false }, () => {
-      if (this.state.student.length >= 3) {
-        this.myErpFunc()
+    this.setState(
+      {
+        student: e.target.value,
+        studentLabel: e.target.label,
+        selectedErpStatus: selected,
+        showTabs: false,
+        getData: false,
+      },
+      () => {
+        if (this.state.student.length >= 3) {
+          this.myErpFunc();
+        }
       }
-    })
+    );
     if (this.state.selectedNameStatus || this.state.selectedErpStatus) {
       this.setState({
         showTabs: false,
-        getData: false
-      })
+        getData: false,
+      });
     }
-  }
+  };
 
   myStudentFun = () => {
-    const { searchTypeId } = this.state
+    const { searchTypeId } = this.state;
     this.props.studentErpSearch(
-      searchTypeId === 2 ? 'student' : searchTypeId === 3 ? 'fatherName' : searchTypeId === 4 ? 'fatherNo' : searchTypeId === 5 ? 'motherName' : searchTypeId === 6 ? 'motherNo' : 'na',
+      searchTypeId === 2
+        ? 'student'
+        : searchTypeId === 3
+        ? 'fatherName'
+        : searchTypeId === 4
+        ? 'fatherNo'
+        : searchTypeId === 5
+        ? 'motherName'
+        : searchTypeId === 6
+        ? 'motherNo'
+        : 'na',
       this.state.session.value,
       this.state.gradeId,
       this.state.sectionId,
@@ -282,20 +341,33 @@ class StudentLedgerTab extends Component {
       this.props.user,
       this.state.selectedBranches?.value,
       moduleId
-    )
-  }
+    );
+  };
 
   studentNameChangeHandler = (e, selected) => {
-    this.setState({ studentName: e.target.value, selectedNameStatus: selected, showTabs: false, getData: false }, () => {
-      const student = this.props.studentErp && this.props.studentErp.length > 0 ? this.props.studentErp.filter(item => item.name === this.state.studentName)[0] : ''
-      this.setState({
-        studentErp: student && student.erp ? student.erp : null
-      })
-      if (this.state.studentName.length >= 3) {
-        this.myStudentFun()
+    this.setState(
+      {
+        studentName: e.target.value,
+        selectedNameStatus: selected,
+        showTabs: false,
+        getData: false,
+      },
+      () => {
+        const student =
+          this.props.studentErp && this.props.studentErp.length > 0
+            ? this.props.studentErp.filter(
+                (item) => item.name === this.state.studentName
+              )[0]
+            : '';
+        this.setState({
+          studentErp: student && student.erp ? student.erp : null,
+        });
+        if (this.state.studentName.length >= 3) {
+          this.myStudentFun();
+        }
       }
-    })
-  }
+    );
+  };
 
   // erpChangeHander = (e) => {
   //   this.setState({
@@ -305,71 +377,78 @@ class StudentLedgerTab extends Component {
   // }
 
   CheckPayment = () => {
-    console.log(this.props.studentErp , " student erp ");
+    console.log(this.props.studentErp, ' student erp ');
     let user_id = JSON.parse(localStorage.getItem('userDetails')).erp || {};
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     axios
-    .get(urls.CheckPayment + '?student=' + this.props.studentErp[0].erp ,{
-      headers: {
-        Authorization: 'Bearer ' + token
-      }
-    }).then((res) => {
-      console.log(res, 'current eventssss');
-    if(res.data.is_allowed === true) {
-      this.showLedgerHandler()
-    }
-    if(res.data.is_allowed === false) {
-      this.props.alert.warning('Student Data is not matching')
-    }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
+      .get(urls.CheckPayment + '?student=' + this.props.studentErp[0].erp, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      })
+      .then((res) => {
+        console.log(res, 'current eventssss');
+        if (res.data.is_allowed === true) {
+          this.showLedgerHandler();
+        }
+        if (res.data.is_allowed === false) {
+          this.props.alert.warning('Student Data is not matching');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   showLedgerHandler = () => {
-       if (!this.state.session && !this.state.studentErp) {
-      this.props.alert.warning('Please Fill All The Fields')
-      return
+    if (!this.state.session && !this.state.studentErp) {
+      this.props.alert.warning('Please Fill All The Fields');
+      return;
     }
     if (this.state.selectedNameStatus || this.state.selectedErpStatus) {
       this.setState({
         showTabs: true,
-        getData: true
-      })
+        getData: true,
+      });
     } else {
-      this.props.alert.warning('Select Valid Student')
+      this.props.alert.warning('Select Valid Student');
     }
-  }
+  };
   callbackFunction = (childData) => {
-    this.setState({
-      session: {
-        label: childData,
-        value: childData
-      }
-      // getData: false,
-      // showTabs: false
-    }, () => {
-    })
-  }
+    this.setState(
+      {
+        session: {
+          label: childData,
+          value: childData,
+        },
+        // getData: false,
+        // showTabs: false
+      },
+      () => {}
+    );
+  };
 
-
-  render () {
-    const { showTabs, value } = this.state
-    const { classes } = this.props
-    let tabBar = null
+  render() {
+    const { showTabs, value } = this.state;
+    const { classes } = this.props;
+    let tabBar = null;
     // let cond = true
-    let erpValue = null
+    let erpValue = null;
     if (this.state.searchTypeData.value === 1 && this.state.selectedErpStatus) {
-      erpValue = this.state.studentLabel
+      erpValue = this.state.studentLabel;
     } else if (this.state.selectedNameStatus) {
-      erpValue = this.state.studentErp
+      erpValue = this.state.studentErp;
     }
     if (showTabs) {
       tabBar = (
         <React.Fragment>
           <AppBar position='static' style={{ zIndex: 1 }}>
-            <Tabs value={value} onChange={this.handleChange} variant='scrollable' scrollButtons='auto'>
+            <Tabs
+              value={value}
+              onChange={this.handleChange}
+              variant='scrollable'
+              scrollButtons='auto'
+            >
               <Tab value='one' label='Fee Structure' />
               <Tab value='two' label='Make Payment' />
               <Tab value='three' label='Payments' />
@@ -383,62 +462,85 @@ class StudentLedgerTab extends Component {
               <Tab value='ten' label='Order Status' /> */}
             </Tabs>
           </AppBar>
-          {value === 'one' && <TabContainer>
-            <FeeStructureAtAcc alert={this.props.alert}
-              session={this.state.session.value}
-              moduleId={moduleId}
-              branchId={this.state.selectedBranches?.value}
-              getData={this.state.getData}
-              erp={erpValue}
-              user={this.props.user} />
-          </TabContainer>}
-          {value === 'two' && <TabContainer>
-            <MakePayment alert={this.props.alert}
-              session={this.state.session.value}
-              moduleId={moduleId}
-              branchId={this.state.selectedBranches?.value}
-              getData={this.state.getData}
-              erp={erpValue}
-              user={this.props.user}
-              parentCallback={this.callbackFunction} />
-          </TabContainer>}
-          {value === 'three' && <TabContainer>
-            <Payments alert={this.props.alert}
-              session={this.state.session.value}
-              moduleId={moduleId}
-              branchId={this.state.selectedBranches?.value}
-              getData={this.state.getData}
-              erpNo={erpValue}
-              user={this.props.user} />
-          </TabContainer>}
-          {value === 'four' && <TabContainer>
-            < ChequePayments
-              alert={this.props.alert}
-              session={this.state.session.value}
-              moduleId={moduleId}
-              branchId={this.state.selectedBranches?.value}
-              getData={this.state.getData}
-              erpNo={erpValue}
-              user={this.props.user} />
-          </TabContainer>}
-          {value === 'five' && <TabContainer>
-            <Certificate alert={this.props.alert}
-              session={this.state.session.value}
-              moduleId={moduleId}
-              branchId={this.state.selectedBranches?.value}
-              getData={this.state.getData}
-              erp={erpValue}
-              user={this.props.user} />
-          </TabContainer>}
-          {value === 'six' && <TabContainer>
-            <ConcessionDetails alert={this.props.alert}
-              session={this.state.session.value}
-              moduleId={moduleId}
-              branchId={this.state.selectedBranches?.value}
-              getData={this.state.getData}
-              erp={erpValue}
-              user={this.props.user} />
-          </TabContainer>}
+          {value === 'one' && (
+            <TabContainer>
+              <FeeStructureAtAcc
+                alert={this.props.alert}
+                session={this.state.session.value}
+                moduleId={moduleId}
+                branchId={this.state.selectedBranches?.value}
+                getData={this.state.getData}
+                erp={erpValue}
+                user={this.props.user}
+              />
+            </TabContainer>
+          )}
+          {value === 'two' && (
+            <TabContainer>
+              <MakePayment
+                alert={this.props.alert}
+                session={this.state.session.value}
+                moduleId={moduleId}
+                branchId={this.state.selectedBranches?.value}
+                getData={this.state.getData}
+                erp={erpValue}
+                user={this.props.user}
+                parentCallback={this.callbackFunction}
+              />
+            </TabContainer>
+          )}
+          {value === 'three' && (
+            <TabContainer>
+              <Payments
+                alert={this.props.alert}
+                session={this.state.session.value}
+                moduleId={moduleId}
+                branchId={this.state.selectedBranches?.value}
+                getData={this.state.getData}
+                erpNo={erpValue}
+                user={this.props.user}
+              />
+            </TabContainer>
+          )}
+          {value === 'four' && (
+            <TabContainer>
+              <ChequePayments
+                alert={this.props.alert}
+                session={this.state.session.value}
+                moduleId={moduleId}
+                branchId={this.state.selectedBranches?.value}
+                getData={this.state.getData}
+                erpNo={erpValue}
+                user={this.props.user}
+              />
+            </TabContainer>
+          )}
+          {value === 'five' && (
+            <TabContainer>
+              <Certificate
+                alert={this.props.alert}
+                session={this.state.session.value}
+                moduleId={moduleId}
+                branchId={this.state.selectedBranches?.value}
+                getData={this.state.getData}
+                erp={erpValue}
+                user={this.props.user}
+              />
+            </TabContainer>
+          )}
+          {value === 'six' && (
+            <TabContainer>
+              <ConcessionDetails
+                alert={this.props.alert}
+                session={this.state.session.value}
+                moduleId={moduleId}
+                branchId={this.state.selectedBranches?.value}
+                getData={this.state.getData}
+                erp={erpValue}
+                user={this.props.user}
+              />
+            </TabContainer>
+          )}
           {/* {value === 'seven' && <TabContainer>
             <FeeMangement
               session={this.state.session.value}
@@ -448,58 +550,66 @@ class StudentLedgerTab extends Component {
               alert={this.props.alert}
             />
           </TabContainer>} */}
-          {value === 'eight' && <TabContainer>
-            <CurrFeeTypeAcc
-              session={this.state.session.value}
-              moduleId={moduleId}
-              branchId={this.state.selectedBranches?.value}
-              getData={this.state.getData}
-              erp={erpValue}
-              user={this.props.user}
-              alert={this.props.alert}
-            />
-          </TabContainer>}
-          {value === 'nine' && <TabContainer>
-            <StoreAtAcc
-              session={this.state.session.value}
-              moduleId={moduleId}
-              branchId={this.state.selectedBranches?.value}
-              getData={this.state.getData}
-              erp={erpValue}
-              user={this.props.user}
-              alert={this.props.alert}
-            />
-          </TabContainer>}
-          {value === 'ele' && <TabContainer>
-            <ShippingAmount
-              session={this.state.session.value}
-              moduleId={moduleId}
-              branchId={this.state.selectedBranches?.value}
-              getData={this.state.getData}
-              erpValue={erpValue}
-              user={this.props.user}
-              alert={this.props.alert}
-            />
-          </TabContainer>}
-          {value === 'ten' && <TabContainer>
-            <StoreItemStatus
-              session={this.state.session.value}
-              moduleId={moduleId}
-              branchId={this.state.selectedBranches?.value}
-              getData={this.state.getData}
-              erp={erpValue}
-              user={this.props.user}
-              alert={this.props.alert}
-            />
-          </TabContainer>}
+          {value === 'eight' && (
+            <TabContainer>
+              <CurrFeeTypeAcc
+                session={this.state.session.value}
+                moduleId={moduleId}
+                branchId={this.state.selectedBranches?.value}
+                getData={this.state.getData}
+                erp={erpValue}
+                user={this.props.user}
+                alert={this.props.alert}
+              />
+            </TabContainer>
+          )}
+          {value === 'nine' && (
+            <TabContainer>
+              <StoreAtAcc
+                session={this.state.session.value}
+                moduleId={moduleId}
+                branchId={this.state.selectedBranches?.value}
+                getData={this.state.getData}
+                erp={erpValue}
+                user={this.props.user}
+                alert={this.props.alert}
+              />
+            </TabContainer>
+          )}
+          {value === 'ele' && (
+            <TabContainer>
+              <ShippingAmount
+                session={this.state.session.value}
+                moduleId={moduleId}
+                branchId={this.state.selectedBranches?.value}
+                getData={this.state.getData}
+                erpValue={erpValue}
+                user={this.props.user}
+                alert={this.props.alert}
+              />
+            </TabContainer>
+          )}
+          {value === 'ten' && (
+            <TabContainer>
+              <StoreItemStatus
+                session={this.state.session.value}
+                moduleId={moduleId}
+                branchId={this.state.selectedBranches?.value}
+                getData={this.state.getData}
+                erp={erpValue}
+                user={this.props.user}
+                alert={this.props.alert}
+              />
+            </TabContainer>
+          )}
         </React.Fragment>
-      )
+      );
     }
 
     // section row
-    let sectionRow = null
+    let sectionRow = null;
     if (this.state.allSections) {
-      sectionRow = 'All Sections'
+      sectionRow = 'All Sections';
     } else {
       sectionRow = (
         <Select
@@ -509,20 +619,20 @@ class StudentLedgerTab extends Component {
           value={this.state.sectionData ? this.state.sectionData : ''}
           options={
             this.props.sectionData
-              ? this.props.sectionData.map(sec => ({
-                value: sec.section.id,
-                label: sec.section.section_name
-              }))
+              ? this.props.sectionData.map((sec) => ({
+                  value: sec.section.id,
+                  label: sec.section.section_name,
+                }))
               : []
           }
           onChange={this.sectionHandler}
         />
-      )
+      );
     }
 
     // auto suggestions dropdown
-    const { searchTypeData, searchTypeId } = this.state
-    let searchBox = null
+    const { searchTypeData, searchTypeId } = this.state;
+    let searchBox = null;
     if (searchTypeData.value === 1) {
       searchBox = (
         <div style={{ position: 'relative', marginTop: 10 }}>
@@ -534,168 +644,210 @@ class StudentLedgerTab extends Component {
             onChange={this.studentErpChangeHandler}
             margin='dense'
             variant='outlined'
-            data={this.props.studentErp && this.props.studentErp.length > 0 ? this.props.studentErp.map(item => ({ value: item.erp ? item.erp : '', label: item.erp ? item.erp : '' })) : []}
+            data={
+              this.props.studentErp && this.props.studentErp.length > 0
+                ? this.props.studentErp.map((item) => ({
+                    value: item.erp ? item.erp : '',
+                    label: item.erp ? item.erp : '',
+                  }))
+                : []
+            }
           />
         </div>
-      )
+      );
     } else {
       searchBox = (
         <div style={{ position: 'relative', marginTop: 10 }}>
           {/* <label style={{ display: 'block' }}>Search*</label> */}
           <AutoSuggest
-            label={searchTypeId === 2 ? 'Search Student Name' : searchTypeId === 3 ? 'Search Father Name' : searchTypeId === 4 ? 'Search Father Number' : searchTypeId === 5 ? 'Search Mother Name' : searchTypeId === 6 ? 'Search Mother Number' : 'na'}
+            label={
+              searchTypeId === 2
+                ? 'Search Student Name'
+                : searchTypeId === 3
+                ? 'Search Father Name'
+                : searchTypeId === 4
+                ? 'Search Father Number'
+                : searchTypeId === 5
+                ? 'Search Mother Name'
+                : searchTypeId === 6
+                ? 'Search Mother Number'
+                : 'na'
+            }
             style={{ display: 'absolute', top: '10px', width: '240px' }}
             value={this.state.studentName || ''}
             onChange={this.studentNameChangeHandler}
             margin='dense'
             variant='outlined'
-            data={this.props.studentErp && this.props.studentErp.length > 0 ? this.props.studentErp.map(item => ({ value: item.name ? item.name : '', label: item.name ? item.name : '' })) : []}
+            data={
+              this.props.studentErp && this.props.studentErp.length > 0
+                ? this.props.studentErp.map((item) => ({
+                    value: item.name ? item.name : '',
+                    label: item.name ? item.name : '',
+                  }))
+                : []
+            }
           />
         </div>
-      )
+      );
     }
 
     return (
       <Layout>
-      <React.Fragment>
-        <Grid container spacing={2} style={{ padding: 15 }}>
-          <Grid item xs={3} className={classes.item} style={{ zIndex: '1104' }}>
-            <label>Academic Year*</label>
-            <Select
-              placeholder='Select Year'
-              value={this.state.session ? this.state.session : null}
-              options={
-                this.props.session
-                  ? this.props.session.session_year.map(session => ({
-                    value: session,
-                    label: session
-                  }))
-                  : []
-              }
-              onChange={this.handleAcademicyear}
-            />
-          </Grid>
-          <Grid item xs={3} className={classes.item} style={{ zIndex: '1103' }}>
-            <label>Branch*</label>
-            <Select
-              // isMulti
-              placeholder='Select Branch'
-              value={this.state.selectedBranches ? this.state.selectedBranches : ''}
-              options={
-                this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
-                  ? this.props.branches.map(branch => ({
-                    value: branch.branch ? branch.branch.id : '',
-                    label: branch.branch ? branch.branch.branch_name : ''
-                  }))
-                  : [] : []
-              }
-
-              onChange={this.changehandlerbranch}
-            />
-          </Grid>
-          <Grid item xs={3} className={classes.item} style={{ zIndex: '1102' }}>
-            <label>Grade*</label>
-            <Select
-              placeholder='Select Grade'
-              value={this.state.gradeData ? this.state.gradeData : null}
-              options={
-                this.props.gradeData
-                  ? this.props.gradeData.map(grades => ({
-                    value: grades.grade.id,
-                    label: grades.grade.grade
-                  }))
-                  : []
-              }
-              onChange={this.gradeHandler}
-            />
-          </Grid>
-          <Grid item xs={3} className={classes.item} style={{ zIndex: '1101' }}>
-            <label>Section*</label>
-            {sectionRow}
-          </Grid>
-          <Grid item xs={3} className={classes.item} style={{ zIndex: '1100' }}>
-            <label>Active/Inactive*</label>
-            <Select
-              placeholder='Select State'
-              value={this.state.studentTypeData ? this.state.studentTypeData : ''}
-              options={[
-                {
-                  label: 'Active',
-                  value: 1
-                },
-                {
-                  label: 'InActive',
-                  value: 2
-                },
-                {
-                  label: 'Both',
-                  value: 3
-                }
-              ]}
-              onChange={this.activeHandler}
-            />
-          </Grid>
-          <Grid item xs={3} className={classes.item} style={{ zIndex: '1000' }}>
-            <label>Search Type*</label>
-            <Select
-              placeholder='Select Type'
-              value={this.state.searchTypeData ? this.state.searchTypeData : ''}
-              options={[
-                {
-                  label: 'ERP',
-                  value: 1
-                },
-                {
-                  label: 'Student Name',
-                  value: 2
-                },
-                {
-                  label: 'Father Name',
-                  value: 3
-                },
-                {
-                  label: 'Father Number',
-                  value: 4
-                },
-                {
-                  label: 'Mother Name',
-                  value: 5
-                },
-                {
-                  label: 'Mother Number',
-                  value: 6
-                }
-              ]}
-              onChange={this.searchTypeHandler}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            {searchBox}
-          </Grid>
-          <Grid item xs={2} className={classes.item}>
-            <Button
-              style={{ marginLeft: '10px', marginTop: '20px', color : "white" }}
-              variant='contained'
-              color='primary'
-              disabled={!this.state.session}
-              // onClick={this.erpHandler}
-              onClick={this.CheckPayment}>
-              GET
-            </Button>
-          </Grid>
-        </Grid>
-        {this.state.searchTypeData.value === 1
-          ? <Student erp={this.state.studentLabel} session={this.state.session.value} user={this.props.user} alert={this.props.alert} />
-          : <Student erp={this.state.studentErp} session={this.state.session.value} user={this.props.user} alert={this.props.alert} />}
-        {tabBar}
-        {this.props.dataLoading ? <CircularProgress open /> : null}
-      </React.Fragment>
+        <div style={{ height: '100%' }}>
+          <React.Fragment>
+            <Grid container spacing={2} style={{ padding: 15 }}>
+              <Grid item xs={3} className={classes.item} style={{ zIndex: '1104' }}>
+                <label>Academic Year*</label>
+                <Select
+                  placeholder='Select Year'
+                  value={this.state.session ? this.state.session : null}
+                  options={
+                    this.props.session
+                      ? this.props.session.session_year.map((session) => ({
+                          value: session,
+                          label: session,
+                        }))
+                      : []
+                  }
+                  onChange={this.handleAcademicyear}
+                />
+              </Grid>
+              <Grid item xs={3} className={classes.item} style={{ zIndex: '1103' }}>
+                <label>Branch*</label>
+                <Select
+                  // isMulti
+                  placeholder='Select Branch'
+                  value={this.state.selectedBranches ? this.state.selectedBranches : ''}
+                  options={
+                    this.state.selectedbranchIds !== 'all'
+                      ? this.props.branches.length && this.props.branches
+                        ? this.props.branches.map((branch) => ({
+                            value: branch.branch ? branch.branch.id : '',
+                            label: branch.branch ? branch.branch.branch_name : '',
+                          }))
+                        : []
+                      : []
+                  }
+                  onChange={this.changehandlerbranch}
+                />
+              </Grid>
+              <Grid item xs={3} className={classes.item} style={{ zIndex: '1102' }}>
+                <label>Grade*</label>
+                <Select
+                  placeholder='Select Grade'
+                  value={this.state.gradeData ? this.state.gradeData : null}
+                  options={
+                    this.props.gradeData
+                      ? this.props.gradeData.map((grades) => ({
+                          value: grades.grade.id,
+                          label: grades.grade.grade,
+                        }))
+                      : []
+                  }
+                  onChange={this.gradeHandler}
+                />
+              </Grid>
+              <Grid item xs={3} className={classes.item} style={{ zIndex: '1101' }}>
+                <label>Section*</label>
+                {sectionRow}
+              </Grid>
+              <Grid item xs={3} className={classes.item} style={{ zIndex: '1100' }}>
+                <label>Active/Inactive*</label>
+                <Select
+                  placeholder='Select State'
+                  value={this.state.studentTypeData ? this.state.studentTypeData : ''}
+                  options={[
+                    {
+                      label: 'Active',
+                      value: 1,
+                    },
+                    {
+                      label: 'InActive',
+                      value: 2,
+                    },
+                    {
+                      label: 'Both',
+                      value: 3,
+                    },
+                  ]}
+                  onChange={this.activeHandler}
+                />
+              </Grid>
+              <Grid item xs={3} className={classes.item} style={{ zIndex: '1000' }}>
+                <label>Search Type*</label>
+                <Select
+                  placeholder='Select Type'
+                  value={this.state.searchTypeData ? this.state.searchTypeData : ''}
+                  options={[
+                    {
+                      label: 'ERP',
+                      value: 1,
+                    },
+                    {
+                      label: 'Student Name',
+                      value: 2,
+                    },
+                    {
+                      label: 'Father Name',
+                      value: 3,
+                    },
+                    {
+                      label: 'Father Number',
+                      value: 4,
+                    },
+                    {
+                      label: 'Mother Name',
+                      value: 5,
+                    },
+                    {
+                      label: 'Mother Number',
+                      value: 6,
+                    },
+                  ]}
+                  onChange={this.searchTypeHandler}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                {searchBox}
+              </Grid>
+              <Grid item xs={2} className={classes.item}>
+                <Button
+                  style={{ marginLeft: '10px', marginTop: '20px', color: 'white' }}
+                  variant='contained'
+                  color='primary'
+                  disabled={!this.state.session}
+                  // onClick={this.erpHandler}
+                  onClick={this.CheckPayment}
+                >
+                  GET
+                </Button>
+              </Grid>
+            </Grid>
+            {this.state.searchTypeData.value === 1 ? (
+              <Student
+                erp={this.state.studentLabel}
+                session={this.state.session.value}
+                user={this.props.user}
+                alert={this.props.alert}
+              />
+            ) : (
+              <Student
+                erp={this.state.studentErp}
+                session={this.state.session.value}
+                user={this.props.user}
+                alert={this.props.alert}
+              />
+            )}
+            {tabBar}
+            {this.props.dataLoading ? <CircularProgress open /> : null}
+          </React.Fragment>
+        </div>
       </Layout>
-    )
+    );
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   user: state.authentication.user,
   session: state.academicSession.items,
   // ErpSuggestions: state.finance.makePayAcc.erpSuggestions,
@@ -705,21 +857,39 @@ const mapStateToProps = state => ({
   dataLoading: state.finance.common.dataLoader,
   branches: state.finance.common.branchPerSession,
   // gradeList: state.finance.common.gradeList,
-})
+});
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchGrades: (session, branch, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, branch, alert, user, moduleId })),
+  fetchGrades: (session, branch, alert, user, moduleId) =>
+    dispatch(actionTypes.fetchGrades({ session, branch, alert, user, moduleId })),
   // fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
   // fetchGrades: (alert, user, moduleId, branch, session) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch, session })),
-  studentErpSearch: (type, session, grade, section, status, erp, alert, user, branch) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user, branch })),
+  studentErpSearch: (type, session, grade, section, status, erp, alert, user, branch) =>
+    dispatch(
+      actionTypes.studentErpSearch({
+        type,
+        session,
+        grade,
+        section,
+        status,
+        erp,
+        alert,
+        user,
+        branch,
+      })
+    ),
   clearAllProps: (alert, user) => dispatch(actionTypes.clearAllProps({ alert, user })),
-  fetchAllSections: (session, gradeId, branch, alert, user, moduleId) => dispatch(actionTypes.fetchAllSections({ session, gradeId, branch, alert, user, moduleId })),
+  fetchAllSections: (session, gradeId, branch, alert, user, moduleId) =>
+    dispatch(
+      actionTypes.fetchAllSections({ session, gradeId, branch, alert, user, moduleId })
+    ),
   //   fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user }))
-  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId }))
-})
+  fetchBranches: (session, alert, user, moduleId) =>
+    dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
+});
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(withRouter(StudentLedgerTab)))
+)(withStyles(styles)(withRouter(StudentLedgerTab)));

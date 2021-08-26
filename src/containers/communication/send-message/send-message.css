@@ -1,4 +1,5 @@
 .send_message_wrapper {
+  height: 100%;
   background-color: #f9f9f9;
 }
 .send_message_group_select_lebel {
@@ -11,7 +12,6 @@
   vertical-align: middle;
   margin-right: 1%;
 }
-
 
 .textFields_message {
   display: block;
@@ -35,14 +35,14 @@
   background-color: white;
 }
 
-.message_sending_white_wrapper{
-	margin: 20px 0px 0px;
-	padding: 20px 0px 0px;
-	background-color: white;
+.message_sending_white_wrapper {
+  margin: 20px 0px 0px;
+  padding: 20px 0px 0px;
+  background-color: white;
 }
-.email_subject_wrapper_grid{
-	padding-top: 0px !important;
-	padding-bottom: 0px !important;
+.email_subject_wrapper_grid {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
 }
 .message_type_block_wrapper {
   display: flex;
@@ -66,10 +66,10 @@
   font-weight: 600;
 }
 .send_message_type .MuiInputBase-input {
-	color: #014b7e !important;
+  color: #014b7e !important;
 }
-.send_message_type .MuiIconButton-label{
-	color: #FF6B6B !important;
+.send_message_type .MuiIconButton-label {
+  color: #ff6b6b !important;
 }
 .email_subject_wrapper .MuiFormControl-root {
   width: 70%;
@@ -84,10 +84,10 @@
   margin-right: 1%;
 }
 
-.file_name_container{
-	font-size: 1rem;
-	color: #014b7e;
-	font-weight: 600;
+.file_name_container {
+  font-size: 1rem;
+  color: #014b7e;
+  font-weight: 600;
 }
 @media screen and (max-width: 700px) {
   .textFields_message {

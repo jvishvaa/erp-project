@@ -48,13 +48,12 @@ const useStyles = makeStyles((theme) => ({
       width: '85vw',
       margin: 'auto',
     },
-
   },
   container: {
     maxHeight: 440,
   },
   headertable: {
-    color: theme.palette.secondary.main
+    color: theme.palette.secondary.main,
   },
   columnHeader: {
     color: `${theme.palette.secondary.main} !important`,
@@ -63,16 +62,16 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: `#ffffff !important`,
   },
   tablecell: {
-    color: theme.palette.secondary.main
+    color: theme.palette.secondary.main,
   },
   addsmsCreditBox: {
-    width: "50px",
-    height: "25px",
-    textAlign: "center",
-    outline: "none",
-    border: "none",
-    color: theme.palette.secondary.main
-  }
+    width: '50px',
+    height: '25px',
+    textAlign: 'center',
+    outline: 'none',
+    border: 'none',
+    color: theme.palette.secondary.main,
+  },
 }));
 
 // eslint-disable-next-line no-unused-vars
@@ -308,7 +307,7 @@ const MessageCredit = withRouter(({ history, ...props }) => {
         </Dialog>
       ) : null}
       <Layout>
-        <div className='message_credit__page'>
+        <div className='message_credit__page' style={{ height: '100%' }}>
           <CommonBreadcrumbs
             componentName='Communication'
             childComponentName='Add SMS credit'
@@ -323,7 +322,11 @@ const MessageCredit = withRouter(({ history, ...props }) => {
                   id='message_log-branch'
                   className='sms_credit_branch'
                   options={branchList}
-                  getOptionLabel={(option) => (option && option.branch && option.branch.branch_name) ? option.branch.branch_name : ''}
+                  getOptionLabel={(option) =>
+                    option && option.branch && option.branch.branch_name
+                      ? option.branch.branch_name
+                      : ''
+                  }
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -352,25 +355,37 @@ const MessageCredit = withRouter(({ history, ...props }) => {
             </>
           ) : (
             <Paper className={`common-table ${classes.root}`}>
-              <TableContainer
-                className={classes.container}
-              >
+              <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label='sticky table'>
                   <TableHead className='table-header-row'>
-                    <TableRow color="secondary">
+                    <TableRow color='secondary'>
                       <TableCell className={classes.columnHeader}>Branch</TableCell>
-                      <TableCell className={classes.columnHeader}>Available SMS Credit</TableCell>
-                      <TableCell className={classes.columnHeader}>Used SMS Credit</TableCell>
-                      <TableCell className={classes.columnHeader}>Amount to be Added</TableCell>
-                      <TableCell className={classes.columnHeader}>Add SMS Credit</TableCell>
+                      <TableCell className={classes.columnHeader}>
+                        Available SMS Credit
+                      </TableCell>
+                      <TableCell className={classes.columnHeader}>
+                        Used SMS Credit
+                      </TableCell>
+                      <TableCell className={classes.columnHeader}>
+                        Amount to be Added
+                      </TableCell>
+                      <TableCell className={classes.columnHeader}>
+                        Add SMS Credit
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody className='table_body'>
                     {testData.map((items, index) => (
                       <TableRow key={`message_credit_table_${index}`}>
-                        <TableCell className={classes.tablecell} align='right'>{items.BranchName}</TableCell>
-                        <TableCell className={classes.tablecell} align='right'>{items.AvailableSMS}</TableCell>
-                        <TableCell className={classes.tablecell} align='right'>{items.useSMS}</TableCell>
+                        <TableCell className={classes.tablecell} align='right'>
+                          {items.BranchName}
+                        </TableCell>
+                        <TableCell className={classes.tablecell} align='right'>
+                          {items.AvailableSMS}
+                        </TableCell>
+                        <TableCell className={classes.tablecell} align='right'>
+                          {items.useSMS}
+                        </TableCell>
                         <TableCell className={classes.tablecell} align='right'>
                           {items.Adding ? (
                             <input
@@ -400,18 +415,22 @@ const MessageCredit = withRouter(({ history, ...props }) => {
                                 size='small'
                               >
                                 CANCEL
-                             </Button>
+                              </Button>
 
                               <Button
                                 type='submit'
                                 variant='contained'
                                 color='primary'
-                                style={{ color: 'white', marginLeft: '10%', width: '100%' }}
+                                style={{
+                                  color: 'white',
+                                  marginLeft: '10%',
+                                  width: '100%',
+                                }}
                                 onClick={() => handleSubmit(index)}
                                 size='small'
                               >
                                 SAVE
-                             </Button>
+                              </Button>
                             </div>
                           ) : (
                             <AddCircleIcon

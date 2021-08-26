@@ -13,6 +13,11 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.main,
     boxShadow: 'none',
   },
+  footerBar: {
+    backgroundColor: '#ffffff',
+    color: theme.palette.secondary.main,
+    boxShadow: 'none',
+  },
   searchInputContainerMobile: {
     display: 'flex',
     alignItems: 'center',

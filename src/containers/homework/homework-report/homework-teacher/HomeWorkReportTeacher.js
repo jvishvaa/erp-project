@@ -28,7 +28,7 @@ import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import Loader from '../../../../components/loader/loader';
 
-const useRowStyles = makeStyles((theme)=>({
+const useRowStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
       borderBottom: 'unset',
@@ -41,8 +41,8 @@ const useRowStyles = makeStyles((theme)=>({
       backgroundColor: '#d9d9d9',
     },
     tablehead: {
-      color: theme.palette.secondary.main
-    }
+      color: theme.palette.secondary.main,
+    },
   },
 }));
 
@@ -116,18 +116,26 @@ function BranchTable(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout='auto' unmountOnExit>
             <Box margin={1}>
-              <Typography color = "secondary" variant='h6' gutterBottom component='div'>
+              <Typography color='secondary' variant='h6' gutterBottom component='div'>
                 Grade Wise Data
               </Typography>
               <Table size='small' aria-label='purchases'>
                 <TableHead>
                   <TableRow>
                     <TableCell align='right'></TableCell>
-                    <TableCell className = {classes.tablehead} align='right'>S NO.</TableCell>
-                    <TableCell className = {classes.tablehead}>Grade</TableCell>
-                    <TableCell className = {classes.tablehead}>Total Homework Given</TableCell>
-                    <TableCell className = {classes.tablehead}>Total Homework Submitted</TableCell>
-                    <TableCell className = {classes.tablehead} align='right'>Total Homework Evaluated</TableCell>
+                    <TableCell className={classes.tablehead} align='right'>
+                      S NO.
+                    </TableCell>
+                    <TableCell className={classes.tablehead}>Grade</TableCell>
+                    <TableCell className={classes.tablehead}>
+                      Total Homework Given
+                    </TableCell>
+                    <TableCell className={classes.tablehead}>
+                      Total Homework Submitted
+                    </TableCell>
+                    <TableCell className={classes.tablehead} align='right'>
+                      Total Homework Evaluated
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -218,18 +226,24 @@ function GradeTable(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout='auto' unmountOnExit>
             <Box margin={1}>
-              <Typography color = "secondary" variant='h6' gutterBottom component='div'>
+              <Typography color='secondary' variant='h6' gutterBottom component='div'>
                 Section Wise Data
               </Typography>
               <Table size='small' aria-label='purchases'>
                 <TableHead>
                   <TableRow>
                     <TableCell></TableCell>
-                    <TableCell className = {classes.tablehead}>S No.</TableCell>
-                    <TableCell className = {classes.tablehead}>Section</TableCell>
-                    <TableCell className = {classes.tablehead}>Total Homework Given</TableCell>
-                    <TableCell className = {classes.tablehead} align='right'>Total Homework Submitted</TableCell>
-                    <TableCell className = {classes.tablehead} align='right'>Total Homework Evaluated</TableCell>
+                    <TableCell className={classes.tablehead}>S No.</TableCell>
+                    <TableCell className={classes.tablehead}>Section</TableCell>
+                    <TableCell className={classes.tablehead}>
+                      Total Homework Given
+                    </TableCell>
+                    <TableCell className={classes.tablehead} align='right'>
+                      Total Homework Submitted
+                    </TableCell>
+                    <TableCell className={classes.tablehead} align='right'>
+                      Total Homework Evaluated
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -322,17 +336,23 @@ function SecTable(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout='auto' unmountOnExit>
             <Box margin={1}>
-              <Typography color = "secondary" variant='h6' gutterBottom component='div'>
+              <Typography color='secondary' variant='h6' gutterBottom component='div'>
                 Student Wise Data
               </Typography>
               <Table size='small' aria-label='purchases'>
                 <TableHead>
                   <TableRow>
-                    <TableCell className = {classes.tablehead}>S NO.</TableCell>
-                    <TableCell className = {classes.tablehead}>Student Name</TableCell>
-                    <TableCell className = {classes.tablehead}>Total Homework Given</TableCell>
-                    <TableCell className = {classes.tablehead} align='right'>Total Homework Submitted</TableCell>
-                    <TableCell className = {classes.tablehead} align='right'>Total Homework Evaluated</TableCell>
+                    <TableCell className={classes.tablehead}>S NO.</TableCell>
+                    <TableCell className={classes.tablehead}>Student Name</TableCell>
+                    <TableCell className={classes.tablehead}>
+                      Total Homework Given
+                    </TableCell>
+                    <TableCell className={classes.tablehead} align='right'>
+                      Total Homework Submitted
+                    </TableCell>
+                    <TableCell className={classes.tablehead} align='right'>
+                      Total Homework Evaluated
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 {studentWiseData?.length > 0 ? (
@@ -435,95 +455,107 @@ export default function HomeWorkReportTeacher() {
     <>
       <Layout>
         {loading && <Loader />}
-        <CommonBreadcrumbs
-          componentName={`Homework`}
-          childComponentName={`Teacher HW Report`}
-          isAcademicYearVisible={true}
-        />
-        <Grid container spacing={5} style={{ width: widerWidth, margin: wider }}>
-          <Grid item xs={12} sm={3}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleSubject}
-              id='grade'
-              className='dropdownIcon'
-              value={selectedSubject || {}}
-              options={subjectDropdown || []}
-              getOptionLabel={(option) => option?.subject_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Subject'
-                  placeholder='Subject'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <LocalizationProvider dateAdapter={MomentUtils} className='dropdownIcon'>
-              <DateRangePicker
-                startText='Select-Date-Range'
+        <div style={{ height: '100%' }}>
+          <CommonBreadcrumbs
+            componentName={`Homework`}
+            childComponentName={`Teacher HW Report`}
+            isAcademicYearVisible={true}
+          />
+          <Grid container spacing={5} style={{ width: widerWidth, margin: wider }}>
+            <Grid item xs={12} sm={3}>
+              <Autocomplete
+                style={{ width: '100%' }}
                 size='small'
-                value={dateRangeTechPer}
-                onChange={(newValue) => {
-                  // setDateRangeTechPer(newValue);
-                  setDateRangeTechPer(() => newValue);
-                  if (selectedSubject) {
-                    handleSubject('', selectedSubject);
-                  }
-                }}
-                renderInput={({ inputProps, ...startProps }, endProps) => {
-                  return (
-                    <>
-                      <TextField
-                        {...startProps}
-                        format={(date) => moment(date).format('DD-MM-YYYY')}
-                        inputProps={{
-                          ...inputProps,
-                          value: `${moment(inputProps.value).format(
-                            'MM-DD-YYYY'
-                          )} - ${moment(endProps.inputProps.value).format('MM-DD-YYYY')}`,
-                          readOnly: true,
-                        }}
-                        size='small'
-                        style={{ minWidth: '100%' }}
-                      />
-                    </>
-                  );
-                }}
-              />
-            </LocalizationProvider>
-          </Grid>
-        </Grid>
-        <div style={{ width: widerWidth, margin: wider }}>
-          <TableContainer component={Paper}>
-            <Table aria-label='collapsible table'>
-              <TableHead>
-                <TableRow className={classes.head}>
-                  <TableCell />
-                  <TableCell className = {classes.tablehead}>S No</TableCell>
-                  <TableCell className = {classes.tablehead} align='right'>Branch</TableCell>
-                  <TableCell className = {classes.tablehead} align='right'>Total Homework Given</TableCell>
-                  <TableCell className = {classes.tablehead} align='right'>Total Homework Submitted</TableCell>
-                  <TableCell className = {classes.tablehead} align='right'>Total Homework Evaluated</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {branchWiseData?.map((branch_level_data, index) => (
-                  <BranchTable
-                    key={branch_level_data?.branch_id}
-                    index={index}
-                    branch_level_data={branch_level_data}
-                    selectedSubject={selectedSubject}
-                    dateRange={dateRangeTechPer}
+                onChange={handleSubject}
+                id='grade'
+                className='dropdownIcon'
+                value={selectedSubject || {}}
+                options={subjectDropdown || []}
+                getOptionLabel={(option) => option?.subject_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Subject'
+                    placeholder='Subject'
                   />
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <LocalizationProvider dateAdapter={MomentUtils} className='dropdownIcon'>
+                <DateRangePicker
+                  startText='Select-Date-Range'
+                  size='small'
+                  value={dateRangeTechPer}
+                  onChange={(newValue) => {
+                    // setDateRangeTechPer(newValue);
+                    setDateRangeTechPer(() => newValue);
+                    if (selectedSubject) {
+                      handleSubject('', selectedSubject);
+                    }
+                  }}
+                  renderInput={({ inputProps, ...startProps }, endProps) => {
+                    return (
+                      <>
+                        <TextField
+                          {...startProps}
+                          format={(date) => moment(date).format('DD-MM-YYYY')}
+                          inputProps={{
+                            ...inputProps,
+                            value: `${moment(inputProps.value).format(
+                              'MM-DD-YYYY'
+                            )} - ${moment(endProps.inputProps.value).format(
+                              'MM-DD-YYYY'
+                            )}`,
+                            readOnly: true,
+                          }}
+                          size='small'
+                          style={{ minWidth: '100%' }}
+                        />
+                      </>
+                    );
+                  }}
+                />
+              </LocalizationProvider>
+            </Grid>
+          </Grid>
+          <div style={{ width: widerWidth, margin: wider }}>
+            <TableContainer component={Paper}>
+              <Table aria-label='collapsible table'>
+                <TableHead>
+                  <TableRow className={classes.head}>
+                    <TableCell />
+                    <TableCell className={classes.tablehead}>S No</TableCell>
+                    <TableCell className={classes.tablehead} align='right'>
+                      Branch
+                    </TableCell>
+                    <TableCell className={classes.tablehead} align='right'>
+                      Total Homework Given
+                    </TableCell>
+                    <TableCell className={classes.tablehead} align='right'>
+                      Total Homework Submitted
+                    </TableCell>
+                    <TableCell className={classes.tablehead} align='right'>
+                      Total Homework Evaluated
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {branchWiseData?.map((branch_level_data, index) => (
+                    <BranchTable
+                      key={branch_level_data?.branch_id}
+                      index={index}
+                      branch_level_data={branch_level_data}
+                      selectedSubject={selectedSubject}
+                      dateRange={dateRangeTechPer}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
         </div>
       </Layout>
     </>

@@ -7,9 +7,11 @@ const AssessmentAnalysis = () => {
   return (
     <>
       <Layout>
-        <AssessmentAnalysisContextProvider>
-          <AssessmentAnalysisUI />
-        </AssessmentAnalysisContextProvider>
+        <div style={{ height: '100%' }}>
+          <AssessmentAnalysisContextProvider>
+            <AssessmentAnalysisUI />
+          </AssessmentAnalysisContextProvider>
+        </div>
       </Layout>
     </>
   );

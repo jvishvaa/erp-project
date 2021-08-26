@@ -233,148 +233,149 @@ const ListandFilter = (props) => {
 
   return (
     <Layout>
-      <CommonBreadcrumbs
-        componentName='Master Management'
-        childComponentName='Content Mapping'
-      />
-      <Grid
-        container
-        spacing={2}
-        style={{ width: '95%', overflow: 'hidden', margin: '20px auto' }}
-      >
-        <Grid container spacing={2} style={{ marginTop: '10px' }}>
-          <Grid item md={3} xs={12} sm={6}>
-            <FormControl style={{ width: '100%' }} className={`select-form`}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                value={selectedYear}
-                id='tags-outlined'
-                className='dropdownIcon'
-                options={academicYear}
-                getOptionLabel={(option) => option?.session_year}
-                filterSelectedOptions
-                size='small'
-                renderInput={(params) => (
-                  <TextField {...params} variant='outlined' label='Academic Year' />
-                )}
-                onChange={(e, value) => {
-                  handleChangeYear(value);
-                }}
-                getOptionSelected={(option, value) => value && option.id == value.id}
-              />
-              <FormHelperText style={{ marginLeft: '20px', color: 'red' }}>
-                {error && error.errorMessage && error.errorMessage.branchError}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item md={3} xs={12} sm={6}>
-            <FormControl style={{ width: '100%' }} className={`select-form`}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                value={branchValue}
-                id='tags-outlined'
-                options={branch}
-                className='dropdownIcon'
-                getOptionLabel={(option) => option?.branch.branch_name}
-                filterSelectedOptions
-                size='small'
-                renderInput={(params) => (
-                  <TextField {...params} variant='outlined' label='Branch' />
-                )}
-                onChange={(e, value) => {
-                  handleChangeBranch(value);
-                }}
-                getOptionSelected={(option, value) => value && option.id == value.id}
-              />
-              <FormHelperText style={{ marginLeft: '20px', color: 'red' }}>
-                {error && error.errorMessage && error.errorMessage.branchError}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item md={3} xs={12} sm={6}>
-            <FormControl style={{ width: '100%' }} className={`subject-form`}>
+      <div style={{ height: '100%' }}>
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Content Mapping'
+        />
+        <Grid
+          container
+          spacing={2}
+          style={{ width: '95%', overflow: 'hidden', margin: '20px auto' }}
+        >
+          <Grid container spacing={2} style={{ marginTop: '10px' }}>
+            <Grid item md={3} xs={12} sm={6}>
+              <FormControl style={{ width: '100%' }} className={`select-form`}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  value={selectedYear}
+                  id='tags-outlined'
+                  className='dropdownIcon'
+                  options={academicYear}
+                  getOptionLabel={(option) => option?.session_year}
+                  filterSelectedOptions
+                  size='small'
+                  renderInput={(params) => (
+                    <TextField {...params} variant='outlined' label='Academic Year' />
+                  )}
+                  onChange={(e, value) => {
+                    handleChangeYear(value);
+                  }}
+                  getOptionSelected={(option, value) => value && option.id == value.id}
+                />
+                <FormHelperText style={{ marginLeft: '20px', color: 'red' }}>
+                  {error && error.errorMessage && error.errorMessage.branchError}
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item md={3} xs={12} sm={6}>
+              <FormControl style={{ width: '100%' }} className={`select-form`}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  value={branchValue}
+                  id='tags-outlined'
+                  options={branch}
+                  className='dropdownIcon'
+                  getOptionLabel={(option) => option?.branch.branch_name}
+                  filterSelectedOptions
+                  size='small'
+                  renderInput={(params) => (
+                    <TextField {...params} variant='outlined' label='Branch' />
+                  )}
+                  onChange={(e, value) => {
+                    handleChangeBranch(value);
+                  }}
+                  getOptionSelected={(option, value) => value && option.id == value.id}
+                />
+                <FormHelperText style={{ marginLeft: '20px', color: 'red' }}>
+                  {error && error.errorMessage && error.errorMessage.branchError}
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item md={3} xs={12} sm={6}>
+              <FormControl style={{ width: '100%' }} className={`subject-form`}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  required={true}
+                  value={gradeValue}
+                  id='tags-outlined'
+                  options={gradeRes}
+                  className='dropdownIcon'
+                  getOptionLabel={(option) => option.grade__grade_name}
+                  filterSelectedOptions
+                  size='small'
+                  renderInput={(params) => (
+                    <TextField {...params} variant='outlined' label='Grade' />
+                  )}
+                  onChange={(e, value) => {
+                    handleGradeChange(value);
+                  }}
+                  getOptionSelected={(option, value) => value && option.id == value.id}
+                />
+                <FormHelperText style={{ marginLeft: '20px', color: 'red' }}>
+                  {error && error.errorMessage && error.errorMessage.erp_gradeError}
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item md={3} xs={12} sm={6}>
               <Autocomplete
                 style={{ width: '100%' }}
                 required={true}
-                value={gradeValue}
+                value={selectedModule}
                 id='tags-outlined'
-                options={gradeRes}
+                options={moduleList}
                 className='dropdownIcon'
-                getOptionLabel={(option) => option.grade__grade_name}
+                getOptionLabel={(option) => option.label}
                 filterSelectedOptions
                 size='small'
                 renderInput={(params) => (
-                  <TextField {...params} variant='outlined' label='Grade' />
+                  <TextField {...params} variant='outlined' label='Module' />
                 )}
                 onChange={(e, value) => {
-                  handleGradeChange(value);
+                  setSelectedModule(value);
                 }}
                 getOptionSelected={(option, value) => value && option.id == value.id}
               />
-              <FormHelperText style={{ marginLeft: '20px', color: 'red' }}>
-                {error && error.errorMessage && error.errorMessage.erp_gradeError}
-              </FormHelperText>
-            </FormControl>
+            </Grid>
           </Grid>
-          <Grid item md={3} xs={12} sm={6}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              required={true}
-              value={selectedModule}
-              id='tags-outlined'
-              options={moduleList}
-              className='dropdownIcon'
-              getOptionLabel={(option) => option.label}
-              filterSelectedOptions
-              size='small'
-              renderInput={(params) => (
-                <TextField {...params} variant='outlined' label='Module' />
-              )}
-              onChange={(e, value) => {
-                setSelectedModule(value);
-              }}
-              getOptionSelected={(option, value) => value && option.id == value.id}
-            />
-          </Grid>
+          <div className='btn-list'>
+            <Button
+              variant='contained'
+              className='cancelButton labelColor'
+              onClick={handleClearAll}
+            >
+              Clear All
+            </Button>
+            <Button
+              variant='contained'
+              color='primary'
+              className='filter-btn'
+              style={{ color: 'white', marginLeft: 15 }}
+              onClick={handleFilter}
+            >
+              Filter
+            </Button>
+          </div>
+          <div className='button-container-map'>
+            <StyledButton
+              variant='outlined'
+              color='primary'
+              style={{ color: 'white', marginTop: '4px' }}
+              onClick={navigateToCreatePage}
+            >
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={{ width: '12px', marginRight: '5px' }}
+                    src={Addicon}
+                    alt='given'
+                  />
+                )}
+              />
+              Assign Mapping
+            </StyledButton>
+          </div>
         </Grid>
-        <div className='btn-list'>
-          <Button
-            variant='contained'
-            className='cancelButton labelColor'
-            onClick={handleClearAll}
-          >
-            Clear All
-          </Button>
-          <Button
-            variant='contained'
-            color='primary'
-            className='filter-btn'
-            style={{ color: 'white', marginLeft: 15 }}
-            onClick={handleFilter}
-          >
-            Filter
-          </Button>
-        </div>
-        <div className='button-container-map'>
-          <StyledButton
-            variant='outlined'
-            color='primary'
-            style={{ color: 'white', marginTop: '4px' }}
-            onClick={navigateToCreatePage}
-          >
-            <SvgIcon
-              component={() => (
-                <img
-                  style={{ width: '12px', marginRight: '5px' }}
-                  src={Addicon}
-                  alt='given'
-                />
-              )}
-            />
-            Assign Mapping
-          </StyledButton>
-        </div>
-    </Grid>
         <Grid container spacing={2} className='mapping-sub-grade-container'>
           <Grid item md={12} xs={12} className='mapping-grade-subject-container'>
             <Subjectcard
@@ -384,6 +385,7 @@ const ListandFilter = (props) => {
             />
           </Grid>
         </Grid>
+      </div>
     </Layout>
   );
 };

@@ -29,7 +29,6 @@ import {
 } from '../../utility-functions/themeGenerator';
 // import { isMsAPI } from "../../utility-functions/index";
 
-
 export const ContainerContext = createContext();
 
 const Layout = ({ children, history }) => {
@@ -857,8 +856,8 @@ const Layout = ({ children, history }) => {
 
   return (
     <div className={classes.root}>
-      <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen}/>
-       <Drawer
+      <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
+      <Drawer
         open={drawerOpen}
         variant={isMobile ? '' : 'permanent'}
         // className={clsx(classes.drawer, {
@@ -869,6 +868,12 @@ const Layout = ({ children, history }) => {
           [classes.drawerPaper]: drawerOpen,
           [classes.drawerPaperClose]: !drawerOpen,
         })} drawerScrollBar`}
+        // classes={{
+        //   paper: clsx({
+        //     [classes.drawer]: true,
+        //     [classes.drawerPaper]: drawerOpen,
+        //     [classes.drawerPaperClose]: !drawerOpen,
+        //   })} drawerScrollBar`}
         classes={{
           paper: clsx({
             [classes.drawer]: true,
@@ -885,11 +890,15 @@ const Layout = ({ children, history }) => {
             className={classes.menuControlContainer}
             onClick={() => setDrawerOpen((prevState) => !prevState)}
           >
-            <ListItemIcon>
+            <ListItemIcon className={classes.menuItemIcon}>
               {drawerOpen ? (
-                <CloseIcon className={classes.menuItemIcon} />
+                <>
+                  <CloseIcon />
+                </>
               ) : (
-                <MenuIcon className={classes.menuItemIcon} />
+                <>
+                  <MenuIcon />
+                </>
               )}
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
@@ -921,6 +930,9 @@ const Layout = ({ children, history }) => {
         <ContainerContext.Provider value={{ containerRef }}>
           <div className={classes.container} ref={containerRef}>
             {children}
+            <div className={classAppBar.footerBar}>
+              <Footer />
+            </div>
           </div>
         </ContainerContext.Provider>
       </main>
