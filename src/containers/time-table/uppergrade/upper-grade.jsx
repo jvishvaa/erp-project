@@ -447,9 +447,12 @@ const UpperGrade = (props) => {
             </Button>
           </div>
           {props.teacherView && addPeriodButton ? (
-            <div className='add-new-period-button' onClick={() => handleOpenNewPeriod()}>
+            <Button color="primary"
+              variant="contained"
+              style={{ color: "white !important" }}
+              className={classes.addnewperiodbutton} onClick={() => handleOpenNewPeriod()}>
               Add Period
-            </div>
+            </Button>
           ) : (
             <></>
           )}

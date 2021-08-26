@@ -24,6 +24,8 @@ const useStyles = makeStyles((theme) => ({
   textRight: {
     textAlign: 'right',
   },
+  tooltiptext:theme.toolTipText,
+
 }));
 
 export default useStyles;

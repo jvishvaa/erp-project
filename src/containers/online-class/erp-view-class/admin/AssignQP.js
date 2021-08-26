@@ -160,7 +160,7 @@ const AssignQP = (props) => {
       : endpoints.questionPaper.QuestionsInQP;
     axiosInstance
       .get(
-        `${QuestionsInQP}?question_paper=${value.question_paper}&lobby_identifier=${params.id}`,
+        `${QuestionsInQP}?question_paper=${value.question_paper}&lobby_identifier=${params.id}&question_paper_list=1`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -240,7 +240,8 @@ const AssignQP = (props) => {
       );
     } catch (err) {
       return (
-        <span>The JSON is not in the proper format. Please Contact Technical Team</span>
+        // <span>The JSON is not in the proper format. Please Contact Technical Team</span>
+        <span style={{margin: 'auto 2.5rem'}}>The is not a single choice question.</span>
       );
     }
   };

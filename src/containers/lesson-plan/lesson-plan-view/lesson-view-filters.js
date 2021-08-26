@@ -596,18 +596,19 @@ const LessonViewFilters = ({
         <Grid item xs={6} sm={4} className={isMobile ? '' : 'addButtonPadding'}>
           <a
             className='underlineRemove'
+           
             onClick={() => {
+             
               const fileSrc = `${endpoints.lessonPlan.s3}${obj?.media_file[0]}`;
               openPreview({
                 currentAttachmentIndex: 0,
                 attachmentsArray: [
                   {
                     src: fileSrc,
+                    
                     name: `${
                       obj.lesson_type === '1'
-                        ? location.pathname === '/lesson-plan/teacher-view'
-                          ? 'Portion Document'
-                          : ''
+                        ? 'Portion Document'
                         : 'Yearly Curriculum on the ERP (new)'
                     }`,
                     extension: '.' + fileSrc.split('.')[fileSrc.split('.').length - 1],
@@ -617,25 +618,25 @@ const LessonViewFilters = ({
             }}
           >
             <div className='overviewSynopsisContainer'>
+             
               <div className={classes.overviewSynopsisTag}>
                 {obj.lesson_type === '1'
-                  ? location.pathname === '/lesson-plan/teacher-view'
-                    ? 'Portion Document'
-                    : ''
+                  ? 'Portion Document'
                   : 'Yearly Curriculum on the ERP (new)'}
               </div>
-              {location.pathname === '/lesson-plan/teacher-view' ||
-              obj.lesson_type === '2' ? (
-                <div className='overviewSynopsisIcon'>
-                  <SvgIcon component={() => <VisibilityIcon color='primary' />} />
-                </div>
-              ) : (
-                <></>
-              )}
+              <div className='overviewSynopsisIcon'>
+                <SvgIcon
+                  component={() => (
+                   
+                    <VisibilityIcon color='primary' />
+                  )}
+                />
+              </div>
             </div>
           </a>
         </Grid>
       ))}
+
     </Grid>
   );
 };

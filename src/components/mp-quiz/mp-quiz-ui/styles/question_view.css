@@ -200,6 +200,10 @@
     background-color: #d4546a;
     border: 3px solid #d4546a;
 }
+.option.option-5 .option-inner{
+    background-color: tomato;
+    border: 3px solid tomato;
+}
 
 .control-btn-div:first-child{
     border: 1px solid gold !important;
