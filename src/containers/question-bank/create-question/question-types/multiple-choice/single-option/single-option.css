@@ -108,23 +108,6 @@
   font-weight: 600;
 }
 
-.answerBox .MuiInputBase-input {
-  color: #014b7e;
-  padding: 14px;
-}
-
-.matchingAnswerBox .MuiInputBase-input {
-  color: #014b7e;
-  padding: 0 0 40px 0;
-  font-size: 16px;
-}
-
-.matrixAnswerBox .MuiInputBase-input {
-  color: #014b7e;
-  padding: 0;
-  font-size: 16px;
-}
-
 .checkboxContainer {
   align-self: center;
 }
